@@ -88,6 +88,8 @@ export class Accounts<TBigNumber> {
     if (!params.latestTransactionTime) params.latestTransactionTime = (await augur.contracts.augur.getTimestamp_()).toNumber();
     if (!params.coin) params.coin = Coin.ALL;
     if (!params.action) params.action = Action.ALL;
+    if (!params.sortBy) params.sortBy = "timestamp";
+    if (!params.isSortDescending) params.isSortDescending = true;
 
     let actionCoinComboIsValid = false;
     let allFormattedLogs: any = [];
@@ -95,9 +97,11 @@ export class Accounts<TBigNumber> {
       const orderFilledLogs = await db.findOrderFilledLogs(
         {
           selector: {
-            universe: params.universe,
-            $or: [{[ORDER_EVENT_CREATOR]: params.account}, {[ORDER_EVENT_FILLER]: params.account}],
-            $and: [{[ORDER_EVENT_TIMESTAMP]: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {[ORDER_EVENT_TIMESTAMP]: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            $and: [
+              {universe: params.universe},
+              {$or: [{[ORDER_EVENT_CREATOR]: params.account}, {[ORDER_EVENT_FILLER]: params.account}]},
+              {[ORDER_EVENT_TIMESTAMP]: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`}}
+            ],
           }
         }
       );
@@ -112,7 +116,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             [ORDER_EVENT_CREATOR]: params.account,
-            $and: [{[ORDER_EVENT_TIMESTAMP]: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {[ORDER_EVENT_TIMESTAMP]: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            [ORDER_EVENT_TIMESTAMP]: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -127,7 +131,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             account: params.account,
-            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -141,7 +145,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             sender: params.account,
-            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -156,7 +160,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             reporter: params.account,
-            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -167,7 +171,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             reporter: params.account,
-            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -182,7 +186,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             marketCreator: params.account,
-            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -197,7 +201,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             reporter: params.account,
-            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -212,7 +216,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             reporter: params.account,
-            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -227,7 +231,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             account: params.account,
-            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -238,7 +242,7 @@ export class Accounts<TBigNumber> {
           selector: {
             universe: params.universe,
             account: params.account,
-            $and: [{timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`}}, {timestamp: {$lte: `0x${params.latestTransactionTime.toString(16)}`}}]
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -247,18 +251,13 @@ export class Accounts<TBigNumber> {
       actionCoinComboIsValid = true;
     }
 
-    if (!actionCoinComboIsValid) {
-      throw new Error("Invalid action/coin combination");
-    }
+    if (!actionCoinComboIsValid) throw new Error("Invalid action/coin combination");
 
-    if (params.sortBy) {
-      const order = params.isSortDescending ? "desc" : "asc";
-      allFormattedLogs.sort(compareObjects(params.sortBy, order));
-    }
+    const order = params.isSortDescending ? "desc" : "asc";
+    allFormattedLogs.sort(compareObjects(params.sortBy, order));
 
-    if (params.limit == null && params.offset == null) {
-      return allFormattedLogs;
-    }
+    if (params.limit == null && params.offset == null) return allFormattedLogs;
+
     return allFormattedLogs.slice(params.offset || 0, params.limit || allFormattedLogs.length);
   }
 
@@ -371,8 +370,8 @@ function formatOrderCanceledLogs(transactionLogs: Array<OrderEventLog>, marketIn
         marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(),
         outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(), marketInfo[transactionLogs[i].market]),
-        price: transactionLogs[i].uint256Data[OrderEventUint256Value.price],
-        quantity: transactionLogs[i].uint256Data[OrderEventUint256Value.amount],
+        price: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.price]).toString(),
+        quantity: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.amount]).toString(),
         timestamp: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.timestamp]).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
@@ -395,9 +394,9 @@ function formatParticipationTokensRedeemedLogs(transactionLogs: Array<Participat
         outcome: null,
         outcomeDescription: null,
         price: "0",
-        quantity: transactionLogs[i].attoParticipationTokens,
+        quantity: new BigNumber(transactionLogs[i].attoParticipationTokens).toString(),
         timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
-        total: transactionLogs[i].feePayoutShare,
+        total: new BigNumber(transactionLogs[i].feePayoutShare).toString(),
         transactionHash: transactionLogs[i].transactionHash,
       }
     );
@@ -429,10 +428,10 @@ async function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingPr
         marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome,
         outcomeDescription,
-        price: price.toString(),
-        quantity: transactionLogs[i].numShares,
+        price: new BigNumber(price).toString(),
+        quantity: new BigNumber(transactionLogs[i].numShares).toString(),
         timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
-        total: transactionLogs[i].numPayoutTokens.toString(),
+        total: new BigNumber(transactionLogs[i].numPayoutTokens).toString(),
         transactionHash: transactionLogs[i].transactionHash,
       }
     );
@@ -459,7 +458,7 @@ async function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrow
           price: "0",
           quantity: "0",
           timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
-          total: transactionLogs[i].amountRedeemed,
+          total: new BigNumber(transactionLogs[i].amountRedeemed).toString(),
           transactionHash: transactionLogs[i].transactionHash,
         }
       );
@@ -477,7 +476,7 @@ async function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrow
           price: "0",
           quantity: "0",
           timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
-          total: transactionLogs[i].repReceived,
+          total: new BigNumber(transactionLogs[i].repReceived).toString(),
           transactionHash: transactionLogs[i].transactionHash,
         }
       );
@@ -512,7 +511,7 @@ function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[], params: t.
 async function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<DisputeCrowdsourcerContributionLog>, augur: Augur, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
-    const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].reporter);
+    const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].disputeCrowdsourcer);
     const outcome = getOutcomeFromPayoutNumerators(await reportingParticipant.getPayoutNumerators_(), marketInfo[transactionLogs[i].market]);
     const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     formattedLogs.push(
@@ -525,7 +524,7 @@ async function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<
         outcome,
         outcomeDescription,
         price: "0",
-        quantity: transactionLogs[i].amountStaked,
+        quantity: new BigNumber(transactionLogs[i].amountStaked).toString(),
         timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
@@ -538,7 +537,8 @@ async function formatDisputeCrowdsourcerContributionLogs(transactionLogs: Array<
 async function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialReportSubmittedLog>, augur: Augur, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
-    const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].reporter);
+    const reportingParticipantAddress = await augur.contracts.marketFromAddress(transactionLogs[i].market).getInitialReporter_();
+    const reportingParticipant = augur.contracts.getReportingParticipant(reportingParticipantAddress);
     const outcome = getOutcomeFromPayoutNumerators(await reportingParticipant.getPayoutNumerators_(), marketInfo[transactionLogs[i].market]);
     const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     formattedLogs.push(
@@ -551,7 +551,7 @@ async function formatInitialReportSubmittedLogs(transactionLogs: Array<InitialRe
         outcome,
         outcomeDescription,
         price: "0",
-        quantity: transactionLogs[i].amountStaked,
+        quantity: new BigNumber(transactionLogs[i].amountStaked).toString(),
         timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
@@ -573,8 +573,8 @@ function formatCompleteSetsPurchasedLogs(transactionLogs: Array<CompleteSetsPurc
         marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome: null,
         outcomeDescription: null,
-        price: marketInfo[transactionLogs[i].market].numTicks,
-        quantity: transactionLogs[i].numCompleteSets,
+        price: new BigNumber(marketInfo[transactionLogs[i].market].numTicks).toString(),
+        quantity: new BigNumber(transactionLogs[i].numCompleteSets).toString(),
         timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
@@ -596,8 +596,8 @@ function formatCompleteSetsSoldLogs(transactionLogs: Array<CompleteSetsSoldLog>,
         marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
         outcome: null,
         outcomeDescription: null,
-        price: marketInfo[transactionLogs[i].market].numTicks,
-        quantity: transactionLogs[i].numCompleteSets,
+        price: new BigNumber(marketInfo[transactionLogs[i].market].numTicks).toString(),
+        quantity: new BigNumber(transactionLogs[i].numCompleteSets).toString(),
         timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,

@@ -699,7 +699,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1].reportingState).toBe(MarketInfoReportingState.DESIGNATED_REPORTING);
   expect(markets[2].reportingState).toBe(MarketInfoReportingState.DESIGNATED_REPORTING);
 
-    // Skip to open reporting
+  // Skip to open reporting
   newTime = newTime.plus(SECONDS_IN_A_DAY * 7);
   await john.setTimestamp(newTime);
 
@@ -726,8 +726,8 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   ];
   await john.doInitialReport(categoricalMarket, categoricalMarketPayoutSet);
 
-  const noPayoutSet = [new BigNumber(100), new BigNumber(0), new BigNumber(0)];
-  const yesPayoutSet = [new BigNumber(0), new BigNumber(100), new BigNumber(0)];
+  const noPayoutSet = [new BigNumber(0), new BigNumber(100), new BigNumber(0)];
+  const yesPayoutSet = [new BigNumber(0), new BigNumber(0), new BigNumber(100)];
   await john.doInitialReport(yesNoMarket, noPayoutSet);
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);

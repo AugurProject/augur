@@ -86,6 +86,10 @@ export class Contracts {
     return new ContractInterfaces.DisputeWindow(this.dependencies, address);
   }
 
+  public getInitialReporter(initialReporterAddress: string): ContractInterfaces.InitialReporter {
+    return new ContractInterfaces.InitialReporter(this.dependencies, initialReporterAddress);
+  }
+
   public getReportingParticipant(reportingParticipantAddress: string): ContractInterfaces.DisputeCrowdsourcer {
     return new ContractInterfaces.DisputeCrowdsourcer(this.dependencies, reportingParticipantAddress);
   }

@@ -250,6 +250,7 @@ export class ContractAPI {
     await market.contribute(payoutNumerators, amount, "");
   }
 
+  // TODO Update this to handle case where crowdsourcer is 0 address (hasn't gotten any contributions)
   public async getRemainingToFill(market: ContractInterfaces.Market, payoutNumerators: Array<BigNumber>): Promise<BigNumber> {
     const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
     const crowdsourcerAddress = await market.getCrowdsourcer_(payoutDistributionHash);
@@ -284,6 +285,11 @@ export class ContractAPI {
     const disputeWindowAddress = await market.getDisputeWindow_();
     const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
     return disputeWindow.getEndTime_();
+  }
+
+  public async getInitialReporter(market: ContractInterfaces.Market): Promise<ContractInterfaces.InitialReporter> {
+    const initialReporterAddress = await market.getInitialReporter_();
+    return this.augur.contracts.getInitialReporter(initialReporterAddress);
   }
 
   public async getWinningReportingParticipant(market: ContractInterfaces.Market): Promise<ContractInterfaces.DisputeCrowdsourcer> {
@@ -327,7 +333,7 @@ export class ContractAPI {
   public async getInitialReporterStake(market: ContractInterfaces.Market, payoutNumerators: Array<BigNumber>): Promise<BigNumber> {
     const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
     const initialReporterAddress = await market.getCrowdsourcer_(payoutDistributionHash);
-    const initialReporter = this.augur.contracts.getReportingParticipant(initialReporterAddress);
+    const initialReporter = this.augur.contracts.getInitialReporter(initialReporterAddress);
     return initialReporter.getStake_();
   }
 
