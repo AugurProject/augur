@@ -22,7 +22,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  cancelAllOpenOrders: (orders, cb) => dispatch(cancelAllOpenOrders(orders, cb))
+  cancelAllOpenOrders: (orders, cb) => dispatch(cancelAllOpenOrders(orders, cb)),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -40,15 +40,15 @@ const mergeProps = (sP, dP, oP) => {
         action: () => {
           dP.cancelAllOpenOrders(openOrders);
           dP.closeModal();
-        }
-      }
+        },
+      },
     ],
     closeAction: () => {
       if (sP.modal.cb) {
         sP.modal.cb();
       }
       dP.closeModal();
-    }
+    },
   };
 };
 
@@ -56,6 +56,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(UnsignedOrders)
+    mergeProps,
+  )(UnsignedOrders),
 );
