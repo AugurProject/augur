@@ -36,7 +36,6 @@ export class WebsocketConnector extends Connector {
     });
 
     return this.socket.open();
-
   }
 
   public async disconnect(): Promise<any> {
