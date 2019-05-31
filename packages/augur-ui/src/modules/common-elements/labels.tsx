@@ -1,7 +1,6 @@
 import React from "react";
 import classNames from "classnames";
 import * as constants from "modules/common-elements/constants";
-import { constants as serviceConstants } from "services/constants";
 import Styles from "modules/common-elements/labels.styles";
 import { ClipLoader } from "react-spinners";
 import { MarketIcon, InfoIcon, CheckCircleIcon } from "modules/common-elements/icons";
@@ -17,12 +16,11 @@ import {
   CLOSED,
   SHORT,
   ZERO,
+  REPORTING_STATE,
 } from "modules/common-elements/constants";
 import { ViewTransactionDetailsButton } from "modules/common-elements/buttons";
 import { formatNumber } from "utils/format-number";
 import { FormattedNumber, SizeTypes, DateFormattedObject } from "modules/types";
-
-const { REPORTING_STATE } = serviceConstants;
 
 export interface MarketTypeProps {
   marketType: string;
@@ -123,7 +121,7 @@ export interface LinearPropertyLabelViewTransactionProps {
 export interface ValueLabelProps {
   value: FormattedNumber;
   showDenomination: boolean;
-  keyId: string;
+  keyId?: string;
   showEmptyDash: boolean;
 }
 
@@ -133,7 +131,7 @@ interface HoverValueLabelState {
 
 export interface TextLabelProps {
   text: string;
-  keyId: string;
+  keyId?: string;
 }
 
 export interface TextLabelState {

@@ -1,27 +1,24 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { PulseLoader } from "react-spinners";
 
-import Styles from "modules/modal/components/common/common.styles";
+import Styles from "modules/modal/components/common/common.styles.less";
 
-const ModalLoading = loaderOptions => (
+interface ModalLoadingProps {
+  color?: string;
+  size?: number;
+  sizeUnit?: string;
+  loading?: boolean;
+}
+
+const ModalLoading = ({ color = "#fff", size = 8, sizeUnit = "px", loading = true }: ModalLoadingProps) => (
   <div className={Styles.Loading}>
-    <PulseLoader {...loaderOptions} />
+    <PulseLoader
+      color={color}
+      size={size}
+      sizeUnit={sizeUnit}
+      loading={loading}
+    />
   </div>
 );
-
-ModalLoading.propTypes = {
-  color: PropTypes.string,
-  size: PropTypes.number,
-  sizeUnit: PropTypes.string,
-  loading: PropTypes.bool
-};
-
-ModalLoading.defaultProps = {
-  color: "#fff",
-  size: 8,
-  sizeUnit: "px",
-  loading: true
-};
 
 export default ModalLoading;

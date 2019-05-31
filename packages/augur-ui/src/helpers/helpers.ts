@@ -3,12 +3,10 @@ import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import logError from "utils/log-error";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { loadMarkets } from "modules/markets/actions/load-markets";
-import store from "store";
+import store, { AppState } from "store";
 import { DISCLAIMER_SEEN } from "modules/common-elements/constants";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
-import {
-  selectCurrentTimestamp,
-} from "store/select-state";
+import { selectCurrentTimestamp } from "store/select-state";
 import { logout } from "modules/auth/actions/logout";
 import { formatRep, formatEther } from "utils/format-number";
 import getRep from "modules/account/actions/get-rep";
@@ -18,104 +16,117 @@ import {
   getDaysRemaining,
   getHoursRemaining,
   getMinutesRemaining,
-  convertUnixToFormattedDate,
+  convertUnixToFormattedDate
 } from "utils/format-date";
-import { MarketData } from "modules/types";
+import { MarketData, NodeStyleCallback } from "modules/types";
 
 const localStorageRef = typeof window !== "undefined" && window.localStorage;
 
 const findMarketByDesc = (
   marketDescription: string,
-  callback: NodeStyleCallback = logError,
-) => (dispatch) => {
+  callback: NodeStyleCallback = logError
+) => dispatch => {
   const marketsData: Array<MarketData> = selectMarkets(store.getState());
   const market = marketsData.find(
-    (market) => market.description === marketDescription,
+    market => market.description === marketDescription
   );
   if (!market) {
     dispatch(
-      loadMarkets((err, marketIds) => {
-        if (err) return callback({ err });
+      loadMarkets((err: string, marketIds) => {
+        if (err) return callback(err);
         dispatch(
           loadMarketsInfo(marketIds, (err, markets) => {
-            if (err) return callback({ err });
-            Object.values(markets).forEach((market: MarketData) => {
+            if (err) return callback(err);
+            Object.values(markets).forEach(value => {
+              const market: MarketData = value as MarketData;
               if (market.description === marketDescription) {
-                return callback({ err: null, marketId: market.id });
+                return callback(null, { marketId: market.id });
               }
             });
-            return callback({ err: "market not found" });
-          }),
+            return callback("market not found");
+          })
         );
-      }),
+      })
     );
   } else {
-    return callback({ err: null, marketId: market.id });
+    return callback(null, { marketId: market.id });
   }
 };
 
-const createMarket = (marketData, callback: NodeStyleCallback = logError) => (dispatch) => {
+const createMarket = (
+  marketData,
+  callback: NodeStyleCallback = logError
+) => dispatch => {
   dispatch(
     submitNewMarket(marketData, [], (err, marketId) => {
-      if (err) return callback({ err });
+      if (err) return callback(err);
       marketData.id = marketId;
-      return callback({ err: null, market: marketData });
-    }),
+      return callback(null, { market: marketData });
+    })
   );
 };
 
-const getLoggedInAccountData = (callback: NodeStyleCallback = logError) => (dispatch) =>
-  callback({ err: null, data: store.getState().loginAccount });
+const getLoggedInAccountData = (
+  callback: NodeStyleCallback = logError
+) => (dispatch, getState: () => AppState) => callback(null, { data: getState().loginAccount });
 
-const formatRepValue = (value, callback: NodeStyleCallback = logError) => (dispatch) =>
-  callback({ err: null, data: formatRep(value) });
+const formatRepValue = (
+  value,
+  callback: NodeStyleCallback = logError
+) => dispatch => callback(null, { data: formatRep(value) });
 
-const formatEthValue = (value, callback: NodeStyleCallback = logError) => (dispatch) =>
-  callback(formatEther(value));
+const formatEthValue = (
+  value: number | string,
+  callback: NodeStyleCallback = logError
+) => dispatch => callback(null, formatEther(value));
 
-const getRepTokens = (callback: NodeStyleCallback = logError) => (dispatch) => {
+const getRepTokens = (callback: NodeStyleCallback = logError) => dispatch => {
   dispatch(
-    getRep((err: Error) => {
-      if (err) return callback({ err });
-      return callback({ err: null });
-    }),
+    getRep((err) => {
+      if (err) return callback(err);
+      return callback(null);
+    })
   );
 };
 
-const getMarketCosts = (callback: NodeStyleCallback = logError) => (dispatch) => {
-  const { universe } = store.getState();
+const getMarketCosts = (callback: NodeStyleCallback = logError) => (dispatch, getState: () => AppState) => {
+  const { universe } = getState();
 
   augur.createMarket.getMarketCreationCostBreakdown(
     { universe: universe.id },
-    (err, marketCreationCostBreakdown) => {
-      if (err) return callback({ err });
-      return callback({ err: null, data: marketCreationCostBreakdown });
-    },
+    (err: any, marketCreationCostBreakdown) => {
+      if (err) return callback(err);
+      return callback(null, { data: marketCreationCostBreakdown });
+    }
   );
 };
 
 const getDaysRemainingTime = (
   endTime,
   startTime,
-  callback: NodeStyleCallback = logError,
-) => (dispatch) => callback({ err: null, data: getDaysRemaining(endTime, startTime) });
+  callback: NodeStyleCallback = logError
+) => dispatch =>
+  callback(null, { data: getDaysRemaining(endTime, startTime) });
 const getHoursRemainingTime = (
   endTime,
   startTime,
-  callback: NodeStyleCallback = logError,
-) => (dispatch) => callback({ err: null, data: getHoursRemaining(endTime, startTime) });
+  callback: NodeStyleCallback = logError
+) => dispatch =>
+  callback(null, { data: getHoursRemaining(endTime, startTime) });
 const getMinutesRemainingTime = (
   endTime,
   startTime,
-  callback: NodeStyleCallback = logError,
-) => (dispatch) => callback({ err: null, data: getMinutesRemaining(endTime, startTime) });
+  callback: NodeStyleCallback = logError
+) => dispatch =>
+  callback(null, { data: getMinutesRemaining(endTime, startTime) });
 const convertUnixToFormattedDateTime = (
   date,
-  callback: NodeStyleCallback = logError,
-) => (dispatch) => callback({ err: null, data: convertUnixToFormattedDate(date) });
+  callback: NodeStyleCallback = logError
+) => dispatch =>
+  callback(null, { data: convertUnixToFormattedDate(date) });
 
 const getReportingWindowStats = () => {
-  const { reportingWindowStats } = store.getState();
+  const { reportingWindowStats } = store.getState() as AppState;
   return reportingWindowStats;
 };
 
@@ -123,7 +134,7 @@ export const helpers = (store: any) => {
   const { dispatch, whenever } = store;
   return {
     updateAccountAddress: (account: string) =>
-      new Promise((resolve) => {
+      new Promise(resolve => {
         dispatch(
           useUnlockedAccount(account, () => {
             const unsubscribe = whenever(
@@ -132,9 +143,9 @@ export const helpers = (store: any) => {
               () => {
                 unsubscribe();
                 resolve();
-              },
+              }
             );
-          }),
+          })
         );
       }),
     hasDisclaimerModalBeenDismissed: () =>
@@ -144,68 +155,68 @@ export const helpers = (store: any) => {
         dispatch(
           findMarketByDesc(
             marketDescription,
-            (result: { err: Error; marketId: string }) => {
-              if (result.err) return reject(result.err);
+            (err, result: { marketId: string }) => {
+              if (err) return reject(err);
               resolve(result.marketId);
-            },
-          ),
-        ),
+            }
+          )
+        )
       ),
     createMarket: (market: MarketData) =>
       new Promise((resolve, reject) =>
         dispatch(
-          createMarket(market, (result: { err: Error; market: MarketData }) => {
-            if (result.err) return reject(result.err);
+          createMarket(market, (err: any, result: { market: MarketData }) => {
+            if (err) return reject(err);
             resolve(result.market);
-          }),
-        ),
+          })
+        )
       ),
     getCurrentTimestamp: () =>
-      new Promise((resolve) => resolve(selectCurrentTimestamp(store.getState()))),
+      new Promise(resolve => resolve(selectCurrentTimestamp(store.getState()))),
     getCurrentBlock: () =>
-      new Promise((resolve) => resolve(store.getState().blockchain)),
+      new Promise(resolve => resolve(store.getState().blockchain)),
     logout: () => dispatch(logout()),
     getAccountData: (): Promise<any> =>
-      new Promise((resolve) => dispatch(getLoggedInAccountData(resolve))),
+      new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
     formatRep: (value: number | string): Promise<any> =>
-      new Promise((resolve) => dispatch(formatRepValue(value, resolve))),
+      new Promise(resolve => dispatch(formatRepValue(value, resolve))),
     formatEth: (value: number | string): Promise<any> =>
-      new Promise((resolve) => dispatch(formatEthValue(value, resolve))),
+      new Promise(resolve => dispatch(formatEthValue(value, resolve))),
     getRep: () =>
       new Promise((resolve, reject) =>
         dispatch(
-          getRepTokens((result: { err: Error }) => {
-            if (result.err) return reject();
+          getRepTokens((err, result) => {
+            if (err || result.err) return reject();
             resolve();
-          }),
-        ),
+          })
+        )
       ),
     getMarketCreationCostBreakdown: () =>
       new Promise((resolve, reject) =>
         dispatch(
-          getMarketCosts((result: { err: Error; data: object }) => {
-            if (result.err) return reject();
+          getMarketCosts((err, result) => {
+            if (err || result.err) return reject();
             resolve(result.data);
-          }),
-        ),
+          })
+        )
       ),
     getMarketDisputeOutcomes: () => getMarketDisputeOutcomes(),
     getReportingWindowStats: () => getReportingWindowStats(),
     getDaysRemaining: (endTime, startTime): Promise<any> =>
-      new Promise((resolve) =>
-        dispatch(getDaysRemainingTime(endTime, startTime, resolve)),
+      new Promise(resolve =>
+        dispatch(getDaysRemainingTime(endTime, startTime, resolve))
       ),
     getHoursRemaining: (endTime, startTime): Promise<any> =>
-      new Promise((resolve) =>
-        dispatch(getHoursRemainingTime(endTime, startTime, resolve)),
+      new Promise(resolve =>
+        dispatch(getHoursRemainingTime(endTime, startTime, resolve))
       ),
     getMinutesRemaining: (endTime, startTime): Promise<any> =>
-      new Promise((resolve) =>
-        dispatch(getMinutesRemainingTime(endTime, startTime, resolve)),
+      new Promise(resolve =>
+        dispatch(getMinutesRemainingTime(endTime, startTime, resolve))
       ),
     convertUnixToFormattedDate: (date): Promise<any> =>
-      new Promise((resolve) =>
-        dispatch(convertUnixToFormattedDateTime(date, resolve)),
-      ),
+      new Promise(resolve =>
+        dispatch(convertUnixToFormattedDateTime(date, resolve))
+      )
   };
 };

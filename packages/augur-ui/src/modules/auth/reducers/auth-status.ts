@@ -5,11 +5,11 @@ import {
   IS_CONNECTION_TRAY_OPEN,
   UPDATE_AUTH_STATUS
 } from "modules/auth/actions/auth-status";
-import { AppStatus, BaseAction } from "modules/types";
+import { AuthStatus, BaseAction } from "modules/types";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
-const DEFAULT_STATE: AppStatus = {
+const DEFAULT_STATE: AuthStatus = {
   [IS_LOGGED]: false,
   [EDGE_CONTEXT]: undefined,
   [EDGE_LOADING]: false,
@@ -19,9 +19,9 @@ const DEFAULT_STATE: AppStatus = {
 const KEYS = Object.keys(DEFAULT_STATE);
 
 export default function(
-  authStatus: AppStatus = DEFAULT_STATE,
+  authStatus: AuthStatus = DEFAULT_STATE,
   { type, data }: BaseAction
-) {
+): AuthStatus {
   switch (type) {
     case UPDATE_AUTH_STATUS: {
       const { statusKey, value } = data;

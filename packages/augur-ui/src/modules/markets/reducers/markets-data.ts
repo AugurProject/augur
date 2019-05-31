@@ -15,7 +15,7 @@ import { MarketsData, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: MarketsData = {};
 
-export default function(marketsData: MarketsData = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(marketsData: MarketsData = DEFAULT_STATE, { type, data }: BaseAction): MarketsData {
   switch (type) {
     case UPDATE_MARKETS_DATA: // TODO -- allow for the consumption of partial market objects
       return {

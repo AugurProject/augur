@@ -5,17 +5,19 @@ import { Message } from "modules/modal/message";
 import { selectMarket } from "modules/markets/selectors/market";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
 
   return {
     modal: state.modal,
-    market
+    market,
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   markModalAsSeen: () => {
     const localStorageRef =
       typeof window !== "undefined" && window.localStorage;
@@ -32,24 +34,24 @@ const mapDispatchToProps = (dispatch: any) => ({
   },
   closeModal: () => {
     dispatch(closeModal());
-  }
+  },
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: "Review Market Details",
   description: [
     "Review the markets details to confirm that there are no conflicts, in particular between the Markets Question, Additional Details and Reporting Start Time.",
-    "If the reporting start time doesn’t match up to the title or description, the market might resolve as invalid."
+    "If the reporting start time doesn’t match up to the title or description, the market might resolve as invalid.",
   ],
   marketReview: {
     description: sP.market.description,
     details: sP.market.details,
     endTime: sP.market.endTime,
-    resolutionSource: sP.market.resolutionSource
+    resolutionSource: sP.market.resolutionSource,
   },
   checkboxCTA: {
     markModalAsSeen: dP.markModalAsSeen,
-    unmarkModalAsSeen: dP.unmarkModalAsSeen
+    unmarkModalAsSeen: dP.unmarkModalAsSeen,
   },
   closeAction: () => {
     dP.closeModal();
@@ -62,21 +64,21 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
           sP.modal.cb();
         }
         dP.closeModal();
-      }
+      },
     },
     {
       text: "Cancel",
       action: () => {
         dP.closeModal();
-      }
-    }
-  ]
+      },
+    },
+  ],
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Message)
+    mergeProps,
+  )(Message),
 );

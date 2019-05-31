@@ -5,23 +5,23 @@ import classNames from "classnames";
 import MarketOutcomesList from "modules/market/containers/market-outcomes-list";
 import { Close } from "modules/common/components/icons";
 
-import Styles from "modules/modal/components/common/common.styles";
+import Styles from "modules/modal/components/common/common.styles.less";
 
-export default class ModalTradingOverlay extends Component {
-  static propTypes = {
-    marketId: PropTypes.string.isRequired,
-    market: PropTypes.object.isRequired,
-    selectedOrderProperties: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.string,
-    updateSelectedOrderProperties: PropTypes.func.isRequired,
-    updateSelectedOutcome: PropTypes.func.isRequired,
-    outcomes: PropTypes.array,
-    closeModal: PropTypes.func.isRequired,
-  };
+interface ModalTradingOverlayProps {
+  marketId: string;
+  market: object;
+  selectedOrderProperties: object;
+  selectedOutcome?: string;
+  updateSelectedOrderProperties: Function;
+  updateSelectedOutcome: Function;
+  outcomes?: Array<any>;
+  closeModal: Function;
+}
 
+export default class ModalTradingOverlay extends Component<ModalTradingOverlayProps> {
   static defaultProps = {
     outcomes: [],
-    selectedOutcome: null
+    selectedOutcome: null,
   };
 
   constructor(props) {
@@ -40,27 +40,25 @@ export default class ModalTradingOverlay extends Component {
       closeModal,
       marketId,
       outcomes,
-      market,
-      selectedOrderProperties,
       selectedOutcome,
-      updateSelectedOutcome,
-      updateSelectedOrderProperties,
     } = this.props;
 
     return (
       <section
         className={classNames(
           Styles.ModalContainer,
-          Styles.ModalContainer__full
+          Styles.ModalContainer__full,
         )}
       >
         <section>
           <div className={Styles.Modal__overlayHeader}>
-            <span role="button" tabIndex="-1" onClick={closeModal}>
+            // @ts-ignore
+            <span role="button" tabIndex={-1} onClick={closeModal}>
               {Close}
             </span>
             <div>Select an Outcome</div>
           </div>
+          // @ts-ignore
           <MarketOutcomesList
             marketId={marketId}
             outcomes={outcomes}
