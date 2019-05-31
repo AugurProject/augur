@@ -861,7 +861,7 @@ export const CategoryTagTrail = ({
 }: CategoryTagTrailProps) => (
   <div className={Styles.CategoryTagTrail}>
     <WordTrail items={categories} typeLabel="Category" />
-    {tags.length !== 0 && <WordTrail items={tags} typeLabel="Tags" />}
+    {!tags.length && <WordTrail items={tags} typeLabel="Tags" />}
   </div>
 );
 
