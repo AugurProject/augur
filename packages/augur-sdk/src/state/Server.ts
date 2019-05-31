@@ -26,16 +26,6 @@ export async function run() {
   await controller.createDb();
 
   const api = new API(augur, controller.db);
-
-
-  // const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-  // const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-  // const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
-
-  // const pouchDBFactory = PouchDBFactory({});
-
-  // const db = new DB(pouchDBFactory);
-  // const api = new API(augur, db);
   const endpointSettings = {} as EndpointSettings;
 
   try {
