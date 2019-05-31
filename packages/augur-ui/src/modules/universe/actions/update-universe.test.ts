@@ -1,6 +1,8 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
+// @ts-ignore
 import testState from "test/testState";
+// @ts-ignore
 import { updateUniverse } from "modules/universe/actions/update-universe";
 
 describe(`modules/universe/actions/update-universe.js`, () => {
@@ -16,8 +18,8 @@ describe(`modules/universe/actions/update-universe.js`, () => {
         currentPeriodProgress: 52,
         isReportRevealPhase: true,
         reportPeriod: 18,
-        periodLength: 900
-      })
+        periodLength: 900,
+      }),
     );
     expect(store.getActions()).toEqual([
       {
@@ -28,10 +30,10 @@ describe(`modules/universe/actions/update-universe.js`, () => {
             currentPeriodProgress: 52,
             isReportRevealPhase: true,
             reportPeriod: 18,
-            periodLength: 900
-          }
-        }
-      }
+            periodLength: 900,
+          },
+        },
+      },
     ]);
     store.clearActions();
   });

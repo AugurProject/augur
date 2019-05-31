@@ -17,7 +17,7 @@ export function updateTradeCost({
   numShares,
   limitPrice,
   selfTrade,
-  callback: NodeStyleCallback = logError,
+  callback = logError,
 }: any) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     if (!side || !numShares || !limitPrice) {
@@ -65,7 +65,7 @@ export function updateTradeShares({
   side,
   maxCost,
   limitPrice,
-  callback: NodeStyleCallback = logError,
+  callback = logError,
 }: any) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     if (!side || !maxCost || !limitPrice) {
@@ -174,6 +174,7 @@ function runSimulateTrade(
       const { netPosition: quantity, averagePrice: price } = positions[
         outcomeIndex
       ];
+      // @ts-ignore
       reversal = {
         quantity: createBigNumber(quantity)
           .abs()
@@ -210,6 +211,7 @@ function runSimulateTrade(
     .dividedBy(createBigNumber(simulatedTrade.tokensDepleted, 10))
     .toFixed();
   if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = "0";
+  // @ts-ignore
   simulatedTrade.tradeGroupId = augur.trading.generateTradeGroupId();
 
   const tradeInfo = {
