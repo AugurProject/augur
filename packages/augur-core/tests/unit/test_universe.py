@@ -1,5 +1,5 @@
 from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from utils import longToHexString, stringToBytes
 from pytest import fixture, raises, mark
 
@@ -24,7 +24,7 @@ def test_universe_creation(localFixture, mockReputationToken, mockReputationToke
 
 @mark.skip
 def test_universe_fork_market(localFixture, populatedUniverse, mockUniverse, mockDisputeWindow, mockUniverseFactory, mockDisputeWindowFactory, mockMarket, chain, mockMarketFactory, mockAugur):
-    with raises(TransactionFailed, message="must be called from market"):
+    with raises(TransactionFailed):
         populatedUniverse.fork()
 
     timestamp = localFixture.contracts["Time"].getTimestamp()
@@ -33,7 +33,7 @@ def test_universe_fork_market(localFixture, populatedUniverse, mockUniverse, moc
     mockMarketFactory.set_mock_createMarket__market_address_address_uint256_uint256_address_address_uint256_uint256(mockMarket.address)
     endTime = localFixture.contracts["Time"].getTimestamp() + 30 * 24 * 60 * 60 # 30 days
 
-    with raises(TransactionFailed, message="forking market has to be in universe"):
+    with raises(TransactionFailed):
         mockMarket.callForkOnUniverse(populatedUniverse.address)
 
     assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, tester.a0, "topic", "description", "info")

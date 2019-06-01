@@ -1,5 +1,5 @@
 from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed, ABIContract
+from eth_tester.exceptions import TransactionFailed, ABIContract
 from pytest import fixture, raises
 from utils import TokenDelta, EtherDelta, AssertLog, BuyWithCash
 from reporting_utils import generateFees

@@ -1,5 +1,5 @@
 from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed, ABIContract
+from eth_tester.exceptions import TransactionFailed, ABIContract
 from pytest import fixture, mark, raises
 from utils import longTo32Bytes, bytesToHexString, TokenDelta, EtherDelta, longToHexString, PrintGasUsed, AssertLog
 from reporting_utils import proceedToNextRound, finalize, proceedToDesignatedReporting

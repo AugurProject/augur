@@ -1,5 +1,5 @@
 from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, raises, mark
 from utils import longToHexString, EtherDelta, TokenDelta, PrintGasUsed, BuyWithCash
 from reporting_utils import generateFees

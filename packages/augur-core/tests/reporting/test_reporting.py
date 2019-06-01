@@ -32,7 +32,7 @@ def test_designatedReportHappyPath(localFixture, universe, market):
     with AssertLog(localFixture, "InitialReportSubmitted", initialReportLog):
         assert market.doInitialReport([0, 0, market.getNumTicks()], "Obviously I'm right")
 
-    with raises(TransactionFailed, message="Cannot initial report twice"):
+    with raises(TransactionFailed):
         assert market.doInitialReport([0, 0, market.getNumTicks()], "Obviously I'm right")
 
     # the market is now assigned a dispute window
@@ -53,7 +53,7 @@ def test_designatedReportHappyPath(localFixture, universe, market):
     with AssertLog(localFixture, "MarketFinalized", marketFinalizedLog):
         assert market.finalize()
 
-    with raises(TransactionFailed, message="Cannot finalize twice"):
+    with raises(TransactionFailed):
         market.finalize()
 
 @mark.parametrize('reportByDesignatedReporter', [
@@ -203,10 +203,10 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     with raises(TransactionFailed):
         universe.fork()
 
-    with raises(TransactionFailed, message="We cannot migrate until the fork is finalized"):
+    with raises(TransactionFailed):
         categoricalMarket.migrateThroughOneFork([0,0,0,categoricalMarket.getNumTicks()], "")
 
-    with raises(TransactionFailed, message="We cannot create markets during a fork"):
+    with raises(TransactionFailed):
         time = localFixture.contracts["Time"].getTimestamp()
         localFixture.createYesNoMarket(universe, time + 1000, 1, 0, tester.a0)
 

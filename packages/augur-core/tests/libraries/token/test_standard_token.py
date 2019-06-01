@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, mark, raises
 from utils import AssertLog, stringToBytes
 
@@ -23,7 +23,7 @@ def test_basic_token_transfer(testStandardTokenFixture):
     assert standardToken.balanceOf(tester.a1) == 100
     assert standardToken.balanceOf(tester.a2) == 0
 
-    with raises(TransactionFailed, message="can not cause negative balance"):
+    with raises(TransactionFailed):
         standardToken.transfer(tester.a2, 150, sender=tester.k1)
 
     assert standardToken.transfer(tester.a2, 100, sender=tester.k1)
@@ -31,7 +31,7 @@ def test_basic_token_transfer(testStandardTokenFixture):
     assert standardToken.balanceOf(tester.a2) == 100
 
     value =  2**256-1
-    with raises(TransactionFailed, message="can not cause supply to overflow balance"):
+    with raises(TransactionFailed):
         assert standardToken.faucet(value, sender = tester.k1)
 
 def test_basic_token_emit(testStandardTokenFixture):
@@ -182,7 +182,7 @@ def test_basic_send(testStandardTokenFixture):
     assert standardToken.balanceOf(tester.a1) == 100
     assert standardToken.balanceOf(tester.a2) == 0
 
-    with raises(TransactionFailed, message="can not cause negative balance"):
+    with raises(TransactionFailed):
         standardToken.send(tester.a2, 150, sender=tester.k1)
 
     assert standardToken.send(tester.a2, 100, "", sender=tester.k1)
@@ -197,7 +197,7 @@ def test_operator_send(testStandardTokenFixture):
 
     assert not standardToken.isOperatorFor(tester.a0, tester.a1)
 
-    with raises(TransactionFailed, message="unauthorized account cannot use operator send"):
+    with raises(TransactionFailed):
         standardToken.operatorSend(tester.a2, 1)
 
     assert standardToken.authorizeOperator(tester.a0, sender=tester.k1)
@@ -213,14 +213,14 @@ def test_operator_send(testStandardTokenFixture):
 
     assert not standardToken.isOperatorFor(tester.a0, tester.a1)
 
-    with raises(TransactionFailed, message="unauthorized account cannot use operator send"):
+    with raises(TransactionFailed):
         standardToken.operatorSend(tester.a2, 1)
 
 def test_820_interface_support(testStandardTokenFixture):
     standardToken = testStandardTokenFixture.contracts['StandardTokenHelper']
     assert standardToken.faucet(100)
 
-    with raises(TransactionFailed, message="cannot send to a contract that does not implement ERC777TokensRecipient"):
+    with raises(TransactionFailed):
         standardToken.send(testStandardTokenFixture.contracts["Augur"].address, 1, sender=tester.k1)
 
     tokensRegistry = testStandardTokenFixture.upload("solidity_test_helpers/ERC777TokensRegistry.sol")

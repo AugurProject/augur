@@ -1,9 +1,15 @@
 from pytest import raises, mark
+import conftest
 
+#def test_fixture(fixture, baseSnapshot):
+#    augurSnapshot = conftest.augurInitializedSnapshot(fixture, baseSnapshot)
+#    kitchenSnapshot = conftest.kitchenSinkSnapshot(fixture, augurSnapshot)
+#    pass
+
+'''
 def test_initial_greeting(foo_contract):
     hw = foo_contract.caller.bar()
     assert hw == "hello world"
-
 
 def test_can_update_greeting(w3, foo_contract):
     # send transaction that updates the greeting
@@ -17,7 +23,6 @@ def test_can_update_greeting(w3, foo_contract):
     # verify that the contract is now using the updated greeting
     hw = foo_contract.caller.bar()
     assert hw == "testing contracts is easy"
-
 
 def test_updating_greeting_emits_event(w3, foo_contract):
     # send transaction that updates the greeting
@@ -36,3 +41,4 @@ def test_updating_greeting_emits_event(w3, foo_contract):
     event = logs[0]
     assert event.blockHash == receipt.blockHash
     assert event.args._bar == "testing contracts is easy"
+    '''

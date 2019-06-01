@@ -13,10 +13,10 @@ def test_reputation_token_creation(localFixture, mockUniverse):
     assert reputationToken.getUniverse() == mockUniverse.address
 
 def test_reputation_token_migrate_in(localFixture, mockUniverse, initializedReputationToken, mockReputationToken, mockMarket):
-    with raises(TransactionFailed, message="caller needs to be reputation token"):
+    with raises(TransactionFailed):
         initializedReputationToken.migrateIn(tester.a1, 100)
 
-    with raises(TransactionFailed, message="calling reputation token has to be parent universe's reputation token"):
+    with raises(TransactionFailed):
         mockReputationToken.callMigrateIn(initializedReputationToken.address, tester.a1, 1000)
 
     parentUniverse = localFixture.upload('solidity_test_helpers/MockUniverse.sol', 'parentUniverse')
@@ -24,7 +24,7 @@ def test_reputation_token_migrate_in(localFixture, mockUniverse, initializedRepu
     mockUniverse.setParentUniverse(parentUniverse.address)
     parentUniverse.setForkEndTime(1000000000000000)
     mockReputationToken.setUniverse(mockUniverse.address)
-    with raises(TransactionFailed, message="parent universe needs to have a forking market"):
+    with raises(TransactionFailed):
         mockReputationToken.callMigrateIn(initializedReputationToken.address, tester.a1, 100)
 
     parentUniverse.setForkingMarket(mockMarket.address)
@@ -37,20 +37,20 @@ def test_reputation_token_migrate_in(localFixture, mockUniverse, initializedRepu
     assert initializedReputationToken.totalSupply() == 300
 
 def test_reputation_token_trusted_transfer(localFixture, mockUniverse, initializedReputationToken, mockMarket, mockDisputeWindow, mockLegacyReputationToken):
-    with raises(TransactionFailed, message="universe does not contain dispute window and caller has to be a IDisputeWindow"):
+    with raises(TransactionFailed):
         initializedReputationToken.trustedDisputeWindowTransfer(tester.a1, tester.a2, 100)
 
-    with raises(TransactionFailed, message="universe does not contain dispute window"):
+    with raises(TransactionFailed):
         mockDisputeWindow.callTrustedDisputeWindowTransfer(initializedReputationToken.address, tester.a1, tester.a2, 100)
 
-    with raises(TransactionFailed, message="universe does not contain market"):
+    with raises(TransactionFailed):
         mockMarket.callTrustedMarketTransfer(initializedReputationToken.address, tester.a1, tester.a2, 100)
 
-    with raises(TransactionFailed, message="universe does not contain participation token"):
+    with raises(TransactionFailed):
         mockDisputeWindow.callTrustedDisputeWindowTransfer(initializedReputationToken.address, tester.a1, tester.a2, 100)
 
     mockUniverse.setIsContainerForDisputeWindow(True)
-    with raises(TransactionFailed, message="source balance can not be 0"):
+    with raises(TransactionFailed):
         mockDisputeWindow.callTrustedDisputeWindowTransfer(initializedReputationToken.address, tester.a1, tester.a2, 100)
 
 
@@ -61,7 +61,7 @@ def test_reputation_token_trusted_transfer(localFixture, mockUniverse, initializ
     assert initializedReputationToken.balanceOf(tester.a2) == 0
     assert initializedReputationToken.balanceOf(tester.a1) == 35
 
-    with raises(TransactionFailed, message="transfer has to be approved"):
+    with raises(TransactionFailed):
         mockDisputeWindow.callTrustedDisputeWindowTransfer(initializedReputationToken.address, tester.a1, tester.a2, 100)
 
     assert mockDisputeWindow.callTrustedDisputeWindowTransfer(initializedReputationToken.address, tester.a1, tester.a2, 35)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture, mark
 from utils import fix, AssertLog, bytesToHexString, EtherDelta, TokenDelta, BuyWithCash
 from constants import YES, NO

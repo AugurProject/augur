@@ -1,4 +1,4 @@
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, raises
 from utils import longToHexString
 
