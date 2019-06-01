@@ -7,7 +7,7 @@ const DEFAULT_STATE: AccountShareBalances = {};
 export default function(
   accountShareBalances: AccountShareBalances = DEFAULT_STATE,
   { type, data }: BaseAction,
-) {
+): AccountShareBalances {
   switch (type) {
     case LOAD_USER_SHARE_BALANCES: {
       return {

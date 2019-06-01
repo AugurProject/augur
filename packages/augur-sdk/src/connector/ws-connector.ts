@@ -1,10 +1,10 @@
 import { Connector, Callback } from "./connector";
+import { SubscriptionEventNames } from "../constants";
 import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
 
 export class WebsocketConnector extends Connector {
   private socket: WebSocketAsPromised;
-  private callback: Callback;
 
   constructor(public readonly endpoint: string) {
     super();
@@ -19,6 +19,32 @@ export class WebsocketConnector extends Connector {
       createWebSocket: (url: string) => new WebSocket(url),
     } as any);
 
+    this.socket.onMessage.addListener((message: string) => {
+      try {
+        const response = JSON.parse(message);
+        if (response.result.result) {
+          const events = response.result.result;
+          events.map((data: any) => {
+            if (this.subscriptions[data.eventName]) {
+              this.subscriptions[data.eventName].callback(data);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Bad JSON RPC response: " + message);
+      }
+    });
+
+    this.socket.onError.addListener((message: string) => {
+      console.error("Websocket error");
+      console.error(message);
+    });
+
+    this.socket.onClose.addListener((message: string) => {
+      console.log("Websocket closed");
+      console.log(message);
+    });
+
     return this.socket.open();
   }
 
@@ -32,13 +58,16 @@ export class WebsocketConnector extends Connector {
     };
   }
 
-  public async subscribe(event: string, callback: Callback): Promise<any> {
-    this.callback = callback;
-
-    return this.socket.sendRequest({ method: "subscribe", event, jsonrpc: "2.0" });
+  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
+    this.socket.sendRequest({ method: "subscribe", event, jsonrpc: "2.0", params: [eventName] }).then((response: any) => {
+      this.subscriptions[eventName] = { id: response.result.subscription, callback };
+    });
   }
 
-  public async unsubscribe(event: string): Promise<any> {
-    return this.socket.sendRequest({ method: "unsubscribe", event, jsonrpc: "2.0" });
+  public off(eventName: SubscriptionEventNames | string): void {
+    const subscription = this.subscriptions[eventName].id;
+    this.socket.sendRequest({ method: "unsubscribe", subscription, jsonrpc: "2.0", params: [subscription] }).then(() => {
+      delete this.subscriptions[eventName];
+    });
   }
 }

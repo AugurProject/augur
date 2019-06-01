@@ -6,7 +6,7 @@ import classNames from "classnames";
 
 import { Close } from "modules/common/components/icons";
 import Styles from "modules/alerts/components/alert.styles";
-import EtherscanLink from "modules/common/containers/etherscan-link";
+import { EtherscanLink } from "modules/common-elements/buttons";
 
 interface AlertProps {
   id: String;

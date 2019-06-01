@@ -1,23 +1,30 @@
 /* eslint jsx-a11y/label-has-for: 0 */
 
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Input from "modules/common/components/input/input";
 import ModalActions from "modules/modal/components/common/modal-actions";
 import ModalReview from "modules/modal/components/modal-review";
-import Styles from "modules/modal/components/common/common.styles";
+import Styles from "modules/modal/components/common/common.styles.less";
 import { formatRep, formatEther } from "utils/format-number";
 
-export default class ModalParticipate extends Component {
-  static propTypes = {
-    rep: PropTypes.string.isRequired,
-    closeModal: PropTypes.func.isRequired,
-    purchaseParticipationTokens: PropTypes.func.isRequired
-  };
+interface ModalParticipateProps {
+  rep: string;
+  closeModal: (...args: Array<any>) => any;
+  purchaseParticipationTokens: Function;
+}
 
+interface ModalParticipateState {
+  quantity: string;
+  gasEstimate: string;
+  page: number;
+  isValid: boolean;
+  errors: Array<any>;
+}
+
+export default class ModalParticipate extends Component<ModalParticipateProps, ModalParticipateState> {
   constructor(props) {
     super(props);
 
@@ -26,7 +33,7 @@ export default class ModalParticipate extends Component {
       gasEstimate: "0.0023",
       page: 1,
       isValid: false,
-      errors: []
+      errors: [],
     };
 
     this.triggerReview = this.triggerReview.bind(this);
@@ -44,15 +51,16 @@ export default class ModalParticipate extends Component {
         true,
         (err, gasEstimate) => {
           if (!err && !!gasEstimate) this.setState({ gasEstimate, page: 2 });
-        }
+        },
       );
     }
   }
 
   submitForm(e, ...args) {
     const { purchaseParticipationTokens } = this.props;
-    purchaseParticipationTokens(this.state.quantity, false, err => {
-      err && console.log("ERR for purchaseParticipationTokens", err);
+    purchaseParticipationTokens(this.state.quantity, false, (err) => {
+      if (err)
+        console.log("ERR for purchaseParticipationTokens", err);
     });
   }
 
@@ -64,7 +72,7 @@ export default class ModalParticipate extends Component {
   validateForm(quantity) {
     const { rep } = this.props;
     const bnRep = createBigNumber(rep, 10);
-    const errors = [];
+    const errors: Array<string> = [];
     let isValid = true;
 
     if (quantity === "") {
@@ -112,40 +120,40 @@ export default class ModalParticipate extends Component {
     const { errors, isValid, quantity, gasEstimate, page } = this.state;
     const invalidWithErrors = !isValid && errors.length > 0;
     const formattedQuantity = formatRep(quantity || 0);
-    const formattedGas = formatEther(gasEstimate);
+    const formattedGas = formatEther(Number(gasEstimate));
     const items = [
       {
         label: "Purchase",
         value: "Participation Tokens",
-        denomination: ""
+        denomination: "",
       },
       {
         label: "quantity",
         value: formattedQuantity.fullPrecision,
-        denomination: ""
+        denomination: "",
       },
       {
         label: "price",
         value: formattedQuantity.fullPrecision,
-        denomination: "REP"
+        denomination: "REP",
       },
       {
         label: "gas",
         value: formattedGas.fullPrecision,
-        denomination: "ETH"
-      }
+        denomination: "ETH",
+      },
     ];
     const buttons = [
       {
         label: "Back",
         action: this.switchPages,
-        type: "gray"
+        type: "gray",
       },
       {
         label: "submit",
         action: this.submitForm,
-        type: "purple"
-      }
+        type: "purple",
+      },
     ];
 
     return (
@@ -156,16 +164,17 @@ export default class ModalParticipate extends Component {
             <label htmlFor="modal__participate-quantity">
               Quantity (1 token @ 1 REP)
             </label>
+            // @ts-ignore
             <Input
               id="modal__participate-quantity"
               type="number"
               className={classNames({
-                [`${Styles.ErrorField}`]: invalidWithErrors
+                [`${Styles.ErrorField}`]: invalidWithErrors,
               })}
               value={quantity}
               placeholder="0.0"
-              onChange={value => this.updateQuantity(value)}
-              onKeyDown={e => this.handleKeyDown(e)}
+              onChange={(value) => this.updateQuantity(value)}
+              onKeyDown={(e) => this.handleKeyDown(e)}
               autoComplete="off"
               maxButton
               onMaxButtonClick={() => this.handleMaxClick()}
@@ -181,14 +190,14 @@ export default class ModalParticipate extends Component {
                 {
                   label: "cancel",
                   action: closeModal,
-                  type: "gray"
+                  type: "gray",
                 },
                 {
                   label: "review",
                   action: this.triggerReview,
                   type: "purple",
-                  isDisabled: !isValid
-                }
+                  isDisabled: !isValid,
+                },
               ]}
             />
           </form>

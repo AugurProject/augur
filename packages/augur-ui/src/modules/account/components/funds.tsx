@@ -44,7 +44,7 @@ const Funds = (props: FundsProps) => {
     {
       title: TOTAL_FROZEN_FUNDS,
       value: totalFrozenFunds,
-    }
+    },
   ];
 
   const repBalanceStaked = [
@@ -55,7 +55,7 @@ const Funds = (props: FundsProps) => {
     {
       title: REP_STAKED,
       value: repStaked,
-    }
+    },
   ];
 
   return (

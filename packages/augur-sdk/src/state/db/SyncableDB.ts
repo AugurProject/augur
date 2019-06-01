@@ -80,7 +80,7 @@ export class SyncableDB extends AbstractDB {
 
   private async syncFullTextSearch(): Promise<void> {
     if (this.flexSearch) {
-      const previousDocumentEntries = await this.db.allDocs({include_docs: true});
+      const previousDocumentEntries = await this.db.allDocs({ include_docs: true });
 
       for (let row of previousDocumentEntries.rows) {
         if (row === undefined) {

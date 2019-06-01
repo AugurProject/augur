@@ -3,13 +3,14 @@ import classNames from "classnames";
 
 import PropTypes from "prop-types";
 import Styles from "modules/market/components/market-header/market-header-reporting.styles";
-import { constants } from "services/constants";
 import MarketLink from "modules/market/components/market-link/market-link";
 import {
   CATEGORICAL,
   TYPE_DISPUTE,
   TYPE_REPORT,
-  MARKET_STATUS_MESSAGES
+  MARKET_STATUS_MESSAGES,
+  REPORTING_STATE,
+  CONTRACT_INTERVAL,
 } from "modules/common-elements/constants";
 import {
   CountdownProgress,
@@ -103,7 +104,7 @@ export default class MarketHeaderReporting extends Component {
             </span>
           </div>
           {reportingState ===
-            constants.REPORTING_STATE.AWAITING_FINALIZATION && (
+            REPORTING_STATE.AWAITING_FINALIZATION && (
             <div className={Styles.MarketHeaderReporting__buttonContainer}>
               <button
                 className={Styles.MarketHeaderReporting__button}
@@ -122,7 +123,7 @@ export default class MarketHeaderReporting extends Component {
             </div>
           )}
           {outstandingReturns &&
-            reportingState === constants.REPORTING_STATE.FINALIZED && (
+            reportingState === REPORTING_STATE.FINALIZED && (
               <div className={Styles.MarketHeaderReporting__buttonContainer}>
                 <button
                   className={Styles.MarketHeaderReporting__button}
@@ -138,9 +139,9 @@ export default class MarketHeaderReporting extends Component {
         </div>
       );
     } else if (
-      reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-      reportingState === constants.REPORTING_STATE.AWAITING_FORK_MIGRATION ||
-      reportingState === constants.REPORTING_STATE.AWAITING_NEXT_WINDOW
+      reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+      reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION ||
+      reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW
     ) {
       content = (
         <div className={Styles.MarketHeaderReporting__winner__container}>
@@ -162,7 +163,7 @@ export default class MarketHeaderReporting extends Component {
               )}
             </span>
           </div>
-          {reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE &&
+          {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE &&
             isLogged && (
               <div
                 className={classNames(
@@ -180,7 +181,7 @@ export default class MarketHeaderReporting extends Component {
                 </MarketLink>
               </div>
             )}
-          {reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE &&
+          {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE &&
             !isLogged && (
               <div className={Styles.MarketHeaderReporting__buttonContainer}>
                 <button
@@ -193,7 +194,7 @@ export default class MarketHeaderReporting extends Component {
             )}
         </div>
       );
-    } else if (reportingState === constants.REPORTING_STATE.OPEN_REPORTING) {
+    } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
       content = (
         <div className={Styles.MarketHeaderReporting__winner__container}>
           <div className={Styles.MarketHeaderReporting__info}>
@@ -227,7 +228,7 @@ export default class MarketHeaderReporting extends Component {
         </div>
       );
     } else if (
-      reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING
+      reportingState === REPORTING_STATE.DESIGNATED_REPORTING
     ) {
       content = (
         <div className={Styles.MarketHeaderReporting__winner__container}>
@@ -266,14 +267,14 @@ export default class MarketHeaderReporting extends Component {
     if (finalizationTime) {
       finalizationTimeWithHold = createBigNumber(finalizationTime)
         .plus(
-          createBigNumber(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
+          createBigNumber(CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
         )
         .toNumber();
     }
 
     return (
       <>
-        {reportingState === constants.REPORTING_STATE.AWAITING_FINALIZATION && (
+        {reportingState === REPORTING_STATE.AWAITING_FINALIZATION && (
           <div className={Styles.MarketHeaderReporting__finalization}>
             <div>Awaiting market finalization</div>
             {!isLogged && (

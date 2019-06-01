@@ -1,11 +1,20 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-import Styles from "modules/modal/components/common/common.styles";
+import Styles from "modules/modal/components/common/common.styles.less";
 
-const ModalReceipt = ({ items }) => (
+interface ItemProp {
+  label: string;
+  value: string;
+  denomination: string;
+}
+
+interface ModalReceiptProps {
+  items: Array<ItemProp>;
+}
+
+const ModalReceipt = ({ items }: ModalReceiptProps) => (
   <ul className={Styles.Receipt}>
-    {items.map(item => (
+    {items.map((item) => (
       <li key={item.label}>
         <label>{item.label}</label>
         <span>
@@ -16,15 +25,5 @@ const ModalReceipt = ({ items }) => (
     ))}
   </ul>
 );
-
-ModalReceipt.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequried,
-      value: PropTypes.string.isRequired,
-      denomination: PropTypes.string.isRequired
-    })
-  ).isRequired
-};
 
 export default ModalReceipt;
