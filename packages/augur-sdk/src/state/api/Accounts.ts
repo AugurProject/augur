@@ -89,7 +89,7 @@ export class Accounts<TBigNumber> {
     if (!params.coin) params.coin = Coin.ALL;
     if (!params.action) params.action = Action.ALL;
     if (!params.sortBy) params.sortBy = "timestamp";
-    if (!params.isSortDescending) params.isSortDescending = true;
+    if (typeof params.isSortDescending === "undefined") params.isSortDescending = true;
 
     let actionCoinComboIsValid = false;
     let allFormattedLogs: any = [];
@@ -258,7 +258,15 @@ export class Accounts<TBigNumber> {
 
     if (params.limit == null && params.offset == null) return allFormattedLogs;
 
-    return allFormattedLogs.slice(params.offset || 0, params.limit || allFormattedLogs.length);
+    const start = params.offset || 0;
+    let end: number;
+    if (params.limit) {
+      if (params.offset) end = params.offset + params.limit;
+      else end = params.limit;
+    } else {
+      end = allFormattedLogs.length;
+    }
+    return allFormattedLogs.slice(start, end);
   }
 
   static async getMarketCreatedInfo<TBigNumber>(db: DB, transactionLogs: Array<OrderEventLog|TradingProceedsClaimedLog|DisputeCrowdsourcerRedeemedLog|InitialReporterRedeemedLog|DisputeCrowdsourcerContributionLog|InitialReportSubmittedLog|CompleteSetsPurchasedLog|CompleteSetsSoldLog>): Promise<MarketCreatedInfo> {

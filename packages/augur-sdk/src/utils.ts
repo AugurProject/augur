@@ -22,7 +22,7 @@ export function convertDisplayPriceToOnChainPrice(displayPrice: BigNumber, minPr
   return displayPrice.minus(minPrice).dividedBy(tickSize);
 }
 
-export function compareObjects(key: string, order: string="asc") {
+export function compareObjects(key: string, order: string) {
   return function(a: any, b: any) {
     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
       return 0;
@@ -38,7 +38,7 @@ export function compareObjects(key: string, order: string="asc") {
       comparison = -1;
     }
     return (
-      (order == 'desc') ? (comparison * -1) : comparison
+      (order === 'desc') ? (comparison * -1) : comparison
     );
   }
 }

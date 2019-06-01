@@ -2,7 +2,7 @@ import { API } from "@augurproject/sdk/build/state/api/API";
 import { SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/api/Markets";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { Action } from "@augurproject/sdk/src/state/api/Accounts";
+import { Action, Coin } from "@augurproject/sdk/src/state/api/Accounts";
 import {
   ACCOUNTS,
   makeDbMock,
@@ -683,22 +683,94 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
       }
     ]
   );
-/*
-  // Test universe/account/timestamp params
 
+  // Test earliestTransactionTime/latestTransactionTime params
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
     account: ACCOUNTS[0].publicKey,
     action: Action.ALL,
+    coin: Coin.ALL,
+    earliestTransactionTime: new BigNumber(await disputeWindow.getStartTime_()).plus(1).toNumber(),
+    latestTransactionTime: (await john.getTimestamp()).toNumber(),
+  });
+  expect(accountTransactionHistory.length).toEqual(13);
+
+  // Test limit/offset params
+  accountTransactionHistory = await api.route("getAccountTransactionHistory", {
+    universe: john.augur.contracts.universe.address,
+    account: ACCOUNTS[0].publicKey,
+    action: Action.ALL,
+    coin: Coin.ALL,
     earliestTransactionTime: 0,
     latestTransactionTime: (await john.getTimestamp()).toNumber(),
     sortBy: "action",
-    isSortDescending: true,
-    // limit: ,
-    // offset: ,
+    limit: 2,
+    offset: 2,
   });
-  console.log(accountTransactionHistory);
-  // expect(yesNoMarketTransactionHistory).toMatchObject(
-  // );
-*/
+  expect(accountTransactionHistory).toMatchObject(
+    [
+      { action: 'MARKET_CREATION',
+        coin: 'ETH',
+        details: 'ETH validity bond for market creation',
+        fee: '0',
+        marketDescription: 'description',
+        outcome: null,
+        outcomeDescription: null,
+        price: '0',
+        quantity: '0',
+        total: '0',
+      },
+      { action: 'INITIAL_REPORT',
+        coin: 'REP',
+        details: 'REP staked in initial reports',
+        fee: '0',
+        marketDescription: 'description',
+        outcome: 1,
+        outcomeDescription: 'No',
+        price: '0',
+        quantity: '349680582682291667',
+        total: '0',
+      },
+    ]
+  );
+
+  // Test isDescending param
+  accountTransactionHistory = await api.route("getAccountTransactionHistory", {
+    universe: john.augur.contracts.universe.address,
+    account: ACCOUNTS[0].publicKey,
+    action: Action.ALL,
+    coin: Coin.ALL,
+    earliestTransactionTime: 0,
+    latestTransactionTime: (await john.getTimestamp()).toNumber(),
+    sortBy: "action",
+    isSortDescending: false,
+    limit: 2,
+    offset: 17,
+  });
+  expect(accountTransactionHistory).toMatchObject(
+    [
+      { action: 'BUY',
+        coin: 'ETH',
+        details: 'Buy order',
+        fee: '0',
+        marketDescription: 'description',
+        outcome: 1,
+        outcomeDescription: 'No',
+        price: '22',
+        quantity: '1000000000000',
+        total: '-22000000000000',
+      },
+        { action: 'CANCEL',
+        coin: 'ETH',
+        details: 'Cancel order',
+        fee: '0',
+        marketDescription: 'description',
+        outcome: 0,
+        outcomeDescription: 'Invalid',
+        price: '0',
+        quantity: '0',
+        total: '0',
+      },
+    ]
+  );
 }, 120000);
