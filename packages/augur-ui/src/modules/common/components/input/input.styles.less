@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Input {
-  .border(true, @border-all, @color-input-border-no-focus, @border-width-1);
+  .border(true, @border-all, @color-input-border-no-focus, 1px);
 
   background-color: @color-input-background;
   display: flex;
@@ -9,11 +9,11 @@
   button,
   .input-value-comparison {
     background-color: @color-input-background;
-    font-weight: 500;
+    font-weight: @weight-medium;
   }
 
   input {
-    .border(true, @border-all, @color-transparent, @border-width-1);
+    .border(true, @border-all, @color-transparent, 1px);
 
     display: flex;
     flex: 1;
@@ -24,16 +24,16 @@
   }
 
   input:focus {
-    .border(true, @border-all, @color-transparent, @border-width-1);
+    .border(true, @border-all, @color-transparent, 1px);
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, @border-width-1);
+    .border(true, @border-all, @color-input-border, 1px);
   }
 
   .box {
     font-size: inherit;
-    padding: 1em;
+    padding: @size-16;
     width: 100%;
 
     &.search-input {
@@ -43,33 +43,31 @@
 
   .close {
     background-color: @color-transparent;
-    height: @font-size-medium;
-    line-height: @font-size-medium;
-    margin-top: -9px;
-    width: @font-size-medium;
+    height: @size-16;
+    line-height: @size-16;
+    margin-top: -@size-9;
+    width: @size-16;
 
     @media @breakpoint-mobile {
       margin-top: 0;
-      max-height: 1.438rem;
-      min-height: 1.438rem;
-      min-width: 1.438rem;
+      max-height: @size-24;
+      min-height: @size-24;
+      min-width: @size-24;
     }
   }
 }
 
 .noFocus {
   &:focus-within {
-    .border(true, @border-all, @color-transparent, @border-width-1);
+    .border(true, @border-all, @color-transparent, 1px);
   }
 }
 
 .Input__max {
-  .caps--small();
+  .text-10-medium;
 
   color: @color-neutral;
-  font-size: 10px;
-  font-weight: 500;
-  padding: 0 1rem;
+  padding: 0 @size-16;
   text-transform: capitalize;
 }
 
@@ -78,14 +76,14 @@
 }
 
 .Input__Incremental {
-  .border(true, @border-all, @color-transparent, @border-width-1);
+  .border(true, @border-all, @color-transparent, 1px);
 
   background-color: @color-input-background;
   display: flex;
 
   .box {
     font-size: inherit;
-    padding: 1em;
+    padding: @size-16;
     width: 80%;
 
     &.search-input {
@@ -99,10 +97,10 @@
   }
 
   input {
-    .border(true, @border-all, @color-transparent, @border-width-1);
+    .border(true, @border-all, @color-transparent, 1px);
 
     display: flex;
-    flex: 1 1 auto;
+    flex: 1 auto;
   }
 
   input::placeholder {
@@ -110,11 +108,11 @@
   }
 
   input:focus {
-    .border(true, @border-all, @color-transparent, @border-width-1);
+    .border(true, @border-all, @color-transparent, 1px);
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, @border-width-1);
+    .border(true, @border-all, @color-input-border, 1px);
   }
 
   input[type='number'] {
@@ -137,7 +135,7 @@
   button {
     cursor: default;
     flex: 1;
-    padding: 0 0.2em;
+    padding: 0 @size-4;
 
     &:active {
       background-color: @color-gray;
@@ -150,10 +148,10 @@
 }
 
 .lightBorder {
-  .border(true, @border-all, @color-lightgray, @border-width-1);
+  .border(true, @border-all, @color-lightgray, 1px);
 
   &:focus-within {
-    .border(true, @border-all, @color-lightgray, @border-width-1);
+    .border(true, @border-all, @color-lightgray, 1px);
   }
 }
 

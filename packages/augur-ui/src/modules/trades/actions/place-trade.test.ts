@@ -1,13 +1,17 @@
+// @ts-ignore
 import * as mocks from "test/mockStore";
+// @ts-ignore
 import { tradeTestState } from "test/tradeTestState";
+// @ts-ignore
 import { augur } from "services/augurjs";
+// @ts-ignore
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 
 const { placeTrade } = require("modules/trades/actions/place-trade");
 
 const checkAllownaceActionObject = {
   type: "UPDATE_LOGIN_ACCOUNT",
-  allowance: "0"
+  allowance: "0",
 };
 jest.mock("services/augurjs");
 jest.mock("modules/auth/actions/approve-account");
@@ -17,10 +21,10 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     augur.rpc.getNetworkID.mockImplementation(() => "4");
     augur.trading.calculateTradeCost.mockImplementation();
     augur.trading.calculateTradeCost.mockReturnValue({
-      onChainAmount: "1"
+      onChainAmount: "1",
     });
     augur.trading.placeTrade.mockImplementation(() => {});
-    checkAccountAllowance.mockImplementation(onSent => {
+    checkAccountAllowance.mockImplementation((onSent) => {
       onSent(null, "0");
       return checkAllownaceActionObject;
     });
@@ -32,11 +36,11 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     testState.loginAccount = { privateKey: Buffer.from("PRIVATE_KEY", "utf8") };
     const store = mockStore(testState);
     store.dispatch(
-      placeTrade({ marketId: "testYesNoMarketId", outcomeId: null })
+      placeTrade({ marketId: "testYesNoMarketId", outcomeId: null }),
     );
     store.clearActions();
     store.dispatch(
-      placeTrade({ marketId: "testYesNoMarketId", outcomeId: undefined })
+      placeTrade({ marketId: "testYesNoMarketId", outcomeId: undefined }),
     );
   });
   test("should handle a null/undefined marketId", () => {
@@ -55,7 +59,7 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     const testState = { ...state, ...tradeTestState };
     testState.loginAccount = {
       meta: { privateKey: Buffer.from("PRIVATE_KEY", "utf8") },
-      allowance: "0"
+      allowance: "0",
     };
     const store = mockStore(testState);
 
@@ -69,9 +73,9 @@ describe(`modules/trades/actions/place-trade.js`, () => {
           otherSharesDepleted: "0",
           limitPrice: "0.3",
           numShares: "1",
-          side: "buy"
-        }
-      })
+          side: "buy",
+        },
+      }),
     );
     const storeActions = store.getActions();
     const approvalAction = storeActions[0];
@@ -90,7 +94,7 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     const testState = { ...state, ...tradeTestState };
     testState.loginAccount = {
       meta: { privateKey: Buffer.from("PRIVATE_KEY", "utf8") },
-      allowance: "10000000000000000000000000000000000000000000"
+      allowance: "10000000000000000000000000000000000000000000",
     };
     const store = mockStore(testState);
     // const action = require("./place-trade.js");
@@ -104,9 +108,9 @@ describe(`modules/trades/actions/place-trade.js`, () => {
           otherSharesDepleted: "0",
           limitPrice: "0.3",
           numShares: "1",
-          side: "buy"
-        }
-      })
+          side: "buy",
+        },
+      }),
     );
     const storeActions = store.getActions();
     expect(storeActions).toHaveLength(0);

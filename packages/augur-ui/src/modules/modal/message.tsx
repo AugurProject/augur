@@ -10,7 +10,6 @@ import {
   AlertMessage,
   MarketTitle,
   CallToAction,
-  LinearPropertyLabelProps,
   Breakdown,
   ReadableAddress,
   ReadableAddressProps,
@@ -19,9 +18,13 @@ import {
   MarketReview,
   MarketReviewProps,
   CheckboxCTA,
-  CheckboxCTAProps
+  CheckboxCTAProps,
 } from "modules/modal/common";
-import Styles from "modules/modal/modal.styles";
+import {
+  LinearPropertyLabelProps,
+} from "modules/common-elements/labels";
+
+import Styles from "modules/modal/modal.styles.less";
 
 interface MessageProps {
   closeAction: Function;
@@ -45,6 +48,7 @@ export const Message = (props: MessageProps) => (
       {props.alertMessage && <AlertMessage {...props.alertMessage} />}
       {props.marketTitle && <MarketTitle title={props.marketTitle} />}
       {props.callToAction && <CallToAction callToAction={props.callToAction} />}
+      // @ts-ignore
       {props.description && <Description description={props.description} />}
       {props.breakdown && <Breakdown rows={props.breakdown} />}
       {props.readableAddress && <ReadableAddress {...props.readableAddress} />}

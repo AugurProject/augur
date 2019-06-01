@@ -1,14 +1,14 @@
 import { createBigNumber } from "utils/create-big-number";
 import { ZERO, BUY } from "modules/common-elements/constants";
 
-export const buildDisplayTrade = trade => {
+export const buildDisplayTrade = (trade) => {
   const {
     userNetPositions,
     userShareBalance,
     outcomeId,
     numShares,
     side,
-    shareBalances
+    shareBalances,
   } = trade;
 
   const outcomeIndex = parseInt(outcomeId, 10);
@@ -22,7 +22,7 @@ export const buildDisplayTrade = trade => {
   const useShares = addOutcomeShares.lte(bnNumShares);
   const cost = Math.min(
     bnNumShares.toNumber(),
-    bnExistingShares.abs().toNumber()
+    bnExistingShares.abs().toNumber(),
   );
 
   if (
@@ -31,7 +31,7 @@ export const buildDisplayTrade = trade => {
       outcomeIndex,
       numShares,
       shareBalances,
-      side
+      side,
     )
   ) {
     const mirror = sum(userShareBalance, userNetPositions);
@@ -49,7 +49,7 @@ export const buildDisplayTrade = trade => {
   return {
     ...trade,
     shareCost: useShares ? cost : ZERO,
-    totalCost: addOutcomeShares.lte(ZERO) ? ZERO : addOutcomeShares.toString()
+    totalCost: addOutcomeShares.lte(ZERO) ? ZERO : addOutcomeShares.toString(),
   };
 };
 
@@ -57,6 +57,7 @@ const sum = (arr1, arr2) => {
   if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
   const result = [];
   arr1.forEach((value, i) => {
+    // @ts-ignore
     result[i] = createBigNumber(value).plus(createBigNumber(arr2[i]));
   });
   return result;
@@ -73,16 +74,15 @@ const areEqual = (arr1, arr2) => {
   return result;
 };
 
-/**
-Detect that user is closing out position by buying last outcomes.
-Meaning they already own all other outcomes
- */
+// Detect that user is closing out position by buying last outcomes.
+// Meaning they already own all other outcomes
+
 const buyingAllOutcomes = (
   userShareBalance,
   outcomeIndex,
   numShares,
   shareBalances,
-  side
+  side,
 ) => {
   if (side !== BUY) return false;
   // check if user is selling shares when buying all outcomes
@@ -93,10 +93,10 @@ const buyingAllOutcomes = (
   const minValue = Math.min(...modUserShareBalance).toString();
   if (createBigNumber(minValue).isEqualTo(ZERO)) return false;
   // see if min value is deducted from all other outcome than current outcome buy is on
-  const resulting = modUserShareBalance.map(value =>
+  const resulting = modUserShareBalance.map((value) =>
     createBigNumber(value)
       .minus(minValue)
-      .toString()
+      .toString(),
   );
   return areEqual(resulting, shareBalances);
 };

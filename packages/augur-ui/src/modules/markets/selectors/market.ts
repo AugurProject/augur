@@ -17,10 +17,10 @@ import {
   INDETERMINATE_OUTCOME_NAME,
   MARKET_OPEN,
   MARKET_REPORTING,
-  MARKET_CLOSED
+  MARKET_CLOSED,
+  REPORTING_STATE,
 } from "modules/common-elements/constants";
 
-import { constants } from "services/constants";
 import { getOutcomeName } from "utils/get-outcome";
 
 import store from "store";
@@ -46,6 +46,7 @@ import {
   selectAccountShareBalance,
   selectAccountPositionsState
 } from "store/select-state";
+import { PositionData } from "modules/types";
 
 export const selectMarket = marketId => {
   const state = store.getState();
@@ -154,11 +155,11 @@ const assembleMarket = (
   market.creationTime = convertUnixToFormattedDate(marketData.creationTime);
 
   switch (market.reportingState) {
-    case constants.REPORTING_STATE.PRE_REPORTING:
+    case REPORTING_STATE.PRE_REPORTING:
       market.marketStatus = MARKET_OPEN;
       break;
-    case constants.REPORTING_STATE.AWAITING_FINALIZATION:
-    case constants.REPORTING_STATE.FINALIZED:
+    case REPORTING_STATE.AWAITING_FINALIZATION:
+    case REPORTING_STATE.FINALIZED:
       market.marketStatus = MARKET_CLOSED;
       break;
     default:
@@ -208,7 +209,8 @@ const assembleMarket = (
   if (market.outcomes) {
     market.userPositions = Object.values(
       userTradingPositions.tradingPositions || []
-    ).map(position => {
+    ).map((value) => {
+      const position = value as PositionData;
       const outcome = market.outcomes[position.outcome];
       return {
         ...positionSummary(position, outcome),

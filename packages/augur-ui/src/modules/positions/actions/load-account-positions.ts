@@ -135,6 +135,7 @@ const postProcessing = (
     };
 
     if (positions.tradingPositionsPerMarket && positions.tradingPositionsPerMarket[marketId]) {
+      // @ts-ignore
       marketPositionData[marketId].tradingPositionsPerMarket = positions.tradingPositionsPerMarket[marketId];
     }
 

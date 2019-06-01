@@ -52,7 +52,7 @@ export interface TradeTransactionLimits {
 export class Trade {
   private readonly augur: Augur;
 
-  public constructor (augur: Augur) {
+  public constructor(augur: Augur) {
     this.augur = augur;
   }
 

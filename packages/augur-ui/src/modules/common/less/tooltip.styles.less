@@ -6,7 +6,7 @@ div.Tooltip {
   background-color: @color-primary-alternate;
   border: 1px solid transparent;
   border-radius: @border-radius-default;
-  box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -2px @size-4 0 rgba(0, 0, 0, 0.5);
   color: @color-primary-text;
   line-height: @size-13;
   max-width: 13.7rem;
@@ -18,11 +18,11 @@ div.Tooltip {
 
   > h4 {
     font-weight: 500;
-    margin-bottom: 0.75rem;
+    margin-bottom: @size-12;
   }
 
   > p {
-    margin: 0 0 0.75rem;
+    margin: 0 0 @size-12;
 
     &:last-child {
       margin-bottom: 0;
@@ -37,8 +37,8 @@ div.Tooltip {
 
 .TooltipHint {
   > svg {
-    max-height: 1rem;
-    max-width: 1rem;
+    max-height: @size-16;
+    max-width: @size-16;
   }
 }
 
@@ -51,7 +51,7 @@ div.Tooltip {
     }
 
     &.place-top {
-      box-shadow: 0 -1px 4px 0 rgba(0, 0, 0, 0.2);
+      box-shadow: 0 -1px @size-4 0 rgba(0, 0, 0, 0.2);
       margin-bottom: -@size-14;
 
       &::after {
@@ -69,8 +69,8 @@ div.Tooltip {
         border: 0 solid transparent;
         border-left: 0 solid transparent;
         border-right: 0 solid transparent;
-        border-top-color: #443b59;
-        bottom: -22px;
+        border-top-color: @color-primary-light;
+        bottom: -@size-22;
         content: '';
         display: block;
         height: 0;
@@ -83,7 +83,7 @@ div.Tooltip {
     }
 
     &.place-bottom {
-      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
+      box-shadow: 0 1px @size-4 0 rgba(0, 0, 0, 0.5);
       margin-top: -@size-14;
 
       &::after {
@@ -99,7 +99,7 @@ div.Tooltip {
 
       &::before {
         border: 0 solid transparent;
-        border-bottom-color: #443b59;
+        border-bottom-color: @color-primary-light;
         border-left: 0 solid transparent;
         border-right: 0 solid transparent;
         bottom: 100%;
@@ -132,7 +132,7 @@ div.Tooltip {
       &::before {
         border: 0 solid transparent;
         border-bottom: 0 solid transparent;
-        border-left-color: #443b59;
+        border-left-color: @color-primary-light;
         border-top: 0 solid transparent;
         bottom: unset;
         content: '';
@@ -140,7 +140,7 @@ div.Tooltip {
         height: 0;
         left: unset;
         position: absolute;
-        right: -22px;
+        right: -@size-22;
         top: 50%;
         width: 0;
       }
@@ -164,13 +164,13 @@ div.Tooltip {
       &::before {
         border: 0 solid transparent;
         border-bottom: 0 solid transparent;
-        border-right-color: #443b59;
+        border-right-color: @color-primary-light;
         border-top: 0 solid transparent;
         bottom: unset;
         content: '';
         display: block;
         height: 0;
-        left: -22px;
+        left: -@size-22;
         position: absolute;
         right: unset;
         top: 50%;
