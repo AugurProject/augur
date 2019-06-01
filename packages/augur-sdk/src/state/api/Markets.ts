@@ -137,11 +137,7 @@ export class Markets {
       throw new Error(`No marketId for getMarketPriceCandlesticks: ${params.marketId}`);
     }
 
-<<<<<<< HEAD
-    const orderFilledLogs = await db.findOrderFilledLogs({selector: {market: params.marketId}});
-=======
     const orderFilledLogs = await db.findOrderFilledLogs({ selector: { market: params.marketId, eventType: OrderEventType.Fill } });
->>>>>>> f9621a6cfafdda59db781d075c7fc67ca01c34c6
     const filteredOrderFilledLogs = filterOrderFilledLogs(orderFilledLogs, params);
     const tradeRowsByOutcome = _.groupBy(filteredOrderFilledLogs, (orderFilledLog) => { return new BigNumber(orderFilledLog.uint256Data[OrderEventUint256Value.outcome]).toString(10); });
 
