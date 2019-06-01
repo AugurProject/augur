@@ -2557,7 +2557,7 @@
 				},
 				{
 					"indexed": false,
-					"name": "_outcome",
+					"name": "outcome",
 					"type": "uint256"
 				},
 				{

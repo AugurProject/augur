@@ -155,17 +155,6 @@ export class Accounts<TBigNumber> {
     }
 
     if (params.action === Action.CLAIM_WINNING_CROWDSOURCERS || params.action === Action.ALL) {
-      const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(
-        {
-          selector: {
-            universe: params.universe,
-            reporter: params.account,
-            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
-          }
-        }
-      );
-      let marketInfo = await Accounts.getMarketCreatedInfo(db, disputeCrowdsourcerRedeemedLogs);
-      allFormattedLogs = allFormattedLogs.concat(await formatCrowdsourcerRedeemedLogs(disputeCrowdsourcerRedeemedLogs, augur, marketInfo, params));
       const initialReporterRedeemedLogs = await db.findInitialReporterRedeemedLogs(
         {
           selector: {
@@ -175,8 +164,19 @@ export class Accounts<TBigNumber> {
           }
         }
       );
-      marketInfo = await Accounts.getMarketCreatedInfo(db, initialReporterRedeemedLogs);
+      let marketInfo = await Accounts.getMarketCreatedInfo(db, initialReporterRedeemedLogs);
       allFormattedLogs = allFormattedLogs.concat(await formatCrowdsourcerRedeemedLogs(initialReporterRedeemedLogs, augur, marketInfo, params));
+      const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(
+        {
+          selector: {
+            universe: params.universe,
+            reporter: params.account,
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
+          }
+        }
+      );
+      marketInfo = await Accounts.getMarketCreatedInfo(db, disputeCrowdsourcerRedeemedLogs);
+      allFormattedLogs = allFormattedLogs.concat(await formatCrowdsourcerRedeemedLogs(disputeCrowdsourcerRedeemedLogs, augur, marketInfo, params));
       actionCoinComboIsValid = true;
     }
 
@@ -439,11 +439,15 @@ async function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingPr
   return formattedLogs;
 }
 
-async function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<DisputeCrowdsourcerRedeemedLog>|Array<InitialReporterRedeemedLog>, augur: Augur, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
+async function formatCrowdsourcerRedeemedLogs(transactionLogs: Array<InitialReporterRedeemedLog>|Array<DisputeCrowdsourcerRedeemedLog>, augur: Augur, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Promise<Array<AccountTransaction>> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
-    const reportingParticipant = augur.contracts.getReportingParticipant(transactionLogs[i].reporter);
-    const outcome = getOutcomeFromPayoutNumerators(await reportingParticipant.getPayoutNumerators_(), marketInfo[transactionLogs[i].market]);
+    const reportingParticipant = augur.contracts.getInitialReporter(transactionLogs[i].market);
+    let payoutNumerators: Array<BigNumber> = [];
+    for (let numeratorIndex = 0; numeratorIndex < transactionLogs[i].payoutNumerators.length; numeratorIndex++) {
+      payoutNumerators.push(new BigNumber(transactionLogs[i].payoutNumerators[numeratorIndex]));
+    }
+    const outcome = getOutcomeFromPayoutNumerators(payoutNumerators, marketInfo[transactionLogs[i].market]);
     const outcomeDescription = getOutcomeDescriptionFromOutcome(outcome, marketInfo[transactionLogs[i].market]);
     if (params.coin === "ETH" || params.coin === "ALL") {
       formattedLogs.push(
@@ -493,7 +497,7 @@ function formatMarketCreatedLogs(transactionLogs: MarketCreatedLog[], params: t.
         action: Action.MARKET_CREATION,
         coin: Coin.ETH,
         details: "ETH validity bond for market creation",
-        fee: "", // TODO?
+        fee: "0",
         marketDescription: transactionLogs[i].extraInfo && JSON.parse(transactionLogs[i].extraInfo).description ? JSON.parse(transactionLogs[i].extraInfo).description : "",
         outcome: null,
         outcomeDescription: null,

@@ -217,20 +217,20 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
 
   // Fill orders
   const cost = numShares.times(78).div(10);
-  await john.fillOrder(await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0), cost, numShares.div(10).times(2), "42");
-  await john.fillOrder(await john.getBestOrderId(bid, johnYesNoMarket.address, outcome1), cost, numShares.div(10).times(3), "43");
-  await john.fillOrder(await john.getBestOrderId(bid, johnYesNoMarket.address, outcome2), cost, numShares.div(10).times(3), "43");
-  await john.fillOrder(await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome0), cost, numShares.div(10).times(2), "42");
-  await john.fillOrder(await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome1), cost, numShares.div(10).times(3), "43");
-  await john.fillOrder(await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome2), cost, numShares.div(10).times(3), "43");
-  await john.fillOrder(await john.getBestOrderId(bid, johnScalarMarket.address, outcome0), cost, numShares.div(10).times(2), "42");
-  await john.fillOrder(await john.getBestOrderId(bid, johnScalarMarket.address, outcome1), cost, numShares.div(10).times(3), "43");
+  await mary.fillOrder(await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0), cost, numShares.div(10).times(2), "42");
+  await mary.fillOrder(await john.getBestOrderId(bid, johnYesNoMarket.address, outcome1), cost, numShares.div(10).times(3), "43");
+  await mary.fillOrder(await john.getBestOrderId(bid, johnYesNoMarket.address, outcome2), cost, numShares.div(10).times(3), "43");
+  await mary.fillOrder(await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome0), cost, numShares.div(10).times(2), "42");
+  await mary.fillOrder(await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome1), cost, numShares.div(10).times(3), "43");
+  await mary.fillOrder(await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome2), cost, numShares.div(10).times(3), "43");
+  await mary.fillOrder(await john.getBestOrderId(bid, johnScalarMarket.address, outcome0), cost, numShares.div(10).times(2), "42");
+  await mary.fillOrder(await john.getBestOrderId(bid, johnScalarMarket.address, outcome1), cost, numShares.div(10).times(3), "43");
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
-    account: ACCOUNTS[0].publicKey,
+    account: ACCOUNTS[1].publicKey,
     action: Action.SELL,
   });
   expect(accountTransactionHistory).toMatchObject(
@@ -409,7 +409,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   let newTime = (await johnYesNoMarket.getEndTime_()).plus(SECONDS_IN_A_DAY * 7);
   await john.setTimestamp(newTime);
 
-  // Submit initial reports
+  // Submit initial report
   const noPayoutSet = [new BigNumber(0), new BigNumber(100), new BigNumber(0)];
   const yesPayoutSet = [new BigNumber(0), new BigNumber(0), new BigNumber(100)];
   await john.doInitialReport(johnYesNoMarket, noPayoutSet);
@@ -551,30 +551,44 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   // Finalize markets & redeem crowdsourcer funds
   await johnYesNoMarket.finalize();
 
+  // Transfer cash to dispute window (so participation tokens can be redeemed -- normally this would come from fees)
+  await john.augur.contracts.cash.transfer(disputeWindow.address, new BigNumber(1));
+
   // Redeem participation tokens
   await john.redeemParticipationTokens(disputeWindow.address, john.account);
 
+  // Claim initial reporter
+  const initialReporter = await john.getInitialReporter(johnYesNoMarket);
+  await initialReporter.redeem(john.account);
+
+  // Claim winning crowdsourcers
+  const winningReportingParticipant = await john.getWinningReportingParticipant(johnYesNoMarket);
+  await winningReportingParticipant.redeem(john.account);
+
   // Claim trading proceeds
   let result = await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(johnYesNoMarket.address, john.account);
-  await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(johnYesNoMarket.address, mary.account);
-
-  // TODO Claim initial reporter
-  // const initialReporter = await john.getInitialReporter(johnYesNoMarket);
-  // await initialReporter.redeem(mary.account);
-
-  // TODO Claim winning crowdsourcers
-  // const winningReportingParticipant = await john.getWinningReportingParticipant(johnYesNoMarket);
-  // await winningReportingParticipant.redeem(mary.account);
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
     account: ACCOUNTS[0].publicKey,
-    action: Action.CLAIM_TRADING_PROCEEDS,
+    action: Action.CLAIM_PARTICIPATION_TOKENS,
   });
   expect(accountTransactionHistory).toMatchObject(
     [
+      {
+        action: 'CLAIM_PARTICIPATION_TOKENS',
+        coin: 'ETH',
+        details: 'Claimed reporting fees from participation tokens',
+        fee: '0',
+        marketDescription: '',
+        outcome: null,
+        outcomeDescription: null,
+        price: '0',
+        quantity: '1',
+        total: '1',
+      }
     ]
   );
 
@@ -583,20 +597,90 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
     account: ACCOUNTS[0].publicKey,
     action: Action.CLAIM_WINNING_CROWDSOURCERS,
   });
-  console.log(accountTransactionHistory);
   expect(accountTransactionHistory).toMatchObject(
     [
+      {
+        action: 'CLAIM_WINNING_CROWDSOURCERS',
+        coin: 'ETH',
+        details: 'Claimed reporting fees from crowdsourcers',
+        fee: '0',
+        marketDescription: 'description',
+        outcome: 1,
+        outcomeDescription: 'No',
+        price: '0',
+        quantity: '0',
+        total: '349680582682291667',
+      },
+      {
+        action: 'CLAIM_WINNING_CROWDSOURCERS',
+        coin: 'REP',
+        details: 'Claimed REP fees from crowdsourcers',
+        fee: '0',
+        marketDescription: 'description',
+        outcome: 1,
+        outcomeDescription: 'No',
+        price: '0',
+        quantity: '0',
+        total: '0',
+      },
+      {
+        action: 'CLAIM_WINNING_CROWDSOURCERS',
+        coin: 'ETH',
+        details: 'Claimed reporting fees from crowdsourcers',
+        fee: '0',
+        marketDescription: 'description',
+        outcome: 2,
+        outcomeDescription: 'Yes',
+        price: '0',
+        quantity: '0',
+        total: '2098083496093750002',
+      },
+      {
+        action: 'CLAIM_WINNING_CROWDSOURCERS',
+        coin: 'REP',
+        details: 'Claimed REP fees from crowdsourcers',
+        fee: '0',
+        marketDescription: 'description',
+        outcome: 2,
+        outcomeDescription: 'Yes',
+        price: '0',
+        quantity: '0',
+        total: '2937316894531250002',
+      }
     ]
   );
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
     account: ACCOUNTS[0].publicKey,
-    action: Action.CLAIM_PARTICIPATION_TOKENS,
+    action: Action.CLAIM_TRADING_PROCEEDS,
   });
-  console.log(accountTransactionHistory);
   expect(accountTransactionHistory).toMatchObject(
     [
+      {
+        action: 'CLAIM_TRADING_PROCEEDS',
+        coin: 'ETH',
+        details: 'Claimed trading proceeds',
+        fee: '2200000000000',
+        marketDescription: 'description',
+        outcome: 1,
+        outcomeDescription: 'No',
+        price: '22',
+        quantity: '100000000000',
+        total: '0',
+      },
+      {
+        action: 'CLAIM_TRADING_PROCEEDS',
+        coin: 'ETH',
+        details: 'Claimed trading proceeds',
+        fee: '-7600000000000',
+        marketDescription: 'description',
+        outcome: 2,
+        outcomeDescription: 'Yes',
+        price: '22',
+        quantity: '100000000000',
+        total: '9800000000000',
+      }
     ]
   );
 /*
