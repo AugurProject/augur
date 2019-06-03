@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import MarketOutcomeChartHeaderOrders from "modules/market-charts/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders";
@@ -7,35 +6,44 @@ import MarketOutcomeChartHeaderOrders from "modules/market-charts/components/mar
 import { ASKS, BIDS, BUY, SELL } from "modules/common-elements/constants";
 import MarketOutcomeMidpoint from "modules/market-charts/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint";
 
-import Styles from "modules/market-charts/components/market-outcome-charts--orders/market-outcome-charts--orders.styles";
-import StylesHeader from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--orders/market-outcome-charts--orders.styles.less";
+import StylesHeader from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles.less";
 import { isEmpty, isEqual } from "lodash";
+import { Order } from "modules/types";
 
-function findTrailingZeros(number) {
-  const zeros = number.match(/[0]+$/);
-  if (number.toString().indexOf(".") === -1 || !zeros) {
+function findTrailingZeros(num) {
+  const zeros = num.match(/[0]+$/);
+  if (num.toString().indexOf(".") === -1 || !zeros) {
     return "";
   }
-  return (number % 1 === 0 ? "." : "") + zeros;
+  return (num % 1 === 0 ? "." : "") + zeros;
 }
 
-export default class MarketOutcomeChartsOrders extends Component {
-  static propTypes = {
-    sharedChartMargins: PropTypes.object.isRequired,
-    orderBook: PropTypes.object.isRequired,
-    fixedPrecision: PropTypes.number.isRequired,
-    pricePrecision: PropTypes.number.isRequired,
-    updateHoveredPrice: PropTypes.func.isRequired,
-    updateSelectedOrderProperties: PropTypes.func.isRequired,
-    // updatePrecision: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool,
-    headerHeight: PropTypes.number.isRequired,
-    hasOrders: PropTypes.bool.isRequired,
-    orderBookKeys: PropTypes.object.isRequired
+interface MarketOutcomeChartsOrdersProps {
+  sharedChartMargins: {
+    bottom: number;
   };
+  orderBook: {
+    asks: Array<Order>;
+  };
+  fixedPrecision: number;
+  pricePrecision: number;
+  updateHoveredPrice: Function;
+  updateSelectedOrderProperties: Function;
+  isMobile?: boolean;
+  headerHeight: number;
+  hasOrders: boolean;
+  orderBookKeys: object;
+}
 
+interface MarketOutcomeChartHeaderOrdersState {
+  hoveredOrderIndex: number | null;
+  hoveredSide: any;
+}
+
+export default class MarketOutcomeChartsOrders extends Component<MarketOutcomeChartsOrdersProps, MarketOutcomeChartHeaderOrdersState> {
   static defaultProps = {
-    isMobile: false
+    isMobile: false,
   };
 
   constructor(props) {
@@ -43,9 +51,12 @@ export default class MarketOutcomeChartsOrders extends Component {
 
     this.state = {
       hoveredOrderIndex: null,
-      hoveredSide: null
+      hoveredSide: null,
     };
   }
+
+  public asks: any;
+  public bids: any;
 
   componentDidMount() {
     this.asks.scrollTop = this.asks.scrollHeight;
@@ -68,12 +79,11 @@ export default class MarketOutcomeChartsOrders extends Component {
       orderBook,
       sharedChartMargins,
       updateHoveredPrice,
-      // updatePrecision,
       updateSelectedOrderProperties,
       isMobile,
       headerHeight,
       hasOrders,
-      orderBookKeys
+      orderBookKeys,
     } = this.props;
     const s = this.state;
 
@@ -85,22 +95,21 @@ export default class MarketOutcomeChartsOrders extends Component {
         style={{ paddingBottom: sharedChartMargins.bottom - 4 }}
       >
         <MarketOutcomeChartHeaderOrders
-          // updatePrecision={updatePrecision}
-          isMobile={isMobile}
+          isMobile={isMobile || false}
           headerHeight={headerHeight}
         />
         <div
           className={classNames(
             Styles.MarketOutcomeOrderBook__Side,
-            Styles["MarketOutcomeOrderBook__side--asks"]
+            Styles["MarketOutcomeOrderBook__side--asks"],
           )}
         >
           <div
             className={classNames(
               Styles.MarketOutcomeOrderBook__container,
-              Styles["MarketOutcomeOrderBook__container--asks"]
+              Styles["MarketOutcomeOrderBook__container--asks"],
             )}
-            ref={asks => {
+            ref={(asks) => {
               this.asks = asks;
             }}
           >
@@ -121,14 +130,14 @@ export default class MarketOutcomeChartsOrders extends Component {
                   updateHoveredPrice(order.price.value);
                   this.setState({
                     hoveredOrderIndex: i,
-                    hoveredSide: ASKS
+                    hoveredSide: ASKS,
                   });
                 }}
                 onMouseLeave={() => {
                   updateHoveredPrice(null);
                   this.setState({
                     hoveredOrderIndex: null,
-                    hoveredSide: null
+                    hoveredSide: null,
                   });
                 }}
               >
@@ -139,7 +148,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                       orderPrice: order.price.value.toString(),
                       orderQuantity: order.cumulativeShares.toString(),
                       selectedNav: BUY,
-                      selfTrade: order.mySize !== null
+                      selfTrade: order.mySize !== null,
                     })
                   }
                 >
@@ -154,7 +163,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                       orderPrice: order.price.value.toString(),
                       orderQuantity: order.cumulativeShares.toString(),
                       selectedNav: BUY,
-                      selfTrade: order.mySize !== null
+                      selfTrade: order.mySize !== null,
                     })
                   }
                 >
@@ -162,7 +171,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                     {parseFloat(order.price.value.toFixed(pricePrecision))}
                     <span style={{ color: "#6d1d3d", marginLeft: ".5px" }}>
                       {findTrailingZeros(
-                        order.price.value.toFixed(pricePrecision)
+                        order.price.value.toFixed(pricePrecision),
                       )}
                     </span>
                   </span>
@@ -174,7 +183,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                       orderPrice: order.price.value.toString(),
                       orderQuantity: order.cumulativeShares.toString(),
                       selectedNav: BUY,
-                      selfTrade: order.mySize !== null
+                      selfTrade: order.mySize !== null,
                     })
                   }
                 >
@@ -198,12 +207,12 @@ export default class MarketOutcomeChartsOrders extends Component {
         <div
           className={classNames(
             Styles.MarketOutcomeOrderBook__Side,
-            Styles["MarketOutcomeOrderBook__side--bids"]
+            Styles["MarketOutcomeOrderBook__side--bids"],
           )}
         >
           <div
             className={Styles.MarketOutcomeOrderBook__container}
-            ref={bids => {
+            ref={(bids) => {
               this.bids = bids;
             }}
           >
@@ -217,20 +226,20 @@ export default class MarketOutcomeChartsOrders extends Component {
                   [Styles["MarketOutcomeOrderbook__row--hover-encompassed"]]:
                     s.hoveredOrderIndex !== null &&
                     s.hoveredSide === BIDS &&
-                    i < s.hoveredOrderIndex
+                    i < s.hoveredOrderIndex,
                 })}
                 onMouseEnter={() => {
                   updateHoveredPrice(order.price.value);
                   this.setState({
                     hoveredOrderIndex: i,
-                    hoveredSide: BIDS
+                    hoveredSide: BIDS,
                   });
                 }}
                 onMouseLeave={() => {
                   updateHoveredPrice(null);
                   this.setState({
                     hoveredOrderIndex: null,
-                    hoveredSide: null
+                    hoveredSide: null,
                   });
                 }}
               >
@@ -241,7 +250,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                       orderPrice: order.price.value.toString(),
                       orderQuantity: order.cumulativeShares.toString(),
                       selectedNav: SELL,
-                      selfTrade: order.mySize !== null
+                      selfTrade: order.mySize !== null,
                     })
                   }
                 >
@@ -256,7 +265,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                       orderPrice: order.price.value.toString(),
                       orderQuantity: order.cumulativeShares.toString(),
                       selectedNav: SELL,
-                      selfTrade: order.mySize !== null
+                      selfTrade: order.mySize !== null,
                     })
                   }
                 >
@@ -264,7 +273,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                     {parseFloat(order.price.value.toFixed(pricePrecision))}
                     <span style={{ color: "#135045", marginLeft: ".5px" }}>
                       {findTrailingZeros(
-                        order.price.value.toFixed(pricePrecision)
+                        order.price.value.toFixed(pricePrecision),
                       )}
                     </span>
                   </span>
@@ -276,7 +285,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                       orderPrice: order.price.value.toString(),
                       orderQuantity: order.cumulativeShares.toString(),
                       selectedNav: SELL,
-                      selfTrade: order.mySize !== null
+                      selfTrade: order.mySize !== null,
                     })
                   }
                 >
@@ -293,7 +302,7 @@ export default class MarketOutcomeChartsOrders extends Component {
         <div
           className={classNames(
             StylesHeader.MarketOutcomeChartsHeader__stats,
-            Styles.MarketOutcomeOrderBook__stats
+            Styles.MarketOutcomeOrderBook__stats,
           )}
         >
           <div

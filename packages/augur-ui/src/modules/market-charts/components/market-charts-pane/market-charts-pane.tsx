@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import * as PropTypes from "prop-types";
 import Media from "react-media";
 
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
@@ -11,28 +10,35 @@ import { Candlestick } from "modules/market/components/market-view-charts/candle
 import MarketDepth from "modules/market-charts/containers/market-outcome-chart-depth";
 import { BigNumber } from "bignumber.js";
 
-export default class MarketChartsPane extends Component {
-  static propTypes = {
-    currentTimestamp: PropTypes.number,
-    marketId: PropTypes.string.isRequired,
-    maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    minPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    selectedOutcome: PropTypes.string.isRequired,
-    updateSelectedOrderProperties: PropTypes.func.isRequired,
-    daysPassed: PropTypes.number
-  };
+interface MarketChartsPaneProps {
+  currentTimestamp?: number | undefined;
+  marketId: string;
+  maxPrice: BigNumber;
+  minPrice: BigNumber;
+  selectedOutcome: string;
+  updateSelectedOrderProperties: Function;
+  daysPassed?: number;
+}
 
+interface MarketChartsPaneState {
+  hoveredPrice: null | BigNumber;
+  hoveredDepth: Array<any>;
+}
+
+export default class MarketChartsPane extends Component<MarketChartsPaneProps, MarketChartsPaneState> {
   static defaultProps = {
     currentTimestamp: 0,
-    daysPassed: 0
+    daysPassed: 0,
   };
+
+  public ordersContainer;
 
   constructor(props) {
     super(props);
 
     this.state = {
       hoveredDepth: [],
-      hoveredPrice: null
+      hoveredPrice: null,
     };
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this);
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this);
@@ -40,13 +46,13 @@ export default class MarketChartsPane extends Component {
 
   updateHoveredDepth(hoveredDepth) {
     this.setState({
-      hoveredDepth
+      hoveredDepth,
     });
   }
 
   updateHoveredPrice(hoveredPrice) {
     this.setState({
-      hoveredPrice
+      hoveredPrice,
     });
   }
 
@@ -58,13 +64,13 @@ export default class MarketChartsPane extends Component {
       maxPrice,
       minPrice,
       updateSelectedOrderProperties,
-      daysPassed
+      daysPassed,
     } = this.props;
     const s = this.state;
 
     return (
       <Media query={TEMP_TABLET}>
-      {matches =>
+      {(matches) =>
         matches ? (
           <ModuleTabs selected={0} fillForMobile>
             <ModulePane label="Candlesticks">
@@ -79,7 +85,7 @@ export default class MarketChartsPane extends Component {
               />
             </ModulePane>
             <ModulePane
-              ref={ordersContainer => {
+              ref={(ordersContainer) => {
                 this.ordersContainer = ordersContainer;
               }}
               label="Market Depth"
@@ -114,7 +120,7 @@ export default class MarketChartsPane extends Component {
               />
             </ModulePane>
             <ModulePane
-              ref={ordersContainer => {
+              ref={(ordersContainer) => {
                 this.ordersContainer = ordersContainer;
               }}
               label="Market Depth"

@@ -1,3 +1,4 @@
+// @ts-ignore
 import unpackTransactionParameters from "modules/transactions/helpers/unpack-transaction-parameters";
 
 describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => {
@@ -15,7 +16,7 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
             "market",
             "outcome",
             "minimumTradeSize",
-            "tradeGroupId"
+            "tradeGroupId",
           ],
           label: "Bid",
           name: "buy",
@@ -27,7 +28,7 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
             "int256",
             "int256",
             "int256",
-            "int256"
+            "int256",
           ],
           to: "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
           from: "0xdceb761b558e202c993f447b470a89cec2a3b6e9",
@@ -37,17 +38,17 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
             "0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2",
             "2",
             "0x2386f26fc10000",
-            "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036"
-          ]
+            "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036",
+          ],
         },
         response: {
           hash:
             "0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878",
           txHash:
             "0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878",
-          callReturn: null
-        }
-      }
+          callReturn: null,
+        },
+      },
     };
 
     const actual = unpackTransactionParameters(params.tx);
@@ -61,7 +62,7 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
       minimumTradeSize: "0x2386f26fc10000",
       tradeGroupId:
         "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036",
-      type: "Bid"
+      type: "Bid",
     });
   });
 
@@ -79,7 +80,7 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
             "market",
             "outcome",
             "minimumTradeSize",
-            "tradeGroupId"
+            "tradeGroupId",
           ],
           label: "Bid",
           name: "buy",
@@ -91,7 +92,7 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
             "int256",
             "int256",
             "int256",
-            "int256"
+            "int256",
           ],
           to: "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
           from: "0xdceb761b558e202c993f447b470a89cec2a3b6e9",
@@ -101,8 +102,8 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
             "0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2",
             "2",
             "0x2386f26fc10000",
-            "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036"
-          ]
+            "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036",
+          ],
         },
         response: {
           blockHash:
@@ -127,9 +128,9 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
           timestamp: 1484208293,
           callReturn:
             "0x4a330392e495bdca39dd7d8617397502a21e5c6d975364471adfe76aea4b2ce7",
-          gasFees: "0.00651868"
-        }
-      }
+          gasFees: "0.00651868",
+        },
+      },
     };
 
     const actual = unpackTransactionParameters(params.tx);
@@ -143,7 +144,7 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
       minimumTradeSize: "0x2386f26fc10000",
       tradeGroupId:
         "0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036",
-      type: "Bid"
+      type: "Bid",
     });
   });
 
@@ -161,18 +162,18 @@ describe("modules/transactions/helpers/unpack-transaction-parameters.js", () => 
           from: "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
           to: "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
           params: [],
-          send: true
+          send: true,
         },
         response: {
-          callReturn: null
-        }
-      }
+          callReturn: null,
+        },
+      },
     };
 
     const actual = unpackTransactionParameters(params.tx);
 
     expect(actual).toEqual({
-      type: "emergencyStop"
+      type: "emergencyStop",
     });
   });
 });

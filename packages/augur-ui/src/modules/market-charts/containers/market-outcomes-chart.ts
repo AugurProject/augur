@@ -12,10 +12,10 @@ const mapStateToProps = (state, ownProps) => {
     minPrice = createBigNumber(0),
     outcomes = [],
     isScalar,
-    scalarDenomination
+    scalarDenomination,
   } = selectMarket(ownProps.marketId);
   const bucketedPriceTimeSeries = selectBucketedPriceTimeSeries(
-    ownProps.marketId
+    ownProps.marketId,
   );
 
   return {
@@ -26,7 +26,7 @@ const mapStateToProps = (state, ownProps) => {
     outcomes,
     bucketedPriceTimeSeries,
     isScalar,
-    scalarDenomination
+    scalarDenomination,
   };
 };
 
