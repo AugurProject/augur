@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
 import { HashRouter } from "react-router-dom";
 
-import MainErrorBoundary from "modules/common/components/main-error-boundary/main-error-boundary";
+import MainErrorBoundary from "modules/app/components/main-error-boundary";
 
 import store from "store";
 import { WindowApp } from "modules/types";

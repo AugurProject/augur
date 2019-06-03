@@ -12,34 +12,42 @@ import {
   getForkEndTime,
   getForkReputationGoal,
   getWinningChildUniverse,
-  isFinalized
+  isFinalized,
 } from "modules/contracts/actions/contractCalls";
 import {
   SCALAR,
   NULL_ADDRESS,
-  UNIVERSE_ID
+  UNIVERSE_ID,
 } from "modules/common-elements/constants";
 import { AppState } from "store";
-import { NodeStyleCallback } from "modules/types";
+import { NodeStyleCallback, MarketData, Universe } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
 const REQUIRED_GENESIS_SUPPLY = createBigNumber(
   "1100000000000000000000000",
-  10
+  10,
 );
+
+interface UniverseDate {
+  market: MarketData | null;
+  id: string;
+  reportableOutcomes: string | null;
+  winningChildUniverseId: string | null;
+  openInterest: string;
+}
 
 export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { universe, loginAccount, marketsData } = getState();
     const universeId = universe.id || UNIVERSE_ID;
 
-    const universeData = {
+    const universeData: UniverseDate = {
       market: null,
       id: universeId,
       reportableOutcomes: null,
       winningChildUniverseId: null,
-      openInterest: universe.openInterest || "0"
+      openInterest: universe.openInterest || "0",
     };
 
     if (universe.isForking && marketsData[universe.forkingMarket]) {
@@ -47,7 +55,7 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
       universeData.market = forkingMarket;
       universeData.reportableOutcomes = selectReportableOutcomes(
         forkingMarket.marketType,
-        forkingMarket.outcomes
+        forkingMarket.outcomes,
       );
       universeData.winningChildUniverseId = universe.winningChildUniverse;
     }
@@ -63,7 +71,7 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
             universeData,
             { id: parentUniverseId },
             { id: parentUniverseId },
-            callback
+            callback,
           );
         }
 
@@ -83,7 +91,7 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
                     universeData,
                     parentUniverseData,
                     { id: grandParentUniverseId },
-                    callback
+                    callback,
                   );
                 }
 
@@ -96,26 +104,26 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
                       universeData,
                       parentUniverseData,
                       grandParentUniverseData,
-                      callback
+                      callback,
                     );
-                  }
+                  },
                 );
-              }
+              },
             );
-          }
+          },
         );
-      }
+      },
     );
   };
 }
 
 function getUniverseInfo(universeId: string, callback: NodeStyleCallback) {
-  const universeData: any = {
+  const universeData: UniverseDate = {
     id: universeId,
     reportableOutcomes: null,
     winningChildUniverseId: null,
     market: null,
-    openInterest: "0"
+    openInterest: "0",
   };
 
   augur.api.Universe.getForkingMarket(
@@ -128,12 +136,14 @@ function getUniverseInfo(universeId: string, callback: NodeStyleCallback) {
           if (err) return callback(err);
           universeData.market = marketsDataArray[0];
           universeData.reportableOutcomes = selectReportableOutcomes(
+            // @ts-ignore
             universeData.market.marketType,
-            universeData.market.outcomes
+            // @ts-ignore
+            universeData.market.outcomes,
           );
           augur.api.Market.isFinalized(
             { tx: { to: forkingMarket } },
-            (err: any, isForkingMarketFinalized: Boolean) => {
+            (err: any, isForkingMarketFinalized: boolean) => {
               if (err) return callback(err);
               if (!isForkingMarketFinalized) {
                 return callback(null, universeData);
@@ -144,13 +154,13 @@ function getUniverseInfo(universeId: string, callback: NodeStyleCallback) {
                   if (err) return callback(err);
                   universeData.winningChildUniverseId = winningChildUniverse;
                   return callback(null, universeData);
-                }
+                },
               );
-            }
+            },
           );
-        }
+        },
       );
-    }
+    },
   );
 }
 
@@ -160,20 +170,20 @@ function getUniversesInfoWithParentContext(
   currentUniverseData: any,
   parentUniverseData: any,
   grandParentUniverseData: any,
-  callback: NodeStyleCallback
+  callback: NodeStyleCallback,
 ) {
   augur.augurNode.submitRequest(
     "getUniversesInfo",
     {
       universe: currentUniverseData.id,
-      account
+      account,
     },
     (err: any, result: any) => {
       if (err) return callback(err);
       const initialMapping = {
         parent: null,
         children: [],
-        currentLevel: []
+        currentLevel: [],
       };
 
       async.forEachOf(
@@ -185,11 +195,12 @@ function getUniversesInfoWithParentContext(
               // give default value of 0, there might have been error
               obj.openInterest = openInterest || 0;
               callback(err, obj);
-            }
+            },
           );
         },
-        err => {
+        (err) => {
           callback(
+            // @ts-ignore
             err,
             result.reduce((acc: any, universeData: any) => {
               const supply = createBigNumber(universeData.supply || "0", 10);
@@ -204,7 +215,7 @@ function getUniversesInfoWithParentContext(
               if (universeData.parentUniverse === currentUniverseData.id) {
                 universeData.description = getUniverseName(
                   currentUniverseData,
-                  universeData
+                  universeData,
                 );
                 universeData.isWinningUniverse =
                   currentUniverseData.winningChildUniverseId ===
@@ -215,7 +226,7 @@ function getUniversesInfoWithParentContext(
               ) {
                 universeData.description = getUniverseName(
                   parentUniverseData,
-                  universeData
+                  universeData,
                 );
                 universeData.isWinningUniverse =
                   parentUniverseData.winningChildUniverseId ===
@@ -228,7 +239,7 @@ function getUniversesInfoWithParentContext(
               } else {
                 universeData.description = getUniverseName(
                   grandParentUniverseData,
-                  universeData
+                  universeData,
                 );
                 universeData.isWinningUniverse =
                   grandParentUniverseData.winningChildUniverseId ===
@@ -236,11 +247,11 @@ function getUniversesInfoWithParentContext(
                 acc.parent = universeData;
               }
               return acc;
-            }, initialMapping)
+            }, initialMapping),
           );
-        }
+        },
       );
-    }
+    },
   );
 }
 
@@ -249,10 +260,11 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
 
   if (universeData.isInvalid) return "Invalid";
 
+  // @ts-ignore
   const outcomeId = calculatePayoutNumeratorsValue(
     parentUniverseData.market,
     universeData.payout,
-    universeData.isInvalid
+    universeData.isInvalid,
   ).toString();
   if (parentUniverseData.market.marketType === SCALAR) {
     return outcomeId;
@@ -264,7 +276,7 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
 }
 
 // TODO: this whole thing will be refactored
-export function getForkingInfo(universe: any, callback: NodeStyleCallback = logError) {
+export function getForkingInfo(universe: Universe, callback: NodeStyleCallback = logError) {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     // Getting current fork data
     const forkingMarket = await getForkingMarket();
@@ -283,7 +295,7 @@ export function getForkingInfo(universe: any, callback: NodeStyleCallback = logE
         forkReputationGoal,
         forkingMarket,
         isForking,
-        winningChildUniverse
+        winningChildUniverse,
       });
     }
   };
@@ -292,8 +304,8 @@ export function getForkingInfo(universe: any, callback: NodeStyleCallback = logE
 // TODO: this whole thing will be refactored
 function updateUniverseIfForkingDataChanged(
   dispatch: ThunkDispatch<void, any, Action>,
-  oldUniverseData: any,
-  universeData: any
+  oldUniverseData: Universe,
+  universeData: Universe,
 ) {
   if (
     (universeData.id && oldUniverseData.id !== universeData.id) ||
@@ -308,7 +320,7 @@ function updateUniverseIfForkingDataChanged(
   }
 }
 
-export function getUniverseProperties(universe: any, callback: NodeStyleCallback) {
+export function getUniverseProperties(callback: Function | null = null) {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     const openInterest = await getOpenInterestInAttoCash();
     const forkThreshold = await getDisputeThresholdForFork();
