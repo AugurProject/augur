@@ -8,35 +8,42 @@ import { isEqual } from "lodash";
 import CustomPropTypes from "utils/custom-prop-types";
 import { ASKS, BIDS, BUY, SELL, ZERO } from "modules/common-elements/constants";
 
-import Styles from "modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth.styles.less";
 
-export default class MarketOutcomeDepth extends Component {
-  static propTypes = {
-    sharedChartMargins: PropTypes.object,
-    marketDepth: PropTypes.object.isRequired,
-    orderBookKeys: PropTypes.object.isRequired,
-    pricePrecision: PropTypes.number.isRequired,
-    updateHoveredPrice: PropTypes.func.isRequired,
-    updateHoveredDepth: PropTypes.func.isRequired,
-    updateSelectedOrderProperties: PropTypes.func.isRequired,
-    marketMin: CustomPropTypes.bigNumber.isRequired,
-    marketMax: CustomPropTypes.bigNumber.isRequired,
-    // hoveredDepth: PropTypes.array.isRequired,
-    isMobile: PropTypes.bool,
-    // headerHeight: PropTypes.number.isRequired,
-    // ordersWidth: PropTypes.number.isRequired,
-    hasOrders: PropTypes.bool.isRequired,
-    hoveredPrice: PropTypes.any
-  };
+interface MarketOutcomeDepthProps {
+  sharedChartMargins?: object;
+  marketDepth: object;
+  orderBookKeys: object;
+  pricePrecision: number;
+  updateHoveredPrice: Function;
+  updateHoveredDepth: Function;
+  updateSelectedOrderProperties: Function;
+  marketMin: BigNumber;
+  marketMax: BigNumber;
+  isMobile?: boolean;
+  hasOrders: boolean;
+  hoveredPrice?: any;
+}
 
+interface MarketOutcomeDepthState {
+  depthContainer: any;
+  containerWidth: number;
+  containerHeight: number;
+  yScale: number | null;
+  xScale: number | null;
+}
+
+export default class MarketOutcomeDepth extends Component<MarketOutcomeDepthProps, MarketOutcomeDepthState> {
   static defaultProps = {
     hoveredPrice: null,
     isMobile: false,
     sharedChartMargins: {
       top: 0,
-      bottom: 30
-    }
+      bottom: 30,
+    },
   };
+
+  public depthChart: any;
 
   constructor(props) {
     super(props);
@@ -46,7 +53,7 @@ export default class MarketOutcomeDepth extends Component {
       containerWidth: 0,
       containerHeight: 0,
       yScale: null,
-      xScale: null
+      xScale: null,
     };
 
     this.drawDepth = this.drawDepth.bind(this);
@@ -65,7 +72,7 @@ export default class MarketOutcomeDepth extends Component {
       updateHoveredPrice,
       updateSelectedOrderProperties,
       isMobile,
-      hasOrders
+      hasOrders,
     } = this.props;
     this.drawDepth({
       marketDepth,
@@ -77,7 +84,7 @@ export default class MarketOutcomeDepth extends Component {
       updateHoveredPrice,
       updateSelectedOrderProperties,
       isMobile,
-      hasOrders
+      hasOrders,
     });
   }
 
@@ -89,7 +96,7 @@ export default class MarketOutcomeDepth extends Component {
       sharedChartMargins,
       updateHoveredPrice,
       updateSelectedOrderProperties,
-      isMobile
+      isMobile,
     } = this.props;
     if (
       !isEqual(marketDepth, nextProps.marketDepth) ||
@@ -98,7 +105,7 @@ export default class MarketOutcomeDepth extends Component {
       !isEqual(updateHoveredPrice, nextProps.updateHoveredPrice) ||
       !isEqual(
         updateSelectedOrderProperties,
-        nextProps.updateSelectedOrderProperties
+        nextProps.updateSelectedOrderProperties,
       ) ||
       isMobile !== nextProps.isMobile
     ) {
@@ -112,7 +119,7 @@ export default class MarketOutcomeDepth extends Component {
         updateHoveredPrice: nextProps.updateHoveredPrice,
         updateSelectedOrderProperties: nextProps.updateSelectedOrderProperties,
         isMobile: nextProps.isMobile,
-        hasOrders: nextProps.hasOrders
+        hasOrders: nextProps.hasOrders,
       });
     }
 
@@ -133,7 +140,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMin: nextProps.marketMin,
         marketMax: nextProps.marketMax,
         containerHeight: nextState.containerHeight,
-        containerWidth: nextState.containerWidth
+        containerWidth: nextState.containerWidth,
       });
     }
   }
@@ -150,7 +157,7 @@ export default class MarketOutcomeDepth extends Component {
         updateHoveredPrice,
         updateSelectedOrderProperties,
         isMobile,
-        hasOrders
+        hasOrders,
       } = options;
 
       const drawParams = determineDrawParams({
@@ -161,7 +168,7 @@ export default class MarketOutcomeDepth extends Component {
         pricePrecision,
         isMobile,
         marketMax,
-        marketMin
+        marketMin,
       });
 
       const depthContainer = new ReactFauxDOM.Element("div");
@@ -175,7 +182,7 @@ export default class MarketOutcomeDepth extends Component {
           "width",
           drawParams.containerWidth -
             drawParams.chartDim.left -
-            drawParams.chartDim.right
+            drawParams.chartDim.right,
         )
         .attr("height", drawParams.containerHeight)
         .style("margin", "0.75rem 0.5rem 0");
@@ -188,7 +195,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMax,
         marketMin,
         isMobile,
-        hasOrders
+        hasOrders,
       });
 
       drawLines({
@@ -198,12 +205,12 @@ export default class MarketOutcomeDepth extends Component {
         isMobile,
         hasOrders,
         marketMin,
-        marketMax
+        marketMax,
       });
 
       setupCrosshairs({
         drawParams,
-        depthChart
+        depthChart,
       });
 
       attachHoverClickHandlers({
@@ -215,7 +222,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMin,
         marketMax,
         updateHoveredPrice,
-        updateSelectedOrderProperties
+        updateSelectedOrderProperties,
       });
 
       this.setState({
@@ -223,7 +230,7 @@ export default class MarketOutcomeDepth extends Component {
         yScale: drawParams.yScale,
         xScale: drawParams.xScale,
         containerWidth: drawParams.containerWidth,
-        containerHeight: drawParams.containerHeight
+        containerHeight: drawParams.containerHeight,
       });
     }
   }
@@ -238,7 +245,7 @@ export default class MarketOutcomeDepth extends Component {
       sharedChartMargins,
       updateHoveredPrice,
       updateSelectedOrderProperties,
-      hasOrders
+      hasOrders,
     } = this.props;
     this.drawDepth({
       marketDepth,
@@ -249,7 +256,7 @@ export default class MarketOutcomeDepth extends Component {
       marketMax,
       updateHoveredPrice,
       updateSelectedOrderProperties,
-      hasOrders
+      hasOrders,
     });
   }
 
@@ -264,7 +271,7 @@ export default class MarketOutcomeDepth extends Component {
         containerHeight,
         containerWidth,
         marketMin,
-        marketMax
+        marketMax,
       } = options;
 
       if (hoveredPrice == null) {
@@ -276,7 +283,7 @@ export default class MarketOutcomeDepth extends Component {
           hoveredPrice,
           marketDepth,
           marketMin,
-          marketMax
+          marketMax,
         );
         if (nearestFillingOrder === null) return;
 
@@ -292,6 +299,7 @@ export default class MarketOutcomeDepth extends Component {
             .attr("x1", xScale(nearestFillingOrder[1]))
             .attr("y1", 0)
             .attr("x2", xScale(nearestFillingOrder[1]))
+            // @ts-ignore
             .attr("y2", containerHeight - sharedChartMargins.bottom)
             .style("display", null);
         } else {
@@ -308,7 +316,7 @@ export default class MarketOutcomeDepth extends Component {
             "x2",
             nearestFillingOrder[4] === BIDS
               ? xScale(nearestFillingOrder[1])
-              : containerWidth
+              : containerWidth,
           )
           .attr("y2", yScale(nearestFillingOrder[0]));
 
@@ -326,7 +334,7 @@ export default class MarketOutcomeDepth extends Component {
   render() {
     return (
       <div
-        ref={depthChart => {
+        ref={(depthChart) => {
           this.depthChart = depthChart;
         }}
         className={Styles.MarketOutcomeDepth__container}
@@ -341,7 +349,7 @@ export function nearestCompletelyFillingOrder(
   price,
   { asks = [], bids = [] },
   marketMin,
-  marketMax
+  marketMax,
 ) {
   const marketRange = createBigNumber(marketMax).minus(marketMin);
   const PRICE_INDEX = 1;
@@ -353,6 +361,7 @@ export function nearestCompletelyFillingOrder(
   let closestIndex = -1;
   let closestDistance = Number.MAX_VALUE;
   for (let i = 0; i < items.length; i++) {
+    // @ts-ignore
     const dist = Math.abs(items[i][PRICE_INDEX] - price);
     if (dist < closestDistance) {
       closestIndex = i;
@@ -371,6 +380,7 @@ export function nearestCompletelyFillingOrder(
           : marketRange.times(items[i][2].toString()).minus(long.toString());
       cost = cost.plus(tradeCost);
     }
+    // @ts-ignore
     items[closestIndex].push(cost);
   } else {
     return null;
@@ -386,7 +396,7 @@ function determineDrawParams(options) {
     marketDepth,
     marketMax,
     marketMin,
-    orderBookKeys
+    orderBookKeys,
   } = options;
 
   const chartDim = {
@@ -394,7 +404,7 @@ function determineDrawParams(options) {
     right: 10,
     left: 10,
     stick: 5,
-    tickOffset: 10
+    tickOffset: 10,
   };
 
   const containerWidth = depthChart.clientWidth;
@@ -454,7 +464,7 @@ function determineDrawParams(options) {
         askToCopy[0],
         marketMax.toNumber(),
         askToCopy[2],
-        false
+        false,
       ]);
     }
   }
@@ -466,7 +476,7 @@ function determineDrawParams(options) {
         bidToCopy[0],
         marketMin.toNumber(),
         bidToCopy[2],
-        false
+        false,
       ]);
     }
   }
@@ -480,7 +490,7 @@ function determineDrawParams(options) {
     xDomain,
     yDomain,
     xScale,
-    yScale
+    yScale,
   };
 }
 
@@ -493,7 +503,7 @@ function drawTicks(options) {
     marketMax,
     marketMin,
     isMobile,
-    hasOrders
+    hasOrders,
   } = options;
   // Y Axis
   //  Chart Bounds
@@ -515,11 +525,11 @@ function drawTicks(options) {
     )
     .attr(
       "y1",
-      (d, i) => (drawParams.containerHeight - drawParams.chartDim.bottom) * i
+      (d, i) => (drawParams.containerHeight - drawParams.chartDim.bottom) * i,
     )
     .attr(
       "y2",
-      (d, i) => (drawParams.containerHeight - drawParams.chartDim.bottom) * i
+      (d, i) => (drawParams.containerHeight - drawParams.chartDim.bottom) * i,
     );
 
   //  Midpoint Label
@@ -544,7 +554,7 @@ function drawTicks(options) {
       .attr("x2", drawParams.xScale(orderBookKeys.mid.toNumber()))
       .attr(
         "y2",
-        drawParams.containerHeight - drawParams.chartDim.bottom - quarter
+        drawParams.containerHeight - drawParams.chartDim.bottom - quarter,
       )
       .attr("transform", `translate(0, ${quarter})`);
     depthChart
@@ -563,7 +573,7 @@ function drawTicks(options) {
       .attr("dx", pricePlacement)
       .attr("dy", 0)
       .text(
-        orderBookKeys.mid && `${orderBookKeys.mid.toFixed(pricePrecision)}`
+        orderBookKeys.mid && `${orderBookKeys.mid.toFixed(pricePrecision)}`,
       );
 
     depthChart
@@ -624,7 +634,7 @@ function drawTicks(options) {
     .attr("id", "depth-x-axis")
     .attr(
       "transform",
-      `translate(0, ${drawParams.containerHeight - drawParams.chartDim.bottom})`
+      `translate(0, ${drawParams.containerHeight - drawParams.chartDim.bottom})`,
     )
     .call(
       d3
@@ -646,7 +656,7 @@ function drawLines(options) {
     marketDepth,
     hasOrders,
     marketMin,
-    marketMax
+    marketMax,
   } = options;
 
   // Defs
@@ -697,7 +707,7 @@ function drawLines(options) {
     .x(d => drawParams.xScale(d[1]))
     .y(d => drawParams.yScale(d[0]));
 
-  Object.keys(marketDepth).forEach(side => {
+  Object.keys(marketDepth).forEach((side) => {
     depthChart
       .append("path")
       .data([marketDepth[side].reverse()])
@@ -719,7 +729,7 @@ function drawLines(options) {
     .x1(d => drawParams.xScale(marketMax))
     .y(d => drawParams.yScale(d[0]));
 
-  Object.keys(marketDepth).forEach(side => {
+  Object.keys(marketDepth).forEach((side) => {
     depthChart
       .append("path")
       .data([marketDepth[side]])
@@ -813,7 +823,7 @@ function attachHoverClickHandlers(options) {
     marketMin,
     marketMax,
     updateHoveredPrice,
-    updateSelectedOrderProperties
+    updateSelectedOrderProperties,
   } = options;
 
   depthChart
@@ -823,7 +833,7 @@ function attachHoverClickHandlers(options) {
       "width",
       drawParams.containerWidth -
         drawParams.chartDim.left -
-        drawParams.chartDim.right
+        drawParams.chartDim.right,
     )
     .attr("height", drawParams.containerHeight)
     .on("mouseover", () => d3.select("#crosshairs").style("display", null))
@@ -850,25 +860,25 @@ function attachHoverClickHandlers(options) {
         hoveredPrice,
         marketDepth,
         marketMin,
-        marketMax
+        marketMax,
       );
       if (nearestFillingOrder === null) return;
 
       d3.select(bidsDepthLine).attr(
         "stroke-width",
-        nearestFillingOrder[4] === ASKS ? 1 : 2
+        nearestFillingOrder[4] === ASKS ? 1 : 2,
       );
       d3.select(asksDepthLine).attr(
         "stroke-width",
-        nearestFillingOrder[4] === ASKS ? 2 : 1
+        nearestFillingOrder[4] === ASKS ? 2 : 1,
       );
       d3.select("#crosshairX").attr(
         "class",
-        `crosshair-${nearestFillingOrder[4]}`
+        `crosshair-${nearestFillingOrder[4]}`,
       );
       d3.select("#crosshairY").attr(
         "class",
-        `crosshair-${nearestFillingOrder[4]}`
+        `crosshair-${nearestFillingOrder[4]}`,
       );
 
       updateHoveredPrice(hoveredPrice);
@@ -883,7 +893,8 @@ function attachHoverClickHandlers(options) {
         `${createBigNumber(nearestFillingOrder[0]).toFixed(pricePrecision)}`
       );
       d3.select("#cost_value").html(
-        `${nearestFillingOrder[5].toFixed(pricePrecision)} ETH`
+        // @ts-ignore
+        `${nearestFillingOrder[5].toFixed(pricePrecision)} ETH`,
       );
 
       // 27 comes from the padding/border/margins so 1rem total for horz
@@ -908,11 +919,11 @@ function attachHoverClickHandlers(options) {
       const flipY = quarterY > yScale(nearestFillingOrder[0]);
       d3.select("#hovered_tooltip").attr(
         "class",
-        `hovered_tooltip_div ${nearestFillingOrder[4]} ${flipX ? "flip" : ""}`
+        `hovered_tooltip_div ${nearestFillingOrder[4]} ${flipX ? "flip" : ""}`,
       );
       const offset = {
         hoverToolTipX: flipX ? 0 : testWidth * -1,
-        hoverToolTipY: flipY ? verticalSpacing : testHeight * -1
+        hoverToolTipY: flipY ? verticalSpacing : testHeight * -1,
       };
       const tooltip = d3
         .select("#hovered_tooltip_container")
@@ -932,7 +943,7 @@ function attachHoverClickHandlers(options) {
         orderPrice,
         marketDepth,
         marketMin,
-        marketMax
+        marketMax,
       );
 
       if (
@@ -943,7 +954,7 @@ function attachHoverClickHandlers(options) {
         updateSelectedOrderProperties({
           orderQuantity: nearestFillingOrder[0],
           orderPrice: nearestFillingOrder[1],
-          selectedNav: nearestFillingOrder[4] === BIDS ? SELL : BUY
+          selectedNav: nearestFillingOrder[4] === BIDS ? SELL : BUY,
         });
       }
     });

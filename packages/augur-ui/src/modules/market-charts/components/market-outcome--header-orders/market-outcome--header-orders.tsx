@@ -4,21 +4,29 @@ import classNames from "classnames";
 
 import { collapseIcon, expandIcon } from "modules/common/components/icons";
 
-import StylesHeader from "modules/market/components/market-outcomes-list/market-outcomes-list.styles";
-import Styles from "modules/market-charts/components/market-outcome--header-orders/market-outcome--header-orders.styles";
+import StylesHeader from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";
+import Styles from "modules/market-charts/components/market-outcome--header-orders/market-outcome--header-orders.styles.less";
+
+interface MarketOutcomeChartsHeaderOrdersProps {
+  title: string;
+  headers: Array<any>;
+  extended: boolean;
+  toggle: any;
+  hide: boolean;
+}
 
 const MarketOutcomeChartsHeaderOrders = ({
   title,
   headers,
   extended,
   toggle,
-  hide
-}) => (
+  hide,
+}: MarketOutcomeChartsHeaderOrdersProps) => (
   <section className={Styles.MarketOutcomeChartsHeader__orders}>
     <button
       className={classNames(
         StylesHeader.MarketOutcomesList__heading,
-        Styles.MarketOutcomeChartsHeader__heading
+        Styles.MarketOutcomeChartsHeader__heading,
       )}
       onClick={toggle}
     >
@@ -59,11 +67,3 @@ const MarketOutcomeChartsHeaderOrders = ({
 );
 
 export default MarketOutcomeChartsHeaderOrders;
-
-MarketOutcomeChartsHeaderOrders.propTypes = {
-  title: PropTypes.string.isRequired,
-  headers: PropTypes.array.isRequired,
-  extended: PropTypes.bool.isRequired,
-  toggle: PropTypes.func.isRequired,
-  hide: PropTypes.bool.isRequired
-};

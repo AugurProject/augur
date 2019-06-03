@@ -8,6 +8,20 @@ import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { FormattedNumber, DateFormattedObject } from "modules/types";
+
+export interface TransactionObject {
+  hash: any;
+  status: any;
+  data: any;
+  type?: string;
+  eventName?: string;
+  blockNumber?: string;
+  message?: string;
+  gasFees?: FormattedNumber;
+  description?: string;
+  timestamp?: DateFormattedObject;
+}
 
 export const constructBasicTransaction = ({
   eventName,
@@ -17,9 +31,9 @@ export const constructBasicTransaction = ({
   message,
   description,
   gasFees = 0,
-  status = SUCCESS
+  status = SUCCESS,
 }: any) => {
-  const transaction: any = { hash, status, data: {} };
+  const transaction: TransactionObject = { hash, status, data: {} };
   if (eventName) transaction.type = eventName;
   if (blockNumber) transaction.blockNumber = blockNumber;
   if (message) transaction.message = message;
@@ -31,7 +45,7 @@ export const constructBasicTransaction = ({
 
 export const constructTransaction = (
   log: any,
-  callback: NodeStyleCallback = logError
+  callback: NodeStyleCallback = logError,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   switch (log.eventName) {
     case "OrderCreated":
@@ -56,14 +70,14 @@ export const constructTransaction = (
       return dispatch(
         loadReportingHistory({
           reporter: getState().loginAccount.address,
-          universe: getState().universe.id
-        })
+          universe: getState().universe.id,
+        }),
       );
     default:
       console.warn(
         `constructing default transaction for event ${
           log.eventName
-        } (no handler found)`
+        } (no handler found)`,
       );
       dispatch(
         updateTransactionsData({
@@ -73,9 +87,9 @@ export const constructTransaction = (
             blockNumber: log.blockNumber,
             timestamp: log.timestamp,
             message: log.message,
-            description: log.description
-          })
-        })
+            description: log.description,
+          }),
+        }),
       );
   }
 };
