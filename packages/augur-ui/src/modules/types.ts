@@ -242,6 +242,7 @@ export interface Order {
   type: string;
   orderEstimate: string;
   outcomeName: string;
+  cumulativeShares: number;
 }
 
 export interface LiquidityOrders {
@@ -347,6 +348,7 @@ export interface GasPriceInfo {
   average: number;
   fast: number;
   safeLow: number;
+  userDefinedGasPrice: string;
 }
 export interface FilterSortOptions {
   marketFilter: string;
@@ -390,7 +392,7 @@ export interface Endpoints {
 export interface Connection {
   isConnected: boolean;
   isConnectedToAugurNode: boolean;
-  augurNodeNetworkId?: string;
+  augurNodeNetworkId?: number;
   isReconnectionPaused: boolean;
 }
 

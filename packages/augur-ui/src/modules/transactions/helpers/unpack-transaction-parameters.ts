@@ -6,6 +6,7 @@ export default function(tx) {
   const unfixedParams =
     params.constructor === Array ? params.slice() : [params];
   const unpacked = {};
+  // @ts-ignore
   unpacked.type = tx.type;
   for (let i = 0; i < numInputs; ++i) {
     unpacked[inputs[i]] = unfixedParams[i];
