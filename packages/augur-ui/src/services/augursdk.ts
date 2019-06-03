@@ -7,6 +7,7 @@ import {
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
 import { Addresses } from "@augurproject/artifacts";
+import {WebsocketConnector} from "@augurproject/sdk";
 
 export class SDK {
   public sdk: Augur<Provider> | null = null;
@@ -19,6 +20,7 @@ export class SDK {
     isWeb3: boolean = false,
   ) {
     this.isWeb3Transport = isWeb3;
+
     const ethersProvider = new EthersProvider(provider, 10, 0, 40);
     const networkId = await ethersProvider.getNetworkId();
     const contractDependencies = new ContractDependenciesEthers(
@@ -31,6 +33,7 @@ export class SDK {
       ethersProvider,
       contractDependencies,
       Addresses[networkId],
+      new WebsocketConnector()
     );
   }
 
