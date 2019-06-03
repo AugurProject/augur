@@ -1,7 +1,7 @@
 import logError from "utils/log-error";
 import {
   getUniverseProperties,
-  getForkingInfo
+  getForkingInfo,
 } from "modules/universe/actions/load-universe-info";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
@@ -16,7 +16,7 @@ const syncUniverse = (blockNumber: number, callback: NodeStyleCallback = logErro
 ) => {
   const { universe } = getState();
   if (!blockNumber || blockNumber % GET_UNIVERSE_INFO_EVERY_X_BLOCKS === 0) {
-    dispatch(getUniverseProperties(universe));
+    dispatch(getUniverseProperties());
     dispatch(getForkingInfo(universe));
   }
   callback(null);

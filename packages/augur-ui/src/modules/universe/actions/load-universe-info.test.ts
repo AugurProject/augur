@@ -1,4 +1,6 @@
+// @ts-ignore
 import { YES_NO } from "modules/common-elements/constants";
+// @ts-ignore
 import { loadUniverseInfo } from "modules/universe/actions/load-universe-info";
 
 jest.mock("services/augurjs");
@@ -8,22 +10,22 @@ describe("modules/account/actions/load-universe-info.js", () => {
     test("should return the expected object", () => {
       const stateData = {
         loginAccount: {
-          address: "0xACCOUNT"
+          address: "0xACCOUNT",
         },
         universe: {
           winningChildUniverse: "0xCHILD_1",
           forkingMarket: "0xMARKET",
           id: "0xGENESIS",
-          isForking: true
+          isForking: true,
         },
         marketsData: {
           "0xMARKET": {
             maxPrice: 1,
             minPrice: 0,
             numTicks: 10000,
-            marketType: YES_NO
-          }
-        }
+            marketType: YES_NO,
+          },
+        },
       };
 
       const getState = () => stateData;
@@ -39,8 +41,8 @@ describe("modules/account/actions/load-universe-info.js", () => {
             openInterest: "1000000",
             parentUniverse: "0xGENESIS",
             description: "No",
-            isWinningUniverse: true
-          }
+            isWinningUniverse: true,
+          },
         ],
         currentLevel: [
           {
@@ -52,9 +54,9 @@ describe("modules/account/actions/load-universe-info.js", () => {
             supply: "1100000000000000000000000",
             parentUniverse: "0x0000000000000000000000000000000000000000",
             description: "GENESIS",
-            isWinningUniverse: false
-          }
-        ]
+            isWinningUniverse: false,
+          },
+        ],
       };
 
       loadUniverseInfo((err, actual) => {

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import FilterSearch from "modules/filter-sort/containers/filter-search";
 import FilterDropDowns from "modules/filter-sort/containers/filter-dropdowns";
@@ -10,26 +9,29 @@ import parsePath from "modules/routes/helpers/parse-path";
 import { MARKETS } from "modules/routes/constants/views";
 import { CATEGORY_PARAM_NAME } from "modules/common-elements/constants";
 
-import Styles from "modules/markets-list/components/markets-header/markets-header.styles";
+import Styles from "modules/markets-list/components/markets-header/markets-header.styles.less";
 
-// NOTE -- commented out state due to temp lack of utilization + linting
-export default class MarketsHeader extends Component {
-  static propTypes = {
-    location: PropTypes.object.isRequired,
-    filter: PropTypes.string.isRequired,
-    sort: PropTypes.string.isRequired,
-    maxFee: PropTypes.string.isRequired,
-    hasOrders: PropTypes.bool.isRequired,
-    updateFilter: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    isSearchingMarkets: PropTypes.bool.isRequired
-  };
+interface MarketsHeaderProps {
+  location: object;
+  filter: string;
+  sort: string;
+  maxFee: string;
+  hasOrders: boolean;
+  updateFilter: Function;
+  history: object;
+  isSearchingMarkets: boolean;
+}
 
+interface MarketsHeaderState {
+  headerTitle: string | null;
+}
+
+export default class MarketsHeader extends Component<MarketsHeaderProps, MarketsHeaderState> {
   constructor(props) {
     super(props);
 
     this.state = {
-      headerTitle: null
+      headerTitle: null,
     };
 
     this.setHeaderTitle = this.setHeaderTitle.bind(this);
@@ -59,7 +61,7 @@ export default class MarketsHeader extends Component {
 
       if (path[0] === MARKETS) {
         this.setState({
-          headerTitle: path[0]
+          headerTitle: path[0],
         });
       }
     }
@@ -73,7 +75,7 @@ export default class MarketsHeader extends Component {
       hasOrders,
       updateFilter,
       history,
-      isSearchingMarkets
+      isSearchingMarkets,
     } = this.props;
     const s = this.state;
 
