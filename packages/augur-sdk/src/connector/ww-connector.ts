@@ -1,5 +1,3 @@
-import RunWorker from "../state//Sync.worker";
-
 import { API } from "../state/api/API";
 import { Augur } from "../Augur";
 import { BlockAndLogStreamerListener } from "../state/db/BlockAndLogStreamerListener";
@@ -20,6 +18,8 @@ export class WebWorkerConnector extends Connector {
   private worker: any;
 
   public async connect(params?: any): Promise<any> {
+    const RunWorker = require("../state//Sync.worker");
+
     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
     const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
