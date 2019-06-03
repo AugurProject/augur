@@ -8,5 +8,5 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 export default connect(mapStateToProps)(
-  MarketOutcomeChartsCandlestickHighchart
+  MarketOutcomeChartsCandlestickHighchart,
 );
