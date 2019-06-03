@@ -1,6 +1,6 @@
 import {
   UPDATE_TRANSACTION_STATUS,
-  CLEAR_TRANSACTION_STATUS
+  CLEAR_TRANSACTION_STATUS,
 } from "modules/transactions/actions/update-transactions-status";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";

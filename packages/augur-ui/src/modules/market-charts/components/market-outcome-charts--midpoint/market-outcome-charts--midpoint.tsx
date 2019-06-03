@@ -1,8 +1,15 @@
 import React from "react";
-import PropTypes from "prop-types";
-import Styles from "modules/market-charts/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint.styles.less";
 
-const Midpoint = ({ orderBookKeys, pricePrecision, hasOrders }) => (
+interface MidpointProps {
+  orderBookKeys: {
+    mid: number;
+  };
+  hasOrders: boolean;
+  pricePrecision: number;
+}
+
+const Midpoint = ({ orderBookKeys, pricePrecision, hasOrders }: MidpointProps) => (
   <section>
     {hasOrders && (
       <div className={Styles.MarketOutcomeMidpoint}>
@@ -19,11 +26,5 @@ const Midpoint = ({ orderBookKeys, pricePrecision, hasOrders }) => (
     )}
   </section>
 );
-
-Midpoint.propTypes = {
-  orderBookKeys: PropTypes.object.isRequired,
-  hasOrders: PropTypes.bool.isRequired,
-  pricePrecision: PropTypes.number.isRequired
-};
 
 export default Midpoint;

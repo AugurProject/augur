@@ -242,6 +242,7 @@ export interface Order {
   type: string;
   orderEstimate: string;
   outcomeName: string;
+  cumulativeShares: number;
 }
 
 export interface LiquidityOrders {
