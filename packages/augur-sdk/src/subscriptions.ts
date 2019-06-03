@@ -15,7 +15,6 @@ export class Subscriptions extends EventEmitter {
   }
 
   public unsubscribe(subscription: string): void {
-    console.log("subscriptions unsubscribing");
     this.emit(`unsubscribe:${subscription}`);
   }
 
@@ -25,7 +24,6 @@ export class Subscriptions extends EventEmitter {
   }
 
   private subscribeToEvent(eventName: string, publish: (data: {}) => void): string {
-    console.log("subscriptions subscribing");
     const subscription: string = uuidv4();
 
     const handler = (data: {}): void => {
@@ -35,7 +33,6 @@ export class Subscriptions extends EventEmitter {
 
     this.on(eventName, publish)
       .once(`unsubscribe:${subscription}`, (): void => {
-        console.log("received unsubscribe in subscriptions");
         this.removeListener(eventName, publish);
         this.parentEmitter.removeListener(eventName, handler);
       })

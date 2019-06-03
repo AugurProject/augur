@@ -35,6 +35,16 @@ export class WebsocketConnector extends Connector {
       }
     });
 
+    this.socket.onError.addListener((message: string) => {
+      console.error("Websocket error");
+      console.error(message);
+    });
+
+    this.socket.onClose.addListener((message: string) => {
+      console.log("Websocket closed");
+      console.log(message);
+    });
+
     return this.socket.open();
   }
 
