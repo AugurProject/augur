@@ -80,6 +80,7 @@
     "typescript"
   ],
   "resolutions": {
-    "**/sha3": "2.0.1"
+    "**/sha3": "2.0.1",
+    "**/pouchdb-adapter-memory/memdown": "1.2.7"
   }
 }
