@@ -1,5 +1,26 @@
 import * as React from "react";
 
+export const AugurLoadingLogo = (
+  <svg viewBox="50 50 205 205">
+    <path
+      className="outer-lines"
+      d="M66.3 199.1L152.8 55M152.8 251l-86.5-51.9M239.7 199.1L152.8 251M152.8 55l86.9 144.1"
+    />
+    <path
+      className="inner-bottom-line"
+      d="M152.8 250.5l.3-33.8c0-6.3 3.4-12.1 9-15.2l5.6-2.8c6-3 11.1-7.7 14.5-13.6l2.2-3.7"
+    />
+    <path
+      className="inner-lines"
+      d="M158.1 135.2s13.6 3.1 20.2 11c11.3 13.5 6.3 25.5 13.7 30.7 8.5 6 46.4 22.2 46.4 22.2m-118.7-30.8s.2-9.8 5.9-18.5c6.9-10.5 18-12.4 23.5-17.8 4.5-4.4 4-13 4-13l-.3-62.5m-4 144.5s-7.8-1-13.4-4.7c-7.3-4.9-12.5-15.1-17.6-17.1-5.5-2.1-11.4 1-11.4 1L66.3 199"
+    />
+    <path
+      className="mask"
+      d="M183.1 170.7s2.5 9 7.5 12.8c5 3.8-1.9 6.4-8.1.9s.6-13.7.6-13.7zm-22.2-33.9c4.5-6.9.9-13.4-2.1-7.8-3 5.5-11.5 9.4-11.5 9.4s9.1 5.4 13.6-1.6zm-41.5 29.4c-8.1-1.8-12.8 3.9-6.6 4.7s12.9 7.4 12.9 7.4 1.8-10.3-6.3-12.1zm34.6 36.4c3.3-7.5-1.3-13.3-3.4-7.4-2.1 6-9.8 11.2-9.8 11.2s9.9 3.8 13.2-3.8z"
+    />
+  </svg>
+);
+
 export const ViewIcon = (
   <svg viewBox="0 0 10 10">
     <path d="M8.75 8.75V9.25H9.25V8.75H8.75ZM1.25 8.75H0.75V9.25H1.25V8.75ZM1.25 1.25V0.75H0.75V1.25H1.25ZM8.75 1.25H9.25V0.75H8.75V1.25ZM8.25 5C8.25 5.27614 8.47386 5.5 8.75 5.5C9.02614 5.5 9.25 5.27614 9.25 5H8.25ZM5 0.75C4.72386 0.75 4.5 0.973858 4.5 1.25C4.5 1.52614 4.72386 1.75 5 1.75V0.75ZM9.25 7.1875C9.25 6.91136 9.02614 6.6875 8.75 6.6875C8.47386 6.6875 8.25 6.91136 8.25 7.1875H9.25ZM2.8125 1.75C3.08864 1.75 3.3125 1.52614 3.3125 1.25C3.3125 0.973858 3.08864 0.75 2.8125 0.75V1.75ZM8.75 8.25H1.25V9.25H8.75V8.25ZM1.75 8.75V1.25H0.75V8.75H1.75ZM8.25 1.25V5H9.25V1.25H8.25ZM5 1.75H8.75V0.75H5V1.75ZM8.25 7.1875V8.75H9.25V7.1875H8.25ZM1.25 1.75H2.8125V0.75H1.25V1.75Z" />
@@ -103,6 +124,21 @@ export const TwoArrows = (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
+  </svg>
+);
+
+export const BackArrow = (
+  <svg
+    viewBox="0 0 18 10"
+  >
+    <path
+      d="M5 1L1 5L5 9"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <rect x="2" y="4" width="16" height="2" rx="1" />
   </svg>
 );
 
@@ -377,6 +413,183 @@ export const MobileNavBackIcon = () => (
     </g>
   </svg>
 );
+
+// ## STATIC ICONS FOR THIRD PARTY
+export const Ledger = (
+  <svg
+    width="18px"
+    height="18px"
+    viewBox="0 0 18 18"
+    version="1.1"
+    xmlns="http://www.w3.org/1999/xlink"
+  >
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="SoftwareWalletDisconnectedActive"
+        transform="translate(-24.000000, -239.000000)"
+        fill="#FFFFFF"
+        fillRule="nonzero"
+      >
+        <g id="dropdown" transform="translate(0.000000, 72.000000)">
+          <g id="ledger" transform="translate(0.000000, 152.000000)">
+            <g id="ledgerLogo" transform="translate(24.000000, 15.000000)">
+              <path d="M15.1127835,0 L6.82994618,0 L6.82994618,11.1103292 L17.9461595,11.1103292 L17.9461475,2.89067605 C17.9506737,1.32998241 16.674302,1.60715874e-16 15.1127835,0 Z M4.28625516,0 L2.89672999,0 C1.33521148,0 0,1.27117366 0,2.8951998 L0,4.28399095 L4.28625516,4.28399095 L4.28625516,0 Z M0,6.88514702 L4.28625516,6.88514702 L4.28625516,11.169138 L0,11.169138 L0,6.88514702 Z M13.6644185,17.9954763 L15.0539437,17.9954763 C16.6154622,17.9954763 17.9506737,16.7243026 17.9506737,15.1002765 L17.9506737,13.716009 L13.6644185,13.716009 L13.6644185,17.9954763 Z M6.82994618,13.716009 L11.1162013,13.716009 L11.1162013,18 L6.82994618,18 L6.82994618,13.716009 Z M0,13.716009 L0,15.1048002 C0,16.6654938 1.27184551,18 2.89672999,18 L4.28625516,18 L4.28625516,13.716009 L0,13.716009 Z" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
+export const Trezor = (
+  <svg
+    width="13px"
+    height="18px"
+    viewBox="0 0 13 18"
+    version="1.1"
+   
+  >
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="SoftwareWalletDisconnectedActive"
+        transform="translate(-27.000000, -191.000000)"
+        fill="#FFFFFF"
+        fillRule="nonzero"
+      >
+        <g id="dropdown" transform="translate(0.000000, 72.000000)">
+          <g id="trezor" transform="translate(0.000000, 104.000000)">
+            <path
+              d="M37.5237142,20.5296365 L39.326924,20.5296365 L39.326924,30.1125063 L39.3145205,30.1125063 L33.1636759,33 L27.0124035,30.1125063 L27,30.1125063 L27,20.5296365 L28.8040653,20.5296365 L28.8040653,19.1842878 C28.8040653,16.8773006 30.760394,15 33.1645313,15 C35.5673854,15 37.5237142,16.8773006 37.5237142,19.1842878 L37.5237142,20.5296365 Z M36.8462273,28.5187988 L36.8462273,22.7781863 L29.4806967,22.7781863 L29.4806967,28.5187988 L33.1636759,30.2435607 L36.8462273,28.5187988 Z M31.0405417,19.1842878 L31.0405417,20.5296365 L35.2872378,20.5296365 L35.2872378,19.1842878 C35.2872378,18.1165167 34.3343081,17.2476904 33.1645313,17.2476904 C31.9934714,17.2476904 31.0405417,18.1165167 31.0405417,19.1842878 Z"
+              id="trezorLogo"
+            />
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
+export const Edge = (
+  <svg
+    width="18px"
+    height="18px"
+    viewBox="0 0 18 18"
+    version="1.1"
+   
+  >
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="SoftwareWalletDisconnectedActive"
+        transform="translate(-24.000000, -143.000000)"
+        fill="#FFFFFF"
+        fillRule="nonzero"
+      >
+        <g id="dropdown" transform="translate(0.000000, 72.000000)">
+          <g id="edge" transform="translate(0.000000, 56.000000)">
+            <path
+              d="M26.7901934,15 L33.4904666,15 L30.5986628,22.673431 L24,22.673431 L26.7901934,15 Z M31.8857655,24.4729727 L34.4520286,17.5466409 L41.974343,17.5466409 L36.6694783,32.0513509 L24.2990517,32.0513509 L27.0278822,24.4155608 L31.8857655,24.4729727 Z"
+              id="edgeLogo"
+            />
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
+export const MetaMask = (
+  <svg
+    width="19px"
+    height="20px"
+    viewBox="0 0 19 20"
+    version="1.1"
+   
+  >
+    <defs />
+    <g
+      id="Create/Connect-Account"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
+      <g
+        id="SoftwareWalletDisconnectedActive"
+        transform="translate(-23.000000, -94.000000)"
+        stroke="#FFFFFF"
+      >
+        <g id="dropdown" transform="translate(0.000000, 72.000000)">
+          <g id="metaMask" transform="translate(0.000000, 8.000000)">
+            <g id="metamaskLogo" transform="translate(23.909091, 15.000000)">
+              <polygon
+                id="Stroke-1"
+                strokeLinecap="round"
+                points="5.42289817 0.156604444 7.37789817 2.49299556 10.8538254 2.49299556 16.7192436 1.00627556 14.98128 5.46684444 15.6332255 6.10389332 15.1983164 6.52872888 15.6332255 6.74135112 15.1983164 7.16618668 15.4157709 7.80364444 14.8453709 8.97184 14.7638255 10.1400356 14.98128 11.6267556 14.98128 13.3260978 16.2847527 14.8128178 16.93628 15.2376533 16.5017891 16.2995378 15.1983164 17.7866667 12.8088254 17.7866667 7.31809816 15.9229511 1.72951637 17.7866667 0.209007273 13.9635556 2.38146182 9.07774224 1.51248 8.22807112 2.16442546 8.01585776 1.07798909 7.37880888 1.94697091 7.16618668 0.860952727 6.52872888 1.51248 6.31651556 1.51248 5.25463112 2.81595273 2.70561778"
+              />
+              <polyline
+                id="Stroke-3"
+                strokeLinecap="round"
+                points="16.3932291 14.9191289 15.3072109 14.9191289 15.0897564 15.3439644 15.0897564 16.6184711 16.3719018 16.4267022"
+              />
+              <polygon
+                id="Stroke-6"
+                strokeLinecap="round"
+                points="14.1816431 10.6363636 14.7272727 11.2907831 13.9090909 11.4545455"
+              />
+              <polygon
+                id="Stroke-7"
+                strokeLinecap="round"
+                points="9.74372357 10.6363636 10.6363636 12.2727273 8.18181818 11.7272728"
+              />
+              <polyline
+                id="Stroke-8"
+                points="7.31079802 2.45454545 9 5.11343951 5.62159599 8.7952577 2.45454545 9"
+              />
+              <polyline
+                id="Stroke-9"
+                strokeLinecap="round"
+                points="8.75830948 13.9090909 14.7272727 15.645097 7.36363636 16.3636364"
+              />
+              <polyline
+                id="Stroke-10"
+                strokeLinecap="round"
+                points="9 13.0909091 6.38165021 10.6363637 5.72727273 9"
+              />
+              <polyline
+                id="Stroke-11"
+                strokeLinecap="round"
+                points="14.7272727 14.7272727 11.6590768 11.802648 11.0452014 10.1314339 9 4.90909091"
+              />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
 // TODO: The below Icon's are slated to be removed, for now I moved them here to reduce file amounts/noise
 export const NavMarketsIcon = () => (
   <svg
@@ -522,7 +735,7 @@ export const NavAccountIcon = () => (
   </svg>
 );
 
-export const NavLogoutIcon = () => (
+export const LogoutIcon = () => (
   <svg
     width="16"
     height="16"

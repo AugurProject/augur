@@ -10,7 +10,7 @@ import {
   ERROR_TYPES
 } from "modules/common-elements/constants";
 import isMetaMaskPresent from "modules/auth/helpers/is-meta-mask";
-import { logoutIcon } from "modules/common/components/icons";
+import { LogoutIcon } from "modules/common-elements/icons";
 
 import Styles from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import Ledger from "modules/auth/containers/ledger-connect";
@@ -160,7 +160,7 @@ export default class ConnectDropdown extends Component {
               role="button"
               tabIndex="-1"
             >
-              <div className={Styles.ConnectDropdown__icon}>{logoutIcon}</div>
+              <div className={Styles.ConnectDropdown__icon}>{LogoutIcon}</div>
               <div className={Styles.ConnectDropdown__title}>Logout</div>
             </div>
           </div>

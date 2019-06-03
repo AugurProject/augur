@@ -19,11 +19,9 @@ import {
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
 import {
-  infoIcon
-} from "modules/common/components/icons";
-import {
   XIcon,
-  ExclamationCircle
+  ExclamationCircle,
+  InfoIcon
 } from "modules/common-elements/icons";
 import Styles from "modules/trading/components/trading--confirm/trading--confirm.styles";
 import { formatGasCostToEther, formatShares } from "utils/format-number";
@@ -254,7 +252,7 @@ class MarketTradingConfirm extends Component {
                     data-tip
                     data-for="tooltip--confirm"
                   >
-                    {infoIcon}
+                    {InfoIcon}
                   </label>
                   <ReactTooltip
                     id="tooltip--confirm"

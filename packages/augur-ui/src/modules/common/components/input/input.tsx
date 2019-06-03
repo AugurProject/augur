@@ -4,8 +4,7 @@ import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { PulseLoader } from "react-spinners";
 
-import { IconSearch, CloseDark } from "modules/common/components/icons";
-
+import { SearchIcon, XIcon } from "modules/common-elements/icons";
 import debounce from "utils/debounce";
 
 import Styles from "modules/common/components/input/input.styles";
@@ -205,7 +204,7 @@ export default class Input extends Component {
         onBlur={this.onBlurThing}
         style={style}
       >
-        {isSearch && IconSearch}
+        {isSearch && SearchIcon}
         {!isMultiline && (
           <input
             {...p}
@@ -251,7 +250,7 @@ export default class Input extends Component {
               className={Styles.close}
               onClick={this.handleClear}
             >
-              {CloseDark}
+              {XIcon}
             </button>
           )}
 
@@ -261,7 +260,7 @@ export default class Input extends Component {
               type="button"
               className="button--text-only"
               onClick={this.handleToggleVisibility}
-              tabIndex="-1"
+              tabIndex={-1}
             >
               {isHiddenContentVisible ? (
                 <i className="fa fa-eye-slash" />
@@ -298,7 +297,7 @@ export default class Input extends Component {
           <div className={Styles.value__incrementers}>
             <button
               type="button"
-              tabIndex="-1"
+              tabIndex={-1}
               className={classNames(Styles["increment-value"], "unstyled")}
               onClick={e => {
                 e.currentTarget.blur();
@@ -328,7 +327,7 @@ export default class Input extends Component {
             </button>
             <button
               type="button"
-              tabIndex="-1"
+              tabIndex={-1}
               className="decrement-value unstyled"
               onClick={e => {
                 e.currentTarget.blur();

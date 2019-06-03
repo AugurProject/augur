@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
   ChevronDown,
-  ChevronUp,
-  BackArrow
+  ChevronUp
 } from "modules/common/components/icons";
+import { BackArrow } from "modules/common-elements/icons";
 import MarkdownRenderer from "modules/common-elements/markdown-renderer";
 import MarketHeaderBar from "modules/market/containers/market-header-bar";
 import { BigNumber } from "bignumber.js";
