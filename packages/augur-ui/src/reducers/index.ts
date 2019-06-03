@@ -31,6 +31,38 @@ import filledOrders from "modules/orders/reducers/filled-orders";
 import accountShareBalances from "modules/positions/reducers/account-share-balances";
 import readNotifications from "modules/notifications/reducers/read-notifications";
 import pendingQueue from "modules/pending-queue/reducers/pending-queue";
+import {
+  LoginAccount,
+  MarketTradingHistory,
+  AccountPosition,
+  AppStatus,
+  AuthStatus,
+  Blockchain,
+  Category,
+  Connection,
+  EnvObject,
+  Favorite,
+  FilterSortOptions,
+  GasPriceInfo,
+  MarketsInReporting,
+  MarketsData,
+  NewMarket,
+  Alert,
+  OrderBooks,
+  OrderCancellations,
+  OutcomesData,
+  LiquidityOrders,
+  PendingOrders,
+  PendingQueue,
+  FilledOrders,
+  ReportingWindowStats,
+  UserReports,
+  TransacitonData,
+  TransacitonStatus,
+  Universe,
+  Versions,
+  AccountShareBalances
+} from "modules/types";
 
 export function createReducer() {
   return {
@@ -66,6 +98,44 @@ export function createReducer() {
     transactionsStatus,
     universe,
     versions,
-    accountShareBalances,
+    accountShareBalances
   };
+}
+
+// TODO: couldn't use concreat type form `createReducer` so hardcoding structure here
+// keeping with reducers for easier maintenance.
+export interface AppStateInterface {
+  accountPositions: AccountPosition;
+  alerts: Array<Alert>;
+  appStatus: AppStatus;
+  authStatus: AuthStatus;
+  blockchain: Blockchain;
+  categories: Array<Category>;
+  connection: Connection;
+  env: EnvObject;
+  favorites: Favorite;
+  filterSortOptions: FilterSortOptions;
+  gasPriceInfo: GasPriceInfo;
+  loginAccount: LoginAccount;
+  marketReportState: MarketsInReporting;
+  marketTradingHistory: MarketTradingHistory;
+  marketsData: MarketsData;
+  modal: any;
+  newMarket: NewMarket;
+  readNotifications: Array<Notification>;
+  orderBooks: OrderBooks;
+  orderCancellation: OrderCancellations;
+  outcomesData: OutcomesData;
+  pendingLiquidityOrders: LiquidityOrders;
+  pendingOrders: PendingOrders;
+  pendingQueue: PendingQueue;
+  filledOrders: FilledOrders;
+  reportingWindowStats: ReportingWindowStats;
+  reports: UserReports;
+  sidebarStatus: any;
+  transactionsData: TransacitonData;
+  transactionsStatus: TransacitonStatus;
+  universe: Universe;
+  versions: Versions;
+  accountShareBalances: AccountShareBalances;
 }
