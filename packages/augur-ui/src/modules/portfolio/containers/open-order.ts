@@ -79,7 +79,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     rowProperties: openOrder,
     columnProperties,
     styleOptions: {
-      noToggle: oP.extendedView,
+      noToggle: oP.extendedViewNotOnMobile,
       openOrder: true
     }
   };
