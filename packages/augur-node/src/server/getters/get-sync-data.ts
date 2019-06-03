@@ -4,6 +4,7 @@ import { Augur } from "../../types";
 import { isSyncFinished } from "../../blockchain/bulk-sync-augur-node-with-blockchain";
 import { version } from "../../version";
 import { Addresses } from "@augurproject/artifacts";
+import { Block } from 'ethers/providers';
 
 export const NoParams = t.type({
 });
@@ -15,8 +16,8 @@ export interface UISyncData {
   netId: string;
   isSyncFinished: boolean;
   addresses: {};
-  highestBlock: {};
-  lastProcessedBlock: {};
+  highestBlock: Block;
+  lastProcessedBlock: Block;
 }
 
 export async function getSyncData(db: Knex, augur: Augur, params: t.TypeOf<typeof NoParams>): Promise<UISyncData> {

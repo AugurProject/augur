@@ -1,4 +1,4 @@
-import { augur } from "services/augurjs";
+import {augur, default as AugurJS} from "services/augurjs";
 import { updateBlockchain } from "modules/app/actions/update-blockchain";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { createBigNumber } from "utils/create-big-number";
@@ -40,7 +40,7 @@ export const syncBlockchain = (cb: Function) => (
 
   cb && cb();
 
-  augur.augurNode.getSyncData((err: any, res: any) => {
+  AugurJS.augur.augurNode.submitRequest("getSyncData", {}, (err, res) => {
     if (!err && res) {
       dispatch(
         updateBlockchain({
