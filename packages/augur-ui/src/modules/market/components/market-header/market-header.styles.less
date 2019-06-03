@@ -328,7 +328,7 @@
   }
 
   .MarketHeader__descContainer {
-    margin: 1.5625rem 0 1.25rem @size-8;
+    margin: @size-24 0 @size-20 @size-8;
     max-width: unset;
   }
 
@@ -343,7 +343,7 @@
   }
 
   .Properties {
-    border-bottom: 1px solid #0f0a19;
+    border-bottom: 1px solid @color-primary-background;
     flex-direction: column;
     margin-bottom: 0;
     margin-left: 0;
@@ -351,10 +351,15 @@
     padding-left: 0;
   }
 
-  .TimeStuff {
+  .Time {
     align-items: normal;
     background-color: @color-secondary-action;
     margin: @size-8 0;
     padding: @size-16;
+  }
+
+  .Toggle {
+    margin-top: 0;
+    margin-bottom: @size-10;
   }
 }
