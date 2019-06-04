@@ -1,3 +1,4 @@
+# Port of old pyethereum utils
 
 import sha3 as _sha3
 def sha3_256(x):
@@ -99,7 +100,6 @@ def ecrecover_to_pub(rawhash, v, r, s):
     assert len(pub) == 64
     return pub
 
-
 def ecsign(rawhash, key):
     if coincurve and hasattr(coincurve, 'PrivateKey'):
         pk = coincurve.PrivateKey(key)
@@ -115,19 +115,14 @@ def ecsign(rawhash, key):
 def mk_contract_address(sender, nonce):
     return sha3(rlp.encode([normalize_address(sender), nonce]))[12:]
 
-
 def mk_metropolis_contract_address(sender, initcode):
     return sha3(normalize_address(sender) + initcode)[12:]
-
 
 def safe_ord(value):
     if isinstance(value, int):
         return value
     else:
         return ord(value)
-
-# decorator
-
 
 def debug(label):
     def deb(f):
@@ -147,13 +142,11 @@ def flatten(li):
         o.extend(l)
     return o
 
-
 def bytearray_to_int(arr):
     o = 0
     for a in arr:
         o = (o << 8) + a
     return o
-
 
 def int_to_32bytearray(i):
     o = [0] * 32
@@ -171,13 +164,11 @@ def sha3(seed):
 assert encode_hex(
     sha3(b'')) == 'c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470'
 
-
 @Memoize
 def privtoaddr(k):
     k = normalize_key(k)
     x, y = privtopub(k)
     return sha3(encode_int32(x) + encode_int32(y))[12:]
-
 
 def checksum_encode(addr):  # Takes a 20-byte binary address as input
     addr = normalize_address(addr)
@@ -190,10 +181,8 @@ def checksum_encode(addr):  # Takes a 20-byte binary address as input
             o += c.upper() if (v & (2**(255 - 4 * i))) else c.lower()
     return '0x' + o
 
-
 def check_checksum(addr):
     return checksum_encode(normalize_address(addr)) == addr
-
 
 def normalize_address(x, allow_blank=False):
     if is_numeric(x):
@@ -211,7 +200,6 @@ def normalize_address(x, allow_blank=False):
         raise Exception("Invalid address format: %r" % x)
     return x
 
-
 def normalize_key(key):
     if is_numeric(key):
         o = encode_int32(key)
@@ -227,7 +215,6 @@ def normalize_key(key):
         raise Exception("Zero privkey invalid")
     return o
 
-
 def zpad(x, l):
     """ Left zero pad value `x` at least to length `l`.
 
@@ -241,7 +228,6 @@ def zpad(x, l):
     '\xca\xfe'
     """
     return b'\x00' * max(0, l - len(x)) + x
-
 
 def rzpad(value, total_length):
     """ Right zero pad value `x` at least to length `l`.
@@ -257,14 +243,12 @@ def rzpad(value, total_length):
     """
     return value + b'\x00' * max(0, total_length - len(value))
 
-
 def int_to_addr(x):
     o = [b''] * 20
     for i in range(20):
         o[19 - i] = ascii_chr(x & 0xff)
         x >>= 8
     return b''.join(o)
-
 
 def coerce_addr_to_bin(x):
     if is_numeric(x):
@@ -274,7 +258,6 @@ def coerce_addr_to_bin(x):
     else:
         return zpad(x, 20)[-20:]
 
-
 def coerce_addr_to_hex(x):
     if is_numeric(x):
         return encode_hex(zpad(big_endian_int.serialize(x), 20))
@@ -282,7 +265,6 @@ def coerce_addr_to_hex(x):
         return x
     else:
         return encode_hex(zpad(x, 20)[-20:])
-
 
 def coerce_to_int(x):
     if is_numeric(x):
@@ -292,7 +274,6 @@ def coerce_to_int(x):
     else:
         return big_endian_to_int(x)
 
-
 def coerce_to_bytes(x):
     if is_numeric(x):
         return big_endian_int.serialize(x)
@@ -300,7 +281,6 @@ def coerce_to_bytes(x):
         return decode_hex(x)
     else:
         return x
-
 
 def parse_int_or_hex(s):
     if is_numeric(s):
@@ -312,21 +292,14 @@ def parse_int_or_hex(s):
     else:
         return int(s)
 
-
 def ceil32(x):
     return x if x % 32 == 0 else x + 32 - (x % 32)
-
 
 def to_signed(i):
     return i if i < TT255 else i - TT256
 
-
 def sha3rlp(x):
     return sha3(rlp.encode(x))
-
-
-# Format encoders/decoders for bin, addr, int
-
 
 def decode_bin(v):
     """decodes a bytearray from serialization"""
@@ -334,13 +307,11 @@ def decode_bin(v):
         raise Exception("Value must be binary, not RLP array")
     return v
 
-
 def decode_addr(v):
     """decodes an address from serialization"""
     if len(v) not in [0, 20]:
         raise Exception("Serialized addresses must be empty or 20 bytes long!")
     return encode_hex(v)
-
 
 def decode_int(v):
     """decodes and integer from serialization"""
@@ -348,20 +319,16 @@ def decode_int(v):
         raise Exception("No leading zero bytes allowed for integers")
     return big_endian_to_int(v)
 
-
 def decode_int256(v):
     return big_endian_to_int(v)
-
 
 def encode_bin(v):
     """encodes a bytearray into serialization"""
     return v
 
-
 def encode_root(v):
     """encodes a trie root into serialization"""
     return v
-
 
 def encode_int(v):
     """encodes an integer into serialization"""
@@ -369,10 +336,8 @@ def encode_int(v):
         raise Exception("Integer invalid or out of range: %r" % v)
     return int_to_big_endian(v)
 
-
 def encode_int256(v):
     return zpad(int_to_big_endian(v), 256)
-
 
 def scan_bin(v):
     if v[:2] in ('0x', b'0x'):
@@ -380,13 +345,11 @@ def scan_bin(v):
     else:
         return decode_hex(v)
 
-
 def scan_int(v):
     if v[:2] in ('0x', b'0x'):
         return big_endian_to_int(decode_hex(v[2:]))
     else:
         return int(v)
-
 
 # Decoding from RLP serialization
 decoders = {
@@ -422,24 +385,19 @@ scanners = {
     "int256b": lambda x: big_endian_to_int(decode_hex(x))
 }
 
-
 def int_to_hex(x):
     o = encode_hex(encode_int(x))
     return '0x' + (o[1:] if (len(o) > 0 and o[0] == b'0') else o)
 
-
 def remove_0x_head(s):
     return s[2:] if s[:2] in (b'0x', '0x') else s
-
 
 def parse_as_bin(s):
     return decode_hex(s[2:] if s[:2] == '0x' else s)
 
-
 def parse_as_int(s):
     return s if is_numeric(s) else int(
         '0' + s[2:], 16) if s[:2] == '0x' else int(s)
-
 
 def print_func_call(ignore_first_arg=False, max_call_number=100):
     """ utility function to facilitate debug, it will print input args before
@@ -492,13 +450,11 @@ def print_func_call(ignore_first_arg=False, max_call_number=100):
         return wrapper
     return inner
 
-
 def dump_state(trie):
     res = ''
     for k, v in list(trie.to_dict().items()):
         res += '%r:%r\n' % (encode_hex(k), encode_hex(v))
     return res
-
 
 class Denoms():
 
@@ -517,9 +473,7 @@ class Denoms():
         self.ether = 10 ** 18
         self.turing = 2 ** 256 - 1
 
-
 denoms = Denoms()
-
 
 address = Binary.fixed_length(20, allow_empty=True)
 int20 = BigEndianInt(20)
@@ -527,7 +481,6 @@ int32 = BigEndianInt(32)
 int256 = BigEndianInt(256)
 hash32 = Binary.fixed_length(32)
 trie_root = Binary.fixed_length(32, allow_empty=True)
-
 
 class bcolors:
     HEADER = '\033[95m'
@@ -538,7 +491,6 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
-
 
 def DEBUG(msg, *args, **kwargs):
     from ethereum import slogging
