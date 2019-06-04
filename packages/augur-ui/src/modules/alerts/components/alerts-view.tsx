@@ -7,8 +7,8 @@ import Alert from "modules/alerts/components/alert";
 
 import { Close } from "modules/common/components/icons";
 
-import Styles from "modules/alerts/components/alerts-view.styles";
-import ToggleHeightStyles from "utils/toggle-height.styles";
+import Styles from "modules/alerts/components/alerts-view.styles.less";
+import ToggleHeightStyles from "utils/toggle-height.styles.less";
 
 interface AlertsViewProps {
   alerts: Array<any>;

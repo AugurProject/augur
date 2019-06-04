@@ -513,6 +513,8 @@ type ButtonActionType = (
 
 export type NodeStyleCallback = (err: Error | string | null, result?: any) => void;
 
+export type DataCallback = (result?: any) => void;
+
 export interface BaseAction extends AnyAction {
   type: string;
   data?: any;

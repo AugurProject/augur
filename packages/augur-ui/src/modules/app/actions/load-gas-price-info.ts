@@ -8,13 +8,13 @@ import {
   getGasPrice
 } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";
-import { NodeStyleCallback } from "modules/types";
+import { NodeStyleCallback, DataCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
-const MAINNET_ID = "1";
+const MAINNET_ID = 1;
 
 export function loadGasPriceInfo(callback: NodeStyleCallback = logError) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
@@ -23,7 +23,7 @@ export function loadGasPriceInfo(callback: NodeStyleCallback = logError) {
     const networkId = getNetworkId();
 
     if (networkId === MAINNET_ID) {
-      getGasPriceRanges(networkId, (result: any) => {
+      getGasPriceRanges((result: any) => {
         dispatch(
           updateGasPriceInfo({
             ...result,
@@ -35,12 +35,12 @@ export function loadGasPriceInfo(callback: NodeStyleCallback = logError) {
   };
 }
 
-function getGasPriceRanges(networkId: string, callback: NodeStyleCallback) {
+function getGasPriceRanges(callback: DataCallback) {
   const defaultGasPrice = setDefaultGasInfo();
   getGasPriceValues(defaultGasPrice, (result: any) => callback(result));
 }
 
-function getGasPriceValues(defaultGasPrice: any, callback: NodeStyleCallback) {
+function getGasPriceValues(defaultGasPrice: any, callback: DataCallback) {
   fetch(GAS_PRICE_API_ENDPOINT)
     .then(
       res => res.json()

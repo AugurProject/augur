@@ -14,6 +14,7 @@ export const getAugurNodeNetworkId = (callback: NodeStyleCallback = logError) =>
   const { connection } = getState();
   if (connection.augurNodeNetworkId != null)
     return callback(null, connection.augurNodeNetworkId);
+    // @ts-ignore
   augur.augurNode.getSyncData((err: any, contractAddresses: any) => {
     if (err) return callback(err);
     const augurNodeNetworkId = getNetworkId();
