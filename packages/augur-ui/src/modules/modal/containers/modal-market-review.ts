@@ -6,7 +6,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { AppState } from "store";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal
+  modal: state.modal,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch: any) => ({
   },
   closeModal: () => {
     dispatch(closeModal());
-  }
+  },
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -34,11 +34,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   description: [
     "Markets on Augur are created by the community, this means that errors can be made in the creation of a market that result in the market being resolved as invalid.",
     "Always make sure that the Market Question, Additional Details, Reporting Start Time, Resolution Source and Outcomes are not in direct conflict with each other. Always make sure the market has mutually exclusive outcomes, i.e. only one outcome can occur.",
-    "If the reporting start time (UTC) isn’t after the actual end of the event, or if the title/description and reporting start time don’t match up, there is a high probability that the market will resolve as invalid."
+    "If the reporting start time (UTC) isn’t after the actual end of the event, or if the title/description and reporting start time don’t match up, there is a high probability that the market will resolve as invalid.",
   ],
   checkbox: {
     markModalAsSeen: dP.markModalAsSeen,
-    unmarkModalAsSeen: dP.unmarkModalAsSeen
+    unmarkModalAsSeen: dP.unmarkModalAsSeen,
   },
   closeAction: () => {
     dP.closeModal();
@@ -51,15 +51,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
           sP.modal.cb();
         }
         dP.closeModal();
-      }
-    }
-  ]
+      },
+    },
+  ],
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Message)
+    mergeProps,
+  )(Message),
 );

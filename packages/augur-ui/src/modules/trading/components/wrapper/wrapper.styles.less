@@ -1,0 +1,99 @@
+@import (reference) "~assets/styles/shared";
+
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  > div:last-of-type {
+    align-items: flex-end;
+    display: flex;
+    flex-grow: 1;
+    margin-bottom: @size-8;
+    margin-top: @size-12;
+    padding: 0 @size-16;
+
+    > button {
+      .mono-14-bold;
+
+      border-width: 2px;
+      padding: 0;
+      text-transform: uppercase;
+      width: 100%;
+    }
+
+    &.Full {
+      flex-grow: unset;
+    }
+  }
+}
+
+.Buy,
+.Sell {
+  background-color: @color-tertiary-background;
+  border-bottom: 1px solid @color-tertiary-one;
+  color: @color-neutral;
+  display: flex;
+
+  > li {
+    color: @color-lightgray;
+    text-align: center;
+    width: 50%;
+
+    &.active {
+      background-color: @color-theme-primary;
+      color: @color-secondary-text;
+    }
+
+    &:hover {
+      color: @color-secondary-text;
+    }
+
+    > div {
+      padding: @size-20 0;
+      width: 100%;
+    }
+
+    > button {
+      .mono-12;
+
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      height: 56px;
+      padding: @size-18 0;
+      position: relative;
+      text-transform: uppercase;
+      width: 100%;
+
+      > span {
+        border-radius: 100px;
+        bottom: @size-14;
+        margin-top: @size-4;
+        position: absolute;
+        transform: matrix(1, 0, 0, -1, 0, 0);
+        width: 5rem;
+
+        &.notActive {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.Buy {
+  > li > button > span {
+    border-bottom: 1px solid @color-positive;
+  }
+}
+
+.Sell {
+  > li > button > span {
+    border-bottom: 1px solid @color-negative;
+  }
+}
+
+.Scalar {
+  margin-bottom: @size-8;
+}

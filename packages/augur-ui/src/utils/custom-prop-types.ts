@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js";
 
 // This is a factory function
-function createCustomPropType(isRequired: boolean) {
+function createCustomPropType(isRequired: boolean): Error | void {
   // The factory returns a custom prop type
-  return function customPropType(props, propName, componentName) {
+  return function customPropType(props, propName, componentName): Error | void {
     const prop = props[propName];
     if (prop == null) {
       // Prop is missing
@@ -26,7 +26,7 @@ function createCustomPropType(isRequired: boolean) {
           componentName +
           "`. Validation failed, not an instance of BigNumber"
       );
-    }
+    };
   };
 }
 

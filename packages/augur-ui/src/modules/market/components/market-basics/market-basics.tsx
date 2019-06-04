@@ -21,7 +21,7 @@ import TimeRemainingIndicatorWrapper from "modules/market/components/common/time
 import { constants } from "services/augurjs";
 import moment from "moment";
 import { compact } from "lodash";
-import { CategoryTagTrail } from "modules/common/components/category-tag-trail/category-tag-trail";
+import { CategoryTagTrail } from "modules/common-elements/labels";
 import { MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 

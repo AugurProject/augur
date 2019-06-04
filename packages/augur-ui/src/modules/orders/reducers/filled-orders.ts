@@ -2,11 +2,11 @@ import {
   UPDATE_USER_TRADING_HISTORY,
   UPDATE_USER_MARKET_TRADING_HISTORY
 } from "modules/markets/actions/market-trading-history-management";
-import { FilledOrders, Order, BaseAction } from "modules/types";
+import { FilledOrders, FilledOrder, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: FilledOrders = {};
 
-export default function(filledOrders: FilledOrders = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(filledOrders: FilledOrders = DEFAULT_STATE, { type, data }: BaseAction): FilledOrders {
   switch (type) {
     case UPDATE_USER_TRADING_HISTORY: {
       const { userFilledOrders, account } = data;
@@ -20,7 +20,7 @@ export default function(filledOrders: FilledOrders = DEFAULT_STATE, { type, data
 
       return {
         [account]: [
-          ...filledOrders[account].filter((t: Order) => t.marketId !== marketId),
+          ...filledOrders[account].filter((t: FilledOrder) => t.marketId !== marketId),
           ...userFilledOrders,
         ],
       };

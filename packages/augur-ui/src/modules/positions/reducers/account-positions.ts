@@ -6,7 +6,7 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE: AccountPosition = {};
 
-export default function(accountPositions = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(accountPositions = DEFAULT_STATE, { type, data }: BaseAction): AccountPosition {
   switch (type) {
     case UPDATE_ACCOUNT_POSITIONS_DATA: {
       const { positionData, marketId } = data;

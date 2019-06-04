@@ -2,7 +2,7 @@ import {
   UPDATE_TRANSACTIONS_DATA,
   DELETE_TRANSACTION,
   DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH,
-  CLEAR_TRANSACTION_DATA
+  CLEAR_TRANSACTION_DATA,
 } from "modules/transactions/actions/update-transactions-data";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
@@ -13,8 +13,8 @@ const DEFAULT_STATE: TransacitonData = {};
 
 export default function(
   transactionsData: TransacitonData = DEFAULT_STATE,
-  { type, data }: BaseAction
-) {
+  { type, data }: BaseAction,
+): TransacitonData {
   switch (type) {
     case UPDATE_TRANSACTIONS_DATA:
       return Object.keys(data.updatedTransactionsData).reduce(
@@ -22,11 +22,11 @@ export default function(
           p[transactionId] = {
             ...transactionsData[transactionId],
             ...data.updatedTransactionsData[transactionId],
-            id: transactionId
+            id: transactionId,
           };
           return p;
         },
-        { ...transactionsData }
+        { ...transactionsData },
       );
     case DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH:
       return Object.keys(transactionsData).reduce((p, transactionId) => {

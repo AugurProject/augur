@@ -9,12 +9,16 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EventLogDBRouter } from "../state//db/EventLogDBRouter";
 import { JsonRpcProvider } from "ethers/providers";
 import { PouchDBFactory } from "../state//db/AbstractDB";
+import { SubscriptionEventNames } from "../constants";
+import { Subscriptions } from "../subscriptions";
 import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
+import { augurEmitter } from "../events";
 
 const settings = require("@augurproject/sdk/src/state/settings.json");
 
 export class SEOConnector extends Connector {
   private api: API;
+  private events = new Subscriptions(augurEmitter);
 
   public async connect(params?: any): Promise<any> {
     Sync.start({ adapter: "memory" });
@@ -41,11 +45,14 @@ export class SEOConnector extends Connector {
     };
   }
 
-  public async subscribe(event: string, callback: Callback): Promise<any> {
-    return;
+  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
+    const subscription: string = this.events.subscribe(eventName, callback);
+    this.subscriptions[eventName] = { id: subscription, callback };
   }
 
-  public async unsubscribe(event: string): Promise<any> {
-    return;
+  public off(eventName: SubscriptionEventNames | string): void {
+    const subscription = this.subscriptions[eventName].id;
+    delete this.subscriptions[eventName];
+    return this.events.unsubscribe(subscription);
   }
 }

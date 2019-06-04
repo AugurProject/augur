@@ -6,8 +6,9 @@ import {
 } from "modules/alerts/actions/alerts";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
+import { Alert, BaseAction } from "modules/types";
 
-const DEFAULT_STATE = [];
+const DEFAULT_STATE: Array<Alert> = [];
 
 /**
  * @typedef {Object} AlertAction
@@ -36,7 +37,7 @@ const DEFAULT_STATE = [];
  * @returns {Alert[]}
  *
  */
-export default function(alerts = DEFAULT_STATE, { data, type }) {
+export default function(alerts = DEFAULT_STATE, { data, type }: BaseAction): Array<Alert> {
   switch (type) {
     case ADD_ALERT: {
       const isDuplicate =

@@ -4,7 +4,6 @@ import {
   encodeNumberAsJSNumber,
   unfix,
 } from "speedomatic";
-import { constants } from "services/constants";
 import { ZERO, TEN, ETHER } from "modules/common-elements/constants";
 import addCommas from "utils/add-commas-to-number";
 import { FormattedNumber, FormattedNumberOptions } from "modules/types";
@@ -54,6 +53,7 @@ adding the numbers 1.11 and 1.44, but displaying them as 1.1 and 1.4, it may loo
 if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them using the formatted values.
 
 */
+type NumStrBigNumber = number | BigNumber | string;
 
 export const ETHER_NUMBER_OF_DECIMALS = 4;
 export const SHARES_NUMBER_OF_DECIMALS = 4;
@@ -61,7 +61,7 @@ export const SHARES_NUMBER_OF_DECIMALS = 4;
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
 
-export function formatEther(num: number, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatEther(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -74,7 +74,7 @@ export function formatEther(num: number, opts: FormattedNumberOptions = optionsB
   });
 }
 
-export function formatEtherEstimate(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatEtherEstimate(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -87,7 +87,7 @@ export function formatEtherEstimate(num, opts: FormattedNumberOptions = optionsB
   });
 }
 
-export function formatPercent(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatPercent(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 0,
@@ -100,11 +100,11 @@ export function formatPercent(num, opts: FormattedNumberOptions = optionsBlank()
   });
 }
 
-export function formatShares(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatShares(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   const formattedShares = formatNumber(num, {
     decimals: SHARES_NUMBER_OF_DECIMALS,
     decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
-    denomination: ` Share${encodeNumberAsJSNumber(num, false) !== 1 ? "s" : ""}`,
+    denomination: ` Shares`,
     minimized: false,
     zeroStyled: false,
     blankZero: false,
@@ -120,7 +120,7 @@ export function formatShares(num, opts: FormattedNumberOptions = optionsBlank())
   return formattedShares;
 }
 
-export function formatDai(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatDai(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
@@ -133,7 +133,7 @@ export function formatDai(num, opts: FormattedNumberOptions = optionsBlank()): F
   });
 }
 
-export function formatRep(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatRep(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 4,
     decimalsRounded: 0,
@@ -146,24 +146,11 @@ export function formatRep(num, opts: FormattedNumberOptions = optionsBlank()): F
   });
 }
 
-export function formatRepTokens(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatRepTokens(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
     denomination: " REP Tokens",
-    positiveSign: false,
-    zeroStyled: false,
-    blankZero: false,
-    bigUnitPostfix: false,
-    ...opts,
-  });
-}
-
-export function formatConfirmations(num, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
-  return formatNumber(Math.max(num, 0), {
-    decimals: 0,
-    decimalsRounded: 0,
-    denomination: "confirmations",
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -233,8 +220,8 @@ export function formatGasCostToEther(num: string, opts: FormattedNumberOptions =
   return sumAndformatGasCostToEther([num], opts, gasPrice);
 }
 
-export function formatAttoRep(num: number, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
-  if (!num || num === 0 || isNaN(num)) return formatBlank();
+export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+  if (!num) return formatBlank();
   return formatNumber(
     createBigNumber(num.toString())
       .dividedBy(ETHER)
@@ -244,8 +231,8 @@ export function formatAttoRep(num: number, opts: FormattedNumberOptions = option
 }
 
 // At some point potentially refactor all this to be more generic (e.g formatAttoAmount)
-export function formatAttoEth(num: number, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
-  if (!num || num === 0 || isNaN(num)) return formatBlank();
+export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+  if (!num) return formatBlank();
   return formatNumber(
     createBigNumber(num.toString())
       .dividedBy(ETHER)
@@ -254,7 +241,7 @@ export function formatAttoEth(num: number, opts: FormattedNumberOptions = option
   );
 }
 
-export function formatGasCost(num: number, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatGasCost(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   return formatNumber(num, {
     decimals: 0,
     decimalsRounded: 0,
@@ -268,7 +255,7 @@ export function formatGasCost(num: number, opts: FormattedNumberOptions = option
 }
 
 export function formatNumber(
-  num,
+  num: NumStrBigNumber,
   opts: FormattedNumberOptions = optionsBlank(),
 ): FormattedNumber {
   const value = num != null ? createBigNumber(num, 10) : ZERO;
@@ -311,7 +298,7 @@ export function formatNumber(
     roundingMode = BigNumber.ROUND_HALF_EVEN;
   }
   let formatSigFig = false;
-  if (isNaN(parseFloat(num))) {
+  if (typeof num === "string" && isNaN(parseFloat(num))) {
     o.value = 0;
     o.formattedValue = 0;
     o.formatted = "0";
@@ -327,7 +314,7 @@ export function formatNumber(
         .negated()
         .toNumber(),
     );
-    const roundToZeroThreshold = constants.PRECISION.zero;
+    const roundToZeroThreshold = ZERO;
     o.value = value.toNumber();
     if (value.abs().lt(roundToZeroThreshold)) {
       // value is less than zero
@@ -347,7 +334,7 @@ export function formatNumber(
         .toFixed(decimals);
     }
 
-    const zeroFixed = constants.PRECISION.zero.toFixed(
+    const zeroFixed = ZERO.toFixed(
       USUAL_NUMBER_DECIMAL_PLACES,
     );
 
@@ -362,15 +349,15 @@ export function formatNumber(
         formatted = value.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES);
         if (
           formatted ===
-            constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES) ||
+            ZERO.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES) ||
           formatted ===
             "-" +
-              constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
+              ZERO.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
         ) {
           formatted = zeroFixed; // if there are no significant digits in the 8 decimal places, just use zero
         } else {
           formatted = value.toFixed(
-            1 - Math.floor(Math.log(value.abs()) / Math.log(10)),
+            1 - Math.floor(Math.log(value.abs().toNumber()) / Math.log(10)),
           ); // find first two significant digit
         }
       }
@@ -409,8 +396,8 @@ export function formatNumber(
   o.denomination = denomination;
   o.full = makeFull(o.formatted, o.denomination); // should this use this?
 
-  if (isNaN(parseFloat(num)) || o.formatted === "0") {
-    o.formatted = constants.PRECISION.zero.toFixed(decimalsRounded);
+  if (typeof num === "string" && isNaN(parseFloat(num)) || o.formatted === "0") {
+    o.formatted = ZERO.toFixed(decimalsRounded);
   }
   return o;
 }

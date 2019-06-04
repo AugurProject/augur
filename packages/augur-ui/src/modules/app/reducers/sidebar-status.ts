@@ -17,7 +17,7 @@ const DEFAULT_STATE = {
   isAlertsVisible: false,
 };
 
-export default function(sideNavStatus = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(sideNavStatus = DEFAULT_STATE, { type, data }: BaseAction): any {
   switch (type) {
     case UPDATE_CURRENT_BASE_PATH: {
       return { ...sideNavStatus, currentBasePath: data };

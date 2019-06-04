@@ -20,12 +20,11 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     steps:
       - checkout: self
-        fetchDepth: 5
       - bash: |
           set -euo pipefail
           echo "Build Source Branch: $(Build.SourceBranchName)"
           if [[ "$(Build.SourceBranchName)" == "master" ]]; then
-            GIT_COMMAND='git show --name-only --oneline $(Build.SourceVersion)'
+            GIT_COMMAND='git log -m -1 --name-only --pretty="format:" $(Build.SourceVersion)'
           else
             GIT_COMMAND='git diff --name-only origin/master..HEAD'
           fi
@@ -43,11 +42,28 @@ jobs:
                 echo "found a ui change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_UI;isOutput=true]true"
               fi
+              if [[ $f =~ .*augur-sdk.* ]]
+              then
+                echo "found a sdk change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_SDK;isOutput=true]true"
+              fi
             done
         displayName: check git for changes
         name: setVars
 
   - job: TestAndLint
+    dependsOn:
+    - PreFlightCheck
+    condition: |
+      and
+      (
+        succeeded(),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
+    variables:
+      JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
+      JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
+      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
@@ -56,7 +72,6 @@ jobs:
           node_version: 10.x
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: NodeTool@0
         inputs:
           versionSpec: $(node_version)
@@ -81,6 +96,16 @@ jobs:
           set -euo pipefail
           yarn test
         displayName: yarn test
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/sdk test
+        displayName: augur-sdk test
+        condition: |
+          and
+          (
+            succeeded(),
+            eq(variables['JOB_TRIGGER_SDK'], 'true')
+          )
 
 
   - job: Augur_build_docker_image
@@ -91,17 +116,12 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.x'
@@ -154,17 +174,12 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.x'
@@ -211,16 +226,13 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
-      maxParallel: 10
+      maxParallel: 5
       matrix:
         trading_and_libs:
           TESTS: tests/test*.py tests/libraries tests/trading
@@ -246,7 +258,6 @@ jobs:
           TESTS: security:mythril
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.x'
@@ -288,18 +299,13 @@ jobs:
       and
       (
         succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        )
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
     timeoutInMinutes: 120
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: Docker@1
         displayName: docker login
         inputs:

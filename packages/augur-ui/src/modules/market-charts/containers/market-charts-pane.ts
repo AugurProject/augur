@@ -8,7 +8,7 @@ import { AppState } from "store";
 
 const mapStateToProps = (state: AppState, ownProps: any) => {
   const {
-    currentTimestamp
+    currentTimestamp,
   } = state;
   const market = selectMarket(ownProps.marketId);
   const daysPassed =
@@ -24,11 +24,10 @@ const mapStateToProps = (state: AppState, ownProps: any) => {
   };
 };
 
-
 const MarketChartsPaneContainer = withRouter(
   connect(
-    mapStateToProps
-  )(MarketChartsPane)
+    mapStateToProps,
+  )(MarketChartsPane),
 );
 
 export default MarketChartsPaneContainer;

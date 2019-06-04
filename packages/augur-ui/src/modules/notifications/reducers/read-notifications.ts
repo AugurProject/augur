@@ -5,7 +5,7 @@ import { Notification, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: Array<Notification> = [];
 
-export default (notifications = DEFAULT_STATE, { type, data }: BaseAction) => {
+export default (notifications = DEFAULT_STATE, { type, data }: BaseAction): Array<Notification> => {
   switch (type) {
     case UPDATE_READ_NOTIFICATIONS:
       return data.notifications;

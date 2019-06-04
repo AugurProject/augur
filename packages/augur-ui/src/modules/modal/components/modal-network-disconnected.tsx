@@ -4,24 +4,30 @@ import PropTypes from "prop-types";
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalLoading from "modules/modal/components/common/modal-loading";
 
-import commonStyles from "modules/modal/components/common/common.styles";
+import commonStyles from "modules/modal/components/common/common.styles.less";
 
 import getValue from "utils/get-value";
+import { EnvObject } from "modules/types";
 
-export default class ModalNetworkDisconnected extends Component {
-  static propTypes = {
-    modal: PropTypes.shape({
-      env: PropTypes.object.isRequired,
-      connection: PropTypes.object.isRequired
-    }).isRequired,
-    updateIsReconnectionPaused: PropTypes.func.isRequired
+interface ModalNetworkDisconnectedProps {
+  modal: {
+    env: EnvObject;
+    connection: object;
   };
+  updateIsReconnectionPaused: Function;
+}
 
+interface ModalNetworkDisconnectedState {
+  [x: number]: any;
+  showEnvForm: boolean;
+}
+
+export default class ModalNetworkDisconnected extends Component<ModalNetworkDisconnectedProps, ModalNetworkDisconnectedState> {
   constructor(props) {
     super(props);
 
     this.state = {
-      showEnvForm: false
+      showEnvForm: false,
     };
 
     this.showForm = this.showForm.bind(this);
