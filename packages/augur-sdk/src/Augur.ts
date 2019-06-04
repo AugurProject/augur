@@ -8,6 +8,8 @@ import { Provider } from "./ethereum/Provider";
 import { SubscriptionEventNames, isSubscriptionEventName } from "./constants";
 import { Trade } from "./api/Trade";
 import { TransactionStatusCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
+import {Markets} from "./state/api/Markets";
+import {GetterParamType} from "./state/api";
 
 export interface CustomEvent {
   name: string;
@@ -115,6 +117,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   public getMarket(address: string): ContractInterfaces.Market {
     return new ContractInterfaces.Market(this.dependencies, address);
+  }
+
+  public getMarkets = (p: GetterParamType<typeof Markets.getMarkets>) => {
+    return this.connector.submitRequest("getMarkets", p);
   }
 
   public getOrders(): ContractInterfaces.Orders {
