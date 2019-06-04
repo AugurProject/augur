@@ -40,29 +40,21 @@ const MarketScalarOutcomeDisplay = ({
     left: outcomeVerticalLinePosition() + "%"
   };
 
-  const minValue = `${min}`;
-
-  const maxValue = `${max}`;
-
   const lastPriceDenomination = getValue(
     outcomes[0],
     "lastPricePercent.denomination"
   );
 
   return (
-    <div className={Styles.MarketScalarOutcomes}>
-      <div className={Styles.MarketScalarOutcomes__graph}>
-        <div className={Styles.MarketScalarOutcomes__edge} />
-        <div className={Styles.MarketScalarOutcomes__line}>
+    <div className={Styles.ScalarOutcomes}>
+      <div>
+        <div />
+        <div>
           <DashlineLong />
-          <span
-            className={Styles.MarketScalarOutcomes__current}
-            style={currentValuePosition}
-          >
+          <span style={currentValuePosition}>
             <div>
               <span
                 className={Styles["MarketScalarOutcomes__current-value"]}
-                data-testid="midpoint"
               >
                 {getValue(outcomes[0], "lastPricePercent.formatted")}
               </span>
@@ -78,7 +70,7 @@ const MarketScalarOutcomeDisplay = ({
             </div>
           </span>
         </div>
-        <div className={Styles.MarketScalarOutcomes__edge} />
+        <div />
       </div>
       <div
         className={classNames(
@@ -89,13 +81,13 @@ const MarketScalarOutcomeDisplay = ({
         <div style={{ flexGrow: "1" }}>
           Min:{" "}
           <span className={Styles.MarketScalarOutcomes__minMaxValue}>
-            {minValue}
+            {`${min}`}
           </span>
         </div>
         <div>
           Max:{" "}
           <span className={Styles.MarketScalarOutcomes__minMaxValue}>
-            {maxValue}
+            {`${max}`}
           </span>
         </div>
       </div>
