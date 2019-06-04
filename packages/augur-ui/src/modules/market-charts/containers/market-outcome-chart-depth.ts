@@ -24,12 +24,12 @@ const mapStateToProps = (state, ownProps) => {
   const maxPrice = market.maxPrice || createBigNumber(0);
   const outcome =
     (market.outcomes || []).find(
-      outcome => outcome.id === ownProps.selectedOutcome
+      (outcome) => outcome.id === ownProps.selectedOutcome,
     ) || {};
   const cumulativeOrderBook = orderAndAssignCumulativeShares(
     outcome.orderBook,
     userOrders,
-    state.loginAccount.address
+    state.loginAccount.address,
   );
   const marketDepth = orderForMarketDepth(cumulativeOrderBook);
   const orderBookKeys = getOrderBookKeys(marketDepth, minPrice, maxPrice);
@@ -49,7 +49,7 @@ const mapStateToProps = (state, ownProps) => {
     marketDepth,
     orderBookKeys,
     marketMin: minPrice,
-    marketMax: maxPrice
+    marketMax: maxPrice,
   };
 };
 

@@ -25,7 +25,7 @@ import {
   MobileNavHamburgerIcon,
   MobileNavCloseIcon,
   MobileNavBackIcon,
-  NavLogoutIcon,
+  LogoutIcon,
   NavAccountIcon,
   NavCreateIcon,
   NavMarketsIcon,
@@ -199,7 +199,7 @@ export default class AppView extends Component<AppProps, AppState> {
     {
       title: "Logout",
       iconName: "nav-logout-icon",
-      icon: NavLogoutIcon,
+      icon: LogoutIcon,
       mobileClick: () => this.props.logout(),
       route: ACCOUNT_DEPOSIT,
       requireLogin: true,

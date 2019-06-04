@@ -6,11 +6,12 @@ import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
+import noop from "utils/noop";
 
 export const loadReportingHistory = (
   options = {},
   callback: NodeStyleCallback = logError,
-  marketIdAggregator: Function
+  marketIdAggregator: Function = noop,
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadReportingHistoryInternal(

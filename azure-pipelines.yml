@@ -20,7 +20,6 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     steps:
       - checkout: self
-        fetchDepth: 5
       - bash: |
           set -euo pipefail
           echo "Build Source Branch: $(Build.SourceBranchName)"
@@ -73,7 +72,6 @@ jobs:
           node_version: 10.x
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: NodeTool@0
         inputs:
           versionSpec: $(node_version)
@@ -124,7 +122,6 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.x'
@@ -183,7 +180,6 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.x'
@@ -236,7 +232,7 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
-      maxParallel: 10
+      maxParallel: 5
       matrix:
         trading_and_libs:
           TESTS: tests/test*.py tests/libraries tests/trading
@@ -262,7 +258,6 @@ jobs:
           TESTS: security:mythril
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.x'
@@ -311,7 +306,6 @@ jobs:
     timeoutInMinutes: 120
     steps:
       - checkout: self
-        fetchDepth: 5
       - task: Docker@1
         displayName: docker login
         inputs:

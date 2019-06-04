@@ -12,7 +12,7 @@ import {
   formatAttoEth
 } from "utils/format-number";
 import MarketPreview from "modules/market/containers/market-preview";
-import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
+import NullStateMessage from "modules/common-elements/null-state-message";
 import ReportingReportForm from "modules/reporting/components/reporting-report-form/reporting-report-form";
 import ReportingReportConfirm from "modules/reporting/components/reporting-report-confirm/reporting-report-confirm";
 import { TYPE_VIEW, ZERO } from "modules/common-elements/constants";

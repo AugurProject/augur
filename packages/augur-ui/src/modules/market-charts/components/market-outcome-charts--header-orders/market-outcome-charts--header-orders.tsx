@@ -1,14 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import Styles from "modules/market-charts/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders.styles";
-import StylesHeader from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders.styles.less";
+import StylesHeader from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles.less";
 
-const MarketOutcomeChartsHeaderOrders = ({ isMobile, headerHeight }) => (
+interface MarketOutcomeChartsHeaderOrdersProps {
+  isMobile: boolean;
+  headerHeight: number;
+}
+const MarketOutcomeChartsHeaderOrders = ({ isMobile, headerHeight }: MarketOutcomeChartsHeaderOrdersProps) => (
   <section
     className={Styles.MarketOutcomeChartsHeader__orders}
-    style={{ minHeight: isMobile && headerHeight }}
+    style={ isMobile ? { minHeight: headerHeight } : {}}
   >
     {isMobile || (
       <div className={StylesHeader.MarketOutcomeChartsHeader__Header}>
@@ -18,7 +21,7 @@ const MarketOutcomeChartsHeaderOrders = ({ isMobile, headerHeight }) => (
     <div
       className={classNames(
         StylesHeader.MarketOutcomeChartsHeader__stats,
-        Styles["MarketOutcomeChartsHeader__stats--orders"]
+        Styles["MarketOutcomeChartsHeader__stats--orders"],
       )}
     >
       <div className={StylesHeader["MarketOutcomeChartsHeader__stat--right"]}>
@@ -41,8 +44,3 @@ const MarketOutcomeChartsHeaderOrders = ({ isMobile, headerHeight }) => (
 );
 
 export default MarketOutcomeChartsHeaderOrders;
-
-MarketOutcomeChartsHeaderOrders.propTypes = {
-  isMobile: PropTypes.bool.isRequired,
-  headerHeight: PropTypes.number.isRequired
-};

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
+import NullStateMessage from "modules/common-elements/null-state-message";
 import Alert from "modules/alerts/components/alert";
 
 import { Close } from "modules/common/components/icons";

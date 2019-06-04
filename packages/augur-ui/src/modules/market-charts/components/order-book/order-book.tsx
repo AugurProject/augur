@@ -6,36 +6,36 @@ import MarketOutcomeHeaderOrders from "modules/market-charts/components/market-o
 import { HoverValueLabel } from "modules/common-elements/labels";
 import { ASKS, BIDS, BUY, SELL } from "modules/common-elements/constants";
 
-import Styles from "modules/market-charts/components/order-book/order-book.styles";
+import Styles from "modules/market-charts/components/order-book/order-book.styles.less";
 import { isEmpty, isEqual } from "lodash";
 
 interface OrderBookSideProps {
-  orderBook: Object;
+  orderBook: object;
   updateSelectedOrderProperties: Function;
-  hasOrders: Boolean;
-  orderBookKeys: Object;
-  fixedPrecision: Number;
-  pricePrecision: Number;
+  hasOrders: boolean;
+  orderBookKeys: object;
+  fixedPrecision: number;
+  pricePrecision: number;
   setHovers: Function;
-  type: String;
-  scrollToTop: Boolean;
+  type: string;
+  scrollToTop: boolean;
 }
 
 interface OrderBookProps {
-  orderBook: Object;
+  orderBook: object;
   updateSelectedOrderProperties: Function;
-  hasOrders: Boolean;
-  orderBookKeys: Object;
-  fixedPrecision: Number;
-  pricePrecision: Number;
-  toggle: Boolean;
-  extend: Boolean;
-  hide: Boolean;
+  hasOrders: boolean;
+  orderBookKeys: object;
+  fixedPrecision: number;
+  pricePrecision: number;
+  toggle: boolean;
+  extend: boolean;
+  hide: boolean;
 }
 
 interface OrderBookState {
-  hoveredOrderIndex: Number;
-  hoveredSide: Number;
+  hoveredOrderIndex: number;
+  hoveredSide: number;
 }
 
 class OrderBookSide extends Component<OrderBookSideProps, {}> {
@@ -73,8 +73,8 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
 
     return (
       <div className={Styles.Side}>
-        <div 
-          className={classNames({[Styles.Asks]: type === ASKS})} 
+        <div
+          className={classNames({[Styles.Asks]: type === ASKS})}
           ref={side => {
             this.side = side;
           }}
@@ -88,17 +88,17 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                 [Styles.AskHead]: i === 0 && type === BIDS,
                 [Styles.Hover]: i === hoveredOrderIndex && hoveredSide === type,
                 [Styles.EncompassedHover]:
-                  (hoveredOrderIndex !== null && type === ASKS && hoveredSide === ASKS && i > hoveredOrderIndex) || 
-                  (hoveredOrderIndex !== null && type === BIDS && hoveredSide === BIDS && i < hoveredOrderIndex), 
+                  (hoveredOrderIndex !== null && type === ASKS && hoveredSide === ASKS && i > hoveredOrderIndex) ||
+                  (hoveredOrderIndex !== null && type === BIDS && hoveredSide === BIDS && i < hoveredOrderIndex),
               })}
-              onMouseEnter={() => { setHovers(i, type) } } 
+              onMouseEnter={() => { setHovers(i, type) } }
               onMouseLeave={() => { setHovers(null, null) } }
               onClick={() =>
                 updateSelectedOrderProperties({
                   orderPrice: order.price.value.toString(),
                   orderQuantity: order.cumulativeShares.toString(),
                   selectedNav: type === ASKS ? BUY : SELL,
-                  selfTrade: order.mySize !== null
+                  selfTrade: order.mySize !== null,
                 })
               }
             >
@@ -127,6 +127,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
   }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export default class OrderBook extends Component<OrderBookProps, OrderBookState> {
 
   static defaultProps = {
@@ -134,15 +135,15 @@ export default class OrderBook extends Component<OrderBookProps, OrderBookState>
     extend: false,
     hide: false,
     fixedPrecision: 4,
-    pricePrecision: 4
+    pricePrecision: 4,
   };
 
   state: OrderBookState = {
     hoveredOrderIndex: null,
-    hoveredSide: null
+    hoveredSide: null,
   };
 
-  setHovers = (hoveredOrderIndex: Number, hoveredSide: Number) => {
+  setHovers = (hoveredOrderIndex: number, hoveredSide: number) => {
     this.setState({
       hoveredOrderIndex: hoveredOrderIndex,
       hoveredSide: hoveredSide
@@ -156,7 +157,7 @@ export default class OrderBook extends Component<OrderBookProps, OrderBookState>
       orderBookKeys,
       toggle,
       extend,
-      hide
+      hide,
     } = this.props;
     const s = this.state;
 
@@ -169,10 +170,10 @@ export default class OrderBook extends Component<OrderBookProps, OrderBookState>
           extended={extend}
           hide={hide}
         />
-        <OrderBookSide 
-          {...this.props} 
-          setHovers={this.setHovers} 
-          hoveredSide={s.hoveredSide} 
+        <OrderBookSide
+          {...this.props}
+          setHovers={this.setHovers}
+          hoveredSide={s.hoveredSide}
           hoveredOrderIndex={s.hoveredOrderIndex}
           type={ASKS}
           scrollToTop
@@ -196,10 +197,10 @@ export default class OrderBook extends Component<OrderBookProps, OrderBookState>
             )}
           </div>
         )}
-        <OrderBookSide 
-          {...this.props} 
-          setHovers={this.setHovers} 
-          hoveredSide={s.hoveredSide} 
+        <OrderBookSide
+          {...this.props}
+          setHovers={this.setHovers}
+          hoveredSide={s.hoveredSide}
           hoveredOrderIndex={s.hoveredOrderIndex}
           type={BIDS}
         />

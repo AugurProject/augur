@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import {
   ChevronDown,
-  ChevronUp,
-  BackArrow
+  ChevronUp
 } from "modules/common/components/icons";
-import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";
+import { BackArrow } from "modules/common-elements/icons";
+import MarkdownRenderer from "modules/common-elements/markdown-renderer";
 import MarketHeaderBar from "modules/market/containers/market-header-bar";
 import { BigNumber } from "bignumber.js";
 import Styles from "modules/market/components/market-header/market-header.styles";
@@ -277,7 +277,7 @@ export default class MarketHeader extends Component {
               <MarketHeaderReporting marketId={market.id} />
               <div className={Styles.Core}>
                 {market.id && <CoreProperties market={market} />}
-                <div className={Styles.TimeStuff}>
+                <div className={Styles.Time}>
                   <MarketTimeline
                     startTime={market.creationTime || 0}
                     currentTime={currentTime || 0}

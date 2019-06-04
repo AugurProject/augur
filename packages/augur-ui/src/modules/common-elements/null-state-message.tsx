@@ -3,12 +3,16 @@ import classNames from "classnames";
 
 import isPopulated from "utils/is-populated";
 
-import Styles from "modules/common/components/null-state-message/null-state-message.styles";
-
-const NullStateMessage = p => (
+import Styles from "modules/common-elements/null-state-message.styles";
+interface NullStateProps {
+  message?: string;
+  addNullPadding: Boolean;
+  className?: string;
+}
+const NullStateMessage = (p: NullStateProps) => (
   <article
     className={classNames(p.className, Styles.NullState, {
-      [`${Styles.NullState__padding}`]: p.addNullPadding
+      [`${Styles.Padding}`]: p.addNullPadding
     })}
   >
     {!isPopulated(p.message) ? (

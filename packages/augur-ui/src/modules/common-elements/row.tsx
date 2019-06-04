@@ -101,7 +101,7 @@ const Row = (props: RowProps) => {
     </Media>
   );
 
-  if (noToggle) {
+  if (noToggle && !extendedViewNotOnMobile) {
     return (
       <div onClick={rowOnClick} className={classNames(Styles.SingleRow, Styles.BottomBorder, {[Styles.Row4Parent]: outcome})}>
         {rowContent}
@@ -130,43 +130,50 @@ const Row = (props: RowProps) => {
             [Styles.ParentSingleRow]: isSingle
           })}
         >
-          <ToggleRow
-            className={classNames({
-              [Styles.SingleRow]: isSingle || position,
-              [Styles.GroupRow]: !isSingle && !position,
-              [Styles.BottomBorder]: extendedView && !position,
-              [Styles.SingleRow3]: position
-            })}
-            innerClassName={classNames({
-              [Styles.InnerGroupRow]: !isSingle || position,
-              [Styles.InnerGroupRow_a]:
-                extendedView || (position && isFirst)
-            })}
-            arrowClassName={Styles.Arrow}
-            rowContent={rowContent}
-            toggleContent={
-              <>
-                {openOrder && (
-                  <OpenOrderExpandedContent
-                    openOrder={rowProperties}
-                    isSingle={isSingle}
-                  />
-                )}
-                {filledOrder && (
-                  <FilledOrdersTable
-                    filledOrder={rowProperties}
-                    showMarketInfo={isSingle}
-                  />
-                )}
-                {position && (
-                  <PositionExpandedContent
-                    showExpandedToggleOnMobile={showExpandedToggleOnMobile}
-                    position={rowProperties}
-                  />
-                )}
-              </>
-            }
-          />
+          {(noToggle && extendedViewNotOnMobile && !matches) &&
+            <div className={classNames(Styles.SingleRow, Styles.BottomBorder)}>
+              {rowContent}
+            </div>
+          } 
+          {!(noToggle && extendedViewNotOnMobile && !matches) &&
+            <ToggleRow
+              className={classNames({
+                [Styles.SingleRow]: isSingle || position,
+                [Styles.GroupRow]: !isSingle && !position,
+                [Styles.BottomBorder]: extendedView && !position,
+                [Styles.SingleRow3]: position
+              })}
+              innerClassName={classNames({
+                [Styles.InnerGroupRow]: !isSingle || position,
+                [Styles.InnerGroupRow_a]:
+                  extendedView || (position && isFirst)
+              })}
+              arrowClassName={Styles.Arrow}
+              rowContent={rowContent}
+              toggleContent={
+                <>
+                  {openOrder && (
+                    <OpenOrderExpandedContent
+                      openOrder={rowProperties}
+                      isSingle={isSingle}
+                    />
+                  )}
+                  {filledOrder && (
+                    <FilledOrdersTable
+                      filledOrder={rowProperties}
+                      showMarketInfo={isSingle}
+                    />
+                  )}
+                  {position && (
+                    <PositionExpandedContent
+                      showExpandedToggleOnMobile={showExpandedToggleOnMobile}
+                      position={rowProperties}
+                    />
+                  )}
+                </>
+              }
+            />
+          }
         </div>
       )}
     </Media>
