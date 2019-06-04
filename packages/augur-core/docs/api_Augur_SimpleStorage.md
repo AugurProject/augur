@@ -1,0 +1,6 @@
+---
+id: Augur_SimpleStorage
+title: SimpleStorage
+---
+
+<div class="contract-doc"><div class="contract"><h2 class="contract-header"><span class="contract-kind">contract</span> SimpleStorage</h2><div class="source">Source: <a href="http://github.com/AugurProject/augur-core//blob/v2.0.0-0/source/contracts/blah/Augur.sol" target="_blank">source/contracts/blah/Augur.sol</a></div></div><div class="index"><h2>Index</h2><ul><li><a href="Augur_SimpleStorage.html#get">get</a></li><li><a href="Augur_SimpleStorage.html#set">set</a></li></ul></div><div class="reference"><h2>Reference</h2><div class="functions"><h3>Functions</h3><ul><li><div class="item function"><span id="get" class="anchor-marker"></span><h4 class="name">get</h4><div class="body"><code class="signature">function <strong>get</strong><span>() </span><span>public </span><span>view </span><span>returns  (uint) </span></code><hr/><dl><dt><span class="label-return">Returns:</span></dt><dd>uint</dd></dl></div></div></li><li><div class="item function"><span id="set" class="anchor-marker"></span><h4 class="name">set</h4><div class="body"><code class="signature">function <strong>set</strong><span>(uint x) </span><span>public </span></code><hr/><dl><dt><span class="label-parameters">Parameters:</span></dt><dd><div><code>x</code> - uint</div></dd></dl></div></div></li></ul></div></div></div>
