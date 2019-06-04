@@ -12,7 +12,7 @@ import { AppState } from "store";
 
 export const constructRelayTransaction = (tx: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
+  getState: () => AppState,
 ) => {
   const { alerts } = getState();
   const { hash, status } = tx;
@@ -29,23 +29,26 @@ export const constructRelayTransaction = (tx: any) => (
         blockNumber,
         params: unpackedParams,
         status,
+        // @ts-ignore
         title: unpackedParams.type,
         description: "",
-        linkPath: makePath(TRANSACTIONS),
-        to: tx.data.to
-      })
+        linkPath: makePath(TRANSACTIONS, false),
+        to: tx.data.to,
+      }),
     );
   }
   return {
     [hash]: constructBasicTransaction({
+      // @ts-ignore
       eventName: unpackedParams.type,
       hash,
       blockNumber,
       timestamp,
       message: "",
+      // @ts-ignore
       description: unpackedParams._description || "",
       gasFees: tx.response.gasFees,
-      status
-    })
+      status,
+    }),
   };
 };
