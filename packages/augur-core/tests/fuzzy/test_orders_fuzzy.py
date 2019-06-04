@@ -5,8 +5,8 @@ from utils import fix, longTo32Bytes, nullAddress
 from constants import BID, ASK
 
 @mark.parametrize('orderType,numOrders,withBoundingOrders,deadOrderProbability', [
-    #(BID,  10, False,  0.0),
-    #(ASK,  10, False,  0.0),
+    (BID,  10, False,  0.0),
+    (ASK,  10, False,  0.0),
     (BID,  20, False,  0.0),
     (ASK,  20, False,  0.0),
     (BID,  40, False,  0.0),
