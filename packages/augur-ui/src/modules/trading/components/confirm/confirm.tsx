@@ -18,18 +18,18 @@ import {
 } from "modules/common-elements/constants";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
+import Styles from "modules/trading/components/confirm/confirm.styles";
 import {
   XIcon,
   ExclamationCircle,
   InfoIcon
 } from "modules/common-elements/icons";
-import Styles from "modules/trading/components/trading--confirm/trading--confirm.styles";
 import { formatGasCostToEther, formatShares } from "utils/format-number";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { isEqual } from "lodash";
 import { LinearPropertyLabel } from "modules/common-elements/labels";
 
-class MarketTradingConfirm extends Component {
+class Confirm extends Component {
   static propTypes = {
     trade: PropTypes.shape({
       numShares: PropTypes.string,
@@ -317,4 +317,4 @@ class MarketTradingConfirm extends Component {
   }
 }
 
-export default MarketTradingConfirm;
+export default Confirm;

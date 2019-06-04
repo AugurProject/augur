@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-import TradingWrapper from "modules/trading/components/trading--wrapper/trading--wrapper";
+import Wrapper from "modules/trading/components/wrapper/wrapper";
 import { isEqual } from "lodash";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { BigNumber } from "utils/create-big-number";
@@ -114,7 +114,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
 
     return (
       <section className={Styles.TradingForm}>
-        <TradingWrapper
+        <Wrapper
           market={market}
           isLogged={isLogged}
           selectedOutcome={s.selectedOutcome}

@@ -12,14 +12,14 @@ import {
 } from "modules/common-elements/constants";
 import { isEqual } from "lodash";
 import FormStyles from "modules/common/less/form";
-import Styles from "modules/trading/components/trading--form/trading--form.styles";
+import Styles from "modules/trading/components/form/form.styles";
 import { ExclamationCircle } from "modules/common-elements/icons";
 import { SquareDropdown } from "modules/common-elements/selection";
 import { Checkbox } from "modules/common-elements/form";
 import getPrecision from "utils/get-number-precision";
 import convertExponentialToDecimal from "utils/convert-exponential";
 
-class TradingForm extends Component {
+class Form extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
     marketType: PropTypes.string.isRequired,
@@ -508,9 +508,9 @@ class TradingForm extends Component {
       marketType === SCALAR && market.scalarDenomination;
 
     return (
-      <div className={Styles.TradingForm__form__container}>
+      <div className={Styles.Form}>
         {market.marketType === CATEGORICAL &&
-          <div className={classNames(Styles.TradingForm__outcome__container, Styles.HideOnMobile)}>
+          <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <SquareDropdown
               defaultValue={defaultOutcome}
               onChange={this.changeOutcomeDropdown}
@@ -523,18 +523,18 @@ class TradingForm extends Component {
           </div>
         }
         {market.marketType === YES_NO &&
-          <div className={classNames(Styles.TradingForm__outcome__container, Styles.HideOnMobile)}>
-            <div className={Styles.TradingForm__outcome__container__yes}>
+          <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
+            <div className={Styles.Yes}>
               <span>Outcome:</span> Yes
             </div>
           </div>
         }
-        <ul className={Styles["TradingForm__form-body"]}>
-          <li className={Styles["TradingForm__limit-quantity"]}>
+        <ul>
+          <li>
             <label htmlFor="tr__input--quantity">Quantity</label>
             <div
               className={classNames(Styles.TradingForm__input__container, {
-                [`${Styles.error}`]: s.errors[this.INPUT_TYPES.QUANTITY].length
+                [Styles.error]: s.errors[this.INPUT_TYPES.QUANTITY].length
               })}
             >
               <input
@@ -569,13 +569,13 @@ class TradingForm extends Component {
               </span>
             </div>
           </li>
-          <li className={Styles["TradingForm__limit-price"]}>
+          <li>
             <label htmlFor="tr__input--limit-price">
               {marketType === SCALAR ? "Outcome" : "Limit Price"}
             </label>
             <div
               className={classNames(Styles.TradingForm__input__container, {
-                [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length
+                [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length
               })}
             >
               <input
@@ -698,4 +698,4 @@ class TradingForm extends Component {
   }
 }
 
-export default TradingForm;
+export default Form;
