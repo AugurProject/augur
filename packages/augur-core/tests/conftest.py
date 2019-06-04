@@ -449,10 +449,10 @@ class ContractsFixture:
         legacyRepToken.approve(reputationToken.address, totalSupply)
         reputationToken.migrateFromLegacyReputationToken()
 
-    def getLogValue(self, eventName, argName, last=False):
+    def getLogValue(self, eventName, argName):
         augur = self.contracts['Augur']
         logs = augur.getLogs(eventName)
-        log = logs[-1] if last else logs[0]
+        log = logs[0]
         return log.args.__dict__[argName]
 
     def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
