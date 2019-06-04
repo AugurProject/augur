@@ -1,4 +1,4 @@
-import { API } from "@augurproject/sdk/build/state/api/API";
+import { API } from "@augurproject/sdk/build/state/getter/API";
 import { MarketInfo, MarketInfoReportingState, SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/api/Markets";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
@@ -411,8 +411,8 @@ test("State API :: Markets :: getMarketPriceHistory", async () => {
   });
   expect(yesNoMarketPriceHistory).toMatchObject(
     {
-      "0": [{"amount": "8000000000000", "price": "22"}, {"amount": "4000000000000", "price": "22"}],
-      "1": [{"amount": "7000000000000", "price": "22"}, {"amount": "2000000000000", "price": "22"}]
+      "0": [{ "amount": "8000000000000", "price": "22" }, { "amount": "4000000000000", "price": "22" }],
+      "1": [{ "amount": "7000000000000", "price": "22" }, { "amount": "2000000000000", "price": "22" }]
     }
   );
   for (let outcome = 0; outcome < yesNoMarketPriceHistory.length; outcome++) {
@@ -429,8 +429,8 @@ test("State API :: Markets :: getMarketPriceHistory", async () => {
   });
   expect(categoricalMarketPriceHistory).toMatchObject(
     {
-      "0": [{"amount": "8000000000000", "price": "22"}, {"amount": "4000000000000", "price": "22"}],
-      "1": [{"amount": "6000000000000", "price": "22"}, {"amount": "4000000000000", "price": "22"}]
+      "0": [{ "amount": "8000000000000", "price": "22" }, { "amount": "4000000000000", "price": "22" }],
+      "1": [{ "amount": "6000000000000", "price": "22" }, { "amount": "4000000000000", "price": "22" }]
     }
   );
   for (let outcome = 0; outcome < categoricalMarketPriceHistory.length; outcome++) {
@@ -525,64 +525,81 @@ test("State API :: Markets :: getMarketPriceCandlesticks", async () => {
     marketId: yesNoMarket.address
   });
   expect(yesNoMarketPriceCandlesticks).toMatchObject(
-    { '0':
-      [ { tokenVolume: '5000000000000',
+    {
+      '0':
+        [{
+          tokenVolume: '5000000000000',
           start: '40',
           end: '40',
           min: '40',
           max: '40',
           volume: '200000000000000',
-          shareVolume: '5000000000000' },
-        { tokenVolume: '1000000000000',
+          shareVolume: '5000000000000'
+        },
+        {
+          tokenVolume: '1000000000000',
           start: '40',
           end: '40',
           min: '40',
           max: '40',
           volume: '40000000000000',
-          shareVolume: '1000000000000' },
-        { tokenVolume: '3000000000000',
+          shareVolume: '1000000000000'
+        },
+        {
+          tokenVolume: '3000000000000',
           start: '40',
           end: '40',
           min: '30',
           max: '40',
           volume: '90000000000000',
-          shareVolume: '3000000000000' },
-        { tokenVolume: '3000000000000',
+          shareVolume: '3000000000000'
+        },
+        {
+          tokenVolume: '3000000000000',
           start: '30',
           end: '30',
           min: '20',
           max: '30',
           volume: '60000000000000',
-          shareVolume: '3000000000000' } ],
-    '1':
-      [ { tokenVolume: '3000000000000',
+          shareVolume: '3000000000000'
+        }],
+      '1':
+        [{
+          tokenVolume: '3000000000000',
           start: '40',
           end: '40',
           min: '40',
           max: '40',
           volume: '120000000000000',
-          shareVolume: '3000000000000' },
-        { tokenVolume: '0',
+          shareVolume: '3000000000000'
+        },
+        {
+          tokenVolume: '0',
           start: '40',
           end: '40',
           min: '40',
           max: '40',
           volume: '0',
-          shareVolume: '0' },
-        { tokenVolume: '2000000000000',
+          shareVolume: '0'
+        },
+        {
+          tokenVolume: '2000000000000',
           start: '30',
           end: '30',
           min: '30',
           max: '30',
           volume: '60000000000000',
-          shareVolume: '2000000000000' },
-        { tokenVolume: '7000000000000',
+          shareVolume: '2000000000000'
+        },
+        {
+          tokenVolume: '7000000000000',
           start: '20',
           end: '20',
           min: '20',
           max: '20',
           volume: '140000000000000',
-          shareVolume: '7000000000000' } ]
+          shareVolume: '7000000000000'
+        }]
     }
   );
   for (let outcome in yesNoMarketPriceCandlesticks) {
@@ -599,28 +616,35 @@ test("State API :: Markets :: getMarketPriceCandlesticks", async () => {
     period: 30,
   });
   expect(yesNoMarketPriceCandlesticks).toMatchObject(
-    { '1':
-      [ { tokenVolume: '0',
+    {
+      '1':
+        [{
+          tokenVolume: '0',
           start: '40',
           end: '40',
           min: '40',
           max: '40',
           volume: '0',
-          shareVolume: '0' },
-        { tokenVolume: '2000000000000',
+          shareVolume: '0'
+        },
+        {
+          tokenVolume: '2000000000000',
           start: '30',
           end: '30',
           min: '30',
           max: '30',
           volume: '60000000000000',
-          shareVolume: '2000000000000' },
-        { tokenVolume: '7000000000000',
+          shareVolume: '2000000000000'
+        },
+        {
+          tokenVolume: '7000000000000',
           start: '20',
           end: '20',
           min: '20',
           max: '20',
           volume: '140000000000000',
-          shareVolume: '7000000000000' } ]
+          shareVolume: '7000000000000'
+        }]
     }
   );
   for (let outcome in yesNoMarketPriceCandlesticks) {
@@ -700,7 +724,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[1].reportingState).toBe(MarketInfoReportingState.DESIGNATED_REPORTING);
   expect(markets[2].reportingState).toBe(MarketInfoReportingState.DESIGNATED_REPORTING);
 
-    // Skip to open reporting
+  // Skip to open reporting
   newTime = newTime.plus(SECONDS_IN_A_DAY * 7);
   await john.setTimestamp(newTime);
 

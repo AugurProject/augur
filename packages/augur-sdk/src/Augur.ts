@@ -8,6 +8,7 @@ import { Provider } from "./ethereum/Provider";
 import { SubscriptionEventNames, isSubscriptionEventName } from "./constants";
 import { Trade } from "./api/Trade";
 import { TransactionStatusCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { Markets } from "./state/getter/Markets";
 
 export interface CustomEvent {
   name: string;
@@ -29,7 +30,7 @@ export class Augur<TProvider extends Provider = Provider> {
   public readonly addresses: ContractAddresses;
   public readonly contracts: Contracts;
   public readonly trade: Trade;
-  public readonly connector: Connector;
+  public static connector: Connector;
 
   // TODO Set genericEventNames & userSpecificEvents using
   // GenericContractInterfaces instead of hardcoding them
@@ -91,7 +92,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
-    this.connector = connector;
+    Augur.connector = connector;
 
     // API
     this.addresses = addresses;
@@ -101,6 +102,9 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   public static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: Connector = new EmptyConnector()): Promise<Augur> {
+    // has to be static because of the way we instantiate boundTo methods 
+    Augur.connector = connector;
+
     const networkId = await provider.getNetworkId();
     const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector);
 
@@ -134,26 +138,28 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   public async connect(params?: any): Promise<any> {
-    return this.connector.connect(params);
+    return Augur.connector.connect(params);
   }
 
   public async disconnect(): Promise<any> {
-    return this.connector.disconnect();
+    return Augur.connector.disconnect();
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
-    return this.connector.bindTo(f);
+    return Augur.connector.bindTo(f);
   }
 
   public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
     if (isSubscriptionEventName(eventName)) {
-      this.connector.on(eventName, callback);
+      Augur.connector.on(eventName, callback);
     }
   }
 
   public off(eventName: SubscriptionEventNames | string): void {
     if (isSubscriptionEventName(eventName)) {
-      this.connector.off(eventName);
+      Augur.connector.off(eventName);
     }
   }
+
+  public getMarkets = this.bindTo(Markets.getMarkets);
 }

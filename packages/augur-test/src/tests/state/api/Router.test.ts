@@ -1,4 +1,4 @@
-import { API } from "@augurproject/sdk/build/state/api/API";
+import { API } from "@augurproject/sdk/build/state/getter/API";
 import { Augur } from "@augurproject/sdk";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Router } from "@augurproject/sdk/build/state/api/Router";

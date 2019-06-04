@@ -2,7 +2,7 @@
 //
 //
 import { Addresses } from "@augurproject/artifacts";
-import { Augur } from "../Augur"
+import { Augur } from "../Augur";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
@@ -36,11 +36,11 @@ console.log("Starting web worker");
       augur.off(SubscriptionEventNames.Approval);
     });
 
-    console.log("getMarkets");
-    const getMarkets = augur.bindTo(Markets.getMarkets);
-    console.log(await getMarkets({
+    const markets = await augur.getMarkets({
       universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
-    }));
+    });
+
+    console.log(markets);
     console.log("Done");
   } catch (e) {
     console.log(e);
