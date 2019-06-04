@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 
-import TradingForm from "modules/trading/components/trading--form/trading--form";
-import TradingConfirm from "modules/trading/components/trading--confirm/trading--confirm";
+import Form from "modules/trading/components/form/form";
+import Confirm from "modules/trading/components/confirm/confirm";
 import { generateTrade } from "modules/trades/helpers/generate-trade";
 import getValue from "utils/get-value";
 import { isEqual, keys, pick } from "lodash";
@@ -14,12 +14,12 @@ import {
   SELL,
   UPPER_FIXED_PRECISION_BOUND
 } from "modules/common-elements/constants";
-import Styles from "modules/trading/components/trading--wrapper/trading--wrapper.styles";
+import Styles from "modules/trading/components/wrapper/wrapper.styles";
 import { OrderButton } from "modules/common-elements/buttons";
 import { formatShares } from "utils/format-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
 
-class TradingWrapper extends Component {
+class Wrapper extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
     marketReviewTradeSeen: PropTypes.bool.isRequired,
@@ -82,7 +82,7 @@ class TradingWrapper extends Component {
   componentWillMount() {
     this.setState({
       ...this.state,
-      trade: TradingWrapper.getDefaultTrade(this.props)
+      trade: Wrapper.getDefaultTrade(this.props)
     });
   }
 
@@ -122,12 +122,12 @@ class TradingWrapper extends Component {
   }
 
   clearOrderConfirmation() {
-    const trade = TradingWrapper.getDefaultTrade(this.props);
+    const trade = Wrapper.getDefaultTrade(this.props);
     this.setState({ trade });
   }
 
   clearOrderForm(wholeForm = true) {
-    const trade = TradingWrapper.getDefaultTrade(this.props);
+    const trade = Wrapper.getDefaultTrade(this.props);
 
     if (wholeForm) {
       this.updateState(
@@ -320,71 +320,45 @@ class TradingWrapper extends Component {
     } = s;
 
     return (
-      <section className={Styles.TradingWrapper}>
-        <div className={Styles.TradingWrapper__container}>
-          <section className={Styles.TradingWrapper__darkbg}>
-            <ul
-              className={classNames({
-                [Styles.TradingWrapper__header_buy]: selectedNav === BUY,
-                [Styles.TradingWrapper__header_sell]: selectedNav === SELL
-              })}
-            >
-              <li
-                className={classNames({
-                  [`${Styles.active_buy}`]: selectedNav === BUY
-                })}
+      <section className={Styles.Wrapper}>
+        <div>
+          <ul
+            className={classNames({
+              [Styles.Buy]: selectedNav === BUY,
+              [Styles.Sell]: selectedNav === SELL,
+              [Styles.Scalar]: market.marketType === SCALAR,
+            })}
+          >
+            <li className={classNames({[`${Styles.active}`]: selectedNav === BUY})}>
+              <button
+                onClick={() =>
+                  this.updateTradeTotalCost({
+                    ...s,
+                    selectedNav: BUY
+                  })
+                }
               >
-                <button
-                  onClick={() =>
-                    this.updateTradeTotalCost({
-                      ...s,
-                      selectedNav: BUY
-                    })
-                  }
-                >
-                  <div>Buy Shares</div>
-                  <span
-                    className={classNames(
-                      Styles.TradingWrapper__underline__buy,
-                      {
-                        [`${Styles.notActive}`]: selectedNav === SELL
-                      }
-                    )}
-                  />
-                </button>
-              </li>
-              <li
-                className={classNames({
-                  [`${Styles.active_sell}`]: selectedNav === SELL
-                })}
+                <div>Buy Shares</div>
+                <span className={classNames({[`${Styles.notActive}`]: selectedNav === SELL})} />
+              </button>
+            </li>
+            <li className={classNames({[`${Styles.active}`]: selectedNav === SELL})}>
+              <button
+                onClick={() =>
+                  this.updateTradeTotalCost({
+                    ...s,
+                    selectedNav: SELL
+                  })
+                }
               >
-                <button
-                  onClick={() =>
-                    this.updateTradeTotalCost({
-                      ...s,
-                      selectedNav: SELL
-                    })
-                  }
-                >
-                  <div>Sell Shares</div>
-                  <span
-                    className={classNames(
-                      Styles.TradingWrapper__underline__sell,
-                      {
-                        [`${Styles.notActive}`]: selectedNav === BUY
-                      }
-                    )}
-                  />
-                </button>
-              </li>
-            </ul>
-          </section>
-          {market.marketType === SCALAR && (
-            <div className={Styles.TradingWrapper__scalar__line} />
-          )}
+                <div>Sell Shares</div>
+                <span className={classNames({[`${Styles.notActive}`]: selectedNav === BUY})}/>
+              </button>
+            </li>
+          </ul>
           {market &&
             market.marketType && (
-              <TradingForm
+              <Form
                 market={market}
                 marketType={getValue(this.props, "market.marketType")}
                 maxPrice={getValue(this.props, "market.maxPrice")}
@@ -409,7 +383,7 @@ class TradingWrapper extends Component {
         </div>
         {s.trade &&
           (s.trade.shareCost.value !== 0 || s.trade.totalCost.value !== 0) && (
-            <TradingConfirm
+            <Confirm
               numOutcomes={market.numOutcomes}
               marketType={getValue(this.props, "market.marketType")}
               maxPrice={getValue(this.props, "market.maxPrice")}
@@ -422,8 +396,8 @@ class TradingWrapper extends Component {
             />
           )}
         <div
-          className={classNames(Styles.TradingWrapper__actions, {
-            [Styles.TradingWrapper__fullActions]:
+          className={classNames({
+            [Styles.Full]:
               s.trade &&
               (s.trade.shareCost.value !== 0 || s.trade.totalCost.value !== 0)
           })}
@@ -449,4 +423,4 @@ class TradingWrapper extends Component {
   }
 }
 
-export default TradingWrapper;
+export default Wrapper;
