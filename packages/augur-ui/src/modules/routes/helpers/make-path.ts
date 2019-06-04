@@ -1,7 +1,7 @@
 // TODO -- clean up doc here
 // (String|Array) string to individual path OR array of deep paths for linking OR array of individual paths to match when routing
 // (Bool) whether return value of paths array should be formatted as string path or matching regex
-export default function makePath(paths, match) {
+export default function makePath(paths, match = false) {
   // Invalid, return root
   if (
     (paths.constructor !== String && paths.constructor !== Array) ||
