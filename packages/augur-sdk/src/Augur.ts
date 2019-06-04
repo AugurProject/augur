@@ -9,6 +9,7 @@ import { SubscriptionEventNames, isSubscriptionEventName } from "./constants";
 import { Trade } from "./api/Trade";
 import { TransactionStatusCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Markets } from "./state/getter/Markets";
+import { SyncData } from "./state/getter/sync-data";
 
 export interface CustomEvent {
   name: string;
@@ -162,4 +163,5 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   public getMarkets = this.bindTo(Markets.getMarkets);
+  public getSyncData = this.bindTo(SyncData.getSyncData);
 }
