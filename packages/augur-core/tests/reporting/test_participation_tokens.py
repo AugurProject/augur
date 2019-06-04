@@ -1,4 +1,3 @@
-from ethereum.tools import tester
 from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, raises, mark
 from utils import longToHexString, EtherDelta, TokenDelta, PrintGasUsed, BuyWithCash
@@ -17,30 +16,30 @@ def test_participation_tokens(kitchenSinkFixture, universe, market, cash):
         disputeWindow.buy(300)
 
     # Fast forward time until the new dispute window starts and we can buy some tokens
-    assert reputationToken.transfer(tester.a1, 100)
+    assert reputationToken.transfer(kitchenSinkFixture.accounts[1], 100)
     kitchenSinkFixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
-    with TokenDelta(reputationToken, -300, tester.a0, "Buying sisnt take REP"):
-        with TokenDelta(disputeWindow, 300, tester.a0, "Buying didnt give PTs"):
+    with TokenDelta(reputationToken, -300, kitchenSinkFixture.accounts[0], "Buying sisnt take REP"):
+        with TokenDelta(disputeWindow, 300, kitchenSinkFixture.accounts[0], "Buying didnt give PTs"):
             assert disputeWindow.buy(300)
-    with TokenDelta(reputationToken, -100, tester.a1, "Buying sisnt take REP"):
-        with TokenDelta(disputeWindow, 100, tester.a1, "Buying didnt give PTs"):
-            assert disputeWindow.buy(100, sender = tester.k1)
+    with TokenDelta(reputationToken, -100, kitchenSinkFixture.accounts[1], "Buying sisnt take REP"):
+        with TokenDelta(disputeWindow, 100, kitchenSinkFixture.accounts[1], "Buying didnt give PTs"):
+            assert disputeWindow.buy(100, sender = kitchenSinkFixture.accounts[1])
 
     # We can't redeem until the window is over
     with raises(TransactionFailed):
-        disputeWindow.redeem(tester.a0)
+        disputeWindow.redeem(kitchenSinkFixture.accounts[0])
 
     # Fast forward time until the new dispute window is over and we can redeem
     kitchenSinkFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     totalFees = cash.balanceOf(disputeWindow.address)
 
-    with TokenDelta(reputationToken, 300, tester.a0, "Redeeming didn't refund REP"):
-        with TokenDelta(cash, totalFees * 3 / 4, tester.a0, "Redeeming didn't give fees"):
-            with TokenDelta(disputeWindow, -300, tester.a0, "Redeeming didn't burn PTs"):
-                assert disputeWindow.redeem(tester.a0)
+    with TokenDelta(reputationToken, 300, kitchenSinkFixture.accounts[0], "Redeeming didn't refund REP"):
+        with TokenDelta(cash, totalFees * 3 / 4, kitchenSinkFixture.accounts[0], "Redeeming didn't give fees"):
+            with TokenDelta(disputeWindow, -300, kitchenSinkFixture.accounts[0], "Redeeming didn't burn PTs"):
+                assert disputeWindow.redeem(kitchenSinkFixture.accounts[0])
 
-    with TokenDelta(reputationToken, 100, tester.a1, "Redeeming didn't refund REP"):
-        with TokenDelta(cash, totalFees * 1 / 4, tester.a1, "Redeeming didn't give fees"):
-            with TokenDelta(disputeWindow, -100, tester.a1, "Redeeming didn't burn PTs"):
-                assert disputeWindow.redeem(tester.a1)
+    with TokenDelta(reputationToken, 100, kitchenSinkFixture.accounts[1], "Redeeming didn't refund REP"):
+        with TokenDelta(cash, totalFees * 1 / 4, kitchenSinkFixture.accounts[1], "Redeeming didn't give fees"):
+            with TokenDelta(disputeWindow, -100, kitchenSinkFixture.accounts[1], "Redeeming didn't burn PTs"):
+                assert disputeWindow.redeem(kitchenSinkFixture.accounts[1])

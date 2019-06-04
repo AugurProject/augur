@@ -1,5 +1,5 @@
-from ethereum.tools import tester
-from utils import longToHexString, stringToBytes, bytesToHexString, twentyZeros, thirtyTwoZeros, longTo32Bytes
+
+from utils import longToHexString, stringToBytes, twentyZeros, thirtyTwoZeros, longTo32Bytes
 from pytest import fixture, raises, mark
 from eth_tester.exceptions import TransactionFailed
 

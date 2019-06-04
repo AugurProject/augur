@@ -455,11 +455,11 @@ class ContractsFixture:
         log = logs[-1] if last else logs[0]
         return log.args.__dict__[argName]
 
-    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0, debug=False):
+    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
         sender = sender or self.accounts[0]
         marketCreationFee = validityBond or universe.getOrCacheMarketCreationCost(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createYesNoMarket(int(endTime), feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, topic, extraInfo, sender=sender, getReturnData=False, debug=debug)
+            assert universe.createYesNoMarket(int(endTime), feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, topic, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
@@ -520,6 +520,10 @@ class ContractsFixture:
             designatedReporterAddress = sender,
             sender = sender)
 
+    def getShareToken(self, market, outcome):
+        address = market.getShareToken(outcome)
+        return self.applySignature("ShareToken", address)
+
 @pytest.fixture(scope="session")
 def fixture(request):
     return ContractsFixture(request)
@@ -554,7 +558,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
         fixture.contracts["Time"].setTimestamp(universe.getForkEndTime() + 1)
         reputationToken = fixture.applySignature('ReputationToken', universe.getReputationToken())
         yesPayoutNumerators = [0, 0, forkingMarket.getNumTicks()]
-        reputationToken.migrateOutByPayout(yesPayoutNumerators, reputationToken.balanceOf(tester.a0))
+        reputationToken.migrateOutByPayout(yesPayoutNumerators, reputationToken.balanceOf(fixture.accounts[0]))
         universe = fixture.applySignature('Universe', universe.createChildUniverse(yesPayoutNumerators))
 
     yesNoMarket = fixture.createReasonableYesNoMarket(universe)

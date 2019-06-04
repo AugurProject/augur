@@ -27,9 +27,6 @@ def longToHexString(value, leftPad=40):
 def bytesToLong(value):
     return value.encode('hex')
 
-def bytesToHexString(value):
-    return longToHexString(bytesToLong(value))
-
 def captureFilteredLogs(state, contract, logs):
     def captureLog(contract, logs, message):
         translated = contract.translator.listen(message)
@@ -101,14 +98,19 @@ class PrintGasUsed():
         self.fixture = fixture
         self.action = action
         self.originalGas = originalGas
+        self.blockNumber = self.fixture.eth_tester.backend.chain.get_block().number
 
     def __enter__(self):
-        self.startingGas = self.fixture.chain.head_state.gas_used
+        pass
 
     def __exit__(self, *args):
         if args[1]:
             raise args[1]
-        gasUsed = self.fixture.chain.head_state.gas_used - self.startingGas
+        currentBlock = self.fixture.eth_tester.backend.chain.get_block().number
+        gasUsed = 0
+        while self.blockNumber < currentBlock:
+            gasUsed += self.fixture.eth_tester.backend.chain.get_canonical_block_by_number(self.blockNumber)._header._gas_used
+            self.blockNumber += 1
         if self.originalGas:
             print("GAS USED WITH %s : %i. ORIGINAL: %i DELTA: %i" % (self.action, gasUsed, self.originalGas, self.originalGas - gasUsed))
         else:
@@ -141,6 +143,7 @@ class AssertLog():
                 self.skip -= 1
 
         if not foundLog:
+            import pdb;pdb.set_trace()
             raise Exception("Assert log failed to find the log with event name %s" % (self.eventName))
 
         for (key, expectedValue) in self.data.items():

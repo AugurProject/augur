@@ -1,5 +1,5 @@
-from ethereum.tools import tester
-from utils import longToHexString, stringToBytes, bytesToHexString, twentyZeros, thirtyTwoZeros, longTo32Bytes
+
+from utils import longToHexString, stringToBytes, twentyZeros, thirtyTwoZeros, longTo32Bytes
 from pytest import fixture, raises, mark
 from eth_tester.exceptions import TransactionFailed
 
@@ -13,47 +13,47 @@ def test_market_creation(localFixture, mockUniverse, mockDisputeWindow, mockCash
     market = localFixture.upload('../source/contracts/reporting/Market.sol', 'newMarket')
 
     with raises(TransactionFailed):
-        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 1, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, fixture.accounts[1], fixture.accounts[1], 1, numTicks)
 
     with raises(TransactionFailed):
-        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 9, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, fixture.accounts[1], fixture.accounts[1], 9, numTicks)
 
     with raises(TransactionFailed):
-        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 7, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, fixture.accounts[1], fixture.accounts[1], 7, numTicks)
 
     with raises(TransactionFailed):
-        market.initialize(mockUniverse.address, endTime, oneEther / 2 + 1, tester.a1, tester.a1, 5, numTicks)
+        market.initialize(mockUniverse.address, endTime, oneEther / 2 + 1, fixture.accounts[1], fixture.accounts[1], 5, numTicks)
 
     with raises(TransactionFailed):
-        market.initialize(mockUniverse.address, endTime, fee, longToHexString(0), tester.a1, 5, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, longToHexString(0), fixture.accounts[1], 5, numTicks)
 
     with raises(TransactionFailed):
-        market.initialize(mockUniverse.address, endTime, fee, tester.a1, longToHexString(0), 5, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, fixture.accounts[1], longToHexString(0), 5, numTicks)
 
     mockUniverse.setForkingMarket(mockMarket.address)
     with raises(TransactionFailed):
-        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 5, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, fixture.accounts[1], fixture.accounts[1], 5, numTicks)
 
     mockUniverse.setForkingMarket(longToHexString(0))
     mockReputationToken.setBalanceOf(0)
     mockUniverse.setOrCacheDesignatedReportNoShowBond(100)
     with raises(TransactionFailed):
-        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 5, numTicks)
+        market.initialize(mockUniverse.address, endTime, fee, fixture.accounts[1], fixture.accounts[1], 5, numTicks)
 
     mockReputationToken.setBalanceOf(100)
     mockUniverse.setOrCacheTargetReporterGasCosts(15)
     mockUniverse.setOrCacheValidityBond(12)
     with raises(TransactionFailed):
-        market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 5, numTicks, value=0)
+        market.initialize(mockUniverse.address, endTime, fee, fixture.accounts[1], fixture.accounts[1], 5, numTicks, value=0)
 
     mockShareTokenFactory.resetCreateShareToken()
-    assert market.initialize(mockUniverse.address, endTime, fee, tester.a1, tester.a1, 5, numTicks, value=100)
+    assert market.initialize(mockUniverse.address, endTime, fee, fixture.accounts[1], fixture.accounts[1], 5, numTicks, value=100)
     assert mockShareTokenFactory.getCreateShareTokenMarketValue() == market.address
     assert mockShareTokenFactory.getCreateShareTokenOutcomeValue() == 5
     assert market.getTypeName() == stringToBytes("Market")
     assert market.getUniverse() == mockUniverse.address
     assert market.getUniverse() == mockUniverse.address
-    assert market.getDesignatedReporter() == bytesToHexString(tester.a1)
+    assert market.getDesignatedReporter() == fixture.accounts[1]
     assert market.getNumberOfOutcomes() == 6
     assert market.getEndTime() == endTime
     assert market.getNumTicks() == numTicks
@@ -69,7 +69,7 @@ def test_market_creation(localFixture, mockUniverse, mockDisputeWindow, mockCash
 def test_initial_report(localFixture, initializedMarket, mockReputationToken, mockUniverse, mockInitialReporter):
     # We can't do the initial report till the market has ended
     with raises(TransactionFailed):
-        initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
+        initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=fixture.accounts[1])
 
     localFixture.contracts["Time"].setTimestamp(initializedMarket.getEndTime() + 1)
 
@@ -77,11 +77,11 @@ def test_initial_report(localFixture, initializedMarket, mockReputationToken, mo
     initBond = 10 ** 8
     mockUniverse.setOrCacheDesignatedReportStake(initBond)
     mockReputationToken.setBalanceOf(repBalance)
-    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
+    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=fixture.accounts[1])
     # verify creator gets back rep bond
-    assert mockReputationToken.getTransferValueFor(tester.a2) == mockUniverse.getOrCacheDesignatedReportNoShowBond()
+    assert mockReputationToken.getTransferValueFor(fixture.accounts[2]) == mockUniverse.getOrCacheDesignatedReportNoShowBond()
     # verify init reporter pays init rep bond
-    assert mockReputationToken.getTrustedTransferSourceValue() == bytesToHexString(tester.a1)
+    assert mockReputationToken.getTrustedTransferSourceValue() == fixture.accounts[1]
     assert mockReputationToken.getTrustedTransferAttotokensValue() == initBond
     initialReporter = localFixture.applySignature("InitialReporter", initializedMarket.getInitialReporter())
     assert mockReputationToken.getTrustedTransferDestinationValue() == initialReporter.address
@@ -94,7 +94,7 @@ def test_contribute(localFixture, initializedMarket, mockNextDisputeWindow, mock
 
     localFixture.contracts["Time"].setTimestamp(initializedMarket.getEndTime() + 1)
 
-    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
+    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=fixture.accounts[1])
 
     mockNextDisputeWindow.setIsActive(True)
     winningPayoutHash = initializedMarket.derivePayoutDistributionHash([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0])
@@ -106,13 +106,13 @@ def test_contribute(localFixture, initializedMarket, mockNextDisputeWindow, mock
 
     assert initializedMarket.contribute([0, 0, 0, 0, 0, initializedMarket.getNumTicks()], 1, "")
     assert mockDisputeCrowdsourcer.contributeWasCalled() == True
-    assert mockDisputeCrowdsourcer.getContributeParticipant() == bytesToHexString(tester.a0)
+    assert mockDisputeCrowdsourcer.getContributeParticipant() == fixture.accounts[0]
     assert mockDisputeCrowdsourcer.getContributeAmount() == 1
 
 
 def test_market_finish_crowdsourcing_dispute_bond_fork(localFixture, initializedMarket, mockDisputeCrowdsourcer, mockNextDisputeWindow, mockUniverse):
     localFixture.contracts["Time"].setTimestamp(initializedMarket.getEndTime() + 1)
-    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
+    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=fixture.accounts[1])
     mockNextDisputeWindow.setIsActive(True)
 
     mockUniverse.setDisputeThresholdForFork(200)
@@ -149,7 +149,7 @@ def test_finalize(localFixture, chain, initializedMarket, mockInitialReporter, m
         initializedMarket.finalize()
 
     localFixture.contracts["Time"].setTimestamp(initializedMarket.getEndTime() + 1)
-    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=tester.k1)
+    assert initializedMarket.doInitialReport([initializedMarket.getNumTicks(), 0, 0, 0, 0, 0], "", sender=fixture.accounts[1])
     mockInitialReporter.setReportTimestamp(1)
 
     with raises(TransactionFailed):
@@ -244,7 +244,7 @@ def localSnapshot(fixture, augurInitializedWithMocksSnapshot):
     mockUniverse.setNextDisputeWindow(mockNextDisputeWindow.address)
     mockDisputeWindow.setEndTime(fixture.contracts["Time"].getTimestamp() + constants.DESIGNATED_REPORTING_DURATION_SECONDS())
     mockNextDisputeWindow.setEndTime(mockDisputeWindow.getEndTime() + constants.DESIGNATED_REPORTING_DURATION_SECONDS())
-    assert market.initialize(mockUniverse.address, endTime, 16, tester.a1, tester.a2, 5, numTicks, value=100)
+    assert market.initialize(mockUniverse.address, endTime, 16, fixture.accounts[1], fixture.accounts[2], 5, numTicks, value=100)
 
     return fixture.createSnapshot()
 

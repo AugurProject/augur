@@ -1,4 +1,4 @@
-from ethereum.tools import tester
+
 from eth_tester.exceptions import TransactionFailed
 from utils import longToHexString, stringToBytes
 from pytest import fixture, raises, mark
@@ -36,7 +36,7 @@ def test_universe_fork_market(localFixture, populatedUniverse, mockUniverse, moc
     with raises(TransactionFailed):
         mockMarket.callForkOnUniverse(populatedUniverse.address)
 
-    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, tester.a0, "topic", "description", "info")
+    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, fixture.accounts[0], "topic", "description", "info")
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
 
     assert populatedUniverse.isContainerForMarket(mockMarket.address)
@@ -97,7 +97,7 @@ def test_universe_contains(localFixture, populatedUniverse, mockMarket, chain, m
     mockMarketFactory.setMarket(mockMarket.address)
     endTime = localFixture.contracts["Time"].getTimestamp() + 30 * 24 * 60 * 60 # 30 days
 
-    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, tester.a0, "topic", "description", "info")
+    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, fixture.accounts[0], "topic", "description", "info")
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
 
     assert populatedUniverse.isContainerForDisputeWindow(mockDisputeWindow.address) == True
@@ -188,7 +188,7 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
     endTimeValue = timestamp + 10
     feePerEthInWeiValue = 10 ** 18
     affiliateFeeDivisor = 100
-    designatedReporterAddressValue = tester.a2
+    designatedReporterAddressValue = fixture.accounts[2]
     mockDisputeWindow.setCreateMarket(mockMarket.address)
 
     # set current dispute window

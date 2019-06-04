@@ -1,7 +1,7 @@
 from datetime import timedelta
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, mark
-from utils import stringToBytes, AssertLog, bytesToHexString, EtherDelta, TokenDelta
+from utils import stringToBytes, AssertLog, EtherDelta, TokenDelta
 from reporting_utils import proceedToDesignatedReporting
 
 def test_market_creation(contractsFixture, universe, market):
@@ -29,7 +29,7 @@ def test_market_creation(contractsFixture, universe, market):
 
     endTime = 0
     with raises(TransactionFailed):
-        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, account0, debug=True)
+        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, account0)
 
 def test_categorical_market_creation(contractsFixture, universe):
     account0 = contractsFixture.accounts[0]

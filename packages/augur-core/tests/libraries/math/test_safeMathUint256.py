@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from ethereum.tools import tester
 from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, mark, raises
 

@@ -16,7 +16,7 @@ class Contract():
             setattr(self, functionName, self.get_contract_function(originalFunction, abiFunc))
 
     def get_contract_function(self, originalFunction, abiFunc):
-        def contract_function(*args, sender=self.w3.eth.accounts[0], value=0, getReturnData=True, commitTx=True, debug=False):
+        def contract_function(*args, sender=self.w3.eth.accounts[0], value=0, getReturnData=True, commitTx=True):
             contractFunction = originalFunction(*self.processArgs(*args, abiFunc=abiFunc))
             retVal = True
             outputs = abiFunc['outputs']
@@ -40,11 +40,11 @@ class Contract():
             argType = type(arg)
             if argType is float or argType is Decimal:
                 arg = int(arg)
-            elif abiParam['type'] == 'uint32[]':
+            elif abiParam['type'] == 'uint256[]':
                 arg = [int(item) for item in arg]
             elif argType == str and abiParam['type'] == 'bytes32':
                 arg = arg.encode('utf-8')
-            elif abiParam['type'] == 'bytes32[]':
+            elif abiParam['type'] == 'bytes32[]' and type(arg[0]) is not bytes:
                 arg = [item.encode('utf-8') for item in arg]
             processedArgs.append(arg)
         return processedArgs

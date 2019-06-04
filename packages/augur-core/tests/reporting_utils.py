@@ -3,7 +3,7 @@
 from random import randint
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises
-from utils import longToHexString, PrintGasUsed, TokenDelta, BuyWithCash
+from utils import longToHexString, PrintGasUsed, TokenDelta, BuyWithCash, AssertLog
 
 def proceedToDesignatedReporting(fixture, market):
     fixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
@@ -104,14 +104,24 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
     if (finalizeByMigration):
         # Tester 0 moves more than 50% of REP
         amount = reputationToken.balanceOf(account0) - 20
-        with TokenDelta(noUniverseReputationToken, amount, account0, "No REP token balance was no correct"):
-            reputationToken.migrateOut(noUniverseReputationToken.address, amount)
+        marketFinalizedLog = {
+            "universe": universe.address,
+            "market": market.address,
+        }
+        with AssertLog(fixture, "MarketFinalized", marketFinalizedLog):
+            with TokenDelta(noUniverseReputationToken, amount, account0, "No REP token balance was no correct"):
+                reputationToken.migrateOut(noUniverseReputationToken.address, amount)
         assert reputationToken.balanceOf(account0) == 20
         assert market.getWinningPayoutDistributionHash() == noUniverse.getParentPayoutDistributionHash()
     else:
         # Time marches on past the fork end time
         fixture.contracts["Time"].setTimestamp(universe.getForkEndTime() + 1)
-        assert market.finalize()
+        marketFinalizedLog = {
+            "universe": universe.address,
+            "market": market.address,
+        }
+        with AssertLog(fixture, "MarketFinalized", marketFinalizedLog):
+            assert market.finalize()
         assert market.getWinningPayoutDistributionHash() == yesUniverse.getParentPayoutDistributionHash()
         # If the fork is past the fork period we can not migrate
         with raises(TransactionFailed):
