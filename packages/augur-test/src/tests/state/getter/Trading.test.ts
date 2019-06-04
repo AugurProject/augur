@@ -7,7 +7,7 @@ import {
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { API } from "@augurproject/sdk/build/state/getter/API";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { MarketTradingHistory, Orders } from "@augurproject/sdk/build/state/api/Trading";
+import { MarketTradingHistory, Orders } from "@augurproject/sdk/build/state/getter/Trading";
 import { BigNumber } from "bignumber.js";
 import { stringTo32ByteHex } from "../../../libs/Utils";
 
