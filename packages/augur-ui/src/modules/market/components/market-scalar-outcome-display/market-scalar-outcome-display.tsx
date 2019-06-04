@@ -51,53 +51,41 @@ const MarketScalarOutcomeDisplay = ({
         <div />
         <div>
           <DashlineLong />
-          <span style={currentValuePosition}>
-            <div>
-              <span
-                className={Styles["MarketScalarOutcomes__current-value"]}
-              >
-                {getValue(outcomes[0], "lastPricePercent.formatted")}
-              </span>
-              <span
-                className={Styles["MarketScalarOutcomes__current-denomination"]}
-              >
-                {lastPriceDenomination}
-              </span>
-              <MarketOutcomeTradingIndicator
-                outcome={outcomes[0]}
-                location="scalarScale"
-              />
-            </div>
-          </span>
+          <div style={currentValuePosition}>
+            <span>
+              {getValue(outcomes[0], "lastPricePercent.formatted")}
+            </span>
+            <span>
+              {lastPriceDenomination}
+            </span>
+            <MarketOutcomeTradingIndicator
+              outcome={outcomes[0]}
+              location="scalarScale"
+            />
+          </div>
         </div>
         <div />
       </div>
       <div
         className={classNames(
-          Styles.MarketScalarOutcomes__row,
           Styles.MarketScalarOutcomes__minMax
         )}
       >
-        <div style={{ flexGrow: "1" }}>
+        <div>
           Min:{" "}
-          <span className={Styles.MarketScalarOutcomes__minMaxValue}>
+          <span>
             {`${min}`}
           </span>
         </div>
         <div>
           Max:{" "}
-          <span className={Styles.MarketScalarOutcomes__minMaxValue}>
+          <span>
             {`${max}`}
           </span>
         </div>
       </div>
-      <div
-        className={classNames(
-          Styles.MarketScalarOutcomes__row,
-          Styles.MarketScalarOutcomes__denomination
-        )}
-      >
-        <div style={{ flexGrow: "1" }}>{scalarDenomination}</div>
+      <div>
+        <div>{scalarDenomination}</div>
         <div>{scalarDenomination}</div>
       </div>
     </div>

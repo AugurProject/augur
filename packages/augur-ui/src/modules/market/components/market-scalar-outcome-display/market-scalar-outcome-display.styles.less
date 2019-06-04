@@ -37,52 +37,59 @@
         position: relative;
       }
 
-      > span {
+      > div {
         .text-14-bold;
 
         left: 50%;
         position: absolute;
         top: -14.45px;
         transform: translateX(-50%);
+
+        > span:first-of-type {
+          &::before {
+            background-color: @color-outcome-seven;
+            border-radius: 50%;
+            content: "";
+            height: @size-5;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            right: 0;
+            top: 1.3rem;
+            width: @size-5;
+          }
+        }
+
+        > span:nth-of-type(2) {
+          left: @size-4;
+          position: relative;
+        }
       }
     }
   }
-}
 
-.MarketScalarOutcomes__row {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-}
+  > div:nth-of-type(2),
+  > div:last-of-type {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
 
-.MarketScalarOutcomes__denomination {
-  .text-10;
+    > div:first-of-type {
+      flex-grow: 1;
+    }
+  }
 
-  margin-top: @size-4;
-}
+  > div:nth-of-type(2) {
+    .text-12;
 
-.MarketScalarOutcomes__minMax {
-  .text-12;
-}
+    > div > span {
+      font-weight: bold;
+    }
+  }
 
-.MarketScalarOutcomes__minMaxValue {
-  font-weight: bold;
-}
+  > div:last-of-type {
+    .text-10;
 
-.MarketScalarOutcomes__current-denomination {
-  left: @size-4;
-  position: relative;
-}
-
-.MarketScalarOutcomes__current-value::before {
-  background-color: @color-outcome-seven;
-  border-radius: 50%;
-  content: "";
-  height: @size-5;
-  left: 0;
-  margin: auto;
-  position: absolute;
-  right: 0;
-  top: 1.3rem;
-  width: @size-5;
+    margin-top: @size-4;
+  }
 }
