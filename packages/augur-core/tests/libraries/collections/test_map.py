@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, raises
 from utils import longTo32Bytes, longToHexString
 
@@ -33,7 +32,7 @@ def test_map(testerContractsFixture):
     # Add a value
     assert mapTester.add(KEY1, VALUE1)
 
-    assert not mapTester.add(KEY1, VALUE1)
+    assert not mapTester.add(KEY1, VALUE1, commitTx=False)
 
     # Confirm the value is present
     assert mapTester.getCount() == 1
@@ -48,7 +47,7 @@ def test_map(testerContractsFixture):
     # Remove the value
     assert mapTester.remove(KEY1)
 
-    assert not mapTester.remove(KEY1)
+    assert not mapTester.remove(KEY1, commitTx=False)
 
     # Confirm the value is gone
     assert mapTester.getCount() == 0

@@ -1,5 +1,5 @@
-from ethereum.tools import tester
-from ethereum.tools.tester import ABIContract, TransactionFailed
+
+from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, mark, raises
 from utils import longTo32Bytes, PrintGasUsed, fix, nullAddress
 from constants import BID, ASK, YES, NO
@@ -8,49 +8,47 @@ from trading.test_claimTradingProceeds import acquireLongShares, finalizeMarket
 from reporting_utils import proceedToNextRound, proceedToFork, finalize, proceedToDesignatedReporting
 
 # Market Methods
-MARKET_CREATION =               2287080
-MARKET_FINALIZATION =           595614
-INITIAL_REPORT =                558191
-FIRST_CONTRIBUTE =              830261
-FIRST_COMPLETED_CONTRIBUTE =    571792
-LAST_COMPLETED_CONTRIBUTE =     1444101
-FORKING_CONTRIBUTE =            972243
+MARKET_CREATION =               2292216
+MARKET_FINALIZATION =           948446
+INITIAL_REPORT =                554349
+FIRST_CONTRIBUTE =              830811
+FIRST_COMPLETED_CONTRIBUTE =    582390
+LAST_COMPLETED_CONTRIBUTE =     1445403
+FORKING_CONTRIBUTE =            984817
 
 # Redemption
-REPORTING_WINDOW_CREATE =           300437
-INITIAL_REPORT_REDEMPTION =         97257
-CROWDSOURCER_REDEMPTION =           92228
-PARTICIPATION_TOKEN_REDEMPTION =    91482
+REPORTING_WINDOW_CREATE =           305421
+INITIAL_REPORT_REDEMPTION =         98937
+CROWDSOURCER_REDEMPTION =           93908
+PARTICIPATION_TOKEN_REDEMPTION =    93162
 
 # Trading
-CREATE_ORDER =      496034
-FILL_ORDER =        922442
-CLAIM_PROCEEDS =    688931
+CREATE_ORDER =      481755
+FILL_ORDER =        808067
+CLAIM_PROCEEDS =    667419
 
 # Other
-UNIVERSE_CREATE =   877639
+UNIVERSE_CREATE =   6392431
 
 pytestmark = mark.skip(reason="Just for testing gas cost")
-
-tester.STARTGAS = long(6.7 * 10**6)
 
 def test_universe_creation(localFixture, augur):
     with PrintGasUsed(localFixture, "UNIVERSE_CREATE", UNIVERSE_CREATE):
         augur.createGenesisUniverse()
 
-def test_disputeWindowCreation(localFixture, universe, cash):
-    endTime = long(localFixture.chain.head_state.timestamp + timedelta(days=365).total_seconds())
+def test_disputeWindowCreation(localFixture, augur, universe, cash):
+    endTime = augur.getTimestamp() + timedelta(days=365).total_seconds()
 
     with PrintGasUsed(localFixture, "REPORTING_WINDOW_CREATE", REPORTING_WINDOW_CREATE):
         universe.getOrCreateDisputeWindowByTimestamp(endTime, False)
 
-def test_marketCreation(localFixture, universe):
+def test_marketCreation(localFixture, augur, universe):
     marketCreationFee = universe.getOrCacheMarketCreationCost()
 
-    endTime = long(localFixture.chain.head_state.timestamp + timedelta(days=1).total_seconds())
+    endTime = augur.getTimestamp() + timedelta(days=1).total_seconds()
     feePerEthInWei = 10**16
     affiliateFeeDivisor = 100
-    designatedReporterAddress = tester.a0
+    designatedReporterAddress = localFixture.accounts[0]
     numTicks = 10 ** 18
     numOutcomes = 2
 
@@ -105,21 +103,21 @@ def test_orderFilling(localFixture, market):
     fillerCost = fix('2', '60')
 
     # create order
-    localFixture.contracts["Cash"].faucet(creatorCost, sender = tester.k1)
-    orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = tester.k1)
+    localFixture.contracts["Cash"].faucet(creatorCost, sender = localFixture.accounts[1])
+    orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = localFixture.accounts[1])
 
     with PrintGasUsed(localFixture, "FillOrder:publicFillOrder", FILL_ORDER):
-        localFixture.contracts["Cash"].faucet(fillerCost, sender = tester.k2)
-        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = tester.k2)
+        localFixture.contracts["Cash"].faucet(fillerCost, sender = localFixture.accounts[2])
+        fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, False, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[2])
 
 def test_winningShareRedmption(localFixture, cash, market):
     claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
 
-    acquireLongShares(localFixture, cash, market, YES, 1, claimTradingProceeds.address, sender = tester.k1)
+    acquireLongShares(localFixture, cash, market, YES, 1, claimTradingProceeds.address, sender = localFixture.accounts[1])
     finalizeMarket(localFixture, market, [0, 0, market.getNumTicks()])
 
     with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds", CLAIM_PROCEEDS):
-        claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1])
 
 def test_initial_report(localFixture, universe, cash, market):
     proceedToDesignatedReporting(localFixture, market)
@@ -163,23 +161,23 @@ def test_redeem(localFixture, universe, cash, market):
     assert market.finalize()
 
     with PrintGasUsed(localFixture, "InitialReporter:redeem", INITIAL_REPORT_REDEMPTION):
-        initialReporter.redeem(tester.a0)
+        initialReporter.redeem(localFixture.accounts[0])
 
     with PrintGasUsed(localFixture, "DisputeCrowdsourcer:redeem", CROWDSOURCER_REDEMPTION):
-        winningDisputeCrowdsourcer1.redeem(tester.a0)
+        winningDisputeCrowdsourcer1.redeem(localFixture.accounts[0])
 
     with PrintGasUsed(localFixture, "DisputeWindow:redeem", PARTICIPATION_TOKEN_REDEMPTION):
-        disputeWindow.redeem(tester.a0)
+        disputeWindow.redeem(localFixture.accounts[0])
 
 
 @fixture(scope="session")
 def localSnapshot(fixture, kitchenSinkSnapshot):
     fixture.resetToSnapshot(kitchenSinkSnapshot)
-    universe = ABIContract(fixture.chain, kitchenSinkSnapshot['universe'].translator, kitchenSinkSnapshot['universe'].address)
-    market = ABIContract(fixture.chain, kitchenSinkSnapshot['yesNoMarket'].translator, kitchenSinkSnapshot['yesNoMarket'].address)
+    universe = fixture.applySignature(None, kitchenSinkSnapshot['universe'].address, kitchenSinkSnapshot['universe'].abi)
+    market = fixture.applySignature(None, kitchenSinkSnapshot['yesNoMarket'].address, kitchenSinkSnapshot['yesNoMarket'].abi)
     # Give some REP to testers to make things interesting
     reputationToken = fixture.applySignature('ReputationToken', universe.getReputationToken())
-    for testAccount in [tester.a1, tester.a2, tester.a3]:
+    for testAccount in [fixture.accounts[1], fixture.accounts[2], fixture.accounts[3]]:
         reputationToken.transfer(testAccount, 1 * 10**6 * 10**18)
 
     return fixture.createSnapshot()
@@ -191,20 +189,20 @@ def localFixture(fixture, localSnapshot):
 
 @fixture
 def universe(localFixture, kitchenSinkSnapshot):
-    return ABIContract(localFixture.chain, kitchenSinkSnapshot['universe'].translator, kitchenSinkSnapshot['universe'].address)
+    return localFixture.applySignature(None, kitchenSinkSnapshot['universe'].address, kitchenSinkSnapshot['universe'].abi)
 
 @fixture
 def market(localFixture, kitchenSinkSnapshot):
-    return ABIContract(localFixture.chain, kitchenSinkSnapshot['yesNoMarket'].translator, kitchenSinkSnapshot['yesNoMarket'].address)
+    return localFixture.applySignature(None, kitchenSinkSnapshot['yesNoMarket'].address, kitchenSinkSnapshot['yesNoMarket'].abi)
 
 @fixture
 def categoricalMarket(localFixture, kitchenSinkSnapshot):
-    return ABIContract(localFixture.chain, kitchenSinkSnapshot['categoricalMarket'].translator, kitchenSinkSnapshot['categoricalMarket'].address)
+    return localFixture.applySignature(None, kitchenSinkSnapshot['categoricalMarket'].address, kitchenSinkSnapshot['categoricalMarket'].abi)
 
 @fixture
 def scalarMarket(localFixture, kitchenSinkSnapshot):
-    return ABIContract(localFixture.chain, kitchenSinkSnapshot['scalarMarket'].translator, kitchenSinkSnapshot['scalarMarket'].address)
+    return localFixture.applySignature(None, kitchenSinkSnapshot['scalarMarket'].address, kitchenSinkSnapshot['scalarMarket'].abi)
 
 @fixture
 def cash(localFixture, kitchenSinkSnapshot):
-    return ABIContract(localFixture.chain, kitchenSinkSnapshot['cash'].translator, kitchenSinkSnapshot['cash'].address)
+    return localFixture.applySignature(None, kitchenSinkSnapshot['cash'].address, kitchenSinkSnapshot['cash'].abi)

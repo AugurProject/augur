@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
 from random import randint
-from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import raises
-from utils import longToHexString, PrintGasUsed, TokenDelta, BuyWithCash
+from utils import longToHexString, PrintGasUsed, TokenDelta, BuyWithCash, AssertLog
 
 def proceedToDesignatedReporting(fixture, market):
     fixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
@@ -12,7 +11,8 @@ def proceedToDesignatedReporting(fixture, market):
 def proceedToInitialReporting(fixture, market):
     fixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
 
-def proceedToNextRound(fixture, market, contributor = tester.k0, doGenerateFees = False, moveTimeForward = True, randomPayoutNumerators = False, description = ""):
+def proceedToNextRound(fixture, market, contributor = None, doGenerateFees = False, moveTimeForward = True, randomPayoutNumerators = False, description = ""):
+    contributor = contributor or fixture.accounts[0]
     if fixture.contracts["Augur"].getTimestamp() < market.getEndTime():
         fixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
 
@@ -67,6 +67,7 @@ def proceedToFork(fixture, market, universe):
         reportingParticipant.forkAndRedeem()
 
 def finalize(fixture, market, universe, finalizeByMigration = True):
+    account0 = fixture.accounts[0]
     reputationToken = fixture.applySignature('ReputationToken', universe.getReputationToken())
 
     # The universe forks and there is now a universe where NO and YES are the respective outcomes of each
@@ -93,7 +94,7 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
     with raises(TransactionFailed):
         reputationToken.migrateOut(yesUniverseReputationToken.address, 0)
 
-    with TokenDelta(yesUniverseReputationToken, amount, tester.a0, "Yes REP token balance was no correct"):
+    with TokenDelta(yesUniverseReputationToken, amount, account0, "Yes REP token balance was no correct"):
         reputationToken.migrateOut(yesUniverseReputationToken.address, amount)
 
     # Attempting to finalize the fork now will not succeed as a majority or REP has not yet migrated and fork end time has not been reached
@@ -102,15 +103,25 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
 
     if (finalizeByMigration):
         # Tester 0 moves more than 50% of REP
-        amount = reputationToken.balanceOf(tester.a0) - 20
-        with TokenDelta(noUniverseReputationToken, amount, tester.a0, "No REP token balance was no correct"):
-            reputationToken.migrateOut(noUniverseReputationToken.address, amount)
-        assert reputationToken.balanceOf(tester.a0) == 20
+        amount = reputationToken.balanceOf(account0) - 20
+        marketFinalizedLog = {
+            "universe": universe.address,
+            "market": market.address,
+        }
+        with AssertLog(fixture, "MarketFinalized", marketFinalizedLog):
+            with TokenDelta(noUniverseReputationToken, amount, account0, "No REP token balance was no correct"):
+                reputationToken.migrateOut(noUniverseReputationToken.address, amount)
+        assert reputationToken.balanceOf(account0) == 20
         assert market.getWinningPayoutDistributionHash() == noUniverse.getParentPayoutDistributionHash()
     else:
         # Time marches on past the fork end time
         fixture.contracts["Time"].setTimestamp(universe.getForkEndTime() + 1)
-        assert market.finalize()
+        marketFinalizedLog = {
+            "universe": universe.address,
+            "market": market.address,
+        }
+        with AssertLog(fixture, "MarketFinalized", marketFinalizedLog):
+            assert market.finalize()
         assert market.getWinningPayoutDistributionHash() == yesUniverse.getParentPayoutDistributionHash()
         # If the fork is past the fork period we can not migrate
         with raises(TransactionFailed):
@@ -121,6 +132,7 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
         market.finalize()
 
 def generateFees(fixture, universe, market):
+    account1 = fixture.accounts[1]
     completeSets = fixture.contracts['CompleteSets']
     cash = fixture.contracts['Cash']
     disputeWindow = universe.getOrCreateNextDisputeWindow(False)
@@ -129,10 +141,10 @@ def generateFees(fixture, universe, market):
     cost = 1000 * market.getNumTicks()
     marketCreatorFees = cost / market.getMarketCreatorSettlementFeeDivisor()
 
-    with BuyWithCash(cash, cost, tester.k1, "buy complete set"):
-        completeSets.publicBuyCompleteSets(market.address, 1000, sender=tester.k1)
+    with BuyWithCash(cash, cost, account1, "buy complete set"):
+        completeSets.publicBuyCompleteSets(market.address, 1000, sender=account1)
     initialMarketCreatorFees = market.marketCreatorFeesAttoCash()
-    completeSets.publicSellCompleteSets(market.address, 1000, sender=tester.k1)
+    completeSets.publicSellCompleteSets(market.address, 1000, sender=account1)
     assert marketCreatorFees == market.marketCreatorFeesAttoCash() - initialMarketCreatorFees, "The market creator didn't get correct share of fees from complete set sale"
     newFeesBalance = cash.balanceOf(disputeWindow)
     reporterFees = cost / universe.getOrCacheReportingFeeDivisor()
