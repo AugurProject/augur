@@ -1,15 +1,18 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import * as constants from "modules/common-elements/constants";
-import { constants as serviceConstants } from "services/constants";
 import Styles from "modules/common-elements/labels.styles";
 import { ClipLoader } from "react-spinners";
-import { MarketIcon, InfoIcon, CheckCircleIcon } from "modules/common-elements/icons";
+import {
+  MarketIcon,
+  InfoIcon,
+  CheckCircleIcon
+} from "modules/common-elements/icons";
 import { MarketProgress } from "modules/common-elements/progress";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
 import { createBigNumber } from "utils/create-big-number";
-import { DashlineNormal } from "modules/common/components/dashline/dashline";
 import {
   SELL,
   BOUGHT,
@@ -17,12 +20,11 @@ import {
   CLOSED,
   SHORT,
   ZERO,
+  REPORTING_STATE
 } from "modules/common-elements/constants";
 import { ViewTransactionDetailsButton } from "modules/common-elements/buttons";
 import { formatNumber } from "utils/format-number";
-import { FormattedNumber, SizeTypes, DateFormattedObject } from "modules/types";
-
-const { REPORTING_STATE } = serviceConstants;
+import { FormattedNumber, SizeTypes } from "modules/types";
 
 export interface MarketTypeProps {
   marketType: string;
@@ -123,7 +125,7 @@ export interface LinearPropertyLabelViewTransactionProps {
 export interface ValueLabelProps {
   value: FormattedNumber;
   showDenomination: boolean;
-  keyId: string;
+  keyId?: string;
   showEmptyDash: boolean;
 }
 
@@ -133,7 +135,7 @@ interface HoverValueLabelState {
 
 export interface TextLabelProps {
   text: string;
-  keyId: string;
+  keyId?: string;
 }
 
 export interface TextLabelState {
@@ -146,6 +148,48 @@ export interface RepBalanceProps {
   rep: string;
 }
 
+interface ButtonObj {
+  label: string;
+  onClick: Function;
+}
+
+interface WordTrailProps {
+  typeLabel: string;
+  items: Array<ButtonObj>;
+  children: Array<any>;
+}
+
+interface CategoryTagTrailProps {
+  categories: Array<ButtonObj>;
+  tags: Array<ButtonObj>;
+}
+
+interface ValueDenominationProps {
+  valueClassname?: string | null;
+  className?: string | null;
+  value?: number | null;
+  formatted?: string | null;
+  fullPrecision?: string | null;
+  denomination?: string | null;
+  hidePrefix?: Boolean;
+  hidePostfix?: Boolean;
+  prefix?: string | null;
+  postfix?: string | null;
+  hideDenomination?: Boolean;
+}
+
+export const DashlineNormal = () => (
+  <svg width="100%" height="1">
+    <line x1="0" x2="100%" y1="0" y2="0" className={Styles.Dashline} />
+  </svg>
+);
+
+export const DashlineLong = () => (
+  <svg width="100%" height="1">
+    <line x1="0" x2="100%" y1="0" y2="0" className={Styles.DashlineL} />
+  </svg>
+);
+
 export function formatExpandedValue(
   value,
   showDenomination,
@@ -153,12 +197,7 @@ export function formatExpandedValue(
   max = "1000",
   min = "0.0001"
 ) {
-  const {
-    fullPrecision,
-    roundedFormatted,
-    denomination,
-    formatted
-  } = value;
+  const { fullPrecision, roundedFormatted, denomination, formatted } = value;
   const maxHoverDecimals = 8;
   const minHoverDecimals = 4;
   const fullWithoutDecimals = fullPrecision.split(".")[0];
@@ -178,7 +217,10 @@ export function formatExpandedValue(
         decimalsRounded: maxHoverDecimals
       });
       fullValue = round.formatted;
-      if (fullValue.split(".")[1] && fullValue.split(".")[1].length > maxHoverDecimals) {
+      if (
+        fullValue.split(".")[1] &&
+        fullValue.split(".")[1].length > maxHoverDecimals
+      ) {
         fullValue = round.rounded;
       }
     }
@@ -231,7 +273,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
       >
         {`${frontFacingLabel}${postfix}${denominationLabel}`}
       </label>
-      {postfix.length !== 0 &&
+      {postfix.length !== 0 && (
         <ReactTooltip
           id={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
           className={TooltipStyles.Tooltip}
@@ -243,7 +285,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
         >
           {`${fullPrecision} ${denominationLabel}`}
         </ReactTooltip>
-      }
+      )}
     </span>
   );
 };
@@ -254,7 +296,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
     scrollWidth: null,
     clientWidth: null,
     isDisabled: true
-  }
+  };
 
   measure() {
     const { clientWidth, scrollWidth } = this.labelRef;
@@ -263,22 +305,22 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
       scrollWidth,
       clientWidth,
       isDisabled: !(scrollWidth > clientWidth)
-    })
+    });
   }
 
   componentDidMount() {
-    this.measure()
+    this.measure();
   }
 
   componentDidUpdate() {
-    this.measure()
+    this.measure();
   }
 
   shouldComponentUpdate(nextProps: any, nextState: any) {
     return (
       this.state.scrollWidth !== nextState.scrollWidth ||
       this.state.clientWidth !== nextState.clientWidth
-    )
+    );
   }
   render() {
     const { text, keyId } = this.props;
@@ -293,7 +335,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
         >
           {text}
         </label>
-        {!isDisabled &&
+        {!isDisabled && (
           <ReactTooltip
             id={`${keyId}-${text.replace(/\s+/g, "-")}`}
             className={TooltipStyles.Tooltip}
@@ -305,7 +347,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
           >
             {text}
           </ReactTooltip>
-        }
+        )}
       </span>
     );
   }
@@ -571,16 +613,11 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   );
 };
 
-
 export const PendingLabel = () => (
-  <span
-    className={Styles.PendingLabel}
-    data-tip
-    data-for={'processing'}
-  >
+  <span className={Styles.PendingLabel} data-tip data-for={"processing"}>
     Processing <ClipLoader size={8} color="#ffffff" />
     <ReactTooltip
-      id={'processing'}
+      id={"processing"}
       className={TooltipStyles.Tooltip}
       effect="solid"
       place="top"
@@ -594,9 +631,7 @@ export const PendingLabel = () => (
 );
 
 export const ConfirmedLabel = () => (
-  <span className={Styles.ConfirmedLabel}>
-    Confirmed {CheckCircleIcon}
-  </span>
+  <span className={Styles.ConfirmedLabel}>Confirmed {CheckCircleIcon}</span>
 );
 
 export const MovementIcon = (props: MovementIconProps) => {
@@ -696,10 +731,9 @@ export const MovementLabel = (props: MovementLabelProps) => {
           : { ...props.styles, justifyContent: "flex-end" }
       }
     >
-      {showIcon &&
-        props.value !== 0 && (
-          <MovementIcon value={props.value} size={props.size} />
-        )}
+      {showIcon && props.value !== 0 && (
+        <MovementIcon value={props.value} size={props.size} />
+      )}
       {
         <MovementText
           value={props.value}
@@ -715,7 +749,13 @@ export const MovementLabel = (props: MovementLabelProps) => {
 };
 
 export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
-  <span className={classNames(Styles.PillLabel, {[Styles.HideOnMobile]: hideOnMobile})}>{label}</span>
+  <span
+    className={classNames(Styles.PillLabel, {
+      [Styles.HideOnMobile]: hideOnMobile
+    })}
+  >
+    {label}
+  </span>
 );
 
 export const RepBalance = (props: RepBalanceProps) => (
@@ -781,3 +821,139 @@ export const LinearPropertyViewTransaction = (
     <ViewTransactionDetailsButton transactionHash={props.transactionHash} />
   </div>
 );
+
+export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
+  <div className={Styles.WordTrail}>
+    {children}
+    {items.map(({ label, onClick }, index) => (
+      <button
+        key={label}
+        data-testid={`${typeLabel}-${index}`}
+        className={Styles.WordTrailButton}
+        onClick={e => onClick()}
+      >
+        {label}
+      </button>
+    ))}
+  </div>
+);
+
+WordTrail.propTypes = {
+  typeLabel: PropTypes.string,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired
+    })
+  ),
+  children: PropTypes.array
+};
+
+WordTrail.defaultProps = {
+  children: [],
+  items: [],
+  typeLabel: "label-type"
+};
+
+export const CategoryTagTrail = ({
+  categories,
+  tags
+}: CategoryTagTrailProps) => (
+  <div className={Styles.CategoryTagTrail}>
+    <WordTrail items={categories} typeLabel="Category" />
+    {!tags.length && <WordTrail items={tags} typeLabel="Tags" />}
+  </div>
+);
+
+CategoryTagTrail.propTypes = {
+  categories: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired
+    })
+  ).isRequired,
+  tags: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired
+    })
+  ).isRequired
+};
+
+export const ValueDenomination = ({
+  className,
+  prefix,
+  hidePrefix,
+  formatted,
+  fullPrecision,
+  valueClassname,
+  denomination,
+  hideDenomination,
+  postfix,
+  hidePostfix,
+  value
+}: ValueDenominationProps) => (
+  <span className={Styles[className]}>
+    {prefix &&
+      !hidePrefix && (
+        <span className={Styles.prefix}>{prefix}</span>
+      )}
+    {formatted &&
+      fullPrecision && (
+        <span
+          data-tip={fullPrecision}
+          data-event="click focus"
+          className={`value_${valueClassname}`}
+        >
+          {formatted}
+        </span>
+      )}
+    {formatted &&
+      !fullPrecision && (
+        <span className={`value_${valueClassname}`}>{formatted}</span>
+      )}
+    {denomination &&
+      !hideDenomination && (
+        <span className={Styles.denomination}>
+          {denomination}
+        </span>
+      )}
+    {postfix &&
+      !hidePostfix && (
+        <span className={Styles.postfix}>{postfix}</span>
+      )}
+    {!value &&
+      value !== 0 &&
+      !formatted &&
+      formatted !== "0" && <span>&mdash;</span> // null/undefined state handler
+    }
+  </span>
+);
+
+ValueDenomination.propTypes = {
+  valueClassname: PropTypes.string,
+  className: PropTypes.string,
+  value: PropTypes.number,
+  formatted: PropTypes.string,
+  fullPrecision: PropTypes.string,
+  denomination: PropTypes.string,
+  hidePrefix: PropTypes.bool,
+  hidePostfix: PropTypes.bool,
+  prefix: PropTypes.string,
+  postfix: PropTypes.string,
+  hideDenomination: PropTypes.bool
+};
+
+ValueDenomination.defaultProps = {
+  className: null,
+  valueClassname: null,
+  prefix: null,
+  postfix: null,
+  value: null,
+  formatted: null,
+  fullPrecision: null,
+  denomination: null,
+  hidePrefix: false,
+  hidePostfix: false,
+  hideDenomination: false
+};

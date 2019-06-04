@@ -26,7 +26,7 @@ import {
   ProceedsToClaimOnHoldTemplate,
 } from "modules/account/components/notifications-templates";
 
-import { Notification, DateFormattedObject } from "modules/types";
+import { Notification, DateFormattedObject, QueryEndpoints } from "modules/types";
 
 import {
   NOTIFICATION_TYPES,
@@ -81,7 +81,7 @@ class Notifications extends React.Component<
       case NOTIFICATION_TYPES.reportOnMarkets:
         buttonAction = () => {
           this.markAsRead(notification);
-          const queryLink = {
+          const queryLink: QueryEndpoints = {
             [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
             [RETURN_PARAM_NAME]: location.hash,
           };

@@ -1,24 +1,42 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Input from "modules/common/components/input/input";
-
-import Styles from "modules/modal/components/common/common.styles";
+import Styles from "modules/modal/components/common/common.styles.less";
 import ModalActions from "modules/modal/components/common/modal-actions";
 import { windowRef } from "utils/window-ref";
 import { editEndpointParams } from "utils/edit-endpoint-params";
 import { MODAL_NETWORK_CONNECT } from "modules/common-elements/constants";
+import { EnvObject, WindowApp } from "modules/types";
 
-export default class ModalNetworkConnect extends Component {
-  static propTypes = {
-    modal: PropTypes.shape({
-      isInitialConnection: PropTypes.bool
-    }).isRequired,
-    env: PropTypes.object.isRequired,
-    submitForm: PropTypes.func.isRequired,
-    isConnectedThroughWeb3: PropTypes.bool.isRequired
+
+interface ModalNetworkConnectProps {
+  modal: {
+    type: string;
+    isInitialConnection?: boolean;
+  };
+  env: EnvObject;
+  submitForm: Function;
+  isConnectedThroughWeb3: boolean;
+}
+
+interface ModalNetworkConnectState {
+  augurNode: string;
+  ethereumNode: string;
+  connectErrors: Array<string>;
+  formErrors: {
+    augurNode: Array<string>;
+    ethereumNode: Array<string>;
+  };
+  [x: number]: any;
+}
+
+export default class ModalNetworkConnect extends Component<ModalNetworkConnectProps, ModalNetworkConnectState> {
+  public types: {
+    IPC: string;
+    HTTP: string;
+    WS: string;
   };
 
   constructor(props) {
@@ -41,8 +59,8 @@ export default class ModalNetworkConnect extends Component {
       connectErrors: [],
       formErrors: {
         augurNode: [],
-        ethereumNode: []
-      }
+        ethereumNode: [],
+      },
     };
 
     this.types = { IPC: "ipc", HTTP: "http", WS: "ws" };
@@ -90,7 +108,7 @@ export default class ModalNetworkConnect extends Component {
     const protocol = this.calcProtocol(ethereumNode);
     if (protocol) {
       ethNode = {
-        [`${protocol}`]: ethereumNode
+        [`${protocol}`]: ethereumNode,
       };
     }
 
@@ -103,17 +121,17 @@ export default class ModalNetworkConnect extends Component {
         ipc: "",
         http: "",
         ws: "",
-        ...ethNode
-      }
+        ...ethNode,
+      },
     };
     const endpoints = {
       augurNode: updatedEnv["augur-node"],
       ethereumNodeHTTP: updatedEnv["ethereum-node"].http,
-      ethereumNodeWS: updatedEnv["ethereum-node"].ws
+      ethereumNodeWS: updatedEnv["ethereum-node"].ws,
     };
 
     // reloads window
-    editEndpointParams(windowRef, endpoints);
+    editEndpointParams(windowRef as WindowApp, endpoints);
 
     // this.props.submitForm used as a hook for disconnection modal, normally just preventsDefault
     submitForm(e);
@@ -130,24 +148,25 @@ export default class ModalNetworkConnect extends Component {
     return (
       <form
         className={classNames(Styles.ModalForm, {
-          [`${Styles.ModalContainer}`]: modal.type === MODAL_NETWORK_CONNECT
+          [`${Styles.ModalContainer}`]: modal.type === MODAL_NETWORK_CONNECT,
         })}
       >
         <h1>Connect to Augur</h1>
         <label htmlFor="modal__augurNode-input">Augur Node Address:</label>
+        // @ts-ignore
         <Input
           id="modal__augurNode-input"
           type="text"
           className={classNames({
-            [`${Styles.ErrorField}`]: AugurNodeInValid
+            [`${Styles.ErrorField}`]: AugurNodeInValid,
           })}
           value={augurNode}
           placeholder="Enter the augurNode address you would like to connect to."
-          onChange={value => this.validateField("augurNode", value)}
+          onChange={(value) => this.validateField("augurNode", value)}
           required
         />
         {AugurNodeInValid &&
-          formErrors.augurNode.map(error => (
+          formErrors.augurNode.map((error) => (
             <p key={error} className={Styles.Error}>
               {InputErrorIcon()} {error}
             </p>
@@ -160,27 +179,28 @@ export default class ModalNetworkConnect extends Component {
           </div>
         )}
         {!isConnectedThroughWeb3 && (
+          // @ts-ignore
           <Input
             id="modal__ethNode-input"
             type="text"
             className={classNames({
-              [`${Styles.ErrorField}`]: ethereumNodeInValid
+              [`${Styles.ErrorField}`]: ethereumNodeInValid,
             })}
             value={ethereumNode}
             placeholder="Enter the Ethereum Node address you would like to connect to."
-            onChange={value => this.validateField("ethereumNode", value)}
+            onChange={(value) => this.validateField("ethereumNode", value)}
             required
           />
         )}
         {!isConnectedThroughWeb3 &&
           ethereumNodeInValid &&
-          formErrors.ethereumNode.map(error => (
+          formErrors.ethereumNode.map((error) => (
             <p key={error} className={Styles.Error}>
               {InputErrorIcon()} {error}
             </p>
           ))}
         {hasConnectionErrors &&
-          connectErrors.map(error => (
+          connectErrors.map((error) => (
             <p key={error} className={Styles.Error}>
               {InputErrorIcon()} {error}
             </p>
@@ -191,8 +211,8 @@ export default class ModalNetworkConnect extends Component {
               label: "Connect",
               isDisabled: formInvalid,
               type: "purple",
-              action: this.submitForm
-            }
+              action: this.submitForm,
+            },
           ]}
         />
       </form>

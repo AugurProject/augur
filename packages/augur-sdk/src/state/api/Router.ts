@@ -25,7 +25,7 @@ export function Getter(alternateInterface?: string) {
       Router.Add(propertyKey, descriptor.value, Object(target)[target.name + "Params"]);
     }
 
-    Object.defineProperty(Object(target)[propertyKey], 'name', {value: propertyKey, writable: false});
+    Object.defineProperty(Object(target)[propertyKey], 'name', { value: propertyKey, writable: false });
   };
 }
 
@@ -38,11 +38,11 @@ export class Router {
 
   private static routings = new Map();
 
-  private readonly augurAPI: Augur;
+  private readonly augur: Augur;
   private readonly db: DB;
 
-  constructor(augurAPI: Augur, db: DB) {
-    this.augurAPI = augurAPI;
+  constructor(augur: Augur, db: DB) {
+    this.augur = augur;
     this.db = db;
   }
 
@@ -67,6 +67,6 @@ export class Router {
       decodedParams.value[key] = AddressFormatReviver(key, decodedParams.value[key]);
     }
 
-    return getter.func(this.augurAPI, this.db, decodedParams.value);
+    return getter.func(this.augur, this.db, decodedParams.value);
   }
 }

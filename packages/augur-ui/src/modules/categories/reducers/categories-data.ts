@@ -8,7 +8,7 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 const DEFAULT_STATE: Array<Category> = [];
 
 // TODO: make sure to merge in new categories/topics when new market comes in on log
-export default function(categories = DEFAULT_STATE, { type, data }: BaseAction) {
+export default function(categories = DEFAULT_STATE, { type, data }: BaseAction): Array<Category> {
   switch (type) {
     case UPDATE_CATEGORIES:
       return data.categories;

@@ -1,4 +1,4 @@
-import WordTrail from "modules/common/components/word-trail/word-trail";
+import { WordTrail } from "modules/common-elements/labels";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -277,7 +277,7 @@ export default class MarketHeader extends Component {
               <MarketHeaderReporting marketId={market.id} />
               <div className={Styles.Core}>
                 {market.id && <CoreProperties market={market} />}
-                <div className={Styles.TimeStuff}>
+                <div className={Styles.Time}>
                   <MarketTimeline
                     startTime={market.creationTime || 0}
                     currentTime={currentTime || 0}

@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import * as constants from "modules/common-elements/constants";
 import {
   StarIcon,
@@ -14,12 +16,12 @@ import {
   ViewIcon,
   DownloadIcon,
   RotatableChevron,
-  Filter,
+  Filter
 } from "modules/common-elements/icons";
 import classNames from "classnames";
-import EtherscanLink from "modules/common/containers/etherscan-link";
 
 import Styles from "modules/common-elements/buttons.styles";
+import { AppState } from "store";
 
 export interface DefaultButtonProps {
   text: string;
@@ -307,4 +309,58 @@ export const FilterButton = (props: DefaultActionButtonProps) => (
     Filter Topics
     {Filter}
   </button>
+);
+
+interface EtherscanLinkTSXProps {
+  baseUrl?: string | null;
+  txhash: string;
+  label: string;
+  showNonLink?: Boolean;
+}
+
+const EtherscanLinkTSX = ({
+  baseUrl,
+  txhash,
+  label,
+  showNonLink
+}: EtherscanLinkTSXProps) => (
+  <span>
+    {baseUrl && (
+      <a href={baseUrl + txhash} target="blank">
+        {label}
+      </a>
+    )}
+    {!baseUrl && showNonLink && <span>{label}</span>}
+  </span>
+);
+
+EtherscanLinkTSX.propTypes = {
+  baseUrl: PropTypes.string,
+  txhash: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  showNonLink: PropTypes.bool
+};
+
+EtherscanLinkTSX.defaultProps = {
+  baseUrl: null,
+  showNonLink: false
+};
+
+const mapStateToPropsEtherScanLink = (state: AppState) => {
+  const networkId = state.connection.augurNodeNetworkId;
+  const networkLink = {
+    1: "https://etherscan.io/tx/",
+    3: "https://ropsten.etherscan.io/tx/",
+    4: "https://rinkeby.etherscan.io/tx/",
+    19: "http://scan.thundercore.com/tx/",
+    42: "https://kovan.etherscan.io/tx/"
+  };
+
+  return {
+    baseUrl: networkLink[networkId]
+  };
+};
+
+export const EtherscanLink = connect(mapStateToPropsEtherScanLink)(
+  EtherscanLinkTSX
 );

@@ -1,10 +1,25 @@
 import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL } from "modules/common-elements/constants";
+import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
+import { string } from "io-ts";
+import { AnyAction } from "redux";
 
 export enum SizeTypes {
   SMALL = "small",
   NORMAL = "normal",
   LARGE = "large",
+}
+
+export interface Alert {
+  id: string;
+  title: string;
+  description: string;
+  timestamp: number;
+  href: string;
+  action: any;
+  status: string;
+  seen: boolean;
+  level: string;
 }
 
 export interface DateFormattedObject {
@@ -57,6 +72,7 @@ export interface MarketData {
   outcomes: Array<Outcomes>;
   scalarDenomination: string;
   universe: string;
+  tickSize: BigNumber;
   // TODO: this should come from SDK types
 }
 export interface OutcomesData {
@@ -71,14 +87,15 @@ export interface TransacitonStatus {
   };
 }
 export interface Universe {
-  id: string;
-  forkEndTime: number;
-  forkReputationGoal: string;
-  forkingMarket: string;
-  isForking: boolean;
-  winningChildUniverse: string;
-  openInterest: string;
-  forkThreshold: string;
+  id?: string;
+  forkEndTime?: number;
+  forkReputationGoal?: string;
+  forkingMarket?: string;
+  isForking?: boolean;
+  isForkingMarketFinalized?: boolean;
+  winningChildUniverse?: string;
+  openInterest?: BigNumber;
+  forkThreshold?: BigNumber;
 }
 export interface AccountShareBalances {
   [marketId: string]: Array<string>;
@@ -95,13 +112,13 @@ export interface TransacitonData {
   };
 }
 export interface UserReports {
-  markets: {
+  markets?: {
     [universeId: string]: string;
   };
 }
 export interface FormattedNumber {
   fullPrecision: number | string;
-  roundedValue: number;
+  roundedValue: number | BigNumber;
   roundedFormatted: string;
   formatted: string;
   formattedValue: number | string;
@@ -141,8 +158,8 @@ export interface ReportingWindowStats {
   };
 }
 export interface PendingQueue {
-  [pendingId: string]: {
-    [QueueName: string]: {
+  [queueName: string]: {
+    [pendingId: string]: {
       status: string;
     };
   };
@@ -152,7 +169,7 @@ export interface PendingOrders {
 }
 
 export interface OrderBook {
-  marketId: string | undefined;
+  marketId?: string;
   [outcome: number]: {
     [BUY]: {
       [id: string]: Order;
@@ -207,7 +224,15 @@ export interface Notification {
 export interface OrderStatus {
   orderId: string;
   status: string;
+  marketId: string;
+  outcome: any;
+  orderTypeLabel: string;
 }
+
+export interface OrderCancellations {
+  [orderId: string]: { status: string };
+}
+
 export interface Order {
   id: string;
   outcome: string | number; // TODO: need to be consistent with outcome naming and type
@@ -216,6 +241,24 @@ export interface Order {
   price: string;
   type: string;
   orderEstimate: string;
+  outcomeName: string;
+  cumulativeShares: number;
+}
+
+export interface LiquidityOrders {
+  [marketId: string]: {
+    [outcome: number]: Array<LiquidityOrder>;
+  };
+}
+
+export interface LiquidityOrder {
+  id?: string;
+  outcome?: string | number; // TODO: need to be consistent with outcome naming and type
+  index?: number;
+  quantity: BigNumber;
+  price: BigNumber;
+  type: string;
+  orderEstimate: BigNumber;
   outcomeName: string;
 }
 export interface NewMarketPropertiesValidations {
@@ -261,15 +304,18 @@ export interface NewMarket {
   category: string;
   tag1: string;
   tag2: string;
-  settlementFee: string;
-  orderBook: OrderBook;
-  orderBookSorted: OrderBook;
-  orderBookSeries: OrderBook;
+  settlementFee: number;
+  orderBook: {[outcome: number]: Array<LiquidityOrder> };
+  orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
+  orderBookSeries: {[outcome: number]: Array<LiquidityOrder> };
   initialLiquidityEth: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
 }
 
+export interface FilledOrders {
+  [account: string]: Array<FilledOrder>;
+}
 export interface FilledOrder {
   creator: string;
   orderId: string;
@@ -291,17 +337,18 @@ export interface MarketTradingHistory {
   [marketId: string]: TradingHistory;
 }
 export interface MarketsInReporting {
-  designated: Array<string>;
-  open: Array<string>;
-  upcoming: Array<string>;
-  awaiting: Array<string>;
-  dispute: Array<string>;
-  resolved: Array<string>;
+  designated?: Array<string>;
+  open?: Array<string>;
+  upcoming?: Array<string>;
+  awaiting?: Array<string>;
+  dispute?: Array<string>;
+  resolved?: Array<string>;
 }
 export interface GasPriceInfo {
   average: number;
   fast: number;
   safeLow: number;
+  userDefinedGasPrice: string;
 }
 export interface FilterSortOptions {
   marketFilter: string;
@@ -323,9 +370,9 @@ export interface EthereumNodeOptions {
 }
 
 export interface EnvObject {
-  "augur-node": string;
-  "ethereum-node": EthereumNodeOptions;
-  universe: string | null;
+  "augur-node"?: string;
+  "ethereum-node"?: EthereumNodeOptions;
+  universe?: string;
   useWeb3Transport: boolean;
 }
 
@@ -333,6 +380,8 @@ export interface QueryEndpoints {
   ethereum_node_http?: string;
   augur_node?: string;
   ethereum_node_ws?: string;
+  [MARKET_ID_PARAM_NAME]?: string;
+  [RETURN_PARAM_NAME]?: string;
 }
 export interface Endpoints {
   ethereumNodeHTTP: string;
@@ -343,7 +392,7 @@ export interface Endpoints {
 export interface Connection {
   isConnected: boolean;
   isConnectedToAugurNode: boolean;
-  augurNodeNetworkId: string;
+  augurNodeNetworkId?: number;
   isReconnectionPaused: boolean;
 }
 
@@ -362,10 +411,15 @@ export interface Blockchain {
 }
 
 export interface AppStatus {
-  isLogged: boolean | undefined;
-  edgeLoading: boolean | undefined;
-  edgeContext: string | undefined;
-  isConnectionTrayOpen: boolean | undefined;
+  isMobile?: boolean;
+  isMobileSmall?: boolean;
+}
+
+export interface AuthStatus {
+  isLogged?: boolean;
+  edgeLoading?: boolean;
+  edgeContext?: string;
+  isConnectionTrayOpen?: boolean;
 }
 
 export interface PositionsTotal {
@@ -444,8 +498,15 @@ export interface LoginAccount {
   dai?: string;
 }
 
+export interface Web3 {
+  currentProvider: any;
+}
+
 export interface WindowApp extends Window {
   app: object;
+  web3: Web3;
+  localStorage: Storage;
+  integrationHelpers: any;
 }
 
 type ButtonActionType = (
@@ -454,7 +515,7 @@ type ButtonActionType = (
 
 export type NodeStyleCallback = (err: Error | string | null, result?: any) => void;
 
-export interface BaseAction {
+export interface BaseAction extends AnyAction {
   type: string;
-  data: any | undefined;
+  data?: any;
 }

@@ -10,12 +10,13 @@ import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
-  ...state.gasPriceInfo
+  ...state.gasPriceInfo,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeAction: () => dispatch(closeModal()),
   saveAction: (userDefinedGasPrice: number) => {
+    // @ts-ignore
     dispatch(updateGasPriceInfo({ userDefinedGasPrice }));
     dispatch(closeModal());
     dispatch(registerUserDefinedGasPriceFunction());
@@ -25,6 +26,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(Gas)
+    mapDispatchToProps,
+  )(Gas),
 );

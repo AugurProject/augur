@@ -3,19 +3,21 @@ import classNames from "classnames";
 
 import PropTypes from "prop-types";
 import Styles from "modules/market/components/market-header/market-header-reporting.styles";
-import { constants } from "services/constants";
 import MarketLink from "modules/market/components/market-link/market-link";
 import {
   CATEGORICAL,
   TYPE_DISPUTE,
   TYPE_REPORT,
-  MARKET_STATUS_MESSAGES
+  MARKET_STATUS_MESSAGES,
+  REPORTING_STATE,
+  CONTRACT_INTERVAL,
 } from "modules/common-elements/constants";
 import {
   CountdownProgress,
   formatTime
 } from "modules/common-elements/progress";
 import { createBigNumber } from "utils/create-big-number";
+import { PrimaryButton } from "modules/common-elements/buttons";
 
 import canClaimProceeds from "utils/can-claim-proceeds";
 
@@ -63,218 +65,176 @@ export default class MarketHeaderReporting extends Component {
       finalizationTime
     } = market;
 
-    let CatWinnerColorIndex = null;
     const canClaim = canClaimProceeds(
       finalizationTime,
       outstandingReturns,
       currentTimestamp
     );
 
-    if (market.marketType === CATEGORICAL) {
-      if (tentativeWinner && tentativeWinner.id) {
-        CatWinnerColorIndex = (parseInt(tentativeWinner.id, 10) + 1).toString();
-      }
-      if (consensus && consensus.winningOutcome) {
-        CatWinnerColorIndex = parseInt(consensus.winningOutcome, 10).toString();
-      }
-    }
     let content = null;
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
       content = (
         <div
           className={classNames(
-            Styles.MarketHeaderReporting__winner__container,
-            Styles.MarketHeaderReporting__winner__container__set,
-            Styles[
-              `MarketHeaderReporting__winner__container__color__${CatWinnerColorIndex}`
-            ]
+            Styles.Content,
+            Styles.Set
           )}
         >
-          <div className={Styles.MarketHeaderReporting__outcomeContainer}>
-            <span className={Styles.MarketHeader__winning}>
+          <div>
+            <span>
               Winning Outcome
             </span>
-            <span className={Styles.MarketHeaderReporting__winner__row}>
-              <div className={Styles.MarketHeaderReporting__winner}>
-                {consensus.isInvalid
-                  ? "Invalid"
-                  : consensus.outcomeName || consensus.winningOutcome}
-              </div>
+            <span>
+              {consensus.isInvalid
+                ? "Invalid"
+                : consensus.outcomeName || consensus.winningOutcome}
             </span>
           </div>
           {reportingState ===
-            constants.REPORTING_STATE.AWAITING_FINALIZATION && (
-            <div className={Styles.MarketHeaderReporting__buttonContainer}>
-              <button
-                className={Styles.MarketHeaderReporting__button}
-                onClick={() => {
-                  this.setState({ disableFinalize: true });
-                  finalizeMarket(id, err => {
-                    if (err) {
-                      this.setState({ disableFinalize: false });
-                    }
-                  });
-                }}
-                disabled={this.state.disableFinalize || !isLogged}
-              >
-                Finalize
-              </button>
-            </div>
+            REPORTING_STATE.AWAITING_FINALIZATION && (
+            <PrimaryButton
+              id="button"
+              action={() => {
+                this.setState({ disableFinalize: true });
+                finalizeMarket(id, err => {
+                  if (err) {
+                    this.setState({ disableFinalize: false });
+                  }
+                });
+              }}
+              text="Finalize"
+              disabled={this.state.disableFinalize || !isLogged}
+            />
           )}
           {outstandingReturns &&
-            reportingState === constants.REPORTING_STATE.FINALIZED && (
-              <div className={Styles.MarketHeaderReporting__buttonContainer}>
-                <button
-                  className={Styles.MarketHeaderReporting__button}
-                  onClick={() => {
-                    claimTradingProceeds(id);
-                  }}
-                  disabled={!isLogged || !canClaim}
-                >
-                  Claim Proceeds
-                </button>
-              </div>
+            reportingState === REPORTING_STATE.FINALIZED && (
+              <PrimaryButton
+                id="button"
+                action={() => {
+                  claimTradingProceeds(id);
+                }}
+                text="Claim Proceeds"
+                disabled={!isLogged || !canClaim}
+              />
             )}
         </div>
       );
     } else if (
-      reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-      reportingState === constants.REPORTING_STATE.AWAITING_FORK_MIGRATION ||
-      reportingState === constants.REPORTING_STATE.AWAITING_NEXT_WINDOW
+      reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+      reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION ||
+      reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW
     ) {
       content = (
-        <div className={Styles.MarketHeaderReporting__winner__container}>
+        <div className={classNames(Styles.Content, Styles.Dispute)}>
           <div>
-            <span className={Styles.MarketHeader__tentative}>
+            <span>
               Tentative Winning Outcome
             </span>
-            <span className={Styles.MarketHeaderReporting__winner__row}>
-              {tentativeWinner &&
-              (tentativeWinner.name || tentativeWinner.isInvalid) ? (
-                <div className={Styles.MarketHeaderReporting__winner}>
-                  {tentativeWinner &&
-                    (tentativeWinner.isInvalid
-                      ? "Invalid"
-                      : tentativeWinner.name)}
-                </div>
-              ) : (
-                <div style={{ minHeight: "20px" }} />
-              )}
-            </span>
+            {tentativeWinner &&
+            (tentativeWinner.name || tentativeWinner.isInvalid) ? (
+              <span>
+                {tentativeWinner &&
+                  (tentativeWinner.isInvalid
+                    ? "Invalid"
+                    : tentativeWinner.name)}
+              </span>
+            ) : (
+              <div style={{ minHeight: "20px" }} />
+            )}
           </div>
-          {reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE &&
-            isLogged && (
-              <div
-                className={classNames(
-                  Styles.MarketHeaderReporting__winner,
-                  Styles.MarketHeaderReporting__buttonContainer
-                )}
-              >
-                <MarketLink
-                  className={Styles.MarketHeaderReporting__button}
-                  id={id}
-                  linkType={TYPE_DISPUTE}
-                  location={location}
-                >
-                  Dispute
-                </MarketLink>
-              </div>
-            )}
-          {reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE &&
-            !isLogged && (
-              <div className={Styles.MarketHeaderReporting__buttonContainer}>
-                <button
-                  className={Styles.MarketHeaderReporting__button}
-                  disabled={!isLogged}
-                >
-                  Dispute
-                </button>
-              </div>
-            )}
+          {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE && (
+            <MarketLink
+              id={id}
+              linkType={TYPE_DISPUTE}
+              location={location}
+              disabled={!isLogged}
+            >
+              <PrimaryButton
+                id="button"
+                text="Dispute"
+                action={() => {}}
+                disabled={!isLogged}
+              />
+            </MarketLink>
+          )}
         </div>
       );
-    } else if (reportingState === constants.REPORTING_STATE.OPEN_REPORTING) {
+    } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
       content = (
-        <div className={Styles.MarketHeaderReporting__winner__container}>
-          <div className={Styles.MarketHeaderReporting__info}>
-            <span className={Styles.MarketHeader__reporting}>
+        <div className={classNames(Styles.Content, Styles.Report)}>
+          <div>
+            <span>
               Tentative Winning Outcome
             </span>
-            <span className={Styles.MarketHeaderReporting__reporting__row}>
+            <span>
               Designated Reporter Failed to show. Please submit a report.
             </span>
           </div>
-          <div className={Styles.MarketHeaderReporting__buttonContainer}>
-            {isLogged ? (
-              <MarketLink
-                className={Styles.MarketHeaderReporting__buttonNoMargin}
-                id={id}
-                location={location}
-                disabled={!isLogged}
-                linkType={TYPE_REPORT}
-              >
-                Submit Report
-              </MarketLink>
-            ) : (
-              <button
-                className={Styles.MarketHeaderReporting__buttonNoMargin}
-                disabled={!isLogged}
-              >
-                Report
-              </button>
-            )}
-          </div>
+          <MarketLink
+            id={id}
+            location={location}
+            disabled={!isLogged}
+            linkType={TYPE_REPORT}
+          >
+            <PrimaryButton
+              id="button"
+              text="Submit Report"
+              action={() => {}}
+              disabled={!isLogged}
+            />
+          </MarketLink>
         </div>
       );
     } else if (
-      reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING
+      reportingState === REPORTING_STATE.DESIGNATED_REPORTING
     ) {
       content = (
-        <div className={Styles.MarketHeaderReporting__winner__container}>
-          <div className={Styles.MarketHeaderReporting__info}>
-            <span className={Styles.MarketHeader__reporting}>
+        <div className={classNames(Styles.Content, Styles.Report)}>
+          <div>
+            <span>
               Reporting has started
             </span>
-            <span className={Styles.MarketHeaderReporting__reporting__row}>
+            <span>
               {isDesignatedReporter
                 ? "Please Submit a report"
                 : "Awaiting the Market’s Designated Reporter"}
             </span>
           </div>
-          <div className={Styles.MarketHeaderReporting__buttonContainer}>
-            {isLogged && isDesignatedReporter ? (
-              <MarketLink
-                className={Styles.MarketHeaderReporting__buttonNoMargin}
-                id={id}
-                location={location}
-                disabled={!isLogged}
-                linkType={TYPE_REPORT}
-              >
-                Submit Report
-              </MarketLink>
-            ) : null}
-          </div>
+          {isLogged && isDesignatedReporter ? (
+            <MarketLink
+              id={id}
+              location={location}
+              disabled={!isLogged}
+              linkType={TYPE_REPORT}
+            >
+              <PrimaryButton
+                id="button"
+                action={() => {}}
+                text="Report"
+              />
+            </MarketLink>
+          ) : null}
         </div>
       );
     }
 
     if (!content) {
-      return <div className={Styles.MarketHeaderReporting__break} />;
+      return <div className={Styles.Break} />;
     }
 
     let finalizationTimeWithHold = null;
     if (finalizationTime) {
       finalizationTimeWithHold = createBigNumber(finalizationTime)
         .plus(
-          createBigNumber(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
+          createBigNumber(CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
         )
         .toNumber();
     }
 
     return (
       <>
-        {reportingState === constants.REPORTING_STATE.AWAITING_FINALIZATION && (
-          <div className={Styles.MarketHeaderReporting__finalization}>
+        {reportingState === REPORTING_STATE.AWAITING_FINALIZATION && (
+          <div className={Styles.Finalization}>
             <div>Awaiting market finalization</div>
             {!isLogged && (
               <div>
@@ -292,7 +252,7 @@ export default class MarketHeaderReporting extends Component {
         )}
         {outstandingReturns &&
           !canClaim && (
-            <div className={Styles.MarketHeaderReporting__claimOnHold}>
+            <div className={Styles.ClaimHold}>
               <div>
                 <div>3 day waiting period in progress</div>
                 <div>
@@ -309,7 +269,7 @@ export default class MarketHeaderReporting extends Component {
               </div>
             </div>
           )}
-        <div className={Styles.MarketHeaderReporting__container}>{content}</div>
+        {content}
       </>
     );
   }

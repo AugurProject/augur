@@ -5,7 +5,7 @@ import classNames from "classnames";
 import getValue from "utils/get-value";
 import CustomPropTypes from "utils/custom-prop-types";
 import { createBigNumber } from "utils/create-big-number";
-import { DashlineLong } from "modules/common/components/dashline/dashline";
+import { DashlineLong } from "modules/common-elements/labels";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles";
 

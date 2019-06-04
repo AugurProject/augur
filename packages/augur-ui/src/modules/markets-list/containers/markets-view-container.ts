@@ -4,20 +4,22 @@ import { withRouter } from "react-router-dom";
 import MarketsView from "modules/markets-list/components/markets-view";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-
-import { compose } from "redux";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { getSelectedTagsAndCategoriesFromLocation } from "modules/markets/helpers/get-selected-tags-and-categories-from-location";
 import { loadMarketsByFilter } from "modules/markets/actions/load-markets";
 import { buildSearchString } from "modules/markets/selectors/build-search-string";
 import debounce from "utils/debounce";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
-const mapStateToProps = (state, { location }) => {
+const mapStateToProps = (state: AppState, { location }) => {
   const markets = selectMarkets(state);
   const {
     selectedCategoryName,
     keywords,
-    selectedTagNames
+    selectedTagNames,
   } = getSelectedTagsAndCategoriesFromLocation(location);
 
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
@@ -32,24 +34,24 @@ const mapStateToProps = (state, { location }) => {
     defaultFilter: state.filterSortOptions.marketFilter,
     defaultSort: state.filterSortOptions.marketSort,
     defaultMaxFee: state.filterSortOptions.maxFee,
-    defaultHasOrders: state.filterSortOptions.hasOrders
+    defaultHasOrders: state.filterSortOptions.hasOrders,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  loadMarketsInfoIfNotLoaded: marketIds =>
-    dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
-  loadMarketsByFilter: (filter, cb) =>
-    debounce(dispatch(loadMarketsByFilter(filter, cb)))
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+  toggleFavorite: (marketId) => dispatch(toggleFavorite(marketId)),
+  loadMarketsInfoIfNotLoaded: (marketIds) =>
+    dispatch(loadMarketsInfoIfNotLoaded((marketIds))),
+  loadMarketsByFilter: (filter, cb: NodeStyleCallback) =>
+    // @ts-ignore
+    debounce(dispatch(loadMarketsByFilter(filter, cb))),
 });
 
-const Markets = compose(
-  withRouter,
+const Markets = withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )
-)(MarketsView);
+    mapDispatchToProps,
+  )(MarketsView),
+);
 
 export default Markets;

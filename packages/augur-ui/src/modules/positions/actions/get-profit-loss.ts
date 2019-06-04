@@ -10,7 +10,7 @@ export default function getProfitLoss({
   endTime = null,
   periodInterval = null,
   marketId = null,
-  callback: NodeStyleCallback = logError,
+  callback = logError,
 }: any) {
   // NOTE: PL data isn't going to be saved to the application state
   // only the performanceGraph Component. Always pass a callback or you won't

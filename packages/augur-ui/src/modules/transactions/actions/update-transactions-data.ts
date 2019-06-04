@@ -6,19 +6,19 @@ export const UPDATE_TRANSACTIONS_DATA = "UPDATE_TRANSACTIONS_DATA";
 
 export const deleteTransaction = (transactionId: string) => ({
   type: DELETE_TRANSACTION,
-  data: { transactionId }
+  data: { transactionId },
 });
 
 export const deleteTransactionsWithTransactionHash = (
-  transactionHash: string
+  transactionHash: string,
 ) => ({
   type: DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH,
-  data: { transactionHash }
+  data: { transactionHash },
 });
 
 export const clearTransactions = () => ({ type: CLEAR_TRANSACTION_DATA });
 
 export const updateTransactionsData = (updatedTransactionsData: any) => ({
   type: UPDATE_TRANSACTIONS_DATA,
-  data: { updatedTransactionsData }
+  data: { updatedTransactionsData },
 });
