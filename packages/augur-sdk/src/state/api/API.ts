@@ -7,6 +7,7 @@ import "./Markets";
 import "./Ping";
 import "./Trading";
 import "./Users";
+import "./sync-data";
 
 export class API {
   private readonly router: Router;
