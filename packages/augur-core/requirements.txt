@@ -5,7 +5,7 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 asn1crypto==0.24.0        # via coincurve
-cffi==1.11.5              # via coincurve
+cffi==1.12.3              # via coincurve
 coincurve==11.0.0         # via ethereum
 ethereum==2.3.1
 future==0.17.1            # via ethereum
