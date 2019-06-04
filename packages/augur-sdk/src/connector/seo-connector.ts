@@ -13,6 +13,7 @@ import { SubscriptionEventNames } from "../constants";
 import { Subscriptions } from "../subscriptions";
 import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
 import { augurEmitter } from "../events";
+import {MarketGetterParamTypes, MarketGetterReturnTypes} from "../state/api";
 
 const settings = require("@augurproject/sdk/src/state/settings.json");
 
@@ -33,6 +34,10 @@ export class SEOConnector extends Connector {
     await controller.createDb();
 
     this.api = new API(augur, controller.db);
+  }
+
+  public async submitRequest<K extends keyof MarketGetterParamTypes>(name: K, params: MarketGetterParamTypes[K]): Promise<MarketGetterReturnTypes[K]> {
+    return this.api.route(name, params);
   }
 
   public async disconnect(): Promise<any> {

@@ -2,6 +2,7 @@ import { Connector, Callback } from "./connector";
 import { SubscriptionEventNames } from "../constants";
 import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
+import {MarketGetterParamTypes, MarketGetterReturnTypes} from "../state/api";
 
 export class WebsocketConnector extends Connector {
   private socket: WebSocketAsPromised;
@@ -46,6 +47,10 @@ export class WebsocketConnector extends Connector {
     });
 
     return this.socket.open();
+  }
+
+  public async submitRequest<K extends keyof MarketGetterParamTypes>(name: K, params: MarketGetterParamTypes[K]): Promise<MarketGetterReturnTypes[K]> {
+    return this.socket.sendRequest({ method: name, params, jsonrpc: "2.0" });
   }
 
   public async disconnect(): Promise<any> {

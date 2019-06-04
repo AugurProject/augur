@@ -1,5 +1,5 @@
-import { ContractEvents } from "@augurproject/types";
 import { SubscriptionEventNames } from "../constants";
+import {MarketGetterParamTypes, MarketGetterReturnTypes} from "../state/api";
 
 export type Callback = (data: any) => void;
 
@@ -9,6 +9,8 @@ export abstract class Connector {
   // Lifecyle of the connector
   public abstract async connect(params?: any): Promise<any>;
   public abstract async disconnect(): Promise<any>;
+
+  public abstract async submitRequest<K extends keyof MarketGetterParamTypes>(command:K, options: MarketGetterParamTypes[K]) : Promise<MarketGetterReturnTypes[K]>;
 
   // bind API calls
   public abstract bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R>;

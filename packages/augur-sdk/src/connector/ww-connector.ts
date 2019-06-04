@@ -5,11 +5,12 @@ import { Connector, Callback } from "./connector";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Controller } from "../state/Controller";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { EventLogDBRouter } from "../state//db/EventLogDBRouter";
+import { EventLogDBRouter } from "../state/db/EventLogDBRouter";
 import { JsonRpcProvider } from "ethers/providers";
-import { PouchDBFactory } from "../state//db/AbstractDB";
+import { PouchDBFactory } from "../state/db/AbstractDB";
 import { SubscriptionEventNames } from "../constants";
 import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
+import {MarketGetterParamTypes, MarketGetterReturnTypes} from "../state/api";
 
 const settings = require("@augurproject/sdk/src/state/settings.json");
 
@@ -52,6 +53,10 @@ export class WebWorkerConnector extends Connector {
 
   public async disconnect(): Promise<any> {
     this.worker.terminate();
+  }
+
+  public async submitRequest<K extends keyof MarketGetterParamTypes>(name: K, params: MarketGetterParamTypes[K]): Promise<MarketGetterReturnTypes[K]> {
+    return this.api.route(name, params);
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {

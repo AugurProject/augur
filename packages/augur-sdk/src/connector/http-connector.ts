@@ -1,6 +1,7 @@
 import { Connector, Callback } from "./connector";
 import { SubscriptionEventNames } from "../constants";
 import fetch from "cross-fetch";
+import {MarketGetterParamTypes, MarketGetterReturnTypes} from "../state/api";
 
 export class HTTPConnector extends Connector {
 
@@ -15,6 +16,16 @@ export class HTTPConnector extends Connector {
   public async disconnect(): Promise<any> {
     return Promise.resolve();
   }
+
+  public async submitRequest<K extends keyof MarketGetterParamTypes>(name: K, params: MarketGetterParamTypes[K]): Promise<MarketGetterReturnTypes[K]> {
+    return <MarketGetterReturnTypes[K]>(await (await fetch(this.endpoint, {
+      method: "POST",
+      body: JSON.stringify({ id: 42, method: name, params, jsonrpc: "2.0" }),
+      headers: { "Content-Type": "application/json" },
+    })).json());
+
+  }
+
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R) {
     return async (params: P): Promise<R> => {
