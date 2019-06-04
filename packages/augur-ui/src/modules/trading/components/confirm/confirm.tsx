@@ -18,13 +18,11 @@ import {
 } from "modules/common-elements/constants";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
-import {
-  infoIcon
-} from "modules/common/components/icons";
 import Styles from "modules/trading/components/confirm/confirm.styles";
 import {
   XIcon,
-  ExclamationCircle
+  ExclamationCircle,
+  InfoIcon
 } from "modules/common-elements/icons";
 import { formatGasCostToEther, formatShares } from "utils/format-number";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
@@ -254,7 +252,7 @@ class Confirm extends Component {
                     data-tip
                     data-for="tooltip--confirm"
                   >
-                    {infoIcon}
+                    {InfoIcon}
                   </label>
                   <ReactTooltip
                     id="tooltip--confirm"

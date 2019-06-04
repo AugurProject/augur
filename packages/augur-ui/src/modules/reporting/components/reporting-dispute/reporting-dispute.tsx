@@ -7,7 +7,7 @@ import * as speedomatic from "speedomatic";
 import { createBigNumber } from "utils/create-big-number";
 import { formatGasCostToEther } from "utils/format-number";
 import MarketPreview from "modules/market/containers/market-preview";
-import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
+import NullStateMessage from "modules/common-elements/null-state-message";
 import ReportingDisputeForm from "modules/reporting/containers/reporting-dispute-form";
 import ReportingDisputeConfirm from "modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm";
 import { TYPE_VIEW, ZERO } from "modules/common-elements/constants";

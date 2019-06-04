@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import formatAddress from "modules/auth/helpers/format-address";
-import { prevIcon, nextIcon } from "modules/common/components/icons";
+import { prevIcon, nextIcon } from "modules/common-elements/icons";
 import { formatEther } from "utils/format-number";
 
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";

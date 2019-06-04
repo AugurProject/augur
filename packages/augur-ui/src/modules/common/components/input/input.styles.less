@@ -45,11 +45,13 @@
     background-color: @color-transparent;
     height: @size-16;
     line-height: @size-16;
-    margin-top: -@size-9;
     width: @size-16;
 
+    > svg > path {
+      stroke: @color-primary-text;
+    }
+
     @media @breakpoint-mobile {
-      margin-top: 0;
       max-height: @size-24;
       min-height: @size-24;
       min-width: @size-24;
