@@ -1,4 +1,0 @@
-export const marketAdditionalDetailsDetailsContainer: string;
-export const marketAdditionalDetailsDetailsWrapper: string;
-export const marketAdditionalDetailsDetailsHelperText: string;
-export const marketAdditionalDetailsDetailsDetailsText: string;
