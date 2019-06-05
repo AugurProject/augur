@@ -1,6 +1,6 @@
-import * as Sync from "./Sync";
-import {Subscriptions} from "../subscriptions";
-import {augurEmitter} from "../events";
+import * as Sync from "@augurproject/sdk/build/state/Sync";
+import {Subscriptions} from "@augurproject/sdk/build/subscriptions";
+import {augurEmitter} from "@augurproject/sdk/build/events";
 
 // this to be as typesafe as possible with self and addEventListener + postMessage
 const ctx: Worker = self as any;

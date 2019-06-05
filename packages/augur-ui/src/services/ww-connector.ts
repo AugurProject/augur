@@ -1,8 +1,9 @@
-import RunWorker from "../state//Sync.worker";
+import RunWorker from "./Sync.worker";
 
-import {API} from "../state/getter/API";
-import {Callback, Connector} from "./connector";
-import {SubscriptionEventNames} from "../constants";
+import {API} from "@augurproject/sdk/build/state/getter/API";
+import {Callback, Connector} from "@augurproject/sdk/build/connector/connector";
+import {SubscriptionEventNames} from "@augurproject/sdk/build/constants";
+import {buildAPI} from "@augurproject/sdk/build/state";
 
 export class WebWorkerConnector extends Connector {
   private api: API;
@@ -15,6 +16,8 @@ export class WebWorkerConnector extends Connector {
       ethNodeUrl,
       account
     });
+
+    this.api = await buildAPI(ethNodeUrl, account);
 
     this.worker.onmessage = (event: MessageEvent) => {
       try {
