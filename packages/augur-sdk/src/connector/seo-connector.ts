@@ -46,6 +46,7 @@ export class SEOConnector extends Connector {
   }
 
   public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
+    console.log("On called with eventName: " + eventName);
     const subscription: string = this.events.subscribe(eventName, callback);
     this.subscriptions[eventName] = { id: subscription, callback };
   }

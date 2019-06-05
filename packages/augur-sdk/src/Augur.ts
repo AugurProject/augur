@@ -93,7 +93,8 @@ export class Augur<TProvider extends Provider = Provider> {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
-    Augur.connector = connector;
+    if (!Augur.connector || connector.constructor.name !== "EmptyConnector")
+      Augur.connector = connector;
 
     // API
     this.addresses = addresses;
@@ -103,8 +104,9 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   public static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: Connector = new EmptyConnector()): Promise<Augur> {
-    // has to be static because of the way we instantiate boundTo methods 
-    Augur.connector = connector;
+    // has to be static because of the way we instantiate boundTo methods
+    if (!Augur.connector || connector.constructor.name !== "EmptyConnector")
+      Augur.connector = connector;
 
     const networkId = await provider.getNetworkId();
     const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector);
