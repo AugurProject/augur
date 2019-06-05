@@ -197,7 +197,8 @@
     "webpack-deadcode-plugin": "0.1.11",
     "webpack-dev-middleware": "3.3.0",
     "webpack-hot-middleware": "2.24.2",
-    "webpack-merge": "4.1.4"
+    "webpack-merge": "4.1.4",
+    "worker-loader": "2.0.0"
   },
   "resolutions": {
     "**/sha3": "2.0.1"
