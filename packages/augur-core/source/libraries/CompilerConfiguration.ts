@@ -7,6 +7,7 @@ export class CompilerConfiguration {
     public readonly contractInterfacesOutputPath: string;
     public readonly abiOutputPath: string;
     public readonly contractOutputPath: string;
+    public readonly fullContractOutputPath: string
     public readonly enableSdb: boolean;
     public readonly useFlattener: boolean;
 
@@ -21,6 +22,7 @@ export class CompilerConfiguration {
 
         this.abiOutputPath = path.join(outputRoot, 'abi.json');
         this.contractOutputPath = path.join(outputRoot, 'contracts.json');
+        this.fullContractOutputPath = path.join(outputRoot, 'contracts_full.json');
         this.enableSdb = enableSdb;
         this.useFlattener = useFlattener;
     }

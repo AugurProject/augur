@@ -22,6 +22,8 @@ import 'ROOT/ITime.sol';
 
 
 // Centralized approval authority and event emissions
+
+/// @title Augur
 contract Augur is IAugur {
     using SafeMathUint256 for uint256;
 
@@ -114,6 +116,10 @@ contract Augur is IAugur {
     // Registry
     //
 
+    /// @dev Adds a contract key/address pair to the Augur contract's registry
+    /// @param _key Key name used to register contract
+    /// @param _address Contract address to register
+    /// @return true
     function registerContract(bytes32 _key, address _address) public returns (bool) {
         require(msg.sender == uploader);
         require(registry[_key] == address(0));
