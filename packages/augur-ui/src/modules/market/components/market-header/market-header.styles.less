@@ -35,7 +35,7 @@
       flex-wrap: wrap;
       margin-right: @size-20;
       max-width: 654px;
-      padding-top: 0.125rem;
+      padding-top: 2px;
 
       > span {
         margin: 0 @size-8 0 0;
@@ -56,7 +56,7 @@
 .Toggle {
   display: flex;
   justify-content: center;
-  margin-top: 1.85rem;
+  margin-top: @size-30;
 
   > button {
     background: @color-theme-primary;
@@ -81,12 +81,12 @@
   }
 }
 
-.MarketHeader__AdditionalDetails-text,
-.MarketHeader__AdditionalDetails-text:disabled {
+.AdditionalDetails,
+.AdditionalDetails:disabled {
   background: none;
   border: 0;
   margin: 0;
-  margin-top: -10px;
+  margin-top: -@size-10;
   max-height: 90px;
   overflow: hidden;
   padding: 0 0 @size-8 0;
@@ -98,19 +98,18 @@
   > p {
     margin-top: 0;
   }
-}
 
-.MarketHeader__AdditionalDetails-tall {
-  max-height: 1000px;
-  overflow-y: auto;
-  transition: max-height 0.15s ease-in;
+  &.Tall {
+    max-height: 1000px;
+    overflow-y: auto;
+    transition: max-height 0.15s ease-in;
+  }
 }
 
 .BackButton {
-  .caps--small();
+  .text-10;
 
   display: flex;
-  font-size: 10px;
   text-transform: capitalize;
 
   span {
@@ -119,8 +118,8 @@
 
   svg {
     height: @size-16;
-    margin-right: @size-20;
     width: @size-18;
+    margin-right: @size-20;
 
     rect {
       fill: @color-alternate-text;
@@ -155,75 +154,36 @@
   > .Properties > section {
     display: none;
   }
-}
 
-.MarketHeader__description {
-  color: @color-secondary-text;
-  flex-grow: 1;
-  font-size: @font-size-rather-large;
-  font-weight: bold;
-  line-height: normal;
-}
+  > div:first-of-type {
+    flex: 1;
+    margin-right: @size-20;
+    max-width: 654px;
 
-.MarketHeader__descriptionContainer {
-  border-radius: @size-4;
-  overflow-y: auto;
-  padding: @size-16;
-  padding-bottom: 0;
-  padding-left: 0;
-  padding-top: @size-4;
-
-  > p {
-    margin-bottom: 0;
-  }
-}
-
-.MarketHeader__descriptionContainer:focus {
-  outline: none;
-}
-
-.MarketHeader__readMoreButton {
-  .text-12;
-
-  color: @color-secondary-text;
-  cursor: pointer;
-  margin-top: @size-12;
-  text-transform: uppercase;
-
-  svg {
-    height: @size-16;
-    margin-right: @size-8;
-
-    polyline {
-      stroke: @color-secondary-text;
-      stroke-width: 3;
+    &.Collapsed { 
+      display: flex;
+      flex: 1;
+      width: 100%;
     }
-  }
+
+    > h1 {
+      .text-24-bold;
+
+      color: @color-secondary-text;
+      flex-grow: 1;
+    }
+
+    > div:first-of-type {
+      padding: 0 0 @size-16;
+
+      > p {
+        margin-bottom: 0;
+      }
+    }
+  }   
 }
 
-.MarketHeader__readMoreButton-less {
-  align-items: center;
-  display: flex;
-  margin-top: 0;
-}
-
-.MarketHeader__descContainer {
-  flex: 1;
-  margin-right: @size-20;
-  max-width: 654px;
-}
-
-.MarketHeader__collapsed {
-  display: flex;
-  flex: 1;
-  width: 100%;
-}
-
-.MarketHeader__details:first-of-type {
-  padding: 0 0 @size-16 0;
-}
-
-.MarketHeader__details {
+.Details {
   padding: 0;
 
   h4 {
@@ -231,8 +191,8 @@
 
     color: @color-shadow-text;
     display: block;
-    padding-bottom: 0.125rem;
-    padding-right: 0.5em;
+    padding-bottom: 2px;
+    padding-right: @size-8;
     text-transform: uppercase;
   }
 
@@ -250,21 +210,43 @@
       text-overflow: ellipsis;
     }
   }
+
+  > button {
+    .text-12;
+
+    color: @color-secondary-text;
+    cursor: pointer;
+    margin-top: @size-12;
+    text-transform: uppercase;
+
+    svg {
+      height: @size-12;
+      margin-right: @size-8;
+
+      polyline {
+        stroke: @color-secondary-text;
+        stroke-width: 3;
+      }
+    }
+
+    &.Less {
+      align-items: center;
+      display: flex;
+      margin-top: 0;
+    }
+  }
 }
 
 .Properties {
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin-left: 3rem;
-  min-height: fit-content;
-  min-width: 370px;
-  padding-left: @size-8;
+  margin-left: @size-48;
 }
 
 .Core {
   display: flex;
-  padding: 1.125rem 0 0;
+  padding: @size-18 0 0;
 
   > div:first-of-type {
     padding-top: 1px;
@@ -321,34 +303,31 @@
     }
   }
 
-  .MarketHeader__description,
-  .MarketHeader_toggleContainer,
   .BackButton {
     display: none;
-  }
-
-  .MarketHeader__descContainer {
-    margin: @size-24 0 @size-20 @size-8;
-    max-width: unset;
   }
 
   .MainValues {
     flex-direction: column;
 
     > .Properties {
+      border-bottom: 1px solid @color-primary-background;
+      margin-left: 0;
+
       > section {
         display: flex;
       }
     }
-  }
 
-  .Properties {
-    border-bottom: 1px solid @color-primary-background;
-    flex-direction: column;
-    margin-bottom: 0;
-    margin-left: 0;
-    min-width: unset;
-    padding-left: 0;
+    > div:first-of-type {
+      > h1 {
+        display: none;
+      }
+
+      > div {
+        margin: @size-12 0 @size-10 @size-8;
+      }
+    }
   }
 
   .Time {
@@ -359,7 +338,6 @@
   }
 
   .Toggle {
-    margin-top: 0;
-    margin-bottom: @size-10;
+    display: none;
   }
 }
