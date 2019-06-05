@@ -1,8 +1,8 @@
 import { API } from "@augurproject/sdk/build/state/api/API";
-import { SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/api/Markets";
+import { SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/getter/Markets";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { Action, Coin } from "@augurproject/sdk/src/state/api/Accounts";
+import { Action, Coin } from "@augurproject/sdk/build/state/getter/Accounts";
 import {
   ACCOUNTS,
   makeDbMock,
