@@ -3,20 +3,29 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { twoArrows } from "modules/common/components/icons";
+import { TwoArrows } from "modules/common-elements/icons";
 
 import Styles from "modules/market/components/market-view/market-outcome-selector.styles";
 
-const MarketOutcomeSelector = ({ outcomeName, outcome, selectOutcome }) => (
-  <div
-    role="button"
-    tabIndex="-1"
+interface MarketOutcomeSelectorProps {
+  outcome?: any | null;
+  outcomeName?: string;
+  selectOutcome: Function;
+}
+
+const MarketOutcomeSelector = ({
+  outcomeName,
+  outcome,
+  selectOutcome
+}: MarketOutcomeSelectorProps) => (
+  <button
+    tabIndex={-1}
     className={Styles.MarketOutcomeSelector}
-    onClick={selectOutcome}
+    onClick={e => selectOutcome()}
   >
     <div>{outcome ? outcomeName : "Select an Outcome"}</div>
-    <span>{twoArrows}</span>
-  </div>
+    <span>{TwoArrows}</span>
+  </button>
 );
 
 MarketOutcomeSelector.propTypes = {

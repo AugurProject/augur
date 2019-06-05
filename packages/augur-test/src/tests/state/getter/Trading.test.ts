@@ -5,9 +5,9 @@ import {
   ContractAPI,
 } from "../../../libs";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
-import { API } from "@augurproject/sdk/build/state/api/API";
+import { API } from "@augurproject/sdk/build/state/getter/API";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { MarketTradingHistory, Orders } from "@augurproject/sdk/build/state/api/Trading";
+import { MarketTradingHistory, Orders } from "@augurproject/sdk/build/state/getter/Trading";
 import { BigNumber } from "bignumber.js";
 import { stringTo32ByteHex } from "../../../libs/Utils";
 
@@ -19,7 +19,7 @@ let john: ContractAPI;
 let mary: ContractAPI;
 
 beforeAll(async () => {
-  const {provider, addresses} = await deployContracts(ACCOUNTS, compilerOutput);
+  const { provider, addresses } = await deployContracts(ACCOUNTS, compilerOutput);
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
@@ -144,7 +144,7 @@ test("State API :: Trading :: getOrders", async () => {
     orderState: "OPEN"
   });
 
-  await expect (orders).toEqual({});
+  await expect(orders).toEqual({});
 
   // Get Canceled orders
   orders = await api.route("getOrders", {

@@ -5,7 +5,7 @@ import { createBigNumber } from "utils/create-big-number";
 import getValue from "utils/get-value";
 import insufficientFunds from "modules/markets/helpers/insufficient-funds";
 
-import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";
+import MarkdownRenderer from "modules/common-elements/markdown-renderer";
 import {
   formatEtherEstimate,
   formatGasCostToEther,

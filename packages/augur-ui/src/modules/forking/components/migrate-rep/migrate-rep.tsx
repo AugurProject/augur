@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet";
 import * as speedomatic from "speedomatic";
 import { formatGasCostToEther } from "utils/format-number";
 import MarketPreview from "modules/market/containers/market-preview";
-import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
+import NullStateMessage from "modules/common-elements/null-state-message";
 import MigrateRepForm from "modules/forking/components/migrate-rep-form/migrate-rep-form";
 import MigrateRepConfirm from "modules/forking/components/migrate-rep-confirm/migrate-rep-confirm";
 import { TYPE_VIEW } from "modules/common-elements/constants";

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture as pytest_fixture
 from utils import stringToBytes, AssertLog
 
@@ -37,9 +36,10 @@ def test_real_time(localFixture, augur):
     assert time.getTypeName() == stringToBytes("Time")
 
     # If we change the block timestamp it will be reflected in the new time
-    localFixture.chain.head_state.timestamp = 500
+    curTime = time.getTimestamp()
+    localFixture.eth_tester.time_travel(curTime + 500)
 
-    assert time.getTimestamp() == 500
+    assert time.getTimestamp() == curTime + 500
 
 
 @pytest_fixture(scope="session")

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import CustomPropTypes from "utils/custom-prop-types";
 import Styles from "modules/market/components/market-additional-details/market-additional-details.style";
 import { SCALAR } from "modules/common-elements/constants";
-import MarkdownRenderer from "modules/common/components/markdown-renderer/markdown-renderer";
+import MarkdownRenderer from "modules/common-elements/markdown-renderer";
 
 const MarketAdditonalDetails = ({
   details,

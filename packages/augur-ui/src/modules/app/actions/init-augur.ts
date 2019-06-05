@@ -14,7 +14,7 @@ import { updateUniverse } from "modules/universe/actions/update-universe";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
 import logError from "utils/log-error";
-import networkConfig from "config/network";
+import networkConfig from "config/network.json";
 import { version } from "version";
 import { updateVersions } from "modules/app/actions/update-versions";
 import { defaultTo, isEmpty } from "lodash";
@@ -32,7 +32,7 @@ import { setSelectedUniverse } from "modules/auth/actions/selected-universe-mana
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { NodeStyleCallback } from "modules/types";
+import { NodeStyleCallback, WindowApp } from "modules/types";
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -68,10 +68,11 @@ function pollForAccount(
           },
         );
       }
+      const windowApp = windowRef as WindowApp;
       const disclaimerSeen =
-        windowRef &&
-        windowRef.localStorage &&
-        windowRef.localStorage.getItem(DISCLAIMER_SEEN);
+      windowApp &&
+      windowApp.localStorage &&
+      windowApp.localStorage.getItem(DISCLAIMER_SEEN);
       if (!disclaimerSeen) {
         dispatch(
           updateModal({
@@ -90,9 +91,10 @@ function loadAccount(
   callback: NodeStyleCallback,
 ) {
   let loggedInAccount: any = null;
+  const windowApp = windowRef as WindowApp;
   const usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
-  if (windowRef.localStorage && windowRef.localStorage.getItem) {
-    loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
+  if (windowApp.localStorage && windowApp.localStorage.getItem) {
+    loggedInAccount = windowApp.localStorage.getItem("loggedInAccount");
   }
   getAccounts().then((accounts: Array<string>) => {
     let account = existing;
@@ -203,17 +205,19 @@ export function connectAugur(
             );
           }
         });
+        const windowApp = windowRef as WindowApp;
         let universeId =
           env.universe ||
           AugurJS.augur.contracts.addresses[getNetworkId()]
             .Universe;
         if (
-          windowRef.localStorage &&
-          windowRef.localStorage.getItem &&
+          windowApp.localStorage &&
+          windowApp.localStorage.getItem &&
           loginAccount.address
         ) {
+          const localUniverse = windowApp.localStorage.getItem && windowApp.localStorage.getItem(loginAccount.address) || "";
           const storedUniverseId = JSON.parse(
-            windowRef.localStorage.getItem(loginAccount.address),
+            localUniverse,
           ).selectedUniverse[
             getState().connection.augurNodeNetworkId ||
             getNetworkId().toString()
@@ -229,7 +233,7 @@ export function connectAugur(
             pollForAccount(dispatch, getState, null);
             pollForNetwork(dispatch, getState);
           }
-          callback();
+          callback(null);
         };
 
         if (process.env.NODE_ENV === "development") {
