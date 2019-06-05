@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { AugurLoadingLogo } from "modules/common/components/icons";
+import { AugurLoadingLogo } from "modules/common-elements/icons";
 import Styles from "modules/app/components/logo.styles";
 
 interface LogoProps {

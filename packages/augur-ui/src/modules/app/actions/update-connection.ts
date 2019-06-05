@@ -30,7 +30,7 @@ export function updateAugurNodeConnectionStatus(isConnectedToAugurNode: boolean)
  * @param {string} augurNodeNetworkId
  * @return {{type: string, augurNodeNetworkId: *}} returns action
  */
-export function updateAugurNodeNetworkId(augurNodeNetworkId: string) {
+export function updateAugurNodeNetworkId(augurNodeNetworkId: number) {
   return {
     type: UPDATE_AUGUR_NODE_NETWORK_ID,
     data: { augurNodeNetworkId }

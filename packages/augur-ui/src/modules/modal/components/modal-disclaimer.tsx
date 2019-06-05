@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import ModalActions from "modules/modal/components/common/modal-actions";
-import Checkbox from "modules/common/components/checkbox/checkbox";
+import { Checkbox } from "modules/common-elements/form";
 
 import Styles from "modules/modal/components/common/common.styles.less";
 

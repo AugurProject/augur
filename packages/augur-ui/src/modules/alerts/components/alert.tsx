@@ -5,19 +5,19 @@ import moment from "moment";
 import classNames from "classnames";
 
 import { Close } from "modules/common/components/icons";
-import Styles from "modules/alerts/components/alert.styles";
+import Styles from "modules/alerts/components/alert.styles.less";
 import { EtherscanLink } from "modules/common-elements/buttons";
 
 interface AlertProps {
-  id: String;
-  description?: String;
-  linkPath?: String | any;
+  id: string;
+  description?: string;
+  linkPath?: string | any;
   onClick?: Function;
   removeAlert: Function;
-  seen: Boolean;
-  timestamp?: Number;
-  title: String;
-  status: String;
+  seen: boolean;
+  timestamp: number;
+  title: string;
+  status: string;
   toggleAlerts: Function;
 }
 
@@ -41,7 +41,7 @@ export default class Alert extends Component<AlertProps> {
     description: "",
     linkPath: null,
     onClick: null,
-    timestamp: null
+    timestamp: 0,
   };
 
   render() {
@@ -68,7 +68,6 @@ export default class Alert extends Component<AlertProps> {
       >
         <div className={Styles.Column} style={{ flex: "1" }}>
           <Link
-            className={Styles.Link}
             to={linkPath || ""}
             onClick={e => {
               e.stopPropagation();

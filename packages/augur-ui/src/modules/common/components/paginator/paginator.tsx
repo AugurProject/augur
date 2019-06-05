@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { PaginationArrorw } from "modules/common/components/icons";
+import { PaginationArrow } from "modules/common-elements/icons";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 
 import parseQuery from "modules/routes/helpers/parse-query";
@@ -259,7 +259,7 @@ class Paginator extends Component<PaginatorProps, PaginatorState> {
                   search: backQuery
                 }}
               >
-                <button aria-label="Previous page">{PaginationArrorw}</button>
+                <button aria-label="Previous page">{PaginationArrow}</button>
               </Link>
             )}
           </div>
@@ -285,7 +285,7 @@ class Paginator extends Component<PaginatorProps, PaginatorState> {
                   className={Styles.forwardArrorw}
                   aria-label="Next page"
                 >
-                  {PaginationArrorw}
+                  {PaginationArrow}
                 </button>
               </Link>
             )}

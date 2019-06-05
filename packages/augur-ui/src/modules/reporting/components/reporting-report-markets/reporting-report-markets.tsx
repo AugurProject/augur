@@ -7,7 +7,7 @@ import ReportingHeader from "modules/reporting/containers/reporting-header";
 import MarketPreview from "modules/market/containers/market-preview";
 import Paginator from "modules/common/components/paginator/paginator";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
-import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
+import NullStateMessage from "modules/common-elements/null-state-message";
 
 export const ReportSection = ({
   title,
