@@ -8,7 +8,7 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
 import { Markets } from "./getter/Markets";
 import { SubscriptionEventNames } from "../constants";
-import { SEOConnector } from "../connector/seo-connector";
+import { WebsocketConnector } from "../connector/ws-connector";
 
 const settings = require("@augurproject/sdk/src/state/settings.json");
 
@@ -16,24 +16,23 @@ console.log("Starting web worker");
 
 (async function() {
   try {
-    const connector = new SEOConnector();
+    const connector = new WebsocketConnector("ws://localhost:9001");
     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
     const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector);
     await augur.connect();
 
-    augur.on(SubscriptionEventNames.CompleteSetsPurchased, (data: any): void => {
-      console.log(data);
-      augur.off(SubscriptionEventNames.CompleteSetsPurchased);
+    augur.on(SubscriptionEventNames.CompleteSetsPurchased, (...args: Array<any>): void => {
+      console.log(args);
     });
 
-    augur.on(SubscriptionEventNames.Burn, (data: any): void => {
-      console.log(data);
+    augur.on(SubscriptionEventNames.Burn, (...args: Array<any>): void => {
+      console.log(args);
       augur.off(SubscriptionEventNames.Burn);
     });
 
-    augur.on(SubscriptionEventNames.Approval, (data: any): void => {
-      console.log(data);
+    augur.on(SubscriptionEventNames.Approval, (...args: Array<any>): void => {
+      console.log(args);
       augur.off(SubscriptionEventNames.Approval);
     });
 

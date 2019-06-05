@@ -22,13 +22,11 @@ export class WebsocketConnector extends Connector {
     this.socket.onMessage.addListener((message: string) => {
       try {
         const response = JSON.parse(message);
+
         if (response.result.result) {
-          const events = response.result.result;
-          events.map((data: any) => {
-            if (this.subscriptions[data.eventName]) {
-              this.subscriptions[data.eventName].callback(data);
-            }
-          });
+          if (this.subscriptions[response.result.eventName]) {
+            this.subscriptions[response.result.eventName].callback(...(response.result.result));
+          }
         }
       } catch (error) {
         console.error("Bad JSON RPC response: " + message);

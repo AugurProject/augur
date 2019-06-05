@@ -1,7 +1,7 @@
 import { ContractEvents } from "@augurproject/types";
 import { SubscriptionEventNames } from "../constants";
 
-export type Callback = (data: any) => void;
+export type Callback = (...args: Array<any>) => void;
 
 export abstract class Connector {
   protected subscriptions: { [event: string]: { id: string, callback: Callback } } = {};

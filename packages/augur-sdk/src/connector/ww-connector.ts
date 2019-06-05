@@ -36,13 +36,10 @@ export class WebWorkerConnector extends Connector {
       try {
         if (event.data.subscribed) {
           this.subscriptions[event.data.subscribed].id = event.data.subscription;
-          console.log(this.subscriptions[event.data.subscribed]);
         } else {
-          event.data.map((data: any) => {
-            if (this.subscriptions[data.eventName]) {
-              this.subscriptions[data.eventName].callback(data);
-            }
-          });
+          if (this.subscriptions[event.data.eventName]) {
+            this.subscriptions[event.data.eventName].callback(...(event.data.result));
+          }
         }
       } catch (error) {
         console.error("Bad Web Worker response: " + event);
