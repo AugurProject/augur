@@ -6,9 +6,9 @@
 // import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 // import { EthersProvider } from "@augurproject/ethersjs-provider";
 // import { JsonRpcProvider } from "ethers/providers";
-// import { Markets } from "./api/Markets";
+// import { Markets } from "./getter/Markets";
 // import { SubscriptionEventNames } from "../constants";
-// import { WebsocketConnector } from "../connector/ws-connector";
+// import { WebWorkerConnector } from "../connector/ww-connector";
 
 // const settings = require("@augurproject/sdk/src/state/settings.json");
 
@@ -18,7 +18,7 @@
 //   try {
 //     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
 //     const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-//     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], new WebsocketConnector("ws://localhost:9001"));
+//     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], new WebWorkerConnector());
 //     await augur.connect();
 
 //     augur.on(SubscriptionEventNames.CompleteSetsPurchased, (data: any): void => {

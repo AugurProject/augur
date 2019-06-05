@@ -40,72 +40,52 @@ const MarketScalarOutcomeDisplay = ({
     left: outcomeVerticalLinePosition() + "%"
   };
 
-  const minValue = `${min}`;
-
-  const maxValue = `${max}`;
-
   const lastPriceDenomination = getValue(
     outcomes[0],
     "lastPricePercent.denomination"
   );
 
   return (
-    <div className={Styles.MarketScalarOutcomes}>
-      <div className={Styles.MarketScalarOutcomes__graph}>
-        <div className={Styles.MarketScalarOutcomes__edge} />
-        <div className={Styles.MarketScalarOutcomes__line}>
+    <div className={Styles.ScalarOutcomes}>
+      <div>
+        <div />
+        <div>
           <DashlineLong />
-          <span
-            className={Styles.MarketScalarOutcomes__current}
-            style={currentValuePosition}
-          >
-            <div>
-              <span
-                className={Styles["MarketScalarOutcomes__current-value"]}
-                data-testid="midpoint"
-              >
-                {getValue(outcomes[0], "lastPricePercent.formatted")}
-              </span>
-              <span
-                className={Styles["MarketScalarOutcomes__current-denomination"]}
-              >
-                {lastPriceDenomination}
-              </span>
-              <MarketOutcomeTradingIndicator
-                outcome={outcomes[0]}
-                location="scalarScale"
-              />
-            </div>
-          </span>
+          <div style={currentValuePosition}>
+            <span>
+              {getValue(outcomes[0], "lastPricePercent.formatted")}
+            </span>
+            <span>
+              {lastPriceDenomination}
+            </span>
+            <MarketOutcomeTradingIndicator
+              outcome={outcomes[0]}
+              location="scalarScale"
+            />
+          </div>
         </div>
-        <div className={Styles.MarketScalarOutcomes__edge} />
+        <div />
       </div>
       <div
         className={classNames(
-          Styles.MarketScalarOutcomes__row,
           Styles.MarketScalarOutcomes__minMax
         )}
       >
-        <div style={{ flexGrow: "1" }}>
+        <div>
           Min:{" "}
-          <span className={Styles.MarketScalarOutcomes__minMaxValue}>
-            {minValue}
+          <span>
+            {`${min}`}
           </span>
         </div>
         <div>
           Max:{" "}
-          <span className={Styles.MarketScalarOutcomes__minMaxValue}>
-            {maxValue}
+          <span>
+            {`${max}`}
           </span>
         </div>
       </div>
-      <div
-        className={classNames(
-          Styles.MarketScalarOutcomes__row,
-          Styles.MarketScalarOutcomes__denomination
-        )}
-      >
-        <div style={{ flexGrow: "1" }}>{scalarDenomination}</div>
+      <div>
+        <div>{scalarDenomination}</div>
         <div>{scalarDenomination}</div>
       </div>
     </div>
