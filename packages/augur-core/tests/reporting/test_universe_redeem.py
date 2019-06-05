@@ -1,5 +1,4 @@
-from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, raises, mark
 from utils import longToHexString, EtherDelta, TokenDelta, PrintGasUsed
 from reporting_utils import proceedToNextRound, proceedToFork, finalize
@@ -42,7 +41,7 @@ def test_redeem_reporting_participants(kitchenSinkFixture, market, categoricalMa
     expectedRep += ptAmount
     expectedRep -= 1 # Rounding error
     fees = cash.balanceOf(disputeWindow.address)
-    with TokenDelta(reputationToken, expectedRep, tester.a0, "Redeeming didn't refund REP"):
-        with TokenDelta(cash, fees, tester.a0, "Redeeming didn't pay out fees"):
+    with TokenDelta(reputationToken, expectedRep, kitchenSinkFixture.accounts[0], "Redeeming didn't refund REP"):
+        with TokenDelta(cash, fees, kitchenSinkFixture.accounts[0], "Redeeming didn't pay out fees"):
             with PrintGasUsed(kitchenSinkFixture, "Universe Redeem:", 0):
                 assert universe.redeemStake([initialReporter.address, winningDisputeCrowdsourcer1.address, winningDisputeCrowdsourcer2.address], [disputeWindow.address])

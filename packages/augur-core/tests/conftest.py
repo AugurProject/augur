@@ -1,39 +1,125 @@
+import pytest
+import eth
+import eth_tester
+from typing import Any
 from datetime import timedelta
-from ethereum.tools import tester
-from ethereum.tools.tester import Chain
-from ethereum.abi import ContractTranslator
-from ethereum.tools.tester import ABIContract
-from ethereum.config import config_metropolis, Env
-import ethereum
+from eth_tester import PyEVMBackend, EthereumTester
+from solc import compile_standard
 from io import open as io_open
 from json import dump as json_dump, load as json_load, dumps as json_dumps
 from os import path, walk, makedirs, remove as remove_file
-import pytest
 from re import findall
-from solc import compile_standard
-from reporting_utils import proceedToFork
-from mock_templates import generate_mock_contracts
-from utils import bytesToHexString, longToHexString, stringToBytes, BuyWithCash
+from contract import Contract
+from utils import stringToBytes, BuyWithCash
 
-# Make TXs free.
-ethereum.opcodes.GCONTRACTBYTE = 0
-ethereum.opcodes.GTXDATAZERO = 0
-ethereum.opcodes.GTXDATANONZERO = 0
+from web3 import (
+    EthereumTesterProvider,
+    Web3,
+)
 
-# Monkeypatch to bypass the contract size limit
-def monkey_post_spurious_dragon_hardfork():
-    return False
+from web3.middleware import (
+    abi_middleware,
+    attrdict_middleware,
+    gas_price_strategy_middleware,
+    name_to_address_middleware,
+    normalize_errors_middleware,
+    pythonic_middleware,
+    request_parameter_normalizer,
+    validation_middleware,
+)
 
-original_create_contract = ethereum.messages.create_contract
+from eth_typing import (
+    Address,
+    Hash32
+)
 
-def new_create_contract(ext, msg):
-    old_post_spurious_dragon_hardfork_check = ext.post_spurious_dragon_hardfork
-    ext.post_spurious_dragon_hardfork = monkey_post_spurious_dragon_hardfork
-    res, gas, dat = original_create_contract(ext, msg)
-    ext.post_spurious_dragon_hardfork = old_post_spurious_dragon_hardfork_check
-    return res, gas, dat
+from trie import (
+    HexaryTrie,
+)
 
-ethereum.messages.create_contract = new_create_contract
+from eth.db.hash_trie import HashTrie
+
+from eth._utils.padding import (
+    pad32,
+)
+
+from eth_utils import (
+    encode_hex,
+    is_checksum_address,
+    int_to_big_endian,
+)
+
+from eth.rlp.headers import (
+    BlockHeader,
+    HeaderParams,
+)
+
+import rlp
+
+import web3
+
+genesis_overrides = {
+    'gas_limit': 8000000
+}
+custom_genesis_params = PyEVMBackend._generate_genesis_params(overrides=genesis_overrides)
+custom_genesis_state = PyEVMBackend._generate_genesis_state(num_accounts=9)
+
+# Hacks to reduce test time
+def new_is_valid_opcode(self, position: int) -> bool:
+    return True
+
+def new_default_middlewares(self, web3):
+    return [
+        (request_parameter_normalizer, 'request_param_normalizer'),
+        (gas_price_strategy_middleware, 'gas_price_strategy'),
+        (name_to_address_middleware(web3), 'name_to_address'),
+        (attrdict_middleware, 'attrdict'),
+        (pythonic_middleware, 'pythonic'),
+        (normalize_errors_middleware, 'normalize_errors'),
+        (validation_middleware, 'validation'),
+        (abi_middleware, 'abi'),
+    ]
+
+def new_debug2(self, message: str, *args: Any, **kwargs: Any) -> None:
+    pass
+
+def new_get_storage(self, address: Address, slot: int, from_journal: bool=True) -> int:
+        account = self._get_account(address, from_journal)
+        storage = HashTrie(HexaryTrie(self._journaldb, account.storage_root))
+
+        slot_as_key = pad32(int_to_big_endian(slot))
+
+        encoded_value = storage[slot_as_key]
+        if not encoded_value:
+            return 0
+        return rlp.decode(encoded_value, sedes=rlp.sedes.big_endian_int)
+
+def dumb_gas_search(*args) -> int:
+    return 7500000
+
+def dumb_get_buffered_gas_estimate(web3, transaction, gas_buffer=100000):
+    return 7500000
+
+def dumb_estimateGas(self, transaction, block_identifier=None):
+    return 7000000
+
+def new_create_header_from_parent(self,
+                                parent_header: BlockHeader,
+                                **header_params: HeaderParams) -> BlockHeader:
+    header = self.get_vm_class_for_block_number(
+        block_number=parent_header.block_number + 1,
+    ).create_header_from_parent(parent_header, **header_params)
+    header._gas_limit = 8000000
+    return header
+
+eth.vm.code_stream.CodeStream.is_valid_opcode = new_is_valid_opcode
+eth.tools.logging.ExtendedDebugLogger.debug2 = new_debug2
+eth.db.account.AccountDB.get_storage = new_get_storage
+web3.manager.RequestManager.default_middlewares = new_default_middlewares
+web3._utils.transactions.get_buffered_gas_estimate = dumb_get_buffered_gas_estimate
+eth.chains.base.Chain.create_header_from_parent = new_create_header_from_parent
+old_estimateGas = web3.eth.Eth.estimateGas
+web3.eth.Eth.estimateGas = dumb_estimateGas
 
 # used to resolve relative paths
 BASE_PATH = path.dirname(path.abspath(__file__))
@@ -55,8 +141,7 @@ def pytest_addoption(parser):
 
 def pytest_configure(config):
     # register an additional marker
-    config.addinivalue_line("markers",
-        "cover: use coverage contracts")
+    config.addinivalue_line("markers", "cover: use coverage contracts")
 
 class ContractsFixture:
     signatures = {}
@@ -70,6 +155,25 @@ class ContractsFixture:
     def ensureCacheDirectoryExists():
         if not path.exists(COMPILATION_CACHE):
             makedirs(COMPILATION_CACHE)
+
+    def __init__(self, request):
+        self.eth_tester = EthereumTester(backend=PyEVMBackend(genesis_parameters=custom_genesis_params, genesis_state=custom_genesis_state))
+        self.testerProvider = EthereumTesterProvider(ethereum_tester=self.eth_tester)
+        self.w3 = Web3(self.testerProvider)
+        self.eth_tester.backend.chain.gas_estimator = dumb_gas_search
+        self.accounts = self.eth_tester.get_accounts()
+        self.contracts = {}
+        self.relativeContractsPath = '../source/contracts'
+        self.relativeTestContractsPath = 'solidity_test_helpers'
+        # self.relativeTestContractsPath = 'mock_templates/contracts'
+        self.externalContractsPath = '../source/contracts/external'
+        self.coverageMode = request.config.option.cover
+        self.subFork = request.config.option.subFork
+        if self.coverageMode:
+            self.chain.head_state.log_listeners.append(self.writeLogToFile)
+            self.relativeContractsPath = '../coverageEnv/contracts'
+            self.relativeTestContractsPath = '../coverageEnv/solidity_test_helpers'
+            self.externalContractsPath = '../coverageEnv/contracts/external'
 
     def generateSignature(self, relativeFilePath):
         ContractsFixture.ensureCacheDirectoryExists()
@@ -185,63 +289,11 @@ class ContractsFixture:
                 self.getAllDependencies(dependencyPath, knownDependencies)
         return(knownDependencies)
 
-    ####
-    #### Class Methods
-    ####
-
-    def __init__(self):
-        tester.GASPRICE = 0
-        tester.STARTGAS = long(6.7 * 10**7)
-        config_metropolis['GASLIMIT_ADJMAX_FACTOR'] = .000000000001
-        config_metropolis['GENESIS_GAS_LIMIT'] = 2**60
-        config_metropolis['MIN_GAS_LIMIT'] = 2**60
-        config_metropolis['BLOCK_GAS_LIMIT'] = 2**60
-
-        for a in range(10):
-            tester.base_alloc[getattr(tester, 'a%i' % a)] = {'balance': 10**24}
-
-        self.chain = Chain(env=Env(config=config_metropolis))
-        self.contracts = {}
-        self.testerAddress = self.generateTesterMap('a')
-        self.testerKey = self.generateTesterMap('k')
-        self.testerAddressToKey = dict(zip(self.testerAddress.values(), self.testerKey.values()))
-        if path.isfile('./allFiredEvents'):
-            remove_file('./allFiredEvents')
-        self.relativeContractsPath = '../source/contracts'
-        self.relativeTestContractsPath = 'solidity_test_helpers'
-        # self.relativeTestContractsPath = 'mock_templates/contracts'
-        self.externalContractsPath = '../source/contracts/external'
-        self.coverageMode = pytest.config.option.cover
-        self.subFork = pytest.config.option.subFork
-        if self.coverageMode:
-            self.chain.head_state.log_listeners.append(self.writeLogToFile)
-            self.relativeContractsPath = '../coverageEnv/contracts'
-            self.relativeTestContractsPath = '../coverageEnv/solidity_test_helpers'
-            self.externalContractsPath = '../coverageEnv/contracts/external'
-
-    def writeLogToFile(self, message):
-        with open('./allFiredEvents', 'a') as logsFile:
-            logsFile.write(json_dumps(message.to_dict()) + '\n')
-
-    def distributeRep(self, universe):
-        # Get the reputation token for this universe and migrate legacy REP to it
-        reputationToken = self.applySignature('ReputationToken', universe.getReputationToken())
-        legacyRepToken = self.applySignature('LegacyReputationToken', reputationToken.getLegacyRepToken())
-        totalSupply = legacyRepToken.balanceOf(tester.a0)
-        legacyRepToken.approve(reputationToken.address, totalSupply)
-        reputationToken.migrateFromLegacyReputationToken()
-
-    def generateTesterMap(self, ch):
-        testers = {}
-        for i in range(0,9):
-            testers[i] = getattr(tester, ch + "%d" % i)
-        return testers
-
     def uploadAndAddToAugur(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=[]):
         lookupKey = lookupKey if lookupKey else path.splitext(path.basename(relativeFilePath))[0]
         contract = self.upload(relativeFilePath, lookupKey, signatureKey, constructorArgs)
         if not contract: return None
-        self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00'), contract.address)
+        self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
         return(contract)
 
     def generateAndStoreSignature(self, relativePath):
@@ -271,44 +323,46 @@ class ContractsFixture:
         if signatureKey not in ContractsFixture.signatures:
             ContractsFixture.signatures[signatureKey] = self.generateSignature(resolvedPath)
         signature = ContractsFixture.signatures[signatureKey]
-        contractTranslator = ContractTranslator(signature)
-        if len(constructorArgs) > 0:
-            compiledCode += contractTranslator.encode_constructor_arguments(constructorArgs)
-        contractAddress = bytesToHexString(self.chain.contract(compiledCode, language='evm'))
-        contract = ABIContract(self.chain, contractTranslator, contractAddress)
+        W3Contract = self.w3.eth.contract(abi=signature, bytecode=compiledCode)
+        deploy_address = self.accounts[0]
+        tx_hash = W3Contract.constructor(*constructorArgs).transact({'from': deploy_address, 'gasPrice': 1, 'gas': 7500000})
+        tx_receipt = self.w3.eth.waitForTransactionReceipt(tx_hash, 180)
+        w3Contract = W3Contract(tx_receipt.contractAddress)
+        contract = Contract(self.w3, w3Contract)
         self.contracts[lookupKey] = contract
-        return(contract)
+        return contract
 
-    def applySignature(self, signatureName, address):
+    def applySignature(self, signatureName, address, signature=None):
         assert address
-        if type(address) is long:
-            address = longToHexString(address)
-        translator = ContractTranslator(ContractsFixture.signatures[signatureName])
-        contract = ABIContract(self.chain, translator, address)
+        if signature is None:
+            signature = ContractsFixture.signatures[signatureName]
+        W3Contract = self.w3.eth.contract(abi=signature)
+        w3Contract = W3Contract(address)
+        contract = Contract(self.w3, w3Contract)
         return contract
 
     def createSnapshot(self):
-        self.chain.tx(sender=tester.k0, to=tester.a1, value=0)
-        self.chain.mine(1)
-        contractsCopy = {}
-        for contractName in self.contracts:
-            contractsCopy[contractName] = dict(translator = self.contracts[contractName].translator, address = self.contracts[contractName].address)
-        return  { 'state': self.chain.head_state.to_snapshot(), 'contracts': contractsCopy }
+        return self.eth_tester.take_snapshot()
 
     def resetToSnapshot(self, snapshot):
-        if not 'state' in snapshot: raise "snapshot is missing 'state'"
+        self.eth_tester.revert_to_snapshot(snapshot)
+
+    def createSnapshot(self):
+        contractsCopy = {}
+        for contractName in self.contracts:
+            contractsCopy[contractName] = dict(signature = self.contracts[contractName].abi, address = self.contracts[contractName].address)
+        return  { 'snapshot_id': self.eth_tester.take_snapshot(), 'contracts': contractsCopy }
+
+    def resetToSnapshot(self, snapshot):
+        if not 'snapshot_id' in snapshot: raise "snapshot is missing 'snapshot_id'"
         if not 'contracts' in snapshot: raise "snapshot is missing 'contracts'"
-        self.chain = Chain(genesis=snapshot['state'], env=Env(config=config_metropolis))
-        if self.coverageMode:
-            self.chain.head_state.log_listeners.append(self.writeLogToFile)
+        self.eth_tester.revert_to_snapshot(snapshot['snapshot_id'])
+        #if self.coverageMode:
+        #    self.chain.head_state.log_listeners.append(self.writeLogToFile)
         self.contracts = {}
         for contractName in snapshot['contracts']:
             contract = snapshot['contracts'][contractName]
-            self.contracts[contractName] = ABIContract(self.chain, contract['translator'], contract['address'])
-
-    ####
-    #### Bulk Operations
-    ####
+            self.contracts[contractName] = self.applySignature(None, contract['address'], contract['signature'])
 
     def uploadAllContracts(self):
         for directory, _, filenames in walk(resolveRelativePath(self.relativeContractsPath)):
@@ -343,27 +397,6 @@ class ContractsFixture:
                 else:
                     self.uploadAndAddToAugur(path.join(directory, filename))
 
-    def buildMockContracts(self):
-        testContractsPath = resolveRelativePath(self.relativeTestContractsPath)
-        with open("./output/contracts/abi.json") as f:
-            abi = json_load(f)
-        if not path.exists(testContractsPath):
-            makedirs(testContractsPath)
-        mock_sources = generate_mock_contracts("0.5.4", abi)
-        for source in mock_sources.values():
-            source.write(testContractsPath)
-
-    def uploadAllMockContracts(self):
-        for directory, _, filenames in walk(resolveRelativePath(self.relativeTestContractsPath)):
-            for filename in filenames:
-                name, extension = path.splitext(filename)
-                if extension != '.sol': continue
-                if not name.startswith('Mock'): continue
-                if 'Factory' in name:
-                    self.upload(path.join(directory, filename))
-                else:
-                    self.uploadAndAddToAugur(path.join(directory, filename))
-
     def uploadExternalContracts(self):
         for directory, _, filenames in walk(resolveRelativePath(self.externalContractsPath)):
             for filename in filenames:
@@ -387,15 +420,10 @@ class ContractsFixture:
     #### Helpers
     ####
 
-    def getSeededCash(self):
-        cash = self.contracts['Cash']
-        cash.faucet(1, sender = tester.k9)
-        return cash
-
     def approveCentralAuthority(self):
         authority = self.contracts['Augur']
         contractsToApprove = ['Cash']
-        testersGivingApproval = [getattr(tester, 'k%i' % x) for x in range(0,10)]
+        testersGivingApproval = [self.accounts[x] for x in range(0,8)]
         for testerKey in testersGivingApproval:
             for contractName in contractsToApprove:
                 self.contracts[contractName].approve(authority.address, 2**254, sender=testerKey)
@@ -404,95 +432,101 @@ class ContractsFixture:
         # We have to upload Augur first
         return self.upload("../source/contracts/Augur.sol")
 
-    def uploadShareToken(self, augurAddress = None):
-        augurAddress = augurAddress if augurAddress else self.contracts['Augur'].address
-        self.ensureShareTokenDependencies()
-        shareTokenFactory = self.contracts['ShareTokenFactory']
-        shareToken = shareTokenFactory.createShareToken(augurAddress)
-        return self.applySignature('shareToken', shareToken)
-
     def createUniverse(self):
-        universeAddress = self.contracts['Augur'].createGenesisUniverse()
+        augur = self.contracts['Augur']
+        assert augur.createGenesisUniverse(getReturnData=False)
+        universeCreatedLogs = augur.getLogs("UniverseCreated")
+        universeAddress = universeCreatedLogs[0].args.childUniverse
         universe = self.applySignature('Universe', universeAddress)
         assert universe.getTypeName() == stringToBytes('Universe')
         return universe
 
-    def getShareToken(self, market, outcome):
-        shareTokenAddress = market.getShareToken(outcome)
-        assert shareTokenAddress
-        shareToken = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['ShareToken']), shareTokenAddress)
-        return shareToken
+    def distributeRep(self, universe):
+        # Get the reputation token for this universe and migrate legacy REP to it
+        reputationToken = self.applySignature('ReputationToken', universe.getReputationToken())
+        legacyRepToken = self.applySignature('LegacyReputationToken', reputationToken.getLegacyRepToken())
+        totalSupply = legacyRepToken.balanceOf(self.accounts[0])
+        legacyRepToken.approve(reputationToken.address, totalSupply)
+        reputationToken.migrateFromLegacyReputationToken()
 
-    def getOrCreateChildUniverse(self, parentUniverse, market, payoutDistribution):
-        assert payoutDistributionHash
-        childUniverseAddress = parentUniverse.getOrCreateChildUniverse(payoutDistribution)
-        assert childUniverseAddress
-        childUniverse = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Universe']), childUniverseAddress)
-        return childUniverse
+    def getLogValue(self, eventName, argName):
+        augur = self.contracts['Augur']
+        logs = augur.getLogs(eventName)
+        log = logs[0]
+        return log.args.__dict__[argName]
 
-    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
-        marketCreationFee = validityBond or universe.getOrCacheMarketCreationCost()
+    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
+        sender = sender or self.accounts[0]
+        marketCreationFee = validityBond or universe.getOrCacheMarketCreationCost(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, topic, extraInfo, sender=sender)
-        assert marketAddress
-        market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
+            assert universe.createYesNoMarket(int(endTime), feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, topic, extraInfo, sender=sender, getReturnData=False)
+        marketAddress = self.getLogValue("MarketCreated", "market")
+        market = self.applySignature('Market', marketAddress)
         return market
 
-    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}"):
-        marketCreationFee = universe.getOrCacheMarketCreationCost()
+    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, topic="", extraInfo="{description: '\"description\"}"):
+        sender = sender or self.accounts[0]
+        marketCreationFee = universe.getOrCacheMarketCreationCost(commitTx=False)
         outcomes = [" "] * numOutcomes
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes, topic, extraInfo, sender=sender)
-        assert marketAddress
-        market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
+            assert universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes, topic, extraInfo, sender=sender, getReturnData=False)
+        marketAddress = self.getLogValue("MarketCreated", "market")
+        market = self.applySignature('Market', marketAddress)
         return market
 
-    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}"):
-        marketCreationFee = universe.getOrCacheMarketCreationCost()
+    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, topic="", extraInfo="{description: '\"description\"}"):
+        sender = sender or self.accounts[0]
+        marketCreationFee = universe.getOrCacheMarketCreationCost(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            marketAddress = universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, [minPrice, maxPrice], numTicks, topic, extraInfo, sender=sender)
-            # uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, bytes32 _topic, string memory _extraInfo
-        assert marketAddress
-        market = ABIContract(self.chain, ContractTranslator(ContractsFixture.signatures['Market']), marketAddress)
+            assert universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, [minPrice, maxPrice], numTicks, topic, extraInfo, sender=sender, getReturnData=False)
+        marketAddress = self.getLogValue("MarketCreated", "market")
+        market = self.applySignature('Market', marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=tester.k0, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
+    def createReasonableYesNoMarket(self, universe, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
+        sender = sender or self.accounts[0]
         return self.createYesNoMarket(
             universe = universe,
-            endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
+            endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 4,
-            designatedReporterAddress = tester.a0,
+            designatedReporterAddress = sender,
             sender = sender,
             topic= topic,
             extraInfo= extraInfo,
             validityBond= validityBond)
 
-    def createReasonableCategoricalMarket(self, universe, numOutcomes, sender=tester.k0):
+    def createReasonableCategoricalMarket(self, universe, numOutcomes, sender=None):
+        sender = sender or self.accounts[0]
         return self.createCategoricalMarket(
             universe = universe,
             numOutcomes = numOutcomes,
-            endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
+            endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
-            designatedReporterAddress = tester.a0,
+            designatedReporterAddress = sender,
             sender = sender)
 
-    def createReasonableScalarMarket(self, universe, maxPrice, minPrice, numTicks, sender=tester.k0):
+    def createReasonableScalarMarket(self, universe, maxPrice, minPrice, numTicks, sender=None):
+        sender = sender or self.accounts[0]
         return self.createScalarMarket(
             universe = universe,
-            endTime = long(self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds()),
+            endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 0,
             maxPrice= maxPrice,
             minPrice= minPrice,
             numTicks= numTicks,
-            designatedReporterAddress = tester.a0,
+            designatedReporterAddress = sender,
             sender = sender)
 
+    def getShareToken(self, market, outcome):
+        address = market.getShareToken(outcome)
+        return self.applySignature("ShareToken", address)
+
 @pytest.fixture(scope="session")
-def fixture():
-    return ContractsFixture()
+def fixture(request):
+    return ContractsFixture(request)
 
 @pytest.fixture(scope="session")
 def baseSnapshot(fixture):
@@ -509,19 +543,12 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     return fixture.createSnapshot()
 
 @pytest.fixture(scope="session")
-def augurInitializedWithMocksSnapshot(fixture, augurInitializedSnapshot):
-    fixture.buildMockContracts()
-    fixture.uploadAllMockContracts()
-    return fixture.createSnapshot()
-
-@pytest.fixture(scope="session")
 def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     fixture.resetToSnapshot(augurInitializedSnapshot)
-    # TODO: remove assignments to the fixture as they don't get rolled back, so can bleed across tests.  We should be accessing things via `fixture.contracts[...]`
     legacyReputationToken = fixture.contracts['LegacyReputationToken']
     legacyReputationToken.faucet(11 * 10**6 * 10**18)
     universe = fixture.createUniverse()
-    cash = fixture.getSeededCash()
+    cash = fixture.contracts['Cash']
     augur = fixture.contracts['Augur']
     fixture.distributeRep(universe)
 
@@ -531,13 +558,11 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
         fixture.contracts["Time"].setTimestamp(universe.getForkEndTime() + 1)
         reputationToken = fixture.applySignature('ReputationToken', universe.getReputationToken())
         yesPayoutNumerators = [0, 0, forkingMarket.getNumTicks()]
-        reputationToken.migrateOutByPayout(yesPayoutNumerators, reputationToken.balanceOf(tester.a0))
+        reputationToken.migrateOutByPayout(yesPayoutNumerators, reputationToken.balanceOf(fixture.accounts[0]))
         universe = fixture.applySignature('Universe', universe.createChildUniverse(yesPayoutNumerators))
 
     yesNoMarket = fixture.createReasonableYesNoMarket(universe)
-    startingGas = fixture.chain.head_state.gas_used
     categoricalMarket = fixture.createReasonableCategoricalMarket(universe, 3)
-    print 'Gas Used: %s' % (fixture.chain.head_state.gas_used - startingGas)
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
     snapshot = fixture.createSnapshot()
@@ -558,39 +583,39 @@ def kitchenSinkFixture(fixture, kitchenSinkSnapshot):
 
 @pytest.fixture
 def universe(kitchenSinkFixture, kitchenSinkSnapshot):
-    return ABIContract(kitchenSinkFixture.chain, kitchenSinkSnapshot['universe'].translator, kitchenSinkSnapshot['universe'].address)
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['universe'].address, kitchenSinkSnapshot['universe'].abi)
 
 @pytest.fixture
 def cash(kitchenSinkFixture, kitchenSinkSnapshot):
-    return ABIContract(kitchenSinkFixture.chain, kitchenSinkSnapshot['cash'].translator, kitchenSinkSnapshot['cash'].address)
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['cash'].address, kitchenSinkSnapshot['cash'].abi)
 
 @pytest.fixture
 def augur(kitchenSinkFixture, kitchenSinkSnapshot):
-    return ABIContract(kitchenSinkFixture.chain, kitchenSinkSnapshot['augur'].translator, kitchenSinkSnapshot['augur'].address)
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['augur'].address, kitchenSinkSnapshot['augur'].abi)
 
 @pytest.fixture
 def market(kitchenSinkFixture, kitchenSinkSnapshot):
-    return ABIContract(kitchenSinkFixture.chain, kitchenSinkSnapshot['yesNoMarket'].translator, kitchenSinkSnapshot['yesNoMarket'].address)
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['yesNoMarket'].address, kitchenSinkSnapshot['yesNoMarket'].abi)
 
 @pytest.fixture
 def yesNoMarket(kitchenSinkFixture, kitchenSinkSnapshot):
-    return ABIContract(kitchenSinkFixture.chain, kitchenSinkSnapshot['yesNoMarket'].translator, kitchenSinkSnapshot['yesNoMarket'].address)
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['yesNoMarket'].address, kitchenSinkSnapshot['yesNoMarket'].abi)
 
 @pytest.fixture
 def categoricalMarket(kitchenSinkFixture, kitchenSinkSnapshot):
-    return ABIContract(kitchenSinkFixture.chain, kitchenSinkSnapshot['categoricalMarket'].translator, kitchenSinkSnapshot['categoricalMarket'].address)
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['categoricalMarket'].address, kitchenSinkSnapshot['categoricalMarket'].abi)
 
 @pytest.fixture
 def scalarMarket(kitchenSinkFixture, kitchenSinkSnapshot):
-    return ABIContract(kitchenSinkFixture.chain, kitchenSinkSnapshot['scalarMarket'].translator, kitchenSinkSnapshot['scalarMarket'].address)
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['scalarMarket'].address, kitchenSinkSnapshot['scalarMarket'].abi)
 
 @pytest.fixture
 def auction(kitchenSinkFixture, kitchenSinkSnapshot):
-    return ABIContract(kitchenSinkFixture.chain, kitchenSinkSnapshot['auction'].translator, kitchenSinkSnapshot['auction'].address)
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['auction'].address, kitchenSinkSnapshot['auction'].abi)
 
 @pytest.fixture
 def reputationToken(kitchenSinkFixture, kitchenSinkSnapshot):
-    return ABIContract(kitchenSinkFixture.chain, kitchenSinkSnapshot['reputationToken'].translator, kitchenSinkSnapshot['reputationToken'].address)
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['reputationToken'].address, kitchenSinkSnapshot['reputationToken'].abi)
 
 # TODO: globally replace this with `fixture` and `kitchenSinkSnapshot` as appropriate then delete this
 @pytest.fixture(scope="session")

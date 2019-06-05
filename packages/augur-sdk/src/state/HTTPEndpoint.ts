@@ -5,8 +5,8 @@ import fs from "fs";
 import helmet from "helmet";
 import https from "https";
 import { AddressFormatReviver } from "./AddressFormatReviver";
-import { API } from "./api/API";
-import { EndpointSettings, JsonRpcRequest } from "./api/types";
+import { API } from "./getter/API";
+import { EndpointSettings, JsonRpcRequest } from "./getter/types";
 import { JsonRpcErrorCode, MakeJsonRpcError } from "./MakeJsonRpcError";
 import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
 

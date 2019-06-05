@@ -1,6 +1,6 @@
-import {AbstractDB, PouchDBFactoryType} from "./AbstractDB";
-import {DB} from "./DB";
-import {SyncStatus} from "./SyncStatus";
+import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
+import { DB } from "./DB";
+import { SyncStatus } from "./SyncStatus";
 
 export interface SequenceIds {
   [dbName: string]: string
@@ -42,9 +42,9 @@ export class MetaDB extends AbstractDB {
       let highestSyncBlock = await this.syncStatus.getHighestSyncBlock(this.dbName);
       // Sort blocks so newest blocks are removed first
       const blocksToRemove = await this.db.find({
-        selector: {blockNumber: {$gte: blockNumber}},
+        selector: { blockNumber: { $gte: blockNumber } },
         fields: ['blockNumber', '_id', '_rev'],
-        sort: [{blockNumber: 'desc'}],
+        sort: [{ blockNumber: 'desc' }],
       });
       if (blocksToRemove.docs.length > 0) {
         console.log("\n\nDeleting the following blocks from " + this.dbName);

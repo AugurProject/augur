@@ -4,12 +4,12 @@ import http from "http";
 import https from "https";
 import WebSocket from "ws";
 
-import { API } from "./api/API";
+import { API } from "./getter/API";
 import { AddressFormatReviver } from "./AddressFormatReviver";
 import { ControlMessageType } from "../constants";
 import { EventEmitter } from "events";
 import { IsJsonRpcRequest } from "./IsJsonRpcRequest";
-import { JsonRpcRequest, EndpointSettings } from "./api/types";
+import { JsonRpcRequest, EndpointSettings } from "./getter/types";
 import { MakeJsonRpcError, JsonRpcErrorCode } from "./MakeJsonRpcError";
 import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
 import { Subscriptions } from "../subscriptions";

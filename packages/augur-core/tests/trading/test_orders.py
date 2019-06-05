@@ -1,21 +1,11 @@
 #!/usr/bin/env python
 
-from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import mark, raises
-from utils import fix, bytesToHexString, longTo32Bytes, longToHexString, nullAddress
+from utils import fix, longTo32Bytes, longToHexString, nullAddress
 from constants import BID, ASK, YES, NO
 
 WEI_TO_ETH = 10**18
-
-ATTOSHARES = 0
-DISPLAY_PRICE = 1
-OWNER = 2
-TOKENS_ESCROWED = 3
-SHARES_ESCROWED = 4
-BETTER_ORDER_ID = 5
-WORSE_ORDER_ID = 6
-GAS_PRICE = 7
 
 def test_walkOrderList_bids(contractsFixture, market):
     orders = contractsFixture.contracts['Orders']
@@ -25,7 +15,7 @@ def test_walkOrderList_bids(contractsFixture, market):
         "type": BID,
         "amount": fix('1'),
         "price": 6000,
-        "sender": tester.a0,
+        "sender": contractsFixture.accounts[0],
         "outcome": outcomeID,
         "moneyEscrowed": fix('6000'),
         "sharesEscrowed": 0,
@@ -57,7 +47,7 @@ def test_walkOrderList_bids(contractsFixture, market):
         "type": BID,
         "amount": fix('1'),
         "price": 5900,
-        "sender": tester.a0,
+        "sender": contractsFixture.accounts[0],
         "outcome": outcomeID,
         "moneyEscrowed": fix('5900'),
         "sharesEscrowed": 0,
@@ -89,7 +79,7 @@ def test_walkOrderList_bids(contractsFixture, market):
         "type": BID,
         "amount": fix('1'),
         "price": 5950,
-        "sender": tester.a0,
+        "sender": contractsFixture.accounts[0],
         "outcome": outcomeID,
         "moneyEscrowed": fix('5950'),
         "sharesEscrowed": 0,
@@ -126,7 +116,7 @@ def test_walkOrderList_asks(contractsFixture, market):
         "type": ASK,
         "amount": fix('1'),
         "price": 6000,
-        "sender": tester.a0,
+        "sender": contractsFixture.accounts[0],
         "outcome": outcomeID,
         "moneyEscrowed": fix('6000'),
         "sharesEscrowed": 0,
@@ -156,7 +146,7 @@ def test_walkOrderList_asks(contractsFixture, market):
         "type": ASK,
         "amount": fix('1'),
         "price": 5900,
-        "sender": tester.a0,
+        "sender": contractsFixture.accounts[0],
         "outcome": outcomeID,
         "moneyEscrowed": fix('5900'),
         "sharesEscrowed": 0,
@@ -188,7 +178,7 @@ def test_walkOrderList_asks(contractsFixture, market):
         "type": ASK,
         "amount": fix('1'),
         "price": 5950,
-        "sender": tester.a0,
+        "sender": contractsFixture.accounts[0],
         "outcome": outcomeID,
         "moneyEscrowed": fix('5950'),
         "sharesEscrowed": 0,
@@ -237,8 +227,8 @@ def test_orderBidSorting(where, orderType, hints, contractsFixture, market):
     # setup pre-existing orders
     worstPrice = 6000 if orderType == BID else 6600
     bestPrice = 6600 if orderType == BID else 6000
-    worstOrderId = orders.testSaveOrder(orderType, market.address, fix('1'), worstPrice, tester.a0, YES, worstPrice, 0, longTo32Bytes(0), longTo32Bytes(0), "0", nullAddress)
-    bestOrderId = orders.testSaveOrder(orderType, market.address, fix('1'), bestPrice, tester.a0, YES, bestPrice, 0, longTo32Bytes(0), longTo32Bytes(0), "0", nullAddress)
+    worstOrderId = orders.testSaveOrder(orderType, market.address, fix('1'), worstPrice, contractsFixture.accounts[0], YES, worstPrice, 0, longTo32Bytes(0), longTo32Bytes(0), "0", nullAddress)
+    bestOrderId = orders.testSaveOrder(orderType, market.address, fix('1'), bestPrice, contractsFixture.accounts[0], YES, bestPrice, 0, longTo32Bytes(0), longTo32Bytes(0), "0", nullAddress)
 
     # validate that our setup went smoothly
     assert orders.getBestOrderId(orderType, market.address, YES, nullAddress) == bestOrderId
@@ -261,7 +251,7 @@ def test_orderBidSorting(where, orderType, hints, contractsFixture, market):
         orderPrice = 5900 if orderType == BID else 6700
         betterOrderId = worstOrderId if hints else longTo32Bytes(0)
         worseOrderId = longTo32Bytes(0)
-    insertedOrder = orders.testSaveOrder(orderType, market.address, fix('1'), orderPrice, tester.a0, YES, orderPrice, 0, betterOrderId, worseOrderId, "0", nullAddress)
+    insertedOrder = orders.testSaveOrder(orderType, market.address, fix('1'), orderPrice, contractsFixture.accounts[0], YES, orderPrice, 0, betterOrderId, worseOrderId, "0", nullAddress)
 
     # validate the new order was inserted correctly
     assert orders.getBetterOrderId(insertedOrder) == longTo32Bytes(0) if where == 'best' else bestOrderId
@@ -272,9 +262,9 @@ def test_orderBidSorting(where, orderType, hints, contractsFixture, market):
 def test_saveOrder(contractsFixture, market):
     orders = contractsFixture.contracts['Orders']
 
-    orderId1 = orders.testSaveOrder(BID, market.address, fix(10), 5000, tester.a1, NO, 0, fix(10), longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
+    orderId1 = orders.testSaveOrder(BID, market.address, fix(10), 5000, contractsFixture.accounts[1], NO, 0, fix(10), longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId1 != bytearray(32)), "saveOrder wasn't executed successfully"
-    orderId2 = orders.testSaveOrder(ASK, market.address, fix(10), 5000, tester.a2, NO, fix('10', '5000'), 0, longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
+    orderId2 = orders.testSaveOrder(ASK, market.address, fix(10), 5000, contractsFixture.accounts[2], NO, fix('10', '5000'), 0, longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId2 != bytearray(32)), "saveOrder wasn't executed successfully"
 
     assert(orders.getAmount(orderId1) == fix(10)), "amount for order1 should be set to 10"
@@ -283,8 +273,8 @@ def test_saveOrder(contractsFixture, market):
     assert(orders.getPrice(orderId1) == 5000), "price for order1 should be set to 5000 wei"
     assert(orders.getPrice(orderId2) == 5000), "price for order2 should be set to 5000 wei"
 
-    assert(orders.getOrderCreator(orderId1) == bytesToHexString(tester.a1)), "orderOwner for order1 should be tester.a1"
-    assert(orders.getOrderCreator(orderId2) == bytesToHexString(tester.a2)), "orderOwner for order2 should be tester.a2"
+    assert(orders.getOrderCreator(orderId1) == contractsFixture.accounts[1]), "orderOwner for order1 should be contractsFixture.accounts[1]"
+    assert(orders.getOrderCreator(orderId2) == contractsFixture.accounts[2]), "orderOwner for order2 should be contractsFixture.accounts[2]"
 
     assert orders.getOrderMoneyEscrowed(orderId1) == 0, "money escrowed should be 0"
     assert orders.getOrderMoneyEscrowed(orderId2) ==  fix('10', '5000'), "money escrowed should be 50000 ETH"
@@ -304,15 +294,15 @@ def test_saveOrder(contractsFixture, market):
 def test_removeOrder(contractsFixture, market):
     orders = contractsFixture.contracts['Orders']
 
-    orderId1 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, tester.a1, NO, 0, fix('10'), longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
+    orderId1 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, contractsFixture.accounts[1], NO, 0, fix('10'), longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId1 != bytearray(32)), "saveOrder wasn't executed successfully"
-    orderId2 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, tester.a2, NO, fix('10', '5000'), 0, longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
+    orderId2 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, contractsFixture.accounts[2], NO, fix('10', '5000'), 0, longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId2 != bytearray(32)), "saveOrder wasn't executed successfully"
-    orderId3 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, tester.a1, YES, 0, fix('10'), longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
+    orderId3 = orders.testSaveOrder(BID, market.address, fix('10'), 5000, contractsFixture.accounts[1], YES, 0, fix('10'), longTo32Bytes(0), longTo32Bytes(0), "1", nullAddress)
     assert(orderId3 != bytearray(32)), "saveOrder wasn't executed successfully"
     assert orders.getAmount(orderId3) == fix('10')
     assert orders.getPrice(orderId3) == 5000
-    assert orders.getOrderCreator(orderId3) == bytesToHexString(tester.a1)
+    assert orders.getOrderCreator(orderId3) == contractsFixture.accounts[1]
     assert orders.getOrderMoneyEscrowed(orderId3) == 0
     assert orders.getOrderSharesEscrowed(orderId3) == fix('10')
     assert orders.getBetterOrderId(orderId3) == longTo32Bytes(0)

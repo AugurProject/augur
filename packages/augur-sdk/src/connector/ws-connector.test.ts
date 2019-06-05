@@ -1,5 +1,5 @@
 import { WebsocketConnector } from "./ws-connector";
-import { Markets } from "../state/api/Markets";
+import { Markets } from "../state/getter/Markets";
 
 jest.mock("websocket-as-promised", () => {
   return {
