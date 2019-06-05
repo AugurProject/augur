@@ -93,13 +93,8 @@ export class ContractCompiler {
         // Create output directory (if it doesn't exist)
         await fs.mkdirp(path.dirname(this.configuration.contractOutputPath));
 
-        // Output all contract data to single file
-        console.log("???????????????");
-        console.log("!!!!!!!!!!!!!!!", this.configuration.fullContractOutputPath);
-        const pos = this.configuration.contractOutputPath.lastIndexOf('.');
-        const fullContractOutputPath = this.configuration.contractOutputPath.substring(0, pos) + "_full." + this.configuration.contractOutputPath.substring(pos + 1);
-        await fs.writeFile(fullContractOutputPath, JSON.stringify(compilerOutput, null, '\t'));
-        // await fs.writeFile(this.configuration.fullContractOutputPath, JSON.stringify(compilerOutput, null, '\t'));
+        // Output all contract data to single file (used for generating documentation markdown files)
+        await fs.writeFile(this.configuration.fullContractOutputPath, JSON.stringify(compilerOutput, null, '\t'));
 
         // Output filtered contract data to single file
         const filteredCompilerOutput = this.filterCompilerOutput(compilerOutput);
