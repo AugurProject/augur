@@ -11,6 +11,7 @@
     "src/abi.json",
     "src/addresses.json",
     "src/contracts.json",
+    "src/networks.json",
     "src/upload-block-numbers.json"
   ],
   "references": []
