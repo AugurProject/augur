@@ -10,6 +10,11 @@ export class WebWorkerConnector extends Connector {
 
   public async connect(ethNodeUrl: string, account?: string): Promise<any> {
     this.worker = new RunWorker();
+    this.worker.postMessage({
+      method: "start",
+      ethNodeUrl,
+      account
+    });
 
     this.worker.onmessage = (event: MessageEvent) => {
       try {
