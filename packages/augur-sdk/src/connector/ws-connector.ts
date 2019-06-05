@@ -1,5 +1,5 @@
-import { Connector, Callback } from "./connector";
-import { SubscriptionEventNames } from "../constants";
+import {Callback, Connector} from "./connector";
+import {SubscriptionEventNames} from "../constants";
 import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
 
@@ -10,7 +10,7 @@ export class WebsocketConnector extends Connector {
     super();
   }
 
-  public async connect(params?: any): Promise<any> {
+  public async connect(ethNodeUrl: string, account?: string): Promise<any> {
     this.socket = new WebSocketAsPromised(this.endpoint, {
       packMessage: (data: any) => JSON.stringify(data),
       unpackMessage: (message: string) => JSON.parse(message),

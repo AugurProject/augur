@@ -1,7 +1,8 @@
-import { Augur } from "../Augur";
-import { PouchDBFactoryType } from "./db/AbstractDB";
-import { DB } from "./db/DB";
-import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
+import {Augur} from "../Augur";
+import {PouchDBFactoryType} from "./db/AbstractDB";
+import {DB} from "./db/DB";
+import {BlockAndLogStreamerListener} from "./db/BlockAndLogStreamerListener";
+
 const settings = require("./settings.json");
 
 export class Controller {
@@ -57,8 +58,6 @@ export class Controller {
 
       this.blockAndLogStreamerListener.listenForBlockRemoved(this.db.rollback.bind(this.db));
       this.blockAndLogStreamerListener.startBlockStreamListener();
-
-      // TODO begin server process
     } catch (err) {
       console.log(err);
     }

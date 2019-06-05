@@ -1,38 +1,17 @@
 import * as Sync from "../state/Sync";
-import { API } from "../state/getter/API";
-import { Augur } from "../Augur";
-import { BlockAndLogStreamerListener } from "../state/db/BlockAndLogStreamerListener";
-import { Connector, Callback } from "./connector";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Controller } from "../state/Controller";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { EventLogDBRouter } from "../state//db/EventLogDBRouter";
-import { JsonRpcProvider } from "ethers/providers";
-import { PouchDBFactory } from "../state//db/AbstractDB";
-import { SubscriptionEventNames } from "../constants";
-import { Subscriptions } from "../subscriptions";
-import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
-import { augurEmitter } from "../events";
+import {API} from "../state/getter/API";
+import {Callback, Connector} from "./connector";
+import {SubscriptionEventNames} from "../constants";
+import {Subscriptions} from "../subscriptions";
+import {augurEmitter} from "../events";
 
-const settings = require("@augurproject/sdk/src/state/settings.json");
 
 export class SEOConnector extends Connector {
   private api: API;
   private events = new Subscriptions(augurEmitter);
 
-  public async connect(params?: any): Promise<any> {
-    Sync.start({ adapter: "memory" });
-
-    const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-    const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
-    const pouchDBFactory = PouchDBFactory({ adapter: "memory" });
-    const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
-    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);
-    const controller = new Controller(augur, Number(augur.networkId), settings.blockstreamDelay, UploadBlockNumbers[augur.networkId], [settings.testAccounts[0]], pouchDBFactory, blockAndLogStreamerListener);
-    await controller.createDb();
-
-    this.api = new API(augur, controller.db);
+  public async connect(ethNodeUrl: string, account?: string): Promise<any> {
+    this.api = await Sync.start(ethNodeUrl, account, { adapter: "memory" });
   }
 
   public async disconnect(): Promise<any> {
