@@ -1,12 +1,12 @@
 import * as HTTPEndpoint from "./HTTPEndpoint";
 import * as Sync from "./Sync";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
-import { API } from "./api/API";
+import { API } from "./getter/API";
 import { Augur } from "../Augur";
 import { BlockAndLogStreamerListener } from "../state/db/BlockAndLogStreamerListener";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { Controller } from "../state/Controller";
-import { EndpointSettings } from "./api/types";
+import { EndpointSettings } from "./getter/types";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EventEmitter } from "events";
 import { EventLogDBRouter } from "../state//db/EventLogDBRouter";
