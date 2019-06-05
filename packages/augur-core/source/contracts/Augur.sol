@@ -116,10 +116,6 @@ contract Augur is IAugur {
     // Registry
     //
 
-    /// @dev Adds a contract key/address pair to the Augur contract's registry
-    /// @param _key Key name used to register contract
-    /// @param _address Contract address to register
-    /// @return true
     function registerContract(bytes32 _key, address _address) public returns (bool) {
         require(msg.sender == uploader);
         require(registry[_key] == address(0));
@@ -244,6 +240,8 @@ contract Augur is IAugur {
     // Time
     //
 
+    /// @dev Returns Augur’s internal Unix timestamp.
+    /// @return (uint256) Augur’s internal Unix timestamp
     function getTimestamp() public view returns (uint256) {
         return time.getTimestamp();
     }
