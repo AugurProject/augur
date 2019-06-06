@@ -19,13 +19,13 @@ import {
 } from "modules/common-elements/constants";
 
 import {
-  ExclamationCircle as InputErrorIcon,
+  InputErrorIcon,
   Hint
-} from "modules/common/components/icons";
+} from "modules/common-elements/icons";
 import Styles from "modules/create-market/components/create-market-form-outcome/create-market-form-outcome.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip.styles";
+import TooltipStyles from "modules/common-elements/tooltip.styles";
 
 const NUM_DIGITS_LIMIT = 4;
 

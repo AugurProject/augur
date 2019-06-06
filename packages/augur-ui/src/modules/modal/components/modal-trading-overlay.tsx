@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import MarketOutcomesList from "modules/market/containers/market-outcomes-list";
-import { Close } from "modules/common/components/icons";
+import { Close } from "modules/common-elements/icons";
 
 import Styles from "modules/modal/components/common/common.styles.less";
 
@@ -47,15 +47,15 @@ export default class ModalTradingOverlay extends Component<ModalTradingOverlayPr
       <section
         className={classNames(
           Styles.ModalContainer,
-          Styles.ModalContainer__full,
+          Styles.ModalContainerFull,
         )}
       >
         <section>
-          <div className={Styles.Modal__overlayHeader}>
+          <div className={Styles.OverlayHeader}>
             // @ts-ignore
-            <span role="button" tabIndex={-1} onClick={closeModal}>
+            <button role="button" tabIndex={-1} onClick={closeModal}>
               {Close}
-            </span>
+            </button>
             <div>Select an Outcome</div>
           </div>
           // @ts-ignore

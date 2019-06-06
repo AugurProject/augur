@@ -4,8 +4,8 @@ import classNames from "classnames";
 import ReactTooltip from "react-tooltip";
 import { formatAttoRep } from "utils/format-number";
 import Styles from "modules/reporting/components/reporting-payouts/reporting-payouts.styles";
-import TooltipStyles from "modules/common/less/tooltip.styles";
-import { ExclamationCircle } from "modules/common/components/icons";
+import TooltipStyles from "modules/common-elements/tooltip.styles";
+import { InputErrorIcon } from "modules/common-elements/icons";
 import { MALFORMED_OUTCOME } from "modules/common-elements/constants";
 
 const CELL_MARGIN = 12;
@@ -43,7 +43,7 @@ const Outcome = ({ className, outcome, marketId }) => {
               data-tip
               data-for="tooltip--potential-fork"
             >
-              {ExclamationCircle()}
+              {InputErrorIcon()}
             </div>
             <ReactTooltip
               id="tooltip--potential-fork"

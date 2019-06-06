@@ -2,7 +2,7 @@ import React, { Component, SyntheticEvent } from "react";
 import classNames from "classnames";
 
 import { formatNumber } from "utils/format-number";
-import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
+import ChevronFlip from "modules/common-elements/chevron-flip";
 
 import Styles from "modules/block-info/block-info-data.styles";
 import ToggleHeightStyles from "utils/toggle-height.styles";

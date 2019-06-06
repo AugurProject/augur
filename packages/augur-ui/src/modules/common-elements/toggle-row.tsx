@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import classNames from "classnames";
 
-import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
+import ChevronFlip from "modules/common-elements/chevron-flip";
 
 import Styles from "modules/common-elements/toggle-row.styles";
 

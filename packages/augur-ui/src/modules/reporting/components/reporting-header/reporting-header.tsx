@@ -5,10 +5,28 @@ import { formatAttoRep, formatAttoEth, formatRep } from "utils/format-number";
 import Styles from "modules/reporting/components/reporting-header/reporting-header.styles";
 import { MODAL_PARTICIPATE } from "modules/common-elements/constants";
 import ForkingContent from "modules/forking/components/forking-content/forking-content";
-import { showMore } from "modules/common/components/icons";
 import TimeProgressBar from "modules/reporting/components/time-progress-bar/time-progress-bar";
 
 import { RepBalance } from "modules/common-elements/labels";
+
+const showMore = (
+  <svg width="14px" height="14px" viewBox="0 0 14 14">
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g transform="translate(-297.000000, -247.000000)">
+        <g transform="translate(73.000000, 40.000000)">
+          <g transform="translate(39.000000, 166.000000)">
+            <g transform="translate(186.000000, 42.000000)">
+              <circle stroke="#A7A2B2" cx="6" cy="6" r="6" />
+              <circle fill="#A7A2B2" fillRule="nonzero" cx="3" cy="6" r="1" />
+              <circle fill="#A7A2B2" fillRule="nonzero" cx="6" cy="6" r="1" />
+              <circle fill="#A7A2B2" fillRule="nonzero" cx="9" cy="6" r="1" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
 
 export default class ReportingHeader extends Component {
   static propTypes = {
@@ -141,302 +159,294 @@ export default class ReportingHeader extends Component {
               <span>: {heading}</span>
               <RepBalance rep={formatRep(repBalance).formattedValue} />
             </h1>
-            {heading === "Dispute" &&
-              isForking && (
-                <ForkingContent
-                  forkingMarket={forkingMarket}
-                  forkEndTime={forkEndTime}
-                  currentTime={currentTime}
-                  expanded={false}
-                  doesUserHaveRep={doesUserHaveRep}
-                  forkReputationGoal={forkReputationGoal}
-                  finalizeMarket={finalizeMarket}
-                  isForkingMarketFinalized={isForkingMarketFinalized}
-                />
-              )}
-            {heading === "Dispute" &&
-              !isForking && (
-                <div className={Styles["ReportingHeader__dispute-wrapper"]}>
-                  <div className={Styles["ReportingHeader__dispute-header"]}>
-                    <div className={Styles.ReportingHeader__row}>
-                      <div>
-                        <div className={Styles.ReportingHeader__statsContainer}>
-                          {isLogged && (
-                            <div className={Styles.ReportingHeader__border}>
+            {heading === "Dispute" && isForking && (
+              <ForkingContent
+                forkingMarket={forkingMarket}
+                forkEndTime={forkEndTime}
+                currentTime={currentTime}
+                expanded={false}
+                doesUserHaveRep={doesUserHaveRep}
+                forkReputationGoal={forkReputationGoal}
+                finalizeMarket={finalizeMarket}
+                isForkingMarketFinalized={isForkingMarketFinalized}
+              />
+            )}
+            {heading === "Dispute" && !isForking && (
+              <div className={Styles["ReportingHeader__dispute-wrapper"]}>
+                <div className={Styles["ReportingHeader__dispute-header"]}>
+                  <div className={Styles.ReportingHeader__row}>
+                    <div>
+                      <div className={Styles.ReportingHeader__statsContainer}>
+                        {isLogged && (
+                          <div className={Styles.ReportingHeader__border}>
+                            <div
+                              className={Styles["ReportingHeader__value-label"]}
+                            >
+                              My Rep Staked
+                            </div>
+                            <div
+                              className={
+                                Styles["ReportingHeader__value-number"]
+                              }
+                              onClick={this.showReadMore}
+                              role="button"
+                              tabIndex={0}
+                              ref={readMore => {
+                                this.readMore = readMore;
+                              }}
+                            >
+                              <span style={{ fontSize: "32px" }}>
+                                {disputeRep}
+                              </span>{" "}
+                              <span
+                                className={
+                                  Styles["ReportingHeader__value-unit"]
+                                }
+                                style={{
+                                  marginLeft: "1rem",
+                                  fontSize: "16px"
+                                }}
+                              >
+                                REP
+                              </span>
+                              <span
+                                style={{
+                                  marginBottom: "-0.5px",
+                                  cursor: "pointer"
+                                }}
+                              >
+                                {showMore}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                        {this.state.readMore && isLogged && (
+                          <div className={Styles.ReportingHeader__readMore}>
+                            <div
+                              className={Styles.ReportingHeader__column}
+                              style={{ marginRight: "30px" }}
+                            >
+                              <div
+                                className={
+                                  Styles[
+                                    "ReportingHeader__readMore-value-label"
+                                  ]
+                                }
+                              >
+                                Reporting
+                              </div>
+                              <div
+                                className={
+                                  Styles[
+                                    "ReportingHeader__readMore-value-number"
+                                  ]
+                                }
+                              >
+                                {reportingRep}{" "}
+                                <span
+                                  className={
+                                    Styles[
+                                      "ReportingHeader__readMore-value-unit"
+                                    ]
+                                  }
+                                >
+                                  REP
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              className={Styles.ReportingHeader__column}
+                              style={{ marginRight: "30px" }}
+                            >
+                              <div
+                                className={
+                                  Styles[
+                                    "ReportingHeader__readMore-value-label"
+                                  ]
+                                }
+                              >
+                                Disputing
+                              </div>
+                              <div
+                                className={
+                                  Styles[
+                                    "ReportingHeader__readMore-value-number"
+                                  ]
+                                }
+                              >
+                                {disputingRep}{" "}
+                                <span
+                                  className={
+                                    Styles[
+                                      "ReportingHeader__readMore-value-unit"
+                                    ]
+                                  }
+                                >
+                                  REP
+                                </span>
+                              </div>
+                            </div>
+                            <div className={Styles.ReportingHeader__column}>
+                              <div
+                                className={
+                                  Styles[
+                                    "ReportingHeader__readMore-value-label"
+                                  ]
+                                }
+                              >
+                                Participation Tokens
+                              </div>
+                              <div
+                                className={
+                                  Styles[
+                                    "ReportingHeader__readMore-value-number"
+                                  ]
+                                }
+                              >
+                                {partRep}{" "}
+                                <span
+                                  className={
+                                    Styles[
+                                      "ReportingHeader__readMore-value-unit"
+                                    ]
+                                  }
+                                >
+                                  REP
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        <div className={Styles.ReportingHeader__column}>
+                          <div className={Styles.ReportingHeader__rowFees}>
+                            <div
+                              className={Styles.ReportingHeader__column}
+                              style={{
+                                marginRight: "20px",
+                                flexGrow: "unset"
+                              }}
+                            >
                               <div
                                 className={
                                   Styles["ReportingHeader__value-label"]
                                 }
                               >
-                                My Rep Staked
+                                Total Fees Available
                               </div>
                               <div
                                 className={
                                   Styles["ReportingHeader__value-number"]
                                 }
-                                onClick={this.showReadMore}
-                                role="button"
-                                tabIndex={0}
-                                ref={readMore => {
-                                  this.readMore = readMore;
-                                }}
                               >
-                                <span style={{ fontSize: "32px" }}>
-                                  {disputeRep}
-                                </span>{" "}
+                                {feeWindowEthFees}{" "}
                                 <span
                                   className={
                                     Styles["ReportingHeader__value-unit"]
                                   }
-                                  style={{
-                                    marginLeft: "1rem",
-                                    fontSize: "16px"
-                                  }}
+                                >
+                                  ETH
+                                </span>
+                              </div>
+                            </div>
+                            <div className={Styles.ReportingHeader__column}>
+                              <div
+                                className={
+                                  Styles["ReportingHeader__value-label"]
+                                }
+                              >
+                                Total Rep Staked
+                              </div>
+                              <div
+                                className={
+                                  Styles["ReportingHeader__value-number"]
+                                }
+                              >
+                                <span>{feeWindowRepStaked}</span>{" "}
+                                <span
+                                  className={
+                                    Styles["ReportingHeader__value-unit"]
+                                  }
                                 >
                                   REP
                                 </span>
-                                <span
-                                  style={{
-                                    marginBottom: "-0.5px",
-                                    cursor: "pointer"
-                                  }}
-                                >
-                                  {showMore}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-                          {this.state.readMore &&
-                            isLogged && (
-                              <div className={Styles.ReportingHeader__readMore}>
-                                <div
-                                  className={Styles.ReportingHeader__column}
-                                  style={{ marginRight: "30px" }}
-                                >
-                                  <div
-                                    className={
-                                      Styles[
-                                        "ReportingHeader__readMore-value-label"
-                                      ]
-                                    }
-                                  >
-                                    Reporting
-                                  </div>
-                                  <div
-                                    className={
-                                      Styles[
-                                        "ReportingHeader__readMore-value-number"
-                                      ]
-                                    }
-                                  >
-                                    {reportingRep}{" "}
-                                    <span
-                                      className={
-                                        Styles[
-                                          "ReportingHeader__readMore-value-unit"
-                                        ]
-                                      }
-                                    >
-                                      REP
-                                    </span>
-                                  </div>
-                                </div>
-                                <div
-                                  className={Styles.ReportingHeader__column}
-                                  style={{ marginRight: "30px" }}
-                                >
-                                  <div
-                                    className={
-                                      Styles[
-                                        "ReportingHeader__readMore-value-label"
-                                      ]
-                                    }
-                                  >
-                                    Disputing
-                                  </div>
-                                  <div
-                                    className={
-                                      Styles[
-                                        "ReportingHeader__readMore-value-number"
-                                      ]
-                                    }
-                                  >
-                                    {disputingRep}{" "}
-                                    <span
-                                      className={
-                                        Styles[
-                                          "ReportingHeader__readMore-value-unit"
-                                        ]
-                                      }
-                                    >
-                                      REP
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className={Styles.ReportingHeader__column}>
-                                  <div
-                                    className={
-                                      Styles[
-                                        "ReportingHeader__readMore-value-label"
-                                      ]
-                                    }
-                                  >
-                                    Participation Tokens
-                                  </div>
-                                  <div
-                                    className={
-                                      Styles[
-                                        "ReportingHeader__readMore-value-number"
-                                      ]
-                                    }
-                                  >
-                                    {partRep}{" "}
-                                    <span
-                                      className={
-                                        Styles[
-                                          "ReportingHeader__readMore-value-unit"
-                                        ]
-                                      }
-                                    >
-                                      REP
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          <div className={Styles.ReportingHeader__column}>
-                            <div className={Styles.ReportingHeader__rowFees}>
-                              <div
-                                className={Styles.ReportingHeader__column}
-                                style={{
-                                  marginRight: "20px",
-                                  flexGrow: "unset"
-                                }}
-                              >
-                                <div
-                                  className={
-                                    Styles["ReportingHeader__value-label"]
-                                  }
-                                >
-                                  Total Fees Available
-                                </div>
-                                <div
-                                  className={
-                                    Styles["ReportingHeader__value-number"]
-                                  }
-                                >
-                                  {feeWindowEthFees}{" "}
-                                  <span
-                                    className={
-                                      Styles["ReportingHeader__value-unit"]
-                                    }
-                                  >
-                                    ETH
-                                  </span>
-                                </div>
-                              </div>
-                              <div className={Styles.ReportingHeader__column}>
-                                <div
-                                  className={
-                                    Styles["ReportingHeader__value-label"]
-                                  }
-                                >
-                                  Total Rep Staked
-                                </div>
-                                <div
-                                  className={
-                                    Styles["ReportingHeader__value-number"]
-                                  }
-                                >
-                                  <span>{feeWindowRepStaked}</span>{" "}
-                                  <span
-                                    className={
-                                      Styles["ReportingHeader__value-unit"]
-                                    }
-                                  >
-                                    REP
-                                  </span>
-                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                      <div
-                        className={Styles.ReportingHeader__column}
-                        style={{ alignItems: "flex-end" }}
-                      >
-                        <div className={Styles.ReportingHeader__participation}>
-                          <div
-                            className={
-                              Styles.ReportingHeader__participationHeader
-                            }
-                          >
-                            {"don't see any reports that need to be disputed?"}
-                          </div>
-                          <div
-                            className={
-                              Styles.ReportingHeader__participationText
-                            }
-                          >
-                            {
-                              "You can still earn a share of this dispute window's reporting fees by purchasing Participation Tokens."
-                            }
-                            {!isLogged && (
-                              <b>
-                                {" "}
-                                Please login to purchase Participation tokens.{" "}
-                              </b>
-                            )}
-                            {!disableParticipate &&
-                              isLogged && (
-                                <b>
-                                  {" "}
-                                  Please add REP to your account to purchase
-                                  Participation Tokens.{" "}
-                                </b>
-                              )}
-                          </div>
-                          {isLogged && (
-                            <button
-                              className={
-                                disableParticipate
-                                  ? Styles[
-                                      "ReportingHeader__participationTokens--disabled"
-                                    ]
-                                  : Styles.ReportingHeader__participationTokens
-                              }
-                              disabled={disableParticipate}
-                              onClick={() =>
-                                updateModal({
-                                  type: MODAL_PARTICIPATE,
-                                  canClose: true
-                                })
-                              }
-                            >
-                              <span
-                                className={
-                                  Styles[
-                                    "ReportingHeader__participationTokens--text"
-                                  ]
-                                }
-                              >
-                                buy participation tokens
-                              </span>
-                            </button>
-                          )}
                         </div>
                       </div>
                     </div>
-                    <TimeProgressBar
-                      endTime={parseInt(reportingWindowStats.endTime, 10)}
-                      currentTime={currentTime}
-                      startTime={reportingWindowStats.startTime}
-                      timePeriodLabel="Dispute Window"
-                    />
+                    <div
+                      className={Styles.ReportingHeader__column}
+                      style={{ alignItems: "flex-end" }}
+                    >
+                      <div className={Styles.ReportingHeader__participation}>
+                        <div
+                          className={
+                            Styles.ReportingHeader__participationHeader
+                          }
+                        >
+                          {"don't see any reports that need to be disputed?"}
+                        </div>
+                        <div
+                          className={Styles.ReportingHeader__participationText}
+                        >
+                          {
+                            "You can still earn a share of this dispute window's reporting fees by purchasing Participation Tokens."
+                          }
+                          {!isLogged && (
+                            <b>
+                              {" "}
+                              Please login to purchase Participation tokens.{" "}
+                            </b>
+                          )}
+                          {!disableParticipate && isLogged && (
+                            <b>
+                              {" "}
+                              Please add REP to your account to purchase
+                              Participation Tokens.{" "}
+                            </b>
+                          )}
+                        </div>
+                        {isLogged && (
+                          <button
+                            className={
+                              disableParticipate
+                                ? Styles[
+                                    "ReportingHeader__participationTokens--disabled"
+                                  ]
+                                : Styles.ReportingHeader__participationTokens
+                            }
+                            disabled={disableParticipate}
+                            onClick={() =>
+                              updateModal({
+                                type: MODAL_PARTICIPATE,
+                                canClose: true
+                              })
+                            }
+                          >
+                            <span
+                              className={
+                                Styles[
+                                  "ReportingHeader__participationTokens--text"
+                                ]
+                              }
+                            >
+                              buy participation tokens
+                            </span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
+                  <TimeProgressBar
+                    endTime={parseInt(reportingWindowStats.endTime, 10)}
+                    currentTime={currentTime}
+                    startTime={reportingWindowStats.startTime}
+                    timePeriodLabel="Dispute Window"
+                  />
                 </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
       </article>
