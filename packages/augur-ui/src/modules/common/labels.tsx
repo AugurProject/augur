@@ -1,17 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import * as constants from "modules/common-elements/constants";
-import Styles from "modules/common-elements/labels.styles";
+import * as constants from "modules/common/constants";
+import Styles from "modules/common/labels.styles";
 import { ClipLoader } from "react-spinners";
 import {
   MarketIcon,
   InfoIcon,
   CheckCircleIcon
-} from "modules/common-elements/icons";
-import { MarketProgress } from "modules/common-elements/progress";
+} from "modules/common/icons";
+import { MarketProgress } from "modules/common/progress";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip.styles";
+import TooltipStyles from "modules/common/tooltip.styles";
 import { createBigNumber } from "utils/create-big-number";
 import {
   SELL,
@@ -21,8 +21,8 @@ import {
   SHORT,
   ZERO,
   REPORTING_STATE
-} from "modules/common-elements/constants";
-import { ViewTransactionDetailsButton } from "modules/common-elements/buttons";
+} from "modules/common/constants";
+import { ViewTransactionDetailsButton } from "modules/common/buttons";
 import { formatNumber } from "utils/format-number";
 import { FormattedNumber, SizeTypes } from "modules/types";
 

@@ -9,7 +9,7 @@ import {
   MODAL_MARKET_REVIEW,
   MARKET_REVIEW_SEEN,
   MARKET_REVIEWS
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { windowRef } from "utils/window-ref";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { updateModal } from "modules/modal/actions/update-modal";

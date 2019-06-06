@@ -6,7 +6,7 @@ import {
 } from "modules/transactions/actions/update-transactions-data";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { PENDING } from "modules/common-elements/constants";
+import { PENDING } from "modules/common/constants";
 import { TransacitonData, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: TransacitonData = {};

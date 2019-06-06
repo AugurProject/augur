@@ -1,4 +1,4 @@
-import { SCALAR } from "modules/common-elements/constants";
+import { SCALAR } from "modules/common/constants";
 import { createBigNumber, BigNumber } from "utils/create-big-number";
 
 export const getPayoutNumerators = (market, selectedOutcome, invalid) => {

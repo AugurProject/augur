@@ -550,7 +550,7 @@ div.ErrorField:focus {
   padding: 0;
 }
 
-.ModalContainer__full {
+.ModalContainerFull {
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -565,13 +565,17 @@ div.ErrorField:focus {
   width: 100%;
 }
 
-.Modal__overlayHeader {
+.OverlayHeader {
   display: flex;
   padding: 24px 20px;
 
-  > span {
-    height: 1rem;
-    width: 1rem;
+  > button {
+    height: @size-16;
+    width: @size-16;
+
+    > svg > g > g {
+      stroke: #F6F6F8;
+    }
   }
 
   > div {

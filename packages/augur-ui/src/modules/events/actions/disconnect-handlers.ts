@@ -4,7 +4,7 @@ import {
   updateConnectionStatus
 } from "modules/app/actions/update-connection";
 import { reInitAugur } from "modules/app/actions/re-init-augur";
-import { MODAL_NETWORK_DISCONNECTED } from "modules/common-elements/constants";
+import { MODAL_NETWORK_DISCONNECTED } from "modules/common/constants";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";

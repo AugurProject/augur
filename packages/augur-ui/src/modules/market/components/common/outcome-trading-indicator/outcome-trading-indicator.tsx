@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { UP, DOWN, NONE } from "modules/common-elements/constants";
+import { UP, DOWN, NONE } from "modules/common/constants";
 import Styles from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator.style";
 
 export default function OutcomeTradingIndicator({

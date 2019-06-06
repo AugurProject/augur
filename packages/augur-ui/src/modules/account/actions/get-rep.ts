@@ -6,7 +6,7 @@ import {
   UNIVERSE_ID,
   CONFIRMED,
   FAILED,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import logError from "utils/log-error";
 import noop from "utils/noop";
 import { AppState } from "store";

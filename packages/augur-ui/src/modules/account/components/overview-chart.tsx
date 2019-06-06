@@ -1,10 +1,10 @@
 import React from "react";
 
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
-import { EthIcon } from "modules/common-elements/icons";
+import { EthIcon } from "modules/common/icons";
 import ProfitLossChart from "modules/account/components/profit-loss-chart";
-import { MovementLabel } from "modules/common-elements/labels";
+import { MovementLabel } from "modules/common/labels";
 import Styles from "modules/account/components/overview-chart.styles.less";
 import { formatEther } from "utils/format-number";
 import { SizeTypes } from "modules/types";

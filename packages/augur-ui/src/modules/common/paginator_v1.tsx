@@ -1,13 +1,15 @@
+// TODO: use only the new pagination going forward, this is depreciated.
+
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { PaginationArrow } from "modules/common-elements/icons";
+import { PaginationArrow } from "modules/common/icons";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 
 import parseQuery from "modules/routes/helpers/parse-query";
 import makeQuery from "modules/routes/helpers/make-query";
 
-import Styles from "modules/common/components/paginator/paginator.styles";
+import Styles from "modules/common/paginator_v1.styles";
 
 interface PaginatorProps {
   itemsLength: number;

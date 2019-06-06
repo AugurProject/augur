@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 import FilledOrders from "modules/portfolio/components/orders/filled-orders";
 import { updateModal } from "modules/modal/actions/update-modal";
 import selectMarketsFillOrders from "modules/portfolio/selectors/select-markets-filled-orders";

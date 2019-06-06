@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
-import { MarketProgress } from "modules/common-elements/progress";
-import { FavoritesButton } from "modules/common-elements/buttons";
-import { END_TIME } from "modules/common-elements/constants";
+import { MarketProgress } from "modules/common/progress";
+import { FavoritesButton } from "modules/common/buttons";
+import { END_TIME } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/common/quads/quad.styles";
 

@@ -6,7 +6,7 @@ import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/common-elements/constants";
+import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);

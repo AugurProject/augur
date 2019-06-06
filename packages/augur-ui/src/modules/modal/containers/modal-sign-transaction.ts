@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Message } from "modules/modal/message";
 import { closeModal } from "modules/modal/actions/close-modal";
-import { MODAL_LEDGER, MODAL_TREZOR } from "modules/common-elements/constants";
+import { MODAL_LEDGER, MODAL_TREZOR } from "modules/common/constants";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";

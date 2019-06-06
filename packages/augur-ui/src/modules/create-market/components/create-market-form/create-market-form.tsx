@@ -12,12 +12,12 @@ import CreateMarketLiquidity from "modules/create-market/components/create-marke
 import CreateMarketLiquidityOrders from "modules/create-market/components/create-market-form-liquidity-orders/create-market-form-liquidity-orders";
 import CreateMarketReview from "modules/create-market/components/create-market-form-review/create-market-form-review";
 import Styles from "modules/create-market/components/create-market-form/create-market-form.styles";
-import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
+import { InputErrorIcon } from "modules/common/icons";
 import { createBigNumber } from "utils/create-big-number";
-import { CATEGORICAL, SCALAR, BID } from "modules/common-elements/constants";
+import { CATEGORICAL, SCALAR, BID } from "modules/common/constants";
 import moment from "moment";
 import { formatDate } from "utils/format-date";
-import { RepBalance } from "modules/common-elements/labels";
+import { RepBalance } from "modules/common/labels";
 import { formatRep } from "utils/format-number";
 
 const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);

@@ -2,8 +2,8 @@ import React from "react";
 import classNames from "classnames";
 
 import getValue from "utils/get-value";
-import { LinearPropertyLabel } from "modules/common-elements/labels";
-import { CancelTextButton } from "modules/common-elements/buttons";
+import { LinearPropertyLabel } from "modules/common/labels";
+import { CancelTextButton } from "modules/common/buttons";
 import MarketLink from "modules/market/components/market-link/market-link";
 import { Order } from "modules/portfolio/types";
 

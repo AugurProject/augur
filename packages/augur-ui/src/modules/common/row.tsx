@@ -2,17 +2,17 @@ import React from "react";
 import classNames from "classnames";
 import Media from "react-media";
 
-import ToggleRow from "modules/common-elements/toggle-row";
+import ToggleRow from "modules/common/toggle-row";
 import { Order } from "modules/portfolio/types";
 import OpenOrderExpandedContent from "modules/portfolio/components/common/rows/open-order-expanded-content";
 import FilledOrdersTable from "modules/portfolio/components/common/tables/filled-orders-table";
 import { FilledOrderInterface } from "modules/portfolio/types";
 import PositionExpandedContent from "modules/portfolio/components/common/rows/position-expanded-content";
-import RowColumn from "modules/common-elements/row-column";
-import { Properties } from "modules/common-elements/row-column";
-import { SMALL_MOBILE } from "modules/common-elements/constants";
+import RowColumn from "modules/common/row-column";
+import { Properties } from "modules/common/row-column";
+import { SMALL_MOBILE } from "modules/common/constants";
 
-import Styles from "modules/common-elements/row.styles";
+import Styles from "modules/common/row.styles";
 
 export interface StyleOptions {
   position?: Boolean;

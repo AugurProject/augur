@@ -5,7 +5,7 @@ import {
 import {
   MODAL_ACCOUNT_APPROVAL,
   ZERO
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import makePath from "modules/routes/helpers/make-path";
 import noop from "utils/noop";
 import { createBigNumber } from "utils/create-big-number";
