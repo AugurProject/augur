@@ -13,15 +13,18 @@ export const connect = async (env: any, loginAccount: LoginAccount, callback: No
 
   let provider;
   let isWeb3 = false;
+  let account;
   const win: WindowApp = window as WindowApp;
   if (win.web3 && win.web3.currentProvider) {
     provider = new Web3Provider(win.web3.currentProvider);
+    account = win.web3.currentProvider.selectedAddress
     isWeb3 = true;
   } else {
     provider = new JsonRpcProvider(env["ethereum-node"].http);
+    account = loginAccount.address;
   }
 
-  await augurSdk.makeApi(provider, loginAccount.address, provider.getSigner(), isWeb3);
+  await augurSdk.makeApi(provider, account, provider.getSigner(), isWeb3);
 
   augur.connect(
     connectOptions,
