@@ -265,7 +265,7 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
-      - script: |
+      - bash: |
           set -euo pipefail
           which node
           node --version
@@ -275,21 +275,21 @@ jobs:
           docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
           docker images
           echo "tests: $(TESTS)"
-          if [[ $(TESTS) == "integration:geth" ]]; then
+          if [[ "$(TESTS)" == "integration:geth" ]]; then
             yarn workspace @augurproject/core docker:run:test:integration:geth;
-          elif [[ $(TESTS) == "integration:parity" ]]; then
+          elif [[ "$(TESTS)" == "integration:parity" ]]; then
             yarn workspace @augurproject/core docker:run:test:integration:parity;
-          elif [[ $(TESTS) == "security:mythril" ]]; then
+          elif [[ "$(TESTS)" == "security:mythril" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:mythril;
             cat $(find . -name test-results.log)
-          elif [[ $(TESTS) == "security:maian" ]]; then
+          elif [[ "$(TESTS)" == "security:maian" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:maian;
-          elif [[ $(TESTS) == "security:smt" ]]; then
+          elif [[ "$(TESTS)" == "security:smt" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:smt;
-          elif [[ $(TESTS) == "security:oyente" ]]; then
+          elif [[ "$(TESTS)" == "security:oyente" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:oyente;
           else
-            yarn workspace @augurproject/core docker:run:test:unit -- $(TESTS);
+            yarn workspace @augurproject/core docker:run:test:unit -- "$(TESTS)";
           fi
         displayName: integration tests
 
