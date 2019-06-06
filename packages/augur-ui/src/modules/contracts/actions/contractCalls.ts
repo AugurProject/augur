@@ -20,8 +20,8 @@ export function isWeb3Transport(): boolean {
 
 export async function getTransaction(hash: string): Promise<any> {
     const Augur = augurSdk.get();
-    const from = await Augur.getTransaction(hash);
-    return from;
+    const tx = await Augur.getTransaction(hash);
+    return tx;
 }
 
 export async function getGasPrice(): Promise<BigNumber> {
