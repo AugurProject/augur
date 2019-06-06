@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import { ACCOUNT_TYPES, ERROR_TYPES } from "modules/common-elements/constants";
-import { errorIcon } from "modules/common-elements/icons";
+import { ACCOUNT_TYPES, ERROR_TYPES } from "modules/common/constants";
+import { errorIcon } from "modules/common/icons";
 
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import Styles from "modules/auth/components/common/error-container.styles";

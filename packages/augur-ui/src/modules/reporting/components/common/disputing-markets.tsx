@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import NullStateMessage from "modules/common-elements/null-state-message";
+import NullStateMessage from "modules/common/null-state-message";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
-import Paginator from "modules/common-elements/paginator_v1";
+import Paginator from "modules/common/paginator_v1";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 
 export default class DisputingMarkets extends Component {

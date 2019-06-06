@@ -12,7 +12,7 @@ import getPrecision from "utils/get-number-precision";
 
 import { selectMarket } from "modules/markets/selectors/market";
 
-import { ASKS, BIDS } from "modules/common-elements/constants";
+import { ASKS, BIDS } from "modules/common/constants";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 
 const mapStateToProps = (state, ownProps) => {

@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 
-import { ImmediateImportance } from "modules/common-elements/icons";
-import { SquareDropdown } from "modules/common-elements/selection";
+import { ImmediateImportance } from "modules/common/icons";
+import { SquareDropdown } from "modules/common/selection";
 import {
   Title,
   ButtonsRow,
   Breakdown,
   Description,
 } from "modules/modal/common";
-import { ETH, REP, ZERO } from "modules/common-elements/constants";
+import { ETH, REP, ZERO } from "modules/common/constants";
 import { formatEther, formatRep } from "utils/format-number";
 import isAddress from "modules/auth/helpers/is-address";
 import Styles from "modules/modal/modal.styles.less";

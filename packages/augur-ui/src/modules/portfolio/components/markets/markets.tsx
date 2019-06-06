@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
-import { LinearPropertyLabel } from "modules/common-elements/labels";
-import { MarketProgress } from "modules/common-elements/progress";
-import { END_TIME } from "modules/common-elements/constants";
+import { LinearPropertyLabel } from "modules/common/labels";
+import { MarketProgress } from "modules/common/progress";
+import { END_TIME } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/common/quads/quad.styles";
 

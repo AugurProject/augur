@@ -1,9 +1,9 @@
 import React from "react";
 
-import { PillSelection } from "modules/common-elements/selection";
+import { PillSelection } from "modules/common/selection";
 import PlatformOverviewStats from "modules/account/containers/platform-overview-stats";
-import * as constants from "modules/common-elements/constants";
-import { LinearPropertyLabel } from "modules/common-elements/labels";
+import * as constants from "modules/common/constants";
+import { LinearPropertyLabel } from "modules/common/labels";
 import Styles from "modules/account/components/activity.styles.less";
 
 export interface ActivityProps {

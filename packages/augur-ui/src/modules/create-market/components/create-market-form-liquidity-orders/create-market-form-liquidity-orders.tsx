@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { CATEGORICAL } from "modules/common-elements/constants";
+import { CATEGORICAL } from "modules/common/constants";
 import MarketLiquidityTable from "modules/market/components/market-liquidity-table/market-liquidity-table";
 
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";

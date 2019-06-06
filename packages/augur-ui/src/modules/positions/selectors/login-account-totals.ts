@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { ZERO } from "modules/common-elements/constants";
+import { ZERO } from "modules/common/constants";
 import store from "store";
 import { selectLoginAccountTotalsState } from "store/select-state";
 import { formatPercent } from "utils/format-number";

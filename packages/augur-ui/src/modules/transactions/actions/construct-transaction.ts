@@ -1,6 +1,6 @@
 import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
 import { updateTransactionsData } from "modules/transactions/actions/update-transactions-data";
-import { SUCCESS } from "modules/common-elements/constants";
+import { SUCCESS } from "modules/common/constants";
 import { formatEther } from "utils/format-number";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import logError from "utils/log-error";

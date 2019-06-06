@@ -5,7 +5,7 @@ import { createBigNumber } from "utils/create-big-number";
 import getValue from "utils/get-value";
 import insufficientFunds from "modules/markets/helpers/insufficient-funds";
 
-import MarkdownRenderer from "modules/common-elements/markdown-renderer";
+import MarkdownRenderer from "modules/common/markdown-renderer";
 import {
   formatEtherEstimate,
   formatGasCostToEther,
@@ -17,10 +17,10 @@ import {
   YES_NO,
   SCALAR,
   CATEGORICAL
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 import classNames from "classnames";
-import { InputErrorIcon } from "modules/common-elements/icons";
+import { InputErrorIcon } from "modules/common/icons";
 import Styles from "modules/create-market/components/create-market-form-review/create-market-form-review.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 import InvalidMessageStyles from "modules/reporting/components/invalid-message/invalid-message.styles";

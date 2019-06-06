@@ -8,7 +8,7 @@ import {
   MODAL_DAI_FAUCET,
   MODAL_DEPOSIT,
   MODAL_TRANSACTIONS,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";

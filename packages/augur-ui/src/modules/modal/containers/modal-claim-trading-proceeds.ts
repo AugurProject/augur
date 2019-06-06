@@ -8,7 +8,7 @@ import claimTradingProceeds, {
 import { closeModal } from "modules/modal/actions/close-modal";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { formatGasCostToEther } from "utils/format-number";
-import { MODAL_REVIEW } from "modules/common-elements/constants";
+import { MODAL_REVIEW } from "modules/common/constants";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";

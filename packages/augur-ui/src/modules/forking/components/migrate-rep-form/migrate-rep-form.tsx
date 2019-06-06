@@ -5,10 +5,10 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 
-import { Input } from "modules/common-elements/form";
-import FormStyles from "modules/common-elements/form-styles";
-import { SCALAR } from "modules/common-elements/constants";
-import { InputErrorIcon } from "modules/common-elements/icons";
+import { Input } from "modules/common/form";
+import FormStyles from "modules/common/form-styles";
+import { SCALAR } from "modules/common/constants";
+import { InputErrorIcon } from "modules/common/icons";
 import Styles from "modules/forking/components/migrate-rep-form/migrate-rep-form.styles";
 import FormattedMigrationTotals from "modules/forking/components/migrate-rep-form/formatted-migration-totals";
 

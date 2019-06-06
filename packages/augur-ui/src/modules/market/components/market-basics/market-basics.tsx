@@ -12,7 +12,7 @@ import toggleTag from "modules/routes/helpers/toggle-tag";
 import toggleCategory from "modules/routes/helpers/toggle-category";
 import { formatDate } from "utils/format-date";
 import getValue from "utils/get-value";
-import { YES_NO, SCALAR, CATEGORICAL } from "modules/common-elements/constants";
+import { YES_NO, SCALAR, CATEGORICAL } from "modules/common/constants";
 
 import CommonStyles from "modules/market/components/common/market-common.styles";
 import Styles from "modules/market/components/market-basics/market-basics.styles";
@@ -21,7 +21,7 @@ import TimeRemainingIndicatorWrapper from "modules/market/components/common/time
 import { constants } from "services/augurjs";
 import moment from "moment";
 import { compact } from "lodash";
-import { CategoryTagTrail } from "modules/common-elements/labels";
+import { CategoryTagTrail } from "modules/common/labels";
 import { MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 

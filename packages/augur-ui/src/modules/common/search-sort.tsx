@@ -1,11 +1,11 @@
 import React, { ReactNode } from "react";
 import classNames from "classnames";
 
-import { SquareDropdown } from "modules/common-elements/selection";
-import { SearchBar } from "modules/common-elements/search";
+import { SquareDropdown } from "modules/common/selection";
+import { SearchBar } from "modules/common/search";
 import { NameValuePair } from "modules/portfolio/types";
 
-import Styles from "modules/common-elements/search-sort.styles";
+import Styles from "modules/common/search-sort.styles";
 
 export interface SearchSortProps {
   sortByOptions: Array<NameValuePair>;

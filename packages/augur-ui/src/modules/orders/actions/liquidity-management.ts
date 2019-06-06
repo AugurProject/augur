@@ -9,7 +9,7 @@ import {
   CATEGORICAL,
   MODAL_ACCOUNT_APPROVAL,
   BID
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { OrderBook, BaseAction } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";

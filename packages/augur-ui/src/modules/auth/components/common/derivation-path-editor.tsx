@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { DEFAULT_DERIVATION_PATH } from "modules/auth/helpers/derivation-path";
 
 import Styles from "modules/auth/components/common/derivation-path-editor.styles";
-import FormStyles from "modules/common-elements/form-styles";
+import FormStyles from "modules/common/form-styles";
 
 export default class DerivationPathEditor extends Component {
   static propTypes = {

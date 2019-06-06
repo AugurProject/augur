@@ -8,7 +8,7 @@ import makePath from "modules/routes/helpers/make-path";
 import makeQuery from "modules/routes/helpers/make-query";
 
 import { NotificationCard } from "modules/account/components/notification-card";
-import { PillLabel } from "modules/common-elements/labels";
+import { PillLabel } from "modules/common/labels";
 import { MARKET, REPORT, DISPUTE } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
@@ -33,7 +33,7 @@ import {
   NOTIFICATIONS_TITLE,
   NOTIFICATIONS_LABEL,
   NEW,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 export interface NotificationsProps extends RouteComponentProps {
   notifications: Array<Notification>;

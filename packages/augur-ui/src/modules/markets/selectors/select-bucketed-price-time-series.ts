@@ -2,7 +2,7 @@ import { createBigNumber } from "utils/create-big-number";
 import createCachedSelector from "re-reselect";
 import { head, each, pullAll } from "lodash";
 import store from "store";
-import { ZERO } from "modules/common-elements/constants";
+import { ZERO } from "modules/common/constants";
 import {
   convertUnixToFormattedDate,
   roundTimestampToPastDayMidnight

@@ -5,7 +5,7 @@ import store from "store";
 
 import { isOrderOfUser } from "modules/orders/helpers/is-order-of-user";
 
-import { BUY, SELL } from "modules/common-elements/constants";
+import { BUY, SELL } from "modules/common/constants";
 
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { formatNone, formatEther, formatShares } from "utils/format-number";

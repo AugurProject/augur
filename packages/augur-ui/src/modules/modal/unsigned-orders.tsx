@@ -5,7 +5,7 @@ import {
   DefaultButtonProps,
   CancelTextButton,
   SubmitTextButton,
-} from "modules/common-elements/buttons";
+} from "modules/common/buttons";
 import {
   Title,
   DescriptionProps,
@@ -16,8 +16,8 @@ import {
 } from "modules/modal/common";
 import {
   LinearPropertyLabelProps,
-} from "modules/common-elements/labels";
-import { BID, CATEGORICAL } from "modules/common-elements/constants";
+} from "modules/common/labels";
+import { BID, CATEGORICAL } from "modules/common/constants";
 import { formatShares, formatEther } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";

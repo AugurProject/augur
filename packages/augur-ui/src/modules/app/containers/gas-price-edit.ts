@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { GAS_SPEED_LABELS } from "modules/common-elements/constants";
+import { GAS_SPEED_LABELS } from "modules/common/constants";
 import { updateModal } from "modules/modal/actions/update-modal";
 import GasPriceEdit from "modules/app/components/gas-price-edit";
 import { AppState } from "store";
