@@ -186,7 +186,7 @@ export const DashlineNormal = () => (
 
 export const DashlineLong = () => (
   <svg width="100%" height="1">
-    <line x1="0" x2="100%" y1="0" y2="0" className={Styles.DashlineL} />
+    <line x1="0" x2="100%" y1="0" y2="0" className={Styles.DashlineLong} />
   </svg>
 );
 

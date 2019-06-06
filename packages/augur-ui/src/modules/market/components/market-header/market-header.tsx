@@ -156,9 +156,6 @@ export default class MarketHeader extends Component {
 
     return (
       <section
-        ref={marketHeaderContainer => {
-          this.marketHeaderContainer = marketHeaderContainer;
-        }}
         className={classNames(
           Styles.MarketHeader,
           ToggleHeightStyles.target,
@@ -206,59 +203,49 @@ export default class MarketHeader extends Component {
         {!headerCollapsed && (
           <div className={Styles.MainValues}>
             <div
-              className={classNames(Styles.MarketHeader__descContainer, {
-                [Styles.MarketHeader__collapsed]: headerCollapsed
+              className={classNames({
+                [Styles.Collapsed]: headerCollapsed
               })}
             >
-              <h1 className={Styles.MarketHeader__description}>
+              <h1>
                 {description}
               </h1>
-
-              <div className={Styles.MarketHeader__descriptionContainer}>
-                <div className={Styles.MarketHeader__details}>
-                  <h4>Resolution Source</h4>
-                  <span>{resolutionSource}</span>
-                </div>
-                {details.length > 0 && (
-                  <div className={Styles.MarketHeader__details}>
-                    <h4>Additional Details</h4>
-                    <label
-                      ref={detailsContainer => {
-                        this.detailsContainer = detailsContainer;
-                      }}
-                      className={classNames(
-                        Styles["MarketHeader__AdditionalDetails-text"],
-                        {
-                          [Styles["MarketHeader__AdditionalDetails-tall"]]:
-                            detailsTooLong && this.state.showReadMore
-                        }
-                      )}
-                    >
-                      <MarkdownRenderer text={details} hideLabel />
-                    </label>
-
-                    {detailsTooLong && (
-                      <button
-                        className={classNames(
-                          Styles.MarketHeader__readMoreButton,
-                          {
-                            [Styles["MarketHeader__readMoreButton-less"]]: this
-                              .state.showReadMore
-                          }
-                        )}
-                        onClick={this.toggleReadMore}
-                      >
-                        {!this.state.showReadMore
-                          ? ChevronDown({ stroke: "#FFFFFF" })
-                          : ChevronUp()}
-                        <span>
-                          {!this.state.showReadMore ? "More" : "Less"}
-                        </span>
-                      </button>
-                    )}
-                  </div>
-                )}
+              <div className={Styles.Details}>
+                <h4>Resolution Source</h4>
+                <span>{resolutionSource}</span>
               </div>
+              {details.length > 0 && (
+                <div className={Styles.Details}>
+                  <h4>Additional Details</h4>
+                  <label
+                    ref={detailsContainer => {
+                      this.detailsContainer = detailsContainer;
+                    }}
+                    className={classNames(
+                      Styles.AdditionalDetails,
+                      {
+                        [Styles.Tall]: detailsTooLong && this.state.showReadMore
+                      }
+                    )}
+                  >
+                    <MarkdownRenderer text={details} hideLabel />
+                  </label>
+
+                  {detailsTooLong && (
+                    <button
+                      className={classNames({[Styles.Less]: this.state.showReadMore})}
+                      onClick={this.toggleReadMore}
+                    >
+                      {!this.state.showReadMore
+                        ? ChevronDown({ stroke: "#FFFFFF" })
+                        : ChevronUp()}
+                      <span>
+                        {!this.state.showReadMore ? "More" : "Less"}
+                      </span>
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
             <div className={Styles.Properties}>
               {market.id && (

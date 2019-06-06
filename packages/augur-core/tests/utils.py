@@ -3,34 +3,29 @@
 from decimal import Decimal
 from struct import pack
 
-from ethereum.utils import privtoaddr
-
 nullAddress = "0x0000000000000000000000000000000000000000"
 garbageAddress = '0xdefec8eddefec8eddefec8eddefec8eddefec8ed'
-twentyZeros = str(pack(">l", 0).rjust(20, '\x00'))
-thirtyTwoZeros = str(pack(">l", 0).rjust(32, '\x00'))
+twentyZeros = str(pack(">l", 0).rjust(20, '\x00'.encode('utf-8')))
+thirtyTwoZeros = str(pack(">l", 0).rjust(32, '\x00'.encode('utf-8')))
 
 def fix(n, m = 1):
-    return long(Decimal(n) * Decimal(m) * 10**18)
+    return Decimal(n) * Decimal(m) * 10**18
 
 def unfix(n):
     return n // 10**18
 
 def stringToBytes(value):
-    return value.ljust(32, '\x00')
+    return value.ljust(32, '\x00').encode('utf-8')
 
 def longTo32Bytes(value):
-    return pack(">l", value).rjust(32, '\x00')
+    return pack(">l", value).rjust(32, '\x00'.encode('utf-8'))
 
 def longToHexString(value, leftPad=40):
     # convert the value to a hex string, strip off the `0x`, strip off any trailing `L`, pad with zeros, prefix with `0x`
     return '0x' + hex(value)[2:].rstrip('L').zfill(leftPad)
 
 def bytesToLong(value):
-    return long(value.encode('hex'), 16)
-
-def bytesToHexString(value):
-    return longToHexString(bytesToLong(value))
+    return value.encode('hex')
 
 def captureFilteredLogs(state, contract, logs):
     def captureLog(contract, logs, message):
@@ -62,20 +57,19 @@ class TokenDelta():
 
 class BuyWithCash():
 
-    def __init__(self, cash, amount, privateKey, err=""):
-        self.privateKey = privateKey
-        self.account = privtoaddr(privateKey)
+    def __init__(self, cash, amount, account, err=""):
+        self.account = account
         self.cash = cash
         self.amount = amount
         self.err = err
 
     def __enter__(self):
         self.originalBalance = self.cash.balanceOf(self.account)
-        self.cash.faucet(self.amount, sender = self.privateKey)
+        self.cash.faucet(self.amount, sender = self.account)
 
     def __exit__(self, *args):
         if args[1]:
-            print args
+            print(args)
             raise args[1]
 
 class EtherDelta():
@@ -104,18 +98,23 @@ class PrintGasUsed():
         self.fixture = fixture
         self.action = action
         self.originalGas = originalGas
+        self.blockNumber = self.fixture.eth_tester.backend.chain.get_block().number
 
     def __enter__(self):
-        self.startingGas = self.fixture.chain.head_state.gas_used
+        pass
 
     def __exit__(self, *args):
         if args[1]:
             raise args[1]
-        gasUsed = self.fixture.chain.head_state.gas_used - self.startingGas
+        currentBlock = self.fixture.eth_tester.backend.chain.get_block().number
+        gasUsed = 0
+        while self.blockNumber < currentBlock:
+            gasUsed += self.fixture.eth_tester.backend.chain.get_canonical_block_by_number(self.blockNumber)._header._gas_used
+            self.blockNumber += 1
         if self.originalGas:
-            print "GAS USED WITH %s : %i. ORIGINAL: %i DELTA: %i" % (self.action, gasUsed, self.originalGas, self.originalGas - gasUsed)
+            print("GAS USED WITH %s : %i. ORIGINAL: %i DELTA: %i" % (self.action, gasUsed, self.originalGas, self.originalGas - gasUsed))
         else:
-            print "GAS USED WITH %s : %i" % (self.action, gasUsed)
+            print("GAS USED WITH %s : %i" % (self.action, gasUsed))
 
 class AssertLog():
 
@@ -127,27 +126,26 @@ class AssertLog():
         self.contract = contract
         if not self.contract:
             self.contract = fixture.contracts['Augur']
-        self.logs = []
 
     def __enter__(self):
-        captureFilteredLogs(self.fixture.chain.head_state, self.contract, self.logs)
+        pass
 
     def __exit__(self, *args):
         if args[1]:
             raise args[1]
 
         foundLog = None
-        for log in self.logs:
-            if (log["_event_type"] == self.eventName):
-                if (self.skip == 0):
-                    foundLog = log
-                    break
-                else:
-                    self.skip -= 1
+        for log in self.contract.getLogs(self.eventName):
+            if (self.skip == 0):
+                foundLog = log
+                break
+            else:
+                self.skip -= 1
 
         if not foundLog:
+            import pdb;pdb.set_trace()
             raise Exception("Assert log failed to find the log with event name %s" % (self.eventName))
 
         for (key, expectedValue) in self.data.items():
-            actualValue = log.get(key)
+            actualValue = log.args.get(key)
             assert actualValue == expectedValue, "%s Log had incorrect value for key \"%s\". Expected: %s. Actual: %s" % (self.eventName, key, expectedValue, actualValue)

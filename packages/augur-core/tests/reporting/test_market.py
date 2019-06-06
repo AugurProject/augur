@@ -1,13 +1,11 @@
 from datetime import timedelta
-from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import raises, mark
-from utils import stringToBytes, AssertLog, bytesToHexString, EtherDelta, TokenDelta
+from utils import stringToBytes, AssertLog, EtherDelta, TokenDelta
 from reporting_utils import proceedToDesignatedReporting
 
-tester.STARTGAS = long(6.7 * 10**6)
-
 def test_market_creation(contractsFixture, universe, market):
+    account0 = contractsFixture.accounts[0]
     numTicks = market.getNumTicks()
 
     market = None
@@ -15,8 +13,8 @@ def test_market_creation(contractsFixture, universe, market):
     marketCreatedLog = {
         "extraInfo": 'so extra',
         "endTime": contractsFixture.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
-        "marketCreator": bytesToHexString(tester.a0),
-        "designatedReporter": "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+        "marketCreator": account0,
+        "designatedReporter": account0,
     }
 
     with AssertLog(contractsFixture, "MarketCreated", marketCreatedLog):
@@ -30,23 +28,24 @@ def test_market_creation(contractsFixture, universe, market):
     assert market.getInitialized()
 
     endTime = 0
-    with raises(TransactionFailed, message="Cannot create a market with an end date in the past"):
-        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
+    with raises(TransactionFailed):
+        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, account0)
 
 def test_categorical_market_creation(contractsFixture, universe):
+    account0 = contractsFixture.accounts[0]
     endTime = contractsFixture.contracts["Time"].getTimestamp() + 1
 
     with raises(TransactionFailed):
-        contractsFixture.createCategoricalMarket(universe, 1, 0, endTime, 1, tester.a0)
+        contractsFixture.createCategoricalMarket(universe, 1, 0, endTime, 1, account0)
 
-    assert contractsFixture.createCategoricalMarket(universe, 3, endTime, 1, 0, tester.a0)
-    assert contractsFixture.createCategoricalMarket(universe, 4, endTime, 1, 0, tester.a0)
-    assert contractsFixture.createCategoricalMarket(universe, 5, endTime, 1, 0, tester.a0)
-    assert contractsFixture.createCategoricalMarket(universe, 6, endTime, 1, 0, tester.a0)
-    assert contractsFixture.createCategoricalMarket(universe, 7, endTime, 1, 0, tester.a0)
+    assert contractsFixture.createCategoricalMarket(universe, 3, endTime, 1, 0, account0)
+    assert contractsFixture.createCategoricalMarket(universe, 4, endTime, 1, 0, account0)
+    assert contractsFixture.createCategoricalMarket(universe, 5, endTime, 1, 0, account0)
+    assert contractsFixture.createCategoricalMarket(universe, 6, endTime, 1, 0, account0)
+    assert contractsFixture.createCategoricalMarket(universe, 7, endTime, 1, 0, account0)
 
     with raises(TransactionFailed):
-        contractsFixture.createCategoricalMarket(universe, 8, endTime, 1, 0, tester.a0)
+        contractsFixture.createCategoricalMarket(universe, 8, endTime, 1, 0, account0)
 
 def test_num_ticks_validation(contractsFixture, universe):
     # Require numTicks != 0
@@ -54,15 +53,17 @@ def test_num_ticks_validation(contractsFixture, universe):
        market = contractsFixture.createReasonableScalarMarket(universe, 30, -10, 0)
 
 def test_transfering_ownership(contractsFixture, universe, market):
+    account0 = contractsFixture.accounts[0]
+    account1 = contractsFixture.accounts[1]
 
     transferLog = {
         "universe": universe.address,
         "market": market.address,
-        "from": bytesToHexString(tester.a0),
-        "to": bytesToHexString(tester.a1),
+        "from": account0,
+        "to": account1,
     }
     with AssertLog(contractsFixture, "MarketTransferred", transferLog):
-        assert market.transferOwnership(tester.a1)
+        assert market.transferOwnership(account1)
 
 @mark.parametrize('invalid', [
     True,
@@ -99,26 +100,27 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
             market.finalize()
 
 def test_max_duration_with_upgrade_cadence(contractsFixture, universe):
+    account0 = contractsFixture.accounts[0]
     baseMarketDurationMaximum = contractsFixture.contracts["Constants"].BASE_MARKET_DURATION_MAXIMUM()
     upgradeCadence = contractsFixture.contracts["Constants"].UPGRADE_CADENCE()
     upgradeDate = contractsFixture.contracts["Augur"].getMaximumMarketEndDate()
 
     # We cannot create markets after the initial deployment upgrade Date
     endTime = upgradeDate + 1
-    with raises(TransactionFailed, message="Cannot create a market with an end date past the maximum duration"):
-        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
+    with raises(TransactionFailed):
+        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, account0)
 
     # If we get within the baseMarketDurationMaximum window of the upgrade day we can create markets that end that much time from now
     now = contractsFixture.contracts["Time"].getTimestamp()
     contractsFixture.contracts["Time"].setTimestamp(upgradeDate - baseMarketDurationMaximum + 2)
-    assert contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
+    assert contractsFixture.createYesNoMarket(universe, endTime, 1, 0, account0)
 
     # Once the upgrade date has passed we can create markets with end times up to the old upgrade date + our upgrade cadence
     contractsFixture.contracts["Time"].setTimestamp(upgradeDate + 1)
     upgradeDate += upgradeCadence
     endTime = upgradeDate + 1
-    with raises(TransactionFailed, message="Cannot create a market with an end date past the maximum duration"):
-        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
+    with raises(TransactionFailed):
+        contractsFixture.createYesNoMarket(universe, endTime, 1, 0, account0)
 
     endTime = upgradeDate - 1
-    assert contractsFixture.createYesNoMarket(universe, endTime, 1, 0, tester.a0)
+    assert contractsFixture.createYesNoMarket(universe, endTime, 1, 0, account0)

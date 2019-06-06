@@ -1,7 +1,7 @@
-from ethereum.tools import tester
-from utils import longToHexString, stringToBytes, bytesToHexString, twentyZeros, thirtyTwoZeros, longTo32Bytes
+
+from utils import longToHexString, stringToBytes, twentyZeros, thirtyTwoZeros, longTo32Bytes
 from pytest import fixture, raises, mark
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 
 pytestmark = mark.skip(reason="Mock Tests off")
 
@@ -26,10 +26,10 @@ def test_fee_window_creation(localFixture, initializedDisputeWindow, mockReputat
     assert initializedDisputeWindow.isOver() == True
 
 def test_fee_window_on_market_finalization(localFixture, initializedDisputeWindow, mockUniverse, mockMarket):
-    with raises(TransactionFailed, message="on market finalized needs to be called from market"):
+    with raises(TransactionFailed):
         initializedDisputeWindow.onMarketFinalized()
 
-    with raises(TransactionFailed, message="market needs to be in same universe"):
+    with raises(TransactionFailed):
         mockMarket.callOnMarketFinalized()
 
     mockUniverse.setIsContainerForMarket(True)
