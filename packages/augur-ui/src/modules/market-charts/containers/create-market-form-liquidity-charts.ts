@@ -9,7 +9,7 @@ import getOrderBookKeys from "modules/markets/helpers/get-orderbook-keys";
 
 import { formatEther, formatShares } from "utils/format-number";
 
-import { SCALAR, BID, BIDS, ASKS } from "modules/common-elements/constants";
+import { SCALAR, BID, BIDS, ASKS } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   const { newMarket, loginAccount } = state;

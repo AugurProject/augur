@@ -5,11 +5,11 @@ import {
   PERIODS,
   VOLUME_ETH_SHARES,
   ETH
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import {
   SquareDropdown,
   StaticLabelDropdown
-} from "modules/common-elements/selection";
+} from "modules/common/selection";
 import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles";
 import MarketOutcomeChartsCandlestickHighchart from "modules/market-charts/containers/market-candlestick";
 import { CandlestickOchl } from "modules/market-charts/components/market-outcome-charts--candlestick/candlestick-ochl";

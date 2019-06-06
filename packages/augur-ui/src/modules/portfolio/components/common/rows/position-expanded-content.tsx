@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import { LinearPropertyLabelMovement } from "modules/common-elements/labels";
+import { LinearPropertyLabelMovement } from "modules/common/labels";
 import { Order } from "modules/portfolio/types";
 
 import Styles from "modules/portfolio/components/common/rows/open-order-expanded-content.styles";

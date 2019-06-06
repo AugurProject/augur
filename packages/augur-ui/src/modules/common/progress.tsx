@@ -1,5 +1,5 @@
 import * as React from "react";
-import Styles from "modules/common-elements/progress.styles";
+import Styles from "modules/common/progress.styles";
 import * as format from "utils/format-date";
 import classNames from "classnames";
 import { constants } from "services/augurjs";

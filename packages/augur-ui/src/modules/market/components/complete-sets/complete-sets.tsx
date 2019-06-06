@@ -1,6 +1,6 @@
 import React from "react";
-import { AWAITING_SIGNATURE, PENDING } from "modules/common-elements/constants";
-import { CompactButton } from "modules/common-elements/buttons";
+import { AWAITING_SIGNATURE, PENDING } from "modules/common/constants";
+import { CompactButton } from "modules/common/buttons";
 import Styles from "modules/market/components/complete-sets/complete-sets.styles";
 
 export interface EmptyDisplayProps {

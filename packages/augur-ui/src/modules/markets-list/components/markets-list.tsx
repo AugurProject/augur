@@ -2,9 +2,9 @@ import React, { Component } from "react";
 
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 import MarketPreview from "modules/market/containers/market-preview";
-import Paginator from "modules/common-elements/paginator_v1";
-import NullStateMessage from "modules/common-elements/null-state-message";
-import { TYPE_TRADE } from "modules/common-elements/constants";
+import Paginator from "modules/common/paginator_v1";
+import NullStateMessage from "modules/common/null-state-message";
+import { TYPE_TRADE } from "modules/common/constants";
 import isEqual from "lodash/isEqual";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
 import debounce from "utils/debounce";

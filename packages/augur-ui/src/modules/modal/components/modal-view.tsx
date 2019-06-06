@@ -30,7 +30,7 @@ import ModalClaimProceeds from "modules/modal/containers/modal-claim-proceeds";
 import ModalTradingOverlay from "modules/modal/components/modal-trading-overlay";
 import ModalOpenOrders from "modules/modal/containers/modal-open-orders";
 
-import * as TYPES from "modules/common-elements/constants";
+import * as TYPES from "modules/common/constants";
 
 import Styles from "modules/modal/components/common/common.styles.less";
 

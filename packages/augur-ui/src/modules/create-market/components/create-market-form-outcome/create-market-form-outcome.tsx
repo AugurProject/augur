@@ -16,16 +16,16 @@ import {
   CATEGORICAL_OUTCOMES_MAX_NUM,
   CATEGORICAL_OUTCOME_MAX_LENGTH,
   ZERO
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 import {
   InputErrorIcon,
   Hint
-} from "modules/common-elements/icons";
+} from "modules/common/icons";
 import Styles from "modules/create-market/components/create-market-form-outcome/create-market-form-outcome.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common-elements/tooltip.styles";
+import TooltipStyles from "modules/common/tooltip.styles";
 
 const NUM_DIGITS_LIMIT = 4;
 

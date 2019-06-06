@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import FilterSwitchBox from "modules/portfolio/components/common/quads/filter-switch-box";
 import MarketRow from "modules/portfolio/components/common/rows/market-row";
-import { MovementLabel } from "modules/common-elements/labels";
+import { MovementLabel } from "modules/common/labels";
 import { SizeTypes } from "modules/types";
 
 import Styles from "modules/account/components/open-markets.styles.less";

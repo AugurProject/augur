@@ -4,15 +4,15 @@ import classNames from "classnames";
 import {
   MovementLabel,
   LinearPropertyLabel,
-} from "modules/common-elements/labels";
-import { DaiLogoIcon, RepLogoIcon } from "modules/common-elements/icons";
+} from "modules/common/labels";
+import { DaiLogoIcon, RepLogoIcon } from "modules/common/icons";
 import {
   AVAILABLE_TRADING_BALANCE,
   TOTAL_FROZEN_FUNDS,
   REP_BALANCE,
   REP_STAKED,
   TOTAL_ACCOUNT_VALUE_IN_ETH,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { SizeTypes } from "modules/types";
 
 import Styles from "modules/account/components/funds.styles.less";

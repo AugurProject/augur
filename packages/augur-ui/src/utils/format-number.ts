@@ -4,7 +4,7 @@ import {
   encodeNumberAsJSNumber,
   unfix,
 } from "speedomatic";
-import { ZERO, TEN, ETHER } from "modules/common-elements/constants";
+import { ZERO, TEN, ETHER } from "modules/common/constants";
 import addCommas from "utils/add-commas-to-number";
 import { FormattedNumber, FormattedNumberOptions } from "modules/types";
 

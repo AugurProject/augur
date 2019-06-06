@@ -11,7 +11,7 @@ import { loadDesignatedReporterMarkets } from "modules/reports/actions/load-desi
 import { loadDisputing } from "modules/reports/actions/load-disputing";
 import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
-import { ACCOUNT_TYPES } from "modules/common-elements/constants";
+import { ACCOUNT_TYPES } from "modules/common/constants";
 import { LoginAccount, NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";

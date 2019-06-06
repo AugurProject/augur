@@ -13,9 +13,9 @@ import {
   BUY,
   SELL,
   UPPER_FIXED_PRECISION_BOUND
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import Styles from "modules/trading/components/wrapper/wrapper.styles";
-import { OrderButton } from "modules/common-elements/buttons";
+import { OrderButton } from "modules/common/buttons";
 import { formatShares } from "utils/format-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
 

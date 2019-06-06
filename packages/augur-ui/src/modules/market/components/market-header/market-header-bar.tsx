@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import Styles from "modules/market/components/market-header/market-header-bar.styles";
-import { FavoritesButton } from "modules/common-elements/buttons";
-import { InReportingLabel } from "modules/common-elements/labels";
-import { PaperClip, Person } from "modules/common-elements/icons";
-import * as constants from "modules/common-elements/constants";
+import { FavoritesButton } from "modules/common/buttons";
+import { InReportingLabel } from "modules/common/labels";
+import { PaperClip, Person } from "modules/common/icons";
+import * as constants from "modules/common/constants";
 import Clipboard from "clipboard";
-import { DotSelection } from "modules/common-elements/selection";
+import { DotSelection } from "modules/common/selection";
 
 export interface MarketHeaderBarProps {
   addToFavorites: Function;

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import MarketOutcomesList from "modules/market/containers/market-outcomes-list";
-import { Close } from "modules/common-elements/icons";
+import { Close } from "modules/common/icons";
 
 import Styles from "modules/modal/components/common/common.styles.less";
 

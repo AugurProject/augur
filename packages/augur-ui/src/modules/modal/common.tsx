@@ -4,28 +4,28 @@ import classNames from "classnames";
 import QRCode from "qrcode.react";
 import Clipboard from "clipboard";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common-elements/tooltip.styles";
-import { Checkbox } from "modules/common-elements/form";
+import TooltipStyles from "modules/common/tooltip.styles";
+import { Checkbox } from "modules/common/form";
 import {
   XIcon,
   CopyIcon,
   CheckCircleIcon,
-} from "modules/common-elements/icons";
+} from "modules/common/icons";
 import {
   DefaultButtonProps,
   PrimaryButton,
   SecondaryButton,
   SubmitTextButton,
   ExternalLinkButton,
-} from "modules/common-elements/buttons";
+} from "modules/common/buttons";
 import {
   LinearPropertyLabel,
   LinearPropertyLabelProps,
   PendingLabel,
   ConfirmedLabel,
-} from "modules/common-elements/labels";
+} from "modules/common/labels";
 import Styles from "modules/modal/modal.styles.less";
-import { PENDING, SUCCESS } from "modules/common-elements/constants";
+import { PENDING, SUCCESS } from "modules/common/constants";
 
 export interface TitleProps {
   title: string;

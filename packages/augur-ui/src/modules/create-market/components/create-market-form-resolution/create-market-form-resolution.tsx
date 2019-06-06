@@ -9,10 +9,10 @@ import {
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import isAddress from "modules/auth/helpers/is-address";
 
-import { InputErrorIcon } from "modules/common-elements/icons";
+import { InputErrorIcon } from "modules/common/icons";
 import Styles from "modules/create-market/components/create-market-form-resolution/create-market-form-resolution.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 

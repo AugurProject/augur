@@ -7,7 +7,7 @@ import {
   ViewTransactionsButton,
   REPFaucetButton,
   DAIFaucetButton,
-} from "modules/common-elements/buttons";
+} from "modules/common/buttons";
 import Styles from "modules/account/components/transactions.styles.less";
 
 interface TransactionsProps {

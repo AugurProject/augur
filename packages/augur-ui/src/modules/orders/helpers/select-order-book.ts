@@ -13,7 +13,7 @@ import {
   BUY,
   SELL,
   ZERO
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 import { has } from "lodash";
 

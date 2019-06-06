@@ -5,8 +5,8 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { formatShares } from "utils/format-number";
-import { SELL } from "modules/common-elements/constants";
-import { HoverValueLabel } from "modules/common-elements/labels";
+import { SELL } from "modules/common/constants";
+import { HoverValueLabel } from "modules/common/labels";
 import MarketOutcomeHeaderOrders from "modules/market-charts/components/market-outcome--header-orders/market-outcome--header-orders";
 
 import Styles from "modules/market/components/market-trade-history/market-trade-history.styles";

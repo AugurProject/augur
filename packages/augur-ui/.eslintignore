@@ -10,5 +10,5 @@ test/*
 src/version.js
 
 # TODO fix issues with below files
-src/modules/common-elements/labels.tsx
+src/modules/common/labels.tsx
 src/modules/portfolio/components/common/quads/filter-box.tsx

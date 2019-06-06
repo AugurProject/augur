@@ -15,19 +15,19 @@ import {
   WARNING,
   ERROR,
   UPPER_FIXED_PRECISION_BOUND
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common-elements/tooltip.styles";
+import TooltipStyles from "modules/common/tooltip.styles";
 import Styles from "modules/trading/components/confirm/confirm.styles";
 import {
   XIcon,
   ExclamationCircle,
   InfoIcon
-} from "modules/common-elements/icons";
+} from "modules/common/icons";
 import { formatGasCostToEther, formatShares } from "utils/format-number";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { isEqual } from "lodash";
-import { LinearPropertyLabel } from "modules/common-elements/labels";
+import { LinearPropertyLabel } from "modules/common/labels";
 
 class Confirm extends Component {
   static propTypes = {

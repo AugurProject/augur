@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import ChevronFlip from "modules/common-elements/chevron-flip";
+import ChevronFlip from "modules/common/chevron-flip";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { PulseLoader } from "react-spinners";
-import { SearchIcon, XIcon, CheckMark } from "modules/common-elements/icons";
+import { SearchIcon, XIcon, CheckMark } from "modules/common/icons";
 import debounce from "utils/debounce";
-import Styles from "modules/common-elements/form.styles";
+import Styles from "modules/common/form.styles";
 
 interface CheckboxProps {
   id: string;

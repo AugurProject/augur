@@ -6,7 +6,7 @@ import ModulePane from "modules/market/components/common/module-tabs/module-pane
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
 import PositionsTable from "modules/market/containers/positions-table";
 import FilledOrdersTable from "modules/market/components/market-orders-positions-table/filled-orders-table";
-import { CancelTextButton } from "modules/common-elements/buttons";
+import { CancelTextButton } from "modules/common/buttons";
 
 import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
 

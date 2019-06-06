@@ -12,7 +12,7 @@ import {
   MARKET_OPEN,
   MARKET_OPEN_INTEREST,
   DAY
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { FilterSortOptions, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: FilterSortOptions = {
