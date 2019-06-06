@@ -39,9 +39,9 @@ export class Router {
   private static routings = new Map();
 
   private readonly augur: Augur;
-  private readonly db: DB;
+  private readonly db: Promise<DB>;
 
-  constructor(augur: Augur, db: DB) {
+  constructor(augur: Augur, db: Promise<DB>) {
     this.augur = augur;
     this.db = db;
   }
@@ -67,6 +67,7 @@ export class Router {
       decodedParams.value[key] = AddressFormatReviver(key, decodedParams.value[key]);
     }
 
-    return getter.func(this.augur, this.db, decodedParams.value);
+    const db = await this.db;
+    return getter.func(this.augur, db, decodedParams.value);
   }
 }

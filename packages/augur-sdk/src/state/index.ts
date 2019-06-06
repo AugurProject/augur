@@ -22,6 +22,7 @@ export async function create(ethNodeUrl:string, account?:string, dbArgs: Databas
   const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses[networkId].Augur, augur.events.getEventTopics);
   const pouchDBFactory = PouchDBFactory(dbArgs);
   const controller = new Controller(augur, Number(networkId), settings.blockstreamDelay, UploadBlockNumbers[networkId], account ? [account] : [], pouchDBFactory, blockAndLogStreamerListener);
+  controller.createDb();
 
   const api = new API(augur, controller.db);
 
