@@ -48,7 +48,7 @@ const MarketBasics = ({
     const displayDate = formatDate(endTime);
 
     ReportEndingIndicator = () => (
-      <div className={Styles.MarketBasics__reportingends}>
+      <div className={Styles.ReportingEnds}>
         <div>
           {p.isMobile
             ? `In Reporting`
@@ -82,53 +82,51 @@ const MarketBasics = ({
   }));
 
   return (
-    <article className={Styles.MarketBasics}>
-      <div
-        className={classNames(CommonStyles.MarketCommon__topcontent, {
-          [`${CommonStyles["single-card"]}`]: p.cardStyle === "single-card"
-        })}
-      >
-        <div className={Styles.MarketBasics__header}>
-          <CategoryTagTrail
-            categories={categoriesWithClick}
-            tags={tagsWithClick}
-          />
-          {p.showDisputeRound && (
-            <div className={Styles["MarketBasics__round-number"]}>
-              <span className={Styles["MarketBasics__round-label"]}>
-                Dispute Round
-              </span>
-              <span className={Styles["MarketBasics__round-text"]}>
-                {getValue(p, "disputeInfo.disputeRound")}
-              </span>
-            </div>
-          )}
-          <ReportEndingIndicator />
-        </div>
-        <h1 className={CommonStyles.MarketCommon__description}>
-          <MarketLink id={p.id} className="market-link">
-            {p.description}
-          </MarketLink>
-        </h1>
-
-        {(marketType === YES_NO || marketType === SCALAR) && (
-          <MarketOutcomesBinaryScalar
-            outcomes={p.outcomes}
-            min={p.minPrice}
-            max={p.maxPrice}
-            type={marketType}
-            scalarDenomination={p.isMobile ? "" : p.scalarDenomination || "N/A"}
-          />
+    <div
+      className={classNames(CommonStyles.MarketCommon__topcontent, {
+        [`${CommonStyles["single-card"]}`]: p.cardStyle === "single-card"
+      })}
+    >
+      <div className={Styles.Header}>
+        <CategoryTagTrail
+          categories={categoriesWithClick}
+          tags={tagsWithClick}
+        />
+        {p.showDisputeRound && (
+          <div className={Styles.RoundNumber}>
+            <span>
+              Dispute Round
+            </span>
+            <span>
+              {getValue(p, "disputeInfo.disputeRound")}
+            </span>
+          </div>
         )}
-
-        {marketType === CATEGORICAL && (
-          <MarketOutcomesCategorical
-            outcomes={p.outcomes}
-            isMobileSmall={p.isMobileSmall}
-          />
-        )}
+        <ReportEndingIndicator />
       </div>
-    </article>
+      <h1 className={CommonStyles.MarketCommon__description}>
+        <MarketLink id={p.id} className="market-link">
+          {p.description}
+        </MarketLink>
+      </h1>
+
+      {(marketType === YES_NO || marketType === SCALAR) && (
+        <MarketOutcomesBinaryScalar
+          outcomes={p.outcomes}
+          min={p.minPrice}
+          max={p.maxPrice}
+          type={marketType}
+          scalarDenomination={p.isMobile ? "" : p.scalarDenomination || "N/A"}
+        />
+      )}
+
+      {marketType === CATEGORICAL && (
+        <MarketOutcomesCategorical
+          outcomes={p.outcomes}
+          isMobileSmall={p.isMobileSmall}
+        />
+      )}
+    </div>
   );
 };
 
