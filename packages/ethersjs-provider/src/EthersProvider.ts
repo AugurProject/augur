@@ -71,6 +71,11 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
     this.contractMapping[contractName] = new ethers.utils.Interface(abi);
   }
 
+  public async getEthBalance(address: string): Promise<string> {
+    const result = await super.getBalance(address);
+    return result.toString();
+  }
+
   public getEventTopic(contractName: string, eventName: string): string {
     const contractInterface = this.contractMapping[contractName];
     if (!contractInterface) {
@@ -127,4 +132,5 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       this.performQueue.push({ message, params, resolve, reject });
     });
   }
+
 }

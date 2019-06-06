@@ -9,6 +9,7 @@ function makeProviderMock(opts?: any): Provider {
   const blockNumber = opts.blockNumber || 0;
   const eventTopic = opts.eventTopic || "xyz";
   const logValues = opts.logValues || [];
+  const balance = opts.balance || "1";
 
   return {
     getNetworkId: (): Promise<NetworkId> => Promise.resolve(networkId),
@@ -17,6 +18,7 @@ function makeProviderMock(opts?: any): Provider {
     storeAbiData: (abi: Abi, contractName: string): void => {},
     getEventTopic: (contractName: string, eventName: string): string => eventTopic,
     parseLogValues: (contractName: string, log: Log): LogValues => logValues,
+    getBalance: (address: string) => balance,
   };
 }
 
