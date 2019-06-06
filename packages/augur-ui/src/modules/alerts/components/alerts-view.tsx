@@ -5,7 +5,7 @@ import classNames from "classnames";
 import NullStateMessage from "modules/common-elements/null-state-message";
 import Alert from "modules/alerts/components/alert";
 
-import { Close } from "modules/common/components/icons";
+import { Close } from "modules/common-elements/icons";
 
 import Styles from "modules/alerts/components/alerts-view.styles.less";
 import ToggleHeightStyles from "utils/toggle-height.styles.less";

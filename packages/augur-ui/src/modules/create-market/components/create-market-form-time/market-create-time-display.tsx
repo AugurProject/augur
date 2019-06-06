@@ -3,7 +3,7 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip.styles";
-import { Hint } from "modules/common/components/icons";
+import { Hint } from "modules/common-elements/icons";
 import Styles from "modules/create-market/components/create-market-form-define/create-market-form-define.styles";
 
 export const MarketCreationTimeDisplay = ({ simple, endTime }) => (

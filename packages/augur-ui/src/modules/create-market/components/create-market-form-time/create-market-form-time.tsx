@@ -7,8 +7,8 @@ import { SingleDatePicker } from "react-dates";
 import {
   ChevronLeft,
   ChevronRight,
-  ExclamationCircle as InputErrorIcon
-} from "modules/common/components/icons";
+  InputErrorIcon
+} from "modules/common-elements/icons";
 import Styles from "modules/create-market/components/create-market-form-define/create-market-form-define.styles";
 import moment from "moment";
 import { formatDate } from "utils/format-date";

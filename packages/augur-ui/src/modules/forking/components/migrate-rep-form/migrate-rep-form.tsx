@@ -8,7 +8,7 @@ import { BigNumber, createBigNumber } from "utils/create-big-number";
 import Input from "modules/common/components/input/input";
 import FormStyles from "modules/common/less/form";
 import { SCALAR } from "modules/common-elements/constants";
-import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
+import { InputErrorIcon } from "modules/common-elements/icons";
 import Styles from "modules/forking/components/migrate-rep-form/migrate-rep-form.styles";
 import FormattedMigrationTotals from "modules/forking/components/migrate-rep-form/formatted-migration-totals";
 

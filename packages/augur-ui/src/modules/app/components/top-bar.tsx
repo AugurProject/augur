@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import { Alerts } from "modules/common/components/icons";
+import { Alerts } from "modules/common-elements/icons";
 import ConnectAccount from "modules/auth/containers/connect-account";
 import GasPriceEdit from "modules/app/containers/gas-price-edit";
 import BlockInfoData from "modules/block-info/containers/block-info-data";

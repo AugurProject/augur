@@ -11,7 +11,7 @@ import {
   ETHER
 } from "modules/common-elements/constants";
 import { formatAttoRep, formatNumber, formatRep } from "utils/format-number";
-import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
+import { InputErrorIcon } from "modules/common-elements/icons";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles";
 import ReportingDisputeProgress from "modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress";

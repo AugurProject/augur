@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import classNames from "classnames";
 
-import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
+import { InputErrorIcon } from "modules/common-elements/icons";
 import Input from "modules/common/components/input/input";
 import Styles from "modules/modal/components/common/common.styles.less";
 import ModalActions from "modules/modal/components/common/modal-actions";
