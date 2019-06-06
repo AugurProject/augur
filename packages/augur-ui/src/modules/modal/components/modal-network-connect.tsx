@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import classNames from "classnames";
 
-import { InputErrorIcon } from "modules/common-elements/icons";
-import { Input } from "modules/common-elements/form";
+import { InputErrorIcon } from "modules/common/icons";
+import { Input } from "modules/common/form";
 import Styles from "modules/modal/components/common/common.styles.less";
 import ModalActions from "modules/modal/components/common/modal-actions";
 import { windowRef } from "utils/window-ref";
 import { editEndpointParams } from "utils/edit-endpoint-params";
-import { MODAL_NETWORK_CONNECT } from "modules/common-elements/constants";
+import { MODAL_NETWORK_CONNECT } from "modules/common/constants";
 import { EnvObject, WindowApp } from "modules/types";
 
 

@@ -3,7 +3,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { TwoArrows } from "modules/common-elements/icons";
+import { TwoArrows } from "modules/common/icons";
 
 import Styles from "modules/market/components/market-view/market-outcome-selector.styles";
 

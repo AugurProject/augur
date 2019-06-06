@@ -1,5 +1,5 @@
 import { BigNumber, createBigNumber } from "utils/create-big-number";
-import { SCALAR, BUY } from "modules/common-elements/constants";
+import { SCALAR, BUY } from "modules/common/constants";
 
 /**
  *

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import { Alerts } from "modules/common-elements/icons";
+import { Alerts } from "modules/common/icons";
 import ConnectAccount from "modules/auth/containers/connect-account";
 import GasPriceEdit from "modules/app/containers/gas-price-edit";
 import BlockInfoData from "modules/block-info/containers/block-info-data";
@@ -10,9 +10,9 @@ import {
   MovementLabel,
   LinearPropertyLabel,
   LinearPropertyLabelMovement
-} from "modules/common-elements/labels";
+} from "modules/common/labels";
 import { CoreStats } from "modules/types";
-import { RepLogoIcon } from "modules/common-elements/icons";
+import { RepLogoIcon } from "modules/common/icons";
 import Styles from "modules/app/components/top-bar.styles";
 
 

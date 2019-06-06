@@ -7,8 +7,8 @@ import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { augur } from "services/augurjs";
 
-import { InputDropdown } from "modules/common-elements/form";
-import { InputErrorIcon } from "modules/common-elements/icons";
+import { InputDropdown } from "modules/common/form";
+import { InputErrorIcon } from "modules/common/icons";
 import CreateMarketFormLiquidityCharts from "modules/market-charts/containers/create-market-form-liquidity-charts";
 
 import {
@@ -19,7 +19,7 @@ import {
   ASK,
   ONE,
   ZERO
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import getValue from "utils/get-value";
 import isPopulated from "utils/is-populated";
 

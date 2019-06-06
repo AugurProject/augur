@@ -3,7 +3,7 @@ import {
   MARKET_OPEN,
   MARKET_REPORTING,
   MARKET_CLOSED
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 export const createTabsInfo = markets => {
   const tabsInfo = [

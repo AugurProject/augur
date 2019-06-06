@@ -2,9 +2,9 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import getValue from "utils/get-value";
 import { AppState } from "store";
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 
-import Row from "modules/common-elements/row";
+import Row from "modules/common/row";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 

@@ -1,7 +1,7 @@
 import { formatAttoRep } from "utils/format-number";
 import { createBigNumber } from "utils/create-big-number";
 import { augur } from "services/augurjs";
-import { ETHER } from "modules/common-elements/constants";
+import { ETHER } from "modules/common/constants";
 
 const ONE = createBigNumber(1);
 const ONE_HUNDRED = createBigNumber(100);

@@ -1,4 +1,4 @@
-import { WordTrail } from "modules/common-elements/labels";
+import { WordTrail } from "modules/common/labels";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -6,14 +6,14 @@ import {
   BackArrow,
   ChevronDown,
   ChevronUp
-} from "modules/common-elements/icons";
-import MarkdownRenderer from "modules/common-elements/markdown-renderer";
+} from "modules/common/icons";
+import MarkdownRenderer from "modules/common/markdown-renderer";
 import MarketHeaderBar from "modules/market/containers/market-header-bar";
 import { BigNumber } from "bignumber.js";
 import Styles from "modules/market/components/market-header/market-header.styles";
 import CoreProperties from "modules/market/components/core-properties/core-properties";
-import ChevronFlip from "modules/common-elements/chevron-flip";
-import { MarketTypeLabel } from "modules/common-elements/labels";
+import ChevronFlip from "modules/common/chevron-flip";
+import { MarketTypeLabel } from "modules/common/labels";
 import { MarketHeaderCollapsed } from "modules/market/components/market-header/market-header-collapsed";
 import makeQuery from "modules/routes/helpers/make-query";
 import { compact } from "lodash";
@@ -21,9 +21,9 @@ import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
   SCALAR
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import MarketHeaderReporting from "modules/market/containers/market-header-reporting";
-import { MarketTimeline } from "modules/common-elements/progress";
+import { MarketTimeline } from "modules/common/progress";
 
 import ToggleHeightStyles from "utils/toggle-height.styles";
 

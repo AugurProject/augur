@@ -19,7 +19,7 @@ import {
   MARKET_REPORTING,
   MARKET_CLOSED,
   REPORTING_STATE,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 import { getOutcomeName } from "utils/get-outcome";
 

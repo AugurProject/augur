@@ -1,5 +1,5 @@
 import React from "react";
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 import {
   LinearPropertyLabel,
   PendingLabel,
@@ -7,8 +7,8 @@ import {
   ValueLabel,
   TextLabel,
   MovementLabel
-} from "modules/common-elements/labels";
-import { CancelTextButton } from "modules/common-elements/buttons";
+} from "modules/common/labels";
+import { CancelTextButton } from "modules/common/buttons";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 
 const { COLUMN_TYPES } = constants;

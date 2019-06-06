@@ -11,13 +11,13 @@ import {
   MARKET_STATUS_MESSAGES,
   REPORTING_STATE,
   CONTRACT_INTERVAL,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import {
   CountdownProgress,
   formatTime
-} from "modules/common-elements/progress";
+} from "modules/common/progress";
 import { createBigNumber } from "utils/create-big-number";
-import { PrimaryButton } from "modules/common-elements/buttons";
+import { PrimaryButton } from "modules/common/buttons";
 
 import canClaimProceeds from "utils/can-claim-proceeds";
 

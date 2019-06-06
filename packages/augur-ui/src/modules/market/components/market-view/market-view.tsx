@@ -20,15 +20,15 @@ import {
   BUY,
   MODAL_TRADING_OVERLAY,
   MARKET_REVIEWS,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 import MarketOutcomeSelector from "modules/market/components/market-view/market-outcome-selector";
 import MarketOutcomesChart from "modules/market-charts/containers/market-outcomes-chart";
 import { getMarketAgeInDays } from "utils/format-date";
 import Styles from "modules/market/components/market-view/market-view.styles";
-import { LeftChevron } from "modules/common-elements/icons";
-import { TEMP_TABLET } from "modules/common-elements/constants";
+import { LeftChevron } from "modules/common/icons";
+import { TEMP_TABLET } from "modules/common/constants";
 
 export default class MarketView extends Component {
   static propTypes = {

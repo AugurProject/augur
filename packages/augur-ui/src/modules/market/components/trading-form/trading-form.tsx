@@ -9,7 +9,7 @@ import { BigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";
 import Styles from "modules/market/components/trading-form/trading-form.styles";
 
-import { PrimaryButton } from "modules/common-elements/buttons";
+import { PrimaryButton } from "modules/common/buttons";
 
 interface TradingFormProps {
   availableFunds: Object;

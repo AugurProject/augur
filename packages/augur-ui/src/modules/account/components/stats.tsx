@@ -1,6 +1,6 @@
 import React from "react";
 
-import { LinearPropertyLabel } from "modules/common-elements/labels";
+import { LinearPropertyLabel } from "modules/common/labels";
 import { formatNumber } from "utils/format-number";
 
 import Styles from "modules/account/components/stats.styles.less";

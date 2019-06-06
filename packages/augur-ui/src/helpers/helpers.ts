@@ -4,7 +4,7 @@ import logError from "utils/log-error";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { loadMarkets } from "modules/markets/actions/load-markets";
 import store, { AppState } from "store";
-import { DISCLAIMER_SEEN } from "modules/common-elements/constants";
+import { DISCLAIMER_SEEN } from "modules/common/constants";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import { selectCurrentTimestamp } from "store/select-state";
 import { logout } from "modules/auth/actions/logout";

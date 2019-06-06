@@ -9,7 +9,7 @@ import { BigNumber } from "bignumber.js";
 import {
   DEFAULT_SHORT_PERIODS_VALUE,
   DEFAULT_PERIODS_VALUE
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 export class Candlestick extends React.Component {
   static propTypes = {

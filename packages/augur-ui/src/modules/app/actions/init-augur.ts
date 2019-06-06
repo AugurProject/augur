@@ -26,7 +26,7 @@ import {
   NETWORK_NAMES,
   ACCOUNT_TYPES,
   DISCLAIMER_SEEN,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
 import { AppState } from "store";

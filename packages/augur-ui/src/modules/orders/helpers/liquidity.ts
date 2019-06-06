@@ -1,4 +1,4 @@
-import { BID } from "modules/common-elements/constants";
+import { BID } from "modules/common/constants";
 
 export function sortOrders(orderBook) {
   const sortedOrderBook = {};

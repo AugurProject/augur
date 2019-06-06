@@ -12,12 +12,12 @@ import {
   formatAttoEth
 } from "utils/format-number";
 import MarketPreview from "modules/market/containers/market-preview";
-import NullStateMessage from "modules/common-elements/null-state-message";
+import NullStateMessage from "modules/common/null-state-message";
 import ReportingReportForm from "modules/reporting/components/reporting-report-form/reporting-report-form";
 import ReportingReportConfirm from "modules/reporting/components/reporting-report-confirm/reporting-report-confirm";
-import { TYPE_VIEW, ZERO } from "modules/common-elements/constants";
+import { TYPE_VIEW, ZERO } from "modules/common/constants";
 import { isEmpty } from "lodash";
-import FormStyles from "modules/common-elements/form-styles";
+import FormStyles from "modules/common/form-styles";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
 import InvalidMessage from "modules/reporting/components/invalid-message/invalid-message";
 import { getOrCacheDesignatedReportStake } from "modules/contracts/actions/contractCalls";

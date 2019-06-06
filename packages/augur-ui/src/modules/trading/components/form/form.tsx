@@ -9,13 +9,13 @@ import {
   SCALAR,
   MIN_QUANTITY,
   UPPER_FIXED_PRECISION_BOUND
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { isEqual } from "lodash";
-import FormStyles from "modules/common-elements/form-styles";
+import FormStyles from "modules/common/form-styles";
 import Styles from "modules/trading/components/form/form.styles";
-import { ExclamationCircle } from "modules/common-elements/icons";
-import { SquareDropdown } from "modules/common-elements/selection";
-import { Checkbox } from "modules/common-elements/form";
+import { ExclamationCircle } from "modules/common/icons";
+import { SquareDropdown } from "modules/common/selection";
+import { Checkbox } from "modules/common/form";
 import getPrecision from "utils/get-number-precision";
 import convertExponentialToDecimal from "utils/convert-exponential";
 

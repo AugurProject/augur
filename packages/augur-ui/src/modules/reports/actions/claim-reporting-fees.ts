@@ -7,7 +7,7 @@ import {
   PENDING,
   SUCCESS,
   UNIVERSE_ID
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import {
   addPendingData,
   removePendingData
