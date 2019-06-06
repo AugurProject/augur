@@ -264,7 +264,7 @@ jobs:
           versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
-          versionSpec: '10.x'
+          versionSpec: '10.15'
       - bash: |
           set -euo pipefail
           which node
@@ -289,7 +289,7 @@ jobs:
           elif [[ "$(TESTS)" == "security:oyente" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:oyente;
           else
-            yarn workspace @augurproject/core docker:run:test:unit -- "$(TESTS)";
+            (cd packages/augur-core &&  yarn docker:run:test:unit -- "$(TESTS)")
           fi
         displayName: integration tests
 
