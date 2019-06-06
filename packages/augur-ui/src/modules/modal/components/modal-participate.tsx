@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 import { InputErrorIcon } from "modules/common-elements/icons";
-import Input from "modules/common/components/input/input";
+import { Input } from "modules/common-elements/form";
 import ModalActions from "modules/modal/components/common/modal-actions";
 import ModalReview from "modules/modal/components/modal-review";
 import Styles from "modules/modal/components/common/common.styles.less";

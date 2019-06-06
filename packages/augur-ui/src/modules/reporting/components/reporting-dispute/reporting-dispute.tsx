@@ -12,7 +12,7 @@ import ReportingDisputeForm from "modules/reporting/containers/reporting-dispute
 import ReportingDisputeConfirm from "modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm";
 import { TYPE_VIEW, ZERO } from "modules/common-elements/constants";
 import { isEmpty } from "lodash";
-import FormStyles from "modules/common/less/form";
+import FormStyles from "modules/common-elements/form-styles";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
 import InvalidMessage from "modules/reporting/components/invalid-message/invalid-message";
 

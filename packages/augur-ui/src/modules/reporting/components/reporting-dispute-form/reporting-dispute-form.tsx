@@ -12,10 +12,10 @@ import {
 } from "modules/common-elements/constants";
 import { formatAttoRep, formatNumber, formatRep } from "utils/format-number";
 import { InputErrorIcon } from "modules/common-elements/icons";
-import FormStyles from "modules/common/less/form";
+import FormStyles from "modules/common-elements/form-styles";
 import Styles from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles";
 import ReportingDisputeProgress from "modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress";
-import Input from "modules/common/components/input/input";
+import { Input } from "modules/common-elements/form";
 import { RepBalance } from "modules/common-elements/labels";
 
 export default class ReportingDisputeForm extends Component {

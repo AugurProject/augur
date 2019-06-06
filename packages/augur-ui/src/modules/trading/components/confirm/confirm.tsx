@@ -17,7 +17,7 @@ import {
   UPPER_FIXED_PRECISION_BOUND
 } from "modules/common-elements/constants";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip.styles";
+import TooltipStyles from "modules/common-elements/tooltip.styles";
 import Styles from "modules/trading/components/confirm/confirm.styles";
 import {
   XIcon,

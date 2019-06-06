@@ -7,7 +7,7 @@ import { createBigNumber } from "utils/create-big-number";
 import { constants } from "services/augurjs";
 
 import { YES_NO, CATEGORICAL, SCALAR } from "modules/common-elements/constants";
-import FormStyles from "modules/common/less/form";
+import FormStyles from "modules/common-elements/form-styles";
 import Styles from "modules/reporting/components/reporting-report-form/reporting-report-form.styles";
 import { InputErrorIcon } from "modules/common-elements/icons";
 import { formatRep } from "utils/format-number";

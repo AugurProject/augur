@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Input from "modules/common/components/input/input";
+import { Input } from "modules/common-elements/form";
 import classNames from "classnames";
 import parseQuery from "modules/routes/helpers/parse-query";
 import makeQuery from "modules/routes/helpers/make-query";
@@ -10,7 +10,7 @@ import { FILTER_SEARCH_PARAM } from "modules/common-elements/constants";
 import { Hint } from "modules/common-elements/icons";
 import Styles from "modules/filter-sort/components/filter-search/filter-search.styles";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip.styles";
+import TooltipStyles from "modules/common-elements/tooltip.styles";
 
 export default class FilterSearch extends Component {
   static propTypes = {

@@ -12,7 +12,7 @@ import MarketHeaderBar from "modules/market/containers/market-header-bar";
 import { BigNumber } from "bignumber.js";
 import Styles from "modules/market/components/market-header/market-header.styles";
 import CoreProperties from "modules/market/components/core-properties/core-properties";
-import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
+import ChevronFlip from "modules/common-elements/chevron-flip";
 import { MarketTypeLabel } from "modules/common-elements/labels";
 import { MarketHeaderCollapsed } from "modules/market/components/market-header/market-header-collapsed";
 import makeQuery from "modules/routes/helpers/make-query";

@@ -5,8 +5,8 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 
-import Input from "modules/common/components/input/input";
-import FormStyles from "modules/common/less/form";
+import { Input } from "modules/common-elements/form";
+import FormStyles from "modules/common-elements/form-styles";
 import { SCALAR } from "modules/common-elements/constants";
 import { InputErrorIcon } from "modules/common-elements/icons";
 import Styles from "modules/forking/components/migrate-rep-form/migrate-rep-form.styles";

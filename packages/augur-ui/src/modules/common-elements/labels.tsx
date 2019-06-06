@@ -11,7 +11,7 @@ import {
 } from "modules/common-elements/icons";
 import { MarketProgress } from "modules/common-elements/progress";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip.styles";
+import TooltipStyles from "modules/common-elements/tooltip.styles";
 import { createBigNumber } from "utils/create-big-number";
 import {
   SELL,
