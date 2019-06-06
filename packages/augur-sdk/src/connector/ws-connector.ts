@@ -52,7 +52,7 @@ export class WebsocketConnector extends Connector {
     return this.socket.close();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
+  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
       return this.socket.sendRequest({ method: f.name, params, jsonrpc: "2.0" });
     };

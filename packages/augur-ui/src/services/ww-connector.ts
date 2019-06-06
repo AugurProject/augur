@@ -42,7 +42,7 @@ export class WebWorkerConnector extends Connector {
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
-    return async (params: P): Promise<R> => {
+    return (params: P): Promise<R> => {
       return this.api.route(f.name, params);
     };
   }
