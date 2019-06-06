@@ -18,7 +18,7 @@ export function isWeb3Transport(): boolean {
   return augurSdk.isWeb3Transport;
 }
 
-export async function getTransactionFromAddress(hash: string): Promise<any> {
+export async function getTransaction(hash: string): Promise<any> {
     const Augur = augurSdk.get();
     const from = await Augur.getTransaction(hash);
     return from;
@@ -31,6 +31,7 @@ export async function getGasPrice(): Promise<BigNumber> {
 }
 
 export async function isUnlocked(address: string): Promise<boolean> {
+  // TODO: do we need to stop supporting unlocked nodes
   return false;
 }
 
