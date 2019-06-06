@@ -20,6 +20,11 @@ const rules = [
     ]
   },
   {
+    test: /\.js$/,
+    use: ["source-map-loader"],
+    enforce: "pre"
+  },
+  {
     test: /npm-cli|node-hid/,
     loader: "null-loader"
   },
