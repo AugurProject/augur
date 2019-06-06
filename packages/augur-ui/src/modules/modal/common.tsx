@@ -4,7 +4,7 @@ import classNames from "classnames";
 import QRCode from "qrcode.react";
 import Clipboard from "clipboard";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip.styles.less";
+import TooltipStyles from "modules/common-elements/tooltip.styles";
 import { Checkbox } from "modules/common-elements/form";
 import {
   XIcon,

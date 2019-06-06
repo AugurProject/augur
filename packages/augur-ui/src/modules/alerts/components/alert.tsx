@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import classNames from "classnames";
 
-import { Close } from "modules/common/components/icons";
+import { Close } from "modules/common-elements/icons";
 import Styles from "modules/alerts/components/alert.styles.less";
 import { EtherscanLink } from "modules/common-elements/buttons";
 
@@ -110,7 +110,7 @@ export default class Alert extends Component<AlertProps> {
                 removeAlert();
               }}
             >
-              <div className={Styles.CloseButton}>{Close}</div>
+              {Close}
             </button>
           </div>
         </div>

@@ -17,7 +17,7 @@ import ReportingReportForm from "modules/reporting/components/reporting-report-f
 import ReportingReportConfirm from "modules/reporting/components/reporting-report-confirm/reporting-report-confirm";
 import { TYPE_VIEW, ZERO } from "modules/common-elements/constants";
 import { isEmpty } from "lodash";
-import FormStyles from "modules/common/less/form";
+import FormStyles from "modules/common-elements/form-styles";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
 import InvalidMessage from "modules/reporting/components/invalid-message/invalid-message";
 import { getOrCacheDesignatedReportStake } from "modules/contracts/actions/contractCalls";

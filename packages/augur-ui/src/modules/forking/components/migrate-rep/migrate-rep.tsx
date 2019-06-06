@@ -11,7 +11,7 @@ import MigrateRepForm from "modules/forking/components/migrate-rep-form/migrate-
 import MigrateRepConfirm from "modules/forking/components/migrate-rep-confirm/migrate-rep-confirm";
 import { TYPE_VIEW } from "modules/common-elements/constants";
 import { isEmpty } from "lodash";
-import FormStyles from "modules/common/less/form";
+import FormStyles from "modules/common-elements/form-styles";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
 
 export default class MigrateRep extends Component {

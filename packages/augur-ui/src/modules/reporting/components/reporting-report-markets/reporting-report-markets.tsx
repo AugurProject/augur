@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { each, isEqual } from "lodash";
 import ReportingHeader from "modules/reporting/containers/reporting-header";
 import MarketPreview from "modules/market/containers/market-preview";
-import Paginator from "modules/common/components/paginator/paginator";
+import Paginator from "modules/common-elements/paginator_v1";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 import NullStateMessage from "modules/common-elements/null-state-message";
 

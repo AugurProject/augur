@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
+import ChevronFlip from "modules/common-elements/chevron-flip";
 import { createBigNumber } from "utils/create-big-number";
 import { formatEther, formatGasCostToEther } from "utils/format-number";
 import MarketLiquidityTable from "modules/market/components/market-liquidity-table/market-liquidity-table";

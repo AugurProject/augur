@@ -20,7 +20,7 @@ import {
 } from "modules/common-elements/constants";
 
 import classNames from "classnames";
-import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
+import { InputErrorIcon } from "modules/common-elements/icons";
 import Styles from "modules/create-market/components/create-market-form-review/create-market-form-review.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
 import InvalidMessageStyles from "modules/reporting/components/invalid-message/invalid-message.styles";

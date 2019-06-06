@@ -28,14 +28,6 @@
   flex-direction: column;
 }
 
-.CloseButton {
-  display: block;
-}
-
-.CloseButtonHidden {
-  display: none;
-}
-
 .Title {
   color: @color-secondary-text;
   flex: 0 1 auto;
@@ -92,6 +84,10 @@
   align-self: baseline;
   margin-left: auto;
   width: @size-12;
+
+  > svg > g > g {
+    stroke: #F6F6F8;
+  }
 }
 
 .Description {

@@ -11,7 +11,7 @@ import {
   UPPER_FIXED_PRECISION_BOUND
 } from "modules/common-elements/constants";
 import { isEqual } from "lodash";
-import FormStyles from "modules/common/less/form";
+import FormStyles from "modules/common-elements/form-styles";
 import Styles from "modules/trading/components/form/form.styles";
 import { ExclamationCircle } from "modules/common-elements/icons";
 import { SquareDropdown } from "modules/common-elements/selection";
