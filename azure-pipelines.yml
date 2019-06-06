@@ -265,8 +265,6 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '10.x'
-      - script: echo "##vso[task.setvariable variable=testVar;isOutput=true]$(TEST)"
-        name: setvarStep
       - script: |
           set -euo pipefail
           which node
@@ -276,21 +274,22 @@ jobs:
           docker pull $CORE_IMAGE_BUILD
           docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
           docker images
-          if [[ $(setvarStep.TESTS) == "integration:geth" ]]; then
+          echo "tests: $(TESTS)"
+          if [[ $(TESTS) == "integration:geth" ]]; then
             yarn workspace @augurproject/core docker:run:test:integration:geth;
-          elif [[ $(setvarStep.TESTS) == "integration:parity" ]]; then
+          elif [[ $(TESTS) == "integration:parity" ]]; then
             yarn workspace @augurproject/core docker:run:test:integration:parity;
-          elif [[ $(setvarStep.TESTS) == "security:mythril" ]]; then
+          elif [[ $(TESTS) == "security:mythril" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:mythril;
             cat $(find . -name test-results.log)
-          elif [[ $(setvarStep.TESTS) == "security:maian" ]]; then
+          elif [[ $(TESTS) == "security:maian" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:maian;
-          elif [[ $(setvarStep.TESTS) == "security:smt" ]]; then
+          elif [[ $(TESTS) == "security:smt" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:smt;
-          elif [[ $(setvarStep.TESTS) == "security:oyente" ]]; then
+          elif [[ $(TESTS) == "security:oyente" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:oyente;
           else
-            yarn workspace @augurproject/core docker:run:test:unit -- $(setvarStep.TESTS);
+            yarn workspace @augurproject/core docker:run:test:unit -- $(TESTS);
           fi
         displayName: integration tests
 
