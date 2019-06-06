@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { augur } from "services/augurjs";
 
-import { InputDropdown } from "modules/common-components/form";
+import { InputDropdown } from "modules/common-elements/form";
 import { InputErrorIcon } from "modules/common-elements/icons";
 import CreateMarketFormLiquidityCharts from "modules/market-charts/containers/create-market-form-liquidity-charts";
 
