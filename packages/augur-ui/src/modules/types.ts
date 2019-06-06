@@ -393,7 +393,7 @@ export interface Endpoints {
 export interface Connection {
   isConnected: boolean;
   isConnectedToAugurNode: boolean;
-  augurNodeNetworkId?: number;
+  augurNodeNetworkId?: string;
   isReconnectionPaused: boolean;
 }
 
