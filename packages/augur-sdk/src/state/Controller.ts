@@ -28,9 +28,7 @@ export class Controller {
       this.blockstreamDelay,
       this.defaultStartSyncBlockNumber,
       this.trackedUsers,
-      this.augur.genericEventNames,
-      this.augur.customEvents,
-      this.augur.userSpecificEvents,
+      this.augur,
       this.pouchDBFactory,
       this.blockAndLogStreamerListener,
     );
@@ -38,17 +36,7 @@ export class Controller {
 
   public async run(): Promise<void> {
     try {
-      this.db = await DB.createAndInitializeDB(
-        this.networkId,
-        this.blockstreamDelay,
-        this.defaultStartSyncBlockNumber,
-        this.trackedUsers,
-        this.augur.genericEventNames,
-        this.augur.customEvents,
-        this.augur.userSpecificEvents,
-        this.pouchDBFactory,
-        this.blockAndLogStreamerListener,
-      );
+      await this.createDb();
       await this.db.sync(
         this.augur,
         settings.chunkSize,

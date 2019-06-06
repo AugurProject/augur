@@ -17,7 +17,7 @@ export class SyncData {
   @Getter()
   public static async getSyncData(augur: Augur, db: DB, params: t.TypeOf<typeof SyncData.SyncDataParams>): Promise<SyncData> {
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
-    const lastSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock("MarketCreated");
+    const lastSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock();
     const blocksBehindCurrent = (highestAvailableBlockNumber - lastSyncedBlockNumber);
     const percentBehindCurrent = (blocksBehindCurrent / highestAvailableBlockNumber * 100).toFixed(4);
 
