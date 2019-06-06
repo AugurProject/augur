@@ -10,7 +10,7 @@ export abstract class Connector {
   public abstract async disconnect(): Promise<any>;
 
   // bind API calls
-  public abstract bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R>;
+  public abstract bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R>;
 
   public abstract on(eventName: SubscriptionEventNames | string, callback: Callback): void;
   public abstract off(eventName: SubscriptionEventNames | string): void;
