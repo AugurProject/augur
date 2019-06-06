@@ -6,7 +6,7 @@ import {BlockAndLogStreamerListener} from "./db/BlockAndLogStreamerListener";
 const settings = require("./settings.json");
 
 export class Controller {
-  public db: DB;
+  public db: Promise<DB>;
 
   public constructor(
     private augur: Augur,
@@ -19,12 +19,13 @@ export class Controller {
   ) {
   }
 
-  public fullTextSearch(eventName: string, query: string): Array<object> {
-    return this.db.fullTextSearch(eventName, query);
+  public async fullTextSearch(eventName: string, query: string) {
+    const db = await this.db;
+    return db.fullTextSearch(eventName, query);
   }
 
-  public async createDb() {
-    this.db = await DB.createAndInitializeDB(
+  public createDb() {
+    this.db = DB.createAndInitializeDB(
       this.networkId,
       this.blockstreamDelay,
       this.defaultStartSyncBlockNumber,
@@ -39,7 +40,7 @@ export class Controller {
 
   public async run(): Promise<void> {
     try {
-      this.db = await DB.createAndInitializeDB(
+      this.db =  DB.createAndInitializeDB(
         this.networkId,
         this.blockstreamDelay,
         this.defaultStartSyncBlockNumber,
@@ -50,13 +51,14 @@ export class Controller {
         this.pouchDBFactory,
         this.blockAndLogStreamerListener,
       );
-      await this.db.sync(
+      const db = await this.db;
+      db.sync(
         this.augur,
         settings.chunkSize,
         settings.blockstreamDelay,
       );
 
-      this.blockAndLogStreamerListener.listenForBlockRemoved(this.db.rollback.bind(this.db));
+      this.blockAndLogStreamerListener.listenForBlockRemoved(db.rollback.bind(db));
       this.blockAndLogStreamerListener.startBlockStreamListener();
     } catch (err) {
       console.log(err);
