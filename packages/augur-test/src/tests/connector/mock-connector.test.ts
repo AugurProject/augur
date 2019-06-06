@@ -1,5 +1,5 @@
 import { makeConnectorMock } from "../../libs";
-import { Markets } from "@augurproject/sdk/build/state/api/Markets";
+import { Markets } from "@augurproject/sdk/build/state/getter/Markets";
 
 const connector = makeConnectorMock([]);
 

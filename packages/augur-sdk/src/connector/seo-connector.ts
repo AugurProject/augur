@@ -1,5 +1,5 @@
 import * as Sync from "../state/Sync";
-import { API } from "../state/api/API";
+import { API } from "../state/getter/API";
 import { Augur } from "../Augur";
 import { BlockAndLogStreamerListener } from "../state/db/BlockAndLogStreamerListener";
 import { Connector, Callback } from "./connector";

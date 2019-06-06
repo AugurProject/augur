@@ -63,7 +63,7 @@ export class Router {
       throw new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`);
     }
 
-    for (let key in decodedParams.value) {
+    for (const key in decodedParams.value) {
       decodedParams.value[key] = AddressFormatReviver(key, decodedParams.value[key]);
     }
 

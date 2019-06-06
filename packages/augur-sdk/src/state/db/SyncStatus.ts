@@ -1,4 +1,4 @@
-import {AbstractDB, PouchDBFactoryType} from "./AbstractDB";
+import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
 
 interface SyncDocument {
   blockNumber: number;
@@ -13,7 +13,7 @@ export class SyncStatus extends AbstractDB {
   }
 
   public async setHighestSyncBlock(dbName: string, blockNumber: number): Promise<PouchDB.Core.Response> {
-    const document: SyncDocument = {blockNumber};
+    const document: SyncDocument = { blockNumber };
     return this.upsertDocument(dbName, document);
   }
 
