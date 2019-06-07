@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import store from "store";
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import getUserFilledOrders from "modules/orders/selectors/filled-orders";
 import getUserOpenOrders from "modules/orders/selectors/user-open-orders";

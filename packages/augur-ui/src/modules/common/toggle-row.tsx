@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react";
 import classNames from "classnames";
 
-import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
+import ChevronFlip from "modules/common/chevron-flip";
 
-import Styles from "modules/common-elements/toggle-row.styles";
+import Styles from "modules/common/toggle-row.styles";
 
 export interface ToggleRowProps {
   rowContent: ReactNode;

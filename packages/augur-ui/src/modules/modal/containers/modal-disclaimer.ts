@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import ModalDisclaimer from "modules/modal/components/modal-disclaimer";
 import { closeModal } from "modules/modal/actions/close-modal";
-import { DISCLAIMER_SEEN } from "modules/common-elements/constants";
+import { DISCLAIMER_SEEN } from "modules/common/constants";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";

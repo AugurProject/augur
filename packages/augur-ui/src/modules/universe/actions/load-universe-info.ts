@@ -18,7 +18,7 @@ import {
   SCALAR,
   NULL_ADDRESS,
   UNIVERSE_ID,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { AppState } from "store";
 import { NodeStyleCallback, MarketData, Universe } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";

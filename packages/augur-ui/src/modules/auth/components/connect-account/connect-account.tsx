@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ConnectDropdown from "modules/auth/containers/connect-dropdown";
-import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
+import ChevronFlip from "modules/common/chevron-flip";
 import formatAddress from "modules/auth/helpers/format-address";
 
 import Styles from "modules/auth/components/connect-account/connect-account.styles";

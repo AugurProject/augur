@@ -8,9 +8,9 @@ import {
   WALLET_TYPE,
   ACCOUNT_TYPES,
   ERROR_TYPES
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import isMetaMaskPresent from "modules/auth/helpers/is-meta-mask";
-import { LogoutIcon } from "modules/common-elements/icons";
+import { LogoutIcon } from "modules/common/icons";
 
 import Styles from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import Ledger from "modules/auth/containers/ledger-connect";

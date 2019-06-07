@@ -6,7 +6,7 @@ import {
   calcOrderShareProfitLoss,
   calculateTotalOrderValue,
 } from "modules/trades/helpers/calc-order-profit-loss-percents";
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 
 export const generateTrade = memoize(
   (market, outcomeTradeInProgress) => {

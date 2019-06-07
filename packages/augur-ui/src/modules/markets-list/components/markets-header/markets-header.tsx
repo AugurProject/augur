@@ -7,7 +7,7 @@ import parseQuery from "modules/routes/helpers/parse-query";
 import parsePath from "modules/routes/helpers/parse-path";
 
 import { MARKETS } from "modules/routes/constants/views";
-import { CATEGORY_PARAM_NAME } from "modules/common-elements/constants";
+import { CATEGORY_PARAM_NAME } from "modules/common/constants";
 
 import Styles from "modules/markets-list/components/markets-header/markets-header.styles.less";
 

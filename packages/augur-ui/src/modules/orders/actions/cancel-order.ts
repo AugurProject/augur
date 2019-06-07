@@ -4,7 +4,7 @@ import {
   CLOSE_DIALOG_CLOSING,
   CLOSE_DIALOG_FAILED,
   CLOSE_DIALOG_PENDING,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { updateOrderStatus } from "modules/orders/actions/update-order-status";
 import selectOrder from "modules/orders/selectors/select-order";
 import logError from "utils/log-error";

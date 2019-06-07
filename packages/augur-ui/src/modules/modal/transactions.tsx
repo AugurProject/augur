@@ -8,15 +8,15 @@ import {
   ExportButton,
   ViewTransactionDetailsButton,
   SortButton,
-} from "modules/common-elements/buttons";
+} from "modules/common/buttons";
 import {
   ASCENDING,
   DESCENDING,
   NEUTRAL,
-} from "modules/common-elements/constants";
-import { Pagination } from "modules/common-elements/pagination";
-import { ValueLabel, TextLabel } from "modules/common-elements/labels";
-import { SquareDropdown, DatePicker } from "modules/common-elements/selection";
+} from "modules/common/constants";
+import { Pagination } from "modules/common/pagination";
+import { ValueLabel, TextLabel } from "modules/common/labels";
+import { SquareDropdown, DatePicker } from "modules/common/selection";
 import { Title } from "modules/modal/common";
 import { formatEther, formatShares } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";

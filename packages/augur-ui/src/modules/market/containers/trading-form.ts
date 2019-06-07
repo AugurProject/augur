@@ -6,7 +6,7 @@ import { windowRef } from "utils/window-ref";
 import {
   MARKET_REVIEW_TRADE_SEEN,
   MODAL_MARKET_REVIEW_TRADE
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { handleFilledOnly } from "modules/alerts/actions/alerts";

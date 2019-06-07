@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { SCALAR, YES_NO, BID, ASK } from "modules/common-elements/constants";
+import { SCALAR, YES_NO, BID, ASK } from "modules/common/constants";
 import { formatEther, formatShares } from "utils/format-number";
 
 import Styles from "modules/market/components/market-liquidity-table/market-liquidity-table.styles";

@@ -5,7 +5,7 @@ import {
   TYPE_TRADE,
   TYPE_FINALIZE_MARKET,
   TYPE_CLAIM_PROCEEDS
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { constants } from "services/augurjs";
 import { isEmpty } from "lodash";
 

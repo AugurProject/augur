@@ -2,8 +2,8 @@ import React, { ReactNode } from "react";
 
 import BoxHeader from "modules/portfolio/components/common/headers/box-header";
 import { NameValuePair } from "modules/portfolio/types";
-import { SearchSort } from "modules/common-elements/search-sort";
-import { SquareDropdown } from "modules/common-elements/selection";
+import { SearchSort } from "modules/common/search-sort";
+import { SquareDropdown } from "modules/common/selection";
 
 import Styles from "modules/portfolio/components/common/quads/filter-box.styles.less";
 

@@ -5,7 +5,7 @@ IS_LOGGED,
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import trezorSigner from "modules/auth/helpers/trezor-signer";
 import { toChecksumAddress } from "ethereumjs-util";
-import { ACCOUNT_TYPES } from "modules/common-elements/constants";
+import { ACCOUNT_TYPES } from "modules/common/constants";
 
 export default function loginWithTrezor(
   address: string,
