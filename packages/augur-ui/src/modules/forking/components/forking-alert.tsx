@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ForkingContent from "modules/forking/components/forking-content/forking-content";
+import ForkingContent from "modules/forking/components/forking-content";
 import ChevronFlip from "modules/common/chevron-flip";
-import Styles from "modules/forking/components/forking-alert/forking-alert.styles";
+import Styles from "modules/forking/components/forking-alert.styles";
 
 class ForkingAlert extends Component {
   constructor(props) {

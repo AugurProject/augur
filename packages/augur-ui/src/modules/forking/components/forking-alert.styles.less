@@ -17,25 +17,27 @@
 }
 
 .ForkingAlert__message {
-  color: white;
-  font-size: 0.875rem;
+  .text-14;
+
+  color: @color-secondary-text;
   line-height: 2.65rem;
-  margin-left: 1em;
+  margin-left: @size-16;
   text-transform: uppercase;
 }
 
 .ForkingAlert__AlertIcon {
-  height: 1.125rem;
+  height: @size-18;
   margin-bottom: auto;
   margin-top: auto;
-  width: 1.125rem;
+  width: @size-18;
 }
 
 .ForkingAlert__addition_details {
-  color: white;
+  .text-12;
+
+  color: @color-secondary-text;
   display: flex;
   flex: 1;
-  font-size: 0.75rem;
   justify-content: flex-end;
   text-transform: uppercase;
 }
@@ -48,12 +50,12 @@
 }
 
 .ForkingAlert__arrow {
-  margin-left: 1em;
+  margin-left: @size-16;
 }
 
 @media @breakpoint-mobile {
   .ForkingAlert {
-    padding: 2rem 1.5em 0.5em;
+    padding: @size-32 @size-24 @size-8;
   }
 
   .ForkingAlert__SubContainer {
@@ -61,17 +63,17 @@
   }
 
   .ForkingAlert__message {
-    color: white;
-    font-size: 0.7rem;
-    line-height: 1em;
-    margin: 0 2em;
-    padding: 0.25em;
+    .text-12;
+  
+    color: @color-secondary-text;
+    margin: 0 @size-32;
+    padding: @size-4;
     text-transform: uppercase;
   }
 
   .ForkingAlert__addition_details_button {
     margin-bottom: auto;
-    margin-right: 0.5em;
+    margin-right: @size-8;
     margin-top: auto;
     text-transform: uppercase;
   }
@@ -79,7 +81,7 @@
 
 @media @breakpoint-mobile-small {
   .ForkingAlert__message {
-    margin: 0 0.5em;
-    padding: 0.05em;
+    margin: 0 @size-8;
+    padding: 1px;
   }
 }
