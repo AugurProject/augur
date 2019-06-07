@@ -48,7 +48,7 @@ export class MarketPositionsTable extends React.Component<
     return (
       <div
         className={classNames(Styles.MarketPositionsTable, {
-          [SharedStyles.MarketOpenOrdersList__table]: extendedView
+          [SharedStyles.Table]: extendedView
         })}
       >
         <PositionsHeader
@@ -56,11 +56,7 @@ export class MarketPositionsTable extends React.Component<
           updateShowPercent={this.updateShowPercent}
           extendedView={extendedView}
         />
-        <div
-          className={classNames({
-            [SharedStyles.MarketOpenOrdersList__scrollContainer]: extendedView
-          })}
-        >
+        <div>
           {positions.map((position: Position, index: number) => (
             <PositionRow
               key={
@@ -76,7 +72,7 @@ export class MarketPositionsTable extends React.Component<
           ))}
         </div>
         {extendedView && positions.length === 0 && (
-          <div className={SharedStyles.MarketOpenOrdersList__empty} />
+          <div className={SharedStyles.Empty} />
         )}
         {extendedView && (
           <CompleteSets
@@ -86,7 +82,7 @@ export class MarketPositionsTable extends React.Component<
             sellCompleteSets={sellCompleteSets}
           />
         )}
-        {extendedView && <div className={SharedStyles.MarketOrders__footer} />}
+        {extendedView && <div className={SharedStyles.Footer} />}
       </div>
     );
   }
