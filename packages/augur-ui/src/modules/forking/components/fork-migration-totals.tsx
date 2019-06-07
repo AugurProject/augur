@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import Styles from "modules/forking/components/fork-migration-totals/fork-migration-totals.styles";
+import Styles from "modules/forking/components/fork-migration-totals.styles";
 import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
 import { createBigNumber } from "utils/create-big-number";
 

@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import MigrateRepView from "modules/forking/components/migrate-rep/migrate-rep";
+import MigrateRepView from "modules/forking/components/migrate-rep";
 import { loadFullMarket } from "modules/markets/actions/load-full-market";
 import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
 import { selectMarket } from "modules/markets/selectors/market";

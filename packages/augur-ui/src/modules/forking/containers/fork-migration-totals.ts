@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { selectMarket } from "modules/markets/selectors/market";
 
-import ForkMigrationTotalsView from "modules/forking/components/fork-migration-totals/fork-migration-totals";
+import ForkMigrationTotalsView from "modules/forking/components/fork-migration-totals";
 
 import { getForkMigrationTotals } from "modules/forking/actions/get-fork-migration-totals";
 

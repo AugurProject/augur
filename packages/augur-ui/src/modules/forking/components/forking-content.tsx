@@ -8,7 +8,7 @@ import TimeProgressBar from "modules/reporting/components/time-progress-bar/time
 import { TYPE_MIGRATE_REP } from "modules/common/constants";
 import MarketLink from "modules/market/components/market-link/market-link";
 import { createBigNumber } from "utils/create-big-number";
-import Styles from "modules/forking/components/forking-content/forking-content.styles";
+import Styles from "modules/forking/components/forking-content.styles";
 
 const ForkingContent = ({
   forkingMarket,
