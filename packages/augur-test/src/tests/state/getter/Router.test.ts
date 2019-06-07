@@ -11,11 +11,11 @@ beforeEach(async () => {
 });
 
 let augur: Augur;
-let db: DB;
+let db: Promise<DB>;
 
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
-  db = await mock.makeDB(augur, ACCOUNTS);
+  db = mock.makeDB(augur, ACCOUNTS);
 }, 120000);
 
 test("State API :: Bad parameters to getter", async () => {
