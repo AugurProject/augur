@@ -673,13 +673,13 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         action: 'CLAIM_TRADING_PROCEEDS',
         coin: 'ETH',
         details: 'Claimed trading proceeds',
-        fee: '-7600000000000',
+        fee: '-7699000000000',
         marketDescription: 'description',
         outcome: 2,
         outcomeDescription: 'Yes',
         price: '22',
         quantity: '100000000000',
-        total: '9800000000000',
+        total: '9899000000000',
       }
     ]
   );
