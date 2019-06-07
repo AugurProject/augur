@@ -95,7 +95,7 @@ const MarketOutcomeChartsHeaderOrders = ({
   <section className={Styles.MarketOutcomeChartsHeader__orders}>
     <button
       className={classNames(
-        StylesHeader.MarketOutcomesList__heading,
+        StylesHeader.Heading,
         Styles.MarketOutcomeChartsHeader__heading
       )}
       onClick={toggle}
