@@ -6,7 +6,7 @@ import Highcharts from "highcharts/highstock";
 import NoDataToDisplay from "highcharts/modules/no-data-to-display";
 import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/candlestick.styles";
 import { each, isEqual, cloneDeep } from "lodash";
-import { PERIOD_RANGES, ETH } from "modules/common-elements/constants";
+import { PERIOD_RANGES, ETH } from "modules/common/constants";
 
 NoDataToDisplay(Highcharts);
 

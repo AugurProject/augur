@@ -1,5 +1,5 @@
 import { prefixHex } from "speedomatic";
-import { EDGE_WALLET_TYPE, ACCOUNT_TYPES } from "modules/common-elements/constants";
+import { EDGE_WALLET_TYPE, ACCOUNT_TYPES } from "modules/common/constants";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,

@@ -2,13 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
-import InputDropdown from "modules/common/components/input-dropdown/input-dropdown";
+import { InputDropdown } from "modules/common/form";
 import { SingleDatePicker } from "react-dates";
 import {
   ChevronLeft,
   ChevronRight,
-  ExclamationCircle as InputErrorIcon
-} from "modules/common/components/icons";
+  InputErrorIcon
+} from "modules/common/icons";
 import Styles from "modules/create-market/components/create-market-form-define/create-market-form-define.styles";
 import moment from "moment";
 import { formatDate } from "utils/format-date";

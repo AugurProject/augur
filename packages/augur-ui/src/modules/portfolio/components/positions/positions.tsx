@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
-import { CompactButton } from "modules/common-elements/buttons";
-import { MovementLabel } from "modules/common-elements/labels";
+import { CompactButton } from "modules/common/buttons";
+import { MovementLabel } from "modules/common/labels";
 import PositionsTable from "modules/market/containers/positions-table";
-import { END_TIME } from "modules/common-elements/constants";
+import { END_TIME } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/common/quads/quad.styles";
 

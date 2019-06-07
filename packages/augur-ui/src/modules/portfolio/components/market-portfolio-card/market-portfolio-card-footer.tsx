@@ -7,7 +7,7 @@ import { convertUnixToFormattedDate } from "utils/format-date";
 import TimeRemainingIndicatorWrapper from "modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
 import { createBigNumber } from "utils/create-big-number";
 import moment from "moment";
-import { TYPE_CLAIM_PROCEEDS } from "modules/common-elements/constants";
+import { TYPE_CLAIM_PROCEEDS } from "modules/common/constants";
 import Styles from "modules/portfolio/components/market-portfolio-card/market-portfolio-card.styles";
 import { constants } from "services/augurjs";
 import { formatEther } from "utils/format-number";

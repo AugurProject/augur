@@ -1,7 +1,7 @@
 import { debounce } from "lodash";
 import { connectAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { MODAL_NETWORK_DISCONNECTED } from "modules/common-elements/constants";
+import { MODAL_NETWORK_DISCONNECTED } from "modules/common/constants";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";

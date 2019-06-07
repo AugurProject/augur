@@ -3,7 +3,7 @@ import {
   Edge,
   MetaMask,
   Trezor
-} from "modules/common-elements/icons";
+} from "modules/common/icons";
 import { DEFAULT_DERIVATION_PATH } from "modules/auth/helpers/derivation-path";
 import {
   timeDay,

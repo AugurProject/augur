@@ -1,5 +1,5 @@
 import { convertUnixToFormattedDate } from "utils/format-date";
-import { ZERO } from "modules/common-elements/constants";
+import { ZERO } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 
 export const getLastTradeTimestamp = marketTradeHistory =>

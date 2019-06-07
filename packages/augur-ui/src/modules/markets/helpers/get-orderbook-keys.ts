@@ -1,6 +1,6 @@
 import memoize from "memoizee";
 
-import { BIDS, ASKS } from "modules/common-elements/constants";
+import { BIDS, ASKS } from "modules/common/constants";
 
 import { createBigNumber } from "utils/create-big-number";
 

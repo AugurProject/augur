@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DefaultButtonProps } from "modules/common-elements/buttons";
+import { DefaultButtonProps } from "modules/common/buttons";
 import {
   Title,
   ButtonsRow,
@@ -12,7 +12,7 @@ import {
 } from "modules/modal/common";
 import {
   LinearPropertyLabelProps,
-} from "modules/common-elements/labels";
+} from "modules/common/labels";
 
 import Styles from "modules/modal/modal.styles.less";
 

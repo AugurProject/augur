@@ -7,7 +7,7 @@ import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
   FILTER_SEARCH_PARAM
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 import { isEmpty } from "lodash/fp";
 import { curriedToggleMemberOfArray } from "utils/toggle-member-of-array";

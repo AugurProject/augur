@@ -88,7 +88,7 @@ import {
   WITHDRAWINEMERGENCY,
   SENDETHER,
   SENDREPUTATION,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { Outcomes } from "modules/types";
 import { AppState } from "store";
 import { Action } from "redux";

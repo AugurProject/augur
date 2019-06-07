@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import CustomPropTypes from "utils/custom-prop-types";
-import { SCALAR } from "modules/common-elements/constants";
+import { SCALAR } from "modules/common/constants";
 import MarketOutcomesListOutcome from "modules/market/containers/market-outcome";
 import MarketScalarOutcomeDisplay from "modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display";
 

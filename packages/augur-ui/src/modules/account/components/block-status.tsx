@@ -2,8 +2,8 @@ import React from "react";
 import classNames from "classnames";
 
 import { formatNumber } from "utils/format-number";
-import * as constants from "modules/common-elements/constants";
-import { LinearPropertyLabel } from "modules/common-elements/labels";
+import * as constants from "modules/common/constants";
+import { LinearPropertyLabel } from "modules/common/labels";
 
 import Styles from "modules/account/components/status.styles.less";
 

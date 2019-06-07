@@ -2,7 +2,7 @@ import {
   YES_NO,
   CATEGORICAL,
   YES_NO_YES_OUTCOME_NAME,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { MarketData, Outcomes } from "modules/types";
 
 export const getOutcomeName = (

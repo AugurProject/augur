@@ -3,7 +3,7 @@ import memoize from "memoizee";
 import Positions from "modules/portfolio/components/positions/positions";
 import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/common-elements/constants";
+import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/common/constants";
 import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
 
 const mapStateToProps = state => {

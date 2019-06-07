@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 
 import MarketsHeader from "modules/markets-list/components/markets-header/markets-header";
 import MarketsList from "modules/markets-list/components/markets-list";
-import { TYPE_TRADE } from "modules/common-elements/constants";
+import { TYPE_TRADE } from "modules/common/constants";
 import { MarketData } from "modules/types";
 
 interface MarketsViewProps {

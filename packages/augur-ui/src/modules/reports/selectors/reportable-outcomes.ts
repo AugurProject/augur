@@ -5,7 +5,7 @@ import {
   YES_NO_YES_OUTCOME_NAME,
   YES_NO,
   CATEGORICAL
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 export const selectReportableOutcomes = (type, outcomes) => {
   switch (type) {

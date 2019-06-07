@@ -3,10 +3,10 @@ import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import getValue from "utils/get-value";
 import { formatEther, formatShares } from "utils/format-number";
-import * as constants from "modules/common-elements/constants";
-import { CATEGORICAL } from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
+import { CATEGORICAL } from "modules/common/constants";
 
-import Row from "modules/common-elements/row";
+import Row from "modules/common/row";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 

@@ -13,7 +13,7 @@ import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import {
   CATEGORICAL,
   NEW_ORDER_GAS_ESTIMATE,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { formatGasCostToEther, formatEther } from "utils/format-number";
 import { AppState } from "store";

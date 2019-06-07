@@ -1,9 +1,9 @@
 import React from "react";
 import classNames from "classnames";
 
-import * as constants from "modules/common-elements/constants";
-import { ImmediateImportance } from "modules/common-elements/icons";
-import { PillLabel } from "modules/common-elements/labels";
+import * as constants from "modules/common/constants";
+import { ImmediateImportance } from "modules/common/icons";
+import { PillLabel } from "modules/common/labels";
 
 import Styles from "modules/account/components/notification.styles.less";
 

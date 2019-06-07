@@ -3,8 +3,8 @@
 import React, { Component } from "react";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
-import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
-import Input from "modules/common/components/input/input";
+import { InputErrorIcon } from "modules/common/icons";
+import { Input } from "modules/common/form";
 import ModalActions from "modules/modal/components/common/modal-actions";
 import ModalReview from "modules/modal/components/modal-review";
 import Styles from "modules/modal/components/common/common.styles.less";

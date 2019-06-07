@@ -17,7 +17,7 @@ import {
   TABLET,
   DESKTOP,
   LARGE_DESKTOP,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 import Styles from "modules/account/components/account-view.styles.less";
 

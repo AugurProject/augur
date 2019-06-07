@@ -4,7 +4,7 @@ import { AppState } from "store";
 import { selectMarket } from "modules/markets/selectors/market";
 import { MarketPositionsTable } from "modules/portfolio/components/common/tables/market-positions-table";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { MODAL_SELL_COMPLETE_SETS } from "modules/common-elements/constants";
+import { MODAL_SELL_COMPLETE_SETS } from "modules/common/constants";
 
 const mapStateToProps = (state: AppState, ownProps: any) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
