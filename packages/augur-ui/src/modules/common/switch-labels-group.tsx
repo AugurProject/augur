@@ -1,12 +1,12 @@
 import React from "react";
 import classNames from "classnames";
-import Styles from "modules/common-elements/switch-labels-group.styles";
+import Styles from "modules/common/switch-labels-group.styles";
 
 import {
   MARKET_OPEN,
   MARKET_REPORTING,
   MARKET_CLOSED
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 export interface KeyValuePair {
   key: string;

@@ -5,7 +5,7 @@ import MarketOrdersPositionsTable from "modules/market/components/market-orders-
 import { selectMarket } from "modules/markets/selectors/market";
 import {
   MODAL_CLAIM_TRADING_PROCEEDS
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { selectCurrentTimestamp } from "store/select-state";
 import { constants } from "services/augurjs";
 import { updateModal } from "modules/modal/actions/update-modal";

@@ -1,7 +1,7 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import makePath from "modules/routes/helpers/make-path";
-import { UNIVERSE_ID } from "modules/common-elements/constants";
+import { UNIVERSE_ID } from "modules/common/constants";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 import { AppState } from "store";

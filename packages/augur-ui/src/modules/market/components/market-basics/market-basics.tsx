@@ -12,7 +12,7 @@ import toggleTag from "modules/routes/helpers/toggle-tag";
 import toggleCategory from "modules/routes/helpers/toggle-category";
 import { formatDate } from "utils/format-date";
 import getValue from "utils/get-value";
-import { YES_NO, SCALAR, CATEGORICAL } from "modules/common-elements/constants";
+import { YES_NO, SCALAR, CATEGORICAL } from "modules/common/constants";
 
 import CommonStyles from "modules/market/components/common/market-common.styles";
 import Styles from "modules/market/components/market-basics/market-basics.styles";
@@ -21,7 +21,7 @@ import TimeRemainingIndicatorWrapper from "modules/market/components/common/time
 import { constants } from "services/augurjs";
 import moment from "moment";
 import { compact } from "lodash";
-import { CategoryTagTrail } from "modules/common-elements/labels";
+import { CategoryTagTrail } from "modules/common/labels";
 import { MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 
@@ -48,7 +48,7 @@ const MarketBasics = ({
     const displayDate = formatDate(endTime);
 
     ReportEndingIndicator = () => (
-      <div className={Styles.MarketBasics__reportingends}>
+      <div className={Styles.ReportingEnds}>
         <div>
           {p.isMobile
             ? `In Reporting`
@@ -82,53 +82,51 @@ const MarketBasics = ({
   }));
 
   return (
-    <article className={Styles.MarketBasics}>
-      <div
-        className={classNames(CommonStyles.MarketCommon__topcontent, {
-          [`${CommonStyles["single-card"]}`]: p.cardStyle === "single-card"
-        })}
-      >
-        <div className={Styles.MarketBasics__header}>
-          <CategoryTagTrail
-            categories={categoriesWithClick}
-            tags={tagsWithClick}
-          />
-          {p.showDisputeRound && (
-            <div className={Styles["MarketBasics__round-number"]}>
-              <span className={Styles["MarketBasics__round-label"]}>
-                Dispute Round
-              </span>
-              <span className={Styles["MarketBasics__round-text"]}>
-                {getValue(p, "disputeInfo.disputeRound")}
-              </span>
-            </div>
-          )}
-          <ReportEndingIndicator />
-        </div>
-        <h1 className={CommonStyles.MarketCommon__description}>
-          <MarketLink id={p.id} className="market-link">
-            {p.description}
-          </MarketLink>
-        </h1>
-
-        {(marketType === YES_NO || marketType === SCALAR) && (
-          <MarketOutcomesBinaryScalar
-            outcomes={p.outcomes}
-            min={p.minPrice}
-            max={p.maxPrice}
-            type={marketType}
-            scalarDenomination={p.isMobile ? "" : p.scalarDenomination || "N/A"}
-          />
+    <div
+      className={classNames(CommonStyles.MarketCommon__topcontent, {
+        [`${CommonStyles["single-card"]}`]: p.cardStyle === "single-card"
+      })}
+    >
+      <div className={Styles.Header}>
+        <CategoryTagTrail
+          categories={categoriesWithClick}
+          tags={tagsWithClick}
+        />
+        {p.showDisputeRound && (
+          <div className={Styles.RoundNumber}>
+            <span>
+              Dispute Round
+            </span>
+            <span>
+              {getValue(p, "disputeInfo.disputeRound")}
+            </span>
+          </div>
         )}
-
-        {marketType === CATEGORICAL && (
-          <MarketOutcomesCategorical
-            outcomes={p.outcomes}
-            isMobileSmall={p.isMobileSmall}
-          />
-        )}
+        <ReportEndingIndicator />
       </div>
-    </article>
+      <h1 className={CommonStyles.MarketCommon__description}>
+        <MarketLink id={p.id} className="market-link">
+          {p.description}
+        </MarketLink>
+      </h1>
+
+      {(marketType === YES_NO || marketType === SCALAR) && (
+        <MarketOutcomesBinaryScalar
+          outcomes={p.outcomes}
+          min={p.minPrice}
+          max={p.maxPrice}
+          type={marketType}
+          scalarDenomination={p.isMobile ? "" : p.scalarDenomination || "N/A"}
+        />
+      )}
+
+      {marketType === CATEGORICAL && (
+        <MarketOutcomesCategorical
+          outcomes={p.outcomes}
+          isMobileSmall={p.isMobileSmall}
+        />
+      )}
+    </div>
   );
 };
 

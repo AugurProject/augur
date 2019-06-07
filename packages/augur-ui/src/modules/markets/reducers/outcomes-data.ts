@@ -8,7 +8,7 @@ import {
   YES_NO_YES_ID,
   SCALAR_UP_ID,
   YES_NO_YES_OUTCOME_NAME
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { OutcomesData, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: OutcomesData = {};

@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import store from "store";
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 import {
   selectMarketReportState,
   selectLoginAccountAddress,

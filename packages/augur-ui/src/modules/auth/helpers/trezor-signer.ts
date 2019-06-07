@@ -3,7 +3,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import TX from "ethereumjs-tx";
 import { prefixHex } from "speedomatic";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
-import { MODAL_TREZOR } from "modules/common-elements/constants";
+import { MODAL_TREZOR } from "modules/common/constants";
 
 const trezorSigner = async (connect, path, dispatch, rawTxArgs) => {
   function hex(num) {

@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 
 import OpenOrders from "modules/portfolio/components/orders/open-orders";
 import { updateModal } from "modules/modal/actions/update-modal";
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 import selectMarketsOpenOrders from "modules/portfolio/selectors/select-markets-open-orders";
 
 const mapStateToProps = state => selectMarketsOpenOrders(state);

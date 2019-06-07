@@ -6,14 +6,14 @@ import PortfolioReportsForkedMarketCard from "modules/portfolio/components/portf
 import {
   TYPE_CLAIM_PROCEEDS,
   MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import Styles from "modules/portfolio/components/portfolio-reports/portfolio-reports.styles";
 import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
 import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 
 import { formatRep } from "utils/format-number";
-import { RepBalance } from "modules/common-elements/labels";
+import { RepBalance } from "modules/common/labels";
 
 export default class PortfolioReports extends Component {
   static propTypes = {

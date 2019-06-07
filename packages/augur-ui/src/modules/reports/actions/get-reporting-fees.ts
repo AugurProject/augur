@@ -11,7 +11,7 @@ import {
   redeemStake,
   CLAIM_WINDOW_GAS_COST
 } from "modules/reports/actions/claim-reporting-fees";
-import { ALL, CLAIM_FEE_WINDOWS } from "modules/common-elements/constants";
+import { ALL, CLAIM_FEE_WINDOWS } from "modules/common/constants";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";

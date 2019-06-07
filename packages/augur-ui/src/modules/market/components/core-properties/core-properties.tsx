@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { SCALAR } from "modules/common-elements/constants";
+import { SCALAR } from "modules/common/constants";
 import Styles from "modules/market/components/core-properties/core-properties.styles";
 import getValue from "utils/get-value";
-import { PropertyLabel } from "modules/common-elements/labels";
+import { PropertyLabel } from "modules/common/labels";
 
 const CoreProperties = ({ market }) => (
   <div className={Styles.CoreProperties}>

@@ -12,7 +12,7 @@ import {
   CLAIM_PROCEEDS,
   PENDING,
   SUCCESS,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";

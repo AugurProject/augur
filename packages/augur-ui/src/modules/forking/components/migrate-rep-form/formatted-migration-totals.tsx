@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 
-import FormStyles from "modules/common/less/form";
+import FormStyles from "modules/common/form-styles";
 import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
 import Styles from "modules/forking/components/migrate-rep-form/migrate-rep-form.styles";
 

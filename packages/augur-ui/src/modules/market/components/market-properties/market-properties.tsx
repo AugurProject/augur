@@ -12,14 +12,14 @@ import {
   TYPE_TRADE,
   SCALAR,
   MODAL_MIGRATE_MARKET
-} from "modules/common-elements/constants";
-import { ValueDenomination } from "modules/common-elements/labels";
+} from "modules/common/constants";
+import { ValueDenomination } from "modules/common/labels";
 import getValue from "utils/get-value";
 import { dateHasPassed } from "utils/format-date";
 import Styles from "modules/market/components/market-properties/market-properties.styles";
-import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
+import ChevronFlip from "modules/common/chevron-flip";
 import { constants } from "services/augurjs";
-import { FavoritesButton } from "modules/common-elements/buttons";
+import { FavoritesButton } from "modules/common/buttons";
 
 const {
   DESIGNATED_REPORTING,

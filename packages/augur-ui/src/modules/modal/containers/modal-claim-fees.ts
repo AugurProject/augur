@@ -22,7 +22,7 @@ import {
   ALL,
   CLAIM_FEE_WINDOWS,
   CLAIM_STAKE_FEES,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 

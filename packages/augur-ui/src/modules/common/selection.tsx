@@ -1,8 +1,8 @@
 import * as React from "react";
 import { head, find } from "lodash";
 import classNames from "classnames";
-import Styles from "modules/common-elements/selection.styles";
-import { Chevron, DotDotDot, TwoArrows } from "modules/common-elements/icons";
+import Styles from "modules/common/selection.styles";
+import { Chevron, DotDotDot, TwoArrows } from "modules/common/icons";
 
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";

@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import OpenMarkets from "modules/account/components/open-markets";
 import { pick } from "lodash";
-import { CLOSED, MARKET_CLOSED } from "modules/common-elements/constants";
+import { CLOSED, MARKET_CLOSED } from "modules/common/constants";
 import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
 import getSelectLoginAccountTotals from "modules/positions/selectors/login-account-totals";
 import memoize from "memoizee";

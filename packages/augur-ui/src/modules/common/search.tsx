@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import classNames from "classnames";
-import Styles from "modules/common-elements/search.styles";
-import { SearchIcon } from "modules/common-elements/icons";
+import Styles from "modules/common/search.styles";
+import { SearchIcon } from "modules/common/icons";
 
 export interface SearchBarProps {
   onChange: (value: string) => void;

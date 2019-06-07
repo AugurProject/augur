@@ -1,4 +1,4 @@
-import { DOWN, UP, NONE, BUY } from "modules/common-elements/constants";
+import { DOWN, UP, NONE, BUY } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { orderBy, first } from "lodash";
 

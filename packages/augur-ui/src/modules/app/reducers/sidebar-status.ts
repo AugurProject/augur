@@ -6,7 +6,7 @@ import {
   UPDATE_IS_ALERT_VISIBLE
 } from "modules/app/actions/update-sidebar-status";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { MOBILE_MENU_STATES } from "modules/common-elements/constants";
+import { MOBILE_MENU_STATES } from "modules/common/constants";
 import { MARKETS } from "modules/routes/constants/views";
 import { BaseAction } from "modules/types";
 

@@ -26,7 +26,7 @@ import {
   MARKET_CLOSED,
   REPORTING_STATE,
   CONTRACT_INTERVAL,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import userOpenOrders from "modules/orders/selectors/user-open-orders";
 
 // Get all the users CLOSED markets with OPEN ORDERS

@@ -1,8 +1,8 @@
 import React from "react";
 import classNames from "classnames";
-import { DirectionButton } from "modules/common-elements/buttons";
+import { DirectionButton } from "modules/common/buttons";
 
-import Styles from "modules/common-elements/pagination.styles";
+import Styles from "modules/common/pagination.styles";
 
 interface PaginationProps {
   page: number;

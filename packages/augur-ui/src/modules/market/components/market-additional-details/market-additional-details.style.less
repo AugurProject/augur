@@ -1,48 +1,41 @@
 @import (reference) '~assets/styles/shared';
 
-.MarketAdditionalDetails__details-wrapper {
-  background-color: @color-darkpurple;
-}
+.AdditionalDetails {
+  .text-12-paragraph;
 
-.MarketAdditionalDetails__details-container {
   color: @color-secondary-text;
-  font-size: @font-size-small;
-  line-height: @font-size-medium;
   margin: auto;
   max-width: 62.75rem;
   overflow: auto;
-  padding: 1.875rem 2rem;
+  padding: @size-30 @size-32;
   transition: height @animation-speed-normal @animation-default-type;
 
   > h4 {
-    &:extend(.caps--small);
+    .text-12;
 
-    color: @color-lightgray;
+    color: @color-tertiary-text;
     display: inline-block;
-    padding-right: 0.5em;
+    padding-right: @size-8;
   }
-}
 
-.MarketAdditionalDetails__details-helper-text {
-  margin-bottom: 0;
-}
+  > p {
+    margin-bottom: 0;
+  }
 
-.MarketAdditionalDetails__details-details-text,
-.MarketAdditionalDetails__details-details-text:disabled {
-  background: none;
-  border: 0;
-  color: @color-lightgray;
-  margin: 1rem 0 0;
-  overflow: hidden;
-  padding: 0;
-  resize: none;
-  text-transform: none;
-  white-space: pre-wrap;
-}
+  &.Text {
+    background: none;
+    border: 0;
+    color: @color-tertiary-text;
+    margin: @size-16 0 0;
+    overflow: hidden;
+    padding: 0;
+    resize: none;
+    text-transform: none;
+    white-space: pre-wrap;
+  }
 
-@media @breakpoint-mobile-medium {
-  .MarketAdditionalDetails__details-container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  @media @breakpoint-mobile-medium {
+    padding-left: @size-16;
+    padding-right: @size-16;
   }
 }
