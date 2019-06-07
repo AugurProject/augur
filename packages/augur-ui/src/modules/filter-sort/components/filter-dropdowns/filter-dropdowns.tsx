@@ -180,10 +180,7 @@ export default class FilterSearch extends Component {
         />
         <Checkbox
           id="has-orders"
-          type="checkbox"
-          name="hasOrders"
           isChecked={hasOrders}
-          value={hasOrders}
           onClick={this.changeHasOrders}
         />
         <label htmlFor="has-orders">has open orders</label>
