@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+
+<head>  
+<!-- Google Analytics Content Experiment code -->
+<script>function utmx_section(){}function utmx(){}(function(){var
+k='195388066-5',d=document,l=d.location,c=d.cookie;
+if(l.search.indexOf('utm_expid='+k)>0)return;
+function f(n){if(c){var i=c.indexOf(n+'=');if(i>-1){var j=c.
+indexOf(';',i);return escape(c.substring(i+n.length+1,j<0?c.
+length:j))}}}var x=f('__utmx'),xx=f('__utmxx'),h=l.hash;d.write(
+'<sc'+'ript src="'+'http'+(l.protocol=='https:'?'s://ssl':
+'://www')+'.google-analytics.com/ga_exp.js?'+'utmxkey='+k+
+'&utmx='+(x?x:'')+'&utmxx='+(xx?xx:'')+'&utmxtime='+new Date().
+valueOf()+(h?'&utmxhash='+escape(h.substr(1)):'')+
+'" type="text/javascript" charset="utf-8"><\/sc'+'ript>')})();
+</script><script>utmx('url','A/B');</script>
+<!-- End of Google Analytics Content Experiment code -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74080255-11"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-74080255-11', { 'anonymize_ip': true });
+</script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Augur | A Decentralized Oracle & Prediction Market Protocol</title>
+    <meta content="Augur - Prediction Markets | A Decentralized Oracle & Prediction Market Protocol" property="og:title">
+    <meta content="Augur - Prediction Markets | A Decentralized Oracle & Prediction Market Protocol" property="og:site_name">
+    <meta content="Augur - Prediction Markets | A Decentralized Oracle & Prediction Market Protocol" name="twitter:card">
+    <meta content="Augur - Prediction Markets | A Decentralized Oracle & Prediction Market Protocol" name="twitter:title">
+    <meta content="Augur Predicton Markets" name="twitter:domain">
+
+    <meta content="Augur is a decentralized oracle and prediction market protocol built on the Ethereum blockchain. Forecast events and be rewarded for predicting them correctly." name="description">
+    <meta content="Augur is a decentralized oracle and prediction market protocol built on the Ethereum blockchain. Forecast events and be rewarded for predicting them correctly." property="og:description">
+    <meta content="Augur is a decentralized oracle and prediction market protocol built on the Ethereum blockchain. Forecast events and be rewarded for predicting them correctly." name="twitter:description">
+
+    <meta content="https://www.augur.net/" property="og:url">
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.augur.net/" />
+    <meta name="google-site-verification" content="0yoO8otlMdNBBDxuvq_KxlJyoSzIhBc8eK_7FzJ1_qg" />
+    
+    <link rel="stylesheet preload" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js" async defer></script>
+    <script>
+        window.addEventListener('load', function() {
+            window.cookieconsent.initialise({
+                'palette': {
+                    'popup': {
+                        'background': '#553580'
+                    },
+                    'button': {
+                        'background': '#FFF',
+                    }
+                }
+            })
+        })
+    </script>
+
+    <meta content="https://augur.net/dist/images/meta_logo.png" property="og:image">
+    <meta content="https://augur.net/dist/images/meta_logo.png" name="twitter:image">
+    <meta content="https://augur.net/dist/images/meta_logo.png" name="twitter:image:src">
+
+    <link rel="stylesheet preload" type="text/css" href="/dist/styles/site.min.css" async defer>
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta content="LQMTXnM-70SbbKHdPCf9S9o_w2Au-bA3a6-2Z9kSCOo" name="google-site-verification">
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: "en",
+                layout: google.translate.TranslateElement.FloatPosition.TOP_LEFT,
+                multilanguagePage: true
+            }, "google_translate_element");
+        }
+    </script>
+
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
+    <script>
+        window.addEventListener('load', async() => {
+            let video = document.querySelector('video[muted][autoplay]');
+            try {await video.play();} catch (err) {video.controls = true;}});
+    </script>
+</head>
+
+<body>
+    <header class="Header">
+        <div class="Header__wrap">
+            <a href="/">
+                <img alt="Augur Prediction Markets" src="/dist/images/augur-logo.svg">
+            </a>
+            <div class="Header__nav">
+                <ul>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/bounty/">Bug Bounty</a></li>
+                    <li><a href="/faq/">FAQ</a></li>
+                    <li><a href="https://medium.com/@AugurProject" target="_blank">Weekly Reports</a></li>
+                </ul>
+                <img alt="Augur Prediction Markets" class="Header__nav-mobile-close" src="/dist/images/icon--times.svg">
+            </div>
+            <img alt="Augur Prediction Markets" class="Header__nav-mobile-open" src="/dist/images/icon--bars.svg">
+        </div>
+    </header>
+    <section class="Hero landing-top" style="padding-bottom: 0;">
+        <div class="Hero__wrap">
+            <div>
+                <h1 class="main-grab">Betting, but 10x Better</h1>
+                <h4><span class="sub-grab">Wager as much as you want on any event in the world for near zero fees</span><br>
+                <span class="value-prop">No Signup. No Deposits. No Limits.</span></h4>
+                <a class="button cta-button cta-primary" href="https://augur.net/ipfs-redirect.html">Start Betting Now</a>
+                <a class="cta-download-link" href="https://augur.net/download" style="margin-bottom: 1em">Advanced: Download Augur</a>
+            </div>
+            <div>
+                <video src="https://www.augur.net/src/videos/flow_seven.mp4" muted autoplay loop playsinline style="width:109%"></video>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="Benefits">
+            <div class="max-width">
+                <div class="quarter-wrap">
+                     <div class="quarter-tile">
+                        <img alt="Why Augur Prediction Markets" src="/dist/images/icon--user-created-markets.svg">
+                        <h6>Non-Custodial</h6>
+                        <p>Nobody else has custody of your funds. Augur is 100% peer-to-peer, owned &amp; operated by those who use it.</p>
+                    </div>
+                    <div class="quarter-tile">
+                        <img alt="Why Augur Prediction Markets" src="/dist/images/icon--low-trading-fees.svg">
+                        <h6>Low Trading Fees</h6>
+                        <p>Trading fees go directly to market creators and reporters. There's no third party making money from your trades.</p>
+                    </div>
+                    <div class="quarter-tile">
+                        <img alt="Why Augur Prediction Markets" src="/dist/images/icon--automated-payouts.svg">
+                        <h6>Liquidity</h6>
+                        <p>No limits or trade restrictions. Any order size will be executed, provided a willing counterparty.
+                        </p>
+                    </div>
+                    <div class="quarter-tile">
+                        <img alt="Why Augur Prediction Markets" src="/dist/images/icon--open-to-all.svg">
+                        <h6>Open to All</h6>
+                        <p>Augur is a permissionless protocol. Anyone, anywhere in the world can participate in and create markets.<sup><a class="link--disclaimer" href="/disclaimer/">[1]</a></sup></p>
+                    </div>
+                </div>
+                <div>
+                    <a align="center" class="button--white download-link cta-button cta-secondary" href="https://augur.net/ipfs-redirect.html">Bet On Augur Now</a>
+                </div>
+            </div>
+        </section>
+
+    <section class="Uses">
+        <div class="uses-overview">
+            <h2 class="uses-grab">The Future of Speculation Has Arrived</h2>
+            <div class="uses-intro">
+                <h4 class="uses-intro-header">Markets for Anyone, Anywhere, Anytime, on...<strong>Anything</strong></h4>
+                <h5 class="uses-intro-sub">Predict elections, cryptocurrency prices, sports &amp; much much more</h5>
+            </div>
+        </div>
+    </section>
+
+
+    <section>
+        <div class="max-width cycle-header">
+            <h2>Augur in 3 Steps...</h2>
+        </div>
+        <div class="AugurCycle__steps-wrapper" style="margin-top: 5rem;">
+            <div class="AugurCycle__step--left">
+                <div class="step--image">
+                    <picture>
+                       <source srcset="/dist/images/screen--market-cycle-step-1.webp"  type="image/webp">
+                       <source srcset="dist/images/screen--market-cycle-step-1.jpg" type="image/jpeg"> 
+                       <img src="dist/images/screen--market-cycle-step-1.jpg" alt="Augur Prediction Markets">
+                    </picture>
+                </div>
+                <div class="step--text">
+                    <h3 class="step--1">Pick an Event</h3>
+                    <p>Anything is fair game, from elections to crypto prices. Can't find what you're looking for? Create your own market with just a few clicks...</p>
+                </div>
+            </div>
+            <div class="AugurCycle__step--right">
+                <div class="step--text">
+                    <h3 class="step--2">Buy and Sell Shares</h3>
+                    <p>Buy shares to go long on an outcome, or sell shares to go short. Trade your shares whenever you like or wait for the outcome to resolve.</p>
+                </div>
+                <div class="step--image">
+                    <picture>
+                       <source srcset="/dist/images/screen--market-cycle-step-3.webp"  type="image/webp">
+                       <source srcset="dist/images/screen--market-cycle-step-3.jpg" type="image/jpeg"> 
+                       <img src="dist/images/screen--market-cycle-step-3.jpg" alt="Augur Prediction Markets">
+                    </picture>
+                </div>
+            </div>
+            <div class="AugurCycle__step--left">
+                <div class="step--image">
+                    <video alt="Augur Prediction Markets" src="https://www.augur.net/src/videos/flow_one.mov" muted autoplay loop playsinline style="width:100%"></video>
+                </div>
+                <div class="step--text">
+                    <h3 class="step--3">Claim Your Winnings</h3>
+                    <p>If you hold shares of the winning outcome, you'll get a payout when the outcome resolves, sent straight to your Ethereum wallet.</p>
+                </div>
+            </div>
+            <div style="margin-top:8em;">
+                <a align="center" class="button--white download-link cta-button cta-secondary" href="https://augur.net/ipfs-redirect.html" style="">Bet On Augur Now</a>
+            </div>
+        </div>
+        </div>
+    </section>
+
+
+        <section class="Uses" style="background-color:#f0eff6;">
+            <div class="Uses__wrap">
+                <h2 class="uses-header">Welcome to the <strong>Future</strong> of Forecasting</h2>
+                <div class="Uses__use-cases">
+                    <div class="Uses__use-cases-wrapper">
+                        <div class="Uses__use-case">
+                            <h6>Political Forecasting</h6>
+                            <p>Turn political knowledge into predictive power by trading on the outcome of upcoming elections, potential policy decisions, and other political events.</p>
+                            <img alt="Augur Prediction Markets" src="/dist/images/icon--political-forecasting.svg">
+                        </div>
+                        <div class="Uses__use-case">
+                            <h6>Event Hedging</h6>
+                            <p>Hedge against catastrophic events like natural disasters, market crashes, and geopolitical upheaval by betting that the event will occur.</p>
+                            <img alt="Augur Prediction Markets" src="/dist/images/icon--insurance-hedging.svg">
+                        </div>
+                        <div class="Uses__use-case">
+                            <h6>Weather Prediction</h6>
+                            <p>Harness the power of crowds to create a more accurate weather prediction tool for events like hurricane landfalls, heat waves, and daily temperature averages.</p>
+                            <img alt="Augur Prediction Markets" src="/dist/images/icon--weather-prediction.svg">
+                        </div>
+                        <div class="Uses__use-case">
+                            <h6>Cryptocurrency Speculation</h6>
+                            <p>Short a cryptocurrency or predict the next bull run. Hedge or leverage exposure to any crypto asset.</p>
+                            <img alt="Augur Prediction Markets" src="/dist/images/icon--company-forecasting.svg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="Currencies">
+            <div class="Currencies__wrap">
+                <h2 class="currencies-header">Currencies of Augur</h2>
+                <div class="Currencies__currency-wrap" style="margin-top: 0rem;">
+                    <div class="Currencies__currency">
+                        <div class="Currencies__currency-heading-wrap">
+                            <div>
+                                <h2>ETH</h2>
+                                <h4>Ethereum</h4>
+                            </div>
+                            <img alt="Why Augur Prediction Markets" src="/dist/images/icon--ethereum.svg">
+                        </div>
+                        <p>Trading on the Augur protocol is done with Ethereum, the decentralized world computer. As one of the most widely-used cryptocurrencies, Ethereum helps make trading on Augur accessible to all.</p>
+                    </div>
+                    <div class="Currencies__currency">
+                        <div class="Currencies__currency-heading-wrap">
+                            <div>
+                                <h2>REP</h2>
+                                <h4>Reputation</h4>
+                            </div>
+                            <img alt="Why Augur Prediction Markets" src="/dist/images/icon--reputation.svg">
+                        </div>
+                        <p>REP is used for reporting on and disputing the outcomes of events. REP holders are rewarded for reporting the correct winning outcome of the event after it occurs, while others can dispute if they don't agree.</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <a align="center" class="button--white download-link cta-button cta-secondary" href="https://augur.net/ipfs-redirect.html">Bet On Augur Now</a>
+            </div>
+        </section>
+
+        <section">
+            <div class="max-width projects-header">
+                <h2>Join The Augur Ecosystem</h2>
+                <div class="GetStartedSteps__note" style="margin-bottom:0em;">
+                    <h5 style="text-align:center;">Join the growing number of developers, projects and companies building on the Augur protocol. </h5>
+                    <br>
+                    <div class="quarter-wrap">
+                         <div class="quarter-tile">
+                            <a href="https://blitzpredict.io"><img alt="Why Augur Prediction Markets" src="/dist/images/eco-blitzpredict.jpg" style="height:5.375rem;margin-left: auto;margin-right: auto;"></a>
+                        </div>
+                        <div class="quarter-tile">
+                            <a href="https://guesser.io"><img alt="Why Augur Prediction Markets" src="/dist/images/eco-guesser.jpg" style="height:5.375rem;margin-left: auto;margin-right: auto;"></a>
+                        </div>
+                        <div class="quarter-tile">
+                            <a href="https://predictions.global"><img alt="Why Augur Prediction Markets" src="/dist/images/eco-pg.jpg" style="height:5.375rem;margin-left: auto;margin-right: auto;"></a>
+                        </div>
+                         <div class="quarter-tile">
+                            <a href="https://veil.co"><img alt="Why Augur Prediction Markets" src="/dist/images/eco-veil.png" style="height:5.375rem;margin-left: auto;margin-right: auto;"></a>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="quarter-wrap">
+                        <div class="quarter-tile">
+                            <a href="https://reporters.chat"><img alt="Why Augur Prediction Markets" src="/dist/images/eco-rc.png" style="height:5.375rem;margin-left: auto;margin-right: auto;"></a>
+                        </div>
+                        <div class="quarter-tile">
+                            <a href="http://pdotindex.com"><img alt="Why Augur Prediction Markets" src="/dist/images/eco-pdot.jpg" style="height:5.375rem;margin-left: auto;margin-right: auto;"></a>
+                        </div>
+                        <div class="quarter-tile">
+                            <a href="http://crystalball.be/stats"><img alt="Why Augur Prediction Markets" src="/dist/images/eco-crystal.jpg" style="height:5.375rem;margin-left: auto;margin-right: auto;"></a>
+                        </div>
+                        <div class="quarter-tile">
+                            <a href="https://augurinsider.com"><img alt="Why Augur Prediction Markets" src="/dist/images/eco-avix.jpg" style="height:5.375rem;margin-left: auto;margin-right: auto;"></a>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <p style="text-align:center;"><a href="https://mikemcdonald.github.io/augur/leaderboard.html">Augur Profit Leaderboard</a>, <a href="https://dispute.tools">Dispute.Tools</a>, <a href="https://exploreaugur.com">ExploreAugur.com</a>, <a href="https://logfile.info">LogFile.Info</a></p>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="Connect" style="background-color:#f0eff6;">
+            <div class="Connect__wrap">
+                <h2 style="width:100%">Join the Community</h2>
+                <div class="Connect__block-wrap-outer">
+                    <div class="Connect__block">
+                        <img alt="Augur Prediction Markets" src="/dist/images/icon--discord.svg">
+                        <h4>Join the Conversation</h4>
+                        <p>The Augur community discusses design and development daily on Discord. Community members are always welcome to join with questions and feedback.</p>
+                        <a class="link--arrow" href="https://discord.gg/faud6Fx" target="_blank">Find us on Discord</a>
+                    </div>
+                    <div class="Connect__block-wrap-inner">
+                        <div class="Connect__block">
+                            <img alt="Augur Prediction Markets" src="/dist/images/icon--stack-exchange.svg">
+                            <h4>Technical Questions?</h4>
+                            <a class="link--arrow" href="https://augur.stackexchange.com/" target="_blank">View Stack
+                        Exchange</a>
+                        </div>
+                        <div class="Connect__block">
+                            <img alt="Augur Prediction Markets" src="/dist/images/icon--general-questions.svg">
+                            <h4>General Questions?</h4>
+                            <a class="link--arrow" href="mailto:team@augur.net" target="_blank">Connect through Email</a>
+                        </div>
+                        <div class="Connect__block--around-the-web">
+                            <h4>Find Augur around the web</h4>
+                            <ul>
+                                <li>
+                                    <a href="https://facebook.com/AugurProject/" target="_blank">
+                                        <img alt="Augur Prediction Markets" src="/dist/images/icon--facebook.svg">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://twitter.com/AugurProject" target="_blank">
+                                        <img alt="Augur Prediction Markets" src="/dist/images/icon--twitter.svg">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://reddit.com/r/Augur" target="_blank">
+                                        <img alt="Augur Prediction Markets" src="/dist/images/icon--reddit.svg">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/AugurProject" target="_blank">
+                                        <img alt="Augur Prediction Markets" src="/dist/images/icon--github.svg">
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="Developers" style="padding: 4.5rem 0;background-color:#FFF;color:#000;">
+            <div class="Developers__wrap">
+                <div class="Developers__intro">
+                    <h2>Getting Started for Developers</h2>
+                    <h5>Anyone is welcome to contribute to Augur. The best way to begin is to join the Augur Discord channel, where the Augur community discusses design and development every day.</h5>
+                    <p>If you have a specific issue you would like to report, open an Issue in the relevant Github repository. If you have code you would like to contribute, open a Pull Request. Directions for setting up a local development environment can be found in each repository.</p>
+                </div>
+                <div class="Developers__repos">
+                    <div class="Developers__repos-intro">
+                        <h5>Github Repositories</h5>
+                        <p>The Augur Github repositories can be found at <a href="https://github.com/AugurProject" target="_blank">github.com/AugurProject</a>.</p>
+                        <p>The repos under most active development are:</p>
+                    </div>
+                    <ul class="list--links">
+                        <li><a href="https://github.com/AugurProject/augur" target="_blank">Augur Client (React, Redux)</a></li>
+                        <li><a href="https://github.com/AugurProject/augur-node" target="_blank">Augur Node (Node, Typescript)</a></li>
+                        <li><a href="https://github.com/AugurProject/augur-core" target="_blank">Augur Core (Solidity)</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer class="Footer">
+            <div class="max-width">
+                <div class="Footer__main-wrap">
+                    <a href="/"><img alt="Augur Prediction Markets" src="/dist/images/augur-logo--white.svg"></a>
+                    <div class="Footer__nav-wrap">
+                        <ul>
+                            <li><a href="/blog">Blog</a></li>
+                            <li><a href="/bounty/">Bug Bounty</a></li>
+                            <li><a href="/faq/" target="_blank">FAQ</a></li>
+                            <li><a href="https://medium.com/@AugurProject" target="_blank">Weekly Reports</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="https://docs.augur.net/" target="_blank">Documentation</a></li>
+                            <li><a href="https://github.com/AugurProject/whitepaper" target="_blank">Whitepaper</a></li>
+                            <li><a href="/disclaimer/">Disclaimer</a></li>
+                            <li><a href="mailto:team@augur.net" target="_blank">Contact</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="https://github.com/AugurProject/augur-core/blob/master/LICENSE" target="_blank">Augur
+                        Core License</a></li>
+                            <li><a href="https://github.com/AugurProject/augur/blob/master/LICENSE" target="_blank">Augur UI
+                        License</a></li>
+                            <li><a href="https://github.com/AugurProject/augur-node/blob/master/LICENSE" target="_blank">Augur
+                        Node License</a></li>
+                            <li><a href="https://github.com/AugurProject/augur-app/blob/master/LICENSE.md" target="_blank">Augur
+                        App License</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="/terms-of-service/">Terms of Service</a></li>
+                            <li><a href="/privacy-policy/">Privacy Policy</a></li>
+                            <li><a href="/cookies-and-related-technologies-notice/">Cookies Notice</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="Footer__sub-wrap">
+                    <span>Copyright &#64; 2019 Forecast Foundation OU</span>
+                    <ul>
+                        <li>
+                            <a href="https://discord.gg/faud6Fx" target="_blank">
+                                <img alt="Augur Prediction Markets" src="/dist/images/icon--discord--white.svg">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://augur.stackexchange.com/" target="_blank">
+                                <img alt="Augur Prediction Markets" src="/dist/images/icon--stack-exchange--white.svg">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://facebook.com/AugurProject/" target="_blank">
+                                <img alt="Augur Prediction Markets" src="/dist/images/icon--facebook--white.svg">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com/AugurProject" target="_blank">
+                                <img alt="Augur Prediction Markets" src="/dist/images/icon--twitter--white.svg">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://reddit.com/r/Augur" target="_blank">
+                                <img alt="Augur Prediction Markets" src="/dist/images/icon--reddit--white.svg">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/AugurProject" target="_blank">
+                                <img alt="Augur Prediction Markets" src="/dist/images/icon--github--white.svg">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+        <script src="/dist/scripts/site.min.js"></script>
+        <script type="application/javascript">
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="86px" height="73px" viewBox="0 0 86 73" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/insurancehedging</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Designs" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon/insurancehedging">
+            <g id="Group-17" transform="translate(0.000000, 12.000000)">
+                <rect id="Rectangle-13" stroke="#553580" stroke-width="2" x="1" y="1" width="76" height="42"></rect>
+                <rect id="Rectangle-21" fill="#553580" x="5" y="20" width="16" height="3"></rect>
+                <rect id="Rectangle-21" fill="#553580" x="10" y="14" width="11" height="3"></rect>
+                <rect id="Rectangle-21" fill="#553580" x="10" y="26" width="11" height="3"></rect>
+                <g id="Group-16" transform="translate(65.000000, 21.500000) scale(-1, 1) translate(-65.000000, -21.500000) translate(57.000000, 14.000000)" fill="#553580">
+                    <rect id="Rectangle-21" x="0" y="6" width="16" height="3"></rect>
+                    <rect id="Rectangle-21" x="5" y="0" width="11" height="3"></rect>
+                    <rect id="Rectangle-21" x="5" y="12" width="11" height="3"></rect>
+                </g>
+            </g>
+            <path d="M58,42.5833333 C58,42.5833333 58,47.9961548 58,52.1785714 C58,64.7723214 71.5,71 71.5,71 C71.5,71 85,64.7723214 85,52.1785714 C85,47.9961548 85,42.5833333 85,42.5833333 L71.5,43 L58,42.5833333 Z" id="Shape" stroke="#553580" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero"></path>
+            <rect id="Rectangle-22" stroke="#553580" stroke-width="2" x="6" y="7" width="64" height="2"></rect>
+            <rect id="Rectangle-22" stroke="#553580" stroke-width="2" x="11" y="1" width="54" height="2"></rect>
+            <path d="M46.8181818,25.6 L43,28.0363636 C42.0181818,26.1454545 40.9636364,25.3454545 39.4727273,25.3454545 C38.0909091,25.3454545 37.0363636,26.3272727 37.0363636,27.6727273 C37.0363636,32.1090909 47.9090909,31.5272727 47.9090909,39.0909091 C47.9090909,43.3090909 45.5818182,46.0363636 41.9454545,46.8 L41.9454545,50 L37.5090909,50 L37.5090909,46.7272727 C34.0181818,45.8909091 31.6545455,43.0545455 31,39.8909091 L34.8181818,37.4909091 C35.5818182,40.2181818 37.1090909,42.6545455 39.8727273,42.6545455 C41.8363636,42.6545455 43.1818182,41.6727273 43.1818182,39.3454545 C43.1818182,35.1272727 32.5272727,35.9636364 32.5272727,27.8909091 C32.5272727,24.6909091 34.5272727,22.0727273 37.5090909,21.2363636 L37.5090909,18 L41.9454545,18 L41.9454545,21.3090909 C44.1272727,21.9272727 45.8,23.4181818 46.8181818,25.6 Z" id="$" fill="#553580"></path>
+            <path d="M66.388939,56.0282234 L79.9734691,56.0165358 L79.9734691,58.0165358 L66.388939,58.0282234 L66.388939,58.0299441 L64.388939,58.0299441 L64.388939,51.0299441 L66.388939,51.0299441 L66.388939,56.0282234 Z" id="Combined-Shape" fill="#553580" transform="translate(72.181204, 54.529944) rotate(-48.000000) translate(-72.181204, -54.529944) "></path>
+        </g>
+    </g>
+</svg>

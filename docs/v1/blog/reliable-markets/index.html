@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-74080255-11"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-74080255-11', { 'anonymize_ip': true });
+    </script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Defeating Augur's Largest Attack | Augur Prediction Markets</title>
+    <meta content="Defeating Augur's Largest Attack | Augur Prediction Markets" property="og:title">
+    <meta content="Defeating Augur's Largest Attack | Augur Prediction Markets" property="og:site_name">
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@AugurProject" />
+    <meta name="twitter:creator" content="@AugurProject">
+    <meta name="twitter:title" content="Defeating Augur's Largest Attack | Augur Prediction Markets" />
+    <meta name="twitter:description" content="Our Four-Legged Strategy for Ending Invalid Market Scams and Building a More Reliable and Robust Protocol" />
+    <meta name="twitter:image" content="https://augur.net/dist/images/meta_logo.png" />
+
+    <meta content="Our Four-Legged Strategy for Ending Invalid Market Scams and Building a More Reliable and Robust Protocol" name="description">
+    <meta content="Our Four-Legged Strategy for Ending Invalid Market Scams and Building a More Reliable and Robust Protocol">
+
+    <meta content="https://www.augur.net/blog/reliable-markets" property="og:url">
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.augur.net/blog/reliable-markets" />
+
+    <meta content="https://augur.net/dist/images/meta_logo.png" property="og:image">
+
+    <link rel="stylesheet" type="text/css" href="/dist/styles/site.min.css" defer>
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta content="LQMTXnM-70SbbKHdPCf9S9o_w2Au-bA3a6-2Z9kSCOo" name="google-site-verification">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" defer />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js" defer></script>
+    <script>
+        window.addEventListener("load", function() {
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#553580"
+                    },
+                    "button": {
+                        "background": "#FFF",
+                    }
+                }
+            })
+        });
+    </script>
+
+</head>
+
+<body>
+    <header class="Header">
+        <div class="Header__wrap">
+            <a href="/">
+                <img alt="Defeating Augur’s Largest Attack" src="/dist/images/augur-logo.svg">
+            </a>
+            <div class="Header__nav">
+                <ul>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/bounty/">Bug Bounty</a></li>
+                    <li><a href="/faq/">FAQ</a></li>
+                    <li><a href="https://medium.com/@AugurProject" target="_blank">Weekly Reports</a></li>
+                </ul>
+                <img alt="FAQ - Frequently Asked Questions" class="Header__nav-mobile-close" src="/dist/images/icon--times.svg">
+            </div>
+            <img alt="FAQ - Frequently Asked Questions" class="Header__nav-mobile-open" src="/dist/images/icon--bars.svg">
+        </div>
+    </header>
+
+    <section class="Hero--wide">
+        <div class="Hero__wrap">
+            <div>
+                <h1 class="with-line">Defeating Augur’s Largest Attack:</h1>
+                <h4>Our Four-Legged Strategy for Ending Invalid Market Scams and Building a More Reliable and Robust Protocol</h4>
+                <p style="font-style:italic;font-size:.8em;">author: <a class="author-byline" href="https://twitter.com/Ben_davidow"><b><u>Ben Davidow</u></b></a></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="Faq">
+        <div class="max-width">
+            <div class="FaqAnswers">
+                <div class="FaqAnswer" id="rewriting-the-game" style="margin-top:-10em;">
+                    <h5>Rewriting the Game:</h5>
+                    <p>
+                        Augur is a bit like a high-stakes chess match. Its developers and community face off against exploiters and attackers in a sort of intellectual arms race. Bad actors pursue new exploits, new lines of attack, and developers counter by making the protocol
+                        more robust and secure. Each side attempts to outsmart and outmaneuver the other.
+
+                    </p>
+                    <p>
+                        But unlike a chess match, the developers may rewrite and improve the game as its being played. The ultimate goal is to create a game where everyone wins: where the individual incentives of market actors align with the utility and security of the protocol
+                        as a whole. A game where it is more profitable to participate in the protocol than to attack it and where it is more profitable to create valid markets and report honestly on their outcomes than it is to create invalid markets
+                        and lie.
+                    </p>
+                    <p>
+                        While Augur v1 has largely succeeded on this front, it has faced one pressing attack vector: invalid market scams. Bad actors, or at least one prominent trader, have gamed the system to deliberately create and profit off of Invalid markets at the expense
+                        of other traders. This attack vector was known before v1, but due to a technical issue, it was successfully exploited by scammers.
+
+                    </p>
+                    <p> 
+                        This is a serious problem, and it demands a serious solution. So <b>starting today, we are releasing a suite of changes that we believe will make Invalid market scams a thing of the past. We expect that these improvements will not just solve this issue for good but also make Augur a more reliable and robust protocol in general.</b> We implemented the first of these changes today, while others will arrive in Augur v2.
+
+                    </p>
+                    <p>
+                        Before diving into the changes, let’s see how the attack works...
+                    </p>
+                </div>
+
+                <div class="FaqAnswer" id="the-attack">
+                    <h5>The Attack:</h5>
+                    <p>
+                        In a prediction market, traders buy shares whose payout depends on the outcome of an event. In a YES/NO market on Augur v1, one can buy two types of shares: YES or NO. If the market resolves YES (the event occurred), each YES share pays out one Ether,
+                        and each NO share pays out nothing. If the market resolves NO (the event does not occur), each NO share pays out one Ether, and each YES share pays out nothing. However, if the outcome was ambiguous or unverifiable, the market is deemed “Invalid,” and YES and NO shares each pay out .50 Ether.
+                    </p>
+                    <p>
+                        The Invalid scam involves creating markets that appear valid on first glance but are actually Invalid. The most common approach is setting a market to end before the outcome will be known. The market creator (or other traders) then place orders for cheap YES and/or NO shares for under .50 Ether a pop. Traders who do not realize the market is Invalid or do not understand how Invalid markets work then buy these shares, and the scammers net a profit when the market resolves.
+
+                    </p>
+
+                    <p>
+                        The same scheme can be applied to categorical markets (multiple outcomes) and scalar markets (numerical outcomes), adjusted for varying payouts in the case of Invalid. For example, in a categorical market with 4 outcomes, each Invalid share pays out .25 Ether, so scammers buy YES or NO shares for under .25.
+
+                    </p>
+
+                    <p>
+                        In Augur v1, market creators pay a validity bond when they create a market, which they only get back if the market is valid. The validity bond, however, has been lower in some cases than needed to deter Invalid market creation.
+
+                    </p>
+                </div>
+
+                <div class="FaqAnswer" id="the-counterattack">
+                    <h5>Designing the Counterattack:</h5>
+                    <p>
+                        Ideal solutions require a few traits:
+                    </p>
+                    <p>
+                        We need <b>autonomous</b> solutions that use market forces and incentives or programmable logic rather than manual interference. For example, since Augur is a decentralized, censorship-resistant protocol, the Forecast Foundation
+                        cannot manually remove or flag markets.</p>
+
+                    <p>
+                        We need <b>robust</b> solutions that succeed in different contexts and attack the problem from different angles, from deterring the creation of Invalid markets in the first place to signaling which existing markets are likely Invalid.
+                    </p>
+
+                    <p>
+                        Finally, we favor <b>broadly useful</b> solutions that have neutral or beneficial side effects and that ideally create utility for traders beyond addressing this issue.
+                    </p>
+                </div>
+
+                <div class="FaqAnswer" id="liquidity-sort">
+                    <h5>Liquidity Sort:</h5>
+                    <p>
+                        <b>Today, we released a new version of Augur App that redefines how markets are sorted and incentivizes liquid and valid outcomes.</b> The sort ranks markets based on their “depth-weighted” spread and makes the most liquid order
+                        books the most visible.
+                    </p>
+
+                    <p> 
+                        A normal spread is the gap between the highest bid (price traders are offering to buy at) and the lowest ask (price traders offering to sell at). Filtering out markets with wide spreads would hide the highest-risk scam markets where
+                        traders could incur the greatest losses.
+                    </p>
+
+                    <p> 
+                        Scammers, however, could bypass a simple spread filter by placing a trail of dust orders, tiny bids or asks, leading up to a larger, more profitable order, in an attempt to lure in unsuspecting traders. So we need to account for not just the width of the spread, but also its <i>depth</i>.
+                    </p>
+
+                    <center><img src="https://augur.net/src/images/reliable-markets-one.png" alt="Defeating Augur's Largest Attack" style="width:25em;margin-top:3em;"><p style="font-style:italic; font-size:.8em;margin-top:1em;" ><i>An example of a market with a wide and shallow spread</i><p></center>
+
+                    <p>
+                        A depth-weighted spread lets us account for both how wide the spread is and the quantity of volume on each side. For example, a market with .01 shares on bid at .49 and .1 shares on sale at .51 is less liquid then a market with 10 shares on bid at .48 and 10 shares on sale at .52, despite the tighter spread.
+
+                    </p>
+
+                    <p>
+                        Imagine buying the cheapest 15% of asks from an order book and then selling them back into the market right away. If you recoup a high percentage of what you paid, say 85%, the market is more liquid than if you recoup a small percentage, say 50%. If there’s a wide spread or a narrow spread but with a bunch of dust orders, you only recoup a small amount. 
+                    </p>
+
+                    <center><img src="https://augur.net/src/images/reliable-markets-two.png" alt="Defeating Augur's Largest Attack" style="width:25em;margin-top:2em;"><p style="font-style:italic; font-size:.8em;margin-top:1em;" ><i>An example of an order book with a relatively narrow and deep spread, by present Augur standards</i><p></center>
+
+                    <p>
+                        The new liquidity sort essentially codifies this scenario. Markets are sorted based on the amount of shares you could buy and sell while still meeting a liquidity threshold, which defaults to 15%. So a market where you could buy 100 ETH worth of shares, sell them, and recoup 85% (1–15%) of what you paid, would rank higher than a market where you could only buy and sell 10 ETH while recouping the same percentage. It also filters out markets with spreads greater than 15%. This feature alone may not filter out all Invalid markets, but it greatly diminishes the damage.</p>
+
+                    <p><b>The sort rewards liquid markets with tight, deep spreads. In other words, it makes the markets that are the most useful to traders, the most visible.</b> Before, traders could wash trade their way to the top of the markets page,
+                        since the sort was based purely on open interest, the amount of money currently at stake in the market. Invalid markets benefited from perverse network effects where they appeared to have good offers, so people traded in them,
+                        which lifted them yet higher in the default sort. </p>
+
+                    <p><b>The new sort flips these network effects to favor liquid, valid markets. It incentivizes market creators and makers to put in more liquidity with tighter spreads.</b></p>
+
+
+
+                </div>
+
+                <div class="FaqAnswer" id="invalid-filter">
+                    <h5>Experimental Invalid Filter:</h5>
+                    <p>
+                        An Invalid market could still sneak through the spread filter. It probably wouldn’t hurt traders as much as a market that <i>didn’t</i> pass the filter, but it may still produce losses.
+
+                    </p>
+
+                    <center><img src="https://augur.net/src/images/reliable-markets-three.png" alt="Defeating Augur's Largest Attack" style="width:25em;"></center>
+                    <br>
+
+                    <p>
+                        For example, this market would pass the spread filter with flying colors, and yet…it’s Invalid! If someone fills the .48 bid, they will lose .02 ETH + fees per share, and the scammer will net .02 ETH + fees per share.
+                    </p>
+
+                    <p>
+                        Is there some other tell that reveals that this market is invalid or at least offers a red flag — just from looking at the order book?
+                    </p>
+
+                    <p>
+                        Yes! Nobody is offering to buy or sell at any price that would incur a loss in the case of Invalid. In a YES/NO market, that means no bids above .50 and no asks below .50.
+                    </p>
+
+                    <p>
+                        Remember, Invalid market scams are a rigged game in which the market creator knows the end payout of shares from the get go, .50 ETH in a YES/NO market. So if there were any bid above .50 or ask below .50, it presumably would have already been filled
+                        by the market creator or a rational actor.
+
+
+                    </p>
+
+                    <p>
+                        <b>So our Invalid filter excludes markets that have no bids or asks that would incur a loss for the order creators in the case of Invalid resolution. The presence of such orders is a signal that a market is <i>valid</i>, since one or more rational actors would have filled them already if the market were <i>invalid</i>.</b>
+                    </p>
+                    <p>The filter also accounts for fees. For example, let’s say the market creator is collecting 4% fees. Having a bid filled at .52 ETH would still net a profit, despite spending .52 ETH on a share that would ultimately pay out .50 ETH (.50 - .52+.04 = .02). </p>
+
+                    <p>Even accounting for fees, the Invalid filter is not bulletproof. An Invalid scammer could post a small order as a loss leader to pass the filter. However, in tandem with the spread filter, this makes it sufficiently hard to profit
+                        off of Invalid scams such that the market creators are probably better off applying their savvy to making valid markets. </p>
+
+                    <p>The liquidity sort and Invalid filters work symbiotically, since as market creators add liquidity in order to rank high in the liquidity sort, they are also more likely to pass the Invalid filter. However, the Invalid filter runs the
+                        risk of false positives: filtering out markets that are actually valid. So we’re adding the filter as an experimental feature that the user is free to de-select. As an experimental filter, our plan is to observe what happens in
+                        the wild, see which way the cat jumps, and make adjustments as needed.</p>
+
+                </div>
+
+                <div class="FaqAnswer" id="tradeable-invalid">
+                    <h5>Tradeable Invalid:</h5>
+                    <p>
+                        The solutions mentioned so far, while useful, do not get at the root issue: incentives. They also rely on UI changes and don’t touch the protocol. <b>Tradable Invalid, one of the innovations we’re most excited for in v2, is an elegant solution that gets at the heart of the matter. It applies market forces to disincentivize the creation of Invalid markets and make it harder to profit off or get scammed by them.</b>
+
+
+                    </p>
+                    <p>In v2, Invalid becomes an explicit tradable outcome. Just like you can buy YES or NO shares, you will be able to buy “Invalid shares.” <b>This will make it impossible for scammers to profit off YES or NO shares in Invalid markets, since such shares will pay out nothing.</b>
+                    </p>
+                    <p>The price and order book for Invalid shares in any given market will signal the risk of Invalid resolution. So traders will better be able to filter out Invalid markets and to account for and hedge against the risk of Invalid in the
+                        markets that they do trade in. It will also be possible to buy insurance against an Invalid resolution when buying YES or NO shares.
+                    </p>
+                    <p><b>Where tradable Invalid really shines is in its broader utility.</b> A core property of a well-designed prediction market is that the price of shares signals the present perceived probability of an outcome. For example, if YES shares
+                        for “Will Andrew Yang be the 2020 Democratic Presidential Nominee” are going for .09 ETH, the market thinks there’s a ~9% chance. This goes the other way too: traders decide how much to pay based on their own perceived probability.
+                        So the relationship between price and perceived probability is a two way street. </p>
+
+                    <p>This equation is broken in Augur v1. Since one cannot know how much an Invalid outcome is priced into NO or YES shares, one cannot infer perceived probability from price. Even if an outcome has a 0% probability of occurring, YES shares
+                        may have a positive price if there is any chance that the market will resolve Invalid. Tradable Invalid breaks these into discreet outcomes, so that <b>the probability the market is assigning to each outcome becomes crystal clear. This moves Augur closer to it’s long-term vision of becoming a public utility that produces robust predictions on any outcome in the world.</b>                        </p>
+                </div>
+
+                <div class="FaqAnswer" id="invalid-bonds">
+                    <h5>Floating Formula for Invalid Bonds:</h5>
+                    <p>
+                        When you create a market on Augur you put up an “Invalidity Bond,” a deposit that you get back if and only if the market resolves valid. The price of this bond is automatically adjusted based on the number of recent Invalid markets. More Invalid markets
+                        drives the rate up to make it costlier to create them, while fewer Invalid markets drives the rate down.
+
+                    </p>
+
+                    <p>
+
+                        The problem is that in v1, the rate can fall too quickly, making it cheaper to create Invalid markets. In v2, the formula is altered so that the bond can fall no more than 15% in a single week. This may help deter Invalid market creation while letting
+                        users filter markets by the bond rate the market creator paid, with the idea that markets with higher rates are less likely to be Invalid.
+
+                    </p>
+                </div>
+                <div class="FaqAnswer" id="valid-resolution">
+                    <h5>A Valid Resolution:</h5>
+
+                    <p>
+                        <i>“You never change things by fighting the existing reality.
+                        To change something, build a new model that makes the existing model obsolete.” ― Buckminster Fuller</i>
+                    </p>
+
+                    <p>
+                        <b>We believe that these changes will make Invalid market scams a losing game and ultimately obsolete.</b> Invalid market scammers will face a choice: seek a new exploit, leave Augur, or start creating valid markets and contributing
+                        productive liquidity (it appears the most prolific Invalid market creator on Augur has already creating some valid markets). Either way, it’s a win. If they find a new exploit, we can counteract it before Augur hits primetime.
+                        If they redirect their skills at making valid markets, even better.
+
+                    </p>
+                    <p>
+                        In the high-stakes face-off between a protocol and its exploiters, one invaluable edge that Augur has is a community of thousands of people the world over who are excited about the project and want it to succeed. The community has been instrumental in
+                        helping develop and refine some of these solutions. In particular, we owe a big shoutout to the folks in the #game-theory channel on the Augur <a href="https://invite.augur.net">Discord</a>.
+
+                    </p>
+
+                    <p> We also recognize numerous members of the Augur community who have gone out of their way to educate others on the risk of Invalid markets and in some cases to even front run scammers. And finally, while we could never condone their
+                        actions, thank you to Invalid market creators for showing us where Augur could be improved.
+
+                    </p>
+
+                    <p>As we take a big step forward in solving this problem, we believe that with the hard work and ingenuity of our developers and community, we can meet any challenge that comes our way.
+
+                    </p>
+
+                    <p>
+                        To get started on Augur, visit <a href="https://augur.net">augur.net</a>.
+
+                    </p>
+                </div>
+
+                <a class="button cta-primary cta-blog" href="https://augur.net/ipfs-redirect.html" style="text-align:center;margin-top:-.5em;">Start Trading on Augur</a> <br><br><br>
+
+                <div class="FaqAnswer" id="market-creators">
+                    <h5><i>Special note for market creators:</i></h5>
+                    <p>
+                    <i>It is essential to add liquidity to your market for users to see it. Your market must contain an order book where the difference between the highest ask and lowest bid is less than 15% of the range, inclusive of fees, of the market. For example, a binary or categorical market with a .55 bid and .63 ask would have an 8% spread, so it would show up. A market with a .55 bid and .75 ask would *not* show up. The tighter the spread and greater liquidity, the higher your market will rank and the more people will see it.</i>
+
+                    </p>
+                    <p><i>Additionally, for your market to appear on the default markets page, you must have a bid above or an ask below the number of outcomes in the market divided by the range, after accounting for fees. For instance, a YES/NO market with a highest bid of .48 and lowest ask of .52 would be filtered out, since there is no bid above .50 or ask below .50. A market with a .52 bid and .55 ask would *not* be filtered out.</i>
+                    </p>
+
+                    <p><i>So in Augur V1, until a better solution goes live in V2, this means avoiding creating markets with true even odds, and instead creating ones with a slight (or large) underdog to ensure they’re not accidentally caught by the invalid market filter. </i>
+
+                    </p>
+                </div>
+
+
+
+
+            </div>
+
+            <div class="FaqIndex">
+                <h5>Table of Contents:</h5>
+                <div class="FaqIndex__question">
+                    <a href="#rewriting-the-game">Rewriting the Game</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#the-attack">The Attack</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#the-counterattack">The Counterattack</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#liquidity-sort">Liquidity Sort</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#invalid-filter">Experimental Invalid Filter</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#tradeable-invalid">Tradeable Invalid</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#invalid-bonds">Floating Forumla for Invalid Bonds</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#valid-resolution">A Vaild Resolution</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#market-creators">Note For Market Creators</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="Footer">
+        <div class="max-width">
+            <div class="Footer__main-wrap">
+                <a href="/"><img alt="FAQ - Frequently Asked Questions" src="/dist/images/augur-logo--white.svg"></a>
+                <div class="Footer__nav-wrap">
+                    <ul>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/bounty/">Bug Bounty</a></li>
+                        <li><a href="/faq/" target="_blank">FAQ</a></li>
+                        <li><a href="https://medium.com/@AugurProject" target="_blank">Weekly Reports</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="https://docs.augur.net/" target="_blank">Documentation</a></li>
+                        <li><a href="https://github.com/AugurProject/whitepaper" target="_blank">Whitepaper</a></li>
+                        <li><a href="/disclaimer/">Disclaimer</a></li>
+                        <li><a href="mailto:team@augur.net" target="_blank">Contact</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="https://github.com/AugurProject/augur-core/blob/master/LICENSE" target="_blank">Augur Core License</a></li>
+                        <li><a href="https://github.com/AugurProject/augur/blob/master/LICENSE" target="_blank">Augur UI License</a></li>
+                        <li><a href="https://github.com/AugurProject/augur-node/blob/master/LICENSE" target="_blank">Augur Node License</a></li>
+                        <li><a href="https://github.com/AugurProject/augur-app/blob/master/LICENSE.md" target="_blank">Augur App License</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="/terms-of-service/">Terms of Service</a></li>
+                        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+                        <li><a href="/cookies-and-related-technologies-notice/">Cookies Notice</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="Footer__sub-wrap">
+                <span>Copyright &#64; 2019 Forecast Foundation OU</span>
+                <ul>
+                    <li>
+                        <a href="https://discord.gg/faud6Fx" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--discord--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://augur.stackexchange.com/" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--stack-exchange--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://facebook.com/AugurProject/" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--facebook--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/AugurProject" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--twitter--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://reddit.com/r/Augur" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--reddit--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/AugurProject" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--github--white.svg">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <script src="/dist/scripts/site.min.js"></script>
+</body>
+
+</html>
