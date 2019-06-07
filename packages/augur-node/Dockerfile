@@ -3,7 +3,7 @@ FROM node:10.15 as builder
 WORKDIR /app/
 
 COPY wait-for-url.sh wait-for-url.sh
-COPY config.json config.json
+COPY src/config.json config.json
 COPY tsconfig.json tsconfig.json
 COPY certs certs
 

@@ -43,7 +43,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   loadMarketsInfoIfNotLoaded: (marketIds) =>
     dispatch(loadMarketsInfoIfNotLoaded((marketIds))),
   loadMarketsByFilter: (filter, cb: NodeStyleCallback) =>
-    // @ts-ignore
     debounce(dispatch(loadMarketsByFilter(filter, cb))),
 });
 

@@ -6,7 +6,8 @@
     "experimentalDecorators": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "src/state/settings.json"
   ],
   "references": [
     {
