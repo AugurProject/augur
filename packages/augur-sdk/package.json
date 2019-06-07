@@ -52,7 +52,7 @@
     "flexsearch": "0.6.2",
     "ganache-core": "2.5.5",
     "io-ts": "1.4.2",
-    "isomorphic-ws": "^4.0.1",
+    "isomorphic-ws": "4.0.1",
     "lodash": "4.17.11",
     "postinstall-build": "5.0.3",
     "pouchdb": "7.0.0",
@@ -64,7 +64,7 @@
     "webpack-cli": "3.3.0",
     "websocket-as-promised": "brianosaurus/websocket-as-promised#a104f774d702c0fbefe7ac2438b682676cf7d005",
     "worker-loader": "2.0.0",
-    "ws": "^7.0.0",
+    "ws": "7.0.0",
     "yarn": "1.15.2"
   },
   "devDependencies": {
