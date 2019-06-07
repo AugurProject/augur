@@ -20,7 +20,7 @@ import {
   MOBILE_MENU_STATES
 } from "modules/common/constants";
 import { Checkbox } from "modules/common/form";
-import Styles from "modules/filter-sort/components/filter-dropdowns/filter-dropdowns.styles";
+import Styles from "modules/filter-sort/components/filter-dropdowns.styles";
 import parseQuery from "modules/routes/helpers/parse-query";
 import makeQuery from "modules/routes/helpers/make-query";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
@@ -180,10 +180,7 @@ export default class FilterSearch extends Component {
         />
         <Checkbox
           id="has-orders"
-          type="checkbox"
-          name="hasOrders"
           isChecked={hasOrders}
-          value={hasOrders}
           onClick={this.changeHasOrders}
         />
         <label htmlFor="has-orders">has open orders</label>

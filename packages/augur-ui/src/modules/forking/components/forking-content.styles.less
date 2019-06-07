@@ -1,20 +1,21 @@
 @import (reference) "~assets/styles/shared";
 
 .ForkingContent {
-  color: white;
+  color: @color-secondary-text;
   width: 100%;
 
   h4 {
-    font-size: @font-size-small;
-    font-weight: 500;
+    .text-12-medium;
+
     margin-bottom: 0.75rem;
     text-transform: uppercase;
   }
 
   p {
-    font-size: 0.8em;
-    line-height: 1.5em;
-    margin-top: 1.25rem;
+    .text-12;
+
+    line-height: @size-24;
+    margin-top: @size-20;
   }
 
   &.expanded {
@@ -25,13 +26,13 @@
 }
 
 .ForkingContent__container {
-  padding-top: 1em;
+  padding-top: @size-16;
 
   &.expanded {
     margin-left: 18%;
     margin-right: 5%;
-    padding-bottom: 2em;
-    padding-top: 2em;
+    padding-bottom: @size-32;
+    padding-top: @size-32;
     width: 80%;
 
     @media @breakpoint-mobile {
@@ -45,7 +46,7 @@
 
   > button,
   > span {
-    margin-right: 1em;
+    margin-right: @size-16;
   }
 }
 
@@ -53,7 +54,7 @@
 .ForkingContent__migrate_rep_button {
   &:extend(.button--white);
 
-  margin-top: 2em;
+  margin-top: @size-32;
   padding: 0 0.4em;
   width: 9.75em;
 
