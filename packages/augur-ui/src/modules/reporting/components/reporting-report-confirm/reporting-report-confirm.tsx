@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { BigNumber } from "utils/create-big-number";
 
-import ConfirmStyles from "modules/common/less/confirm-table";
+import ConfirmStyles from "modules/common/confirm-table";
 
 const ReportingReportConfirm = ({
   selectedOutcome,

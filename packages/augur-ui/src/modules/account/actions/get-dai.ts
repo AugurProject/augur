@@ -1,7 +1,7 @@
 import { updateAlert } from "modules/alerts/actions/alerts";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
-import { CONFIRMED, FAILED } from "modules/common-elements/constants";
+import { CONFIRMED, FAILED } from "modules/common/constants";
 import logError from "utils/log-error";
 import { getDai } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";

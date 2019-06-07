@@ -4,7 +4,7 @@ import { Message } from "modules/modal/message";
 import { assetDataUtils } from "@0xproject/order-utils";
 import { BigNumber } from "@0xproject/utils";
 import { augur } from "services/augurjs";
-import { NETWORK_IDS } from "modules/common-elements/constants";
+import { NETWORK_IDS } from "modules/common/constants";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";

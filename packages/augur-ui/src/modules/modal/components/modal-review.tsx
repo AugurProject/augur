@@ -5,7 +5,7 @@ import classNames from "classnames";
 import ModalReceipt from "modules/modal/components/common/modal-receipt";
 import ModalDescription from "modules/modal/components/common/modal-description";
 import ModalActions from "modules/modal/components/common/modal-actions";
-import { MODAL_REVIEW } from "modules/common-elements/constants";
+import { MODAL_REVIEW } from "modules/common/constants";
 
 import Styles from "modules/modal/components/common/common.styles.less";
 // if this is a review modal, then apply the overall wrapper css, otherwise it should be wrapped already.

@@ -49,9 +49,7 @@ export const EthIcon = (
 
 export const DaiLogoIcon = (
   <svg viewBox="0 0 32 32">
-    <path
-      d="M26.633 14.817L15.817 4 5 14.817l10.817 3.996 10.816-3.996zM8.364 13.9l7.333-7.498s7.169 7.333 7.471 7.48c.303.146-4.931 0-4.931 0l-2.42-2.475-2.448 2.493H8.364zm7.453 5.674l10.816-4.024-10.816 10.083L5 15.605l10.817 3.97z"
-    />
+    <path d="M26.633 14.817L15.817 4 5 14.817l10.817 3.996 10.816-3.996zM8.364 13.9l7.333-7.498s7.169 7.333 7.471 7.48c.303.146-4.931 0-4.931 0l-2.42-2.475-2.448 2.493H8.364zm7.453 5.674l10.816-4.024-10.816 10.083L5 15.605l10.817 3.97z" />
   </svg>
 );
 
@@ -128,9 +126,7 @@ export const TwoArrows = (
 );
 
 export const BackArrow = (
-  <svg
-    viewBox="0 0 18 10"
-  >
+  <svg viewBox="0 0 18 10">
     <path
       d="M5 1L1 5L5 9"
       strokeWidth="2"
@@ -165,12 +161,41 @@ export const XIcon = (
 );
 
 export const ExclamationCircle = (
-  <svg
-    viewBox="0 0 16 16"
-  >
+  <svg viewBox="0 0 16 16">
     <circle cx="8" cy="8" r="7.5" />
     <rect x="7.55566" y="3.55554" width="1.15556" height="6.22222" />
     <path d="M7.57252 10.8973C7.44279 11.0463 7.37793 11.2313 7.37793 11.4523C7.37793 11.6685 7.44279 11.8487 7.57252 11.9928C7.70706 12.137 7.90886 12.209 8.17793 12.209C8.44219 12.209 8.64159 12.137 8.77613 11.9928C8.91066 11.8487 8.97793 11.6685 8.97793 11.4523C8.97793 11.2313 8.91066 11.0463 8.77613 10.8973C8.64159 10.7436 8.44219 10.6667 8.17793 10.6667C7.90886 10.6667 7.70706 10.7436 7.57252 10.8973Z" />
+  </svg>
+);
+
+export const InputErrorIcon = (c = "#ff2727") => (
+  <svg viewBox="0 0 16 16">
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g transform="translate(-682.000000, -464.000000)">
+        <g transform="translate(682.000000, 464.000000)">
+          <circle stroke={c} strokeWidth="1" cx="8" cy="8" r="7" />
+          <text
+            transform="translate(8.000000, 7.500000) scale(-1, 1) translate(-8.000000, -7.500000) "
+            fontFamily=".AppleSystemUIFont"
+            fontSize="10.5"
+            fontWeight="normal"
+            letterSpacing="0.262500018"
+            fill={c}
+          >
+            <tspan x="6.7" y="11.5">
+              !
+            </tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
+export const Hint = (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+    <circle cx="9" cy="9" r="8" strokeWidth="2" />
+    <path d="M6.5 6.30273H9.74023V11.7051H11.8086V12.6426H6.5V11.7051H8.65625V7.24609H6.5V6.30273ZM8.51562 4.63867C8.51562 4.45898 8.56836 4.30859 8.67383 4.1875C8.7832 4.0625 8.94727 4 9.16602 4C9.38086 4 9.54297 4.0625 9.65234 4.1875C9.76172 4.30859 9.81641 4.45898 9.81641 4.63867C9.81641 4.81445 9.76172 4.96094 9.65234 5.07812C9.54297 5.19531 9.38086 5.25391 9.16602 5.25391C8.94727 5.25391 8.7832 5.19531 8.67383 5.07812C8.56836 4.96094 8.51562 4.81445 8.51562 4.63867Z" />
   </svg>
 );
 
@@ -292,6 +317,29 @@ export const DotDotDot = (
   </svg>
 );
 
+export const Close = (
+  <svg viewBox="0 0 24 24">
+    <g
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="round"
+    >
+      <g>
+        <path
+          d="M2.25937312,2.25937312 L21.7139306,21.7139306"
+          id="CloseLine"
+        />
+        <path
+          d="M21.8116947,2.3571372 L2.3571372,21.8116947 L21.8116947,2.3571372 Z"
+          strokeLinejoin="round"
+        />
+      </g>
+    </g>
+  </svg>
+);
+
 export const PaperClip = (
   <svg viewBox="0 0 22 22">
     <path d="M3.78899 13.089C2.21787 14.6601 2.21787 17.2179 3.78898 18.789C5.36009 20.3601 7.91786 20.3601 9.48898 18.789L12.639 15.639C12.6995 15.5802 12.7476 15.51 12.7807 15.4324C12.8138 15.3548 12.8312 15.2715 12.8318 15.1871C12.8324 15.1028 12.8162 15.0192 12.7842 14.9411C12.7522 14.8631 12.705 14.7922 12.6454 14.7326C12.5858 14.6729 12.5149 14.6257 12.4368 14.5937C12.3588 14.5617 12.2752 14.5456 12.1908 14.5462C12.1065 14.5468 12.0231 14.5641 11.9456 14.5972C11.868 14.6303 11.7978 14.6785 11.739 14.739L8.58898 17.889C7.50089 18.9771 5.77707 18.9771 4.68898 17.889C3.6009 16.8009 3.6009 15.0771 4.68899 13.989L7.83899 10.839C8.92707 9.7509 10.6509 9.7509 11.739 10.839C11.7978 10.8995 11.868 10.9476 11.9456 10.9807C12.0231 11.0138 12.1065 11.0312 12.1908 11.0318C12.2752 11.0324 12.3588 11.0162 12.4368 10.9842C12.5149 10.9522 12.5858 10.905 12.6454 10.8454C12.705 10.7858 12.7522 10.7149 12.7842 10.6368C12.8162 10.5588 12.8324 10.4752 12.8318 10.3908C12.8312 10.3065 12.8138 10.2231 12.7807 10.1456C12.7476 10.068 12.6995 9.99777 12.639 9.93898C11.0679 8.36787 8.5101 8.36787 6.93899 9.93899L3.78899 13.089ZM9.90617 6.97181C9.84921 7.03306 9.80488 7.10492 9.7757 7.18331C9.74652 7.26169 9.73305 7.34505 9.73609 7.42863C9.73913 7.51221 9.75861 7.59438 9.79341 7.67043C9.82821 7.74649 9.87765 7.81495 9.93891 7.8719C10.0002 7.92885 10.072 7.97316 10.1504 8.00233C10.2288 8.0315 10.3122 8.04494 10.3958 8.04188C10.4794 8.03883 10.5615 8.01933 10.6376 7.98452C10.7136 7.94971 10.7821 7.90026 10.839 7.83899L13.989 4.68899C15.0771 3.6009 16.8009 3.6009 17.889 4.68898C18.9771 5.77707 18.9771 7.5009 17.889 8.58898L14.739 11.739C13.6509 12.8271 11.9271 12.8271 10.839 11.739C10.7802 11.6785 10.71 11.6303 10.6324 11.5972C10.5548 11.5641 10.4715 11.5468 10.3871 11.5462C10.3028 11.5456 10.2192 11.5618 10.1411 11.5938C10.0631 11.6257 9.99221 11.6729 9.93257 11.7326C9.87294 11.7922 9.82575 11.8631 9.79375 11.9411C9.76175 12.0192 9.74558 12.1028 9.74618 12.1871C9.74677 12.2715 9.76412 12.3548 9.79722 12.4324C9.83032 12.51 9.87851 12.5802 9.93898 12.639C11.5101 14.2101 14.0679 14.2101 15.639 12.639L18.789 9.48898C20.3601 7.91786 20.3601 5.3601 18.789 3.78898C17.2179 2.21787 14.6601 2.21787 13.089 3.78899L9.93899 6.93899C9.92765 6.94953 9.91671 6.96047 9.90617 6.97181Z" />
@@ -299,17 +347,8 @@ export const PaperClip = (
 );
 // prevIcon, nextIcon need to be refactored still to remove colors, leaving for now.
 export const prevIcon = (
-  <svg
-    width="7px"
-    height="11px"
-    viewBox="0 0 7 11"   
-  >
-    <g
-      stroke="none"
-      strokeWidth="1"
-      fill="none"
-      fillRule="evenodd"
-    >
+  <svg width="7px" height="11px" viewBox="0 0 7 11">
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g
         transform="translate(-24.000000, -406.000000)"
         fill="#FFFFFF"
@@ -331,17 +370,8 @@ export const prevIcon = (
 );
 
 export const nextIcon = (
-  <svg
-    width="7px"
-    height="11px"
-    viewBox="0 0 7 11"
-  >
-    <g
-      stroke="none"
-      strokeWidth="1"
-      fill="none"
-      fillRule="evenodd"
-    >
+  <svg width="7px" height="11px" viewBox="0 0 7 11">
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g
         transform="translate(-156.000000, -406.000000)"
         fill="#FFFFFF"
@@ -363,12 +393,7 @@ export const nextIcon = (
 );
 // PaginationArrow: is for the legacy arrow for pagination, need to refactor out old paginaton.
 export const PaginationArrow = (
-  <svg
-    width="6"
-    height="10"
-    viewBox="0 0 6 10"
-    fill="none"
-  >
+  <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
     <path
       d="M5 9L1 5L5 1"
       strokeWidth="2"
@@ -395,10 +420,7 @@ export const Filter = (
 );
 
 export const MobileNavHamburgerIcon = () => (
-  <svg
-    viewBox="0 0 16 12"
-    className="mobile-nav-hamburger-icon"
-  >
+  <svg viewBox="0 0 16 12" className="mobile-nav-hamburger-icon">
     <g
       id="Symbols"
       stroke="none"
@@ -431,10 +453,7 @@ export const MobileNavHamburgerIcon = () => (
 );
 
 export const MobileNavCloseIcon = () => (
-  <svg
-    viewBox="0 0 16 14"
-    className="mobile-nav-close-icon"
-  >
+  <svg viewBox="0 0 16 14" className="mobile-nav-close-icon">
     <g
       id="Symbols"
       stroke="none"
@@ -465,10 +484,7 @@ export const MobileNavCloseIcon = () => (
 );
 
 export const MobileNavBackIcon = () => (
-  <svg
-    viewBox="0 0 8 14"
-    className="mobile-nav-back-icon"
-  >
+  <svg viewBox="0 0 8 14" className="mobile-nav-back-icon">
     <g
       id="Symbols"
       stroke="none"
@@ -531,13 +547,7 @@ export const Ledger = (
 );
 
 export const Trezor = (
-  <svg
-    width="13px"
-    height="18px"
-    viewBox="0 0 13 18"
-    version="1.1"
-   
-  >
+  <svg width="13px" height="18px" viewBox="0 0 13 18" version="1.1">
     <defs />
     <g
       id="Create/Connect-Account"
@@ -566,13 +576,7 @@ export const Trezor = (
 );
 
 export const Edge = (
-  <svg
-    width="18px"
-    height="18px"
-    viewBox="0 0 18 18"
-    version="1.1"
-   
-  >
+  <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1">
     <defs />
     <g
       id="Create/Connect-Account"
@@ -601,13 +605,7 @@ export const Edge = (
 );
 
 export const MetaMask = (
-  <svg
-    width="19px"
-    height="20px"
-    viewBox="0 0 19 20"
-    version="1.1"
-   
-  >
+  <svg width="19px" height="20px" viewBox="0 0 19 20" version="1.1">
     <defs />
     <g
       id="Create/Connect-Account"
@@ -673,10 +671,7 @@ export const MetaMask = (
 
 // TODO: The below Icon's are slated to be removed, for now I moved them here to reduce file amounts/noise
 export const NavMarketsIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    className="nav-markets-icon"
-  >
+  <svg viewBox="0 0 24 24" className="nav-markets-icon">
     <g
       id="Symbols"
       stroke="none"
@@ -703,10 +698,7 @@ export const NavMarketsIcon = () => (
 );
 
 export const NavCreateIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    className="nav-create-icon"
-  >
+  <svg viewBox="0 0 24 24" className="nav-create-icon">
     <g
       id="Symbols"
       stroke="none"
@@ -737,10 +729,7 @@ export const NavCreateIcon = () => (
 );
 
 export const NavPortfolioIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    className="nav-portfolio-icon"
-  >
+  <svg viewBox="0 0 24 24" className="nav-portfolio-icon">
     <g
       id="Symbols"
       stroke="none"
@@ -779,10 +768,7 @@ export const NavReportingIcon = () => (
 );
 
 export const NavAccountIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    className="nav-account-icon"
-  >
+  <svg viewBox="0 0 24 24" className="nav-account-icon">
     <g
       id="Symbols"
       stroke="none"
@@ -827,6 +813,169 @@ export const LogoutIcon = () => (
     <g fill="#FFF" fillRule="nonzero">
       <path d="M14.16 10.123H5.624a1.125 1.125 0 0 1 0-2.25h8.534l-1.454-1.455a1.125 1.125 0 0 1 1.59-1.59l3.375 3.374a1.125 1.125 0 0 1 0 1.591l-3.375 3.375a1.125 1.125 0 1 1-1.59-1.59l1.454-1.455z" />
       <path d="M9 15.5v-2a1 1 0 0 1 2 0v4H0V0h11v4a1 1 0 0 1-2 0V2H2v13.5h7z" />
+    </g>
+  </svg>
+);
+
+export const errorIcon = (
+  <svg width="16px" height="16px" viewBox="0 0 16 16">
+    <defs />
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g transform="translate(-24.000000, -607.000000)">
+        <g transform="translate(24.000000, 607.000000)">
+          <g>
+            <g>
+              <circle fill="#FF0050" cx="8" cy="8" r="8" />
+              <path
+                d="M8.87821659,10.1462941 L6.93119318,10.1462941 L6.62451916,3.05 L9.1848906,3.05 L8.87821659,10.1462941 Z M6.55319962,12.3571998 C6.55319962,12.005355 6.68038486,11.7165137 6.93475916,11.4906674 C7.18913345,11.2648211 7.50650222,11.1518996 7.886875,11.1518996 C8.26724777,11.1518996 8.58461655,11.2648211 8.83899084,11.4906674 C9.09336513,11.7165137 9.22055037,12.005355 9.22055037,12.3571998 C9.22055037,12.7090446 9.09336513,12.9978859 8.83899084,13.2237322 C8.58461655,13.4495785 8.26724777,13.5625 7.886875,13.5625 C7.50650222,13.5625 7.18913345,13.4495785 6.93475916,13.2237322 C6.68038486,12.9978859 6.55319962,12.7090446 6.55319962,12.3571998 Z"
+                fill="#FFFFFF"
+                transform="translate(7.886875, 8.306250) scale(-1, 1) translate(-7.886875, -8.306250) "
+              />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+);
+
+export const Alerts = unseenCount => (
+  <svg width="34" height="24" viewBox="0 0 34 24">
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g>
+        <g
+          transform="translate(4.000000, 1.000000)"
+          stroke="#FFFFFF"
+          strokeWidth="0"
+        >
+          <path
+            d="M7.9209 2.57172V1.94672C7.9209 1.12172 8.5959 0.446716 9.4209 0.446716C10.2459 0.446716 10.9209 1.12172 10.9209 1.94672V2.54672"
+            stroke="#FFFFFF"
+            strokeWidth="0.894"
+          />
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M11.4209 20.4472C11.4209 21.5512 10.5249 22.4472 9.4209 22.4472C8.3169 22.4472 7.4209 21.5512 7.4209 20.4472"
+            fill="#FFFFFF"
+          />
+          <path
+            d="M11.4209 20.4472C11.4209 21.5512 10.5249 22.4472 9.4209 22.4472C8.3169 22.4472 7.4209 21.5512 7.4209 20.4472C7.4209 20.4472 8.63985 20.4472 9.4209 20.4472C10.2019 20.4472 11.4209 20.4472 11.4209 20.4472Z"
+            stroke="#FFFFFF"
+            strokeWidth="0.894"
+          />
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M18.3387 17.4493C16.5787 14.4473 15.2627 11.4473 15.4207 8.44727C15.5787 5.44727 12.7347 2.44727 9.42066 2.44727C6.10666 2.44727 3.24666 5.13827 3.42066 8.44727C3.57866 11.4473 2.57866 14.4473 0.578663 17.4473C-1.42134 20.4473 20.0987 20.4503 18.3387 17.4493Z"
+            fill="#FFFFFF"
+            stroke="#FFFFFF"
+            strokeWidth="0.894"
+          />
+        </g>
+        {!!unseenCount && (
+          <g transform="translate(13.000000, 2.000000)" textAnchor="middle">
+            <rect
+              x="0.5"
+              y="0.5"
+              width="21"
+              height="13"
+              rx="6.5"
+              fill="#FD6266"
+              stroke="#211A32"
+            />
+            <text
+              fontFamily="roboto-Bold, roboto"
+              fontSize="8"
+              fontWeight="bold"
+              fill="#FFFFFF"
+            >
+              <tspan x="11.01902362" y="10.0428031">
+                {unseenCount}
+              </tspan>
+            </text>
+          </g>
+        )}
+      </g>
+    </g>
+  </svg>
+);
+// TODO: ChevronUp and Down are only used by marketHeader... refactor
+export const ChevronUp = () => (
+  <svg viewBox="0 0 16 16">
+    <g
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <g stroke="#A7A2B2">
+        <polyline
+          transform="translate(8.156854, 11.156854) scale(1, -1) rotate(-225.000000) translate(-8.156854, -11.156854) "
+          points="3.65685425 6.65685425 12.6568542 6.65685425 12.6568542 15.6568542"
+        />
+      </g>
+    </g>
+  </svg>
+);
+export const ChevronDown = p => (
+  <svg viewBox="0 0 16 16">
+    <g
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <g stroke={p.stroke || "#A7A2B2"}>
+        <polyline
+          transform="translate(8.156854, 6.156854) rotate(-225.000000) translate(-8.156854, -6.156854) "
+          points="3.65685425 1.65685425 12.6568542 1.65685425 12.6568542 10.6568542"
+        />
+      </g>
+    </g>
+  </svg>
+);
+// TODO: Chevron Left and Right are only used in create-market-form-time -- refactor.
+export const ChevronLeft = (
+  <svg viewBox="0 0 16 16">
+    <g
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <g stroke="#231A3A">
+        <polyline
+          transform="translate(11.156854, 7.863961) rotate(-135.000000) translate(-11.156854, -7.863961) "
+          points="6.65685425 3.36396103 15.6568542 3.36396103 15.6568542 12.363961"
+        />
+      </g>
+    </g>
+  </svg>
+);
+
+export const ChevronRight = (
+  <svg viewBox="0 0 9 14">
+    <g
+      fill="none"
+      fillRule="evenodd"
+      strokeLinecap="round"
+      opacity=".54"
+      strokeLinejoin="round"
+    >
+      <g stroke="#231A3A">
+        <g>
+          <g>
+            <path d="M1.16 13.228l6.363-6.364L1.16.5" />
+          </g>
+        </g>
+      </g>
     </g>
   </svg>
 );

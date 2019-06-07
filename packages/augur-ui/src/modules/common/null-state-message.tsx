@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import isPopulated from "utils/is-populated";
 
-import Styles from "modules/common-elements/null-state-message.styles";
+import Styles from "modules/common/null-state-message.styles";
 interface NullStateProps {
   message?: string;
   addNullPadding: Boolean;

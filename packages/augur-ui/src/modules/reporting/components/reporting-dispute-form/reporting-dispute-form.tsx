@@ -9,14 +9,14 @@ import {
   MALFORMED_OUTCOME,
   ZERO,
   ETHER
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { formatAttoRep, formatNumber, formatRep } from "utils/format-number";
-import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
-import FormStyles from "modules/common/less/form";
+import { InputErrorIcon } from "modules/common/icons";
+import FormStyles from "modules/common/form-styles";
 import Styles from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles";
 import ReportingDisputeProgress from "modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress";
-import Input from "modules/common/components/input/input";
-import { RepBalance } from "modules/common-elements/labels";
+import { Input } from "modules/common/form";
+import { RepBalance } from "modules/common/labels";
 
 export default class ReportingDisputeForm extends Component {
   static propTypes = {

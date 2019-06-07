@@ -12,7 +12,7 @@ import {
   MODAL_CLAIM_FEES,
   MODAL_UNSIGNED_ORDERS,
   MODAL_OPEN_ORDERS,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";

@@ -5,7 +5,7 @@ import {
   AUGUR_NODE_URL,
   ETHEREUM_NODE_HTTP,
   ETHEREUM_NODE_WS
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 import { createPath } from "history";
 

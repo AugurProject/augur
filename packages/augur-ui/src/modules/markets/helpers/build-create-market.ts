@@ -5,7 +5,7 @@ import {
   CATEGORICAL,
   SCALAR,
   DESIGNATED_REPORTER_SELF
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 export const buildCreateMarket = (
   newMarket,

@@ -1,7 +1,7 @@
 import memoize from "memoizee";
 import { createBigNumber } from "utils/create-big-number";
 
-import { LONG, SHORT, ZERO, CLOSED } from "modules/common-elements/constants";
+import { LONG, SHORT, ZERO, CLOSED } from "modules/common/constants";
 import { formatEther, formatShares, formatPercent } from "utils/format-number";
 
 export const positionSummary = memoize(

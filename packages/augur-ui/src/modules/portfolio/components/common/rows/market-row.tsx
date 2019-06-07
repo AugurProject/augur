@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
 import classNames from "classnames";
 
-import ToggleRow from "modules/common-elements/toggle-row";
-import { MarketStatusLabel } from "modules/common-elements/labels";
+import ToggleRow from "modules/common/toggle-row";
+import { MarketStatusLabel } from "modules/common/labels";
 import MarketLink from "modules/market/components/market-link/market-link";
 
 import Styles from "modules/portfolio/components/common/rows/market-row.styles";

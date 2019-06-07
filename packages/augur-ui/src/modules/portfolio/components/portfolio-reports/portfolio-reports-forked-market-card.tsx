@@ -10,7 +10,7 @@ import Styles from "modules/portfolio/components/market-portfolio-card/market-po
 import MarketPortfolioCardFooter from "modules/portfolio/components/market-portfolio-card/market-portfolio-card-footer";
 import MarketProperties from "modules/market/containers/market-properties";
 import ForkMigrationTotals from "modules/forking/containers/fork-migration-totals";
-import { CategoryTagTrail } from "modules/common-elements/labels";
+import { CategoryTagTrail } from "modules/common/labels";
 import { MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 import toggleTag from "modules/routes/helpers/toggle-tag";

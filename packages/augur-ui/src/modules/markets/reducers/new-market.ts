@@ -5,7 +5,7 @@ import {
   CLEAR_NEW_MARKET
 } from "modules/markets/actions/update-new-market";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { SETTLEMENT_FEE_DEFAULT } from "modules/common-elements/constants";
+import { SETTLEMENT_FEE_DEFAULT } from "modules/common/constants";
 import { DEFAULT_SCALAR_TICK_SIZE } from "@augurproject/augur.js/src/constants";
 
 import { createBigNumber } from "utils/create-big-number";

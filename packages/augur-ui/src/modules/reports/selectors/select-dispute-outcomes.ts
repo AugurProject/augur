@@ -2,7 +2,7 @@ import {
   SCALAR,
   MALFORMED_OUTCOME,
   ZERO
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 import { isEmpty } from "lodash";
 import { createBigNumber } from "utils/create-big-number";

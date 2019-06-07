@@ -5,8 +5,8 @@ import {
   CountdownProgress,
   MarketProgress,
   formatTime,
-} from "modules/common-elements/progress";
-import { SubmitTextButton } from "modules/common-elements/buttons";
+} from "modules/common/progress";
+import { SubmitTextButton } from "modules/common/buttons";
 import { DateFormattedObject } from "modules/types";
 
 import Styles from "modules/account/components/notification.styles.less";
@@ -15,7 +15,7 @@ import {
   NOTIFICATION_TYPES,
   MARKET_STATUS_MESSAGES,
   REPORTING_ENDS,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { Market } from "modules/types";
 
 interface BaseProps {

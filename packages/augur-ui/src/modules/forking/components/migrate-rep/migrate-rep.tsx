@@ -6,12 +6,12 @@ import { Helmet } from "react-helmet";
 import * as speedomatic from "speedomatic";
 import { formatGasCostToEther } from "utils/format-number";
 import MarketPreview from "modules/market/containers/market-preview";
-import NullStateMessage from "modules/common-elements/null-state-message";
+import NullStateMessage from "modules/common/null-state-message";
 import MigrateRepForm from "modules/forking/components/migrate-rep-form/migrate-rep-form";
 import MigrateRepConfirm from "modules/forking/components/migrate-rep-confirm/migrate-rep-confirm";
-import { TYPE_VIEW } from "modules/common-elements/constants";
+import { TYPE_VIEW } from "modules/common/constants";
 import { isEmpty } from "lodash";
-import FormStyles from "modules/common/less/form";
+import FormStyles from "modules/common/form-styles";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
 
 export default class MigrateRep extends Component {
