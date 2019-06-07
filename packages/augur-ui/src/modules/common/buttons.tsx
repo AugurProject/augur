@@ -1,7 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import * as constants from "modules/common/constants";
+import {
+  NEUTRAL,
+  ASCENDING,
+  DESCENDING,
+  BUY,
+  SELL
+} from "modules/common/constants";
 import {
   StarIcon,
   XIcon,
@@ -34,7 +40,7 @@ export interface SortButtonProps {
   text: string;
   action: Function;
   disabled?: boolean;
-  sortOption: constants.NEUTRAL | constants.ASCENDING | constants.DESCENDING;
+  sortOption: NEUTRAL | ASCENDING | DESCENDING;
 }
 
 export interface DirectionButtonProps {
@@ -58,13 +64,17 @@ export interface EthPercentProps {
 }
 
 export interface OrderButtonProps extends DefaultButtonProps {
-  type: constants.BUY | constants.SELL;
+  type: BUY | SELL;
 }
 
-export interface FavoritesButtonProps extends DefaultButtonProps {
+export interface FavoritesButtonProps {
   isFavorite: boolean;
   hideText?: boolean;
   isSmall?: boolean;
+  text?: string;
+  action: Function;
+  disabled?: boolean;
+  title?: string;
 }
 
 export interface ViewTransactionDetailsButtonProps {
@@ -104,14 +114,14 @@ export const OrderButton = (props: OrderButtonProps) => (
   <button
     onClick={e => props.action(e)}
     className={
-      props.type === constants.BUY
+      props.type === BUY
         ? Styles.BuyOrderButton
         : Styles.SellOrderButton
     }
     disabled={props.disabled}
     title={props.title}
   >
-    {props.type === constants.BUY ? "Place Buy Order" : "Place Sell Order"}
+    {props.type === BUY ? "Place Buy Order" : "Place Sell Order"}
   </button>
 );
 
@@ -290,8 +300,8 @@ export const SortButton = (props: SortButtonProps) => (
   <button
     onClick={e => props.action(e)}
     className={classNames(Styles.SortButton, {
-      [Styles.Ascending]: props.sortOption === constants.ASCENDING,
-      [Styles.Descending]: props.sortOption === constants.DESCENDING
+      [Styles.Ascending]: props.sortOption === ASCENDING,
+      [Styles.Descending]: props.sortOption === DESCENDING
     })}
     disabled={props.disabled}
   >
