@@ -123,7 +123,7 @@ contract SimulateTrade is Initializable {
         }
     }
 
-    function isMatch(SimulationData memory _simulationData) private view returns (bool) {
+    function isMatch(SimulationData memory _simulationData) private pure returns (bool) {
         if (_simulationData.orderId == 0) {
             return false;
         }

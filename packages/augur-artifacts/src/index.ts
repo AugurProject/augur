@@ -29,6 +29,7 @@ export interface ContractAddresses {
     Orders: string;
     ShareToken: string;
     Trade: string;
+    SimulateTrade: string;
     Controller?: string;
     OrdersFinder?: string;
     OrdersFetcher?: string;

@@ -43,9 +43,20 @@ test("Trade :: simulateTrade", async () => {
   await john.placeBasicYesNoTrade(0, market1, 1, orderAmount, orderPrice, new BigNumber(0));
 
   const fillAmount = new BigNumber(0.5);
-  const simulationData = await mary.simulateBasicTrade(1, market1, 1, fillAmount, orderPrice, new BigNumber(0));
+  const fillPrice = new BigNumber(0.6);
+  let simulationData = await mary.simulateBasicYesNoTrade(1, market1, 1, fillAmount, orderPrice, new BigNumber(0));
 
+  await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(fillPrice));
   await expect(simulationData.sharesFilled).toEqual(fillAmount);
-  await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(orderPrice));
+
+  await mary.placeBasicYesNoTrade(1, market1, 1, orderAmount, orderPrice, new BigNumber(0));
+  await john.placeBasicYesNoTrade(1, market1, 1, orderAmount, orderPrice, new BigNumber(0));
+
+  simulationData = await mary.simulateBasicYesNoTrade(0, market1, 1, orderAmount, orderPrice, new BigNumber(0));
+
+  const expectedFees = orderAmount.multipliedBy(fillPrice).dividedBy(50); // 2% combined market & reporter fees
+  await expect(simulationData.sharesDepleted).toEqual(orderAmount);
+  await expect(simulationData.sharesFilled).toEqual(orderAmount);
+  await expect(simulationData.settlementFees).toEqual(expectedFees);
 
 }, 15000);
