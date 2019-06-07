@@ -62,10 +62,9 @@ export class DB {
    * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  public static createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     const dbController = new DB(pouchDBFactory);
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, customEvents, userSpecificEvents, blockAndLogStreamerListener);
-    return dbController;
+    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, customEvents, userSpecificEvents, blockAndLogStreamerListener);
   }
 
   /**
@@ -80,7 +79,7 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<void> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
@@ -135,6 +134,7 @@ export class DB {
     }
 
     // TODO If derived DBs are used, `this.metaDatabase.rollback` should also be called here
+    return this;
   }
 
   /**
@@ -279,7 +279,7 @@ export class DB {
    *
    * @param {number} blockNumber Oldest block number to delete
    */
-  public async rollback(blockNumber: number): Promise<void> {
+  public rollback = async  (blockNumber: number): Promise<void> => {
     let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (let eventName of this.genericEventNames) {

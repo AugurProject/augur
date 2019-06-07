@@ -14,7 +14,7 @@ import { BigNumber } from "bignumber.js";
 
 const mock = makeDbMock();
 
-let db: DB;
+let db: Promise<DB>;
 let api: API;
 let john: ContractAPI;
 let mary: ContractAPI;
@@ -24,7 +24,7 @@ beforeAll(async () => {
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
-  db = await mock.makeDB(john.augur, ACCOUNTS);
+  db = mock.makeDB(john.augur, ACCOUNTS);
   api = new API(john.augur, db);
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
@@ -36,7 +36,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   const johnCategoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
   const johnScalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   let accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address.toLowerCase(), // Test that lower-case addresses can be passed in
@@ -98,7 +98,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   await john.placeOrder(johnScalarMarket.address, bid, numShares, price, outcome1, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
   await john.placeOrder(johnScalarMarket.address, bid, numShares, price, outcome2, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
@@ -226,7 +226,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   await mary.fillOrder(await john.getBestOrderId(bid, johnScalarMarket.address, outcome0), cost, numShares.div(10).times(2), "42");
   await mary.fillOrder(await john.getBestOrderId(bid, johnScalarMarket.address, outcome1), cost, numShares.div(10).times(3), "43");
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
@@ -340,7 +340,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   // Cancel an order
   await john.cancelOrder(await john.getBestOrderId(bid, johnScalarMarket.address, outcome2));
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
@@ -369,7 +369,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   await john.buyCompleteSets(johnYesNoMarket, numberOfCompleteSets);
   await john.sellCompleteSets(johnYesNoMarket, numberOfCompleteSets);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
@@ -414,7 +414,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   const yesPayoutSet = [new BigNumber(0), new BigNumber(0), new BigNumber(100)];
   await john.doInitialReport(johnYesNoMarket, noPayoutSet);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
@@ -460,7 +460,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
     }
   }
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
@@ -568,7 +568,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   // Claim trading proceeds
   let result = await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(johnYesNoMarket.address, john.account);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   accountTransactionHistory = await api.route("getAccountTransactionHistory", {
     universe: john.augur.contracts.universe.address,
