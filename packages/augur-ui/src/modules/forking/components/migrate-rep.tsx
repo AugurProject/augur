@@ -12,7 +12,7 @@ import MigrateRepConfirm from "modules/forking/components/migrate-rep-confirm";
 import { TYPE_VIEW } from "modules/common/constants";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/form-styles";
-import Styles from "modules/reporting/components/reporting-report.styles";
+import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
 
 export default class MigrateRep extends Component {
   static propTypes = {
