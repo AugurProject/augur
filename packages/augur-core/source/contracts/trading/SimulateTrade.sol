@@ -26,7 +26,6 @@ contract SimulateTrade is Initializable {
         uint256 amount;
         uint256 price;
         uint256 numTicks;
-        bool ignoreShares;
         uint256 availableShares;
         address sender;
         bytes32 orderId;
@@ -61,7 +60,6 @@ contract SimulateTrade is Initializable {
             amount: _amount,
             price: _price,
             numTicks: _market.getNumTicks(),
-            ignoreShares: _ignoreShares,
             availableShares: _ignoreShares ? 0 : getNumberOfAvaialableShares(_direction, _market, _outcome, _sender),
             sender: _sender,
             orderId: _orderId,
@@ -88,7 +86,7 @@ contract SimulateTrade is Initializable {
             _simulationData.amount -= _fillAmount;
 
             _simulationData.orderId = orders.getWorseOrderId(_simulationData.orderId);
-            _simulationData.orderAmount = orders.getPrice(_simulationData.orderId);
+            _simulationData.orderAmount = orders.getAmount(_simulationData.orderId);
             _simulationData.orderPrice = orders.getPrice(_simulationData.orderId);
             _simulationData.orderShares = orders.getOrderSharesEscrowed(_simulationData.orderId);
         }
