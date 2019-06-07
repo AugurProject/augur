@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { Augur } from "@augurproject/sdk";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
