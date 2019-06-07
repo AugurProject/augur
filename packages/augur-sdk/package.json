@@ -60,6 +60,7 @@
     "pouchdb-find": "7.0.0",
     "speedomatic": "2.1.5",
     "ts-loader": "5.3.3",
+    "typedoc": "0.14.2",
     "webpack": "4.29.6",
     "webpack-cli": "3.3.0",
     "websocket-as-promised": "brianosaurus/websocket-as-promised#a104f774d702c0fbefe7ac2438b682676cf7d005",

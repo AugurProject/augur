@@ -19,6 +19,8 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "esModuleInterop": true,
+    "module": "es2015",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "typeRoots": [
