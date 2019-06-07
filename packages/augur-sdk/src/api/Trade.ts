@@ -1,5 +1,3 @@
-import { Provider } from '../ethereum/Provider';
-import { Contracts } from './Contracts';
 import { BigNumber } from "bignumber.js";
 import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice } from '../utils';
 import * as _ from "lodash";
@@ -11,10 +9,6 @@ import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 // XXX TEMP for better worse order ids
 export function stringTo32ByteHex(stringToEncode: string): string {
   return `0x${Buffer.from(stringToEncode, 'utf8').toString('hex').padEnd(64, '0')}`;
-}
-
-export interface GenericCallback {
-  (result: any): any
 }
 
 export interface PlaceTradeParams {
@@ -47,6 +41,35 @@ export interface PlaceTradeChainParams extends PlaceTradeParams {
 export interface TradeTransactionLimits {
   loopLimit: BigNumber,
   gasLimit: BigNumber,
+}
+
+export interface Order {
+  amount: BigNumber,
+  displayPrice: BigNumber,
+  displaySharesEscrowed: BigNumber,
+  owner: string,
+}
+
+export interface SingleOutcomeOrderBook {
+  buyOrders: Array<Order>,
+  sellorders: Array<Order>,
+}
+
+export interface SimulateTradeDisplayParams extends PlaceTradeDisplayParams {
+  shareBalances: Array<BigNumber>,
+  marketCreatorFeeRate: BigNumber,
+  reportingFeeRate: BigNumber,
+  singleOutcomeOrderBook: SingleOutcomeOrderBook,
+}
+
+export interface SimulatedTrade {
+ sharesFilled: BigNumber,
+ settlementFees: BigNumber,
+ worstCaseFees: BigNumber,
+ sharesDepleted: BigNumber,
+ otherSharesDepleted: BigNumber,
+ tokensDepleted: BigNumber,
+ shareBalances: Array<BigNumber>,
 }
 
 export class Trade {
@@ -95,6 +118,12 @@ export class Trade {
       params.amount = amountRemaining;
       return await this.placeOnChainTrade(params);
     }
+  }
+
+  public async simulateTrade(params: SimulateTradeDisplayParams): Promise<void> {
+    // Convert to on chain data
+    // Send to simulateTrade
+    // Convert results back to display data
   }
 
   public async checkIfTradeValid(params: PlaceTradeChainParams): Promise<string | null> {

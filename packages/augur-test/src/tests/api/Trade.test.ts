@@ -34,3 +34,18 @@ test("Trade :: placeTrade", async () => {
   await expect(amountInOrder.toNumber()).toEqual(10**16 / 2);
 
 }, 15000);
+
+test("Trade :: simulateTrade", async () => {
+  const market1 = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+
+  const orderAmount = new BigNumber(1);
+  const orderPrice = new BigNumber(0.4)
+  await john.placeBasicYesNoTrade(0, market1, 1, orderAmount, orderPrice, new BigNumber(0));
+
+  const fillAmount = new BigNumber(0.5);
+  const simulationData = await mary.simulateBasicTrade(1, market1, 1, fillAmount, orderPrice, new BigNumber(0));
+
+  await expect(simulationData.sharesFilled).toEqual(fillAmount);
+  await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(orderPrice));
+
+}, 15000);
