@@ -195,7 +195,6 @@ test("State API :: Markets :: getMarkets", async () => {
   // Place orders on some markets
   const bid = new BigNumber(0);
   const outcome0 = new BigNumber(0);
-  const outcome1 = new BigNumber(1);
   const numShares = new BigNumber(10000000000000);
   const price = new BigNumber(22);
   const yesNoOrderId = await john.placeOrder(yesNoMarket1.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
@@ -751,8 +750,8 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   ];
   await john.doInitialReport(categoricalMarket, categoricalMarketPayoutSet);
 
-  const noPayoutSet = [new BigNumber(100), new BigNumber(0), new BigNumber(0)];
-  const yesPayoutSet = [new BigNumber(0), new BigNumber(100), new BigNumber(0)];
+  const noPayoutSet = [new BigNumber(0), new BigNumber(100), new BigNumber(0)];
+  const yesPayoutSet = [new BigNumber(0), new BigNumber(0), new BigNumber(100)];
   await john.doInitialReport(yesNoMarket, noPayoutSet);
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);

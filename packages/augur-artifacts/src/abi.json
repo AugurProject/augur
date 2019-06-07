@@ -1138,6 +1138,57 @@
 					"type": "address"
 				},
 				{
+					"name": "_shareToken",
+					"type": "address"
+				},
+				{
+					"name": "_sender",
+					"type": "address"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"name": "_numShares",
+					"type": "uint256"
+				},
+				{
+					"name": "_numPayoutTokens",
+					"type": "uint256"
+				},
+				{
+					"name": "_finalTokenBalance",
+					"type": "uint256"
+				},
+				{
+					"name": "_fees",
+					"type": "uint256"
+				}
+			],
+			"name": "logTradingProceedsClaimed",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				},
+				{
 					"name": "_target",
 					"type": "address"
 				},
@@ -1361,53 +1412,6 @@
 				}
 			],
 			"name": "logParticipationTokensRedeemed",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_shareToken",
-					"type": "address"
-				},
-				{
-					"name": "_sender",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_numShares",
-					"type": "uint256"
-				},
-				{
-					"name": "_numPayoutTokens",
-					"type": "uint256"
-				},
-				{
-					"name": "_finalTokenBalance",
-					"type": "uint256"
-				},
-				{
-					"name": "_fees",
-					"type": "uint256"
-				}
-			],
-			"name": "logTradingProceedsClaimed",
 			"outputs": [
 				{
 					"name": "",
@@ -2023,6 +2027,11 @@
 					"indexed": false,
 					"name": "outcomes",
 					"type": "bytes32[]"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "MarketCreated",
@@ -2065,6 +2074,11 @@
 					"indexed": false,
 					"name": "description",
 					"type": "string"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "InitialReportSubmitted",
@@ -2134,6 +2148,11 @@
 					"indexed": false,
 					"name": "description",
 					"type": "string"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "DisputeCrowdsourcerContribution",
@@ -2203,6 +2222,11 @@
 					"indexed": false,
 					"name": "payoutNumerators",
 					"type": "uint256[]"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "InitialReporterRedeemed",
@@ -2245,6 +2269,11 @@
 					"indexed": false,
 					"name": "payoutNumerators",
 					"type": "uint256[]"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "DisputeCrowdsourcerRedeemed",
@@ -2451,6 +2480,11 @@
 					"indexed": false,
 					"name": "marketOI",
 					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "CompleteSetsPurchased",
@@ -2488,6 +2522,11 @@
 					"indexed": false,
 					"name": "fees",
 					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "CompleteSetsSold",
@@ -2518,6 +2557,11 @@
 				},
 				{
 					"indexed": false,
+					"name": "outcome",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
 					"name": "numShares",
 					"type": "uint256"
 				},
@@ -2534,6 +2578,11 @@
 				{
 					"indexed": false,
 					"name": "fees",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
 					"type": "uint256"
 				}
 			],
@@ -2904,6 +2953,11 @@
 				{
 					"indexed": false,
 					"name": "feePayoutShare",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"name": "timestamp",
 					"type": "uint256"
 				}
 			],

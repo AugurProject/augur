@@ -25,12 +25,12 @@
 
   align-items: center;
   background-color: @color-secondary-text;
-  border-radius: 17px;
+  border-radius: @size-18;
   color: @color-primary-alternate;
   display: flex;
   height: 35px;
   min-width: 250px;
-  padding: 5px 12px;
+  padding: @size-5 @size-12;
   transition: min-width @animation-speed-normal @animation-default-type;
 
   @media @breakpoint-mobile {
@@ -51,7 +51,7 @@
     color: inherit;
     font-size: inherit;
     line-height: normal;
-    padding: 0 0 0 0.5rem;
+    padding: 0 0 0 @size-8;
 
     &::placeholder {
       color: @color-alternate-text;

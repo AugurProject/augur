@@ -12,22 +12,23 @@
 }
 
 .ForkMigrationTotals__forkMigrationTotal-rep-migrated {
+  .text-12;
+
   color: @color-lightgray;
-  font-size: 0.7em;
   font-weight: bold;
-  margin-left: 0.5em;
+  margin-left: @size-8;
   text-transform: uppercase;
 }
 
 .ForkMigrationTotals__height-sentinel {
   display: inline-block;
-  margin-bottom: 0.25em;
+  margin-bottom: @size-4;
   visibility: hidden;
 }
 
 .ForkMigrationTotals__forkMigrationTotals {
   display: grid;
-  grid-gap: 0.75rem 3.75rem;
+  grid-gap: @size-12 3.75rem;
   grid-template-columns: repeat(3, auto);
 }
 
@@ -51,22 +52,22 @@
 }
 
 .ForkMigrationTotals__forkMigrationTotal-name {
-  line-height: 1.3rem;
+  line-height: @size-20;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .ForkMigrationTotals__winning-forkMigrationTotal-message {
+  .text-12-medium;
+
   color: #9d93d0;
-  font-size: 0.8em;
-  font-weight: 500;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
 .ForkMigrationTotals__forkMigrationTotal-value {
-  &:extend(.number--large);
+  .mono-24;
 
   margin-left: 1.75rem;
 }
@@ -91,7 +92,7 @@
   }
 
   .ForkMigrationTotals__forkMigrationTotals {
-    grid-gap: 0.75rem 7vw;
+    grid-gap: @size-12 7vw;
   }
 }
 
@@ -102,7 +103,7 @@
 
     > span {
       margin-left: 0;
-      margin-top: 0.7rem;
+      margin-top: @size-12;
       width: 100%;
 
       &:first-child {
@@ -119,10 +120,10 @@
   .ForkMigrationTotals__height-sentinel > span {
     display: block;
 
-    &:first-child { margin-top: 0.7rem; }
+    &:first-child { margin-top: @size-12; }
   }
 
   .ForkMigrationTotals__show-more {
-    top: 0.75rem;
+    top: @size-12;
   }
 }

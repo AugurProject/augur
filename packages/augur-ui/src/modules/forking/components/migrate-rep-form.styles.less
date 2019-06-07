@@ -10,30 +10,31 @@ ul.MigrateRepForm__fields {
 }
 
 .MigrateRepForm__outcome_rep_total {
-  color: white;
-  font-size: 0.7em;
-  padding-left: 1em;
+  .text-12;
+
+  color: @color-secondary-text;
+  padding-left: @size-16;
 }
 
 .MigrateRepForm__winning_outcome {
+  .text-12-bold;
+
   color: #9e82ef;
-  font-size: small;
-  font-weight: bold;
-  margin-left: 2em;
+  margin-left: @size-32;
   text-transform: uppercase;
 }
 
 .MigrateRepForm__button {
+  .text-10-medium;
+
   background: @color-lighter-purple;
-  border-radius: 3px;
+  border-radius: @border-radius-default;
   color: @color-secondary-text;
-  font-size: @font-size-extra-small;
-  font-weight: 500;
-  padding: 0.8em;
+  padding: @size-12;
 }
 
 .MigrateRepForm__container {
-  margin-right: 0.6em;
+  margin-right: @size-10;
   position: absolute;
   right: 0;
 }

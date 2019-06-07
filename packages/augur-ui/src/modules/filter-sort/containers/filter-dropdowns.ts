@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import FilterDropdown from "modules/filter-sort/components/filter-dropdowns/filter-dropdowns";
+import FilterDropdown from "modules/filter-sort/components/filter-dropdowns";
 import {
   updateFilterSortOptions,
   MARKET_FILTER,

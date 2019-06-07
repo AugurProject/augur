@@ -5,7 +5,7 @@ import { createBigNumber } from "utils/create-big-number";
 
 import FormStyles from "modules/common/form-styles";
 import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
-import Styles from "modules/forking/components/migrate-rep-form/migrate-rep-form.styles";
+import Styles from "modules/forking/components/migrate-rep-form.styles";
 
 export default class FormattedMigrationTotals extends Component {
   static propTypes = {
