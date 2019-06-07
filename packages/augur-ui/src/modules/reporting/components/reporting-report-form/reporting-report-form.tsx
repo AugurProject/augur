@@ -6,12 +6,12 @@ import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 import { constants } from "services/augurjs";
 
-import { YES_NO, CATEGORICAL, SCALAR } from "modules/common-elements/constants";
-import FormStyles from "modules/common/less/form";
+import { YES_NO, CATEGORICAL, SCALAR } from "modules/common/constants";
+import FormStyles from "modules/common/form-styles";
 import Styles from "modules/reporting/components/reporting-report-form/reporting-report-form.styles";
-import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
+import { InputErrorIcon } from "modules/common/icons";
 import { formatRep } from "utils/format-number";
-import { RepBalance } from "modules/common-elements/labels";
+import { RepBalance } from "modules/common/labels";
 
 export default class ReportingReportForm extends Component {
   static propTypes = {

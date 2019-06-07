@@ -14,7 +14,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { Proceeds } from "modules/modal/proceeds";
 import { constants } from "services/augurjs";
 import { ActionRowsProps } from "modules/modal/common";
-import { CLAIM_PROCEEDS } from "modules/common-elements/constants";
+import { CLAIM_PROCEEDS } from "modules/common/constants";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";

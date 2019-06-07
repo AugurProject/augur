@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
-import { MOBILE_MENU_STATES } from "modules/common-elements/constants";
+import { MOBILE_MENU_STATES } from "modules/common/constants";
 
 import Styles from "modules/app/components/inner-nav/inner-nav.styles";
 

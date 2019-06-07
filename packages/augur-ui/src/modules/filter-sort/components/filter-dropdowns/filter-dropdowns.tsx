@@ -18,14 +18,14 @@ import {
   MAX_FEE_30_PERCENT,
   MAX_FEE_40_PERCENT,
   MOBILE_MENU_STATES
-} from "modules/common-elements/constants";
-import { Checkbox } from "modules/common-elements/form";
+} from "modules/common/constants";
+import { Checkbox } from "modules/common/form";
 import Styles from "modules/filter-sort/components/filter-dropdowns/filter-dropdowns.styles";
 import parseQuery from "modules/routes/helpers/parse-query";
 import makeQuery from "modules/routes/helpers/make-query";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import { SquareDropdown } from "modules/common-elements/selection";
-import { FilterButton } from "modules/common-elements/buttons";
+import { SquareDropdown } from "modules/common/selection";
+import { FilterButton } from "modules/common/buttons";
 
 const sortOptions = [
   { value: MARKET_CREATION_TIME, label: "Creation Time" },

@@ -4,7 +4,7 @@ import {
   MARKET_OPEN,
   MARKET_REPORTING,
   MARKET_CLOSED
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { orderBy } from "lodash";
 
 export const createMarketsStateObject = markets => {

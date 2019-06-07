@@ -10,7 +10,7 @@ import {
   MARKET_REPORTING,
   MARKET_CLOSED,
   REPORTING_STATE,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";

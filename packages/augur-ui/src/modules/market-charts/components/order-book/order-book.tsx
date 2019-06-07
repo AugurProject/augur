@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import MarketOutcomeHeaderOrders from "modules/market-charts/components/market-outcome--header-orders/market-outcome--header-orders";
-import { HoverValueLabel } from "modules/common-elements/labels";
-import { ASKS, BIDS, BUY, SELL } from "modules/common-elements/constants";
+import { HoverValueLabel } from "modules/common/labels";
+import { ASKS, BIDS, BUY, SELL } from "modules/common/constants";
 
 import Styles from "modules/market-charts/components/order-book/order-book.styles.less";
 import { isEmpty, isEqual } from "lodash";

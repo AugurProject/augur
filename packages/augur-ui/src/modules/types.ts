@@ -1,5 +1,5 @@
 import { ReactNode, MouseEvent } from "react";
-import { BUY, SELL } from "modules/common-elements/constants";
+import { BUY, SELL } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { string } from "io-ts";
 import { AnyAction } from "redux";

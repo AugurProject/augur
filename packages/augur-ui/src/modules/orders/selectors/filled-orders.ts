@@ -1,6 +1,6 @@
 import store from "store";
 import { createBigNumber } from "utils/create-big-number";
-import { BUY, SELL } from "modules/common-elements/constants";
+import { BUY, SELL } from "modules/common/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import {
   selectMarketsDataState,

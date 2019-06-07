@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { AppState } from "store";
-import * as constants from "modules/common-elements/constants";
-import Row from "modules/common-elements/row";
-import { Properties } from "modules/common-elements/row-column";
+import * as constants from "modules/common/constants";
+import Row from "modules/common/row";
+import { Properties } from "modules/common/row-column";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 

@@ -9,8 +9,8 @@ import DerivationPath, {
 import classNames from "classnames";
 import AddressPickerContent from "modules/auth/components/common/address-picker-content";
 import DerivationPathEditor from "modules/auth/components/common/derivation-path-editor";
-import { ERROR_TYPES } from "modules/common-elements/constants";
-import { errorIcon } from "modules/common/components/icons";
+import { ERROR_TYPES } from "modules/common/constants";
+import { errorIcon } from "modules/common/icons";
 import { filter } from "lodash";
 import Styles from "modules/auth/components/common/hardware-wallet.styles";
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";

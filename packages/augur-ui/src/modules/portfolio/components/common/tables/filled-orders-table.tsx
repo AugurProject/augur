@@ -9,8 +9,8 @@ import {
   LinearPropertyLabel,
   LinearPropertyViewTransaction,
   ValueLabel
-} from "modules/common-elements/labels";
-import { ViewTransactionDetailsButton } from "modules/common-elements/buttons";
+} from "modules/common/labels";
+import { ViewTransactionDetailsButton } from "modules/common/buttons";
 
 import Styles from "modules/portfolio/components/common/tables/filled-orders-table.styles";
 

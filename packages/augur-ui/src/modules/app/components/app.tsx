@@ -31,7 +31,7 @@ import {
   NavMarketsIcon,
   NavPortfolioIcon,
   NavReportingIcon
-} from "modules/common-elements/icons";
+} from "modules/common/icons";
 import { Link } from "react-router-dom";
 import makePath from "modules/routes/helpers/make-path";
 import parsePath from "modules/routes/helpers/parse-path";
@@ -57,7 +57,7 @@ import {
   MODAL_NETWORK_CONNECT,
   CATEGORY_PARAM_NAME,
   MOBILE_MENU_STATES
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 import Styles from "modules/app/components/app.styles";
 import MarketsInnerNavContainer from "modules/app/containers/markets-inner-nav";

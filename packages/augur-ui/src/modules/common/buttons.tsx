@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 import {
   StarIcon,
   XIcon,
@@ -17,10 +17,10 @@ import {
   DownloadIcon,
   RotatableChevron,
   Filter
-} from "modules/common-elements/icons";
+} from "modules/common/icons";
 import classNames from "classnames";
 
-import Styles from "modules/common-elements/buttons.styles";
+import Styles from "modules/common/buttons.styles";
 import { AppState } from "store";
 
 export interface DefaultButtonProps {

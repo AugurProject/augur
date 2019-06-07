@@ -5,7 +5,7 @@ import classNames from "classnames";
 import {
   MODAL_GAS_PRICE,
   GAS_SPEED_LABELS
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 import Styles from "modules/app/components/gas-price-edit.styles";
 

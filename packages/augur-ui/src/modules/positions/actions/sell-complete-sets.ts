@@ -5,7 +5,7 @@ import {
   updateTransactionStatus,
   clearTransactionStatus,
 } from "modules/transactions/actions/update-transactions-status";
-import { AWAITING_SIGNATURE, PENDING } from "modules/common-elements/constants";
+import { AWAITING_SIGNATURE, PENDING } from "modules/common/constants";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";

@@ -1,9 +1,9 @@
 import React, { Component, ReactNode } from "react";
 
 import { find } from "lodash";
-import { ALL_MARKETS, END_TIME } from "modules/common-elements/constants";
+import { ALL_MARKETS, END_TIME } from "modules/common/constants";
 import QuadBox from "modules/portfolio/components/common/quads/quad-box";
-import { SwitchLabelsGroup } from "modules/common-elements/switch-labels-group";
+import { SwitchLabelsGroup } from "modules/common/switch-labels-group";
 import { NameValuePair, Market, Tab} from "modules/portfolio/types";
 import MarketRow from "modules/portfolio/components/common/rows/market-row";
 import EmptyDisplay from "modules/portfolio/components/common/tables/empty-display";

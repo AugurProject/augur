@@ -1,5 +1,5 @@
 import store, { AppState } from "store";
-import * as constants from "modules/common-elements/constants";
+import * as constants from "modules/common/constants";
 import setAlertText from "modules/alerts/actions/set-alert-text";
 import { createBigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";

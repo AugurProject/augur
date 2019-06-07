@@ -1,15 +1,125 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import ChevronFlip from "modules/common/chevron-flip";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { PulseLoader } from "react-spinners";
-
-import { SearchIcon, XIcon } from "modules/common-elements/icons";
+import { SearchIcon, XIcon, CheckMark } from "modules/common/icons";
 import debounce from "utils/debounce";
+import Styles from "modules/common/form.styles";
 
-import Styles from "modules/common/components/input/input.styles";
+interface CheckboxProps {
+  id: string;
+  isChecked: boolean;
+  disabled?: boolean;
+  // value: boolean;
+  onClick: Function;
+  small?: boolean;
+  smallOnDesktop?: boolean;
+}
 
-export default class Input extends Component {
+interface InputDropdownProps {
+  onChange: Function;
+  default: string;
+  options: Array<string>;
+  isMobileSmall: Boolean;
+  label: string;
+  className?: string;
+  onKeyPress?: Function;
+}
+
+interface InputDropdownState {
+  label: string;
+  value: string;
+  showList: Boolean;
+  selected: Boolean;
+}
+
+export const Checkbox = ({
+  id,
+  smallOnDesktop = false,
+  isChecked,
+  // value,
+  onClick,
+  disabled
+}: CheckboxProps) => (
+  <div
+    className={classNames(Styles.Checkbox, {
+      [Styles.CheckboxSmall]: smallOnDesktop
+    })}
+  >
+    <input
+      id={id}
+      type="checkbox"
+      checked={isChecked}
+      // value={value}
+      disabled={disabled}
+      onChange={e => onClick()}
+    />
+    <span
+      role="button"
+      tabIndex={0}
+      onClick={e => onClick()}
+      className={classNames({
+        [Styles.CheckmarkSmall]: smallOnDesktop
+      })}
+    >
+      {CheckMark}
+    </span>
+  </div>
+);
+
+Checkbox.propTypes = {
+  id: PropTypes.string.isRequired,
+  isChecked: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
+  // value: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+  small: PropTypes.bool,
+  smallOnDesktop: PropTypes.bool
+};
+
+Checkbox.defaultProps = {
+  disabled: false,
+  small: false,
+  smallOnDesktop: false
+};
+
+interface InputProps {
+  type?: string;
+  className?: string;
+  value: any;
+  max?: any;
+  min?: any;
+  isMultiline?: Boolean;
+  isClearable?: Boolean;
+  onChange: Function;
+  updateValue?: Function;
+  onBlur?: Function;
+  isIncrementable?: Boolean;
+  incrementAmount?: number;
+  canToggleVisibility?: Boolean;
+  shouldMatchValue?: Boolean;
+  comparisonValue?: string;
+  isSearch?: Boolean;
+  placeholder?: string;
+  maxButton?: Boolean;
+  onMaxButtonClick?: Function;
+  noFocus?: Boolean;
+  isLoading?: Boolean;
+  onFocus?: Function;
+  lightBorder?: Boolean;
+  darkMaxBtn?: Boolean;
+  style?: any;
+}
+
+interface InputState {
+  value: any;
+  isHiddenContentVisible: Boolean;
+  focused: Boolean;
+}
+
+export class Input extends Component<InputProps, InputState> {
   // TODO -- Prop Validations
   static propTypes = {
     type: PropTypes.string,
@@ -187,14 +297,14 @@ export default class Input extends Component {
     return (
       <div
         className={classNames(
-          isIncrementable ? Styles.Input__Incremental : Styles.Input,
+          isIncrementable ? Styles.Incremental : Styles.Input,
           className,
           {
             "can-toggle-visibility": canToggleVisibility,
-            [Styles.focusBorder]: focused && !noFocus && !lightBorder,
-            [`${Styles.noFocus}`]: noFocus,
-            [`${Styles.lightBorder}`]: lightBorder,
-            [Styles.setWidth]: darkMaxBtn
+            [Styles.FocusBorder]: focused && !noFocus && !lightBorder,
+            [`${Styles.NoFocus}`]: noFocus,
+            [`${Styles.LightBorder}`]: lightBorder,
+            [Styles.SetWidth]: darkMaxBtn
           }
         )}
         ref={inputHandler => {
@@ -242,39 +352,36 @@ export default class Input extends Component {
           </div>
         )}
 
-        {isClearable &&
-          !isMultiline &&
-          !!value && (
-            <button
-              type="button"
-              className={Styles.close}
-              onClick={this.handleClear}
-            >
-              {XIcon}
-            </button>
-          )}
+        {isClearable && !isMultiline && !!value && (
+          <button
+            type="button"
+            className={Styles.close}
+            onClick={this.handleClear}
+          >
+            {XIcon}
+          </button>
+        )}
 
-        {canToggleVisibility &&
-          value && (
-            <button
-              type="button"
-              className="button--text-only"
-              onClick={this.handleToggleVisibility}
-              tabIndex={-1}
-            >
-              {isHiddenContentVisible ? (
-                <i className="fa fa-eye-slash" />
-              ) : (
-                <i className="fa fa-eye" />
-              )}
-            </button>
-          )}
+        {canToggleVisibility && value && (
+          <button
+            type="button"
+            className="button--text-only"
+            onClick={this.handleToggleVisibility}
+            tabIndex={-1}
+          >
+            {isHiddenContentVisible ? (
+              <i className="fa fa-eye-slash" />
+            ) : (
+              <i className="fa fa-eye" />
+            )}
+          </button>
+        )}
 
         {maxButton && (
           <button
             type="button"
-            className={classNames(Styles.Input__max, {
-              [Styles.Input__maxDark]: darkMaxBtn
+            className={classNames(Styles.Max, {
+              [Styles.MaxDark]: darkMaxBtn
             })}
             onClick={onMaxButtonClick}
           >
@@ -282,23 +389,22 @@ export default class Input extends Component {
           </button>
         )}
 
-        {shouldMatchValue &&
-          value && (
-            <div className="input-value-comparison">
-              {value === comparisonValue ? (
-                <i className="fa fa-check-circle input-does-match" />
-              ) : (
-                <i className="fa fa-times-circle input-does-not-match" />
-              )}
-            </div>
-          )}
+        {shouldMatchValue && value && (
+          <div className="input-value-comparison">
+            {value === comparisonValue ? (
+              <i className="fa fa-check-circle input-does-match" />
+            ) : (
+              <i className="fa fa-times-circle input-does-not-match" />
+            )}
+          </div>
+        )}
 
         {isIncrementable && (
-          <div className={Styles.value__incrementers}>
+          <div className={Styles.ValueIncrementers}>
             <button
               type="button"
               tabIndex={-1}
-              className={classNames(Styles["increment-value"], "unstyled")}
+              className={classNames(Styles.IncrementValue, "unstyled")}
               onClick={e => {
                 e.currentTarget.blur();
 
@@ -371,3 +477,148 @@ function sanitizeBound(value) {
 
   return value;
 }
+
+export class InputDropdown extends Component<
+  InputDropdownProps,
+  InputDropdownState
+> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      label: props.default || props.label,
+      value: props.default,
+      showList: false,
+      selected: !!props.default
+    };
+
+    this.dropdownSelect = this.dropdownSelect.bind(this);
+    this.toggleList = this.toggleList.bind(this);
+    this.handleWindowOnClick = this.handleWindowOnClick.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+  }
+
+  componentDidMount() {
+    const { isMobileSmall, options } = this.props;
+    window.addEventListener("click", this.handleWindowOnClick);
+
+    if (isMobileSmall && this.state.value === "") {
+      this.dropdownSelect(options[0]);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("click", this.handleWindowOnClick);
+  }
+
+  onKeyPress(value) {
+    const { onKeyPress } = this.props;
+    if (onKeyPress) {
+      onKeyPress(value);
+    }
+  }
+
+  dropdownSelect(value) {
+    const { onChange } = this.props;
+    if (value !== this.state.value) {
+      this.setState({
+        label: value,
+        value,
+        selected: true
+      });
+      onChange(value);
+      this.toggleList();
+    }
+  }
+
+  toggleList() {
+    this.setState({ showList: !this.state.showList });
+  }
+
+  handleWindowOnClick(event) {
+    if (
+      this.refInputDropdown &&
+      !this.refInputDropdown.contains(event.target)
+    ) {
+      this.setState({ showList: false });
+    } else {
+      this.refInputDropdown.focus();
+    }
+  }
+
+  render() {
+    const { className, label, options } = this.props;
+    const { showList, selected, currentLabel, value } = this.state;
+
+    return (
+      <div
+        ref={InputDropdown => {
+          this.refInputDropdown = InputDropdown;
+        }}
+        className={classNames(Styles.InputDropdown, className)}
+        onClick={this.toggleList}
+        onKeyPress={value => this.onKeyPress(value)}
+      >
+        <span
+          key={label}
+          className={classNames({
+            [`${Styles.selected}`]: selected
+          })}
+        >
+          {currentLabel}
+        </span>
+        <div
+          className={classNames({
+            [`${Styles.active}`]: showList
+          })}
+        >
+          {options.map(option => (
+            <button
+              className={classNames({
+                [`${Styles.active}`]: option === value
+              })}
+              key={option + label}
+              value={option}
+              onClick={() => this.dropdownSelect(option)}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        <select
+          className={classNames({
+            [`${Styles.selected}`]: selected
+          })}
+          onChange={e => {
+            this.dropdownSelect(e.target.value);
+          }}
+          value={value}
+        >
+          {options.map(option => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        <span>
+          <ChevronFlip pointDown={!showList} stroke="white" />
+        </span>
+      </div>
+    );
+  }
+}
+
+InputDropdown.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  default: PropTypes.string.isRequired,
+  options: PropTypes.array.isRequired,
+  isMobileSmall: PropTypes.bool.isRequired,
+  label: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  onKeyPress: PropTypes.func
+};
+
+InputDropdown.defaultProps = {
+  onKeyPress: null,
+  className: null
+};

@@ -1,49 +1,45 @@
 @import (reference) '~assets/styles/shared';
 @import (reference) '~modules/market/components/common/market-common.styles';
 
-.MarketBasics {
-  &__header {
-    .MarketCommon__header;
+.Header {
+  .MarketCommon__header;
 
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  &__reportingends {
-    .label-12--dark;
-
-    align-items: center;
-    display: inline-flex;
-
-    > div {
-      padding-right: 0.4rem;
-    }
-  }
-}
-
-.MarketBasics__round-number {
-  margin-top: -0.5rem;
-}
-
-.MarketBasics__round-label {
-  color: @color-secondary-text;
-  font-size: @font-size-small;
-  line-height: 1.25rem;
-  margin-right: 0.75rem;
-  text-transform: capitalize;
-}
-
-.MarketBasics__round-text {
   align-items: center;
-  background: @color-primary-light;
-  border-radius: 100%;
-  color: @color-secondary-text;
+  margin-bottom: @size-16;
+}
+
+.ReportingEnds {
+  .label-12--dark;
+
+  align-items: center;
   display: inline-flex;
-  font-size: @font-size-small;
-  font-weight: 600;
-  height: 1.875rem;
-  justify-content: center;
-  letter-spacing: 0;
-  line-height: 1.125rem;
-  width: 1.875rem;
+
+  > div {
+    padding-right: @size-6;
+  }
+}
+
+.RoundNumber {
+  margin-top: -@size-8;
+
+  > span:first-of-type {
+    .text-12-paragraph;
+
+    color: @color-secondary-text;
+    margin-right: @size-12;
+    text-transform: capitalize; 
+  }
+
+  > span:last-of-type {
+    .text-12-medium;
+
+    align-items: center;
+    background: @color-primary-light;
+    border-radius: 100%;
+    color: @color-secondary-text;
+    display: inline-flex;
+    height: @size-30;
+    justify-content: center;
+    width: @size-30
+  }
 }

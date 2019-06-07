@@ -4,7 +4,7 @@ import classNames from "classnames";
 import {
   Syncing as SyncingIcon,
   ImmediateImportance,
-} from "modules/common-elements/icons";
+} from "modules/common/icons";
 import {
   SYNCED,
   SYNCING,
@@ -13,7 +13,7 @@ import {
   SYNC_MESSAGE_SYNCING,
   SYNC_MESSAGE_BLOCKSBEHIND,
   SYNCING_TITLE,
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 import Styles from "modules/account/components/status.styles.less";
 

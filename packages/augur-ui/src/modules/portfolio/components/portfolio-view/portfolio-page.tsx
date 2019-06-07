@@ -7,7 +7,7 @@ import OpenOrders from "modules/portfolio/containers/open-orders";
 import FilledOrders from "modules/portfolio/containers/filled-orders";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
-import { SMALL_MOBILE, LARGE_DESKTOP } from "modules/common-elements/constants";
+import { SMALL_MOBILE, LARGE_DESKTOP } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/portfolio-view/portfolio-view.styles";
 
