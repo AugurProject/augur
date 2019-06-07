@@ -3,7 +3,6 @@ import { Contracts } from "@augurproject/sdk/build/api/Contracts";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { stringTo32ByteHex } from "@augurproject/core/build/libraries/HelperFunctions";
-import { ethers } from "ethers";
 import { BigNumber } from "bignumber.js";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 

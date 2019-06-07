@@ -7,6 +7,7 @@ import "./Markets";
 import "./Ping";
 import "./Trading";
 import "./Users";
+import "./Accounts";
 import "./sync-data";
 
 export class API {

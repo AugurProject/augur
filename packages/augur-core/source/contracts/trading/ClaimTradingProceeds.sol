@@ -54,7 +54,7 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
             // always destroy shares as it gives a minor gas refund and is good for the network
             if (_numberOfShares > 0) {
                 _shareToken.destroyShares(_shareHolder, _numberOfShares);
-                logTradingProceedsClaimed(_market, address(_shareToken), _shareHolder, _numberOfShares, _shareHolderShare, _creatorShare, _reporterShare);
+                logTradingProceedsClaimed(_market, _outcome, address(_shareToken), _shareHolder, _numberOfShares, _shareHolderShare, _creatorShare.add(_reporterShare));
             }
             distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare);
         }
@@ -79,8 +79,8 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         return true;
     }
 
-    function logTradingProceedsClaimed(IMarket _market, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens, uint256 _creatorShare, uint256 _reporterShare) private returns (bool) {
-        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, address(_market), _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens),_creatorShare.add(_reporterShare));
+    function logTradingProceedsClaimed(IMarket _market, uint256 _outcome, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) private returns (bool) {
+        augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, address(_market), _outcome, _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens), _fees);
         return true;
     }
 
