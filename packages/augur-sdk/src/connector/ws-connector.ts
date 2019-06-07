@@ -1,5 +1,5 @@
-import { Connector, Callback } from "./connector";
-import { SubscriptionEventNames } from "../constants";
+import {Callback, Connector} from "./connector";
+import {SubscriptionEventNames} from "../constants";
 import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
 
@@ -10,7 +10,7 @@ export class WebsocketConnector extends Connector {
     super();
   }
 
-  public async connect(params?: any): Promise<any> {
+  public async connect(ethNodeUrl: string, account?: string): Promise<any> {
     this.socket = new WebSocketAsPromised(this.endpoint, {
       packMessage: (data: any) => JSON.stringify(data),
       unpackMessage: (message: string) => JSON.parse(message),
@@ -52,7 +52,7 @@ export class WebsocketConnector extends Connector {
     return this.socket.close();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
+  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
       return this.socket.sendRequest({ method: f.name, params, jsonrpc: "2.0" });
     };

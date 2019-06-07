@@ -4,6 +4,7 @@ import { API } from "@augurproject/sdk/build/state/getter/API";
 import { Augur } from "@augurproject/sdk";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";
+import {SEOConnector} from "@augurproject/sdk";
 
 const mock = makeDbMock();
 
@@ -12,11 +13,13 @@ beforeEach(async () => {
 });
 
 let augur: Augur;
-let db: DB;
+let db: Promise<DB>;
 
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
-  db = await mock.makeDB(augur, ACCOUNTS);
+  db = mock.makeDB(augur, ACCOUNTS);
+  // Must wait for the db for initialize before we start the http server.
+  await db;
 }, 120000);
 
 test("HTTPEndpoint :: Responds to ping Json RPC Request ", async () => {

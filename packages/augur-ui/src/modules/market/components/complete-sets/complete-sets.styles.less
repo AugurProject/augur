@@ -1,13 +1,14 @@
 @import (reference) "~assets/styles/shared";
 
 .CompleteSets {
+  .text-12;
+
   align-items: center;
   background-color: @color-primary-alternate;
   color: @color-secondary-text;
   display: flex;
-  font-size: @font-size-small;
   justify-content: space-between;
-  padding: 0.5rem 2rem;
+  padding: @size-8 @size-32;
   width: 100%;
 
   > span {
@@ -19,8 +20,8 @@
 
     &:disabled,
     &:disabled:hover {
-      border-color: @color-gray;
-      color: @color-gray;
+      border-color: @color-disabled-text;
+      color: @color-disabled-text;
       cursor: not-allowed;
       text-decoration: none;
     }
