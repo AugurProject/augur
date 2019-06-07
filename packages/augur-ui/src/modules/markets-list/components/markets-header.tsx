@@ -9,7 +9,7 @@ import parsePath from "modules/routes/helpers/parse-path";
 import { MARKETS } from "modules/routes/constants/views";
 import { CATEGORY_PARAM_NAME } from "modules/common/constants";
 
-import Styles from "modules/markets-list/components/markets-header/markets-header.styles.less";
+import Styles from "modules/markets-list/components/markets-header.styles.less";
 
 interface MarketsHeaderProps {
   location: object;
@@ -77,11 +77,11 @@ export default class MarketsHeader extends Component<MarketsHeaderProps, Markets
       history,
       isSearchingMarkets,
     } = this.props;
-    const s = this.state;
+    const { headerTitle } = this.state;
 
     return (
       <article className={Styles.MarketsHeader}>
-        <h1>{s.headerTitle}</h1>
+        <h1>{headerTitle}</h1>
         <FilterDropDowns
           filter={filter}
           sort={sort}
