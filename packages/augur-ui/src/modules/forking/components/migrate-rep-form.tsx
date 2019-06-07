@@ -9,8 +9,8 @@ import { Input } from "modules/common/form";
 import FormStyles from "modules/common/form-styles";
 import { SCALAR } from "modules/common/constants";
 import { InputErrorIcon } from "modules/common/icons";
-import Styles from "modules/forking/components/migrate-rep-form/migrate-rep-form.styles";
-import FormattedMigrationTotals from "modules/forking/components/migrate-rep-form/formatted-migration-totals";
+import Styles from "modules/forking/components/migrate-rep-form.styles";
+import FormattedMigrationTotals from "modules/forking/components/formatted-migration-totals";
 
 export default class MigrateRepForm extends Component {
   static propTypes = {
