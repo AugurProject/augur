@@ -20,7 +20,7 @@ const MarketOrdersPositionsTable = ({
   cancelAllOpenOrders
 }) => (
   <ModuleTabs
-    className={Styles.Table}
+    className={Styles.Tabs}
     selected={0}
     fillForOnlyMobile
     borderBetween
@@ -31,7 +31,7 @@ const MarketOrdersPositionsTable = ({
         marketId={marketId}
         market={market}
       />
-      <div className={Styles.MarketOrders__footer}>
+      <div className={Styles.Footer}>
         {openOrders.length > 0 && (
           <CancelTextButton
             action={() => cancelAllOpenOrders(openOrders)}
