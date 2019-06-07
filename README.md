@@ -38,7 +38,7 @@ NOTE: Run `yarn` at the base of the repository to install dependencies before ru
 | Command               | Purpose       |
 | -------------         | ------------- |
 |  `yarn build`         |  Build all everything but the UI once. |
-|  `yarn build:watch`   |  Build all everything but the UI continuously. |
+|  `yarn build:watch`   |  Build everything but the UI continuously. |
 |  `yarn build:clean`   |  Remove JUST typescript build artifacts |
 |  `yarn clean`         |  Remove everything that isn't currently being tracked by git (node_modules, build aretifacts, etc.) |
 
