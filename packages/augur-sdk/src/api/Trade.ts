@@ -1,7 +1,5 @@
-import { Provider } from '../ethereum/Provider';
-import { Contracts } from './Contracts';
 import { BigNumber } from "bignumber.js";
-import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice } from '../utils';
+import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, convertOnChainAmountToDisplayAmount, QUINTILLION } from '../utils';
 import * as _ from "lodash";
 import * as constants from '../constants';
 import { Augur } from './../Augur';
@@ -11,10 +9,6 @@ import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 // XXX TEMP for better worse order ids
 export function stringTo32ByteHex(stringToEncode: string): string {
   return `0x${Buffer.from(stringToEncode, 'utf8').toString('hex').padEnd(64, '0')}`;
-}
-
-export interface GenericCallback {
-  (result: any): any
 }
 
 export interface PlaceTradeParams {
@@ -47,6 +41,32 @@ export interface PlaceTradeChainParams extends PlaceTradeParams {
 export interface TradeTransactionLimits {
   loopLimit: BigNumber,
   gasLimit: BigNumber,
+}
+
+export interface Order {
+  amount: BigNumber,
+  displayPrice: BigNumber,
+  displaySharesEscrowed: BigNumber,
+  owner: string,
+}
+
+export interface SingleOutcomeOrderBook {
+  buyOrders: Array<Order>,
+  sellorders: Array<Order>,
+}
+
+export interface ContractSimulateTradeData {
+  _sharesFilled: BigNumber,
+  _settlementFees: BigNumber,
+  _sharesDepleted: BigNumber,
+  _tokensDepleted: BigNumber,
+}
+
+export interface SimulateTradeData {
+  sharesFilled: BigNumber,
+  settlementFees: BigNumber,
+  sharesDepleted: BigNumber,
+  tokensDepleted: BigNumber,
 }
 
 export class Trade {
@@ -94,6 +114,22 @@ export class Trade {
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
       return await this.placeOnChainTrade(params);
+    }
+  }
+
+  public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
+    const onChainTradeParams = this.getOnChainTradeParams(params);
+    const tickSize = numTicksToTickSize(params.numTicks, params.minPrice, params.maxPrice);
+    const simulationData: Array<BigNumber> = <Array<BigNumber>><unknown> await this.augur.contracts.simulateTrade.simulateTrade_(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), onChainTradeParams.amount, onChainTradeParams.price, params.ignoreShares, params.kycToken, params.doNotCreateOrders);
+    const displaySharesFilled = convertOnChainAmountToDisplayAmount(simulationData[0], tickSize);
+    const displaySharesDepleted = convertOnChainAmountToDisplayAmount(simulationData[2], tickSize);
+    const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
+    const displaySettlementFees = simulationData[3].dividedBy(QUINTILLION);
+    return {
+      sharesFilled: displaySharesFilled,
+      tokensDepleted: displayTokensDepleted,
+      sharesDepleted: displaySharesDepleted,
+      settlementFees: displaySettlementFees,
     }
   }
 

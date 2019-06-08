@@ -79,5 +79,7 @@ export class ProfitLoss extends c.ProfitLoss<BigNumber> {
 }
 export class ShareToken extends c.ShareToken<BigNumber> {
 }
+export class SimulateTrade extends c.SimulateTrade<BigNumber> {
+}
 export class Trade extends c.Trade<BigNumber> {
 }

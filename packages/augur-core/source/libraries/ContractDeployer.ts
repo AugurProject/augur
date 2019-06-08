@@ -18,7 +18,8 @@ import {
     Orders,
     ClaimTradingProceeds,
     Cash,
-    ProfitLoss
+    ProfitLoss,
+    SimulateTrade
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -249,6 +250,10 @@ Deploying to: ${networkConfiguration.networkName}
         const profitLossContract = await this.getContractAddress("ProfitLoss");
         const profitLoss = new ProfitLoss(this.dependencies, profitLossContract);
         promises.push(profitLoss.initialize(this.augur!.address));
+
+        const simulateTradeContract = await this.getContractAddress("SimulateTrade");
+        const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
+        promises.push(simulateTrade.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");
