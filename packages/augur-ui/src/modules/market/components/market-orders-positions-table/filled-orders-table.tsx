@@ -9,24 +9,20 @@ import FilledOrdersHeader from "modules/portfolio/components/common/headers/fill
 import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
 
 const FilledOrdersTable = ({ filledOrders, scalarDenomination }) => (
-  <div>
-    <div className={Styles.MarketOpenOrdersList__table}>
+  <>
+    <div className={Styles.Table}>
       <FilledOrdersHeader extendedView />
       {filledOrders.length === 0 && (
-        <div className={Styles.MarketOpenOrdersList__empty} />
+        <div className={Styles.Empty} />
       )}
-      <div className={Styles.MarketOpenOrdersList__scrollContainer}>
-        {filledOrders.length > 0 && (
-          <div className={Styles["MarketOpenOrdersList__table-body"]}>
-            {filledOrders.map((order, i) => (
-              <FilledOrder key={i} filledOrder={order} extendedViewNotOnMobile />
-            ))}
-          </div>
-        )}
+      <div>
+        {filledOrders.length > 0 && filledOrders.map((order, i) => (
+          <FilledOrder key={i} filledOrder={order} extendedViewNotOnMobile />
+        ))}
       </div>
     </div>
-    <div className={Styles.MarketOrders__footer} />
-  </div>
+    <div className={Styles.Footer} />
+  </>
 );
 
 FilledOrdersTable.propTypes = {
