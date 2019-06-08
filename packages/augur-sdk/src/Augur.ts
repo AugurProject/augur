@@ -4,6 +4,7 @@ import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
 import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
+import { BigNumber } from 'bignumber.js';
 import { Provider } from "./ethereum/Provider";
 import { SubscriptionEventNames, isSubscriptionEventName } from "./constants";
 import { Trade } from "./api/Trade";
@@ -114,6 +115,29 @@ export class Augur<TProvider extends Provider = Provider> {
     await augur.contracts.setReputationToken(networkId);
 
     return augur;
+  }
+
+  public async getTransaction(hash: string): Promise<string> {
+    const tx = await this.dependencies.provider.getTransaction(hash);
+    if (!tx) return "";
+    return tx.from;
+  }
+  public async listAccounts() {
+    return this.dependencies.provider.listAccounts();
+  }
+
+  public async getTimestamp() {
+    return this.contracts.augur.getTimestamp_();
+  }
+
+  public async getEthBalance(address: string): Promise<string> {
+    const balance = await this.dependencies.provider.getBalance(address);
+    return balance.toString();
+  }
+
+  public async getGasPrice(): Promise<BigNumber> {
+    const balance = await this.dependencies.provider.getGasPrice();
+    return new BigNumber(balance.toString());
   }
 
   public async getAccount(): Promise<string> {

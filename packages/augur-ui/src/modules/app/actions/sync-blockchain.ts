@@ -9,7 +9,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
 const GET_GAS_BLOCK_LIMIT = 100;
-const MAINNET_ID = "1";
+const MAINNET_ID = 1;
 
 export const syncBlockchain = (cb: Function) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -40,6 +40,7 @@ export const syncBlockchain = (cb: Function) => (
 
   cb && cb();
 
+  // @ts-ignore
   augur.augurNode.getSyncData((err: any, res: any) => {
     if (!err && res) {
       dispatch(
