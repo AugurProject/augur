@@ -349,6 +349,7 @@ export interface GasPriceInfo {
   fast: number;
   safeLow: number;
   userDefinedGasPrice: string;
+  blockNumber: string;
 }
 export interface FilterSortOptions {
   marketFilter: string;
@@ -392,7 +393,7 @@ export interface Endpoints {
 export interface Connection {
   isConnected: boolean;
   isConnectedToAugurNode: boolean;
-  augurNodeNetworkId?: number;
+  augurNodeNetworkId?: string;
   isReconnectionPaused: boolean;
 }
 
