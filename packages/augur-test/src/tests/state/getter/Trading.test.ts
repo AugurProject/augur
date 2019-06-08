@@ -13,7 +13,7 @@ import { stringTo32ByteHex } from "../../../libs/Utils";
 
 const mock = makeDbMock();
 
-let db: DB;
+let db: Promise<DB>;
 let api: API;
 let john: ContractAPI;
 let mary: ContractAPI;
@@ -23,7 +23,7 @@ beforeAll(async () => {
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
-  db = await mock.makeDB(john.augur, ACCOUNTS);
+  db = mock.makeDB(john.augur, ACCOUNTS);
   api = new API(john.augur, db);
 }, 120000);
 
@@ -49,7 +49,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
   // And the rest using another account
   await mary.fillOrder(orderId, cost, numShares.div(2), "43");
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Get trades by user
   let trades: Array<MarketTradingHistory> = await api.route("getTradingHistory", {
@@ -94,7 +94,7 @@ test("State API :: Trading :: getOrders", async () => {
   const orderId = await john.getBestOrderId(bid, market.address, outcome);
   await john.fillOrder(orderId, cost, numShares.div(2), "42");
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Get orders for the market
   let orders: Orders = await api.route("getOrders", {
@@ -111,7 +111,7 @@ test("State API :: Trading :: getOrders", async () => {
   const newPrice = new BigNumber(25);
   await john.setOrderPrice(orderId, newPrice, stringTo32ByteHex(""), stringTo32ByteHex(""));
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Get orders for the market
   orders = await api.route("getOrders", {
@@ -125,7 +125,7 @@ test("State API :: Trading :: getOrders", async () => {
   // Cancel order
   await john.cancelOrder(orderId);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Get orders for the market
   orders = await api.route("getOrders", {
@@ -163,7 +163,7 @@ test("State API :: Trading :: getOrders", async () => {
   await john.placeOrder(market.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
   const newOrderId = await john.getBestOrderId(bid, market.address, outcome);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Get orders for the market after the initial time
   orders = await api.route("getOrders", {
@@ -203,7 +203,7 @@ test("State API :: Trading :: getBetterWorseOrders", async () => {
   const highOrderId = await john.getBestOrderId(bid, market.address, outcome);
 
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Get better worse order ids for a price in the middle
   let betterWorseOrders = await api.route("getBetterWorseOrders", {

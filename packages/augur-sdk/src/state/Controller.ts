@@ -1,64 +1,34 @@
-import { Augur } from "../Augur";
-import { PouchDBFactoryType } from "./db/AbstractDB";
-import { DB } from "./db/DB";
-import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
+import {Augur} from "../Augur";
+import {DB} from "./db/DB";
+import {BlockAndLogStreamerListener} from "./db/BlockAndLogStreamerListener";
+
 const settings = require("./settings.json");
 
 export class Controller {
-  public db: DB;
 
   public constructor(
     private augur: Augur,
-    private networkId: number,
-    private blockstreamDelay: number,
-    private defaultStartSyncBlockNumber: number,
-    private trackedUsers: Array<string>,
-    private pouchDBFactory: PouchDBFactoryType,
+    private db: Promise<DB>,
     private blockAndLogStreamerListener: BlockAndLogStreamerListener,
   ) {
   }
 
-  public fullTextSearch(eventName: string, query: string): Array<object> {
-    return this.db.fullTextSearch(eventName, query);
-  }
-
-  public async createDb() {
-    this.db = await DB.createAndInitializeDB(
-      this.networkId,
-      this.blockstreamDelay,
-      this.defaultStartSyncBlockNumber,
-      this.trackedUsers,
-      this.augur.genericEventNames,
-      this.augur.customEvents,
-      this.augur.userSpecificEvents,
-      this.pouchDBFactory,
-      this.blockAndLogStreamerListener,
-    );
+  public async fullTextSearch(eventName: string, query: string) {
+    const db = await this.db;
+    return db.fullTextSearch(eventName, query);
   }
 
   public async run(): Promise<void> {
     try {
-      this.db = await DB.createAndInitializeDB(
-        this.networkId,
-        this.blockstreamDelay,
-        this.defaultStartSyncBlockNumber,
-        this.trackedUsers,
-        this.augur.genericEventNames,
-        this.augur.customEvents,
-        this.augur.userSpecificEvents,
-        this.pouchDBFactory,
-        this.blockAndLogStreamerListener,
-      );
-      await this.db.sync(
+      const db = await this.db;
+      db.sync(
         this.augur,
         settings.chunkSize,
         settings.blockstreamDelay,
       );
 
-      this.blockAndLogStreamerListener.listenForBlockRemoved(this.db.rollback.bind(this.db));
+      this.blockAndLogStreamerListener.listenForBlockRemoved(db.rollback.bind(db));
       this.blockAndLogStreamerListener.startBlockStreamListener();
-
-      // TODO begin server process
     } catch (err) {
       console.log(err);
     }

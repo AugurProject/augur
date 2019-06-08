@@ -13,7 +13,7 @@ import { BigNumber } from "bignumber.js";
 
 const mock = makeDbMock();
 
-let db: DB;
+let db: Promise<DB>;
 let api: API;
 let john: ContractAPI;
 let mary: ContractAPI;
@@ -23,7 +23,7 @@ beforeAll(async () => {
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
-  db = await mock.makeDB(john.augur, ACCOUNTS);
+  db = mock.makeDB(john.augur, ACCOUNTS);
   api = new API(john.augur, db);
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
@@ -98,7 +98,8 @@ test("State API :: Markets :: getMarkets", async () => {
     "{\"description\": \"scalar description 2\", \"longDescription\": \"scalar longDescription 2\", \"_scalarDenomination\": \"scalar denom 2\", \"tags\": [\"scalar tag2-1\", \"scalar tag2-2\", \"scalar tag2-3\"]}"
   );
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  const actualDB = await db;
+  await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
 
   let markets: Array<MarketInfo>;
 
@@ -203,7 +204,7 @@ test("State API :: Markets :: getMarkets", async () => {
   await john.placeOrder(categoricalMarket1.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
   await john.placeOrder(scalarMarket1.address, bid, numShares, price, outcome0, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Test hasOrders
   markets = await api.route("getMarkets", {
@@ -242,7 +243,7 @@ test("State API :: Markets :: getMarkets", async () => {
   await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), "43");
   await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), "43");
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarkets", {
     universe: universe.address,
@@ -261,7 +262,7 @@ test("State API :: Markets :: getMarkets", async () => {
   await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), "43");
   await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), "43");
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarkets", {
     universe: universe.address,
@@ -272,7 +273,7 @@ test("State API :: Markets :: getMarkets", async () => {
   // Move timestamp to designated reporting phase
   await john.setTimestamp(endTime);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Test disputeWindow
   markets = await api.route("getMarkets", {
@@ -317,7 +318,7 @@ test("State API :: Markets :: getMarkets", async () => {
   const noPayoutSet = [new BigNumber(100), new BigNumber(0), new BigNumber(0)];
   await john.doInitialReport(yesNoMarket1, noPayoutSet);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Retest disputeWindow & reportingState
   let disputeWindow = await yesNoMarket1.getDisputeWindow_();
@@ -403,7 +404,7 @@ test("State API :: Markets :: getMarketPriceHistory", async () => {
   await mary.fillOrder(categoricalOrderId0, cost, numShares.div(10).multipliedBy(4), "43");
   await mary.fillOrder(categoricalOrderId1, cost, numShares.div(10).multipliedBy(2), "43");
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   let yesNoMarketPriceHistory = await api.route("getMarketPriceHistory", {
     marketId: yesNoMarket.address
@@ -518,7 +519,7 @@ test("State API :: Markets :: getMarketPriceCandlesticks", async () => {
 
   const endTime = (await john.getTimestamp()).toNumber();
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   let yesNoMarketPriceCandlesticks = await api.route("getMarketPriceCandlesticks", {
     marketId: yesNoMarket.address
@@ -691,7 +692,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   await mary.buyCompleteSets(categoricalMarket, numShares);
   await mary.buyCompleteSets(scalarMarket, numShares);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   let markets: Array<MarketInfo> = await api.route("getMarketsInfo", {
     marketIds: [
@@ -709,7 +710,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   let newTime = (await yesNoMarket.getEndTime_()).plus(1);
   await john.setTimestamp(newTime);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -727,7 +728,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   newTime = newTime.plus(SECONDS_IN_A_DAY * 7);
   await john.setTimestamp(newTime);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -754,7 +755,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   const yesPayoutSet = [new BigNumber(0), new BigNumber(0), new BigNumber(100)];
   await john.doInitialReport(yesNoMarket, noPayoutSet);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -781,7 +782,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
     }
   }
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -798,7 +799,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   newTime = newTime.plus(SECONDS_IN_A_DAY * 7);
   await john.setTimestamp(newTime);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [
@@ -834,7 +835,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   let remainingToFill = await john.getRemainingToFill(yesNoMarket, noPayoutSet);
   await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
 
-  await db.sync(john.augur, mock.constants.chunkSize, 0);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   markets = await api.route("getMarketsInfo", {
     marketIds: [

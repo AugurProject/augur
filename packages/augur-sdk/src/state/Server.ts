@@ -1,31 +1,13 @@
 import * as HTTPEndpoint from "./HTTPEndpoint";
 import * as Sync from "./Sync";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
-import { API } from "./getter/API";
-import { Augur } from "../Augur";
-import { BlockAndLogStreamerListener } from "../state/db/BlockAndLogStreamerListener";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Controller } from "../state/Controller";
-import { EndpointSettings } from "./getter/types";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { EventEmitter } from "events";
-import { EventLogDBRouter } from "../state//db/EventLogDBRouter";
-import { JsonRpcProvider } from "ethers/providers";
-import { PouchDBFactory } from "./db/AbstractDB";
-import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
+import {EndpointSettings} from "./getter/types";
+import {EventEmitter} from "events";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
-  const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-  const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-  const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
-  const pouchDBFactory = PouchDBFactory({});
-  const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
-  const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);
-  const controller = new Controller(augur, Number(augur.networkId), settings.blockstreamDelay, UploadBlockNumbers[augur.networkId], [settings.testAccounts[0]], pouchDBFactory, blockAndLogStreamerListener);
-  await controller.createDb();
 
-  const api = new API(augur, controller.db);
+  const api = await Sync.start(settings.ethNodeURLs[4], settings.testAccounts[0]);
   const endpointSettings = {} as EndpointSettings;
 
   try {
@@ -84,8 +66,6 @@ export async function run() {
   } catch {
     endpointSettings.certificateKeyFile = "./certs/ssl-cert-snakeoil.pem";
   }
-
-  Sync.start({});
 
   console.log("Starting websocket and http endpoints");
   HTTPEndpoint.run(api, endpointSettings);

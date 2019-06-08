@@ -13,6 +13,18 @@ const PATHS = {
 // COMMON CONFIG
 const rules = [
   {
+    test: /\.worker\.[jt]s$/,
+    use: [
+      "worker-loader",
+      "babel-loader"
+    ]
+  },
+  {
+    test: /\.js$/,
+    use: ["source-map-loader"],
+    enforce: "pre"
+  },
+  {
     test: /npm-cli|node-hid/,
     loader: "null-loader"
   },
@@ -69,14 +81,7 @@ const rules = [
 const babelConfig = {
   test: /\.[jt]sx?$/,
   loader: "babel-loader",
-  exclude: function(modulePath) {
-    return (
-      /node_modules/.test(modulePath) &&
-      /node_modules\/(core-js|lodash|react|websocket|autolinker|remarkable|moment|regenerator-runtime)/.test(
-        modulePath
-      )
-    );
-  }
+  exclude: /(node_modules|bower_components)/
 };
 
 if(process.env.TYPE_CHECKING === "true") {
@@ -90,7 +95,7 @@ if(process.env.TYPE_CHECKING === "true") {
   babelConfig.test = /\.jsx?$/;
 }
 
-rules.push(babelConfig);
+rules.unshift(babelConfig);
 
 module.exports = {
   mode: "development",

@@ -10,7 +10,7 @@ import {
 } from "modules/common/constants";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
 import Styles from "modules/reporting/components/reporting-resolved/reporting-resolved.styles";
-import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
+import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label";
 
 export default class ReportingResolved extends Component {
   static propTypes = {

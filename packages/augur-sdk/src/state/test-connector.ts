@@ -20,7 +20,7 @@ console.log("Starting web worker");
     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
     const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector);
-    await augur.connect();
+    await augur.connect("");
 
     augur.on(SubscriptionEventNames.CompleteSetsPurchased, (data: any): void => {
       console.log(data);

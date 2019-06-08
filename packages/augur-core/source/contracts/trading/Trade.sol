@@ -41,10 +41,6 @@ contract Trade is Initializable, ReentrancyGuard {
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant DEFAULT_LOOP_LIMIT = 3;
 
-    // Trade Signing support
-    mapping (bytes32 => bool) public executed;
-    mapping (bytes32 => bool) public cancelled;
-
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
