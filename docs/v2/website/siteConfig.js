@@ -23,7 +23,7 @@ const users = [
 const siteConfig = {
   title: 'Augur Documentation', // Title for your website.
   tagline: '',
-  url: 'https://www.augur.net', // Your website URL
+  // url: 'https://www.augur.net', // Your website URL
   baseUrl: '/', // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
@@ -39,7 +39,8 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     {doc: 'getting-started', label: 'Docs'},
-    {doc: 'contracts/index', label: 'API'},
+    {doc: 'contracts/index', label: 'Contracts'},
+    {doc: 'sdk/README', label: 'SDK'},
     {page: 'help', label: 'Help'},
     {href: 'https://www.augur.net/blog/', label: 'Blog'},
     {search: true}

@@ -60,7 +60,6 @@
     "pouchdb-find": "7.0.0",
     "speedomatic": "2.1.5",
     "ts-loader": "5.3.3",
-    "typedoc": "0.14.2",
     "webpack": "4.29.6",
     "webpack-cli": "3.3.0",
     "websocket-as-promised": "brianosaurus/websocket-as-promised#a104f774d702c0fbefe7ac2438b682676cf7d005",
@@ -75,6 +74,8 @@
     "jest": "22.4.4",
     "ts-jest": "23.10.5",
     "ts-node": "8.0.3",
+    "typedoc": "0.14.2",
+    "typedoc-plugin-markdown": "1.2.1",
     "webpack-dev-server": "3.2.1"
   },
   "buildDependencies": [
