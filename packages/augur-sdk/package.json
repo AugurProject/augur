@@ -22,7 +22,8 @@
     "clean": "echo delete database",
     "rebuild": "yarn clean && yarn build",
     "clean-start": "yarn rebuild && yarn start",
-    "clean-start-local": "yarn rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 yarn start"
+    "clean-start-local": "yarn rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 yarn start",
+    "build:documentation": "yarn typedoc --theme markdown --mdDocusaurus --disableOutputCheck --ignoreCompilerErrors --out ../../docs/v2/docs/sdk ./src"
   },
   "repository": {
     "type": "git",

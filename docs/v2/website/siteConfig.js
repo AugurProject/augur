@@ -40,7 +40,7 @@ const siteConfig = {
   headerLinks: [
     {doc: 'getting-started', label: 'Docs'},
     {doc: 'contracts/index', label: 'Contracts'},
-    {doc: 'sdk/README', label: 'SDK'},
+    {doc: 'sdk/api-readme', label: 'SDK'},
     {page: 'help', label: 'Help'},
     {href: 'https://www.augur.net/blog/', label: 'Blog'},
     {search: true}
