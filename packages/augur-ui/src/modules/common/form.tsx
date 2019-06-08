@@ -54,12 +54,12 @@ export const Checkbox = ({
       checked={isChecked}
       // value={value}
       disabled={disabled}
-      onChange={e => onClick()}
+      onChange={e => onClick(e)}
     />
     <span
       role="button"
       tabIndex={0}
-      onClick={e => onClick()}
+      onClick={e => onClick(e)}
       className={classNames({
         [Styles.CheckmarkSmall]: smallOnDesktop
       })}

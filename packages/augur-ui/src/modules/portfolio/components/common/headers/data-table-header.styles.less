@@ -4,8 +4,8 @@
   display: grid;
   flex-direction: row;
   grid-template-columns: repeat(5, 1fr);
-  min-height: 2rem;
-  padding: 0.75rem 2.8rem 0.75rem 0;
+  min-height: @size-32;
+  padding: @size-12 2.8rem @size-12 0;
   width: 100%;
 
   > li {
@@ -34,32 +34,32 @@
 
 .FilledOrdersHeader {
   grid-template-columns: repeat(5, 1fr) minmax(5rem, 1fr) 3.2rem;
-  padding-bottom: 0.375rem;
-  padding-top: 0.375rem;
+  padding-bottom: @size-6;
+  padding-top: @size-6;
 
   &:last-child {
-    margin-right: -0.5px;
+    margin-right: -@size-8;
   }
 }
 
 .PositionHeader {
   background: fade(@color-primary-alternate, 40%);
   grid-template-columns: repeat(8, 1fr);
-  padding-left: 1.5rem;
+  padding-left: @size-24;
   padding-right: 4rem;
 }
 
 .DataTableHeader__extended {
   background: @color-theme-primary;
   grid-template-columns: repeat(6, 1fr) 6.2rem;
-  padding: 0.375rem 1.5rem;
+  padding: @size-6 @size-24;
 }
 
 .PositionHeader__extended {
   background: @color-theme-primary;
   grid-template-columns: repeat(6, 1fr);
-  padding-bottom: 0.75rem;
-  padding-right: 1.75rem;
+  padding-bottom: @size-12;
+  padding-right: @size-28;
   padding-top: 0.85rem;
 }
 
@@ -74,11 +74,19 @@
   }
 }
 
+.OutcomesHeader {
+  background-color: @color-theme-primary;
+  border-bottom: 1px solid @color-primary-background;  
+  grid-template-columns: 2fr repeat(5, 1fr);
+  padding: 0 @size-24;
+}
+
+
 @media @breakpoint-mobile-mid {
   .DataTableHeader {
     grid-template-columns: repeat(3, 1fr);
-    padding-left: 1rem;
-    padding-right: 3rem;
+    padding-left: @size-16;
+    padding-right: @size-48;
 
     > li {
       color: @color-shadow-text;
@@ -132,7 +140,7 @@
 
   .PositionHeader {
     grid-template-columns: repeat(6, 1fr);
-    padding: 0.5rem 1.5rem 0.5rem 1rem;
+    padding: @size-8 @size-24 @size-8 @size-16;
 
     > li {
       &:last-child {
@@ -142,7 +150,7 @@
   }
 
   .PositionHeader__extended {
-    border-bottom: 0.0625rem solid @color-primary-background;
+    border-bottom: 1px solid @color-primary-background;
     grid-template-columns: repeat(5, 1fr);
     padding-bottom: @size-6;
     padding-left: @size-16;
@@ -159,6 +167,31 @@
       &:nth-of-type(5),
       &:last-child {
         display: flex;
+      }
+    }
+  }
+
+  .OutcomesHeader {
+    grid-template-columns: repeat(5, 1fr);
+    padding: 0 @size-16 0 @size-24;
+
+    > li {
+      font-size: @size-9;
+
+      &:nth-of-type(2) {
+        text-align: left;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .OutcomesHeader {
+    > li {
+      min-width: unset;
+
+      &:first-child {
+        min-width: 50px;
       }
     }
   }

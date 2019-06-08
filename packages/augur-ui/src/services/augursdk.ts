@@ -3,6 +3,7 @@ import {
   ContractDependenciesEthers,
   EthersSigner,
 } from "contract-dependencies-ethers";
+import {WebWorkerConnector} from "./ww-connector";
 
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
@@ -31,7 +32,10 @@ export class SDK {
       ethersProvider,
       contractDependencies,
       Addresses[networkId],
+      new WebWorkerConnector()
     );
+
+    this.sdk.connect("http://localhost:8545", account);
   }
 
   public get(): Augur<Provider> {

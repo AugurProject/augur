@@ -164,15 +164,15 @@ export class Augur<TProvider extends Provider = Provider> {
     this.dependencies.deRegisterAllTransactionStatusCallbacks();
   }
 
-  public async connect(params?: any): Promise<any> {
-    return Augur.connector.connect(params);
+  public async connect(ethNodeUrl: string, account?: string): Promise<any> {
+    return Augur.connector.connect(ethNodeUrl, account);
   }
 
   public async disconnect(): Promise<any> {
     return Augur.connector.disconnect();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
+  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return Augur.connector.bindTo(f);
   }
 

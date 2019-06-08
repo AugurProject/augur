@@ -181,6 +181,7 @@
     "rimraf": "2.6.2",
     "sinon": "2.4.1",
     "sinon-stub-promise": "4.0.0",
+    "source-map-loader": "^0.2.4",
     "style-loader": "0.23.1",
     "stylelint": "8.4.0",
     "stylelint-config-standard": "18.2.0",
@@ -197,7 +198,8 @@
     "webpack-deadcode-plugin": "0.1.11",
     "webpack-dev-middleware": "3.3.0",
     "webpack-hot-middleware": "2.24.2",
-    "webpack-merge": "4.1.4"
+    "webpack-merge": "4.1.4",
+    "worker-loader": "2.0.0"
   },
   "resolutions": {
     "**/sha3": "2.0.1"

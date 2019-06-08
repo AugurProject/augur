@@ -58,7 +58,7 @@ export interface PLTradeData extends TradeData {
 
 const mock = makeDbMock();
 
-let db: DB;
+let db: Promise<DB>;
 let api: API;
 let john: ContractAPI;
 let mary: ContractAPI;
@@ -68,7 +68,7 @@ beforeAll(async () => {
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
-  db = await mock.makeDB(john.augur, ACCOUNTS);
+  db = mock.makeDB(john.augur, ACCOUNTS);
   api = new API(john.augur, db);
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
@@ -128,7 +128,7 @@ test("State API :: Users :: getProfitLoss & getProfitLossSummary ", async () => 
     await doTrade(trade, trade.market);
   }
 
-  await db.sync(
+  await (await db).sync(
     john.augur,
     mock.constants.chunkSize,
     0,
@@ -447,7 +447,7 @@ async function processTrades(tradeData: Array<UTPTradeData>, market: ContractInt
   for (let trade of tradeData) {
     await doTrade(trade, market, minPrice, maxPrice);
 
-    await db.sync(
+    await (await db).sync(
       john.augur,
       mock.constants.chunkSize,
       0,

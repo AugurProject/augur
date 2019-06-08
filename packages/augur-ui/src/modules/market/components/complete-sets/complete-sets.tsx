@@ -10,14 +10,12 @@ export interface EmptyDisplayProps {
   marketId: string;
 }
 
-const CompleteSets = (props: EmptyDisplayProps) => {
-  const {
-    numCompleteSets,
-    transactionsStatus,
-    sellCompleteSets,
-    marketId
-  } = props;
-
+const CompleteSets = ({
+  numCompleteSets,
+  transactionsStatus,
+  sellCompleteSets,
+  marketId
+}: EmptyDisplayProps) => {
   const pendingCompleteSetsHash = `pending-${marketId}-${numCompleteSets &&
     numCompleteSets.fullPrecision}`;
   const pendingCompleteSetsInfo = transactionsStatus[pendingCompleteSetsHash];

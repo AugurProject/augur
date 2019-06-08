@@ -13,7 +13,7 @@ import "./sync-data";
 export class API {
   private readonly router: Router;
 
-  constructor(augur: Augur, db: DB) {
+  constructor(augur: Augur, db: Promise<DB>) {
     this.router = new Router(augur, db);
   }
 

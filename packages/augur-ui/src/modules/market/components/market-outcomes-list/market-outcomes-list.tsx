@@ -9,6 +9,7 @@ import MarketScalarOutcomeDisplay from "modules/market/components/market-scalar-
 
 import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles";
 import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
+import HeaderStyles from "modules/portfolio/components/common/headers/data-table-header.styles";
 
 export default class MarketOutcomesList extends Component {
   static propTypes = {
@@ -46,68 +47,32 @@ export default class MarketOutcomesList extends Component {
     } = this.props;
 
     return (
-      <section className={Styles.MarketOutcomesList}>
+      <section className={Styles.OutcomesList}>
         {!popUp && (
-          <div className={Styles.MarketOutcomesList__heading}>Outcomes</div>
+          <div className={Styles.Heading}>Outcomes</div>
         )}
-        <div
-          ref={outcomeList => {
-            this.outcomeList = outcomeList;
-          }}
-        >
-          <div className={SharedStyles.MarketOpenOrdersList__table}>
-            <ul
-              className={classNames(
-                SharedStyles["MarketOpenOrdersList__table-header"],
-                SharedStyles["MarketOutcomes__table-header"]
-              )}
-            >
-              <li>Outcome</li>
-              <li>
-                <span>
-                  Bid <span />
-                  Qty
-                </span>
-              </li>
-              <li>
-                <span>
-                  Best <span />
-                  Bid
-                </span>
-              </li>
-              <li>
-                <span>
-                  Best <span />
-                  Ask
-                </span>
-              </li>
-              <li>
-                <span>
-                  Ask <span />
-                  Qty
-                </span>
-              </li>
-              <li>
-                <span>Last</span>
-              </li>
-            </ul>
-            <div className={SharedStyles["MarketOpenOrdersList__table-body"]}>
-              {outcomes &&
-                outcomes.map(outcome => (
-                  <MarketOutcomesListOutcome
-                    key={outcome.id}
-                    outcome={outcome}
-                    marketId={marketId}
-                    selectedOutcome={selectedOutcome}
-                    updateSelectedOutcome={updateSelectedOutcome}
-                    marketType={marketType}
-                    scalarDenomination={
-                      marketType === SCALAR && scalarDenomination
-                    }
-                  />
-                ))}
-            </div>
-          </div>
+        <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes)}>
+          <ul className={classNames(HeaderStyles.DataTableHeader, HeaderStyles.OutcomesHeader)}>
+            <li>Outcome</li>
+            <li>Bid Qty</li>
+            <li>Best Bid</li>
+            <li>Best Ask</li>
+            <li>Ask Qty</li>
+            <li>Last</li>
+          </ul>
+          {outcomes && outcomes.map(outcome => (
+            <MarketOutcomesListOutcome
+              key={outcome.id}
+              outcome={outcome}
+              marketId={marketId}
+              selectedOutcome={selectedOutcome}
+              updateSelectedOutcome={updateSelectedOutcome}
+              marketType={marketType}
+              scalarDenomination={
+                marketType === SCALAR && scalarDenomination
+              }
+            />
+          ))}
         </div>
         {marketType === SCALAR && (
           <MarketScalarOutcomeDisplay

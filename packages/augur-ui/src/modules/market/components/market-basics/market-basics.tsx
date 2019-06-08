@@ -33,7 +33,7 @@ const MarketBasics = ({
   marketType,
   ...p
 }) => {
-  let ReportEndingIndicator = () => null;
+  let ReportEndingIndicator: any = () => null;
   if (
     p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING &&
     !p.hideReportEndingIndicator

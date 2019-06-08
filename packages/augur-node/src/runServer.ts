@@ -2,7 +2,7 @@ import { BigNumber } from "./types";
 import { AugurNodeController } from "./controller";
 import { logger } from "./utils/logger";
 import { ConnectOptions } from "./setup/connectOptions";
-import { Augur } from "@augurproject/sdk";
+import { Augur, EmptyConnector } from "@augurproject/sdk";
 
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers/json-rpc-provider";
@@ -10,13 +10,16 @@ import { JsonRpcProvider } from "ethers/providers/json-rpc-provider";
 import { Addresses } from "@augurproject/artifacts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 
-
 export async function start(retries: number, config: ConnectOptions, databaseDir: string, isWarpSync: boolean) {
   const ethersProvider = new EthersProvider(new JsonRpcProvider(config.http), 5, 0, 40);
 
+  Augur.connector = new EmptyConnector();
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined);
   const networkId = await ethersProvider.getNetworkId();
-  const augur = new Augur<EthersProvider>(ethersProvider, contractDependencies, networkId, Addresses[networkId]);
+  const augur = new Augur<EthersProvider>(ethersProvider, contractDependencies, networkId, Addresses[networkId], Augur.connector);
+
+
+  await augur.contracts.setReputationToken(networkId);
 
   const augurNodeController = new AugurNodeController(augur, config, databaseDir, isWarpSync);
 
