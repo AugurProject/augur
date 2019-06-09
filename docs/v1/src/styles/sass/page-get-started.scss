@@ -1,0 +1,267 @@
+// Wallets
+
+.Wallets {
+  padding: 3rem 0;
+}
+
+.Wallets__wrap {
+  @extend .max-width;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+// GetStartedSteps
+
+.GetStartedSteps {
+  background-color: $white;
+  padding: 6.5rem 0;
+}
+
+.GetStartedSteps__steps {
+  margin: 8rem auto 0;
+  max-width: 51.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.GetStartedSteps__step {
+  @extend .with-number;
+
+  margin-bottom: 6.25rem;
+
+  &::before {
+    color: $purple--mid;
+    top: -4.5rem;
+  }
+
+  > h5 {
+    margin-bottom: 0.75rem;
+  }
+
+  > p > a {
+    @extend .link--mono;
+
+    color: $purple;
+  }
+}
+
+.GetStartedSteps__steps-conclusion {
+  @extend .with-line;
+
+  margin-bottom: 0;
+  padding-top: 2.125rem;
+
+  &::after {
+    bottom: auto;
+    top: 0;
+  }
+
+  > p > a {
+    @extend .link--mono;
+
+    color: $purple;
+  }
+}
+
+.GetStartedSteps__note {
+  @extend .white-box;
+
+  padding: 5rem;
+  margin: 5rem auto 0;
+  max-width: 58rem;
+
+  > h5 {
+    color: $purple;
+    margin-bottom: 2.125rem;
+  }
+
+  > p > a {
+    text-decoration: underline;
+  }
+}
+
+// Developers
+
+.Developers {
+  background-color: $gray--dark;
+  color: $white;
+  padding: 6.5rem 0;
+}
+
+.Developers__wrap {
+  @extend .max-width;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.Developers__intro {
+  width: 49%;
+
+  > h2,
+  > h5 {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.Developers__repos {
+  @extend .white-box;
+
+  border-radius: 0;
+  color: $black;
+  padding: 4rem 1rem 3.5rem;
+  width: 45.2%;
+}
+
+.Developers__repos-intro {
+  margin: auto;
+  max-width: 26.625rem;
+
+  > h5 {
+    @extend .with-line;
+
+    margin-bottom: 3rem;
+
+    &::after {
+      bottom: -1.5rem;
+    }
+  }
+
+  > p {
+    margin-bottom: 1.5rem;
+
+    > a {
+      @extend .link--mono;
+
+      color: $purple;
+    }
+  }
+}
+
+// Submit to FAQ
+
+.SubmitToFAQ {
+  background-color: $purple--light;
+  margin: 6.5rem 5rem;
+}
+
+.SubmitToFAQ__wrap {
+  @extend .max-width;
+
+  padding: 6.5rem 5rem;
+
+  > h5 {
+    margin-bottom: 4.375rem;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .Wallets {
+    padding-bottom: 1rem;
+  }
+
+  .Wallets__wrap {
+    flex-wrap: wrap;
+
+    &::after {
+      content: '';
+      width: 45%;
+    }
+
+    > img {
+      margin-bottom: 4rem;
+      width: 45%;
+    }
+  }
+
+  .Developers__wrap {
+    flex-wrap: wrap;
+  }
+  .Developers__intro {
+    width: 100%;
+    margin-bottom: 4rem;
+  }
+
+  .Developers__repos {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  .Developers__repos-intro {
+    margin: 0;
+  }
+}
+@media only screen and (max-width: 700px) {
+  .SubmitToFAQ {
+    margin: 3rem 3rem;
+  }
+
+  .SubmitToFAQ__wrap {
+    padding: 4rem 2rem;
+
+    > p.p--extra-large {
+      margin-bottom: 1rem;
+    }
+
+    > h5 {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .GetStartedSteps__steps {
+    margin-top: 5rem;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .GetStartedSteps__note {
+    padding: 2rem;
+  }
+
+  .Developers__repos > .list--links {
+    font-size: 1rem;
+    line-height: 3rem;
+  }
+
+  .list--links > li {
+    line-height: 1.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+@media only screen and (max-width: 520px) {
+  .list--links > li::after {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .GetStartedSteps > .max-width {
+    padding: 0;
+
+    > h2 {
+      padding-left: 1rem;
+    }
+
+    > .GetStartedSteps__steps {
+      margin-top: 6rem;
+      padding-left: 2.25rem;
+      padding-right: 1rem;
+
+      > .GetStartedSteps__step.step--4 {
+        margin-bottom: 4rem;
+      }
+    }
+  }
+
+  .SubmitToFAQ {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .SubmitToFAQ__wrap {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

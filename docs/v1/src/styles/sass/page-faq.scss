@@ -1,0 +1,74 @@
+.Faq {
+  padding-top: 6.5rem;
+
+  > .max-width {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 6.5rem;
+  }
+
+  p a {
+  color: #05aad4;
+}
+
+}
+
+
+
+.FaqAnswers {
+  width: 41.75rem;
+  padding-right: 4rem;
+}
+
+.FaqAnswer {
+  padding-bottom: 4rem;
+
+  > ul {
+    font-size: 1.125rem;
+    font-weight: 400;
+    list-style: disc outside;
+    padding-left: 2.4rem;
+
+    > li {
+      margin-bottom: 2rem;
+    }
+  }
+
+  > h5 {
+    @extend .with-line;
+
+    margin-bottom: 2.5rem;
+
+    &::after {
+      bottom: -1.25rem;
+    }
+  }
+}
+
+.FaqIndex {
+  position: relative;
+  top: -11.5rem;
+  padding: 2.8125rem 2.5rem 2.5rem;
+  width: 24.5rem;
+  background-color: $purple--light;
+}
+
+.FaqIndex__question {
+  margin-top: 2rem;
+
+  > a {
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .FaqIndex {
+    display: none;
+  }
+  .FaqAnswers {
+    width: 100%;
+    padding-right: 0;
+  }
+}

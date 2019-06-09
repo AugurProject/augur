@@ -1,0 +1,649 @@
+// Main
+
+.value-prop {
+  line-height: 5rem;
+  font-weight: bold;
+  letter-spacing: .5px;
+}
+
+.main-grab {
+  font-size: 2.75rem;
+  font-family: MuseoSans;
+  letter-spacing: .5px;
+  color: #232323;
+  margin-bottom: 14px;
+}
+
+.sub-grab {
+  font-size: 1.43rem;
+  line-height: 1.9rem;
+}
+
+.landing-top {
+  margin-bottom: 7rem;
+}
+
+@media only screen and (max-width: 700px) {
+  .value-prop {
+    letter-spacing: 0;
+  }
+}
+
+// Use Cases
+
+.Uses {
+  margin-top: 8em;
+}
+
+.uses-overview {
+  background: #000;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: #fff;
+  padding: 60px 0 0 0;
+}
+
+/* if browser does not support webp, use jpg*/
+.no-webp .uses-overview {
+  background-image: url("../images/augur_future.jpg");
+}
+
+.webp .uses-overview {
+  background-image: url("../images/augur_future.webp");
+}
+
+
+.uses-header {
+  color: #fff;
+  font-size: 2.3rem;
+  margin-bottom: 2.4rem;
+}
+
+.uses-grab {
+    padding: 10px;
+    text-align: center;
+    color: #000;
+    letter-spacing: 0px;
+    margin-bottom: 14.375rem;
+}
+
+.Uses__wrap {
+  @extend .max-width;
+  background: #000;
+  padding-top: 30px;
+  max-width: unset;
+}
+
+.uses-intro {
+  line-height: 4.75rem;
+  text-align: center;
+  background: rgba(255,255,255,.77);
+  color: #48abdc;
+  padding: 23px 0 40px 0;
+  margin-bottom: 75px;
+}
+
+.uses-intro-header {
+  font-size: 1.7rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #40a8ca;
+}
+
+.uses-intro-sub {
+  font-size: 1.4rem;
+  color: #464646;
+  padding-top: 7px;
+  font-weight: normal;
+}
+
+.Uses__use-cases {
+  position: relative;
+}
+
+.Uses__use-cases-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.Uses__use-case {
+  @extend .white-box;
+
+  box-shadow: 0 3px 38px 0 rgba(0, 0, 0, 0.06), 0 3px 7px 0 rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+  min-height: 17rem;
+  overflow: hidden;
+  padding: 3.5rem 6rem 3rem 7.5rem;
+  position: relative;
+  width: 48.5%;
+
+  > h6 {
+    @extend .with-line;
+
+    margin-bottom: 3rem;
+
+    &::after {
+      bottom: -1.5rem;
+    }
+  }
+
+  > p {
+    margin-bottom: 0;
+  }
+
+  > img {
+    left: -0.85rem;
+    position: absolute;
+    top: 9rem;
+    width: 5.5rem;
+  }
+
+  &:nth-child(5),
+  &:nth-child(6) {
+    margin-bottom: 0;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .Uses__intro {
+    font-size: 2.25rem;
+    line-height: 3.5rem;
+    padding-top: 5rem;
+    position: static;
+  }
+
+  .Uses__use-cases {
+    padding-top: 4.125rem;
+    position: static;
+  }
+
+  .Uses__use-case {
+    padding: 11.5rem 4rem 3rem;
+    width: 100%;
+
+    > img {
+      left: 4rem;
+      top: 3.5rem;
+    }
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .Uses__use-case {
+    padding: 10.5rem 2rem 2rem;
+
+    > img {
+      left: 2rem;
+      top: 2rem;
+    }
+  }
+}
+
+// The Augur Cycle
+
+.cycle-header {
+  text-align: center;
+  padding-top: 4em;
+}
+
+.AugurCycle {
+  padding-top: 11.5rem;
+}
+
+.AugurCycle__steps-wrapper {
+  @extend .max-width--wide;
+}
+
+.AugurCycle__step {
+  display: flex;
+  margin-bottom:3rem;
+
+  > .step--image {
+    width: 48%;
+
+    > img {
+      border: 4px solid $white;
+      border-top-width: 12px;
+      border-radius: 4px;
+      box-shadow: 0 3px 38px 0 rgba(0, 0, 0, 0.06),
+        0 3px 7px 0 rgba(0, 0, 0, 0.06), 0 10px 64px 0 rgba(0, 0, 0, 0.09);
+    }
+  }
+
+  .step--text {
+    padding: 6rem 2rem 0 2.625rem;
+    width: 35%;
+
+    > h3 {
+      @extend .with-number;
+    }
+  }
+
+  > *:first-child {
+    margin-right: 3rem;
+  }
+}
+
+.AugurCycle__step--left {
+  @extend .AugurCycle__step;
+  justify-content: flex-start;
+}
+
+.AugurCycle__step--right {
+  @extend .AugurCycle__step;
+  justify-content: flex-end;
+}
+
+@media only screen and (max-width: 900px) {
+  .AugurCycle {
+    padding-top: 6rem;
+  }
+
+  .AugurCycle__step--left,
+  .AugurCycle__step--right {
+    flex-wrap: wrap;
+    margin-bottom: 6rem;
+
+    > .step--text {
+      margin: 0 0 2rem;
+      order: 1;
+      width: 100%;
+    }
+
+    > .step--image {
+      margin: 0;
+      order: 2;
+      width: 100%;
+    }
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .AugurCycle {
+    padding-top: 4rem;
+  }
+
+  .AugurCycle__step--left,
+  .AugurCycle__step--right {
+    margin-bottom: 2rem;
+
+    > .step--text {
+      padding-top: 4rem;
+      padding-left: 2rem;
+    }
+  }
+}
+
+// Currencies
+
+.Currencies {
+  background-color: #fff;
+}
+
+.currencies-header {
+}
+
+.Currencies__wrap {
+  @extend .max-width;
+  position: relative;
+  top: 5rem;
+  margin-bottom: 6rem;
+}
+
+.Currencies__currency-wrap {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Currencies__currency {
+  @extend .white-box;
+
+  color: $black;
+  padding: 3.375rem 2.75rem 4rem 2.5rem;
+  width: 48.5%;
+}
+
+.Currencies__currency-heading-wrap {
+  align-items: start;
+  display: flex;
+  justify-content: flex-start;
+
+  > div:first-child {
+    margin-right: 3rem;
+    padding-top: 0.625rem;
+
+    > h2 {
+      font-weight: 700;
+      line-height: 3rem;
+      margin-bottom: 0;
+    }
+
+    > h4 {
+      @extend .with-line;
+
+      margin-bottom: 3.25rem;
+
+      &::after {
+        bottom: -1.625rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .Currencies {
+    padding-top: 0;
+  }
+
+  .Currencies__wrap {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    position: static;
+  }
+
+  .Currencies__currency-wrap {
+    display: block;
+  }
+
+  .Currencies__currency {
+    width: 100%;
+
+    &:first-child {
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .Currencies__currency-heading-wrap > div:first-child {
+    margin-right: 1rem;
+  }
+}
+
+// Technology
+
+.Technology {
+  padding-top: 7.375rem;
+}
+
+.Technology__wrap {
+  @extend .max-width;
+
+  position: relative;
+  top: 5rem;
+
+  > h2 {
+    line-height: 3.625rem;
+    margin-bottom: 2.5rem;
+    max-width: 33rem;
+  }
+}
+
+.Technology__blocks-wrap {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12.375rem;
+}
+
+.Technology__block {
+  @extend .white-box;
+
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 3.375rem 4rem 3rem 2.5rem;
+  position: relative;
+  width: 48.5%;
+
+  > h4 {
+    @extend .with-line;
+
+    margin-bottom: 3.25rem;
+
+    &::after {
+      bottom: -1.625rem;
+    }
+  }
+
+  &::before {
+    background-repeat: no-repeat;
+    background-position: center;
+    content: '';
+    left: 50%;
+    height: 13.75rem;
+    position: absolute;
+    width: 13.75rem;
+    z-index: -1;
+  }
+
+  &:first-child::before {
+    background-image: url('../images/icon--decentralized.svg');
+    margin-left: -6.875rem;
+    top: -8.5rem;
+  }
+
+  &:last-child::before {
+    background-image: url('../images/icon--open-source.svg');
+    margin-left: -6.875rem;
+    top: -8rem;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .Technology {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+
+  .Technology__wrap {
+    position: static;
+  }
+
+  .Technology__blocks-wrap {
+    display: block;
+  }
+
+  .Technology__block {
+    width: 100%;
+
+    &:first-child {
+      margin-bottom: 10rem;
+    }
+  }
+}
+
+// Benefits
+
+.Benefits {
+  background-color: #fff;
+  padding-top: 4.875rem;
+  border-top: 10px dotted #ebe8fd;
+}
+
+// Projects 
+
+.projects-header {
+  text-align: center;
+}
+
+
+@media only screen and (max-width: 900px) {
+  .Benefits {
+    padding-top: 6rem;
+    padding-bottom: 2rem;
+  }
+}
+
+// Connect
+
+.Connect {
+  padding: 6.5rem 0;
+}
+
+.Connect__wrap {
+  @extend .max-width;
+
+  > h2 {
+    max-width: 33rem;
+  }
+}
+
+.Connect__block-wrap-outer {
+  display: flex;
+  justify-content: space-between;
+
+  > div:first-child {
+    width: 40.7%;
+  }
+}
+
+.Connect__block-wrap-inner {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 57%;
+
+  > div {
+    width: 48%;
+
+    &:last-child {
+      width: 100%;
+    }
+  }
+}
+
+.Connect__block {
+  @extend .white-box;
+
+  padding: 3.5rem 2.5rem 3rem;
+  position: relative;
+
+  > img {
+    position: absolute;
+    right: 2rem;
+    top: 1.5rem;
+  }
+
+  > h4 {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.Connect__block--around-the-web {
+  @extend .Connect__block;
+
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+
+  > h4 {
+    max-width: 15rem;
+  }
+
+  > ul > li {
+    display: inline-block;
+    margin-right: 2.125rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .Connect__block-wrap-outer {
+    display: block;
+
+    > div:first-child {
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+  }
+
+  .Connect__block-wrap-inner {
+    width: 100%;
+
+    > div {
+      width: 100%;
+
+      &:first-child {
+        margin-bottom: 2rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .Connect__block {
+    padding: 2rem 3rem 2rem 1.5rem;
+  }
+
+  .Connect__block--around-the-web {
+    display: block;
+    padding-right: 1.5rem;
+
+    > ul > li {
+      margin-right: 1.5rem;
+    }
+  }
+}
+
+// Disclaimer
+
+.Disclaimer {
+  background-color: $purple--light;
+  padding: 5rem 0;
+
+  > div > p {
+    max-width: 56rem;
+  }
+}
+
+.download-links-section {
+  flex-direction: row;
+  h3 {
+    white-space: nowrap;
+  }
+};
+
+.download-links {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.download-links > a {
+  &.download-link {
+    @extend .button;
+  }
+  &.download-link.inverse-button {
+    @extend .button--white;
+  }
+
+  text-align: center;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+}
+
+@media only screen and (min-width: 1100px) {
+  .download-links {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .download-links-section {
+    flex-direction: column;
+    &:first-child div {
+      margin-bottom: 1rem;
+    }
+  };
+}
+
+.download-links.inverse-button > a {
+  &.download-link {
+    @extend .button--white;
+  }
+}

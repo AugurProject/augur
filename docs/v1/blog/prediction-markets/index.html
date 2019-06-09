@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-74080255-11"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-74080255-11', { 'anonymize_ip': true });
+  </script>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>The Ultimate Guide to Decentralized Prediction Markets | Augur Prediction Markets</title>
+    <meta content="The Ultimate Guide to Decentralized Prediction Markets | Augur Prediction Markets" property="og:title">
+    <meta content="The Ultimate Guide to Decentralized Prediction Markets | Augur Prediction Markets" property="og:site_name">
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@AugurProject" />
+    <meta name="twitter:creator" content="@AugurProject">
+    <meta name="twitter:title" content="The Ultimate Guide to Decentralized Prediction Markets | Augur Prediction Markets" />
+    <meta name="twitter:description" content="Decentralized Prediction Markets: What are they, how do they work, and why they are the future" />
+    <meta name="twitter:image" content="https://augur.net/dist/images/meta_dpm_guide.png" />
+
+    <meta content="Decentralized Prediction Markets: What are they, how do they work, and why they are the future" name="description">
+    <meta content="Decentralized Prediction Markets: What are they, how do they work, and why they are the future" property="og:description">
+
+    <meta content="https://www.augur.net/blog/prediction-markets" property="og:url">
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.augur.net/blog/prediction-markets" />
+
+    <meta content="https://augur.net/dist/images/meta_dpm_guide.png" property="og:image">
+
+    <link rel="stylesheet" type="text/css" href="/dist/styles/site.min.css" defer>
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta content="LQMTXnM-70SbbKHdPCf9S9o_w2Au-bA3a6-2Z9kSCOo" name="google-site-verification">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" defer />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js" defer></script>
+    <script>
+        window.addEventListener("load", function() {
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#553580"
+                    },
+                    "button": {
+                        "background": "#FFF",
+                    }
+                }
+            })
+        });
+    </script>
+
+</head>
+
+<body>
+    <header class="Header">
+        <div class="Header__wrap">
+            <a href="/">
+                <img alt="The Ultimate Guide to Decentralized Prediction Markets | Augur Prediction Markets" src="/dist/images/augur-logo.svg">
+            </a>
+            <div class="Header__nav">
+                <ul>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/bounty/">Bug Bounty</a></li>
+                    <li><a href="/faq/">FAQ</a></li>
+                    <li><a href="https://medium.com/@AugurProject" target="_blank">Weekly Reports</a></li>
+                </ul>
+                <img alt="FAQ - Frequently Asked Questions" class="Header__nav-mobile-close" src="/dist/images/icon--times.svg">
+            </div>
+            <img alt="FAQ - Frequently Asked Questions" class="Header__nav-mobile-open" src="/dist/images/icon--bars.svg">
+        </div>
+    </header>
+
+    <section class="Hero--wide" style="padding-bottom:1rem!important;">
+        <div class="Hero__wrap">
+            <div>
+                <h1 class="with-line">The Ultimate Guide to Decentralized Prediction Markets</h1>
+                <h4>What They Are, How They Work & Why They Are the Future</h4>
+                <p style="font-style:italic;font-size:.8em;">author: <a href="https://twitter.com/Ben_davidow"><b style="color:blue;"><u>Ben Davidow</u></b></a></p>
+                <h6>
+            </div>
+        </div>
+    </section>
+
+    <section class="Faq">
+
+        <div class="max-width">
+            <div class="FaqAnswers">
+
+                <div class="FaqAnswer" id="welcome-to-the-future">
+                    <h5>Welcome to the Future:</h5>
+                    <p>
+                        You wake up one early spring morning in 2036 and ask Siri’s granddaughter “Will it rain today?” “No,” she politely replies, “but according to Augur, we’ll see some scattered showers around 12:30pm next Tuesday.” 
+
+                    </p>
+                    <p>
+When you open the refrigerator, you discover that your farm-to-fridge drone delivery service has bulked up on orange juice, since prices are forecasted to rise next week. Speaking of prices, you’re thinking about a new apartment, but you see that rental rates in your area are expected to go down in a couple months, so you opt to hold off for now.
+                    </p>
+                    <p>
+
+Over coffee, you scan through the news, which has been fact-checked by the most reliable source in the world, a DPM oracle. Fake news is but a faint memory, and so are the days of unreliable polls and pundits you think to yourself as you check a prediction market’s forecast on the upcoming presidential election.
+
+<p>
+This may sound like Sci-Fi, but this kind of morning may not be too far off, thanks in part to the emergence of something called Decentralized Prediction Markets (DPMs).
+
+</p>     
+
+<p>DPMs can be a bit daunting to grasp, but it doesn’t have to be this way. Today, we’ll break down DPMs in simple terms. What are prediction markets? How do they work and why do they matter? What are the benefits of decentralizing them and what does that even mean? 
+</p><p>These are some things you’ll learn today. 
+</p>           
+
+</div>
+
+                <div class="FaqAnswer" id="what-is-prediction-market">
+                    <h5>What is a Prediction Market?</h5>
+                    <p>
+A market is, in essence, just a group of people (or robots) buying and selling things. This can be physical goods as in a grocery store, services as in Uber, or financial assets as in the stock market.  
+</p>                    <p>
+A prediction market is a place to buy and sell…predictions. Or to be precise, shares in predictions. In the stock market, you get shares in a company. In a prediction market you get shares in an event outcome. This could be any future event like whether it will rain in Seattle tomorrow, whether America’s GDP will go up next quarter, or whether Dwayne Johnson will be elected president in 2024. 
+                    </p>
+
+                    <center><img src="https://augur.net/src/images/comic_one.png" alt="A New Way To Resolve Twitter Disputes with Augur" style="width:25em;"><p style="font-style:italic; font-size:.8em;" >Illustration by <a href="https://www.saili.me/about"><b style="color:blue;"><u>Sai Li</u></b></a> <p></center>
+
+                    <p>
+There are two types of shares in a prediction market: YES (long) shares and NO (short) shares. The ultimate value (payout) of each share depends on whether an event occurs or not. In a simple prediction market, each YES share pays out a dollar if the event in question occurs and pays out nothing if it does not occur. Each NO share pays out a dollar if the event does not occur and nothing if it does.
+
+                    </p>
+
+                    <p>What determines the price of these shares? The short answer is however much buyers are willing to pay and sellers are willing to accept. This amount is directly proportional to how likely they believe the outcome in question is to occur. Let’s look at a simple example to understand why. 
+</p><p>Let’s say I have a dice concealed in my hand and there’s a prediction market on whether I’ll roll one of the following: one, two, or three. There’s a 50% chance the outcome will occur, so a YES share that pays out a dollar if the event occurs should cost the same as a NO share that pays out a dollar if the event does not occur. Since both YES or NO shares will pay out a dollar 50% of the time, buyers and sellers agree on a price of 50 cents for each. 
+</p><p>But let’s say I reveal that the dice hidden in my hand is actually 4-sided. Suddenly, 50 cents per YES share is a steal, because I will roll a one, two, or three 75% of the time. So buyers are now willing to pay up to 75 cents for YES shares or 25 cents for NO shares. 
+</p><p>Prediction markets on real-world events contain uncertainty, market actors with differing information, views and intuitions, and any number of factors that may affect the outcome. The net result is that the perceived probability of the event occurring varies across individuals and across time. If there’s a market on whether Jeff Schmoe will be elected president and some scandal surfaces that diminishes his chances, sellers will step in to drive down the price. 
+</p><p>In a prediction market, price equals perceived probability. For example, if each YES share costs 75 cents, that means the market thinks there’s a roughly 75% chance that the outcome will occur. If each NO share costs 40 cents, that means the market thinks there’s a 40% chance that it will not occur. Remember, “the market” is just a group of people buying and selling shares. 
+</p>
+
+              <center><img src="https://augur.net/src/images/comic_four.png" alt="Augur Prediction Markets Explained - How Do Prediction Markets Work" style="width:25em;"><p style="font-style:italic; font-size:.8em;" >Illustration by <a href="https://www.saili.me/about"><b style="color:blue;"><u>Sai Li</u></b></a> <p></center>
+
+<p>You can think of a market as a sort of tug-of-war with two opposing forces: buyers and sellers. Buyers want to buy for as low as possible and sellers want to sell as high as possible. If and only if a buyer and seller agree on a price, you get a trade. The present price in a market is the meeting point of buyers and sellers: an equilibrium that represents the highest price buyers will pay and the lowest price sellers will accept. In a prediction market, this equilibrium reflects the present perceived probability that an event will occur, and it shifts as the market absorbs more information and prices in new developments. 
+</p><p>Putting this all together, a prediction market is a group of traders exchanging shares whose payout depends on future event outcomes, which, in totality, produces a tool for absorbing the world’s information and making better predictions. Let’s look at why...
+</p>
+                </div>
+
+                  <div class="FaqAnswer" id="why-are-prediction-markets-useful">
+                    <h5>Why are Prediction Markets Useful?</h5>
+                    <p>
+Prediction markets can help forecast any verifiable outcome whether political elections, the weather, economic growth, housing prices, the spread of flu outbreaks…you name it.
+                    </p>
+                    <p>
+Studies indicate that prediction markets outperform traditional forecasting methods like expert panels and political polls. Iowa Electronic Markets, a political prediction market, was found to produce more accurate forecasts than professional pollsters, making correct election calls 451 out of 596 times. An internal prediction market at Hewlett-Packard more accurately forecasted printer sales than a team of company executives. Another study showed that orange juice futures produce more accurate weather predictions than the National Weather Service.
+                    </p>
+<p>
+Keep in mind that these studies are based on centralized prediction markets. As we’ll soon see, these are limited and may pale in comparison to the predictive powers of decentralized markets. 
+                    </p>
+                    <p>
+Prediction markets extract the wisdom of the crowd acting like a super magnet that pulls in all the world’s information. Participants predict honestly and to the best of their ability since they have “skin in the game” and stand to lose or gain based on the quality of their forecasts. 
+                    </p><p>Prediction markets not only extract existing knowledge but motivate the production of new knowledge. For example, prediction markets on the weather might motivate meteorologists to develop improved forecasting models. Prediction markets make the creation and revelation of knowledge competitive and meritocratic. 
+</p><p>By compensating good predictions and imposing costs for bad ones, prediction markets reward greater leverage to so-called superforecasters over time while discouraging dishonest or inaccurate ones. </p><p>Markets have a way of bringing the truth to light. Consider the 1986 Challenger explosion. After this tragic accident where the manned space shuttle broke apart seconds after launch, the world wondered what had gone wrong. 
+</p><p>It took a panel of experts months to single out the culprit: a contractor that had manufactured defective rocket parts. But within minutes of the explosion, the contractor’s stock plummeted. What took the panel months to figure out, took the stock market minutes. Somebody somewhere, or more likely a group of somebodies, knew the truth, and they were incentivized to reveal it to the market. 
+</p><p>But while the stock market is good at absorbing information, this is a byproduct of its core task of pricing companies. Prediction markets on the other hand are designed from scratch to aggregate information. They incentivize a diverse crowd to disclose all of their private knowledge and do so as soon as possible lest others beat them to the punch. 
+</p><p>Prediction markets can be a sort of public utility to provide insights of general interest, and can also be used internally by corporations to forecast things like product sales and project completion dates.
+</p><p>Prediction markets can be used not only to predict the future, but to prepare for the future by letting individuals and organizations hedge risk. For example, a Chilean farmer who relies on the weather could protect against the risk of drought by forecasting a low amount of rainfall on a prediction market. If it rains, his crop flourishes, but otherwise, he gets a payout from his hedge. 
+</p><p>A 2008 paper penned by several Nobel Laureates and Google’s Chief Economist made the case that prediction markets can let governments and businesses make better forecasts and policy decisions. They encouraged regulators to take a tolerant stance toward prediction markets since they can help manage economic risk and enhance social welfare. James Surowiecki’s 2004 book, <i>The Wisdom of Crowds</i>, also championed prediction markets as a means to unleash collective insight.
+</p>
+
+                </div>
+
+                <div class="FaqAnswer" id="limits-of-centralized-prediction-markets">
+                    <h5>The Limits of centralized Prediction Markets:</h5>
+                    <p>
+Centralized prediction markets suffer from what could be called the three Cs of centralization: they are Closed, Controlled, and Costly. These factors limit the utility of prediction markets and their ability to absorb information and produce accurate forecasts. 
+                    </p>
+
+                    <p id="closed"><b>Closed:</b></p>
+
+                    <p> Centralized prediction markets, like most financial markets today, are siloed and segregated by borders, capital controls, and regulation. Market operators and regulators act as gatekeepers that limit who can participate and what they can speculate on. There are only a small number of outcomes available to speculate on and no way to create your own markets. 
+</p>
+
+                    <p id="controlled"><b>Controlled (and Censored):</b></p>
+
+                    <p> Centralized prediction markets impose low betting caps, which prevent high-confidence actors from sufficiently expressing their conviction and moving the markets by staking higher amounts. This limits the predictive powers of these markets. The risk of markets being shut down by regulators also discourages participation. 
+
+</p>
+
+                    <p id="costly"><b>Costly:</b></p>
+
+                    <p> Centralized prediction markets charge fees in the forms of cuts on profit or withdrawal fees. This discourages participation and less participation equals less powerful predictions. 
+
+</p>
+
+                    <p id="liquid"><b>In Sum, Illiquid..</b></p>
+
+                    <p> Markets are networks and networks tend to have network effects. This means that each additional participant makes the network more useful and valuable to other participants. One can think of a market as a sort of dating network that connects buyers and sellers. The fewer sellers, the less likely a buyer is to find a match and vice versa. The ability to find a buyer or seller, and do so quickly, is called liquidity. If you can easily find a seller to buy from or a buyer to sell to, a market is liquid. The more liquid a market, the more attractive it is to new buyers and sellers, driving yet more liquidity. 
+
+</p>
+<p>But anything that discourages participation is a drain on liquidity and thwarts these network effects. A centralized prediction market is like a river with a dam: there is little liquidity, and information cannot flow freely.
+</p><p>Imagine we lived in a world where each country or jurisdiction had its own Wikipedia and some places lacked any access to one. Some versions would be more accurate and complete than others, but no version would be as good as the one we have today, since no single source could access all the world’s knowledge. Imagine further, that in this alternative universe, only central authorities could create new Wikipedia pages. There would be far fewer pages and authorities would censor which subjects were included. 
+</p><p>Welcome to the world of centralized prediction markets. Different jurisdictions have different markets and some lack any at all, and only centralized operators can create markets. There’s got to be a better alternative, right?
+</p>
+
+                </div>
+
+                 <div class="FaqAnswer" id="advantages-of-decentralized-prediction-markets">
+                    <h5>The Advantages of Decentralized Prediction Markets:</h5>
+                    <p> 
+DPMs are ownerless entities free of centralized operators. We’ll soon look at how this works, but first, what are the advantages?
+
+                    </p>
+                                      <p id="open"><b>Open:</b></p>
+
+                    <p> DPMs let anyone, anywhere, anytime trade in and create markets on any outcome. DPMs not only open up participation in prediction markets themselves, but speculation in general. If you’re in the developing world, for instance, it’s hard to get access to American stocks. With a DPM, anyone, anywhere can get exposure to any asset by trading in a prediction market on its future value. 
+
+                                                 <center><img src="https://augur.net/src/images/comic_three.png" alt="Poyo The Cat Makes An Invalid Market On Augur" style="width:25em;"><p style="font-style:italic; font-size:.8em;" >Illustration by <a href="https://www.saili.me/about"><b style="color:blue;"><u>Sai Li</u></b></a> <p></center>
+
+</p><p>They also let participants create their own markets. Remember the Chilean farmer who wants to hedge the risk of drought? In the world up till now, he’d be out of luck. At best, it would cost millions of dollars and herculean effort to get a large bank to create a custom-made derivatives instrument. With a DPM like Augur, it would require a couple clicks and the cost of a Starbucks coffee. 
+</p>
+
+                    <p id="free"><b>Free (almost):</b></p>
+
+                    <p> DPMs only impose fees where needed to secure the network. Fees tend to be minimal and trend toward zero over time. 
+
+</p>
+
+                    <p id="reliable"><b>Reliable:</b></p>
+
+                    <p> DPMs eliminate counterparty risk and shady operators; participants need not trust anyone to custody their funds.
+
+</p>
+
+                    <p id="resilient "><b>Resilient:</b></p>
+
+                    <p> DPMs are more resistant to censorship and nefarious actors. They cannot be arbitrarily shut down, and since they are distributed, they have no single point of failure. A DPM like Augur that issues publicly-tradable tokens whose value reflects the platform’s usage, has a wide community of stakeholders incentivized to secure and spread its use.
+
+</p>
+
+                    <p id="magic"><b>The Magic:</b></p>
+
+                    <p> Each of these traits is a game-changer but when you fuse them together you get the magic: a global, open, borderless liquidity pool that serves as an efficient market for absorbing and aggregating the world’s information.
+
+</p><p>Remember that liquidity has powerful network effects. If a centralized prediction market is a swimming pool, a mature DPM is a raging river, where information flows freely and unstoppably. If prediction markets are “truth engines” that power predictions by absorbing the world’s information as efficiently as possible, a centralized prediction market is a Ford Model T. A DPM is a rocket ship.
+</p>
+
+                </div>
+
+                <div class="FaqAnswer" id="rise-of-decentralized-prediction-markets">
+                    <h5>The Rise of Decentralized Prediction Markets:</h5>
+                    <p>
+Until recently, the idea of ownerless, peer-to-peer prediction markets was a pipedream, but thanks to the rise of blockchain and crypto, it’s now a reality. In particular, we now have a collectively shared “world computer” called Ethereum that anyone can access, use, and build tools and applications on and that nobody can censor or shut down. This world computer is actually a network of thousands of computers or “nodes” that talk to each other and duplicate the same data and code. And that’s what makes it so powerful. You can attack or shut down many individual nodes, but the network lives on. 
+                    </p>
+                    <p>
+The power of Ethereum lies in something called “smart contracts,” which have been called “agreements with superpowers,” because they are unstoppable and self-executing. They are written in and enforced by code rather than third parties and are guaranteed to execute as written. They are tamper-proof, censorship-resistant and auditable. There is no “code behind closed doors” as with a Facebook or Uber. Everything is in the open. 
+                    </p>
+
+                                             <center><img src="https://augur.net/src/images/comic_two.png" alt="Grandma Uses Prediction Market Augur" style="width:25em;"><p style="font-style:italic; font-size:.8em;" >Illustration by <a href="https://www.saili.me/about"><b style="color:blue;"><u>Sai Li</u></b></a> <p></center>
+                                                <p>
+A DPM is, in essence, a set of smart contracts that say who gets paid how much under what conditions. For instance, Alice gets paid 20 cents if it rains in Seattle tomorrow. A DPM is one type of Decentralized application (DApp). DApps replace centralized control with code, cryptography, and sometimes, as we’ll soon see, communal incentives. DPM protocols built on Ethereum include Stox, Gnosis, and Augur. Related protocols on other blockchains include Hivemind built on Bitcoin and Bodhi built on Qtum. 
+                    </p><p>These are early days for DPMs. Just as early iPhones traded off screen size and computing power for new features like portability and GPS, today’s blockchains trade off speed and efficiency for trust and resilience. Due to scalability issues, DPMs today can be slow and costly to use. But these are issues that can and will be resolved in time. 
+</p>
+                </div>
+
+                <div class="FaqAnswer" id="the-oracle-problem">
+                    <h5>Solving The Oracle Problem:</h5>
+                    <p>
+As we saw, a DPM is, in essence, a set of smart contracts that say who will get paid how much if X or Y event occurs. But who decides which outcome actually occurred? 
+                    </p><p>In a centralized prediction market, it’s easy. Once a market expires, the operator says whether X or Y happened. But in a DPM there’s no operator! A market actor or group of actors could stand to gain millions or even billions by manipulating an outcome and claiming that Y occurred when in fact X was the true outcome.
+</p><p>This is an example of a broader conundrum called The Oracle Problem. An oracle is whatever feeds truth about the real world into a blockchain. Blockchains are immutable, tamper-proof ledgers, but the real-world is messy and rife with misinformation.  So how can a blockchain interact with the real world while preserving its truthfulness? In the case of a DPM, how can you ensure accurate market outcomes?
+</p><p>There are different ways to solve this challenge. Augur, for example, uses an incentivized communal resolution system. Market outcomes undergo a resolution process whereby participants can dispute outcomes by placing a financial stake. Those who stake on the accurate outcome, or more precisely, on the outcome that the market ultimately resolves to, win an additional stake. Those who report inaccurate outcomes, lose their stakes. This incentivizes honest reporting.
+</p><p>Some would argue that a decentralized oracle, rather than a prediction engine, is the ultimate innovation of a DPM like Augur. Such an oracle can serve as a canonical source of truth about the state of reality, a sort of generalized fact-checker. In a world plagued by misinformation and fake news, such an oracle could serve as the ultimate arbiter of what actually happened. </p> <p> So a DPM like Augur may more accurately be called a decentralized truth market. It produces honest predictions about the future but also honest reports of what has already occurred and the present state of the world. </p>
+
+                </div>
+
+                <div class="FaqAnswer" id="bet-on-prediction-markets-today">
+                    <h5>How To Use a DPM Today:</h5>
+                    <p>
+Let’s take a quick peek at Augur as an example of how to use a DPM. One can participate on Augur in many ways, including making predictions, creating markets and reporting on outcomes. 
+                    </p><p>
+Right now, traders on Augur use Ether, the native token of the Ethereum network, to buy and sell shares. In an upcoming release, traders will be able to use a stablecoin that equals a US Dollar. There are several types of markets on Augur, the simplest of which is YES/NO. Such markets either resolve YES (the outcome occurred), NO (it did not), or INVALID if the outcome is deemed unverifiable. 
+                    </p><p>Let’s say there’s a YES/NO market on whether or not Dwayne Johnson will be elected president in 2024. Every long (YES) share you buy pays out one ether if the market resolves YES (Dwayne becomes president) and pays out nothing if the market resolves NO (he doesn’t). If the market is trading at .25 ether a share, that means the market thinks there’s a roughly 25% likelihood Dwayne will be elected president. If you buy a YES share, you stand to gain .75 ether if the market resolves YES or lose .25 ether if the market resolves NO. If you sell a YES share at .25 ether, you stand to gain .25 ether if the market resolves NO or lose .75 ether if the market resolves YES. You can also buy fractions of shares. 
+</p><p>Augur’s native token, called Reputation (REP), is used to create markets and to report on and resolve their outcomes. All useful actions on Augur from making good predictions to creating markets that people want to trade in to honestly reporting event outcomes are incentivized in order to align the individual interests of market actors with the collective utility and security of the platform. 
+</p><p>Augur can be accessed via a downloadable app or via a web app. To get started, visit <a class="cta-in-text" href="https://augur.net">augur.net</a>. 
+</p>
+                </div>
+
+                <div class="FaqAnswer" id="citations">
+                    <h5>Citations:</h5>
+
+                    <a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.320.1811&rep=rep1&type=pdf">The Promise of Predictions Markets</a><br>
+
+                    <a href="https://www.circle.com/marketing/pdfs/research/circle-research-prediction-markets.pdf">Prediction Markets Sector Report | Circle Research </a><br>
+
+                    <a href="https://www.springer.com/la/book/9783834933584"> Prediction Markets: Fundamentals, Designs, and Applications </a><br>
+
+                    <a href="https://www.amazon.com/Information-Markets-New-Making-Decisions/dp/0844742287"> Information Markets: A New Way of Making Decisions in the Public and Private Sectors </a><br>
+
+                    <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=641444"> Harnessing the Power of Information: A New Approach to Economic Development </a><br>
+
+                    <a href="http://science.sciencemag.org/content/291/5506/987"> The Real Power of Artifical Markets </a><br>
+
+                </div>
+
+            </div>
+
+            <div class="FaqIndex">
+                <h5>The Ultimate Guide to Decentralized Prediction Markets:</h5>
+                <div class="FaqIndex__question">
+                    <a href="#welcome-to-the-future">Welcome To The Future</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#what-is-prediction-market">What Is A Prediction Market?</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#why-are-prediction-markets-useful">Why Are Prediction Markets Useful?</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#limits-of-centralized-prediction-markets">Limits of centralized Prediction Markets</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#advantages-of-decentralized-prediction-markets">Advantages of Decentralized Prediction Markets</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#rise-of-decentralized-prediction-markets">The Rise of Decentralized Prediction Markets</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#the-oracle-problem">Solving The Oracle Problem</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#bet-on-prediction-markets-today">How To Use A Decentralized Prediction Market Today</a>
+                </div>
+                <div class="FaqIndex__question">
+                    <a href="#citations">Citations</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="Footer">
+        <div class="max-width">
+            <div class="Footer__main-wrap">
+                <a href="/"><img alt="FAQ - Frequently Asked Questions" src="/dist/images/augur-logo--white.svg"></a>
+                <div class="Footer__nav-wrap">
+                    <ul>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/bounty/">Bug Bounty</a></li>
+                        <li><a href="/faq/" target="_blank">FAQ</a></li>
+                        <li><a href="https://medium.com/@AugurProject" target="_blank">Weekly Reports</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="https://docs.augur.net/" target="_blank">Documentation</a></li>
+                        <li><a href="https://github.com/AugurProject/whitepaper" target="_blank">Whitepaper</a></li>
+                        <li><a href="/disclaimer/">Disclaimer</a></li>
+                        <li><a href="mailto:team@augur.net" target="_blank">Contact</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="https://github.com/AugurProject/augur-core/blob/master/LICENSE" target="_blank">Augur Core License</a></li>
+                        <li><a href="https://github.com/AugurProject/augur/blob/master/LICENSE" target="_blank">Augur UI License</a></li>
+                        <li><a href="https://github.com/AugurProject/augur-node/blob/master/LICENSE" target="_blank">Augur Node License</a></li>
+                        <li><a href="https://github.com/AugurProject/augur-app/blob/master/LICENSE.md" target="_blank">Augur App License</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="/terms-of-service/">Terms of Service</a></li>
+                        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+                        <li><a href="/cookies-and-related-technologies-notice/">Cookies Notice</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="Footer__sub-wrap">
+                <span>Copyright &#64; 2019 Forecast Foundation OU</span>
+                <ul>
+                    <li>
+                        <a href="https://discord.gg/faud6Fx" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--discord--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://augur.stackexchange.com/" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--stack-exchange--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://facebook.com/AugurProject/" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--facebook--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/AugurProject" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--twitter--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://reddit.com/r/Augur" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--reddit--white.svg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/AugurProject" target="_blank">
+                            <img alt="FAQ - Frequently Asked Questions" src="/dist/images/icon--github--white.svg">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <script src="/dist/scripts/site.min.js"></script>
+</body>
+
+</html>

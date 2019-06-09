@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="24px" viewBox="0 0 20 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>se-icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="footer" transform="translate(-1063.000000, -321.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="icons">
+                <g transform="translate(1018.000000, 321.000000)">
+                    <g id="se-icon" transform="translate(45.000000, 0.000000)">
+                        <path d="M0,10.4628633 L19.1888058,10.4628633 L19.1888058,14.4413348 L0,14.4413348 L0,10.4628633 Z M0,5.32185145 L19.1888058,5.32185145 L19.1888058,9.30032293 L0,9.30032293 L0,5.32185145 Z M16.1873482,0 C17.8548246,0 19.1888058,1.42088267 19.1888058,3.17761033 L19.1888058,4.21097955 L0,4.21097955 L0,3.17761033 C0,1.42088267 1.38528812,0 3.07841804,0 L16.1873482,0 Z M0,15.5780409 L19.3170732,15.5780409 L19.3170732,16.6114101 C19.3170732,18.3681378 17.9317851,19.7890205 16.2386551,19.7890205 L15.3407832,19.7890205 L11.2875328,24 L11.2875328,19.7890205 L3.07841804,19.7890205 C1.38528812,19.7890205 0,18.3681378 0,16.6114101 L0,15.5780409 Z" id="Combined-Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

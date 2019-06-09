@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-74080255-11"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-74080255-11', { 'anonymize_ip': true });
+  </script>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Disclosures - Bugs & Vulnerabilities  | Augur Prediction Markets</title>
+  <meta content="Disclosures - Bugs & Vulnerabilities  | Augur Prediction Markets" property="og:title">
+  <meta content="Disclosures - Bugs & Vulnerabilities  | Augur Prediction Markets" property="og:site_name">
+  <meta content="Disclosures - Bugs & Vulnerabilities  | Augur Prediction Markets" name="twitter:title">
+  <meta content="Disclosures - Bugs & Vulnerabilities  | Augur Prediction Markets" name="twitter:card">
+  <meta content="Augur Prediction Markets" name="twitter:domain">
+
+  <meta content="The Augur Disclosure Program provides the public disclosures of bugs and vulnerabilites discovered in the Augur protocol or supporting software. Rewards up to $200,000 USD are available for additional findings." name="description">
+  <meta content="The Augur Disclosure Program provides the public disclosures of bugs and vulnerabilites discovered in the Augur protocol or supporting software. Rewards up to $200,000 USD are available for additional findings." property="og:description">
+  <meta content="The Augur Disclosure Program provides the public disclosures of bugs and vulnerabilites discovered in the Augur protocol or supporting software. Rewards up to $200,000 USD are available for additional findings." name="twitter:description">
+
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.augur.net/disclosures/"/>
+  <meta content="https://www.augur.net/disclosures/" property="og:url">
+
+  <meta content="https://augur.net/dist/images/meta_logo.png" property="og:image">
+  <meta content="https://augur.net/dist/images/meta_logo.png" name="twitter:image">
+  <meta content="https://augur.net/dist/images/meta_logo.png" name="twitter:image:src">
+
+  <link rel="stylesheet" type="text/css" href="/dist/styles/site.min.css" defer>
+  <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <meta content="LQMTXnM-70SbbKHdPCf9S9o_w2Au-bA3a6-2Z9kSCOo" name="google-site-verification">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" defer />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js" defer></script>
+  <script>
+    window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#553580"
+        },
+        "button": {
+          "background": "#FFF",
+        }
+      }
+    })});
+  </script>
+</head>
+
+<body>
+  <header class="Header">
+    <div class="Header__wrap">
+      <a href="/">
+        <img alt="Augur Bug Bounty" src="/dist/images/augur-logo.svg">
+      </a>
+      <div class="Header__nav">
+        <ul>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/bounty/">Bug Bounty</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="https://medium.com/@AugurProject" target="_blank">Weekly Reports</a></li>
+        </ul>
+        <img alt="Augur Bug Bounty" class="Header__nav-mobile-close" src="/dist/images/icon--times.svg">
+      </div>
+      <img alt="Augur Bug Bounty" class="Header__nav-mobile-open" src="/dist/images/icon--bars.svg">
+    </div>
+  </header>
+  <section class="Hero--wide" style="    padding-bottom: 7.25rem;">
+    <div class="Hero__wrap">
+      <div>
+        <h1 class="with-line">Bug & Vulnerability Disclosures</h1>
+        <h4>Public disclosure of various known bugs and issues.</h4>
+      </div>
+    </div>
+  </section>
+  <section class="Scope" style="background-color:#44415a;">
+    <div class="Scope__wrap" style="margin-bottom: 6em;">
+      <h2 style="color:white;">Vulnerability Reports:</h2>
+      <div class="Scope__blocks" style="max-width: 100%;">
+
+        <div class="Scope__block">
+          <div class="Scope__block-wrap">
+            <div>
+              <h3>02.11.19 - Augur UI</h3>
+              <p><b>8 Outcome Categorical Markets Broken During Disputing.</b> 8 outcome categorical markets hide the last outcome in replace of invalid during a dispute, showing 8 total outcomes when it should be 9 (including invalid). This issue...</p>
+            </div>
+            <ul class="Scope__rewards-list" style="text-align:center;">
+              <h4 style="margin-bottom:1em;"> <b> Severity Assessment </b> </h4>
+              <li style="display:inherit;"><span style="color:red;">High: </span><span><span>paid  </span>$5,000</span></li>
+              <p style="margin-top:1rem;">Peter Benesch <a href="https://twitter.com/P_Benesch"><b>(@P_Benesch)</b></a></p>
+              <li style="width:120px;margin-left: auto; margin-right: auto;background-color: transparent;color: black;border-style: solid;font-weight: bold;padding: 0em .75em;margin-top:-1em;min-width:120px;margin-bottom:1rem;"><span style="font-size: .8rem;text-align: center;"><a href="https://hackerone.com/augurproject">Full Report:</a></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="Scope__block" style="margin-bottom: 2rem;">
+          <div class="Scope__block-wrap">
+            <div>
+              <h3>12.12.18 - Augur Contracts</h3>
+              <p><b>Indisputable Reporting via Arbitrarily Large Initial Reports.</b> The initial reporter stake is determined by the REP balance of the specific InitialReporter contract at the time of initial report. This can be arbitrarily...</p>
+            </div>
+            <ul class="Scope__rewards-list" style="text-align:center;">
+              <h4 style="margin-bottom:1em;"> <b> Severity Assessment </b> </h4>
+              <li style="display:inherit;"><span style="color:yellow;">Medium: </span><span><span>paid </span>$2,000</span></li>
+              <p style="margin-top:1rem;">Michael Xu <a href="https://hackerone.com/michaelx"><b>(@michaelx)</b></a></p>
+              <li style="width:120px;margin-left: auto; margin-right: auto;background-color: transparent;color: black;border-style: solid;font-weight: bold;padding: 0em .75em;margin-top:-1em;min-width:120px;margin-bottom:1rem;"><span style="font-size: .8rem;text-align: center;"><a href="https://hackerone.com/reports/397194">Full Report:</a></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="Scope__block" style="margin-bottom: 2rem;">
+          <div class="Scope__block-wrap">
+            <div>
+              <h3>08.11.18 - Augur Contracts</h3>
+              <p><b>Incorrect Reporting Fee Calculation.</b> The reporting fee in Augur is calculated and adjusted by comparing the OI within the platform to a target OI which is based on the price of REP. The goal of this is to dynamically adjust...</p>
+            </div>
+            <ul class="Scope__rewards-list" style="text-align:center;">
+              <h4 style="margin-bottom:1em;"> <b> Severity Assessment </b> </h4>
+              <li style="display:inherit;"><span style="color:red;">High: </span><span><span>paid </span>$5,000</span></li>
+              <p style="margin-top:1rem;">Jack Peterson <a href="https://twitter.com/tinybike"><b>(@tinybike)</b></a></p>
+              <li style="width:120px;margin-left: auto; margin-right: auto;background-color: transparent;color: black;border-style: solid;font-weight: bold;padding: 0em .75em;margin-top:-1em;min-width:120px;margin-bottom:1rem;"><span style="font-size: .8rem;text-align: center;"><a href="https://hackerone.com/augurproject">Full Report:</a></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="Scope__block" style="margin-bottom: 2rem;">
+          <div class="Scope__block-wrap">
+            <div>
+              <h3>08.04.18 - Augur UI</h3>
+              <p><b>Augur UI data can be completely replaced by an attacker which can lead to fund and reputation loss.</b> A third party site can include a hidden iframe which can override "augur-node" configuration variable of a running Augur...</p>
+            </div>
+            <ul class="Scope__rewards-list" style="text-align:center;">
+              <h4 style="margin-bottom:1em;"> <b> Severity Assessment </b> </h4>
+              <li style="display:inherit;"><span style="color:red;">High: </span><span><span>paid </span>$5,000</span></li>
+              <p style="margin-top:1rem;">Viacheslav Sniezhkov <a href="https://twitter.com/slava_snezhkov"><b>(@droblin)</b></a></p>
+              <li style="width:120px;margin-left: auto; margin-right: auto;background-color: transparent;color: black;border-style: solid;font-weight: bold;padding: 0em .75em;margin-top:-1em;min-width:120px;margin-bottom:1rem;"><span style="font-size: .8rem;text-align: center;"><a href="https://hackerone.com/reports/386587">Full Report:</a></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="Scope__block" style="margin-bottom: 2rem;">
+          <div class="Scope__block-wrap">
+            <div>
+              <h3>07.31.18 - Augur UI</h3>
+              <p><b>Full UI hijack via dormant browser service workers.</b> The attack described in this document consists of abusing all modern browser's service worker security policy coupled with Augur's architectural design of running the UI in...</p>
+            </div>
+            <ul class="Scope__rewards-list" style="text-align:center;">
+              <h4 style="margin-bottom:1em;"> <b> Severity Assessment </b> </h4>
+              <li style="display:inherit;"><span style="color:green;">Low: </span><span><span>paid </span>$1,000</span></li>
+              <p style="margin-top:1rem;">Péter Szilágyi <a href="https://twitter.com/peter_szilagyi"><b>(@karalabe)</b></a></p>
+              <li style="width:120px;margin-left: auto; margin-right: auto;background-color: transparent;color: black;border-style: solid;font-weight: bold;padding: 0em .75em;margin-top:-1em;min-width:120px;margin-bottom:1rem;"><span style="font-size: .8rem;text-align: center;"><a href="https://hackerone.com/reports/380594">Full Report:</a></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="Scope__block" style="margin-bottom: 2rem;">
+          <div class="Scope__block-wrap">
+            <div>
+              <h3>07.20.18 - Augur Contracts</h3>
+              <p><b>Orderbook Linked List Ordering Bugs.</b> The structure and logic for the on chain orderbook is spread throughout multiple contracts and is somewhat complex. While generally working correctly there are few known contract logic...</p>
+            </div>
+            <ul class="Scope__rewards-list" style="text-align:center;">
+              <h4 style="margin-bottom:1em;"> <b> Severity Assessment </b> </h4>
+              <li style="display:inherit;"><span style="color:yellow;">Medium: </span><span><span>paid </span>$2,500</span></li>
+              <p style="margin-top:1rem;">Alex Chapman <a href="https://github.com/nuevoalex"><b>(@nuevoalex)</b></a></p>
+              <li style="width:120px;margin-left: auto; margin-right: auto;background-color: transparent;color: black;border-style: solid;font-weight: bold;padding: 0em .75em;margin-top:-1em;min-width:120px;margin-bottom:1rem;"><span style="font-size: .8rem;text-align: center;"><a href="https://hackerone.com/augurproject">Full Report:</a></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="Scope__block" style="margin-bottom: 2rem;">
+          <div class="Scope__block-wrap">
+            <div>
+              <h3>07.19.18 - Augur Website</h3>
+              <p><b>Subdomain takeover on slack.augur.net pointing to GitHub Pages.</b> The slack.augur.net record wasn't removed from the DNS after the migration to Discord (invite.augur.net) and was pointing to a non-existent page on GitHub Pages. So a subdomain takeover...</p>
+            </div>
+            <ul class="Scope__rewards-list" style="text-align:center;">
+              <h4 style="margin-bottom:1em;"> <b> Severity Assessment </b> </h4>
+              <li style="display:inherit;"><span style="color:yellow;">Medium: </span><span><span>paid </span>$250</span></li>
+              <p style="margin-top:1rem;">George Jubleanu <a href="https://hackerone.com/sorachiace"><b>(@sorachiace)</b></a></p>
+              <li style="width:120px;margin-left: auto; margin-right: auto;background-color: transparent;color: black;border-style: solid;font-weight: bold;padding: 0em .75em;margin-top:-1em;min-width:120px;margin-bottom:1rem;"><span style="font-size: .8rem;text-align: center;"><a href="https://hackerone.com/reports/382995">Full Report:</a></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="Scope__block">
+          <div class="Scope__block-wrap">
+            <div>
+              <h3>07.05.18 - Augur Contracts</h3>
+              <p><b>A miner can manipulate the gas reporting bond.</b> The ETH bond provided during market creation could be manipulated by a malicious miner to become so high that it would be prohibitively expensive for normal market creation. Since this...</p>
+            </div>
+            <ul class="Scope__rewards-list" style="text-align:center;">
+              <h4 style="margin-bottom:1em;"> <b> Severity Assessment </b> </h4>
+              <li style="display:inherit;"><span style="color:red;">High: </span><span><span>paid </span>$5,000</span></li>
+              <p style="margin-top:1rem;">Edmund Edgar <a href="https://twitter.com/edmundedgar"><b>(@edmundedgar)</b></a></p>
+              <li style="width:120px;margin-left: auto; margin-right: auto;background-color: transparent;color: black;border-style: solid;font-weight: bold;padding: 0em .75em;margin-top:-1em;min-width:120px;margin-bottom:1rem;"><span style="font-size: .8rem;text-align: center;"><a href="https://hackerone.com/reports/377398">Full Report:</a></span></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <section class="BountiesFAQ">
+    <div class="max-width">
+      <div class="BountiesFAQ__questions">
+        <div class="BountiesFAQ__question">
+          <h5>What scoring system is used?</h5>
+          <p>The Forecast Foudnation utilizes the Common Vulnerability Scoring System (CVSS) - an industry standard calculator used to determine the severity of a bug. The CVSS enables there to be a common language around the severity of bugs. Read more about CVSS <a href="https://docs.hackerone.com/hackers/severity.html">here.</a></p>
+        </div>
+        <div class="BountiesFAQ__question">
+          <h5>How do I submit a report?</h5>
+          <p>Ideally, you submit bugs and reports via the <a href="https://hackerone.com/augurproject">Augur HackerOne</a> project, where a prompt and timley response is assured. If you believe you have discovered a severe or critical vulnerability where time is ticking, please reach out to any Foundation member in the <a href="https://invite.augur.net">Augur Discord</a> for an immediate response. </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="Footer">
+    <div class="max-width">
+      <div class="Footer__main-wrap">
+        <a href="/"><img alt="Augur Bug Bounty" src="/dist/images/augur-logo--white.svg"></a>
+        <div class="Footer__nav-wrap">
+          <ul>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/bounty/">Bug Bounty</a></li>
+            <li><a href="/faq/" target="_blank">FAQ</a></li>
+            <li><a href="https://medium.com/@AugurProject" target="_blank">Weekly Reports</a></li>
+          </ul>
+          <ul>
+            <li><a href="https://docs.augur.net/" target="_blank">Documentation</a></li>
+            <li><a href="https://github.com/AugurProject/whitepaper" target="_blank">Whitepaper</a></li>
+            <li><a href="/disclaimer/">Disclaimer</a></li>
+            <li><a href="mailto:team@augur.net" target="_blank">Contact</a></li>
+          </ul>
+          <ul>
+            <li><a href="https://github.com/AugurProject/augur-core/blob/master/LICENSE" target="_blank">Augur Core License</a></li>
+            <li><a href="https://github.com/AugurProject/augur/blob/master/LICENSE" target="_blank">Augur UI License</a></li>
+            <li><a href="https://github.com/AugurProject/augur-node/blob/master/LICENSE" target="_blank">Augur Node License</a></li>
+            <li><a href="https://github.com/AugurProject/augur-app/blob/master/LICENSE.md" target="_blank">Augur App License</a></li>
+          </ul>
+          <ul>
+            <li><a href="/terms-of-service/">Terms of Service</a></li>
+            <li><a href="/privacy-policy/">Privacy Policy</a></li>
+            <li><a href="/cookies-and-related-technologies-notice/">Cookies Notice</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="Footer__sub-wrap">
+        <span>Copyright &#64; 2019 Forecast Foundation OU</span>
+        <ul>
+          <li>
+            <a href="https://discord.gg/faud6Fx" target="_blank">
+              <img alt="Augur Bug Bounty" src="/dist/images/icon--discord--white.svg">
+            </a>
+          </li>
+          <li>
+            <a href="https://augur.stackexchange.com/" target="_blank">
+              <img alt="Augur Bug Bounty" src="/dist/images/icon--stack-exchange--white.svg">
+            </a>
+          </li>
+          <li>
+            <a href="https://facebook.com/AugurProject/" target="_blank">
+              <img alt="Augur Bug Bounty" src="/dist/images/icon--facebook--white.svg">
+            </a>
+          </li>
+          <li>
+            <a href="https://twitter.com/AugurProject" target="_blank">
+              <img alt="Augur Bug Bounty" src="/dist/images/icon--twitter--white.svg">
+            </a>
+          </li>
+          <li>
+            <a href="https://reddit.com/r/Augur" target="_blank">
+              <img alt="Augur Bug Bounty" src="/dist/images/icon--reddit--white.svg">
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/AugurProject" target="_blank">
+              <img alt="Augur Bug Bounty"src="/dist/images/icon--github--white.svg">
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+  <script src="/dist/scripts/site.min.js"></script>
+</body>
+</html>
