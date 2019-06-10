@@ -3,7 +3,7 @@ import RunWorker from "./Sync.worker";
 import {API} from "@augurproject/sdk/build/state/getter/API";
 import {Callback, Connector} from "@augurproject/sdk/build/connector/connector";
 import {SubscriptionEventNames} from "@augurproject/sdk/build/constants";
-import {buildAPI} from "@augurproject/sdk/build/state";
+import {buildAPI} from "@augurproject/sdk";
 
 export class WebWorkerConnector extends Connector {
   private api: API;
