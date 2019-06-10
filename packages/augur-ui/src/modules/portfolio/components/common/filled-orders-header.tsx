@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import Styles from "modules/portfolio/components/common/headers/data-table-header.styles";
+import Styles from "modules/portfolio/components/common/data-table-header.styles";
 
 interface FilledOrdersHeaderProps {
   extendedView?: boolean;

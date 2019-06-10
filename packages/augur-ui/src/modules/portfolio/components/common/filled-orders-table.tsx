@@ -12,7 +12,7 @@ import {
 } from "modules/common/labels";
 import { ViewTransactionDetailsButton } from "modules/common/buttons";
 
-import Styles from "modules/portfolio/components/common/tables/filled-orders-table.styles";
+import Styles from "modules/portfolio/components/common/filled-orders-table.styles";
 
 export interface FilledOrdersTableProps {
   filledOrder: FilledOrder;

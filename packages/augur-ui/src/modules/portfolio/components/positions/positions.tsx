@@ -7,7 +7,7 @@ import { MovementLabel } from "modules/common/labels";
 import PositionsTable from "modules/market/containers/positions-table";
 import { END_TIME } from "modules/common/constants";
 
-import Styles from "modules/portfolio/components/common/quads/quad.styles";
+import Styles from "modules/portfolio/components/common/quad.styles";
 
 const sortByOptions = [
   {

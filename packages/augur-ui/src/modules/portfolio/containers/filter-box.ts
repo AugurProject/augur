@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import FilterBox from "modules/portfolio/components/common/quads/filter-box";
+import FilterBox from "modules/portfolio/components/common/filter-box";
 import { pick } from "lodash";
 
 import { createMarketsStateObject } from "modules/portfolio/helpers/create-markets-state-object";

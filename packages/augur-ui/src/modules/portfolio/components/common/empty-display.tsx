@@ -1,6 +1,6 @@
 import React from "react";
 
-import Styles from "modules/portfolio/components/common/tables/empty-display.styles";
+import Styles from "modules/portfolio/components/common/empty-display.styles";
 
 export interface EmptyDisplayProps {
   filterLabel: string;

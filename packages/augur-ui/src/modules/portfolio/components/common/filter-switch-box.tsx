@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
 
-import QuadBox from "modules/portfolio/components/common/quads/quad-box";
+import QuadBox from "modules/portfolio/components/common/quad-box";
 import { NameValuePair, Market } from "modules/portfolio/types";
-import EmptyDisplay from "modules/portfolio/components/common/tables/empty-display";
+import EmptyDisplay from "modules/portfolio/components/common/empty-display";
 import { isEqual } from "lodash";
 
 export interface MarketsByReportingState {

@@ -6,7 +6,7 @@ import { LinearPropertyLabel } from "modules/common/labels";
 import { MarketProgress } from "modules/common/progress";
 import { END_TIME } from "modules/common/constants";
 
-import Styles from "modules/portfolio/components/common/quads/quad.styles";
+import Styles from "modules/portfolio/components/common/quad.styles";
 
 const sortByOptions = [
   {

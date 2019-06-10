@@ -1,13 +1,13 @@
 import React from "react";
 
-import PositionsHeader from "modules/portfolio/components/common/headers/positions-header";
+import PositionsHeader from "modules/portfolio/components/common/positions-header";
 import PositionRow from "modules/portfolio/containers/position-row";
 import { Position } from "modules/portfolio/types";
 import classNames from "classnames";
 import CompleteSets from "modules/market/components/complete-sets/complete-sets";
 
 import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
-import Styles from "modules/portfolio/components/common/tables/market-positions-table.styles";
+import Styles from "modules/portfolio/components/common/market-positions-table.styles";
 
 export interface MarketPositionsTableProps {
   positions: Array<Position>;

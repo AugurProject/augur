@@ -7,7 +7,7 @@ import { CancelTextButton } from "modules/common/buttons";
 import MarketLink from "modules/market/components/market-link/market-link";
 import { Order } from "modules/portfolio/types";
 
-import Styles from "modules/portfolio/components/common/rows/open-order-expanded-content.styles";
+import Styles from "modules/portfolio/components/common/open-order-expanded-content.styles";
 
 export interface OpenOrderExpandedContentProps {
   openOrder: Order;
