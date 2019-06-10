@@ -37,9 +37,13 @@ export class SyncStatus extends AbstractDB {
         sort: ["blockNumber"],
       });
 
-      console.log(highestBlock.docs);
+      //console.log(highestBlock.docs);
 
-      return (highestBlock.docs[0] as any).blockNumber;
+      if (highestBlock.docs && highestBlock.docs.length > 0) {
+        return (highestBlock.docs[0] as any).blockNumber;
+      } else {
+        return 0;
+      }
     }
   }
 }

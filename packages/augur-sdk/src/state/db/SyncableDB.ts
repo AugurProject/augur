@@ -144,6 +144,8 @@ export class SyncableDB extends AbstractDB {
   public addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
 
+    console.log(logs);
+
     let success = true;
     let documents;
     if (logs.length > 0) {
@@ -167,6 +169,16 @@ export class SyncableDB extends AbstractDB {
     if (success) {
       await this.notifyNewBlockEvent(blocknumber);
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
+      console.log("checking for a write", blocknumber);
+      const highestBlock = await this.find({
+        selector: {
+          blockNumber: { $gt: 0 },
+        },
+        fields: ["blockNumber"],
+        sort: ["blockNumber"],
+      });
+
+      console.log(highestBlock.docs);
     } else {
       throw new Error(`Unable to add new block`);
     }

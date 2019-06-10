@@ -20,17 +20,7 @@ export class WebsocketConnector extends Connector {
     } as any);
 
     this.socket.onMessage.addListener((message: string) => {
-      try {
-        const response = JSON.parse(message);
-
-        if (response.result.result) {
-          if (this.subscriptions[response.result.eventName]) {
-            this.subscriptions[response.result.eventName].callback(...(response.result.result));
-          }
-        }
-      } catch (error) {
-        console.error("Bad JSON RPC response: " + message);
-      }
+      this.messageReceived(message);
     });
 
     this.socket.onError.addListener((message: string) => {
@@ -44,6 +34,20 @@ export class WebsocketConnector extends Connector {
     });
 
     return this.socket.open();
+  }
+
+  public messageReceived(message: string) {
+    try {
+      const response = JSON.parse(message);
+
+      if (response.result.result) {
+        if (this.subscriptions[response.result.eventName]) {
+          this.subscriptions[response.result.eventName].callback(...(response.result.result));
+        }
+      }
+    } catch (error) {
+      console.error("Bad JSON RPC response: " + message);
+    }
   }
 
   public async disconnect(): Promise<any> {
