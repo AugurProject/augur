@@ -1,6 +1,5 @@
-import React, { Component, ReactNode } from "react";
+import React, { ReactNode } from "react";
 
-import { find } from "lodash";
 import { ALL_MARKETS, END_TIME } from "modules/common/constants";
 import QuadBox from "modules/portfolio/components/common/quads/quad-box";
 import { SwitchLabelsGroup } from "modules/common/switch-labels-group";
@@ -131,13 +130,14 @@ export default class FilterBox extends React.Component<
   };
 
   applySortBy = (value: string, data: Array<Market>) => {
-    const valueObj = find(this.props.sortByOptions, { value });
+    const { currentAugurTimestamp, sortByOptions } = this.props;
+    const valueObj = sortByOptions.find(option => ({ value }));
     let comp: any;
 
     if (valueObj && valueObj.comp) {
       comp = valueObj.comp;
     }
-    const { currentAugurTimestamp } = this.props;
+   
 
     if (valueObj && valueObj.value === END_TIME) {
       comp = (marketA, marketB) => {
@@ -176,7 +176,7 @@ export default class FilterBox extends React.Component<
 
     const { filteredData, search, selectedTab, tabs } = this.state;
 
-    let selectedLabel: any = find(tabs, { key: selectedTab });
+    let selectedLabel: any = tabs.find(tab => ({ key: selectedTab }));
 
     if (selectedLabel) {
       selectedLabel = selectedLabel.label.toLowerCase();
