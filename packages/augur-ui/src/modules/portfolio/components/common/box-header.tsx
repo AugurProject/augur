@@ -15,23 +15,18 @@ export interface BoxHeaderProps {
 
 const BoxHeader = (props: BoxHeaderProps) => (
   <>
-    <div
-      className={classNames(
-        Styles.BoxHeader__headerContainer,
-        Styles.ShowOnMobile
-      )}
-    >
-      <div className={Styles["BoxHeader__rightContent--mobile"]}>
+    <div className={Styles.ShowOnMobile}>
+      <div className={Styles.RightContent}>
         {props.rightContent}
       </div>
       <div
-        className={classNames(Styles.BoxHeader_middleContainer, {
+        className={classNames(Styles.Middle, {
           [Styles.isSwitched]: props.switchHeaders
         })}
       >
         {props.bottomBarContent && (
           <div
-            className={classNames(Styles["BoxHeader__bottomContent--mobile"], {
+            className={classNames(Styles.BottomContent, {
               [Styles.noBackground]: props.noBackgroundBottom
             })}
           >
@@ -39,27 +34,27 @@ const BoxHeader = (props: BoxHeaderProps) => (
           </div>
         )}
         {props.mostRightContent && (
-          <div className={Styles["BoxHeader__mostRightContent--mobile"]}>
+          <div className={Styles.MostRightContent}>
             {props.mostRightContent}
           </div>
         )}
       </div>
       {props.bottomRightBarContent && (
-        <div className={Styles["BoxHeader__bottomRightContent--mobile"]}>
+        <div className={Styles.BottomRightContent}>
           {props.bottomRightBarContent}
         </div>
       )}
     </div>
-    <div className={Styles.HideOnMobile}>
-      <div className={Styles["BoxHeader__header--top-row"]}>
-        <div className={Styles.BoxHeader__title}>{props.title}</div>
-        <div className={Styles.BoxHeader__right}>
+    <div className={classNames(Styles.BoxHeader, Styles.HideOnMobile)}>
+      <div>
+        <div>{props.title}</div>
+        <div>
           {props.rightContent}
           {props.mostRightContent}
         </div>
       </div>
       {props.bottomBarContent && (
-        <div className={Styles["BoxHeader__header--bottom-row"]}>
+        <div>
           {props.bottomBarContent}
           {props.bottomRightBarContent}
         </div>
