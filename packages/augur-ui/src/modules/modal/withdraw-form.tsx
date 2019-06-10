@@ -202,7 +202,8 @@ export class WithdrawForm extends Component<
       <div className={Styles.WithdrawForm}>
         <Title title="Send Funds" closeAction={closeAction} />
         <main>
-          // @ts-ignore
+          {/*
+            // @ts-ignore */}
           <Description
             description={["Send funds from your connected wallet"]}
           />
