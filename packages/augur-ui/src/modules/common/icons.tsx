@@ -40,8 +40,7 @@ export const CollapseIcon = (
     <path d="M10 6.5L10 13.5"strokeLinecap="round" />
     <path
       d="M13 21L10 24L7 21"
-      stroke="#484552"
-      strokeLinecap="round"
+x      strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path d="M10 23.5L10 16.5" strokeLinecap="round" />
@@ -57,12 +56,10 @@ export const ExpandIcon = (
         width="18"
         height="4"
         rx="1"
-        stroke="#484552"
         strokeLinecap="round"
       />
       <path
         d="M13 6L10 9L7 6"
-        stroke="#484552"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -72,12 +69,10 @@ export const ExpandIcon = (
         x2="7.5"
         y2="-0.5"
         transform="matrix(-4.37114e-08 -1 -1 4.37114e-08 9.5 8)"
-        stroke="#484552"
         strokeLinecap="round"
       />
       <path
         d="M13 22L10 19L7 22"
-        stroke="#484552"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -86,7 +81,6 @@ export const ExpandIcon = (
         y1="20.5"
         x2="10"
         y2="27.5"
-        stroke="#484552"
         strokeLinecap="round"
       />
     </g>
