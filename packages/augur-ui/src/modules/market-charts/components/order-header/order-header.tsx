@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import StylesHeader from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";
-import Styles from "modules/market-charts/components/market-outcome--header-orders/market-outcome--header-orders.styles.less";
+import Styles from "modules/market-charts/components/order-header/order-header.styles.less";
 
 const collapseIcon = (
   <svg width="20" height="30" viewBox="0 0 20 30" fill="none">
@@ -77,7 +77,7 @@ const expandIcon = (
   </svg>
 );
 
-interface MarketOutcomeChartsHeaderOrdersProps {
+interface OrderHeaderProps {
   title: string;
   headers: Array<any>;
   extended: boolean;
@@ -85,55 +85,35 @@ interface MarketOutcomeChartsHeaderOrdersProps {
   hide: boolean;
 }
 
-const MarketOutcomeChartsHeaderOrders = ({
+const OrderHeader = ({
   title,
   headers,
   extended,
   toggle,
   hide
-}: MarketOutcomeChartsHeaderOrdersProps) => (
-  <section className={Styles.MarketOutcomeChartsHeader__orders}>
+}: OrderHeaderProps) => (
+  <section className={Styles.OrderHeader}>
     <button
-      className={classNames(
-        StylesHeader.Heading,
-        Styles.MarketOutcomeChartsHeader__heading
-      )}
+      className={StylesHeader.Heading}
       onClick={toggle}
     >
       {title}
       <span>{extended ? expandIcon : collapseIcon}</span>
     </button>
     {!hide && (
-      <div
-        className={classNames(
-          Styles.MarketOutcomeChartsHeader__stats,
-          Styles["MarketOutcomeChartsHeader__stats--orders"]
-        )}
-      >
-        <div
-          className={Styles["MarketOutcomeChartsHeader__stat--right"]}
-          style={{ justifyContent: "flex-start" }}
-        >
-          <span className={Styles["MarketOutcomeChartsHeader__stat-title"]}>
-            {headers[0]}
-          </span>
+      <div>
+        <div>
+          {headers[0]}
         </div>
-        <div
-          className={Styles["MarketOutcomeChartsHeader__stat--right"]}
-          style={{ justifyContent: "center" }}
-        >
-          <span className={Styles["MarketOutcomeChartsHeader__stat-title"]}>
-            {headers[1]}
-          </span>
+        <div>
+          {headers[1]}
         </div>
-        <div className={Styles["MarketOutcomeChartsHeader__stat--right"]}>
-          <span className={Styles["MarketOutcomeChartsHeader__stat-title"]}>
-            {headers[2]}
-          </span>
+        <div>
+          {headers[2]}
         </div>
       </div>
     )}
   </section>
 );
 
-export default MarketOutcomeChartsHeaderOrders;
+export default OrderHeader;
