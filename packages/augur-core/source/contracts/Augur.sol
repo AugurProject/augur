@@ -22,6 +22,8 @@ import 'ROOT/ITime.sol';
 
 
 // Centralized approval authority and event emissions
+
+/// @title Augur
 contract Augur is IAugur {
     using SafeMathUint256 for uint256;
 
@@ -238,6 +240,8 @@ contract Augur is IAugur {
     // Time
     //
 
+    /// @dev Returns Augur’s internal Unix timestamp.
+    /// @return (uint256) Augur’s internal Unix timestamp
     function getTimestamp() public view returns (uint256) {
         return time.getTimestamp();
     }

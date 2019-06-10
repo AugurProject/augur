@@ -1,7 +1,7 @@
 import { Dependencies, AbiFunction, AbiParameter, Transaction, TransactionReceipt } from 'contract-dependencies';
 import { ethers } from 'ethers'
 import { BigNumber } from 'bignumber.js';
-import { TransactionRequest } from "ethers/providers";
+import { TransactionRequest, TransactionResponse } from "ethers/providers";
 import { isInstanceOfBigNumber, isInstanceOfEthersBigNumber, isInstanceOfArray } from "./utils";
 import * as _ from "lodash";
 
@@ -14,6 +14,9 @@ export interface EthersProvider {
     call(transaction: Transaction<ethers.utils.BigNumber>): Promise<string>;
     estimateGas(transaction: TransactionRequest): Promise<ethers.utils.BigNumber>;
     listAccounts(): Promise<string[]>;
+    getBalance(address: string): Promise<ethers.utils.BigNumber>;
+    getGasPrice(): Promise<ethers.utils.BigNumber>;
+    getTransaction(hash: string): Promise<TransactionResponse>;
 }
 
 export enum TransactionStatus {
@@ -160,7 +163,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         } finally {
             delete this.transactionDataMetaData[txMetadataKey];
         }
-        
+
     }
 
     public async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {
