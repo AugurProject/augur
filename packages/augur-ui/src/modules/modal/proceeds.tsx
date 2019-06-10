@@ -33,7 +33,8 @@ export const Proceeds = (props: ProceedsProps) => (
         // @ts-ignore
         <DescriptionMessage messages={props.descriptionMessage} />
       )}
-      // @ts-ignore
+      {/*
+        // @ts-ignore */}
       {props.rows && <ActionRows rows={props.rows} />}
       {props.breakdown && <Breakdown short rows={props.breakdown} />}
     </main>

@@ -1,28 +1,32 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 
-import FormStyles from "modules/common/form-styles";
+import FormStyles from "modules/common/form-styles.less";
 import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
-import Styles from "modules/forking/components/migrate-rep-form.styles";
+import Styles from "modules/forking/components/migrate-rep-form.styles.less";
+import { MarketData } from "modules/types";
 
-export default class FormattedMigrationTotals extends Component {
-  static propTypes = {
-    selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-      .isRequired,
-    currentBlockNumber: PropTypes.number.isRequired,
-    getForkMigrationTotals: PropTypes.func.isRequired,
-    market: PropTypes.object.isRequired,
-    validateOutcome: PropTypes.func.isRequired
-  };
+interface FormattedMigrationTotalsProps {
+  selectedOutcome: string | number;
+  currentBlockNumber: number;
+  getForkMigrationTotals: Function;
+  market: MarketData;
+  validateOutcome: Function;
+}
 
+interface FormattedMigrationTotalsState {
+  formattedMigrationTotals: any;
+  blockNumber: number;
+}
+
+export default class FormattedMigrationTotals extends Component<FormattedMigrationTotalsProps, FormattedMigrationTotalsState> {
   constructor(props) {
     super(props);
 
     this.state = {
       formattedMigrationTotals: null,
-      blockNumber: props.currentBlockNumber
+      blockNumber: props.currentBlockNumber,
     };
   }
 
@@ -35,7 +39,7 @@ export default class FormattedMigrationTotals extends Component {
     const currentBlock = createBigNumber(newProps.currentBlockNumber);
     if (currentBlock.gt(updateBlock)) {
       this.setState({
-        blockNumber: newProps.currentBlockNumber
+        blockNumber: newProps.currentBlockNumber,
       });
     }
   }
@@ -58,10 +62,10 @@ export default class FormattedMigrationTotals extends Component {
       const { reportableOutcomes } = market;
       const formattedMigrationTotals = selectMigrateTotals(
         reportableOutcomes,
-        forkMigrationTotals
+        forkMigrationTotals,
       );
       this.setState({
-        formattedMigrationTotals
+        formattedMigrationTotals,
       });
     });
   }
@@ -75,12 +79,12 @@ export default class FormattedMigrationTotals extends Component {
       <ul className={FormStyles["Form__radio-buttons--per-line"]}>
         {formattedMigrationTotals &&
           formattedMigrationTotals.length > 0 &&
-          formattedMigrationTotals.map(outcome => (
+          formattedMigrationTotals.map((outcome) => (
             <li key={outcome.id}>
               <button
                 className={classNames({
                   [`${FormStyles.active}`]: selectedOutcome === outcome.id,
-                  [FormStyles.isInvalidField]: outcome.name === "Indeterminate"
+                  [FormStyles.isInvalidField]: outcome.name === "Indeterminate",
                 })}
                 onClick={e => {
                   validateOutcome(outcome.id, outcome.name, false);

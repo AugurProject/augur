@@ -52,13 +52,15 @@ export default class ModalTradingOverlay extends Component<ModalTradingOverlayPr
       >
         <section>
           <div className={Styles.OverlayHeader}>
-            // @ts-ignore
+            {/*
+              // @ts-ignore */}
             <button role="button" tabIndex={-1} onClick={closeModal}>
               {Close}
             </button>
             <div>Select an Outcome</div>
           </div>
-          // @ts-ignore
+          {/*
+            // @ts-ignore */}
           <MarketOutcomesList
             marketId={marketId}
             outcomes={outcomes}

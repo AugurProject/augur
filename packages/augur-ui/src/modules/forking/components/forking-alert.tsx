@@ -1,15 +1,28 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import ForkingContent from "modules/forking/components/forking-content";
 import ChevronFlip from "modules/common/chevron-flip";
-import Styles from "modules/forking/components/forking-alert.styles";
+import Styles from "modules/forking/components/forking-alert.styles.less";
+import { Universe } from "modules/types";
 
-class ForkingAlert extends Component {
+interface ForkingAlertProps {
+  location: Location;
+  universe: Universe;
+  currentTime: number;
+  doesUserHaveRep: boolean;
+  marginLeft: number;
+  finalizeMarket: (...args: Array<any>) => any;
+}
+
+class ForkingAlert extends Component<ForkingAlertProps, { isExpanded: boolean }> {
+  static defaultProps = {
+    marginLeft: 0,
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
-      isExpanded: false
+      isExpanded: false,
     };
 
     this.expand = this.expand.bind(this);
@@ -19,14 +32,14 @@ class ForkingAlert extends Component {
     const { location } = this.props;
     if (nextProps.location !== location) {
       this.setState({
-        isExpanded: false
+        isExpanded: false,
       });
     }
   }
 
   expand() {
     this.setState({
-      isExpanded: !this.state.isExpanded
+      isExpanded: !this.state.isExpanded,
     });
   }
 
@@ -36,13 +49,13 @@ class ForkingAlert extends Component {
       doesUserHaveRep,
       marginLeft,
       universe,
-      finalizeMarket
+      finalizeMarket,
     } = this.props;
     const {
       forkEndTime,
       forkingMarket,
       isForkingMarketFinalized,
-      forkReputationGoal
+      forkReputationGoal,
     } = universe;
     const forkWindowActive = Number(forkEndTime) > currentTime;
 
@@ -98,18 +111,5 @@ class ForkingAlert extends Component {
     );
   }
 }
-
-ForkingAlert.propTypes = {
-  location: PropTypes.object.isRequired,
-  universe: PropTypes.object.isRequired,
-  currentTime: PropTypes.number.isRequired,
-  doesUserHaveRep: PropTypes.bool.isRequired,
-  marginLeft: PropTypes.number,
-  finalizeMarket: PropTypes.func.isRequired
-};
-
-ForkingAlert.defaultProps = {
-  marginLeft: 0
-};
 
 export default ForkingAlert;
