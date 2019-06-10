@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Input } from "modules/common/form";
 import classNames from "classnames";
 import parseQuery from "modules/routes/helpers/parse-query";
@@ -8,27 +7,35 @@ import makeQuery from "modules/routes/helpers/make-query";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 import { FILTER_SEARCH_PARAM } from "modules/common/constants";
 import { Hint } from "modules/common/icons";
-import Styles from "modules/filter-sort/components/filter-search.styles";
+import Styles from "modules/filter-sort/components/filter-search.styles.less";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/tooltip.styles";
+import TooltipStyles from "modules/common/tooltip.styles.less";
 
-export default class FilterSearch extends Component {
-  static propTypes = {
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    isSearchingMarkets: PropTypes.bool
-  };
+interface FilterSearchProps {
+  location: Location;
+  history: History;
+  isSearchingMarkets?: boolean;
+}
 
+interface FilterSearchState {
+  search: string;
+  placeholder: string;
+}
+
+export default class FilterSearch extends Component<FilterSearchProps, FilterSearchState> {
   static defaultProps = {
-    isSearchingMarkets: false
+    isSearchingMarkets: false,
   };
+
+  public timeout;
+  public parent;
 
   constructor(props) {
     super(props);
 
     this.state = {
       search: "",
-      placeholder: "Search"
+      placeholder: "Search",
     };
 
     this.updateQuery = this.updateQuery.bind(this);
@@ -92,9 +99,10 @@ export default class FilterSearch extends Component {
     }
 
     updatedSearch = makeQuery(updatedSearch);
+    // @ts-ignore
     history.push({
       ...location,
-      search: updatedSearch
+      search: updatedSearch,
     });
   }
 
@@ -105,7 +113,7 @@ export default class FilterSearch extends Component {
     return (
       <article
         className={Styles.FilterSearch}
-        ref={parent => {
+        ref={(parent) => {
           this.parent = parent;
         }}
       >

@@ -164,7 +164,8 @@ export default class ModalParticipate extends Component<ModalParticipateProps, M
             <label htmlFor="modal__participate-quantity">
               Quantity (1 token @ 1 REP)
             </label>
-            // @ts-ignore
+            {/*
+              // @ts-ignore */}
             <Input
               id="modal__participate-quantity"
               type="number"

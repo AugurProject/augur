@@ -121,7 +121,8 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
   <div className={Styles.Orders}>
     <Title title={props.title} closeAction={props.closeAction} />
     <main>
-      // @ts-ignore
+      {/*
+        // @ts-ignore */}
       <Description description={props.description} />
       <MarketTitle title={props.marketTitle} />
       {props.header && (
