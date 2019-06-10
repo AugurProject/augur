@@ -243,7 +243,7 @@ async function runCommandForNetwork(networkConfiguration: NetworkConfiguration, 
           const networkId = await ethersProvider.getNetworkId();
 
           const signer = await EthersFastSubmitWallet.create(networkConfiguration.privateKey, provider);
-          const dependencies = new ContractDependenciesEthers(provider, signer);
+          const dependencies = new ContractDependenciesEthers(ethersProvider, signer);
 
           const addresses = Addresses[networkId];
           const { Augur: address } = Addresses[networkId];

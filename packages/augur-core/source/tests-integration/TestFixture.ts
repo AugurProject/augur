@@ -283,9 +283,9 @@ export class TestFixture {
         return new ReputationToken(this.dependencies, repContractAddress);
     }
 
-    public async getEthBalance(): Promise<BigNumber> {
+    public async getEthBalance(): Promise<string> {
         const ethBalance = await this.provider.getBalance(this.account);
-        return new BigNumber(ethBalance.toString());
+        return ethBalance.toString();
     }
 
     public async getRepBalance(owner: string): Promise<BigNumber> {

@@ -3,6 +3,7 @@ import Find from "pouchdb-find";
 import Memory from "pouchdb-adapter-memory";
 import PouchDB from "pouchdb";
 import * as _ from "lodash";
+import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
@@ -93,7 +94,7 @@ export abstract class AbstractDB {
 
 export type PouchDBFactoryType = (dbName: string) => PouchDB.Database;
 
-export function PouchDBFactory(dbArgs: object) {
+export function PouchDBFactory(dbArgs: DatabaseConfiguration) {
   const dbDir = "db";
 
   if (fs && fs.existsSync && !fs.existsSync(dbDir)) {

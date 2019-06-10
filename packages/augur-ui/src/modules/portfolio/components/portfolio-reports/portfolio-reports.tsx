@@ -10,7 +10,7 @@ import {
 import Styles from "modules/portfolio/components/portfolio-reports/portfolio-reports.styles";
 import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
 import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
-import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
+import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label";
 
 import { formatRep } from "utils/format-number";
 import { RepBalance } from "modules/common/labels";

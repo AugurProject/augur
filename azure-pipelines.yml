@@ -94,19 +94,16 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn test
+          yarn test --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
       - bash: |
           set -euo pipefail
           yarn workspace @augurproject/sdk test
-        displayName: augur-sdk test
-        condition: |
-          and
-          (
-            succeeded(),
-            eq(variables['JOB_TRIGGER_SDK'], 'true')
-          )
-
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testRunner: JUnit
+          testResultsFiles: '**/junit.xml'
 
   - job: Augur_build_docker_image
     dependsOn:
