@@ -1,0 +1,71 @@
+@import (reference) '~assets/styles/shared';
+
+.OrderHeader {
+  display: flex;
+  flex-direction: column;
+  min-height: fit-content;
+
+  > button {
+    > span {
+      margin-top: -1px;
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      > span {
+        > svg {
+          > rect,
+          > path,
+          > line {
+            stroke: @color-secondary-text;
+          }
+
+          > g {
+            > rect,
+            > path,
+            > line {
+              stroke: @color-secondary-text;
+            }
+          }
+        }
+      }
+    }
+
+    @media @breakpoint-mobile {
+      display: none;
+    }
+  }
+
+  > div {
+    background-color: @color-theme-primary;
+    display: flex;
+    height: 100%;
+    padding: @size-9 @size-24 @size-9 @size-10;
+
+    > div:first-of-type {
+      justify-content: flex-start;
+      margin-left: @size-16;
+    }
+
+    > div:nth-of-type(2) {
+      justify-content: center;
+    }
+
+    > div {
+      .mono-10;
+
+      color: @color-neutral;
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      text-transform: capitalize;
+      text-transform: uppercase;
+      white-space: nowrap;
+
+      @media @breakpoint-mobile {
+        .mono-9;
+      }
+    }
+  }
+}
