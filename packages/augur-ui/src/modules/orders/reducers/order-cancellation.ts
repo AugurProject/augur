@@ -1,6 +1,6 @@
 import {
   UPDATE_ORDER_STATUS,
-  UPDATE_ORDER_REMOVE
+  UPDATE_ORDER_REMOVE,
 } from "modules/orders/actions/update-order-status";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { OrderCancellations, BaseAction } from "modules/types";
@@ -16,14 +16,14 @@ export default function(orderCancellation = DEFAULT_STATE, { type, data }: BaseA
       const { orderId, status } = data;
       return {
         ...orderCancellation,
-        [orderId]: status
+        [orderId]: status,
       };
     }
     case UPDATE_ORDER_REMOVE: {
       const { orderId } = data;
       delete orderCancellation[orderId];
       return {
-        ...orderCancellation
+        ...orderCancellation,
       };
     }
     case RESET_STATE:

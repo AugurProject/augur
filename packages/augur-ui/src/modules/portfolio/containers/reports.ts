@@ -13,16 +13,17 @@ import { loadReportingHistory } from "modules/reports/actions/load-reporting-his
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { loadDisputingDetails } from "modules/reports/actions/load-disputing-details";
+import { MarketData } from "modules/types";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const PAGINATION_COUNT = 10;
-  const forkedMarket = state.universe.isForking
+  const forkedMarket: Array<MarketData> = state.universe.isForking
     ? selectMarket(state.universe.forkingMarket)
     : null;
   const disputeOutcomes = marketDisputeOutcomes() || {};
-  const disputableMarkets = [];
-  const upcomingDisputableMarkets = [];
-  const resolvedMarkets = [];
+  const disputableMarkets: Array<MarketData> = [];
+  const upcomingDisputableMarkets: Array<MarketData> = [];
+  const resolvedMarkets: Array<MarketData> = [];
 
   const reportedMarkets =
     (state.reports &&
@@ -30,7 +31,7 @@ const mapStateToProps = state => {
       state.reports.markets[state.universe.id]) ||
     [];
 
-  each(reportedMarkets, marketId => {
+  each(reportedMarkets, (marketId) => {
     const market = selectMarket(marketId);
     switch (market.reportingState) {
       case constants.REPORTING_STATE.CROWDSOURCING_DISPUTE:
@@ -53,13 +54,13 @@ const mapStateToProps = state => {
   const userResolvedMarkets = orderBy(
     resolvedMarkets,
     ["endTime.timestamp"],
-    ["desc"]
+    ["desc"],
   );
 
-  const disputableMarketIds = disputableMarkets.map(item => item.id) || [];
-  const resolvedMarketIds = userResolvedMarkets.map(item => item.id) || [];
+  const disputableMarketIds = disputableMarkets.map((item) => item.id) || [];
+  const resolvedMarketIds = userResolvedMarkets.map((item) => item.id) || [];
   const upcomingDisputableMarketIds = upcomingDisputableMarkets.map(
-    item => item.id
+    (item) => item.id,
   );
 
   return {
@@ -84,25 +85,25 @@ const mapStateToProps = state => {
     forkEndTime: state.universe.forkEndTime,
     forkingMarketId: state.universe.forkingMarket,
     disputableMarketIds,
-    upcomingDisputableMarketIds
+    upcomingDisputableMarketIds,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
-  getReportingFees: callback => dispatch(getReportingFees(callback)),
-  updateModal: modal => dispatch(updateModal(modal)),
+const mapDispatchToProps = (dispatch) => ({
+  finalizeMarket: (marketId) => dispatch(sendFinalizeMarket(marketId)),
+  getReportingFees: (callback) => dispatch(getReportingFees(callback)),
+  updateModal: (modal) => dispatch(updateModal(modal)),
   loadMarkets: () => dispatch(loadReportingHistory()),
-  loadMarketsInfoIfNotLoaded: marketIds =>
+  loadMarketsInfoIfNotLoaded: (marketIds) =>
     dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+  toggleFavorite: (marketId) => dispatch(toggleFavorite(marketId)),
   loadDisputingDetails: (marketIds, cb) =>
-    dispatch(loadDisputingDetails(marketIds, cb))
+    dispatch(loadDisputingDetails(marketIds, cb)),
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(PortfolioReports)
+    mapDispatchToProps,
+  )(PortfolioReports),
 );

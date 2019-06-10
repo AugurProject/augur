@@ -10,7 +10,7 @@ export default function() {
   return marketsOpenOrders(store.getState());
 }
 
-export const marketsOpenOrders = createSelector(selectMarkets, allMarkets => {
+export const marketsOpenOrders = createSelector(selectMarkets, (allMarkets) => {
   const markets = allMarkets.reduce((p, m) => {
     if (m.marketStatus === constants.MARKET_CLOSED) return p;
     const userOpenOrders = getUserOpenOrders(m.id) || [];
@@ -22,18 +22,18 @@ export const marketsOpenOrders = createSelector(selectMarkets, allMarkets => {
         ...m,
         recentlyTraded: marketsPositionsRecentlyTraded[m.id] || 0,
         filledOrders: getUserFilledOrders(m.id) || [],
-        userOpenOrders
-      }
+        userOpenOrders,
+      },
     ];
   }, []);
 
   markets.sort(
-    (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
+    (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp,
   );
 
   const individualOrders = markets.reduce(
     (p, market) => [...p, ...getUserOpenOrders(market.id)],
-    []
+    [],
   );
 
   const marketsObj = markets.reduce((obj, market) => {
@@ -50,6 +50,6 @@ export const marketsOpenOrders = createSelector(selectMarkets, allMarkets => {
     markets,
     marketsObj,
     ordersObj,
-    openOrders: individualOrders
+    openOrders: individualOrders,
   };
 });

@@ -323,9 +323,10 @@ export interface FilledOrder {
   amount: string;
   price: string;
   type: string;
-  timestamp: number;
+  timestamp: DateFormattedObject;
   transactionHash: string;
   marketId: string;
+  marketDescription: string;
   logIndex: number;
 }
 
@@ -451,6 +452,7 @@ export interface PositionData extends PositionsTotal {
   marketId: string;
   netPosition: string;
   outcome: number;
+  outcomeId: string;
   position: string;
   timestamp: number;
 }

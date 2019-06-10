@@ -5,7 +5,7 @@ import ToggleRow from "modules/common/toggle-row";
 import { MarketStatusLabel } from "modules/common/labels";
 import MarketLink from "modules/market/components/market-link/market-link";
 
-import Styles from "modules/portfolio/components/common/rows/market-row.styles";
+import Styles from "modules/portfolio/components/common/rows/market-row.styles.less";
 
 export interface TimeObject {
   formattedShortDate: string;
@@ -37,12 +37,12 @@ const MarketRow = (props: MarketRowProps) => {
   const content = (
     <div
       className={classNames(Styles.MarketRow__contentContainer, {
-        [Styles.MarketRow__noToggle]: props.noToggle
+        [Styles.MarketRow__noToggle]: props.noToggle,
       })}
     >
       <div
         className={classNames(Styles.MarketRow__content, {
-          [Styles.MarketRow__contentShow]: props.showState
+          [Styles.MarketRow__contentShow]: props.showState,
         })}
       >
         {props.showState && (
@@ -62,7 +62,7 @@ const MarketRow = (props: MarketRowProps) => {
       </div>
       <span
         className={classNames(Styles.MarketRow__time, {
-          [Styles.MarketRow__timeShow]: props.showState
+          [Styles.MarketRow__timeShow]: props.showState,
         })}
       >
         {props.rightContent}
