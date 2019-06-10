@@ -8,6 +8,24 @@
   > button {
     > span {
       margin-top: -1px;
+      > svg {
+        width: @size-20;
+        height: @size-28;
+
+        > rect,
+        > path,
+        > line {
+          stroke: @color-neutral-secondary;
+        }
+
+        > g {
+          > rect,
+          > path,
+          > line {
+            stroke: @color-neutral-secondary;
+          }
+        }
+      }
     }
 
     &:hover {
