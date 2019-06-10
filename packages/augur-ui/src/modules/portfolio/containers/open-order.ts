@@ -29,36 +29,36 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "orderName",
       columnType: COLUMN_TYPES.TEXT,
       text: orderLabel,
-      keyId: openOrder.id
+      keyId: openOrder.id,
     },
     {
       key: "orderType",
       columnType: COLUMN_TYPES.POSITION_TYPE,
-      type: openOrder.type
+      type: openOrder.type,
     },
     {
       key: "unmatchedShares",
       columnType: COLUMN_TYPES.VALUE,
       value: openOrder.unmatchedShares && unmatchedShares,
-      keyId: "openOrder-unmatchedShares-" + openOrder.id
+      keyId: "openOrder-unmatchedShares-" + openOrder.id,
     },
     {
       key: "avgPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: openOrder.avgPrice && avgPrice,
-      keyId: "openOrder-price-" + openOrder.id
+      keyId: "openOrder-price-" + openOrder.id,
     },
     {
       key: "tokensEscrowed",
       columnType: COLUMN_TYPES.VALUE,
       value: tokensEscrowed,
-      keyId: "openOrder-tokensEscrowed-" + openOrder.id
+      keyId: "openOrder-tokensEscrowed-" + openOrder.id,
     },
     {
       key: "sharesEscrowed",
       columnType: COLUMN_TYPES.VALUE,
       value: sharesEscrowed,
-      keyId: "openOrder-sharesEscrowed-" + openOrder.id
+      keyId: "openOrder-sharesEscrowed-" + openOrder.id,
     },
     {
       key: "cancel",
@@ -69,8 +69,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: (e: Event) => {
         e.stopPropagation();
         openOrder.cancelOrder(openOrder);
-      }
-    }
+      },
+    },
   ];
   return {
     ...oP,
@@ -80,8 +80,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     columnProperties,
     styleOptions: {
       noToggle: oP.extendedViewNotOnMobile,
-      openOrder: true
-    }
+      openOrder: true,
+    },
   };
 };
 
@@ -89,6 +89,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Row)
+    mergeProps,
+  )(Row),
 );

@@ -3,7 +3,7 @@ import {
   ADD_MARKET_LIQUIDITY_ORDERS,
   REMOVE_LIQUIDITY_ORDER,
   LOAD_PENDING_LIQUIDITY_ORDERS,
-  CLEAR_ALL_MARKET_ORDERS
+  CLEAR_ALL_MARKET_ORDERS,
 } from "modules/orders/actions/liquidity-management";
 import { LiquidityOrders, LiquidityOrder, BaseAction } from "modules/types";
 
@@ -27,7 +27,7 @@ export default function(
   switch (type) {
     case LOAD_PENDING_LIQUIDITY_ORDERS:
       return {
-        ...data.pendingLiquidityOrders
+        ...data.pendingLiquidityOrders,
       };
     case ADD_MARKET_LIQUIDITY_ORDERS: {
       const { liquidityOrders, marketId } = data;
@@ -35,13 +35,13 @@ export default function(
       const updatedOrderBook = marketOutcomes.reduce((acc, outcome) => {
         acc[outcome] = liquidityOrders[outcome].map((order, index, array) => ({
           ...array[index],
-          index
+          index,
         }));
         return acc;
       }, {});
       return {
         ...pendingLiquidityOrders,
-        [marketId]: updatedOrderBook
+        [marketId]: updatedOrderBook,
       };
     }
     case CLEAR_ALL_MARKET_ORDERS: {
@@ -52,11 +52,11 @@ export default function(
       const { order, updates, marketId, outcomeId } = data;
       const updatedOrder = {
         ...order,
-        ...updates
+        ...updates,
       };
       const updatedOutcomeArray = pendingLiquidityOrders[marketId][
         outcomeId
-      ].map(outcomeOrder => {
+      ].map((outcomeOrder) => {
         if (outcomeOrder.index !== updatedOrder.index) return outcomeOrder;
         return updatedOrder;
       });

@@ -3,7 +3,7 @@
 import React from "react";
 
 import { formatShares } from "utils/format-number";
-import { FilledOrder } from "modules/portfolio/types";
+import { MarketData } from "modules/types";
 import MarketLink from "modules/market/components/market-link/market-link";
 import {
   LinearPropertyLabel,
@@ -12,11 +12,11 @@ import {
 } from "modules/common/labels";
 import { ViewTransactionDetailsButton } from "modules/common/buttons";
 
-import Styles from "modules/portfolio/components/common/tables/filled-orders-table.styles";
+import Styles from "modules/portfolio/components/common/tables/filled-orders-table.styles.less";
 
 export interface FilledOrdersTableProps {
-  filledOrder: FilledOrder;
-  showMarketInfo: Boolean;
+  filledOrder: MarketData;
+  showMarketInfo: boolean;
 }
 
 const FilledOrdersTable = (props: FilledOrdersTableProps) => {
@@ -34,7 +34,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
           <li>Time Stamp</li>
           <li>TX Details</li>
         </ul>
-        {filledOrder.trades.map((trade: FilledOrder, i: number) => (
+        {filledOrder.trades.map((trade: MarketData, i: number) => (
           <ul key={i} className={Styles.FilledOrdersTable__trade}>
             <li>
               <ValueLabel value={formatShares(trade.amount)} />
@@ -54,7 +54,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <span>Market:</span> {filledOrder.marketDescription}
           </MarketLink>
         )}
-        {filledOrder.trades.map((trade: FilledOrder, i: number) => (
+        {filledOrder.trades.map((trade: MarketData, i: number) => (
           <div key={i}>
             <LinearPropertyLabel
               highlightFirst

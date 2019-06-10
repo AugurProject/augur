@@ -6,33 +6,33 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/common/constants";
 import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const positions = getLoginAccountPositions();
-  const timestamps = getMarketsPositionsRecentlyTraded(state);
+  const timestamps = getMarketsPositionsRecentlyTraded();
   const markets = getPositionsMarkets(timestamps, positions);
 
   return {
-    markets
+    markets,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  claimTradingProceeds: marketId =>
-    dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId }))
+const mapDispatchToProps = (dispatch) => ({
+  claimTradingProceeds: (marketId) =>
+    dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId })),
 });
 
 const getPositionsMarkets = memoize(
   (marketsPositionsRecentlyTraded, positions) =>
-    Array.from(new Set([...positions.markets])).map(m => ({
+    Array.from(new Set([...positions.markets])).map((m) => ({
       ...m,
-      recentlyTraded: marketsPositionsRecentlyTraded[m.id]
+      recentlyTraded: marketsPositionsRecentlyTraded[m.id],
     })),
-  { max: 1 }
+  { max: 1 },
 );
 
 const PositionsContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Positions);
 
 export default PositionsContainer;

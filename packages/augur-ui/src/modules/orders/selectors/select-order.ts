@@ -6,7 +6,7 @@ export default function(
   marketId,
   outcome,
   orderTypeLabel,
-  orderBooks
+  orderBooks,
 ) {
   return getOrder(orderId, marketId, outcome, orderTypeLabel, orderBooks);
 }
@@ -25,10 +25,10 @@ const getOrder = memoize(
       marketId,
       outcome,
       orderTypeLabel,
-      orderBooks
+      orderBooks,
     );
     if (orderBook == null) return null;
     return orderBook[orderId] || null;
   },
-  { max: 1 }
+  { max: 1 },
 );

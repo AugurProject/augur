@@ -1,5 +1,5 @@
 import React from "react";
-import Styles from "modules/reporting/components/invalid-message/invalid-message.styles";
+import Styles from "modules/reporting/components/invalid-message/invalid-message.styles.less";
 
 const InvalidMessage = () => (
   <div className={Styles.InvalidMessage}>

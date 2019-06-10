@@ -5,60 +5,62 @@ import { Helmet } from "react-helmet";
 import PortfolioReportsForkedMarketCard from "modules/portfolio/components/portfolio-reports/portfolio-reports-forked-market-card";
 import {
   TYPE_CLAIM_PROCEEDS,
-  MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET
+  MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
 } from "modules/common/constants";
-import Styles from "modules/portfolio/components/portfolio-reports/portfolio-reports.styles";
+import Styles from "modules/portfolio/components/portfolio-reports/portfolio-reports.styles.less";
 import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
 import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label";
 
 import { formatRep } from "utils/format-number";
 import { RepBalance } from "modules/common/labels";
+import { MarketData } from "modules/types";
 
-export default class PortfolioReports extends Component {
-  static propTypes = {
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    markets: PropTypes.array.isRequired,
-    availableRep: PropTypes.string,
-    upcomingMarkets: PropTypes.array.isRequired,
-    upcomingMarketsCount: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool.isRequired,
-    isConnected: PropTypes.bool.isRequired,
-    outcomes: PropTypes.object.isRequired,
-    isForking: PropTypes.bool.isRequired,
-    forkingMarketId: PropTypes.string.isRequired,
-    paginationCount: PropTypes.number.isRequired,
-    disputableMarketsLength: PropTypes.number,
-    showPagination: PropTypes.bool.isRequired,
-    showUpcomingPagination: PropTypes.bool.isRequired,
-    currentTimestamp: PropTypes.number.isRequired,
-    getReportingFees: PropTypes.func.isRequired,
-    finalizeMarket: PropTypes.func.isRequired,
-    forkedMarket: PropTypes.object,
-    updateModal: PropTypes.func.isRequired,
-    reportingFees: PropTypes.object.isRequired,
-    resolvedMarkets: PropTypes.array.isRequired,
-    resolvedMarketIds: PropTypes.array.isRequired,
-    toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
-    loadMarkets: PropTypes.func.isRequired,
-    disputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    upcomingDisputableMarketIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    loadDisputingDetails: PropTypes.func.isRequired
-  };
 
+interface PortfolioReportsProps {
+  location: Location;
+  history: History;
+  markets: Array<MarketData>;
+  availableRep?: string;
+  upcomingMarkets: Array<MarketData>;
+  upcomingMarketsCount: number;
+  isMobile: boolean;
+  isConnected: boolean;
+  outcomes: object
+  isForking: boolean;
+  forkingMarketId: string;
+  paginationCount: number;
+  disputableMarketsLength?: number;
+  showPagination: boolean;
+  showUpcomingPagination: boolean;
+  currentTimestamp: number;
+  getReportingFees: Function;
+  finalizeMarket: Function;
+  forkedMarket?: MarketData;
+  updateModal: Function;
+  reportingFees: object
+  resolvedMarkets: Array<MarketData>;
+  resolvedMarketIds: Array<MarketData>;
+  toggleFavorite: Function;
+  loadMarketsInfoIfNotLoaded: Function;
+  loadMarkets: Function;
+  disputableMarketIds: Array<string>;
+  upcomingDisputableMarketIds: Array<string>;
+  loadDisputingDetails: Function;
+}
+
+export default class PortfolioReports extends Component<PortfolioReportsProps> {
   static defaultProps = {
     forkedMarket: null,
     disputableMarketsLength: 0,
-    availableRep: "0"
+    availableRep: "0",
   };
 
   constructor(props) {
     super(props);
 
     this.handleClaimReportingFeesForkedMarket = this.handleClaimReportingFeesForkedMarket.bind(
-      this
+      this,
     );
     this.modalCallback = this.modalCallback.bind(this);
   }
@@ -78,7 +80,7 @@ export default class PortfolioReports extends Component {
       unclaimedEth: unclaimedForkEth,
       unclaimedRep: unclaimedForkRepStaked,
       forkedMarket,
-      modalCallback: this.modalCallback
+      modalCallback: this.modalCallback,
     });
   };
 
