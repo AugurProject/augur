@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { formatAttoRep, formatAttoEth, formatRep } from "utils/format-number";
 import Styles from "modules/reporting/components/reporting-header/reporting-header.styles";
 import { MODAL_PARTICIPATE } from "modules/common/constants";
-import ForkingContent from "modules/forking/components/forking-content/forking-content";
+import ForkingContent from "modules/forking/components/forking-content";
 import TimeProgressBar from "modules/reporting/components/time-progress-bar/time-progress-bar";
 
 import { RepBalance } from "modules/common/labels";
