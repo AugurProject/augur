@@ -6,11 +6,11 @@ import { pick } from "lodash";
 
 import { createMarketsStateObject } from "modules/portfolio/helpers/create-markets-state-object";
 
-const mapStateToProps = state => ({
-  currentAugurTimestamp: state.blockchain.currentAugurTimestamp
+const mapStateToProps = (state) => ({
+  currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = (dispatch) => ({});
 
 const mergeProps = (sP, dP, oP) => {
   const marketsObj = oP.markets.reduce((obj, market) => {
@@ -21,7 +21,7 @@ const mergeProps = (sP, dP, oP) => {
   const marketsPick =
     oP.markets &&
     oP.markets.map((
-      market // when these things change then component will re-render/re-sort
+      market, // when these things change then component will re-render/re-sort
     ) => pick(market, oP.pickVariables));
 
   const marketsByState = createMarketsStateObject(marketsPick);
@@ -30,7 +30,7 @@ const mergeProps = (sP, dP, oP) => {
     ...oP,
     ...sP,
     dataObj: marketsObj,
-    data: marketsByState
+    data: marketsByState,
   };
 };
 
@@ -38,8 +38,8 @@ const FilterBoxContainer = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(FilterBox)
+    mergeProps,
+  )(FilterBox),
 );
 
 export default FilterBoxContainer;

@@ -4,9 +4,9 @@ import { compact } from "lodash";
 import PropTypes from "prop-types";
 
 import MarketLink from "modules/market/components/market-link/market-link";
-import CommonStyles from "modules/market/components/common/market-common.styles";
-import DisputeMarketCardStyles from "modules/reporting/components/dispute-market-card/dispute-market-card.style";
-import Styles from "modules/portfolio/components/market-portfolio-card/market-portfolio-card.styles";
+import CommonStyles from "modules/market/components/common/market-common.styles.less";
+import DisputeMarketCardStyles from "modules/reporting/components/dispute-market-card/dispute-market-card.style.less";
+import Styles from "modules/portfolio/components/market-portfolio-card/market-portfolio-card.styles.less";
 import MarketPortfolioCardFooter from "modules/portfolio/components/market-portfolio-card/market-portfolio-card-footer";
 import MarketProperties from "modules/market/containers/market-properties";
 import ForkMigrationTotals from "modules/forking/containers/fork-migration-totals";
@@ -22,17 +22,17 @@ const PortfolioReportsForkedMarketCard = ({
   linkType,
   market,
   unclaimedForkEth,
-  unclaimedForkRepStaked
+  unclaimedForkRepStaked,
 }) => {
   const process = (...arr) =>
-    compact(arr).map(label => ({
+    compact(arr).map((label) => ({
       label,
       onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history)
     }));
   const categoriesWithClick = process(market.category);
-  const tagsWithClick = compact(market.tags).map(tag => ({
+  const tagsWithClick = compact(market.tags).map((tag) => ({
     label: tag,
-    onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history)
+    onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history),
   }));
 
   const localButtonText = "Claim Proceeds";
@@ -47,7 +47,6 @@ const PortfolioReportsForkedMarketCard = ({
       <section
         className={classNames(
           CommonStyles.MarketCommon__topcontent,
-          DisputeMarketCardStyles.MarketCard__topcontent
         )}
       >
         <div className={CommonStyles.MarketCommon__header}>
@@ -96,7 +95,7 @@ PortfolioReportsForkedMarketCard.propTypes = {
   linkType: PropTypes.string.isRequired,
   market: PropTypes.object.isRequired,
   unclaimedForkEth: PropTypes.object.isRequired,
-  unclaimedForkRepStaked: PropTypes.object.isRequired
+  unclaimedForkRepStaked: PropTypes.object.isRequired,
 };
 
 export default PortfolioReportsForkedMarketCard;

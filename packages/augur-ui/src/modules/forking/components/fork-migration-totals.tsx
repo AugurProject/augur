@@ -1,13 +1,22 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
-import Styles from "modules/forking/components/fork-migration-totals.styles";
+import Styles from "modules/forking/components/fork-migration-totals.styles.less";
 import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
 import { createBigNumber } from "utils/create-big-number";
+import { MarketData } from "modules/types";
 
 const forkTotalHeight = "30px";
 
-const ForkMigrationTotal = ({ className, forkMigrationTotal }) => {
+interface ForkMigrationTotalProps {
+  forkMigrationTotal: {
+    rep: any;
+    name: string;
+    winner: boolean;
+  };
+  className?: string;
+}
+
+const ForkMigrationTotal = ({ className, forkMigrationTotal }: ForkMigrationTotalProps) => {
   const currentMigrated = forkMigrationTotal.rep.full
     ? forkMigrationTotal.rep.full
     : "0";
@@ -49,7 +58,22 @@ const ForkMigrationTotal = ({ className, forkMigrationTotal }) => {
   );
 };
 
-class ForkMigrationTotals extends Component {
+interface ForkMigrationTotalsProps {
+  forkingMarket: MarketData;
+  getForkMigrationTotals: Function;
+  currentBlockNumber: number;
+}
+
+interface ForkMigrationTotalsState {
+  forkMigrationTotalWrapperHeight: string;
+  isOpen: boolean;
+  forkMigrationTotalsMap: any;
+  blockNumber: number;
+}
+
+class ForkMigrationTotals extends Component<ForkMigrationTotalsProps, ForkMigrationTotalsState> {
+  public forkMigrationTotalTable;
+
   constructor(props) {
     super(props);
 
@@ -57,7 +81,7 @@ class ForkMigrationTotals extends Component {
       forkMigrationTotalWrapperHeight: forkTotalHeight,
       isOpen: false,
       forkMigrationTotalsMap: {},
-      blockNumber: props.currentBlockNumber
+      blockNumber: props.currentBlockNumber,
     };
 
     this.showMore = this.showMore.bind(this);
@@ -72,7 +96,7 @@ class ForkMigrationTotals extends Component {
     const currentBlock = createBigNumber(newProps.currentBlockNumber);
     if (currentBlock.gt(updateBlock)) {
       this.setState({
-        blockNumber: this.props.currentBlockNumber
+        blockNumber: this.props.currentBlockNumber,
       });
     }
   }
@@ -93,7 +117,7 @@ class ForkMigrationTotals extends Component {
     getForkMigrationTotals((err, forkMigrationTotalsMap) => {
       if (err) return console.error(err);
       this.setState({
-        forkMigrationTotalsMap
+        forkMigrationTotalsMap,
       });
     });
   }
@@ -105,7 +129,7 @@ class ForkMigrationTotals extends Component {
 
     this.setState({
       forkMigrationTotalWrapperHeight,
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   }
 
@@ -113,13 +137,13 @@ class ForkMigrationTotals extends Component {
     const {
       forkMigrationTotalsMap,
       forkMigrationTotalWrapperHeight,
-      isOpen
+      isOpen,
     } = this.state;
 
     const { reportableOutcomes } = this.props.forkingMarket;
     const forkMigrationTotals = selectMigrateTotals(
       reportableOutcomes,
-      forkMigrationTotalsMap
+      forkMigrationTotalsMap,
     );
 
     const totalForkMigrationTotals = forkMigrationTotals.length;
@@ -129,7 +153,7 @@ class ForkMigrationTotals extends Component {
       : `+ ${totalForkMigrationTotals - 3} more`;
 
     const forkMigrationTotalWrapperStyle = {
-      minHeight: forkMigrationTotalWrapperHeight
+      minHeight: forkMigrationTotalWrapperHeight,
     };
 
     return (
@@ -147,8 +171,8 @@ class ForkMigrationTotals extends Component {
           className={classNames(
             Styles["ForkMigrationTotals__forkMigrationTotals-container"],
             {
-              [`${Styles["show-more"]}`]: displayShowMore
-            }
+              [`${Styles["show-more"]}`]: displayShowMore,
+            },
           )}
         >
           {displayShowMore && (
@@ -160,13 +184,13 @@ class ForkMigrationTotals extends Component {
             </button>
           )}
           <div
-            ref={forkMigrationTotalTable => {
+            ref={(forkMigrationTotalTable) => {
               this.forkMigrationTotalTable = forkMigrationTotalTable;
             }}
             className={Styles.ForkMigrationTotals__forkMigrationTotals}
           >
             {forkMigrationTotals.length > 0 &&
-              forkMigrationTotals.map(forkMigrationTotal => (
+              forkMigrationTotals.map((forkMigrationTotal) => (
                 <ForkMigrationTotal
                   key={forkMigrationTotal.id}
                   forkMigrationTotal={forkMigrationTotal}
@@ -178,20 +202,5 @@ class ForkMigrationTotals extends Component {
     );
   }
 }
-
-ForkMigrationTotals.propTypes = {
-  forkingMarket: PropTypes.object.isRequired,
-  getForkMigrationTotals: PropTypes.func.isRequired,
-  currentBlockNumber: PropTypes.number.isRequired
-};
-
-ForkMigrationTotal.propTypes = {
-  forkMigrationTotal: PropTypes.object.isRequired,
-  className: PropTypes.string
-};
-
-ForkMigrationTotal.defaultProps = {
-  className: null
-};
 
 export default ForkMigrationTotals;

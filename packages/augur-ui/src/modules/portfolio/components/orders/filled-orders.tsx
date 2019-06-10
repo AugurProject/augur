@@ -1,37 +1,40 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
 import OrderMarketRow from "modules/portfolio/components/common/rows/order-market-row";
 import FilledOrder from "modules/portfolio/containers/filled-order";
 import FilledOrdersHeader from "modules/portfolio/components/common/headers/filled-orders-header";
-
+import { MarketData, Order } from "modules/types";
 const sortByOptions = [
   {
     label: "View by Most Recently Traded Market",
     value: "tradedMarket",
-    comp: null
+    comp: null,
   },
   {
     label: "View by Most Recently Traded Outcome",
     value: "tradedOutcome",
-    comp: null
-  }
+    comp: null,
+  },
 ];
 
-export default class FilledOrders extends Component {
-  static propTypes = {
-    markets: PropTypes.array.isRequired,
-    filledOrders: PropTypes.array.isRequired,
-    marketsObj: PropTypes.object.isRequired,
-    ordersObj: PropTypes.object.isRequired
-  };
+interface FilledOrdersProps {
+  markets: Array<MarketData>;
+  filledOrders: Array<Order>;
+  marketsObj: MarketData;
+  ordersObj: Order;
+}
 
+interface FilledOrdersState {
+  viewByMarkets: boolean;
+}
+
+export default class FilledOrders extends Component<FilledOrdersProps, FilledOrdersState> {
   constructor(props) {
     super(props);
 
     this.state = {
-      viewByMarkets: true
+      viewByMarkets: true,
     };
 
     this.filterComp = this.filterComp.bind(this);
@@ -51,7 +54,7 @@ export default class FilledOrders extends Component {
 
   switchView() {
     this.setState({
-      viewByMarkets: !this.state.viewByMarkets
+      viewByMarkets: !this.state.viewByMarkets,
     });
   }
 
@@ -69,6 +72,7 @@ export default class FilledOrders extends Component {
         filledOrders
       />
     ) : (
+      // @ts-ignore
       <FilledOrder
         key={"filledOrder_" + data.id}
         filledOrder={ordersObj[data.id]}
@@ -82,6 +86,7 @@ export default class FilledOrders extends Component {
     const { viewByMarkets } = this.state;
 
     return (
+      // @ts-ignore
       <FilterSwitchBox
         title="Filled Orders"
         filterLabel="filled orders"

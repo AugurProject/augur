@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { augur } from "services/augurjs";
 import classNames from "classnames";
 import { formatAttoRep } from "utils/format-number";
@@ -8,7 +7,19 @@ import TimeProgressBar from "modules/reporting/components/time-progress-bar/time
 import { TYPE_MIGRATE_REP } from "modules/common/constants";
 import MarketLink from "modules/market/components/market-link/market-link";
 import { createBigNumber } from "utils/create-big-number";
-import Styles from "modules/forking/components/forking-content.styles";
+import Styles from "modules/forking/components/forking-content.styles.less";
+
+interface ForkingContentProps {
+  finalizeMarket: Function;
+  forkingMarket: string;
+  forkEndTime: string;
+  currentTime: number;
+  expanded: boolean;
+  doesUserHaveRep: boolean;
+  forkReputationGoal: string;
+  isForkingMarketFinalized?: boolean;
+  marginLeft: number;
+}
 
 const ForkingContent = ({
   forkingMarket,
@@ -17,18 +28,18 @@ const ForkingContent = ({
   expanded,
   doesUserHaveRep,
   forkReputationGoal,
-  isForkingMarketFinalized,
+  isForkingMarketFinalized = false,
   finalizeMarket,
-  marginLeft
-}) => {
-  const unixFormattedDate = convertUnixToFormattedDate(forkEndTime);
+  marginLeft,
+}: ForkingContentProps) => {
+  const unixFormattedDate = convertUnixToFormattedDate(Number(forkEndTime));
   const forkWindowActive = !dateHasPassed(
     currentTime * 1000,
-    Number(forkEndTime)
+    Number(forkEndTime),
   );
   const startTime = createBigNumber(forkEndTime)
     .minus(
-      createBigNumber(augur.constants.CONTRACT_INTERVAL.FORK_DURATION_SECONDS)
+      createBigNumber(augur.constants.CONTRACT_INTERVAL.FORK_DURATION_SECONDS),
     )
     .toNumber();
   const threshold = formatAttoRep(forkReputationGoal);
@@ -37,13 +48,13 @@ const ForkingContent = ({
     <section
       className={classNames(
         Styles.ForkingContent,
-        expanded ? Styles.expanded : ""
+        expanded ? Styles.expanded : "",
       )}
     >
       <div
         className={classNames(
           Styles.ForkingContent__container,
-          expanded ? Styles.expanded : ""
+          expanded ? Styles.expanded : "",
         )}
         style={{ paddingLeft: marginLeft }}
       >
@@ -104,7 +115,6 @@ const ForkingContent = ({
             <MarketLink
               className={Styles.ForkingContent__migrate_rep_button}
               id={forkingMarket}
-              formattedDescription="Migrate REP"
               linkType={TYPE_MIGRATE_REP}
             >
               Migrate REP
@@ -123,22 +133,6 @@ const ForkingContent = ({
       </div>
     </section>
   );
-};
-
-ForkingContent.propTypes = {
-  finalizeMarket: PropTypes.func.isRequired,
-  forkingMarket: PropTypes.string.isRequired,
-  forkEndTime: PropTypes.string.isRequired,
-  currentTime: PropTypes.number.isRequired,
-  expanded: PropTypes.bool.isRequired,
-  doesUserHaveRep: PropTypes.bool.isRequired,
-  forkReputationGoal: PropTypes.string.isRequired,
-  isForkingMarketFinalized: PropTypes.bool,
-  marginLeft: PropTypes.number.isRequired
-};
-
-ForkingContent.defaultProps = {
-  isForkingMarketFinalized: false
 };
 
 export default ForkingContent;
