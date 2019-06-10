@@ -15,7 +15,7 @@ export const submitMigrateREP = ({
   invalid,
   amount,
   history,
-  callback: NodeStyleCallback = logError
+  callback = logError,
 }: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, marketsData, universe } = getState();
   const outcome = parseFloat(selectedOutcome);
@@ -55,8 +55,8 @@ export const submitMigrateREP = ({
         },
         onFailed: (err: any) => {
           callback(err);
-        }
+        },
       });
-    }
+    },
   );
 };
