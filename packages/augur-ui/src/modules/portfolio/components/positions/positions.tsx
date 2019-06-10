@@ -7,7 +7,8 @@ import { MovementLabel } from "modules/common/labels";
 import PositionsTable from "modules/market/containers/positions-table";
 import { END_TIME } from "modules/common/constants";
 
-import Styles from "modules/portfolio/components/common/quad.styles";
+import Styles from "modules/portfolio/components/common/quad.styles.less";
+import { MarketData } from "modules/types";
 
 const sortByOptions = [
   {
@@ -56,16 +57,20 @@ function renderToggleContent(market) {
   return <PositionsTable market={market} />;
 }
 
-export default class Positions extends Component {
-  static propTypes = {
-    markets: PropTypes.array.isRequired
-  };
+interface PositionsProps {
+  markets: Array<MarketData>;
+}
 
+interface PositionsState {
+  showCurrentValue: boolean;
+}
+
+export default class Positions extends Component<PositionsProps, PositionsState> {
   constructor(props) {
     super(props);
 
     this.state = {
-      showCurrentValue: false
+      showCurrentValue: false,
     };
 
     this.updateRightContentValue = this.updateRightContentValue.bind(this);
@@ -121,7 +126,7 @@ export default class Positions extends Component {
           "reportingState",
           "myPositionsSummary",
           "recentlyTraded",
-          "endTime"
+          "endTime",
         ]}
       />
     );

@@ -60,22 +60,24 @@ export default class FilterSwitchBox extends React.Component<
     const filteredData = this.applySearch(input, data);
 
     this.updateFilteredData(filteredData);
-  };
+  }
 
   applySearch = (input: string, filteredData: Array<Market>) => {
     const { filterComp } = this.props;
 
     return filteredData.filter(filterComp.bind(this, input));
-  };
+  }
 
   updateView = () => {
-    this.props.switchView();
+    if (this.props.switchView) {
+      this.props.switchView();
+    }
     this.setState({ view: !this.state.view });
-  };
+  }
 
   updateFilteredData = (filteredData: Array<Market>) => {
     this.setState({ filteredData });
-  };
+  }
 
   render() {
     const {

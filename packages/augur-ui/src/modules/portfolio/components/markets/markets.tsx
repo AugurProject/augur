@@ -6,7 +6,8 @@ import { LinearPropertyLabel } from "modules/common/labels";
 import { MarketProgress } from "modules/common/progress";
 import { END_TIME } from "modules/common/constants";
 
-import Styles from "modules/portfolio/components/common/quad.styles";
+import Styles from "modules/portfolio/components/common/quad.styles.less";
+import { MarketData } from "modules/types";
 
 const sortByOptions = [
   {
@@ -14,7 +15,7 @@ const sortByOptions = [
     value: END_TIME,
     comp(marketA, marketB) {
       return marketA.endTime.timestamp - marketB.endTime.timestamp;
-    }
+    },
   },
   {
     label: "Sort by Most Recently Traded",
@@ -23,15 +24,15 @@ const sortByOptions = [
       return (
         marketB.recentlyTraded.timestamp - marketA.recentlyTraded.timestamp
       );
-    }
+    },
   },
   {
     label: "Sort by Creation Time",
     value: "creationTime",
     comp(marketA, marketB) {
       return marketB.creationTime.timestamp - marketA.creationTime.timestamp;
-    }
-  }
+    },
+  },
 ];
 
 function filterComp(input, market) {
@@ -59,13 +60,13 @@ function renderToggleContent(market) {
   );
 }
 
-class MyMarkets extends Component {
-  static propTypes = {
-    myMarkets: PropTypes.array.isRequired,
-    currentAugurTimestamp: PropTypes.number.isRequired,
-    reportingWindowStatsEndTime: PropTypes.number
-  };
+interface MyMarketsProps {
+  myMarkets: Array<MarketData>;
+  currentAugurTimestamp: number;
+  reportingWindowStatsEndTime: number;
+}
 
+class MyMarkets extends Component<MyMarketsProps> {
   static defaultProps = {
     reportingWindowStatsEndTime: 0,
     currentAugurTimestamp: 0
@@ -95,6 +96,7 @@ class MyMarkets extends Component {
     const { myMarkets } = this.props;
 
     return (
+      // @ts-ignore
       <FilterBox
         title="My Created Markets"
         sortByOptions={sortByOptions}

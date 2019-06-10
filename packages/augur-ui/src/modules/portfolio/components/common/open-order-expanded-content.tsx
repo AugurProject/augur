@@ -7,11 +7,11 @@ import { CancelTextButton } from "modules/common/buttons";
 import MarketLink from "modules/market/components/market-link/market-link";
 import { Order } from "modules/portfolio/types";
 
-import Styles from "modules/portfolio/components/common/open-order-expanded-content.styles";
+import Styles from "modules/portfolio/components/common/open-order-expanded-content.styles.less";
 
 export interface OpenOrderExpandedContentProps {
   openOrder: Order;
-  isSingle?: Boolean;
+  isSingle?: boolean;
 }
 
 const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
@@ -25,7 +25,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
     <div className={Styles.OpenOrder_infoContainer}>
       <div
         className={classNames(Styles.OpenOrder__info, {
-          [Styles.OpenOrder__infoSingle]: isSingle
+          [Styles.OpenOrder__infoSingle]: isSingle,
         })}
       >
         {isSingle && (

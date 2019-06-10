@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import classNames from "classnames";
 
-import Styles from "modules/portfolio/components/common/box-header.styles";
+import Styles from "modules/portfolio/components/common/box-header.styles.less";
 
 export interface BoxHeaderProps {
   title: string;
@@ -11,6 +11,7 @@ export interface BoxHeaderProps {
   bottomRightBarContent?: ReactNode;
   switchHeaders?: boolean;
   noBackgroundBottom?: boolean;
+  mostRightContent?: ReactNode;
 }
 
 const BoxHeader = (props: BoxHeaderProps) => (
@@ -21,7 +22,7 @@ const BoxHeader = (props: BoxHeaderProps) => (
       </div>
       <div
         className={classNames(Styles.Middle, {
-          [Styles.isSwitched]: props.switchHeaders
+          [Styles.isSwitched]: props.switchHeadersx
         })}
       >
         {props.bottomBarContent && (

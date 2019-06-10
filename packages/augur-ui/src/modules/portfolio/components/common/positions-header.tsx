@@ -3,13 +3,13 @@ import classNames from "classnames";
 
 import { EthPercentButton } from "modules/common/buttons";
 
-import Styles from "modules/portfolio/components/common/data-table-header.styles";
-import SharedStyles from "modules/common/row.styles";
+import Styles from "modules/portfolio/components/common/data-table-header.styles.less";
+import SharedStyles from "modules/common/row.styles.less";
 
 interface PositionsHeaderProps {
-  showPercent: Boolean;
+  showPercent: boolean;
   updateShowPercent: Function;
-  extendedView?: Boolean;
+  extendedView?: boolean;
 }
 
 const PositionsHeader = (props: PositionsHeaderProps) => (
@@ -17,7 +17,7 @@ const PositionsHeader = (props: PositionsHeaderProps) => (
     className={classNames(Styles.DataTableHeader, Styles.PositionHeader, {
       [SharedStyles.Row3]: !props.extendedView,
       [Styles.DataTableHeader__extended]: props.extendedView,
-      [Styles.PositionHeader__extended]: props.extendedView
+      [Styles.PositionHeader__extended]: props.extendedView,
     })}
   >
     <li>Outcome</li>

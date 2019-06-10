@@ -3,7 +3,7 @@ import store from "store";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import {
   selectMarketTradingHistoryState,
-  selectAccountPositionsState
+  selectAccountPositionsState,
 } from "store/select-state";
 
 export default function() {
@@ -16,6 +16,6 @@ export const marketsPositionsRecentlyTraded = createSelector(
   (positions, marketTradeHistory) =>
     Object.keys(positions).reduce(
       (p, m) => ({ ...p, [m]: getLastTradeTimestamp(marketTradeHistory[m]) }),
-      {}
-    )
+      {},
+    ),
 );

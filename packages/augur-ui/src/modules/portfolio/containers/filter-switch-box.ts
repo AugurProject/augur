@@ -3,10 +3,10 @@ import { withRouter } from "react-router-dom";
 
 import FilterSwitchBox from "modules/portfolio/components/common/filter-switch-box";
 
-const mapStateToProps = state => ({});
+const mapStateToProps = (state) => ({});
 
 const FilterSwitchBoxContainer = withRouter(
-  connect(mapStateToProps)(FilterSwitchBox)
+  connect(mapStateToProps)(FilterSwitchBox),
 );
 
 export default FilterSwitchBoxContainer;

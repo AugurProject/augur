@@ -6,7 +6,8 @@ import { MarketProgress } from "modules/common/progress";
 import { FavoritesButton } from "modules/common/buttons";
 import { END_TIME } from "modules/common/constants";
 
-import Styles from "modules/portfolio/components/common/quad.styles";
+import Styles from "modules/portfolio/components/common/quad.styles.less";
+import { MarketData } from "modules/types";
 
 const sortByOptions = [
   {
@@ -36,17 +37,17 @@ function filterComp(input, market) {
   return market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 }
 
-export default class Favorites extends Component {
-  static propTypes = {
-    markets: PropTypes.array.isRequired,
-    currentAugurTimestamp: PropTypes.number,
-    reportingWindowStatsEndTime: PropTypes.number,
-    toggleFavorite: PropTypes.func.isRequired
-  };
+interface FavoritesProps {
+  markets: Array<MarketData>;
+  currentAugurTimestamp: number;
+  reportingWindowStatsEndTime: number;
+  toggleFavorite: Function;
+}
 
+export default class Favorites extends Component<FavoritesProps> {
   static defaultProps = {
     currentAugurTimestamp: 0,
-    reportingWindowStatsEndTime: 0
+    reportingWindowStatsEndTime: 0,
   };
 
   constructor(props) {
@@ -59,7 +60,7 @@ export default class Favorites extends Component {
     const {
       currentAugurTimestamp,
       reportingWindowStatsEndTime,
-      toggleFavorite
+      toggleFavorite,
     } = this.props;
 
     return (

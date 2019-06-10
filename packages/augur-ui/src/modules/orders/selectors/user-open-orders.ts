@@ -17,7 +17,7 @@ import {
   selectOrderBooksState,
   selectOrderCancellationState,
   selectPendingOrdersState,
-  selectLoginAccountAddress
+  selectLoginAccountAddress,
 } from "store/select-state";
 
 function selectMarketsDataStateMarket(state, marketId) {
@@ -52,7 +52,7 @@ export const selectUserOpenOrders = createCachedSelector(
   (market, outcomes, orderBook, orderCancellation, pendingOrders, account) => {
     let userOpenOrders =
       Object.keys(outcomes || {})
-        .map(outcomeId =>
+        .map((outcomeId) =>
           selectUserOpenOrdersInternal(
             market.id,
             outcomeId,
@@ -60,9 +60,9 @@ export const selectUserOpenOrders = createCachedSelector(
             orderCancellation,
             market.description,
             getOutcomeName(market, outcomes[outcomeId]),
-          )
+          ),
         )
-        .filter(collection => collection.length !== 0)
+        .filter((collection) => collection.length !== 0)
         .flat() || [];
 
     // add pending orders
@@ -71,7 +71,7 @@ export const selectUserOpenOrders = createCachedSelector(
     }
 
     return userOpenOrders || [];
-  }
+  },
 )((state, marketId) => marketId);
 
 function selectUserOpenOrdersInternal(
@@ -80,7 +80,7 @@ function selectUserOpenOrdersInternal(
   marketOrderBook,
   orderCancellation,
   marketDescription,
-  name
+  name,
 ) {
   const { loginAccount } = store.getState();
   if (!loginAccount.address || marketOrderBook == null) return [];
@@ -92,7 +92,7 @@ function selectUserOpenOrdersInternal(
     marketOrderBook,
     orderCancellation,
     marketDescription,
-    name
+    name,
   );
 }
 
@@ -104,7 +104,7 @@ const userOpenOrders = memoize(
     marketOrderBook,
     orderCancellation,
     marketDescription,
-    name
+    name,
   ) => {
     const orderData = marketOrderBook[outcomeId];
 
@@ -119,7 +119,7 @@ const userOpenOrders = memoize(
             loginAccount.address,
             orderCancellation,
             marketDescription,
-            name
+            name,
           );
     const userAsks =
       orderData == null || orderData.sell == null
@@ -132,15 +132,15 @@ const userOpenOrders = memoize(
             loginAccount.address,
             orderCancellation,
             marketDescription,
-            name
+            name,
           );
 
     const orders = userAsks.concat(userBids);
     return orders.sort(
-      (a, b) => b.creationTime.timestamp - a.creationTime.timestamp
+      (a, b) => b.creationTime.timestamp - a.creationTime.timestamp,
     );
   },
-  { max: 10 }
+  { max: 10 },
 );
 
 function getUserOpenOrders(
@@ -151,21 +151,21 @@ function getUserOpenOrders(
   userId,
   orderCancellation = {},
   marketDescription = "",
-  name = ""
+  name = "",
 ) {
   const typeOrders = orders[orderType];
 
   return Object.keys(typeOrders)
-    .map(orderId => typeOrders[orderId])
+    .map((orderId) => typeOrders[orderId])
     .filter(
-      order => isOrderOfUser(order, userId) && order.orderState === "OPEN"
+      (order) => isOrderOfUser(order, userId) && order.orderState === "OPEN",
     )
     .sort((order1, order2) =>
       createBigNumber(order2.price, 10).comparedTo(
-        createBigNumber(order1.price, 10)
-      )
+        createBigNumber(order1.price, 10),
+      ),
     )
-    .map(order => ({
+    .map((order) => ({
       id: order.orderId,
       type: orderType,
       marketId,
@@ -187,9 +187,9 @@ function getUserOpenOrders(
             orderId: id,
             marketId,
             outcome: outcomeId,
-            orderTypeLabel: type
-          })
+            orderTypeLabel: type,
+          }),
         );
-      }
+      },
     }));
 }

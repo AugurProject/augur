@@ -14,11 +14,11 @@ import {
   MARKET,
   REPORT,
   DISPUTE,
-  MIGRATE_REP
+  MIGRATE_REP,
 } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
-  RETURN_PARAM_NAME
+  RETURN_PARAM_NAME,
 } from "modules/routes/constants/param-names";
 
 const MarketLink = ({ linkType, className, id, children }) => {
@@ -39,7 +39,7 @@ const MarketLink = ({ linkType, className, id, children }) => {
   }
 
   const queryLink = {
-    [MARKET_ID_PARAM_NAME]: id
+    [MARKET_ID_PARAM_NAME]: id,
   };
 
   if (linkType === TYPE_DISPUTE || linkType === TYPE_REPORT) {
