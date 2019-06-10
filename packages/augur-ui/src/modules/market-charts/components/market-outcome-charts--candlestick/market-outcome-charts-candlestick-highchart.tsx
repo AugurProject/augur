@@ -5,7 +5,7 @@ import CustomPropTypes from "utils/custom-prop-types";
 import Highcharts from "highcharts/highstock";
 import NoDataToDisplay from "highcharts/modules/no-data-to-display";
 import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/candlestick.styles";
-import { each, isEqual, cloneDeep } from "lodash";
+import { each, cloneDeep } from "lodash";
 import { PERIOD_RANGES, ETH } from "modules/common/constants";
 
 NoDataToDisplay(Highcharts);
@@ -192,11 +192,18 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component {
   }
 
   componentWillUpdate(nextProps) {
+    const {
+      priceTimeSeries,
+      selectedPeriod,
+      volumeType,
+      containerHeight
+    } = this.props;
     if (
-      !isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries) ||
-      !isEqual(this.props.selectedPeriod, nextProps.selectedPeriod) ||
-      !isEqual(this.props.volumeType, nextProps.volumeType) ||
-      !isEqual(this.props.containerHeight, nextProps.containerHeight)
+      JSON.stringify(priceTimeSeries) !==
+        JSON.stringify(nextProps.priceTimeSeries) ||
+      selectedPeriod !== nextProps.selectedPeriod ||
+      volumeType !== nextProps.volumeType ||
+      containerHeight !== nextProps.containerHeight
     ) {
       this.buidOptions(
         nextProps.priceTimeSeries,

@@ -3,7 +3,6 @@ import React, { ReactNode } from "react";
 import QuadBox from "modules/portfolio/components/common/quads/quad-box";
 import { NameValuePair, Market } from "modules/portfolio/types";
 import EmptyDisplay from "modules/portfolio/components/common/tables/empty-display";
-import { isEqual } from "lodash";
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -40,14 +39,14 @@ export default class FilterSwitchBox extends React.Component<
     view: false,
   };
 
-  componentWillUpdate(nextProps: FilterBoxProps, nextState: FilterBoxState) {
+  componentWillUpdate({ data }: FilterBoxProps, { search, view }: FilterBoxState) {
     if (
-      !isEqual(nextProps.data, this.props.data) ||
-      this.state.view !== nextState.view
+      JSON.stringify(data) !== JSON.stringify(this.props.data) ||
+      this.state.view !== view
     ) {
-      let filteredData = nextProps.data;
-      if (nextState.search !== "") {
-        filteredData = this.applySearch(nextState.search, nextProps.data);
+      let filteredData = data;
+      if (search !== "") {
+        filteredData = this.applySearch(search, data);
       }
       this.updateFilteredData(filteredData);
     }
