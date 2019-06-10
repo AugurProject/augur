@@ -5,5 +5,5 @@ import memoize from "memoizee";
  */
 export const isOrderOfUser = memoize(
   (order, userAddress) => userAddress != null && order.owner === userAddress,
-  { max: 10 }
+  { max: 10 },
 );

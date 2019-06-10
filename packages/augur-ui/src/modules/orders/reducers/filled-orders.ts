@@ -1,6 +1,6 @@
 import {
   UPDATE_USER_TRADING_HISTORY,
-  UPDATE_USER_MARKET_TRADING_HISTORY
+  UPDATE_USER_MARKET_TRADING_HISTORY,
 } from "modules/markets/actions/market-trading-history-management";
 import { FilledOrders, FilledOrder, BaseAction } from "modules/types";
 

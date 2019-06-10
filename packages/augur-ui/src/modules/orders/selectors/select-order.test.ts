@@ -1,3 +1,4 @@
+// @ts-ignore
 import { BUY } from "modules/common-elements/constants";
 
 describe("modules/orders/selectors/select-order.js", () => {
@@ -22,11 +23,11 @@ describe("modules/orders/selectors/select-order.js", () => {
                 "0x000000000000000000000000000000000000000000000000000000000000000a",
               worseOrderId:
                 "0x000000000000000000000000000000000000000000000000000000000000000b",
-              gasPrice: "20000000000"
-            }
-          }
-        }
-      }
+              gasPrice: "20000000000",
+            },
+          },
+        },
+      },
     });
     expect(order).toEqual({
       amount: "1.1111",
@@ -40,7 +41,7 @@ describe("modules/orders/selectors/select-order.js", () => {
         "0x000000000000000000000000000000000000000000000000000000000000000a",
       worseOrderId:
         "0x000000000000000000000000000000000000000000000000000000000000000b",
-      gasPrice: "20000000000"
+      gasPrice: "20000000000",
     });
   });
 });

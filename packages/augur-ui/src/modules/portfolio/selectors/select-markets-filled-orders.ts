@@ -5,7 +5,6 @@ import {
   selectMarketReportState,
   selectLoginAccountAddress,
   selectFilledOrders,
-  selectMarketsDataState
 } from "store/select-state";
 import { selectMarket } from "modules/markets/selectors/market";
 import { keyArrayBy } from "utils/key-by";
@@ -21,21 +20,19 @@ export const marketsFilledOrders = createSelector(
   selectMarketReportState,
   selectLoginAccountAddress,
   selectFilledOrders,
-  selectMarketsDataState,
   getMarketsPositionsRecentlyTraded,
   (
     marketReportState,
     loginAccountAddress,
     filledOrders,
-    marketsData,
-    timestamps
+    timestamps,
   ) => {
     const marketIds = filterMarketIds(
       filledOrders[loginAccountAddress] || [],
-      marketReportState.resolved
+      marketReportState.resolved,
     );
     const markets = filterMarketsByStatus(marketIds, timestamps).sort(
-      (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
+      (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp,
     );
     const allFilledOrders = getAllUserFilledOrders(marketIds);
 
@@ -43,9 +40,9 @@ export const marketsFilledOrders = createSelector(
       markets,
       marketsObj: keyObjectsById(markets),
       ordersObj: keyObjectsById(allFilledOrders),
-      filledOrders: allFilledOrders
+      filledOrders: allFilledOrders,
     };
-  }
+  },
 );
 
 const filterMarketIds = (userFilledOrders, resolvedMarkets) =>
@@ -53,10 +50,10 @@ const filterMarketIds = (userFilledOrders, resolvedMarkets) =>
     keyArrayBy(
       userFilledOrders.reduce(
         (p, m) => (resolvedMarkets.indexOf(m.marketId) === -1 ? [...p, m] : p),
-        []
+        [],
       ),
-      "marketId"
-    )
+      "marketId",
+    ),
   );
 
 const filterMarketsByStatus = (marketIds, marketsPositionsRecentlyTraded) =>
@@ -77,18 +74,18 @@ const filterMarketsByStatus = (marketIds, marketsPositionsRecentlyTraded) =>
         ...market,
         recentlyTraded: marketsPositionsRecentlyTraded[market.id] || 0,
         filledOrders,
-        userOpenOrders: getUserOpenOrders(m)
-      }
+        userOpenOrders: getUserOpenOrders(m),
+      },
     ];
   }, []);
 
-const getAllUserFilledOrders = marketIds =>
+const getAllUserFilledOrders = (marketIds) =>
   marketIds.reduce(
     (p, marketId) => [...p, ...(getUserFilledOrders(marketId) || [])],
-    []
+    [],
   );
 
-const keyObjectsById = array =>
+const keyObjectsById = (array) =>
   array.reduce((obj, o) => {
     obj[o.id] = o;
     return obj;

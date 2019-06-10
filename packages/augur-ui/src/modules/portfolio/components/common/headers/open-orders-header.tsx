@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import Styles from "modules/portfolio/components/common/headers/data-table-header.styles";
+import Styles from "modules/portfolio/components/common/headers/data-table-header.styles.less";
 
 interface OpenOrdersHeaderProps {
   extendedView?: boolean;
@@ -10,7 +10,7 @@ interface OpenOrdersHeaderProps {
 const OpenOrdersHeader = (props: OpenOrdersHeaderProps) => (
   <ul
     className={classNames(Styles.DataTableHeader, {
-      [Styles.DataTableHeader__extended]: props.extendedView
+      [Styles.DataTableHeader__extended]: props.extendedView,
     })}
   >
     <li>Outcome</li>

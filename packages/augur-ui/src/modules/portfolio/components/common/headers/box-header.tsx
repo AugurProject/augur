@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import classNames from "classnames";
 
-import Styles from "modules/portfolio/components/common/headers/box-header.styles";
+import Styles from "modules/portfolio/components/common/headers/box-header.styles.less";
 
 export interface BoxHeaderProps {
   title: string;
@@ -11,14 +11,14 @@ export interface BoxHeaderProps {
   bottomRightBarContent?: ReactNode;
   switchHeaders?: boolean;
   noBackgroundBottom?: boolean;
+  mostRightContent?: ReactNode;
 }
 
 const BoxHeader = (props: BoxHeaderProps) => (
   <>
     <div
       className={classNames(
-        Styles.BoxHeader__headerContainer,
-        Styles.ShowOnMobile
+        Styles.ShowOnMobile,
       )}
     >
       <div className={Styles["BoxHeader__rightContent--mobile"]}>
@@ -26,13 +26,13 @@ const BoxHeader = (props: BoxHeaderProps) => (
       </div>
       <div
         className={classNames(Styles.BoxHeader_middleContainer, {
-          [Styles.isSwitched]: props.switchHeaders
+          [Styles.isSwitched]: props.switchHeaders,
         })}
       >
         {props.bottomBarContent && (
           <div
             className={classNames(Styles["BoxHeader__bottomContent--mobile"], {
-              [Styles.noBackground]: props.noBackgroundBottom
+              [Styles.noBackground]: props.noBackgroundBottom,
             })}
           >
             {props.bottomBarContent}
@@ -53,7 +53,7 @@ const BoxHeader = (props: BoxHeaderProps) => (
     <div className={Styles.HideOnMobile}>
       <div className={Styles["BoxHeader__header--top-row"]}>
         <div className={Styles.BoxHeader__title}>{props.title}</div>
-        <div className={Styles.BoxHeader__right}>
+        <div>
           {props.rightContent}
           {props.mostRightContent}
         </div>

@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as views from "modules/routes/constants/views";
 
 describe("modules/app/constants/views", () => {
