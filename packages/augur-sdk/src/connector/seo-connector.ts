@@ -19,16 +19,18 @@ const settings = require("@augurproject/sdk/src/state/settings.json");
 export class SEOConnector extends Connector {
   private api: API;
   private events = new Subscriptions(augurEmitter);
+  private ethersProvider: EthersProvider;
 
   public async connect(params?: any): Promise<any> {
-    Sync.start({ adapter: "memory" });
+    this.ethersProvider = params.provider ? params.provider : new EthersProvider(new JsonRpcProvider(settings.addresses[4]), 10, 0, 40);
 
-    const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-    const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
+    Sync.start({ adapter: "memory" }, this.ethersProvider);
+
+    const contractDependencies = new ContractDependenciesEthers(this.ethersProvider, undefined, settings.testAccounts[0]);
+    const augur = await Augur.create(this.ethersProvider, contractDependencies, Addresses[4]);
     const pouchDBFactory = PouchDBFactory({ adapter: "memory" });
     const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
-    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);
+    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(this.ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);
     const controller = new Controller(augur, Number(augur.networkId), settings.blockstreamDelay, UploadBlockNumbers[augur.networkId], [settings.testAccounts[0]], pouchDBFactory, blockAndLogStreamerListener);
     await controller.createDb();
 
@@ -36,7 +38,7 @@ export class SEOConnector extends Connector {
   }
 
   public async disconnect(): Promise<any> {
-    return;
+    this.ethersProvider.polling = false;
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {

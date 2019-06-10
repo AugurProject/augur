@@ -1,5 +1,6 @@
-import { WebsocketConnector } from "./ws-connector";
-import { Markets } from "../state/getter/Markets";
+import { Markets } from "@augurproject/sdk/build/state/getter/Markets";
+import { SubscriptionEventNames } from "@augurproject/sdk/build//constants";
+import { WebsocketConnector } from "@augurproject/sdk/build/connector/ws-connector";
 
 jest.mock("websocket-as-promised", () => {
   return {
@@ -16,7 +17,7 @@ jest.mock("websocket-as-promised", () => {
 describe("ws-connector", () => {
   it("should use sendMessage to send transaction", async () => {
     const connector = new WebsocketConnector("http://localhost:9001");
-    await connector.connect();
+    connector.connect();
     const getMarkets = connector.bindTo(Markets.getMarkets);
     await getMarkets({
       universe: "0x6a424C1bd008C82191Db24bA1528e60ca92314cA",

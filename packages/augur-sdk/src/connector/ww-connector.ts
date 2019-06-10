@@ -18,14 +18,15 @@ const settings = require("@augurproject/sdk/src/state/settings.json");
 export class WebWorkerConnector extends Connector {
   private api: API;
   private worker: any;
+  private ethersProvider: EthersProvider;
 
   public async connect(params?: any): Promise<any> {
-    const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-    const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
+    this.ethersProvider = params.provider ? params.provider : new EthersProvider(new JsonRpcProvider(settings.addresses[4]), 10, 0, 40);
+    const contractDependencies = new ContractDependenciesEthers(this.ethersProvider, undefined, settings.testAccounts[0]);
+    const augur = await Augur.create(this.ethersProvider, contractDependencies, Addresses[4]);
     const pouchDBFactory = PouchDBFactory({});
     const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
-    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);
+    const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(this.ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);
     const controller = new Controller(augur, Number(augur.networkId), settings.blockstreamDelay, UploadBlockNumbers[augur.networkId], [settings.testAccounts[0]], pouchDBFactory, blockAndLogStreamerListener);
     await controller.createDb();
 

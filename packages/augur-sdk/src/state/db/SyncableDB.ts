@@ -175,7 +175,7 @@ export class SyncableDB extends AbstractDB {
           blockNumber: { $gt: 0 },
         },
         fields: ["blockNumber"],
-        sort: ["blockNumber"],
+        sort: [{ blockNumber: "desc" }],
       });
 
       console.log(highestBlock.docs);
