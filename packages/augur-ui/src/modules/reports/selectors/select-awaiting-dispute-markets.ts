@@ -3,7 +3,8 @@ import { createBigNumber } from "utils/create-big-number";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { constants } from "services/augurjs";
 import store from "store";
-import { isEmpty, orderBy } from "lodash";
+import { orderBy } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import selectDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { selectUniverseState } from "store/select-state";
 

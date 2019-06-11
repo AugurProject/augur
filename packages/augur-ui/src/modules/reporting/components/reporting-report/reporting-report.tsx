@@ -16,7 +16,7 @@ import NullStateMessage from "modules/common/null-state-message";
 import ReportingReportForm from "modules/reporting/components/reporting-report-form/reporting-report-form";
 import ReportingReportConfirm from "modules/reporting/components/reporting-report-confirm/reporting-report-confirm";
 import { TYPE_VIEW, ZERO } from "modules/common/constants";
-import { isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import FormStyles from "modules/common/form-styles";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
 import InvalidMessage from "modules/reporting/components/invalid-message/invalid-message";

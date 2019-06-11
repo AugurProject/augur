@@ -17,7 +17,8 @@ import logError from "utils/log-error";
 import networkConfig from "config/network.json";
 import { version } from "version";
 import { updateVersions } from "modules/app/actions/update-versions";
-import { defaultTo, isEmpty } from "lodash";
+import { defaultTo } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,

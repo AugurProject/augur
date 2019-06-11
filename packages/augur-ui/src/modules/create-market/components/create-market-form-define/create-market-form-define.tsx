@@ -4,7 +4,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { uniqBy, isEmpty } from "lodash";
+import { uniqBy } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import {
   DESCRIPTION_MAX_LENGTH,
   TAGS_MAX_LENGTH

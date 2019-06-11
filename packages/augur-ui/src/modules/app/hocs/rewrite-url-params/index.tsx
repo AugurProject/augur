@@ -9,7 +9,8 @@ import {
 
 import { createPath } from "history";
 
-import { camelCase, compose, isEmpty, mapKeys, omit, pick } from "lodash/fp";
+import { camelCase, compose, mapKeys, omit, pick } from "lodash/fp";
+import { isEmpty } from "utils/is-populated";
 import makeQuery from "modules/routes/helpers/make-query";
 
 const keys = {

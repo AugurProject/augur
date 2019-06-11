@@ -6,7 +6,8 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import * as speedomatic from "speedomatic";
-import { uniq, isEmpty } from "lodash";
+import { uniq } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import { formatNumber, cutOffDecimal } from "utils/format-number";
 import {
   YES_NO,

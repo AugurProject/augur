@@ -21,7 +21,7 @@ import {
   ZERO
 } from "modules/common/constants";
 import getValue from "utils/get-value";
-import isPopulated from "utils/is-populated";
+import { isPopulated } from "utils/is-populated";
 
 import Styles from "modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
