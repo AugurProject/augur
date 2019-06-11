@@ -37,7 +37,9 @@ export class Controller {
 
   public async run(): Promise<void> {
     try {
-      await this.createDb();
+      if (!this.db) {
+        await this.createDb();
+      }
       await this.db.sync(
         this.augur,
         settings.chunkSize,

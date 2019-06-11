@@ -25,20 +25,20 @@ export class SEOConnector extends Connector {
     this.ethersProvider = params.provider ? params.provider : new EthersProvider(new JsonRpcProvider(settings.addresses[4]), 10, 0, 40);
 
     const contractDependencies = new ContractDependenciesEthers(this.ethersProvider, undefined, settings.testAccounts[0]);
-    let augur: Augur;
-    if (params.augur) {
-      augur = params.augur;
-    } else {
-      augur = await Augur.create(this.ethersProvider, contractDependencies, Addresses[4]);
-    }
-
-    Sync.start({ adapter: "memory" }, this.ethersProvider, augur);
+    const augur = params.augur ? params.augur : await Augur.create(this.ethersProvider, contractDependencies, Addresses[4]);
 
     const pouchDBFactory = PouchDBFactory({ adapter: "memory" });
     const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
     const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(this.ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);
     const controller = new Controller(augur, Number(augur.networkId), settings.blockstreamDelay, UploadBlockNumbers[augur.networkId], [settings.testAccounts[0]], pouchDBFactory, blockAndLogStreamerListener);
-    await controller.createDb();
+
+    if (params.db) {
+      controller.db = params.db;
+    } else {
+      await controller.createDb();
+    }
+
+    Sync.start({ adapter: "memory" }, this.ethersProvider, augur, controller.db);
 
     this.api = new API(augur, controller.db);
   }
@@ -55,12 +55,15 @@ export class SEOConnector extends Connector {
 
   public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
     const subscription: string = this.events.subscribe(eventName, callback);
+    console.log(subscription);
     this.subscriptions[eventName] = { id: subscription, callback };
   }
 
   public off(eventName: SubscriptionEventNames | string): void {
-    const subscription = this.subscriptions[eventName].id;
-    delete this.subscriptions[eventName];
-    return this.events.unsubscribe(subscription);
+    const subscription = this.subscriptions[eventName]
+    if (subscription) {
+      delete this.subscriptions[eventName];
+      return this.events.unsubscribe(subscription.id);
+    }
   }
 }

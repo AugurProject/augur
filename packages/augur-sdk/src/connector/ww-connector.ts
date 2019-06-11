@@ -64,9 +64,10 @@ export class WebWorkerConnector extends Connector {
   }
 
   public off(eventName: SubscriptionEventNames | string): void {
-    const subscription = this.subscriptions[eventName].id;
-    delete this.subscriptions[eventName];
-
-    this.worker.postMessage({ unsubscribe: subscription });
+    const subscription = this.subscriptions[eventName];
+    if (subscription) {
+      delete this.subscriptions[eventName];
+      this.worker.postMessage({ unsubscribe: subscription.id });
+    }
   }
 }

@@ -67,9 +67,11 @@ export class WebsocketConnector extends Connector {
   }
 
   public off(eventName: SubscriptionEventNames | string): void {
-    const subscription = this.subscriptions[eventName].id;
-    this.socket.sendRequest({ method: "unsubscribe", subscription, jsonrpc: "2.0", params: [subscription] }).then(() => {
-      delete this.subscriptions[eventName];
-    });
+    const subscription = this.subscriptions[eventName];
+    if (subscription) {
+      this.socket.sendRequest({ method: "unsubscribe", subscription: subscription.id, jsonrpc: "2.0", params: [subscription.id] }).then(() => {
+        delete this.subscriptions[eventName];
+      });
+    }
   }
 }
