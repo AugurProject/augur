@@ -1,6 +1,5 @@
 import React from "react";
 import classNames from "classnames";
-import { compact } from "lodash";
 import PropTypes from "prop-types";
 
 import MarketLink from "modules/market/components/market-link/market-link";
@@ -22,17 +21,17 @@ const PortfolioReportsForkedMarketCard = ({
   linkType,
   market,
   unclaimedForkEth,
-  unclaimedForkRepStaked,
+  unclaimedForkRepStaked
 }) => {
   const process = (...arr) =>
-    compact(arr).map((label) => ({
+    arr.filter(Boolean).map(label => ({
       label,
       onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history)
     }));
   const categoriesWithClick = process(market.category);
-  const tagsWithClick = compact(market.tags).map((tag) => ({
+  const tagsWithClick = market.tags.filter(Boolean).map(tag => ({
     label: tag,
-    onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history),
+    onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history)
   }));
 
   const localButtonText = "Claim Proceeds";
@@ -44,11 +43,7 @@ const PortfolioReportsForkedMarketCard = ({
         DisputeMarketCardStyles["DisputeMarket__fork-top"]
       )}
     >
-      <section
-        className={classNames(
-          CommonStyles.MarketCommon__topcontent,
-        )}
-      >
+      <section className={classNames(CommonStyles.MarketCommon__topcontent)}>
         <div className={CommonStyles.MarketCommon__header}>
           <CategoryTagTrail
             categories={categoriesWithClick}
@@ -95,7 +90,7 @@ PortfolioReportsForkedMarketCard.propTypes = {
   linkType: PropTypes.string.isRequired,
   market: PropTypes.object.isRequired,
   unclaimedForkEth: PropTypes.object.isRequired,
-  unclaimedForkRepStaked: PropTypes.object.isRequired,
+  unclaimedForkRepStaked: PropTypes.object.isRequired
 };
 
 export default PortfolioReportsForkedMarketCard;
