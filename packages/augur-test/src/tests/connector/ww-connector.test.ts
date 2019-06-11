@@ -85,6 +85,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
     expect(markets).toEqual([yesNoMarket1.address]);
 
     connector.off(SubscriptionEventNames.NewBlock);
+    connector.disconnect();
     done();
   });
 

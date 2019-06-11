@@ -56,6 +56,7 @@ test("WebsocketConnector :: Should route correctly and handle events", async (do
     expect(markets).toEqual(["0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407"]);
 
     connector.off(SubscriptionEventNames.NewBlock);
+    connector.disconnect();
     done();
   });
 
