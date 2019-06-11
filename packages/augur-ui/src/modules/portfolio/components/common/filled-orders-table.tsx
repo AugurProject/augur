@@ -22,20 +22,20 @@ export interface FilledOrdersTableProps {
 const FilledOrdersTable = (props: FilledOrdersTableProps) => {
   const { filledOrder, showMarketInfo } = props;
   return (
-    <div className={Styles.FilledOrdersTable}>
-      <div className={Styles.FilledOrdersTable__inner}>
+    <div className={Styles.FilledOrders}>
+      <div>
         {showMarketInfo && (
           <MarketLink id={filledOrder.marketId}>
             {filledOrder.marketDescription}
           </MarketLink>
         )}
-        <ul className={Styles.FilledOrdersTable__header}>
+        <ul>
           <li>Filled</li>
           <li>Time Stamp</li>
           <li>TX Details</li>
         </ul>
         {filledOrder.trades.map((trade: MarketData, i: number) => (
-          <ul key={i} className={Styles.FilledOrdersTable__trade}>
+          <ul key={i}>
             <li>
               <ValueLabel value={formatShares(trade.amount)} />
             </li>
@@ -48,12 +48,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
           </ul>
         ))}
       </div>
-      <div className={Styles.FilledOrdersTable__innerMobile}>
-        {showMarketInfo && (
-          <MarketLink id={filledOrder.marketId}>
-            <span>Market:</span> {filledOrder.marketDescription}
-          </MarketLink>
-        )}
+      <div>
         {filledOrder.trades.map((trade: MarketData, i: number) => (
           <div key={i}>
             <LinearPropertyLabel
