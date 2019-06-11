@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 
 import { createBigNumber } from "utils/create-big-number";
 

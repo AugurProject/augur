@@ -4,7 +4,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { uniqBy, isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import {
   DESCRIPTION_MAX_LENGTH,
   TAGS_MAX_LENGTH
@@ -17,6 +17,19 @@ import StylesForm from "modules/create-market/components/create-market-form/crea
 import { MarketCreateFormTime } from "modules/create-market/components/create-market-form-time/create-market-form-time";
 import { MarketCreationTimeDisplay } from "modules/create-market/components/create-market-form-time/market-create-time-display";
 import InvalidMessageStyles from "modules/reporting/components/invalid-message/invalid-message.styles";
+
+const uniqBy = (arr, predicate) => {
+  const cb = typeof predicate === 'function' ? predicate : (o) => o[predicate];
+  
+  return [...arr.reduce((map, item) => {
+    const key = (item === null || item === undefined) ? 
+      item : cb(item);
+    
+    map.has(key) || map.set(key, item);
+    
+    return map;
+  }, new Map()).values()];
+};
 
 export default class CreateMarketDefine extends Component {
   static propTypes = {

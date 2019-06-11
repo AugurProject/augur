@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { MOBILE_MENU_STATES } from "modules/common/constants";
 import Styles from "modules/app/components/inner-nav/inner-nav.styles";
-import { isNull } from "lodash";
 import MenuItem from "modules/app/components/inner-nav/menu-item";
 import { XIcon, RotatableChevron } from "modules/common/icons";
 
@@ -77,7 +76,7 @@ const BaseInnerNavPure = ({
         )}
         style={subMenuAnimatedStyle}
       >
-        {submenuItems.filter(item => !isNull(item.label)).map(item => (
+        {submenuItems.filter(item => item.label !== null).map(item => (
           <DataToItem key={item.label} {...item} />
         ))}
       </ul>

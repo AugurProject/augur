@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { constants } from "services/augurjs";
 import store from "store";
-import { isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 
 import selectDisputeOutcomes from "modules/reports/selectors/select-dispute-outcomes";
 import { selectUniverseState } from "store/select-state";
