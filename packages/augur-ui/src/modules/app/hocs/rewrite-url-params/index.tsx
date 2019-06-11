@@ -1,49 +1,30 @@
 import React from "react";
 import PropTypes from "prop-types";
 import parseQuery from "modules/routes/helpers/parse-query";
-import {
-  AUGUR_NODE_URL,
-  ETHEREUM_NODE_HTTP,
-  ETHEREUM_NODE_WS
-} from "modules/common/constants";
-
 import { createPath } from "history";
 
-import { camelCase, compose, mapKeys, pick } from "lodash/fp";
-import { isEmpty } from "utils/is-populated";
 import makeQuery from "modules/routes/helpers/make-query";
-
-const keys = {
-  AUGUR_NODE_URL,
-  ETHEREUM_NODE_HTTP,
-  ETHEREUM_NODE_WS
-};
-
-const valuesToGet = Object.values(keys);
-const grabParams = pick(valuesToGet);
-
-const grabAndCamelCaseWindowParams = compose(
-  mapKeys(camelCase),
-  grabParams,
-  parseQuery
-);
 
 export const RewriteUrlParams = windowRef => BaseCmp => {
   const WrapperCmp = props => {
     const { location } = props;
     const searchValues = parseQuery(location.search);
-    const paramsToMove = grabParams(searchValues);
-    if (!isEmpty(paramsToMove)) {
-      const {
-        augur_node,
-        ethereum_node_http,
-        ethereum_node_ws,
-        ...remainingSearchValues
-      } = searchValues;
+    const {
+      augur_node,
+      ethereum_node_http,
+      ethereum_node_ws,
+      ...remainingSearchValues
+    } = searchValues;
+    if (augur_node || ethereum_node_http || ethereum_node_ws) {
       const path = createPath({
         ...location,
         search: makeQuery(remainingSearchValues)
       });
+      const paramsToMove = { augur_node, ethereum_node_http, ethereum_node_ws };
+      // filter out the undefined paramsToMove key/values
+      Object.keys(paramsToMove).forEach(
+        key => !paramsToMove[key] && delete paramsToMove[key]
+      );
 
       windowRef.location.href = createPath({
         pathname: windowRef.location.origin,
@@ -53,10 +34,16 @@ export const RewriteUrlParams = windowRef => BaseCmp => {
     }
 
     // Discover params added to window location and pass to wrapped component.
-    const windowParams = grabAndCamelCaseWindowParams(
-      windowRef.location.search
+    const parsedParams = parseQuery(windowRef.location.search);
+    const windowParams = {
+      augurNode: parsedParams.augur_node,
+      ethereumNodeHttp: parsedParams.ethereum_node_http,
+      ethereumNodeWs: parsedParams.ethereum_node_ws
+    };
+    // filter out the undefined paramsToMove key/values
+    Object.keys(windowParams).forEach(
+      key => !windowParams[key] && delete windowParams[key]
     );
-
     return <BaseCmp {...props} {...windowParams} />;
   };
 

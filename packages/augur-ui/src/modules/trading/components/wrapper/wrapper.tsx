@@ -7,7 +7,6 @@ import Form from "modules/trading/components/form/form";
 import Confirm from "modules/trading/components/confirm/confirm";
 import { generateTrade } from "modules/trades/helpers/generate-trade";
 import getValue from "utils/get-value";
-import { pick } from "lodash";
 import {
   SCALAR,
   BUY,
@@ -18,6 +17,15 @@ import Styles from "modules/trading/components/wrapper/wrapper.styles";
 import { OrderButton } from "modules/common/buttons";
 import { formatShares } from "utils/format-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
+// TODO: refactor the need to use this function.
+function pick(object, keys) {
+  return keys.reduce((obj, key) => {
+     if (object && object.hasOwnProperty(key)) {
+        obj[key] = object[key];
+     }
+     return obj;
+   }, {});
+}
 
 class Wrapper extends Component {
   static propTypes = {
