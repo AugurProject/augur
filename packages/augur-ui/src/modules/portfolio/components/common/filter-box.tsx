@@ -2,11 +2,11 @@ import React, { Component, ReactNode } from "react";
 
 import { find } from "lodash";
 import { ALL_MARKETS, END_TIME } from "modules/common/constants";
-import QuadBox from "modules/portfolio/components/common/quads/quad-box";
+import QuadBox from "modules/portfolio/components/common/quad-box";
 import { SwitchLabelsGroup } from "modules/common/switch-labels-group";
 import { NameValuePair, Market, Tab} from "modules/portfolio/types";
-import MarketRow from "modules/portfolio/components/common/rows/market-row";
-import EmptyDisplay from "modules/portfolio/components/common/tables/empty-display";
+import MarketRow from "modules/portfolio/components/common/market-row";
+import EmptyDisplay from "modules/portfolio/components/common/empty-display";
 import { createTabsInfo } from "modules/portfolio/helpers/create-tabs-info";
 import { isEqual } from "lodash";
 

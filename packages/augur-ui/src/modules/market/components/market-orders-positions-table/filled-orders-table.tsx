@@ -4,7 +4,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import FilledOrder from "modules/portfolio/containers/filled-order";
-import FilledOrdersHeader from "modules/portfolio/components/common/headers/filled-orders-header";
+import FilledOrdersHeader from "modules/portfolio/components/common/filled-orders-header";
 
 import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
 

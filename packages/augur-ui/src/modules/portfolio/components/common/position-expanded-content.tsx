@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { LinearPropertyLabelMovement } from "modules/common/labels";
 import { Order } from "modules/portfolio/types";
 
-import Styles from "modules/portfolio/components/common/rows/open-order-expanded-content.styles.less";
+import Styles from "modules/portfolio/components/common/open-order-expanded-content.styles.less";
 
 export interface PositionExpandedContentProps {
   position: Order;
