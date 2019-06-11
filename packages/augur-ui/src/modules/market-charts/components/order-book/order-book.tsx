@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import MarketOutcomeHeaderOrders from "modules/market-charts/components/market-outcome--header-orders/market-outcome--header-orders";
+import OrderHeader from "modules/market-charts/components/order-header/order-header";
 import { HoverValueLabel } from "modules/common/labels";
 import { ASKS, BIDS, BUY, SELL } from "modules/common/constants";
 
@@ -163,7 +163,7 @@ export default class OrderBook extends Component<OrderBookProps, OrderBookState>
 
     return (
       <section className={Styles.OrderBook}>
-        <MarketOutcomeHeaderOrders
+        <OrderHeader
           title="Order Book"
           headers={["quantity", "price", "my quantity"]}
           toggle={toggle}

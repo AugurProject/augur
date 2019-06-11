@@ -28,7 +28,7 @@ export const selectAggregateOrderBook = memoize(
     if (marketOrderBook == null) {
       return {
         [BIDS]: [],
-        [ASKS]: []
+        [ASKS]: [],
       };
     }
 
@@ -37,17 +37,17 @@ export const selectAggregateOrderBook = memoize(
         outcomeId,
         BUY,
         marketOrderBook,
-        orderCancellation
+        orderCancellation,
       ).sort(sortPricePointsByPriceDesc),
       [ASKS]: selectAggregatePricePoints(
         outcomeId,
         SELL,
         marketOrderBook,
-        orderCancellation
-      ).sort(sortPricePointsByPriceAsc)
+        orderCancellation,
+      ).sort(sortPricePointsByPriceAsc),
     };
   },
-  { max: 100 }
+  { max: 100 },
 );
 
 export const selectTopBid = memoize(
@@ -68,7 +68,7 @@ export const selectTopBid = memoize(
     }
     return topBid != null ? topBid : null;
   },
-  { max: 10 }
+  { max: 10 },
 );
 
 export const selectTopAsk = memoize(
@@ -89,7 +89,7 @@ export const selectTopAsk = memoize(
     }
     return topAsk != null ? topAsk : null;
   },
-  { max: 10 }
+  { max: 10 },
 );
 
 /**
@@ -107,29 +107,29 @@ const selectAggregatePricePoints = memoize(
     const currentUserAddress = store.getState().loginAccount.address;
 
     const shareCountPerPrice = Object.keys(orders[outcomeId][side])
-      .map(orderId => orders[outcomeId][side][orderId])
+      .map((orderId) => orders[outcomeId][side][orderId])
       .filter(
-        order => orderCancellation[order.orderId] !== CLOSE_DIALOG_CLOSING
+        (order) => orderCancellation[order.orderId] !== CLOSE_DIALOG_CLOSING,
       )
-      .filter(order => order.orderState !== CANCELED)
-      .map(order => ({
+      .filter((order) => order.orderState !== CANCELED)
+      .map((order) => ({
         ...order,
-        isOfCurrentUser: isOrderOfUser(order, currentUserAddress)
+        isOfCurrentUser: isOrderOfUser(order, currentUserAddress),
       }))
       .reduce(reduceSharesCountByPrice, {});
 
-    return Object.keys(shareCountPerPrice).map(price => {
+    return Object.keys(shareCountPerPrice).map((price) => {
       const obj = {
         isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
         shares: formatShares(shareCountPerPrice[price].shares),
         price: formatEther(price),
         sharesEscrowed: formatShares(shareCountPerPrice[price].sharesEscrowed),
-        tokensEscrowed: formatEther(shareCountPerPrice[price].tokensEscrowed)
+        tokensEscrowed: formatEther(shareCountPerPrice[price].tokensEscrowed),
       };
       return obj;
     });
   },
-  { max: 100 }
+  { max: 100 },
 );
 
 /**
@@ -149,7 +149,7 @@ function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
         shares: ZERO,
         sharesEscrowed: ZERO,
         tokensEscrowed: ZERO,
-        isOfCurrentUser: false
+        isOfCurrentUser: false,
       };
     }
     aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[

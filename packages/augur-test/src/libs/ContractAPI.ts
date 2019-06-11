@@ -1,5 +1,5 @@
 import { stringTo32ByteHex, NULL_ADDRESS} from "./Utils";
-import { Augur, PlaceTradeDisplayParams } from "@augurproject/sdk";
+import { Augur, PlaceTradeDisplayParams, SimulateTradeData } from "@augurproject/sdk";
 import { ContractInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { AccountList, makeDependencies, makeSigner } from "./LocalAugur";
@@ -191,8 +191,32 @@ export class ContractAPI {
     await this.augur.trade.placeTrade(params);
   }
 
+  public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
+    return await this.augur.trade.simulateTrade(params);
+  }
+
   public async placeBasicYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber): Promise<void> {
     await this.placeTrade({
+      direction,
+      market: market.address,
+      numTicks: await market.getNumTicks_(),
+      numOutcomes: <3 | 4 | 5 | 6 | 7 | 8><unknown>await market.getNumberOfOutcomes_(),
+      outcome,
+      tradeGroupId: stringTo32ByteHex("42"),
+      ignoreShares: false,
+      affiliateAddress: NULL_ADDRESS,
+      kycToken: NULL_ADDRESS,
+      doNotCreateOrders: false,
+      minPrice: new BigNumber(0),
+      maxPrice: new BigNumber(10**18),
+      displayAmount,
+      displayPrice,
+      displayShares,
+    });
+  }
+
+  public async simulateBasicYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber): Promise<SimulateTradeData> {
+    return await this.simulateTrade({
       direction,
       market: market.address,
       numTicks: await market.getNumTicks_(),
@@ -250,6 +274,7 @@ export class ContractAPI {
     await market.contribute(payoutNumerators, amount, "");
   }
 
+  // TODO Update this to handle case where crowdsourcer is 0 address (hasn't gotten any contributions)
   public async getRemainingToFill(market: ContractInterfaces.Market, payoutNumerators: Array<BigNumber>): Promise<BigNumber> {
     const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
     const crowdsourcerAddress = await market.getCrowdsourcer_(payoutDistributionHash);
@@ -286,9 +311,24 @@ export class ContractAPI {
     return disputeWindow.getEndTime_();
   }
 
+  public async getInitialReporter(market: ContractInterfaces.Market): Promise<ContractInterfaces.InitialReporter> {
+    const initialReporterAddress = await market.getInitialReporter_();
+    return this.augur.contracts.getInitialReporter(initialReporterAddress);
+  }
+
   public async getWinningReportingParticipant(market: ContractInterfaces.Market): Promise<ContractInterfaces.DisputeCrowdsourcer> {
     const reportingParticipantAddress = await market.getWinningReportingParticipant_();
     return this.augur.contracts.getReportingParticipant(reportingParticipantAddress);
+  }
+
+  public async buyParticipationTokens(disputeWindowAddress: string, amount: BigNumber, sender: string=this.account): Promise<void> {
+    const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
+    await disputeWindow.buy(amount, {sender});
+  }
+
+  public async redeemParticipationTokens(disputeWindowAddress: string, account: string=this.account): Promise<void> {
+    const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
+    await disputeWindow.redeem(account);
   }
 
   public async getUniverse(market: ContractInterfaces.Market): Promise<ContractInterfaces.Universe> {
@@ -317,7 +357,7 @@ export class ContractAPI {
   public async getInitialReporterStake(market: ContractInterfaces.Market, payoutNumerators: Array<BigNumber>): Promise<BigNumber> {
     const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
     const initialReporterAddress = await market.getCrowdsourcer_(payoutDistributionHash);
-    const initialReporter = this.augur.contracts.getReportingParticipant(initialReporterAddress);
+    const initialReporter = this.augur.contracts.getInitialReporter(initialReporterAddress);
     return initialReporter.getStake_();
   }
 

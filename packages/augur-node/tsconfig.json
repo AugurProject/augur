@@ -9,8 +9,8 @@
     "noImplicitAny": false
   },
   "include": [
-    "src",
-    "./config.json"
+    "./src/**/*",
+    "./src/config.json"
   ],
   "exclude": [
     "**/*.test.ts"

@@ -1,0 +1,94 @@
+@import (reference) '~assets/styles/shared';
+
+.BoxHeader {
+  > div:first-of-type {
+    align-items: center;
+    border-bottom: 1px solid @color-secondary-background;
+    display: flex;
+    flex-direction: row;
+    height: 4rem;
+    padding: @size-18 @size-24;
+
+    > div:first-of-type {
+      .text-16;
+
+      line-height: @size-18;
+      margin-right: @size-16;
+      white-space: nowrap;
+    }
+
+    > div:last-of-type {
+      align-items: center;
+      display: flex;
+      flex: 1;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+  }
+
+  > div:nth-of-type(2) {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    height: @size-40;
+    justify-content: flex-end;
+    padding: 0 @size-24 0;
+  }
+}
+
+.RightContent,
+.MostRightContent,
+.BottomRightContent {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 @size-8;
+}
+
+.MostRightContent {
+  margin: @size-12 0;
+}
+
+.BottomRightContent {
+  margin-bottom: @size-12;
+}
+
+.BottomContent {
+  background: @color-theme-primary;
+  margin-top: @size-16;
+  padding: 0 @size-8;
+}
+
+.noBackground {
+  background: unset;
+  margin-top: 0;
+}
+
+.ShowOnMobile {
+  display: none;
+}
+
+.HideOnMobile {
+  display: block;
+}
+
+.Middle {
+  display: flex;
+  flex: 1;
+  flex-direction: column-reverse;
+}
+
+.isSwitched {
+  flex-direction: column;
+}
+
+@media @breakpoint-mobile-mid {
+  .ShowOnMobile {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .HideOnMobile {
+    display: none;
+  }
+}

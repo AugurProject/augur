@@ -4,10 +4,10 @@ import Media from "react-media";
 
 import ToggleRow from "modules/common/toggle-row";
 import { Order } from "modules/portfolio/types";
-import OpenOrderExpandedContent from "modules/portfolio/components/common/rows/open-order-expanded-content";
-import FilledOrdersTable from "modules/portfolio/components/common/tables/filled-orders-table";
+import OpenOrderExpandedContent from "modules/portfolio/components/common/open-order-expanded-content";
+import FilledOrdersTable from "modules/portfolio/components/common/filled-orders-table";
 import { FilledOrderInterface } from "modules/portfolio/types";
-import PositionExpandedContent from "modules/portfolio/components/common/rows/position-expanded-content";
+import PositionExpandedContent from "modules/portfolio/components/common/position-expanded-content";
 import RowColumn from "modules/common/row-column";
 import { Properties } from "modules/common/row-column";
 import { SMALL_MOBILE } from "modules/common/constants";

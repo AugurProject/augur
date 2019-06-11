@@ -1,12 +1,10 @@
-import { Augur, Provider } from "@augurproject/sdk";
-import {
-  ContractDependenciesEthers,
-  EthersSigner,
-} from "contract-dependencies-ethers";
+import {Augur, Provider} from "@augurproject/sdk";
+import {ContractDependenciesEthers, EthersSigner,} from "contract-dependencies-ethers";
+import {WebWorkerConnector} from "./ww-connector";
 
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { JsonRpcProvider } from "ethers/providers";
-import { Addresses } from "@augurproject/artifacts";
+import {EthersProvider} from "@augurproject/ethersjs-provider";
+import {JsonRpcProvider} from "ethers/providers";
+import {Addresses} from "@augurproject/artifacts";
 
 export class SDK {
   public sdk: Augur<Provider> | null = null;
@@ -31,7 +29,15 @@ export class SDK {
       ethersProvider,
       contractDependencies,
       Addresses[networkId],
+      new WebWorkerConnector()
     );
+
+    // This is temporary to get SOME diagnostic info out there....
+    ethersProvider.on("block", ((sdk) => () => {
+      sdk.getSyncData().then((syncData) => console.table({0: syncData}));
+    })(this.sdk));
+
+    this.sdk.connect("http://localhost:8545", account);
   }
 
   public get(): Augur<Provider> {

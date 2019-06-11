@@ -32,7 +32,7 @@ jobs:
           for f in $(eval "$GIT_COMMAND");
             do
               echo "$f"
-              if [[ $f =~ .*augur-core/source.* ]] || [[ $f =~ .*augur-core/package.json ]]
+              if [[ $f =~ .*augur-core/.* ]]
               then
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
@@ -94,19 +94,16 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn test
+          yarn test --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
       - bash: |
           set -euo pipefail
           yarn workspace @augurproject/sdk test
-        displayName: augur-sdk test
-        condition: |
-          and
-          (
-            succeeded(),
-            eq(variables['JOB_TRIGGER_SDK'], 'true')
-          )
-
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testRunner: JUnit
+          testResultsFiles: '**/junit.xml'
 
   - job: Augur_build_docker_image
     dependsOn:
@@ -231,6 +228,7 @@ jobs:
       )
     pool:
       vmImage: 'Ubuntu 16.04'
+    timeoutInMinutes: 120
     strategy:
       maxParallel: 5
       matrix:
@@ -242,14 +240,14 @@ jobs:
           TESTS: tests/fuzzy
         unit:
           TESTS: tests/unit
-        trading_and_libs_subfork:
-          TESTS: tests/test*.py tests/libraries tests/trading --subFork
-        reporting_subfork:
-          TESTS: tests/reporting --subFork
-        fuzzy_subfork:
-          TESTS: tests/fuzzy --subFork
-        unit_subfork:
-          TESTS: tests/unit --subFork
+#       trading_and_libs_subfork:
+#         TESTS: tests/test*.py tests/libraries tests/trading --subFork
+#       reporting_subfork:
+#         TESTS: tests/reporting --subFork
+#       fuzzy_subfork:
+#         TESTS: tests/fuzzy --subFork
+#       unit_subfork:
+#         TESTS: tests/unit --subFork
         geth_integration:
           TESTS: integration:geth
         parity_integration:
@@ -263,8 +261,8 @@ jobs:
           versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
-          versionSpec: '10.x'
-      - script: |
+          versionSpec: '10.15'
+      - bash: |
           set -euo pipefail
           which node
           node --version
@@ -273,21 +271,22 @@ jobs:
           docker pull $CORE_IMAGE_BUILD
           docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
           docker images
-          if [[ "$TESTS" == "integration:geth" ]]; then
+          echo "tests: $(TESTS)"
+          if [[ "$(TESTS)" == "integration:geth" ]]; then
             yarn workspace @augurproject/core docker:run:test:integration:geth;
-          elif [[ "$TESTS" == "integration:parity" ]]; then
+          elif [[ "$(TESTS)" == "integration:parity" ]]; then
             yarn workspace @augurproject/core docker:run:test:integration:parity;
-          elif [[ "$TESTS" == "security:mythril" ]]; then
+          elif [[ "$(TESTS)" == "security:mythril" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:mythril;
             cat $(find . -name test-results.log)
-          elif [[ "$TESTS" == "security:maian" ]]; then
+          elif [[ "$(TESTS)" == "security:maian" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:maian;
-          elif [[ "$TESTS" == "security:smt" ]]; then
+          elif [[ "$(TESTS)" == "security:smt" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:smt;
-          elif [[ "$TESTS" == "security:oyente" ]]; then
+          elif [[ "$(TESTS)" == "security:oyente" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:oyente;
           else
-            yarn workspace @augurproject/core docker:run:test:unit -- $TESTS;
+            (cd packages/augur-core &&  yarn docker:run:test:unit -- $(TESTS))
           fi
         displayName: integration tests
 

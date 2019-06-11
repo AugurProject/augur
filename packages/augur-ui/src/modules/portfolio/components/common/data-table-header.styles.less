@@ -1,0 +1,197 @@
+@import (reference) '~assets/styles/shared';
+
+.DataTableHeader {
+  display: grid;
+  flex-direction: row;
+  grid-template-columns: repeat(5, 1fr);
+  min-height: @size-32;
+  padding: @size-12 2.8rem @size-12 0;
+  width: 100%;
+
+  > li {
+    .mono-10;
+
+    align-items: center;
+    color: @color-shadow-text;
+    display: flex;
+    flex-grow: 1;
+    padding: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    &:first-child {
+      font-weight: normal;
+      margin: auto 0;
+      padding-left: 0;
+    }
+
+    &:not(:first-child) {
+      justify-content: flex-end;
+      text-align: right;
+    }
+  }
+}
+
+.FilledOrdersHeader {
+  grid-template-columns: repeat(5, 1fr) minmax(5rem, 1fr) 3.2rem;
+  padding-bottom: @size-6;
+  padding-top: @size-6;
+
+  &:last-child {
+    margin-right: -@size-8;
+  }
+}
+
+.PositionHeader {
+  background: fade(@color-primary-alternate, 40%);
+  grid-template-columns: repeat(8, 1fr);
+  padding-left: @size-24;
+  padding-right: 4rem;
+}
+
+.DataTableHeader__extended {
+  background: @color-theme-primary;
+  grid-template-columns: repeat(6, 1fr) 6.2rem;
+  padding: @size-6 @size-24;
+}
+
+.PositionHeader__extended {
+  background: @color-theme-primary;
+  grid-template-columns: repeat(6, 1fr);
+  padding-bottom: @size-12;
+  padding-right: @size-28;
+  padding-top: 0.85rem;
+}
+
+.FilledOrdersHeader__extended {
+  grid-template-columns: repeat(5, 1fr) 6rem;
+  padding-right: 4rem;
+
+  > li {
+    &:nth-of-type(3) {
+      display: none;
+    }
+  }
+}
+
+.OutcomesHeader {
+  background-color: @color-theme-primary;
+  border-bottom: 1px solid @color-primary-background;  
+  grid-template-columns: 2fr repeat(5, 1fr);
+  padding: 0 @size-24;
+}
+
+@media @breakpoint-mobile-mid {
+  .DataTableHeader {
+    grid-template-columns: repeat(3, 1fr);
+    padding-left: @size-16;
+    padding-right: @size-48;
+
+    > li {
+      color: @color-shadow-text;
+      font-size: @size-9;
+
+      &:first-child {
+        display: none;
+      }
+
+      &:nth-of-type(2) {
+        justify-content: flex-start;
+      }
+    }
+  }
+
+  .DataTableHeader__extended {
+    > li {
+      &:nth-of-type(2) {
+        min-height: @size-22;
+      }
+
+      &:nth-of-type(5),
+      &:nth-of-type(6) {
+        display: none;
+      }
+    }
+  }
+
+  .FilledOrdersHeader {
+    background: @color-theme-primary;
+    grid-template-columns: repeat(5, 1fr);
+
+    > li {
+      &:nth-of-type(5) {
+        display: flex;
+      }
+
+      &:nth-of-type(6) {
+        display: none;
+      }
+    }
+  }
+
+  .FilledOrdersHeader__extended {
+    > li {
+      &:nth-of-type(3) {
+        display: flex;
+      }
+    }
+  }
+
+  .PositionHeader {
+    grid-template-columns: repeat(6, 1fr);
+    padding: @size-8 @size-24 @size-8 @size-16;
+
+    > li {
+      &:last-child {
+        display: none;
+      }
+    }
+  }
+
+  .PositionHeader__extended {
+    border-bottom: 1px solid @color-primary-background;
+    grid-template-columns: repeat(5, 1fr);
+    padding-bottom: @size-6;
+    padding-left: @size-16;
+    padding-top: @size-6;
+
+    > li {
+      padding-left: @size-10;
+      white-space: pre-line;
+
+      &:nth-of-type(2) {
+        padding: 0;
+      }
+
+      &:nth-of-type(5),
+      &:last-child {
+        display: flex;
+      }
+    }
+  }
+
+  .OutcomesHeader {
+    grid-template-columns: repeat(5, 1fr);
+    padding: 0 @size-16 0 @size-24;
+
+    > li {
+      font-size: @size-9;
+
+      &:nth-of-type(2) {
+        text-align: left;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .OutcomesHeader {
+    > li {
+      min-width: unset;
+
+      &:first-child {
+        min-width: 50px;
+      }
+    }
+  }
+}

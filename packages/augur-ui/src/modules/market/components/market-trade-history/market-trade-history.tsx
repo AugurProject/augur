@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { formatShares } from "utils/format-number";
 import { SELL } from "modules/common/constants";
 import { HoverValueLabel } from "modules/common/labels";
-import MarketOutcomeHeaderOrders from "modules/market-charts/components/market-outcome--header-orders/market-outcome--header-orders";
+import OrderHeader from "modules/market-charts/components/order-header/order-header";
 
 import Styles from "modules/market/components/market-trade-history/market-trade-history.styles";
 
@@ -39,7 +39,7 @@ export default class MarketTradeHistory extends Component {
 
     return (
       <section className={Styles.TradeHistory}>
-        <MarketOutcomeHeaderOrders
+        <OrderHeader
           title="Trade History"
           headers={["quantity", "price", "time"]}
           toggle={toggle}

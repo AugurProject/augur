@@ -2,19 +2,19 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { selectMarket } from "modules/markets/selectors/market";
 
-import ForkMigrationTotalsView from "modules/forking/components/fork-migration-totals/fork-migration-totals";
+import ForkMigrationTotalsView from "modules/forking/components/fork-migration-totals";
 
 import { getForkMigrationTotals } from "modules/forking/actions/get-fork-migration-totals";
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   universe: state.universe.id,
   forkingMarketId: state.universe.forkingMarket,
-  currentBlockNumber: state.blockchain.currentBlockNumber
+  currentBlockNumber: state.blockchain.currentBlockNumber,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   getForkMigrationTotals: (universe, callback) =>
-    dispatch(getForkMigrationTotals(universe, callback))
+    dispatch(getForkMigrationTotals(universe, callback)),
 });
 
 const mergeProps = (sP, dP) => {
@@ -23,8 +23,8 @@ const mergeProps = (sP, dP) => {
   return {
     ...sP,
     forkingMarket,
-    getForkMigrationTotals: callback =>
-      dP.getForkMigrationTotals(sP.universe, callback)
+    getForkMigrationTotals: (callback) =>
+      dP.getForkMigrationTotals(sP.universe, callback),
   };
 };
 
@@ -32,8 +32,8 @@ const ForkMigrationTotals = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(ForkMigrationTotalsView)
+    mergeProps,
+  )(ForkMigrationTotalsView),
 );
 
 export default ForkMigrationTotals;

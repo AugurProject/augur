@@ -1,4 +1,5 @@
-import { augur } from "services/augurjs";
+import { augur } from "services/augursdk";
+import * as AugurJS from "services/augurjs";
 import { updateBlockchain } from "modules/app/actions/update-blockchain";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { createBigNumber } from "utils/create-big-number";
@@ -9,7 +10,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
 const GET_GAS_BLOCK_LIMIT = 100;
-const MAINNET_ID = "1";
+const MAINNET_ID = 1;
 
 export const syncBlockchain = (cb: Function) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -39,13 +40,13 @@ export const syncBlockchain = (cb: Function) => (
     }
 
   cb && cb();
-
-  augur.augurNode.getSyncData((err: any, res: any) => {
-    if (!err && res) {
+  
+  AugurJS.augur.augurNode.submitRequest("getSyncData", {}, (err, result) => {
+    if (!err && result) {
       dispatch(
         updateBlockchain({
-          highestBlock: res.highestBlock.number,
-          lastProcessedBlock: res.lastProcessedBlock.number,
+          highestBlock: result.highestBlock.number,
+          lastProcessedBlock: result.lastProcessedBlock.number,
         }),
       );
     }

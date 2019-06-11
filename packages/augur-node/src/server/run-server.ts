@@ -9,7 +9,7 @@ import { EventEmitter } from "events";
 import express from "express";
 import { Addresses } from "@augurproject/artifacts";
 
-import { websocketConfigs } from "../../config.json";
+import { websocketConfigs } from "../config.json";
 
 export interface RunServerResult {
   app: express.Application;

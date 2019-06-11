@@ -10,7 +10,7 @@ export class EmptyConnector extends Connector {
     return;
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
+  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
       return "" as any;
     };

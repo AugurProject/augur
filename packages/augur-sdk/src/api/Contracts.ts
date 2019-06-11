@@ -18,6 +18,7 @@ export class Contracts {
   public claimTradingProceeds: ContractInterfaces.ClaimTradingProceeds;
   public time: SomeTime | void;
   public legacyReputationToken: ContractInterfaces.LegacyReputationToken;
+  public simulateTrade: ContractInterfaces.SimulateTrade;
 
   public reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -36,6 +37,7 @@ export class Contracts {
     this.completeSets = new ContractInterfaces.CompleteSets(dependencies, addresses.CompleteSets);
     this.claimTradingProceeds = new ContractInterfaces.ClaimTradingProceeds(dependencies, addresses.ClaimTradingProceeds);
     this.legacyReputationToken = new ContractInterfaces.LegacyReputationToken(dependencies, addresses.LegacyReputationToken);
+    this.simulateTrade = new ContractInterfaces.SimulateTrade(dependencies, addresses.SimulateTrade);
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
     }
@@ -84,6 +86,10 @@ export class Contracts {
 
   public disputeWindowFromAddress(address: string): ContractInterfaces.DisputeWindow {
     return new ContractInterfaces.DisputeWindow(this.dependencies, address);
+  }
+
+  public getInitialReporter(initialReporterAddress: string): ContractInterfaces.InitialReporter {
+    return new ContractInterfaces.InitialReporter(this.dependencies, initialReporterAddress);
   }
 
   public getReportingParticipant(reportingParticipantAddress: string): ContractInterfaces.DisputeCrowdsourcer {

@@ -4,8 +4,8 @@ export function sortOrders(orderBook) {
   const sortedOrderBook = {};
   const bids = [];
   const asks = [];
-  Object.keys(orderBook).forEach(outcome => {
-    Object.keys(orderBook[outcome]).forEach(index => {
+  Object.keys(orderBook).forEach((outcome) => {
+    Object.keys(orderBook[outcome]).forEach((index) => {
       if (orderBook[outcome][index].type === BID) {
         if (!bids[outcome]) {
           bids[outcome] = [];
@@ -23,13 +23,13 @@ export function sortOrders(orderBook) {
     }
     if (bids[outcome]) {
       bids[outcome].sort(compareBidPrices);
-      Object.keys(bids[outcome]).forEach(index => {
+      Object.keys(bids[outcome]).forEach((index) => {
         sortedOrderBook[outcome].push(bids[outcome][index]);
       });
     }
     if (asks[outcome]) {
       asks[outcome].sort(compareAskPrices);
-      Object.keys(asks[outcome]).forEach(index => {
+      Object.keys(asks[outcome]).forEach((index) => {
         sortedOrderBook[outcome].push(asks[outcome][index]);
       });
     }

@@ -5,18 +5,18 @@ import FilledOrders from "modules/portfolio/components/orders/filled-orders";
 import { updateModal } from "modules/modal/actions/update-modal";
 import selectMarketsFillOrders from "modules/portfolio/selectors/select-markets-filled-orders";
 
-const mapStateToProps = state => selectMarketsFillOrders(state);
+const mapStateToProps = (state) => selectMarketsFillOrders();
 
-const mapDispatchToProps = dispatch => ({
-  claimTradingProceeds: marketId =>
+const mapDispatchToProps = (dispatch) => ({
+  claimTradingProceeds: (marketId) =>
     dispatch(
-      updateModal({ type: constants.MODAL_CLAIM_TRADING_PROCEEDS, marketId })
-    )
+      updateModal({ type: constants.MODAL_CLAIM_TRADING_PROCEEDS, marketId }),
+    ),
 });
 
 const FilledOrdersContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(FilledOrders);
 
 export default FilledOrdersContainer;

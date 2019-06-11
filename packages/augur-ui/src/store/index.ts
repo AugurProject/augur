@@ -49,7 +49,7 @@ const localStorageMiddleware = store => next => action => {
     const networkIdToUse: number = isConnected ? getNetworkId() : augurNodeNetworkId;
     const universeIdToUse =
       env.universe || augur.contracts.addresses[networkIdToUse].Universe;
-    const accountValue = localStorage.getItem(address) || "";
+    const accountValue = localStorage.getItem(address) || "{}";
     let storedAccountData = JSON.parse(accountValue);
     if (!storedAccountData || !storedAccountData.selectedUniverse) {
       storedAccountData = {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import FilterSwitchBox from "modules/portfolio/components/common/quads/filter-switch-box";
-import MarketRow from "modules/portfolio/components/common/rows/market-row";
+import FilterSwitchBox from "modules/portfolio/components/common/filter-switch-box";
+import MarketRow from "modules/portfolio/components/common/market-row";
 import { MovementLabel } from "modules/common/labels";
 import { SizeTypes } from "modules/types";
 

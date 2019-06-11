@@ -323,9 +323,10 @@ export interface FilledOrder {
   amount: string;
   price: string;
   type: string;
-  timestamp: number;
+  timestamp: DateFormattedObject;
   transactionHash: string;
   marketId: string;
+  marketDescription: string;
   logIndex: number;
 }
 
@@ -349,6 +350,7 @@ export interface GasPriceInfo {
   fast: number;
   safeLow: number;
   userDefinedGasPrice: string;
+  blockNumber: string;
 }
 export interface FilterSortOptions {
   marketFilter: string;
@@ -392,7 +394,7 @@ export interface Endpoints {
 export interface Connection {
   isConnected: boolean;
   isConnectedToAugurNode: boolean;
-  augurNodeNetworkId?: number;
+  augurNodeNetworkId?: string;
   isReconnectionPaused: boolean;
 }
 
@@ -450,6 +452,7 @@ export interface PositionData extends PositionsTotal {
   marketId: string;
   netPosition: string;
   outcome: number;
+  outcomeId: string;
   position: string;
   timestamp: number;
 }

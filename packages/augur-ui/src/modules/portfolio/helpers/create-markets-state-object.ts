@@ -3,18 +3,19 @@ import {
   ALL_MARKETS,
   MARKET_OPEN,
   MARKET_REPORTING,
-  MARKET_CLOSED
+  MARKET_CLOSED,
 } from "modules/common/constants";
 import { orderBy } from "lodash";
+import { MarketData } from "modules/types";
 
-export const createMarketsStateObject = markets => {
-  const openPositionMarkets = [];
-  const reportingMarkets = [];
-  const closedMarkets = [];
+export const createMarketsStateObject = (markets) => {
+  const openPositionMarkets: Array<MarketData> = [];
+  const reportingMarkets: Array<MarketData> = [];
+  const closedMarkets: Array<MarketData> = [];
 
   const reportingStates = constants.REPORTING_STATE;
 
-  markets.forEach(market => {
+  markets.forEach((market) => {
     if (
       market.reportingState === reportingStates.FINALIZED ||
       market.reportingState === reportingStates.AWAITING_FINALIZATION
@@ -30,14 +31,14 @@ export const createMarketsStateObject = markets => {
   const orderdClosedMarkets = orderBy(
     closedMarkets,
     ["endTime.timestamp"],
-    ["desc"]
+    ["desc"],
   );
 
   const marketsObject = {
     [ALL_MARKETS]: markets,
     [MARKET_OPEN]: openPositionMarkets,
     [MARKET_REPORTING]: reportingMarkets,
-    [MARKET_CLOSED]: orderdClosedMarkets
+    [MARKET_CLOSED]: orderdClosedMarkets,
   };
 
   return marketsObject;

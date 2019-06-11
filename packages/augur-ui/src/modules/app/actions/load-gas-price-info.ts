@@ -14,7 +14,7 @@ import { Action } from "redux";
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
-const MAINNET_ID = 1;
+const MAINNET_ID = "1";
 
 export function loadGasPriceInfo(callback: NodeStyleCallback = logError) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {

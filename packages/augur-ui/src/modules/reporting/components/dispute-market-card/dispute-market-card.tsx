@@ -1,12 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import MarketLink from "modules/market/components/market-link/market-link";
-import CommonStyles from "modules/market/components/common/market-common.styles";
+import CommonStyles from "modules/market/components/common/market-common.styles.less";
 import MarketProperties from "modules/market/containers/market-properties";
 import ForkMigrationTotals from "modules/forking/containers/fork-migration-totals";
 import MarketReportingPayouts from "modules/reporting/containers/reporting-payouts";
-import Styles from "modules/reporting/components/dispute-market-card/dispute-market-card.style";
+import Styles from "modules/reporting/components/dispute-market-card/dispute-market-card.style.less";
 
 import { MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
@@ -16,10 +15,19 @@ import classNames from "classnames";
 
 import { compact } from "lodash";
 import { CategoryTagTrail } from "modules/common/labels";
+import { MarketData } from "modules/types";
+
+interface DisputeMarketCardProps {
+  location: Location;
+  history: History;
+  market: MarketData;
+  isForkingMarket?: boolean;
+  isMobile: boolean;
+}
 
 const DisputeMarketCard = ({
   history,
-  isForkingMarket,
+  isForkingMarket = false,
   location,
   market,
   ...p
@@ -35,15 +43,15 @@ const DisputeMarketCard = ({
   const showForkTop = potentialFork || isForkingMarket;
 
   const process = (...arr) =>
-    compact(arr).map(label => ({
+    compact(arr).map((label) => ({
       label,
-      onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history)
+      onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history),
     }));
 
   const categoriesWithClick = process(market.category);
-  const tagsWithClick = compact(market.tags).map(tag => ({
+  const tagsWithClick = compact(market.tags).map((tag) => ({
     label: tag,
-    onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history)
+    onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history),
   }));
 
   return (
@@ -57,6 +65,7 @@ const DisputeMarketCard = ({
         <div className={CommonStyles.MarketCommon__header}>
           <CategoryTagTrail
             categories={categoriesWithClick}
+            // @ts-ignore
             tags={tagsWithClick}
           />
           <div className={Styles["DisputeMarket__round-number"]}>
@@ -88,7 +97,7 @@ const DisputeMarketCard = ({
           </div>
         </div>
         <h1 className={CommonStyles.MarketCommon__description}>
-          <MarketLink id={market.id} location={location}>
+          <MarketLink id={market.id}>
             {market.description}
           </MarketLink>
         </h1>
@@ -106,18 +115,6 @@ const DisputeMarketCard = ({
       </div>
     </article>
   );
-};
-
-DisputeMarketCard.propTypes = {
-  location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-  market: PropTypes.object.isRequired,
-  isForkingMarket: PropTypes.bool,
-  isMobile: PropTypes.bool.isRequired
-};
-
-DisputeMarketCard.defaultProps = {
-  isForkingMarket: false
 };
 
 export default DisputeMarketCard;

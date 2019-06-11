@@ -22,7 +22,8 @@
     "clean": "echo delete database",
     "rebuild": "yarn clean && yarn build",
     "clean-start": "yarn rebuild && yarn start",
-    "clean-start-local": "yarn rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 yarn start"
+    "clean-start-local": "yarn rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 yarn start",
+    "build:documentation": "yarn typedoc --theme markdown --mdDocusaurus --disableOutputCheck --ignoreCompilerErrors --out ../../docs/v2/docs/sdk ./src"
   },
   "repository": {
     "type": "git",
@@ -52,7 +53,7 @@
     "flexsearch": "0.6.2",
     "ganache-core": "2.5.5",
     "io-ts": "1.4.2",
-    "isomorphic-ws": "^4.0.1",
+    "isomorphic-ws": "4.0.1",
     "lodash": "4.17.11",
     "postinstall-build": "5.0.3",
     "pouchdb": "7.0.0",
@@ -64,7 +65,7 @@
     "webpack-cli": "3.3.0",
     "websocket-as-promised": "brianosaurus/websocket-as-promised#a104f774d702c0fbefe7ac2438b682676cf7d005",
     "worker-loader": "2.0.0",
-    "ws": "^7.0.0",
+    "ws": "7.0.0",
     "yarn": "1.15.2"
   },
   "devDependencies": {
@@ -74,6 +75,8 @@
     "jest": "22.4.4",
     "ts-jest": "23.10.5",
     "ts-node": "8.0.3",
+    "typedoc": "0.14.2",
+    "typedoc-plugin-markdown": "1.2.1",
     "webpack-dev-server": "3.2.1"
   },
   "buildDependencies": [

@@ -2,7 +2,6 @@ import { API } from "@augurproject/sdk/build/state/getter/API";
 import { Augur } from "@augurproject/sdk";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Router } from "@augurproject/sdk/build/state/getter/Router";
-import { ethers } from "ethers";
 import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../../libs";
 
 const mock = makeDbMock();
@@ -12,11 +11,11 @@ beforeEach(async () => {
 });
 
 let augur: Augur;
-let db: DB;
+let db: Promise<DB>;
 
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
-  db = await mock.makeDB(augur, ACCOUNTS);
+  db = mock.makeDB(augur, ACCOUNTS);
 }, 120000);
 
 test("State API :: Bad parameters to getter", async () => {

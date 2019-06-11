@@ -1,15 +1,16 @@
-import { Connector, Callback } from "./connector/connector";
-import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { ContractInterfaces } from "@augurproject/core";
-import { Contracts } from "./api/Contracts";
-import { EmptyConnector } from "./connector/empty-connector";
-import { Events } from "./api/Events";
-import { Provider } from "./ethereum/Provider";
-import { SubscriptionEventNames, isSubscriptionEventName } from "./constants";
-import { Trade } from "./api/Trade";
-import { TransactionStatusCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Markets } from "./state/getter/Markets";
-import { SyncData } from "./state/getter/sync-data";
+import {Callback, Connector} from "./connector/connector";
+import {ContractAddresses, NetworkId} from "@augurproject/artifacts";
+import {ContractInterfaces} from "@augurproject/core";
+import {Contracts} from "./api/Contracts";
+import {EmptyConnector} from "./connector/empty-connector";
+import {Events} from "./api/Events";
+import {BigNumber} from 'bignumber.js';
+import {Provider} from "./ethereum/Provider";
+import {isSubscriptionEventName, SubscriptionEventNames} from "./constants";
+import {Trade} from "./api/Trade";
+import {ContractDependenciesEthers, TransactionStatusCallback} from "contract-dependencies-ethers";
+import {Markets} from "./state/getter/Markets";
+import {SyncData} from "./state/getter/sync-data";
 
 export interface CustomEvent {
   name: string;
@@ -116,6 +117,29 @@ export class Augur<TProvider extends Provider = Provider> {
     return augur;
   }
 
+  public async getTransaction(hash: string): Promise<string> {
+    const tx = await this.dependencies.provider.getTransaction(hash);
+    if (!tx) return "";
+    return tx.from;
+  }
+  public async listAccounts() {
+    return this.dependencies.provider.listAccounts();
+  }
+
+  public async getTimestamp() {
+    return this.contracts.augur.getTimestamp_();
+  }
+
+  public async getEthBalance(address: string): Promise<string> {
+    const balance = await this.dependencies.provider.getBalance(address);
+    return balance.toString();
+  }
+
+  public async getGasPrice(): Promise<BigNumber> {
+    const balance = await this.dependencies.provider.getGasPrice();
+    return new BigNumber(balance.toString());
+  }
+
   public async getAccount(): Promise<string> {
     return await this.dependencies.getDefaultAddress();
   }
@@ -140,15 +164,15 @@ export class Augur<TProvider extends Provider = Provider> {
     this.dependencies.deRegisterAllTransactionStatusCallbacks();
   }
 
-  public async connect(params?: any): Promise<any> {
-    return Augur.connector.connect(params);
+  public async connect(ethNodeUrl: string, account?: string): Promise<any> {
+    return Augur.connector.connect(ethNodeUrl, account);
   }
 
   public async disconnect(): Promise<any> {
     return Augur.connector.disconnect();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => R): (params: P) => Promise<R> {
+  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return Augur.connector.bindTo(f);
   }
 
@@ -165,5 +189,8 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   public getMarkets = this.bindTo(Markets.getMarkets);
-  public getSyncData = this.bindTo(SyncData.getSyncData);
+  public getSyncData = () => {
+    return this.bindTo(SyncData.getSyncData)({});
+  }
+
 }

@@ -2,7 +2,6 @@ import * as t from "io-ts";
 import { Augur } from "../../Augur";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
-import { SyncStatus } from "../db/SyncStatus";
 
 export interface SyncData {
   highestAvailableBlockNumber: number;

@@ -1,48 +1,53 @@
-// An example how to use Augur to retrieve data
-//
-//
-// import { Addresses } from "@augurproject/artifacts";
-// import { Augur } from "../Augur"
-// import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-// import { EthersProvider } from "@augurproject/ethersjs-provider";
-// import { JsonRpcProvider } from "ethers/providers";
-// import { Markets } from "./getter/Markets";
-// import { SubscriptionEventNames } from "../constants";
-// import { WebWorkerConnector } from "../connector/ww-connector";
+import { Augur } from "../Augur";
+import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
+import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { Controller } from "./Controller";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { EventLogDBRouter } from "./db/EventLogDBRouter";
+import { JsonRpcProvider } from "ethers/providers";
+import { PouchDBFactory } from "./db/AbstractDB";
+import { Addresses, UploadBlockNumbers } from "@augurproject/artifacts";
+import { API } from "./getter/API";
+import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
+import { DB } from "./db/DB";
 
-// const settings = require("@augurproject/sdk/src/state/settings.json");
+const settings = require("./settings.json");
 
-// console.log("Starting web worker");
 
-// (async function() {
-//   try {
-//     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-//     const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-//     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], new WebWorkerConnector());
-//     await augur.connect();
+async function buildDeps(ethNodeUrl: string, account?: string, dbArgs: PouchDB.Configuration.DatabaseConfiguration = {}, params: any = {}) {
+  const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
+  const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, account);
+  const networkId = await ethersProvider.getNetworkId();
 
-//     augur.on(SubscriptionEventNames.CompleteSetsPurchased, (data: any): void => {
-//       console.log(data);
-//       augur.off(SubscriptionEventNames.CompleteSetsPurchased);
-//     });
+  const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId]);
+  const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
+  const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses[networkId].Augur, augur.events.getEventTopics);
+  const pouchDBFactory = PouchDBFactory(dbArgs);
+  const db = DB.createAndInitializeDB(
+    Number(networkId),
+    settings.blockstreamDelay,
+    UploadBlockNumbers[networkId],
+    account ? [account] : [],
+    augur.genericEventNames,
+    augur.customEvents,
+    augur.userSpecificEvents,
+    pouchDBFactory,
+    blockAndLogStreamerListener,
+  );
+  return { augur, blockAndLogStreamerListener, db };
+}
 
-//     augur.on(SubscriptionEventNames.Burn, (data: any): void => {
-//       console.log(data);
-//       augur.off(SubscriptionEventNames.Burn);
-//     });
+export async function create(ethNodeUrl: string, account?: string, dbArgs: DatabaseConfiguration = {}): Promise<{ api: API, controller: Controller }> {
+  const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, dbArgs);
 
-//     augur.on(SubscriptionEventNames.Approval, (data: any): void => {
-//       console.log(data);
-//       augur.off(SubscriptionEventNames.Approval);
-//     });
+  const controller = new Controller(augur, db, blockAndLogStreamerListener);
+  const api = new API(augur, db);
 
-//     console.log("getMarkets");
-//     const getMarkets = augur.bindTo(Markets.getMarkets);
-//     console.log(await getMarkets({
-//       universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
-//     }));
-//     console.log("Done");
-//   } catch (e) {
-//     console.log(e);
-//   }
-// })();
+  return { api, controller };
+};
+
+export async function buildAPI(ethNodeUrl: string, account?: string, dbArgs: DatabaseConfiguration = {}, params: any = {}): Promise<API> {
+  const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, dbArgs);
+
+  return new API(augur, db);
+}

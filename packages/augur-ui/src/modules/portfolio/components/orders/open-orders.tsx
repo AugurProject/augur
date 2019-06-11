@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 
 import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
 import OpenOrder from "modules/portfolio/containers/open-order";
-import OpenOrdersHeader from "modules/portfolio/components/common/headers/open-orders-header";
-import OrderMarketRow from "modules/portfolio/components/common/rows/order-market-row";
+import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
+import OrderMarketRow from "modules/portfolio/components/common/order-market-row";
 
 const sortByOptions = [
   {

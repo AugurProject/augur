@@ -4,7 +4,7 @@ import {
   YOUR_OVERVIEW_TITLE,
   TIMEFRAME_OPTIONS,
 } from "modules/common/constants";
-import QuadBox from "modules/portfolio/components/common/quads/quad-box";
+import QuadBox from "modules/portfolio/components/common/quad-box";
 import { PillSelection } from "modules/common/selection";
 import Funds from "modules/account/containers/funds";
 import Stats from "modules/account/containers/stats";

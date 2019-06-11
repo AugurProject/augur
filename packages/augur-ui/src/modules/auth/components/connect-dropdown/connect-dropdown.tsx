@@ -160,7 +160,7 @@ export default class ConnectDropdown extends Component {
               role="button"
               tabIndex="-1"
             >
-              <div className={Styles.ConnectDropdown__icon}>{LogoutIcon}</div>
+              <div className={Styles.ConnectDropdown__icon}>{LogoutIcon()}</div>
               <div className={Styles.ConnectDropdown__title}>Logout</div>
             </div>
           </div>

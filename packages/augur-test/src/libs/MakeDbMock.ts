@@ -4,7 +4,6 @@ import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Augur } from "@augurproject/sdk";
 import { AccountList } from "./LocalAugur";
 import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
-import { ethers } from "ethers";
 import * as _ from "lodash";
 
 interface Databases {

@@ -21,6 +21,73 @@ export const AugurLoadingLogo = (
   </svg>
 );
 
+
+export const CollapseIcon = (
+  <svg viewBox="0 0 20 30" fill="none">
+    <rect
+      x="1"
+      y="1"
+      width="18"
+      height="28"
+      rx="1"
+      strokeLinecap="round"
+    />
+    <path
+      d="M13 9L10 6L7 9"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path d="M10 6.5L10 13.5"strokeLinecap="round" />
+    <path
+      d="M13 21L10 24L7 21"
+x      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path d="M10 23.5L10 16.5" strokeLinecap="round" />
+  </svg>
+);
+
+export const ExpandIcon = (
+  <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
+    <g opacity="0.87">
+      <rect
+        x="1"
+        y="12"
+        width="18"
+        height="4"
+        rx="1"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13 6L10 9L7 6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <line
+        x1="0.5"
+        y1="-0.5"
+        x2="7.5"
+        y2="-0.5"
+        transform="matrix(-4.37114e-08 -1 -1 4.37114e-08 9.5 8)"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13 22L10 19L7 22"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <line
+        x1="10"
+        y1="20.5"
+        x2="10"
+        y2="27.5"
+        strokeLinecap="round"
+      />
+    </g>
+  </svg>
+);
+
+
 export const ViewIcon = (
   <svg viewBox="0 0 10 10">
     <path d="M8.75 8.75V9.25H9.25V8.75H8.75ZM1.25 8.75H0.75V9.25H1.25V8.75ZM1.25 1.25V0.75H0.75V1.25H1.25ZM8.75 1.25H9.25V0.75H8.75V1.25ZM8.25 5C8.25 5.27614 8.47386 5.5 8.75 5.5C9.02614 5.5 9.25 5.27614 9.25 5H8.25ZM5 0.75C4.72386 0.75 4.5 0.973858 4.5 1.25C4.5 1.52614 4.72386 1.75 5 1.75V0.75ZM9.25 7.1875C9.25 6.91136 9.02614 6.6875 8.75 6.6875C8.47386 6.6875 8.25 6.91136 8.25 7.1875H9.25ZM2.8125 1.75C3.08864 1.75 3.3125 1.52614 3.3125 1.25C3.3125 0.973858 3.08864 0.75 2.8125 0.75V1.75ZM8.75 8.25H1.25V9.25H8.75V8.25ZM1.75 8.75V1.25H0.75V8.75H1.75ZM8.25 1.25V5H9.25V1.25H8.25ZM5 1.75H8.75V0.75H5V1.75ZM8.25 7.1875V8.75H9.25V7.1875H8.25ZM1.25 1.75H2.8125V0.75H1.25V1.75Z" />
