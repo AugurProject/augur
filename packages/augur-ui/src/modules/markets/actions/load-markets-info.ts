@@ -57,7 +57,7 @@ export const loadMarketsInfoIfNotLoaded = (
     (marketId: string) => !isMarketLoaded(marketId, marketsData),
   );
 
-  if (marketIdsToLoad.length !== 0) return callback(null);
+  if (marketIdsToLoad.length === 0) return callback(null);
   dispatch(loadMarketsInfo(marketIdsToLoad, callback));
 };
 
