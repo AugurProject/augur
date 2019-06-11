@@ -13,11 +13,11 @@ export default function(orderBooks = DEFAULT_STATE, { type, data }: BaseAction):
       const { marketId, orderBook } = data;
       const newOrderBooks = Object.keys(orderBooks).reduce(
         (p, m) => (m !== marketId ? { ...p, [m]: orderBooks[m] } : p),
-        {}
+        {},
       );
       return {
         ...newOrderBooks,
-        [marketId]: orderBook
+        [marketId]: orderBook,
       };
     }
     case RESET_STATE:

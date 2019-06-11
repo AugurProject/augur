@@ -153,7 +153,8 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
       >
         <h1>Connect to Augur</h1>
         <label htmlFor="modal__augurNode-input">Augur Node Address:</label>
-        // @ts-ignore
+        {/*
+            // @ts-ignore */}
         <Input
           id="modal__augurNode-input"
           type="text"

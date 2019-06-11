@@ -194,12 +194,12 @@ export function connectAugur(
         dispatch(updateConnectionStatus(true));
         dispatch(updateAugurNodeConnectionStatus(true));
         dispatch(getAugurNodeNetworkId());
-        AugurJS.augur.augurNode.getSyncData((err: any, res: any) => {
-          if (!err && res) {
+        AugurJS.augur.augurNode.submitRequest("getSyncData", {}, (err, result) => {
+          if (!err && result) {
             dispatch(
               updateVersions({
-                augurjs: res.version,
-                augurNode: res.augurNodeVersion,
+                augurjs: result.version,
+                augurNode: result.augurNodeVersion,
                 augurui: version,
               }),
             );

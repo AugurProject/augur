@@ -1,6 +1,6 @@
 import React from "react";
 
-import QuadBox from "modules/portfolio/components/common/quads/quad-box";
+import QuadBox from "modules/portfolio/components/common/quad-box";
 import {
   DepositButton,
   WithdrawButton,

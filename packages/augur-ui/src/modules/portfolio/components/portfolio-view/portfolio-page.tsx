@@ -9,14 +9,12 @@ import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 import { SMALL_MOBILE, LARGE_DESKTOP } from "modules/common/constants";
 
-import Styles from "modules/portfolio/components/portfolio-view/portfolio-view.styles";
+import Styles from "modules/portfolio/components/portfolio-view/portfolio-view.styles.less";
 
-export interface PortfolioPageProps {}
-
-const PortfolioPage = (props: PortfolioPageProps) => (
+const PortfolioPage = () => (
   <div>
     <Media query={SMALL_MOBILE}>
-      {matches =>
+      {(matches) =>
         matches ? (
           <ModuleTabs selected={0} fillWidth noBorder>
             <ModulePane label="Positions">
@@ -35,7 +33,7 @@ const PortfolioPage = (props: PortfolioPageProps) => (
         ) : (
           <section className={Styles.PortfolioView}>
             <Media query={LARGE_DESKTOP}>
-              {matches =>
+              {(matches) =>
                 matches ? (
                   <>
                     <div>

@@ -18,5 +18,5 @@ const getOrderBook = memoize(
     if (!has(orderBooks, [marketId, outcome, orderTypeLabel])) return null;
     return orderBooks[marketId][outcome][orderTypeLabel] || null;
   },
-  { max: 1 }
+  { max: 1 },
 );

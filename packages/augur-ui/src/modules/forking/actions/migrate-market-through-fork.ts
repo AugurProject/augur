@@ -10,8 +10,8 @@ import { Action } from "redux";
 
 export const migrateMarketThroughFork = (
   marketId: string,
-  estimateGas: Boolean = false,
-  callback: NodeStyleCallback = logError
+  estimateGas: boolean = false,
+  callback: NodeStyleCallback = logError,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount } = getState();
   augur.api.Market.migrateThroughOneFork({
@@ -30,7 +30,7 @@ export const migrateMarketThroughFork = (
         const gasPrice = getGasPrice(getState());
         return callback(
           null,
-          formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice)
+          formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice.toString())
         );
       }
       return callback(null, res);

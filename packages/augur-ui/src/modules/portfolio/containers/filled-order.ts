@@ -23,7 +23,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const orderType = getValue(filledOrder, "type");
 
   const originalQuantity = formatShares(
-    getValue(filledOrder, "originalQuantity")
+    getValue(filledOrder, "originalQuantity"),
   );
 
   const columnProperties = [
@@ -31,42 +31,42 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "orderName",
       columnType: COLUMN_TYPES.TEXT,
       text: filledOrder.outcome,
-      keyId: `${originalQuantity}-${orderQuantity}-${orderPrice}`
+      keyId: `${originalQuantity}-${orderQuantity}-${orderPrice}`,
     },
     {
       key: "orderType",
       columnType: COLUMN_TYPES.POSITION_TYPE,
       type: orderType,
-      pastTense: true
+      pastTense: true,
     },
     {
       key: "originalQuantity",
       columnType: COLUMN_TYPES.VALUE,
       value: originalQuantity,
-      keyId: "filledOrder-originalQuantity-" + filledOrder.id
+      keyId: "filledOrder-originalQuantity-" + filledOrder.id,
     },
     {
       key: "orderQuantity",
       columnType: COLUMN_TYPES.VALUE,
       value: orderQuantity,
-      keyId: "filledOrder-orderQuantity-" + filledOrder.id
+      keyId: "filledOrder-orderQuantity-" + filledOrder.id,
     },
     {
       key: "orderPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: orderPrice,
-      keyId: "filledOrder-orderPrice-" + filledOrder.id
+      keyId: "filledOrder-orderPrice-" + filledOrder.id,
     },
     {
       key: "formattedShortDate",
       columnType: COLUMN_TYPES.PLAIN,
-      value: filledOrder.timestamp.formattedShortDate
+      value: filledOrder.timestamp.formattedShortDate,
     },
     {
       key: "length",
       columnType: COLUMN_TYPES.PLAIN,
-      value: filledOrder.trades.length
-    }
+      value: filledOrder.trades.length,
+    },
   ];
   return {
     ...oP,
@@ -75,8 +75,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     rowProperties: filledOrder,
     columnProperties,
     styleOptions: {
-      filledOrder: true
-    }
+      filledOrder: true,
+    },
   };
 };
 
@@ -84,6 +84,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Row)
+    mergeProps,
+  )(Row),
 );
