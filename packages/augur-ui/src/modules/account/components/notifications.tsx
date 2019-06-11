@@ -2,8 +2,8 @@ import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { orderBy } from "lodash";
 
-import QuadBox from "modules/portfolio/components/common/quads/quad-box";
-import EmptyDisplay from "modules/portfolio/components/common/tables/empty-display";
+import QuadBox from "modules/portfolio/components/common/quad-box";
+import EmptyDisplay from "modules/portfolio/components/common/empty-display";
 import makePath from "modules/routes/helpers/make-path";
 import makeQuery from "modules/routes/helpers/make-query";
 

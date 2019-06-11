@@ -5,7 +5,7 @@ import ToggleRow from "modules/common/toggle-row";
 import { MarketStatusLabel } from "modules/common/labels";
 import MarketLink from "modules/market/components/market-link/market-link";
 
-import Styles from "modules/portfolio/components/common/rows/market-row.styles.less";
+import Styles from "modules/portfolio/components/common/market-row.styles.less";
 
 export interface TimeObject {
   formattedShortDate: string;

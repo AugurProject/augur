@@ -6,7 +6,7 @@ import { MarketProgress } from "modules/common/progress";
 import { FavoritesButton } from "modules/common/buttons";
 import { END_TIME } from "modules/common/constants";
 
-import Styles from "modules/portfolio/components/common/quads/quad.styles.less";
+import Styles from "modules/portfolio/components/common/quad.styles.less";
 import { MarketData } from "modules/types";
 
 const sortByOptions = [
