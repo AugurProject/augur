@@ -7,7 +7,7 @@ import Form from "modules/trading/components/form/form";
 import Confirm from "modules/trading/components/confirm/confirm";
 import { generateTrade } from "modules/trades/helpers/generate-trade";
 import getValue from "utils/get-value";
-import { keys, pick } from "lodash";
+import { pick } from "lodash";
 import {
   SCALAR,
   BUY,
@@ -161,7 +161,7 @@ class Wrapper extends Component {
 
   updateParentOrderValues() {
     this.props.updateSelectedOrderProperties({
-      ...pick(this.state, keys(this.props.selectedOrderProperties))
+      ...pick(this.state, Object.keys(this.props.selectedOrderProperties))
     });
   }
 
