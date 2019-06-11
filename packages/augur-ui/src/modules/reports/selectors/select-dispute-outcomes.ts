@@ -4,7 +4,7 @@ import {
   ZERO
 } from "modules/common/constants";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
-import { isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import { createBigNumber } from "utils/create-big-number";
 
 export default function(

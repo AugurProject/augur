@@ -1,11 +1,8 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import Wrapper from "modules/trading/components/wrapper/wrapper";
-import { isEqual } from "lodash";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
-import { BigNumber } from "utils/create-big-number";
 import makePath from "modules/routes/helpers/make-path";
 import Styles from "modules/market/components/trading-form/trading-form.styles";
 
@@ -36,11 +33,10 @@ interface TradingFormState {
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
-
   static defaultProps = {
     selectedOutcome: null
   };
-  
+
   state: TradingFormState = {
     showForm: false,
     selectedOutcome:
@@ -49,13 +45,14 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
             outcome => outcome.id === this.props.selectedOutcome
           )
         : null
-  }
+  };
 
   componentWillReceiveProps(nextProps: TradingFormProps) {
     const { market, selectedOutcome } = this.props;
     if (
-      (!isEqual(selectedOutcome, nextProps.selectedOutcome) ||
-        !isEqual(market.outcomes, nextProps.market.outcomes)) &&
+      (selectedOutcome !== nextProps.selectedOutcome ||
+        JSON.stringify(market.outcomes) !==
+          JSON.stringify(nextProps.market.outcomes)) &&
       (nextProps.market && nextProps.market.outcomes)
     ) {
       if (nextProps.selectedOutcome !== null) {
@@ -72,7 +69,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
 
   toggleForm = () => {
     this.setState({ showForm: !this.state.showForm });
-  }
+  };
 
   render() {
     const {
@@ -143,16 +140,15 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
                 text="Connect a Wallet"
               />
             )}
-            {!hasFunds &&
-              isLogged && (
-                <Link to={makePath(ACCOUNT_DEPOSIT)}>
-                  <PrimaryButton
-                    id="add-funds"
-                    action={() => {}}
-                    text="Add Funds"
-                  />
-                </Link>
-              )}
+            {!hasFunds && isLogged && (
+              <Link to={makePath(ACCOUNT_DEPOSIT)}>
+                <PrimaryButton
+                  id="add-funds"
+                  action={() => {}}
+                  text="Add Funds"
+                />
+              </Link>
+            )}
           </div>
         )}
       </section>

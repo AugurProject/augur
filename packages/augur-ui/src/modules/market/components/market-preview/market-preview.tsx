@@ -10,7 +10,7 @@ import MarketLiquidity from "modules/market/containers/market-liquidity";
 import CommonStyles from "modules/market/components/common/market-common.styles";
 import Styles from "modules/market/components/market-preview/market-preview.styles";
 import MarketAdditonalDetails from "modules/market/components/market-additional-details/market-additional-details";
-import { isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import ToggleHeightStyles from "utils/toggle-height.styles";
 
 export default class MarketPreview extends Component {

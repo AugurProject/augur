@@ -2,7 +2,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import OpenMarkets from "modules/account/components/open-markets";
-import { pick } from "lodash";
 import { CLOSED, MARKET_CLOSED } from "modules/common/constants";
 import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
 import getSelectLoginAccountTotals from "modules/positions/selectors/login-account-totals";
@@ -15,7 +14,7 @@ const mapStateToProps = (state: AppState) => {
   const timestamps = getMarketsPositionsRecentlyTraded();
 
   const markets = getPositionsMarkets(timestamps, positions).sort(
-    (a: any, b: any) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp,
+    (a: any, b: any) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
   );
 
   const marketsObj = markets.reduce((obj: any, market: any) => {
@@ -24,14 +23,19 @@ const mapStateToProps = (state: AppState) => {
   }, {});
 
   const marketsPick = markets.map((
-    market: any, // when these things change then component will re-render/re-sort
-  ) => pick(market, ["id", "description", "reportingState", "recentlyTraded"]));
+    { id, description, reportingState, recentlyTraded }: any // when these things change then component will re-render/re-sort
+  ) => ({
+    id,
+    description,
+    reportingState,
+    recentlyTraded
+  }));
 
   return {
     isLogged: state.authStatus.isLogged,
     markets: marketsPick,
     marketsObj,
-    totalPercentage,
+    totalPercentage
   };
 };
 
@@ -41,7 +45,9 @@ const getPositionsMarkets = memoize(
   (marketsPositionsRecentlyTraded: any, positions: any) =>
     positions.markets.reduce((p, m) => {
       if (m.marketStatus === MARKET_CLOSED) return p;
-      const pos = m.userPositions.filter((position: any) => position.type !== CLOSED);
+      const pos = m.userPositions.filter(
+        (position: any) => position.type !== CLOSED
+      );
       return pos.length === 0
         ? p
         : [
@@ -49,11 +55,11 @@ const getPositionsMarkets = memoize(
             {
               ...m,
               userPositions: pos,
-              recentlyTraded: marketsPositionsRecentlyTraded[m.id],
-            },
+              recentlyTraded: marketsPositionsRecentlyTraded[m.id]
+            }
           ];
     }, []),
-  { max: 1 },
+  { max: 1 }
 );
 
 export default OpenMarketsContainer;

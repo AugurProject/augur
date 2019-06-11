@@ -26,7 +26,6 @@ import {
 } from "modules/common/icons";
 import { formatGasCostToEther, formatShares } from "utils/format-number";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
-import { isEqual } from "lodash";
 import { LinearPropertyLabel } from "modules/common/labels";
 
 class Confirm extends Component {
@@ -65,10 +64,11 @@ class Confirm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { trade, gasPrice, availableFunds } = this.props;
     if (
-      !isEqual(this.props.trade, nextProps.trade) ||
-      !isEqual(this.props.gasPrice, nextProps.gasPrice) ||
-      !isEqual(this.props.availableFunds, nextProps.availableFunds)
+      trade !== nextProps.trade ||
+      gasPrice !== nextProps.gasPrice ||
+      availableFunds !== nextProps.availableFunds
     ) {
       this.setState({
         messages: this.constructMessages(nextProps)

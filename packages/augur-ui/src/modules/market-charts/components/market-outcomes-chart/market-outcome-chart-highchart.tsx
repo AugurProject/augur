@@ -4,7 +4,6 @@ import { createBigNumber } from "utils/create-big-number";
 import Highcharts from "highcharts/highstock";
 import NoDataToDisplay from "highcharts/modules/no-data-to-display";
 import Styles from "modules/market-charts/components/market-outcomes-chart/market-outcomes-chart.styles";
-import { isEqual } from "lodash";
 
 NoDataToDisplay(Highcharts);
 
@@ -146,15 +145,15 @@ export default class MarketOutcomesChartHighchart extends Component {
   }
 
   componentWillUpdate(nextProps) {
+    const { bucketedPriceTimeSeries, daysPassed, selectedOutcome } = this.props;
+    const { containerHeight, containerWidth } = this.state;
     if (
-      !isEqual(
-        this.props.bucketedPriceTimeSeries,
-        nextProps.bucketedPriceTimeSeries
-      ) ||
-      !isEqual(this.props.daysPassed, nextProps.daysPassed) ||
-      !isEqual(this.props.selectedOutcome, nextProps.selectedOutcome) ||
-      !isEqual(this.state.containerHeight, this.container.clientHeight) ||
-      !isEqual(this.state.containerWidth, this.container.clientWidth)
+      JSON.stringify(bucketedPriceTimeSeries) !==
+        JSON.stringify(nextProps.bucketedPriceTimeSeries) ||
+      daysPassed !== nextProps.daysPassed ||
+      selectedOutcome !== nextProps.selectedOutcome ||
+      containerHeight !== this.container.clientHeight ||
+      containerWidth !== this.container.clientWidth
     ) {
       this.onResize();
       this.buidOptions(

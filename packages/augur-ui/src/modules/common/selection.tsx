@@ -1,5 +1,4 @@
 import * as React from "react";
-import { head, find } from "lodash";
 import classNames from "classnames";
 import Styles from "modules/common/selection.styles";
 import { Chevron, DotDotDot, TwoArrows } from "modules/common/icons";
@@ -90,8 +89,8 @@ interface DotSelectionState {
 class Dropdown extends React.Component<DropdownProps, DropdownState> {
   state: DropdownState = {
     selected: this.props.defaultValue
-      ? find(this.props.options, { value: this.props.defaultValue })
-      : head(this.props.options),
+      ? this.props.options.find(o => ({ value: this.props.defaultValue }))
+      : this.props.options[0],
     showList: false
   };
 
@@ -102,7 +101,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   componentWillUpdate(nextProps: DropdownProps) {
     if (nextProps.defaultValue !== this.props.defaultValue) {
       this.dropdownSelect(
-        find(this.props.options, { value: nextProps.defaultValue })
+        this.props.options.find(o => ({ value: nextProps.defaultValue }))
       );
     }
   }

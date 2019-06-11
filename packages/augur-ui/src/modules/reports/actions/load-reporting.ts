@@ -1,7 +1,6 @@
 import { augur, constants } from "services/augurjs";
 import logError from "utils/log-error";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-import { filter, head } from "lodash";
 import {
   updateDesignatedReportingMarkets,
   updateUpcomingDesignatedReportingMarkets,
@@ -120,7 +119,7 @@ export const loadReporting = (
 
   Promise.all([openPromise, prePromise, designatedPromise]).then(
     (errors: any) => {
-      const nonNullErrors = head(filter(errors, err => err !== null));
+      const [nonNullErrors, ...rest] = errors.filter(err => err !== null);
       if (callback) callback(nonNullErrors);
     }
   );
