@@ -21,12 +21,12 @@ export function makeConnectorMock(json: object): Connector {
       };
     }
 
-    public async on(event: SubscriptionEventNames | string, callback: Callback): Promise<any> {
-      return true;
+    public async on(event: SubscriptionEventNames | string, callback: Callback): Promise<void> {
+      return;
     }
 
-    public async off(eventName: SubscriptionEventNames | string): Promise<any> {
-      return true;
+    public async off(eventName: SubscriptionEventNames | string): Promise<void> {
+      return;
     }
   }
 

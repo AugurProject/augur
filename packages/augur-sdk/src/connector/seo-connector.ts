@@ -53,13 +53,13 @@ export class SEOConnector extends Connector {
     };
   }
 
-  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
+  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
     const subscription: string = this.events.subscribe(eventName, callback);
     this.subscriptions[eventName] = { id: subscription, callback };
   }
 
-  public off(eventName: SubscriptionEventNames | string): void {
-    const subscription = this.subscriptions[eventName]
+  public async off(eventName: SubscriptionEventNames | string): Promise<void> {
+    const subscription = this.subscriptions[eventName];
     if (subscription) {
       delete this.subscriptions[eventName];
       return this.events.unsubscribe(subscription.id);

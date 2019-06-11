@@ -69,7 +69,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
 
   await connector.connect({ provider, db, augur: john.augur });
 
-  connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
+  await connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
     expect(args).toEqual([{
       highestAvailableBlockNumber: 88,
       lastSyncedBlockNumber: 88,
@@ -84,7 +84,9 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
     });
     expect(markets).toEqual([yesNoMarket1.address]);
 
-    connector.off(SubscriptionEventNames.NewBlock);
+    await connector.off(SubscriptionEventNames.NewBlock);
+
+    expect(connector.subscriptions).toEqual({});
     connector.disconnect();
     done();
   });

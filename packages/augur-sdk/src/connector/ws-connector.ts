@@ -22,7 +22,6 @@ export class WebsocketConnector extends Connector {
     this.socket.onMessage.addListener((message: string) => {
       try {
         const response = JSON.parse(message);
-
         this.messageReceived(response.result);
       } catch (error) {
         console.error("Bad JSON RPC response: " + message);
@@ -55,18 +54,16 @@ export class WebsocketConnector extends Connector {
     };
   }
 
-  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
-    this.socket.sendRequest({ method: "subscribe", eventName, jsonrpc: "2.0", params: [eventName] }).then((response: any) => {
-      this.subscriptions[eventName] = { id: response.result.subscription, callback };
-    });
+  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
+    const response: any = await this.socket.sendRequest({ method: "subscribe", eventName, jsonrpc: "2.0", params: [eventName] });
+    this.subscriptions[eventName] = { id: response.result.subscription, callback };
   }
 
-  public off(eventName: SubscriptionEventNames | string): void {
+  public async off(eventName: SubscriptionEventNames | string): Promise<void> {
     const subscription = this.subscriptions[eventName];
     if (subscription) {
-      this.socket.sendRequest({ method: "unsubscribe", subscription: subscription.id, jsonrpc: "2.0", params: [subscription.id] }).then(() => {
-        delete this.subscriptions[eventName];
-      });
+      await this.socket.sendRequest({ method: "unsubscribe", subscription: subscription.id, jsonrpc: "2.0", params: [subscription.id] });
+      delete this.subscriptions[eventName];
     }
   }
 }

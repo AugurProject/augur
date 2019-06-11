@@ -69,12 +69,12 @@ export class WebWorkerConnector extends Connector {
     };
   }
 
-  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
+  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
     this.subscriptions[eventName] = { id: "", callback };
     this.worker.postMessage({ subscribe: eventName });
   }
 
-  public off(eventName: SubscriptionEventNames | string): void {
+  public async off(eventName: SubscriptionEventNames | string): Promise<void> {
     const subscription = this.subscriptions[eventName];
     if (subscription) {
       delete this.subscriptions[eventName];

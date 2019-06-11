@@ -16,9 +16,9 @@ export class EmptyConnector extends Connector {
     };
   }
 
-  public on(eventName: SubscriptionEventNames, callback: Callback): void {
+  public async on(eventName: SubscriptionEventNames, callback: Callback): Promise<void> {
   }
 
-  public off(eventName: SubscriptionEventNames): void {
+  public async off(eventName: SubscriptionEventNames): Promise<void> {
   }
 }

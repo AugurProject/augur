@@ -26,6 +26,6 @@ export class HTTPConnector extends Connector {
     };
   }
 
-  public on(eventName: SubscriptionEventNames | string, callback: Callback): void { }
-  public off(eventName: SubscriptionEventNames | string): void { }
+  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> { }
+  public async off(eventName: SubscriptionEventNames | string): Promise<void> { }
 }

@@ -41,7 +41,7 @@ test("WebsocketConnector :: Should route correctly and handle events", async (do
   const connector = new WebsocketConnector("http://localhost:9001");
   await connector.connect();
 
-  connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
+  await connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
     expect(args).toEqual([{
       highestAvailableBlockNumber: 88,
       lastSyncedBlockNumber: 88,
@@ -55,7 +55,8 @@ test("WebsocketConnector :: Should route correctly and handle events", async (do
     });
     expect(markets).toEqual(["0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407"]);
 
-    connector.off(SubscriptionEventNames.NewBlock);
+    await connector.off(SubscriptionEventNames.NewBlock);
+    expect(connector.subscriptions).toEqual({});
     connector.disconnect();
     done();
   });
