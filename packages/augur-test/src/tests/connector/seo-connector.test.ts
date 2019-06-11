@@ -11,6 +11,7 @@ import { SubscriptionEventNames } from "@augurproject/sdk/build//constants";
 
 let connector: SEOConnector;
 let provider: EthersProvider;
+let john: ContractAPI;
 let addresses: any;
 
 describe("seo-connector", () => {
@@ -20,6 +21,10 @@ describe("seo-connector", () => {
 
     const contractData = await deployContracts(ACCOUNTS, compilerOutput);
     provider = contractData.provider;
+    addresses = contractData.addresses;
+
+    john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+    await john.approveCentralAuthority();
   });
 
   afterEach(() => {
@@ -27,13 +32,19 @@ describe("seo-connector", () => {
   });
 
   it("Should route the message correctly and return a response", async (done) => {
+    console.log(john.augur.contracts.universe);
+    console.log(john.augur);
+
     await connector.connect({ provider });
+
+    console.log(john.augur.contracts.universe);
+    console.log(john.augur);
 
     connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
       const getMarkets = connector.bindTo(Markets.getMarkets);
-      await getMarkets({
-        universe: "0x02149d40d255fCeaC54A3ee3899807B0539bad60",
-      });
+      // await getMarkets({
+      //   universe: john.augur.contracts.universe;
+      // });
 
       connector.off(SubscriptionEventNames.NewBlock);
       await connector.disconnect();
