@@ -11,10 +11,13 @@ import { UploadBlockNumbers, Addresses } from "@augurproject/artifacts";
 const settings = require("@augurproject/sdk/src/state/settings.json");
 
 // TODO Add Ethereum node URL as param
-export async function start(dbArgs: object, provider?: EthersProvider) {
+export async function start(dbArgs: object, provider?: EthersProvider, augur?: Augur) {
   const ethersProvider = provider ? provider : new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-  const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
+
+  if (!augur) {
+    augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
+  }
 
   const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
   const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);

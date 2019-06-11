@@ -24,10 +24,16 @@ export class SEOConnector extends Connector {
   public async connect(params?: any): Promise<any> {
     this.ethersProvider = params.provider ? params.provider : new EthersProvider(new JsonRpcProvider(settings.addresses[4]), 10, 0, 40);
 
-    Sync.start({ adapter: "memory" }, this.ethersProvider);
-
     const contractDependencies = new ContractDependenciesEthers(this.ethersProvider, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(this.ethersProvider, contractDependencies, Addresses[4]);
+    let augur: Augur;
+    if (params.augur) {
+      augur = params.augur;
+    } else {
+      augur = await Augur.create(this.ethersProvider, contractDependencies, Addresses[4]);
+    }
+
+    Sync.start({ adapter: "memory" }, this.ethersProvider, augur);
+
     const pouchDBFactory = PouchDBFactory({ adapter: "memory" });
     const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
     const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(this.ethersProvider, eventLogDBRouter, Addresses.Augur, augur.events.getEventTopics);
