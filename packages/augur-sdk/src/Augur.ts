@@ -1,16 +1,16 @@
-import { Connector, Callback } from "./connector/connector";
-import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { ContractInterfaces } from "@augurproject/core";
-import { Contracts } from "./api/Contracts";
-import { EmptyConnector } from "./connector/empty-connector";
-import { Events } from "./api/Events";
-import { BigNumber } from 'bignumber.js';
-import { Provider } from "./ethereum/Provider";
-import { SubscriptionEventNames, isSubscriptionEventName } from "./constants";
-import { Trade } from "./api/Trade";
-import { TransactionStatusCallback, ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { Markets } from "./state/getter/Markets";
-import { SyncData } from "./state/getter/sync-data";
+import {Callback, Connector} from "./connector/connector";
+import {ContractAddresses, NetworkId} from "@augurproject/artifacts";
+import {ContractInterfaces} from "@augurproject/core";
+import {Contracts} from "./api/Contracts";
+import {EmptyConnector} from "./connector/empty-connector";
+import {Events} from "./api/Events";
+import {BigNumber} from 'bignumber.js';
+import {Provider} from "./ethereum/Provider";
+import {isSubscriptionEventName, SubscriptionEventNames} from "./constants";
+import {Trade} from "./api/Trade";
+import {ContractDependenciesEthers, TransactionStatusCallback} from "contract-dependencies-ethers";
+import {Markets} from "./state/getter/Markets";
+import {SyncData} from "./state/getter/sync-data";
 
 export interface CustomEvent {
   name: string;
@@ -189,5 +189,8 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   public getMarkets = this.bindTo(Markets.getMarkets);
-  public getSyncData = this.bindTo(SyncData.getSyncData);
+  public getSyncData = () => {
+    return this.bindTo(SyncData.getSyncData)({});
+  }
+
 }
