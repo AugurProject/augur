@@ -62,29 +62,9 @@ export class DB {
    * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-<<<<<<< HEAD
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, augur: Augur, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
-||||||| merged common ancestors
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
-=======
   public static createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
->>>>>>> 961cebb023a76c9968591cc4b58fab07ccba127f
     const dbController = new DB(pouchDBFactory);
-<<<<<<< HEAD
-
-    dbController.augur = augur;
-    dbController.genericEventNames = augur.genericEventNames;
-    dbController.userSpecificEvents = augur.userSpecificEvents;
-    dbController.customEvents = augur.customEvents;
-
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, blockAndLogStreamerListener);
-    return dbController;
-||||||| merged common ancestors
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, customEvents, userSpecificEvents, blockAndLogStreamerListener);
-    return dbController;
-=======
     return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, customEvents, userSpecificEvents, blockAndLogStreamerListener);
->>>>>>> 961cebb023a76c9968591cc4b58fab07ccba127f
   }
 
   /**
@@ -99,13 +79,7 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-<<<<<<< HEAD
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<void> {
-||||||| merged common ancestors
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<void> {
-=======
   public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
->>>>>>> 961cebb023a76c9968591cc4b58fab07ccba127f
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);

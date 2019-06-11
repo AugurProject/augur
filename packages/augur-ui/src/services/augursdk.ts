@@ -1,6 +1,6 @@
 import {Augur, Provider} from "@augurproject/sdk";
 import {ContractDependenciesEthers, EthersSigner,} from "contract-dependencies-ethers";
-import {WebWorkerConnector} from "./ww-connector";
+import {WebWorkerConnector} from "@augurproject/sdk";
 
 import {EthersProvider} from "@augurproject/ethersjs-provider";
 import {JsonRpcProvider} from "ethers/providers";
