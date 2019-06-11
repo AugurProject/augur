@@ -20,7 +20,7 @@ import {
   UNIVERSE_ID,
 } from "modules/common/constants";
 import { AppState } from "store";
-import { NodeStyleCallback, MarketData, Universe } from "modules/types";
+import { NodeStyleCallback, Universe } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
@@ -29,28 +29,24 @@ const REQUIRED_GENESIS_SUPPLY = createBigNumber(
   10,
 );
 
-interface UniverseDate {
-  market: MarketData | null;
-  id: string;
-  reportableOutcomes: string | null;
-  winningChildUniverseId: string | null;
-  openInterest: string;
-}
-
 export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { universe, loginAccount, marketsData } = getState();
     const universeId = universe.id || UNIVERSE_ID;
 
-    const universeData: UniverseDate = {
-      market: null,
+    if (!loginAccount.address) return;
+
+    const address = loginAccount.address;
+    const universeData: Universe = {
+      market: undefined,
+      forkingMarket: undefined,
       id: universeId,
-      reportableOutcomes: null,
-      winningChildUniverseId: null,
+      winningChildUniverse: undefined,
       openInterest: universe.openInterest || "0",
+      reportableOutcomes: null,
     };
 
-    if (universe.isForking && marketsData[universe.forkingMarket]) {
+    if (universe.isForking && universe.forkingMarket && marketsData[universe.forkingMarket]) {
       const forkingMarket = marketsData[universe.forkingMarket];
       universeData.market = forkingMarket;
       universeData.reportableOutcomes = selectReportableOutcomes(
@@ -67,7 +63,7 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
 
         if (parentUniverseId === NULL_ADDRESS) {
           return getUniversesInfoWithParentContext(
-            loginAccount.address,
+            address,
             universeData,
             { id: parentUniverseId },
             { id: parentUniverseId },
@@ -87,7 +83,7 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
 
                 if (grandParentUniverseId === NULL_ADDRESS) {
                   return getUniversesInfoWithParentContext(
-                    loginAccount.address,
+                    address,
                     universeData,
                     parentUniverseData,
                     { id: grandParentUniverseId },
@@ -100,7 +96,7 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
                   (err: any, grandParentUniverseData: any) => {
                     if (err) return callback(err);
                     return getUniversesInfoWithParentContext(
-                      loginAccount.address,
+                      address,
                       universeData,
                       parentUniverseData,
                       grandParentUniverseData,
@@ -118,11 +114,11 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
 }
 
 function getUniverseInfo(universeId: string, callback: NodeStyleCallback) {
-  const universeData: UniverseDate = {
+  const universeData: Universe = {
     id: universeId,
-    reportableOutcomes: null,
-    winningChildUniverseId: null,
-    market: null,
+    reportableOutcomes: undefined,
+    winningChildUniverseId: undefined,
+    market: undefined,
     openInterest: "0",
   };
 
@@ -291,8 +287,8 @@ export function getForkingInfo(universe: Universe, callback: NodeStyleCallback =
         winningChildUniverse = await getWinningChildUniverse();
       }
       updateUniverseIfForkingDataChanged(dispatch, universe, {
-        forkEndTime,
-        forkReputationGoal,
+        forkEndTime: forkEndTime.toNumber(),
+        forkReputationGoal: forkReputationGoal,
         forkingMarket,
         isForking,
         winningChildUniverse,
@@ -305,7 +301,7 @@ export function getForkingInfo(universe: Universe, callback: NodeStyleCallback =
 function updateUniverseIfForkingDataChanged(
   dispatch: ThunkDispatch<void, any, Action>,
   oldUniverseData: Universe,
-  universeData: Universe,
+  universeData: Partial<Universe>,
 ) {
   if (
     (universeData.id && oldUniverseData.id !== universeData.id) ||

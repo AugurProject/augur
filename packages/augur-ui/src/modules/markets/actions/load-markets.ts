@@ -1,6 +1,5 @@
 import { augurSdk } from "services/augursdk";
 import logError from "utils/log-error";
-import { parallel } from "async";
 import {
   MARKET_CREATION_TIME,
   MARKET_END_DATE,

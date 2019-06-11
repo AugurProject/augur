@@ -9,12 +9,12 @@ import logError from "utils/log-error";
 import { AppState } from "store";
 import { Action } from "redux";
 import { MarketData, NodeStyleCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 
 export const loadMarketsInfo = (
   marketIds: Array<string>,
   callback: NodeStyleCallback = logError,
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+): ThunkAction<any, any, any, any> => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketIds || marketIds.length === 0) {
     return callback(null, []);
   }
@@ -51,13 +51,13 @@ export const loadMarketsInfo = (
 export const loadMarketsInfoIfNotLoaded = (
   marketIds: Array<string>,
   callback: NodeStyleCallback = logError,
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState): void => {
+): ThunkAction<any, any, any, any> => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { marketsData } = getState();
   const marketIdsToLoad = marketIds.filter(
     (marketId: string) => !isMarketLoaded(marketId, marketsData),
   );
 
-  if (marketIdsToLoad.length === 0) return callback(null);
+  if (marketIdsToLoad.length !== 0) return callback(null);
   dispatch(loadMarketsInfo(marketIdsToLoad, callback));
 };
 
@@ -65,7 +65,6 @@ export const loadMarketsDisputeInfo = (
   marketIds: Array<string>,
   callback: NodeStyleCallback = logError,
 ) => (dispatch: ThunkDispatch<void, any, Action>): void => {
-  dispatch(
     getDisputeInfo(
       marketIds,
       (err: any, marketsDisputeInfoArray: Array<string>) => {
@@ -85,6 +84,5 @@ export const loadMarketsDisputeInfo = (
           }),
         );
       },
-    ),
-  );
+    );
 };

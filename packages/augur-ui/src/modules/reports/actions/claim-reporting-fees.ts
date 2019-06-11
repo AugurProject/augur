@@ -14,7 +14,7 @@ import {
 } from "modules/pending-queue/actions/pending-queue-management";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
 export const CLAIM_FEES_GAS_COST = 3000000;
@@ -25,8 +25,11 @@ export const FEE_WINDOW_BATCH_SIZE = 10;
 export function claimReportingFeesForkedMarket(
   options: any,
   callback: NodeStyleCallback = logError
-) {
-  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+): ThunkAction<any, any, any, any> {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     const { loginAccount } = getState();
     const payload = {
       ...options,
@@ -44,8 +47,14 @@ export function claimReportingFeesForkedMarket(
   };
 }
 
-export function redeemStake(options: any, callback: NodeStyleCallback = logError) {
-  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+export function redeemStake(
+  options: any,
+  callback: NodeStyleCallback = logError
+): ThunkAction<any, any, any, any> {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     const { loginAccount, universe } = getState();
     const universeId = universe.id || UNIVERSE_ID;
     const gasPrice = getGasPrice(getState());
@@ -98,14 +107,14 @@ export function redeemStake(options: any, callback: NodeStyleCallback = logError
             sumAndformatGasCostToEther(
               gasCosts,
               { decimalsRounded: 4 },
-              gasPrice
+              gasPrice.toString()
             )
           );
         onFailed && failed.forEach((m: any) => onFailed(m));
-        callback();
+        callback(null);
       })
-      .catch(() => {
-        callback();
+      .catch((e) => {
+        callback(e);
       });
   };
 
@@ -113,7 +122,7 @@ export function redeemStake(options: any, callback: NodeStyleCallback = logError
     feeWindows: Array<any>,
     reportingParticipants: Array<string>
   ) {
-    const batches = [];
+    const batches: Array<any> = [];
     const feeWindowBatchSize = Math.ceil(
       feeWindows.length / FEE_WINDOW_BATCH_SIZE
     );

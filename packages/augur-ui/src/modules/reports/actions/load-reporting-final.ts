@@ -5,33 +5,27 @@ import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
+import { augurSdk } from "services/augursdk";
 
-export const loadReportingFinal = (callback: NodeStyleCallback = logError) => (
+export const loadReportingFinal = (callback: NodeStyleCallback = logError) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { universe } = getState();
-  augur.augurNode.submitRequest(
-    "getMarkets",
-    {
-      reportingState: [
-        constants.REPORTING_STATE.FINALIZED,
-        constants.REPORTING_STATE.AWAITING_FINALIZATION
-      ],
-      sortBy: "endTime",
-      isSortDescending: true,
-      universe: universe.id
-    },
-    (err: any, resolvedMarketIds: Array<string>) => {
-      if (err) return callback(err);
+  const augur = augurSdk.get();
 
-      if (!resolvedMarketIds || resolvedMarketIds.length === 0) {
-        dispatch(updateResolvedMarkets([]));
-        return callback(null, []);
-      }
+  const param = {
+    reportingState: [
+      constants.REPORTING_STATE.FINALIZED,
+      constants.REPORTING_STATE.AWAITING_FINALIZATION
+    ],
+    sortBy: "endTime",
+    isSortDescending: true,
+    universe: universe.id
+  };
 
-      dispatch(updateResolvedMarkets(resolvedMarketIds));
-      callback(null, resolvedMarketIds);
-    }
-  );
+  const resolvedMarketIds: Array<string> = await augur.getMarkets(param);
+  dispatch(updateResolvedMarkets(resolvedMarketIds));
+  callback(null, resolvedMarketIds);
+
 };
