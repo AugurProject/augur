@@ -9,7 +9,7 @@ import {
 
 import { createPath } from "history";
 
-import { camelCase, compose, mapKeys, omit, pick } from "lodash/fp";
+import { camelCase, compose, mapKeys, pick } from "lodash/fp";
 import { isEmpty } from "utils/is-populated";
 import makeQuery from "modules/routes/helpers/make-query";
 
@@ -32,10 +32,14 @@ export const RewriteUrlParams = windowRef => BaseCmp => {
   const WrapperCmp = props => {
     const { location } = props;
     const searchValues = parseQuery(location.search);
-
     const paramsToMove = grabParams(searchValues);
     if (!isEmpty(paramsToMove)) {
-      const remainingSearchValues = omit(valuesToGet, searchValues);
+      const {
+        augur_node,
+        ethereum_node_http,
+        ethereum_node_ws,
+        ...remainingSearchValues
+      } = searchValues;
       const path = createPath({
         ...location,
         search: makeQuery(remainingSearchValues)

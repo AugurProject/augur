@@ -1,6 +1,6 @@
 import { DOWN, UP, NONE, BUY } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
-import { orderBy, first } from "lodash";
+import { orderBy } from "lodash";
 
 export const selectMarketOutcomeTradingIndicator = (
   marketTradingHistory,
