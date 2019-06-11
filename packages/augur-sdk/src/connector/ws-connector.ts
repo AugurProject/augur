@@ -29,11 +29,6 @@ export class WebsocketConnector extends Connector {
       }
     });
 
-    this.socket.onError.addListener((message: string) => {
-      console.error("Websocket error");
-      console.error(message);
-    });
-
     this.socket.onClose.addListener((message: string) => {
       console.log("Websocket closed");
       console.log(message);
@@ -61,7 +56,7 @@ export class WebsocketConnector extends Connector {
   }
 
   public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
-    this.socket.sendRequest({ method: "subscribe", event, jsonrpc: "2.0", params: [eventName] }).then((response: any) => {
+    this.socket.sendRequest({ method: "subscribe", eventName, jsonrpc: "2.0", params: [eventName] }).then((response: any) => {
       this.subscriptions[eventName] = { id: response.result.subscription, callback };
     });
   }

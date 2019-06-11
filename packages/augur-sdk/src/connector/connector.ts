@@ -4,7 +4,7 @@ import { SubscriptionEventNames } from "../constants";
 export type Callback = (...args: Array<any>) => void;
 
 export abstract class Connector {
-  protected subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
+  public subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
 
   // Lifecyle of the connector
   public abstract async connect(params?: any): Promise<any>;
