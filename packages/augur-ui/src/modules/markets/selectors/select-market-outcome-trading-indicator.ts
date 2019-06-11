@@ -36,7 +36,7 @@ function getTradeStatus(
     ["desc", "desc"]
   );
 
-  const firstTrade = first(sortedTrades);
+  const [firstTrade, ...rest] = sortedTrades;
   if (!getTradeType) {
     if (trades.length === 1) {
       return firstTrade.type === BUY ? UP : DOWN;
