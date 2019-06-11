@@ -20,7 +20,13 @@ export class WebsocketConnector extends Connector {
     } as any);
 
     this.socket.onMessage.addListener((message: string) => {
-      this.messageReceived(message);
+      try {
+        const response = JSON.parse(message);
+
+        this.messageReceived(response.result);
+      } catch (error) {
+        console.error("Bad JSON RPC response: " + message);
+      }
     });
 
     this.socket.onError.addListener((message: string) => {
@@ -36,17 +42,11 @@ export class WebsocketConnector extends Connector {
     return this.socket.open();
   }
 
-  public messageReceived(message: string) {
-    try {
-      const response = JSON.parse(message);
-
-      if (response.result.result) {
-        if (this.subscriptions[response.result.eventName]) {
-          this.subscriptions[response.result.eventName].callback(...(response.result.result));
-        }
+  public messageReceived(message: any) {
+    if (message.result) {
+      if (this.subscriptions[message.eventName]) {
+        this.subscriptions[message.eventName].callback(...(message.result));
       }
-    } catch (error) {
-      console.error("Bad JSON RPC response: " + message);
     }
   }
 

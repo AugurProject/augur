@@ -37,7 +37,7 @@ beforeAll(async () => {
   await john.approveCentralAuthority();
 }, 120000);
 
-test("Should route the message correctly and return a response", async (done) => {
+test("SEOConnector :: Should route correctly and handle events", async (done) => {
   const universe = john.augur.contracts.universe;
   const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
   const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
@@ -58,6 +58,13 @@ test("Should route the message correctly and return a response", async (done) =>
   await connector.connect({ provider, db, augur: john.augur });
 
   connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
+    expect(args).toEqual([{
+      highestAvailableBlockNumber: 88,
+      lastSyncedBlockNumber: 88,
+      blocksBehindCurrent: 0,
+      percentBehindCurrent: "0.0000",
+    }]);
+
     const getMarkets = connector.bindTo(Markets.getMarkets);
     const markets = await getMarkets({
       universe: john.augur.contracts.universe.address,
@@ -65,14 +72,9 @@ test("Should route the message correctly and return a response", async (done) =>
     expect(markets).toEqual([yesNoMarket1.address]);
 
     connector.off(SubscriptionEventNames.NewBlock);
+
+    done();
   });
 
   await db.sync(john.augur, mock.constants.chunkSize, 0);
-
-  const markets = await api.route("getMarkets", {
-    universe: universe.address,
-  });
-
-  expect(markets).toEqual([yesNoMarket1.address]);
-  done();
 }, 15000);

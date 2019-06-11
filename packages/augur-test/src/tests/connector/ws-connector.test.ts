@@ -7,9 +7,9 @@ jest.mock("websocket-as-promised", () => {
     __esModule: true,
     default: () => ({
       open: () => true,
-      sendRequest: () => ({
-        someValue: "data",
-      }),
+      sendRequest: () => {
+        return ["0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407"];
+      },
     }),
   };
 });
@@ -19,8 +19,8 @@ describe("ws-connector", () => {
     const connector = new WebsocketConnector("http://localhost:9001");
     connector.connect();
     const getMarkets = connector.bindTo(Markets.getMarkets);
-    await getMarkets({
-      universe: "0x6a424C1bd008C82191Db24bA1528e60ca92314cA",
+    const markets = await getMarkets({
+      universe: "0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407",
     });
   });
 });
