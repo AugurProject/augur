@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 import createCachedSelector from "re-reselect";
-import { each, pullAll } from "lodash";
+import { pullAll } from "lodash";
 import store from "store";
 import { ZERO } from "modules/common/constants";
 import {
@@ -125,7 +125,7 @@ function getTradeInTimeRange(timeSeries, startTime, endTime) {
     };
   }
 
-  each(timeSeries, p => {
+  timeSeries.forEach(p => {
     const timestamp = createBigNumber(p.timestamp);
     if (timestamp.gt(createBigNumber(endTime))) return;
     if (timestamp.gte(startTime)) {

@@ -2,7 +2,6 @@ import React from "react";
 
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
-import { each } from "lodash";
 import ReportingHeader from "modules/reporting/containers/reporting-header";
 import MarketPreview from "modules/market/containers/market-preview";
 import Paginator from "modules/common/paginator_v1";
@@ -129,8 +128,8 @@ class ReportingReporting extends React.Component {
     }
     if (JSON.stringify(nextProps.marketIds) !== JSON.stringify(marketIds)) {
       // need to load first 10 of each market type
-      let initMarketIds = [];
-      each(Object.keys(paginations), key => {
+      let initMarketIds: any = [];
+      Object.keys(paginations).forEach(key => {
         const { lower, boundedLength } = paginations[key];
         const keyMarketIds = nextProps.marketIds[key];
         const marketIdLength = boundedLength + (lower - 1);
