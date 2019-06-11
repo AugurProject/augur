@@ -47,7 +47,7 @@ export class MarketPositionsTable extends React.Component<
 
     return (
       <div
-        className={classNames(Styles.MarketPositionsTable, {
+        className={classNames(Styles.PositionsTable, {
           [SharedStyles.Table]: extendedView
         })}
       >

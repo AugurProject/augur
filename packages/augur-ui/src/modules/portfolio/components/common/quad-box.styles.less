@@ -1,0 +1,48 @@
+@import (reference) '~assets/styles/shared';
+
+.Quad {
+  background: @color-theme-primary;
+  border: 1px solid @color-primary-alternate;
+  border-radius: @border-radius-default;
+  color: @color-secondary-text;
+  flex: 1;
+  max-height: 50%;
+  min-height: 50%;
+  padding-bottom: @size-24;
+
+  @media @breakpoint-mobile-mid {
+    background: unset;
+    border: 0;
+    padding-bottom: 0;
+  }
+
+  > div:last-of-type {
+    background: @color-secondary-background;
+    border-bottom: 1px solid @color-secondary-background;
+    flex: 1;
+    overflow: auto;
+    overflow-y: overlay;
+
+    @media @breakpoint-mobile-mid {
+      background: unset;
+      max-height: calc(100vh - 150px);
+      min-height: calc(100vh - 150px);
+      overflow-y: visible;
+      padding: 0 @size-8 @size-4;
+    }
+  }
+}
+
+.ShowOnMobile {
+  display: none;
+}
+
+@media @breakpoint-mobile-mid {
+  .ShowOnMobile {
+    display: flex;
+  }
+
+  .HideOnMobile {
+    display: none;
+  }
+}

@@ -1,87 +1,91 @@
 @import (reference) "~assets/styles/shared";
 
-.MarketRow__container {
-  border-bottom: 0.125rem solid @color-theme-primary;
+.MarketRow {
+  border-bottom: 2px solid @color-theme-primary;
 
   &:not(:last-of-type) {
-    margin-bottom: 0.125rem;
+    margin-bottom: 2px;
   }
 
   @media @breakpoint-mobile-mid {
-    border: 1px solid #2b2438;
+    border: 1px solid @color-primary-alternate;
     border-radius: 3px;
 
     &:not(:last-of-type) {
-      margin-bottom: 4px;
+      margin-bottom: @size-4;
     }
   }
 }
 
-.MarketRow__noToggle {
-  background-color: @color-tertiary-background;
-  padding-right: 0.875rem;
-}
-
-.MarketRow__content {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  padding: 1rem 0 1rem 1.5rem;
-}
-
-.MarketRow__contentContainer {
+.MarketRowContent {
   display: flex;
   flex: 1;
+
+  &.NoToggle {
+    background-color: @color-tertiary-background;
+    padding-right: @size-14;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: @size-16 0 @size-16 @size-24;
+
+    &.Show {
+      padding-bottom: @size-24;
+      padding-top: @size-8;
+    }
+
+    > div {
+      padding: 0 0 @size-10;
+    }
+
+    > span {
+      .text-12-medium;
+
+      align-items: center;
+      color: @color-secondary-text;
+      display: flex;
+      flex: 1;
+      line-height: @size-16;
+      margin-right: @size-16;
+    }
+  }
+
+  > span {
+    .mono-12;
+
+    align-items: center;
+    color: @color-tertiary-text;
+    display: flex;
+    justify-content: center;
+    min-width: min-content;
+    text-align: right;
+
+    &.Show {
+      padding-bottom: 2px;
+    }
+  }
 }
 
-.MarketRow__contentShow {
-  padding-bottom: 1.5rem;
-  padding-top: 0.5rem;
-}
-
-.MarketRow__Arrow {
-  margin-left: 1.25rem;
-  margin-right: 1.5rem;
-}
-
-.MarketRow__firstRow {
-  padding: 0 0 0.625rem;
-}
-
-.MarketRow__description {
-  .text-12-medium;
-
-  align-items: center;
-  color: @color-secondary-text;
-  display: flex;
-  flex: 1;
-  line-height: 1rem;
-  margin-right: 1rem;
-}
-
-.MarketRow__time {
-  .text-12;
-
-  align-items: center;
-  color: @color-tertiary-text;
-  display: flex;
-  font-family: @roboto-mono;
-  justify-content: center;
-  min-width: min-content;
-  text-align: right;
-}
-
-.MarketRow__timeShow {
-  padding-bottom: 0.125rem;
+.Arrow {
+  margin-left: @size-20;
+  margin-right: @size-24;
 }
 
 @media @breakpoint-mobile-mid {
-  .MarketRow__content,
-  .MarketRow__contentShow {
-    padding-left: 1rem;
+  .MarketRow__container {
+    > div {
+      padding-left: @size-16;
+
+      &.Show {
+        padding-left: @size-16;
+      }
+    }
   }
 
   .MarketRow__Arrow {
-    margin-right: 1rem;
+    margin-right: @size-16;
   }
 }
