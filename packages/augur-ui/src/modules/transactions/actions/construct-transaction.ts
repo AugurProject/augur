@@ -6,7 +6,7 @@ import { convertUnixToFormattedDate } from "utils/format-date";
 import logError from "utils/log-error";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { FormattedNumber, DateFormattedObject } from "modules/types";
 
@@ -46,7 +46,7 @@ export const constructBasicTransaction = ({
 export const constructTransaction = (
   log: any,
   callback: NodeStyleCallback = logError,
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+): ThunkAction<any, any, any, any> => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   switch (log.eventName) {
     case "OrderCreated":
     case "OrderFilled":

@@ -6,10 +6,10 @@ import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
-export function checkAccountAllowance(callback: NodeStyleCallback = logError) {
+export function checkAccountAllowance(callback: NodeStyleCallback = logError): ThunkAction<any, any, any, any> {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
     if (loginAccount.allowance && loginAccount.allowance !== "0") {

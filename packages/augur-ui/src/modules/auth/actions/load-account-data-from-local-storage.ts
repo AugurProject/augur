@@ -9,11 +9,11 @@ import { updateUniverse } from "modules/universe/actions/update-universe";
 import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor";
 import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-management";
 import { setSelectedUniverse } from "./selected-universe-management";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
 
-export const loadAccountDataFromLocalStorage = (address: string) => (
+export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
