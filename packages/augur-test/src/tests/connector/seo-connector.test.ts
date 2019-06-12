@@ -29,11 +29,9 @@ jest.mock("@augurproject/sdk/build/state/index", () => {
   return {
     __esModule: true,
     buildAPI: () => {
-      console.log(" in build API");
       return new API(john.augur, db);
     },
     create: () => {
-      console.log("In create");
       const eventLogDBRouter = new EventLogDBRouter(john.augur.events.parseLogs);
       const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(provider, eventLogDBRouter, addresses.Augur, john.augur.events.getEventTopics);
       const api = new API(john.augur, db);
@@ -78,9 +76,9 @@ test("SEOConnector :: Should route correctly and handle events", async (done) =>
 
   await connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
     expect(args).toEqual([{
-      highestAvailableBlockNumber: 88,
-      lastSyncedBlockNumber: 88,
       blocksBehindCurrent: 0,
+      highestAvailableBlockNumber: 91,
+      lastSyncedBlockNumber: 91,
       percentBehindCurrent: "0.0000",
     }]);
 
