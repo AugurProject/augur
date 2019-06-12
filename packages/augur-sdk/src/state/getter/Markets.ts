@@ -13,7 +13,7 @@ import {
   ORDER_EVENT_OUTCOME
 } from "../logs/types";
 import { SortLimit } from "./types";
-import { Augur, numTicksToTickSize } from "../../index";
+import { Augur, numTicksToTickSize, ETHER } from "../../index";
 import { toAscii } from "../utils/utils";
 
 import * as _ from "lodash";
@@ -326,8 +326,8 @@ export class Markets {
       const marketFinalizedLogs = (await db.findMarketFinalizedLogs({ selector: { market: marketCreatedLog.market } })).reverse();
       const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({ selector: { market: marketCreatedLog.market } })).reverse();
 
-      const minPrice = new BigNumber(marketCreatedLog.prices[0]);
-      const maxPrice = new BigNumber(marketCreatedLog.prices[1]);
+      let minPrice = new BigNumber(marketCreatedLog.prices[0]);
+      let maxPrice = new BigNumber(marketCreatedLog.prices[1]);
       const numTicks = new BigNumber(marketCreatedLog.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const cumulativeScale = maxPrice.minus(minPrice);
@@ -355,6 +355,8 @@ export class Markets {
         marketType = "categorical";
       } else {
         marketType = "scalar";
+        minPrice = minPrice.dividedBy(ETHER.toString());
+        maxPrice = maxPrice.dividedBy(ETHER.toString());
       }
 
       let description = null;
