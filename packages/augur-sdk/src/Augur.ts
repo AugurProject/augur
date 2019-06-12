@@ -188,7 +188,12 @@ export class Augur<TProvider extends Provider = Provider> {
     }
   }
 
-  public getMarkets = this.bindTo(Markets.getMarkets);
+  public getMarkets = (params: Parameters<typeof Markets.getMarkets>[2]) => {
+    // sortBy param broken. See #2437.
+    delete params.sortBy;
+    return this.bindTo(Markets.getMarkets)(params);
+  }
+
   public getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
   public getSyncData = () => {
     return this.bindTo(SyncData.getSyncData)({});
