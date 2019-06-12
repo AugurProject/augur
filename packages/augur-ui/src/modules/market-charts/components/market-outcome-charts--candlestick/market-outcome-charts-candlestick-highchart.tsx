@@ -5,10 +5,11 @@ import CustomPropTypes from "utils/custom-prop-types";
 import Highcharts from "highcharts/highstock";
 import NoDataToDisplay from "highcharts/modules/no-data-to-display";
 import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/candlestick.styles";
-import { cloneDeep } from "lodash";
 import { PERIOD_RANGES, ETH } from "modules/common/constants";
 
 NoDataToDisplay(Highcharts);
+
+const jsonDeepCopy = (src) => JSON.parse(JSON.stringify(src));
 
 const HighConfig = {
   ShowNavigator: 350,
@@ -360,7 +361,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component {
       ]
     });
 
-    const updatedObjects = cloneDeep(newOptions);
+    const updatedObjects = jsonDeepCopy(newOptions);
     this.setState({ options: updatedObjects });
     if (this.chart) {
       this.chart.update(updatedObjects);
