@@ -2,7 +2,7 @@ import { constants } from "services/augurjs";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { selectCurrentTimestamp } from "store/select-state";
-import { each, orderBy } from "lodash";
+import { orderBy } from "lodash";
 import PortfolioReports from "modules/portfolio/components/portfolio-reports/portfolio-reports";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
@@ -31,7 +31,7 @@ const mapStateToProps = (state) => {
       state.reports.markets[state.universe.id]) ||
     [];
 
-  each(reportedMarkets, (marketId) => {
+  reportedMarkets.forEach((marketId) => {
     const market = selectMarket(marketId);
     switch (market.reportingState) {
       case constants.REPORTING_STATE.CROWDSOURCING_DISPUTE:

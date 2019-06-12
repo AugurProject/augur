@@ -12,7 +12,7 @@ import { loadDisputing } from "modules/reports/actions/load-disputing";
 import { loadGasPriceInfo } from "modules/app/actions/load-gas-price-info";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 import { ACCOUNT_TYPES } from "modules/common/constants";
-import { LoginAccount, NodeStyleCallback } from "modules/types";
+import { LoginAccount, NodeStyleCallback, WindowApp } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
@@ -22,12 +22,13 @@ export const loadAccountData = (
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   const address: string = getValue(account, "address");
   if (!address) return callback("account address required");
+  const windowApp = windowRef as WindowApp;
   if (
-    windowRef &&
-    windowRef.localStorage.setItem && account && account.meta &&
+    windowApp &&
+    windowApp.localStorage.setItem && account && account.meta &&
     account.meta.accountType === ACCOUNT_TYPES.METAMASK
   ) {
-    windowRef.localStorage.setItem("loggedInAccount", address);
+    windowApp.localStorage.setItem("loggedInAccount", address);
   }
   dispatch(loadAccountDataFromLocalStorage(address));
   dispatch(updateLoginAccount(account));

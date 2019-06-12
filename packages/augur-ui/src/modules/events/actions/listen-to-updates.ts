@@ -1,9 +1,3 @@
-import { augur } from "services/augurjs";
-import {
-  handleAugurNodeDisconnect,
-  handleEthereumDisconnect
-} from "modules/events/actions/disconnect-handlers";
-import { handleNewBlock } from "modules/events/actions/handle-new-block";
 import {
   handleMarketStateLog,
   handleMarketCreatedLog,
@@ -29,71 +23,55 @@ import {
   handleApprovalLog
 } from "modules/events/actions/log-handlers";
 import { wrapLogHandler } from "modules/events/actions/wrap-log-handler";
-import logError from "utils/log-error";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { SubscriptionEventNames } from "@augurproject/sdk";
 import { AppState } from "store";
 
-export const listenToUpdates = (history: any) => (
+// TODO: wire up new v2 events when they are ready in sdk
+export const listenToUpdates = () => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
-) => {
-  augur.events.stopBlockListeners();
-  augur.events.stopAugurNodeEventListeners();
-  augur.events.startBlockListeners({
-    onAdded: (block: any) => dispatch(handleNewBlock(block)),
-    onRemoved: (block: any) => dispatch(handleNewBlock(block))
-  });
-  augur.events.startAugurNodeEventListeners(
-    {
-      MarketState: dispatch(wrapLogHandler(handleMarketStateLog)),
-      MarketCreated: dispatch(wrapLogHandler(handleMarketCreatedLog)),
-      MarketMigrated: dispatch(wrapLogHandler(handleMarketMigratedLog)),
-      TokensTransferred: dispatch(wrapLogHandler(handleTokensTransferredLog)),
-      OrderCreated: dispatch(wrapLogHandler(handleOrderCreatedLog)),
-      OrderCanceled: dispatch(wrapLogHandler(handleOrderCanceledLog)),
-      OrderFilled: dispatch(wrapLogHandler(handleOrderFilledLog)),
-      TradingProceedsClaimed: dispatch(
-        wrapLogHandler(handleTradingProceedsClaimedLog)
-      ),
-      InitialReportSubmitted: dispatch(
-        wrapLogHandler(handleInitialReportSubmittedLog)
-      ),
-      InitialReporterRedeemed: dispatch(
-        wrapLogHandler(handleInitialReporterRedeemedLog)
-      ),
-      MarketFinalized: dispatch(wrapLogHandler(handleMarketFinalizedLog)),
-      DisputeCrowdsourcerCreated: dispatch(
-        wrapLogHandler(handleDisputeCrowdsourcerCreatedLog)
-      ),
-      DisputeCrowdsourcerContribution: dispatch(
-        wrapLogHandler(handleDisputeCrowdsourcerContributionLog)
-      ),
-      DisputeCrowdsourcerCompleted: dispatch(
-        wrapLogHandler(handleDisputeCrowdsourcerCompletedLog)
-      ),
-      DisputeCrowdsourcerRedeemed: dispatch(
-        wrapLogHandler(handleDisputeCrowdsourcerRedeemedLog)
-      ),
-      UniverseForked: dispatch(wrapLogHandler()),
-      CompleteSetsPurchased: dispatch(wrapLogHandler()),
-      CompleteSetsSold: dispatch(wrapLogHandler(handleCompleteSetsSoldLog)),
-      TokensMinted: dispatch(wrapLogHandler(handleTokensMintedLog)),
-      TokensBurned: dispatch(wrapLogHandler(handleTokensBurnedLog)),
-      FeeWindowCreated: dispatch(wrapLogHandler(handleFeeWindowCreatedLog)),
-      FeeWindowOpened: dispatch(wrapLogHandler(handleFeeWindowOpenedLog)),
-      InitialReporterTransferred: dispatch(wrapLogHandler()),
-      TimestampSet: dispatch(wrapLogHandler()),
-      FeeWindowRedeemed: dispatch(wrapLogHandler(handleFeeWindowRedeemedLog)),
-      UniverseCreated: dispatch(wrapLogHandler()),
-      Approval: dispatch(wrapLogHandler(handleApprovalLog))
-    },
-    logError
-  );
-  augur.events.nodes.augur.on("disconnect", (event: any) =>
-    dispatch(handleAugurNodeDisconnect(history, event))
-  );
-  augur.events.nodes.ethereum.on("disconnect", (event: any) =>
-    dispatch(handleEthereumDisconnect(history, event))
-  );
-};
+) => ({
+  [SubscriptionEventNames.MarketState]: dispatch(wrapLogHandler(handleMarketStateLog)),
+  [SubscriptionEventNames.MarketCreated]: dispatch(wrapLogHandler(handleMarketCreatedLog)),
+  [SubscriptionEventNames.MarketMigrated]: dispatch(wrapLogHandler(handleMarketMigratedLog)),
+  [SubscriptionEventNames.TokensTransferred]: dispatch(wrapLogHandler(handleTokensTransferredLog)),
+  // [SubscriptionEventNames.OrderCreated]: dispatch(wrapLogHandler(handleOrderCreatedLog)),
+  // [SubscriptionEventNames.OrderCanceled]: dispatch(wrapLogHandler(handleOrderCanceledLog)),
+  // [SubscriptionEventNames.OrderFilled]: dispatch(wrapLogHandler(handleOrderFilledLog)),
+  [SubscriptionEventNames.TradingProceedsClaimed]: dispatch(
+    wrapLogHandler(handleTradingProceedsClaimedLog)
+  ),
+  [SubscriptionEventNames.InitialReportSubmitted]: dispatch(
+    wrapLogHandler(handleInitialReportSubmittedLog)
+  ),
+  [SubscriptionEventNames.InitialReporterRedeemed]: dispatch(
+    wrapLogHandler(handleInitialReporterRedeemedLog)
+  ),
+  [SubscriptionEventNames.MarketFinalized]: dispatch(wrapLogHandler(handleMarketFinalizedLog)),
+  [SubscriptionEventNames.DisputeCrowdsourcerCreated]: dispatch(
+    wrapLogHandler(handleDisputeCrowdsourcerCreatedLog)
+  ),
+  [SubscriptionEventNames.DisputeCrowdsourcerContribution]: dispatch(
+    wrapLogHandler(handleDisputeCrowdsourcerContributionLog)
+  ),
+  [SubscriptionEventNames.DisputeCrowdsourcerCompleted]: dispatch(
+    wrapLogHandler(handleDisputeCrowdsourcerCompletedLog)
+  ),
+  // [SubscriptionEventNames.DisputeCrowdsourcerRedeemed]: dispatch(
+  //   wrapLogHandler(handleDisputeCrowdsourcerRedeemedLog)
+  // ),
+  // [SubscriptionEventNames.UniverseForked]: dispatch(wrapLogHandler()),
+  [SubscriptionEventNames.CompleteSetsPurchased]: dispatch(wrapLogHandler()),
+  [SubscriptionEventNames.CompleteSetsSold]: dispatch(wrapLogHandler(handleCompleteSetsSoldLog)),
+  // [SubscriptionEventNames.TokensMinted]: dispatch(wrapLogHandler(handleTokensMintedLog)),
+  [SubscriptionEventNames.TokensBurned]: dispatch(wrapLogHandler(handleTokensBurnedLog)),
+  // [SubscriptionEventNames.FeeWindowCreated]: dispatch(wrapLogHandler(handleFeeWindowCreatedLog)),
+  // [SubscriptionEventNames.FeeWindowOpened]: dispatch(wrapLogHandler(handleFeeWindowOpenedLog)),
+  [SubscriptionEventNames.InitialReporterTransferred]: dispatch(wrapLogHandler()),
+  // [SubscriptionEventNames.TimestampSet]: dispatch(wrapLogHandler()),
+  // [SubscriptionEventNames.FeeWindowRedeemed]: dispatch(wrapLogHandler(handleFeeWindowRedeemedLog)),
+  [SubscriptionEventNames.UniverseCreated]: dispatch(wrapLogHandler()),
+  [SubscriptionEventNames.Approval]: dispatch(wrapLogHandler(handleApprovalLog))
+});

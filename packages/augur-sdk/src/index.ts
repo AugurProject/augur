@@ -9,3 +9,5 @@ export * from "./connector/empty-connector";
 export * from "./connector/http-connector";
 export * from "./connector/seo-connector";
 export * from "./connector/ws-connector";
+
+export { buildAPI } from "./state"

@@ -4,7 +4,6 @@ import Highcharts from "highcharts/highstock";
 import { createBigNumber } from "utils/create-big-number";
 import Styles from "modules/account/components/overview-chart.styles.less";
 import { UserTimeRangeData } from "modules/account/components/overview-chart";
-import { isEqual } from "lodash";
 import { formatEther } from "utils/format-number";
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
@@ -120,7 +119,7 @@ export default class ProfitLossChart extends Component<
   }
 
   componentWillUpdate(nextProps: ChartProps | any) {
-    if (!isEqual(this.props.data, nextProps.data)) {
+    if (JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data)) {
       this.buidOptions(nextProps.data);
     }
   }

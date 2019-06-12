@@ -1,4 +1,4 @@
-import { debounce } from "lodash";
+import debounce from "utils/debounce";
 import { connectAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_NETWORK_DISCONNECTED } from "modules/common/constants";

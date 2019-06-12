@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 
 import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
-import OrderMarketRow from "modules/portfolio/components/common/rows/order-market-row";
+import OrderMarketRow from "modules/portfolio/components/common/order-market-row";
 import FilledOrder from "modules/portfolio/containers/filled-order";
-import FilledOrdersHeader from "modules/portfolio/components/common/headers/filled-orders-header";
+
+import FilledOrdersHeader from "modules/portfolio/components/common/filled-orders-header";
 import { MarketData, Order } from "modules/types";
+
 const sortByOptions = [
   {
     label: "View by Most Recently Traded Market",

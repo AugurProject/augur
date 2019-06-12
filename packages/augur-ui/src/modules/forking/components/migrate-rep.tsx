@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Helmet } from "react-helmet";
 
@@ -10,27 +9,42 @@ import NullStateMessage from "modules/common/null-state-message";
 import MigrateRepForm from "modules/forking/components/migrate-rep-form";
 import MigrateRepConfirm from "modules/forking/components/migrate-rep-confirm";
 import { TYPE_VIEW } from "modules/common/constants";
-import { isEmpty } from "lodash";
-import FormStyles from "modules/common/form-styles";
-import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
+import { isEmpty } from "utils/is-populated";
+import FormStyles from "modules/common/form-styles.less";
+import Styles from "modules/reporting/components/reporting-report/reporting-report.styles.less";
+import { MarketData } from "modules/types";
 
-export default class MigrateRep extends Component {
-  static propTypes = {
-    accountREP: PropTypes.string.isRequired,
-    getForkMigrationTotals: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    isConnected: PropTypes.bool.isRequired,
-    isLogged: PropTypes.bool.isRequired,
-    isMarketLoaded: PropTypes.bool.isRequired,
-    loadFullMarket: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired,
-    market: PropTypes.object.isRequired,
-    marketId: PropTypes.string.isRequired,
-    submitMigrateREP: PropTypes.func.isRequired,
-    currentBlockNumber: PropTypes.number.isRequired,
-    gasPrice: PropTypes.number.isRequired
+interface MirgrateRepProps {
+  accountREP: string;
+  getForkMigrationTotals: (...args: Array<any>) => any;
+  history: History;
+  isConnected: boolean;
+  isLogged: boolean;
+  isMarketLoaded: boolean;
+  loadFullMarket: Function;
+  location: Location;
+  market: MarketData;
+  marketId: string;
+  submitMigrateREP: Function;
+  currentBlockNumber: number;
+  gasPrice: string;
+}
+
+interface MirgrateRepState {
+  currentStep: number;
+  isMarketInValid: any;
+  selectedOutcome: string;
+  selectedOutcomeName: string;
+  repAmount: string;
+  validations: {
+    repAmount: boolean;
+    selectedOutcome: any;
   };
+  gasEstimate: string;
+  forkMigrationTotals: any;
+}
 
+export default class MigrateRep extends Component<MirgrateRepProps, MirgrateRepState> {
   constructor(props) {
     super(props);
 
@@ -42,10 +56,10 @@ export default class MigrateRep extends Component {
       repAmount: "",
       validations: {
         repAmount: false,
-        selectedOutcome: null
+        selectedOutcome: null,
       },
       gasEstimate: "0",
-      forkMigrationTotals: null
+      forkMigrationTotals: null,
     };
 
     this.prevPage = this.prevPage.bind(this);
@@ -96,7 +110,7 @@ export default class MigrateRep extends Component {
             gasEstimate: formatGasCostToEther(
               gasEstimateValue,
               { decimalsRounded: 4 },
-              gasPrice
+              gasPrice,
             )
           });
         }
@@ -113,7 +127,7 @@ export default class MigrateRep extends Component {
       market,
       submitMigrateREP,
       getForkMigrationTotals,
-      currentBlockNumber
+      currentBlockNumber,
     } = this.props;
     const s = this.state;
 
@@ -140,12 +154,9 @@ export default class MigrateRep extends Component {
               <MigrateRepForm
                 market={market}
                 updateState={this.updateState}
-                isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcome}
                 selectedOutcomeName={s.selectedOutcomeName}
-                forkMigrationTotals={s.forkMigrationTotals}
                 validations={s.validations}
-                repAmounts={s.repAmount}
                 accountREP={accountREP}
                 getForkMigrationTotals={getForkMigrationTotals}
                 currentBlockNumber={currentBlockNumber}
@@ -173,12 +184,12 @@ export default class MigrateRep extends Component {
                 })}
                 disabled={
                   !Object.keys(s.validations).every(
-                    key => s.validations[key] === true
+                    (key) => s.validations[key] === true,
                   )
                 }
                 onClick={
                   Object.keys(s.validations).every(
-                    key => s.validations[key] === true
+                    (key) => s.validations[key] === true,
                   )
                     ? this.nextPage
                     : undefined
@@ -196,7 +207,7 @@ export default class MigrateRep extends Component {
                       selectedOutcome: s.selectedOutcome,
                       invalid: s.isMarketInValid,
                       amount: speedomatic.fix(s.repAmount, "hex"),
-                      history
+                      history,
                     })
                   }
                 >
@@ -211,6 +222,7 @@ export default class MigrateRep extends Component {
             <NullStateMessage
               message="Market not found"
               className={Styles.NullState}
+              addNullPadding={false}
             />
           </div>
         )}

@@ -5,7 +5,7 @@ import ToggleRow from "modules/common/toggle-row";
 import { MarketStatusLabel } from "modules/common/labels";
 import MarketLink from "modules/market/components/market-link/market-link";
 
-import Styles from "modules/portfolio/components/common/rows/market-row.styles.less";
+import Styles from "modules/portfolio/components/common/market-row.styles.less";
 
 export interface TimeObject {
   formattedShortDate: string;
@@ -36,17 +36,17 @@ export interface MarketRowProps {
 const MarketRow = (props: MarketRowProps) => {
   const content = (
     <div
-      className={classNames(Styles.MarketRow__contentContainer, {
-        [Styles.MarketRow__noToggle]: props.noToggle,
+      className={classNames(Styles.MarketRowContent, {
+        [Styles.NoToggle]: props.noToggle,
       })}
     >
       <div
-        className={classNames(Styles.MarketRow__content, {
-          [Styles.MarketRow__contentShow]: props.showState,
+        className={classNames({
+          [Styles.Show]: props.showState,
         })}
       >
         {props.showState && (
-          <div className={Styles.MarketRow__firstRow}>
+          <div>
             <MarketStatusLabel
               marketStatus={props.market.marketStatus}
               alternate
@@ -54,14 +54,12 @@ const MarketRow = (props: MarketRowProps) => {
             />
           </div>
         )}
-        <span className={Styles.MarketRow__description}>
-          <MarketLink id={props.market.id}>
-            {props.market.description}
-          </MarketLink>
-        </span>
+        <MarketLink id={props.market.id}>
+          {props.market.description}
+        </MarketLink>
       </div>
       <span
-        className={classNames(Styles.MarketRow__time, {
+        className={classNames({
           [Styles.MarketRow__timeShow]: props.showState,
         })}
       >
@@ -71,14 +69,14 @@ const MarketRow = (props: MarketRowProps) => {
   );
 
   return (
-    <div className={Styles.MarketRow__container}>
+    <div className={Styles.MarketRow}>
       {props.noToggle ? (
         content
       ) : (
         <ToggleRow
-          arrowClassName={Styles.MarketRow__Arrow}
+          arrowClassName={Styles.Arrow}
           rowContent={content}
-          toggleContent={props.toggleContent || <div>info</div>}
+          toggleContent={props.toggleContent}
         />
       )}
     </div>

@@ -10,7 +10,6 @@ import {
   MIN_QUANTITY,
   UPPER_FIXED_PRECISION_BOUND
 } from "modules/common/constants";
-import { isEqual } from "lodash";
 import FormStyles from "modules/common/form-styles";
 import Styles from "modules/trading/components/form/form.styles";
 import { ExclamationCircle } from "modules/common/icons";
@@ -87,10 +86,8 @@ class Form extends Component {
     this.updateTestProperty(this.INPUT_TYPES.EST_ETH, nextProps);
 
     if (
-      !isEqual(
-        nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
-        this.state[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]
-      )
+      nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS] !==
+      this.state[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]
     ) {
       this.setState({
         [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
@@ -509,7 +506,7 @@ class Form extends Component {
 
     return (
       <div className={Styles.Form}>
-        {market.marketType === CATEGORICAL &&
+        {market.marketType === CATEGORICAL && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <SquareDropdown
               defaultValue={defaultOutcome}
@@ -521,14 +518,14 @@ class Form extends Component {
               large
             />
           </div>
-        }
-        {market.marketType === YES_NO &&
+        )}
+        {market.marketType === YES_NO && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <div className={Styles.Yes}>
               <span>Outcome:</span> Yes
             </div>
           </div>
-        }
+        )}
         <ul>
           <li>
             <label htmlFor="tr__input--quantity">Quantity</label>

@@ -9,7 +9,7 @@ import MarketScalarOutcomeDisplay from "modules/market/components/market-scalar-
 
 import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles";
 import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
-import HeaderStyles from "modules/portfolio/components/common/headers/data-table-header.styles";
+import HeaderStyles from "modules/portfolio/components/common/data-table-header.styles";
 
 export default class MarketOutcomesList extends Component {
   static propTypes = {

@@ -12,7 +12,7 @@ import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { submitMigrateREP } from "modules/forking/actions/submit-migrate-rep";
 import { getForkMigrationTotals } from "modules/forking/actions/get-fork-migration-totals";
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLogged: state.authStatus.isLogged,
   isConnected: state.connection.isConnected,
   universe: state.universe.id,
@@ -20,11 +20,11 @@ const mapStateToProps = state => ({
   isMobile: state.appStatus.isMobile,
   accountREP: state.loginAccount.rep,
   currentBlockNumber: state.blockchain.currentBlockNumber,
-  gasPrice: getGasPrice(state)
+  gasPrice: getGasPrice(state),
 });
 
-const mapDispatchToProps = dispatch => ({
-  loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
+const mapDispatchToProps = (dispatch) => ({
+  loadFullMarket: (marketId) => dispatch(loadFullMarket(marketId)),
   submitMigrateREP: ({
     estimateGas,
     marketId,
@@ -32,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
     invalid,
     amount,
     history,
-    callback
+    callback,
   }) =>
     dispatch(
       submitMigrateREP({
@@ -42,11 +42,11 @@ const mapDispatchToProps = dispatch => ({
         invalid,
         amount,
         history,
-        callback
-      })
+        callback,
+      }),
     ),
   getForkMigrationTotals: (universe, callback) =>
-    dispatch(getForkMigrationTotals(universe, callback))
+    dispatch(getForkMigrationTotals(universe, callback)),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -69,7 +69,7 @@ const mergeProps = (sP, dP, oP) => {
       invalid,
       amount,
       history,
-      callback
+      callback,
     }) =>
       dP.submitMigrateREP({
         estimateGas,
@@ -78,10 +78,10 @@ const mergeProps = (sP, dP, oP) => {
         invalid,
         amount,
         history,
-        callback
+        callback,
       }),
-    getForkMigrationTotals: callback =>
-      dP.getForkMigrationTotals(sP.universe, callback)
+    getForkMigrationTotals: (callback) =>
+      dP.getForkMigrationTotals(sP.universe, callback),
   };
 };
 
@@ -89,8 +89,8 @@ const MigrateRep = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(MigrateRepView)
+    mergeProps,
+  )(MigrateRepView),
 );
 
 export default MigrateRep;

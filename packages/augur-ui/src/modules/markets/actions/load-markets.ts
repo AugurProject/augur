@@ -1,6 +1,5 @@
 import { augurSdk } from "services/augursdk";
 import logError from "utils/log-error";
-import { parallel } from "async";
 import {
   MARKET_CREATION_TIME,
   MARKET_END_DATE,
@@ -16,7 +15,6 @@ import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
-import {flatten} from "lodash";
 
 // NOTE -- We ONLY load the market ids during this step.
 // From here we populate the marketsData
@@ -128,7 +126,8 @@ export const loadMarketsByFilter = (filterOptions, cb:Function = () => {}) => as
 
   const requests = filter.map((filterType) => augur.getMarkets({ ...params, reportingState: filterType }));
   const nestedMarkets = await Promise.all(requests);
-  const markets = flatten(nestedMarkets);
+  // flatten, when we upgrade to es2019 we can use nestedMarkets.flat() instead
+  const markets = nestedMarkets.reduce( (a, b) => a.concat(b), []);
 
   cb(null, markets);
 };

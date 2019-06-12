@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { EthPercentButton } from "modules/common/buttons";
 
-import Styles from "modules/portfolio/components/common/headers/data-table-header.styles.less";
+import Styles from "modules/portfolio/components/common/data-table-header.styles.less";
 import SharedStyles from "modules/common/row.styles.less";
 
 interface PositionsHeaderProps {

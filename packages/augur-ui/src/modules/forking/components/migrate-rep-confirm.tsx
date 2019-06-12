@@ -1,13 +1,18 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-import ConfirmStyles from "modules/common/confirm-table";
+import ConfirmStyles from "modules/common/confirm-table.less";
 
-const MigrateRepConfirm = ({ selectedOutcomeName, repAmount, gasEstimate }) => (
+interface MigrateRepConfirmProps {
+  selectedOutcomeName: string;
+  repAmount: string;
+  gasEstimate: string;
+}
+
+const MigrateRepConfirm = ({ selectedOutcomeName, repAmount, gasEstimate }: MigrateRepConfirmProps) => (
   <article className={ConfirmStyles.Confirm}>
     <h2 className={ConfirmStyles.Confirm__heading}>Confirm Migration</h2>
     <div className={ConfirmStyles["Confirm__wrapper--wide"]}>
-      <div className={ConfirmStyles.Confirm__creation}>
+      <div>
         <ul className={ConfirmStyles["Confirm__list--left-align"]}>
           <li>
             <span>Outcome</span>
@@ -34,11 +39,5 @@ const MigrateRepConfirm = ({ selectedOutcomeName, repAmount, gasEstimate }) => (
     </div>
   </article>
 );
-
-MigrateRepConfirm.propTypes = {
-  selectedOutcomeName: PropTypes.string.isRequired,
-  repAmount: PropTypes.string.isRequired,
-  gasEstimate: PropTypes.string.isRequired
-};
 
 export default MigrateRepConfirm;

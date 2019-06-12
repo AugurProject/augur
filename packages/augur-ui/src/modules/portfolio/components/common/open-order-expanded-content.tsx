@@ -7,7 +7,7 @@ import { CancelTextButton } from "modules/common/buttons";
 import MarketLink from "modules/market/components/market-link/market-link";
 import { Order } from "modules/portfolio/types";
 
-import Styles from "modules/portfolio/components/common/rows/open-order-expanded-content.styles.less";
+import Styles from "modules/portfolio/components/common/expanded-content.styles.less";
 
 export interface OpenOrderExpandedContentProps {
   openOrder: Order;
@@ -22,10 +22,10 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
   const creationTime = getValue(openOrder, "creationTime.formattedShort");
 
   return (
-    <div className={Styles.OpenOrder_infoContainer}>
+    <div className={Styles.OrderInfo}>
       <div
-        className={classNames(Styles.OpenOrder__info, {
-          [Styles.OpenOrder__infoSingle]: isSingle,
+        className={classNames({
+          [Styles.Single]: isSingle,
         })}
       >
         {isSingle && (
@@ -40,7 +40,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
           </span>
         )}
         <div>
-          <div className={Styles.OpenOrder__labels}>
+          <div>
             <LinearPropertyLabel
               label="Total Cost (ETH)"
               highlightFirst
@@ -57,7 +57,7 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
               value={creationTime}
             />
           </div>
-          <div className={Styles.OpenOrder__timestamp}>{creationTime}</div>
+          <div>{creationTime}</div>
           {openOrder.cancelOrder && (
             <CancelTextButton
               disabled={openOrder.pending}

@@ -7,7 +7,6 @@ import Form from "modules/trading/components/form/form";
 import Confirm from "modules/trading/components/confirm/confirm";
 import { generateTrade } from "modules/trades/helpers/generate-trade";
 import getValue from "utils/get-value";
-import { isEqual, keys, pick } from "lodash";
 import {
   SCALAR,
   BUY,
@@ -18,6 +17,15 @@ import Styles from "modules/trading/components/wrapper/wrapper.styles";
 import { OrderButton } from "modules/common/buttons";
 import { formatShares } from "utils/format-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
+// TODO: refactor the need to use this function.
+function pick(object, keys) {
+  return keys.reduce((obj, key) => {
+     if (object && object.hasOwnProperty(key)) {
+        obj[key] = object[key];
+     }
+     return obj;
+   }, {});
+}
 
 class Wrapper extends Component {
   static propTypes = {
@@ -89,7 +97,10 @@ class Wrapper extends Component {
   componentWillUpdate(nextProps) {
     const { selectedOrderProperties } = this.props;
 
-    if (!isEqual(selectedOrderProperties, nextProps.selectedOrderProperties)) {
+    if (
+      JSON.stringify(selectedOrderProperties) !==
+      JSON.stringify(nextProps.selectedOrderProperties)
+    ) {
       if (
         nextProps.selectedOrderProperties.orderPrice !==
           this.state.orderPrice ||
@@ -158,7 +169,7 @@ class Wrapper extends Component {
 
   updateParentOrderValues() {
     this.props.updateSelectedOrderProperties({
-      ...pick(this.state, keys(this.props.selectedOrderProperties))
+      ...pick(this.state, Object.keys(this.props.selectedOrderProperties))
     });
   }
 
@@ -326,10 +337,14 @@ class Wrapper extends Component {
             className={classNames({
               [Styles.Buy]: selectedNav === BUY,
               [Styles.Sell]: selectedNav === SELL,
-              [Styles.Scalar]: market.marketType === SCALAR,
+              [Styles.Scalar]: market.marketType === SCALAR
             })}
           >
-            <li className={classNames({[`${Styles.active}`]: selectedNav === BUY})}>
+            <li
+              className={classNames({
+                [`${Styles.active}`]: selectedNav === BUY
+              })}
+            >
               <button
                 onClick={() =>
                   this.updateTradeTotalCost({
@@ -339,10 +354,18 @@ class Wrapper extends Component {
                 }
               >
                 <div>Buy Shares</div>
-                <span className={classNames({[`${Styles.notActive}`]: selectedNav === SELL})} />
+                <span
+                  className={classNames({
+                    [`${Styles.notActive}`]: selectedNav === SELL
+                  })}
+                />
               </button>
             </li>
-            <li className={classNames({[`${Styles.active}`]: selectedNav === SELL})}>
+            <li
+              className={classNames({
+                [`${Styles.active}`]: selectedNav === SELL
+              })}
+            >
               <button
                 onClick={() =>
                   this.updateTradeTotalCost({
@@ -352,34 +375,37 @@ class Wrapper extends Component {
                 }
               >
                 <div>Sell Shares</div>
-                <span className={classNames({[`${Styles.notActive}`]: selectedNav === BUY})}/>
+                <span
+                  className={classNames({
+                    [`${Styles.notActive}`]: selectedNav === BUY
+                  })}
+                />
               </button>
             </li>
           </ul>
-          {market &&
-            market.marketType && (
-              <Form
-                market={market}
-                marketType={getValue(this.props, "market.marketType")}
-                maxPrice={getValue(this.props, "market.maxPrice")}
-                minPrice={getValue(this.props, "market.minPrice")}
-                selectedNav={selectedNav}
-                orderPrice={orderPrice}
-                orderQuantity={orderQuantity}
-                orderEthEstimate={orderEthEstimate}
-                orderEscrowdEth={orderEscrowdEth}
-                doNotCreateOrders={doNotCreateOrders}
-                selectedOutcome={selectedOutcome}
-                updateState={this.updateState}
-                updateOrderProperty={this.updateOrderProperty}
-                clearOrderForm={this.clearOrderForm}
-                updateSelectedOutcome={updateSelectedOutcome}
-                updateTradeTotalCost={this.updateTradeTotalCost}
-                updateTradeNumShares={this.updateTradeNumShares}
-                updateNewOrderProperties={this.updateNewOrderProperties}
-                clearOrderConfirmation={this.clearOrderConfirmation}
-              />
-            )}
+          {market && market.marketType && (
+            <Form
+              market={market}
+              marketType={getValue(this.props, "market.marketType")}
+              maxPrice={getValue(this.props, "market.maxPrice")}
+              minPrice={getValue(this.props, "market.minPrice")}
+              selectedNav={selectedNav}
+              orderPrice={orderPrice}
+              orderQuantity={orderQuantity}
+              orderEthEstimate={orderEthEstimate}
+              orderEscrowdEth={orderEscrowdEth}
+              doNotCreateOrders={doNotCreateOrders}
+              selectedOutcome={selectedOutcome}
+              updateState={this.updateState}
+              updateOrderProperty={this.updateOrderProperty}
+              clearOrderForm={this.clearOrderForm}
+              updateSelectedOutcome={updateSelectedOutcome}
+              updateTradeTotalCost={this.updateTradeTotalCost}
+              updateTradeNumShares={this.updateTradeNumShares}
+              updateNewOrderProperties={this.updateNewOrderProperties}
+              clearOrderConfirmation={this.clearOrderConfirmation}
+            />
+          )}
         </div>
         {s.trade &&
           (s.trade.shareCost.value !== 0 || s.trade.totalCost.value !== 0) && (

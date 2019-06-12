@@ -14,11 +14,13 @@ import {
 import { ALL, CLAIM_FEE_WINDOWS } from "modules/common/constants";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { NodeStyleCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
 
-export const getReportingFees = (callback: NodeStyleCallback = logError) => (
+export const getReportingFees = (
+  callback: NodeStyleCallback = logError
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -37,7 +39,7 @@ export const getReportingFees = (callback: NodeStyleCallback = logError) => (
         .plus(createBigNumber(result.total.unclaimedRepEarned))
         .toString();
 
-      const promises = [];
+      const promises: Array<Promise<any>> = [];
 
       if (result.nonforkedMarkets.length > 0) {
         promises.push(
@@ -87,9 +89,9 @@ export const getReportingFees = (callback: NodeStyleCallback = logError) => (
           .toNumber();
         const gasPrice = getGasPrice(getState());
         const gasCost = formatGasCostToEther(
-          windowGas,
+          windowGas.toString(),
           { decimalsRounded: 4 },
-          gasPrice
+          gasPrice.toString()
         );
 
         dispatch(
@@ -118,16 +120,16 @@ export const getReportingFees = (callback: NodeStyleCallback = logError) => (
                   zeroStyled: false
                 }
               ),
-              participationTokenRepStaked: formatAttoRep(
-                result.total.participationTokenRepStaked,
+              unclaimedParticipationTokenEthFees: formatAttoRep(
+                result.total.unclaimedParticipationTokenEthFees,
                 {
                   decimals: 4,
                   decimalsRounded: 4,
                   zeroStyled: false
                 }
               ),
-              unclaimedParticipationTokenEthFees: formatAttoRep(
-                result.total.unclaimedParticipationTokenEthFees,
+              participationTokenRepStaked: formatAttoRep(
+                result.total.participationTokenRepStaked,
                 {
                   decimals: 4,
                   decimalsRounded: 4,

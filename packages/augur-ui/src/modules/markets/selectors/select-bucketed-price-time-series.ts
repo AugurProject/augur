@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 import createCachedSelector from "re-reselect";
-import { head, each, pullAll } from "lodash";
+import { pullAll } from "lodash";
 import store from "store";
 import { ZERO } from "modules/common/constants";
 import {
@@ -107,8 +107,10 @@ function splitTradesByTimeBucket(priceTimeSeries, timeBuckets) {
     const start = timeBuckets[i];
     const end = timeBuckets[i + 1];
     const result = getTradeInTimeRange(timeSeries, start, end);
-    if (result.trades.length > 0)
-      series.push({ ...head(result.trades), timestamp: start });
+    if (result.trades.length > 0) {
+      const [head, ...rest] = result.trades;
+      series.push({ ...head, timestamp: start });
+    }
     timeSeries = result.trimmedTimeSeries;
   }
   return series;
@@ -123,7 +125,7 @@ function getTradeInTimeRange(timeSeries, startTime, endTime) {
     };
   }
 
-  each(timeSeries, p => {
+  timeSeries.forEach(p => {
     const timestamp = createBigNumber(p.timestamp);
     if (timestamp.gt(createBigNumber(endTime))) return;
     if (timestamp.gte(startTime)) {
