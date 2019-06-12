@@ -1,5 +1,5 @@
-import { HTTPConnector } from "@augurproject/sdk/build/connector/http-connector";
-import { Markets } from "@augurproject/sdk/build/state/getter/Markets";
+import { HTTPConnector } from "./http-connector";
+import { Markets } from "../state/getter/Markets";
 
 jest.mock("cross-fetch", () => {
   return {
