@@ -79,7 +79,6 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
   }
 
   onLogsAdded = async (blockHash: string, extendedLogs: ExtendedLog[]) => {
-    console.log("logs added");
     const block = await this.deps.getBlockByHash(blockHash);
 
     if (block) {
@@ -93,7 +92,6 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
   }
 
   onNewBlock = async (block: Block) => {
-    console.log("new block");
     if (block) {
       await this.deps.blockAndLogStreamer.reconcileNewBlock(block);
     }
