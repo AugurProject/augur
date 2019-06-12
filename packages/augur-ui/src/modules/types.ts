@@ -1,8 +1,8 @@
 import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
-import { string } from "io-ts";
 import { AnyAction } from "redux";
+import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -88,7 +88,7 @@ export interface TransacitonStatus {
 }
 export interface Universe {
   id: string;
-  market?: MarketData;
+  market?: MarketData | MarketInfo;
   forkEndTime?: number;
   forkReputationGoal?: BigNumber;
   forkingMarket?: string;
