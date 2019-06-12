@@ -62,9 +62,15 @@ export class DB {
    * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  public static createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  public static createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, augur: Augur, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     const dbController = new DB(pouchDBFactory);
-    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, customEvents, userSpecificEvents, blockAndLogStreamerListener);
+
+    dbController.augur = augur; 
+    dbController.genericEventNames = augur.genericEventNames;
+    dbController.userSpecificEvents = augur.userSpecificEvents;
+    dbController.customEvents = augur.customEvents;
+
+    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers,  blockAndLogStreamerListener);
   }
 
   /**
@@ -79,7 +85,7 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>,  blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
@@ -108,6 +114,7 @@ export class DB {
           },
         };
       }
+
       new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
     }
 
@@ -392,11 +399,11 @@ export class DB {
   }
 
   /**
- * Queries the DisputeCrowdsourcerContribution DB
- *
- * @param {PouchDB.Find.FindRequest<{}>} request Query object
- * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
- */
+   * Queries the DisputeCrowdsourcerContribution DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
+   */
   public async findDisputeCrowdsourcerContributionLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerContributionLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerContribution"), request);
     return results.docs as unknown as Array<DisputeCrowdsourcerContributionLog>;
