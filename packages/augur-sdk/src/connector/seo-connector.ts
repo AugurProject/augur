@@ -11,6 +11,7 @@ export class SEOConnector extends Connector {
 
   public async connect(ethNodeUrl: string, account?: string): Promise<any> {
     this.api = await Sync.start(ethNodeUrl, account, { adapter: "memory" });
+    console.log("api received from sync.start");
   }
 
   public async disconnect(): Promise<any> {

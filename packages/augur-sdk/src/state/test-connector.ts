@@ -22,17 +22,18 @@ console.log("Starting web worker");
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector);
     await augur.connect("");
 
-    augur.on(SubscriptionEventNames.CompleteSetsPurchased, (...args: Array<any>): void => {
-      console.log(args);
+    augur.on(SubscriptionEventNames.CompleteSetsPurchased, (data: any): void => {
+      console.log(data);
+      augur.off(SubscriptionEventNames.CompleteSetsPurchased);
     });
 
-    augur.on(SubscriptionEventNames.Burn, (...args: Array<any>): void => {
-      console.log(args);
+    augur.on(SubscriptionEventNames.Burn, (data: any): void => {
+      console.log(data);
       augur.off(SubscriptionEventNames.Burn);
     });
 
-    augur.on(SubscriptionEventNames.Approval, (...args: Array<any>): void => {
-      console.log(args);
+    augur.on(SubscriptionEventNames.Approval, (data: any): void => {
+      console.log(data);
       augur.off(SubscriptionEventNames.Approval);
     });
 

@@ -36,14 +36,9 @@ jest.mock("@augurproject/sdk/build/state/Sync.worker", () => {
 jest.mock("@augurproject/sdk/build/state/index", () => {
   return {
     __esModule: true,
-    default: () => ({
-      buildDeps: () => { console.log("in build deps"); },
-      create: () => { console.log("in index create"); },
-      buildAPI: () => {
-        console.log("in index buildAPI");
-        return new API(john.augur, db);
-      },
-    }),
+    buildAPI: () => {
+      return new API(john.augur, db);
+    },
   };
 });
 

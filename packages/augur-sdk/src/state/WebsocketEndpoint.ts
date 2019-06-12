@@ -14,7 +14,6 @@ import { MakeJsonRpcError, JsonRpcErrorCode } from "./MakeJsonRpcError";
 import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
 import { Subscriptions } from "../subscriptions";
 import { augurEmitter } from "../events";
-import { SubscriptionEventNames } from "../constants";
 
 function isSafe(websocket: WebSocket) {
   if (websocket.readyState !== WebSocket.OPEN) {
@@ -78,8 +77,8 @@ export async function run<TBigNumber>(api: API, endpointSettings: EndpointSettin
             const eventName: string = message.params.shift();
 
             try {
-              const subscription: string = subscriptions.subscribe(eventName, (...args: Array<any>): void => {
-                safeSend(websocket, MakeJsonRpcResponse(null, { eventName, subscription, result: args }));
+              const subscription: string = subscriptions.subscribe(eventName, (data: {}): void => {
+                safeSend(websocket, MakeJsonRpcResponse(null, { subscription, result: data }));
               });
               safeSend(websocket, MakeJsonRpcResponse(message.id, { subscription }));
             } catch (exc) {

@@ -1,15 +1,15 @@
 import { Augur } from "../Augur";
 import { DB } from "./db/DB";
-import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
+import { IBlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
 
-const settings = require("@augurproject/sdk/src/state/settings.json");
+const settings = require("./settings.json");
 
 export class Controller {
 
   public constructor(
     private augur: Augur,
     private db: Promise<DB>,
-    private blockAndLogStreamerListener: BlockAndLogStreamerListener,
+    private blockAndLogStreamerListener: IBlockAndLogStreamerListener,
   ) {
   }
 
