@@ -41,9 +41,9 @@ function filterComp(input, market) {
 
 function renderToggleContent(market) {
   return (
-    <div className={Styles.Quad__infoParent}>
-      <div className={Styles.Quad__infoContainer}>
-        <div className={Styles.Quad__info}>
+    <div className={Styles.InfoParent}>
+      <div>
+        <div>
           <LinearPropertyLabel
             label="Volume"
             highlightFirst

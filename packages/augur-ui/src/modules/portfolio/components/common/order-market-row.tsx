@@ -25,7 +25,7 @@ const OrderMarketRow = (props: OrderMarketRowProps) => {
 
   return (
     <div className={Styles.OrderMarket}>
-      <div className={Styles.OrderMarket__description}>
+      <div>
         <MarketLink id={market.id}>{market.description}</MarketLink>
       </div>
       <div>

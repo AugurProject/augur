@@ -8,7 +8,7 @@ export { default as Market } from "modules/market/containers/market-view";
 
 export {
   default as Portfolio
-} from "modules/portfolio/components/portfolio-view/portfolio-page";
+} from "modules/portfolio/components/portfolio-view/portfolio-view";
 
 export {
   default as CreateMarket
