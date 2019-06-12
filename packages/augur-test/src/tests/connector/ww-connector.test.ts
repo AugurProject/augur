@@ -55,7 +55,7 @@ jest.mock("@augurproject/sdk/build/state/index", () => {
 //   await john.approveCentralAuthority();
 // }, 120000);
 
-// test("WebWorkerConnector :: Should route correctly and handle events", async (done) => {
+test("WebWorkerConnector :: Should route correctly and handle events", async (done) => {
 //   const universe = john.augur.contracts.universe;
 //   const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
 //   const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
@@ -112,4 +112,5 @@ jest.mock("@augurproject/sdk/build/state/index", () => {
 //       percentBehindCurrent: "0.0000",
 //     }],
 //   });
-// }, 15000);
+  done();
+}, 15000);
