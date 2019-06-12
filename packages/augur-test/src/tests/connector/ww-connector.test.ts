@@ -18,8 +18,7 @@ let connector: WebWorkerConnector;
 let provider: EthersProvider;
 let john: ContractAPI;
 let addresses: any;
-let db: DB;
-let api: API;
+let db: Promise<DB>;
 
 const mock = makeDbMock();
 
@@ -31,9 +30,22 @@ jest.mock("@augurproject/sdk/build/state/Sync.worker", () => {
       terminate: () => { },
       postMessage: (message: any) => { },
     }),
-  }
+  };
 });
 
+jest.mock("@augurproject/sdk/build/state/index", () => {
+  return {
+    __esModule: true,
+    default: () => ({
+      buildDeps: () => { console.log("in build deps"); },
+      create: () => { console.log("in index create"); },
+      buildAPI: () => {
+        console.log("in index buildAPI");
+        return new API(john.augur, db);
+      },
+    }),
+  };
+});
 
 beforeAll(async () => {
   connector = new WebWorkerConnector();
@@ -43,9 +55,8 @@ beforeAll(async () => {
   addresses = contractData.addresses;
 
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-  db = await mock.makeDB(john.augur, ACCOUNTS);
+  db = mock.makeDB(john.augur, ACCOUNTS);
 
-  api = new API(john.augur, db);
   await john.approveCentralAuthority();
 }, 120000);
 
@@ -53,7 +64,6 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
   const universe = john.augur.contracts.universe;
   const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
   const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
-  const highFeePerCashInAttoCash = new BigNumber(10).pow(18).div(10); // 10% creator fee
   const affiliateFeeDivisor = new BigNumber(0);
   const designatedReporter = john.account;
 
@@ -67,7 +77,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
     "{\"description\": \"yesNo description 1\", \"longDescription\": \"yesNo longDescription 1\", \"tags\": [\"yesNo tag1-1\", \"yesNo tag1-2\", \"yesNo tag1-3\"]}",
   );
 
-  await connector.connect({ provider, db, augur: john.augur });
+  await connector.connect("");
 
   await connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
     expect(args).toEqual([{
@@ -77,7 +87,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
       percentBehindCurrent: "0.0000",
     }]);
 
-    await db.sync(john.augur, mock.constants.chunkSize, 0);
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     const getMarkets = connector.bindTo(Markets.getMarkets);
     const markets = await getMarkets({
       universe: john.augur.contracts.universe.address,

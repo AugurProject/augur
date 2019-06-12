@@ -1,4 +1,4 @@
-import {SubscriptionEventNames} from "../constants";
+import { SubscriptionEventNames } from "../constants";
 
 export type Callback = (...args: Array<any>) => void;
 

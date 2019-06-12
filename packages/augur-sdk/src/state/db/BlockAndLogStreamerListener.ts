@@ -19,7 +19,7 @@ export interface BlockAndLogStreamerListenerDependencies {
   blockAndLogStreamer: BlockAndLogStreamerInterface<Block, ExtendedLog>;
   getBlockByHash: (hashOrTag: string) => Promise<Block>;
   eventLogDBRouter: EventLogDBRouter;
-  getEventTopics: (eventName: string) => Array<string>;
+  getEventTopics: (eventName:string) => Array<string>;
   // TODO Use an emitter?
   listenForNewBlocks: (callback: (block: Block) => Promise<void>) => void;
 }
@@ -36,14 +36,14 @@ export interface IBlockAndLogStreamerListener {
 }
 
 export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener {
-  private address: string;
+  private address:string;
 
   constructor(private deps: BlockAndLogStreamerListenerDependencies) {
     this.address = deps.address;
     deps.blockAndLogStreamer.subscribeToOnLogsAdded(this.onLogsAdded);
   }
 
-  public static create(provider: EthersProvider, eventLogDBRouter: EventLogDBRouter, address: string, getEventTopics: ((eventName: string) => Array<string>)) {
+  public static create(provider: EthersProvider, eventLogDBRouter: EventLogDBRouter, address:string, getEventTopics: ((eventName:string) => Array<string>)) {
     const dependencies = new EthersProviderBlockStreamAdapter(provider);
     const blockAndLogStreamer = new BlockAndLogStreamer<Block, ExtendedLog>(dependencies.getBlockByHash, dependencies.getLogs, (error: Error) => {
       console.error(error);

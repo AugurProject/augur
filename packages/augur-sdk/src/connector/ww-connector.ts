@@ -2,7 +2,7 @@ import RunWorker from "../state/Sync.worker";
 
 import { API } from "../state/getter/API";
 import { Callback, Connector } from "./connector";
-import { SubscriptionEventNames } from "..//constants";
+import { SubscriptionEventNames } from "../constants";
 import { buildAPI } from "../state/index";
 
 export class WebWorkerConnector extends Connector {
@@ -18,30 +18,30 @@ export class WebWorkerConnector extends Connector {
     });
 
     this.api = buildAPI(ethNodeUrl, account);
-
     this.worker.onmessage = (event: MessageEvent) => {
       try {
-        if (event.data.subscribed) {
-          this.subscriptions[event.data.subscribed].id = event.data.subscription;
-          console.log(this.subscriptions[event.data.subscribed]);
-        } else {
-          event.data.map((data: any) => {
-            if (this.subscriptions[data.eventName]) {
-              this.subscriptions[data.eventName].callback(data);
-            }
-          });
-        }
+        this.messageReceived(event.data);
       } catch (error) {
         console.error("Bad Web Worker response: " + event);
       }
     };
   }
 
+  public messageReceived(message: any) {
+    if (message.subscribed) {
+      this.subscriptions[message.subscribed].id = message.subscription;
+    } else {
+      if (this.subscriptions[message.eventName]) {
+        this.subscriptions[message.eventName].callback(...(message.result));
+      }
+    } 1
+  }
+
   public async disconnect(): Promise<any> {
     this.worker.terminate();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>) {
+  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
       return (await this.api).route(f.name, params);
     };
@@ -53,9 +53,10 @@ export class WebWorkerConnector extends Connector {
   }
 
   public async off(eventName: SubscriptionEventNames | string): Promise<void> {
-    const subscription = this.subscriptions[eventName].id;
-    delete this.subscriptions[eventName];
-
-    this.worker.postMessage({ unsubscribe: subscription });
+    const subscription = this.subscriptions[eventName];
+    if (subscription) {
+      delete this.subscriptions[eventName];
+      this.worker.postMessage({ unsubscribe: subscription.id });
+    }
   }
 }

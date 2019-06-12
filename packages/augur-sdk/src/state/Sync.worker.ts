@@ -1,5 +1,5 @@
 import * as Sync from "./Sync";
-import { Subscriptions } from "..//subscriptions";
+import { Subscriptions } from "../subscriptions";
 import { augurEmitter } from "../events";
 
 // this to be as typesafe as possible with self and addEventListener + postMessage

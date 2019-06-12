@@ -30,6 +30,7 @@ import {
   UniverseForkedLog,
 } from "../logs/types";
 
+
 export class DB {
   private networkId: number;
   private blockstreamDelay: number;
@@ -40,7 +41,6 @@ export class DB {
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private metaDatabase: MetaDB; // TODO Remove this if derived DBs are not used.
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
-  private augur: Augur;
   public readonly pouchDBFactory: PouchDBFactoryType;
   public syncStatus: SyncStatus;
 
@@ -85,10 +85,13 @@ export class DB {
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
     this.trackedUsers = new TrackedUsers(networkId, this.pouchDBFactory);
     this.metaDatabase = new MetaDB(this, networkId, this.pouchDBFactory);
+    this.genericEventNames = genericEventNames;
+    this.customEvents = customEvents;
+    this.userSpecificEvents = userSpecificEvents;
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
-    for (let eventName of this.genericEventNames) {
+    for (let eventName of genericEventNames) {
       let fullTextSearchOptions = undefined;
       if (eventName === "MarketCreated") {
         fullTextSearchOptions = {
@@ -108,17 +111,17 @@ export class DB {
           },
         };
       }
-      new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
+      new SyncableDB(this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
     }
 
-    for (let customEvent of this.customEvents) {
-      new SyncableDB(this.augur, this, networkId, customEvent.eventName ? customEvent.eventName : customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
+    for (let customEvent of customEvents) {
+      new SyncableDB(this, networkId, customEvent.eventName ? customEvent.eventName : customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
     }
 
     for (let trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
-      for (let userSpecificEvent of this.userSpecificEvents) {
-        new UserSyncableDB(this.augur, this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
+      for (let userSpecificEvent of userSpecificEvents) {
+        new UserSyncableDB(this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
       }
     }
 

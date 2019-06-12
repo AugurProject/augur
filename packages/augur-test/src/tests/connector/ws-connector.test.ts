@@ -39,7 +39,7 @@ jest.mock("websocket-as-promised", () => {
 
 test("WebsocketConnector :: Should route correctly and handle events", async (done) => {
   const connector = new WebsocketConnector("http://localhost:9001");
-  await connector.connect();
+  await connector.connect("");
 
   await connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
     expect(args).toEqual([{

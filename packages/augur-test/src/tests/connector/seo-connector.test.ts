@@ -5,7 +5,6 @@ import {
   ContractAPI,
 } from "../../libs";
 
-import { API } from "@augurproject/sdk/build/state/getter/API";
 import { BigNumber } from "bignumber.js";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
@@ -19,7 +18,6 @@ let provider: EthersProvider;
 let john: ContractAPI;
 let addresses: any;
 let db: DB;
-let api: API;
 
 const mock = makeDbMock();
 
@@ -33,7 +31,6 @@ beforeAll(async () => {
   john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
   db = await mock.makeDB(john.augur, ACCOUNTS);
 
-  api = new API(john.augur, db);
   await john.approveCentralAuthority();
 }, 120000);
 
@@ -55,7 +52,7 @@ test("SEOConnector :: Should route correctly and handle events", async (done) =>
     "{\"description\": \"yesNo description 1\", \"longDescription\": \"yesNo longDescription 1\", \"tags\": [\"yesNo tag1-1\", \"yesNo tag1-2\", \"yesNo tag1-3\"]}",
   );
 
-  await connector.connect({ provider, db, augur: john.augur });
+  await connector.connect("");
 
   await connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
     expect(args).toEqual([{

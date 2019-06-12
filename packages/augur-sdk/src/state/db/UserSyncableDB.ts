@@ -10,8 +10,8 @@ export class UserSyncableDB extends SyncableDB {
   public readonly user: string;
   private additionalTopics: Array<Array<string | Array<string>>>;
 
-  constructor(augur: Augur, dbController: DB, networkId: number, eventName: string, user: string, numAdditionalTopics: number, userTopicIndicies: Array<number>, idFields: Array<string> = []) {
-    super(augur, dbController, networkId, eventName, dbController.getDatabaseName(eventName, user), idFields);
+  constructor(dbController: DB, networkId: number, eventName: string, user: string, numAdditionalTopics: number, userTopicIndicies: Array<number>, idFields: Array<string> = []) {
+    super(dbController, networkId, eventName, dbController.getDatabaseName(eventName, user), idFields);
     this.user = user;
     const bytes32User = `0x000000000000000000000000${this.user.substr(2).toLowerCase()}`;
     this.additionalTopics = [];
