@@ -17,6 +17,7 @@ export function updateSdk(loginAccount: LoginAccount, injectedProvider: JsonRpcP
     }
 
     try {
+      await augurSdk.destroy();
       await augurSdk.makeApi(
         provider,
         address,
