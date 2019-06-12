@@ -326,8 +326,8 @@ export class Markets {
       const marketFinalizedLogs = (await db.findMarketFinalizedLogs({ selector: { market: marketCreatedLog.market } })).reverse();
       const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({ selector: { market: marketCreatedLog.market } })).reverse();
 
-      let minPrice = new BigNumber(marketCreatedLog.prices[0]);
-      let maxPrice = new BigNumber(marketCreatedLog.prices[1]);
+      const minPrice = new BigNumber(marketCreatedLog.prices[0]).dividedBy(ETHER.toString());;
+      const maxPrice = new BigNumber(marketCreatedLog.prices[1]).dividedBy(ETHER.toString());;
       const numTicks = new BigNumber(marketCreatedLog.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const cumulativeScale = maxPrice.minus(minPrice);
@@ -355,8 +355,6 @@ export class Markets {
         marketType = "categorical";
       } else {
         marketType = "scalar";
-        minPrice = minPrice.dividedBy(ETHER.toString());
-        maxPrice = maxPrice.dividedBy(ETHER.toString());
       }
 
       let description = null;
@@ -370,6 +368,7 @@ export class Markets {
         resolutionSource = extraInfo.resolutionSource ? extraInfo.resolutionSource : null;
         scalarDenomination = extraInfo._scalarDenomination ? extraInfo._scalarDenomination : null;
       }
+      const defaultPrice = maxPrice.minus(minPrice).dividedBy(2).toString(10);
 
       return Object.assign({
         id: marketCreatedLog.market,
@@ -396,7 +395,7 @@ export class Markets {
         numTicks: numTicks.toString(10),
         tickSize: tickSize.toString(10),
         consensus,
-        outcomes: await getMarketOutcomes(db, marketCreatedLog, scalarDenomination)
+        outcomes: await getMarketOutcomes(db, marketCreatedLog, scalarDenomination, defaultPrice)
       });
     }));
   }
@@ -456,7 +455,7 @@ async function getMarketOpenInterest(db: DB, marketCreatedLog: MarketCreatedLog)
   return "0";
 }
 
-async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, scalarDenomination: string): Promise<Array<MarketInfoOutcome>> {
+async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, scalarDenomination: string, defaultPrice: string): Promise<Array<MarketInfoOutcome>> {
   let outcomes: Array<MarketInfoOutcome> = [];
   if (marketCreatedLog.outcomes.length === 0) {
     const ordersFilled0 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x00" } })).reverse();
@@ -469,12 +468,12 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, sca
     });
     outcomes.push({
       id: 1,
-      price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].uint256Data[OrderEventUint256Value.price]).toString(10) : ".5",
+      price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].uint256Data[OrderEventUint256Value.price]).toString(10) : defaultPrice,
       description: (marketCreatedLog.marketType === 0) ? "No" : scalarDenomination
     });
     outcomes.push({
       id: 2,
-      price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].uint256Data[OrderEventUint256Value.price]).toString(10) : ".5",
+      price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].uint256Data[OrderEventUint256Value.price]).toString(10) : defaultPrice,
       description: (marketCreatedLog.marketType === 0) ? "Yes" : scalarDenomination
     });
   } else {
@@ -489,7 +488,7 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, sca
       const outcomeDescription = marketCreatedLog.outcomes[i].replace("0x", "");
       outcomes.push({
         id: i + 1,
-        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[OrderEventUint256Value.price]).toString(10) : ".5",
+        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[OrderEventUint256Value.price]).toString(10) : defaultPrice,
         description: Buffer.from(outcomeDescription, "hex").toString()
       });
     }
