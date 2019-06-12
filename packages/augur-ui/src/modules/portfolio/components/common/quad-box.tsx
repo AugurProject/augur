@@ -5,7 +5,7 @@ import { NameValuePair } from "modules/portfolio/types";
 import { SearchSort } from "modules/common/search-sort";
 import { SquareDropdown } from "modules/common/selection";
 
-import Styles from "modules/portfolio/components/common/filter-box.styles.less";
+import Styles from "modules/portfolio/components/common/quad-box.styles.less";
 
 export interface QuadBoxProps {
   title: string;
@@ -55,20 +55,18 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
 );
 
 const QuadBox = (props: QuadBoxProps) => (
-  <div className={Styles.FilterBox}>
+  <div className={Styles.Quad}>
     <div className={Styles.HideOnMobile}>
       <BoxHeaderElement {...props} switchHeaders={false} />
     </div>
-    <div className={Styles.FilterBox__content}>
-      <div className={Styles.FilterBox__container}>
-        <div className={Styles.ShowOnMobile}>
-          <BoxHeaderElement
-            {...props}
-            switchHeaders={props.switchHeaders}
-          />
-        </div>
-        {(props.content) ? props.content : null}
+    <div>
+      <div className={Styles.ShowOnMobile}>
+        <BoxHeaderElement
+          {...props}
+          switchHeaders={props.switchHeaders}
+        />
       </div>
+      {(props.content) ? props.content : null}
     </div>
   </div>
 );

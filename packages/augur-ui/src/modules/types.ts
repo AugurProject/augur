@@ -1,8 +1,8 @@
 import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
-import { string } from "io-ts";
 import { AnyAction } from "redux";
+import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -87,14 +87,17 @@ export interface TransacitonStatus {
   };
 }
 export interface Universe {
-  id?: string;
+  id: string;
+  market?: MarketData | MarketInfo;
   forkEndTime?: number;
-  forkReputationGoal?: string;
+  forkReputationGoal?: BigNumber;
   forkingMarket?: string;
   isForking?: boolean;
+  reportableOutcomes?: any;
   isForkingMarketFinalized?: boolean;
+  winningChildUniverseId?: string;
   winningChildUniverse?: string;
-  openInterest?: BigNumber;
+  openInterest?: BigNumber | string;
   forkThreshold?: BigNumber;
 }
 export interface AccountShareBalances {
@@ -142,19 +145,20 @@ export interface FormattedNumberOptions {
   bigUnitPostfix?: boolean;
 }
 export interface ReportingWindowStats {
-  startTime: string | null;
-  endTime: string | null;
-  stake: string | null;
+  startTime?: string;
+  endTime?: string;
+  stake?: string;
   reportingFees: {
     unclaimedEth: FormattedNumber;
     unclaimedRep: FormattedNumber;
     unclaimedForkEth: FormattedNumber;
     unclaimedForkRepStaked: FormattedNumber;
+    unclaimedParticipationTokenEthFees: FormattedNumber;
+    participationTokenRepStaked: FormattedNumber;
     feeWindows: Array<string>;
     forkedMarket: string | null;
     nonforkedMarkets: Array<string>;
-    feeWindowEthFees: string;
-    feeWindowRepStaked: string;
+    gasCosts: string;
   };
 }
 export interface PendingQueue {

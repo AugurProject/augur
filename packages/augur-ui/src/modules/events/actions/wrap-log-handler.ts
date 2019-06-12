@@ -1,9 +1,11 @@
 import { defaultLogHandler } from "modules/events/actions/default-log-handler";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
 
-export const wrapLogHandler = (logHandler: Function = defaultLogHandler) => (
+export const wrapLogHandler = (
+  logHandler: any = defaultLogHandler
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => (err: any, log: any) => {

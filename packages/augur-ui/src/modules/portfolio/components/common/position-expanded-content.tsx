@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { LinearPropertyLabelMovement } from "modules/common/labels";
 import { Order } from "modules/portfolio/types";
 
-import Styles from "modules/portfolio/components/common/open-order-expanded-content.styles.less";
+import Styles from "modules/portfolio/components/common/expanded-content.styles.less";
 
 export interface PositionExpandedContentProps {
   position: Order;
@@ -16,11 +16,11 @@ const PositionExpandedContent = (props: PositionExpandedContentProps) => {
 
   return (
     <div
-      className={classNames(Styles.Position_infoContainer, {
+      className={classNames(Styles.PositionInfo, {
         [Styles.BottomBorder]: showExpandedToggle
       })}
     >
-      <div className={Styles.Position__info}>
+      <div>
         <LinearPropertyLabelMovement
           highlightFirst
           showPercent

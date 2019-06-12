@@ -1,11 +1,11 @@
 import { deleteTransactionsWithTransactionHash } from "modules/transactions/actions/update-transactions-data";
 import { constructTransaction } from "modules/transactions/actions/construct-transaction";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
 
 // TODO: when integrating with SDK need to use SDK's log types
-export const updateLoggedTransactions = (log: any) => (
+export const updateLoggedTransactions = (log: any): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -16,7 +16,7 @@ export const updateLoggedTransactions = (log: any) => (
   }
 };
 
-export const removeLogFromTransactions = (log: any) => (
+export const removeLogFromTransactions = (log: any): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -27,7 +27,7 @@ export const removeLogFromTransactions = (log: any) => (
   dispatch(deleteTransactionsWithTransactionHash(log.transactionHash));
 };
 
-export const addLogToTransactions = (log: any) => (
+export const addLogToTransactions = (log: any): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
