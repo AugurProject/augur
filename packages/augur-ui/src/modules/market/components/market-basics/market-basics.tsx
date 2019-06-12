@@ -20,7 +20,6 @@ import SingleSlicePieGraph from "modules/market/components/common/single-slice-p
 import TimeRemainingIndicatorWrapper from "modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
 import { constants } from "services/augurjs";
 import moment from "moment";
-import { compact } from "lodash";
 import { CategoryTagTrail } from "modules/common/labels";
 import { MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
@@ -70,13 +69,13 @@ const MarketBasics = ({
       : { pathname: makePath(MARKETS) };
 
   const process = (...arr) =>
-    compact(arr).map(label => ({
+    arr.filter(Boolean).map(label => ({
       label,
       onClick: toggleCategory(label, path, history)
     }));
 
   const categoriesWithClick = process(category);
-  const tagsWithClick = compact(tags).map(tag => ({
+  const tagsWithClick = tags.filter(Boolean).map(tag => ({
     label: tag,
     onClick: toggleTag(tag, path, history)
   }));
@@ -94,12 +93,8 @@ const MarketBasics = ({
         />
         {p.showDisputeRound && (
           <div className={Styles.RoundNumber}>
-            <span>
-              Dispute Round
-            </span>
-            <span>
-              {getValue(p, "disputeInfo.disputeRound")}
-            </span>
+            <span>Dispute Round</span>
+            <span>{getValue(p, "disputeInfo.disputeRound")}</span>
           </div>
         )}
         <ReportEndingIndicator />

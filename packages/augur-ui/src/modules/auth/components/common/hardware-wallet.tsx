@@ -11,7 +11,6 @@ import AddressPickerContent from "modules/auth/components/common/address-picker-
 import DerivationPathEditor from "modules/auth/components/common/derivation-path-editor";
 import { ERROR_TYPES } from "modules/common/constants";
 import { errorIcon } from "modules/common/icons";
-import { filter } from "lodash";
 import Styles from "modules/auth/components/common/hardware-wallet.styles";
 import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
 import StylesError from "modules/auth/components/common/error-container.styles";
@@ -229,7 +228,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
           }
 
           const walletAddressesWithBalances = sortAndfilterBalances
-            ? filter(walletAddresses, (item: { balance: string }) => item.balance !== "0").sort(
+            ? walletAddresses.filter((item: { balance: string }) => item.balance !== "0").sort(
                 HardwareWallet.sortBalanceDesc,
               )
             : walletAddresses;

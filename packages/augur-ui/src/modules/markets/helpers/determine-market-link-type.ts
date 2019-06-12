@@ -7,7 +7,7 @@ import {
   TYPE_CLAIM_PROCEEDS
 } from "modules/common/constants";
 import { constants } from "services/augurjs";
-import { isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 
 export const determineMarketLinkType = (market, loginAccount) => {
   if (isEmpty(market) || !loginAccount.address) return TYPE_VIEW;

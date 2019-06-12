@@ -1,7 +1,7 @@
 import parseQuery from "modules/routes/helpers/parse-query";
 import { createPath } from "history";
 import makeQuery from "modules/routes/helpers/make-query";
-import { isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import { WindowApp, Endpoints, QueryEndpoints } from "modules/types";
 
 export const editEndpointParams = (

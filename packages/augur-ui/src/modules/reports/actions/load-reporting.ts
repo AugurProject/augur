@@ -1,7 +1,6 @@
 import { augur, constants } from "services/augurjs";
 import logError from "utils/log-error";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-import { filter, head } from "lodash";
 import {
   updateDesignatedReportingMarkets,
   updateUpcomingDesignatedReportingMarkets,
@@ -11,11 +10,15 @@ import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { augurSdk } from "services/augursdk";
 
 export const loadReporting = (
   marketIdsParam: any,
   callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
   const { universe, loginAccount } = getState();
   const designatedReportingParams = {
     universe: universe.id,
@@ -53,75 +56,28 @@ export const loadReporting = (
     );
     return;
   }
-
-  let prePromise: any = null;
-  let designatedPromise: any = null;
+  const augur = augurSdk.get();
   if (loginAccount.address) {
-    prePromise = new Promise((resolve: Function) => {
-      augur.augurNode.submitRequest(
-        "getMarkets",
-        {
-          reportingState: constants.REPORTING_STATE.PRE_REPORTING,
-          sortBy: "endTime",
-          ...designatedReportingParams
-        },
-        (err: any, marketIds: Array<string>) => {
-          if (err) return resolve(err);
-          if (!marketIds || marketIds.length === 0 || !loginAccount.address) {
-            dispatch(updateUpcomingDesignatedReportingMarkets([]));
-            return resolve(null);
-          }
-          dispatch(updateUpcomingDesignatedReportingMarkets(marketIds));
-          resolve(null);
-        }
-      );
+    const preReportingIds = await augur.getMarkets({
+      reportingState: constants.REPORTING_STATE.PRE_REPORTING,
+      sortBy: "endTime",
+      ...designatedReportingParams
+    });
+    dispatch(updateUpcomingDesignatedReportingMarkets(preReportingIds));
+
+    const designatedIds = await augur.getMarkets({
+      reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
+      sortBy: "endTime",
+      ...designatedReportingParams
+    });
+    dispatch(updateDesignatedReportingMarkets(designatedIds));
+
+    const marketIds = await augur.getMarkets({
+      reportingState: constants.REPORTING_STATE.OPEN_REPORTING,
+      sortBy: "endTime",
+      universe: universe.id
     });
 
-    designatedPromise = new Promise((resolve: Function) => {
-      augur.augurNode.submitRequest(
-        "getMarkets",
-        {
-          reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
-          sortBy: "endTime",
-          ...designatedReportingParams
-        },
-        (err: any, marketIds: Array<string>) => {
-          if (err) return resolve(err);
-          if (!marketIds || marketIds.length === 0 || !loginAccount.address) {
-            dispatch(updateDesignatedReportingMarkets([]));
-            return resolve(null);
-          }
-          dispatch(updateDesignatedReportingMarkets(marketIds));
-          resolve(null);
-        }
-      );
-    });
+    dispatch(updateOpenMarkets(marketIds));
   }
-
-  const openPromise: any = new Promise((resolve: Function) => {
-    augur.augurNode.submitRequest(
-      "getMarkets",
-      {
-        reportingState: constants.REPORTING_STATE.OPEN_REPORTING,
-        sortBy: "endTime",
-        universe: universe.id
-      },
-      (err: any, marketIds: Array<string>) => {
-        if (err) return resolve(err);
-        if (!marketIds || marketIds.length === 0) {
-          dispatch(updateOpenMarkets([]));
-          return resolve(null);
-        }
-        dispatch(updateOpenMarkets(marketIds));
-        resolve(null);
-      }
-    );
-  });
-
-  Promise.all([openPromise, prePromise, designatedPromise]).then(
-    (errors: any) => {
-      const nonNullErrors = head(filter(errors, err => err !== null));
-      if (callback) callback(nonNullErrors);
-    }
-  );
 };

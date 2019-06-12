@@ -8,12 +8,12 @@ import { loadAlerts } from "modules/alerts/actions/alerts";
 import { loadUsershareBalances } from "modules/positions/actions/load-user-share-balances";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
 import { AppState } from "store";
 
-export const loadAccountHistory = () => (
+export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {

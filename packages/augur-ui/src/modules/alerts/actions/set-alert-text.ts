@@ -2,7 +2,7 @@
  * @todo Update text for FINALIZE once alert triggering is moved
  */
 import { augur } from "services/augurjs";
-import { isEmpty } from "lodash/fp";
+import { isEmpty } from "utils/is-populated";
 import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { getOutcomeName } from "utils/get-outcome";

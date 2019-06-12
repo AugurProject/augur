@@ -3,11 +3,13 @@ import logError from "utils/log-error";
 import { createBigNumber } from "utils/create-big-number";
 import { updateReportingWindowStats } from "modules/reports/actions/update-reporting-window-stats";
 import { NodeStyleCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
 
-export const loadReportingWindowBounds = (callback: NodeStyleCallback = logError) => (
+export const loadReportingWindowBounds = (
+  callback: NodeStyleCallback = logError
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {

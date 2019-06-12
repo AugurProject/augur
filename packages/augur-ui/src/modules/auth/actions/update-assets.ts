@@ -9,10 +9,10 @@ import {
   getRepBalance
 } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
-export function updateAssets(callback: NodeStyleCallback = logError) {
+export function updateAssets(callback: NodeStyleCallback = logError): ThunkAction<any, any, any, any> {
   return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
     const balances: LoginAccount = Object.assign(loginAccount, {

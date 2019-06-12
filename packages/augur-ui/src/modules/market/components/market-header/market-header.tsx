@@ -2,11 +2,7 @@ import { WordTrail } from "modules/common/labels";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import {
-  BackArrow,
-  ChevronDown,
-  ChevronUp
-} from "modules/common/icons";
+import { BackArrow, ChevronDown, ChevronUp } from "modules/common/icons";
 import MarkdownRenderer from "modules/common/markdown-renderer";
 import MarketHeaderBar from "modules/market/containers/market-header-bar";
 import { BigNumber } from "bignumber.js";
@@ -16,7 +12,6 @@ import ChevronFlip from "modules/common/chevron-flip";
 import { MarketTypeLabel } from "modules/common/labels";
 import { MarketHeaderCollapsed } from "modules/market/components/market-header/market-header-collapsed";
 import makeQuery from "modules/routes/helpers/make-query";
-import { compact } from "lodash";
 import {
   CATEGORY_PARAM_NAME,
   TAGS_PARAM_NAME,
@@ -139,7 +134,7 @@ export default class MarketHeader extends Component {
     }
 
     const process = (...arr) =>
-      compact(arr).map(label => ({
+      arr.filter(Boolean).map(label => ({
         label,
         onClick: () => {
           this.gotoFilter("category", label);
@@ -147,7 +142,7 @@ export default class MarketHeader extends Component {
       }));
 
     const categoriesWithClick = process(market.category);
-    const tagsWithClick = compact(market.tags).map(tag => ({
+    const tagsWithClick = market.tags.filter(Boolean).map(tag => ({
       label: tag,
       onClick: () => {
         this.gotoFilter("tag", tag);
@@ -207,9 +202,7 @@ export default class MarketHeader extends Component {
                 [Styles.Collapsed]: headerCollapsed
               })}
             >
-              <h1>
-                {description}
-              </h1>
+              <h1>{description}</h1>
               <div className={Styles.Details}>
                 <h4>Resolution Source</h4>
                 <span>{resolutionSource}</span>
@@ -221,27 +214,24 @@ export default class MarketHeader extends Component {
                     ref={detailsContainer => {
                       this.detailsContainer = detailsContainer;
                     }}
-                    className={classNames(
-                      Styles.AdditionalDetails,
-                      {
-                        [Styles.Tall]: detailsTooLong && this.state.showReadMore
-                      }
-                    )}
+                    className={classNames(Styles.AdditionalDetails, {
+                      [Styles.Tall]: detailsTooLong && this.state.showReadMore
+                    })}
                   >
                     <MarkdownRenderer text={details} hideLabel />
                   </label>
 
                   {detailsTooLong && (
                     <button
-                      className={classNames({[Styles.Less]: this.state.showReadMore})}
+                      className={classNames({
+                        [Styles.Less]: this.state.showReadMore
+                      })}
                       onClick={this.toggleReadMore}
                     >
                       {!this.state.showReadMore
                         ? ChevronDown({ stroke: "#FFFFFF" })
                         : ChevronUp()}
-                      <span>
-                        {!this.state.showReadMore ? "More" : "Less"}
-                      </span>
+                      <span>{!this.state.showReadMore ? "More" : "Less"}</span>
                     </button>
                   )}
                 </div>
@@ -280,7 +270,9 @@ export default class MarketHeader extends Component {
             [Styles.Collapsed]: headerCollapsed
           })}
         >
-          <button onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}>
+          <button
+            onClick={() => this.setState({ headerCollapsed: !headerCollapsed })}
+          >
             <ChevronFlip
               stroke="#999999"
               quick

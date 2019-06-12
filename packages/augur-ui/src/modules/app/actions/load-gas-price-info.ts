@@ -9,14 +9,14 @@ import {
 } from "modules/contracts/actions/contractCalls";
 import { AppState } from "store";
 import { NodeStyleCallback, DataCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
 const MAINNET_ID = "1";
 
-export function loadGasPriceInfo(callback: NodeStyleCallback = logError) {
+export function loadGasPriceInfo(callback: NodeStyleCallback = logError): ThunkAction<any, any, any, any> {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount, blockchain } = getState();
     if (!loginAccount.address) return callback(null);
