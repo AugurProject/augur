@@ -1,25 +1,25 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import ConnectDropdown from "modules/auth/components/connect-dropdown/connect-dropdown";
-import { loginWithMetaMask } from "modules/auth/actions/login-with-metamask";
+import { loginWithInjectedWeb3 } from "modules/auth/actions/login-with-injected-web3";
 import { logout } from "modules/auth/actions/logout";
 import { showEdgeLogin } from "modules/auth/actions/show-edge-login";
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isMobile: state.appStatus.isMobile,
   isLogged: state.authStatus.isLogged,
   edgeLoading: state.authStatus.edgeLoading,
 });
 
 const mapDispatchToProps = (dispatch, { history }) => ({
-  connectMetaMask: cb => dispatch(loginWithMetaMask(cb)),
+  connectMetaMask: (cb) => dispatch(loginWithInjectedWeb3(cb)),
   logout: () => dispatch(logout()),
-  edgeLoginLink: history => dispatch(showEdgeLogin(history))
+  edgeLoginLink: (history) => dispatch(showEdgeLogin(history)),
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(ConnectDropdown)
+    mapDispatchToProps,
+  )(ConnectDropdown),
 );
