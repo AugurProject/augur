@@ -6,11 +6,5 @@
   "extends": [
     "gts/tslint.json"
   ],
-  "linterOptions": {
-    "exclude": [
-      "**/*.json",
-      "packages/augur-core/source/libraries/GenericContractInterfaces.ts"
-    ]
-  },
   "rules": {}
 }
