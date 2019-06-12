@@ -58,7 +58,7 @@ const AccountView = (props: AccountViewProps) => (
           </ModuleTabs>
         ) : (
           <section className={Styles.AccountView}>
-            <div className={Styles.AccountView__container}>
+            <div>
               <Media query={TABLET}>
                 {(matches) =>
                   matches && (
