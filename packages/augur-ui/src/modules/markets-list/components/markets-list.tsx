@@ -5,7 +5,6 @@ import MarketPreview from "modules/market/containers/market-preview";
 import Paginator from "modules/common/paginator_v1";
 import NullStateMessage from "modules/common/null-state-message";
 import { TYPE_TRADE } from "modules/common/constants";
-import isEqual from "lodash/isEqual";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
 import debounce from "utils/debounce";
 import { MarketData } from "modules/types";
@@ -40,7 +39,10 @@ interface MarketsListState {
   showPagination: boolean;
 }
 
-export default class MarketsList extends Component<MarketsListProps, MarketsListState> {
+export default class MarketsList extends Component<
+  MarketsListProps,
+  MarketsListState
+> {
   static defaultProps = {
     testid: null,
     linkType: TYPE_TRADE,
@@ -51,7 +53,7 @@ export default class MarketsList extends Component<MarketsListProps, MarketsList
     style: null,
     showDisputingCard: false,
     outcomes: null,
-    showOutstandingReturns: false,
+    showOutstandingReturns: false
   };
 
   constructor(props) {
@@ -62,7 +64,7 @@ export default class MarketsList extends Component<MarketsListProps, MarketsList
       boundedLength: 10,
       marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
       showPagination:
-        props.filteredMarkets && props.filteredMarkets.length > PAGINATION_COUNT,
+        props.filteredMarkets && props.filteredMarkets.length > PAGINATION_COUNT
     };
 
     this.setSegment = this.setSegment.bind(this);
@@ -86,16 +88,20 @@ export default class MarketsList extends Component<MarketsListProps, MarketsList
     if (
       lowerBound !== nextState.lowerBound ||
       boundedLength !== nextState.boundedLength ||
-      !isEqual(filteredMarkets, nextProps.filteredMarkets)
+      JSON.stringify(filteredMarkets) !==
+        JSON.stringify(nextProps.filteredMarkets)
     ) {
       this.setMarketIDsMissingInfo(
         nextProps.filteredMarkets,
         nextState.lowerBound,
-        nextState.boundedLength,
+        nextState.boundedLength
       );
     }
 
-    if (!isEqual(marketIdsMissingInfo, nextState.marketIdsMissingInfo)) {
+    if (
+      JSON.stringify(marketIdsMissingInfo) !==
+      JSON.stringify(nextState.marketIdsMissingInfo)
+    ) {
       if (loadMarketsInfoIfNotLoaded) {
         this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo);
       }
@@ -111,7 +117,7 @@ export default class MarketsList extends Component<MarketsListProps, MarketsList
       const marketIdLength = boundedLength + (lowerBound - 1);
       const marketIdsMissingInfo = filteredMarkets.slice(
         lowerBound - 1,
-        marketIdLength,
+        marketIdLength
       );
       const showPagination = filteredMarkets.length > PAGINATION_COUNT;
       this.setState({ marketIdsMissingInfo, showPagination });
@@ -143,7 +149,7 @@ export default class MarketsList extends Component<MarketsListProps, MarketsList
       showDisputingCard,
       outcomes,
       linkType,
-      showOutstandingReturns,
+      showOutstandingReturns
     } = this.props;
     const s = this.state;
 
@@ -154,7 +160,9 @@ export default class MarketsList extends Component<MarketsListProps, MarketsList
         {marketsLength && s.boundedLength ? (
           [...Array(s.boundedLength)].map((unused, i) => {
             const id = filteredMarkets[s.lowerBound - 1 + i];
-            const market = markets.find((market: MarketData) => market.id === id);
+            const market = markets.find(
+              (market: MarketData) => market.id === id
+            );
 
             if (market && market.id) {
               if (showDisputingCard) {
@@ -196,17 +204,16 @@ export default class MarketsList extends Component<MarketsListProps, MarketsList
             message={nullMessage}
           />
         )}
-        {!!marketsLength &&
-          s.showPagination && (
-            <Paginator
-              itemsLength={marketsLength}
-              itemsPerPage={PAGINATION_COUNT}
-              location={location}
-              history={history}
-              setSegment={this.setSegment}
-              pageParam={paginationPageParam}
-            />
-          )}
+        {!!marketsLength && s.showPagination && (
+          <Paginator
+            itemsLength={marketsLength}
+            itemsPerPage={PAGINATION_COUNT}
+            location={location}
+            history={history}
+            setSegment={this.setSegment}
+            pageParam={paginationPageParam}
+          />
+        )}
       </article>
     );
   }

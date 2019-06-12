@@ -5,10 +5,11 @@ import CustomPropTypes from "utils/custom-prop-types";
 import Highcharts from "highcharts/highstock";
 import NoDataToDisplay from "highcharts/modules/no-data-to-display";
 import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/candlestick.styles";
-import { each, isEqual, cloneDeep } from "lodash";
 import { PERIOD_RANGES, ETH } from "modules/common/constants";
 
 NoDataToDisplay(Highcharts);
+
+const jsonDeepCopy = (src) => JSON.parse(JSON.stringify(src));
 
 const HighConfig = {
   ShowNavigator: 350,
@@ -192,11 +193,18 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component {
   }
 
   componentWillUpdate(nextProps) {
+    const {
+      priceTimeSeries,
+      selectedPeriod,
+      volumeType,
+      containerHeight
+    } = this.props;
     if (
-      !isEqual(this.props.priceTimeSeries, nextProps.priceTimeSeries) ||
-      !isEqual(this.props.selectedPeriod, nextProps.selectedPeriod) ||
-      !isEqual(this.props.volumeType, nextProps.volumeType) ||
-      !isEqual(this.props.containerHeight, nextProps.containerHeight)
+      JSON.stringify(priceTimeSeries) !==
+        JSON.stringify(nextProps.priceTimeSeries) ||
+      selectedPeriod !== nextProps.selectedPeriod ||
+      volumeType !== nextProps.volumeType ||
+      containerHeight !== nextProps.containerHeight
     ) {
       this.buidOptions(
         nextProps.priceTimeSeries,
@@ -293,7 +301,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component {
     ];
     const ohlc = [];
     const volume = [];
-    each(priceTimeSeries, item => {
+    priceTimeSeries.forEach(item => {
       const { period } = item;
       ohlc.push([period, item.open, item.high, item.low, item.close]);
       volume.push([
@@ -353,7 +361,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component {
       ]
     });
 
-    const updatedObjects = cloneDeep(newOptions);
+    const updatedObjects = jsonDeepCopy(newOptions);
     this.setState({ options: updatedObjects });
     if (this.chart) {
       this.chart.update(updatedObjects);

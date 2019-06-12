@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import isPopulated from "utils/is-populated";
+import { isPopulated } from "utils/is-populated";
 
 import Styles from "modules/common/null-state-message.styles";
 interface NullStateProps {

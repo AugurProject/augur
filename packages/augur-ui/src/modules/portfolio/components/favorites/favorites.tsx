@@ -64,7 +64,7 @@ export default class Favorites extends Component<FavoritesProps> {
     } = this.props;
 
     return (
-      <div className={Styles.Quads__multiRightContent}>
+      <div className={Styles.MultiColumn}>
         <MarketProgress
           reportingState={market.reportingState}
           currentTime={currentAugurTimestamp}

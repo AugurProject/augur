@@ -13,7 +13,6 @@ import toggleTag from "modules/routes/helpers/toggle-tag";
 import toggleCategory from "modules/routes/helpers/toggle-category";
 import classNames from "classnames";
 
-import { compact } from "lodash";
 import { CategoryTagTrail } from "modules/common/labels";
 import { MarketData } from "modules/types";
 
@@ -43,15 +42,15 @@ const DisputeMarketCard = ({
   const showForkTop = potentialFork || isForkingMarket;
 
   const process = (...arr) =>
-    compact(arr).map((label) => ({
+    arr.filter(Boolean).map(label => ({
       label,
-      onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history),
+      onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history)
     }));
 
   const categoriesWithClick = process(market.category);
-  const tagsWithClick = compact(market.tags).map((tag) => ({
+  const tagsWithClick = market.tags.filter(Boolean).map(tag => ({
     label: tag,
-    onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history),
+    onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history)
   }));
 
   return (
@@ -97,9 +96,7 @@ const DisputeMarketCard = ({
           </div>
         </div>
         <h1 className={CommonStyles.MarketCommon__description}>
-          <MarketLink id={market.id}>
-            {market.description}
-          </MarketLink>
+          <MarketLink id={market.id}>{market.description}</MarketLink>
         </h1>
         {isForkingMarket && <ForkMigrationTotals />}
         {!isForkingMarket && (

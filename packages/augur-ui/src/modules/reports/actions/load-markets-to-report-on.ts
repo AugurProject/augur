@@ -1,5 +1,4 @@
 import { parallel } from "async";
-import { augur } from "services/augurjs";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 import { updateMarketsWithAccountReportData } from "modules/reports/actions/update-markets-with-account-report-data";
 import logError from "utils/log-error";
@@ -7,11 +6,15 @@ import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { augurSdk } from "services/augursdk";
 
 export const loadMarketsToReportOn = (
   options: any,
   callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
   const { env, universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
   if (!loginAccount.rep || loginAccount.rep === "0") return callback(null);
@@ -29,21 +32,17 @@ export const loadMarketsToReportOn = (
   };
   const openReportingQuery = { ...query, reportingState: "OPEN_REPORTING" };
   const reportingQuery = { ...query, reportingState: "CROWDSOURCING_DISPUTE" };
+  const augur = augurSdk.get();
 
-  parallel(
-    {
-      designatedReporting: next =>
-        augur.markets.getMarkets(designatedReportingQuery, next),
-      openReporting: next => augur.markets.getMarkets(openReportingQuery, next),
-      reporting: next => augur.markets.getMarkets(reportingQuery, next)
-    },
-    (err, marketsToReportOn) => {
-      // marketsToReportOn: {designatedReporting: [marketIds], allReporting: [marketIds], limitedReporting: [marketIds]}
-      if (err) return callback(err);
-      // TODO we have market IDs *only*, so we need to check if the market's data is already loaded (and call loadMarketsData if not)
-      dispatch(updateMarketsData(marketsToReportOn));
-      dispatch(updateMarketsWithAccountReportData(marketsToReportOn));
-      callback(null, marketsToReportOn);
-    }
-  );
+  // TODO: refactor to combine all 3 reporting states into one call to get markets,
+  // not sure how the result is shaped currently
+  const marketsTypes = {
+    designatedReporting: await augur.getMarkets(designatedReportingQuery),
+    openReporting: await augur.getMarkets(openReportingQuery),
+    reporting: await augur.getMarkets(reportingQuery)
+  };
+
+  dispatch(updateMarketsData(marketsTypes));
+  dispatch(updateMarketsWithAccountReportData(marketsTypes));
+  callback(null, marketsTypes);
 };

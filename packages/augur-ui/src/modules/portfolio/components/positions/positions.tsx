@@ -87,7 +87,7 @@ export default class Positions extends Component<PositionsProps, PositionsState>
     return showCurrentValue ? (
       market.myPositionsSummary.currentValue.formatted
     ) : (
-      <div className={Styles.Quad__column}>
+      <div className={Styles.Column}>
         <span>{market.myPositionsSummary.totalReturns.formatted}</span>
         <MovementLabel
           showPercent

@@ -11,7 +11,7 @@ import { SMALL_MOBILE, LARGE_DESKTOP } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/portfolio-view/portfolio-view.styles.less";
 
-const PortfolioPage = () => (
+const PortfolioView = () => (
   <div>
     <Media query={SMALL_MOBILE}>
       {(matches) =>
@@ -66,4 +66,4 @@ const PortfolioPage = () => (
   </div>
 );
 
-export default PortfolioPage;
+export default PortfolioView;

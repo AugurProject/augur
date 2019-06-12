@@ -1,6 +1,6 @@
 import memoize from "memoizee";
 
-import { has } from "lodash";
+import has from "utils/has";
 
 export default function(marketId, outcome, orderTypeLabel, orderBooks) {
   return getOrderBook(marketId, outcome, orderTypeLabel, orderBooks);

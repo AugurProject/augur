@@ -15,8 +15,7 @@ import {
   ZERO
 } from "modules/common/constants";
 
-import { has } from "lodash";
-
+import has from "utils/has";
 import { formatShares, formatEther } from "utils/format-number";
 
 /**

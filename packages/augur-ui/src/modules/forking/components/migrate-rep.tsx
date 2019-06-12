@@ -9,7 +9,7 @@ import NullStateMessage from "modules/common/null-state-message";
 import MigrateRepForm from "modules/forking/components/migrate-rep-form";
 import MigrateRepConfirm from "modules/forking/components/migrate-rep-confirm";
 import { TYPE_VIEW } from "modules/common/constants";
-import { isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import FormStyles from "modules/common/form-styles.less";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles.less";
 import { MarketData } from "modules/types";

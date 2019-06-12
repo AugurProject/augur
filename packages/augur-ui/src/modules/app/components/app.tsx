@@ -10,7 +10,6 @@ import shouldComponentUpdatePure from "utils/should-component-update-pure";
 import isWindows from "utils/is-windows";
 
 import { tween } from "shifty";
-import { isEqual } from "lodash";
 
 import Modal from "modules/modal/containers/modal-view";
 import TopBar from "modules/app/containers/top-bar";
@@ -270,12 +269,11 @@ export default class AppView extends Component<AppProps, AppState> {
     if (isMobile !== nextProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
-
-    if (!isEqual(universe.isForking, nextProps.universe.isForking)) {
+    if (universe.isForking !== nextProps.universe.isForking) {
       this.sideNavMenuData[1].disabled = nextProps.universe.isForking;
     }
 
-    if (!isEqual(location, nextProps.location)) {
+    if (location !== nextProps.location) {
       const lastBasePath = parsePath(location.pathname)[0];
       const nextBasePath = parsePath(nextProps.location.pathname)[0];
 

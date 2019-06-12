@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import * as speedomatic from "speedomatic";
-import { uniq, isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import { formatNumber, cutOffDecimal } from "utils/format-number";
 import {
   YES_NO,
@@ -333,7 +333,7 @@ export default class CreateMarketOutcome extends Component {
       x => !isEmpty(x)
     ).length;
     const isUnique =
-      uniq(Object.values(cleanedOutcomes).filter(x => !isEmpty(x))).length ===
+      [...new Set(Object.values(cleanedOutcomes).filter(x => !isEmpty(x)))].length ===
       cleanedOutcomesLen;
 
     switch (true) {

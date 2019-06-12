@@ -33,7 +33,7 @@ export const showEdgeLogin = (history: any) => (
       hideKeys: true,
       vendorName: "Augur",
       vendorImageUrl:
-        "https://airbitz.co/go/wp-content/uploads/2016/08/augur_logo_100.png"
+        "https://airbitz.co/go/wp-content/uploads/2016/08/"
     }).then((edgeContext: any) => {
       dispatch(updateAuthStatus(EDGE_LOADING, false));
       dispatch(updateAuthStatus(EDGE_CONTEXT, edgeContext));

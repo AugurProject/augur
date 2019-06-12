@@ -5,6 +5,7 @@ import {WebWorkerConnector} from "@augurproject/sdk";
 import {EthersProvider} from "@augurproject/ethersjs-provider";
 import {JsonRpcProvider} from "ethers/providers";
 import {Addresses} from "@augurproject/artifacts";
+import { listenToUpdates } from "modules/events/actions/listen-to-updates";
 
 export class SDK {
   public sdk: Augur<Provider> | null = null;
@@ -32,12 +33,32 @@ export class SDK {
       new WebWorkerConnector()
     );
 
+    this.wireUpEvents();
+
     // This is temporary to get SOME diagnostic info out there....
     ethersProvider.on("block", ((sdk) => () => {
       sdk.getSyncData().then((syncData) => console.table({0: syncData}));
     })(this.sdk));
 
     this.sdk.connect("http://localhost:8545", account);
+  }
+
+  public async destroy() {
+    this.unwireEvents();
+    if(this.sdk) this.sdk.disconnect();
+    this.sdk = null;
+  }
+
+  private async wireUpEvents() {
+    const events = listenToUpdates();
+    Object.keys(events).map(e => {
+      if (this.sdk) this.sdk.on(e, events[e]);
+    })
+  }
+
+  private async unwireEvents() {
+    // TODO: have sdk unwire events on disconnect
+    console.log("unwiring up sdk events");
   }
 
   public get(): Augur<Provider> {
@@ -49,3 +70,6 @@ export class SDK {
 }
 
 export const augurSdk = new SDK();
+
+
+

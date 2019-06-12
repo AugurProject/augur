@@ -46,7 +46,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
           />
         }
         toggleContent={
-          <div className={Styles.OpenMarkets__expandedContent}>
+          <div className={Styles.ExpandedContent}>
             {marketsObj[market.id].userPositions.map((position: any) => (
               <div key={position.outcomeId}>
                 <span>{position.outcomeName}</span>
@@ -79,7 +79,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
         filterComp={filterComp}
         noBackgroundBottom
         bottomBarContent={
-          <div className={Styles.OpenMarkets__bottomBar}>
+          <div className={Styles.BottomBar}>
             <div>
               <span>24hr</span>
               <MovementLabel
