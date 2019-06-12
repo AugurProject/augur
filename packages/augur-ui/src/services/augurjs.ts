@@ -4,24 +4,7 @@ import { augurSdk } from "services/augursdk";
 import { JsonRpcProvider, Web3Provider } from "ethers/providers";
 import { LoginAccount, NodeStyleCallback, Connection, EnvObject } from "modules/types";
 import { windowRef } from "utils/window-ref";
-
-// Access a User’s MetaMask/Dapper Account
-async function initInjectedWeb3() {
-  if (typeof window.ethereum === "undefined") {
-    // Handle case where user hasn't installed MetaMask/Dapper.
-    return false;
-  }
-  try {
-    // If a user is logged in to MetaMask/Dapper and has previously approved the dapp,
-    // `ethereum.enable` will return the result of `eth_accounts`.
-    const accounts = await window.ethereum.enable();
-    return accounts;
-  } catch (error) {
-    // Handle error. If the user rejects the request for access, then
-    // `ethereum.enable` will throw an error.
-    return false;
-  }
-}
+import getInjectedWeb3Accounts from "utils/get-injected-web3-accounts";
 
 export const connect = async (env: EnvObject, loginAccount: LoginAccount, callback: NodeStyleCallback = logError) => {
   const connectOptions = {
@@ -47,7 +30,7 @@ export const connect = async (env: EnvObject, loginAccount: LoginAccount, callba
     );
   };
 
-  const injectedAccount = await initInjectedWeb3();
+  const injectedAccount = await getInjectedWeb3Accounts();
   const loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
 
   // Use injected provider if returning User has a unlocked injected account that matches the current logged in account
