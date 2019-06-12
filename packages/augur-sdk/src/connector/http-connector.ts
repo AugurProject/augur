@@ -16,7 +16,7 @@ export class HTTPConnector extends Connector {
     return Promise.resolve();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>) {
+  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
       return <R>(await (await fetch(this.endpoint, {
         method: "POST",
