@@ -26,7 +26,7 @@ import ModulePane from "modules/market/components/common/module-tabs/module-pane
 import MarketOutcomeSelector from "modules/market/components/market-view/market-outcome-selector";
 import MarketOutcomesChart from "modules/market-charts/containers/market-outcomes-chart";
 import { getMarketAgeInDays } from "utils/format-date";
-import Styles from "modules/market/components/market-view/market-view.styles";
+import Styles from "modules/market/components/market-view/market-view.styles.less";
 import { LeftChevron } from "modules/common/icons";
 import { TEMP_TABLET } from "modules/common/constants";
 
@@ -67,7 +67,7 @@ export default class MarketView extends Component {
       extendOrderBook: false,
       extendTradeHistory: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
-      selectedOutcome: props.marketType === CATEGORICAL ? "0" : "1",
+      selectedOutcome: 0,
       fixedPrecision: 4,
       selectedOutcomeProperties: {
         1: {

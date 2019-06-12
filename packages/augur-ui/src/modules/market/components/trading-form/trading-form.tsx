@@ -7,16 +7,17 @@ import makePath from "modules/routes/helpers/make-path";
 import Styles from "modules/market/components/trading-form/trading-form.styles";
 
 import { PrimaryButton } from "modules/common/buttons";
+import { MarketData } from "modules/types";
 
 interface TradingFormProps {
   availableFunds: Object;
   isLogged: Boolean;
   isConnectionTrayOpen: Boolean;
-  market: Object;
+  market: MarketData;
   marketReviewTradeSeen: Boolean;
   marketReviewTradeModal: Function;
   selectedOrderProperties: Object;
-  selectedOutcome: String;
+  selectedOutcome: number;
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
   gasPrice: Number;
@@ -29,35 +30,33 @@ interface TradingFormProps {
 
 interface TradingFormState {
   showForm: Boolean;
-  selectedOutcome: Number;
+  selectedOutcome: number;
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcome: null
+    selectedOutcome: 0
   };
 
   state: TradingFormState = {
     showForm: false,
     selectedOutcome:
-      this.props.selectedOutcome !== null && this.props.market.outcomes
+      this.props.market.outcomes
         ? this.props.market.outcomes.find(
             outcome => outcome.id === this.props.selectedOutcome
           )
-        : null
+        : 0
   };
 
   componentWillReceiveProps(nextProps: TradingFormProps) {
-    const { market, selectedOutcome } = this.props;
+    const { selectedOutcome } = this.props;
+    const { market } = nextProps;
     if (
-      (selectedOutcome !== nextProps.selectedOutcome ||
-        JSON.stringify(market.outcomes) !==
-          JSON.stringify(nextProps.market.outcomes)) &&
-      (nextProps.market && nextProps.market.outcomes)
+      (selectedOutcome !== nextProps.selectedOutcome)
     ) {
       if (nextProps.selectedOutcome !== null) {
         this.setState({
-          selectedOutcome: nextProps.market.outcomes.find(
+          selectedOutcome: market.outcomes.find(
             outcome => outcome.id === nextProps.selectedOutcome
           )
         });

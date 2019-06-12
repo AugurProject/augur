@@ -2,7 +2,7 @@ import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
-import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketInfo, MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -57,24 +57,13 @@ export interface CoreStats {
 export interface MarketsData {
   [marketId: string]: MarketData;
 }
-export interface Outcomes {
-  id: string;
-  description?: string;
+export interface Outcomes extends MarketInfoOutcome {
   name?: string;
 }
-export interface MarketData {
-  id: string;
-  description: string;
-  maxPrice: BigNumber;
-  minPrice: BigNumber;
-  numTicks: number;
-  marketType: string;
-  outcomes: Array<Outcomes>;
-  scalarDenomination: string;
-  universe: string;
-  tickSize: BigNumber;
-  // TODO: this should come from SDK types
-}
+export interface MarketData extends MarketInfo {
+
+};
+
 export interface OutcomesData {
   [marketId: string]: {
     [outcomeId: string]: MarketData;
@@ -88,7 +77,7 @@ export interface TransacitonStatus {
 }
 export interface Universe {
   id: string;
-  market?: MarketData | MarketInfo;
+  market?: MarketData;
   forkEndTime?: number;
   forkReputationGoal?: BigNumber;
   forkingMarket?: string;
