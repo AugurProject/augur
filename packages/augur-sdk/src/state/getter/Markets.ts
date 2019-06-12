@@ -48,7 +48,7 @@ export const SECONDS_IN_A_DAY = 86400;
 export interface MarketInfoOutcome {
   id: number;
   price: string;
-  description: string | null;
+  description: string;
 }
 
 export enum MarketInfoReportingState {
