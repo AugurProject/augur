@@ -49,7 +49,7 @@ export default class Overview extends React.Component<
         content={
           <div className={Styles.AccountOverview}>
             <Funds />
-            <div className={Styles.AccountOverview__pillSelector}>
+            <div className={Styles.PillSelector}>
               <PillSelection
                 options={TIMEFRAME_OPTIONS}
                 defaultSelection={TIMEFRAME_OPTIONS[3].id}
