@@ -1,5 +1,5 @@
 import { HTTPConnector } from "./http-connector";
-import { Markets } from "../state/getter/Markets"
+import { Markets } from "../state/getter/Markets";
 
 jest.mock("cross-fetch", () => {
   return {

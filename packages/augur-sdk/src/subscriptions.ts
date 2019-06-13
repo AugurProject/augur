@@ -10,7 +10,7 @@ export class Subscriptions extends EventEmitter {
     this.setMaxListeners(0); // Subscriptions all need to listen to removeAllListeners for the global teardown
   }
 
-  public subscribe(eventName: string, publish: (data: {}) => void): string {
+  public subscribe(eventName: string, publish: (...args: Array<any>) => void): string {
     return this.subscribeToEvent(eventName, publish);
   }
 
@@ -23,12 +23,13 @@ export class Subscriptions extends EventEmitter {
     return eventName ? super.removeAllListeners(eventName) : super.removeAllListeners();
   }
 
-  private subscribeToEvent(eventName: string, publish: (data: {}) => void): string {
+  private subscribeToEvent(eventName: string, publish: (...args: Array<any>) => void): string {
     const subscription: string = uuidv4();
 
-    const handler = (data: {}): void => {
-      this.emit(eventName, data);
+    const handler = (...args: Array<any>): void => {
+      this.emit(eventName, ...args);
     };
+
     this.parentEmitter.on(eventName, handler);
 
     this.on(eventName, publish)
