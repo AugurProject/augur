@@ -1,7 +1,7 @@
 from eth_tester.exceptions import TransactionFailed
 from utils import captureFilteredLogs, AssertLog, nullAddress
 from pytest import raises
-from reporting_utils import proceedToNextRound
+from reporting_utils import proceedToNextRound, proceedToFork
 
 def test_crowdsourcer_transfer(contractsFixture, market, universe):
     proceedToNextRound(contractsFixture, market)
@@ -53,3 +53,9 @@ def test_malicious_shady_parties(contractsFixture, universe):
 
     maliciousMarketHaver.setMarket(nullAddress)
     assert not universe.isContainerForReportingParticipant(maliciousMarketHaver.address)
+
+def test_universe_fork_goal_freeze(contractsFixture, universe, market):
+    proceedToFork(contractsFixture, market, universe)
+
+    with raises(TransactionFailed):
+        universe.updateForkValues()
