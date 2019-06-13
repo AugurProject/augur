@@ -14,8 +14,6 @@ import MarketLiquidity from "modules/market/components/market-liquidity/market-l
 
 const mapStateToProps = (state, ownProps) => ({
   isLogged: state.authStatus.isLogged,
-  isMobile: state.appStatus.isMobile,
-  isMobileSmall: state.appStatus.isMobileSmall,
   availableEth: getValue(state, "loginAccount.eth") || "0",
   loginAccount: state.loginAccount,
   gasPrice: getGasPrice(state)
