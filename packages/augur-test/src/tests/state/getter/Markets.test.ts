@@ -860,7 +860,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "needsMigration": false,
         "numOutcomes": 3,
         "numTicks": "100",
-        "openInterest": "1500000000000000",
+        "openInterest": "0.0015",
         "outcomes": [
           {
             "description": "Invalid",
@@ -883,7 +883,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "scalarDenomination": null,
         "tickSize": "0.01",
         "universe": john.augur.contracts.universe.address,
-        "volume": "1000000000000000",
+        "volume": "0.001",
       },
       {
         "author": john.account,
@@ -902,7 +902,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "needsMigration": false,
         "numOutcomes": 4,
         "numTicks": "100",
-        "openInterest": "1500000000000000",
+        "openInterest": "0.0015",
         "outcomes": [
           {
             "description": "Invalid",
@@ -930,7 +930,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "scalarDenomination": null,
         "tickSize": "0.01",
         "universe": john.augur.contracts.universe.address,
-        "volume": "610000000000000",
+        "volume": "0.00061",
       },
       {
         "author": john.account,
@@ -945,7 +945,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "needsMigration": true,
         "numOutcomes": 3,
         "numTicks": "20000",
-        "openInterest": "300000000000000000",
+        "openInterest": "0.3",
         "scalarDenomination": "scalar denom 1",
         "outcomes": [
           {
@@ -968,7 +968,7 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "resolutionSource": null,
         "tickSize": "0.01",
         "universe": john.augur.contracts.universe.address,
-        "volume": "100110000000000000",
+        "volume": "0.10011",
       },
     ]
   );

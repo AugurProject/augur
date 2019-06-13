@@ -13,7 +13,7 @@ import {
   ORDER_EVENT_OUTCOME
 } from "../logs/types";
 import { SortLimit } from "./types";
-import { Augur, numTicksToTickSize, QUINTILLION, convertOnChainAmountToDisplayAmount } from "../../index";
+import { Augur, numTicksToTickSize, QUINTILLION } from "../../index";
 import { toAscii } from "../utils/utils";
 
 import * as _ from "lodash";
@@ -383,7 +383,7 @@ export class Markets {
         author: marketCreatedLog.marketCreator,
         creationBlock: marketCreatedLog.blockNumber,
         category: Buffer.from(marketCreatedLog.topic.replace("0x", ""), "hex").toString(),
-        volume: (marketVolumeChangedLogs.length > 0) ? new BigNumber(marketVolumeChangedLogs[0].volume).toString() : "0",
+        volume: (marketVolumeChangedLogs.length > 0) ? new BigNumber(marketVolumeChangedLogs[0].volume).dividedBy(QUINTILLION).toString() : "0",
         openInterest: await getMarketOpenInterest(db, marketCreatedLog),
         reportingState,
         needsMigration,
@@ -441,18 +441,18 @@ async function getMarketOpenInterest(db: DB, marketCreatedLog: MarketCreatedLog)
   const completeSetsSoldLogs = (await db.findCompleteSetsSoldLogs({ selector: { market: marketCreatedLog.market } })).reverse();
   if (completeSetsPurchasedLogs.length > 0 && completeSetsSoldLogs.length > 0) {
     if (completeSetsPurchasedLogs[0].blockNumber > completeSetsSoldLogs[0].blockNumber) {
-      return new BigNumber(completeSetsPurchasedLogs[0].marketOI).toString();
+      return new BigNumber(completeSetsPurchasedLogs[0].marketOI).dividedBy(QUINTILLION).toString();
     } else if (completeSetsSoldLogs[0].blockNumber > completeSetsPurchasedLogs[0].blockNumber) {
-      return new BigNumber(completeSetsSoldLogs[0].marketOI).toString();
+      return new BigNumber(completeSetsSoldLogs[0].marketOI).dividedBy(QUINTILLION).toString();
     } else if (completeSetsPurchasedLogs[0].transactionIndex > completeSetsSoldLogs[0].transactionIndex) {
-      return new BigNumber(completeSetsPurchasedLogs[0].marketOI).toString();
+      return new BigNumber(completeSetsPurchasedLogs[0].marketOI).dividedBy(QUINTILLION).toString();
     } else {
-      return new BigNumber(completeSetsSoldLogs[0].marketOI).toString();
+      return new BigNumber(completeSetsSoldLogs[0].marketOI).dividedBy(QUINTILLION).toString();
     }
   } else if (completeSetsPurchasedLogs.length > 0) {
-    return new BigNumber(completeSetsPurchasedLogs[0].marketOI).toString();
+    return new BigNumber(completeSetsPurchasedLogs[0].marketOI).dividedBy(QUINTILLION).toString();
   } else if (completeSetsSoldLogs.length > 0) {
-    return new BigNumber(completeSetsSoldLogs[0].marketOI).toString();
+    return new BigNumber(completeSetsSoldLogs[0].marketOI).dividedBy(QUINTILLION).toString();
   }
   return "0";
 }
