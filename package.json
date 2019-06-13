@@ -33,7 +33,9 @@
     "tools": "yarn workspace @augurproject/tools",
     "an": "yarn workspace @augurproject/node",
     "flash": "yarn workspace @augurproject/tools flash",
-    "dp": "yarn workspace @augurproject/tools dp"
+    "dp": "yarn workspace @augurproject/tools dp",
+    "check": "gts check",
+    "fix": "gts fix"
   },
   "devDependencies": {
     "@babel/core": "7.2.2",
@@ -81,6 +83,7 @@
     "lerna": "3.10.8",
     "listr": "0.14.3",
     "npm-run-all": "4.1.5",
+    "gts": "^1.0.0",
     "prettier": "1.15.3",
     "rxjs-compat": "6.3.3",
     "ts-node": "7.0.1",
