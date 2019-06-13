@@ -8,7 +8,6 @@ import Portis, { INetwork } from "@portis/web3";
 import Web3 from "web3";
 import { updateIsLoggedAndLoadAccountData } from "modules/auth/actions/update-is-logged-and-load-account-data";
 import { ACCOUNT_TYPES } from "modules/common/constants";
-import { augurSdk } from "services/augursdk";
 import { AppState } from "store";
 
 // TODO find home for all wallet API keys

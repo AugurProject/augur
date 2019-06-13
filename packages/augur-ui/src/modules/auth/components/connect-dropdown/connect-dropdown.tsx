@@ -115,7 +115,10 @@ export default class ConnectDropdown extends Component<ConnectDropdownProps, Con
       connectPortis((err, res) => {
         if (err) {
           console.error(err);
-          this.showError(ERROR_TYPES.UNSUPPORTED_NETWORK);
+          this.showError({
+            header: "Unable To Connect",
+            subheader: err,
+          });
         }
       });
     }
