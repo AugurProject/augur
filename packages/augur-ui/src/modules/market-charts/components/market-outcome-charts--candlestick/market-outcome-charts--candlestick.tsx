@@ -10,30 +10,39 @@ import {
   SquareDropdown,
   StaticLabelDropdown
 } from "modules/common/selection";
-import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles.less";
 import MarketOutcomeChartsCandlestickHighchart from "modules/market-charts/containers/market-candlestick";
 import { CandlestickOchl } from "modules/market-charts/components/market-outcome-charts--candlestick/candlestick-ochl";
 
-class MarketOutcomeCandlestick extends React.PureComponent {
-  static propTypes = {
-    fixedPrecision: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool,
-    marketMax: CustomPropTypes.bigNumber.isRequired,
-    marketMin: CustomPropTypes.bigNumber.isRequired,
-    priceTimeSeries: PropTypes.array.isRequired,
-    selectedPeriod: PropTypes.number.isRequired,
-    updateSelectedPeriod: PropTypes.func.isRequired,
-    pricePrecision: PropTypes.number.isRequired
-  };
+interface MarketOutcomeCandlestickProps {
+  fixedPrecision: number;
+  isMobile: boolean;
+  marketMax: BigNumber;
+  marketMin: BigNumber;
+  priceTimeSeries: Array<any>;
+  selectedPeriod: number;
+  updateSelectedPeriod: Function;
+  pricePrecision: number;
+}
 
+interface MarketOutcomeCandlestickState {
+  containerWidth: number;
+  containerHeight: number;
+  hoveredPeriod: any;
+  volumeType: string;
+  defaultCandlePeriod: any;
+}
+class MarketOutcomeCandlestick extends React.PureComponent<MarketOutcomeCandlestickProps, MarketOutcomeCandlestickState> {
   static defaultProps = {
     isMobile: false
   };
+  drawContainer: any;
 
   constructor(props) {
     super(props);
 
     this.state = {
+      containerWidth: 0,
       containerHeight: 0,
       hoveredPeriod: {},
       volumeType: ETH,

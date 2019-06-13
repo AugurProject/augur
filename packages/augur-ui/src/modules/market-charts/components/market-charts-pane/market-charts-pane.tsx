@@ -15,7 +15,7 @@ interface MarketChartsPaneProps {
   marketId: string;
   maxPrice: BigNumber;
   minPrice: BigNumber;
-  selectedOutcome: string;
+  selectedOutcomeId: number;
   updateSelectedOrderProperties: Function;
   daysPassed?: number;
 }
@@ -60,7 +60,7 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
     const {
       currentTimestamp,
       marketId,
-      selectedOutcome,
+      selectedOutcomeId,
       maxPrice,
       minPrice,
       updateSelectedOrderProperties,
@@ -77,7 +77,7 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
               <Candlestick
                 currentTimeInSeconds={currentTimestamp}
                 marketId={marketId}
-                selectedOutcome={selectedOutcome}
+                selectedOutcomeId={selectedOutcomeId}
                 minPrice={minPrice}
                 maxPrice={maxPrice}
                 daysPassed={daysPassed}
@@ -92,7 +92,7 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
             >
               <MarketDepth
                 marketId={marketId}
-                selectedOutcome={selectedOutcome}
+                selectedOutcomeId={selectedOutcomeId}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
                 hoveredPrice={s.hoveredPrice}
                 hoveredDepth={s.hoveredDepth}
@@ -106,14 +106,14 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
             <ModulePane label="Price History">
               <MarketOutcomesChart
                 marketId={marketId}
-                selectedOutcome={selectedOutcome}
+                selectedOutcomeId={selectedOutcomeId}
               />
             </ModulePane>
             <ModulePane label="Candlesticks">
               <Candlestick
                 currentTimeInSeconds={currentTimestamp}
                 marketId={marketId}
-                selectedOutcome={selectedOutcome}
+                selectedOutcomeId={selectedOutcomeId}
                 minPrice={minPrice}
                 maxPrice={maxPrice}
                 daysPassed={daysPassed}
@@ -127,7 +127,7 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
             >
               <MarketDepth
                 marketId={marketId}
-                selectedOutcome={selectedOutcome}
+                selectedOutcomeId={selectedOutcomeId}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
                 hoveredPrice={s.hoveredPrice}
                 hoveredDepth={s.hoveredDepth}

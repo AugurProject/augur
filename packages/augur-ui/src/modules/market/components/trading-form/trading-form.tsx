@@ -4,23 +4,24 @@ import { Link } from "react-router-dom";
 import Wrapper from "modules/trading/components/wrapper/wrapper";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
-import Styles from "modules/market/components/trading-form/trading-form.styles";
+import Styles from "modules/market/components/trading-form/trading-form.styles.less";
 
 import { PrimaryButton } from "modules/common/buttons";
 import { MarketData } from "modules/types";
+import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
 
 interface TradingFormProps {
-  availableFunds: Object;
-  isLogged: Boolean;
-  isConnectionTrayOpen: Boolean;
+  availableFunds: BigNumber;
+  isLogged: boolean;
+  isConnectionTrayOpen: boolean;
   market: MarketData;
-  marketReviewTradeSeen: Boolean;
+  marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
   selectedOrderProperties: Object;
-  selectedOutcome: number;
+  selectedOutcomeId: number;
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
-  gasPrice: Number;
+  gasPrice: number;
   updateSelectedOutcome: Function;
   updateTradeCost: Function;
   updateTradeShares: Function;
@@ -29,13 +30,14 @@ interface TradingFormProps {
 }
 
 interface TradingFormState {
-  showForm: Boolean;
-  selectedOutcome: number;
+  showForm: boolean;
+  selectedOutcomeId: number;
+  selectedOutcome: MarketInfoOutcome;
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcome: 0
+    selectedOutcomeId: 0
   };
 
   state: TradingFormState = {
@@ -43,25 +45,22 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
     selectedOutcome:
       this.props.market.outcomes
         ? this.props.market.outcomes.find(
-            outcome => outcome.id === this.props.selectedOutcome
+            outcome => outcome.id === this.props.selectedOutcomeId
           )
         : 0
   };
 
   componentWillReceiveProps(nextProps: TradingFormProps) {
-    const { selectedOutcome } = this.props;
+    const { selectedOutcomeId } = this.props;
     const { market } = nextProps;
     if (
-      (selectedOutcome !== nextProps.selectedOutcome)
+      (selectedOutcomeId !== nextProps.selectedOutcomeId)
     ) {
-      if (nextProps.selectedOutcome !== null) {
-        this.setState({
-          selectedOutcome: market.outcomes.find(
-            outcome => outcome.id === nextProps.selectedOutcome
-          )
-        });
-      } else {
-        this.setState({ selectedOutcome: null });
+      if (nextProps.selectedOutcomeId !== null) {
+        const selectedOutcome = market.outcomes.find(
+          outcome => outcome.id === nextProps.selectedOutcomeId
+        );
+        this.setState({ selectedOutcome });
       }
     }
   }
@@ -92,7 +91,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
     const hasFunds = availableFunds && availableFunds.gt(0);
     const hasSelectedOutcome = s.selectedOutcome !== null;
 
-    let initialMessage = "";
+    let initialMessage: string = "";
 
     switch (true) {
       case !isLogged:

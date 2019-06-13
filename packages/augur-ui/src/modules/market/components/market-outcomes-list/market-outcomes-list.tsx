@@ -1,31 +1,31 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import CustomPropTypes from "utils/custom-prop-types";
 import { SCALAR } from "modules/common/constants";
 import MarketOutcomesListOutcome from "modules/market/containers/market-outcome";
 import MarketScalarOutcomeDisplay from "modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display";
 
-import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles";
-import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
-import HeaderStyles from "modules/portfolio/components/common/data-table-header.styles";
+import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";
+import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style.less";
+import HeaderStyles from "modules/portfolio/components/common/data-table-header.styles.less";
+import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
 
-export default class MarketOutcomesList extends Component {
-  static propTypes = {
-    marketId: PropTypes.string.isRequired,
-    outcomes: PropTypes.array.isRequired,
-    updateSelectedOutcome: PropTypes.func.isRequired,
-    selectedOutcome: PropTypes.any,
-    scalarDenomination: PropTypes.any,
-    marketType: PropTypes.string,
-    minPrice: CustomPropTypes.bigNumber,
-    maxPrice: CustomPropTypes.bigNumber,
-    popUp: PropTypes.bool
-  };
 
+interface MarketOutcomesListProps {
+  marketId: string,
+  outcomes: Array<MarketInfoOutcome>,
+  updateSelectedOutcome: Function,
+  selectedOutcomeId: number,
+  scalarDenomination: string | null,
+  marketType: string,
+  minPrice: BigNumber,
+  maxPrice: BigNumber,
+  popUp: boolean,
+};
+
+export default class MarketOutcomesList extends Component<MarketOutcomesListProps> {
   static defaultProps = {
-    selectedOutcome: null,
+    selectedOutcomeId: 1,
     scalarDenomination: null,
     marketType: null,
     minPrice: null,
@@ -37,7 +37,7 @@ export default class MarketOutcomesList extends Component {
     const {
       marketId,
       outcomes,
-      selectedOutcome,
+      selectedOutcomeId,
       updateSelectedOutcome,
       marketType,
       scalarDenomination,
@@ -65,7 +65,7 @@ export default class MarketOutcomesList extends Component {
               key={outcome.id}
               outcome={outcome}
               marketId={marketId}
-              selectedOutcome={selectedOutcome}
+              selectedOutcome={selectedOutcomeId}
               updateSelectedOutcome={updateSelectedOutcome}
               marketType={marketType}
               scalarDenomination={

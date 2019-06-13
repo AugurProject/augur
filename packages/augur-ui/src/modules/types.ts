@@ -1,5 +1,5 @@
 import { ReactNode, MouseEvent } from "react";
-import { BUY, SELL } from "modules/common/constants";
+import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
 import { MarketInfo, MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
@@ -61,7 +61,10 @@ export interface Outcomes extends MarketInfoOutcome {
   name?: string;
 }
 export interface MarketData extends MarketInfo {
-
+  marketStatus: string;
+  creationTime: DateFormattedObject;
+  // TODO: add this to getter MarketInfo
+  disputeInfo: object;
 };
 
 export interface OutcomesData {
@@ -377,6 +380,8 @@ export interface QueryEndpoints {
   ethereum_node_ws?: string;
   [MARKET_ID_PARAM_NAME]?: string;
   [RETURN_PARAM_NAME]?: string;
+  [CATEGORY_PARAM_NAME]?: string;
+  [TAGS_PARAM_NAME]?: string;
 }
 export interface Endpoints {
   ethereumNodeHTTP: string;

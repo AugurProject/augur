@@ -30,6 +30,7 @@ import Styles from "modules/common/buttons.styles";
 import { AppState } from "store";
 
 export interface DefaultButtonProps {
+  id?: string;
   text: string;
   action: Function;
   disabled?: boolean;

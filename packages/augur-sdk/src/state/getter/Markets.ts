@@ -87,6 +87,7 @@ export interface MarketInfo {
   details: string | null;
   resolutionSource: string | null;
   numTicks: string;
+  tags: Array<string>;
   tickSize: string;
   consensus: Array<string> | null,
   outcomes: Array<MarketInfoOutcome>;

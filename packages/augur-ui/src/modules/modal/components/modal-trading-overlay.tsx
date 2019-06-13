@@ -64,7 +64,7 @@ export default class ModalTradingOverlay extends Component<ModalTradingOverlayPr
           <MarketOutcomesList
             marketId={marketId}
             outcomes={outcomes}
-            selectedOutcome={selectedOutcome}
+            selectedOutcomeId={selectedOutcome}
             updateSelectedOutcome={this.updateSelectedOutcome}
             popUp
           />

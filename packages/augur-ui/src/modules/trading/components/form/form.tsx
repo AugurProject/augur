@@ -10,36 +10,51 @@ import {
   MIN_QUANTITY,
   UPPER_FIXED_PRECISION_BOUND
 } from "modules/common/constants";
-import FormStyles from "modules/common/form-styles";
-import Styles from "modules/trading/components/form/form.styles";
+import FormStyles from "modules/common/form-styles.less";
+import Styles from "modules/trading/components/form/form.styles.less";
 import { ExclamationCircle } from "modules/common/icons";
 import { SquareDropdown } from "modules/common/selection";
 import { Checkbox } from "modules/common/form";
 import getPrecision from "utils/get-number-precision";
 import convertExponentialToDecimal from "utils/convert-exponential";
+import { MarketData } from "modules/types";
+import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketType } from "@augurproject/sdk/build/state/logs/types";
 
-class Form extends Component {
-  static propTypes = {
-    market: PropTypes.object.isRequired,
-    marketType: PropTypes.string.isRequired,
-    maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    minPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    orderQuantity: PropTypes.string.isRequired,
-    orderPrice: PropTypes.string.isRequired,
-    orderEthEstimate: PropTypes.string.isRequired,
-    orderEscrowdEth: PropTypes.string.isRequired,
-    selectedNav: PropTypes.string.isRequired,
-    selectedOutcome: PropTypes.object.isRequired,
-    updateState: PropTypes.func.isRequired,
-    updateOrderProperty: PropTypes.func.isRequired,
-    doNotCreateOrders: PropTypes.bool.isRequired,
-    updateSelectedOutcome: PropTypes.func.isRequired,
-    clearOrderForm: PropTypes.func.isRequired,
-    updateTradeTotalCost: PropTypes.func.isRequired,
-    updateTradeNumShares: PropTypes.func.isRequired,
-    updateNewOrderProperties: PropTypes.func.isRequired,
-    clearOrderConfirmation: PropTypes.func.isRequired
-  };
+interface FromProps {
+  market: MarketData;
+  marketType: string;
+  maxPrice: BigNumber;
+  minPrice: BigNumber;
+  orderQuantity: string;
+  orderPrice: string;
+  orderEthEstimate: string;
+  orderEscrowdEth: string;
+  selectedNav: string;
+  selectedOutcome: MarketInfoOutcome;
+  updateState: Function;
+  updateOrderProperty: Function;
+  doNotCreateOrders: boolean;
+  updateSelectedOutcome: Function;
+  clearOrderForm: Function;
+  updateTradeTotalCost: Function;
+  updateTradeNumShares: Function;
+  updateNewOrderProperties: Function;
+  clearOrderConfirmation: Function;
+};
+
+interface TestResults { isOrderValid: boolean, errors: object, errorCount: number }
+
+interface FormState {
+  isOrderValid: boolean;
+  lastInputModified: string;
+  [item: string] : string;
+  errors: object;
+  errorCount: number;
+}
+class Form extends Component<FromProps, FormState> {
+  INPUT_TYPES: { QUANTITY: string; PRICE: string; DO_NOT_CREATE_ORDERS: string; EST_ETH: string; SELECTED_NAV: string; };
+  MINIMUM_TRADE_VALUE: BigNumber;
 
   constructor(props) {
     super(props);
@@ -70,10 +85,12 @@ class Form extends Component {
         [this.INPUT_TYPES.EST_ETH]: []
       }
     };
+
     this.state = {
       ...startState,
       isOrderValid: this.orderValidation(startState).isOrderValid,
-      lastInputModified: null
+      lastInputModified: "",
+      errorCount: 0,
     };
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
     this.updateTestProperty = this.updateTestProperty.bind(this);
@@ -110,7 +127,7 @@ class Form extends Component {
           };
           const { isOrderValid, errors, errorCount } = this.orderValidation(
             newOrderInfo,
-            null,
+            undefined,
             nextProps,
             true
           );
@@ -128,7 +145,7 @@ class Form extends Component {
     }
   }
 
-  testTotal(value, errors, isOrderValid, price) {
+  testTotal(value, errors, isOrderValid, price): TestResults {
     let errorCount = 0;
     let passedTest = !!isOrderValid;
     if (value === "") {
@@ -144,7 +161,7 @@ class Form extends Component {
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
-  testQuantity(value, errors, isOrderValid, nextProps, fromExternal) {
+  testQuantity(value, errors: object, isOrderValid: boolean, nextProps, fromExternal): TestResults {
     let errorCount = 0;
     let passedTest = !!isOrderValid;
     const precision = getPrecision(value, 0);
@@ -172,7 +189,7 @@ class Form extends Component {
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
-  testPrice(value, errors, isOrderValid, nextProps = null) {
+  testPrice(value, errors: object, isOrderValid: boolean, nextProps): TestResults {
     const props = nextProps || this.props;
     const { maxPrice, minPrice, market } = props;
     const tickSize = createBigNumber(market.tickSize);
@@ -203,7 +220,7 @@ class Form extends Component {
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
-  testPropertyCombo(quantity, price, estEth, changedProperty, errors) {
+  testPropertyCombo(quantity: string, price: string, estEth: string, changedProperty: string | undefined, errors: object): TestResults {
     let errorCount = 0;
     if (quantity && estEth && !price) {
       errorCount += 1;
@@ -233,10 +250,10 @@ class Form extends Component {
 
   orderValidation(
     order,
-    changedProperty,
-    nextProps = null,
+    changedProperty?: string,
+    nextProps?: FromProps,
     fromExternal = false
-  ) {
+  ): TestResults {
     let errors = {
       [this.INPUT_TYPES.QUANTITY]: [],
       [this.INPUT_TYPES.PRICE]: [],
@@ -266,11 +283,11 @@ class Form extends Component {
     errorCount += priceErrorCount;
     errors = { ...errors, ...priceErrors };
 
-    let quantityValid = null;
+    let quantityValid = false;
 
     if (changedProperty !== this.INPUT_TYPES.EST_ETH) {
       const {
-        isOrderValid: bob,
+        isOrderValid: isThisOrderValid,
         errors: quantityErrors,
         errorCount: quantityErrorCount
       } = this.testQuantity(
@@ -281,7 +298,7 @@ class Form extends Component {
         fromExternal
       );
 
-      quantityValid = bob;
+      quantityValid = isThisOrderValid;
       errorCount += quantityErrorCount;
       errors = { ...errors, ...quantityErrors };
     }
@@ -315,7 +332,7 @@ class Form extends Component {
     return { isOrderValid, errors, errorCount };
   }
 
-  validateForm(property, rawValue) {
+  validateForm(property: string, rawValue) {
     const {
       updateOrderProperty,
       updateTradeTotalCost,
@@ -371,15 +388,9 @@ class Form extends Component {
         }
 
         const order = {
-          [this.INPUT_TYPES.QUANTITY]: BigNumber.isBigNumber(orderQuantity)
-            ? orderQuantity.toFixed()
-            : orderQuantity,
-          [this.INPUT_TYPES.PRICE]: BigNumber.isBigNumber(orderPrice)
-            ? orderPrice.toFixed()
-            : orderPrice,
-          [this.INPUT_TYPES.EST_ETH]: BigNumber.isBigNumber(orderEthEstimate)
-            ? orderEthEstimate.toFixed()
-            : orderEthEstimate,
+          [this.INPUT_TYPES.QUANTITY]: orderQuantity ? new BigNumber(orderQuantity).toFixed() : orderQuantity,
+          [this.INPUT_TYPES.PRICE]: orderPrice ? new BigNumber(orderPrice).toFixed() : orderPrice,
+          [this.INPUT_TYPES.EST_ETH]: orderEthEstimate ? new BigNumber(orderEthEstimate).toFixed() : orderEthEstimate,
           selectedNav
         };
 
@@ -501,25 +512,25 @@ class Form extends Component {
       s[this.INPUT_TYPES.QUANTITY]
     );
     const defaultOutcome = selectedOutcome ? selectedOutcome.id : "Outcome";
-    const isScalerWithDenomination =
-      marketType === SCALAR && market.scalarDenomination;
+    const isScalerWithDenomination: boolean =
+      market.marketType === MarketType.Scalar;
 
     return (
       <div className={Styles.Form}>
-        {market.marketType === CATEGORICAL && (
+        {market.marketType === MarketType.Categorical && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <SquareDropdown
               defaultValue={defaultOutcome}
               onChange={this.changeOutcomeDropdown}
               options={market.outcomes.map(outcome => ({
-                label: outcome.name,
+                label: outcome.description,
                 value: outcome.id
               }))}
               large
             />
           </div>
         )}
-        {market.marketType === YES_NO && (
+        {market.marketType === MarketType.YesNo && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <div className={Styles.Yes}>
               <span>Outcome:</span> Yes
@@ -587,9 +598,7 @@ class Form extends Component {
                 min={min}
                 placeholder="0.00"
                 value={
-                  BigNumber.isBigNumber(s[this.INPUT_TYPES.PRICE])
-                    ? s[this.INPUT_TYPES.PRICE].toNumber()
-                    : s[this.INPUT_TYPES.PRICE]
+                  s[this.INPUT_TYPES.PRICE] ? new BigNumber(s[this.INPUT_TYPES.PRICE]).toNumber() : s[this.INPUT_TYPES.PRICE]
                 }
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)
@@ -599,10 +608,10 @@ class Form extends Component {
                 className={classNames({
                   [`${Styles.isScalar_largeText}`]:
                     isScalerWithDenomination &&
-                    market.scalarDenomination.length <= 24,
+                    (market.scalarDenomination || []).length <= 24,
                   [`${Styles.isScalar_smallText}`]:
                     isScalerWithDenomination &&
-                    market.scalarDenomination.length > 24,
+                    (market.scalarDenomination || []).length > 24,
                   [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length
                 })}
               >
@@ -632,9 +641,7 @@ class Form extends Component {
                 min={MIN_QUANTITY.toFixed()}
                 placeholder="0.00"
                 value={
-                  BigNumber.isBigNumber(s[this.INPUT_TYPES.EST_ETH])
-                    ? s[this.INPUT_TYPES.EST_ETH].toNumber()
-                    : s[this.INPUT_TYPES.EST_ETH]
+                  s[this.INPUT_TYPES.EST_ETH] ? new BigNumber(s[this.INPUT_TYPES.EST_ETH]).toNumber() : s[this.INPUT_TYPES.EST_ETH]
                 }
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.EST_ETH, e.target.value)
@@ -659,7 +666,7 @@ class Form extends Component {
             <Checkbox
               id="tr__input--do-no-create-orders"
               type="checkbox"
-              isChecked={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
+              isChecked={!!s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
               value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
               smallOnDesktop
               onClick={e =>

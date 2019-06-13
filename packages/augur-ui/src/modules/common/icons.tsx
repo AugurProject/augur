@@ -40,7 +40,7 @@ export const CollapseIcon = (
     <path d="M10 6.5L10 13.5"strokeLinecap="round" />
     <path
       d="M13 21L10 24L7 21"
-x      strokeLinecap="round"
+      strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path d="M10 23.5L10 16.5" strokeLinecap="round" />
