@@ -262,13 +262,13 @@ export class Trading {
         fullPrecisionAmount: amount,
         tokensEscrowed,
         sharesEscrowed,
-        canceledBlockNumber: orderEventDoc.eventType == 1 ? orderEventDoc.blockNumber : undefined,
+        canceledBlockNumber: orderEventDoc.eventType == 1 ? String(orderEventDoc.blockNumber) : undefined,
         canceledTransactionHash: orderEventDoc.eventType == 1 ? orderEventDoc.transactionHash : undefined,
         canceledTime: orderEventDoc.eventType == 1 ? orderEventDoc.timestamp : undefined,
         creationTime: originalOrderDoc ? originalOrderDoc.timestamp : 0,
         creationBlockNumber: originalOrderDoc ? originalOrderDoc.blockNumber : 0,
         originalFullPrecisionAmount: originalOrderDoc ? convertOnChainAmountToDisplayAmount(new BigNumber(originalOrderDoc.uint256Data[OrderEventUint256Value.amount], 16), tickSize).toString(10) : 0,
-      } as Order);
+      }) as Order;
       return orders;
     }, {} as Orders);
   }
