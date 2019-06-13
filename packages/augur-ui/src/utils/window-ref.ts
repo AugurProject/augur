@@ -1,1 +1,3 @@
-export const windowRef = typeof window === "undefined" ? {} : window;
+import { WindowApp } from "modules/types";
+
+export const windowRef: WindowApp = window as WindowApp;

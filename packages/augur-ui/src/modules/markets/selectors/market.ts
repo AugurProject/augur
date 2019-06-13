@@ -232,7 +232,7 @@ const assembleMarket = (
   market.outcomes = Object.keys(marketOutcomesData || {})
     .map(outcomeId => {
       const outcomeData = marketOutcomesData[outcomeId];
-      const volume = createBigNumber(outcomeData.volume);
+      const volume = createBigNumber(outcomeData.volume || "0");
 
       const outcome = {
         ...outcomeData,

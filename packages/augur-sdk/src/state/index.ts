@@ -28,9 +28,7 @@ async function buildDeps(ethNodeUrl: string, account?: string, dbArgs: PouchDB.C
     settings.blockstreamDelay,
     UploadBlockNumbers[networkId],
     account ? [account] : [],
-    augur.genericEventNames,
-    augur.customEvents,
-    augur.userSpecificEvents,
+    augur,
     pouchDBFactory,
     blockAndLogStreamerListener,
   );

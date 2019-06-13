@@ -1,10 +1,12 @@
+import * as _ from "lodash";
 import { AbstractDB, BaseDocument } from "./AbstractDB";
 import { Augur } from "../../Augur";
-import { Log, ParsedLog } from "@augurproject/types";
 import { DB } from "./DB";
+import { Log, ParsedLog } from "@augurproject/types";
+import { SubscriptionEventNames } from "../../constants";
 import { SyncStatus } from "./SyncStatus";
+import { augurEmitter } from "../../events";
 import { toAscii } from "../utils/utils";
-import * as _ from "lodash";
 
 // because flexsearch is a UMD type lib
 import FlexSearch = require("flexsearch");
@@ -24,6 +26,7 @@ export interface Document extends BaseDocument {
  * Stores event logs for non-user-specific events.
  */
 export class SyncableDB extends AbstractDB {
+  protected augur: Augur;
   protected eventName: string;
   protected contractName: string; // TODO Remove if unused
   private syncStatus: SyncStatus;
@@ -31,6 +34,7 @@ export class SyncableDB extends AbstractDB {
   private flexSearch?: FlexSearch;
 
   constructor(
+    augur: Augur,
     db: DB,
     networkId: number,
     eventName: string,
@@ -39,6 +43,7 @@ export class SyncableDB extends AbstractDB {
     fullTextSearchOptions?: object
   ) {
     super(networkId, dbName, db.pouchDBFactory);
+    this.augur = augur;
     this.eventName = eventName;
     this.syncStatus = db.syncStatus;
     this.idFields = idFields;
@@ -158,12 +163,28 @@ export class SyncableDB extends AbstractDB {
       success = await this.bulkUpsertDocuments(documents[0]._id, documents);
     }
     if (success) {
+      await this.notifyNewBlockEvent(blocknumber);
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
     } else {
       throw new Error(`Unable to add new block`);
     }
 
     return blocknumber;
+  }
+
+  public notifyNewBlockEvent = async (blockNumber: number): Promise<void> => {
+    if (blockNumber > await this.syncStatus.getHighestSyncBlock()) {
+      const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
+      const blocksBehindCurrent = (highestAvailableBlockNumber - blockNumber);
+      const percentBehindCurrent = (blocksBehindCurrent / highestAvailableBlockNumber * 100).toFixed(4);
+
+      augurEmitter.emit(SubscriptionEventNames.NewBlock, {
+        highestAvailableBlockNumber,
+        lastSyncedBlockNumber: blockNumber,
+        blocksBehindCurrent,
+        percentBehindCurrent,
+      });
+    }
   }
 
   public async rollback(blockNumber: number): Promise<void> {
