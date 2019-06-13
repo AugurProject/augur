@@ -57,6 +57,7 @@ test("UserSynableDB.sync", async () => {
   }
 
   const db = new UserSyncableDB(
+    john.augur,
     dbController,
     mock.constants.networkId,
     tokensTransferredEventDefinition.name,
@@ -111,7 +112,7 @@ test("props", async () => {
 
   const eventName = "foo";
   const user = "artistotle";
-  const db = new UserSyncableDB(dbController, mock.constants.networkId, eventName, user, 2, [0]);
+  const db = new UserSyncableDB(john.augur, dbController, mock.constants.networkId, eventName, user, 2, [0]);
 
   // @ts-ignore - verify private property "additionalTopics"
   expect(db.additionalTopics).toEqual([[
