@@ -9,8 +9,8 @@ export default function OutcomeTradingIndicator({
   location
 }) {
   const indicatorArray = {
-    [UP]: Styles.TradingIndicator_arrow_up,
-    [DOWN]: Styles.TradingIndicator_arrow_down,
+    [UP]: Styles.Up,
+    [DOWN]: Styles.Down,
     [NONE]: ""
   };
 
