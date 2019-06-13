@@ -12,7 +12,8 @@ export enum ACCOUNT_TYPES {
 }
 
 export enum SubscriptionEventNames {
-  DisputeWindowOpened = "DisputeWindowOpened",
+  Approval = "Approval",
+  Burn = "Burn",
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
@@ -21,6 +22,7 @@ export enum SubscriptionEventNames {
   DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog",
   DisputeWindowClosed = "DisputeWindowClosed",
   DisputeWindowCreated = "DisputeWindowCreated",
+  DisputeWindowOpened = "DisputeWindowOpened",
   DisputeWindowRedeemed = "DisputeWindowRedeemed",
   InitialReportSubmitted = "InitialReportSubmitted",
   InitialReporterRedeemed = "InitialReporterRedeemed",
@@ -29,15 +31,14 @@ export enum SubscriptionEventNames {
   MarketFinalized = "MarketFinalized",
   MarketMigrated = "MarketMigrated",
   MarketState = "MarketState",
+  NewBlock = "NewBlock",
   OrderEvent = "OrderEvent",
   ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
   SyncFinished = "SyncFinished",
+  TokensBurned = "TokensBurned",
   TokensTransferred = "TokensTransferred",
   TradingProceedsClaimed = "TradingProceedsClaimed",
   UniverseCreated = "UniverseCreated",
-  Burn = "Burn",
-  TokensBurned = "TokensBurned",
-  Approval = "Approval",
 }
 
 export function isSubscriptionEventName(eventName: string): string | null {
@@ -59,14 +60,14 @@ export function isSubscriptionEventName(eventName: string): string | null {
 }
 
 export enum ControlMessageType {
-  ServerStart = "ServerStart",
-  ServerError = "ServerError",
-  WebsocketError = "WebsocketError",
-  WebsocketClose = "WebsocketClose",
-  BulkSyncStarted = "BulkSyncStarted",
-  BulkSyncFinished = "BulkSyncFinished",
-  BulkOrphansCheckStarted = "BulkOrphansCheckStarted",
   BulkOrphansCheckFinished = "BulkOrphansCheckFinished",
+  BulkOrphansCheckStarted = "BulkOrphansCheckStarted",
+  BulkSyncFinished = "BulkSyncFinished",
+  BulkSyncStarted = "BulkSyncStarted",
+  ServerError = "ServerError",
+  ServerStart = "ServerStart",
+  WebsocketClose = "WebsocketClose",
+  WebsocketError = "WebsocketError",
 }
 
 export const ETHER = new ethersUtils.BigNumber(10).pow(18);
