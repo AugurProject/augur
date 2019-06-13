@@ -139,7 +139,7 @@ export class ContractAPI {
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
     const maxPrice = new BigNumber(250).multipliedBy(new BigNumber(10).pow(18));
     const numTicks = new BigNumber(20000);
-    return this.createScalarMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, [minPrice, maxPrice], numTicks, " ", "{\"description\": \"description\"}");
+    return this.createScalarMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, [minPrice, maxPrice], numTicks, " ", "{\"description\": \"description\", \"_scalarDenomination\": \"scalar denom 1\"}");
   }
 
   public async placeOrder(
