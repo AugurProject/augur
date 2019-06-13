@@ -8,7 +8,7 @@ import { getDisputeInfo } from "modules/reports/actions/get-dispute-info";
 import logError from "utils/log-error";
 import { AppState } from "store";
 import { Action } from "redux";
-import { MarketData, NodeStyleCallback } from "modules/types";
+import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { augurSdk } from "services/augursdk";
 
@@ -19,6 +19,7 @@ export const loadMarketsInfo = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  console.log("get markets info", marketIds);
   if (!marketIds || marketIds.length === 0) {
     return callback(null, []);
   }
@@ -38,6 +39,7 @@ export const loadMarketsInfo = (
       };
     }, {});
 
+  console.log("got markets info", Object.keys(marketsData).length);
   if (!Object.keys(marketsData).length)
     return callback("no marketIds in collection");
 
