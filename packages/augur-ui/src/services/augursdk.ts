@@ -36,10 +36,11 @@ export class SDK {
     this.wireUpEvents();
 
     // This is temporary to get SOME diagnostic info out there....
+/*
     ethersProvider.on("block", ((sdk) => () => {
       sdk.getSyncData().then((syncData) => console.table({0: syncData}));
     })(this.sdk));
-
+*/
     this.sdk.connect("http://localhost:8545", account);
   }
 

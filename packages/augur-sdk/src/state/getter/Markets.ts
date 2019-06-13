@@ -363,12 +363,14 @@ export class Markets {
       let details = null;
       let resolutionSource = null;
       let scalarDenomination = null;
+      let tags = [];
       if (marketCreatedLog.extraInfo) {
         const extraInfo = JSON.parse(marketCreatedLog.extraInfo);
-        description = extraInfo.description ? extraInfo.longDescription : null;
+        description = extraInfo.description ? extraInfo.description : null;
         details = extraInfo.longDescription ? extraInfo.longDescription : null;
         resolutionSource = extraInfo.resolutionSource ? extraInfo.resolutionSource : null;
         scalarDenomination = extraInfo._scalarDenomination ? extraInfo._scalarDenomination : null;
+        tags = extraInfo.tags ? extraInfo.tags : [];
       }
       const defaultPrice = displayMaxPrice.minus(displayMinPrice).dividedBy(2).toString(10);
 
@@ -397,6 +399,7 @@ export class Markets {
         numTicks: numTicks.toString(10),
         tickSize: tickSize.toString(10),
         consensus,
+        tags,
         outcomes: await getMarketOutcomes(db, marketCreatedLog, scalarDenomination, defaultPrice, )
       });
     }));
