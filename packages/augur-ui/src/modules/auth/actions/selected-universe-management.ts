@@ -19,7 +19,7 @@ export const setSelectedUniverse = (selectedUniverseId: string | null = null) =>
     const windowApp = windowRef as WindowApp;
   if (windowApp && windowApp.localStorage) {
     const { localStorage } = windowApp;
-    const localAccount = localStorage.getItem(address) || "";
+    const localAccount = localStorage.getItem(address) || "{}";
     const accountStorage = JSON.parse(localAccount);
     if (accountStorage) {
       localStorage.setItem(

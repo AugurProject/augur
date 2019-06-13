@@ -59,8 +59,8 @@ export default class ModuleTabs extends Component {
         <li
           key={index}
           className={classNames({
-            [Styles.ModuleTabs__activeTab]: this.state.selected === index,
-            [Styles.ModuleTabs__activeTabFill]:
+            [Styles.ActiveTab]: this.state.selected === index,
+            [Styles.ActiveTabFill]:
               this.state.selected === index && this.props.fillWidth
           })}
         >
@@ -71,13 +71,13 @@ export default class ModuleTabs extends Component {
           >
             <span
               className={classNames({
-                [Styles.ModuleTabs__activeSpanFill]:
+                [Styles.ActiveSpanFill]:
                   this.state.selected === index && this.props.fillWidth,
-                [Styles.ModuleTabs__activeNoBorder]:
+                [Styles.ActiveNoBorder]:
                   this.state.selected === index && this.props.noBorder,
-                [Styles.ModuleTabs__activeBorderBetween]:
+                [Styles.ActiveBorderBetween]:
                   this.state.selected === index && this.props.borderBetween,
-                [Styles.ModuleTabs__isNew]: child.props.isNew
+                [Styles.IsNew]: child.props.isNew
               })}
             >
               {child.props.label}
@@ -88,17 +88,17 @@ export default class ModuleTabs extends Component {
     }
 
     return (
-      <div className={Styles.ModuleTabs__headers}>
+      <div className={Styles.Headers}>
         {this.props.leftButton}
         <ul
-          className={classNames(Styles.ModuleTabs__tab, {
-            [Styles.ModuleTabs__tabFill]: this.props.fillWidth,
-            [Styles.ModuleTabs__tabFillWidth]:
+          className={classNames({
+            [Styles.Fill]: this.props.fillWidth,
+            [Styles.FillWidth]:
               this.props.fillWidth || this.props.fillForMobile,
-            [Styles.ModuleTabs__tabFillWidthMobile]:
+            [Styles.FillWidthMobile]:
               this.props.fillForOnlyMobile,
-            [Styles.ModuleTabs__noBorder]: this.props.noBorder,
-            [Styles.ModuleTabs__borderBetween]: this.props.borderBetween
+            [Styles.NoBorder]: this.props.noBorder,
+            [Styles.BorderBetween]: this.props.borderBetween
           })}
         >
           {this.props.children.map(labels.bind(this))}
@@ -109,7 +109,7 @@ export default class ModuleTabs extends Component {
 
   renderContent() {
     return (
-      <div className={Styles.ModuleTabs__content}>
+      <div className={Styles.Ccontent}>
         {this.props.children[this.state.selected]}
       </div>
     );
@@ -119,7 +119,7 @@ export default class ModuleTabs extends Component {
     return (
       <div
         className={classNames(Styles.ModuleTabs, this.props.className, {
-          [Styles.ModuleTabs__scrollOver]: this.props.scrollOver
+          [Styles.ScrollOver]: this.props.scrollOver
         })}
         id={"tabs_" + this.props.id}
       >

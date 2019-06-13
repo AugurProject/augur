@@ -30,7 +30,6 @@ import {
   UniverseForkedLog,
 } from "../logs/types";
 
-
 export class DB {
   private networkId: number;
   private blockstreamDelay: number;
@@ -41,6 +40,7 @@ export class DB {
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private metaDatabase: MetaDB; // TODO Remove this if derived DBs are not used.
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
+  private augur: Augur;
   public readonly pouchDBFactory: PouchDBFactoryType;
   public syncStatus: SyncStatus;
 
@@ -62,9 +62,15 @@ export class DB {
    * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  public static createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  public static createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, augur: Augur, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     const dbController = new DB(pouchDBFactory);
-    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, customEvents, userSpecificEvents, blockAndLogStreamerListener);
+
+    dbController.augur = augur; 
+    dbController.genericEventNames = augur.genericEventNames;
+    dbController.userSpecificEvents = augur.userSpecificEvents;
+    dbController.customEvents = augur.customEvents;
+
+    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers,  blockAndLogStreamerListener);
   }
 
   /**
@@ -79,19 +85,16 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, customEvents: Array<CustomEvent>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>,  blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
     this.trackedUsers = new TrackedUsers(networkId, this.pouchDBFactory);
     this.metaDatabase = new MetaDB(this, networkId, this.pouchDBFactory);
-    this.genericEventNames = genericEventNames;
-    this.customEvents = customEvents;
-    this.userSpecificEvents = userSpecificEvents;
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
-    for (let eventName of genericEventNames) {
+    for (let eventName of this.genericEventNames) {
       let fullTextSearchOptions = undefined;
       if (eventName === "MarketCreated") {
         fullTextSearchOptions = {
@@ -111,17 +114,18 @@ export class DB {
           },
         };
       }
-      new SyncableDB(this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
+
+      new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
     }
 
-    for (let customEvent of customEvents) {
-      new SyncableDB(this, networkId, customEvent.eventName ? customEvent.eventName : customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
+    for (let customEvent of this.customEvents) {
+      new SyncableDB(this.augur, this, networkId, customEvent.eventName ? customEvent.eventName : customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
     }
 
     for (let trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
-      for (let userSpecificEvent of userSpecificEvents) {
-        new UserSyncableDB(this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        new UserSyncableDB(this.augur, this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
       }
     }
 
@@ -279,7 +283,7 @@ export class DB {
    *
    * @param {number} blockNumber Oldest block number to delete
    */
-  public rollback = async  (blockNumber: number): Promise<void> => {
+  public rollback = async (blockNumber: number): Promise<void> => {
     let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (let eventName of this.genericEventNames) {
@@ -395,11 +399,11 @@ export class DB {
   }
 
   /**
- * Queries the DisputeCrowdsourcerContribution DB
- *
- * @param {PouchDB.Find.FindRequest<{}>} request Query object
- * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
- */
+   * Queries the DisputeCrowdsourcerContribution DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<DisputeCrowdsourcerContributionLog>>}
+   */
   public async findDisputeCrowdsourcerContributionLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerContributionLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerContribution"), request);
     return results.docs as unknown as Array<DisputeCrowdsourcerContributionLog>;
