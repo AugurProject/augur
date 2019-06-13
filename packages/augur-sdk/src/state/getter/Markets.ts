@@ -13,7 +13,7 @@ import {
   ORDER_EVENT_OUTCOME
 } from "../logs/types";
 import { SortLimit } from "./types";
-import { Augur, numTicksToTickSize, ETHER } from "../../index";
+import { Augur, numTicksToTickSize, QUINTILLION, convertOnChainAmountToDisplayAmount } from "../../index";
 import { toAscii } from "../utils/utils";
 
 import * as _ from "lodash";
@@ -326,11 +326,13 @@ export class Markets {
       const marketFinalizedLogs = (await db.findMarketFinalizedLogs({ selector: { market: marketCreatedLog.market } })).reverse();
       const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({ selector: { market: marketCreatedLog.market } })).reverse();
 
-      const minPrice = new BigNumber(marketCreatedLog.prices[0]).dividedBy(ETHER.toString());;
-      const maxPrice = new BigNumber(marketCreatedLog.prices[1]).dividedBy(ETHER.toString());;
+      const minPrice = new BigNumber(marketCreatedLog.prices[0]);
+      const maxPrice = new BigNumber(marketCreatedLog.prices[1]);
       const numTicks = new BigNumber(marketCreatedLog.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      const cumulativeScale = maxPrice.minus(minPrice);
+      const displayMinPrice = minPrice.dividedBy(QUINTILLION);
+      const displayMaxPrice = maxPrice.dividedBy(QUINTILLION);
+      const cumulativeScale = displayMaxPrice.minus(displayMinPrice);
 
       const reportingState = await getMarketReportingState(db, marketCreatedLog, marketFinalizedLogs);
       const needsMigration = (reportingState === MarketInfoReportingState.AWAITING_FORK_MIGRATION) ? true : false;
@@ -368,15 +370,15 @@ export class Markets {
         resolutionSource = extraInfo.resolutionSource ? extraInfo.resolutionSource : null;
         scalarDenomination = extraInfo._scalarDenomination ? extraInfo._scalarDenomination : null;
       }
-      const defaultPrice = maxPrice.minus(minPrice).dividedBy(2).toString(10);
+      const defaultPrice = displayMaxPrice.minus(displayMinPrice).dividedBy(2).toString(10);
 
       return Object.assign({
         id: marketCreatedLog.market,
         universe: marketCreatedLog.universe,
         marketType,
         numOutcomes: (marketCreatedLog.outcomes.length > 0) ? marketCreatedLog.outcomes.length + 1 : 3,
-        minPrice: minPrice.toString(10),
-        maxPrice: maxPrice.toString(10),
+        minPrice: displayMinPrice.toString(10),
+        maxPrice: displayMaxPrice.toString(10),
         cumulativeScale: cumulativeScale.toString(10),
         author: marketCreatedLog.marketCreator,
         creationBlock: marketCreatedLog.blockNumber,
@@ -395,7 +397,7 @@ export class Markets {
         numTicks: numTicks.toString(10),
         tickSize: tickSize.toString(10),
         consensus,
-        outcomes: await getMarketOutcomes(db, marketCreatedLog, scalarDenomination, defaultPrice)
+        outcomes: await getMarketOutcomes(db, marketCreatedLog, scalarDenomination, defaultPrice, )
       });
     }));
   }
