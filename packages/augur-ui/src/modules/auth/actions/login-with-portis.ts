@@ -8,7 +8,8 @@ import Portis, { INetwork } from "@portis/web3";
 import Web3 from "web3";
 import { updateIsLoggedAndLoadAccountData } from "modules/auth/actions/update-is-logged-and-load-account-data";
 import { ACCOUNT_TYPES } from "modules/common/constants";
-import { AppState } from "store";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
+
 
 // TODO find home for all wallet API keys
 const PORTIS_API_KEY = "b67817cf-8dd0-4116-a0cf-657820ddc019";
@@ -31,10 +32,9 @@ const getPortisNetwork = (networkId): false | string | INetwork  => {
 
 export const loginWithPortis = (callback: NodeStyleCallback) => async (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
 ) => {
 
-  const networkId = getState().connection.augurNodeNetworkId;
+  const networkId = getNetworkId();
   const protisNetwork = getPortisNetwork(networkId);
 
   if (protisNetwork) {
