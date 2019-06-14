@@ -17,16 +17,16 @@ export enum SubscriptionEventNames {
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
   DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution",
   DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated",
-  DisputeCrowdsourcerRedeemed = "DisputeCrowdsourcerRedeemed", // Missing in sdk/src/state/logs/types.ts
+  DisputeCrowdsourcerRedeemed = "DisputeCrowdsourcerRedeemed",
   DisputeWindowCreated = "DisputeWindowCreated",
   InitialReportSubmitted = "InitialReportSubmitted",
   InitialReporterRedeemed = "InitialReporterRedeemed",
-  InitialReporterTransferred = "InitialReporterTransferred", // Missing in sdk/src/state/logs/types.ts
+  InitialReporterTransferred = "InitialReporterTransferred",
   MarketCreated = "MarketCreated",
   MarketFinalized = "MarketFinalized",
   MarketMigrated = "MarketMigrated",
-  MarketParticipantsDisavowed = "MarketParticipantsDisavowed", // Missing in sdk/src/state/logs/types.ts
-  MarketTransferred = "MarketTransferred", // Missing in sdk/src/state/logs/types.ts
+  MarketParticipantsDisavowed = "MarketParticipantsDisavowed",
+  MarketTransferred = "MarketTransferred",
   MarketVolumeChanged = "MarketVolumeChanged",
   NewBlock = "NewBlock",
   OrderEvent = "OrderEvent",
@@ -35,11 +35,11 @@ export enum SubscriptionEventNames {
   ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
   TimestampSet = "TimestampSet",
   TokenBalanceChanged = "TokenBalanceChanged",
-  TokensBurned = "TokensBurned", // Missing in sdk/src/state/logs/types.ts
-  TokensMinted = "TokensMinted", // Missing in sdk/src/state/logs/types.ts
+  TokensBurned = "TokensBurned",
+  TokensMinted = "TokensMinted",
   TokensTransferred = "TokensTransferred",
   TradingProceedsClaimed = "TradingProceedsClaimed",
-  UniverseCreated = "UniverseCreated", // Missing in sdk/src/state/logs/types.ts
+  UniverseCreated = "UniverseCreated",
   UniverseForked = "UniverseForked",
 }
 
