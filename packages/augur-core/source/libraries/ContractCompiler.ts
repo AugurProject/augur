@@ -123,7 +123,7 @@ export class ContractCompiler {
             return stats.isFile() && path.extname(file) !== ".sol";
         }
         const filePaths:string[] = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreFile);
-        let filesPromises;
+        let filesPromises: Array<Promise<string>>;
         if (this.configuration.useFlattener) {
             filesPromises = filePaths.map(async filePath => (await this.generateFlattenedSolidity(filePath)));
         } else {
