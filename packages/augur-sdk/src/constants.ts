@@ -12,33 +12,35 @@ export enum ACCOUNT_TYPES {
 }
 
 export enum SubscriptionEventNames {
-  Approval = "Approval",
-  Burn = "Burn",
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
   DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution",
   DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated",
-  DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog",
-  DisputeWindowClosed = "DisputeWindowClosed",
+  DisputeCrowdsourcerRedeemed = "DisputeCrowdsourcerRedeemed", // Missing in sdk/src/state/logs/types.ts
   DisputeWindowCreated = "DisputeWindowCreated",
-  DisputeWindowOpened = "DisputeWindowOpened",
-  DisputeWindowRedeemed = "DisputeWindowRedeemed",
   InitialReportSubmitted = "InitialReportSubmitted",
   InitialReporterRedeemed = "InitialReporterRedeemed",
-  InitialReporterTransferred = "InitialReporterTransferred",
+  InitialReporterTransferred = "InitialReporterTransferred", // Missing in sdk/src/state/logs/types.ts
   MarketCreated = "MarketCreated",
   MarketFinalized = "MarketFinalized",
   MarketMigrated = "MarketMigrated",
-  MarketState = "MarketState",
+  MarketParticipantsDisavowed = "MarketParticipantsDisavowed", // Missing in sdk/src/state/logs/types.ts
+  MarketTransferred = "MarketTransferred", // Missing in sdk/src/state/logs/types.ts
+  MarketVolumeChanged = "MarketVolumeChanged",
   NewBlock = "NewBlock",
   OrderEvent = "OrderEvent",
+  ParticipationTokensRedeemed = "ParticipationTokensRedeemed",
+  ProfitLossChanged = "ProfitLossChanged",
   ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
-  SyncFinished = "SyncFinished",
-  TokensBurned = "TokensBurned",
+  TimestampSet = "TimestampSet",
+  TokenBalanceChanged = "TokenBalanceChanged",
+  TokensBurned = "TokensBurned", // Missing in sdk/src/state/logs/types.ts
+  TokensMinted = "TokensMinted", // Missing in sdk/src/state/logs/types.ts
   TokensTransferred = "TokensTransferred",
   TradingProceedsClaimed = "TradingProceedsClaimed",
-  UniverseCreated = "UniverseCreated",
+  UniverseCreated = "UniverseCreated", // Missing in sdk/src/state/logs/types.ts
+  UniverseForked = "UniverseForked",
 }
 
 export function isSubscriptionEventName(eventName: string): string | null {
