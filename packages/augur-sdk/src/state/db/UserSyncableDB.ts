@@ -30,4 +30,8 @@ export class UserSyncableDB extends SyncableDB {
     }
     return logs;
   }
+
+  public getFullEventName(): string {
+    return `${this.eventName}-${this.user}`;
+  }
 }

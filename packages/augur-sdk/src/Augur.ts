@@ -1,16 +1,16 @@
-import {Callback, Connector} from "./connector/connector";
-import {ContractAddresses, NetworkId} from "@augurproject/artifacts";
-import {ContractInterfaces} from "@augurproject/core";
-import {Contracts} from "./api/Contracts";
-import {EmptyConnector} from "./connector/empty-connector";
-import {Events} from "./api/Events";
-import {BigNumber} from 'bignumber.js';
-import {Provider} from "./ethereum/Provider";
-import {isSubscriptionEventName, SubscriptionEventNames} from "./constants";
-import {Trade} from "./api/Trade";
-import {ContractDependenciesEthers, TransactionStatusCallback} from "contract-dependencies-ethers";
-import {Markets} from "./state/getter/Markets";
-import {SyncData} from "./state/getter/sync-data";
+import { Callback, Connector } from "./connector/connector";
+import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
+import { ContractInterfaces } from "@augurproject/core";
+import { Contracts } from "./api/Contracts";
+import { EmptyConnector } from "./connector/empty-connector";
+import { Events } from "./api/Events";
+import { BigNumber } from 'bignumber.js';
+import { Provider } from "./ethereum/Provider";
+import { isSubscriptionEventName, SubscriptionEventNames } from "./constants";
+import { Trade } from "./api/Trade";
+import { ContractDependenciesEthers, TransactionStatusCallback } from "contract-dependencies-ethers";
+import { Markets } from "./state/getter/Markets";
+import { SyncData } from "./state/getter/sync-data";
 
 export interface CustomEvent {
   name: string;
@@ -176,15 +176,15 @@ export class Augur<TProvider extends Provider = Provider> {
     return Augur.connector.bindTo(f);
   }
 
-  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
+  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
-      Augur.connector.on(eventName, callback);
+      return Augur.connector.on(eventName, callback);
     }
   }
 
-  public off(eventName: SubscriptionEventNames | string): void {
+  public async off(eventName: SubscriptionEventNames | string): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
-      Augur.connector.off(eventName);
+      return Augur.connector.off(eventName);
     }
   }
 
