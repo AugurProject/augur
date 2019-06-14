@@ -1,9 +1,9 @@
 import RunWorker from "./Sync.worker";
 
-import {API} from "@augurproject/sdk/build/state/getter/API";
-import {Callback, Connector} from "@augurproject/sdk/build/connector/connector";
-import {SubscriptionEventNames} from "@augurproject/sdk/build/constants";
-import {buildAPI} from "@augurproject/sdk";
+import { API } from "@augurproject/sdk/build/state/getter/API";
+import { Callback, Connector } from "@augurproject/sdk/build/connector/connector";
+import { SubscriptionEventNames } from "@augurproject/sdk/build/constants";
+import { buildAPI } from "@augurproject/sdk";
 
 export class WebWorkerConnector extends Connector {
   private api: Promise<API>;
@@ -47,15 +47,17 @@ export class WebWorkerConnector extends Connector {
     };
   }
 
-  public on(eventName: SubscriptionEventNames | string, callback: Callback): void {
+  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
     this.subscriptions[eventName] = { id: "", callback };
     this.worker.postMessage({ subscribe: eventName });
   }
 
-  public off(eventName: SubscriptionEventNames | string): void {
-    const subscription = this.subscriptions[eventName].id;
-    delete this.subscriptions[eventName];
+  public async off(eventName: SubscriptionEventNames | string): Promise<void> {
+    const subscription = this.subscriptions[eventName];
 
-    this.worker.postMessage({ unsubscribe: subscription });
+    if (subscription) {
+      delete this.subscriptions[eventName];
+      this.worker.postMessage({ unsubscribe: subscription.id });
+    }
   }
 }
