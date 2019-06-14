@@ -31,23 +31,20 @@ interface TradingFormProps {
 
 interface TradingFormState {
   showForm: boolean;
-  selectedOutcomeId: number;
   selectedOutcome: MarketInfoOutcome;
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcomeId: 0
+    selectedOutcomeId: 1
   };
 
   state: TradingFormState = {
     showForm: false,
     selectedOutcome:
-      this.props.market.outcomes
-        ? this.props.market.outcomes.find(
+      this.props.market.outcomes.find(
             outcome => outcome.id === this.props.selectedOutcomeId
-          )
-        : 0
+          ) || this.props.market.outcomes[1]
   };
 
   componentWillReceiveProps(nextProps: TradingFormProps) {
@@ -59,7 +56,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       if (nextProps.selectedOutcomeId !== null) {
         const selectedOutcome = market.outcomes.find(
           outcome => outcome.id === nextProps.selectedOutcomeId
-        );
+        ) || this.props.market.outcomes[1];
         this.setState({ selectedOutcome });
       }
     }

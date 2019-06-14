@@ -2,7 +2,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import getValue from "utils/get-value";
-import { formatEther, formatShares } from "utils/format-number";
 import * as constants from "modules/common/constants";
 import { CATEGORICAL } from "modules/common/constants";
 

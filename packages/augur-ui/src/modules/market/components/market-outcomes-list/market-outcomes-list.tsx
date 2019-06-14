@@ -60,19 +60,20 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {outcomes && outcomes.map(outcome => (
+          {outcomes && [...outcomes.slice(1), ...outcomes.splice(0,1)].map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
               outcome={outcome}
               marketId={marketId}
-              selectedOutcome={selectedOutcomeId}
+              selectedOutcomeId={selectedOutcomeId}
               updateSelectedOutcome={updateSelectedOutcome}
               marketType={marketType}
               scalarDenomination={
                 marketType === SCALAR && scalarDenomination
               }
             />
-          ))}
+          ))
+          }
         </div>
         {marketType === SCALAR && (
           <MarketScalarOutcomeDisplay
