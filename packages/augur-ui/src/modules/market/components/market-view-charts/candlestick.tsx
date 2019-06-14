@@ -11,17 +11,21 @@ import {
   DEFAULT_PERIODS_VALUE
 } from "modules/common/constants";
 
-export class Candlestick extends React.Component {
-  static propTypes = {
-    currentTimeInSeconds: PropTypes.number.isRequired,
-    marketId: PropTypes.string.isRequired,
-    maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    minPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    selectedOutcome: PropTypes.string.isRequired,
-    daysPassed: PropTypes.number.isRequired,
-    isMobile: PropTypes.bool
-  };
+interface CandlestickProps {
+  currentTimeInSeconds: number;
+  marketId: string;
+  maxPrice: BigNumber;
+  minPrice: BigNumber;
+  selectedOutcomeId: string;
+  daysPassed: number;
+  isMobile: boolean;
+}
 
+interface CandlestickState {
+  priceTimeSeries: Array<any>,
+  selectedPeriod: any
+}
+export class Candlestick extends React.Component<CandlestickProps, CandlestickState> {
   static defaultProps = {
     isMobile: false
   };
@@ -61,7 +65,7 @@ export class Candlestick extends React.Component {
   }
 
   getData() {
-    const { currentTimeInSeconds, marketId, selectedOutcome } = this.props;
+    const { currentTimeInSeconds, marketId, selectedOutcomeId } = this.props;
     const { selectedPeriod } = this.state;
 
     loadCandleStickData(
@@ -69,11 +73,11 @@ export class Candlestick extends React.Component {
         marketId,
         period: selectedPeriod,
         end: currentTimeInSeconds,
-        outcome: selectedOutcome
+        outcome: selectedOutcomeId
       },
       (err, data) => {
         if (err) return logError(err);
-        const priceTimeSeries = data[selectedOutcome] || [];
+        const priceTimeSeries = data[selectedOutcomeId] || [];
         this.setState({
           priceTimeSeries
         });

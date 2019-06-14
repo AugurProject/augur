@@ -13,7 +13,7 @@ const mapStateToProps = (state, ownProps) => {
   const disputeOutcomes = marketDisputeOutcomes() || {};
   return {
     currentTimestamp:
-      selectCurrentTimestampInSeconds(state) || Math.floor(new Date() / 1000),
+      selectCurrentTimestampInSeconds(state) || 0,
     market,
     isLogged: state.authStatus.isLogged,
     isDesignatedReporter:
