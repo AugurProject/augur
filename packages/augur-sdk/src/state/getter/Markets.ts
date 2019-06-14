@@ -91,6 +91,8 @@ export interface MarketInfo {
   tickSize: string;
   consensus: Array<string> | null,
   outcomes: Array<MarketInfoOutcome>;
+  settlementFee: string;
+  reportingFeeRate: string;
 }
 
 export interface MarketPriceCandlestick {
@@ -374,6 +376,8 @@ export class Markets {
         tags = extraInfo.tags ? extraInfo.tags : [];
       }
       const defaultPrice = displayMaxPrice.minus(displayMinPrice).dividedBy(2).toString(10);
+      const settlementFee = new BigNumber(marketCreatedLog.feeDivisor).dividedBy(QUINTILLION).toString(10);
+      const reportingFeeRate = "0"; // TODO need to pull this from somewhere
 
       return Object.assign({
         id: marketCreatedLog.market,
@@ -395,6 +399,8 @@ export class Markets {
         finalizationTime,
         description,
         scalarDenomination,
+        settlementFee,
+        reportingFeeRate,
         details,
         resolutionSource,
         numTicks: numTicks.toString(10),
