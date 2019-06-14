@@ -74,11 +74,47 @@ test("SEOConnector :: Should route correctly and handle events", async (done) =>
 
   await connector.connect("");
 
+  await connector.on(SubscriptionEventNames.MarketCreated, async (...args: Array<any>): Promise<void> => {
+    expect(args[0]).toHaveProperty("extraInfo", "{\"description\": \"yesNo description 1\", \"longDescription\": \"yesNo longDescription 1\", \"tags\": [\"yesNo tag1-1\", \"yesNo tag1-2\", \"yesNo tag1-3\"]}");
+
+    const getMarkets = connector.bindTo(Markets.getMarkets);
+    const markets = await getMarkets({
+      universe: john.augur.contracts.universe.address,
+    });
+    expect(markets).toEqual([yesNoMarket1.address]);
+
+    await connector.off(SubscriptionEventNames.MarketCreated);
+    expect(connector.subscriptions).toEqual({});
+    done();
+  });
+
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+}, 15000);
+
+test("SEOConnector :: Should route correctly and handle events", async (done) => {
+  const universe = john.augur.contracts.universe;
+  const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
+  const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
+  const affiliateFeeDivisor = new BigNumber(0);
+  const designatedReporter = john.account;
+
+  const yesNoMarket1 = await john.createYesNoMarket(
+    universe,
+    endTime,
+    lowFeePerCashInAttoCash,
+    affiliateFeeDivisor,
+    designatedReporter,
+    "yesNo topic 1",
+    "{\"description\": \"yesNo description 1\", \"longDescription\": \"yesNo longDescription 1\", \"tags\": [\"yesNo tag1-1\", \"yesNo tag1-2\", \"yesNo tag1-3\"]}",
+  );
+
+  await connector.connect("");
+
   await connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
     expect(args).toEqual([{
       blocksBehindCurrent: 0,
-      highestAvailableBlockNumber: 91,
-      lastSyncedBlockNumber: 91,
+      highestAvailableBlockNumber: 93,
+      lastSyncedBlockNumber: 93,
       percentBehindCurrent: "0.0000",
     }]);
 
@@ -86,7 +122,7 @@ test("SEOConnector :: Should route correctly and handle events", async (done) =>
     const markets = await getMarkets({
       universe: john.augur.contracts.universe.address,
     });
-    expect(markets).toEqual([yesNoMarket1.address]);
+    expect(markets[markets.length - 1]).toEqual(yesNoMarket1.address);
 
     await connector.off(SubscriptionEventNames.NewBlock);
     expect(connector.subscriptions).toEqual({});
