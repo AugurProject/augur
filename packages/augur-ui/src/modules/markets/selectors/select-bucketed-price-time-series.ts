@@ -1,6 +1,5 @@
 import { createBigNumber } from "utils/create-big-number";
 import createCachedSelector from "re-reselect";
-import { pullAll } from "lodash";
 import store from "store";
 import { ZERO } from "modules/common/constants";
 import {
@@ -134,7 +133,8 @@ function getTradeInTimeRange(timeSeries, startTime, endTime) {
   });
 
   return {
-    trimmedTimeSeries: pullAll(timeSeries, bucket),
+    trimmedTimeSeries: (timeSeries, bucket) =>
+      timeSeries.filter(v => !bucket.includes(v)),
     trades: bucket
       .sort((a, b) => b.logIndex - a.logIndex)
       .sort((a, b) => b.timestamp - a.timestamp)
