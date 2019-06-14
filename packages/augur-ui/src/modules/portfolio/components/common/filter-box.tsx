@@ -176,7 +176,7 @@ export default class FilterBox extends React.Component<
 
     const { filteredData, search, selectedTab, tabs } = this.state;
 
-    let selectedLabel: any = tabs.find(tab => ({ key: selectedTab }));
+    let selectedLabel: any = tabs.find(tab => tab.key === selectedTab );
 
     if (selectedLabel) {
       selectedLabel = selectedLabel.label.toLowerCase();

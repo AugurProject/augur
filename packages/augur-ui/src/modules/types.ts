@@ -3,6 +3,7 @@ import { BUY, SELL } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
 import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
+import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -370,14 +371,14 @@ export interface Favorite {
 export interface EthereumNodeOptions {
   blockRetention: number;
   connectionTimeout: number;
-  http: string | null;
+  http: string;
   pollingIntervalMilliseconds: number;
-  ws: string | null;
+  ws: string;
 }
 
 export interface EnvObject {
   "augur-node"?: string;
-  "ethereum-node"?: EthereumNodeOptions;
+  "ethereum-node": EthereumNodeOptions;
   universe?: string;
   useWeb3Transport: boolean;
 }
@@ -495,7 +496,7 @@ export interface TimeframeData {
 export interface LoginAccount {
   address?: string;
   displayAddress?: string;
-  meta?: { accountType: string; address: string; signer: object | null };
+  meta?: { accountType: string; address: string; signer: EthersSigner, isWeb3: boolean };
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
