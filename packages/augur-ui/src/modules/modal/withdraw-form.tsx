@@ -73,7 +73,7 @@ export class WithdrawForm extends Component<
     const { amount } = this.state;
     this.setState({ currency: value });
     if (amount.length) {
-      this.amountChange({ target: { value: amount } });
+      this.amountChange(amount);
     }
   }
 
@@ -83,16 +83,12 @@ export class WithdrawForm extends Component<
     const fullAmount = createBigNumber(loginAccount[currency.toLowerCase()]);
     const valueMinusGas = fullAmount.minus(GasCosts.eth.fullPrecision);
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
-    this.amountChange({
-      target: {
-        value: currency === ETH ? resolvedValue.toFixed() : fullAmount.toFixed()
-      },
-    });
+    this.amountChange(currency === ETH ? resolvedValue.toFixed() : fullAmount.toFixed());
   }
 
-  amountChange = (amouont: string) => {
+  amountChange = (amount: string) => {
     const { loginAccount, GasCosts } = this.props;
-    const newAmount = convertExponentialToDecimal(sanitizeArg(parseFloat(amount)));
+    const newAmount = convertExponentialToDecimal(sanitizeArg(amount));
     const bnNewAmount = createBigNumber(newAmount || "0");
     const { errors: updatedErrors, currency } = this.state;
     updatedErrors.amount = "";
@@ -218,7 +214,7 @@ export class WithdrawForm extends Component<
                 placeholder="0x..."
                 onChange={this.addressChange}
                 error={errors.address.length > 0}
-                errorMessage={errors.address}
+                errorMessage={errors.address.length > 0 ? errors.address : ""}
               />
             </div>
             <div>
@@ -241,7 +237,7 @@ export class WithdrawForm extends Component<
                 placeholder="0.00"
                 onChange={this.amountChange}
                 error={errors.amount && errors.amount.length > 0}
-                errorMessage={errors.amount}
+                errorMessage={errors.amount && errors.amount.length > 0 ? errors.amount : ""}
                 value={amount}
               />
             </div>
