@@ -67,7 +67,7 @@ export enum MarketInfoReportingState {
 export interface MarketInfo {
   id: string;
   universe: string;
-  marketType: MarketType;
+  marketType: string;
   numOutcomes: number;
   minPrice: string;
   maxPrice: string;

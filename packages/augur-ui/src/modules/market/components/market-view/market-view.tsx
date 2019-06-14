@@ -298,7 +298,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                         <MarketOutcomeSelector
                           outcome={s.selectedOutcomeId}
                           outcomeName={selectedOutcomeName}
-                          selectOutcome={this.showModal}
+                          selectOutcome={this.updateSelectedOutcome}
                         />
                       )}
                       {marketType !== CATEGORICAL && (
