@@ -52,6 +52,7 @@
     "@babel/polyfill": "7.2.5",
     "@ledgerhq/hw-app-eth": "4.48.0",
     "@ledgerhq/hw-transport-u2f": "4.48.0",
+    "@portis/web3": "2.0.0-beta.30",
     "async": "2.6.1",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
@@ -99,6 +100,7 @@
     "shifty": "2.6.1",
     "speedomatic": "2.1.5",
     "trezor-connect": "7.0.3",
+    "web3": "1.0.0-beta.55",
     "webpack": "4.19.1",
     "webpack-cli": "^3.3.1",
     "webpack-dev-middleware": "3.3.0"

@@ -6,7 +6,7 @@
       "src",
       "test"
     ],
-    "noImplicitAny": false
+    "noImplicitReturns": false
   },
   "include": [
     "./src/**/*",

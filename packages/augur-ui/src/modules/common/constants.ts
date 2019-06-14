@@ -2,6 +2,7 @@ import {
   Ledger,
   Edge,
   MetaMask,
+  Portis,
   Trezor
 } from "modules/common/icons";
 import { DEFAULT_DERIVATION_PATH } from "modules/auth/helpers/derivation-path";
@@ -79,6 +80,7 @@ export const EDGE_WALLET_TYPE = "wallet:ethereum";
 // # Connect Nav Constants
 export const ACCOUNT_TYPES = {
   EDGE: "edge",
+  PORTIS: "portis",
   LEDGER: "ledger",
   METAMASK: "metaMask",
   TREZOR: "trezor",
@@ -102,11 +104,21 @@ export const ERROR_TYPES = {
   INCORRECT_FORMAT: {
     header: "Incorrect Format",
     subheader: `Please enter a derivative path with the format "${DEFAULT_DERIVATION_PATH}"`
-  }
+  },
+  UNSUPPORTED_NETWORK: {
+    header: "Unsupported Network",
+    subheader: "Portis is only available on mainnet/kovan/localhost",
+  },
 };
 
 const DEFAULT_ITEM_INDEX = 0;
 export const ITEMS = [
+  {
+    param: ACCOUNT_TYPES.PORTIS,
+    title: "Portis",
+    icon: Portis,
+    type: WALLET_TYPE.SOFTWARE
+  },
   {
     param: ACCOUNT_TYPES.METAMASK,
     title: "Metamask / Web 3 Provider",
