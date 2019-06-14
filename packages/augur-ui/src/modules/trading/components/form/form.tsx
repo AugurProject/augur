@@ -37,7 +37,6 @@ interface FromProps {
   clearOrderForm: Function;
   updateTradeTotalCost: Function;
   updateTradeNumShares: Function;
-  updateNewOrderProperties: Function;
   clearOrderConfirmation: Function;
 }
 
@@ -524,8 +523,8 @@ class Form extends Component<FromProps, FormState> {
       maxPrice,
       minPrice,
       updateState,
-      updateNewOrderProperties,
       orderEscrowdEth,
+      updateSelectedOutcome,
     } = this.props;
     const s = this.state;
 
@@ -545,14 +544,15 @@ class Form extends Component<FromProps, FormState> {
     );
 
     const isScalerWithDenomination: boolean = market.marketType === SCALAR;
+    const defaultOutcome = selectedOutcome ? selectedOutcome.id : "Outcome";
 
     return (
       <div className={Styles.TradingForm}>
-        {selectedOutcome && market.marketType === CATEGORICAL && (
+        {market.marketType === CATEGORICAL && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <SquareDropdown
-              defaultValue={selectedOutcome.id}
-              onChange={value => console.log('dropdown is now ', value)}
+              defaultValue={defaultOutcome}
+              onChange={value => updateSelectedOutcome(value)}
               options={market.outcomes.map(outcome => ({
                 label: outcome.description,
                 value: outcome.id,

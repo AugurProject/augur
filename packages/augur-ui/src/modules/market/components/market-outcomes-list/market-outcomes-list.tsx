@@ -14,7 +14,7 @@ interface MarketOutcomesListProps {
   marketId: string,
   outcomes: Array<MarketInfoOutcome>,
   updateSelectedOutcome: Function,
-  selectedOutcomeId: string,
+  selectedOutcomeId?: string,
   scalarDenomination: string | undefined,
   marketType: string,
   minPrice: BigNumber,
@@ -27,6 +27,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
     selectedOutcomeId: "1",
     scalarDenomination: null,
     marketType: null,
+    outcomes: [],
     minPrice: null,
     maxPrice: null,
     popUp: false

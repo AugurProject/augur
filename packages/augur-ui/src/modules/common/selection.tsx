@@ -89,7 +89,7 @@ interface DotSelectionState {
 class Dropdown extends React.Component<DropdownProps, DropdownState> {
   state: DropdownState = {
     selected: this.props.defaultValue
-      ? this.props.options.find(o => ({ value: this.props.defaultValue }))
+      ? this.props.options.find(o => o.value === this.props.defaultValue)
       : this.props.options[0],
     showList: false
   };
@@ -101,7 +101,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   componentWillUpdate(nextProps: DropdownProps) {
     if (nextProps.defaultValue !== this.props.defaultValue) {
       this.dropdownSelect(
-        this.props.options.find(o => ({ value: nextProps.defaultValue }))
+        this.props.options.find(o => o.value === nextProps.defaultValue)
       );
     }
   }

@@ -234,7 +234,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
     } = this.props;
     const s = this.state;
 
-    const outcome = outcomes.find( outcomeValue => outcomeValue.id === s.selectedOutcomeId)
+    const outcome = outcomes.find( outcomeValue => outcomeValue.id.toString() === s.selectedOutcomeId)
     const selectedOutcomeName: string = outcome ? outcome.description : "";
 
     return (
@@ -271,7 +271,6 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                       <MarketHeader marketId={marketId} />
                       <MarketOutcomesList
                         marketId={marketId}
-                        outcomes={outcomes}
                         selectedOutcomeId={s.selectedOutcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
                       />
@@ -411,7 +410,6 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                         >
                           <MarketOutcomesList
                             marketId={marketId}
-                            outcomes={outcomes}
                             selectedOutcomeId={s.selectedOutcomeId}
                             updateSelectedOutcome={this.updateSelectedOutcome}
                           />

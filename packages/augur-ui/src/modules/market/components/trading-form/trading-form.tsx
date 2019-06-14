@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-import Wrapper from "modules/trading/components/wrapper/wrapper";
-import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
-import makePath from "modules/routes/helpers/make-path";
-import Styles from "modules/market/components/trading-form/trading-form.styles.less";
+import Wrapper from 'modules/trading/components/wrapper/wrapper';
+import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
+import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
-import { PrimaryButton } from "modules/common/buttons";
-import { MarketData } from "modules/types";
-import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+import { PrimaryButton } from 'modules/common/buttons';
+import { MarketData } from 'modules/types';
+import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
 
 interface TradingFormProps {
   availableFunds: BigNumber;
@@ -36,27 +36,33 @@ interface TradingFormState {
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcomeId: "1"
+    selectedOutcomeId: "1",
   };
 
   state: TradingFormState = {
     showForm: false,
     selectedOutcome:
-    this.props.market && this.props.market.outcomes && this.props.market.outcomes.find(
-            outcome => outcome.id === this.props.selectedOutcomeId
-          )
+      this.props.market &&
+      this.props.market.outcomes &&
+      this.props.market.outcomes.find(
+        outcome => outcome.id.toString() === this.props.selectedOutcomeId
+      ),
   };
 
   componentWillReceiveProps(nextProps: TradingFormProps) {
     const { selectedOutcomeId } = this.props;
     const { market } = nextProps;
     if (
-      (selectedOutcomeId !== nextProps.selectedOutcomeId)
+      selectedOutcomeId !== nextProps.selectedOutcomeId ||
+      market.outcomes !== this.props.market.outcomes
     ) {
       if (nextProps.selectedOutcomeId !== null) {
-        const selectedOutcome = market && market.outcomes && market.outcomes.find(
-          outcome => outcome.id === nextProps.selectedOutcomeId
-        );
+        const selectedOutcome =
+          market &&
+          market.outcomes &&
+          market.outcomes.find(
+            outcome => outcome.id.toString() === nextProps.selectedOutcomeId
+          );
         this.setState({ selectedOutcome });
       }
     }
@@ -81,24 +87,24 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       toggleConnectionTray,
       onSubmitPlaceTrade,
       marketReviewTradeSeen,
-      marketReviewTradeModal
+      marketReviewTradeModal,
     } = this.props;
     const s = this.state;
 
     const hasFunds = availableFunds && availableFunds.gt(0);
     const hasSelectedOutcome = s.selectedOutcome !== null;
 
-    let initialMessage: string | boolean = "";
+    let initialMessage: string | boolean = '';
 
     switch (true) {
       case !isLogged:
-        initialMessage = "Connect a wallet to place an order.";
+        initialMessage = 'Connect a wallet to place an order.';
         break;
       case isLogged && !hasFunds:
-        initialMessage = "Add funds to begin trading.";
+        initialMessage = 'Add funds to begin trading.';
         break;
       case isLogged && hasFunds && !hasSelectedOutcome:
-        initialMessage = "Select an outcome to begin placing an order.";
+        initialMessage = 'Select an outcome to begin placing an order.';
         break;
       default:
         initialMessage = false;
