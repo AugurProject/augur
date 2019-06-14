@@ -1,6 +1,5 @@
 /* eslint jsx-a11y/label-has-for: 0 */
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import {
@@ -515,7 +514,7 @@ class Form extends Component<FromProps, FormState> {
       market.marketType === SCALAR;
 
     return (
-      <div className={Styles.Form}>
+      <div className={Styles.TradingForm}>
         {selectedOutcome && selectedOutcome.id && market.marketType === CATEGORICAL && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <SquareDropdown
