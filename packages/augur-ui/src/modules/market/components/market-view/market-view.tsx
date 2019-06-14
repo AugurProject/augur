@@ -41,7 +41,6 @@ interface MarketViewProps {
   loadFullMarket: Function,
   loadMarketTradingHistory: Function,
   description: string,
-  location: object,
   marketType: string,
   outcomes: Array<MarketInfoOutcome>,
   updateModal: Function,
@@ -61,7 +60,7 @@ interface MarketViewState {
   extendOrderBook: boolean,
   extendTradeHistory: boolean,
   selectedOrderProperties: DefaultOrderProperties,
-  selectedOutcomeId: number,
+  selectedOutcomeId: string,
   fixedPrecision: number,
   selectedOutcomeProperties: DefaultOrderPropertiesMap,
 }
@@ -70,7 +69,6 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
     marketType: undefined,
     outcomes: [],
     currentTimestamp: 0,
-    selectedOutcomeId: 1
   };
 
   DEFAULT_ORDER_PROPERTIES = { orderPrice: "", orderQuantity: "", selectedNav: BUY};
@@ -83,7 +81,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       extendOrderBook: false,
       extendTradeHistory: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
-      selectedOutcomeId: 1,
+      selectedOutcomeId: "1",
       fixedPrecision: 4,
       selectedOutcomeProperties: {
         1: {
@@ -176,15 +174,10 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
   }
 
   updateSelectedOutcome(selectedOutcomeId) {
-    const { marketType } = this.props;
     if (selectedOutcomeId !== this.state.selectedOutcomeId) {
       this.setState(
         {
-          selectedOutcomeId:
-            selectedOutcomeId === this.state.selectedOutcomeId &&
-            marketType === CATEGORICAL
-              ? null
-              : selectedOutcomeId,
+          selectedOutcomeId,
           selectedOrderProperties: {
             ...this.DEFAULT_ORDER_PROPERTIES
           }
@@ -234,7 +227,6 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       currentTimestamp,
       description,
       marketId,
-      location,
       outcomes,
       market,
       marketType,
@@ -438,8 +430,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                     <div className={Styles.MarketView__secondRow}>
                       <div
                         className={classNames(
-                          Styles.MarketView__component,
-                          Styles.MarketView__orderPositionsTable
+                          Styles.MarketView__component
                         )}
                       >
                         <MarketOrdersPositionsTable marketId={marketId} />

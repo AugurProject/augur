@@ -36,7 +36,7 @@ export const CandlestickOchl = ({ hoveredPeriod, pricePrecision }) => (
         </>
       )}
     </span>
-    <span>ETH</span>
+    <span>DAI</span>
   </div>
 );
 

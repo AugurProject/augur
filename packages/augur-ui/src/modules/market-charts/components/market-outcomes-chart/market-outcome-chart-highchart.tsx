@@ -17,7 +17,7 @@ interface MarketOutcomeChartsHighchartsProps {
   bucketedPriceTimeSeries: object;
   isScalar: boolean;
   scalarDenomination: string;
-  selectedOutcomeId: number;
+  selectedOutcomeId: string;
   pricePrecision: number;
   daysPassed: number;
 }
@@ -134,7 +134,7 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
             snap: true,
             label: {
               enabled: true,
-              format: "{value:.4f} <span class='eth-label'>ETH</span>"
+              format: "{value:.4f} <span class='eth-label'>DAI</span>"
             }
           }
         },

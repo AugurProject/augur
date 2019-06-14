@@ -10,13 +10,12 @@ import SharedStyles from "modules/market/components/market-orders-positions-tabl
 import HeaderStyles from "modules/portfolio/components/common/data-table-header.styles.less";
 import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
 
-
 interface MarketOutcomesListProps {
   marketId: string,
   outcomes: Array<MarketInfoOutcome>,
   updateSelectedOutcome: Function,
-  selectedOutcomeId: number,
-  scalarDenomination: string | null,
+  selectedOutcomeId: string,
+  scalarDenomination: string | undefined,
   marketType: string,
   minPrice: BigNumber,
   maxPrice: BigNumber,
@@ -25,7 +24,7 @@ interface MarketOutcomesListProps {
 
 export default class MarketOutcomesList extends Component<MarketOutcomesListProps> {
   static defaultProps = {
-    selectedOutcomeId: 1,
+    selectedOutcomeId: "1",
     scalarDenomination: null,
     marketType: null,
     minPrice: null,
@@ -60,7 +59,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {outcomes && [...outcomes.slice(1), ...outcomes.splice(0,1)].map(outcome => (
+          {outcomes && outcomes.map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
               outcome={outcome}

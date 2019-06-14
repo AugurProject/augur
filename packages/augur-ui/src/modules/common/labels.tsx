@@ -20,15 +20,15 @@ import {
   CLOSED,
   SHORT,
   ZERO,
+  YES_NO,
   REPORTING_STATE
 } from "modules/common/constants";
 import { ViewTransactionDetailsButton } from "modules/common/buttons";
 import { formatNumber } from "utils/format-number";
 import { FormattedNumber, SizeTypes } from "modules/types";
-import { MarketType } from "@augurproject/sdk/build/state/logs/types";
 
 export interface MarketTypeProps {
-  marketType: MarketType;
+  marketType: string;
 }
 
 export interface MarketStatusProps {
@@ -488,7 +488,7 @@ export const MarketTypeLabel = (props: MarketTypeProps) => {
 
   return (
     <span className={Styles.MarketTypeLabel}>
-      {props.marketType === MarketType.YesNo ? "Yes/No" : props.marketType}
+      {props.marketType === YES_NO ? "Yes/No" : props.marketType}
     </span>
   );
 };

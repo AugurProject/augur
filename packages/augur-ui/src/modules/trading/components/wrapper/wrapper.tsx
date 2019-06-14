@@ -19,7 +19,7 @@ import { formatShares } from "utils/format-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
 import { MarketData } from "modules/types";
 import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
-import { MarketType } from "@augurproject/sdk/build/state/logs/types";
+
 // TODO: refactor the need to use this function.
 function pick(object, keys) {
   return keys.reduce((obj, key) => {
@@ -350,7 +350,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             className={classNames({
               [Styles.Buy]: selectedNav === BUY,
               [Styles.Sell]: selectedNav === SELL,
-              [Styles.Scalar]: market.marketType === MarketType.Scalar
+              [Styles.Scalar]: market.marketType === SCALAR
             })}
           >
             <li

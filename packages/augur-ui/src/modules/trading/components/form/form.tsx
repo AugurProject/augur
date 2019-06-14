@@ -19,7 +19,6 @@ import getPrecision from "utils/get-number-precision";
 import convertExponentialToDecimal from "utils/convert-exponential";
 import { MarketData } from "modules/types";
 import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
-import { MarketType } from "@augurproject/sdk/build/state/logs/types";
 
 interface FromProps {
   market: MarketData;
@@ -53,7 +52,7 @@ interface FormState {
   errorCount: number;
 }
 class Form extends Component<FromProps, FormState> {
-  INPUT_TYPES: { QUANTITY: string; PRICE: string; DO_NOT_CREATE_ORDERS: string; EST_ETH: string; SELECTED_NAV: string; };
+  INPUT_TYPES: { QUANTITY: string; PRICE: string; DO_NOT_CREATE_ORDERS: string; EST_DAI: string; SELECTED_NAV: string; };
   MINIMUM_TRADE_VALUE: BigNumber;
 
   constructor(props) {
@@ -63,7 +62,7 @@ class Form extends Component<FromProps, FormState> {
       QUANTITY: "orderQuantity",
       PRICE: "orderPrice",
       DO_NOT_CREATE_ORDERS: "doNotCreateOrders",
-      EST_ETH: "orderEthEstimate",
+      EST_DAI: "orderEthEstimate",
       SELECTED_NAV: "selectedNav"
     };
 
@@ -78,11 +77,11 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.PRICE]: props.orderPrice,
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
       [this.INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
-      [this.INPUT_TYPES.EST_ETH]: props.orderEthEstimate,
+      [this.INPUT_TYPES.EST_DAI]: props.orderEthEstimate,
       errors: {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
-        [this.INPUT_TYPES.EST_ETH]: []
+        [this.INPUT_TYPES.EST_DAI]: []
       }
     };
 
@@ -100,7 +99,7 @@ class Form extends Component<FromProps, FormState> {
   componentWillReceiveProps(nextProps) {
     this.updateTestProperty(this.INPUT_TYPES.QUANTITY, nextProps);
     this.updateTestProperty(this.INPUT_TYPES.PRICE, nextProps);
-    this.updateTestProperty(this.INPUT_TYPES.EST_ETH, nextProps);
+    this.updateTestProperty(this.INPUT_TYPES.EST_DAI, nextProps);
 
     if (
       nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS] !==
@@ -154,7 +153,7 @@ class Form extends Component<FromProps, FormState> {
     if (value && createBigNumber(value).lt(0)) {
       errorCount += 1;
       passedTest = false;
-      errors[this.INPUT_TYPES.EST_ETH].push(
+      errors[this.INPUT_TYPES.EST_DAI].push(
         "Total Order Value must be greater than 0"
       );
     }
@@ -236,11 +235,11 @@ class Form extends Component<FromProps, FormState> {
       errors[this.INPUT_TYPES.QUANTITY].push("Quantity must be greater than 0");
     }
     if (
-      changedProperty === this.INPUT_TYPES.EST_ETH &&
+      changedProperty === this.INPUT_TYPES.EST_DAI &&
       createBigNumber(estEth).lte(0)
     ) {
       errorCount += 1;
-      errors[this.INPUT_TYPES.EST_ETH].push(
+      errors[this.INPUT_TYPES.EST_DAI].push(
         "Total Order Value must be greater than 0"
       );
     }
@@ -257,7 +256,7 @@ class Form extends Component<FromProps, FormState> {
     let errors = {
       [this.INPUT_TYPES.QUANTITY]: [],
       [this.INPUT_TYPES.PRICE]: [],
-      [this.INPUT_TYPES.EST_ETH]: []
+      [this.INPUT_TYPES.EST_DAI]: []
     };
     let isOrderValid = true;
     let errorCount = 0;
@@ -271,8 +270,8 @@ class Form extends Component<FromProps, FormState> {
       createBigNumber(order[this.INPUT_TYPES.QUANTITY]);
 
     const total =
-      order[this.INPUT_TYPES.EST_ETH] &&
-      createBigNumber(order[this.INPUT_TYPES.EST_ETH]);
+      order[this.INPUT_TYPES.EST_DAI] &&
+      createBigNumber(order[this.INPUT_TYPES.EST_DAI]);
 
     const {
       isOrderValid: priceValid,
@@ -285,7 +284,7 @@ class Form extends Component<FromProps, FormState> {
 
     let quantityValid = false;
 
-    if (changedProperty !== this.INPUT_TYPES.EST_ETH) {
+    if (changedProperty !== this.INPUT_TYPES.EST_DAI) {
       const {
         isOrderValid: isThisOrderValid,
         errors: quantityErrors,
@@ -319,7 +318,7 @@ class Form extends Component<FromProps, FormState> {
     } = this.testPropertyCombo(
       order[this.INPUT_TYPES.QUANTITY],
       order[this.INPUT_TYPES.PRICE],
-      order[this.INPUT_TYPES.EST_ETH],
+      order[this.INPUT_TYPES.EST_DAI],
       changedProperty,
       errors
     );
@@ -376,13 +375,13 @@ class Form extends Component<FromProps, FormState> {
       () => {
         let orderQuantity = updatedState[this.INPUT_TYPES.QUANTITY];
         const orderPrice = updatedState[this.INPUT_TYPES.PRICE];
-        let orderEthEstimate = updatedState[this.INPUT_TYPES.EST_ETH];
+        let orderEthEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
 
         if (property === this.INPUT_TYPES.QUANTITY) {
           orderEthEstimate = "";
         } else if (
-          property === this.INPUT_TYPES.EST_ETH ||
-          (property === this.INPUT_TYPES.EST_ETH && value === "")
+          property === this.INPUT_TYPES.EST_DAI ||
+          (property === this.INPUT_TYPES.EST_DAI && value === "")
         ) {
           orderQuantity = "";
         }
@@ -390,7 +389,7 @@ class Form extends Component<FromProps, FormState> {
         const order = {
           [this.INPUT_TYPES.QUANTITY]: orderQuantity ? new BigNumber(orderQuantity).toFixed() : orderQuantity,
           [this.INPUT_TYPES.PRICE]: orderPrice ? new BigNumber(orderPrice).toFixed() : orderPrice,
-          [this.INPUT_TYPES.EST_ETH]: orderEthEstimate ? new BigNumber(orderEthEstimate).toFixed() : orderEthEstimate,
+          [this.INPUT_TYPES.EST_DAI]: orderEthEstimate ? new BigNumber(orderEthEstimate).toFixed() : orderEthEstimate,
           selectedNav
         };
 
@@ -419,12 +418,12 @@ class Form extends Component<FromProps, FormState> {
               ) {
                 updateTradeTotalCost(order);
               } else if (
-                order[this.INPUT_TYPES.EST_ETH] &&
+                order[this.INPUT_TYPES.EST_DAI] &&
                 order[this.INPUT_TYPES.PRICE] &&
-                order[this.INPUT_TYPES.EST_ETH] !== "0" &&
-                ((this.state.lastInputModified === this.INPUT_TYPES.EST_ETH &&
+                order[this.INPUT_TYPES.EST_DAI] !== "0" &&
+                ((this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
                   property === this.INPUT_TYPES.PRICE) ||
-                  property === this.INPUT_TYPES.EST_ETH)
+                  property === this.INPUT_TYPES.EST_DAI)
               ) {
                 updateTradeNumShares(order);
               }
@@ -439,8 +438,8 @@ class Form extends Component<FromProps, FormState> {
               ) {
                 updateTradeTotalCost(order);
               } else if (
-                this.state.lastInputModified === this.INPUT_TYPES.EST_ETH &&
-                validationResults.errors[this.INPUT_TYPES.EST_ETH].length === 0
+                this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
+                validationResults.errors[this.INPUT_TYPES.EST_DAI].length === 0
               ) {
                 updateTradeNumShares(order);
               }
@@ -463,11 +462,11 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.PRICE]: "",
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: false,
       [this.INPUT_TYPES.SELECTED_NAV]: selectedNav,
-      [this.INPUT_TYPES.EST_ETH]: "",
+      [this.INPUT_TYPES.EST_DAI]: "",
       errors: {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
-        [this.INPUT_TYPES.EST_ETH]: []
+        [this.INPUT_TYPES.EST_DAI]: []
       }
     };
     this.setState(
@@ -504,7 +503,7 @@ class Form extends Component<FromProps, FormState> {
       new Set([
         ...s.errors[this.INPUT_TYPES.QUANTITY],
         ...s.errors[this.INPUT_TYPES.PRICE],
-        ...s.errors[this.INPUT_TYPES.EST_ETH]
+        ...s.errors[this.INPUT_TYPES.EST_DAI]
       ])
     );
 
@@ -513,11 +512,11 @@ class Form extends Component<FromProps, FormState> {
     );
 
     const isScalerWithDenomination: boolean =
-      market.marketType === MarketType.Scalar;
+      market.marketType === SCALAR;
 
     return (
       <div className={Styles.Form}>
-        {selectedOutcome && selectedOutcome.id && market.marketType === MarketType.Categorical && (
+        {selectedOutcome && selectedOutcome.id && market.marketType === CATEGORICAL && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <SquareDropdown
               defaultValue={selectedOutcome.id}
@@ -530,7 +529,7 @@ class Form extends Component<FromProps, FormState> {
             />
           </div>
         )}
-        {market.marketType === MarketType.YesNo && (
+        {market.marketType === YES_NO && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <div className={Styles.Yes}>
               <span>Outcome:</span> Yes
@@ -615,7 +614,7 @@ class Form extends Component<FromProps, FormState> {
                   [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length
                 })}
               >
-                {isScalerWithDenomination ? market.scalarDenomination : "ETH"}
+                {isScalerWithDenomination ? market.scalarDenomination : "DAI"}
               </span>
             </div>
           </li>
@@ -623,7 +622,7 @@ class Form extends Component<FromProps, FormState> {
             <label htmlFor="tr__input--limit-price">Total Order Value</label>
             <div
               className={classNames(Styles.TradingForm__input__container, {
-                [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_ETH].length
+                [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI].length
               })}
             >
               <input
@@ -631,7 +630,7 @@ class Form extends Component<FromProps, FormState> {
                   FormStyles.Form__input,
                   Styles.TradingForm__input,
                   {
-                    [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_ETH]
+                    [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI]
                       .length
                   }
                 )}
@@ -641,24 +640,24 @@ class Form extends Component<FromProps, FormState> {
                 min={MIN_QUANTITY.toFixed()}
                 placeholder="0.00"
                 value={
-                  s[this.INPUT_TYPES.EST_ETH] ? new BigNumber(s[this.INPUT_TYPES.EST_ETH]).toNumber() : s[this.INPUT_TYPES.EST_ETH]
+                  s[this.INPUT_TYPES.EST_DAI] ? new BigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber() : s[this.INPUT_TYPES.EST_DAI]
                 }
                 onChange={e =>
-                  this.validateForm(this.INPUT_TYPES.EST_ETH, e.target.value)
+                  this.validateForm(this.INPUT_TYPES.EST_DAI, e.target.value)
                 }
               />
               <span
                 className={classNames({
-                  [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_ETH].length
+                  [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI].length
                 })}
               >
-                ETH
+                DAI
               </span>
             </div>
             {orderEscrowdEth && (
               <label className={Styles.smallLabel}>
                 {ExclamationCircle}
-                {` Max cost of ${orderEscrowdEth} ETH will be escrowed`}
+                {` Max cost of ${orderEscrowdEth} DAI will be escrowed`}
               </label>
             )}
           </li>

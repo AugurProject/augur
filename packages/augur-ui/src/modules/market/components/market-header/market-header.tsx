@@ -22,7 +22,6 @@ import { MarketTimeline } from "modules/common/progress";
 
 import ToggleHeightStyles from "utils/toggle-height.styles.less";
 import { MarketData, QueryEndpoints } from "modules/types";
-import { MarketType } from "@augurproject/sdk/build/state/logs/types";
 
 const OVERFLOW_DETAILS_LENGTH = 89; // in px, overflow limit to trigger MORE details
 
@@ -33,7 +32,7 @@ interface MarketHeaderProps {
   minPrice: BigNumber;
   market: MarketData;
   currentTime: number;
-  marketType: MarketType;
+  marketType: string;
   scalarDenomination: string;
   resolutionSource: any;
   isLogged: boolean;
@@ -133,7 +132,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
     const detailsTooLong =
       market.details && this.state.detailsHeight > OVERFLOW_DETAILS_LENGTH;
 
-    if (marketType === MarketType.Scalar) {
+    if (marketType === SCALAR) {
       const denomination = scalarDenomination ? ` ${scalarDenomination}` : "";
       const warningText =
         (details.length > 0 ? `\n\n` : ``) +

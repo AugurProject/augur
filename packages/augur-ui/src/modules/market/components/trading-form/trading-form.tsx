@@ -18,7 +18,7 @@ interface TradingFormProps {
   marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
   selectedOrderProperties: Object;
-  selectedOutcomeId: number;
+  selectedOutcomeId: string;
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
   gasPrice: number;
@@ -36,7 +36,7 @@ interface TradingFormState {
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcomeId: 1
+    selectedOutcomeId: "1"
   };
 
   state: TradingFormState = {

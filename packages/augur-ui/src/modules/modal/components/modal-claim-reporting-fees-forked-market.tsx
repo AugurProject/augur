@@ -113,7 +113,7 @@ export default class ModalClaimReportingFeesForkedMarket extends Component<Modal
         {
           label: "ETH",
           value: unclaimedEth.formatted,
-          denomination: "ETH",
+          denomination: "DAI",
         },
         {
           label: "GAS",

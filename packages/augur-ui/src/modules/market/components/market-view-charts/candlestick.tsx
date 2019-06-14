@@ -16,7 +16,7 @@ interface CandlestickProps {
   marketId: string;
   maxPrice: BigNumber;
   minPrice: BigNumber;
-  selectedOutcomeId: number;
+  selectedOutcomeId: string;
   daysPassed: number;
   isMobile: boolean;
 }

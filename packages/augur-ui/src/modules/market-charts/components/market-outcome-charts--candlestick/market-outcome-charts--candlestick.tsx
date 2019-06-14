@@ -4,7 +4,7 @@ import CustomPropTypes from "utils/custom-prop-types";
 import {
   PERIODS,
   VOLUME_ETH_SHARES,
-  ETH
+  DAI
 } from "modules/common/constants";
 import {
   SquareDropdown,
@@ -45,7 +45,7 @@ class MarketOutcomeCandlestick extends React.PureComponent<MarketOutcomeCandlest
       containerWidth: 0,
       containerHeight: 0,
       hoveredPeriod: {},
-      volumeType: ETH,
+      volumeType: DAI,
       defaultCandlePeriod: props.selectedPeriod
     };
 
