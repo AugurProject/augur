@@ -27,16 +27,6 @@ console.log("Starting web worker");
       augur.off(SubscriptionEventNames.CompleteSetsPurchased);
     });
 
-    augur.on(SubscriptionEventNames.Burn, (data: any): void => {
-      console.log(data);
-      augur.off(SubscriptionEventNames.Burn);
-    });
-
-    augur.on(SubscriptionEventNames.Approval, (data: any): void => {
-      console.log(data);
-      augur.off(SubscriptionEventNames.Approval);
-    });
-
     const markets = await augur.getMarkets({
       universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
     });

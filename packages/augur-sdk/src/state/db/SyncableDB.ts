@@ -160,9 +160,16 @@ export class SyncableDB extends AbstractDB {
         }));
       }
       documents = _.sortBy(documents, "_id");
+
       success = await this.bulkUpsertDocuments(documents[0]._id, documents);
     }
     if (success) {
+      if (documents && (documents as Array<any>).length) {
+        _.each(documents, (document: any) => {
+          augurEmitter.emit(this.eventName, document);
+        });
+      }
+
       await this.notifyNewBlockEvent(blocknumber);
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
     } else {
@@ -263,5 +270,9 @@ export class SyncableDB extends AbstractDB {
       return this.flexSearch.search(query);
     }
     return [];
+  }
+
+  public getFullEventName(): string {
+    return this.eventName;
   }
 }
