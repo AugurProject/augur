@@ -31,7 +31,7 @@ interface TradingFormProps {
 
 interface TradingFormState {
   showForm: boolean;
-  selectedOutcome: MarketInfoOutcome;
+  selectedOutcome: MarketInfoOutcome | undefined;
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
@@ -42,9 +42,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
   state: TradingFormState = {
     showForm: false,
     selectedOutcome:
-      this.props.market.outcomes.find(
+    this.props.market && this.props.market.outcomes && this.props.market.outcomes.find(
             outcome => outcome.id === this.props.selectedOutcomeId
-          ) || this.props.market.outcomes[1]
+          )
   };
 
   componentWillReceiveProps(nextProps: TradingFormProps) {
@@ -54,9 +54,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       (selectedOutcomeId !== nextProps.selectedOutcomeId)
     ) {
       if (nextProps.selectedOutcomeId !== null) {
-        const selectedOutcome = market.outcomes.find(
+        const selectedOutcome = market && market.outcomes && market.outcomes.find(
           outcome => outcome.id === nextProps.selectedOutcomeId
-        ) || this.props.market.outcomes[1];
+        );
         this.setState({ selectedOutcome });
       }
     }
@@ -88,7 +88,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
     const hasFunds = availableFunds && availableFunds.gt(0);
     const hasSelectedOutcome = s.selectedOutcome !== null;
 
-    let initialMessage: string = "";
+    let initialMessage: string | boolean = "";
 
     switch (true) {
       case !isLogged:

@@ -3,13 +3,12 @@ import {
   YES_NO_NO_OUTCOME_NAME,
   YES_NO_YES_ID,
   YES_NO_YES_OUTCOME_NAME,
-  YES_NO,
-  CATEGORICAL
 } from "modules/common/constants";
+import { MarketType } from "@augurproject/sdk/build/state/logs/types";
 
-export const selectReportableOutcomes = (type, outcomes) => {
+export const selectReportableOutcomes = (type: MarketType, outcomes) => {
   switch (type) {
-    case YES_NO:
+    case MarketType.YesNo:
       return [
         {
           id: `${YES_NO_NO_ID}`,
@@ -20,7 +19,7 @@ export const selectReportableOutcomes = (type, outcomes) => {
           name: YES_NO_YES_OUTCOME_NAME
         }
       ];
-    case CATEGORICAL:
+    case MarketType.Categorical:
       return outcomes.slice();
     default:
       return [];

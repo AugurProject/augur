@@ -47,6 +47,7 @@ import {
   selectAccountPositionsState
 } from "store/select-state";
 import { PositionData } from "modules/types";
+import { MarketType } from "@augurproject/node/build/src";
 
 export const selectMarket = marketId => {
   const state = store.getState();
@@ -130,19 +131,19 @@ const assembleMarket = (
     market.maxPrice = createBigNumber(market.maxPrice);
 
   switch (market.marketType) {
-    case YES_NO:
+    case MarketType.yesNo:
       market.isYesNo = true;
       market.isCategorical = false;
       market.isScalar = false;
       delete market.scalarDenomination;
       break;
-    case CATEGORICAL:
+    case MarketType.categorical:
       market.isYesNo = false;
       market.isCategorical = true;
       market.isScalar = false;
       delete market.scalarDenomination;
       break;
-    case SCALAR:
+    case MarketType.scalar:
       market.isYesNo = false;
       market.isCategorical = false;
       market.isScalar = true;

@@ -511,16 +511,16 @@ class Form extends Component<FromProps, FormState> {
     const quantityValue = convertExponentialToDecimal(
       s[this.INPUT_TYPES.QUANTITY]
     );
-    const defaultOutcome = selectedOutcome ? selectedOutcome.id : "Outcome";
+
     const isScalerWithDenomination: boolean =
       market.marketType === MarketType.Scalar;
 
     return (
       <div className={Styles.Form}>
-        {market.marketType === MarketType.Categorical && (
+        {selectedOutcome && selectedOutcome.id && market.marketType === MarketType.Categorical && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <SquareDropdown
-              defaultValue={defaultOutcome}
+              defaultValue={selectedOutcome.id}
               onChange={this.changeOutcomeDropdown}
               options={market.outcomes.map(outcome => ({
                 label: outcome.description,
