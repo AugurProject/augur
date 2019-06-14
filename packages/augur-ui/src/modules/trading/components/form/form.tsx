@@ -1,23 +1,23 @@
 /* eslint jsx-a11y/label-has-for: 0 */
-import React, { Component } from "react";
-import classNames from "classnames";
-import { BigNumber, createBigNumber } from "utils/create-big-number";
+import React, { Component } from 'react';
+import classNames from 'classnames';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import {
   YES_NO,
   CATEGORICAL,
   SCALAR,
   MIN_QUANTITY,
-  UPPER_FIXED_PRECISION_BOUND
-} from "modules/common/constants";
-import FormStyles from "modules/common/form-styles.less";
-import Styles from "modules/trading/components/form/form.styles.less";
-import { ExclamationCircle } from "modules/common/icons";
-import { SquareDropdown } from "modules/common/selection";
-import { Checkbox } from "modules/common/form";
-import getPrecision from "utils/get-number-precision";
-import convertExponentialToDecimal from "utils/convert-exponential";
-import { MarketData } from "modules/types";
-import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+  UPPER_FIXED_PRECISION_BOUND,
+} from 'modules/common/constants';
+import FormStyles from 'modules/common/form-styles.less';
+import Styles from 'modules/trading/components/form/form.styles.less';
+import { ExclamationCircle } from 'modules/common/icons';
+import { SquareDropdown } from 'modules/common/selection';
+import { Checkbox } from 'modules/common/form';
+import getPrecision from 'utils/get-number-precision';
+import convertExponentialToDecimal from 'utils/convert-exponential';
+import { MarketData } from 'modules/types';
+import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
 
 interface FromProps {
   market: MarketData;
@@ -39,30 +39,41 @@ interface FromProps {
   updateTradeNumShares: Function;
   updateNewOrderProperties: Function;
   clearOrderConfirmation: Function;
-};
+}
 
-interface TestResults { isOrderValid: boolean, errors: object, errorCount: number }
+interface TestResults {
+  isOrderValid: boolean;
+  errors: object;
+  errorCount: number;
+}
 
 interface FormState {
   isOrderValid: boolean;
   lastInputModified: string;
-  [item: string] : string;
+  [item: string]: string;
   errors: object;
   errorCount: number;
 }
 class Form extends Component<FromProps, FormState> {
-  INPUT_TYPES: { QUANTITY: string; PRICE: string; DO_NOT_CREATE_ORDERS: string; EST_DAI: string; SELECTED_NAV: string; };
+  INPUT_TYPES: {
+    QUANTITY: string;
+    PRICE: string;
+    DO_NOT_CREATE_ORDERS: string;
+    EST_DAI: string;
+    SELECTED_NAV: string;
+  };
+
   MINIMUM_TRADE_VALUE: BigNumber;
 
   constructor(props) {
     super(props);
 
     this.INPUT_TYPES = {
-      QUANTITY: "orderQuantity",
-      PRICE: "orderPrice",
-      DO_NOT_CREATE_ORDERS: "doNotCreateOrders",
-      EST_DAI: "orderEthEstimate",
-      SELECTED_NAV: "selectedNav"
+      QUANTITY: 'orderQuantity',
+      PRICE: 'orderPrice',
+      DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
+      EST_DAI: 'orderEthEstimate',
+      SELECTED_NAV: 'selectedNav',
     };
 
     this.MINIMUM_TRADE_VALUE = createBigNumber(1, 10).dividedBy(10000);
@@ -80,14 +91,14 @@ class Form extends Component<FromProps, FormState> {
       errors: {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
-        [this.INPUT_TYPES.EST_DAI]: []
-      }
+        [this.INPUT_TYPES.EST_DAI]: [],
+      },
     };
 
     this.state = {
       ...startState,
       isOrderValid: this.orderValidation(startState).isOrderValid,
-      lastInputModified: "",
+      lastInputModified: '',
       errorCount: 0,
     };
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
@@ -106,7 +117,7 @@ class Form extends Component<FromProps, FormState> {
     ) {
       this.setState({
         [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
-          nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]
+          nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
       });
     }
   }
@@ -116,12 +127,12 @@ class Form extends Component<FromProps, FormState> {
     if (nextProps[property] !== this.state[property]) {
       this.setState(
         {
-          [property]: nextProps[property]
+          [property]: nextProps[property],
         },
         () => {
           const newOrderInfo = {
             ...this.state,
-            [property]: nextProps[property]
+            [property]: nextProps[property],
           };
           const { isOrderValid, errors, errorCount } = this.orderValidation(
             newOrderInfo,
@@ -136,7 +147,7 @@ class Form extends Component<FromProps, FormState> {
             ...newOrderInfo,
             errors,
             isOrderValid,
-            errorCount
+            errorCount,
           });
         }
       );
@@ -146,20 +157,26 @@ class Form extends Component<FromProps, FormState> {
   testTotal(value, errors, isOrderValid, price): TestResults {
     let errorCount = 0;
     let passedTest = !!isOrderValid;
-    if (value === "") {
+    if (value === '') {
       return { isOrderValid: false, errors, errorCount };
     }
     if (value && createBigNumber(value).lt(0)) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.EST_DAI].push(
-        "Total Order Value must be greater than 0"
+        'Total Order Value must be greater than 0'
       );
     }
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
-  testQuantity(value, errors: object, isOrderValid: boolean, nextProps, fromExternal): TestResults {
+  testQuantity(
+    value,
+    errors: object,
+    isOrderValid: boolean,
+    nextProps,
+    fromExternal
+  ): TestResults {
     let errorCount = 0;
     let passedTest = !!isOrderValid;
     const precision = getPrecision(value, 0);
@@ -168,13 +185,13 @@ class Form extends Component<FromProps, FormState> {
     if (value && value.lte(0)) {
       errorCount += 1;
       passedTest = false;
-      errors[this.INPUT_TYPES.QUANTITY].push("Quantity must be greater than 0");
+      errors[this.INPUT_TYPES.QUANTITY].push('Quantity must be greater than 0');
     }
     if (value && value.lt(0.000000001) && !value.eq(0) && !fromExternal) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.QUANTITY].push(
-        "Quantity must be greater than 0.000000001"
+        'Quantity must be greater than 0.000000001'
       );
     }
     if (value && precision > UPPER_FIXED_PRECISION_BOUND && !fromExternal) {
@@ -187,7 +204,12 @@ class Form extends Component<FromProps, FormState> {
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
-  testPrice(value, errors: object, isOrderValid: boolean, nextProps): TestResults {
+  testPrice(
+    value,
+    errors: object,
+    isOrderValid: boolean,
+    nextProps
+  ): TestResults {
     const props = nextProps || this.props;
     const { maxPrice, minPrice, market } = props;
     const tickSize = createBigNumber(market.tickSize);
@@ -207,7 +229,7 @@ class Form extends Component<FromProps, FormState> {
       value
         .minus(minPrice)
         .mod(tickSize)
-        .gt("0")
+        .gt('0')
     ) {
       errorCount += 1;
       passedTest = false;
@@ -218,12 +240,18 @@ class Form extends Component<FromProps, FormState> {
     return { isOrderValid: passedTest, errors, errorCount };
   }
 
-  testPropertyCombo(quantity: string, price: string, estEth: string, changedProperty: string | undefined, errors: object): TestResults {
+  testPropertyCombo(
+    quantity: string,
+    price: string,
+    estEth: string,
+    changedProperty: string | undefined,
+    errors: object
+  ): TestResults {
     let errorCount = 0;
     if (quantity && estEth && !price) {
       errorCount += 1;
       errors[this.INPUT_TYPES.PRICE].push(
-        "Price is needed with Quantity or Total Value"
+        'Price is needed with Quantity or Total Value'
       );
     }
     if (
@@ -231,7 +259,7 @@ class Form extends Component<FromProps, FormState> {
       createBigNumber(quantity).lte(0)
     ) {
       errorCount += 1;
-      errors[this.INPUT_TYPES.QUANTITY].push("Quantity must be greater than 0");
+      errors[this.INPUT_TYPES.QUANTITY].push('Quantity must be greater than 0');
     }
     if (
       changedProperty === this.INPUT_TYPES.EST_DAI &&
@@ -239,7 +267,7 @@ class Form extends Component<FromProps, FormState> {
     ) {
       errorCount += 1;
       errors[this.INPUT_TYPES.EST_DAI].push(
-        "Total Order Value must be greater than 0"
+        'Total Order Value must be greater than 0'
       );
     }
 
@@ -255,7 +283,7 @@ class Form extends Component<FromProps, FormState> {
     let errors = {
       [this.INPUT_TYPES.QUANTITY]: [],
       [this.INPUT_TYPES.PRICE]: [],
-      [this.INPUT_TYPES.EST_DAI]: []
+      [this.INPUT_TYPES.EST_DAI]: [],
     };
     let isOrderValid = true;
     let errorCount = 0;
@@ -275,7 +303,7 @@ class Form extends Component<FromProps, FormState> {
     const {
       isOrderValid: priceValid,
       errors: priceErrors,
-      errorCount: priceErrorCount
+      errorCount: priceErrorCount,
     } = this.testPrice(price, errors, isOrderValid, nextProps);
 
     errorCount += priceErrorCount;
@@ -287,7 +315,7 @@ class Form extends Component<FromProps, FormState> {
       const {
         isOrderValid: isThisOrderValid,
         errors: quantityErrors,
-        errorCount: quantityErrorCount
+        errorCount: quantityErrorCount,
       } = this.testQuantity(
         quantity,
         errors,
@@ -304,7 +332,7 @@ class Form extends Component<FromProps, FormState> {
     const {
       isOrderValid: totalValid,
       errors: totalErrors,
-      errorCount: totalErrorCount
+      errorCount: totalErrorCount,
     } = this.testTotal(total, errors, isOrderValid, price);
 
     errorCount += totalErrorCount;
@@ -313,7 +341,7 @@ class Form extends Component<FromProps, FormState> {
     const {
       isOrderValid: comboValid,
       errors: comboErrors,
-      errorCount: comboErrorCount
+      errorCount: comboErrorCount,
     } = this.testPropertyCombo(
       order[this.INPUT_TYPES.QUANTITY],
       order[this.INPUT_TYPES.PRICE],
@@ -336,20 +364,20 @@ class Form extends Component<FromProps, FormState> {
       updateTradeTotalCost,
       updateTradeNumShares,
       selectedNav,
-      clearOrderForm
+      clearOrderForm,
     } = this.props;
 
     const value = convertExponentialToDecimal(rawValue);
     const updatedState = {
       ...this.state,
-      [property]: value
+      [property]: value,
     };
 
-    if (value === "") {
+    if (value === '') {
       clearOrderForm(false);
       return this.setState(
         {
-          [property]: ""
+          [property]: '',
         },
         () => {
           updateOrderProperty({ [property]: value });
@@ -369,7 +397,7 @@ class Form extends Component<FromProps, FormState> {
 
     updateOrderProperty(
       {
-        [property]: value
+        [property]: value,
       },
       () => {
         let orderQuantity = updatedState[this.INPUT_TYPES.QUANTITY];
@@ -377,19 +405,25 @@ class Form extends Component<FromProps, FormState> {
         let orderEthEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
 
         if (property === this.INPUT_TYPES.QUANTITY) {
-          orderEthEstimate = "";
+          orderEthEstimate = '';
         } else if (
           property === this.INPUT_TYPES.EST_DAI ||
-          (property === this.INPUT_TYPES.EST_DAI && value === "")
+          (property === this.INPUT_TYPES.EST_DAI && value === '')
         ) {
-          orderQuantity = "";
+          orderQuantity = '';
         }
 
         const order = {
-          [this.INPUT_TYPES.QUANTITY]: orderQuantity ? new BigNumber(orderQuantity).toFixed() : orderQuantity,
-          [this.INPUT_TYPES.PRICE]: orderPrice ? new BigNumber(orderPrice).toFixed() : orderPrice,
-          [this.INPUT_TYPES.EST_DAI]: orderEthEstimate ? new BigNumber(orderEthEstimate).toFixed() : orderEthEstimate,
-          selectedNav
+          [this.INPUT_TYPES.QUANTITY]: orderQuantity
+            ? new BigNumber(orderQuantity).toFixed()
+            : orderQuantity,
+          [this.INPUT_TYPES.PRICE]: orderPrice
+            ? new BigNumber(orderPrice).toFixed()
+            : orderPrice,
+          [this.INPUT_TYPES.EST_DAI]: orderEthEstimate
+            ? new BigNumber(orderEthEstimate).toFixed()
+            : orderEthEstimate,
+          selectedNav,
         };
 
         // update the local state of this form then make call to calculate total or shares
@@ -397,10 +431,10 @@ class Form extends Component<FromProps, FormState> {
           {
             ...updatedState,
             errors: {
-              ...validationResults.errors
+              ...validationResults.errors,
             },
             errorCount: validationResults.errorCount,
-            isOrderValid: validationResults.isOrderValid
+            isOrderValid: validationResults.isOrderValid,
           },
           () => {
             if (
@@ -410,7 +444,7 @@ class Form extends Component<FromProps, FormState> {
               if (
                 order[this.INPUT_TYPES.QUANTITY] &&
                 order[this.INPUT_TYPES.PRICE] &&
-                order[this.INPUT_TYPES.QUANTITY] !== "0" &&
+                order[this.INPUT_TYPES.QUANTITY] !== '0' &&
                 ((this.state.lastInputModified === this.INPUT_TYPES.QUANTITY &&
                   property === this.INPUT_TYPES.PRICE) ||
                   property === this.INPUT_TYPES.QUANTITY)
@@ -419,7 +453,7 @@ class Form extends Component<FromProps, FormState> {
               } else if (
                 order[this.INPUT_TYPES.EST_DAI] &&
                 order[this.INPUT_TYPES.PRICE] &&
-                order[this.INPUT_TYPES.EST_DAI] !== "0" &&
+                order[this.INPUT_TYPES.EST_DAI] !== '0' &&
                 ((this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
                   property === this.INPUT_TYPES.PRICE) ||
                   property === this.INPUT_TYPES.EST_DAI)
@@ -445,7 +479,7 @@ class Form extends Component<FromProps, FormState> {
             }
             if (property !== this.INPUT_TYPES.PRICE) {
               this.setState({
-                lastInputModified: property
+                lastInputModified: property,
               });
             }
           }
@@ -457,21 +491,21 @@ class Form extends Component<FromProps, FormState> {
   clearOrderFormProperties() {
     const { selectedNav, clearOrderForm } = this.props;
     const startState = {
-      [this.INPUT_TYPES.QUANTITY]: "",
-      [this.INPUT_TYPES.PRICE]: "",
+      [this.INPUT_TYPES.QUANTITY]: '',
+      [this.INPUT_TYPES.PRICE]: '',
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: false,
       [this.INPUT_TYPES.SELECTED_NAV]: selectedNav,
-      [this.INPUT_TYPES.EST_DAI]: "",
+      [this.INPUT_TYPES.EST_DAI]: '',
       errors: {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
-        [this.INPUT_TYPES.EST_DAI]: []
-      }
+        [this.INPUT_TYPES.EST_DAI]: [],
+      },
     };
     this.setState(
       {
         ...startState,
-        isOrderValid: false
+        isOrderValid: false,
       },
       () => clearOrderForm()
     );
@@ -491,7 +525,7 @@ class Form extends Component<FromProps, FormState> {
       minPrice,
       updateState,
       updateNewOrderProperties,
-      orderEscrowdEth
+      orderEscrowdEth,
     } = this.props;
     const s = this.state;
 
@@ -502,7 +536,7 @@ class Form extends Component<FromProps, FormState> {
       new Set([
         ...s.errors[this.INPUT_TYPES.QUANTITY],
         ...s.errors[this.INPUT_TYPES.PRICE],
-        ...s.errors[this.INPUT_TYPES.EST_DAI]
+        ...s.errors[this.INPUT_TYPES.EST_DAI],
       ])
     );
 
@@ -510,19 +544,18 @@ class Form extends Component<FromProps, FormState> {
       s[this.INPUT_TYPES.QUANTITY]
     );
 
-    const isScalerWithDenomination: boolean =
-      market.marketType === SCALAR;
+    const isScalerWithDenomination: boolean = market.marketType === SCALAR;
 
     return (
       <div className={Styles.TradingForm}>
-        {selectedOutcome && selectedOutcome.id && market.marketType === CATEGORICAL && (
+        {selectedOutcome && market.marketType === CATEGORICAL && (
           <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
             <SquareDropdown
               defaultValue={selectedOutcome.id}
-              onChange={this.changeOutcomeDropdown}
+              onChange={value => console.log('dropdown is now ', value)}
               options={market.outcomes.map(outcome => ({
                 label: outcome.description,
-                value: outcome.id
+                value: outcome.id,
               }))}
               large
             />
@@ -540,7 +573,7 @@ class Form extends Component<FromProps, FormState> {
             <label htmlFor="tr__input--quantity">Quantity</label>
             <div
               className={classNames(Styles.TradingForm__input__container, {
-                [Styles.error]: s.errors[this.INPUT_TYPES.QUANTITY].length
+                [Styles.error]: s.errors[this.INPUT_TYPES.QUANTITY].length,
               })}
             >
               <input
@@ -549,13 +582,13 @@ class Form extends Component<FromProps, FormState> {
                   Styles.TradingForm__input,
                   {
                     [`${Styles.error}`]: s.errors[this.INPUT_TYPES.QUANTITY]
-                      .length
+                      .length,
                   }
                 )}
                 id="tr__input--quantity"
                 type="number"
                 step={
-                  quantityValue && quantityValue !== ""
+                  quantityValue && quantityValue !== ''
                     ? MIN_QUANTITY.toFixed()
                     : 1
                 }
@@ -568,7 +601,7 @@ class Form extends Component<FromProps, FormState> {
               <span
                 className={classNames({
                   [`${Styles.error}`]: s.errors[this.INPUT_TYPES.QUANTITY]
-                    .length
+                    .length,
                 })}
               >
                 Shares
@@ -577,11 +610,11 @@ class Form extends Component<FromProps, FormState> {
           </li>
           <li>
             <label htmlFor="tr__input--limit-price">
-              {marketType === SCALAR ? "Outcome" : "Limit Price"}
+              {marketType === SCALAR ? 'Outcome' : 'Limit Price'}
             </label>
             <div
               className={classNames(Styles.TradingForm__input__container, {
-                [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length
+                [Styles.error]: s.errors[this.INPUT_TYPES.PRICE].length,
               })}
             >
               <input
@@ -596,7 +629,9 @@ class Form extends Component<FromProps, FormState> {
                 min={min}
                 placeholder="0.00"
                 value={
-                  s[this.INPUT_TYPES.PRICE] ? new BigNumber(s[this.INPUT_TYPES.PRICE]).toNumber() : s[this.INPUT_TYPES.PRICE]
+                  s[this.INPUT_TYPES.PRICE]
+                    ? new BigNumber(s[this.INPUT_TYPES.PRICE]).toNumber()
+                    : s[this.INPUT_TYPES.PRICE]
                 }
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)
@@ -610,18 +645,18 @@ class Form extends Component<FromProps, FormState> {
                   [`${Styles.isScalar_smallText}`]:
                     isScalerWithDenomination &&
                     (market.scalarDenomination || []).length > 24,
-                  [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length
+                  [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length,
                 })}
               >
-                {isScalerWithDenomination ? market.scalarDenomination : "DAI"}
+                {isScalerWithDenomination ? market.scalarDenomination : 'DAI'}
               </span>
             </div>
           </li>
-          <li className={Styles["TradingForm__limit-price"]}>
+          <li className={Styles['TradingForm__limit-price']}>
             <label htmlFor="tr__input--limit-price">Total Order Value</label>
             <div
               className={classNames(Styles.TradingForm__input__container, {
-                [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI].length
+                [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI].length,
               })}
             >
               <input
@@ -630,7 +665,7 @@ class Form extends Component<FromProps, FormState> {
                   Styles.TradingForm__input,
                   {
                     [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI]
-                      .length
+                      .length,
                   }
                 )}
                 id="tr__input--limit-price"
@@ -639,7 +674,9 @@ class Form extends Component<FromProps, FormState> {
                 min={MIN_QUANTITY.toFixed()}
                 placeholder="0.00"
                 value={
-                  s[this.INPUT_TYPES.EST_DAI] ? new BigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber() : s[this.INPUT_TYPES.EST_DAI]
+                  s[this.INPUT_TYPES.EST_DAI]
+                    ? new BigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber()
+                    : s[this.INPUT_TYPES.EST_DAI]
                 }
                 onChange={e =>
                   this.validateForm(this.INPUT_TYPES.EST_DAI, e.target.value)
@@ -647,7 +684,8 @@ class Form extends Component<FromProps, FormState> {
               />
               <span
                 className={classNames({
-                  [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI].length
+                  [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI]
+                    .length,
                 })}
               >
                 DAI
@@ -671,7 +709,7 @@ class Form extends Component<FromProps, FormState> {
                 updateState({
                   [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: !s[
                     this.INPUT_TYPES.DO_NOT_CREATE_ORDERS
-                  ]
+                  ],
                 })
               }
             />
