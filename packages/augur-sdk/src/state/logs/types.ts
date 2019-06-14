@@ -234,6 +234,15 @@ export interface TimestampSetLog extends Log, Doc {
   newTimestamp: Timestamp;
 }
 
+export interface TokenBalanceChangedLog extends Log, Doc {
+  universe: Address;
+  owner: Address;
+  token: string;
+  tokenType: string;
+  market: Address;
+  balance: string;
+}
+
 export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
   universe: Address;
   shareToken: Address;
@@ -249,13 +258,4 @@ export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
 export interface UniverseForkedLog extends Log, Doc {
   universe: Address;
   forkingMarket: Address;
-}
-
-export interface TokenBalanceChangedLog extends Log, Doc {
-  universe: Address;
-  owner: Address;
-  token: string;
-  tokenType: string;
-  market: Address;
-  balance: string;
 }
