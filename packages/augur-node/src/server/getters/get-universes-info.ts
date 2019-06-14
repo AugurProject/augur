@@ -49,8 +49,8 @@ export async function getUniversesInfo(db: Knex, augur: Augur, params: t.TypeOf<
     return formatBigNumberAsFixed<UIUniverseInfoRow<BigNumber>, UIUniverseInfoRow<string>>({
       universe: row.universe,
       parentUniverse: row.parentUniverse,
-      balance: row.balance || "0",
-      supply: row.supply || "0",
+      balance: row.balance || new BigNumber("0"),
+      supply: row.supply || new BigNumber("0"),
       numMarkets: row.numMarkets,
       payout: normalizedPayoutsToFixed(normalizePayouts(row)).payout,
       isInvalid: Boolean(row.isInvalid),
