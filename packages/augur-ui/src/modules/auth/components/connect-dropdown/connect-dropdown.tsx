@@ -1,33 +1,40 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { PulseLoader } from "react-spinners";
-
 import {
   ITEMS,
   WALLET_TYPE,
   ACCOUNT_TYPES,
-  ERROR_TYPES
+  ERROR_TYPES,
 } from "modules/common/constants";
 import isMetaMaskPresent from "modules/auth/helpers/is-meta-mask";
 import { LogoutIcon } from "modules/common/icons";
 
-import Styles from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
+import Styles from "modules/auth/components/connect-dropdown/connect-dropdown.styles.less";
 import Ledger from "modules/auth/containers/ledger-connect";
 import Trezor from "modules/auth/containers/trezor-connect";
 import ErrorContainer from "modules/auth/components/common/error-container";
 
-export default class ConnectDropdown extends Component {
-  static propTypes = {
-    isLogged: PropTypes.bool.isRequired,
-    connectMetaMask: PropTypes.func.isRequired,
-    toggleDropdown: PropTypes.func.isRequired,
-    logout: PropTypes.func.isRequired,
-    edgeLoginLink: PropTypes.func.isRequired,
-    edgeLoading: PropTypes.bool.isRequired,
-    history: PropTypes.object.isRequired
-  };
+interface ConnectDropdownProps {
+  isLogged: boolean;
+  connectMetaMask: Function;
+  connectPortis: Function;
+  toggleDropdown: Function;
+  logout: Function;
+  edgeLoginLink: Function;
+  history: History;
+}
 
+interface ConnectDropdownState {
+  selectedOption: null | string;
+  showAdvanced: boolean;
+  error: object | null | undefined;
+  isLedgerLoading: boolean;
+  isTrezorLoading: boolean;
+  showAdvancedButton: boolean;
+}
+
+export default class ConnectDropdown extends Component<ConnectDropdownProps, ConnectDropdownState> {
   constructor(props) {
     super(props);
 
@@ -37,7 +44,7 @@ export default class ConnectDropdown extends Component {
       error: null,
       isLedgerLoading: true,
       isTrezorLoading: true,
-      showAdvancedButton: false
+      showAdvancedButton: false,
     };
 
     this.showAdvanced = this.showAdvanced.bind(this);
@@ -74,7 +81,7 @@ export default class ConnectDropdown extends Component {
   clearState() {
     this.setState({
       selectedOption: null,
-      showAdvancedButton: false
+      showAdvancedButton: false,
     });
   }
 
@@ -90,7 +97,7 @@ export default class ConnectDropdown extends Component {
   }
 
   connect(param) {
-    const { history, connectMetaMask, edgeLoginLink } = this.props;
+    const { history, connectMetaMask, connectPortis, edgeLoginLink } = this.props;
     if (param === ACCOUNT_TYPES.METAMASK) {
       if (!isMetaMaskPresent()) {
         this.showError(ERROR_TYPES.UNABLE_TO_CONNECT);
@@ -104,6 +111,16 @@ export default class ConnectDropdown extends Component {
     } else if (param === ACCOUNT_TYPES.EDGE) {
       edgeLoginLink(history);
       this.closeMenu();
+    } else if (param === ACCOUNT_TYPES.PORTIS) {
+      connectPortis((err, res) => {
+        if (err) {
+          console.error(err);
+          this.showError({
+            header: "Unable To Connect",
+            subheader: err,
+          });
+        }
+      });
     }
   }
 
@@ -147,7 +164,7 @@ export default class ConnectDropdown extends Component {
   }
 
   render() {
-    const { isLogged, edgeLoading } = this.props;
+    const { isLogged } = this.props;
     const s = this.state;
 
     return (
@@ -158,7 +175,7 @@ export default class ConnectDropdown extends Component {
               className={classNames(Styles.ConnectDropdown__item)}
               onClick={() => this.logout()}
               role="button"
-              tabIndex="-1"
+              tabIndex={-1}
             >
               <div className={Styles.ConnectDropdown__icon}>{LogoutIcon()}</div>
               <div className={Styles.ConnectDropdown__title}>Logout</div>
@@ -169,7 +186,7 @@ export default class ConnectDropdown extends Component {
           <div
             className={classNames(
               Styles.ConnectDropdown__item,
-              Styles.ConnectDropdown_explanation
+              Styles.ConnectDropdown_explanation,
             )}
           >
             Connect a wallet to log into Augur.{" "}
@@ -179,7 +196,7 @@ export default class ConnectDropdown extends Component {
           </div>
         )}
         {!isLogged &&
-          ITEMS.map(item => (
+          ITEMS.map((item) => (
             <div key={item.param}>
               <div
                 className={classNames(Styles.ConnectDropdown__item, {
@@ -191,28 +208,25 @@ export default class ConnectDropdown extends Component {
                       (s.showAdvancedButton ||
                         !s.isLedgerLoading ||
                         !s.isTrezorLoading)) ||
-                      s.error)
+                      s.error),
                 })}
                 onClick={() => this.selectOption(item.param)}
                 role="button"
-                tabIndex="-1"
+                tabIndex={-1}
               >
                 <div className={Styles.ConnectDropdown__icon}>{item.icon}</div>
                 <div className={Styles.ConnectDropdown__title}>
                   {item.title}
-                  {s.selectedOption === item.param &&
-                    ((item.param === ACCOUNT_TYPES.EDGE && edgeLoading) ||
-                      (item.param === ACCOUNT_TYPES.LEDGER && s.isLedgerLoading) ||
-                      (item.param === ACCOUNT_TYPES.TREZOR && s.isTrezorLoading)) && (
-                      <div style={{ marginLeft: "8px" }}>
-                        <PulseLoader
-                          color="#FFF"
-                          sizeUnit="px"
-                          size={8}
-                          loading
-                        />
-                      </div>
-                    )}
+                  {s.selectedOption === item.param && (
+                    <div style={{ marginLeft: "8px" }}>
+                      <PulseLoader
+                        color="#FFF"
+                        sizeUnit="px"
+                        size={8}
+                        loading
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {s.selectedOption === item.param &&
@@ -264,7 +278,6 @@ export default class ConnectDropdown extends Component {
               <ErrorContainer
                 error={s.error}
                 connect={this.connect}
-                param={item.param}
                 isSelected={s.selectedOption === item.param}
               />
             </div>
