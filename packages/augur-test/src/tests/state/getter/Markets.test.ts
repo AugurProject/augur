@@ -1,19 +1,12 @@
-import { API } from '@augurproject/sdk/build/state/getter/API';
-import {
-  MarketInfo,
-  MarketInfoReportingState,
-  SECONDS_IN_A_DAY,
+import {API} from '@augurproject/sdk/build/state/getter/API';
+import {MarketInfo, MarketInfoReportingState, SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
-import { Contracts as compilerOutput } from '@augurproject/artifacts';
-import { DB } from '@augurproject/sdk/build/state/db/DB';
-import {
-  ACCOUNTS,
-  makeDbMock,
-  deployContracts,
-  ContractAPI,
-} from '../../../libs';
-import { stringTo32ByteHex, NULL_ADDRESS } from '../../../libs/Utils';
-import { BigNumber } from 'bignumber.js';
+import {Contracts as compilerOutput} from '@augurproject/artifacts';
+import {DB} from '@augurproject/sdk/build/state/db/DB';
+import {ACCOUNTS, ContractAPI, deployContracts, makeDbMock,} from '../../../libs';
+import {NULL_ADDRESS, stringTo32ByteHex} from '../../../libs/Utils';
+import {BigNumber} from 'bignumber.js';
+import {ORDER_TYPES} from "@augurproject/sdk/build";
 
 const mock = makeDbMock();
 
@@ -195,13 +188,13 @@ test('State API :: Markets :: getMarkets', async () => {
   ]);
 
   // Place orders on some markets
-  const bid = new BigNumber(0);
+
   const outcome0 = new BigNumber(0);
   const numShares = new BigNumber(10000000000000);
   const price = new BigNumber(22);
   const yesNoOrderId = await john.placeOrder(
     yesNoMarket1.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome0,
@@ -212,7 +205,7 @@ test('State API :: Markets :: getMarkets', async () => {
   await john.cancelOrder(yesNoOrderId);
   await john.placeOrder(
     yesNoMarket1.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome0,
@@ -222,7 +215,7 @@ test('State API :: Markets :: getMarkets', async () => {
   );
   await john.placeOrder(
     categoricalMarket1.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome0,
@@ -232,7 +225,7 @@ test('State API :: Markets :: getMarkets', async () => {
   );
   await john.placeOrder(
     scalarMarket1.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome0,
@@ -270,17 +263,17 @@ test('State API :: Markets :: getMarkets', async () => {
   // Partially fill orders
   const cost = numShares.multipliedBy(78).div(2);
   const yesNoOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     yesNoMarket1.address,
     outcome0
   );
   const categoricalOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     categoricalMarket1.address,
     outcome0
   );
   const scalarOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     scalarMarket1.address,
     outcome0
   );
@@ -412,14 +405,14 @@ test('State API :: Markets :: getMarketPriceHistory', async () => {
   );
 
   // Place orders
-  const bid = new BigNumber(0);
+
   const outcome0 = new BigNumber(0);
   const outcome1 = new BigNumber(1);
   const numShares = new BigNumber(10000000000000);
   const price = new BigNumber(22);
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome0,
@@ -429,7 +422,7 @@ test('State API :: Markets :: getMarketPriceHistory', async () => {
   );
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome1,
@@ -439,7 +432,7 @@ test('State API :: Markets :: getMarketPriceHistory', async () => {
   );
   await john.placeOrder(
     categoricalMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome0,
@@ -449,7 +442,7 @@ test('State API :: Markets :: getMarketPriceHistory', async () => {
   );
   await john.placeOrder(
     categoricalMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome1,
@@ -461,22 +454,22 @@ test('State API :: Markets :: getMarketPriceHistory', async () => {
   // Fill orders
   const cost = numShares.multipliedBy(78).div(10);
   let yesNoOrderId0 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     yesNoMarket.address,
     outcome0
   );
   let yesNoOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     yesNoMarket.address,
     outcome1
   );
   let categoricalOrderId0 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     categoricalMarket.address,
     outcome0
   );
   let categoricalOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     categoricalMarket.address,
     outcome1
   );
@@ -508,15 +501,15 @@ test('State API :: Markets :: getMarketPriceHistory', async () => {
   const newTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
   await john.setTimestamp(newTime);
 
-  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
-  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  yesNoOrderId0 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome1);
   categoricalOrderId0 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     categoricalMarket.address,
     outcome0
   );
   categoricalOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     categoricalMarket.address,
     outcome1
   );
@@ -627,7 +620,7 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   const startTime = (await john.getTimestamp()).toNumber();
 
   // Place orders
-  const bid = new BigNumber(0);
+
   const outcome0 = new BigNumber(0);
   const outcome1 = new BigNumber(1);
   const numShares = new BigNumber(10000000000000);
@@ -637,7 +630,7 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   const price3 = new BigNumber(40);
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price0,
     outcome0,
@@ -647,7 +640,7 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   );
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price1,
     outcome0,
@@ -657,7 +650,7 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   );
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price2,
     outcome0,
@@ -667,7 +660,7 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   );
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price3,
     outcome0,
@@ -677,7 +670,7 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   );
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price0,
     outcome1,
@@ -687,7 +680,7 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   );
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price1,
     outcome1,
@@ -697,7 +690,7 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   );
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price2,
     outcome1,
@@ -707,7 +700,7 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   );
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price3,
     outcome1,
@@ -730,12 +723,12 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
     .multipliedBy(new BigNumber(100).minus(price3))
     .div(10);
   let yesNoOrderId0 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     yesNoMarket.address,
     outcome0
   );
   let yesNoOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     yesNoMarket.address,
     outcome1
   );
@@ -756,8 +749,8 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   let newTime = (await john.getTimestamp()).plus(60 * 10);
   await john.setTimestamp(newTime);
 
-  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
-  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  yesNoOrderId0 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome1);
   await mary.fillOrder(
     yesNoOrderId0,
     cost1,
@@ -775,8 +768,8 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   newTime = (await john.getTimestamp()).plus(60 * 30);
   await john.setTimestamp(newTime);
 
-  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
-  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  yesNoOrderId0 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome1);
   await mary.fillOrder(
     yesNoOrderId0,
     cost0,
@@ -790,8 +783,8 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
     '43'
   );
 
-  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
-  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  yesNoOrderId0 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome1);
   await mary.fillOrder(
     yesNoOrderId0,
     cost1,
@@ -809,8 +802,8 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
   newTime = (await john.getTimestamp()).plus(60 * 30);
   await john.setTimestamp(newTime);
 
-  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
-  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  yesNoOrderId0 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome1);
   await mary.fillOrder(
     yesNoOrderId0,
     cost2,
@@ -824,8 +817,8 @@ test('State API :: Markets :: getMarketPriceCandlesticks', async () => {
     '43'
   );
 
-  yesNoOrderId0 = await john.getBestOrderId(bid, yesNoMarket.address, outcome0);
-  yesNoOrderId1 = await john.getBestOrderId(bid, yesNoMarket.address, outcome1);
+  yesNoOrderId0 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome0);
+  yesNoOrderId1 = await john.getBestOrderId(ORDER_TYPES.BID, yesNoMarket.address, outcome1);
   await mary.fillOrder(
     yesNoOrderId0,
     cost0,
@@ -1011,14 +1004,14 @@ test('State API :: Markets :: getMarketsInfo', async () => {
   );
 
   // Place orders
-  const bid = new BigNumber(0);
+
   const outcome0 = new BigNumber(0);
   const outcome1 = new BigNumber(1);
   const numShares = new BigNumber(10000000000000);
   const price = new BigNumber(22);
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome0,
@@ -1028,7 +1021,7 @@ test('State API :: Markets :: getMarketsInfo', async () => {
   );
   await john.placeOrder(
     yesNoMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome1,
@@ -1038,7 +1031,7 @@ test('State API :: Markets :: getMarketsInfo', async () => {
   );
   await john.placeOrder(
     categoricalMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome0,
@@ -1048,7 +1041,7 @@ test('State API :: Markets :: getMarketsInfo', async () => {
   );
   await john.placeOrder(
     categoricalMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome1,
@@ -1058,7 +1051,7 @@ test('State API :: Markets :: getMarketsInfo', async () => {
   );
   await john.placeOrder(
     scalarMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome0,
@@ -1068,7 +1061,7 @@ test('State API :: Markets :: getMarketsInfo', async () => {
   );
   await john.placeOrder(
     scalarMarket.address,
-    bid,
+    ORDER_TYPES.BID,
     numShares,
     price,
     outcome1,
@@ -1080,32 +1073,32 @@ test('State API :: Markets :: getMarketsInfo', async () => {
   // Partially fill orders
   const cost = numShares.multipliedBy(78).div(2);
   const yesNoOrderId0 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     yesNoMarket.address,
     outcome0
   );
   const yesNoOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     yesNoMarket.address,
     outcome1
   );
   const categoricalOrderId0 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     categoricalMarket.address,
     outcome0
   );
   const categoricalOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     categoricalMarket.address,
     outcome1
   );
   const scalarOrderId0 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     scalarMarket.address,
     outcome0
   );
   const scalarOrderId1 = await john.getBestOrderId(
-    bid,
+    ORDER_TYPES.BID,
     scalarMarket.address,
     outcome1
   );
