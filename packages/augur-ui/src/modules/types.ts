@@ -1,8 +1,8 @@
 import { ReactNode, MouseEvent } from "react";
-import { BUY, SELL } from "modules/common/constants";
+import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
-import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketInfo, MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
 
 export enum SizeTypes {
@@ -56,29 +56,21 @@ export interface CoreStats {
   realizedPL: ValueLabelPair;
 }
 export interface MarketsData {
-  [marketId: string]: MarketData;
+  [marketId: string]: MarketInfo;
 }
-export interface Outcomes {
-  id: string;
-  description?: string;
+export interface Outcomes extends MarketInfoOutcome {
   name?: string;
 }
-export interface MarketData {
-  id: string;
-  description: string;
-  maxPrice: BigNumber;
-  minPrice: BigNumber;
-  numTicks: number;
-  marketType: string;
-  outcomes: Array<Outcomes>;
-  scalarDenomination: string;
-  universe: string;
-  tickSize: BigNumber;
-  // TODO: this should come from SDK types
-}
+export interface MarketData extends MarketInfo {
+  marketStatus: string;
+  creationTime: DateFormattedObject;
+  // TODO: add this to getter MarketInfo
+  disputeInfo: object;
+};
+
 export interface OutcomesData {
   [marketId: string]: {
-    [outcomeId: string]: MarketData;
+    [outcomeId: string]: MarketInfo;
   };
 }
 export interface TransacitonStatus {
@@ -89,7 +81,7 @@ export interface TransacitonStatus {
 }
 export interface Universe {
   id: string;
-  market?: MarketData | MarketInfo;
+  market?: MarketInfo;
   forkEndTime?: number;
   forkReputationGoal?: BigNumber;
   forkingMarket?: string;
@@ -389,6 +381,8 @@ export interface QueryEndpoints {
   ethereum_node_ws?: string;
   [MARKET_ID_PARAM_NAME]?: string;
   [RETURN_PARAM_NAME]?: string;
+  [CATEGORY_PARAM_NAME]?: string;
+  [TAGS_PARAM_NAME]?: string;
 }
 export interface Endpoints {
   ethereumNodeHTTP: string;

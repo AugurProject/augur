@@ -645,7 +645,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         outcomeDescription: 'Yes',
         price: '0',
         quantity: '0',
-        total: '2937316894531250002',
+        total: '2937316894531250004',
       }
     ]
   );

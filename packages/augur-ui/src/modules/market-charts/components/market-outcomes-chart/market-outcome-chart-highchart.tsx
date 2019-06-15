@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { createBigNumber } from "utils/create-big-number";
 import Highcharts from "highcharts/highstock";
 import NoDataToDisplay from "highcharts/modules/no-data-to-display";
-import Styles from "modules/market-charts/components/market-outcomes-chart/market-outcomes-chart.styles";
+import Styles from "modules/market-charts/components/market-outcomes-chart/market-outcomes-chart.styles.less";
 
 NoDataToDisplay(Highcharts);
 
@@ -11,23 +11,32 @@ const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
 const NUM_DAYS_TO_USE_DAY_TIMEFRAME = 2;
 
-export default class MarketOutcomesChartHighchart extends Component {
-  static propTypes = {
-    maxPrice: PropTypes.number.isRequired,
-    minPrice: PropTypes.number.isRequired,
-    bucketedPriceTimeSeries: PropTypes.object.isRequired,
-    isScalar: PropTypes.bool,
-    scalarDenomination: PropTypes.string,
-    selectedOutcome: PropTypes.string.isRequired,
-    pricePrecision: PropTypes.number.isRequired,
-    daysPassed: PropTypes.number
-  };
+interface MarketOutcomeChartsHighchartsProps {
+  maxPrice: number;
+  minPrice: number;
+  bucketedPriceTimeSeries: object;
+  isScalar: boolean;
+  scalarDenomination: string;
+  selectedOutcomeId: string;
+  pricePrecision: number;
+  daysPassed: number;
+}
 
+interface MarketOutcomeChartsHighchartsState {
+  containerHeight: number;
+  containerWidth: number;
+  options: any;
+}
+export default class MarketOutcomesChartHighchart extends Component<MarketOutcomeChartsHighchartsProps, MarketOutcomeChartsHighchartsState> {
   static defaultProps = {
     isScalar: false,
     daysPassed: 0,
     scalarDenomination: ""
   };
+
+  ethLabel: null;
+  container: any;
+  chart: any;
 
   constructor(props) {
     super(props);
@@ -50,12 +59,17 @@ export default class MarketOutcomesChartHighchart extends Component {
           marginTop: 40,
           events: {
             load() {
+              // @ts-ignore
               const { width } = this.renderer;
+              // @ts-ignore
               this.ethLabel = this.renderer.label("ETH", width - 35, 0).add();
             },
             redraw() {
+              // @ts-ignore
               const { width } = this.renderer;
+              // @ts-ignore
               this.ethLabel.destroy();
+              // @ts-ignore
               this.ethLabel = this.renderer.label("ETH", width - 35, 0).add();
             }
           }
@@ -120,7 +134,7 @@ export default class MarketOutcomesChartHighchart extends Component {
             snap: true,
             label: {
               enabled: true,
-              format: "{value:.4f} <span class='eth-label'>ETH</span>"
+              format: "{value:.4f} <span class='eth-label'>DAI</span>"
             }
           }
         },
@@ -134,24 +148,23 @@ export default class MarketOutcomesChartHighchart extends Component {
   }
 
   componentDidMount() {
-    const { bucketedPriceTimeSeries, selectedOutcome, daysPassed } = this.props;
+    const { bucketedPriceTimeSeries, selectedOutcomeId, daysPassed } = this.props;
     const { containerHeight } = this.state;
     this.buidOptions(
       daysPassed,
       bucketedPriceTimeSeries,
-      selectedOutcome,
-      containerHeight
+      selectedOutcomeId
     );
   }
 
   componentWillUpdate(nextProps) {
-    const { bucketedPriceTimeSeries, daysPassed, selectedOutcome } = this.props;
+    const { bucketedPriceTimeSeries, daysPassed, selectedOutcomeId } = this.props;
     const { containerHeight, containerWidth } = this.state;
     if (
       JSON.stringify(bucketedPriceTimeSeries) !==
         JSON.stringify(nextProps.bucketedPriceTimeSeries) ||
       daysPassed !== nextProps.daysPassed ||
-      selectedOutcome !== nextProps.selectedOutcome ||
+      selectedOutcomeId !== nextProps.selectedOutcomeId ||
       containerHeight !== this.container.clientHeight ||
       containerWidth !== this.container.clientWidth
     ) {
@@ -159,7 +172,7 @@ export default class MarketOutcomesChartHighchart extends Component {
       this.buidOptions(
         nextProps.daysPassed,
         nextProps.bucketedPriceTimeSeries,
-        nextProps.selectedOutcome
+        nextProps.selectedOutcomeId
       );
     }
   }
@@ -183,10 +196,10 @@ export default class MarketOutcomesChartHighchart extends Component {
 
       const {
         bucketedPriceTimeSeries,
-        selectedOutcome,
+        selectedOutcomeId,
         daysPassed
       } = this.props;
-      this.buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcome);
+      this.buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcomeId);
     }
   };
 
@@ -216,7 +229,7 @@ export default class MarketOutcomesChartHighchart extends Component {
     };
   };
 
-  buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcome) {
+  buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcomeId) {
     const { options } = this.state;
     const { isScalar, scalarDenomination } = this.props;
     const { priceTimeSeries } = bucketedPriceTimeSeries;
@@ -257,12 +270,15 @@ export default class MarketOutcomesChartHighchart extends Component {
     const series = [];
     Object.keys(priceTimeSeries).forEach(id => {
       series.push({
+        // @ts-ignore
         type: useArea ? "area" : "line",
+        // @ts-ignore
         lineWidth:
-          selectedOutcome && selectedOutcome === id.toString()
+          selectedOutcomeId && selectedOutcomeId === id
             ? HIGHLIGHTED_LINE_WIDTH
             : NORMAL_LINE_WIDTH,
-        data: priceTimeSeries[id].map(pts => [
+        // @ts-ignore
+          data: priceTimeSeries[id].map(pts => [
           pts.timestamp,
           createBigNumber(pts.price).toNumber()
         ])

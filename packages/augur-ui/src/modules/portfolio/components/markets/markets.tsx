@@ -47,12 +47,12 @@ function renderToggleContent(market) {
           <LinearPropertyLabel
             label="Volume"
             highlightFirst
-            value={`${market.volume.formatted} ETH`}
+            value={`${market.volume.formatted} DAI`}
           />
           <LinearPropertyLabel
             label="Open Interest"
             highlightFirst
-            value={`${market.openInterest.formatted} ETH`}
+            value={`${market.openInterest.formatted} DAI`}
           />
         </div>
       </div>

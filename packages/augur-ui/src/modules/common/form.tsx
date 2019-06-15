@@ -6,13 +6,14 @@ import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { PulseLoader } from "react-spinners";
 import { SearchIcon, XIcon, CheckMark } from "modules/common/icons";
 import debounce from "utils/debounce";
-import Styles from "modules/common/form.styles";
+import Styles from "modules/common/form.styles.less";
 
 interface CheckboxProps {
   id: string;
   isChecked: boolean;
   disabled?: boolean;
-  // value: boolean;
+  type?: string;
+  value?: any;
   onClick: Function;
   small?: boolean;
   smallOnDesktop?: boolean;

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import MarketOutcomesList from "modules/market/containers/market-outcomes-list";
@@ -63,8 +62,7 @@ export default class ModalTradingOverlay extends Component<ModalTradingOverlayPr
             // @ts-ignore */}
           <MarketOutcomesList
             marketId={marketId}
-            outcomes={outcomes}
-            selectedOutcome={selectedOutcome}
+            selectedOutcomeId={selectedOutcome}
             updateSelectedOutcome={this.updateSelectedOutcome}
             popUp
           />

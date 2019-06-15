@@ -2,7 +2,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import getValue from "utils/get-value";
-import { formatEther, formatShares } from "utils/format-number";
 import * as constants from "modules/common/constants";
 import { CATEGORICAL } from "modules/common/constants";
 
@@ -19,7 +18,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const outcome = oP.outcome;
 
-  const outcomeName = getValue(outcome, "name");
+  const outcomeName = getValue(outcome, "description");
 
   const topBidShares = getValue(outcome, "topBid.shares");
   const topAskShares = getValue(outcome, "topAsk.shares");
@@ -84,7 +83,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       isSingle: true,
       noToggle: true,
       colorId: oP.marketType === CATEGORICAL && outcome.id,
-      active: oP.marketType === CATEGORICAL && oP.selectedOutcome === outcome.id
+      active: oP.marketType === CATEGORICAL && oP.selectedOutcomeId === outcome.id
     }
   };
 };

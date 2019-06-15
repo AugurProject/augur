@@ -1,6 +1,6 @@
 export default function convertExponentialToDecimal(
-  exponentialNumber: number,
-): number | string {
+  exponentialNumber: string | number,
+): string {
   // got from davidjs blog
   // sanity check - is it exponential number
   const str = exponentialNumber.toString();
@@ -12,5 +12,5 @@ export default function convertExponentialToDecimal(
         : exponentialNumber.toFixed(exponent);
     return result;
   }
-  return exponentialNumber;
+  return str;
 }

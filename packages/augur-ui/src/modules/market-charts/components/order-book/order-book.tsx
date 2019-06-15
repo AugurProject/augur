@@ -215,7 +215,7 @@ export default class OrderBook extends Component<
                 {orderBookKeys.spread
                   ? orderBookKeys.spread.toFixed(pricePrecision)
                   : "—"}
-                {orderBookKeys.spread && <span>ETH</span>}
+                {orderBookKeys.spread && <span>DAI</span>}
               </div>
             )}
           </div>

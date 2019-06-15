@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import * as constants from "modules/common/constants";
-import Styles from "modules/common/labels.styles";
+import Styles from "modules/common/labels.styles.less";
 import { ClipLoader } from "react-spinners";
 import {
   MarketIcon,
@@ -11,7 +11,7 @@ import {
 } from "modules/common/icons";
 import { MarketProgress } from "modules/common/progress";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/tooltip.styles";
+import TooltipStyles from "modules/common/tooltip.styles.less";
 import { createBigNumber } from "utils/create-big-number";
 import {
   SELL,
@@ -20,6 +20,7 @@ import {
   CLOSED,
   SHORT,
   ZERO,
+  YES_NO,
   REPORTING_STATE
 } from "modules/common/constants";
 import { ViewTransactionDetailsButton } from "modules/common/buttons";
@@ -487,7 +488,7 @@ export const MarketTypeLabel = (props: MarketTypeProps) => {
 
   return (
     <span className={Styles.MarketTypeLabel}>
-      {props.marketType === constants.YES_NO ? "Yes/No" : props.marketType}
+      {props.marketType === YES_NO ? "Yes/No" : props.marketType}
     </span>
   );
 };

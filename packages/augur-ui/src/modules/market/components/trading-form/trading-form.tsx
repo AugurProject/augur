@@ -1,25 +1,27 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-import Wrapper from "modules/trading/components/wrapper/wrapper";
-import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
-import makePath from "modules/routes/helpers/make-path";
-import Styles from "modules/market/components/trading-form/trading-form.styles";
+import Wrapper from 'modules/trading/components/wrapper/wrapper';
+import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
+import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
-import { PrimaryButton } from "modules/common/buttons";
+import { PrimaryButton } from 'modules/common/buttons';
+import { MarketData } from 'modules/types';
+import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
 
 interface TradingFormProps {
-  availableFunds: Object;
-  isLogged: Boolean;
-  isConnectionTrayOpen: Boolean;
-  market: Object;
-  marketReviewTradeSeen: Boolean;
+  availableFunds: BigNumber;
+  isLogged: boolean;
+  isConnectionTrayOpen: boolean;
+  market: MarketData;
+  marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
   selectedOrderProperties: Object;
-  selectedOutcome: String;
+  selectedOutcomeId: string;
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
-  gasPrice: Number;
+  gasPrice: number;
   updateSelectedOutcome: Function;
   updateTradeCost: Function;
   updateTradeShares: Function;
@@ -28,41 +30,40 @@ interface TradingFormProps {
 }
 
 interface TradingFormState {
-  showForm: Boolean;
-  selectedOutcome: Number;
+  showForm: boolean;
+  selectedOutcome: MarketInfoOutcome | undefined;
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcome: null
+    selectedOutcomeId: "1",
   };
 
   state: TradingFormState = {
     showForm: false,
     selectedOutcome:
-      this.props.selectedOutcome !== null && this.props.market.outcomes
-        ? this.props.market.outcomes.find(
-            outcome => outcome.id === this.props.selectedOutcome
-          )
-        : null
+      this.props.market &&
+      this.props.market.outcomes &&
+      this.props.market.outcomes.find(
+        outcome => outcome.id.toString() === this.props.selectedOutcomeId
+      ),
   };
 
   componentWillReceiveProps(nextProps: TradingFormProps) {
-    const { market, selectedOutcome } = this.props;
+    const { selectedOutcomeId } = this.props;
+    const { market } = nextProps;
     if (
-      (selectedOutcome !== nextProps.selectedOutcome ||
-        JSON.stringify(market.outcomes) !==
-          JSON.stringify(nextProps.market.outcomes)) &&
-      (nextProps.market && nextProps.market.outcomes)
+      selectedOutcomeId !== nextProps.selectedOutcomeId ||
+      market.outcomes !== this.props.market.outcomes
     ) {
-      if (nextProps.selectedOutcome !== null) {
-        this.setState({
-          selectedOutcome: nextProps.market.outcomes.find(
-            outcome => outcome.id === nextProps.selectedOutcome
-          )
-        });
-      } else {
-        this.setState({ selectedOutcome: null });
+      if (nextProps.selectedOutcomeId !== null) {
+        const selectedOutcome =
+          market &&
+          market.outcomes &&
+          market.outcomes.find(
+            outcome => outcome.id.toString() === nextProps.selectedOutcomeId
+          );
+        this.setState({ selectedOutcome });
       }
     }
   }
@@ -86,24 +87,24 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       toggleConnectionTray,
       onSubmitPlaceTrade,
       marketReviewTradeSeen,
-      marketReviewTradeModal
+      marketReviewTradeModal,
     } = this.props;
     const s = this.state;
 
     const hasFunds = availableFunds && availableFunds.gt(0);
     const hasSelectedOutcome = s.selectedOutcome !== null;
 
-    let initialMessage = "";
+    let initialMessage: string | boolean = '';
 
     switch (true) {
       case !isLogged:
-        initialMessage = "Connect a wallet to place an order.";
+        initialMessage = 'Connect a wallet to place an order.';
         break;
       case isLogged && !hasFunds:
-        initialMessage = "Add funds to begin trading.";
+        initialMessage = 'Add funds to begin trading.';
         break;
       case isLogged && hasFunds && !hasSelectedOutcome:
-        initialMessage = "Select an outcome to begin placing an order.";
+        initialMessage = 'Select an outcome to begin placing an order.';
         break;
       default:
         initialMessage = false;
