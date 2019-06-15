@@ -580,7 +580,7 @@ function drawTicks(options) {
       .attr("y", quarter - 12)
       .attr("dx", denominationPlacement)
       .attr("dy", 0)
-      .text("ETH");
+      .text("DAI");
   }
 
   const tickCount = 5;
@@ -641,7 +641,7 @@ function drawTicks(options) {
         .tickPadding(4)
     )
     .selectAll("text")
-    .text(d => `${d} ETH`)
+    .text(d => `${d} DAI`)
     .select("path")
     .remove();
 }
@@ -891,7 +891,7 @@ function attachHoverClickHandlers(options) {
       );
       d3.select("#cost_value").html(
         // @ts-ignore
-        `${nearestFillingOrder[5].toFixed(pricePrecision)} ETH`
+        `${nearestFillingOrder[5].toFixed(pricePrecision)} DAI`
       );
 
       // 27 comes from the padding/border/margins so 1rem total for horz

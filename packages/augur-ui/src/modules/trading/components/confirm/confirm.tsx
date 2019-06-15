@@ -224,11 +224,11 @@ class Confirm extends Component {
               </div>
               <LinearPropertyLabel
                 label="Estimated Fee"
-                value={`${orderShareTradingFee.rounded} ETH`}
+                value={`${orderShareTradingFee.rounded} DAI`}
               />
               <LinearPropertyLabel
                 label="Profit"
-                value={`${orderShareProfit.rounded} ETH`}
+                value={`${orderShareProfit.rounded} DAI`}
                 accentValue={notProfitable}
               />
             </div>
@@ -279,11 +279,11 @@ class Confirm extends Component {
               </div>
               <LinearPropertyLabel
                 label="Max Profit"
-                value={`${potentialEthProfit.rounded} ETH`}
+                value={`${potentialEthProfit.rounded} DAI`}
               />
               <LinearPropertyLabel
                 label="Max Loss"
-                value={`${potentialEthLoss.rounded} ETH`}
+                value={`${potentialEthLoss.rounded} DAI`}
               />
             </div>
           )}

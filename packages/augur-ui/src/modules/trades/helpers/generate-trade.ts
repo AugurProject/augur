@@ -114,7 +114,7 @@ export const generateTrade = memoize(
       }),
       shareCost: formatEtherValue(shareCost.abs().toFixed(), {
         blankZero: false,
-      }), // These are actually shares, but they can be formatted like ETH
+      }), // These are actually shares, but they can be formatted like DAI
     };
   },
   { max: 5 },
