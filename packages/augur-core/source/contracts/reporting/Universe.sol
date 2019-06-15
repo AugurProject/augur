@@ -80,6 +80,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function updateForkValues() public returns (bool) {
+        require(!isForking());
         uint256 _totalRepSupply = reputationToken.getTotalTheoreticalSupply();
         forkReputationGoal = _totalRepSupply.div(2); // 50% of REP migrating results in a victory in a fork
         disputeThresholdForFork = _totalRepSupply.div(40); // 2.5% of the total rep supply
