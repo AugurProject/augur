@@ -4,10 +4,10 @@ import {
   YES_NO_YES_ID,
   YES_NO_YES_OUTCOME_NAME,
   YES_NO,
-  CATEGORICAL
+  CATEGORICAL,
 } from "modules/common/constants";
 
-export const selectReportableOutcomes = (type, outcomes) => {
+export const selectReportableOutcomes = (type: string, outcomes) => {
   switch (type) {
     case YES_NO:
       return [

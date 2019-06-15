@@ -10,7 +10,6 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
-import 'ROOT/reporting/IDisputeOverloadToken.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/IOrders.sol';
@@ -34,7 +33,6 @@ contract Augur is IAugur {
         FeeWindow, // No longer a valid type but here for backward compat with Augur Node processing
         FeeToken, // No longer a valid type but here for backward compat with Augur Node processing
         AuctionToken,
-        DisputeOverloadToken,
         ParticipationToken
     }
 
@@ -95,7 +93,6 @@ contract Augur is IAugur {
     mapping(address => bool) private markets;
     mapping(address => bool) private universes;
     mapping(address => bool) private crowdsourcers;
-    mapping(address => bool) private overloadTokens;
     mapping(address => bool) private shareTokens;
     mapping(address => bool) private auctionTokens;
     mapping(address => bool) private trustedSender;
@@ -179,13 +176,8 @@ contract Augur is IAugur {
         require(isKnownUniverse(_universe));
         require(_universe.isContainerForMarket(IMarket(msg.sender)));
         crowdsourcers[_disputeCrowdsourcer] = true;
-        overloadTokens[address(IDisputeCrowdsourcer(_disputeCrowdsourcer).getDisputeOverloadToken())] = true;
         emit DisputeCrowdsourcerCreated(address(_universe), _market, _disputeCrowdsourcer, _payoutNumerators, _size);
         return true;
-    }
-
-    function isKnownOverloadToken(IDisputeOverloadToken _disputeOverloadToken) public view returns (bool) {
-        return overloadTokens[address(_disputeOverloadToken)];
     }
 
     //
@@ -262,6 +254,19 @@ contract Augur is IAugur {
         uint256 _upgradeCadenceDurationEndTime = upgradeTimestamp;
         uint256 _baseDurationEndTime = _now + Reporting.getBaseMarketDurationMaximum();
         return _baseDurationEndTime.max(_upgradeCadenceDurationEndTime);
+    }
+
+    function derivePayoutDistributionHash(uint256[] memory _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes) public view returns (bytes32) {
+        uint256 _sum = 0;
+        // This is to force an Invalid report to be entirely payed out to Invalid
+        require(_payoutNumerators[0] == 0 || _payoutNumerators[0] == _numTicks);
+        require(_payoutNumerators.length == _numOutcomes);
+        for (uint256 i = 0; i < _payoutNumerators.length; i++) {
+            uint256 _value = _payoutNumerators[i];
+            _sum = _sum.add(_value);
+        }
+        require(_sum == _numTicks);
+        return keccak256(abi.encodePacked(_payoutNumerators));
     }
 
     //
@@ -433,13 +438,6 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logDisputeOverloadTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance) public returns (bool) {
-        IDisputeOverloadToken _disputeOverloadToken = IDisputeOverloadToken(msg.sender);
-        require(isKnownOverloadToken(_disputeOverloadToken));
-        logTokensTransferred(address(_universe), msg.sender, _from, _to, _value, TokenType.DisputeOverloadToken, address(_disputeOverloadToken.getMarket()), _fromBalance, _toBalance, 0);
-        return true;
-    }
-
     function logShareTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance, uint256 _outcome) public returns (bool) {
         IShareToken _shareToken = IShareToken(msg.sender);
         require(isKnownShareToken(_shareToken));
@@ -486,20 +484,6 @@ contract Augur is IAugur {
         IDisputeCrowdsourcer _disputeCrowdsourcer = IDisputeCrowdsourcer(msg.sender);
         require(isKnownCrowdsourcer(_disputeCrowdsourcer));
         logTokensMinted(address(_universe), msg.sender, _target, _amount, TokenType.DisputeCrowdsourcer, address(_disputeCrowdsourcer.getMarket()), _totalSupply, _balance, 0);
-        return true;
-    }
-
-    function logDisputeOverloadTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool) {
-        IDisputeOverloadToken _disputeOverloadToken = IDisputeOverloadToken(msg.sender);
-        require(isKnownOverloadToken(_disputeOverloadToken));
-        logTokensBurned(address(_universe), msg.sender, _target, _amount, TokenType.DisputeOverloadToken, address(_disputeOverloadToken.getMarket()), _totalSupply, _balance, 0);
-        return true;
-    }
-
-    function logDisputeOverloadTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool) {
-        IDisputeOverloadToken _disputeOverloadToken = IDisputeOverloadToken(msg.sender);
-        require(isKnownOverloadToken(_disputeOverloadToken));
-        logTokensMinted(address(_universe), msg.sender, _target, _amount, TokenType.DisputeOverloadToken, address(_disputeOverloadToken.getMarket()), _totalSupply, _balance, 0);
         return true;
     }
 

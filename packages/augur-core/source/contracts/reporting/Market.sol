@@ -276,17 +276,18 @@ contract Market is Initializable, Ownable, IMarket {
         }
 
         IV2ReputationToken _reputationToken = getReputationToken();
+        // We burn 20% of the REP to prevent griefing attacks which rely on getting back lost REP
+        _reputationToken.burnForMarket(_reputationToken.balanceOf(address(this)) / 5);
 
         // Now redistribute REP. Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21.
         for (uint256 j = 0; j < participants.length; j++) {
             _reportingParticipant = participants[j];
             if (_reportingParticipant.getPayoutDistributionHash() == winningPayoutDistributionHash) {
-                require(_reputationToken.transfer(address(_reportingParticipant), _reportingParticipant.getSize().mul(2) / 5));
+                // The last participant's owed REP will not actually be 40% ROI in the event it was created through pre-emptive contributions. We just give them all the remaining non burn REP
+                uint256 amountToTransfer = j == participants.length - 1 ? _reputationToken.balanceOf(address(this)) : _reportingParticipant.getSize().mul(2) / 5;
+                require(_reputationToken.transfer(address(_reportingParticipant), amountToTransfer));
             }
         }
-
-        // We burn 20% of the REP to prevent griefing attacks which rely on getting back lost REP
-        _reputationToken.burnForMarket(_reputationToken.balanceOf(address(this)));
         return true;
     }
 
@@ -407,9 +408,9 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function disavowCrowdsourcers() public returns (bool) {
-        require(universe.isForking());
         IMarket _forkingMarket = getForkingMarket();
         require(_forkingMarket != this);
+        require(_forkingMarket != IMarket(NULL_ADDRESS));
         require(!isFinalized());
         IInitialReporter _initialParticipant = getInitialReporter();
         // Early out if already disavowed or nothing to disavow
@@ -516,7 +517,6 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256) {
-        require(isFinalized());
         return getWinningReportingParticipant().getPayoutNumerator(_outcome);
     }
 
@@ -565,16 +565,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators) public view returns (bytes32) {
-        uint256 _sum = 0;
-        // This is to force an Invalid report to be entirely payed out to Invalid
-        require(_payoutNumerators[0] == 0 || _payoutNumerators[0] == numTicks);
-        require(_payoutNumerators.length == numOutcomes);
-        for (uint256 i = 0; i < _payoutNumerators.length; i++) {
-            uint256 _value = _payoutNumerators[i];
-            _sum = _sum.add(_value);
-        }
-        require(_sum == numTicks);
-        return keccak256(abi.encodePacked(_payoutNumerators));
+        return augur.derivePayoutDistributionHash(_payoutNumerators, numTicks, numOutcomes);
     }
 
     function isContainerForShareToken(IShareToken _shadyShareToken) public view returns (bool) {

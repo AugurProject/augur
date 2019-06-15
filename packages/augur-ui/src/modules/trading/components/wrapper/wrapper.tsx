@@ -13,10 +13,13 @@ import {
   SELL,
   UPPER_FIXED_PRECISION_BOUND
 } from "modules/common/constants";
-import Styles from "modules/trading/components/wrapper/wrapper.styles";
+import Styles from "modules/trading/components/wrapper/wrapper.styles.less";
 import { OrderButton } from "modules/common/buttons";
 import { formatShares } from "utils/format-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
+import { MarketData } from "modules/types";
+import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+
 // TODO: refactor the need to use this function.
 function pick(object, keys) {
   return keys.reduce((obj, key) => {
@@ -27,23 +30,33 @@ function pick(object, keys) {
    }, {});
 }
 
-class Wrapper extends Component {
-  static propTypes = {
-    market: PropTypes.object.isRequired,
-    marketReviewTradeSeen: PropTypes.bool.isRequired,
-    marketReviewTradeModal: PropTypes.func.isRequired,
-    selectedOrderProperties: PropTypes.object.isRequired,
-    availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
-    selectedOutcome: PropTypes.object,
-    updateSelectedOrderProperties: PropTypes.func.isRequired,
-    handleFilledOnly: PropTypes.func.isRequired,
-    gasPrice: PropTypes.number.isRequired,
-    updateSelectedOutcome: PropTypes.func.isRequired,
-    updateTradeCost: PropTypes.func.isRequired,
-    updateTradeShares: PropTypes.func.isRequired,
-    onSubmitPlaceTrade: PropTypes.func.isRequired
-  };
+interface WrapperProps {
+  market: MarketData,
+  marketReviewTradeSeen: boolean,
+  marketReviewTradeModal: Function,
+  selectedOrderProperties: object,
+  availableFunds: BigNumber,
+  selectedOutcome: MarketInfoOutcome,
+  updateSelectedOrderProperties: Function,
+  handleFilledOnly: Function,
+  gasPrice: number,
+  updateSelectedOutcome: Function,
+  updateTradeCost: Function,
+  updateTradeShares: Function,
+  onSubmitPlaceTrade: Function
+};
 
+interface WrapperState {
+  orderPrice: string;
+  orderQuantity: string;
+  orderEthEstimate: string;
+  orderEscrowdEth: string;
+  selectedNav: string;
+  doNotCreateOrders: boolean;
+  trade: any;
+};
+
+class Wrapper extends Component<WrapperProps, WrapperState> {
   static defaultProps = {
     selectedOutcome: null
   };
@@ -128,8 +141,8 @@ class Wrapper extends Component {
     }
   }
 
-  updateState(stateValues, cb) {
-    this.setState(currentState => ({ ...currentState, ...stateValues }), cb);
+  updateState(stateValues, cb: () => void) {
+    this.setState(currentState => ({ ...currentState, ...stateValues }), cb );
   }
 
   clearOrderConfirmation() {
@@ -222,7 +235,7 @@ class Wrapper extends Component {
                 ...order,
                 orderEthEstimate: "",
                 orderEscrowdEth: ""
-              });
+              }, () => {});
             }
 
             const newOrderEthEstimate = formatShares(
@@ -238,7 +251,7 @@ class Wrapper extends Component {
               orderEthEstimate: newOrderEthEstimate,
               orderEscrowdEth: newOrder.potentialEthLoss.formatted,
               trade: newOrder
-            });
+            }, () => {});
           }
         );
       }

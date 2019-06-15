@@ -25,49 +25,63 @@ import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 import MarketOutcomeSelector from "modules/market/components/market-view/market-outcome-selector";
 import MarketOutcomesChart from "modules/market-charts/containers/market-outcomes-chart";
-import { getMarketAgeInDays } from "utils/format-date";
-import Styles from "modules/market/components/market-view/market-view.styles";
+import Styles from "modules/market/components/market-view/market-view.styles.less";
 import { LeftChevron } from "modules/common/icons";
 import { TEMP_TABLET } from "modules/common/constants";
+import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketData } from "modules/types";
 
-export default class MarketView extends Component {
-  static propTypes = {
-    market: PropTypes.object.isRequired,
-    marketId: PropTypes.string.isRequired,
-    marketReviewSeen: PropTypes.bool.isRequired,
-    marketReviewModal: PropTypes.func.isRequired,
-    currentTimestamp: PropTypes.number,
-    isConnected: PropTypes.bool.isRequired,
-    loadFullMarket: PropTypes.func.isRequired,
-    loadMarketTradingHistory: PropTypes.func.isRequired,
-    description: PropTypes.string.isRequired,
-    location: PropTypes.object.isRequired,
-    marketType: PropTypes.string,
-    outcomes: PropTypes.array,
-    updateModal: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
-  };
+interface MarketViewProps {
+  market: MarketData,
+  marketId: string,
+  marketReviewSeen: boolean,
+  marketReviewModal: Function,
+  currentTimestamp: number,
+  isConnected: boolean,
+  loadFullMarket: Function,
+  loadMarketTradingHistory: Function,
+  description: string,
+  marketType: string,
+  outcomes: Array<MarketInfoOutcome>,
+  updateModal: Function,
+  history: object,
+};
 
+interface DefaultOrderProperties {
+  orderPrice: string,
+  orderQuantity: string,
+  selectedNav: string,
+}
+
+interface DefaultOrderPropertiesMap {
+  [outcomeId: number]: DefaultOrderProperties,
+}
+interface MarketViewState {
+  extendOrderBook: boolean,
+  extendTradeHistory: boolean,
+  selectedOrderProperties: DefaultOrderProperties,
+  selectedOutcomeId: string,
+  fixedPrecision: number,
+  selectedOutcomeProperties: DefaultOrderPropertiesMap,
+}
+export default class MarketView extends Component<MarketViewProps, MarketViewState> {
   static defaultProps = {
     marketType: undefined,
     outcomes: [],
-    currentTimestamp: 0
+    currentTimestamp: 0,
   };
+
+  DEFAULT_ORDER_PROPERTIES = { orderPrice: "", orderQuantity: "", selectedNav: BUY};
+  node: any;
 
   constructor(props) {
     super(props);
-
-    this.DEFAULT_ORDER_PROPERTIES = {
-      orderPrice: "",
-      orderQuantity: "",
-      selectedNav: BUY
-    };
 
     this.state = {
       extendOrderBook: false,
       extendTradeHistory: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
-      selectedOutcome: props.marketType === CATEGORICAL ? "0" : "1",
+      selectedOutcomeId: "1",
       fixedPrecision: 4,
       selectedOutcomeProperties: {
         1: {
@@ -107,7 +121,8 @@ export default class MarketView extends Component {
       const localStorageRef =
         typeof window !== "undefined" && window.localStorage;
       if (localStorageRef && localStorageRef.setItem) {
-        let markets = JSON.parse(localStorageRef.getItem(MARKET_REVIEWS)) || [];
+        const value = localStorageRef.getItem(MARKET_REVIEWS);
+        let markets = value ? JSON.parse(value) : [];
         markets = markets.concat(this.props.marketId);
         localStorageRef.setItem(MARKET_REVIEWS, JSON.stringify(markets));
       }
@@ -149,8 +164,8 @@ export default class MarketView extends Component {
     }
   }
 
-  updateSelectedOutcomeSwitch(selectedOutcome) {
-    this.updateSelectedOutcome(selectedOutcome);
+  updateSelectedOutcomeSwitch(selectedOutcomeId) {
+    this.updateSelectedOutcome(selectedOutcomeId);
 
     FindReact(document.getElementById("tabs_mobileView")).handleClick(
       null,
@@ -158,16 +173,11 @@ export default class MarketView extends Component {
     );
   }
 
-  updateSelectedOutcome(selectedOutcome) {
-    const { marketType } = this.props;
-    if (selectedOutcome !== this.state.selectedOutcome) {
+  updateSelectedOutcome(selectedOutcomeId) {
+    if (selectedOutcomeId !== this.state.selectedOutcomeId) {
       this.setState(
         {
-          selectedOutcome:
-            selectedOutcome === this.state.selectedOutcome &&
-            marketType === CATEGORICAL
-              ? null
-              : selectedOutcome,
+          selectedOutcomeId,
           selectedOrderProperties: {
             ...this.DEFAULT_ORDER_PROPERTIES
           }
@@ -175,8 +185,8 @@ export default class MarketView extends Component {
       );
 
       const { selectedOutcomeProperties } = this.state;
-      if (!selectedOutcomeProperties[selectedOutcome]) {
-        selectedOutcomeProperties[selectedOutcome] = {
+      if (!selectedOutcomeProperties[selectedOutcomeId]) {
+        selectedOutcomeProperties[selectedOutcomeId] = {
           ...this.DEFAULT_ORDER_PROPERTIES
         };
         this.setState({ selectedOutcomeProperties });
@@ -203,7 +213,7 @@ export default class MarketView extends Component {
       type: MODAL_TRADING_OVERLAY,
       market,
       selectedOrderProperties: s.selectedOrderProperties,
-      selectedOutcome: s.selectedOutcome,
+      selectedOutcomeId: s.selectedOutcomeId,
       toggleForm: this.toggleForm,
       updateSelectedOutcome: this.updateSelectedOutcomeSwitch,
       updateSelectedOrderProperties: this.updateSelectedOrderProperties,
@@ -217,7 +227,6 @@ export default class MarketView extends Component {
       currentTimestamp,
       description,
       marketId,
-      location,
       outcomes,
       market,
       marketType,
@@ -225,18 +234,8 @@ export default class MarketView extends Component {
     } = this.props;
     const s = this.state;
 
-    const selectedOutcomeName =
-      // marketType === CATEGORICAL &&
-      marketType &&
-      s.selectedOutcome &&
-      outcomes.find(
-        outcomeValue => outcomeValue.id === s.selectedOutcome.toString()
-      ).name;
-
-    const daysPassed =
-      market &&
-      market.creationTime &&
-      getMarketAgeInDays(market.creationTime.timestamp, currentTimestamp);
+    const outcome = outcomes.find( outcomeValue => outcomeValue.id.toString() === s.selectedOutcomeId)
+    const selectedOutcomeName: string = outcome ? outcome.description : "";
 
     return (
       <section
@@ -272,15 +271,14 @@ export default class MarketView extends Component {
                       <MarketHeader marketId={marketId} />
                       <MarketOutcomesList
                         marketId={marketId}
-                        outcomes={outcomes}
-                        selectedOutcome={s.selectedOutcome}
+                        selectedOutcomeId={s.selectedOutcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
                       />
                       <div className={Styles.MarketView__priceHistoryChart}>
                         <p>Price History</p>
                         <MarketOutcomesChart
                           marketId={marketId}
-                          selectedOutcome={s.selectedOutcome}
+                          selectedOutcomeId={s.selectedOutcomeId}
                         />
                       </div>
                     </div>
@@ -297,9 +295,9 @@ export default class MarketView extends Component {
                     <div className={Styles.OutcomeSelectionArea}>
                       {marketType === CATEGORICAL && (
                         <MarketOutcomeSelector
-                          outcome={s.selectedOutcome}
+                          outcome={s.selectedOutcomeId}
                           outcomeName={selectedOutcomeName}
-                          selectOutcome={this.showModal}
+                          selectOutcome={this.updateSelectedOutcome}
                         />
                       )}
                       {marketType !== CATEGORICAL && (
@@ -323,7 +321,7 @@ export default class MarketView extends Component {
                                 this.updateSelectedOrderProperties
                               }
                               marketId={marketId}
-                              selectedOutcome={s.selectedOutcome}
+                              selectedOutcomeId={s.selectedOutcomeId}
                               toggle={this.toggleOrderBook}
                               extend={s.extendOrderBook}
                               hide={s.extendTradeHistory}
@@ -336,7 +334,7 @@ export default class MarketView extends Component {
                               {marketId && (
                                 <MarketTradeHistory
                                   marketId={marketId}
-                                  outcome={s.selectedOutcome}
+                                  outcome={s.selectedOutcomeId}
                                   toggle={this.toggleTradeHistory}
                                   extend={s.extendTradeHistory}
                                   hide={s.extendOrderBook}
@@ -350,7 +348,7 @@ export default class MarketView extends Component {
                       <TradingForm
                         market={market}
                         selectedOrderProperties={s.selectedOrderProperties}
-                        selectedOutcome={s.selectedOutcome}
+                        selectedOutcomeId={s.selectedOutcomeId}
                         toggleForm={this.toggleForm}
                         updateSelectedOutcome={this.updateSelectedOutcome}
                         updateSelectedOrderProperties={
@@ -360,7 +358,7 @@ export default class MarketView extends Component {
 
                       <MarketChartsPane
                         marketId={marketId}
-                        selectedOutcome={s.selectedOutcome}
+                        selectedOutcomeId={s.selectedOutcomeId}
                         currentTimestamp={currentTimestamp}
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
@@ -394,7 +392,7 @@ export default class MarketView extends Component {
                           <TradingForm
                             market={market}
                             selectedOrderProperties={s.selectedOrderProperties}
-                            selectedOutcome={s.selectedOutcome}
+                            selectedOutcomeId={s.selectedOutcomeId}
                             toggleForm={this.toggleForm}
                             updateSelectedOutcome={this.updateSelectedOutcome}
                             updateSelectedOrderProperties={
@@ -412,15 +410,14 @@ export default class MarketView extends Component {
                         >
                           <MarketOutcomesList
                             marketId={marketId}
-                            outcomes={outcomes}
-                            selectedOutcome={s.selectedOutcome}
+                            selectedOutcomeId={s.selectedOutcomeId}
                             updateSelectedOutcome={this.updateSelectedOutcome}
                           />
                         </div>
                         <div className={Styles.MarketView__component}>
                           <MarketChartsPane
                             marketId={marketId}
-                            selectedOutcome={s.selectedOutcome}
+                            selectedOutcomeId={s.selectedOutcomeId}
                             updateSelectedOrderProperties={
                               this.updateSelectedOrderProperties
                             }
@@ -431,8 +428,7 @@ export default class MarketView extends Component {
                     <div className={Styles.MarketView__secondRow}>
                       <div
                         className={classNames(
-                          Styles.MarketView__component,
-                          Styles.MarketView__orderPositionsTable
+                          Styles.MarketView__component
                         )}
                       >
                         <MarketOrdersPositionsTable marketId={marketId} />
@@ -455,7 +451,7 @@ export default class MarketView extends Component {
                           this.updateSelectedOrderProperties
                         }
                         marketId={marketId}
-                        selectedOutcome={s.selectedOutcome}
+                        selectedOutcomeId={s.selectedOutcomeId}
                         toggle={this.toggleOrderBook}
                         extend={s.extendOrderBook}
                         hide={s.extendTradeHistory}
@@ -475,7 +471,7 @@ export default class MarketView extends Component {
                         {marketId && (
                           <MarketTradeHistory
                             marketId={marketId}
-                            outcome={s.selectedOutcome}
+                            outcome={s.selectedOutcomeId}
                             toggle={this.toggleTradeHistory}
                             extend={s.extendTradeHistory}
                             hide={s.extendOrderBook}

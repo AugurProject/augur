@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { SCALAR } from "modules/common/constants";
-import Styles from "modules/market/components/core-properties/core-properties.styles";
+import Styles from "modules/market/components/core-properties/core-properties.styles.less";
 import getValue from "utils/get-value";
 import { PropertyLabel } from "modules/common/labels";
 
@@ -9,15 +9,15 @@ const CoreProperties = ({ market }) => (
   <div className={Styles.CoreProperties}>
     <PropertyLabel
       label="Total Volume"
-      value={`${market.volume.formatted} ETH`}
+      value={`${market.volume.formatted} DAI`}
     />
     <PropertyLabel
       label="Open Interest"
-      value={`${market.openInterest.formatted} ETH`}
+      value={`${market.openInterest.formatted} DAI`}
     />
     <PropertyLabel
       label="24hr Volume"
-      value={`${market.volume.formatted} ETH`}
+      value={`${market.volume.formatted} DAI`}
     />
     <PropertyLabel
       label="Estimated Fee"

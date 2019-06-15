@@ -9,6 +9,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     marketType: market.marketType,
     scalarDenomination: market.scalarDenomination,
+    outcomes: market.outcomes,
     minPrice: market.minPrice,
     maxPrice: market.maxPrice
   };

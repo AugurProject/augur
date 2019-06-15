@@ -51,8 +51,6 @@ export class AuctionToken extends c.AuctionToken<BigNumber> {
 }
 export class DisputeCrowdsourcer extends c.DisputeCrowdsourcer<BigNumber> {
 }
-export class DisputeOverloadToken extends c.DisputeOverloadToken<BigNumber> {
-}
 export class DisputeWindow extends c.DisputeWindow<BigNumber> {
 }
 export class InitialReporter extends c.InitialReporter<BigNumber> {
