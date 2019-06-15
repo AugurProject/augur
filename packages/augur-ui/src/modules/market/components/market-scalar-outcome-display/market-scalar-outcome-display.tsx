@@ -7,7 +7,7 @@ import CustomPropTypes from "utils/custom-prop-types";
 import { createBigNumber } from "utils/create-big-number";
 import { DashlineLong } from "modules/common/labels";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
-import Styles from "modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles";
+import Styles from "modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles.less";
 
 const MarketScalarOutcomeDisplay = ({
   outcomes,
@@ -15,25 +15,25 @@ const MarketScalarOutcomeDisplay = ({
   min,
   scalarDenomination = "N/A"
 }) => {
-  const calculatePosition = () => {
+  const calculatePosition = (): number => {
     const lastPrice =
       getValue(outcomes[0], "lastPricePercent.fullPrecision") || 0;
 
     const range = max.minus(min);
-    return `${createBigNumber(lastPrice)
+    return createBigNumber(lastPrice)
       .minus(min)
       .dividedBy(range)
-      .times(createBigNumber(100))}`;
+      .times(createBigNumber(100)).toNumber();
   };
 
-  const outcomeVerticalLinePosition = () => {
+  const outcomeVerticalLinePosition = (): string => {
     let pos = calculatePosition();
     if (pos > 99.0) {
       pos = 99.0;
     } else if (pos < 1.0) {
       pos = 1.0;
     }
-    return pos;
+    return pos.toString();
   };
 
   const currentValuePosition = {
@@ -66,19 +66,15 @@ const MarketScalarOutcomeDisplay = ({
         </div>
         <div />
       </div>
-      <div
-        className={classNames(
-          Styles.MarketScalarOutcomes__minMax
-        )}
-      >
+      <div>
         <div>
-          Min:{" "}
+          Min:
           <span>
             {`${min}`}
           </span>
         </div>
         <div>
-          Max:{" "}
+          Max:
           <span>
             {`${max}`}
           </span>

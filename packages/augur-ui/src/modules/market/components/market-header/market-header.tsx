@@ -6,7 +6,7 @@ import { BackArrow, ChevronDown, ChevronUp } from "modules/common/icons";
 import MarkdownRenderer from "modules/common/markdown-renderer";
 import MarketHeaderBar from "modules/market/containers/market-header-bar";
 import { BigNumber } from "bignumber.js";
-import Styles from "modules/market/components/market-header/market-header.styles";
+import Styles from "modules/market/components/market-header/market-header.styles.less";
 import CoreProperties from "modules/market/components/core-properties/core-properties";
 import ChevronFlip from "modules/common/chevron-flip";
 import { MarketTypeLabel } from "modules/common/labels";
@@ -20,27 +20,33 @@ import {
 import MarketHeaderReporting from "modules/market/containers/market-header-reporting";
 import { MarketTimeline } from "modules/common/progress";
 
-import ToggleHeightStyles from "utils/toggle-height.styles";
+import ToggleHeightStyles from "utils/toggle-height.styles.less";
+import { MarketData, QueryEndpoints } from "modules/types";
 
 const OVERFLOW_DETAILS_LENGTH = 89; // in px, overflow limit to trigger MORE details
 
-export default class MarketHeader extends Component {
-  static propTypes = {
-    description: PropTypes.string.isRequired,
-    details: PropTypes.string.isRequired,
-    maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    minPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    market: PropTypes.object.isRequired,
-    currentTime: PropTypes.number,
-    marketType: PropTypes.string,
-    scalarDenomination: PropTypes.string,
-    resolutionSource: PropTypes.any,
-    isLogged: PropTypes.bool,
-    toggleFavorite: PropTypes.func,
-    isFavorite: PropTypes.bool,
-    history: PropTypes.object.isRequired
-  };
+interface MarketHeaderProps {
+  description: string;
+  details: string;
+  maxPrice: BigNumber;
+  minPrice: BigNumber;
+  market: MarketData;
+  currentTime: number;
+  marketType: string;
+  scalarDenomination: string;
+  resolutionSource: any;
+  isLogged: boolean;
+  toggleFavorite: Function;
+  isFavorite: boolean;
+  history: History;
+}
 
+interface MarketHeaderState {
+  showReadMore: boolean;
+  detailsHeight: number;
+  headerCollapsed: boolean;
+}
+export default class MarketHeader extends Component<MarketHeaderProps, MarketHeaderState> {
   static defaultProps = {
     scalarDenomination: null,
     resolutionSource: "General knowledge",
@@ -50,6 +56,7 @@ export default class MarketHeader extends Component {
     isLogged: false,
     toggleFavorite: () => {}
   };
+  detailsContainer: any;
 
   constructor(props) {
     super(props);
@@ -91,7 +98,7 @@ export default class MarketHeader extends Component {
 
   gotoFilter(type, value) {
     const { history } = this.props;
-    const query =
+    const query: QueryEndpoints =
       type === "category"
         ? {
             [CATEGORY_PARAM_NAME]: value
@@ -141,13 +148,13 @@ export default class MarketHeader extends Component {
         }
       }));
 
-    const categoriesWithClick = process(market.category);
-    const tagsWithClick = market.tags.filter(Boolean).map(tag => ({
+    const categoriesWithClick = process(market.category) || [];
+    const tagsWithClick = market.id && market.tags.filter(Boolean).map(tag => ({
       label: tag,
       onClick: () => {
         this.gotoFilter("tag", tag);
       }
-    }));
+    })) || [];
 
     return (
       <section
@@ -167,7 +174,7 @@ export default class MarketHeader extends Component {
           <WordTrail items={[...categoriesWithClick, ...tagsWithClick]}>
             <button
               className={Styles.BackButton}
-              onClick={() => history.goBack()}
+              onClick={() => history.back()}
             >
               {BackArrow}
             </button>

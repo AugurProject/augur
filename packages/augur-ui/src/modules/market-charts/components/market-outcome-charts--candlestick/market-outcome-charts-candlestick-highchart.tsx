@@ -5,7 +5,7 @@ import CustomPropTypes from "utils/custom-prop-types";
 import Highcharts from "highcharts/highstock";
 import NoDataToDisplay from "highcharts/modules/no-data-to-display";
 import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/candlestick.styles";
-import { PERIOD_RANGES, ETH } from "modules/common/constants";
+import { PERIOD_RANGES, DAI } from "modules/common/constants";
 
 NoDataToDisplay(Highcharts);
 
@@ -74,7 +74,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component {
               if (!props.isMobile) return;
               const { width } = this.renderer;
               this.ethLabel = this.renderer
-                .label("ETH", width - HighConfig.MobileEthlabelX, 0)
+                .label("DAI", width - HighConfig.MobileEthlabelX, 0)
                 .add();
             },
             redraw() {
@@ -82,7 +82,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component {
               const { width } = this.renderer;
               this.ethLabel.destroy();
               this.ethLabel = this.renderer
-                .label("ETH", width - HighConfig.MobileEthlabelX, 0)
+                .label("DAI", width - HighConfig.MobileEthlabelX, 0)
                 .add();
             }
           }
@@ -237,7 +237,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component {
       high: high ? createBigNumber(high) : "",
       low: low ? createBigNumber(low) : "",
       volume: pts
-        ? createBigNumber(volumeType === ETH ? pts.volume : pts.shareVolume)
+        ? createBigNumber(volumeType === DAI ? pts.volume : pts.shareVolume)
         : ""
     });
 
@@ -306,7 +306,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component {
       ohlc.push([period, item.open, item.high, item.low, item.close]);
       volume.push([
         period,
-        volumeType === ETH ? item.volume : item.shareVolume
+        volumeType === DAI ? item.volume : item.shareVolume
       ]);
     });
 

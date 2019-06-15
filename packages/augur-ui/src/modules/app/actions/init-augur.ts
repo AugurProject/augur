@@ -200,27 +200,10 @@ export function connectAugur(
       env,
       loginAccount,
       async (err: any, ConnectionInfo: any) => {
-        if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
+        if (err || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);
         }
         dispatch(updateConnectionStatus(true));
-        dispatch(updateAugurNodeConnectionStatus(true));
-        dispatch(getAugurNodeNetworkId());
-        AugurJS.augur.augurNode.submitRequest(
-          "getSyncData",
-          {},
-          (err, result) => {
-            if (!err && result) {
-              dispatch(
-                updateVersions({
-                  augurjs: result.version,
-                  augurNode: result.augurNodeVersion,
-                  augurui: version
-                })
-              );
-            }
-          }
-        );
         const windowApp = windowRef as WindowApp;
         let universeId =
           env.universe ||
@@ -267,7 +250,6 @@ export function connectAugur(
 }
 
 interface initAugurParams {
-  augurNode: string | null;
   ethereumNodeHttp: string | null;
   ethereumNodeWs: string | null;
   useWeb3Transport: Boolean;
@@ -276,7 +258,6 @@ interface initAugurParams {
 export function initAugur(
   history: any,
   {
-    augurNode,
     ethereumNodeHttp,
     ethereumNodeWs,
     useWeb3Transport
@@ -290,14 +271,13 @@ export function initAugur(
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
     console.log(env);
     env.useWeb3Transport = useWeb3Transport;
-    env["augur-node"] = augurNode ? augurNode : env["augur-node"];
     env["ethereum-node"].http = ethereumNodeHttp
       ? ethereumNodeHttp
       : env["ethereum-node"].http;
     const defaultWS = isEmpty(ethereumNodeHttp) ? env["ethereum-node"].ws : "";
     // If only the http param is provided we need to prevent this "default from taking precedence.
     env["ethereum-node"].ws = ethereumNodeWs ? ethereumNodeWs : defaultWS;
-  
+
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);
   };

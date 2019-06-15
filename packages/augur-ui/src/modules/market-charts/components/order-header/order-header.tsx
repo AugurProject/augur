@@ -1,7 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-
 import { ExpandIcon, CollapseIcon } from "modules/common/icons";
 
 import StylesHeader from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";

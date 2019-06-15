@@ -8,7 +8,7 @@ import { getDisputeInfo } from "modules/reports/actions/get-dispute-info";
 import logError from "utils/log-error";
 import { AppState } from "store";
 import { Action } from "redux";
-import { MarketData, NodeStyleCallback } from "modules/types";
+import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { augurSdk } from "services/augursdk";
 

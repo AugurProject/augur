@@ -15,7 +15,7 @@ const Midpoint = ({ orderBookKeys, pricePrecision, hasOrders }: MidpointProps) =
       <div className={Styles.MarketOutcomeMidpoint}>
         <div className={Styles.MarketOutcomeMidpointLine} />
         <div className={Styles.MarketOutcomeMidpointValue}>
-          {`${orderBookKeys.mid.toFixed(pricePrecision)} ETH`}
+          {`${orderBookKeys.mid.toFixed(pricePrecision)} DAI`}
         </div>
       </div>
     )}
