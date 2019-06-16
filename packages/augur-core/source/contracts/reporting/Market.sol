@@ -432,7 +432,7 @@ contract Market is Initializable, Ownable, IMarket {
         return true;
     }
 
-    function clearCrowdsourcers() public returns (bool) {
+    function clearCrowdsourcers() private returns (bool) {
         crowdsourcers = mapFactory.createMap(augur, address(this));
         return true;
     }
