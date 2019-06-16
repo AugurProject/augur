@@ -1,11 +1,11 @@
-import {NetworkId} from "@augurproject/artifacts";
-import {Filter, Log, LogValues} from "@augurproject/types";
-import {Transaction} from "contract-dependencies";
-import {EthersProvider as EProvider} from "contract-dependencies-ethers";
-import {ethers} from "ethers";
-import {Abi} from "ethereum";
+import { NetworkId } from "@augurproject/artifacts";
+import { Filter, Log, LogValues } from "@augurproject/types";
+import { Transaction } from "contract-dependencies";
+import { EthersProvider as EProvider } from "contract-dependencies-ethers";
+import { ethers } from "ethers";
+import { Abi } from "ethereum";
 import * as _ from "lodash";
-import {AsyncQueue, queue, retry} from "async";
+import { AsyncQueue, queue, retry } from "async";
 
 interface ContractMapping {
   [contractName: string]: ethers.utils.Interface;
@@ -29,8 +29,8 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
     this.performQueue = queue((item: PerformQueueTask, callback: () => void) => {
       const _this = this;
       retry(
-        {times, interval},
-        async function (callback) {
+        { times, interval },
+        async function(callback) {
           let results: any;
           try {
             results = await _this.provider.perform(item.message, item.params);
@@ -39,7 +39,7 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
           }
           callback(null, results);
         },
-        function (err: Error, results: any) {
+        function(err: Error, results: any) {
           if (err) {
             item.reject(err);
             callback();
@@ -69,6 +69,11 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
 
   public storeAbiData(abi: Abi, contractName: string): void {
     this.contractMapping[contractName] = new ethers.utils.Interface(abi);
+  }
+
+  public async getEthBalance(address: string): Promise<string> {
+    const result = await super.getBalance(address);
+    return result.toString();
   }
 
   public getEventTopic(contractName: string, eventName: string): string {
@@ -127,4 +132,5 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       this.performQueue.push({ message, params, resolve, reject });
     });
   }
+
 }

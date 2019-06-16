@@ -1,0 +1,103 @@
+@import (reference) '~assets/styles/shared';
+
+.Confirm {
+  color: @color-secondary-text;
+  margin-bottom: 3.7rem;
+  padding: 0 @size-32;
+  width: 36rem;
+}
+
+.Confirm__heading {
+  .text-16-medium;
+
+  margin-bottom: @size-16;
+  text-transform: capitalize;
+}
+
+.Confirm__list {
+  > li {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      margin-bottom: @size-16;
+    }
+
+    > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:first-child {
+        .text-16;
+
+        color: @color-lightergray;
+        line-height: unset;
+        text-transform: capitalize;
+      }
+    }
+  }
+}
+
+.Confirm__list--left-align {
+  &:extend(.Confirm__list all);
+
+  > li > span {
+    text-transform: capitalize;
+    width: 50%;
+  }
+}
+
+.Confirm__subheading {
+  &:extend(.caps);
+
+  font-size: @font-size-large;
+  margin-bottom: @size-30;
+}
+
+.Confirm__wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  > div {
+    width: 14.375rem;
+  }
+}
+
+.Confirm__wrapper--wide {
+  &:extend(.Confirm__wrapper all);
+
+  > div {
+    border-bottom: 1px solid @color-input-background;
+    border-top: 1px solid @color-input-background;
+    padding: @size-32 0;
+    width: 50rem;
+  }
+}
+
+.Confirm__note_text {
+  .text-12;
+
+  color: fadeout(@color-secondary-text, 25);
+  padding-top: @size-32;
+}
+
+@media @breakpoint-mobile-medium {
+  .Confirm {
+    padding: 0 @size-16;
+    width: 100%;
+  }
+
+  .Confirm__wrapper {
+    flex-wrap: wrap;
+
+    > div {
+      width: 100%;
+
+      &:first-child {
+        margin-bottom: @size-32;
+      }
+    }
+  }
+}

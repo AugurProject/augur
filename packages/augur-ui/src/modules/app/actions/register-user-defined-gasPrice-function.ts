@@ -1,12 +1,17 @@
 import { augur } from "services/augurjs";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { DataCallback } from "modules/types";
+import { AppState } from "store";
 
 export const registerUserDefinedGasPriceFunction = () => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
   // TODO: how to set gasPrice in ethers
-  augur.getGasPrice = (callback: Function) => {
+  // @ts-ignore
+  augur.getGasPrice = (callback: DataCallback) => {
     callback(getGasPrice(getState()));
   };
 };

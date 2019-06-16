@@ -3,20 +3,27 @@ import logError from "utils/log-error";
 import { createBigNumber } from "utils/create-big-number";
 import { formatGasCost } from "utils/format-number";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
-import { getNetworkId, getGasPrice } from "modules/contracts/actions/contractCalls";
+import {
+  getNetworkId,
+  getGasPrice
+} from "modules/contracts/actions/contractCalls";
+import { AppState } from "store";
+import { NodeStyleCallback, DataCallback } from "modules/types";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
+import { Action } from "redux";
 
 const GAS_PRICE_API_ENDPOINT = "https://ethgasstation.info/json/ethgasAPI.json";
 const GWEI_CONVERSION = 1000000000;
 const MAINNET_ID = "1";
 
-export function loadGasPriceInfo(callback: Function = logError) {
-  return (dispatch: Function, getState: Function) => {
+export function loadGasPriceInfo(callback: NodeStyleCallback = logError): ThunkAction<any, any, any, any> {
+  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount, blockchain } = getState();
     if (!loginAccount.address) return callback(null);
     const networkId = getNetworkId();
 
     if (networkId === MAINNET_ID) {
-      getGasPriceRanges(networkId, (result: any) => {
+      getGasPriceRanges((result: any) => {
         dispatch(
           updateGasPriceInfo({
             ...result,
@@ -28,12 +35,12 @@ export function loadGasPriceInfo(callback: Function = logError) {
   };
 }
 
-function getGasPriceRanges(networkId: String, callback: Function) {
+function getGasPriceRanges(callback: DataCallback) {
   const defaultGasPrice = setDefaultGasInfo();
   getGasPriceValues(defaultGasPrice, (result: any) => callback(result));
 }
 
-function getGasPriceValues(defaultGasPrice: any, callback: Function) {
+function getGasPriceValues(defaultGasPrice: any, callback: DataCallback) {
   fetch(GAS_PRICE_API_ENDPOINT)
     .then(
       res => res.json()
@@ -63,9 +70,7 @@ function getGasPriceValues(defaultGasPrice: any, callback: Function) {
 
 async function setDefaultGasInfo() {
   const gasPrice = await getGasPrice();
-  const inGwei = createBigNumber(gasPrice).dividedBy(
-    createBigNumber(GWEI_CONVERSION)
-  );
+  const inGwei = gasPrice.dividedBy(createBigNumber(GWEI_CONVERSION));
   const gasPriceValue = formatGasCost(inGwei).value;
 
   return {

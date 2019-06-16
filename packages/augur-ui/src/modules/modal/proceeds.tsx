@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DefaultButtonProps } from "modules/common-elements/buttons";
+import { DefaultButtonProps } from "modules/common/buttons";
 import {
   Title,
   ButtonsRow,
@@ -8,10 +8,13 @@ import {
   DescriptionMessage,
   ActionRowsProps,
   ActionRows,
-  LinearPropertyLabelProps,
-  Breakdown
+  Breakdown,
 } from "modules/modal/common";
-import Styles from "modules/modal/modal.styles";
+import {
+  LinearPropertyLabelProps,
+} from "modules/common/labels";
+
+import Styles from "modules/modal/modal.styles.less";
 
 interface ProceedsProps {
   closeAction: Function;
@@ -27,8 +30,11 @@ export const Proceeds = (props: ProceedsProps) => (
     <Title title={props.title} closeAction={props.closeAction} />
     <main>
       {props.descriptionMessage && (
+        // @ts-ignore
         <DescriptionMessage messages={props.descriptionMessage} />
       )}
+      {/*
+        // @ts-ignore */}
       {props.rows && <ActionRows rows={props.rows} />}
       {props.breakdown && <Breakdown short rows={props.breakdown} />}
     </main>

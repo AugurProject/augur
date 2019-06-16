@@ -1,0 +1,174 @@
+@import '~assets/styles/shared'; // NOTE -- this is the ONLY location this file should be brought in w/out the `(reference)` directive
+
+body,
+html,
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: @color-primary-background;
+
+  @media @breakpoint-mobile {
+    --is-mobile: true;
+  }
+
+  @media @breakpoint-mobile-small {
+    --is-mobile-small: true;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: @roboto;
+}
+
+#root {
+  height: 100%;
+}
+
+.App {
+  display: grid;
+
+  /* sidebar width */
+  grid-template-columns: @top-bar-height auto;
+  height: 100%;
+
+  @media @breakpoint-mobile {
+    /* disable sidebar mobile grid width */
+    grid-template-columns: 0 auto;
+  }
+}
+
+.App--blur {
+  filter: blur(2px);
+}
+
+.Main {
+  display: grid;
+
+  /* topbar height */
+  grid-template-rows: @top-bar-height auto;
+  height: 100vh;
+  overflow: hidden;
+
+  @media @breakpoint-mobile {
+    /* topbar mobile height */
+    grid-template-rows: @top-bar-height-mobile auto;
+  }
+}
+
+.Main__wrap {
+  display: grid;
+
+  /* inner menubar width */
+  grid-template-columns: 6.875rem auto;
+  margin-left: -100px;
+  overflow: hidden;
+
+  @media @breakpoint-mobile {
+    grid-template-columns: none;
+    grid-template-rows: 0 auto;
+    margin-left: 0;
+  }
+}
+
+.Main__content {
+  height: calc(~"100vh - @{top-bar-height}");
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  @media @breakpoint-mobile {
+    height: calc(~"100vh - @{top-bar-height-mobile}");
+    width: 100vw;
+  }
+}
+
+.SideBar {
+  background: @color-theme-primary;
+  border-right: 0.0625rem solid @color-primary-background;
+  height: 100vh;
+  padding-top: 71px;
+  z-index: @mask-above;
+
+  @media @breakpoint-mobile {
+    padding-top: 0;
+  }
+}
+
+.Logo {
+  background: @color-theme-primary;
+  border-bottom: 1px solid @color-primary-background;
+  left: 1rem;
+  position: absolute;
+  top: -1px;
+
+  @media @breakpoint-mobile {
+    border-bottom: 1px solid @color-primary-light;
+  }
+}
+
+.SideBar__mobile-bars {
+  background: @color-theme-primary;
+  border-bottom: 1px solid @color-primary-background;
+  display: none;
+  height: @top-bar-height-mobile;
+  outline: none;
+  padding: 1rem;
+  position: absolute;
+  width: 3.125rem;
+  z-index: @mask-above;
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+
+  @media @breakpoint-mobile {
+    border-bottom: 1px solid @color-primary-light;
+    display: block;
+
+    > svg > g {
+      stroke-width: 1.5;
+    }
+  }
+}
+
+.App__loadingIndicator {
+  background: @color-lighter-purple;
+  display: none;
+  height: 0.25rem;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: @mask-modal;
+}
+
+svg.SideBar__mobile-bars-unseen {
+  bottom: 1.4rem;
+  position: relative;
+  right: 0.35rem;
+}
+
+.TopBar {
+  z-index: @mask-above;
+
+  @media @breakpoint-mobile {
+    height: @top-bar-height-mobile;
+  }
+}
+
+.TopBar__floatAbove {
+  border-bottom: 1px solid @color-primary-background;
+  margin-left: 3.15rem;
+  z-index: @mask-above;
+
+  @media @breakpoint-mobile {
+    border-bottom: 1px solid @color-primary-light;
+  }
+}

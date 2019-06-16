@@ -11,6 +11,92 @@ const PATHS = {
 };
 
 // COMMON CONFIG
+const rules = [
+  {
+    test: /\.worker\.[jt]s$/,
+    use: [
+      "worker-loader",
+      "babel-loader"
+    ]
+  },
+  {
+    test: /\.js$/,
+    use: ["source-map-loader"],
+    enforce: "pre"
+  },
+  {
+    test: /npm-cli|node-hid/,
+    loader: "null-loader"
+  },
+  {
+    test: /\.less$/,
+    enforce: "pre",
+    loader: "import-glob-loader"
+  },
+  {
+    test: /\.html$/,
+    loader: "html-loader",
+    query: {
+      minimize: true
+    }
+  },
+  {
+    test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+    use: [
+      {
+        loader: "file-loader",
+        options: {
+          name: "[name].[ext]",
+          outputPath: "fonts/"
+        }
+      }
+    ]
+  },
+  {
+    test: /\.less$/,
+    use: [
+      "style-loader",
+      {
+        loader: "typings-for-css-modules-loader",
+        options: {
+          camelCase:true,
+          modules: true,
+          namedExport: true,
+          localIdentName: "[name]_[local]"
+        }
+      },
+      "postcss-loader",
+      "less-loader"
+    ]
+  },
+  {
+    test: /\.css$/,
+    use: [
+      "style-loader",
+      "postcss-loader"
+    ]
+  }
+];
+
+const babelConfig = {
+  test: /\.[jt]sx?$/,
+  loader: "babel-loader",
+  exclude: /(node_modules|bower_components)/
+};
+
+if(process.env.TYPE_CHECKING === "true") {
+  rules.push({
+    test: /\.tsx?$/,
+    loader: "ts-loader",
+    options: {
+      projectReferences: true
+    }
+  });
+  babelConfig.test = /\.jsx?$/;
+}
+
+rules.unshift(babelConfig);
+
 module.exports = {
   mode: "development",
   entry: [
@@ -35,79 +121,20 @@ module.exports = {
     modules: ["node_modules", PATHS.APP],
     extensions: [".html", ".less", ".json", ".js", ".jsx", ".ts", ".tsx"],
     alias: {
-      src: PATHS.APP,
-      config: path.resolve(PATHS.APP, "config"),
       assets: path.resolve(PATHS.APP, "assets"),
+      config: path.resolve(PATHS.APP, "config"),
       modules: path.resolve(PATHS.APP, "modules"),
-      utils: path.resolve(PATHS.APP, "utils"),
+      reducers: path.resolve(PATHS.APP, "reducers"),
       services: path.resolve(PATHS.APP, "services"),
+      store: path.resolve(PATHS.APP, "store"),
+      utils: path.resolve(PATHS.APP, "utils"),
       test: PATHS.TEST,
       assertions: path.resolve(PATHS.TEST, "assertions")
     },
     symlinks: false
   },
   module: {
-    rules: [
-      {
-        test: /npm-cli|node-hid/,
-        loader: "null-loader"
-      },
-      {
-        test: /\.less$/,
-        enforce: "pre",
-        loader: "import-glob-loader"
-      },
-      {
-        test: /\.html$/,
-        loader: "html-loader",
-        query: {
-          minimize: true
-        }
-      },
-      {
-        test: /\.[jt]sx?$/,
-        loader: "babel-loader",
-        exclude: function(modulePath) {
-          return (
-            /node_modules/.test(modulePath) &&
-            /node_modules\/(core-js|lodash|react|websocket|autolinker|remarkable|moment|regenerator-runtime)/.test(
-              modulePath
-            )
-          );
-        }
-      },
-      {
-        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "[name].[ext]",
-              outputPath: "fonts/"
-            }
-          }
-        ]
-      },
-      {
-        test: /\.less$/,
-        use: [
-          "style-loader",
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-              localIdentName: "[name]_[local]"
-            }
-          },
-          "postcss-loader",
-          "less-loader"
-        ]
-      },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "postcss-loader"]
-      }
-    ]
+    rules: rules
   },
   optimization: {
     // https://webpack.js.org/configuration/optimization/#optimization-usedexports
@@ -117,7 +144,7 @@ module.exports = {
   plugins: [
     new DeadCodePlugin({
       // failOnHint: true, // (default: false), if true will stop the build if unused code/files are found.
-      patterns: ["src/**/*.(js|jsx|css)"],
+      patterns: ["src/**/*.(js|jsx|css|ts|tsx)"],
       exclude: [
         "**/*.(stories|spec).(js|jsx)",
         "**/*.test.js", // certain test files (executed by `yarn test`) live in the src/ dir and so DeadCodePlugin interprets them as dead even though they're not

@@ -1,0 +1,87 @@
+@import (reference) "~assets/styles/shared";
+
+.ForkingAlert__Container {
+  position: absolute;
+  right: 0;
+  width: 100%;
+}
+
+.ForkingAlert {
+  background: @color-pink;
+  height: 100%;
+  padding-left: 13.6rem;
+
+  section {
+    display: flex;
+  }
+}
+
+.ForkingAlert__message {
+  .text-14;
+
+  color: @color-secondary-text;
+  line-height: 2.65rem;
+  margin-left: @size-16;
+  text-transform: uppercase;
+}
+
+.ForkingAlert__AlertIcon {
+  height: @size-18;
+  margin-bottom: auto;
+  margin-top: auto;
+  width: @size-18;
+}
+
+.ForkingAlert__addition_details {
+  .text-12;
+
+  color: @color-secondary-text;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  text-transform: uppercase;
+}
+
+.ForkingAlert__addition_details_button {
+  margin-bottom: auto;
+  margin-right: 6em;
+  margin-top: auto;
+  text-transform: uppercase;
+}
+
+.ForkingAlert__arrow {
+  margin-left: @size-16;
+}
+
+@media @breakpoint-mobile {
+  .ForkingAlert {
+    padding: @size-32 @size-24 @size-8;
+  }
+
+  .ForkingAlert__SubContainer {
+    padding-left: 0;
+  }
+
+  .ForkingAlert__message {
+    .text-12;
+  
+    color: @color-secondary-text;
+    margin: 0 @size-32;
+    padding: @size-4;
+    text-transform: uppercase;
+  }
+
+  .ForkingAlert__addition_details_button {
+    margin-bottom: auto;
+    margin-right: @size-8;
+    margin-top: auto;
+    text-transform: uppercase;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .ForkingAlert__message {
+    margin: 0 @size-8;
+    padding: 1px;
+  }
+}

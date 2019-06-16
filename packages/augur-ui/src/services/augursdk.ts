@@ -1,16 +1,14 @@
-import { BigNumber } from "ethers/utils";
-import { Augur } from "@augurproject/sdk";
-import {
-  ContractDependenciesEthers,
-  EthersSigner,
-} from "contract-dependencies-ethers";
+import {Augur, Provider} from "@augurproject/sdk";
+import {ContractDependenciesEthers, EthersSigner,} from "contract-dependencies-ethers";
+import {WebWorkerConnector} from "./ww-connector";
 
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { JsonRpcProvider } from "ethers/providers";
-import { Addresses } from "@augurproject/artifacts";
+import {EthersProvider} from "@augurproject/ethersjs-provider";
+import {JsonRpcProvider} from "ethers/providers";
+import {Addresses} from "@augurproject/artifacts";
+import { listenToUpdates } from "modules/events/actions/listen-to-updates";
 
 export class SDK {
-  public _sdk: Augur<BigNumber, EthersProvider> | null = null;
+  public sdk: Augur<Provider> | null = null;
   public isWeb3Transport: boolean = false;
 
   public async makeApi(
@@ -28,19 +26,51 @@ export class SDK {
       account,
     );
 
-    this._sdk = await Augur.create<BigNumber, EthersProvider>(
+    this.sdk = await Augur.create<Provider>(
       ethersProvider,
       contractDependencies,
       Addresses[networkId],
+      new WebWorkerConnector()
     );
+
+    this.wireUpEvents();
+
+    // This is temporary to get SOME diagnostic info out there....
+/*
+    ethersProvider.on("block", ((sdk) => () => {
+      sdk.getSyncData().then((syncData) => console.table({0: syncData}));
+    })(this.sdk));
+*/
+    this.sdk.connect("http://localhost:8545", account);
   }
 
-  public get(): Augur<BigNumber, EthersProvider> {
-    if (this._sdk) {
-      return this._sdk;
+  public async destroy() {
+    this.unwireEvents();
+    if(this.sdk) this.sdk.disconnect();
+    this.sdk = null;
+  }
+
+  private async wireUpEvents() {
+    const events = listenToUpdates();
+    Object.keys(events).map(e => {
+      if (this.sdk) this.sdk.on(e, events[e]);
+    })
+  }
+
+  private async unwireEvents() {
+    // TODO: have sdk unwire events on disconnect
+    console.log("unwiring up sdk events");
+  }
+
+  public get(): Augur<Provider> {
+    if (this.sdk) {
+      return this.sdk;
     }
     throw new Error("API must be initialized before use.");
   }
 }
 
 export const augurSdk = new SDK();
+
+
+

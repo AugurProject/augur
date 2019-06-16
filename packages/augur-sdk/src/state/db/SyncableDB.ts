@@ -1,10 +1,12 @@
+import * as _ from "lodash";
 import { AbstractDB, BaseDocument } from "./AbstractDB";
 import { Augur } from "../../Augur";
-import { Log, ParsedLog } from "@augurproject/types";
 import { DB } from "./DB";
+import { Log, ParsedLog } from "@augurproject/types";
+import { SubscriptionEventNames } from "../../constants";
 import { SyncStatus } from "./SyncStatus";
+import { augurEmitter } from "../../events";
 import { toAscii } from "../utils/utils";
-import * as _ from "lodash";
 
 // because flexsearch is a UMD type lib
 import FlexSearch = require("flexsearch");
@@ -23,7 +25,8 @@ export interface Document extends BaseDocument {
 /**
  * Stores event logs for non-user-specific events.
  */
-export class SyncableDB<TBigNumber> extends AbstractDB {
+export class SyncableDB extends AbstractDB {
+  protected augur: Augur;
   protected eventName: string;
   protected contractName: string; // TODO Remove if unused
   private syncStatus: SyncStatus;
@@ -31,7 +34,8 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
   private flexSearch?: FlexSearch;
 
   constructor(
-    db: DB<TBigNumber>,
+    augur: Augur,
+    db: DB,
     networkId: number,
     eventName: string,
     dbName: string = db.getDatabaseName(eventName),
@@ -39,6 +43,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     fullTextSearchOptions?: object
   ) {
     super(networkId, dbName, db.pouchDBFactory);
+    this.augur = augur;
     this.eventName = eventName;
     this.syncStatus = db.syncStatus;
     this.idFields = idFields;
@@ -64,7 +69,7 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     return this.db.getIndexes();
   }
 
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
+  public async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
     while (highestSyncedBlockNumber < goalBlock) {
@@ -78,9 +83,9 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     // TODO Make any external calls as needed (such as pushing user's balance to UI)
   }
 
-  private async syncFullTextSearch<TBigNumber>(): Promise<void> {
+  private async syncFullTextSearch(): Promise<void> {
     if (this.flexSearch) {
-      const previousDocumentEntries = await this.db.allDocs({include_docs: true});
+      const previousDocumentEntries = await this.db.allDocs({ include_docs: true });
 
       for (let row of previousDocumentEntries.rows) {
         if (row === undefined) {
@@ -155,15 +160,38 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
         }));
       }
       documents = _.sortBy(documents, "_id");
+
       success = await this.bulkUpsertDocuments(documents[0]._id, documents);
     }
     if (success) {
+      if (documents && (documents as Array<any>).length) {
+        _.each(documents, (document: any) => {
+          augurEmitter.emit(this.eventName, document);
+        });
+      }
+
+      await this.notifyNewBlockEvent(blocknumber);
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
     } else {
       throw new Error(`Unable to add new block`);
     }
 
     return blocknumber;
+  }
+
+  public notifyNewBlockEvent = async (blockNumber: number): Promise<void> => {
+    if (blockNumber > await this.syncStatus.getHighestSyncBlock()) {
+      const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
+      const blocksBehindCurrent = (highestAvailableBlockNumber - blockNumber);
+      const percentBehindCurrent = (blocksBehindCurrent / highestAvailableBlockNumber * 100).toFixed(4);
+
+      augurEmitter.emit(SubscriptionEventNames.NewBlock, {
+        highestAvailableBlockNumber,
+        lastSyncedBlockNumber: blockNumber,
+        blocksBehindCurrent,
+        percentBehindCurrent,
+      });
+    }
   }
 
   public async rollback(blockNumber: number): Promise<void> {
@@ -215,13 +243,14 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
     }
   }
 
-  protected async getLogs(augur: Augur<TBigNumber>, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
+  protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
     return augur.events.getLogs(this.eventName, startBlock, endBlock);
   }
 
   protected processLog(log: Log): BaseDocument {
     if (!log.blockNumber) throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
     let _id = "";
+    // TODO: This works in bulk sync currently because we process logs chronologically. When we switch to reverse chrono for bulk sync we'll need to add more logic
     if (this.idFields.length > 0) {
       // need to preserve order of fields in id
       for (let fieldName of this.idFields) {
@@ -241,5 +270,9 @@ export class SyncableDB<TBigNumber> extends AbstractDB {
       return this.flexSearch.search(query);
     }
     return [];
+  }
+
+  public getFullEventName(): string {
+    return this.eventName;
   }
 }

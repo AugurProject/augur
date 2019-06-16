@@ -1,0 +1,567 @@
+@import (reference) '~assets/styles/shared';
+
+.Button {
+  .text-14-bold;
+
+  border: @border-default;
+  border-radius: @border-radius-default;
+  cursor: @button-cursor;
+
+  &:disabled {
+    cursor: @button-cursor-disabled;
+  }
+}
+
+.PrimaryButton {
+  .Button;
+
+  background: @color-primary-action;
+  color: @color-primary-background;
+  max-height: @button-height-default;
+  padding: @size-12 @size-24;
+
+  &:disabled {
+    background: @color-primary-button-background-disabled;
+  }
+
+  &:hover:enabled {
+    background: @color-primary-button-background-hover;
+  }
+}
+
+.SecondaryButton {
+  .Button;
+
+  background: transparent;
+  border: 1px solid @color-primary-light;
+  color: @color-neutral;
+  max-height: @button-height-default;
+  padding: @size-12 @size-24;
+
+  &:disabled {
+    background: @color-alternate-text;
+  }
+
+  &:hover:enabled {
+    background: @color-primary-light;
+    color: @color-secondary-text;
+  }
+}
+
+.BuyOrderButton {
+  .Button;
+
+  background: @color-buy-order-button-background;
+  border-color: @color-positive;
+  color: @color-secondary-text;
+  height: @button-height-orders;
+  max-height: @button-height-orders;
+  padding: @button-padding-orders;
+
+  &:disabled {
+    background: @color-buy-order-button-background-disabled;
+    border-color: @color-buy-order-button-border-disabled;
+    color: @color-secondary-button-text-disabled;
+  }
+
+  &:hover:enabled {
+    background: @color-buy-order-button-background-hover;
+  }
+}
+
+.SellOrderButton {
+  .Button;
+
+  background: @color-sell-order-button-background;
+  border-color: @color-negative;
+  color: @color-secondary-text;
+  height: @button-height-orders;
+  max-height: @button-height-orders;
+  padding: @button-padding-orders;
+
+  &:disabled {
+    background: @color-sell-order-button-background-disabled;
+    border-color: @color-sell-order-button-border-disabled;
+    color: @color-secondary-button-text-disabled;
+  }
+
+  &:hover:enabled {
+    background: @color-sell-order-button-background-hover;
+  }
+}
+
+.FavoriteButton {
+  .text-12;
+
+  align-items: center;
+  color: @color-secondary-text;
+  cursor: @button-cursor;
+  display: flex;
+  flex-flow: row nowrap;
+
+  > svg {
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    width: 1.5rem;
+  }
+
+  > svg > path {
+    fill: @color-secondary-text;
+    fill-opacity: 0.1;
+    stroke: @color-secondary-text;
+  }
+
+  &:disabled {
+    color: @color-secondary-button-text-disabled;
+    cursor: @button-cursor-disabled;
+
+    > svg > path {
+      fill-opacity: 0.1;
+      stroke: @color-secondary-button-text-disabled;
+      stroke-opacity: 0.3;
+    }
+  }
+
+  &:hover:enabled {
+    > svg > path {
+      fill: @color-primary-action;
+      fill-opacity: 0.1;
+      stroke: @color-primary-action;
+    }
+  }
+}
+
+.FavoriteButton_Favorite {
+  .FavoriteButton;
+
+  > svg > path {
+    fill: @color-primary-action;
+    fill-opacity: 1;
+    stroke: @color-primary-action;
+  }
+
+  &:hover:enabled {
+    > svg > path {
+      fill: @color-primary-action;
+      fill-opacity: 0.5;
+      stroke: @color-primary-action;
+    }
+  }
+}
+
+.FavoriteButton__small {
+  > svg {
+    height: 1rem;
+    width: 1rem;
+  }
+}
+
+.CompactButton {
+  .Button;
+  .mono-10;
+
+  border: @border-default;
+  border-color: @color-primary-light;
+  border-radius: @border-radius-full-round;
+  color: @color-alternate-text;
+  height: 1.25rem;
+  line-height: @size-10;
+  padding: 3px 0.75rem;
+
+  &:hover:enabled {
+    background: @color-primary-light;
+    color: @color-secondary-text;
+  }
+}
+
+.CancelTextButton {
+  .mono-10;
+
+  align-items: center;
+  color: @color-neutral;
+  display: flex;
+  flex-flow: row nowrap;
+  line-height: @size-10;
+  text-transform: uppercase;
+
+  > svg {
+    fill: none;
+    height: 0.5rem;
+    margin-right: 0.25rem;
+    width: 0.5rem;
+
+    > path {
+      stroke: @color-neutral;
+    }
+  }
+
+  &:hover {
+    color: @color-secondary-text;
+
+    > svg > path {
+      stroke: @color-secondary-text;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    &:disabled {
+      color: @color-disabled-text;
+      opacity: 0.5;
+
+      > svg > path {
+        stroke: @color-disabled-text;
+      }
+    }
+  }
+}
+
+.SubmitTextButton {
+  .mono-10;
+
+  align-items: center;
+  color: @color-primary-action;
+  display: flex;
+  flex-flow: row nowrap;
+  line-height: @size-10;
+  text-transform: uppercase;
+
+  &:hover {
+    font-weight: bold;
+  }
+
+  &:disabled {
+    color: fade(@color-secondary-text, 20%);
+
+    &:hover {
+      color: fade(@color-secondary-text, 20%);
+    }
+  }
+}
+
+.EthPercentButton {
+  display: flex;
+  justify-content: center;
+  padding: 0.1875rem;
+
+  > svg {
+    fill: none;
+    height: 0.5rem;
+    width: 0.5rem;
+
+    > path {
+      fill: @color-neutral;
+    }
+  }
+
+  &:hover {
+    > svg > path {
+      fill: @color-secondary-text;
+    }
+  }
+}
+
+.CurrenyActionButton {
+  .Button;
+
+  align-content: center;
+  background: @color-theme-primary;
+  border: 1px solid @color-primary-alternate-two;
+  color: @color-secondary-text;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  line-height: @size-16;
+  max-height: @button-height-default;
+  padding: @size-12 @size-24;
+
+  > svg {
+    fill: none;
+    height: @size-16;
+    margin-right: 0.5rem;
+    width: @size-16;
+
+    > path {
+      fill: @color-secondary-text;
+    }
+  }
+
+  &:disabled {
+    background: @color-neutral;
+    border-color: @color-neutral;
+    color: @color-primary-text;
+
+    > svg {
+      > path {
+        stroke: @color-primary-text;
+      }
+
+      > rect {
+        fill: @color-primary-text;
+      }
+    }
+  }
+
+  &:hover:enabled {
+    background: @color-primary-alternate-two;
+  }
+}
+
+.ViewTransactionsButton {
+  .CurrenyActionButton;
+
+  > svg {
+    height: @size-16;
+    width: @size-16;
+
+    > path {
+      &:nth-child(even) {
+        fill: @color-secondary-text;
+        stroke: none;
+      }
+
+      &:nth-child(odd) {
+        fill: none;
+        stroke: @color-secondary-text;
+      }
+    }
+  }
+
+  &:disabled {
+    > svg {
+      > path {
+        &:nth-child(even) {
+          fill: @color-primary-text;
+        }
+
+        &:nth-child(odd) {
+          stroke: @color-primary-text;
+        }
+      }
+    }
+  }
+}
+
+.DAIFaucetButton,
+.REPFaucetButton {
+  .ViewTransactionsButton;
+
+  height: 100%;
+  padding: 0 @size-24;
+
+  > span {
+    padding: @size-12 0;
+  }
+
+  > svg {
+    height: @size-22;
+    margin: auto @size-8 auto;
+    width: @size-20;
+
+    > path {
+      &:nth-child(odd) {
+        fill: @color-secondary-text;
+        stroke: none;
+      }
+    }
+  }
+
+  &:disabled {
+    > svg > path {
+      &:nth-child(odd) {
+        fill: @color-primary-text;
+        stroke: none;
+      }
+    }
+  }
+}
+
+.DAIFaucetButton {
+  > svg > path {
+    fill: @color-secondary-text;
+  }
+}
+
+.ViewTransactionDetailsButton {
+  .mono-10;
+
+  align-items: center;
+  color: @color-primary-action;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  text-transform: uppercase;
+
+  > svg {
+    fill: none;
+    height: @size-10;
+    margin-right: @size-4;
+    width: @size-10;
+
+    > path:nth-child(odd) {
+      fill: @color-primary-action;
+    }
+
+    > path:nth-child(even) {
+      stroke: @color-primary-action;
+    }
+  }
+
+  > span > a {
+    color: @color-primary-action;
+  }
+
+  &:hover {
+    > svg {
+      > path:nth-child(odd) {
+        fill: @color-secondary-text;
+      }
+
+      > path:nth-child(even) {
+        stroke: @color-secondary-text;
+      }
+    }
+
+    > span > a {
+      color: @color-secondary-text;
+    }
+  }
+}
+
+.ExternalLinkButton {
+  .ViewTransactionDetailsButton;
+
+  color: @color-primary-action;
+  display: inline-flex;
+
+  &:hover {
+    color: @color-secondary-text;
+  }
+
+  > svg > path {
+    &:nth-child(odd) {
+      fill: @color-primary-action;
+      stroke: none;
+    }
+
+    &:nth-child(even) {
+      stroke: @color-primary-action;
+    }
+  }
+}
+
+.DirectionButton {
+  .Button;
+
+  align-items: center;
+  background: @color-theme-primary;
+  border-color: @color-highlight;
+  display: flex;
+  height: @size-32;
+  padding: @size-8;
+  width: @size-32;
+
+  > svg {
+    height: @size-16;
+    margin: auto;
+    width: @size-16;
+
+    > path {
+      stroke: @color-neutral;
+    }
+  }
+
+  &:hover {
+    > svg > path {
+      stroke: @color-secondary-text;
+    }
+  }
+}
+
+.left {
+  > svg {
+    transform: rotate(180deg);
+  }
+}
+
+.ExportButton {
+  .CurrenyActionButton;
+
+  align-items: center;
+  line-height: @size-15;
+  min-width: 9rem;
+  white-space: nowrap;
+
+  > svg {
+    fill: none;
+    height: @size-14;
+    width: @size-10;
+
+    > path {
+      stroke: @color-secondary-text;
+    }
+
+    > rect {
+      fill: @color-secondary-text;
+    }
+  }
+}
+
+.SortButton {
+  align-items: center;
+  display: flex;
+  flex-flow: row-reverse nowrap;
+
+  > svg {
+    flex: 0 0 @size-8;
+    height: @size-12;
+    margin-left: @size-4;
+    width: @size-8;
+
+    > path {
+      fill: @color-neutral;
+
+      &:hover {
+        fill: @color-secondary-text;
+      }
+    }
+  }
+}
+
+.Descending {
+  > svg > path:first-of-type {
+    fill: @color-secondary-text;
+  }
+}
+
+.Ascending {
+  > svg > path:last-of-type {
+    fill: @color-secondary-text;
+  }
+}
+
+.FilterButton {
+  .Button;
+  .text-12;
+
+  align-items: center;
+  border: 2px solid @color-primary-alternate;
+  border-radius: @border-radius-default;
+  color: @color-secondary-text;
+  display: flex;
+  flex-flow: row nowrap;
+  height: @size-40;
+  justify-content: center;
+  max-height: @size-40;
+  max-width: 130px;
+  width: 130px;
+
+  > svg {
+    height: @size-24;
+    margin-left: @size-12;
+    width: @size-24;
+
+    > path {
+      fill: @color-secondary-text;
+    }
+  }
+}

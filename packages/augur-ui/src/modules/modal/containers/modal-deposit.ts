@@ -4,17 +4,20 @@ import { Message } from "modules/modal/message";
 import { assetDataUtils } from "@0xproject/order-utils";
 import { BigNumber } from "@0xproject/utils";
 import { augur } from "services/augurjs";
-import { NETWORK_IDS } from "modules/common-elements/constants";
+import { NETWORK_IDS } from "modules/common/constants";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   address: state.loginAccount.displayAddress,
-  augurNodeNetworkId: state.connection.augurNodeNetworkId
+  augurNodeNetworkId: state.connection.augurNodeNetworkId,
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   openZeroExInstant: () => {
     augur.api.Universe.getReputationToken(
@@ -73,6 +76,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
         );
 
         // eslint-disable-next-line
+        // @ts-ignore
         zeroExInstant.render(currentNetworkParams, "#app");
       }
     );
@@ -85,7 +89,7 @@ function airSwapOnClick(e) {
   e.preventDefault();
   // The widget will offer swaps for REP <-> ETH on mainnet
   // It can still be tested on rinkeby, but only AST <-> ETH is offered
-  window.AirSwap.Trader.render(
+  (window as any).AirSwap.Trader.render(
     {
       env,
       mode: "buy",
@@ -100,13 +104,13 @@ function airSwapOnClick(e) {
         console.info("AirSwap trade complete", txid);
       }
     },
-    document.getElementById("app")
+    document.getElementById("app"),
   );
 }
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const show0xInstant = [NETWORK_IDS.Mainnet, NETWORK_IDS.Kovan].includes(
-    sP.augurNodeNetworkId
+    sP.augurNodeNetworkId,
   );
   const showAirSwap = NETWORK_IDS.Mainnet === sP.augurNodeNetworkId;
   return {
@@ -121,7 +125,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
             openZeroExInstant: () => dP.openZeroExInstant(),
             airSwapOnClick: (e: any) => airSwapOnClick(e),
             show0xInstant,
-            showAirSwap
+            showAirSwap,
           }
         : undefined,
     readableAddress: {
@@ -130,7 +134,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       copyable: true,
       title: "Your connected wallet address"
     },
-    buttons: []
+    buttons: [],
   };
 };
 
@@ -138,6 +142,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Message)
+    mergeProps,
+  )(Message),
 );

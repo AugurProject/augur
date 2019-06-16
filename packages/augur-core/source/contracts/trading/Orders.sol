@@ -90,12 +90,14 @@ contract Orders is IOrders, Initializable {
     function getOrderDataForLogs(bytes32 _orderId) public view returns (Order.Types _type, address[] memory _addressData, uint256[] memory _uint256Data) {
         Order.Data storage _order = orders[_orderId];
         _addressData = new address[](3);
-        _uint256Data = new uint256[](8);
+        _uint256Data = new uint256[](10);
         _addressData[0] = address(_order.kycToken);
         _addressData[1] = _order.creator;
         _uint256Data[0] = _order.price;
         _uint256Data[1] = _order.amount;
         _uint256Data[2] = _order.outcome;
+        _uint256Data[8] = _order.sharesEscrowed;
+        _uint256Data[9] = _order.moneyEscrowed;
         return (_order.orderType, _addressData, _uint256Data);
     }
 

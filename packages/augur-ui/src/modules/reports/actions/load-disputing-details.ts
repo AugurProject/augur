@@ -1,13 +1,16 @@
-import logError from "src/utils/log-error";
+import logError from "utils/log-error";
 import {
   loadMarketsInfoIfNotLoaded,
   loadMarketsDisputeInfo
 } from "modules/markets/actions/load-markets-info";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const loadDisputingDetails = (
-  marketIds: Array<String>,
-  callback: Function = logError
-) => (dispatch: Function) => {
+  marketIds: Array<string>,
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadMarketsInfoIfNotLoaded(marketIds, () => {
       dispatch(

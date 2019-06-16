@@ -1,19 +1,19 @@
 @import (reference) '~assets/styles/shared';
 
-.MarketOutcomesList {
-  border-bottom: 8px solid @color-light-purple;
+.OutcomesList {
+  border-bottom: @size-8 solid @color-theme-primary;
 }
 
-.MarketOutcomesList__heading {
+.Heading {
   align-items: center;
-  background-color: @color-light-purple;
+  background-color: @color-theme-primary;
   border-bottom: 1px solid @color-extra-darkpurple;
   display: flex;
-  font-size: 16px;
+  font-size: @size-16;
   height: 3.5rem;
   justify-content: space-between;
   min-height: 3.5rem;
-  padding: 14px 24px;
+  padding: @size-14 @size-24;
   width: 100%;
 
   > span {
@@ -21,57 +21,14 @@
   }
 }
 
-.MarketOutcomesList__table {
-  display: table;
-  width: 100%;
-}
-
-.MarketOutcomesList__table-header {
-  &:extend(.caps--small);
-
-  background-color: @color-light-purple;
-  color: @color-light-gray;
-  display: table-header-group;
-  font-size: 12px;
-
-  > li {
-    display: table-cell;
-    padding: 0 0 0.625rem;
-    padding-top: 8px;
-    text-align: right;
-    text-transform: capitalize;
-
-    &:first-child {
-      padding-left: 24px;
-      text-align: left;
-    }
-
-    &:last-child {
-      padding-right: 2.2rem;
-    }
-  }
-}
-
-.MarketOutcomesList__table-body {
-  background-color: @color-input-background;
-  display: table-row-group;
-  font-size: @font-size-large;
-  line-height: @font-size-large;
-}
-
-.MarketOutcomesList__table-wrapper {
-  max-height: 20.5rem;
-  overflow-y: auto;
-}
-
 @media @breakpoint-mobile {
-  .MarketOutcomesList {
+  .OutcomesList {
     background: @color-theme-primary;
     border-radius: @border-radius-default;
     color: @color-secondary-text;
   }
 
-  .MarketOutcomesList__heading {
+  .Heading {
     font-size: @size-14;
     padding-left: @size-16;
   }

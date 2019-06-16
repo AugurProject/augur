@@ -1,9 +1,9 @@
 import { createSelector } from "reselect";
-import { selectBlockchainState } from "src/select-state";
+import { selectBlockchainState } from "store/select-state";
 import { formatNumber, formatPercent } from "utils/format-number";
 import { createBigNumber } from "utils/create-big-number";
 
-import { ZERO } from "modules/common-elements/constants";
+import { ZERO } from "modules/common/constants";
 
 export interface BlockchainState {
   highestBlockBn: number;

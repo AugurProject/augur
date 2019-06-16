@@ -1,0 +1,83 @@
+@import (reference) '~assets/styles/shared';
+
+.Paginator {
+  .mono-14;
+
+  color: @color-tertiary-text;
+  height: 3.125rem;
+  margin: @size-40 0;
+}
+
+.controls {
+  display: flex;
+  height: 100%;
+}
+
+.back,
+.location,
+.forward {
+  flex: 1;
+  height: 100%;
+}
+
+.location {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 @size-32;
+  max-width: fit-content;
+}
+
+.button {
+  align-items: center;
+  background: none;
+  display: flex;
+  height: 100%;
+  padding: 0;
+  text-decoration: none;
+
+  button {
+    align-items: center;
+    background: @color-theme-primary;
+    border: 1px solid @color-highlight;
+    border-radius: 3px;
+    box-sizing: border-box;
+    display: flex;
+    height: @size-32;
+    justify-content: center;
+    width: @size-32;
+
+    svg path {
+      stroke: @color-neutral;
+    }
+  }
+
+  button:hover {
+    background: fade(@color-highlight, 30%);
+
+    svg path {
+      stroke: @color-secondary-text;
+    }
+  }
+}
+
+.back > .button {
+  justify-content: flex-end;
+  padding-left: @size-20;
+}
+
+.forward > .button {
+  justify-content: flex-start;
+  padding-right: @size-20;
+}
+
+.forwardArrorw {
+  transform: rotateY(180deg);
+}
+
+@media @breakpoint-mobile-small {
+  .location {
+    flex: 2;
+    max-width: none;
+  }
+}

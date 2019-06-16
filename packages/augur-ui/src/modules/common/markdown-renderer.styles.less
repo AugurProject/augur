@@ -1,0 +1,40 @@
+@import (reference) '~assets/styles/shared';
+
+.MarkdownRenderer {
+  white-space: pre-wrap;
+}
+
+.MarkdownRenderer p {
+  line-height: 140%;
+}
+
+.MarkdownRenderer ul {
+  display: block;
+  list-style-type: disc;
+  margin-block-end: @size-16;
+  margin-block-start: @size-16;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  padding-inline-start: @size-40;
+}
+
+.MarkdownRenderer ol {
+  margin-block-end: @size-16;
+  margin-block-start: @size-16;
+}
+
+.MarkdownRenderer h2,
+.MarkdownRenderer h3,
+.MarkdownRenderer h4,
+.MarkdownRenderer h5,
+.MarkdownRenderer h6 {
+  margin-block-end: @size-16;
+  margin-block-start: @size-16;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  padding: 0 !important;
+}
+
+.MarkdownRenderer del {
+  text-decoration: none;
+}

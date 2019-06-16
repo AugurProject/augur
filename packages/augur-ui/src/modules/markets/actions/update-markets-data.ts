@@ -13,7 +13,7 @@ export const updateMarketsData = (marketsData: any) => ({
   data: { marketsData }
 });
 export const clearMarketsData = () => ({ type: CLEAR_MARKETS_DATA });
-export const updateMarketCategory = (marketId: String, category: String) => ({
+export const updateMarketCategory = (marketId: string, category: string) => ({
   type: UPDATE_MARKET_CATEGORY,
   data: {
     marketId,
@@ -21,8 +21,8 @@ export const updateMarketCategory = (marketId: String, category: String) => ({
   }
 });
 export const updateMarketRepBalance = (
-  marketId: String,
-  repBalance: String
+  marketId: string,
+  repBalance: string
 ) => ({
   type: UPDATE_MARKET_REP_BALANCE,
   data: {
@@ -31,8 +31,8 @@ export const updateMarketRepBalance = (
   }
 });
 export const updateMarketFrozenSharesValue = (
-  marketId: String,
-  frozenSharesValue: String
+  marketId: string,
+  frozenSharesValue: string
 ) => ({
   type: UPDATE_MARKET_FROZEN_SHARES_VALUE,
   data: {
@@ -45,8 +45,8 @@ export const updateMarketsDisputeInfo = (marketsDisputeInfo: any) => ({
   data: { marketsDisputeInfo }
 });
 export const updateMarketEthBalance = (
-  marketId: String,
-  ethBalance: String
+  marketId: string,
+  ethBalance: string
 ) => ({
   type: UPDATE_MARKET_ETH_BALANCE,
   data: {
@@ -54,7 +54,7 @@ export const updateMarketEthBalance = (
     ethBalance
   }
 });
-export const removeMarket = (marketId: String) => ({
+export const removeMarket = (marketId: string) => ({
   type: REMOVE_MARKET,
   data: { marketId }
 });

@@ -4,7 +4,7 @@ export {
   CATEGORICAL,
   BUY,
   SELL
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 
 export const tradeTestState = {
   loginAccount: {
@@ -15,7 +15,6 @@ export const tradeTestState = {
     ethTokens: "10000",
     rep: "50.0"
   },
-  selectedMarketId: "testYesNoMarketId",
   marketsData: {
     testYesNoMarketId: {
       author: "testAuthor1",

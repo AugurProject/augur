@@ -48,6 +48,7 @@ contract Universe is ITyped, IUniverse {
     uint256 public previousDesignatedReportNoShowBondInAttoRep;
 
     mapping (address => uint256) private shareSettlementFeeDivisor;
+    uint256 public previousReportingFeeDivisor;
 
     address public completeSets;
 
@@ -79,6 +80,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function updateForkValues() public returns (bool) {
+        require(!isForking());
         uint256 _totalRepSupply = reputationToken.getTotalTheoreticalSupply();
         forkReputationGoal = _totalRepSupply.div(2); // 50% of REP migrating results in a victory in a fork
         disputeThresholdForFork = _totalRepSupply.div(40); // 2.5% of the total rep supply
@@ -415,28 +417,45 @@ contract Universe is ITyped, IUniverse {
 
     function getOrCacheReportingFeeDivisor() public returns (uint256) {
         IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
-        IDisputeWindow _previousDisputeWindow = getOrCreatePreviousDisputeWindow(false);
         uint256 _currentFeeDivisor = shareSettlementFeeDivisor[address(_disputeWindow)];
         if (_currentFeeDivisor != 0) {
             return _currentFeeDivisor;
         }
-        uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
-        uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
-        uint256 _previousFeeDivisor = shareSettlementFeeDivisor[address(_previousDisputeWindow)];
-        if (_previousFeeDivisor == 0) {
-            _currentFeeDivisor = Reporting.getDefaultReportingFeeDivisor();
-        } else if (_targetRepMarketCapInAttoCash == 0) {
-            _currentFeeDivisor = Reporting.getDefaultReportingFeeDivisor();
-        } else {
-            _currentFeeDivisor = _previousFeeDivisor.mul(_repMarketCapInAttoCash).div(_targetRepMarketCapInAttoCash);
+
+        _currentFeeDivisor = calculateReportingFeeDivisor();
+
+        shareSettlementFeeDivisor[address(_disputeWindow)] = _currentFeeDivisor;
+        previousReportingFeeDivisor = _currentFeeDivisor;
+        return _currentFeeDivisor;
+    }
+
+    function getReportingFeeDivisor() public view returns (uint256) {
+        IDisputeWindow _disputeWindow = getCurrentDisputeWindow(false);
+        uint256 _currentFeeDivisor = shareSettlementFeeDivisor[address(_disputeWindow)];
+        if (_currentFeeDivisor != 0) {
+            return _currentFeeDivisor;
         }
 
-        _currentFeeDivisor = _currentFeeDivisor
+        return calculateReportingFeeDivisor();
+    }
+
+    function calculateReportingFeeDivisor() public view returns (uint256) {
+        uint256 _repMarketCapInAttoCash = getRepMarketCapInAttoCash();
+        uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
+        uint256 _reportingFeeDivisor = 0;
+        if (previousReportingFeeDivisor == 0) {
+            _reportingFeeDivisor = Reporting.getDefaultReportingFeeDivisor();
+        } else if (_targetRepMarketCapInAttoCash == 0) {
+            _reportingFeeDivisor = Reporting.getDefaultReportingFeeDivisor();
+        } else {
+            _reportingFeeDivisor = previousReportingFeeDivisor.mul(_repMarketCapInAttoCash).div(_targetRepMarketCapInAttoCash);
+        }
+
+        _reportingFeeDivisor = _reportingFeeDivisor
             .max(Reporting.getMinimumReportingFeeDivisor())
             .min(Reporting.getMaximumReportingFeeDivisor());
 
-        shareSettlementFeeDivisor[address(_disputeWindow)] = _currentFeeDivisor;
-        return _currentFeeDivisor;
+        return _reportingFeeDivisor;
     }
 
     function getOrCacheMarketCreationCost() public returns (uint256) {

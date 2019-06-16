@@ -8,8 +8,6 @@
     "connectionTimeout": 60000
   },
   "universe": null,
-  "bug-bounty": false,
-  "bug-bounty-address": null,
   "debug": {
     "connect": true,
     "broadcast": false

@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { Augur } from "@augurproject/sdk";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
@@ -15,7 +14,7 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<ethers.utils.BigNumber>;
+let augur: Augur;
 let ethersProvider: EthersProvider;
 beforeAll(async () => {
   const {provider, dependencies, addresses} = await deployContracts(ACCOUNTS, compilerOutput);

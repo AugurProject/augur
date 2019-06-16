@@ -2,6 +2,8 @@ export const abi = require("./abi.json");
 export const Addresses = require("./addresses.json");
 export const Contracts = require("./contracts.json");
 export const UploadBlockNumbers = require("./upload-block-numbers.json");
+export const Networks = require("./networks.json");
+export { ContractEvents } from "./events";
 
 export type NetworkId =
     '1'
@@ -28,6 +30,7 @@ export interface ContractAddresses {
     Orders: string;
     ShareToken: string;
     Trade: string;
+    SimulateTrade: string;
     Controller?: string;
     OrdersFinder?: string;
     OrdersFetcher?: string;

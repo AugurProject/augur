@@ -1,0 +1,94 @@
+@import (reference) "~assets/styles/shared";
+
+.AccountView {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  @media @breakpoint-mobile {
+    min-height: unset;
+  }
+
+  > div {
+    display: flex;
+    flex: 1;
+    margin: @size-24 @size-40 @size-40;
+
+    > div {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      margin: @size-8;
+
+      > div {
+        display: flex;
+        flex: 2 1 auto;
+        flex-direction: column;
+        margin-bottom: @size-12;
+        max-height: 65vh;
+        min-height: 6.25rem;
+
+        &:last-of-type {
+          margin-bottom: @size-20;
+        }
+      }
+    }
+
+    > div:first-of-type {
+      > div {
+        flex: unset;
+      }
+    }
+
+    > div:nth-of-type(2) {
+      height: fit-content;
+
+      > div {
+        max-height: unset;
+      }
+
+      > div:last-of-type {
+        flex: 0;
+        min-height: fit-content;
+      }
+    }
+
+    > div:last-of-type {
+      flex: 2;
+      flex-direction: row;
+      height: fit-content;
+
+      > div:first-of-type {
+        flex: 1;
+        max-height: 70vh;
+      }
+
+      > div:last-of-type {
+        flex: 1;
+        margin-left: 1.5rem;
+      }
+    }
+  }
+}
+
+@media @breakpoint-1-0-0 {
+
+  .AccountView {
+    > div {
+      > div:last-of-type {
+        flex: 1;
+        flex-direction: column;
+        height: unset;
+
+        > div:first-of-type {
+          flex: unset;
+        }
+
+        > div:last-of-type {
+          flex: unset;
+          margin-left: 0;
+        }
+      }
+    }
+  }
+}

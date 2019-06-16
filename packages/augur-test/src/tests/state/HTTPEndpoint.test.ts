@@ -1,10 +1,10 @@
 import * as HTTPEndpoint from "@augurproject/sdk/build/state/HTTPEndpoint";
 import request from "supertest";
-import { API } from "@augurproject/sdk/build/state/api/API";
+import { API } from "@augurproject/sdk/build/state/getter/API";
 import { Augur } from "@augurproject/sdk";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { ethers } from "ethers";
 import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";
+import {SEOConnector} from "@augurproject/sdk";
 
 const mock = makeDbMock();
 
@@ -12,12 +12,14 @@ beforeEach(async () => {
   await mock.wipeDB();
 });
 
-let augur: Augur<ethers.utils.BigNumber>;
-let db: DB<ethers.utils.BigNumber>;
+let augur: Augur;
+let db: Promise<DB>;
 
 beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
-  db = await mock.makeDB(augur, ACCOUNTS);
+  db = mock.makeDB(augur, ACCOUNTS);
+  // Must wait for the db for initialize before we start the http server.
+  await db;
 }, 120000);
 
 test("HTTPEndpoint :: Responds to ping Json RPC Request ", async () => {

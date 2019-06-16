@@ -22,7 +22,7 @@
       }
 
       .highcharts-no-data {
-        font-size: @size-16;
+        .text-16;
       }
 
       .highcharts-label-box {
@@ -30,7 +30,7 @@
         font-weight: bold;
 
         > text > tspan:last-child {
-          font-size: @size-12;
+          .text-12;
         }
       }
 
@@ -67,8 +67,8 @@
         .mono-10;
 
         background-color: @color-theme-primary;
-        padding: 0.5rem;
-        z-index: 2;
+        padding: @size-8;
+        z-index: @above-all-content;
       }
 
       .highcharts-crosshair {
@@ -77,7 +77,7 @@
 
       .highcharts-plot-band {
         fill: @color-highlight-masked;
-        z-index: -1;
+        z-index: @default-behind;
       }
 
       .highcharts-point-down {
@@ -111,7 +111,7 @@
       }
 
       .eth-label {
-        font-size: @size-9;
+        .text-9;
       }
     }
   }
@@ -125,8 +125,4 @@
   .mono-10;
 
   color: @color-secondary-text;
-}
-
-.Candlestick_candlesticks {
-  border-radius: 1px;
 }

@@ -3,6 +3,9 @@ import makePath from "modules/routes/helpers/make-path";
 import logError from "utils/log-error";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { augur } from "services/augurjs";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const submitInitialReport = ({
   estimateGas,
@@ -11,8 +14,8 @@ export const submitInitialReport = ({
   invalid,
   history,
   returnPath = REPORTING_REPORT_MARKETS,
-  callback = logError
-}: any) => (dispatch: Function, getState: Function) => {
+  callback: NodeStyleCallback = logError
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, marketsData } = getState();
   const outcome = parseFloat(selectedOutcome);
 

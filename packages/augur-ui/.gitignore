@@ -59,3 +59,7 @@ augur-local.crt
 augur-local.csr
 
 junit.xml
+
+# styles types
+src/modules/**/*styles.less.d.ts
+src/modules/**/*.less.d.ts

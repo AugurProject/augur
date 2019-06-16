@@ -1,28 +1,13 @@
-import * as Sync from "./Sync";
 import * as HTTPEndpoint from "./HTTPEndpoint";
+import * as Sync from "./Sync";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
-import { API } from "./api/API";
-import { Augur } from "../Augur";
-import { BigNumber as EthersBigNumber } from "ethers/utils";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import { DB } from "./db/DB";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { JsonRpcProvider } from "ethers/providers";
-import { PouchDBFactory } from "./db/AbstractDB";
-import { Addresses } from "@augurproject/artifacts";
-import { EndpointSettings } from "./api/types";
+import {EndpointSettings} from "./getter/types";
+import {EventEmitter} from "events";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
 
-  const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-  const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
-  const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4]);
-
-  const pouchDBFactory = PouchDBFactory({});
-
-  const db = new DB<EthersBigNumber>(pouchDBFactory);
-  const api = new API(augur, db);
+  const api = await Sync.start(settings.ethNodeURLs[4], settings.testAccounts[0]);
   const endpointSettings = {} as EndpointSettings;
 
   try {
@@ -82,10 +67,9 @@ export async function run() {
     endpointSettings.certificateKeyFile = "./certs/ssl-cert-snakeoil.pem";
   }
 
-  Sync.start();
   console.log("Starting websocket and http endpoints");
   HTTPEndpoint.run(api, endpointSettings);
-  await WebsocketEndpoint.run(api, endpointSettings);
+  await WebsocketEndpoint.run(api, endpointSettings, new EventEmitter());
 }
 
 run();

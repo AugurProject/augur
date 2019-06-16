@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
+import { AppState } from "store";
 import { selectMarket } from "modules/markets/selectors/market";
 import { createBigNumber } from "utils/create-big-number";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
@@ -9,55 +9,57 @@ import {
   formatAttoRep,
   formatAttoEth,
   formatEther,
-  formatRep
+  formatRep,
 } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { Proceeds } from "modules/modal/proceeds";
 import { ActionRowsProps } from "modules/modal/common";
 import {
   CLAIM_FEES_GAS_COST,
-  redeemStake
+  redeemStake,
 } from "modules/reports/actions/claim-reporting-fees";
 import {
   ALL,
   CLAIM_FEE_WINDOWS,
-  CLAIM_STAKE_FEES
-} from "modules/common-elements/constants";
+  CLAIM_STAKE_FEES,
+} from "modules/common/constants";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   gasCost: formatGasCostToEther(
     CLAIM_FEES_GAS_COST,
     { decimalsRounded: 4 },
-    getGasPrice(state)
+    getGasPrice(state),
   ),
   pendingQueue: state.pendingQueue || [],
   reportingFees: state.reportingWindowStats.reportingFees,
   feeWindows: state.reportingWindowStats.reportingFees.feeWindows,
-  nonforkedMarkets: state.reportingWindowStats.reportingFees.nonforkedMarkets
+  nonforkedMarkets: state.reportingWindowStats.reportingFees.nonforkedMarkets,
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  redeemStake: (options, callback) => dispatch(redeemStake(options, callback))
+  redeemStake: (options, callback) => dispatch(redeemStake(options, callback)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const marketIdsToTest = sP.nonforkedMarkets;
   const markets: Array<ActionRowsProps> = [];
-  const claimableMarkets = [];
+  const claimableMarkets: any = [];
   let unclaimedRep = createBigNumber(
-    sP.reportingFees.unclaimedRep.fullPrecision
+    sP.reportingFees.unclaimedRep.fullPrecision,
   );
   let unclaimedEth = createBigNumber(
-    sP.reportingFees.unclaimedEth.fullPrecision
+    sP.reportingFees.unclaimedEth.fullPrecision,
   );
-  marketIdsToTest.forEach(marketObj => {
+  marketIdsToTest.forEach((marketObj) => {
     const market = selectMarket(marketObj.marketId);
     const ethFees = formatAttoEth(marketObj.unclaimedEthFees, {
       decimals: 4,
       decimalsRounded: 4,
-      zeroStyled: false
+      zeroStyled: false,
     });
     const total = createBigNumber(ethFees.fullPrecision);
 
@@ -65,7 +67,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       const marketRep = formatAttoRep(marketObj.unclaimedRepTotal, {
         decimals: 4,
         decimalsRounded: 4,
-        zeroStyled: false
+        zeroStyled: false,
       });
 
       const pending =
@@ -94,21 +96,20 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             label: "Reporting Fees",
-            value: `${ethFees.formatted || 0} ETH`
+            value: `${ethFees.formatted || 0} DAI`
           },
           {
             label: "est gas cost",
             value: `${marketObj.gasCost} ETH`
           },
           {
-            label: "total eth",
+            label: "total dai",
             value: `${
               formatEther(
                 createBigNumber(total)
-                  .minus(createBigNumber(marketObj.gasCost))
                   .abs()
               ).formatted
-            } ETH`
+            } DAI`
           }
         ],
         action: () => {

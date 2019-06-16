@@ -1,4 +1,4 @@
-import { Augur, UserSpecificEvent } from "../../Augur";
+import { Augur, UserSpecificEvent, CustomEvent } from "../../Augur";
 import { MetaDB, SequenceIds } from "./MetaDB";
 import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";
@@ -11,31 +11,36 @@ import {
   CompleteSetsSoldLog,
   DisputeCrowdsourcerCompletedLog,
   DisputeCrowdsourcerContributionLog,
+  DisputeCrowdsourcerRedeemedLog,
   DisputeWindowCreatedLog,
+  InitialReporterRedeemedLog,
   InitialReportSubmittedLog,
-  OrderEventLog,
   MarketCreatedLog,
   MarketFinalizedLog,
   MarketMigratedLog,
   MarketVolumeChangedLog,
+  OrderEventLog,
+  OrderEventType,
+  OrderEventUint256Value,
+  ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
   TimestampSetLog,
   TokenBalanceChangedLog,
+  TradingProceedsClaimedLog,
   UniverseForkedLog,
-  OrderEventType,
-  OrderEventUint256Value,
 } from "../logs/types";
 
-
-export class DB<TBigNumber> {
+export class DB {
   private networkId: number;
   private blockstreamDelay: number;
   private trackedUsers: TrackedUsers;
   private genericEventNames: Array<string>;
+  private customEvents: Array<CustomEvent>;
   private userSpecificEvents: Array<UserSpecificEvent>;
-  private syncableDatabases: { [dbName: string]: SyncableDB<TBigNumber> } = {};
-  private metaDatabase: MetaDB<TBigNumber>; // TODO Remove this if derived DBs are not used.
+  private syncableDatabases: { [dbName: string]: SyncableDB } = {};
+  private metaDatabase: MetaDB; // TODO Remove this if derived DBs are not used.
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
+  private augur: Augur;
   public readonly pouchDBFactory: PouchDBFactoryType;
   public syncStatus: SyncStatus;
 
@@ -51,15 +56,21 @@ export class DB<TBigNumber> {
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
+   * @param {Array<CustomEvent>} customEvents Array of custom event objects
    * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
-   * @returns {Promise<DB<TBigNumber>>} Promise to a DB controller object
+   * @returns {Promise<DB>} Promise to a DB controller object
    */
-  public static async createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB<TBigNumber>> {
-    const dbController = new DB<TBigNumber>(pouchDBFactory);
-    await dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, genericEventNames, userSpecificEvents, blockAndLogStreamerListener);
-    return dbController;
+  public static createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, augur: Augur, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+    const dbController = new DB(pouchDBFactory);
+
+    dbController.augur = augur; 
+    dbController.genericEventNames = augur.genericEventNames;
+    dbController.userSpecificEvents = augur.userSpecificEvents;
+    dbController.customEvents = augur.customEvents;
+
+    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers,  blockAndLogStreamerListener);
   }
 
   /**
@@ -74,18 +85,16 @@ export class DB<TBigNumber> {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, genericEventNames: Array<string>, userSpecificEvents: Array<UserSpecificEvent>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<void> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>,  blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
     this.trackedUsers = new TrackedUsers(networkId, this.pouchDBFactory);
     this.metaDatabase = new MetaDB(this, networkId, this.pouchDBFactory);
-    this.genericEventNames = genericEventNames;
-    this.userSpecificEvents = userSpecificEvents;
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
-    for (let eventName of genericEventNames) {
+    for (let eventName of this.genericEventNames) {
       let fullTextSearchOptions = undefined;
       if (eventName === "MarketCreated") {
         fullTextSearchOptions = {
@@ -105,14 +114,18 @@ export class DB<TBigNumber> {
           },
         };
       }
-      new SyncableDB<TBigNumber>(this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
+
+      new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
     }
-    // TODO TokensTransferred should comprise all balance changes with additional metadata and with an index on the to party.
-    // Also update topics/indexes for user-specific events once these changes are made to the contracts.
+
+    for (let customEvent of this.customEvents) {
+      new SyncableDB(this.augur, this, networkId, customEvent.eventName ? customEvent.eventName : customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
+    }
+
     for (let trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
-      for (let userSpecificEvent of userSpecificEvents) {
-        new UserSyncableDB<TBigNumber>(this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
+      for (let userSpecificEvent of this.userSpecificEvents) {
+        new UserSyncableDB(this.augur, this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
       }
     }
 
@@ -125,14 +138,15 @@ export class DB<TBigNumber> {
     }
 
     // TODO If derived DBs are used, `this.metaDatabase.rollback` should also be called here
+    return this;
   }
 
   /**
    * Called from SyncableDB constructor once SyncableDB is successfully created.
    *
-   * @param {SyncableDB<TBigNumber>} db dbController that utilizes the SyncableDB
+   * @param {SyncableDB} db dbController that utilizes the SyncableDB
    */
-  public notifySyncableDBAdded(db: SyncableDB<TBigNumber>): void {
+  public notifySyncableDBAdded(db: SyncableDB): void {
     this.syncableDatabases[db.dbName] = db;
   }
 
@@ -143,11 +157,11 @@ export class DB<TBigNumber> {
   /**
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    *
-   * @param {Augur<TBigNumber>} augur Augur object with which to sync
+   * @param {Augur} augur Augur object with which to sync
    * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    */
-  public async sync(augur: Augur<TBigNumber>, chunkSize: number, blockstreamDelay: number): Promise<void> {
+  public async sync(augur: Augur, chunkSize: number, blockstreamDelay: number): Promise<void> {
     let dbSyncPromises = [];
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
 
@@ -166,6 +180,17 @@ export class DB<TBigNumber> {
 
     for (let genericEventName of this.genericEventNames) {
       let dbName = this.getDatabaseName(genericEventName);
+      dbSyncPromises.push(
+        this.syncableDatabases[dbName].sync(
+          augur,
+          chunkSize,
+          blockstreamDelay,
+          highestAvailableBlockNumber
+        ));
+    }
+
+    for (let customEvent of this.customEvents) {
+      let dbName = this.getDatabaseName(customEvent.name);
       dbSyncPromises.push(
         this.syncableDatabases[dbName].sync(
           augur,
@@ -225,7 +250,7 @@ export class DB<TBigNumber> {
    *
    * @param {string} dbName The name of the database
    */
-  public getSyncableDatabase(dbName: string): SyncableDB<TBigNumber> {
+  public getSyncableDatabase(dbName: string): SyncableDB {
     return this.syncableDatabases[dbName];
   }
 
@@ -258,7 +283,7 @@ export class DB<TBigNumber> {
    *
    * @param {number} blockNumber Oldest block number to delete
    */
-  public async rollback(blockNumber: number): Promise<void> {
+  public rollback = async (blockNumber: number): Promise<void> => {
     let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (let eventName of this.genericEventNames) {
@@ -373,7 +398,7 @@ export class DB<TBigNumber> {
     return results.docs as unknown as Array<DisputeCrowdsourcerCompletedLog>;
   }
 
-    /**
+  /**
    * Queries the DisputeCrowdsourcerContribution DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
@@ -385,6 +410,17 @@ export class DB<TBigNumber> {
   }
 
   /**
+   * Queries the DisputeCrowdsourcerRedeemed DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<DisputeCrowdsourcerRedeemedLog>>}
+   */
+  public async findDisputeCrowdsourcerRedeemedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerRedeemedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerRedeemed"), request);
+    return results.docs as unknown as Array<DisputeCrowdsourcerRedeemedLog>;
+  }
+
+  /**
    * Queries the DisputeWindowCreated DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
@@ -393,6 +429,17 @@ export class DB<TBigNumber> {
   public async findDisputeWindowCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeWindowCreatedLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("DisputeWindowCreated"), request);
     return results.docs as unknown as Array<DisputeWindowCreatedLog>;
+  }
+
+  /**
+   * Queries the InitialReporterRedeemed DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<InitialReporterRedeemedLog>>}
+   */
+  public async findInitialReporterRedeemedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<InitialReporterRedeemedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("InitialReporterRedeemed"), request);
+    return results.docs as unknown as Array<InitialReporterRedeemedLog>;
   }
 
   /**
@@ -492,6 +539,31 @@ export class DB<TBigNumber> {
     return logs;
   }
 
+  /**
+   * Queries the OrderFilled DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<OrderEventLog>>}
+   */
+  public async findOrderPriceChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderEventLog>> {
+    request.selector["eventType"] = OrderEventType.PriceChanged;
+    const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
+    const logs = results.docs as unknown as Array<OrderEventLog>;
+    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
+    return logs;
+  }
+
+  /*
+   * Queries the ParticipationTokensRedeemed DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<ParticipationTokensRedeemedLog>>}
+   */
+  public async findParticipationTokensRedeemedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<ParticipationTokensRedeemedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("ParticipationTokensRedeemed"), request);
+    return results.docs as unknown as Array<ParticipationTokensRedeemedLog>;
+  }
+
   /*
    * Queries the ProfitLossChanged DB
    *
@@ -527,6 +599,18 @@ export class DB<TBigNumber> {
     return results.docs as unknown as Array<TokenBalanceChangedLog>;
   }
 
+
+  /**
+   * Queries the TradingProceedsClaimed DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<TradingProceedsClaimedLog>>}
+   */
+  public async findTradingProceedsClaimedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<TradingProceedsClaimedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("TradingProceedsClaimed"), request);
+    return results.docs as unknown as Array<TradingProceedsClaimedLog>;
+  }
+
   /**
    * Queries the UniverseForked DB
    *
@@ -536,5 +620,18 @@ export class DB<TBigNumber> {
   public async findUniverseForkedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<UniverseForkedLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("UniverseForked"), request);
     return results.docs as unknown as Array<UniverseForkedLog>;
+  }
+
+  /**
+   * Queries the CurrentOrders DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<OrderEventLog>>}
+   */
+  public async findCurrentOrders(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderEventLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("CurrentOrders"), request);
+    const logs = results.docs as unknown as Array<OrderEventLog>;
+    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
+    return logs;
   }
 }

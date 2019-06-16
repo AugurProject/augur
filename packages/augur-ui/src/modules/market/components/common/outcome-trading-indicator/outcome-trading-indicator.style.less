@@ -1,25 +1,24 @@
 @import (reference) "~assets/styles/shared";
 
-.TradingIndicator_arrow_up,
-.TradingIndicator_arrow_down,
-.TradingIndicator_arrow {
+.Up,
+.Down {
   border: solid transparent;
   border-color: rgba(136, 183, 213, 0);
-  border-width: 0 7px 8px;
+  border-width: 0 @size-7 @size-7;
   bottom: 45%;
-  margin-left: 0.9375rem;
+  margin-left: @size-16;
   position: relative;
 
-  &.small {
-    border-width: 0.325rem;
+  @media @breakpoint-mobile {
+    border-width: @size-5; 
   }
 }
 
-.TradingIndicator_arrow_up {
-  border-bottom-color: @color-light-gray;
+.Up {
+  border-bottom-color: @color-neutral;
 }
 
-.TradingIndicator_arrow_down {
-  border-top-color: @color-light-gray;
-  border-width: 8px 7px 0;
+.Down {
+  border-top-color: @color-neutral;
+  border-width: @size-8 @size-7 0;
 }

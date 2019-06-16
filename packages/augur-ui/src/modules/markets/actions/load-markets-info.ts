@@ -6,56 +6,55 @@ import {
 } from "modules/markets/actions/update-markets-data";
 import { getDisputeInfo } from "modules/reports/actions/get-dispute-info";
 import logError from "utils/log-error";
+import { AppState } from "store";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
+import { augurSdk } from "services/augursdk";
 
 export const loadMarketsInfo = (
-  marketIds: Array<String>,
-  callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+  marketIds: Array<string>,
+  callback: NodeStyleCallback = logError
+): ThunkAction<any, any, any, any> => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
   if (!marketIds || marketIds.length === 0) {
     return callback(null, []);
   }
+  const augur = augurSdk.get();
+  const marketsDataArray = await augur.getMarketsInfo({ marketIds });
+  if (marketsDataArray == null || !marketsDataArray.length)
+    return callback("no markets data received");
+  const universeId = getState().universe.id;
+  const marketsData = marketsDataArray
+    .filter(marketHasData => marketHasData)
+    .reduce((p, marketData) => {
+      if (marketData.id == null || marketData.universe !== universeId) return p;
 
-  augur.markets.getMarketsInfo(
-    { marketIds },
-    (err: any, marketsDataArray: Array<any>) => {
-      if (err) return loadingError(dispatch, callback, err, marketIds);
+      return {
+        ...p,
+        [marketData.id]: marketData
+      };
+    }, {});
 
-      if (marketsDataArray == null || !marketsDataArray.length)
-        return loadingError(
-          dispatch,
-          callback,
-          `no markets data received`,
-          marketIds
-        );
-      const universeId = getState().universe.id;
-      const marketsData = marketsDataArray
-        .filter(marketHasData => marketHasData)
-        .reduce((p, marketData) => {
-          if (marketData.id == null || marketData.universe !== universeId)
-            return p;
+  if (!Object.keys(marketsData).length)
+    return callback("no marketIds in collection");
 
-          return {
-            ...p,
-            [marketData.id]: marketData
-          };
-        }, {});
-
-      if (!Object.keys(marketsData).length)
-        return loadingError(dispatch, callback, null, marketIds);
-
-      dispatch(updateMarketsData(marketsData));
-      callback(null, marketsData);
-    }
-  );
+  dispatch(updateMarketsData(marketsData));
+  callback(null, marketsData);
 };
 
 export const loadMarketsInfoIfNotLoaded = (
-  marketIds: Array<String>,
-  callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
+  marketIds: Array<string>,
+  callback: NodeStyleCallback = logError
+): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
   const { marketsData } = getState();
   const marketIdsToLoad = marketIds.filter(
-    marketId => !isMarketLoaded(marketId, marketsData)
+    (marketId: string) => !isMarketLoaded(marketId, marketsData)
   );
 
   if (marketIdsToLoad.length === 0) return callback(null);
@@ -63,38 +62,27 @@ export const loadMarketsInfoIfNotLoaded = (
 };
 
 export const loadMarketsDisputeInfo = (
-  marketIds: Array<String>,
-  callback: Function = logError
-) => (dispatch: Function, getState: Function) => {
-  dispatch(
-    getDisputeInfo(
-      marketIds,
-      (err: any, marketsDisputeInfoArray: Array<String>) => {
-        if (err) return callback(err);
-        if (!marketsDisputeInfoArray.length) return callback(null);
-        const marketsDisputeInfo = marketsDisputeInfoArray.reduce(
-          (p, marketDisputeInfo: any) => ({
-            ...p,
-            [marketDisputeInfo.marketId]: marketDisputeInfo
-          }),
-          {}
-        );
-        dispatch(
-          loadMarketsInfoIfNotLoaded(marketIds, () => {
-            dispatch(updateMarketsDisputeInfo(marketsDisputeInfo));
-            callback(null);
-          })
-        );
-      }
-    )
+  marketIds: Array<string>,
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>): void => {
+  getDisputeInfo(
+    marketIds,
+    (err: any, marketsDisputeInfoArray: Array<string>) => {
+      if (err) return callback(err);
+      if (!marketsDisputeInfoArray.length) return callback(null);
+      const marketsDisputeInfo = marketsDisputeInfoArray.reduce(
+        (p, marketDisputeInfo: any) => ({
+          ...p,
+          [marketDisputeInfo.marketId]: marketDisputeInfo
+        }),
+        {}
+      );
+      dispatch(
+        loadMarketsInfoIfNotLoaded(marketIds, () => {
+          dispatch(updateMarketsDisputeInfo(marketsDisputeInfo));
+          callback(null);
+        })
+      );
+    }
   );
 };
-
-function loadingError(
-  dispatch: Function,
-  callback: Function,
-  error: any,
-  marketIds: Array<String>
-) {
-  callback(error);
-}

@@ -93,7 +93,10 @@ export class ContractCompiler {
         // Create output directory (if it doesn't exist)
         await fs.mkdirp(path.dirname(this.configuration.contractOutputPath));
 
-        // Output contract data to single file
+        // Output all contract data to single file (used for generating documentation markdown files)
+        await fs.writeFile(this.configuration.fullContractOutputPath, JSON.stringify(compilerOutput, null, '\t'));
+
+        // Output filtered contract data to single file
         const filteredCompilerOutput = this.filterCompilerOutput(compilerOutput);
         await fs.writeFile(this.configuration.contractOutputPath, JSON.stringify(filteredCompilerOutput, null, '\t'));
 
@@ -120,7 +123,7 @@ export class ContractCompiler {
             return stats.isFile() && path.extname(file) !== ".sol";
         }
         const filePaths:string[] = await recursiveReadDir(this.configuration.contractSourceRoot, ignoreFile);
-        let filesPromises;
+        let filesPromises: Array<Promise<string>>;
         if (this.configuration.useFlattener) {
             filesPromises = filePaths.map(async filePath => (await this.generateFlattenedSolidity(filePath)));
         } else {
@@ -138,7 +141,8 @@ export class ContractCompiler {
                 },
                 outputSelection: {
                     "*": {
-                        "*": [ "abi", "evm.bytecode.object", "evm.methodIdentifiers" ]
+                        "": [ "ast" ],
+                        "*": [ "abi", "devdoc", "userdoc", "evm.bytecode.object", "evm.methodIdentifiers" ]
                     }
                 }
             },

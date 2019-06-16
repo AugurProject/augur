@@ -1,19 +1,22 @@
 import { prefixHex } from "speedomatic";
-import { EDGE_WALLET_TYPE, ACCOUNT_TYPES } from "modules/common-elements/constants";
+import { EDGE_WALLET_TYPE, ACCOUNT_TYPES } from "modules/common/constants";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,
   IS_LOGGED
-} from "modules/auth/actions/update-auth-status";
+} from "modules/auth/actions/auth-status";
 import logError from "utils/log-error";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
 export const loginWithEdgeEthereumWallet = (
   edgeUiAccount: any,
   ethereumWallet: any,
   history: any
-) => (dispatch: Function) => {
-  const mixedCaseAddress: String = ethereumWallet.keys.ethereumAddress;
-  const lowerCaseAddress: String = mixedCaseAddress.toLowerCase();
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
+  const mixedCaseAddress: string = ethereumWallet.keys.ethereumAddress;
+  const lowerCaseAddress: string = mixedCaseAddress.toLowerCase();
   dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(
     loadAccountData({
@@ -21,7 +24,7 @@ export const loginWithEdgeEthereumWallet = (
       displayAddress: mixedCaseAddress,
       meta: {
         address: lowerCaseAddress,
-        signer: (tx: any, callback: Function) => {
+        signer: (tx: any, callback: NodeStyleCallback) => {
           edgeUiAccount
             .signEthereumTransaction(ethereumWallet.id, tx)
             .then(signed => callback(null, prefixHex(signed)))
@@ -38,8 +41,8 @@ export const loginWithEdgeEthereumWallet = (
 export const loginWithEdge = (
   edgeAccount: any,
   history: any,
-  callback: Function = logError
-) => (dispatch: Function) => {
+  callback: NodeStyleCallback = logError
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   const ethereumWallet = edgeAccount.getFirstWalletInfo(EDGE_WALLET_TYPE);
   if (ethereumWallet != null) {
     return dispatch(

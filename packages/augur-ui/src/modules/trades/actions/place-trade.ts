@@ -5,19 +5,19 @@ import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import {
   BUY,
   ZERO,
-  MODAL_ACCOUNT_APPROVAL
-} from "modules/common-elements/constants";
+  MODAL_ACCOUNT_APPROVAL,
+} from "modules/common/constants";
 import logError from "utils/log-error";
 import noop from "utils/noop";
 import {
   addPendingOrder,
-  removePendingOrder
+  removePendingOrder,
 } from "modules/orders/actions/pending-orders-management";
 import { formatEther, formatShares } from "utils/format-number";
-
-function getOutcomeName(outcomesData: any, outcomeId: any) {
-  return outcomesData[outcomeId].name || outcomesData[outcomeId].description;
-}
+import { getOutcomeName } from "utils/get-outcome";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const placeTrade = ({
   marketId,
@@ -25,21 +25,21 @@ export const placeTrade = ({
   tradeInProgress,
   doNotCreateOrders,
   callback = logError,
-  onComplete = noop
-}: any) => (dispatch: Function, getState: Function) => {
+  onComplete = noop,
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
   const { loginAccount, marketsData, blockchain, outcomesData } = getState();
   const market = marketsData[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
-      `required parameters not found for market ${marketId} outcome ${outcomeId}`
+      `required parameters not found for market ${marketId} outcome ${outcomeId}`,
     );
   }
   const bnAllowance = createBigNumber(loginAccount.allowance, 10);
   const sharesDepleted = createBigNumber(tradeInProgress.sharesDepleted, 10);
   const otherSharesDepleted = createBigNumber(
     tradeInProgress.otherSharesDepleted,
-    10
+    10,
   );
   const sharesProvided = sharesDepleted.eq(ZERO)
     ? otherSharesDepleted.toFixed()
@@ -51,8 +51,9 @@ export const placeTrade = ({
     numTicks: market.numTicks,
     orderType: tradeInProgress.side === BUY ? 0 : 1,
     minDisplayPrice: market.minPrice,
-    maxDisplayPrice: market.maxPrice
+    maxDisplayPrice: market.maxPrice,
   });
+  // @ts-ignore
   const sharesToFill = tradeCost.onChainAmount;
   let hash: any = null;
   // make sure that we actually have an updated allowance.
@@ -77,19 +78,20 @@ export const placeTrade = ({
         addPendingOrder(
           {
             id: hash,
+            // @ts-ignore
             avgPrice: formatEther(tradeInProgress.limitPrice),
             unmatchedShares: formatShares(tradeInProgress.numShares),
             name: getOutcomeName(
               outcomesData[marketId],
-              parseInt(outcomeId, 10)
+              { id: outcomeId },
             ),
             type: tradeInProgress.side,
             pendingOrder: true,
             pending: false,
-            blockNumber: blockchain.currentBlockNumber
+            blockNumber: blockchain.currentBlockNumber,
           },
-          marketId
-        )
+          marketId,
+        ),
       );
 
       callback(null, tradeInProgress.tradeGroupId);
@@ -105,9 +107,9 @@ export const placeTrade = ({
       onComplete({
         res,
         sharesToFill: sharesToFill.toString(),
-        tradeInProgress
+        tradeInProgress,
       });
-    }
+    },
   };
 
   const sendTrade = () => {
@@ -126,8 +128,8 @@ export const placeTrade = ({
         },
         approveCallback: (err: any, res: any) => {
           if (err) return callback(err);
-        }
-      })
+        },
+      }),
     );
   };
 
@@ -137,13 +139,13 @@ export const placeTrade = ({
     bnAllowance.lte(createBigNumber(tradeInProgress.totalCost.value))
   ) {
     dispatch(
-      checkAccountAllowance((err: any, allowance: String) => {
+      checkAccountAllowance((err: any, allowance: string) => {
         if (allowance === "0") {
           promptApprovalandSend();
         } else {
           sendTrade();
         }
-      })
+      }),
     );
   } else {
     sendTrade();

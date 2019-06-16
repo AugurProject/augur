@@ -1,29 +1,33 @@
-import { updateLoginAccount } from "modules/auth/actions/update-login-account";
-
+import { LoginAccount, NodeStyleCallback } from "modules/types";
+import {
+  updateLoginAccount
+} from "modules/account/actions/login-account";
 import logError from "utils/log-error";
 import {
   getEthBalance,
   getDaiBalance,
   getRepBalance
-} from "src/modules/contracts/actions/contractCalls";
+} from "modules/contracts/actions/contractCalls";
+import { AppState } from "store";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
+import { Action } from "redux";
 
-export function updateAssets(callback: Function = logError) {
-  return async (dispatch: Function, getState: Function) => {
+export function updateAssets(callback: NodeStyleCallback = logError): ThunkAction<any, any, any, any> {
+  return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
-    let balances: {
+    const balances: LoginAccount = Object.assign(loginAccount, {
       eth: undefined,
       rep: undefined,
-      dai: undefined
-    };
+      dai: undefined,
+    });
 
     if (!loginAccount.address)
       return dispatch(updateLoginAccount(balances));
     const { address } = loginAccount;
-    const rep = await getRepBalance(address);
-    const dai = await getDaiBalance(address);
-    const { balance: eth } = await getEthBalance(address);
-    balances = { rep, eth, dai };
+    balances.rep = await getRepBalance(address);
+    balances.dai = await getDaiBalance(address);
+    balances.eth = await getEthBalance(address);
     dispatch(updateLoginAccount(balances));
-    callback(null, balances);
+    return callback(null, balances);
   };
 }

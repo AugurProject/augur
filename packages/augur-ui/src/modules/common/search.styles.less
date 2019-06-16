@@ -1,0 +1,138 @@
+@import (reference) '~assets/styles/shared';
+
+.SearchBar {
+  .text-12;
+
+  align-items: center;
+  background: transparent;
+  border-radius: @border-radius-default;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 40px;
+  padding-left: 1.5rem;
+  transition: background 0.25s ease-in;
+  width: auto;
+
+  > span {
+    .mono-10;
+
+    color: @color-primary-alternate-two;
+    margin-right: 0.25rem;
+    white-space: nowrap;
+  }
+
+  > svg {
+    height: 1rem;
+    width: 1rem;
+
+    > g {
+      fill: @color-primary-alternate-two;
+    }
+  }
+
+  > input {
+    background: transparent;
+    border: 0;
+    color: @color-tertiary-text;
+    display: none;
+    line-height: 1rem;
+    padding: 0;
+
+    &:focus {
+      border-color: transparent;
+    }
+
+    &::placeholder {
+      color: @color-primary-alternate-two;
+    }
+  }
+
+  > div {
+    display: none;
+  }
+}
+
+.SearchBar__container {
+  display: flex;
+
+  > button {
+    .mono-12;
+
+    color: @color-secondary-text;
+    display: none;
+    margin-left: 1rem;
+    margin-right: -0.5rem;
+    text-transform: uppercase;
+  }
+}
+
+.SearchBar__containerFocused {
+  flex: 1;
+  width: 100%;
+
+  > button {
+    display: flex;
+  }
+}
+
+.isFocused {
+  background: @color-secondary-action;
+  transition: background 0.25s ease-in;
+  width: 100%;
+
+  > span {
+    display: none;
+  }
+
+  > input {
+    display: block;
+  }
+
+  > svg {
+    margin-right: 0.75rem;
+  }
+
+  > div {
+    display: none;
+  }
+}
+
+@media @breakpoint-mobile-mid {
+  .SearchBar {
+    flex: 1;
+    justify-content: flex-end;
+    padding-right: 6px;
+    width: 100%;
+
+    > div {
+      .mono-12;
+
+      color: @color-primary-alternate-two;
+      display: flex;
+      margin-right: 0.5rem;
+    }
+  }
+
+  .isFocused {
+    > div {
+      display: none;
+    }
+  }
+
+  .SearchBar__container {
+    flex: 1;
+    padding-left: 0.5rem;
+    width: 100%;
+  }
+
+  .SearchBar__cancel {
+    padding-right: 0.5rem;
+  }
+
+  .SearchBar__containerFocused {
+    > button {
+      padding-right: 1rem;
+    }
+  }
+}

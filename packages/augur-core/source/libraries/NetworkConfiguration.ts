@@ -10,14 +10,14 @@ type NetworkOptions = {
 }
 
 export const NETWORKS = [
-  "aura",
-  "clique",
-  "environment",
-  "rinkeby",
-  "ropsten",
-  "kovan",
-  "thunder",
-  "testrpc"
+  'aura',
+  'clique',
+  'environment',
+  'rinkeby',
+  'ropsten',
+  'kovan',
+  'thunder',
+  'testrpc'
 ] as const;
 
 export type NETWORKS = typeof NETWORKS[number];

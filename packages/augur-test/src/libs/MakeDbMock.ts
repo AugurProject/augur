@@ -4,7 +4,6 @@ import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Augur } from "@augurproject/sdk";
 import { AccountList } from "./LocalAugur";
 import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
-import { ethers } from "ethers";
 import * as _ from "lodash";
 
 interface Databases {
@@ -102,13 +101,12 @@ export function makeDbMock() {
       mockState.failCountdown = -1;
       mockState.alwaysFail = false;
     },
-    makeDB: (augur: Augur<ethers.utils.BigNumber>, accounts: AccountList) => DB.createAndInitializeDB<ethers.utils.BigNumber>(
+    makeDB: (augur: Augur, accounts: AccountList) => DB.createAndInitializeDB(
       constants.networkId,
       constants.blockstreamDelay,
       constants.defaultStartSyncBlockNumber,
       _.map(accounts, "publicKey"),
-      augur.genericEventNames,
-      augur.userSpecificEvents,
+      augur,
       makeFactory(),
       makeBlockAndLogStreamerListener(),
     ),

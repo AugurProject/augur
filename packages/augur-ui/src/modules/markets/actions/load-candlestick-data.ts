@@ -1,6 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-
+// TODO: remove these lodash functions.
 import { map, mapValues } from "lodash/fp";
 
 const mutatePeriod = map(
@@ -41,7 +41,7 @@ const mutateOutcome = mapValues(mutatePeriod);
  * @param {LoadCandleStickDataOptions} options
  * @param {function} callback
  */
-export const loadCandleStickData = (options = {}, callback = logError) => {
+export const loadCandleStickData = (options = {}, callback: NodeStyleCallback = logError) => {
   augur.augurNode.submitRequest(
     "getMarketPriceCandlesticks",
     options,

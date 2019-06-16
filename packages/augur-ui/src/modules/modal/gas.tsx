@@ -4,10 +4,10 @@ import {
   Title,
   ButtonsRow,
   SelectableTable,
-  AlertMessage
+  AlertMessage,
 } from "modules/modal/common";
 
-import Styles from "modules/modal/modal.styles";
+import Styles from "modules/modal/modal.styles.less";
 
 interface GasProps {
   saveAction: Function;
@@ -29,7 +29,7 @@ export class Gas extends React.Component<GasProps, GasState> {
     amount: this.props.userDefinedGasPrice || this.props.average,
     showLowAlert:
       (this.props.userDefinedGasPrice || this.props.average) <
-      this.props.safeLow
+      this.props.safeLow,
   };
 
   updateAmount(amount: number) {
@@ -47,28 +47,28 @@ export class Gas extends React.Component<GasProps, GasState> {
       {
         text: "Save",
         action: () => saveAction(amount),
-        disabled
-      }
+        disabled,
+      },
     ];
     const tableData = [
       {
         columns: ["Speed", "Gas Price (gwei)"],
-        action: () => {}
+        action: () => {},
       },
       {
         columns: ["Slow (<30m)", safeLow],
         action: () => {
           this.updateAmount(safeLow);
-        }
+        },
       },
       {
         columns: ["Standard (<5m)", average],
-        action: () => this.updateAmount(average)
+        action: () => this.updateAmount(average),
       },
       {
         columns: ["Fast (<2m)", fast],
-        action: () => this.updateAmount(fast)
-      }
+        action: () => this.updateAmount(fast),
+      },
     ];
 
     return (
@@ -84,7 +84,7 @@ export class Gas extends React.Component<GasProps, GasState> {
             step={1}
             type="number"
             value={this.state.amount}
-            onChange={e => {
+            onChange={(e) => {
               this.updateAmount(parseFloat(e.target.value));
             }}
           />

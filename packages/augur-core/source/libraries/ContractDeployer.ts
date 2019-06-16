@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { BigNumber } from "bignumber.js";
 import { exists, readFile, writeFile } from "async-file";
 import { stringTo32ByteHex, resolveAll } from "./HelperFunctions";
 import { CompilerOutput } from "solc";
@@ -17,7 +18,8 @@ import {
     Orders,
     ClaimTradingProceeds,
     Cash,
-    ProfitLoss
+    ProfitLoss,
+    SimulateTrade
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -28,13 +30,13 @@ import { ContractAddresses } from "@augurproject/artifacts";
 export class ContractDeployer {
     private readonly configuration: DeployerConfiguration;
     private readonly contracts: Contracts;
-    private readonly dependencies: Dependencies<ethers.utils.BigNumber>
+    private readonly dependencies: Dependencies<BigNumber>
     private readonly provider: ethers.providers.JsonRpcProvider;
     private readonly signer: ethers.Signer;
     public augur: Augur|null = null;
     public universe: Universe|null = null;
 
-    public static deployToNetwork = async (networkConfiguration: NetworkConfiguration, dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider,signer: ethers.Signer, deployerConfiguration: DeployerConfiguration) => {
+    public static deployToNetwork = async (networkConfiguration: NetworkConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider,signer: ethers.Signer, deployerConfiguration: DeployerConfiguration) => {
         const compilerOutput = JSON.parse(await readFile(deployerConfiguration.contractInputPath, "utf8"));
         const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compilerOutput);
 
@@ -47,7 +49,7 @@ Deploying to: ${networkConfiguration.networkName}
         await contractDeployer.deploy();
     }
 
-    public constructor(configuration: DeployerConfiguration, dependencies: Dependencies<ethers.utils.BigNumber>, provider: ethers.providers.JsonRpcProvider, signer: ethers.Signer, compilerOutput: CompilerOutput) {
+    public constructor(configuration: DeployerConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider, signer: ethers.Signer, compilerOutput: CompilerOutput) {
         this.configuration = configuration;
         this.dependencies = dependencies;
         this.provider = provider;
@@ -99,8 +101,10 @@ Deploying to: ${networkConfiguration.networkName}
             }
         }
 
-        await this.generateUploadBlockNumberFile(blockNumber);
-        await this.generateAddressMappingFile();
+        if (this.configuration.writeArtifacts) {
+          await this.generateUploadBlockNumberFile(blockNumber);
+          await this.generateAddressMappingFile();
+        }
 
         return this.generateCompleteAddressMapping();
     }
@@ -127,7 +131,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.relativeFilePath.startsWith('legacy_reputation/')) continue;
             if (contract.relativeFilePath.startsWith('external/')) continue;
             if (contract.contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) continue;
-            if (['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeOverloadToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) continue;
+            if (['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
             // @ts-ignore
             mapping[contract.contractName] = contract.address;
@@ -187,7 +191,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.configuration.isProduction && contractName === 'LegacyReputationToken') return;
         if (this.configuration.isProduction && contractName === 'Cash') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
-        if (['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeOverloadToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) return;
+        if (['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) return;
         console.log(`Uploading new version of contract for ${contractName}`);
         contract.address = await this.uploadAndAddToAugur(contract, contractName, []);
     }
@@ -247,6 +251,10 @@ Deploying to: ${networkConfiguration.networkName}
         const profitLoss = new ProfitLoss(this.dependencies, profitLossContract);
         promises.push(profitLoss.initialize(this.augur!.address));
 
+        const simulateTradeContract = await this.getContractAddress("SimulateTrade");
+        const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
+        promises.push(simulateTrade.initialize(this.augur!.address));
+
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");
             const time = new TimeControlled(this.dependencies, timeContract);
@@ -259,10 +267,10 @@ Deploying to: ${networkConfiguration.networkName}
     public async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
         await legacyReputationToken.initializeERC820(this.augur!.address);
-        await legacyReputationToken.faucet(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)).mul(new ethers.utils.BigNumber(11000000)));
+        await legacyReputationToken.faucet(new BigNumber(10).pow(18).multipliedBy(new BigNumber(11000000)));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
-        if (!legacyBalance || legacyBalance == new ethers.utils.BigNumber(0)) {
+        if (!legacyBalance || legacyBalance == new BigNumber(0)) {
             throw new Error("Faucet call to Legacy REP failed");
         }
     }
@@ -270,10 +278,10 @@ Deploying to: ${networkConfiguration.networkName}
     public async initializeCash(): Promise<void> {
         const cash = new LegacyReputationToken(this.dependencies, this.getContractAddress('Cash'));
         await cash.initialize(this.augur!.address);
-        await cash.faucet(new ethers.utils.BigNumber(10).pow(new ethers.utils.BigNumber(18)).mul(new ethers.utils.BigNumber(1000)));
+        await cash.faucet(new BigNumber(10).pow(18).multipliedBy(new BigNumber(1000)));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await cash.balanceOf_(defaultAddress);
-        if (!legacyBalance || legacyBalance == new ethers.utils.BigNumber(0)) {
+        if (!legacyBalance || legacyBalance == new BigNumber(0)) {
             throw new Error("Faucet call to Legacy REP failed");
         }
     }
@@ -311,7 +319,7 @@ Deploying to: ${networkConfiguration.networkName}
         await legacyReputationToken.approve(reputationTokenAddress, legacyBalance);
         await reputationToken.migrateFromLegacyReputationToken();
         const balance = await reputationToken.balanceOf_(defaultAddress);
-        if (!balance || balance == new ethers.utils.BigNumber(0)) {
+        if (!balance || balance == new BigNumber(0)) {
             throw new Error("Migration from Legacy REP failed");
         }
     }

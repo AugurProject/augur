@@ -4,6 +4,9 @@ import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numera
 import { removeAccountDispute } from "modules/reports/actions/update-account-disputes";
 import { augur } from "services/augurjs";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const submitMarketContribute = ({
   estimateGas,
@@ -13,8 +16,8 @@ export const submitMarketContribute = ({
   amount,
   history,
   returnPath = REPORTING_DISPUTE_MARKETS,
-  callback = logError
-}: any) => (dispatch: Function, getState: Function) => {
+  callback: NodeStyleCallback = logError
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, marketsData } = getState();
   const outcome = parseFloat(selectedOutcome);
 

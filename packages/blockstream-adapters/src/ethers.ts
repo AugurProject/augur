@@ -1,23 +1,23 @@
 import { Block, Log, FilterOptions } from "ethereumjs-blockstream";
 import * as _ from "lodash";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import {BlockAndLogStreamerDependencies, ExtendedLog} from ".";
+import { BlockAndLogStreamerDependencies, ExtendedLog } from ".";
 import { JsonRpcProvider } from "ethers/providers";
 
 export class EthersProviderBlockStreamAdapter implements BlockAndLogStreamerDependencies<ExtendedLog, Block> {
-  constructor(private provider: EthersProvider) {}
+  constructor(private provider: EthersProvider) { }
 
 
-  private onNewBlock(reconcileNewBlock:(block:Block) => Promise<void>) {
-    return async (blockNumber:string) => {
+  private onNewBlock(reconcileNewBlock: (block: Block) => Promise<void>) {
+    return async (blockNumber: string) => {
       const block = await this.getBlockByHashOrTag(blockNumber);
-      if(block) {
-          await reconcileNewBlock(block);
+      if (block) {
+        await reconcileNewBlock(block);
       }
     }
   }
 
-  startPollingForBlocks = (reconcileNewBlock:(block:Block) => Promise<void>) => {
+  startPollingForBlocks = (reconcileNewBlock: (block: Block) => Promise<void>) => {
     // This event only emits the block number. We need to find the block details.
     this.provider.on("block", this.onNewBlock(reconcileNewBlock));
   }
@@ -25,11 +25,11 @@ export class EthersProviderBlockStreamAdapter implements BlockAndLogStreamerDepe
   getBlockByNumber = async (hashOrTag: string): Promise<Block> => {
     return this.getBlockByHashOrTag(hashOrTag);
   }
-  getBlockByHash = async (hashOrTag: string): Promise<Block>  => {
+  getBlockByHash = async (hashOrTag: string): Promise<Block> => {
     return this.getBlockByHashOrTag(hashOrTag);
   }
 
-  getBlockByHashOrTag = async (hashOrTag: string): Promise<Block>  => {
+  getBlockByHashOrTag = async (hashOrTag: string): Promise<Block> => {
     const block = await this.provider.getBlock(hashOrTag, false);
     return {
       number: "0x" + block.number.toString(16),
@@ -38,12 +38,11 @@ export class EthersProviderBlockStreamAdapter implements BlockAndLogStreamerDepe
     };
   }
 
-  getLogs = async (filterOptions: FilterOptions): Promise<ExtendedLog[]>  => {
+  getLogs = async (filterOptions: FilterOptions): Promise<ExtendedLog[]> => {
     const logs = await this.provider.getLogs({
       ...filterOptions,
       topics: _.compact(filterOptions.topics),
     });
-    console.log(`Finished querying logs ${JSON.stringify(filterOptions)} (${logs.length})`);
 
     return _.map(logs, (log) => ({
       ...log,
@@ -54,7 +53,7 @@ export class EthersProviderBlockStreamAdapter implements BlockAndLogStreamerDepe
   }
 }
 
-export async function createAdapter(httpAddress: string): Promise<BlockAndLogStreamerDependencies<Log,Block>> {
+export async function createAdapter(httpAddress: string): Promise<BlockAndLogStreamerDependencies<Log, Block>> {
   const ethersProvider = new EthersProvider(new JsonRpcProvider(httpAddress), 5, 0, 40);
   return new EthersProviderBlockStreamAdapter(ethersProvider);
 }

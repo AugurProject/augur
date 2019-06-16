@@ -5,13 +5,13 @@ import fs from "fs";
 import helmet from "helmet";
 import https from "https";
 import { AddressFormatReviver } from "./AddressFormatReviver";
-import { API } from "./api/API";
-import { EndpointSettings, JsonRpcRequest } from "./api/types";
+import { API } from "./getter/API";
+import { EndpointSettings, JsonRpcRequest } from "./getter/types";
 import { JsonRpcErrorCode, MakeJsonRpcError } from "./MakeJsonRpcError";
 import { MakeJsonRpcResponse } from "./MakeJsonRpcResponse";
 
 
-export function createApp<TBigNumber>(api: API<TBigNumber>): express.Application {
+export function createApp(api: API): express.Application {
   const app = express();
 
   app.use(helmet({
@@ -44,7 +44,7 @@ export function createApp<TBigNumber>(api: API<TBigNumber>): express.Application
   return app;
 }
 
-export async function run<TBigNumber>(api: API<TBigNumber>, endpointSettings: EndpointSettings): Promise<any> {
+export async function run(api: API, endpointSettings: EndpointSettings): Promise<any> {
   const app = createApp(api);
 
   app.listen(endpointSettings.httpPort, () => {

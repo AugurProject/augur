@@ -3,11 +3,11 @@ import { updateCategories } from "modules/categories/actions/update-categories";
 // makeUICategory returns a new category literal, ie. an
 // object matching the type of augur-node's UICategory<string>.
 function makeUICategory(
-  categoryName: String,
-  tagName1: String,
-  tagName2: String
+  categoryName: string,
+  tagName1: string,
+  tagName2: string
 ) {
-  function makeTagAggregation(tagName: String) {
+  function makeTagAggregation(tagName: string) {
     return {
       nonFinalizedOpenInterest: "0",
       numberOfMarketsWithThisTag: 1,
@@ -27,7 +27,7 @@ function makeUICategory(
 }
 
 export function appendCategoryIfNew(
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   categories: Array<any>,
   marketWithMaybeNewCategory: any
 ) {

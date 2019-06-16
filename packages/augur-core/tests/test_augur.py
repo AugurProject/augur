@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
+from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture as pytest_fixture
 
 
@@ -11,22 +10,18 @@ def test_is_known_universe(augur, universe):
 
 def test_known_universe_child_creation_failure(augur):
     with raises(TransactionFailed):
-        augur.createChildUniverse("", [0, 0, 10000])
+        augur.createChildUniverse("", [0, 0, 100])
 
 def test_trusted_transfer_amount_failure(augur):
     with raises(TransactionFailed):
         augur.trustedTransfer(augur.address, augur.address, augur.address, 0)
 
 def test_log_requires(augur, universe):
-    # Throws an error in Pyethereum due to `prices` parameter being type int256[]
-    # with raises(TransactionFailed):
-    #     augur.logMarketCreated(0, "", "", universe.address, universe.address, universe.address, 0, [0, 100], 0, [])
+    with raises(TransactionFailed):
+        augur.logInitialReportSubmitted(universe.address, universe.address, universe.address, 1, False, [0, 0, 100], "")
 
     with raises(TransactionFailed):
-        augur.logInitialReportSubmitted(universe.address, universe.address, universe.address, 1, False, [0, 0, 10000])
-
-    with raises(TransactionFailed):
-        augur.logInitialReportSubmitted(augur.address, augur.address, augur.address, 1, False, [0, 0, 10000])
+        augur.logInitialReportSubmitted(augur.address, augur.address, augur.address, 1, False, [0, 0, 100], "")
 
 @pytest_fixture(scope="session")
 def localSnapshot(fixture, kitchenSinkSnapshot):

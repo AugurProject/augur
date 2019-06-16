@@ -3,24 +3,24 @@
 .PortfolioView {
   display: flex;
   flex: 1;
-  margin: 1.25rem;
+  margin: @size-20;
   margin-bottom: 0;
 
   > div {
     flex: 1;
     flex-direction: column;
-    margin: 1.25rem;
+    margin: @size-20;
 
     > div {
       display: flex;
       flex: 2 1 auto;
       flex-direction: column;
-      margin-bottom: 1.5rem;
+      margin-bottom: @size-24;
       max-height: 65vh;
       min-height: 6.25rem;
 
       &:last-of-type {
-        margin-bottom: 1.25rem;
+        margin-bottom: @size-20;
       }
     }
   }
@@ -28,40 +28,24 @@
   > div:last-of-type {
     display: grid;
     flex: 2;
-    grid-gap: 1.5rem;
+    grid-gap: @size-24;
     grid-template-columns: 1fr 1fr;
     height: fit-content;
-    margin-left: 4px;
+    margin-left: @size-3;
   }
-}
-
-.Loading__container,
-.NoMarkets__container {
-  color: @color-lightgray;
-  font-size: @font-size-large;
-  font-weight: 500;
-  line-height: @font-size-rather-large;
-  padding: 2rem;
-  text-align: center;
-}
-
-.NoMarkets__link {
-  color: @color-lightgray;
-  margin-left: 0.5rem;
-  text-decoration-line: underline;
 }
 
 @media @breakpoint-1-0-0 {
   .PortfolioView {
     > div > div {
-      margin-bottom: 2.5rem;
+      margin-bottom: @size-40;
     }
 
     > div:last-of-type {
       display: flex;
       flex: 1;
       flex-direction: column;
-      margin: 1.25rem;
+      margin: @size-24
     }
   }
 }

@@ -1,89 +1,118 @@
-import {
-  ACCOUNTS,
-  deployContracts,
-  makeDbMock,
-  makeTestAugur
-} from "../../libs";
+import { ACCOUNTS, ContractAPI, deployContracts, makeDbMock } from "../../libs";
 import { UserSyncableDB } from "@augurproject/sdk/build/state/db/UserSyncableDB";
-import {Augur} from "@augurproject/sdk";
-import { stringTo32ByteHex } from "@augurproject/core/source/libraries/HelperFunctions";
-import { Contracts } from "@augurproject/sdk/build/api/Contracts";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import {ethers} from "ethers";
-import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
+import { stringTo32ByteHex } from "@augurproject/core/build/libraries/HelperFunctions";
+import { BigNumber } from "bignumber.js";
+import { formatBytes32String } from "ethers/utils";
 
 const mock = makeDbMock();
 
-let augur: Augur<ethers.utils.BigNumber>;
-let addresses: ContractAddresses;
-let dependencies: ContractDependenciesEthers;
-let contracts: Contracts<ethers.utils.BigNumber>;
+let john: ContractAPI;
 
 beforeAll(async () => {
-  augur = await makeTestAugur(ACCOUNTS);
-  const result = await deployContracts(ACCOUNTS, compilerOutput);
-  addresses = result.addresses;
-  dependencies = result.dependencies;
-  contracts = new Contracts(addresses, dependencies);
-}, 180000);
+  const { provider, addresses } = await deployContracts(ACCOUNTS, undefined);
+
+  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  await john.approveCentralAuthority();
+});
 
 beforeEach(async () => {
   await mock.wipeDB();
 });
 
 // UserSyncableDB overrides protected getLogs class, which is only called in sync.
-test.skip("sync", async () => {
-  const dbController = await mock.makeDB(augur, ACCOUNTS);
+test("UserSynableDB.sync", async () => {
+  const augur = john.augur;
+  const universe = augur.contracts.universe;
+  const dbController = await mock.makeDB(john.augur, ACCOUNTS);
 
-  const eventName = "TokensTransferred";
   const sender = ACCOUNTS[0].publicKey;
-  const highestAvailableBlockNumber = 0;
-  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, sender, 0, [0]);
+  const highestAvailableBlockNumber = 10000;
 
-  // Generate logs to be synced
-  // TODO generate user-specific TokensTransferred
-  const cash = contracts.cash;
-  const universe = contracts.universe;
-  const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
-  await cash.faucet(marketCreationCost, { sender });
-  await cash.approve(addresses.Augur, marketCreationCost, { sender });
-  const endTime = new ethers.utils.BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60);
-  const fee = (new ethers.utils.BigNumber(10)).pow(new ethers.utils.BigNumber(16));
-  const affiliateFeeDivisor = new ethers.utils.BigNumber(25);
-  const outcomes: Array<string> = [stringTo32ByteHex("big"), stringTo32ByteHex("small")];
-  const topic = stringTo32ByteHex("boba");
-  const description = "Will big or small boba be the most popular in 2019?";
-  const extraInfo = "";
-  await universe.createCategoricalMarket(
-    endTime,
-    fee,
-    affiliateFeeDivisor,
-    ACCOUNTS[0].publicKey,
-    outcomes,
-    topic,
-    extraInfo,
-    { sender: ACCOUNTS[0].publicKey },
+  // Generate logs to be synced.
+  // Creates TokensTransferred event for REP as part of market creation.
+  // Example:
+  //   { name: 'TokensTransferred',
+  //     parameters:
+  //      { universe: '0x4112a78f07D155884b239A29e378D1f853Edd128',
+  //        from: '0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE',
+  //        to: '0xaA2e22968CB6660De7AC605043EAB08a54e8Bcb4',
+  //        token: '0x1e1BE50CA620E26891029fe54C9A93A9e5042378',
+  //        value: [BigNumber],
+  //        tokenType: 0,
+  //        market: '0x0000000000000000000000000000000000000000' } },
+  await john.createCategoricalMarket(
+    universe,
+    new BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60),
+    (new BigNumber(10)).pow(16),
+    new BigNumber(25),
+    sender,
+    [stringTo32ByteHex("big"), stringTo32ByteHex("small")],
+    "boba",
+    JSON.stringify({ description: "Will big or small boba be the most popular in 2019?" }),
   );
 
-  await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay, highestAvailableBlockNumber);
+  const tokensTransferredEventDefinition = john.augur.userSpecificEvents.find((x) => x.name === "TokensTransferred");
+  if (!tokensTransferredEventDefinition) {
+    throw Error("Definition of UserSpecifiedEvents has changed such that TokensTransferred does not exist.");
+  }
 
-  console.log(Object.keys(mock.getDatabases()));
-  console.log(db.dbName);
+  const db = new UserSyncableDB(
+    john.augur,
+    dbController,
+    mock.constants.networkId,
+    tokensTransferredEventDefinition.name,
+    sender,
+    tokensTransferredEventDefinition.numAdditionalTopics,
+    tokensTransferredEventDefinition.userTopicIndicies,
+  );
+  await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay, highestAvailableBlockNumber);
 
   const tokensTransferredDB = mock.getDatabases()[`db/${db.dbName}`];
   const docs = await tokensTransferredDB.allDocs();
-  console.log(docs);
 
-  expect(docs).toBe(42);  // TODO
-}, 180000);
+  expect(docs.total_rows).toEqual(2);
+
+  const doc = docs.rows[0]; // TokensTransferred event created when paying for market creation
+  const tokenTransfer = await tokensTransferredDB.get(doc.id);
+
+  let marketRepBond = (new BigNumber(await universe.getOrCacheMarketRepBond_())).toString(16);
+  marketRepBond = "0x" + marketRepBond.padStart(16, "0");
+
+  expect(tokenTransfer).toEqual({
+    universe: universe.address,
+    // This is a transfer of REP tokens.
+    token: augur.contracts.getReputationToken().address,
+    from: sender,
+    // Since this is from market creation: REP is sent to the MarketFactory, which then passes it along to the market.
+    to: await augur.contracts.augur.registry_(formatBytes32String("MarketFactory")),
+    value: marketRepBond,
+    tokenType: 0,
+    market: "0x0000000000000000000000000000000000000000",
+    blockNumber: expect.any(Number),
+    blockHash: expect.stringMatching(new RegExp("0x[0-f]{64}")),
+    transactionIndex: expect.any(Number),
+    removed: false,
+    transactionLogIndex: expect.any(Number),
+    transactionHash: expect.stringMatching(new RegExp("0x[0-f]{64}")),
+    logIndex: expect.any(Number),
+    topics: [
+      "0x3c67396e9c55d2fc8ad68875fc5beca1d96ad2a2f23b210ccc1d986551ab6fdf",
+      "0x0000000000000000000000004112a78f07d155884b239a29e378d1f853edd128",
+      "0x0000000000000000000000008fff40efec989fc938bba8b19584da08ead986ee",
+      "0x000000000000000000000000aa2e22968cb6660de7ac605043eab08a54e8bcb4",
+    ],
+    _id: doc.id,
+    _rev: doc.value.rev,
+  });
+}, 30000);
 
 // Constructor does some (private) processing, so verify that it works right.
 test("props", async () => {
-  const dbController = await mock.makeDB(augur, ACCOUNTS);
+  const dbController = await mock.makeDB(john.augur, ACCOUNTS);
 
   const eventName = "foo";
   const user = "artistotle";
-  const db = new UserSyncableDB<ethers.utils.BigNumber>(dbController, mock.constants.networkId, eventName, user, 2, [0]);
+  const db = new UserSyncableDB(john.augur, dbController, mock.constants.networkId, eventName, user, 2, [0]);
 
   // @ts-ignore - verify private property "additionalTopics"
   expect(db.additionalTopics).toEqual([[

@@ -1,9 +1,12 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import makePath from "modules/routes/helpers/make-path";
-import { UNIVERSE_ID } from "modules/common-elements/constants";
+import { UNIVERSE_ID } from "modules/common/constants";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const submitMigrateREP = ({
   estimateGas,
@@ -12,8 +15,8 @@ export const submitMigrateREP = ({
   invalid,
   amount,
   history,
-  callback = logError
-}: any) => (dispatch: Function, getState: Function) => {
+  callback = logError,
+}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, marketsData, universe } = getState();
   const outcome = parseFloat(selectedOutcome);
   const universeID = universe.id || UNIVERSE_ID;
@@ -30,7 +33,7 @@ export const submitMigrateREP = ({
 
   augur.api.Universe.getReputationToken(
     { tx: { to: universeID } },
-    (err: any, reputationTokenAddress: String) => {
+    (err: any, reputationTokenAddress: string) => {
       if (err) return callback(err);
       augur.api.ReputationToken.migrateOutByPayout({
         meta: loginAccount.meta,
@@ -52,8 +55,8 @@ export const submitMigrateREP = ({
         },
         onFailed: (err: any) => {
           callback(err);
-        }
+        },
       });
-    }
+    },
   );
 };

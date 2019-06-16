@@ -15,7 +15,7 @@ import { isCurrentMarket } from "modules/trades/helpers/is-current-market";
 import logError from "utils/log-error";
 import makePath from "modules/routes/helpers/make-path";
 import { MY_MARKETS, TRANSACTIONS } from "modules/routes/constants/views";
-import { loadReporting } from "src/modules/reports/actions/load-reporting";
+import { loadReporting } from "modules/reports/actions/load-reporting";
 import { loadDisputing } from "modules/reports/actions/load-disputing";
 import loadCategories from "modules/categories/actions/load-categories";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
@@ -23,7 +23,7 @@ import {
   loadMarketsInfo,
   loadMarketsInfoIfNotLoaded,
   loadMarketsDisputeInfo
-} from "src/modules/markets/actions/load-markets-info";
+} from "modules/markets/actions/load-markets-info";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { startOrderSending } from "modules/orders/actions/liquidity-management";
 import {
@@ -31,16 +31,19 @@ import {
   loadUserMarketTradingHistory
 } from "modules/markets/actions/market-trading-history-management";
 import { updateAssets } from "modules/auth/actions/update-assets";
-import { selectCurrentTimestampInSeconds } from "src/select-state";
+import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { appendCategoryIfNew } from "modules/categories/actions/append-category";
 import { removePendingOrder } from "modules/orders/actions/pending-orders-management";
 import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";
 import { loadUsershareBalances } from "modules/positions/actions/load-user-share-balances";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 const handleAlertUpdate = (
   log: any,
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(
     updateAlert(log.transactionHash, {
@@ -57,21 +60,21 @@ const handleAlertUpdate = (
 
 const handlePendingOrder = (
   log: any,
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(removePendingOrder(log.transactionHash, log.marketId));
 };
 
-const loadUserPositionsAndBalances = (marketId: String) => (
-  dispatch: Function
+const loadUserPositionsAndBalances = (marketId: string) => (
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
   dispatch(loadMarketAccountPositions(marketId));
   dispatch(loadUsershareBalances([marketId]));
   dispatch(getWinningBalance([marketId]));
 };
 
-export const handleMarketStateLog = (log: any) => (dispatch: Function) => {
+export const handleMarketStateLog = (log: any) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     loadMarketsInfo([log.marketId], () => {
       dispatch(loadReporting([log.marketId]));
@@ -80,8 +83,8 @@ export const handleMarketStateLog = (log: any) => (dispatch: Function) => {
 };
 
 export const handleMarketCreatedLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
   const isStoredTransaction =
     log.marketCreator === getState().loginAccount.address;
@@ -118,8 +121,8 @@ export const handleMarketCreatedLog = (log: any) => (
 };
 
 export const handleMarketMigratedLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const universeId = getState().universe.id;
   if (log.originalUniverse === universeId) {
@@ -131,8 +134,8 @@ export const handleMarketMigratedLog = (log: any) => (
 };
 
 export const handleTokensTransferredLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
   const isStoredTransaction = log.from === address || log.to === address;
@@ -144,8 +147,8 @@ export const handleTokensTransferredLog = (log: any) => (
 };
 
 export const handleTokensMintedLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
   const isStoredTransaction = log.target === address;
@@ -157,8 +160,8 @@ export const handleTokensMintedLog = (log: any) => (
 };
 
 export const handleTokensBurnedLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
   const isStoredTransaction = log.target === address;
@@ -168,8 +171,8 @@ export const handleTokensBurnedLog = (log: any) => (
 };
 
 export const handleOrderCreatedLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(loadMarketsInfoIfNotLoaded([log.marketId]));
   const isStoredTransaction =
@@ -186,8 +189,8 @@ export const handleOrderCreatedLog = (log: any) => (
 };
 
 export const handleOrderCanceledLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(loadMarketsInfoIfNotLoaded([log.marketId]));
   const isStoredTransaction = log.sender === getState().loginAccount.address;
@@ -203,8 +206,8 @@ export const handleOrderCanceledLog = (log: any) => (
 };
 
 export const handleOrderFilledLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(loadMarketsInfo([log.marketId]));
   const { address } = getState().loginAccount;
@@ -231,8 +234,8 @@ export const handleOrderFilledLog = (log: any) => (
 };
 
 export const handleTradingProceedsClaimedLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const isStoredTransaction = log.sender === getState().loginAccount.address;
   if (isStoredTransaction) {
@@ -244,8 +247,8 @@ export const handleTradingProceedsClaimedLog = (log: any) => (
 };
 
 export const handleInitialReportSubmittedLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(loadMarketsInfo([log.market]));
   dispatch(loadMarketsDisputeInfo([log.market]));
@@ -260,8 +263,8 @@ export const handleInitialReportSubmittedLog = (log: any) => (
 };
 
 export const handleInitialReporterRedeemedLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(loadMarketsInfo([log.market]));
   const isStoredTransaction = log.reporter === getState().loginAccount.address;
@@ -275,8 +278,8 @@ export const handleInitialReporterRedeemedLog = (log: any) => (
 };
 
 export const handleMarketFinalizedLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) =>
   dispatch(
     loadMarketsInfo([log.market], (err: any) => {
@@ -321,7 +324,7 @@ export const handleMarketFinalizedLog = (log: any) => (
   );
 
 export const handleDisputeCrowdsourcerCreatedLog = (log: any) => (
-  dispatch: Function
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]));
   dispatch(loadReportingWindowBounds());
@@ -329,8 +332,8 @@ export const handleDisputeCrowdsourcerCreatedLog = (log: any) => (
 };
 
 export const handleDisputeCrowdsourcerContributionLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]));
   dispatch(defaultLogHandler(log));
@@ -341,7 +344,7 @@ export const handleDisputeCrowdsourcerContributionLog = (log: any) => (
 };
 
 export const handleDisputeCrowdsourcerCompletedLog = (log: any) => (
-  dispatch: Function
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
   dispatch(loadMarketsInfo([log.marketId]));
   dispatch(loadMarketsDisputeInfo([log.marketId]));
@@ -350,7 +353,7 @@ export const handleDisputeCrowdsourcerCompletedLog = (log: any) => (
 };
 
 export const handleDisputeCrowdsourcerRedeemedLog = (log: any) => (
-  dispatch: Function
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]));
   dispatch(loadReportingWindowBounds());
@@ -358,26 +361,26 @@ export const handleDisputeCrowdsourcerRedeemedLog = (log: any) => (
   dispatch(getReportingFees());
 };
 
-export const handleFeeWindowCreatedLog = (log: any) => (dispatch: Function) => {
+export const handleFeeWindowCreatedLog = (log: any) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadReportingWindowBounds());
   dispatch(getReportingFees());
 };
 
-export const handleFeeWindowOpenedLog = (log: any) => (dispatch: Function) => {
+export const handleFeeWindowOpenedLog = (log: any) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadReportingWindowBounds());
   dispatch(getReportingFees());
 };
 
 export const handleFeeWindowRedeemedLog = (log: any) => (
-  dispatch: Function
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
   dispatch(defaultLogHandler(log));
   dispatch(getReportingFees());
 };
 
 export const handleCompleteSetsSoldLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const isStoredTransaction = log.account === getState().loginAccount.address;
   if (isStoredTransaction) {
@@ -388,8 +391,8 @@ export const handleCompleteSetsSoldLog = (log: any) => (
 };
 
 export const handleApprovalLog = (log: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
   const isStoredTransaction = log.owner === address;

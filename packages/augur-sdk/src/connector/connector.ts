@@ -1,22 +1,17 @@
-import { ContractEvents } from "@augurproject/types";
+import { SubscriptionEventNames } from "../constants";
 
-export type Callback = (data: any) => Promise<unknown>;
+export type Callback = (...args: Array<any>) => void;
 
 export abstract class Connector {
-  private callbacks: { [key in ContractEvents]?: Callback } = {};
+  public subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
 
-  public abstract async connect(params: any): Promise<any>;
+  // Lifecyle of the connector
+  public abstract async connect(ethNodeUrl: string, account?: string): Promise<any>;
   public abstract async disconnect(): Promise<any>;
-  public abstract async send(data: any): Promise<any>;
-  public abstract async subscribe(event: string, callback: Callback): Promise<any>;
-  public abstract async unsubscribe(event: string): Promise<any>;
 
-  // is ts-io being used with this connector?
-  public decode?(): boolean {
-    return false;
-  }
+  // bind API calls
+  public abstract bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R>;
 
-  public async unsubscribeAll(): Promise<Array<Promise<void>>> {
-    return Object.keys(this.callbacks).map((event) => this.unsubscribe(event));
-  }
+  public abstract async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void>;
+  public abstract async off(eventName: SubscriptionEventNames | string): Promise<void>;
 }

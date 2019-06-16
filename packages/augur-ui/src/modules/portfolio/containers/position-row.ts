@@ -1,17 +1,17 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
-import getValue from "utils/get-value";
-import { formatEther, formatShares } from "utils/format-number";
-import * as constants from "modules/common-elements/constants";
-import Row from "modules/common-elements/row";
-import { Properties } from "modules/common-elements/row-column";
+import { AppState } from "store";
+import * as constants from "modules/common/constants";
+import Row from "modules/common/row";
+import { Properties } from "modules/common/row-column";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const { COLUMN_TYPES } = constants;
 
-const mapStateToProps = (state: any) => ({});
+const mapStateToProps = (state: AppState) => ({});
 
-const mapDispatchToProps = (dispatch: Function) => ({});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const {
@@ -19,7 +19,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     showPercent,
     extendedView,
     isFirst,
-    showExpandedToggle
+    showExpandedToggleOnMobile,
   } = oP;
 
   const columnProperties: Array<Properties> = [
@@ -27,46 +27,46 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "orderName",
       columnType: COLUMN_TYPES.TEXT,
       text: position.outcomeName,
-      keyId: position.totalCost
+      keyId: position.totalCost,
     },
     {
       key: "orderType",
       columnType: COLUMN_TYPES.POSITION_TYPE,
-      type: position.type
+      type: position.type,
     },
     {
       key: "originalQuantity",
       columnType: COLUMN_TYPES.VALUE,
       value: position.quantity,
-      keyId: "position-quantity-" + position.id
+      keyId: "position-quantity-" + position.id,
     },
     {
       key: "orderQuantity",
       columnType: COLUMN_TYPES.VALUE,
       value: position.purchasePrice,
-      keyId: "position-price-" + position.id
+      keyId: "position-price-" + position.id,
     },
     {
       hide: extendedView,
       key: "totalCost",
       columnType: COLUMN_TYPES.VALUE,
       value: position.totalCost,
-      keyId: "position-totalCost-" + position.id
+      keyId: "position-totalCost-" + position.id,
     },
     {
       hide: extendedView,
       key: "totalValue",
       columnType: COLUMN_TYPES.VALUE,
       value: position.totalValue,
-      keyId: "position-totalValue-" + position.id
+      keyId: "position-totalValue-" + position.id,
     },
     {
       hide: extendedView,
       key: "lastPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: position.lastPrice,
-      keyId: "position-lastPrice-" + position.id
-    }
+      keyId: "position-lastPrice-" + position.id,
+    },
   ];
   if (!showPercent) {
     columnProperties.push({
@@ -78,27 +78,27 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       size: "medium",
       hide: extendedView,
       columnType: COLUMN_TYPES.MOVEMENT_LABEL,
-      value: position.totalPercent.roundedFormatted
+      value: position.totalPercent.roundedFormatted,
     });
   } else {
     columnProperties.push({
       key: "totalReturns",
       hide: extendedView,
       columnType: COLUMN_TYPES.PLAIN,
-      value: position.totalReturns.formatted
+      value: position.totalReturns.formatted,
     });
   }
   columnProperties.push({
     key: "unrealizedNet",
     hide: !extendedView,
     columnType: COLUMN_TYPES.PLAIN,
-    value: position.unrealizedNet.formatted
+    value: position.unrealizedNet.formatted,
   });
   columnProperties.push({
     key: "realizedNet",
     hide: !extendedView,
     columnType: COLUMN_TYPES.PLAIN,
-    value: position.realizedNet.formatted
+    value: position.realizedNet.formatted,
   });
   return {
     ...oP,
@@ -108,9 +108,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     columnProperties,
     styleOptions: {
       position: true,
-      showExpandedToggle,
+      showExpandedToggleOnMobile,
       noToggle: extendedView,
-      isFirst
+      isFirst,
     }
   };
 };
@@ -119,6 +119,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Row)
+    mergeProps,
+  )(Row),
 );

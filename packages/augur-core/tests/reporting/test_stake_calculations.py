@@ -1,6 +1,5 @@
-from ethereum.tools import tester
-from ethereum.tools.tester import TransactionFailed
-from utils import captureFilteredLogs, bytesToHexString, AssertLog, TokenDelta, longToHexString
+from eth_tester.exceptions import TransactionFailed
+from utils import captureFilteredLogs, AssertLog, TokenDelta, longToHexString
 from pytest import raises
 from reporting_utils import proceedToNextRound
 

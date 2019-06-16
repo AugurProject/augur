@@ -4,10 +4,8 @@ import network from "config/network";
 
 import { formatNumber, formatShares } from "utils/format-number";
 import { formatDate } from "utils/format-date";
-import { BUY } from "modules/common-elements/constants";
 
 const testState = {
-  activeView: "markets",
   accountTrades: {
     testMarketId: {
       testoutcomeId: [{ type: 1, price: "0.5", amount: "50" }]
@@ -253,7 +251,6 @@ const testState = {
       }
     }
   },
-  selectedMarketId: "testMarketId",
   selectedFilterSort: {
     type: "open",
     sort: "volume",

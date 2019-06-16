@@ -1,7 +1,5 @@
-import { augur } from "services/augurjs";
-import { constants } from "services/constants";
+import { augurSdk } from "services/augursdk";
 import logError from "utils/log-error";
-import { parallel } from "async";
 import {
   MARKET_CREATION_TIME,
   MARKET_END_DATE,
@@ -9,42 +7,48 @@ import {
   MARKET_FEE,
   MARKET_OPEN_INTEREST,
   MARKET_REPORTING,
-  MARKET_CLOSED
-} from "modules/common-elements/constants";
+  MARKET_CLOSED,
+  REPORTING_STATE,
+} from "modules/common/constants";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
-
-const { REPORTING_STATE } = constants;
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 // NOTE -- We ONLY load the market ids during this step.
 // From here we populate the marketsData
-export const loadMarkets = (type: any, callback = logError) => (
-  dispatch: Function,
-  getState: Function
+export const loadMarkets = (type: any, callback: NodeStyleCallback = logError) => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
+  const augur = augurSdk.get();
+
   const { universe } = getState();
-  const params = { universe: universe.id };
 
-  augur.markets.getMarkets(params, (err: any, marketsArray: any) => {
-    if (err) return callback(err);
-
-    const marketsData = marketsArray.reduce(
-      (p: any, id: String) => ({
-        ...p,
-        [id]: { id }
-      }),
-      {}
-    );
+  if(!(universe && universe.id)) return;
+  const marketsArray = await augur.getMarkets({ universe: universe.id });
+  const marketsData = marketsArray.reduce(
+    (p: any, id: string) => ({
+      ...p,
+      [id]: { id }
+    }),
+    {}
+  );
 
     dispatch(updateMarketsData(marketsData));
     callback(null, marketsArray);
-  });
 };
 
-export const loadMarketsByFilter = (filterOptions: any, cb:Function = () => {}) => (
-  dispatch: Function,
-  getState: Function
+export const loadMarketsByFilter = (filterOptions, cb:Function = () => {}) => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
+  const augur = augurSdk.get();
   const { universe } = getState();
+
+  if(!(universe && universe.id)) return;
+
   const filter: Array<any> = [];
   const sort: any = {};
   const parallelParams: any = {};
@@ -87,11 +91,11 @@ export const loadMarketsByFilter = (filterOptions: any, cb:Function = () => {}) 
 
   const params = {
     universe: universe.id,
-    category: filterOptions.category,
-    search: filterOptions.search,
-    maxFee: parseFloat(filterOptions.maxFee),
+    // category: filterOptions.category,
+    // search: filterOptions.search,
+    maxFee: filterOptions.maxFee,
     hasOrders: filterOptions.hasOrders,
-    ...sort
+    // ...sort
   };
   switch (filterOptions.filter) {
     case MARKET_REPORTING: {
@@ -103,13 +107,6 @@ export const loadMarketsByFilter = (filterOptions: any, cb:Function = () => {}) 
         REPORTING_STATE.AWAITING_NEXT_WINDOW,
         REPORTING_STATE.AWAITING_FORK_MIGRATION
       ]);
-      filter.forEach(filterType => {
-        parallelParams[filterType] = (next: Function) =>
-          augur.markets.getMarkets(
-            { ...params, reportingState: filterType },
-            next
-          );
-      });
       break;
     }
     case MARKET_CLOSED: {
@@ -118,42 +115,19 @@ export const loadMarketsByFilter = (filterOptions: any, cb:Function = () => {}) 
         REPORTING_STATE.AWAITING_FINALIZATION,
         REPORTING_STATE.FINALIZED
       ]);
-      filter.forEach(filterType => {
-        parallelParams[filterType] = (next: Function) =>
-          augur.markets.getMarkets(
-            { ...params, reportingState: filterType },
-            next
-          );
-      });
       break;
     }
     default: {
       // open markets only:
       filter.push(REPORTING_STATE.PRE_REPORTING);
-      filter.forEach(filterType => {
-        parallelParams[filterType] = (next: Function) =>
-          augur.markets.getMarkets(
-            { ...params, reportingState: filterType },
-            next
-          );
-      });
       break;
     }
   }
-  parallel(parallelParams, (err: any, filteredMarkets: any) => {
-    let finalizedMarketList: Array<any> = [];
-    if (err) return cb(err);
-    filter.forEach(filterType => {
-      if (
-        filteredMarkets[filterType] &&
-        filteredMarkets[filterType].length > 0
-      ) {
-        finalizedMarketList = finalizedMarketList.concat(
-          filteredMarkets[filterType]
-        );
-      }
-    });
 
-    return cb(null, finalizedMarketList);
-  });
+  const requests = filter.map((filterType) => augur.getMarkets({ ...params, reportingState: filterType }));
+  const nestedMarkets = await Promise.all(requests);
+  // flatten, when we upgrade to es2019 we can use nestedMarkets.flat() instead
+  const markets = nestedMarkets.reduce( (a, b) => a.concat(b), []);
+
+  cb(null, markets);
 };

@@ -1,10 +1,6 @@
-export const UPDATE_GAS_INFO = "UPDATE_GAS_INFO";
+import { GasPriceInfo } from "modules/types";
 
-interface GasPriceInfo {
-  average: number;
-  fast: number;
-  slow: number;
-}
+export const UPDATE_GAS_INFO = "UPDATE_GAS_INFO";
 
 export const updateGasPriceInfo = (gasPriceInfo: GasPriceInfo) => ({
   type: UPDATE_GAS_INFO,

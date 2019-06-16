@@ -1,6 +1,4 @@
 import { loadFavoritesMarkets } from "modules/markets/actions/update-favorites";
-import { updateScalarMarketShareDenomination } from "modules/markets/actions/update-scalar-market-share-denomination";
-import { updateReports } from "modules/reports/actions/update-reports";
 import { addAlert } from "modules/alerts/actions/alerts";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
@@ -11,10 +9,13 @@ import { updateUniverse } from "modules/universe/actions/update-universe";
 import { isNewFavoritesStyle } from "modules/markets/helpers/favorites-processor";
 import { loadPendingQueue } from "modules/pending-queue/actions/pending-queue-management";
 import { setSelectedUniverse } from "./selected-universe-management";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
-export const loadAccountDataFromLocalStorage = (address: String) => (
-  dispatch: Function,
-  getState: Function
+export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const localStorageRef = typeof window !== "undefined" && window.localStorage;
   const { universe, connection } = getState();
@@ -50,31 +51,12 @@ export const loadAccountDataFromLocalStorage = (address: String) => (
       }
       const {
         alerts,
-        scalarMarketsShareDenomination,
-        reports,
         pendingLiquidityOrders,
         pendingOrders,
         gasPriceInfo
       } = storedAccountData;
       if (alerts) {
         alerts.map(n => dispatch(addAlert(n)));
-      }
-      if (scalarMarketsShareDenomination) {
-        Object.keys(scalarMarketsShareDenomination).forEach(
-          marketId => {
-            dispatch(
-              updateScalarMarketShareDenomination(
-                marketId,
-                scalarMarketsShareDenomination[marketId]
-              )
-            );
-          }
-        );
-      }
-      if (
-        reports
-      ) {
-        dispatch(updateReports(reports));
       }
       if (
         pendingLiquidityOrders

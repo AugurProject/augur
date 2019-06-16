@@ -4,122 +4,123 @@ import classNames from "classnames";
 import QRCode from "qrcode.react";
 import Clipboard from "clipboard";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/less/tooltip.styles";
-import Checkbox from "src/modules/common/components/checkbox/checkbox";
+import TooltipStyles from "modules/common/tooltip.styles";
+import { Checkbox } from "modules/common/form";
 import {
   XIcon,
   CopyIcon,
-  CheckCircleIcon
-} from "modules/common-elements/icons";
+  CheckCircleIcon,
+} from "modules/common/icons";
 import {
   DefaultButtonProps,
   PrimaryButton,
   SecondaryButton,
   SubmitTextButton,
-  ExternalLinkButton
-} from "modules/common-elements/buttons";
+  ExternalLinkButton,
+} from "modules/common/buttons";
 import {
   LinearPropertyLabel,
   LinearPropertyLabelProps,
   PendingLabel,
-  ConfirmedLabel
-} from "modules/common-elements/labels";
-import Styles from "modules/modal/modal.styles";
-import { PENDING, SUCCESS } from "modules/common-elements/constants";
+  ConfirmedLabel,
+} from "modules/common/labels";
+import Styles from "modules/modal/modal.styles.less";
+import { PENDING, SUCCESS } from "modules/common/constants";
 
-interface TitleProps {
+export interface TitleProps {
   title: string;
   closeAction: Function;
 }
 
-interface DescriptionProps {
+export interface DescriptionProps {
   description: Array<string>;
 }
 
-interface ButtonsRowProps {
+export interface ButtonsRowProps {
   buttons: Array<DefaultButtonProps>;
 }
 
-interface AlertMessageProps {
+export interface AlertMessageProps {
   preText: string;
   boldText?: string;
   postText?: string;
 }
 
-interface DescriptionMessageProps {
+export interface DescriptionMessageProps {
   messages: Array<AlertMessageProps>;
 }
 
-interface CallToActionProps {
+export interface CallToActionProps {
   callToAction: string;
 }
 
-interface BreakdownProps {
-  rows: Array<Array<LinearPropertyLabelProps>>;
+export interface BreakdownProps {
+  rows: Array<LinearPropertyLabelProps>;
   title?: string;
   short?: boolean;
   reverse?: boolean;
 }
 
-interface MarketTitleProps {
+export interface MarketTitleProps {
   title: string;
 }
 
-interface SelectableTableRow {
+export interface SelectableTableRow {
   columns: Array<string | number>;
   action: Function;
 }
 
-interface SelectableTableProps {
+export interface SelectableTableProps {
   tableData: Array<SelectableTableRow>;
 }
 
-interface ActionRow {
+export interface ActionRow {
   title: string;
   text: string;
   label: string;
   value: string;
   action: Function;
-  status?: boolean;
+  status: typeof PENDING | typeof SUCCESS;
+  properties: Array<{ value: string, label: string, addExtraSpace: boolean }>;
 }
 
-interface ActionRowsProps {
+export interface ActionRowsProps {
   rows: Array<ActionRow>;
 }
 
-interface ReadableAddressProps {
+export interface ReadableAddressProps {
   address: string;
   copyable?: boolean;
   showQR?: boolean;
   title?: string;
 }
 
-interface AccountAddressDisplayProps {
+export interface AccountAddressDisplayProps {
   address: string;
   copyable?: boolean;
 }
 
-interface AccountAddressDisplayState {
+export interface AccountAddressDisplayState {
   isCopied: boolean;
 }
 
-interface MarketReviewProps {
+export interface MarketReviewProps {
   description: string;
   details: string;
   endTime: any;
   resolutionSource: string;
 }
 
-interface MarketReviewState {
+export interface MarketReviewState {
   readMore: boolean;
 }
 
-interface CheckboxCTAProps {
+export interface CheckboxCTAProps {
   markModalAsSeen: Function;
   unmarkModalAsSeen: Function;
 }
 
-interface CheckboxCTAState {
+export interface CheckboxCTAState {
   didCheck: boolean;
 }
 
@@ -155,7 +156,7 @@ export const ButtonsRow = (props: ButtonsRowProps) => (
 
 export const DescriptionMessage = (props: DescriptionMessageProps) => (
   <div className={Styles.DescriptionMessage}>
-    {props.messages.map(message => (
+    {props.messages.map((message) => (
       <span key={message.boldText}>
         {message.preText}
         {message.boldText && (
@@ -223,7 +224,7 @@ export const ActionRows = (props: ActionRowsProps) =>
       <section>
         <MarketTitle title={row.title} />
         <div>
-          {row.properties.map(property => (
+          {row.properties.map((property) => (
             <React.Fragment key={row.title + " " + property.label}>
               <LinearPropertyLabel
                 label={property.label}
@@ -305,11 +306,11 @@ export class AccountAddressDisplay extends Component<
   AccountAddressDisplayState
 > {
   state: AccountAddressDisplayState = {
-    isCopied: false
+    isCopied: false,
   };
 
-  componentWrapper: any = null;
-  clipboard: any = new Clipboard("#copy_address");
+  public componentWrapper: any = null;
+  public clipboard: any = new Clipboard("#copy_address");
 
   copyClicked = () => {
     this.setState({ isCopied: true }, () => {
@@ -324,7 +325,7 @@ export class AccountAddressDisplay extends Component<
     const { address, copyable } = this.props;
     return (
       <span
-        ref={container => {
+        ref={(container) => {
           this.componentWrapper = container;
         }}
         className={Styles.AccountAddressDisplay}
@@ -361,6 +362,7 @@ export class AccountAddressDisplay extends Component<
   }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export class MarketReview extends Component<
   MarketReviewProps,
   MarketReviewState
@@ -417,12 +419,13 @@ export class MarketReview extends Component<
   }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export class CheckboxCTA extends Component<CheckboxCTAProps, CheckboxCTAState> {
   constructor(props: CheckboxCTAProps) {
     super(props);
 
     this.state = {
-      didCheck: false
+      didCheck: false,
     };
 
     this.checkCheckbox = this.checkCheckbox.bind(this);
@@ -456,7 +459,6 @@ export class CheckboxCTA extends Component<CheckboxCTAProps, CheckboxCTAState> {
         <label htmlFor="marketReview">
           <Checkbox
             id="marketReview"
-            type="checkbox"
             value={didCheck}
             isChecked={didCheck}
             onClick={(e: React.SyntheticEvent) => {

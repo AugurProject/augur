@@ -1,29 +1,27 @@
 import * as AugurJS from "services/augurjs";
-import { checkIsKnownUniverse, getNetworkId, getAccounts } from "modules/contracts/actions/contractCalls";
+import {
+  checkIsKnownUniverse,
+  getNetworkId,
+  getAccounts
+} from "modules/contracts/actions/contractCalls";
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
   updateAugurNodeConnectionStatus
 } from "modules/app/actions/update-connection";
 import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
-import { updateContractAddresses } from "modules/contracts/actions/update-contract-addresses";
-import {
-  updateFunctionsAPI,
-  updateEventsAPI
-} from "modules/contracts/actions/update-contract-api";
 import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
 import { logout } from "modules/auth/actions/logout";
 import { verifyMatchingNetworkIds } from "modules/app/actions/verify-matching-network-ids";
 import { checkIfMainnet } from "modules/app/actions/check-if-mainnet";
 import { updateUniverse } from "modules/universe/actions/update-universe";
-import { registerTransactionRelay } from "modules/transactions/actions/register-transaction-relay";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
 import logError from "utils/log-error";
-import networkConfig from "config/network";
-import { version } from "src/version";
+import networkConfig from "config/network.json";
+import { version } from "version";
 import { updateVersions } from "modules/app/actions/update-versions";
-import { defaultTo, isEmpty } from "lodash";
+import { isEmpty } from "utils/is-populated";
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
@@ -32,16 +30,20 @@ import {
   NETWORK_NAMES,
   ACCOUNT_TYPES,
   DISCLAIMER_SEEN
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import { windowRef } from "utils/window-ref";
 import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback, WindowApp } from "modules/types";
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
 function pollForAccount(
-  dispatch: Function,
-  getState: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
   callback: any
 ) {
   const { loginAccount } = getState();
@@ -70,10 +72,11 @@ function pollForAccount(
           }
         );
       }
+      const windowApp = windowRef as WindowApp;
       const disclaimerSeen =
-        windowRef &&
-        windowRef.localStorage &&
-        windowRef.localStorage.getItem(DISCLAIMER_SEEN);
+        windowApp &&
+        windowApp.localStorage &&
+        windowApp.localStorage.getItem(DISCLAIMER_SEEN);
       if (!disclaimerSeen) {
         dispatch(
           updateModal({
@@ -86,60 +89,66 @@ function pollForAccount(
 }
 
 function loadAccount(
-  dispatch: Function,
+  dispatch: ThunkDispatch<void, any, Action>,
   existing: any,
-  accountType: String,
-  callback: Function
+  accountType: string,
+  callback: NodeStyleCallback
 ) {
   let loggedInAccount: any = null;
+  const windowApp = windowRef as WindowApp;
   const usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
-  if (windowRef.localStorage && windowRef.localStorage.getItem) {
-    loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
+  if (windowApp.localStorage && windowApp.localStorage.getItem) {
+    loggedInAccount = windowApp.localStorage.getItem("loggedInAccount");
   }
-  getAccounts().then((accounts: Array<string>) => {
-    let account = existing;
-    if (existing !== accounts[0]) {
-      account = accounts[0];
-      if (account && process.env.AUTO_LOGIN) {
-        dispatch(useUnlockedAccount(account));
-      } else if (
-        loggedInAccount &&
-        usingMetaMask &&
-        loggedInAccount !== account &&
-        account
-      ) {
-        // local storage does not match mm account and mm is signed in
-        dispatch(useUnlockedAccount(account));
-        loggedInAccount = account;
-      } else if (loggedInAccount && loggedInAccount === account) {
-        // local storage matchs mm account
-        dispatch(useUnlockedAccount(loggedInAccount));
-        account = loggedInAccount;
-      } else if (
-        !loggedInAccount &&
-        usingMetaMask &&
-        existing !== account &&
-        account
-      ) {
-        // no local storage set and logged in account does not match mm account, they want to switch accounts
-        dispatch(useUnlockedAccount(account));
-      } else if (!account && usingMetaMask) {
-        // no mm account signed in
-        dispatch(logout());
-        account = null;
+  getAccounts()
+    .then((accounts: Array<string>) => {
+      let account = existing;
+      if (existing !== accounts[0]) {
+        account = accounts[0];
+        if (account && process.env.AUTO_LOGIN) {
+          dispatch(useUnlockedAccount(account));
+        } else if (
+          loggedInAccount &&
+          usingMetaMask &&
+          loggedInAccount !== account &&
+          account
+        ) {
+          // local storage does not match mm account and mm is signed in
+          dispatch(useUnlockedAccount(account));
+          loggedInAccount = account;
+        } else if (loggedInAccount && loggedInAccount === account) {
+          // local storage matchs mm account
+          dispatch(useUnlockedAccount(loggedInAccount));
+          account = loggedInAccount;
+        } else if (
+          !loggedInAccount &&
+          usingMetaMask &&
+          existing !== account &&
+          account
+        ) {
+          // no local storage set and logged in account does not match mm account, they want to switch accounts
+          dispatch(useUnlockedAccount(account));
+        } else if (!account && usingMetaMask) {
+          // no mm account signed in
+          dispatch(logout());
+          account = null;
+        }
       }
-    }
-    callback(null, account);
-  }).catch((err: Error) => {
-    callback(null);
-  });
+      callback(null, account);
+    })
+    .catch((err: Error) => {
+      callback(null);
+    });
 }
 
-function pollForNetwork(dispatch: Function, getState: Function) {
+function pollForNetwork(
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) {
   setInterval(() => {
     const { modal } = getState();
     dispatch(
-      verifyMatchingNetworkIds((err: any, expectedNetworkId: String) => {
+      verifyMatchingNetworkIds((err: any, expectedNetworkId: string) => {
         if (err) return console.error("pollForNetwork failed", err);
         if (expectedNetworkId != null && isEmpty(modal)) {
           dispatch(
@@ -179,51 +188,38 @@ function pollForNetwork(dispatch: Function, getState: Function) {
 export function connectAugur(
   history: any,
   env: any,
-  isInitialConnection: Boolean = false,
-  callback: Function = logError
+  isInitialConnection: boolean = false,
+  callback: NodeStyleCallback = logError
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
       loginAccount,
       async (err: any, ConnectionInfo: any) => {
-        if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
+        if (err || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);
         }
-        const ethereumNodeConnectionInfo = ConnectionInfo.ethereumNode;
         dispatch(updateConnectionStatus(true));
-        dispatch(updateContractAddresses(ethereumNodeConnectionInfo.contracts));
-        dispatch(updateFunctionsAPI(ethereumNodeConnectionInfo.abi.functions));
-        dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events));
-        dispatch(updateAugurNodeConnectionStatus(true));
-        dispatch(getAugurNodeNetworkId());
-        dispatch(registerTransactionRelay());
-        AugurJS.augur.augurNode.getSyncData((err: any, res: any) => {
-          if (!err && res) {
-            dispatch(
-              updateVersions({
-                augurjs: res.version,
-                augurNode: res.augurNodeVersion,
-                augurui: version
-              })
-            );
-          }
-        });
+        const windowApp = windowRef as WindowApp;
         let universeId =
           env.universe ||
-          AugurJS.augur.contracts.addresses[getNetworkId()]
-            .Universe;
+          AugurJS.augur.contracts.addresses[getNetworkId()].Universe;
         if (
-          windowRef.localStorage &&
-          windowRef.localStorage.getItem &&
+          windowApp.localStorage &&
+          windowApp.localStorage.getItem &&
           loginAccount.address
         ) {
-          const storedUniverseId = JSON.parse(
-            windowRef.localStorage.getItem(loginAccount.address)
-          ).selectedUniverse[
+          const localUniverse =
+            (windowApp.localStorage.getItem &&
+              windowApp.localStorage.getItem(loginAccount.address)) ||
+            "";
+          const storedUniverseId = JSON.parse(localUniverse).selectedUniverse[
             getState().connection.augurNodeNetworkId ||
-            getNetworkId().toString()
+              getNetworkId().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
         }
@@ -236,7 +232,7 @@ export function connectAugur(
             pollForAccount(dispatch, getState, null);
             pollForNetwork(dispatch, getState);
           }
-          callback();
+          callback(null);
         };
 
         if (process.env.NODE_ENV === "development") {
@@ -254,32 +250,33 @@ export function connectAugur(
 }
 
 interface initAugurParams {
-  augurNode: String | null;
-  ethereumNodeHttp: String | null;
-  ethereumNodeWs: String | null;
+  ethereumNodeHttp: string | null;
+  ethereumNodeWs: string | null;
   useWeb3Transport: Boolean;
 }
 
 export function initAugur(
   history: any,
-  { augurNode, ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
-  callback = logError
+  {
+    ethereumNodeHttp,
+    ethereumNodeWs,
+    useWeb3Transport
+  }: initAugurParams,
+  callback: NodeStyleCallback = logError
 ) {
-  return (dispatch: Function, getState: Function) => {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
     console.log(env);
     env.useWeb3Transport = useWeb3Transport;
-    env["augur-node"] = defaultTo(augurNode, env["augur-node"]);
-    env["ethereum-node"].http = defaultTo(
-      ethereumNodeHttp,
-      env["ethereum-node"].http
-    );
-
-    env["ethereum-node"].ws = defaultTo(
-      ethereumNodeWs,
-      // If only the http param is provided we need to prevent this "default from taking precedence.
-      isEmpty(ethereumNodeHttp) ? env["ethereum-node"].ws : ""
-    );
+    env["ethereum-node"].http = ethereumNodeHttp
+      ? ethereumNodeHttp
+      : env["ethereum-node"].http;
+    const defaultWS = isEmpty(ethereumNodeHttp) ? env["ethereum-node"].ws : "";
+    // If only the http param is provided we need to prevent this "default from taking precedence.
+    env["ethereum-node"].ws = ethereumNodeWs ? ethereumNodeWs : defaultWS;
 
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);

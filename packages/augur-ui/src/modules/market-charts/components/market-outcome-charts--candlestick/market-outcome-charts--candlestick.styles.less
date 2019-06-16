@@ -1,12 +1,12 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketOutcomeCandlestick {
-  background: @color-light-purple;
+  background: @color-theme-primary;
   display: flex;
   flex: 1 100%;
   flex-direction: column;
   min-height: @charts-min-height;
-  padding: 0.5rem;
+  padding: @size-8;
   position: relative;
 
   @media @breakpoint-mobile {
@@ -36,18 +36,8 @@
   }
 }
 
-.MarketOutcomeChartsHeader__selector__mobile {
-  display: flex;
-  flex-basis: 100%;
-  justify-content: flex-end;
-
-  @media @breakpoint-mobile {
-    justify-content: space-between;
-  }
-}
-
 span.MarketOutcomeChartsHeader__stat {
-  margin-right: 16px;
+  margin-right: @size-16;
   min-width: 55px;
 
   @media @breakpoint-mobile {
@@ -59,8 +49,8 @@ span.MarketOutcomeChartsHeader__stat {
   .mono-10;
 
   display: flex;
-  min-height: 2rem;
-  padding-top: 1rem;
+  min-height: @size-32;
+  padding-top: @size-16;
   width: 100%;
 
   > span {
@@ -68,11 +58,11 @@ span.MarketOutcomeChartsHeader__stat {
 
     > span:first-of-type {
       color: @color-shadow-text;
-      padding-right: 0.5rem;
+      padding-right: @size-8;
     }
 
     > span:nth-of-type(2) {
-      padding-right: 1rem;
+      padding-right: @size-16;
     }
   }
 

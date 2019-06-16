@@ -1,0 +1,126 @@
+@import (reference) '~assets/styles/shared';
+
+.FilledOrders {
+  background-color: @color-active-hover;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+  width: 100%;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    > span {
+      padding: @size-8 @size-24;
+
+      > a {
+        .text-11-medium;
+
+        color: @color-secondary-text;
+      }
+    }
+
+    > ul {
+      display: grid;
+      grid-template-columns: 1fr 165px 125px;
+    }
+
+    > ul:first-of-type {
+      .mono-10;
+
+      color: @color-shadow-text;
+      justify-content: flex-end;
+      padding: @size-6 @size-24;
+      text-transform: uppercase;
+
+      > li {
+        max-width: unset !important;
+        text-align: right;
+
+        &:first-child {
+          text-align: right;
+        }
+
+        &:last-of-type {
+          align-items: center;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-end;
+          max-width: 16.25rem;
+        }
+      }
+    }
+
+    > ul:not(:first-of-type) {
+      border-top: 1px solid fade(@color-primary-background, 50%);
+      justify-content: flex-end;
+      margin: 0 @size-24;
+
+      > li {
+        .mono-11;
+
+        align-items: center;
+        color: @color-tertiary-text;
+        display: flex;
+        justify-content: flex-end;
+        padding: @size-8 0;
+        text-align: right;
+
+        > span > label {
+          .mono-11;
+        }
+
+        &:last-of-type {
+          padding-right: @size-8;
+        }
+
+        &:nth-of-type(2) {
+          font-family: @roboto-mono;
+          text-align: right;
+        }
+      }
+    }
+
+    > div:last-of-type {
+      display: none;
+    }
+  }
+}
+
+@media @breakpoint-mobile-mid {
+  .FilledOrders {
+    > div {
+      display: none;
+    }
+
+    > div:last-of-type {
+      display: flex;
+      flex-direction: column;
+      padding: 0 @size-16;
+
+      > div {
+        border-top: 1px solid @color-primary-background;
+        display: block;
+        padding-bottom: @size-10;
+        padding-top: @size-10;
+      }
+
+      > span {
+        .text-11-medium;
+
+        color: @color-secondary-text;
+        padding: @size-14 0;
+
+        > a > span {
+          .text-11;
+
+          color: @color-neutral;
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 {
+  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
     "composite": true,
     "target": "es5",
@@ -11,11 +12,13 @@
     "declarationMap": true,
     "downlevelIteration": true,
     "inlineSources": true,
+    "sourceMap": false,
     "inlineSourceMap": true,
     "watch": false,
-    "strictNullChecks": true,
-    "alwaysStrict": true,
-    "noImplicitAny": true,
+    "strictNullChecks": false,
+    "alwaysStrict": false,
+    "strict": false,
+    "noImplicitAny": false,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "esModuleInterop": true,
@@ -25,5 +28,9 @@
       "node_modules/@augurproject/types/types",
       "node_modules/@types"
     ]
-  }
+  },
+  "exclude": [
+    "**/node_modules",
+    "**/build"
+  ]
 }

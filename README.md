@@ -31,10 +31,21 @@
 
 <p align="center"><a href="https://github.com/AugurProject/augur-app/releases/latest"> <img width="200" src="https://augur.net/dist/images/meta_logo.png"> </a></p>
 
+## Repository Typescript build commands 
+
+NOTE: Run `yarn` at the base of the repository to install dependencies before running any of the following.
+
+| Command               | Purpose       |
+| -------------         | ------------- |
+|  `yarn build`         |  Build all everything but the UI once. |
+|  `yarn build:watch`   |  Build everything but the UI continuously. |
+|  `yarn build:clean`   |  Remove JUST typescript build artifacts |
+|  `yarn clean`         |  Remove everything that isn't currently being tracked by git (node_modules, build aretifacts, etc.) |
+
 ## UI development
 Run the following 4 commands, each in a separate terminal session from the root of the project.
 
-`yarn; yarn build -w`
+`yarn; yarn build:watch`
 
 ### docker images available
  * `yarn workspace @augurproject/tools docker:geth:pop-15`

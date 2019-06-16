@@ -1,9 +1,9 @@
-import { clearLoginAccount } from "modules/auth/actions/update-login-account";
-import { clearOrphanedOrderData } from "modules/orders/actions/orphaned-orders";
+
+import { clearLoginAccount } from "modules/account/actions/login-account";
 import { clearUserTx } from "modules/contracts/actions/contractCalls";
 
 export function logout() {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: ThunkDispatch<void, any, Action>) => {
     const localStorageRef =
       typeof window !== "undefined" && window.localStorage;
     clearUserTx();
@@ -12,7 +12,6 @@ export function logout() {
       localStorageRef.removeItem("airbitz.users");
       localStorageRef.removeItem("loggedInAccount");
     }
-    dispatch(clearOrphanedOrderData());
     dispatch(clearLoginAccount());
   };
 }

@@ -1,36 +1,36 @@
 @import (reference) "~assets/styles/shared";
 
 .DerivationPathEditor {
-  padding: 16px 24px 8px;
+  padding: @size-16 @size-24 @size-8;
 }
 
 .DerivationPathEditor__title {
-  color: @color-white;
-  font-size: 13px;
-  font-weight: bold;
+  .text-12-bold;
+
+  color: @color-secondary-text;
 }
 
 .DerivationPathEditor__row {
   display: flex;
-  margin-top: 12px;
+  margin-top: @size-12;
 }
 
 .DerivationPathEditor__address {
-  margin-left: 16px;
+  margin-left: @size-16;
 }
 
 .DerivationPathEditor__pathDetails {
-  color: @color-white;
-  font-family: @roboto;
-  font-size: 13px;
-  margin-left: 8px;
+  .text-12;
+
+  color: @color-secondary-text;
+  margin-left: @size-8;
   text-transform: none;
 }
 
 .DerivationPathEditor__path {
-  color: @color-white;
-  font-family: 'Roboto Mono', monospace;
-  font-size: 13px;
+  .mono-12;
+
+  color: @color-secondary-text;
   text-transform: none;
 }
 
@@ -49,37 +49,37 @@
     text-transform: none;
 
     > button {
-      color: @color-white;
+      .text-18;
+
+      color: @color-secondary-text;
       cursor: pointer;
       display: flex;
       flex-grow: 1;
-      font-size: @font-size-large;
-      line-height: @font-size-large;
       min-height: 1.7rem;
-      padding-left: 36px;
+      padding-left: @size-36;
       position: relative;
       text-align: left;
 
       &::before {
-        background-color: white;
+        background-color: @color-secondary-text;
         border: 0;
         border-radius: 100%;
         content: "";
-        height: 20px;
+        height: @size-20;
         left: 0;
         margin: auto;
-        margin-top: 5px;
+        margin-top: @size-5;
         top: 0;
-        width: 20px;
+        width: @size-20;
       }
 
       &::after {
         background-color: @color-purple;
-        height: 11.75px;
-        left: 0.25rem;
-        margin-top: 5px;
-        top: 0.25rem;
-        width: 11.75px;
+        height: @size-12;
+        left: @size-4;
+        margin-top: @size-5;
+        top: @size-4;
+        width: @size-12;
       }
     }
   }
@@ -88,7 +88,7 @@
 .DerivationPathEditor__radioButtonsInput {
   > li {
     > button {
-      padding-left: 32px;
+      padding-left: @size-32;
     }
   }
 }
@@ -97,9 +97,9 @@
   border: none;
   color: @color-darkpurple;
   font-weight: bold;
-  height: 24px;
-  max-height: 24px;
-  padding: 3px 12px;
+  height: @size-24;
+  max-height: @size-24;
+  padding: 3px @size-12;
   text-transform: none;
 
   &::placeholder {

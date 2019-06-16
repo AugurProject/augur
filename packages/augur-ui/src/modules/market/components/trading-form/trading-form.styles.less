@@ -1,0 +1,47 @@
+@import (reference) "~assets/styles/shared";
+
+.TradingForm {
+  background-color: @color-theme-primary;
+  border-bottom: @size-8 solid @color-theme-primary;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 575px;
+  position: relative;
+
+  > div {
+    .text-24;
+    
+    align-items: center;
+    background: fade(@color-secondary-action, 80%);
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    left: 0;
+    padding: 0 2.5rem;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    z-index: @default-z-index;
+
+    > p {
+      line-height: @size-24;
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .TradingForm {
+    flex-grow: 1;
+    margin-bottom: @size-8;
+    min-height: auto;
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+
+    > div {
+      color: @color-secondary-text;
+    }
+  }
+}

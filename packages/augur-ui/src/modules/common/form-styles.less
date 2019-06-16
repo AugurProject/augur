@@ -1,0 +1,449 @@
+@import (reference) '~assets/styles/shared';
+
+.Form {
+  margin: auto;
+  max-width: 62.75rem;
+  padding: 3.75rem 0 9.125rem;
+
+  @media @breakpoint-mobile {
+    padding: 0;
+  }
+}
+
+.Form__error {
+  .text-16;
+
+  color: @color-error-text;
+  display: inline-block;
+  margin-left: 2.32rem;
+  margin-right: 1.5rem;
+  position: absolute;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.Form__error__space {
+  &:extend(.Form__error);
+
+  margin-top: @size-8;
+}
+
+.Form__error--even {
+  .text-16;
+
+  color: @color-error-text;
+  display: inline-block;
+  margin-left: 0;
+  margin-right: @size-24;
+  position: absolute;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.Form__error--even__space {
+  &:extend(.Form__error--even);
+
+  margin-top: @size-8;
+  position: relative;
+}
+
+.Form__error__space > svg,
+.Form__error--even > svg,
+.Form__error--even__space > svg,
+.Form__error--field-50 > svg {
+  margin: 0 @size-4;
+  max-height: @size-16;
+  max-width: @size-16;
+  vertical-align: top;
+}
+
+.Form__error--field-50 {
+  &:extend(.Form__error);
+
+  left: 52%;
+  line-height: @size-13;
+  position: absolute;
+  top: -3px;
+}
+
+.Form__error > svg,
+.Form__error--field-50 > svg {
+  margin: 0 @size-4;
+  max-height: @size-16;
+  max-width: @size-16;
+  vertical-align: top;
+}
+
+.Form__error--field {
+  border-color: @color-error-text;
+  border-width: 1px;
+}
+
+.Form__input::-webkit-inner-spin-button,
+.Form__input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.Form__fields {
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-height: 30rem;
+  padding: 0 @size-32;
+
+  > li {
+    margin-bottom: 3.7rem;
+    position: relative;
+    width: 100%;
+
+    &.field--50 {
+      width: 50%;
+    }
+
+    > label {
+      display: inline-block;
+      font-weight: @weight-bold;
+      margin-bottom: @size-16;
+      position: relative;
+
+      > span:first-child {
+        margin-right: @size-8;
+      }
+    }
+
+    p {
+      .text-18;
+
+      color: @color-secondary-text;
+      display: flex;
+      margin: 0;
+      text-transform: capitalize;
+
+      label {
+        margin: @size-5 @size-16;
+      }
+
+      &.text--field-style {
+        .text-18;
+
+        color: @color-secondary-text;
+      }
+
+      &.error {
+        .text-16;
+
+        color: @color-error-text;
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      .text-18;
+
+      background-color: @color-lightergray;
+
+      &.error {
+        border-color: @color-error-text;
+      }
+
+      &::placeholder {
+        color: @color-lightgray;
+      }
+    }
+
+    textarea {
+      height: 3.5rem;
+      padding-top: @size-16;
+    }
+  }
+}
+
+li.field--short {
+  max-width: 21rem;
+}
+
+.Form__navigation {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 @size-32;
+}
+
+.Form__next,
+.Form__prev,
+.Form__submit {
+  &:extend(.button--bright all);
+
+  &.hide-button {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.Form__page {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+
+  &.show-page {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.Form__radio-buttons {
+  display: flex;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    &:not(:first-child) {
+      margin-left: 4.75rem;
+    }
+
+    > button {
+      .text-18;
+
+      color: @color-secondary-text;
+      cursor: pointer;
+      display: block;
+      min-height: 1.7rem;
+      padding-left: @size-40;
+      position: relative;
+      text-align: left;
+
+      &::before {
+        border: 1px solid @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        height: @size-24;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        width: @size-24;
+      }
+
+      &::after {
+        background-color: @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        display: none;
+        height: @size-14;
+        left: @size-6;
+        margin: auto;
+        position: absolute;
+        top: @size-6;
+        width: @size-14;
+      }
+
+      &.active::after {
+        display: block;
+      }
+    }
+  }
+}
+
+.Form__radio-buttons--per-line {
+  &:extend(.Form__radio-buttons all);
+
+  display: block;
+
+  > li {
+    > button {
+      &.isInvalidField {
+        color: @color-lighter-purple;
+      }
+
+      text-transform: capitalize;
+    }
+  }
+
+  > li:not(:first-child) {
+    margin-left: 0;
+    margin-top: @size-16;
+
+    &.field--inline {
+      display: block;
+      margin-top: 0;
+      max-width: 21rem;
+    }
+  }
+}
+
+.Form__radio-buttons--per-line-inline {
+  display: block;
+
+  > li {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    input[type='number'] {
+      appearance: textfield;
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    &:not(:first-child) {
+      margin-left: 0;
+      margin-top: @size-16;
+
+      &.field--inline {
+        display: block;
+        max-width: 18rem;
+      }
+    }
+
+    > button {
+      .text-12;
+
+      color: @color-secondary-text;
+      cursor: pointer;
+      display: block;
+      min-height: 1.7rem;
+      padding-left: @size-40;
+      position: absolute;
+      text-align: left;
+
+      &::after {
+        background-color: @color-lightgray;
+        border-radius: 100%;
+        content: "";
+        display: none;
+        height: @size-14;
+        left: @size-6;
+        margin: auto;
+        position: absolute;
+        top: @size-6;
+        width: @size-14;
+      }
+
+      &.active::after {
+        display: block;
+      }
+
+      &.button--inline {
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        color: @color-gray;
+        display: inline-block;
+        margin-left: 75%;
+      }
+    }
+  }
+}
+
+.Form__radio-buttons--per-line-long {
+  &:extend(.Form__radio-buttons--per-line all);
+
+  margin-top: @size-16;
+  white-space: nowrap;
+  width: 18rem;
+}
+
+@media @breakpoint-mobile {
+  .Form__fields > li textarea {
+    height: 5.1rem;
+  }
+
+  .Form__radio-buttons {
+    display: block;
+
+    > li:not(:first-child) {
+      margin-left: 0;
+      margin-top: @size-16;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .Form {
+    padding-bottom: @size-48;
+  }
+
+  .Form__fields {
+    padding-left: @size-16;
+    padding-right: @size-16;
+  }
+
+  .Form__navigation {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .Form__next,
+  .Form__prev,
+  .Form__submit {
+    border-radius: 0;
+    white-space: nowrap;
+    width: 50%;
+
+    &.hide-button {
+      display: none;
+    }
+  }
+
+  .Form__next,
+  .Form__submit {
+    background-color: @color-purple;
+    color: @color-secondary-text;
+  }
+
+  .Form__prev.hide-button + .Form__next {
+    width: 100%;
+  }
+
+  .Form__error--field-50 {
+    left: 0;
+    position: relative;
+    top: auto;
+  }
+
+  .Form__error--field {
+    border-color: @color-error-text;
+    border-width: 1px;
+  }
+
+  .Form__error + .Form__error--field-50 {
+    left: @size-8;
+  }
+
+  .Form__fields > li.field--50 {
+    width: 100%;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .Form__fields > li textarea {
+    height: 6.5rem;
+  }
+
+  .Form__navigation {
+    flex-wrap: wrap;
+  }
+
+  .Form__next,
+  .Form__prev,
+  .Form__submit {
+    width: 100%;
+  }
+
+  .Form__next,
+  .Form__submit {
+    order: 1;
+  }
+
+  .Form__prev {
+    order: 2;
+  }
+}

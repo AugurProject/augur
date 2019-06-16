@@ -35,7 +35,7 @@
   cursor: pointer;
   display: flex;
   flex: 1;
-  padding: 1.25rem 1.375rem 1.125rem 1.5rem;
+  padding: @size-20 @size-22 @size-18 @size-24;
   width: 100%;
 
   &:focus {
@@ -45,24 +45,24 @@
 
 .containerLoggedIn {
   @media @breakpoint-mobile-mid {
-    padding-top: 18px;
+    padding-top: @size-18;
   }
 }
 
 .status {
   .mono-10;
 
-  color: @color-less-neutral;
-  margin-bottom: 4px;
+  color: @color-tertiary-text;
+  margin-bottom: @size-4;
 }
 
 .statusIndicator {
   background-color: @color-offwhite;
   border-radius: 50%;
   display: inline-block;
-  margin-right: 5px;
-  min-height: 8px;
-  min-width: 8px;
+  margin-right: @size-5;
+  min-height: @size-8;
+  min-width: @size-8;
 }
 
 .statusGreen {
@@ -76,13 +76,13 @@
 }
 
 .arrow {
-  margin-left: 16px;
+  margin-left: @size-16;
   margin-top: -3px;
-  max-width: 12px;
+  max-width: @size-12;
 
   > span {
     display: inline-block;
-    margin-top: -0.5rem;
+    margin-top: -@size-8;
   }
 }
 
@@ -96,7 +96,7 @@
   background-color: @color-primary-light;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
-  box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px @size-4 -@size-4 rgba(0, 0, 0, 0.5);
   height: 0;
   position: absolute;
   right: 0;

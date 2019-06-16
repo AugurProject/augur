@@ -1,0 +1,554 @@
+@import (reference) "~assets/styles/shared";
+
+.DatePicker {
+  :global {
+    .SingleDatePicker_1 {
+      display: block;
+      max-width: 19.875rem;
+      z-index: @above-all-content;
+    }
+
+    .SingleDatePickerInput {
+      background: none !important;
+      border: none;
+      border-radius: @border-radius-default !important;
+    }
+
+    .DateInput {
+      background: none !important;
+      border-radius: @border-radius-default !important;
+      height: @size-40;
+      max-height: @size-40;
+      width: auto !important;
+    }
+
+    .DateInput_input_1,
+    .DateInput_input__focused,
+    .DateInput_input__focused_2 {
+      border: 1px solid @color-highlight;
+      border-radius: @border-radius-default;
+      height: @size-38;
+      max-height: @size-38;
+    }
+
+    .DateInput_input.DateInput_input_1,
+    .DateInput_input.DateInput_input_1.DateInput_input__focused.DateInput_input__focused_2 {
+      border: none;
+    }
+
+    .DateInput__openDown_3::before,
+    .DateInput__openDown_3::after {
+      content: none;
+      display: none;
+    }
+
+    .DateInput__withCaret::before,
+    .DateInput__withCaret::after {
+      content: none;
+      display: none;
+    }
+
+    .DateInput.DateInput_1.DateInput__withCaret.DateInput__withCaret_2.DateInput__openDown.DateInput__openDown_3 {
+      &::before,
+      &::after {
+        content: none;
+        display: none;
+      }
+    }
+
+    .SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3 {
+      top: auto;
+    }
+
+    .DayPicker_weekHeader.DayPicker_weekHeader_1 {
+      top: 3.5rem;
+    }
+
+    .DayPicker__horizontal_2 {
+      background-color: @color-input-background;
+      border-radius: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      font-size: 0.75rem;
+      line-height: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .SingleDatePickerInput.SingleDatePickerInput_1 {
+      border: 1px solid @color-highlight;
+      border-radius: @border-radius-default;
+    }
+
+    .SingleDatePickerInput,
+    .SingleDatePickerInput_1 {
+      .mono-12;
+
+      background: @color-theme-primary;
+      border: 1px solid @color-highlight;
+      border-radius: @border-radius-default;
+      color: @color-secondary-text;
+      max-height: @size-40;
+    }
+
+    .DateInput_input.DateInput_input_1 {
+      .mono-12;
+
+      background: @color-theme-primary;
+      color: @color-secondary-text;
+    }
+
+    .DateInput_1 {
+      background: none;
+      color: inherit;
+      display: block;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      width: auto;
+    }
+
+    .DateInput_displayText.DateInput_displayText_1 {
+      .mono-12;
+
+      background: none;
+      color: @color-secondary-text;
+
+      &.DateInput_displayText__hasInput {
+        color: inherit;
+      }
+    }
+
+    .DateInput_input__focused {
+      border: 0;
+    }
+
+    .CalendarMonth_1,
+    .CalendarMonthGrid_1,
+    .CalendarMonthGrid_1 {
+      background: none;
+    }
+
+    .CalendarMonth_caption_1 {
+      color: @color-lightgray;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      padding-bottom: 2.8rem;
+      padding-top: 1.75rem;
+    }
+
+    .DayPickerNavigation_button__default_2.DayPickerNavigation_button__default_2 {
+      background: none;
+      border: none;
+    }
+
+    .DayPickerNavigation_leftButton__horizontal_3 {
+      > svg {
+        height: 1rem;
+        transform: rotate(90deg);
+        width: 1rem;
+      }
+    }
+
+    .DayPickerNavigation_rightButton__horizontal_3 {
+      > svg {
+        height: 1rem;
+        transform: rotate(-90deg);
+        width: 1rem;
+      }
+    }
+
+    .DayPicker_weekHeader_li_1 {
+      color: @color-lightgray;
+      font-size: 0;
+
+      &::first-letter {
+        font-size: 0.6875rem;
+      }
+    }
+
+    .CalendarDay_container_1 {
+      background: none;
+      border: none;
+      color: @color-darkpurple;
+
+      &.CalendarDay__selected_2:hover {
+        background: @color-primary-light;
+        border: none;
+        border-radius: 100%;
+      }
+
+      &.CalendarDay__selected,
+      &:hover {
+        background: @color-lightergray;
+        border: none;
+        border-radius: 100%;
+      }
+
+      &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2 {
+        border: none;
+        color: #cacccd;
+
+        &:hover {
+          background: none;
+        }
+      }
+    }
+
+    .DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3 {
+      display: none;
+    }
+  }
+}
+
+.Dropdown {
+  border: 1px solid @color-highlight;
+  border-radius: @border-radius-default;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+  width: 100%;
+
+  > select {
+    display: none;
+  }
+
+  > button {
+    align-items: center;
+    background: @color-theme-primary;
+    border-radius: @border-radius-default;
+    color: @color-secondary-text;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    white-space: nowrap;
+    width: 100%;
+
+    > b {
+      margin-right: auto;
+    }
+
+    > svg > path {
+      fill: none;
+      stroke: @color-neutral;
+    }
+
+    &:hover {
+      background: fade(@color-highlight, 30%);
+      outline: none;
+
+      > svg > path {
+        stroke: @color-secondary-text;
+      }
+    }
+  }
+
+  > div {
+    background-color: @color-secondary-text;
+    border-radius: @border-radius-default;
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 106%;
+    z-index: @mask;
+
+    &.active {
+      display: block;
+    }
+
+    > button {
+      color: @color-primary-background;
+      position: relative;
+      text-align: left;
+      transition: background-color 0.15s ease;
+      white-space: nowrap;
+      width: 100%;
+
+      &:hover {
+        background-color: fade(@color-highlight, 20%);
+      }
+
+      &::before {
+        background-color: fade(@color-highlight, 10%);
+        bottom: 0;
+        content: "";
+        height: 1px;
+        position: absolute;
+      }
+    }
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.Dropdown_Large {
+  .Dropdown;
+
+  border-color: @color-primary-alternate;
+  height: 2.5rem;
+
+  > button {
+    .text-14-medium;
+
+    background: @color-secondary-action;
+    padding: 0 @size-16;
+
+    > svg {
+      flex: 0 0 1.25rem;
+      height: 1.25rem;
+      margin-left: 0.5rem;
+      width: 1.25rem;
+
+      > path {
+        stroke-width: 0.125rem;
+      }
+    }
+  }
+
+  > div {
+    width: 100%;
+  }
+
+  > div > button {
+    .text-14;
+
+    height: 2.5rem;
+    padding: 0 @size-16;
+
+    &::before {
+      left: @size-24;
+      right: @size-24;
+    }
+  }
+}
+
+.Dropdown_Normal {
+  .Dropdown;
+
+  height: 2rem;
+  max-width: fit-content;
+
+  &:active,
+  &:hover {
+    outline: none;
+  }
+
+  > button {
+    .text-10;
+
+    line-height: @size-12;
+    padding: @size-10 @size-12;
+
+    > svg {
+      height: 0.25rem;
+      margin-left: 0.5rem;
+      width: 0.5rem;
+
+      > path {
+        stroke-width: 0.125rem;
+      }
+    }
+  }
+
+  > div > button {
+    .text-10;
+
+    height: 2rem;
+    line-height: @size-12;
+    padding: @size-10 @size-12;
+
+    &::before {
+      left: @size-12;
+      right: @size-12;
+    }
+  }
+}
+
+.Dropdown_stretchOut {
+  @media @breakpoint-mobile-mid {
+    height: unset;
+    max-width: unset;
+
+    > div {
+      left: 0;
+    }
+
+    > button {
+      .text-12;
+
+      padding: 1rem 0.75rem;
+    }
+
+    > .Dropdown__list > button {
+      height: unset;
+      padding: 1rem 0.75rem;
+    }
+  }
+}
+
+.Dropdown_isOpen {
+  > button {
+    background: fade(@color-highlight, 30%);
+
+    > svg > path {
+      stroke: @color-secondary-text;
+    }
+  }
+}
+
+.Dropdown_highlight {
+  > button {
+    background: @color-highlight;
+  }
+}
+
+.Dropdown_openTop {
+  > div {
+    bottom: 106%;
+    top: unset;
+  }
+}
+
+.PillSelection {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  height: @size-32;
+
+  > li {
+    background: transparent;
+    border: 1px solid fade(@color-primary-alternate-two, 20%);
+    border-right: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+    justify-content: center;
+    white-space: nowrap;
+
+    &.Selected {
+      background: @color-theme-primary;
+      border-color: @color-theme-primary;
+
+      & + li {
+        border-left: 0;
+        padding-left: 1px;
+      }
+
+      &:last-of-type {
+        border-bottom-right-radius: @border-radius-full-round;
+        border-right: 1px solid @color-theme-primary;
+        border-top-right-radius: @border-radius-full-round;
+      }
+
+      > button {
+        .mono-10;
+
+        color: @color-secondary-text;
+        line-height: @size-14;
+      }
+    }
+
+    &:first-of-type {
+      border-bottom-left-radius: @border-radius-full-round;
+      border-top-left-radius: @border-radius-full-round;
+    }
+
+    &:last-of-type {
+      border-bottom-right-radius: @border-radius-full-round;
+      border-right: 1px solid fade(@color-primary-alternate-two, 20%);
+      border-top-right-radius: @border-radius-full-round;
+    }
+
+    > button {
+      .mono-10;
+
+      background: transparent;
+      color: @color-primary-alternate-two;
+      line-height: normal;
+      padding: 10px 22px;
+    }
+  }
+}
+
+.DotSelection_Menu {
+  cursor: pointer;
+  position: relative;
+
+  > button > svg {
+    fill: @color-shadow-text;
+    height: @size-16;
+    margin-top: 0.1875rem;
+    width: @size-10;
+
+    @media @breakpoint-mobile {
+      transform: scale(1.3);
+    }
+  }
+
+  > button:hover,
+  > button:active {
+    > svg {
+      fill: @color-secondary-text;
+    }
+  }
+}
+
+.DotSelection_Menu-open {
+  > button > svg {
+    fill: @color-secondary-text;
+  }
+}
+
+.DotSelection_MenuItems {
+  .text-12-bold;
+
+  align-items: flex-start;
+  background: @color-secondary-text;
+  border-radius: @border-radius-default;
+  color: @color-primary-background;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: @size-8 @size-16;
+  position: absolute;
+  right: 0;
+  top: 36px;
+  user-select: none;
+  width: 189px;
+  z-index: @above-all-content;
+
+  @media @breakpoint-mobile {
+    padding: @size-16;
+  }
+
+  > div {
+    align-items: center;
+    border-top: 1px solid fade(@color-primary-alternate, 10%);
+    display: flex;
+    width: 100%;
+  }
+
+  > div:hover {
+    color: @color-shadow-text;
+    opacity: 0.75;
+  }
+
+  > div:first-of-type {
+    border-top: 0;
+    padding-bottom: @size-8;
+
+    @media @breakpoint-mobile {
+      padding-bottom: @size-16;
+    }
+  }
+
+  > div:last-of-type {
+    padding-top: @size-8;
+
+    @media @breakpoint-mobile {
+      padding-top: @size-16;
+    }
+  }
+}

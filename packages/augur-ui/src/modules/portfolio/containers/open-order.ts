@@ -1,16 +1,18 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import getValue from "utils/get-value";
+import { AppState } from "store";
+import * as constants from "modules/common/constants";
 
-import * as constants from "modules/common-elements/constants";
-
-import Row from "modules/common-elements/row";
+import Row from "modules/common/row";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 const { COLUMN_TYPES } = constants;
 
-const mapStateToProps = (state: any) => ({});
+const mapStateToProps = (state: AppState) => ({});
 
-const mapDispatchToProps = (dispatch: Function) => ({});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const openOrder = oP.openOrder;
@@ -27,38 +29,36 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "orderName",
       columnType: COLUMN_TYPES.TEXT,
       text: orderLabel,
-      keyId: openOrder.id
+      keyId: openOrder.id,
     },
     {
       key: "orderType",
       columnType: COLUMN_TYPES.POSITION_TYPE,
-      type: openOrder.type
+      type: openOrder.type,
     },
     {
       key: "unmatchedShares",
       columnType: COLUMN_TYPES.VALUE,
       value: openOrder.unmatchedShares && unmatchedShares,
-      keyId: "openOrder-unmatchedShares-" + openOrder.id
+      keyId: "openOrder-unmatchedShares-" + openOrder.id,
     },
     {
       key: "avgPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: openOrder.avgPrice && avgPrice,
-      keyId: "openOrder-price-" + openOrder.id
+      keyId: "openOrder-price-" + openOrder.id,
     },
     {
       key: "tokensEscrowed",
       columnType: COLUMN_TYPES.VALUE,
-      hide: !oP.extendedView,
       value: tokensEscrowed,
-      keyId: "openOrder-tokensEscrowed-" + openOrder.id
+      keyId: "openOrder-tokensEscrowed-" + openOrder.id,
     },
     {
       key: "sharesEscrowed",
       columnType: COLUMN_TYPES.VALUE,
-      hide: !oP.extendedView,
       value: sharesEscrowed,
-      keyId: "openOrder-sharesEscrowed-" + openOrder.id
+      keyId: "openOrder-sharesEscrowed-" + openOrder.id,
     },
     {
       key: "cancel",
@@ -69,8 +69,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: (e: Event) => {
         e.stopPropagation();
         openOrder.cancelOrder(openOrder);
-      }
-    }
+      },
+    },
   ];
   return {
     ...oP,
@@ -79,9 +79,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     rowProperties: openOrder,
     columnProperties,
     styleOptions: {
-      noToggle: oP.extendedView,
-      openOrder: true
-    }
+      noToggle: oP.extendedViewNotOnMobile,
+      openOrder: true,
+    },
   };
 };
 
@@ -89,6 +89,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Row)
+    mergeProps,
+  )(Row),
 );

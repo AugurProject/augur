@@ -4,20 +4,22 @@ import React from "react";
 import {
   DefaultButtonProps,
   CancelTextButton,
-  SubmitTextButton
-} from "modules/common-elements/buttons";
+  SubmitTextButton,
+} from "modules/common/buttons";
 import {
   Title,
   DescriptionProps,
   Description,
   ButtonsRow,
   MarketTitle,
-  LinearPropertyLabelProps,
-  Breakdown
+  Breakdown,
 } from "modules/modal/common";
-import { BID, CATEGORICAL } from "modules/common-elements/constants";
+import {
+  LinearPropertyLabelProps,
+} from "modules/common/labels";
+import { BID, CATEGORICAL } from "modules/common/constants";
 import { formatShares, formatEther } from "utils/format-number";
-import Styles from "modules/modal/modal.styles";
+import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
 
 interface UnsignedOrdersProps {
@@ -26,22 +28,21 @@ interface UnsignedOrdersProps {
   buttons: Array<DefaultButtonProps>;
   description: DescriptionProps;
   breakdown: Array<LinearPropertyLabelProps>;
-  loginAccount: Object;
-  bnAllowance: Object;
+  loginAccount: object;
+  bnAllowance: object;
   header: Array<string>;
-  liquidity: Object;
+  liquidity: object;
   marketTitle: string;
   marketId: string;
   numTicks: string;
-  minPrice: Object;
-  maxPrice: Object;
+  minPrice: object;
+  maxPrice: object;
   outcomes: Array<string>;
   marketType: string;
   sendLiquidityOrder: Function;
   removeLiquidityOrder: Function;
   scalarDenomination: string;
   openOrders: boolean;
-  isMobile: boolean;
 }
 
 interface Order {
@@ -65,7 +66,7 @@ const orderRow = (order: Order, props: UnsignedOrdersProps) => {
     minPrice,
     outcomes,
     bnAllowance,
-    loginAccount
+    loginAccount,
   } = props;
   const outcomeId = marketType === CATEGORICAL ? outcomeName : 1;
   const buttons = [
@@ -75,8 +76,8 @@ const orderRow = (order: Order, props: UnsignedOrdersProps) => {
         removeLiquidityOrder({
           marketId,
           outcomeId,
-          orderId: index
-        })
+          orderId: index,
+        }),
     },
     {
       text: "submit",
@@ -94,17 +95,17 @@ const orderRow = (order: Order, props: UnsignedOrdersProps) => {
           loginAccount,
           orderCB: () => {},
           seriesCB: () => {},
-          outcome: outcomeId
-        })
-    }
+          outcome: outcomeId,
+        }),
+    },
   ];
   return (
     <div key={`${outcomeName}-${price}-${index}`}>
       <span>{outcomeName}</span>
       <span className={type === BID ? Styles.bid : Styles.ask}>{type}</span>
       <span>{formatShares(quantity).formatted}</span>
-      <span>{formatEther(price).formatted}</span>
-      <span>{formatEther(orderEstimate).formatted}</span>
+      <span>{formatEther(Number(price)).formatted}</span>
+      <span>{formatEther(Number(orderEstimate)).formatted}</span>
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
           if (index === 0)
@@ -120,6 +121,8 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
   <div className={Styles.Orders}>
     <Title title={props.title} closeAction={props.closeAction} />
     <main>
+      {/*
+        // @ts-ignore */}
       <Description description={props.description} />
       <MarketTitle title={props.marketTitle} />
       {props.header && (
@@ -139,7 +142,8 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
         </section>
       )}
       {props.openOrders && (
-        <OpenOrdersTable openOrders={props.orders} isMobile={props.isMobile} />
+        // @ts-ignore
+        <OpenOrdersTable openOrders={props.orders} />
       )}
       {props.breakdown && <Breakdown rows={props.breakdown} short />}
     </main>

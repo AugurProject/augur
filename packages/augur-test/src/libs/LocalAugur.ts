@@ -1,17 +1,16 @@
 import * as path from "path";
 import * as ganache from "ganache-core";
 import { ethers } from "ethers";
-import { CompilerOutput } from "solc";
 
 import { Augur } from "@augurproject/sdk";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ContractDeployer, DeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
+import { DeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
 import { ContractAddresses, Contracts as compilerOutput } from "@augurproject/artifacts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 
 const memdown = require("memdown");
 
-export type Account = {
+export interface Account {
   secretKey: string;
   publicKey: string;
   balance: number;
@@ -19,47 +18,64 @@ export type Account = {
 
 export type AccountList = Array<Account>;
 
-const augurCorePath = path.join(__dirname, "../../augur-core/");
+const augurCorePath = path.join(__dirname, "../../../augur-core/");
 
-function makeDeployerConfiguration() {
+export function makeDeployerConfiguration(writeArtifacts: boolean = true) {
   const contractInputRoot = path.join(augurCorePath, "../augur-artifacts/src");
-  const artifactOutputRoot  = path.join(augurCorePath, "../augur-artifacts/src");
+  const artifactOutputRoot = writeArtifacts ? path.join(augurCorePath, "../augur-artifacts/src") : null;
   const createGenesisUniverse = true;
   const useNormalTime = false;
   const isProduction = false;
   const augurAddress = "0xabc";
   const legacyRepAddress = "0xdef";
-  return new DeployerConfiguration(contractInputRoot, artifactOutputRoot, augurAddress, createGenesisUniverse, isProduction, useNormalTime, legacyRepAddress);
+  return new DeployerConfiguration(
+    contractInputRoot,
+    artifactOutputRoot,
+    augurAddress,
+    createGenesisUniverse,
+    isProduction,
+    useNormalTime,
+    legacyRepAddress,
+  );
 }
 
-interface UsefulContractObjects {
+export interface UsefulContractObjects {
   provider: EthersProvider;
   signer: EthersFastSubmitWallet;
   dependencies: ContractDependenciesEthers;
   addresses: ContractAddresses;
 }
 
-export async function deployContracts(accounts: AccountList, compiledContracts: CompilerOutput): Promise<UsefulContractObjects> {
-  const ganacheProvider = makeGanacheProvider(accounts);
-  const provider = new EthersProvider(makeGanacheProvider(accounts), 5, 0, 40);
+export async function deployContracts(accounts: AccountList, ignored: any): Promise<UsefulContractObjects> {
+  const seed = require("../../seed.json");
+
+  const ganacheProvider = await makeGanacheProvider(accounts);
+  const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
   const signer = await makeSigner(accounts[0], provider);
   const dependencies = makeDependencies(accounts[0], provider, signer);
-
-  const deployerConfiguration = makeDeployerConfiguration();
-  const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, ganacheProvider, signer, compiledContracts);
-  const addresses = await contractDeployer.deploy();
-
+  const addresses = seed.addresses;
   return {provider, signer, dependencies, addresses};
 }
 
-export function makeGanacheProvider(accounts: AccountList): ethers.providers.Web3Provider {
+export async function makeGanacheProvider(accounts: AccountList): Promise<ethers.providers.Web3Provider> {
+  const seed = require("../../seed.json");
+
+  const db = memdown();
+  await new Promise((resolve, reject) => {
+    db.batch(seed.data, (err: Error) => {
+      if (err) reject(err);
+      resolve();
+    });
+  });
+
   return new ethers.providers.Web3Provider(ganache.provider({
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
     allowUnlimitedContractSize: true,
-    db: memdown(),
+    db,
     gasLimit: 75000000000,
     debug: false,
+    network_id: 123456,
     // vmErrorsOnRPCResponse: true,
   }));
 }
@@ -72,7 +88,7 @@ export function makeDependencies(account: Account, provider: EthersProvider, sig
   return new ContractDependenciesEthers(provider, signer, account.publicKey);
 }
 
-export async function makeTestAugur(accounts: AccountList): Promise<Augur<ethers.utils.BigNumber>> {
+export async function makeTestAugur(accounts: AccountList): Promise<Augur> {
   const {provider, dependencies, addresses} = await deployContracts(accounts, compilerOutput);
   return Augur.create(provider, dependencies, addresses);
 }

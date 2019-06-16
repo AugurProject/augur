@@ -1,27 +1,27 @@
 import React, { Component } from "react";
 
-import { ImmediateImportance } from "modules/common-elements/icons";
-import { FormattedValue } from "modules/common-elements/labels";
-import { SquareDropdown } from "modules/common-elements/selection";
+import { ImmediateImportance } from "modules/common/icons";
+import { SquareDropdown } from "modules/common/selection";
 import {
   Title,
   ButtonsRow,
   Breakdown,
-  Description
+  Description,
 } from "modules/modal/common";
-import { ETH, REP, ZERO } from "modules/common-elements/constants";
+import { ETH, REP, ZERO } from "modules/common/constants";
 import { formatEther, formatRep } from "utils/format-number";
 import isAddress from "modules/auth/helpers/is-address";
-import Styles from "modules/modal/modal.styles";
+import Styles from "modules/modal/modal.styles.less";
 import { createBigNumber } from "utils/create-big-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
+import { FormattedNumber } from "modules/types";
 
 interface WithdrawFormProps {
   closeAction: Function;
   transferFunds: Function;
   GasCosts: {
-    eth: FormattedValue;
-    rep: FormattedValue;
+    eth: FormattedNumber;
+    rep: FormattedNumber;
   };
   loginAccount: {
     rep: string;
@@ -53,18 +53,18 @@ export class WithdrawForm extends Component<
     amount: "",
     errors: {
       address: "",
-      amount: ""
+      amount: "",
     }
   };
 
   options = [
     {
       label: ETH,
-      value: ETH
+      value: ETH,
     },
     {
       label: REP,
-      value: REP
+      value: REP,
     }
   ];
 
@@ -74,7 +74,7 @@ export class WithdrawForm extends Component<
     if (amount.length) {
       this.amountChange({ target: { value: amount } });
     }
-  };
+  }
 
   handleMax = () => {
     const { loginAccount, GasCosts } = this.props;
@@ -85,11 +85,11 @@ export class WithdrawForm extends Component<
     this.amountChange({
       target: {
         value: currency === ETH ? resolvedValue.toFixed() : fullAmount.toFixed()
-      }
+      },
     });
-  };
+  }
 
-  amountChange = (e: Event) => {
+  amountChange = (e: any) => {
     const { loginAccount, GasCosts } = this.props;
     const newAmount = convertExponentialToDecimal(sanitizeArg(e.target.value));
     const bnNewAmount = createBigNumber(newAmount || "0");
@@ -110,10 +110,11 @@ export class WithdrawForm extends Component<
       return this.setState({ amount: newAmount, errors: updatedErrors });
     }
 
+    // @ts-ignore
     if (isNaN(parseFloat(newAmount))) {
       updatedErrors.amount = `Quantity isn't a number.`;
     }
-
+    // @ts-ignore
     if (!isFinite(newAmount)) {
       updatedErrors.amount = `Quantity isn't finite.`;
     }
@@ -129,11 +130,11 @@ export class WithdrawForm extends Component<
     if (amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = `Not enough ETH available to pay gas cost.`;
     }
-
+  // @ts-ignore
     this.setState({ amount: newAmount, errors: updatedErrors });
-  };
+  }
 
-  addressChange = (e: Event) => {
+  addressChange = (e: any) => {
     const address = e.target.value;
     const { errors: updatedErrors } = this.state;
     updatedErrors.address = "";
@@ -145,7 +146,7 @@ export class WithdrawForm extends Component<
       updatedErrors.address = `Address is required`;
     }
     this.setState({ address, errors: updatedErrors });
-  };
+  }
 
   render() {
     const { GasCosts, transferFunds, loginAccount, closeAction } = this.props;
@@ -155,11 +156,12 @@ export class WithdrawForm extends Component<
       errAmount === "" && errAddress === "" && amount.length && address.length;
 
     const formattedAmount =
-      currency === ETH ? formatEther(amount || 0) : formatRep(amount || 0);
+      currency === ETH ? formatEther(Number(amount) || 0) : formatRep(amount || 0);
     const gasCost = GasCosts[currency.toLowerCase()];
     const formattedTotal =
       currency === ETH
         ? formatEther(
+            // @ts-ignore
             createBigNumber(amount || 0).plus(GasCosts.eth.fullPrecision)
           )
         : formattedAmount;
@@ -168,38 +170,40 @@ export class WithdrawForm extends Component<
         text: "send",
         action: () =>
           transferFunds(formattedAmount.fullPrecision, currency, address),
-        disabled: !isValid
+        disabled: !isValid,
       },
       {
         text: "cancel",
-        action: closeAction
-      }
+        action: closeAction,
+      },
     ];
     const breakdown = [
       {
         label: "Send",
         value: formattedAmount,
         useValueLabel: true,
-        showDenomination: true
+        showDenomination: true,
       },
       {
         label: "GAS Cost",
         value: gasCost,
         useValueLabel: true,
-        showDenomination: true
+        showDenomination: true,
       },
       {
         label: "Total",
         value: formattedTotal,
         useValueLabel: true,
         showDenomination: true,
-        highlight: true
+        highlight: true,
       }
     ];
     return (
       <div className={Styles.WithdrawForm}>
         <Title title="Send Funds" closeAction={closeAction} />
         <main>
+          {/*
+            // @ts-ignore */}
           <Description
             description={["Send funds from your connected wallet"]}
           />

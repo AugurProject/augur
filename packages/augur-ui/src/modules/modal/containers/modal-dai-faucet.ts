@@ -1,17 +1,19 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Message } from "modules/modal/message";
-
+import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
 import getDai from "modules/account/actions/get-dai";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-const mapStateToProps = (state: any) => ({
-  modal: state.modal
+const mapStateToProps = (state: AppState) => ({
+  modal: state.modal,
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  getDai: () => dispatch(getDai())
+  getDai: () => dispatch(getDai()),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -24,19 +26,19 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       action: () => {
         dP.getDai();
         dP.closeModal();
-      }
+      },
     },
     {
       text: "Cancel",
-      action: () => dP.closeModal()
-    }
-  ]
+      action: () => dP.closeModal(),
+    },
+  ],
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Message)
+    mergeProps,
+  )(Message),
 );

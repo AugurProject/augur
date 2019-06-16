@@ -1,14 +1,17 @@
-import { debounce } from "lodash";
+import debounce from "utils/debounce";
 import { connectAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { MODAL_NETWORK_DISCONNECTED } from "modules/common-elements/constants";
+import { MODAL_NETWORK_DISCONNECTED } from "modules/common/constants";
 import { closeModal } from "modules/modal/actions/close-modal";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { AppState } from "store";
 
 const RETRY_TIMER = 3000; // attempt re-initAugur every 3 seconds.
 
 export const reInitAugur = (history: any) => (
-  dispatch: Function,
-  getState: Function
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   const debounceCall = debounce((callback = cb) => {
     const { connection, env } = getState();

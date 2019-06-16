@@ -6,11 +6,11 @@
       "src",
       "test"
     ],
-    "noImplicitAny": false
+    "noImplicitReturns": false
   },
   "include": [
-    "src",
-    "./config.json"
+    "./src/**/*",
+    "./src/config.json"
   ],
   "exclude": [
     "**/*.test.ts"

@@ -7,11 +7,15 @@ import {
   PENDING,
   SUCCESS,
   UNIVERSE_ID
-} from "modules/common-elements/constants";
+} from "modules/common/constants";
 import {
   addPendingData,
   removePendingData
 } from "modules/pending-queue/actions/pending-queue-management";
+import { AppState } from "store";
+import { NodeStyleCallback } from "modules/types";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
+import { Action } from "redux";
 
 export const CLAIM_FEES_GAS_COST = 3000000;
 export const CLAIM_WINDOW_GAS_COST = 210000;
@@ -20,9 +24,12 @@ export const FEE_WINDOW_BATCH_SIZE = 10;
 
 export function claimReportingFeesForkedMarket(
   options: any,
-  callback: Function = logError
-) {
-  return (dispatch: Function, getState: Function) => {
+  callback: NodeStyleCallback = logError
+): ThunkAction<any, any, any, any> {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     const { loginAccount } = getState();
     const payload = {
       ...options,
@@ -40,8 +47,14 @@ export function claimReportingFeesForkedMarket(
   };
 }
 
-export function redeemStake(options: any, callback: Function = logError) {
-  return (dispatch: Function, getState: Function) => {
+export function redeemStake(
+  options: any,
+  callback: NodeStyleCallback = logError
+): ThunkAction<any, any, any, any> {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     const { loginAccount, universe } = getState();
     const universeId = universe.id || UNIVERSE_ID;
     const gasPrice = getGasPrice(getState());
@@ -56,12 +69,12 @@ export function redeemStake(options: any, callback: Function = logError) {
       estimateGas
     } = options;
 
-    const reportingParticipants: Array<String> = [];
+    const reportingParticipants: Array<string> = [];
     nonforkedMarkets.forEach((nonforkedMarket: any) => {
       if (nonforkedMarket.initialReporter) {
         reportingParticipants.push(nonforkedMarket.initialReporter);
       }
-      nonforkedMarket.crowdsourcers.forEach((crowdsourcer: String) => {
+      nonforkedMarket.crowdsourcers.forEach((crowdsourcer: string) => {
         reportingParticipants.push(crowdsourcer);
       });
     });
@@ -94,22 +107,22 @@ export function redeemStake(options: any, callback: Function = logError) {
             sumAndformatGasCostToEther(
               gasCosts,
               { decimalsRounded: 4 },
-              gasPrice
+              gasPrice.toString()
             )
           );
         onFailed && failed.forEach((m: any) => onFailed(m));
-        callback();
+        callback(null);
       })
-      .catch(() => {
-        callback();
+      .catch((e) => {
+        callback(e);
       });
   };
 
   function batchContractIds(
     feeWindows: Array<any>,
-    reportingParticipants: Array<String>
+    reportingParticipants: Array<string>
   ) {
-    const batches = [];
+    const batches: Array<any> = [];
     const feeWindowBatchSize = Math.ceil(
       feeWindows.length / FEE_WINDOW_BATCH_SIZE
     );

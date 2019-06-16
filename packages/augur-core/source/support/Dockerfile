@@ -10,14 +10,14 @@ ARG SOLC_MD5=fce0ea489308e86aa0d5f7d72bd2cd15
 ENV PATH="/augur/node_modules/.bin:${PATH}"
 
 # install "virtualenv", since the vast majority of users of this image will want it
-RUN pip install --no-cache-dir virtualenv
+RUN python3 -m pip install --no-cache-dir virtualenv
 
 
 WORKDIR /augur
 COPY packages/augur-core/requirements.txt /augur/
-RUN virtualenv /augur/venv && \
+RUN python3 -m venv /augur/venv && \
     source /augur/venv/bin/activate && \
-    pip install --no-cache-dir -r requirements.txt
+    python -m pip install --no-cache-dir -r requirements.txt
 
 
 RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
@@ -35,12 +35,13 @@ ENV PATH="/augur/venv/bin:${PATH}"
 RUN apk add --no-cache \
     git \
     libstdc++ \
-    python2 \
     python3
 
 COPY --from=augur-build /usr/local/bin/solc /usr/local/bin/solc
 COPY --from=augur-build /augur/packages/augur-core/ /augur/packages/augur-core
 COPY --from=augur-build /augur/packages/augur-artifacts/ /augur/packages/augur-artifacts
+COPY --from=augur-build /augur/packages/contract-dependencies/ /augur/packages/contract-dependencies
+COPY --from=augur-build /augur/packages/contract-dependencies-ethers/ /augur/packages/contract-dependencies-ethers
 COPY --from=augur-build /augur/package.json /augur
 COPY --from=augur-build /augur/tsconfig.json /augur
 COPY --from=augur-build /augur/tsconfig-base.json /augur

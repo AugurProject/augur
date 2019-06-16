@@ -1,86 +1,95 @@
 @import (reference) '~assets/styles/shared';
 
-.MarketScalarOutcomes {
+.ScalarOutcomes {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: 40px 24px 16px;
+  padding: @size-40 @size-24 @size-16;
   padding-bottom: 1.7rem;
   position: relative;
 
   @media @breakpoint-mobile {
-    background: @color-grayish-purple;
-    padding: 24px 16px 10px;
+    background: @color-tertiary-background;
+    padding: @size-24 @size-16 @size-10;
   }
-}
 
-.MarketScalarOutcomes__row {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-}
+  > div:first-of-type {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    margin-bottom: @size-5;
 
-.MarketScalarOutcomes__denomination {
-  font-size: 10px;
-  margin-top: 4px;
-}
+    > div:first-of-type,
+    > div:last-of-type {
+      background-color: @color-secondary-text;
+      height: @size-16;
+      width: 1px;
+    }
 
-.MarketScalarOutcomes__minMax {
-  font-size: 12px;
-}
+    > div:nth-of-type(2) {
+      flex-grow: 1;
+      margin-left: @size-6;
+      margin-right: @size-6;
+      position: relative;
 
-.MarketScalarOutcomes__minMaxValue {
-  font-weight: bold;
-}
+      > svg {
+        bottom: 25%;
+        position: relative;
+      }
 
-.MarketScalarOutcomes__graph {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  margin-bottom: 5px;
-}
+      > div {
+        .text-14-bold;
 
-.MarketScalarOutcomes__edge {
-  background-color: white;
-  height: 16px;
-  width: 1px;
-}
+        left: 50%;
+        position: absolute;
+        top: -14.45px;
+        transform: translateX(-50%);
 
-.MarketScalarOutcomes__line {
-  flex-grow: 1;
-  margin-left: 6px;
-  margin-right: 6px;
-  position: relative;
+        > span:first-of-type {
+          &::before {
+            background-color: @color-outcome-seven;
+            border-radius: 50%;
+            content: "";
+            height: @size-5;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            right: 0;
+            top: 1.3rem;
+            width: @size-5;
+          }
+        }
 
-  > svg {
-    bottom: 25%;
-    position: relative;
+        > span:nth-of-type(2) {
+          left: @size-4;
+          position: relative;
+        }
+      }
+    }
   }
-}
 
-.MarketScalarOutcomes__current {
-  font-size: 14px;
-  font-weight: bold;
-  left: 50%;
-  position: absolute;
-  top: -14.45px;
-  transform: translateX(-50%);
-}
+  > div:nth-of-type(2),
+  > div:last-of-type {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
 
-.MarketScalarOutcomes__current-denomination {
-  left: 0.25rem;
-  position: relative;
-}
+    > div:first-of-type {
+      flex-grow: 1;
+    }
+  }
 
-.MarketScalarOutcomes__current-value::before {
-  background-color: @color-outcome-seven;
-  border-radius: 50%;
-  content: "";
-  height: 5px;
-  left: 0;
-  margin: auto;
-  position: absolute;
-  right: 0;
-  top: 1.3rem;
-  width: 5px;
+  > div:nth-of-type(2) {
+    .text-12;
+
+    > div > span {
+      font-weight: bold;
+    }
+  }
+
+  > div:last-of-type {
+    .text-10;
+
+    margin-top: @size-4;
+  }
 }

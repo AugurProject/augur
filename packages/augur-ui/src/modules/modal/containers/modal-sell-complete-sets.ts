@@ -6,11 +6,15 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { sellCompleteSets } from "modules/positions/actions/sell-complete-sets";
 import { createBigNumber } from "utils/create-big-number";
 import { formatEther } from "utils/format-number";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
   const numCompleteSets = createBigNumber(
-    state.modal.numCompleteSets.formatted
+    state.modal.numCompleteSets.formatted,
   );
   const min = market.minPrice;
   const max = market.maxPrice;
@@ -23,17 +27,18 @@ const mapStateToProps = (state: any) => {
     modal: state.modal,
     profitBreakdown: {
       grossETH: formatEther(grossETH),
+      // @ts-ignore
       settlementFee: formatEther(settlementFee),
-      netETH: formatEther(netETH)
+      netETH: formatEther(netETH),
     },
-    marketTitle: market.description
+    marketTitle: market.description,
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  sellCompleteSets: (marketId: string, numCompleteSets: any, cb: Function) =>
-    dispatch(sellCompleteSets(marketId, numCompleteSets, cb))
+  sellCompleteSets: (marketId: string, numCompleteSets: any, cb: NodeStyleCallback) =>
+    dispatch(sellCompleteSets(marketId, numCompleteSets, cb)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -41,17 +46,17 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   alertMessage: {
     preText: "You currently have",
     boldText: sP.modal.numCompleteSets.full,
-    postText: "of all outcomes in the market:"
+    postText: "of all outcomes in the market:",
   },
   breakdown: [
     {
       label: "Settlement Fees",
-      value: sP.profitBreakdown.settlementFee.full
+      value: sP.profitBreakdown.settlementFee.full,
     },
     {
       label: "Total",
-      value: sP.profitBreakdown.netETH.full
-    }
+      value: sP.profitBreakdown.netETH.full,
+    },
   ],
   marketTitle: sP.marketTitle,
   closeAction: () => {
@@ -67,18 +72,18 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
         dP.sellCompleteSets(
           oP.modal.marketId,
           oP.modal.numCompleteSets,
-          oP.modal.cb
+          oP.modal.cb,
         );
         dP.closeModal();
-      }
-    }
-  ]
+      },
+    },
+  ],
 });
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
-  )(Message)
+    mergeProps,
+  )(Message),
 );

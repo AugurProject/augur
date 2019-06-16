@@ -2,15 +2,15 @@ import { toChecksumAddress } from "ethereumjs-util";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
   updateAuthStatus,
-  IS_LOGGED
-} from "modules/auth/actions/update-auth-status";
-import { clearLoginAccount } from "modules/auth/actions/update-login-account";
+  IS_LOGGED,
+} from "modules/auth/actions/auth-status";
+import { clearLoginAccount } from "modules/account/actions/login-account";
 import { clearUserTx } from "modules/contracts/actions/contractCalls";
 
 export const updateIsLoggedAndLoadAccountData = (
   unlockedAddress: string,
-  accountType: string,
-) => (dispatch: Function) => {
+  accountType: string
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   clearUserTx();
   dispatch(clearLoginAccount()); // clear the loginAccount data in local state
   const displayAddress = toChecksumAddress(unlockedAddress);

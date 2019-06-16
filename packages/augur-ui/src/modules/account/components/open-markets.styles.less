@@ -1,0 +1,63 @@
+@import (reference) "~assets/styles/shared";
+
+.ExpandedContent {
+  background: fade(@color-primary-alternate, 40%);
+  flex: 1;
+
+  > div {
+    align-items: center;
+    border-top: 1px solid fade(@color-primary-background, 50%);
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    margin: 0 @size-32;
+    padding: @size-4 0;
+
+    > span {
+      .text-11;
+
+      color: @color-tertiary-text;
+      flex: 1;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > div {
+      margin: 0 @size-16;
+      padding-right: 0;
+    }
+  }
+}
+
+.BottomBar {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  padding-bottom: @size-4;
+  padding-right: @size-8;
+
+  > div {
+    align-items: center;
+    background: @color-tertiary-background;
+    border-radius: 3px;
+    display: flex;
+    margin-bottom: @size-4;
+    margin-top: @size-8;
+    padding: @size-6 @size-8;
+
+    > span {
+      .mono-11;
+
+      color: @color-tertiary-text;
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      padding-right: @size-8;
+      text-transform: uppercase;
+    }
+
+    > div > div {
+      font-weight: bold;
+    }
+  }
+}
