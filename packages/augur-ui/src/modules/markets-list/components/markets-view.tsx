@@ -5,7 +5,6 @@ import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import { TYPE_TRADE } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
-import { RadioCard } from 'modules/common/form';
 
 interface MarketsViewProps {
   isLogged: boolean;
@@ -123,7 +122,6 @@ export default class MarketsView extends Component<
       filterSortedMarkets,
       isSearchingMarkets,
     } = this.state;
-
     return (
       <section
         ref={componentWrapper => {
@@ -133,31 +131,6 @@ export default class MarketsView extends Component<
         <Helmet>
           <title>Markets</title>
         </Helmet>
-        <article
-          style={{
-            margin: '24px',
-            display: 'flex',
-            justifyContent: 'space-around',
-            flexFlow: "row nowrap"
-          }}
-        >
-          <RadioCard
-            defaultChecked
-            value="one"
-            header="one"
-            description="this is some sample text that will be here"
-          />
-          <RadioCard
-            value="two"
-            header="two"
-            description="this is some sample text that will be here"
-          />
-          <RadioCard
-            value="three"
-            header="three"
-            description="this is some sample text that will be here"
-          />
-        </article>
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearchingMarkets}

@@ -37,47 +37,69 @@ interface InputDropdownState {
 }
 
 interface RadioCardProps {
-  defaultChecked?: boolean;
   value: string;
   header: string;
   description: string;
-  onChange: Function;
+  checked?: boolean;
+  onChange?: Function;
+  icon?: SVGElement;
 }
 
-interface RadioCardState {
-  checked: boolean;
+interface RadioCardGroupProps {
+  radioButtons: Array<RadioCardProps>;
+  defaultSelected?: string | null;
 }
 
-export class RadioCard extends Component<RadioCardProps, RadioCardState> {
-  state:RadioCardState = {
-    checked: !!this.props.defaultChecked
-  }
+interface RadioCardGroupState {
+  selected: string | null;
+}
 
-  render () {
-    const {
-      value,
-      header,
-      description,
-      onChange = e => console.log(e),
-    } = this.props;
-    const { checked } = this.state;
+export class RadioCardGroup extends Component<
+  RadioCardGroupProps,
+  RadioCardGroupState
+> {
+  state: RadioCardGroupState = {
+    selected: this.props.defaultSelected || null,
+  };
+
+  render() {
+    const { radioButtons } = this.props;
+    const { selected } = this.state;
     return (
-      <button
-        className={classNames(Styles.RadioCard, {
-          [Styles.RadioCardActive]: checked,
-        })}
-        onClick={e => {
-          onChange(value)
-          this.setState({ checked: !this.state.checked });
-        }}
-      >
-        {Ellipsis}
-        <h5>{header}</h5>
-        <p>{description}</p>
-      </button>
+      <section className={Styles.RadioCardGroup}>
+        {radioButtons.map(radio => (
+          <RadioCard
+            key={radio.value}
+            {...radio}
+            checked={radio.value === selected}
+            onChange={selected => this.setState({ selected })}
+          />
+        ))}
+      </section>
     );
-  } 
-};
+  }
+}
+
+const RadioCard = ({
+  value,
+  header,
+  description,
+  onChange,
+  checked,
+  icon,
+}: RadioCardProps) => (
+  <button
+    className={classNames(Styles.RadioCard, {
+      [Styles.RadioCardActive]: checked,
+    })}
+    onClick={e => onChange(value)}
+  >
+    <div>{CheckMark}</div>
+    {icon ? icon : Ellipsis}
+    <h5>{header}</h5>
+    <p>{description}</p>
+  </button>
+);
 
 export const Checkbox = ({
   id,

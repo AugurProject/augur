@@ -1,5 +1,14 @@
 @import (reference) '~assets/styles/shared';
 // @color-primary-alternate-two
+
+.RadioCardGroup {
+  margin: @size-20;
+  padding: @size-12;
+  display: flex;
+  flex-flow:  row wrap;
+  align-items: space-around;
+}
+
 .RadioCard {
   background: @color-theme-primary;
   border-radius: @border-radius-default;
@@ -22,15 +31,17 @@
 
   > div {
     border-radius: @border-radius-default;
-    display: none;
-    bottom: 11%;
-    left: 52%;
+    display: flex;
+    bottom: 12%;
+    left: 51%;
     align-items: center;
     justify-content: center;
     position: relative;
     height: @size-20;
     width: @size-20;
     background: @color-positive;
+    visibility: hidden;
+    opacity: 0;
 
     > svg {
       height: @size-16;
@@ -81,9 +92,11 @@
 
 .RadioCardActive {
   border: 4px solid @color-positive;
+  padding: 0 @size-8;
 
   > div {
-    display: flex;
+    visibility: visible;
+    opacity: 1;
   }
 
   &:hover,
