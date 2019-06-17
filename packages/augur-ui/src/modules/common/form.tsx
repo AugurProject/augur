@@ -59,7 +59,8 @@ interface FormDropdownProps {
   staticLabel?: string;
   disabled?: Boolean;
   error?: Boolean;
-  errorMessage?: String
+  errorMessage?: String;
+  openTop?: Boolean;
 }
 
 export const FormDropdown = (props: FormDropdownProps) => 
