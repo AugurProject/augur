@@ -129,39 +129,60 @@ div.FormDropdown {
   margin-bottom: @size-4;
   min-width: 150px;
 
+  > div {
+    left: 0;
+  }
+
   > button {
+    background-color: transparent;
     color: @color-primary-alternate-two;
 
     > svg {
-      color: @color-secondary-text;
       height: @size-12;
       width: @size-12;
+
+      > path {
+        stroke: @color-secondary-text;
+      }
+    }
+
+    &:hover {
+      background-color: transparent;
     }
   }
 
   &:hover {
+    background-color: @color-secondary-action;
     border: 1px solid @color-highlight;
     cursor: pointer;
   }
 
-  &:focus,
-  &:active {
-    border: 1px solid @color-active;
-
-    > button {
-      color: @color-secondary-text;
-    }
-  }
-
-  &:disabled {
+  &.disabled {
     background-color: @color-extra-darkpurple;
     border: 1px solid @color-shadow-text;
     color: @color-shadow-text;
     opacity: 0.5;
   }
 
-  &:error {
+  &.error {
     border: 1px solid fade(@color-error-text, 50%);
+  }
+}
+
+div.FormDropdownActive {
+  > button {
+    background-color: transparent;
+    color: @color-secondary-text;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &:hover {
+    background-color: @color-secondary-action;
+    border: 1px solid @color-primary-light;
+    color: @color-secondary-text;
   }
 }
 

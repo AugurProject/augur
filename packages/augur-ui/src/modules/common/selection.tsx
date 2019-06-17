@@ -25,6 +25,7 @@ export interface DropdownProps {
   openTop?: boolean;
   highlight?: boolean;
   stretchOut?: boolean;
+  activeClassName?: string;
 }
 
 interface DropdownState {
@@ -140,19 +141,21 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       large,
       stretchOutOnMobile,
       openTop,
-      className
+      className,
+      activeClassName
     } = this.props;
     const { selected, showList } = this.state;
     return (
       <div
         style={sortByStyles}
-        className={classNames({
+        className={classNames(className, {
           [Styles.Dropdown_Large]: large,
           [Styles.Dropdown_Normal]: !large,
           [Styles.Dropdown_stretchOut]: stretchOutOnMobile,
           [Styles.Dropdown_isOpen]: showList,
-          [Styles.Dropdown_openTop]: openTop
-        }, className)}
+          [Styles.Dropdown_openTop]: openTop,
+          [`${activeClassName}`]: showList,
+        })}
         ref={dropdown => {
           this.refDropdown = dropdown;
         }}

@@ -57,9 +57,24 @@ interface FormDropdownProps {
   defaultValue?: string | number;
   options: Array<NameValuePair>;
   staticLabel?: string;
+  disabled?: Boolean;
+  error?: Boolean;
+  errorMessage?: String
 }
 
-export const FormDropdown = (props: FormDropdownProps) => <SquareDropdown {...props} className={Styles.FormDropdown} />;
+export const FormDropdown = (props: FormDropdownProps) => 
+  <>
+    <SquareDropdown 
+      {...props} 
+      className={classNames(Styles.FormDropdown, {[Styles.disabled]: props.disabled, [Styles.error]: props.error})} 
+      activeClassName={Styles.FormDropdownActive}
+    />
+    {props.error && props.errorMessage && 
+      <span className={Styles.ErrorText}>
+        {props.errorMessage}
+      </span>
+    }
+  </>;
 
 export class TextInput extends React.Component<
   TextInputProps,
