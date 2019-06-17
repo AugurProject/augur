@@ -9,7 +9,7 @@ import {
   InitialReporterRedeemedLog,
   InitialReportSubmittedLog,
   MarketCreatedLog,
-  OrderEventLog,
+  ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
   OrderType,
@@ -263,7 +263,7 @@ export class Accounts<TBigNumber> {
     return allFormattedLogs.slice(start, end);
   }
 
-  static async getMarketCreatedInfo<TBigNumber>(db: DB, transactionLogs: Array<OrderEventLog|TradingProceedsClaimedLog|DisputeCrowdsourcerRedeemedLog|InitialReporterRedeemedLog|DisputeCrowdsourcerContributionLog|InitialReportSubmittedLog|CompleteSetsPurchasedLog|CompleteSetsSoldLog>): Promise<MarketCreatedInfo> {
+  static async getMarketCreatedInfo<TBigNumber>(db: DB, transactionLogs: Array<ParsedOrderEventLog|TradingProceedsClaimedLog|DisputeCrowdsourcerRedeemedLog|InitialReporterRedeemedLog|DisputeCrowdsourcerContributionLog|InitialReportSubmittedLog|CompleteSetsPurchasedLog|CompleteSetsSoldLog>): Promise<MarketCreatedInfo> {
     const markets = transactionLogs.map(transactionLogs => transactionLogs.market);
     let marketCreatedLogs = await db.findMarketCreatedLogs({selector: {market: {$in: markets}}});
     const marketCreatedInfo: MarketCreatedInfo = {};
@@ -306,7 +306,7 @@ function getOutcomeFromPayoutNumerators(payoutNumerators: Array<BigNumber>, mark
   return outcome;
 }
 
-function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatOrderFilledLogs(transactionLogs: Array<ParsedOrderEventLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const price = new BigNumber(transactionLogs[i].price);
@@ -360,7 +360,7 @@ function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, marketInfo
   return formattedLogs;
 }
 
-function formatOrderCanceledLogs(transactionLogs: Array<OrderEventLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
+function formatOrderCanceledLogs(transactionLogs: Array<ParsedOrderEventLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     formattedLogs.push(

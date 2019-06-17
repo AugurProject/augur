@@ -139,7 +139,7 @@ export class SyncableDB extends AbstractDB {
     }
   }
 
-  private explodeLogArrays(logs: Array<ParsedLog>): void {
+  private parseLogArrays(logs: Array<ParsedLog>): void {
     for (let i = 0; i < logs.length; i++) {
       logs[i].kycToken = logs[i].addressData[0];
       logs[i].orderCreator = logs[i].addressData[1];
@@ -165,7 +165,7 @@ export class SyncableDB extends AbstractDB {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
 
     if (this.eventName === "OrderEvent") {
-      this.explodeLogArrays(logs);
+      this.parseLogArrays(logs);
     }
 
     let success = true;

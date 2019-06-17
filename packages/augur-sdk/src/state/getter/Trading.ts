@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertDisplayPriceToOnChainPrice } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { OrderEventLog } from "../logs/types";
+import { ParsedOrderEventLog } from "../logs/types";
 
 import * as t from "io-ts";
 
@@ -226,7 +226,7 @@ export class Trading {
     const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
     const markets = _.keyBy(marketsResponse, "market");
 
-    return currentOrdersResponse.reduce((orders: Orders, orderEventDoc: OrderEventLog) => {
+    return currentOrdersResponse.reduce((orders: Orders, orderEventDoc: ParsedOrderEventLog) => {
       const marketDoc = markets[orderEventDoc.market];
       if (!marketDoc) return orders;
       const originalOrderDoc = originalOrders[orderEventDoc.orderId];

@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import * as constants from '../constants';
 import { Augur } from './../Augur';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
-import { OrderEventLog } from '../state/logs/types';
+import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 
 // XXX TEMP for better worse order ids
 export function stringTo32ByteHex(stringToEncode: string): string {
@@ -176,7 +176,7 @@ export class Trade {
         if (eventParams.eventType === 0) { // Create
           return new BigNumber(0);
         } else if (eventParams.eventType === 3) {// Fill
-          var onChainAmountFilled = eventParams.amountFilled;
+          var onChainAmountFilled = eventParams.uint256Data[OrderEventUint256Value.amountFilled];
           tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(onChainAmountFilled);
         }
       }

@@ -6,8 +6,8 @@ import {
   MarketType,
   MarketCreatedLog,
   MarketFinalizedLog,
-  OrderEventLog,
   OrderEventType,
+  ParsedOrderEventLog,
 } from "../logs/types";
 import { SortLimit } from "./types";
 import { Augur, numTicksToTickSize, QUINTILLION } from "../../index";
@@ -143,7 +143,7 @@ export class Markets {
 
     return _.mapValues(tradeRowsByOutcome, (outcomeTradeRows) => {
       const outcomeTradeRowsByPeriod = _.groupBy(outcomeTradeRows, (tradeRow) => getPeriodStartTime(params.start || 0, new BigNumber(tradeRow.timestamp).toNumber(), params.period || 60));
-      return _.map(outcomeTradeRowsByPeriod, (trades: Array<OrderEventLog>, startTimestamp): MarketPriceCandlestick => {
+      return _.map(outcomeTradeRowsByPeriod, (trades: Array<ParsedOrderEventLog>, startTimestamp): MarketPriceCandlestick => {
         // TODO remove this partialCandlestick stuff and just return
         // a Candlestick after the temporary Candlestick.tokenVolume
         // is removed (see note on Candlestick.tokenVolume).
@@ -153,8 +153,8 @@ export class Markets {
           end: new BigNumber(_.maxBy(trades, (tradeLog) => { return new BigNumber(tradeLog.timestamp).toNumber(); })!.price).toString(10),
           min: new BigNumber(_.minBy(trades, (tradeLog) => { return new BigNumber(tradeLog.price).toNumber(); })!.price).toString(10),
           max: new BigNumber(_.maxBy(trades, (tradeLog) => { return new BigNumber(tradeLog.price).toNumber(); })!.price).toString(10),
-          volume: _.reduce(trades, (totalVolume: BigNumber, tradeRow: OrderEventLog) => totalVolume.plus(new BigNumber(tradeRow.amount).times(tradeRow.price)), new BigNumber(0)).toString(10),
-          shareVolume: _.reduce(trades, (totalShareVolume: BigNumber, tradeRow: OrderEventLog) => totalShareVolume.plus(tradeRow.amount), new BigNumber(0)).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
+          volume: _.reduce(trades, (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) => totalVolume.plus(new BigNumber(tradeRow.amount).times(tradeRow.price)), new BigNumber(0)).toString(10),
+          shareVolume: _.reduce(trades, (totalShareVolume: BigNumber, tradeRow: ParsedOrderEventLog) => totalShareVolume.plus(tradeRow.amount), new BigNumber(0)).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
         };
         return {
           tokenVolume: partialCandlestick.shareVolume, // tokenVolume is temporary, see note on Candlestick.tokenVolume
@@ -168,13 +168,13 @@ export class Markets {
   public static async getMarketPriceHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Markets.GetMarketPriceHistoryParams>): Promise<MarketPriceHistory> {
     let orderFilledLogs = await db.findOrderFilledLogs({ selector: { market: params.marketId, eventType: OrderEventType.Fill } });
     orderFilledLogs.sort(
-      (a: OrderEventLog, b: OrderEventLog) => {
+      (a: ParsedOrderEventLog, b: ParsedOrderEventLog) => {
         return (new BigNumber(a.timestamp).minus(b.timestamp)).toNumber();
       }
     );
 
     return orderFilledLogs.reduce(
-      (previousValue: MarketPriceHistory, currentValue: OrderEventLog): MarketPriceHistory => {
+      (previousValue: MarketPriceHistory, currentValue: ParsedOrderEventLog): MarketPriceHistory => {
         const outcomeString = new BigNumber(currentValue.outcome).toString(10);
         if (!previousValue[outcomeString]) {
           previousValue[outcomeString] = [];
@@ -422,11 +422,11 @@ export class Markets {
   }
 }
 
-function filterOrderFilledLogs(orderFilledLogs: Array<OrderEventLog>, params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>): Array<OrderEventLog> {
+function filterOrderFilledLogs(orderFilledLogs: Array<ParsedOrderEventLog>, params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>): Array<ParsedOrderEventLog> {
   let filteredOrderFilledLogs = orderFilledLogs;
   if (params.outcome || params.start || params.end) {
     filteredOrderFilledLogs = orderFilledLogs.reduce(
-      (previousValue: Array<OrderEventLog>, currentValue: OrderEventLog): Array<OrderEventLog> => {
+      (previousValue: Array<ParsedOrderEventLog>, currentValue: ParsedOrderEventLog): Array<ParsedOrderEventLog> => {
         if (
           (params.outcome && new BigNumber(currentValue.outcome).toString(10) !== params.outcome.toString(10)) ||
           (params.start && new BigNumber(currentValue.timestamp).toNumber() <= params.start) ||

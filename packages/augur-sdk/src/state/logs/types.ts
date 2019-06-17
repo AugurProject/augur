@@ -140,7 +140,32 @@ export interface MarketVolumeChangedLog extends Log, Doc {
   volume: string;
 }
 
+//  addressData
+//  0:  kycToken
+//  1:  orderCreator
+//  2:  orderFiller (Fill)
+//
+//  uint256Data
+//  0:  price
+//  1:  amount
+//  2:  outcome
+//  3:  tokenRefund (Cancel)
+//  4:  sharesRefund (Cancel)
+//  5:  fees (Fill)
+//  6:  amountFilled (Fill)
+//  7:  timestamp
 export interface OrderEventLog extends Log, Doc, Timestamped {
+  universe: Address;
+  market: Address;
+  eventType: OrderEventType;
+  orderType: OrderType;
+  orderId: Bytes32;
+  tradeGroupId: Bytes32;
+  addressData: Array<Address>;
+  uint256Data: Array<string>;
+}
+
+export interface ParsedOrderEventLog extends Log, Doc, Timestamped {
   universe: Address;
   market: Address;
   eventType: OrderEventType;
@@ -173,6 +198,40 @@ export enum OrderEventType {
   PriceChanged = 2,
   Fill = 3,
 }
+
+
+export enum OrderEventAddressValue {
+  kycToken = 0,
+  orderCreator = 1,
+  orderFiller = 2,
+}
+
+export enum OrderEventUint256Value {
+  price = 0,
+  amount = 1,
+  outcome = 2,
+  tokenRefund = 3,
+  sharesRefund = 4,
+  fees = 5,
+  amountFilled = 6,
+  timestamp = 7,
+  sharesEscrowed = 8,
+  tokensEscrowed = 9,
+}
+
+export const ORDER_EVENT_KYC_TOKEN = "addressData.0";
+export const ORDER_EVENT_CREATOR = "addressData.1";
+export const ORDER_EVENT_FILLER = "addressData.2";
+export const ORDER_EVENT_PRICE = "uint256Data.0";
+export const ORDER_EVENT_AMOUNT = "uint256Data.1";
+export const ORDER_EVENT_OUTCOME = "uint256Data.2";
+export const ORDER_EVENT_TOKEN_REFUND = "uint256Data.3";
+export const ORDER_EVENT_SHARES_REFUND = "uint256Data.4";
+export const ORDER_EVENT_FEES = "uint256Data.5";
+export const ORDER_EVENT_AMOUNT_FILLED = "uint256Data.6";
+export const ORDER_EVENT_TIMESTAMP = "uint256Data.7";
+export const ORDER_EVENT_SHARES_ESCROWED = "uint256Data.8";
+export const ORDER_EVENT_TOKENS_ESCROWED = "uint256Data.9";
 
 export interface ParticipationTokensRedeemedLog extends Log, Doc, Timestamped {
   universe: Address;

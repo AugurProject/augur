@@ -2,7 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
 import { NumericDictionary } from "lodash";
-import { ProfitLossChangedLog, OrderEventLog, Doc, Timestamped, MarketCreatedLog } from '../logs/types';
+import { ProfitLossChangedLog, ParsedOrderEventLog, Doc, Timestamped, MarketCreatedLog } from '../logs/types';
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "../../index";
 import { SortLimit } from './types';
 
@@ -265,7 +265,7 @@ export class Users {
             };
           }
           const outcomeValues = ordersFilledResultsByMarketAndOutcome[marketId][outcome];
-          let outcomeValue = new BigNumber(getLastDocBeforeTimestamp<OrderEventLog>(outcomeValues, bucketTimestamp)!.price);
+          let outcomeValue = new BigNumber(getLastDocBeforeTimestamp<ParsedOrderEventLog>(outcomeValues, bucketTimestamp)!.price);
           if (marketFinalizedByMarket[marketId] && bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp)) {
             outcomeValue = new BigNumber(marketFinalizedByMarket[marketId].winningPayoutNumerators[new BigNumber(outcome).toNumber()]);
           }
@@ -400,9 +400,9 @@ async function getProfitLossRecordsByMarketAndOutcome(db: DB, account: string, r
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(profitLossResult);
 }
 
-async function getOrderFilledRecordsByMarketAndOutcome(db: DB, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<OrderEventLog>>>> {
+async function getOrderFilledRecordsByMarketAndOutcome(db: DB, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<ParsedOrderEventLog>>>> {
   const orderFilled = await db.findOrderFilledLogs(request);
-  return groupDocumentsByMarketAndOutcome<OrderEventLog>(orderFilled, "outcome");
+  return groupDocumentsByMarketAndOutcome<ParsedOrderEventLog>(orderFilled, "outcome");
 }
 
 function groupDocumentsByMarketAndOutcome<TDoc extends Doc>(docs: Array<TDoc>, outcomeField: string = "outcome"): _.Dictionary<_.Dictionary<Array<TDoc>>> {
