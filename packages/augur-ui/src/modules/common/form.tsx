@@ -7,6 +7,7 @@ import { PulseLoader } from "react-spinners";
 import { SearchIcon, XIcon, CheckMark } from "modules/common/icons";
 import debounce from "utils/debounce";
 import Styles from "modules/common/form.styles.less";
+import { SquareDropdown } from "modules/common/selection";
 
 interface CheckboxProps {
   id: string;
@@ -35,6 +36,17 @@ interface InputDropdownState {
   showList: Boolean;
   selected: Boolean;
 }
+
+interface FormDropdownProps {
+  id?: string;
+  onChange: any;
+  className?: string;
+  defaultValue?: string | number;
+  options: Array<NameValuePair>;
+  staticLabel?: string;
+}
+
+export const FormDropdown = (props: FormDropdownProps) => <SquareDropdown {...props} className={Styles.FormDropdown} />;
 
 export const Checkbox = ({
   id,

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import { ImmediateImportance } from "modules/common/icons";
-import { SquareDropdown } from "modules/common/selection";
 import {
   Title,
   ButtonsRow,
@@ -15,6 +14,7 @@ import Styles from "modules/modal/modal.styles.less";
 import { createBigNumber } from "utils/create-big-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
 import { FormattedNumber } from "modules/types";
+import { FormDropdown } from "modules/common/form";
 
 interface WithdrawFormProps {
   closeAction: Function;
@@ -226,12 +226,11 @@ export class WithdrawForm extends Component<
             </div>
             <div>
               <label htmlFor="currency">Currency</label>
-              <SquareDropdown
+              <FormDropdown
                 id="currency"
                 options={this.options}
                 defaultValue={currency}
                 onChange={this.dropdownChange}
-                stretchOut
               />
               <span>Available: {loginAccount[currency.toLowerCase()]}</span>
             </div>

@@ -146,13 +146,13 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     return (
       <div
         style={sortByStyles}
-        className={classNames(className, {
+        className={classNames({
           [Styles.Dropdown_Large]: large,
           [Styles.Dropdown_Normal]: !large,
           [Styles.Dropdown_stretchOut]: stretchOutOnMobile,
           [Styles.Dropdown_isOpen]: showList,
           [Styles.Dropdown_openTop]: openTop
-        })}
+        }, className)}
         ref={dropdown => {
           this.refDropdown = dropdown;
         }}
