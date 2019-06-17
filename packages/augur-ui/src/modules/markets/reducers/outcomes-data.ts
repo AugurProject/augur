@@ -5,9 +5,9 @@ import {
   YES_NO,
   CATEGORICAL,
   SCALAR,
-  YES_NO_YES_ID,
   SCALAR_UP_ID,
-  YES_NO_YES_OUTCOME_NAME
+  YES_NO_YES_OUTCOME_NAME,
+  YES_NO_NO_ID
 } from "modules/common/constants";
 import { OutcomesData, BaseAction } from "modules/types";
 
@@ -97,9 +97,9 @@ function parseOutcomes(newMarketsData, outcomesData) {
 
   function parseYesNoOutcomes(marketData) {
     return marketData.outcomes.reduce((p, outcome) => {
-      if (outcome.id === YES_NO_YES_ID) {
+      if (outcome.id !== YES_NO_NO_ID) {
         p[outcome.id] = { ...outcome };
-        p[outcome.id].name = YES_NO_YES_OUTCOME_NAME;
+        p[outcome.id].name = outcome.description
         return p;
       }
 
@@ -120,7 +120,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
     return marketData.outcomes.reduce((p, outcome) => {
       if (outcome.id !== SCALAR_UP_ID) return p;
       p[outcome.id] = { ...outcome };
-      p[outcome.id].name = marketData.scalarDenomination || "N/A";
+      p[outcome.id].name = marketData.description || "N/A";
       return p;
     }, {});
   }

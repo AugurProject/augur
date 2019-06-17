@@ -81,7 +81,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
         if (order.price.eq(price) && order.type === type) {
           orderInfo.quantity = order.quantity.plus(quantity);
           orderInfo.orderEstimate = order.orderEstimate.plus(
-            orderEstimate.replace(" ETH", "")
+            orderEstimate.replace(" DAI", "")
           );
           orderAdded = true;
         }
@@ -95,7 +95,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           type,
           price,
           quantity,
-          orderEstimate: createBigNumber(orderEstimate.replace(" ETH", ""))
+          orderEstimate: createBigNumber(orderEstimate.replace(" DAI", ""))
         });
       }
 

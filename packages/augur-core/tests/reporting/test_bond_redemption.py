@@ -299,13 +299,13 @@ def test_preemptive_crowdsourcer_contributions_disputed_wins(localFixture, unive
     localFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert market.finalize()
 
-    # The account which placed stake first and got normal tokens will make the normal 40% ROI
-    expectedWinnings = realBondSize * .4
-    with TokenDelta(reputationToken, realBondSize + expectedWinnings, localFixture.accounts[0], "Redeeming didn't refund REP"):
+    # Both accounts will get a lower than 40% ROI for their contributions to the tentative outcome
+    expectedReturn = reputationToken.balanceOf(preemptiveDisputeCrowdsourcer.address) * realBondSize / preemptiveDisputeCrowdsourcer.totalSupply()
+    with TokenDelta(reputationToken, expectedReturn, localFixture.accounts[0], "Redeeming didn't refund REP"):
         assert preemptiveDisputeCrowdsourcer.redeem(localFixture.accounts[0])
 
-    # The account which placed stake later and got overload tokens will not make any ROI
-    with TokenDelta(reputationToken, preemptiveBondSize - realBondSize, localFixture.accounts[1], "Redeeming didn't refund REP"):
+    expectedReturn = reputationToken.balanceOf(preemptiveDisputeCrowdsourcer.address) * (preemptiveBondSize - realBondSize) / preemptiveDisputeCrowdsourcer.totalSupply()
+    with TokenDelta(reputationToken, expectedReturn, localFixture.accounts[1], "Redeeming didn't refund REP"):
         assert preemptiveDisputeCrowdsourcer.redeem(localFixture.accounts[1])
 
 def test_preemptive_crowdsourcer_contributions_disputed_loses(localFixture, universe, market, reputationToken):

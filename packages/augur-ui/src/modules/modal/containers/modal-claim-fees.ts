@@ -96,21 +96,20 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           },
           {
             label: "Reporting Fees",
-            value: `${ethFees.formatted || 0} ETH`
+            value: `${ethFees.formatted || 0} DAI`
           },
           {
             label: "est gas cost",
             value: `${marketObj.gasCost} ETH`
           },
           {
-            label: "total eth",
+            label: "total dai",
             value: `${
               formatEther(
                 createBigNumber(total)
-                  .minus(createBigNumber(marketObj.gasCost))
                   .abs()
               ).formatted
-            } ETH`
+            } DAI`
           }
         ],
         action: () => {

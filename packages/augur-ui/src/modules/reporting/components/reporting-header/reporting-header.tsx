@@ -142,7 +142,7 @@ export default class ReportingHeader extends Component {
     const feeWindowEthFees =
       formatAttoEth(reportingWindowStats.feeWindowEthFees, {
         decimals: 4,
-        denomination: " ETH"
+        denomination: " DAI"
       }).formattedValue || 0;
     const feeWindowRepStaked =
       formatAttoRep(reportingWindowStats.feeWindowRepStaked, {
@@ -344,7 +344,7 @@ export default class ReportingHeader extends Component {
                                     Styles["ReportingHeader__value-unit"]
                                   }
                                 >
-                                  ETH
+                                  DAI
                                 </span>
                               </div>
                             </div>
