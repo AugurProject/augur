@@ -14,7 +14,7 @@ import Styles from "modules/modal/modal.styles.less";
 import { createBigNumber } from "utils/create-big-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
 import { FormattedNumber } from "modules/types";
-import { FormDropdown } from "modules/common/form";
+import { FormDropdown, TextInput } from "modules/common/form";
 
 interface WithdrawFormProps {
   closeAction: Function;
@@ -72,7 +72,7 @@ export class WithdrawForm extends Component<
     const { amount } = this.state;
     this.setState({ currency: value });
     if (amount.length) {
-      this.amountChange({ target: { value: amount } });
+      this.amountChange(amount);
     }
   }
 
@@ -82,16 +82,12 @@ export class WithdrawForm extends Component<
     const fullAmount = createBigNumber(loginAccount[currency.toLowerCase()]);
     const valueMinusGas = fullAmount.minus(GasCosts.eth.fullPrecision);
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
-    this.amountChange({
-      target: {
-        value: currency === ETH ? resolvedValue.toFixed() : fullAmount.toFixed()
-      },
-    });
+    this.amountChange(currency === ETH ? resolvedValue.toFixed() : fullAmount.toFixed());
   }
 
-  amountChange = (e: any) => {
+  amountChange = (amount: string) => {
     const { loginAccount, GasCosts } = this.props;
-    const newAmount = convertExponentialToDecimal(sanitizeArg(e.target.value));
+    const newAmount = convertExponentialToDecimal(sanitizeArg(amount));
     const bnNewAmount = createBigNumber(newAmount || "0");
     const { errors: updatedErrors, currency } = this.state;
     updatedErrors.amount = "";
@@ -134,8 +130,7 @@ export class WithdrawForm extends Component<
     this.setState({ amount: newAmount, errors: updatedErrors });
   }
 
-  addressChange = (e: any) => {
-    const address = e.target.value;
+  addressChange = (address: string) => {
     const { errors: updatedErrors } = this.state;
     updatedErrors.address = "";
     if (address && !isAddress(address)) {
@@ -198,6 +193,7 @@ export class WithdrawForm extends Component<
         highlight: true,
       }
     ];
+
     return (
       <div className={Styles.WithdrawForm}>
         <Title title="Send Funds" closeAction={closeAction} />
@@ -210,19 +206,15 @@ export class WithdrawForm extends Component<
           <div className={Styles.GroupedForm}>
             <div>
               <label htmlFor="recipient">Recipient</label>
-              <input
+              <TextInput
                 type="text"
                 id="recipient"
                 autoComplete="off"
-                value={address}
                 placeholder="0x..."
                 onChange={this.addressChange}
+                error={errors.address.length > 0}
+                errorMessage={errors.address.length > 0 ? errors.address : ""}
               />
-              {errors.address.length && (
-                <span>
-                  {ImmediateImportance} {errors.address}
-                </span>
-              )}
             </div>
             <div>
               <label htmlFor="currency">Currency</label>
@@ -237,19 +229,15 @@ export class WithdrawForm extends Component<
             <div>
               <label htmlFor="amount">Amount</label>
               <button onClick={this.handleMax}>MAX</button>
-              <input
+              <TextInput
                 type="number"
                 id="amount"
                 placeholder="0.00"
-                value={amount}
                 onChange={this.amountChange}
+                error={errors.amount && errors.amount.length > 0}
+                errorMessage={errors.amount && errors.amount.length > 0 ? errors.amount : ""}
+                value={amount}
               />
-              {errors.amount &&
-                errors.amount.length && (
-                  <span>
-                    {ImmediateImportance} {errors.amount}
-                  </span>
-                )}
             </div>
           </div>
           <Breakdown rows={breakdown} />
