@@ -1,4 +1,96 @@
 @import (reference) '~assets/styles/shared';
+// @color-primary-alternate-two
+.RadioCard {
+  background: @color-theme-primary;
+  border-radius: @border-radius-default;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  max-height: 216px;
+  max-width: 210px;
+  min-height: 216px;
+  min-width: 210px;
+  padding: 0 @size-12;
+  flex: 0.25 auto;
+
+  &:hover,
+  &:focus {
+    border: 1px solid @color-primary-alternate-two;
+  }
+
+  > div {
+    border-radius: @border-radius-default;
+    display: none;
+    bottom: 11%;
+    left: 52%;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: @size-20;
+    width: @size-20;
+    background: @color-positive;
+
+    > svg {
+      height: @size-16;
+      width: @size-16;
+
+      > path {
+        stroke: @color-primary-text;
+      }
+    }
+  }
+
+  > svg {
+    height: @size-40;
+    width: @size-40;
+
+    > circle {
+      fill: @color-positive;
+    }
+  }
+
+  > input {
+    box-sizing: border-box;
+    position: absolute;
+    visibility: hidden;
+    appearance: none;
+    height: 216px;
+    width: 200px;
+  }
+
+  > h5 {
+    .text-16-bold;
+
+    color: @color-alternate-text;
+    margin-top: @size-24;
+    text-align: center;
+    text-transform: capitalize;
+  }
+
+  > p {
+    .text-14;
+
+    color: @color-tertiary-text;
+    line-height: @size-18;
+    margin: @size-12 0;
+    text-align: center;
+  }
+}
+
+.RadioCardActive {
+  border: 4px solid @color-positive;
+
+  > div {
+    display: flex;
+  }
+
+  &:hover,
+  &:focus {
+    border: 4px solid @color-positive;
+  }
+}
 
 .Checkbox {
   cursor: pointer;
