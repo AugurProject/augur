@@ -24,7 +24,7 @@ interface MarketOutcomesListProps {
 
 export default class MarketOutcomesList extends Component<MarketOutcomesListProps> {
   static defaultProps = {
-    selectedOutcomeId: "1",
+    selectedOutcomeId: "2",
     scalarDenomination: null,
     marketType: null,
     outcomes: [],
