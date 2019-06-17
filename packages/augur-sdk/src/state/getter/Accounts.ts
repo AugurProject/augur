@@ -9,13 +9,7 @@ import {
   InitialReporterRedeemedLog,
   InitialReportSubmittedLog,
   MarketCreatedLog,
-  OrderEventAddressValue,
-  ORDER_EVENT_CREATOR,
-  ORDER_EVENT_FILLER,
-  ORDER_EVENT_OUTCOME,
-  ORDER_EVENT_TIMESTAMP,
   OrderEventLog,
-  OrderEventUint256Value,
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
   OrderType,
@@ -99,8 +93,8 @@ export class Accounts<TBigNumber> {
           selector: {
             $and: [
               {universe: params.universe},
-              {$or: [{[ORDER_EVENT_CREATOR]: params.account}, {[ORDER_EVENT_FILLER]: params.account}]},
-              {[ORDER_EVENT_TIMESTAMP]: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`}}
+              {$or: [{orderCreator: params.account}, {orderFiller: params.account}]},
+              {timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`}}
             ],
           }
         }
@@ -115,8 +109,8 @@ export class Accounts<TBigNumber> {
         {
           selector: {
             universe: params.universe,
-            [ORDER_EVENT_CREATOR]: params.account,
-            [ORDER_EVENT_TIMESTAMP]: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
+            orderCreator: params.account,
+            timestamp: {$gte: `0x${params.earliestTransactionTime.toString(16)}`, $lte: `0x${params.latestTransactionTime.toString(16)}`},
           }
         }
       );
@@ -315,26 +309,26 @@ function getOutcomeFromPayoutNumerators(payoutNumerators: Array<BigNumber>, mark
 function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, marketInfo: MarketCreatedInfo, params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>): Array<AccountTransaction> {
   let formattedLogs: Array<AccountTransaction> = [];
   for (let i = 0; i < transactionLogs.length; i++) {
-    const price = new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.price]);
-    const quantity = new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.amount]);
+    const price = new BigNumber(transactionLogs[i].price);
+    const quantity = new BigNumber(transactionLogs[i].amount);
     const maxPrice = new BigNumber(0);
     if (
       (params.action === Action.BUY || params.action === Action.ALL) &&
-      ((transactionLogs[i].orderType === OrderType.Bid && transactionLogs[i].addressData[OrderEventAddressValue.orderCreator] == params.account) ||
-      (transactionLogs[i].orderType === OrderType.Ask && transactionLogs[i].addressData[OrderEventAddressValue.orderFiller] == params.account))
+      ((transactionLogs[i].orderType === OrderType.Bid && transactionLogs[i].orderCreator == params.account) ||
+      (transactionLogs[i].orderType === OrderType.Ask && transactionLogs[i].orderFiller == params.account))
     )  {
       formattedLogs.push(
         {
           action: Action.BUY,
           coin: Coin.ETH,
           details: "Buy order",
-          fee: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.fees]).toString(),
+          fee: new BigNumber(transactionLogs[i].fees).toString(),
           marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
-          outcome: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(),
-          outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(), marketInfo[transactionLogs[i].market]),
+          outcome: new BigNumber(transactionLogs[i].outcome).toNumber(),
+          outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].outcome).toNumber(), marketInfo[transactionLogs[i].market]),
           price: price.toString(),
           quantity: quantity.toString(),
-          timestamp: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.timestamp]).toNumber(),
+          timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
           total: transactionLogs[i].orderType === OrderType.Bid ? quantity.times(maxPrice.minus(price)).toString() : quantity.times(price).toString(),
           transactionHash: transactionLogs[i].transactionHash,
         }
@@ -342,21 +336,21 @@ function formatOrderFilledLogs(transactionLogs: Array<OrderEventLog>, marketInfo
     }
     if (
       (params.action === Action.SELL || params.action === Action.ALL) &&
-      ((transactionLogs[i].orderType === OrderType.Ask && transactionLogs[i].addressData[OrderEventAddressValue.orderCreator] == params.account) ||
-      (transactionLogs[i].orderType === OrderType.Bid && transactionLogs[i].addressData[OrderEventAddressValue.orderFiller] == params.account))
+      ((transactionLogs[i].orderType === OrderType.Ask && transactionLogs[i].orderCreator == params.account) ||
+      (transactionLogs[i].orderType === OrderType.Bid && transactionLogs[i].orderFiller == params.account))
     )  {
       formattedLogs.push(
         {
           action: Action.SELL,
           coin: Coin.ETH,
           details: "Sell order",
-          fee: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.fees]).toString(),
+          fee: new BigNumber(transactionLogs[i].fees).toString(),
           marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
-          outcome: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(),
-          outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(), marketInfo[transactionLogs[i].market]),
+          outcome: new BigNumber(transactionLogs[i].outcome).toNumber(),
+          outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].outcome).toNumber(), marketInfo[transactionLogs[i].market]),
           price: price.toString(),
           quantity: quantity.toString(),
-          timestamp: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.timestamp]).toNumber(),
+          timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
           total: transactionLogs[i].orderType === OrderType.Bid ? quantity.times(maxPrice.minus(price)).toString() : quantity.times(price).toString(),
           transactionHash: transactionLogs[i].transactionHash,
         }
@@ -376,11 +370,11 @@ function formatOrderCanceledLogs(transactionLogs: Array<OrderEventLog>, marketIn
         details: "Cancel order",
         fee: "0",
         marketDescription: marketInfo[transactionLogs[i].market].extraInfo && JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description : "",
-        outcome: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(),
-        outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.outcome]).toNumber(), marketInfo[transactionLogs[i].market]),
-        price: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.price]).toString(),
-        quantity: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.amount]).toString(),
-        timestamp: new BigNumber(transactionLogs[i].uint256Data[OrderEventUint256Value.timestamp]).toNumber(),
+        outcome: new BigNumber(transactionLogs[i].outcome).toNumber(),
+        outcomeDescription: getOutcomeDescriptionFromOutcome(new BigNumber(transactionLogs[i].outcome).toNumber(), marketInfo[transactionLogs[i].market]),
+        price: new BigNumber(transactionLogs[i].price).toString(),
+        quantity: new BigNumber(transactionLogs[i].amount).toString(),
+        timestamp: new BigNumber(transactionLogs[i].timestamp).toNumber(),
         total: "0",
         transactionHash: transactionLogs[i].transactionHash,
       }
@@ -421,12 +415,12 @@ async function formatTradingProceedsClaimedLogs(transactionLogs: Array<TradingPr
       {
         selector: {
           market: transactionLogs[i].market,
-          [ORDER_EVENT_OUTCOME]: transactionLogs[i].outcome,
+          outcome: transactionLogs[i].outcome,
         },
       }
     );
     orderFilledLogs = orderFilledLogs.reverse();
-    const price = orderFilledLogs[0].uint256Data[OrderEventUint256Value.price];
+    const price = orderFilledLogs[0].price;
     formattedLogs.push(
       {
         action: Action.CLAIM_TRADING_PROCEEDS,

@@ -8,9 +8,6 @@ import {
   MarketFinalizedLog,
   OrderEventLog,
   OrderEventType,
-  OrderEventUint256Value,
-  ORDER_EVENT_AMOUNT,
-  ORDER_EVENT_OUTCOME
 } from "../logs/types";
 import { SortLimit } from "./types";
 import { Augur, numTicksToTickSize, QUINTILLION } from "../../index";
@@ -142,22 +139,22 @@ export class Markets {
 
     const orderFilledLogs = await db.findOrderFilledLogs({ selector: { market: params.marketId, eventType: OrderEventType.Fill } });
     const filteredOrderFilledLogs = filterOrderFilledLogs(orderFilledLogs, params);
-    const tradeRowsByOutcome = _.groupBy(filteredOrderFilledLogs, (orderFilledLog) => { return new BigNumber(orderFilledLog.uint256Data[OrderEventUint256Value.outcome]).toString(10); });
+    const tradeRowsByOutcome = _.groupBy(filteredOrderFilledLogs, (orderFilledLog) => { return new BigNumber(orderFilledLog.outcome).toString(10); });
 
     return _.mapValues(tradeRowsByOutcome, (outcomeTradeRows) => {
-      const outcomeTradeRowsByPeriod = _.groupBy(outcomeTradeRows, (tradeRow) => getPeriodStartTime(params.start || 0, new BigNumber(tradeRow.uint256Data[OrderEventUint256Value.timestamp]).toNumber(), params.period || 60));
+      const outcomeTradeRowsByPeriod = _.groupBy(outcomeTradeRows, (tradeRow) => getPeriodStartTime(params.start || 0, new BigNumber(tradeRow.timestamp).toNumber(), params.period || 60));
       return _.map(outcomeTradeRowsByPeriod, (trades: Array<OrderEventLog>, startTimestamp): MarketPriceCandlestick => {
         // TODO remove this partialCandlestick stuff and just return
         // a Candlestick after the temporary Candlestick.tokenVolume
         // is removed (see note on Candlestick.tokenVolume).
         const partialCandlestick = {
           startTimestamp: parseInt(startTimestamp, 10),
-          start: new BigNumber(_.minBy(trades, (tradeLog) => { return new BigNumber(tradeLog.uint256Data[OrderEventUint256Value.timestamp]).toNumber(); })!.uint256Data[OrderEventUint256Value.price]).toString(10),
-          end: new BigNumber(_.maxBy(trades, (tradeLog) => { return new BigNumber(tradeLog.uint256Data[OrderEventUint256Value.timestamp]).toNumber(); })!.uint256Data[OrderEventUint256Value.price]).toString(10),
-          min: new BigNumber(_.minBy(trades, (tradeLog) => { return new BigNumber(tradeLog.uint256Data[OrderEventUint256Value.price]).toNumber(); })!.uint256Data[OrderEventUint256Value.price]).toString(10),
-          max: new BigNumber(_.maxBy(trades, (tradeLog) => { return new BigNumber(tradeLog.uint256Data[OrderEventUint256Value.price]).toNumber(); })!.uint256Data[OrderEventUint256Value.price]).toString(10),
-          volume: _.reduce(trades, (totalVolume: BigNumber, tradeRow: OrderEventLog) => totalVolume.plus(new BigNumber(tradeRow.uint256Data[OrderEventUint256Value.amount]).times(tradeRow.uint256Data[OrderEventUint256Value.price])), new BigNumber(0)).toString(10),
-          shareVolume: _.reduce(trades, (totalShareVolume: BigNumber, tradeRow: OrderEventLog) => totalShareVolume.plus(tradeRow.uint256Data[OrderEventUint256Value.amount]), new BigNumber(0)).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
+          start: new BigNumber(_.minBy(trades, (tradeLog) => { return new BigNumber(tradeLog.timestamp).toNumber(); })!.price).toString(10),
+          end: new BigNumber(_.maxBy(trades, (tradeLog) => { return new BigNumber(tradeLog.timestamp).toNumber(); })!.price).toString(10),
+          min: new BigNumber(_.minBy(trades, (tradeLog) => { return new BigNumber(tradeLog.price).toNumber(); })!.price).toString(10),
+          max: new BigNumber(_.maxBy(trades, (tradeLog) => { return new BigNumber(tradeLog.price).toNumber(); })!.price).toString(10),
+          volume: _.reduce(trades, (totalVolume: BigNumber, tradeRow: OrderEventLog) => totalVolume.plus(new BigNumber(tradeRow.amount).times(tradeRow.price)), new BigNumber(0)).toString(10),
+          shareVolume: _.reduce(trades, (totalShareVolume: BigNumber, tradeRow: OrderEventLog) => totalShareVolume.plus(tradeRow.amount), new BigNumber(0)).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
         };
         return {
           tokenVolume: partialCandlestick.shareVolume, // tokenVolume is temporary, see note on Candlestick.tokenVolume
@@ -172,20 +169,20 @@ export class Markets {
     let orderFilledLogs = await db.findOrderFilledLogs({ selector: { market: params.marketId, eventType: OrderEventType.Fill } });
     orderFilledLogs.sort(
       (a: OrderEventLog, b: OrderEventLog) => {
-        return (new BigNumber(a.uint256Data[OrderEventUint256Value.timestamp]).minus(b.uint256Data[OrderEventUint256Value.timestamp])).toNumber();
+        return (new BigNumber(a.timestamp).minus(b.timestamp)).toNumber();
       }
     );
 
     return orderFilledLogs.reduce(
       (previousValue: MarketPriceHistory, currentValue: OrderEventLog): MarketPriceHistory => {
-        const outcomeString = new BigNumber(currentValue.uint256Data[OrderEventUint256Value.outcome]).toString(10);
+        const outcomeString = new BigNumber(currentValue.outcome).toString(10);
         if (!previousValue[outcomeString]) {
           previousValue[outcomeString] = [];
         }
         previousValue[outcomeString].push({
-          price: new BigNumber(currentValue.uint256Data[OrderEventUint256Value.price]).toString(10),
-          amount: new BigNumber(currentValue.uint256Data[OrderEventUint256Value.amount]).toString(10),
-          timestamp: new BigNumber(currentValue.uint256Data[OrderEventUint256Value.timestamp]).toString(10),
+          price: new BigNumber(currentValue.price).toString(10),
+          amount: new BigNumber(currentValue.amount).toString(10),
+          timestamp: new BigNumber(currentValue.timestamp).toString(10),
         });
         return previousValue;
       },
@@ -274,7 +271,7 @@ export class Markets {
         if (params.hasOrders) {
           const orderCreatedLogs = await db.findOrderCreatedLogs({ selector: { market: marketCreatedLogInfo[0] } });
           const orderCanceledLogs = await db.findOrderCanceledLogs({ selector: { market: marketCreatedLogInfo[0] } });
-          const orderFilledLogs = await db.findOrderFilledLogs({ selector: { market: marketCreatedLogInfo[0], [ORDER_EVENT_AMOUNT]: "0x00" } });
+          const orderFilledLogs = await db.findOrderFilledLogs({ selector: { market: marketCreatedLogInfo[0], amount: "0x00" } });
           if (orderCreatedLogs.length - orderCanceledLogs.length === orderFilledLogs.length) {
             includeMarket = false;
           }
@@ -431,9 +428,9 @@ function filterOrderFilledLogs(orderFilledLogs: Array<OrderEventLog>, params: t.
     filteredOrderFilledLogs = orderFilledLogs.reduce(
       (previousValue: Array<OrderEventLog>, currentValue: OrderEventLog): Array<OrderEventLog> => {
         if (
-          (params.outcome && new BigNumber(currentValue.uint256Data[OrderEventUint256Value.outcome]).toString(10) !== params.outcome.toString(10)) ||
-          (params.start && new BigNumber(currentValue.uint256Data[OrderEventUint256Value.timestamp]).toNumber() <= params.start) ||
-          (params.end && new BigNumber(currentValue.uint256Data[OrderEventUint256Value.timestamp]).toNumber() >= params.end)
+          (params.outcome && new BigNumber(currentValue.outcome).toString(10) !== params.outcome.toString(10)) ||
+          (params.start && new BigNumber(currentValue.timestamp).toNumber() <= params.start) ||
+          (params.end && new BigNumber(currentValue.timestamp).toNumber() >= params.end)
         ) {
           return previousValue;
         }
@@ -470,37 +467,37 @@ async function getMarketOpenInterest(db: DB, marketCreatedLog: MarketCreatedLog)
 async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, scalarDenomination: string, defaultPrice: string): Promise<Array<MarketInfoOutcome>> {
   let outcomes: Array<MarketInfoOutcome> = [];
   if (marketCreatedLog.outcomes.length === 0) {
-    const ordersFilled0 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x00" } })).reverse();
-    const ordersFilled1 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x01" } })).reverse();
-    const ordersFilled2 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x02" } })).reverse();
+    const ordersFilled0 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x00" } })).reverse();
+    const ordersFilled1 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x01" } })).reverse();
+    const ordersFilled2 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x02" } })).reverse();
     outcomes.push({
       id: 0,
-      price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].uint256Data[OrderEventUint256Value.price]).toString(10) : "0",
+      price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].price).toString(10) : "0",
       description: "Invalid"
     });
     outcomes.push({
       id: 1,
-      price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].uint256Data[OrderEventUint256Value.price]).toString(10) : defaultPrice,
+      price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].price).toString(10) : defaultPrice,
       description: (marketCreatedLog.marketType === 0) ? "No" : scalarDenomination
     });
     outcomes.push({
       id: 2,
-      price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].uint256Data[OrderEventUint256Value.price]).toString(10) : defaultPrice,
+      price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].price).toString(10) : defaultPrice,
       description: (marketCreatedLog.marketType === 0) ? "Yes" : scalarDenomination
     });
   } else {
-    const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x00" } })).reverse();
+    const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x00" } })).reverse();
     outcomes.push({
       id: 0,
-      price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[OrderEventUint256Value.price]).toString(10) : "0",
+      price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : "0",
       description: "Invalid"
     });
     for (let i = 0; i < marketCreatedLog.outcomes.length; i++) {
-      const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x0" + (i + 1) } })).reverse();
+      const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x0" + (i + 1) } })).reverse();
       const outcomeDescription = marketCreatedLog.outcomes[i].replace("0x", "");
       outcomes.push({
         id: i + 1,
-        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[OrderEventUint256Value.price]).toString(10) : defaultPrice,
+        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : defaultPrice,
         description: Buffer.from(outcomeDescription, "hex").toString()
       });
     }

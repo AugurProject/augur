@@ -2,7 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { DB } from "../db/DB";
 import { Getter } from "./Router";
 import { NumericDictionary } from "lodash";
-import { ProfitLossChangedLog, OrderEventLog, Doc, Timestamped, MarketCreatedLog, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_TIMESTAMP, ORDER_EVENT_OUTCOME } from '../logs/types';
+import { ProfitLossChangedLog, OrderEventLog, Doc, Timestamped, MarketCreatedLog } from '../logs/types';
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "../../index";
 import { SortLimit } from './types';
 
@@ -113,8 +113,8 @@ export class Users {
         universe: params.universe,
         market: params.marketId,
         $or: [
-          { [ORDER_EVENT_CREATOR]: params.account },
-          { [ORDER_EVENT_FILLER]: params.account },
+          { orderCreator: params.account },
+          { orderFiller: params.account },
         ],
       }
     }
@@ -151,7 +151,7 @@ export class Users {
     const tradingPositionsByMarketAndOutcome = _.mapValues(profitLossResultsByMarketAndOutcome, (profitLossResultsByOutcome) => {
       return _.mapValues(profitLossResultsByOutcome, (profitLossResult: ProfitLossChangedLog) => {
         const marketDoc = markets[profitLossResult.market];
-        let outcomeValue = new BigNumber(ordersFilledResultsByMarketAndOutcome[profitLossResult.market][profitLossResult.outcome]!.uint256Data[OrderEventUint256Value.price]);
+        let outcomeValue = new BigNumber(ordersFilledResultsByMarketAndOutcome[profitLossResult.market][profitLossResult.outcome]!.price);
         if (marketFinalizedByMarket[profitLossResult.market]) {
           outcomeValue = new BigNumber(marketFinalizedByMarket[profitLossResult.market].winningPayoutNumerators[new BigNumber(profitLossResult.outcome).toNumber()]);
         }
@@ -210,12 +210,12 @@ export class Users {
       selector: {
         universe: params.universe,
         $or: [
-          { [ORDER_EVENT_CREATOR]: params.account },
-          { [ORDER_EVENT_FILLER]: params.account },
+          { orderCreator: params.account },
+          { orderFiller: params.account },
         ],
         $and: [
-          { [ORDER_EVENT_TIMESTAMP]: { $lte: `0x${endTime.toString(16)}` } },
-          { [ORDER_EVENT_TIMESTAMP]: { $gte: `0x${startTime.toString(16)}` } }
+          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+          { timestamp: { $gte: `0x${startTime.toString(16)}` } }
         ]
       },
     }
@@ -265,7 +265,7 @@ export class Users {
             };
           }
           const outcomeValues = ordersFilledResultsByMarketAndOutcome[marketId][outcome];
-          let outcomeValue = new BigNumber(getLastDocBeforeTimestamp<OrderEventLog>(outcomeValues, bucketTimestamp)!.uint256Data[OrderEventUint256Value.price]);
+          let outcomeValue = new BigNumber(getLastDocBeforeTimestamp<OrderEventLog>(outcomeValues, bucketTimestamp)!.price);
           if (marketFinalizedByMarket[marketId] && bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp)) {
             outcomeValue = new BigNumber(marketFinalizedByMarket[marketId].winningPayoutNumerators[new BigNumber(outcome).toNumber()]);
           }
@@ -402,7 +402,7 @@ async function getProfitLossRecordsByMarketAndOutcome(db: DB, account: string, r
 
 async function getOrderFilledRecordsByMarketAndOutcome(db: DB, request: PouchDB.Find.FindRequest<{}>): Promise<_.Dictionary<_.Dictionary<Array<OrderEventLog>>>> {
   const orderFilled = await db.findOrderFilledLogs(request);
-  return groupDocumentsByMarketAndOutcome<OrderEventLog>(orderFilled, ORDER_EVENT_OUTCOME);
+  return groupDocumentsByMarketAndOutcome<OrderEventLog>(orderFilled, "outcome");
 }
 
 function groupDocumentsByMarketAndOutcome<TDoc extends Doc>(docs: Array<TDoc>, outcomeField: string = "outcome"): _.Dictionary<_.Dictionary<Array<TDoc>>> {

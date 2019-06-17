@@ -21,7 +21,6 @@ import {
   MarketVolumeChangedLog,
   OrderEventLog,
   OrderEventType,
-  OrderEventUint256Value,
   ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
   TimestampSetLog,
@@ -65,7 +64,7 @@ export class DB {
   public static createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, augur: Augur, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     const dbController = new DB(pouchDBFactory);
 
-    dbController.augur = augur; 
+    dbController.augur = augur;
     dbController.genericEventNames = augur.genericEventNames;
     dbController.userSpecificEvents = augur.userSpecificEvents;
     dbController.customEvents = augur.customEvents;
@@ -507,7 +506,7 @@ export class DB {
     request.selector["eventType"] = OrderEventType.Cancel;
     const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
     const logs = results.docs as unknown as Array<OrderEventLog>;
-    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
+    for (const log of logs) log.timestamp = log.timestamp;
     return logs;
   }
 
@@ -521,7 +520,7 @@ export class DB {
     request.selector["eventType"] = OrderEventType.Create;
     const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
     const logs = results.docs as unknown as Array<OrderEventLog>;
-    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
+    for (const log of logs) log.timestamp = log.timestamp;
     return logs;
   }
 
@@ -535,7 +534,7 @@ export class DB {
     request.selector["eventType"] = OrderEventType.Fill;
     const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
     const logs = results.docs as unknown as Array<OrderEventLog>;
-    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
+    for (const log of logs) log.timestamp = log.timestamp;
     return logs;
   }
 
@@ -549,7 +548,7 @@ export class DB {
     request.selector["eventType"] = OrderEventType.PriceChanged;
     const results = await this.findInSyncableDB(this.getDatabaseName("OrderEvent"), request);
     const logs = results.docs as unknown as Array<OrderEventLog>;
-    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
+    for (const log of logs) log.timestamp = log.timestamp;
     return logs;
   }
 
@@ -631,7 +630,7 @@ export class DB {
   public async findCurrentOrders(request: PouchDB.Find.FindRequest<{}>): Promise<Array<OrderEventLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("CurrentOrders"), request);
     const logs = results.docs as unknown as Array<OrderEventLog>;
-    for (const log of logs) log.timestamp = log.uint256Data[OrderEventUint256Value.timestamp];
+    for (const log of logs) log.timestamp = log.timestamp;
     return logs;
   }
 }

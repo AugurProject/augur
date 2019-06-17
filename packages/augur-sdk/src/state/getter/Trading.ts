@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertDisplayPriceToOnChainPrice } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { OrderEventLog, OrderEventAddressValue, OrderEventUint256Value, ORDER_EVENT_CREATOR, ORDER_EVENT_FILLER, ORDER_EVENT_OUTCOME, ORDER_EVENT_AMOUNT, ORDER_EVENT_TIMESTAMP } from "../logs/types";
+import { OrderEventLog } from "../logs/types";
 
 import * as t from "io-ts";
 
@@ -125,10 +125,10 @@ export class Trading {
       selector: {
         universe: params.universe,
         market: params.marketId,
-        [ORDER_EVENT_OUTCOME]: params.outcome,
+        outcome: params.outcome,
         $or: [
-          { [ORDER_EVENT_CREATOR]: params.account },
-          { [ORDER_EVENT_FILLER]: params.account },
+          { orderCreator: params.account },
+          { orderFiller: params.account },
         ],
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
@@ -153,15 +153,15 @@ export class Trading {
       if (!orderDoc) return trades;
       const marketDoc = markets[orderFilledDoc.market];
       if (!marketDoc) return trades;
-      const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.addressData[OrderEventAddressValue.orderCreator];
+      const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.orderCreator;
       const orderType = orderDoc.orderType === 0 ? "buy" : "sell";
-      const fees = new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.fees]);
+      const fees = new BigNumber(orderFilledDoc.fees);
       const minPrice = new BigNumber(marketDoc.prices[0]);
       const maxPrice = new BigNumber(marketDoc.prices[1]);
       const numTicks = new BigNumber(marketDoc.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.amountFilled], 16), tickSize);
-      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.price], 16), minPrice, tickSize);
+      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderFilledDoc.amountFilled, 16), tickSize);
+      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderFilledDoc.price, 16), minPrice, tickSize);
       trades.push(Object.assign(_.pick(orderFilledDoc, [
         "transactionHash",
         "logIndex",
@@ -169,10 +169,10 @@ export class Trading {
         "tradeGroupId",
       ]), {
           marketId: orderFilledDoc.market,
-          outcome: new BigNumber(orderFilledDoc.uint256Data[OrderEventUint256Value.outcome]).toNumber(),
+          outcome: new BigNumber(orderFilledDoc.outcome).toNumber(),
           maker: isMaker,
           type: isMaker ? orderType : (orderType === "buy" ? "sell" : "buy"),
-          selfFilled: orderFilledDoc.addressData[OrderEventAddressValue.orderCreator] === orderFilledDoc.addressData[OrderEventAddressValue.orderFiller],
+          selfFilled: orderFilledDoc.orderCreator === orderFilledDoc.orderFiller,
           price: price.toString(10),
           amount: amount.toString(10),
           settlementFees: fees.toString(10),
@@ -190,30 +190,30 @@ export class Trading {
       selector: {
         universe: params.universe,
         market: params.marketId,
-        [ORDER_EVENT_OUTCOME]: params.outcome,
+        outcome: params.outcome,
         orderType: params.orderType,
-        [ORDER_EVENT_CREATOR]: params.creator,
+        orderCreator: params.creator,
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
       limit: params.limit,
       skip: params.offset,
     };
 
-    if (params.orderState === "OPEN") request.selector = Object.assign(request.selector, { [ORDER_EVENT_AMOUNT]: { $gt: "0x00" } });
+    if (params.orderState === "OPEN") request.selector = Object.assign(request.selector, { amount: { $gt: "0x00" } });
     if (params.orderState === "CANCELED") request.selector = Object.assign(request.selector, { "eventType": 1 });
     if (params.orderState === "FILLED") request.selector = Object.assign(request.selector, { "eventType": 3 });
 
     if (params.latestCreationTime && params.earliestCreationTime) {
       request.selector = Object.assign(request.selector, {
         $and: [
-          { [ORDER_EVENT_TIMESTAMP]: { $lte: `0x${params.latestCreationTime.toString(16)}` } },
-          { [ORDER_EVENT_TIMESTAMP]: { $gte: `0x${params.earliestCreationTime.toString(16)}` } }
+          { timestamp: { $lte: `0x${params.latestCreationTime.toString(16)}` } },
+          { timestamp: { $gte: `0x${params.earliestCreationTime.toString(16)}` } }
         ]
       });
     } else if (params.latestCreationTime) {
-      request.selector = Object.assign(request.selector, { [ORDER_EVENT_TIMESTAMP]: { $lte: `0x${params.latestCreationTime.toString(16)}` } });
+      request.selector = Object.assign(request.selector, { timestamp: { $lte: `0x${params.latestCreationTime.toString(16)}` } });
     } else if (params.earliestCreationTime) {
-      request.selector = Object.assign(request.selector, { [ORDER_EVENT_TIMESTAMP]: { $gte: `0x${params.earliestCreationTime.toString(16)}` } });
+      request.selector = Object.assign(request.selector, { timestamp: { $gte: `0x${params.earliestCreationTime.toString(16)}` } });
     }
 
     const currentOrdersResponse = await db.findCurrentOrders(request);
@@ -234,14 +234,14 @@ export class Trading {
       const maxPrice = new BigNumber(marketDoc.prices[1]);
       const numTicks = new BigNumber(marketDoc.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.amountFilled], 16), tickSize).toString(10);
-      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.price], 16), minPrice, tickSize).toString(10);
+      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.amountFilled, 16), tickSize).toString(10);
+      const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderEventDoc.price, 16), minPrice, tickSize).toString(10);
       const market = orderEventDoc.market;
-      const outcome = new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.outcome]).toNumber();
+      const outcome = new BigNumber(orderEventDoc.outcome).toNumber();
       const orderType = orderEventDoc.orderType;
       const orderId = orderEventDoc.orderId;
-      const sharesEscrowed = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.sharesEscrowed], 16), tickSize).toString(10);
-      const tokensEscrowed = new BigNumber(orderEventDoc.uint256Data[OrderEventUint256Value.tokensEscrowed], 16).dividedBy(10 ** 18).toString(10);
+      const sharesEscrowed = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.sharesEscrowed, 16), tickSize).toString(10);
+      const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16).dividedBy(10 ** 18).toString(10);
       let orderState = "OPEN";
       if (amount === "0") {
         orderState = orderEventDoc.eventType == 1 ? "CANCELED" : "FILLED";
@@ -254,7 +254,7 @@ export class Trading {
         "logIndex",
         "orderId",
       ]), {
-        owner: orderEventDoc.addressData[OrderEventAddressValue.orderCreator],
+        owner: orderEventDoc.orderCreator,
         orderState,
         price,
         amount,
@@ -267,7 +267,7 @@ export class Trading {
         canceledTime: orderEventDoc.eventType == 1 ? orderEventDoc.timestamp : undefined,
         creationTime: originalOrderDoc ? originalOrderDoc.timestamp : 0,
         creationBlockNumber: originalOrderDoc ? originalOrderDoc.blockNumber : 0,
-        originalFullPrecisionAmount: originalOrderDoc ? convertOnChainAmountToDisplayAmount(new BigNumber(originalOrderDoc.uint256Data[OrderEventUint256Value.amount], 16), tickSize).toString(10) : 0,
+        originalFullPrecisionAmount: originalOrderDoc ? convertOnChainAmountToDisplayAmount(new BigNumber(originalOrderDoc.amount, 16), tickSize).toString(10) : 0,
       }) as Order;
       return orders;
     }, {} as Orders);
@@ -278,9 +278,9 @@ export class Trading {
     const request = {
       selector: {
         market: params.marketId,
-        [ORDER_EVENT_OUTCOME]: `0x0${params.outcome.toString()}`,
+        outcome: `0x0${params.outcome.toString()}`,
         orderType: params.orderType === "buy" ? 0 : 1,
-        [ORDER_EVENT_AMOUNT]: { $gt: "0x00" }
+        amount: { $gt: "0x00" }
       }
     };
 
@@ -293,9 +293,9 @@ export class Trading {
     const numTicks = new BigNumber(marketDoc.numTicks);
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const onChainPrice = convertDisplayPriceToOnChainPrice(new BigNumber(params.price), minPrice, tickSize);
-    const [lesserOrders, greaterOrders] = _.partition(currentOrdersResponse, (order) => new BigNumber(order.uint256Data[OrderEventUint256Value.price]).lt(onChainPrice));
-    const greaterOrder = _.reduce(greaterOrders, (result, order) => (result.orderId === null || new BigNumber(order.uint256Data[OrderEventUint256Value.price]).lt(result.price) ? { orderId: order.orderId, price: new BigNumber(order.uint256Data[OrderEventUint256Value.price]) } : result), { orderId: null, price: ZERO });
-    const lesserOrder = _.reduce(lesserOrders, (result, order) => (result.orderId === null || new BigNumber(order.uint256Data[OrderEventUint256Value.price]).gt(result.price) ? { orderId: order.orderId, price: new BigNumber(order.uint256Data[OrderEventUint256Value.price]) } : result), { orderId: null, price: ZERO });
+    const [lesserOrders, greaterOrders] = _.partition(currentOrdersResponse, (order) => new BigNumber(order.price).lt(onChainPrice));
+    const greaterOrder = _.reduce(greaterOrders, (result, order) => (result.orderId === null || new BigNumber(order.price).lt(result.price) ? { orderId: order.orderId, price: new BigNumber(order.price) } : result), { orderId: null, price: ZERO });
+    const lesserOrder = _.reduce(lesserOrders, (result, order) => (result.orderId === null || new BigNumber(order.price).gt(result.price) ? { orderId: order.orderId, price: new BigNumber(order.price) } : result), { orderId: null, price: ZERO });
     if (params.orderType === "buy") {
       return {
         betterOrderId: greaterOrder.orderId,
