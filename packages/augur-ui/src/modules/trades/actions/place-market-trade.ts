@@ -37,7 +37,6 @@ export const placeMarketTrade = ({
   const affiliateAddress = undefined; // TODO: get this from state
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
 
-
   placeTrade(
     orderType,
     market.id,
@@ -57,101 +56,4 @@ export const placeMarketTrade = ({
 
   // TODO: figure out Error handling
   callback(null, null);
-
-  /*
-  // make sure that we actually have an updated allowance.
-  const placeTradeParams: any = {
-    meta: loginAccount.meta,
-    amount: tradeInProgress.numShares,
-    limitPrice: tradeInProgress.limitPrice,
-    sharesProvided,
-    minPrice: market.minPrice,
-    maxPrice: market.maxPrice,
-    numTicks: market.numTicks,
-    _direction: tradeInProgress.side === BUY ? 0 : 1,
-    _market: marketId,
-    _outcome: parseInt(outcomeId, 10),
-    _tradeGroupId: tradeInProgress.tradeGroupId,
-    doNotCreateOrders,
-    onSent: (res: any) => {
-      ({ hash } = res);
-      dispatch(checkAccountAllowance());
-
-      dispatch(
-        addPendingOrder(
-          {
-            id: hash,
-            // @ts-ignore
-            avgPrice: formatEther(tradeInProgress.limitPrice),
-            unmatchedShares: formatShares(tradeInProgress.numShares),
-            name: getOutcomeName(
-              outcomesData[marketId],
-              { id: outcomeId },
-            ),
-            type: tradeInProgress.side,
-            pendingOrder: true,
-            pending: false,
-            blockNumber: blockchain.currentBlockNumber,
-          },
-          marketId,
-        ),
-      );
-
-      callback(null, tradeInProgress.tradeGroupId);
-    },
-    onFailed: () => {
-      if (hash) {
-        dispatch(removePendingOrder(hash, marketId));
-      }
-      callback();
-    },
-    onSuccess: (res: any) => {
-      if (bnAllowance.lte(0)) dispatch(checkAccountAllowance());
-      onComplete({
-        res,
-        sharesToFill: sharesToFill.toString(),
-        tradeInProgress,
-      });
-    },
-  };
-
-  const sendTrade = () => {
-    augur.trading.placeTrade(placeTradeParams);
-  };
-
-  const promptApprovalandSend = () => {
-    dispatch(
-      updateModal({
-        type: MODAL_ACCOUNT_APPROVAL,
-        approveOnSent: () => {
-          // This is done since the approval likely hasn't been minded yet so otherwise an eth_call for a trade will fail.
-          // NOTE: augur.js is looking for specifically the string "null", not the actual null.
-          placeTradeParams.tx = { returns: "null" };
-          sendTrade();
-        },
-        approveCallback: (err: any, res: any) => {
-          if (err) return callback(err);
-        },
-      }),
-    );
-  };
-
-  if (
-    bnAllowance === undefined ||
-    bnAllowance.lte(0) ||
-    bnAllowance.lte(createBigNumber(tradeInProgress.totalCost.value))
-  ) {
-    dispatch(
-      checkAccountAllowance((err: any, allowance: string) => {
-        if (allowance === "0") {
-          promptApprovalandSend();
-        } else {
-          sendTrade();
-        }
-      }),
-    );
-  } else {
-    sendTrade();
-  }
-*/
 };
