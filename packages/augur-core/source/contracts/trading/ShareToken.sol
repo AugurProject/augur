@@ -1,6 +1,6 @@
 pragma solidity 0.5.4;
 
-import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/libraries/IERC1820Registry.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/libraries/ITyped.sol';
@@ -34,7 +34,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         shouldUpdatePL = true;
     }
 
-    function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc820RegistryAddress) external beforeInitialized returns(bool) {
+    function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) external beforeInitialized returns(bool) {
         endInitialization();
         market = _market;
         outcome = _outcome;
@@ -45,8 +45,8 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         completeSets = _augur.lookup("CompleteSets");
         claimTradingProceeds = _augur.lookup("ClaimTradingProceeds");
         profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
-        erc820Registry = IERC820Registry(_erc820RegistryAddress);
-        initialize820InterfaceImplementations();
+        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
+        initialize1820InterfaceImplementations();
         return true;
     }
 
@@ -64,18 +64,18 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
 
     function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
         require(msg.sender == createOrder);
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return _transfer(_source, _destination, _attotokens, true);
     }
 
     function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
         require(msg.sender == fillOrder);
         // We do not call ERC777 hooks here as it would allow a malicious order creator to halt trading
-        return internalTransfer(_source, _destination, _attotokens, false);
+        return _transfer(_source, _destination, _attotokens, false);
     }
 
     function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
         require(msg.sender == cancelOrder);
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return _transfer(_source, _destination, _attotokens, true);
     }
 
     function getTypeName() public view returns(bytes32) {

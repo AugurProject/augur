@@ -266,7 +266,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
-        await legacyReputationToken.initializeERC820(this.augur!.address);
+        await legacyReputationToken.initializeERC1820(this.augur!.address);
         await legacyReputationToken.faucet(new BigNumber(10).pow(18).multipliedBy(new BigNumber(11000000)));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);

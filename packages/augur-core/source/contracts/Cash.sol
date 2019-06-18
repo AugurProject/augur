@@ -16,8 +16,8 @@ contract Cash is ITyped, VariableSupplyToken, ICash {
     string constant public symbol = "CASH";
 
     function initialize(IAugur _augur) public returns (bool) {
-        erc820Registry = IERC820Registry(_augur.lookup("ERC820Registry"));
-        initialize820InterfaceImplementations();
+        erc1820Registry = IERC1820Registry(_augur.lookup("ERC1820Registry"));
+        initialize1820InterfaceImplementations();
         return true;
     }
 

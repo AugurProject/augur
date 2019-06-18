@@ -7,7 +7,7 @@ export class Augur extends c.Augur<BigNumber> {
 }
 export class Cash extends c.Cash<BigNumber> {
 }
-export class ERC820Registry extends c.ERC820Registry<BigNumber> {
+export class ERC1820Registry extends c.ERC1820Registry<BigNumber> {
 }
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
 }

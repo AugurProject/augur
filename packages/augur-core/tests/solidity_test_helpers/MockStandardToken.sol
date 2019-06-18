@@ -2,7 +2,7 @@ pragma solidity 0.5.4;
 
 
 import 'ROOT/libraries/token/BasicToken.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 
 
 contract MockStandardToken is ERC20, BasicToken {

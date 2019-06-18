@@ -30,7 +30,6 @@ contract Auction is Initializable, IAuction {
     IV2ReputationToken private reputationToken;
     ICash public cash;
     AuctionTokenFactory public auctionTokenFactory;
-    uint256 public initialRepPriceInAttoCash;
 
     bool public bootstrapMode; // Indicates the auction is currently bootstrapping by selling off minted REP to get CASH for the CASH auction
     bool public bootstrapped; // Records that a bootstrap initialization occurred. We can turn bootstrapping off if this has happened before.
@@ -54,9 +53,9 @@ contract Auction is Initializable, IAuction {
         cash = ICash(augur.lookup("Cash"));
         auctionTokenFactory = AuctionTokenFactory(augur.lookup("AuctionTokenFactory"));
         initializationTime = augur.getTimestamp();
-        initialRepPriceInAttoCash = Reporting.getAuctionInitialRepPrice();
-        lastRepPrice = initialRepPriceInAttoCash;
-        repPrice = initialRepPriceInAttoCash;
+        uint256 _initialRepPriceInAttoCash = Reporting.getAuctionInitialRepPrice();
+        lastRepPrice = _initialRepPriceInAttoCash;
+        repPrice = _initialRepPriceInAttoCash;
         bootstrapMode = true;
         return true;
     }

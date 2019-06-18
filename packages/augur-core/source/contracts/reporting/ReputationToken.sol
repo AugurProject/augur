@@ -1,10 +1,10 @@
 pragma solidity 0.5.4;
 
-import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/libraries/IERC1820Registry.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/Reporting.sol';
@@ -22,18 +22,18 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     IUniverse internal parentUniverse;
     uint256 internal totalMigrated;
     uint256 internal totalTheoreticalSupply;
-    ERC20Token public legacyRepToken;
+    IERC20 public legacyRepToken;
     IAugur public augur;
 
-    constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse, address _erc820RegistryAddress) public {
+    constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse, address _erc1820RegistryAddress) public {
         require(_universe != IUniverse(0));
         augur = _augur;
         universe = _universe;
         parentUniverse = _parentUniverse;
-        legacyRepToken = ERC20Token(augur.lookup("LegacyReputationToken"));
+        legacyRepToken = IERC20(augur.lookup("LegacyReputationToken"));
         updateTotalTheoreticalSupply();
-        erc820Registry = IERC820Registry(_erc820RegistryAddress);
-        initialize820InterfaceImplementations();
+        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
+        initialize1820InterfaceImplementations();
     }
 
     function migrateOutByPayout(uint256[] memory _payoutNumerators, uint256 _attotokens) public returns (bool) {
@@ -103,27 +103,27 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
 
     function trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(IUniverse(msg.sender) == universe);
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return _transfer(_source, _destination, _attotokens, true);
     }
 
     function trustedMarketTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForMarket(IMarket(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return _transfer(_source, _destination, _attotokens, true);
     }
 
     function trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForReportingParticipant(IReportingParticipant(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return _transfer(_source, _destination, _attotokens, true);
     }
 
     function trustedAuctionTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.getAuction() == (IAuction(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return _transfer(_source, _destination, _attotokens, true);
     }
 
     function trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForDisputeWindow(IDisputeWindow(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return _transfer(_source, _destination, _attotokens, true);
     }
 
     function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view returns (bool) {
@@ -146,7 +146,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return totalMigrated;
     }
 
-    function getLegacyRepToken() public view returns (ERC20Token) {
+    function getLegacyRepToken() public view returns (IERC20) {
         return legacyRepToken;
     }
 
@@ -182,7 +182,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
 
     function migrateFromLegacyReputationToken() public returns (bool) {
         uint256 _legacyBalance = legacyRepToken.balanceOf(msg.sender);
-        require(legacyRepToken.transferFrom(msg.sender, address(0), _legacyBalance));
+        require(legacyRepToken.transferFrom(msg.sender, address(1), _legacyBalance));
         mint(msg.sender, _legacyBalance);
         return true;
     }

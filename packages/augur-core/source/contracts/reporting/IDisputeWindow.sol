@@ -7,10 +7,10 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/trading/ICash.sol';
 import 'ROOT/IAugur.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 
 
-contract IDisputeWindow is ITyped, ERC20Token {
+contract IDisputeWindow is ITyped, IERC20 {
     uint256 public invalidMarketsTotal;
     uint256 public validityBondTotal;
 
@@ -20,7 +20,7 @@ contract IDisputeWindow is ITyped, ERC20Token {
     uint256 public designatedReportNoShowsTotal;
     uint256 public designatedReporterNoShowBondTotal;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc820RegistryAddress) public returns (bool);
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public returns (bool);
     function getUniverse() public view returns (IUniverse);
     function getReputationToken() public view returns (IReputationToken);
     function getStartTime() public view returns (uint256);

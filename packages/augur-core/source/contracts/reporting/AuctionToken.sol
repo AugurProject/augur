@@ -1,6 +1,6 @@
 pragma solidity 0.5.4;
 
-import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/libraries/IERC1820Registry.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IAuctionToken.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
@@ -18,18 +18,18 @@ contract AuctionToken is ITyped, Initializable, VariableSupplyToken, IAuctionTok
     IAugur public augur;
     IAuction public auction;
     IUniverse public universe;
-    ERC20Token public redemptionToken; // The token being auctioned off and recieved at redemption
+    IERC20 public redemptionToken; // The token being auctioned off and recieved at redemption
     uint256 public auctionIndex;
 
-    function initialize(IAugur _augur, IAuction _auction, ERC20Token _redemptionToken, uint256 _auctionIndex, address _erc820RegistryAddress) public beforeInitialized returns(bool) {
+    function initialize(IAugur _augur, IAuction _auction, IERC20 _redemptionToken, uint256 _auctionIndex, address _erc1820RegistryAddress) public beforeInitialized returns(bool) {
         endInitialization();
         augur = _augur;
         auction = _auction;
         universe = auction.getUniverse();
         redemptionToken = _redemptionToken;
         auctionIndex = _auctionIndex;
-        erc820Registry = IERC820Registry(_erc820RegistryAddress);
-        initialize820InterfaceImplementations();
+        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
+        initialize1820InterfaceImplementations();
         return true;
     }
 
