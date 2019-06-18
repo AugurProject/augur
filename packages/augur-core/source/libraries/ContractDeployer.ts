@@ -243,10 +243,6 @@ Deploying to: ${networkConfiguration.networkName}
         const orders = new Orders(this.dependencies, ordersContract);
         promises.push(orders.initialize(this.augur!.address));
 
-        const cashContract = await this.getContractAddress("Cash");
-        const cash = new Cash(this.dependencies, cashContract);
-        promises.push(cash.initialize(this.augur!.address));
-
         const profitLossContract = await this.getContractAddress("ProfitLoss");
         const profitLoss = new ProfitLoss(this.dependencies, profitLossContract);
         promises.push(profitLoss.initialize(this.augur!.address));
@@ -277,7 +273,6 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async initializeCash(): Promise<void> {
         const cash = new LegacyReputationToken(this.dependencies, this.getContractAddress('Cash'));
-        await cash.initialize(this.augur!.address);
         await cash.faucet(new BigNumber(10).pow(18).multipliedBy(new BigNumber(1000)));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await cash.balanceOf_(defaultAddress);
