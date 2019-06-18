@@ -14,7 +14,7 @@ contract VariableSupplyToken is StandardToken {
     }
 
     function burn(address _target, uint256 _amount) internal returns (bool) {
-        _burn(address(this), _target, _amount, "", "");
+        _burn(address(this), _target, _amount, "", "", false);
         onBurn(_target, _amount);
         return true;
     }

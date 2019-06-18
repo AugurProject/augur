@@ -1,10 +1,10 @@
 pragma solidity 0.5.4;
 
-
+import 'ROOT/libraries/token/IStandardToken.sol';
 import 'ROOT/libraries/token/ERC777.sol';
 
 
-contract StandardToken is ERC777 {
+contract StandardToken is ERC777, IStandardToken {
 
     function initialize1820InterfaceImplementations() internal returns (bool) {
         super.initialize1820InterfaceImplementations();
@@ -12,7 +12,7 @@ contract StandardToken is ERC777 {
         return true;
     }
 
-    function noHooksTransfer(address recipient, uint256 amount) public returns (bool) {
+    function noHooksTransfer(address recipient, uint256 amount) external returns (bool) {
         internalNoHooksTransfer(msg.sender, recipient, amount);
         return true;
     }

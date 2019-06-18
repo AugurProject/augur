@@ -29,6 +29,7 @@ import "ROOT/libraries/IERC1820Registry.sol";
  *  - The ERC1820 Registry contract is not hardcoded but instead provided later on in the class heirarchy during runtime. This makes testing simpler.
  *  - To follow coding standards some member variables with underscores were renamed in favor of simply exposing those variables to satisfy ERC20 and ERC777 interface requirements
  *  - The internal _mint function allows a boolean to specify requireReceptionAck. Our variable supply tokens will not require this.
+ *  - The internal _burn function allows a boolean to specify wether 1820 hooks are called. Our variable supply tokens will not call them. Calling them would put our contracts at risk for malicious hooks
  *
  */
 
@@ -319,13 +320,16 @@ contract ERC777 is IERC777, IERC20 {
         address from,
         uint256 amount,
         bytes memory data,
-        bytes memory operatorData
+        bytes memory operatorData,
+        bool callHooks
     )
         internal
     {
         require(from != address(0), "ERC777: burn from the zero address");
 
-        _callTokensToSend(operator, from, address(0), amount, data, operatorData);
+        if (callHooks) {
+            _callTokensToSend(operator, from, address(0), amount, data, operatorData);
+        }
 
         // Update state variables
         supply = supply.sub(amount);
