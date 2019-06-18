@@ -19,6 +19,19 @@ interface CheckboxProps {
   smallOnDesktop?: boolean;
 }
 
+interface TextInputProps {
+  error?: boolean;
+  errrorMessage?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  onChange: Function;
+  value?: string;
+}
+
+interface TextInputState {
+  value: string;
+}
+
 interface InputDropdownProps {
   onChange: Function;
   default: string;
@@ -101,6 +114,51 @@ const RadioCard = ({
     <p>{description}</p>
   </div>
 );
+export class TextInput extends React.Component<
+  TextInputProps,
+  TextInputState
+> {
+  state: TextInputState = {
+    value: this.props.value
+  };
+
+  componentWillReceiveProps(nextProps: TextInputProps) {
+    const { value } = this.props;
+    if (value !== nextProps.value) {
+      this.setState({ value: nextProps.value });
+    }
+  }
+
+  onChange = (e: any) => {
+    const value = e.target.value;
+    this.setState({value});
+    this.props.onChange(value);
+  }
+  render() {
+    const {
+      placeholder,
+      disabled,
+      error,
+      errorMessage
+    } = this.props;
+
+    return (
+      <>
+        <input
+          {...this.props}
+          className={classNames(Styles.TextInput, {[Styles.error]: error})}
+          value={this.state.value}
+          onChange={this.onChange}
+          placeholder={placeholder}
+          disabled={disabled}
+        />
+        {error && 
+          <span className={Styles.ErrorText}>{errorMessage}</span>
+        }
+      </>
+    );
+  }
+}
 
 export const Checkbox = ({
   id,
