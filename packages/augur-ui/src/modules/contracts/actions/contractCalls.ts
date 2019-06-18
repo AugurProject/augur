@@ -13,6 +13,7 @@ import {
 } from '@augurproject/sdk/build';
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
 import { createBigNumber } from 'utils/create-big-number';
+import { NULL_ADDRESS } from 'modules/common/constants';
 
 export function clearUserTx(): void {
   const Augur = augurSdk.get();
@@ -153,8 +154,8 @@ export async function placeTrade(
   numOutcomes: number,
   outcomeId: number,
   ignoreShares: boolean,
-  affiliateAddress: string,
-  kycToken: string,
+  affiliateAddress: string = NULL_ADDRESS,
+  kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -164,19 +165,20 @@ export async function placeTrade(
   displayShares: BigNumber | string,
 ): Promise<void> {
   const Augur = augurSdk.get();
+  const tradeGroupId = generateTradeGroupId();
   const params: PlaceTradeDisplayParams = {
     direction: direction as 0 | 1,
     market: marketId,
     numTicks: createBigNumber(numTicks),
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
-    tradeGroupId: generateTradeGroupId(),
+    tradeGroupId,
     ignoreShares,
     affiliateAddress,
     kycToken,
     doNotCreateOrders,
-    minPrice: createBigNumber(minPrice),
-    maxPrice: createBigNumber(maxPrice),
+    displayMinPrice: createBigNumber(minPrice),
+    displayMaxPrice: createBigNumber(maxPrice),
     displayAmount: createBigNumber(displayAmount),
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
@@ -190,8 +192,8 @@ export async function simulateTrade(
   numOutcomes: number,
   outcomeId: number,
   ignoreShares: boolean,
-  affiliateAddress: string,
-  kycToken: string,
+  affiliateAddress: string = NULL_ADDRESS,
+  kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -201,22 +203,24 @@ export async function simulateTrade(
   displayShares: BigNumber | string,
 ): Promise<SimulateTradeData> {
   const Augur = augurSdk.get();
+  const tradeGroupId = generateTradeGroupId();
   const params: PlaceTradeDisplayParams = {
     direction: direction as 0 | 1,
     market: marketId,
     numTicks: createBigNumber(numTicks),
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
-    tradeGroupId: generateTradeGroupId(),
+    tradeGroupId,
     ignoreShares,
     affiliateAddress,
     kycToken,
     doNotCreateOrders,
-    minPrice: createBigNumber(minPrice),
-    maxPrice: createBigNumber(maxPrice),
+    displayMinPrice: createBigNumber(minPrice),
+    displayMaxPrice: createBigNumber(maxPrice),
     displayAmount: createBigNumber(displayAmount),
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
   };
+  console.log(JSON.stringify(params));
   return Augur.simulateTrade(params);
 }
