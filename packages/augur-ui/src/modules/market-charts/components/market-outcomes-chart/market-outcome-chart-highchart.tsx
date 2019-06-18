@@ -62,7 +62,7 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
               // @ts-ignore
               const { width } = this.renderer;
               // @ts-ignore
-              this.ethLabel = this.renderer.label("ETH", width - 35, 0).add();
+              this.ethLabel = this.renderer.label("DAI", width - 35, 0).add();
             },
             redraw() {
               // @ts-ignore
@@ -70,7 +70,7 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
               // @ts-ignore
               this.ethLabel.destroy();
               // @ts-ignore
-              this.ethLabel = this.renderer.label("ETH", width - 35, 0).add();
+              this.ethLabel = this.renderer.label("DAI", width - 35, 0).add();
             }
           }
         },

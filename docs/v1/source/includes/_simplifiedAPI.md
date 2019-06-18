@@ -8,7 +8,7 @@ Accounts Functions
 // Accounts Simplified API Examples:
 
 augur.accounts.approveAugur({
-  address: "0x0000000000000000000000000000000000000b0b",
+  address: "0x0000000000000000000000000000000000000b0b", 
   meta: {
     accountType: "privateKey",
     address: "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Ec",
@@ -675,12 +675,12 @@ augur.createMarket.getMarketCreationCostBreakdown({
 }
 
 augur.createMarket.getMarketFromCreateMarketReceipt(
-  "0xa50c02cf3de82139fc6f66a9c1726f59b93b4a94725bddbf9ecae0c38edc4f06",
+  "0xa50c02cf3de82139fc6f66a9c1726f59b93b4a94725bddbf9ecae0c38edc4f06", 
   function (error, result) {
     console.log(result);
   }
 );
-// example output:
+// example output: 
 "0x5e05e281a4564077985debdb91159a825a6774d3"
 ```
 ### augur.createMarket.createCategoricalMarket(p)
@@ -695,7 +695,7 @@ This transaction will fail if:
 * `p._endTime` has already passed.
 * The Universe is Forking.
 
-NOTE: The account attempting to create the new market must have sufficient REP in order for the market to be created. This is also true when calling `eth_estimateGas`, which essentially does a trial run of the transaction to determine what the gas cost would be to actually run it.
+NOTE: The account attempting to create the new market must have sufficient REP in order for the market to be created. This is also true when calling `eth_estimateGas`, which essentially does a trial run of the transaction to determine what the gas cost would be to actually run it. 
 
 #### **Parameters:**
 
@@ -730,7 +730,7 @@ This transaction will fail if:
 * `p._endTime` has already passed.
 * The Universe is Forking.
 
-NOTE: The account attempting to create the new market must have sufficient REP in order for the market to be created. This is also true when calling `eth_estimateGas`, which essentially does a trial run of the transaction to determine what the gas cost would be to actually run it.
+NOTE: The account attempting to create the new market must have sufficient REP in order for the market to be created. This is also true when calling `eth_estimateGas`, which essentially does a trial run of the transaction to determine what the gas cost would be to actually run it. 
 
 #### **Parameters:**
 
@@ -1177,7 +1177,7 @@ This function will fail if:
     * **`p.universe`**  (string) Contract address of the Universe from which to get transfer history.
     * **`p.creator`** (string) &lt;optional> Ethereum address of a [Market Creator](#market-creator) by which to filter the returned results, as a 20-byte hexadecimal string.
     * **`p.category`** (string) &lt;optional> Market category by which to filter the returned results.
-    * **`p.search`** (string) &lt;optional> Query string used to determine which Markets are returned by `augur.markets.getMarkets`. By default, a full-text search will be performed on this string. However, it is also possible to search across specific market properties, by specifying `marketId`, `category`, `tags`, `shortDescription`, `longDescription`, `resolutionSource`, and `scalarDenomination`. For example, to search within market categories, `p.search` can be set to "category: ETH". More complex queries can be formed using "AND" and "OR". For example, setting `p.search` to "category: Ethereum OR tags: ETH" will search for all markets with the category "Ethereum" or the tag "ETH".
+    * **`p.search`** (string) &lt;optional> Query string used to determine which Markets are returned by `augur.markets.getMarkets`. By default, a full-text search will be performed on this string. However, it is also possible to search across specific market properties, by specifying `marketId`, `category`, `tags`, `shortDescription`, `longDescription`, `resolutionSource`, and `scalarDenomination`. For example, to search within market categories, `p.search` can be set to "category: ETH". More complex queries can be formed using "AND" and "OR". For example, setting `p.search` to "category: Ethereum OR tags: ETH" will search for all markets with the category "Ethereum" or the tag "ETH". 
     * **`p.reportingState`** (string|Array&lt;string>) &lt;optional> [REPORTING_STATE](#REPORTING_STATE) (or array of REPORTING_STATEs) by which to filter the returned results.
     * **`p.feeWindow`** (string) &lt;optional> Ethereum address of a [Fee Window](#fee-window) by which to filter the returned results, as a 20-byte hexadecimal string.
     * **`p.designatedReporter`** (string) &lt;optional> Ethereum address of a [Designated Reporter](#designated-reporter) by which to filter the returned results, as a 20-byte hexadecimal string.
@@ -1284,11 +1284,11 @@ augur.reporting.claimReportingFeesForkedMarket({
 // example output:
 {
   successfulTransactions: {
-    crowdsourcerForkAndRedeem: [
+    crowdsourcerForkAndRedeem: [ 
       "0xfc2355a7e5a7adb23b51f54027e624bfe0e23001",
     ],
     initialReporterForkAndRedeem: [],
-    crowdsourcerRedeem: [
+    crowdsourcerRedeem: [ 
       "0xfc2355a7e5a7adb23b51f54027e624bfe0e23002",
     ],
     initialReporterRedeem: [
@@ -1718,7 +1718,7 @@ The claiming process works as follows:
     * **`p.onSent`**  (function) Called if/when the transactions are broadcast to the network. (Currently used as a placeholder and not actually used by this function.)
     * **`p.onSuccess`**  (function) Called if/when all transactions are sealed and confirmed.
     * **`p.onFailed`**  (function) Called if/when all transactions have been attempted and at least one transaction has failed. Error message shows which transactions succeeded and which ones failed.
-
+    
 #### **Returns:**
 
 * (<a href="#ClaimReportingFeesForkedMarketResponse">ClaimReportingFeesForkedMarketResponse</a>|<a href="#ClaimReportingFeesForkedMarketGasEstimates">ClaimReportingFeesForkedMarketGasEstimates</a>)  Object containing information about which contracts successfully had fees claimed from them, or a breakdown of gas estimates.
@@ -1754,7 +1754,7 @@ The claiming process works as follows:
     * **`p.onSent`**  (function) Called if/when the transactions are broadcast to the network. (Currently used as a placeholder and not actually used by this function.)
     * **`p.onSuccess`**  (function) Called if/when all transactions are sealed and confirmed.
     * **`p.onFailed`**  (function) Called if/when all transactions have been attempted and at least one transaction has failed. Error message shows which transactions succeeded and which ones failed.
-
+    
 #### **Returns:**
 
 * (<a href="#ClaimReportingFeesNonforkedMarketsResponse">ClaimReportingFeesNonforkedMarketsResponse</a>|<a href="#ClaimReportingFeesNonforkedMarketsGasEstimates">ClaimReportingFeesNonforkedMarketsGasEstimates</a>)  Object containing information about which contracts successfully had fees claimed from them, or a breakdown of gas estimates.
@@ -1782,7 +1782,7 @@ This transaction will fail if:
 
 * This function does not return a value.
 
-### augur.reporting.getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp)
+### augur.reporting.getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp) 
 
 Returns the percentage of the current [Fee Window](#fee-window) that has elapsed.
 
@@ -2881,7 +2881,7 @@ Returns a randomly-generated trade group ID. (Trade group IDs are used by Augur'
 
 #### **Returns:**
 
-* (string) Randomly-generated trade group ID.
+* (string) Randomly-generated trade group ID. 
 
 <!-- Add links to section -->
 ### augur.trading.getBetterWorseOrders(p, callback)
@@ -3141,11 +3141,11 @@ BigNumber { s: 1, e: 1, c: [10] }
 ```
 ### augur.utils.convertBigNumberToHexString
 
-Returns a hexadecimal string that is equivalent to `bigNumber`.
+Returns a hexadecimal string that is equivalent to `bigNumber`. 
 
 #### **Parameters:**
 
-* **`bigNumber`**  (BigNumber)
+* **`bigNumber`**  (BigNumber) 
 
 #### **Returns:**
 
