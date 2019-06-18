@@ -6,6 +6,10 @@ export function numTicksToTickSize(numTicks: BigNumber, minPrice: BigNumber, max
   return maxPrice.minus(minPrice).div(numTicks).dividedBy(QUINTILLION);
 }
 
+export function numTicksToTickSizeWithDisplayPrices(numTicks: BigNumber, minPrice: BigNumber, maxPrice: BigNumber): BigNumber {
+  return maxPrice.minus(minPrice).div(numTicks);
+}
+
 export function convertOnChainAmountToDisplayAmount(onChainAmount: BigNumber, tickSize: BigNumber) {
   return onChainAmount.dividedBy(tickSize).dividedBy(QUINTILLION);
 }
