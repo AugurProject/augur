@@ -33,7 +33,7 @@
     "prediction",
     "market",
     "dapp",
-    "crypo"
+    "crypto"
   ],
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
@@ -42,10 +42,10 @@
   },
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {
-    "@augurproject/sdk": "1.0.0-0",
     "@augurproject/artifacts": "1.0.0-0",
-    "@augurproject/ethersjs-provider": "1.0.0-0",
     "@augurproject/core": "2.0.0-0",
+    "@augurproject/ethersjs-provider": "1.0.0-0",
+    "@augurproject/sdk": "1.0.0-0",
     "blockstream-adapters": "1.0.0-0",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
@@ -60,7 +60,10 @@
     "tsyringe": "^3.2.0"
   },
   "devDependencies": {
+    "@types/vorpal": "^1.11.0",
+    "levelup": "4.0.2",
     "options-parser": "0.4.0",
-    "ts-node": "7.0.1"
+    "ts-node": "7.0.1",
+    "vorpal": "^1.12.0"
   }
 }
