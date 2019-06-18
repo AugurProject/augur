@@ -60,7 +60,7 @@ export async function deployContracts(seedFilePath: string, accounts: AccountLis
 }
 
 export async function makeGanacheProvider(seedFilePath: string, accounts: AccountList): Promise<ethers.providers.Web3Provider> {
-  const db = setupGanacheDb(seedFilePath);
+  const db = await setupGanacheDb(seedFilePath);
   return new ethers.providers.Web3Provider(ganache.provider(makeGanacheOpts(accounts, db)));
 }
 
