@@ -56,7 +56,7 @@ export interface CoreStats {
   realizedPL: ValueLabelPair;
 }
 export interface MarketsData {
-  [marketId: string]: MarketInfo;
+  [marketId: string]: MarketData;
 }
 export interface Outcomes extends MarketInfoOutcome {
   name?: string;
@@ -70,7 +70,7 @@ export interface MarketData extends MarketInfo {
 
 export interface OutcomesData {
   [marketId: string]: {
-    [outcomeId: string]: MarketInfo;
+    [outcomeId: string]: MarketData;
   };
 }
 export interface TransacitonStatus {
