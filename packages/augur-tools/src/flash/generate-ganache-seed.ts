@@ -70,19 +70,13 @@ interface LevelDBRow {
 }
 
 export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE): Promise<void> {
-  console.log("LAKI", 0);
   const ganacheProvider = makeGanacheProvider(ACCOUNTS);
-  console.log("LAKI", 1);
   const { addresses } = await deployContracts(ganacheProvider, ACCOUNTS, compilerOutput);
-  console.log("LAKI", 2);
   const contractsHash = hashContracts();
-  console.log("LAKI", 3);
 
   const leveledDB = levelup(db);
 
   const payload: LevelDBRow[] = [];
-
-  console.log("LAKO", 4);
 
   await new Promise((resolve, reject) => {
     leveledDB.createReadStream({
