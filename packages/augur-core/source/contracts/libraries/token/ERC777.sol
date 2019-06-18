@@ -24,7 +24,7 @@ import "ROOT/libraries/IERC1820Registry.sol";
  * destroyed. This makes integration with ERC20 applications seamless.
  *
  * AUGUR Modifications:
- *  - Public burning functions will revert.
+ *  - Public burning functions are note available. The ERC777 standard says they can be made to fail for some or all calls.
  *  - A hook is exposed for subclasses to send additional logs on transfer events
  *  - The ERC1820 Registry contract is not hardcoded but instead provided later on in the class heirarchy during runtime. This makes testing simpler.
  *  - To follow coding standards some member variables with underscores were renamed in favor of simply exposing those variables to satisfy ERC20 and ERC777 interface requirements
@@ -52,12 +52,10 @@ contract ERC777 is IERC777, IERC20 {
     // See https://github.com/ethereum/solidity/issues/4024.
 
     // keccak256("ERC777TokensSender")
-    bytes32 constant private TOKENS_SENDER_INTERFACE_HASH =
-        0x29ddb589b1fb5fc7cf394961c1adf5f8c6454761adf795e67fe149f658abe895;
+    bytes32 constant private TOKENS_SENDER_INTERFACE_HASH = 0x29ddb589b1fb5fc7cf394961c1adf5f8c6454761adf795e67fe149f658abe895;
 
     // keccak256("ERC777TokensRecipient")
-    bytes32 constant private TOKENS_RECIPIENT_INTERFACE_HASH =
-        0xb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b;
+    bytes32 constant private TOKENS_RECIPIENT_INTERFACE_HASH = 0xb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b;
 
     // For each account, a mapping of its operators and revoked default operators.
     mapping(address => mapping(address => bool)) private _operators;
@@ -133,23 +131,13 @@ contract ERC777 is IERC777, IERC20 {
     }
 
     /**
-     * @dev See `IERC777.burn`.
-     *
-     * Also emits a `Transfer` event for ERC20 compatibility.
-     */
-    function burn(uint256 amount, bytes calldata data) external {
-        // The ERC777 standard states that the use of the burn function may be restricted in any way. We dissallow it in all cases.
-        revert();
-        //_burn(msg.sender, msg.sender, amount, data, "");
-    }
-
-    /**
      * @dev See `IERC777.isOperatorFor`.
      */
     function isOperatorFor(
         address operator,
         address tokenHolder
-    ) public view returns (bool) {
+    ) public view returns (bool)
+    {
         return operator == tokenHolder || _operators[tokenHolder][operator];
     }
 
@@ -198,16 +186,6 @@ contract ERC777 is IERC777, IERC20 {
     {
         require(isOperatorFor(msg.sender, sender), "ERC777: caller is not an operator for holder");
         _send(msg.sender, sender, recipient, amount, data, operatorData, true);
-    }
-
-    /**
-     * @dev See `IERC777.operatorBurn`.
-     *
-     * Emits `Sent` and `Transfer` events.
-     */
-    function operatorBurn(address account, uint256 amount, bytes calldata data, bytes calldata operatorData) external {
-        // The ERC777 standard states that the use of the burn function may be restricted in any way. We dissallow it in all cases.
-        revert();
     }
 
     /**

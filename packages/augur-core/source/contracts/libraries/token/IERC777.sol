@@ -48,21 +48,6 @@ interface IERC777 {
     function send(address recipient, uint256 amount, bytes calldata data) external;
 
     /**
-     * @dev Destroys `amount` tokens from the caller's account, reducing the
-     * total supply.
-     *
-     * If a send hook is registered for the caller, the corresponding function
-     * will be called with `data` and empty `operatorData`. See `IERC777Sender`.
-     *
-     * Emits a `Burned` event.
-     *
-     * Requirements
-     *
-     * - the caller must have at least `amount` tokens.
-     */
-    function burn(uint256 amount, bytes calldata data) external;
-
-    /**
      * @dev Returns true if an account is an operator of `tokenHolder`.
      * Operators can send and burn tokens on behalf of their owners. All
      * accounts are their own operator.
@@ -129,28 +114,6 @@ interface IERC777 {
     function operatorSend(
         address sender,
         address recipient,
-        uint256 amount,
-        bytes calldata data,
-        bytes calldata operatorData
-    ) external;
-
-    /**
-     * @dev Destoys `amount` tokens from `account`, reducing the total supply.
-     * The caller must be an operator of `account`.
-     *
-     * If a send hook is registered for `account`, the corresponding function
-     * will be called with `data` and `operatorData`. See `IERC777Sender`.
-     *
-     * Emits a `Burned` event.
-     *
-     * Requirements
-     *
-     * - `account` cannot be the zero address.
-     * - `account` must have at least `amount` tokens.
-     * - the caller must be an operator for `account`.
-     */
-    function operatorBurn(
-        address account,
         uint256 amount,
         bytes calldata data,
         bytes calldata operatorData
