@@ -79,7 +79,7 @@ export class RadioCardGroup extends Component<
     );
   }
 }
-
+// this has to be a div to allow for the grid layout we want to use.
 const RadioCard = ({
   value,
   header,
@@ -88,17 +88,18 @@ const RadioCard = ({
   checked,
   icon,
 }: RadioCardProps) => (
-  <button
+  <div
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
     })}
+    role="button"
     onClick={e => onChange(value)}
   >
     <div>{CheckMark}</div>
     {icon ? icon : Ellipsis}
     <h5>{header}</h5>
     <p>{description}</p>
-  </button>
+  </div>
 );
 
 export const Checkbox = ({

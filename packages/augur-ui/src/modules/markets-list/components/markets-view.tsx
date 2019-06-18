@@ -5,6 +5,7 @@ import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import { TYPE_TRADE } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
+import { RadioCardGroup } from "modules/common/form";
 
 interface MarketsViewProps {
   isLogged: boolean;
@@ -122,6 +123,23 @@ export default class MarketsView extends Component<
       filterSortedMarkets,
       isSearchingMarkets,
     } = this.state;
+    const RadioButtons = [
+      {
+        value: "one",
+        header: "one",
+        description: "one's text is right here"
+      },
+      {
+        value: "two",
+        header: "two",
+        description: "two's text is right here and there is more"
+      },
+      {
+        value: "three",
+        header: "three",
+        description: "three's text is right here and some"
+      }
+    ];
     return (
       <section
         ref={componentWrapper => {
@@ -131,6 +149,7 @@ export default class MarketsView extends Component<
         <Helmet>
           <title>Markets</title>
         </Helmet>
+        <RadioCardGroup radioButtons={RadioButtons} defaultSelected="three" />
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearchingMarkets}
