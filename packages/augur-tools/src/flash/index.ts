@@ -1,14 +1,20 @@
 import { seedFileIsOutOfDate, createSeedFile } from "./generate-ganache-seed";
+import { AccountList, makeGanacheProvider, makeGanacheServer } from "./ganache";
+
+import { GanacheServer } from "ganache-core";
+import { ethers } from "ethers";
 
 import Vorpal from "vorpal";
-import { AccountList, makeGanacheProvider, makeGanacheServer } from "./ganache";
-import { ethers } from "ethers";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import * as ganache from "ganache-core";
 const vorpal = new Vorpal();
 
 interface State {
-  seedFilePath?: string;
-  ganacheProvider?: ethers.providers.Web3Provider;
   accounts: AccountList;
+  seedFilePath?: string;
+  provider?: EthersProvider;
+  ganacheProvider?: ethers.providers.Web3Provider;
+  ganacheServer?: GanacheServer;
 }
 
 const state: State = {
@@ -35,10 +41,11 @@ vorpal
     if (args.options.internal) {
       state.ganacheProvider = await makeGanacheProvider(state.seedFilePath, state.accounts);
     } else {
-      await makeGanacheServer(state.seedFilePath, state.accounts);
+      state.ganacheServer = await makeGanacheServer(state.seedFilePath, state.accounts);
+      state.ganacheProvider = new ethers.providers.Web3Provider(state.ganacheServer.ganacheProvider);
     }
 
-
+    state.provider = new EthersProvider(state.ganacheProvider, 5, 0, 40);
   });
 
 vorpal
@@ -52,6 +59,13 @@ vorpal
     } else {
       this.log("Seed file is up-to-date. No need to update.");
     }
+  });
+
+vorpal
+  .command("gas-limit")
+  .action(async function(this: Vorpal.CommandInstance) {
+    const block = await state.provider.getBlock("latest");
+    this.log(`${block.gasLimit.toNumber()}`);
   });
 
 vorpal

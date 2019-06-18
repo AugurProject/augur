@@ -6,8 +6,6 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { DeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
-import * as https from "https";
-import * as http from "http";
 
 import memdown from "memdown";
 import { MemDown } from "memdown";
@@ -64,7 +62,7 @@ export async function makeGanacheProvider(seedFilePath: string, accounts: Accoun
   return new ethers.providers.Web3Provider(ganache.provider(makeGanacheOpts(accounts, db)));
 }
 
-export async function makeGanacheServer(seedFilePath: string, accounts: AccountList): Promise<http.Server | https.Server> {
+export async function makeGanacheServer(seedFilePath: string, accounts: AccountList): Promise<ganache.GanacheServer> {
   const db = await setupGanacheDb(seedFilePath);
   return ganache.server(makeGanacheOpts(accounts, db));
 }
