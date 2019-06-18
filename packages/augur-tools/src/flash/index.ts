@@ -30,6 +30,19 @@ const state: State = {
 };
 
 vorpal
+  .command("create-seed-file", "Creates Ganache seed file from compiled Augur contracts.")
+  .option("--filepath", `Where is the seed file? Defaults to "./seed.json"`)
+  .action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args) {
+    state.seedFilePath = args.options.filepath || `${__dirname}/seed.json`;
+    if (await seedFileIsOutOfDate(state.seedFilePath)) {
+      this.log("Seed file out of date. Creating/updating...");
+      await createSeedFile(state.seedFilePath, state.accounts);
+    } else {
+      this.log("Seed file is up-to-date. No need to update.");
+    }
+  });
+
+vorpal
   .command("ganache", "Start a Ganache node.")
   .option("--internal", "Prevent node from being available to browsers.")
   .action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args) {
@@ -48,18 +61,6 @@ vorpal
     state.provider = new EthersProvider(state.ganacheProvider, 5, 0, 40);
   });
 
-vorpal
-  .command("create-seed-file", "Creates Ganache seed file from compiled Augur contracts.")
-  .option("--filepath", `Where is the seed file? Defaults to "./seed.json"`)
-  .action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args) {
-    state.seedFilePath = args.options.filepath || `${__dirname}/seed.json`;
-    if (await seedFileIsOutOfDate(state.seedFilePath)) {
-      this.log("Seed file out of date. Creating/updating...");
-      await createSeedFile(state.seedFilePath, state.accounts);
-    } else {
-      this.log("Seed file is up-to-date. No need to update.");
-    }
-  });
 
 vorpal
   .command("gas-limit")
