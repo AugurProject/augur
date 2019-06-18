@@ -2,7 +2,7 @@ import * as fs from "async-file";
 import { ethers } from "ethers";
 import * as ganache from "ganache-core";
 import {
-  AccountList, ACCOUNTS,
+  AccountList,
   makeDependencies,
   makeDeployerConfiguration,
   makeSigner,
@@ -69,9 +69,9 @@ interface LevelDBRow {
   type: "put";
 }
 
-export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE): Promise<void> {
-  const ganacheProvider = makeGanacheProvider(ACCOUNTS);
-  const { addresses } = await deployContracts(ganacheProvider, ACCOUNTS, compilerOutput);
+export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE, accounts: AccountList): Promise<void> {
+  const ganacheProvider = makeGanacheProvider(accounts);
+  const { addresses } = await deployContracts(ganacheProvider, accounts, compilerOutput);
   const contractsHash = hashContracts();
 
   const leveledDB = levelup(db);

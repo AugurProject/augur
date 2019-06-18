@@ -62,8 +62,12 @@
   "devDependencies": {
     "@types/vorpal": "^1.11.0",
     "levelup": "4.0.2",
+    "memdown": "4.0.0",
     "options-parser": "0.4.0",
     "ts-node": "7.0.1",
     "vorpal": "^1.12.0"
+  },
+  "resolutions": {
+    "**/memdown": "4.0.0"
   }
 }

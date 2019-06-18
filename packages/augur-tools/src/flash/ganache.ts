@@ -2,13 +2,15 @@ import * as path from "path";
 import * as ganache from "ganache-core";
 import { ethers } from "ethers";
 
-import { Augur } from "@augurproject/sdk";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { DeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import * as https from "https";
+import * as http from "http";
 
-const memdown = require("memdown");
+import memdown from "memdown";
+import { MemDown } from "memdown";
 
 export interface Account {
   secretKey: string;
@@ -46,10 +48,10 @@ export interface UsefulContractObjects {
   addresses: ContractAddresses;
 }
 
-export async function deployContracts(accounts: AccountList): Promise<UsefulContractObjects> {
-  const seed = require("../../seed.json");
+export async function deployContracts(seedFilePath: string, accounts: AccountList): Promise<UsefulContractObjects> {
+  const seed = require(seedFilePath);
 
-  const ganacheProvider = await makeGanacheProvider(accounts);
+  const ganacheProvider = await makeGanacheProvider(seedFilePath, accounts);
   const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
   const signer = await makeSigner(accounts[0], provider);
   const dependencies = makeDependencies(accounts[0], provider, signer);
@@ -57,10 +59,21 @@ export async function deployContracts(accounts: AccountList): Promise<UsefulCont
   return {provider, signer, dependencies, addresses};
 }
 
-export async function makeGanacheProvider(accounts: AccountList): Promise<ethers.providers.Web3Provider> {
-  const seed = require("../../seed.json");
+export async function makeGanacheProvider(seedFilePath: string, accounts: AccountList): Promise<ethers.providers.Web3Provider> {
+  const db = setupGanacheDb(seedFilePath);
+  return new ethers.providers.Web3Provider(ganache.provider(makeGanacheOpts(accounts, db)));
+}
 
-  const db = memdown();
+export async function makeGanacheServer(seedFilePath: string, accounts: AccountList): Promise<http.Server | https.Server> {
+  const db = await setupGanacheDb(seedFilePath);
+  return ganache.server(makeGanacheOpts(accounts, db));
+}
+
+async function setupGanacheDb(seedFilePath: string): Promise<MemDown> {
+  const seed = require(seedFilePath);
+
+  const db = memdown("");
+
   await new Promise((resolve, reject) => {
     db.batch(seed.data, (err: Error) => {
       if (err) reject(err);
@@ -68,7 +81,11 @@ export async function makeGanacheProvider(accounts: AccountList): Promise<ethers
     });
   });
 
-  return new ethers.providers.Web3Provider(ganache.provider({
+  return db;
+}
+
+function makeGanacheOpts(accounts: AccountList, db: MemDown) {
+  return {
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
     allowUnlimitedContractSize: true,
@@ -77,7 +94,7 @@ export async function makeGanacheProvider(accounts: AccountList): Promise<ethers
     debug: false,
     network_id: 123456,
     // vmErrorsOnRPCResponse: true,
-  }));
+  };
 }
 
 export async function makeSigner(account: Account, provider: EthersProvider) {
@@ -87,21 +104,3 @@ export async function makeSigner(account: Account, provider: EthersProvider) {
 export function makeDependencies(account: Account, provider: EthersProvider, signer: EthersFastSubmitWallet) {
   return new ContractDependenciesEthers(provider, signer, account.publicKey);
 }
-
-export async function makeTestAugur(accounts: AccountList): Promise<Augur> {
-  const {provider, dependencies, addresses} = await deployContracts(accounts);
-  return Augur.create(provider, dependencies, addresses);
-}
-
-export const ACCOUNTS: AccountList = [
-  {
-    secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
-    publicKey: "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
-    balance: 100000000000000000000,  // 100 ETH
-  },
-  {
-    secretKey: "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a",
-    publicKey: "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb",
-    balance: 100000000000000000000,  // 100 ETH
-  },
-];
