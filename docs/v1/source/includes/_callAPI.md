@@ -1297,7 +1297,7 @@ Note: Calling this function only works for retrieving a DisputeCrowdsourcer if t
 
 ### augur.api.Market.getDenominationToken(p, callback)
 
-Returns the Ethereum contract address of the token used to denominate the specified [Market](#market). A Denomination Token is the [ERC-20 Token](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md) used as the currency to trade on the [Outcome](#outcome) of a [Market](#market). Currently, this function will always return the address of a [Cash](https://github.com/AugurProject/augur-core/blob/master/source/contracts/trading/Cash.sol) contract; however, Augur will eventually support other types of Denomination Tokens.
+Returns the Ethereum contract address of the token used to denominate the specified [Market](#market). A Denomination Token is the [ERC-20 Token](https://eips.ethereum.org/EIPS/eip-20) used as the currency to trade on the [Outcome](#outcome) of a [Market](#market). Currently, this function will always return the address of a [Cash](https://github.com/AugurProject/augur-core/blob/master/source/contracts/trading/Cash.sol) contract; however, Augur will eventually support other types of Denomination Tokens.
 
 #### **Parameters:**
 
@@ -2351,7 +2351,7 @@ augur.api.ReputationToken.getTotalTheoreticalSupply({
 ```
 Provides JavaScript bindings for the [ReputationToken Solidity Contract](https://github.com/AugurProject/augur-core/blob/master/source/contracts/reporting/ReputationToken.sol), which handles the approval, migration, and transfering of [Reputation Tokens](#rep). 
 
-The Reputation Token, or REP, is an ERC-20 token that implements all of the required functions listed in the [ERC-20 Token Standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md). It does not, however, implement the optional functions.
+The Reputation Token, or REP, is an ERC-20 token that implements all of the required functions listed in the [ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20). It does not, however, implement the optional functions.
 
 ### augur.api.ReputationToken.allowance(p, callback)
 
@@ -2454,7 +2454,7 @@ augur.api.ShareToken.getOutcome({
 ```
 Provides JavaScript bindings for the [ShareToken Solidity Code](https://github.com/AugurProject/augur-core/blob/master/source/contracts/trading/ShareToken.sol), which handles the approval and transferring of [Shares](#share) in Augur. 
 
-The Share Token is an ERC-20 token that implements all of the required functions listed in the [ERC-20 Token Standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md). It does not, however, implement the optional functions. Within Augur, it represents [Shares](#share) in [Market](#market) [Outcomes](#outcome).
+The Share Token is an ERC-20 token that implements all of the required functions listed in the [ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20). It does not, however, implement the optional functions. Within Augur, it represents [Shares](#share) in [Market](#market) [Outcomes](#outcome).
 
 ### augur.api.ShareToken.allowance(p, callback)
 
@@ -3066,7 +3066,7 @@ Returns whether the specified [Universe](#universe) is a container for a particu
 
 ### augur.api.Universe.isContainerForShareToken(p, callback)
 
-Returns whether the specific [Universe](#universe) is a container for a given Share Token. ([Shares](#share) are represented within Augur's smart contracts as [ERC-20](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md) tokens called Share Tokens.)
+Returns whether the specific [Universe](#universe) is a container for a given Share Token. ([Shares](#share) are represented within Augur's smart contracts as [ERC-20](https://eips.ethereum.org/EIPS/eip-20) tokens called Share Tokens.)
 
 #### **Parameters:**
 
