@@ -139,8 +139,34 @@ export class SyncableDB extends AbstractDB {
     }
   }
 
+  private parseLogArrays(logs: Array<ParsedLog>): void {
+    for (let i = 0; i < logs.length; i++) {
+      logs[i].kycToken = logs[i].addressData[0];
+      logs[i].orderCreator = logs[i].addressData[1];
+      logs[i].orderFiller = logs[i].addressData[2];
+
+      logs[i].price = logs[i].uint256Data[0];
+      logs[i].amount = logs[i].uint256Data[1];
+      logs[i].outcome = logs[i].uint256Data[2];
+      logs[i].tokenRefund = logs[i].uint256Data[3];
+      logs[i].sharesRefund = logs[i].uint256Data[4];
+      logs[i].fees = logs[i].uint256Data[5];
+      logs[i].amountFilled = logs[i].uint256Data[6];
+      logs[i].timestamp = logs[i].uint256Data[7];
+      logs[i].sharesEscrowed = logs[i].uint256Data[8];
+      logs[i].tokensEscrowed = logs[i].uint256Data[9];
+
+      delete logs[i].addressData;
+      delete logs[i].uint256Data;
+    }
+  }
+
   public addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
+
+    if (this.eventName === "OrderEvent") {
+      this.parseLogArrays(logs);
+    }
 
     let success = true;
     let documents;

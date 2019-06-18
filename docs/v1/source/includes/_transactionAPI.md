@@ -2010,7 +2010,7 @@ augur.api.ReputationToken.updateSiblingMigrationTotal({
 ```
 Provides JavaScript bindings for the [ReputationToken Solidity Contract](https://github.com/AugurProject/augur-core/blob/master/source/contracts/reporting/ReputationToken.sol), which handles the approval, migration, and transfering of [Reputation Tokens](#rep).
 
-The Reputation Token, or REP, is an ERC-20 token that implements all of the required functions listed in the [ERC-20 Token Standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md). It does not, however, implement the optional functions.
+The Reputation Token, or REP, is an ERC-20 token that implements all of the required functions listed in the [ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20). It does not, however, implement the optional functions.
 
 ### augur.api.ReputationToken.approve(p)
 
@@ -2345,7 +2345,7 @@ augur.api.ShareToken.transferFrom({
 ```
 Provides JavaScript bindings for the [ShareToken Solidity Code](https://github.com/AugurProject/augur-core/blob/master/source/contracts/trading/ShareToken.sol), which handles the approval and transferring of [Shares](#share) in Augur. 
 
-The Share Token is an ERC-20 token that implements all of the required functions listed in the [ERC-20 Token Standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md). It does not, however, implement the optional functions. Within Augur, it represents [Shares](#share) in [Market](#market) [Outcomes](#outcome).
+The Share Token is an ERC-20 token that implements all of the required functions listed in the [ERC-20 Token Standard](https://eips.ethereum.org/EIPS/eip-20). It does not, however, implement the optional functions. Within Augur, it represents [Shares](#share) in [Market](#market) [Outcomes](#outcome).
 
 ### augur.api.ShareToken.approve(p)
 

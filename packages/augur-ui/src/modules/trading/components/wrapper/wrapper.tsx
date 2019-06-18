@@ -258,13 +258,13 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     );
   }
 
-  placeTrade(market, selectedOutcome, s) {
+  placeMarketTrade(market, selectedOutcome, s) {
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,
       s.trade,
       s.doNotCreateOrders,
-      (err, tradeGroupID) => {
+      (err, result) => {
         // onSent/onFailed CB
         if (!err) {
           this.clearOrderForm();
@@ -448,10 +448,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               if (!marketReviewTradeSeen) {
                 marketReviewTradeModal({
                   marketId: market.id,
-                  cb: () => this.placeTrade(market, selectedOutcome, s)
+                  cb: () => this.placeMarketTrade(market, selectedOutcome, s)
                 });
               } else {
-                this.placeTrade(market, selectedOutcome, s);
+                this.placeMarketTrade(market, selectedOutcome, s);
               }
             }}
             disabled={!s.trade || !s.trade.limitPrice}
