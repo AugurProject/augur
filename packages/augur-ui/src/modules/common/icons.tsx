@@ -138,6 +138,13 @@ export const Chevron = (
   </svg>
 );
 
+export const OutlineChevron = (
+  <svg viewBox="0 0 32 32" fill="none">
+    <rect x="-0.5" y="0.5" width="31" height="31" rx="2.5" transform="matrix(-1 0 0 1 31 0)"/>
+    <path d="M18 20L14 16L18 12" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+);
+
 export const MarketIcon = (
   <svg viewBox="0 0 14 9">
     <path d="M13.25 0.5H13.75C13.75 0.223858 13.5261 0 13.25 0V0.5ZM12.75 4.41304C12.75 4.68919 12.9739 4.91304 13.25 4.91304C13.5261 4.91304 13.75 4.68919 13.75 4.41304H12.75ZM9.5 0C9.22386 0 9 0.223858 9 0.5C9 0.776142 9.22386 1 9.5 1V0ZM12.75 0.5V4.41304H13.75V0.5H12.75ZM9.5 1H13.25V0H9.5V1Z" />
