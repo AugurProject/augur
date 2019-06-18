@@ -221,6 +221,5 @@ export async function simulateTrade(
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
   };
-  console.log(JSON.stringify(params));
   return Augur.simulateTrade(params);
 }

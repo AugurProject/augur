@@ -248,8 +248,6 @@ async function runSimulateTrade(
     .dividedBy(createBigNumber(simulateTradeValue.tokensDepleted, 10))
     .toFixed();
   if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
-  // @ts-ignore
-  simulatedTrade.tradeGroupId = augur.trading.generateTradeGroupId();
 
   const tradeInfo = {
     ...newTradeDetails,

@@ -1,61 +1,64 @@
-import { augur } from "services/augurjs";
 import { createBigNumber } from "utils/create-big-number";
-import { updateModal } from "modules/modal/actions/update-modal";
-import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import {
   BUY,
-  ZERO,
-  MODAL_ACCOUNT_APPROVAL,
 } from "modules/common/constants";
 import logError from "utils/log-error";
 import noop from "utils/noop";
-import {
-  addPendingOrder,
-  removePendingOrder,
-} from "modules/orders/actions/pending-orders-management";
-import { formatEther, formatShares } from "utils/format-number";
-import { getOutcomeName } from "utils/get-outcome";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { MarketData } from "modules/types";
+import { placeTrade } from "modules/contracts/actions/contractCalls";
 
-export const placeTrade = ({
+export const placeMarketTrade = ({
   marketId,
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
   callback = logError,
   onComplete = noop,
-}: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+}: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
-  const { loginAccount, marketsData, blockchain, outcomesData } = getState();
-  const market = marketsData[marketId];
+  const { marketsData } = getState();
+  const market: MarketData = marketsData[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
       `required parameters not found for market ${marketId} outcome ${outcomeId}`,
     );
   }
-  const bnAllowance = createBigNumber(loginAccount.allowance, 10);
-  const sharesDepleted = createBigNumber(tradeInProgress.sharesDepleted, 10);
-  const otherSharesDepleted = createBigNumber(
-    tradeInProgress.otherSharesDepleted,
-    10,
+
+  const userShares = createBigNumber(tradeInProgress.sharesDepleted, 10);
+
+  const displayPrice = tradeInProgress.limitPrice;
+  const displayAmount = tradeInProgress.numShares;
+  const orderType = tradeInProgress.side === BUY ? 0 : 1;
+
+  const ignoreShares = false; // TODO: get this from order form
+  const affiliateAddress = undefined; // TODO: get this from state
+  const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
+
+
+  placeTrade(
+    orderType,
+    market.id,
+    market.numOutcomes,
+    parseInt(outcomeId, 10),
+    ignoreShares,
+    affiliateAddress,
+    kycToken,
+    doNotCreateOrders,
+    market.numTicks,
+    market.minPrice,
+    market.maxPrice,
+    displayAmount,
+    displayPrice,
+    userShares
   );
-  const sharesProvided = sharesDepleted.eq(ZERO)
-    ? otherSharesDepleted.toFixed()
-    : sharesDepleted.toFixed();
-  const tradeCost = augur.trading.calculateTradeCost({
-    displayPrice: tradeInProgress.limitPrice,
-    displayAmount: tradeInProgress.numShares,
-    sharesProvided,
-    numTicks: market.numTicks,
-    orderType: tradeInProgress.side === BUY ? 0 : 1,
-    minDisplayPrice: market.minPrice,
-    maxDisplayPrice: market.maxPrice,
-  });
-  // @ts-ignore
-  const sharesToFill = tradeCost.onChainAmount;
-  let hash: any = null;
+
+  // TODO: figure out Error handling
+  callback(null, null);
+
+  /*
   // make sure that we actually have an updated allowance.
   const placeTradeParams: any = {
     meta: loginAccount.meta,
@@ -150,4 +153,5 @@ export const placeTrade = ({
   } else {
     sendTrade();
   }
+*/
 };
