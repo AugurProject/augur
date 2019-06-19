@@ -5,7 +5,7 @@ import classNames from "classnames";
 import ChevronFlip from "modules/common/chevron-flip";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { PulseLoader } from "react-spinners";
-import { SearchIcon, XIcon, CheckMark, OutlineChevron } from "modules/common/icons";
+import { SearchIcon, XIcon, CheckMark, OutlineChevron, Ellipsis } from "modules/common/icons";
 import debounce from "utils/debounce";
 
 import Styles from "modules/common/form.styles.less";
@@ -68,6 +68,71 @@ interface InputDropdownState {
   selected: Boolean;
 }
 
+interface RadioCardProps {
+  value: string;
+  header: string;
+  description: string;
+  checked?: boolean;
+  onChange?: Function;
+  icon?: SVGElement;
+}
+
+interface RadioCardGroupProps {
+  radioButtons: Array<RadioCardProps>;
+  defaultSelected?: string | null;
+}
+
+interface RadioCardGroupState {
+  selected: string | null;
+}
+
+export class RadioCardGroup extends Component<
+  RadioCardGroupProps,
+  RadioCardGroupState
+> {
+  state: RadioCardGroupState = {
+    selected: this.props.defaultSelected || null,
+  };
+
+  render() {
+    const { radioButtons } = this.props;
+    const { selected } = this.state;
+    return (
+      <section className={Styles.RadioCardGroup}>
+        {radioButtons.map(radio => (
+          <RadioCard
+            key={radio.value}
+            {...radio}
+            checked={radio.value === selected}
+            onChange={selected => this.setState({ selected })}
+          />
+        ))}
+      </section>
+    );
+  }
+}
+// this has to be a div to allow for the grid layout we want to use.
+const RadioCard = ({
+  value,
+  header,
+  description,
+  onChange,
+  checked,
+  icon,
+}: RadioCardProps) => (
+  <div
+    className={classNames(Styles.RadioCard, {
+      [Styles.RadioCardActive]: checked,
+    })}
+    role="button"
+    onClick={e => onChange(value)}
+  >
+    <div>{CheckMark}</div>
+    {icon ? icon : Ellipsis}
+    <h5>{header}</h5>
+    <p>{description}</p>
+  </div>
+);
 export class TextInput extends React.Component<
   TextInputProps,
   TextInputState
@@ -118,20 +183,18 @@ export const Checkbox = ({
   id,
   smallOnDesktop = false,
   isChecked,
-  // value,
   onClick,
-  disabled
+  disabled,
 }: CheckboxProps) => (
   <div
     className={classNames(Styles.Checkbox, {
-      [Styles.CheckboxSmall]: smallOnDesktop
+      [Styles.CheckboxSmall]: smallOnDesktop,
     })}
   >
     <input
       id={id}
       type="checkbox"
       checked={isChecked}
-      // value={value}
       disabled={disabled}
       onChange={e => onClick(e)}
     />
@@ -140,7 +203,7 @@ export const Checkbox = ({
       tabIndex={0}
       onClick={e => onClick(e)}
       className={classNames({
-        [Styles.CheckmarkSmall]: smallOnDesktop
+        [Styles.CheckmarkSmall]: smallOnDesktop,
       })}
     >
       {CheckMark}
@@ -155,13 +218,13 @@ Checkbox.propTypes = {
   // value: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
   small: PropTypes.bool,
-  smallOnDesktop: PropTypes.bool
+  smallOnDesktop: PropTypes.bool,
 };
 
 Checkbox.defaultProps = {
   disabled: false,
   small: false,
-  smallOnDesktop: false
+  smallOnDesktop: false,
 };
 
 export const DatePicker = (props: DatePickerProps) => (
@@ -244,11 +307,11 @@ export class Input extends Component<InputProps, InputState> {
     onFocus: PropTypes.func,
     lightBorder: PropTypes.bool,
     darkMaxBtn: PropTypes.bool,
-    style: PropTypes.object
+    style: PropTypes.object,
   };
 
   static defaultProps = {
-    type: "text",
+    type: 'text',
     className: null,
     min: null,
     max: null,
@@ -270,7 +333,7 @@ export class Input extends Component<InputProps, InputState> {
     comparisonValue: null,
     placeholder: null,
     darkMaxBtn: false,
-    style: {}
+    style: {},
   };
 
   constructor(props) {
@@ -279,7 +342,7 @@ export class Input extends Component<InputProps, InputState> {
     this.state = {
       value: props.value,
       isHiddenContentVisible: false,
-      focused: false
+      focused: false,
     };
 
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -295,7 +358,7 @@ export class Input extends Component<InputProps, InputState> {
   }
 
   componentDidMount() {
-    window.addEventListener("click", this.handleWindowOnClick);
+    window.addEventListener('click', this.handleWindowOnClick);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -323,7 +386,7 @@ export class Input extends Component<InputProps, InputState> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("click", this.handleWindowOnClick);
+    window.removeEventListener('click', this.handleWindowOnClick);
   }
 
   handleOnChange = e => {
@@ -344,8 +407,8 @@ export class Input extends Component<InputProps, InputState> {
   };
 
   handleClear = () => {
-    this.setState({ value: "" });
-    this.props.onChange("");
+    this.setState({ value: '' });
+    this.props.onChange('');
   };
 
   handleToggleVisibility = () =>
@@ -355,13 +418,13 @@ export class Input extends Component<InputProps, InputState> {
 
   handleWindowOnClick(event) {
     this.setState({
-      focused: this.inputHandler && this.inputHandler.contains(event.target)
+      focused: this.inputHandler && this.inputHandler.contains(event.target),
     });
   }
 
   updateIsHiddenContentVisible(isHiddenContentVisible) {
     this.setState({
-      isHiddenContentVisible
+      isHiddenContentVisible,
     });
   }
 
@@ -398,11 +461,11 @@ export class Input extends Component<InputProps, InputState> {
           isIncrementable ? Styles.Incremental : Styles.Input,
           className,
           {
-            "can-toggle-visibility": canToggleVisibility,
+            'can-toggle-visibility': canToggleVisibility,
             [Styles.FocusBorder]: focused && !noFocus && !lightBorder,
             [`${Styles.NoFocus}`]: noFocus,
             [`${Styles.LightBorder}`]: lightBorder,
-            [Styles.SetWidth]: darkMaxBtn
+            [Styles.SetWidth]: darkMaxBtn,
           }
         )}
         ref={inputHandler => {
@@ -416,10 +479,10 @@ export class Input extends Component<InputProps, InputState> {
         {!isMultiline && (
           <input
             {...p}
-            className={classNames("box", className, {
-              "search-input": isSearch
+            className={classNames('box', className, {
+              'search-input': isSearch,
             })}
-            type={type === "password" && isHiddenContentVisible ? "text" : type}
+            type={type === 'password' && isHiddenContentVisible ? 'text' : type}
             value={value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
@@ -440,7 +503,7 @@ export class Input extends Component<InputProps, InputState> {
         )}
 
         {isSearch && (
-          <div style={{ marginRight: "8px" }}>
+          <div style={{ marginRight: '8px' }}>
             <PulseLoader
               color="#553580"
               sizeUnit="px"
@@ -479,7 +542,7 @@ export class Input extends Component<InputProps, InputState> {
           <button
             type="button"
             className={classNames(Styles.Max, {
-              [Styles.MaxDark]: darkMaxBtn
+              [Styles.MaxDark]: darkMaxBtn,
             })}
             onClick={onMaxButtonClick}
           >
@@ -502,7 +565,7 @@ export class Input extends Component<InputProps, InputState> {
             <button
               type="button"
               tabIndex={-1}
-              className={classNames(Styles.IncrementValue, "unstyled")}
+              className={classNames(Styles.IncrementValue, 'unstyled')}
               onClick={e => {
                 e.currentTarget.blur();
 
@@ -587,7 +650,7 @@ export class InputDropdown extends Component<
       label: props.default || props.label,
       value: props.default,
       showList: false,
-      selected: !!props.default
+      selected: !!props.default,
     };
 
     this.dropdownSelect = this.dropdownSelect.bind(this);
@@ -598,15 +661,15 @@ export class InputDropdown extends Component<
 
   componentDidMount() {
     const { isMobileSmall, options } = this.props;
-    window.addEventListener("click", this.handleWindowOnClick);
+    window.addEventListener('click', this.handleWindowOnClick);
 
-    if (isMobileSmall && this.state.value === "") {
+    if (isMobileSmall && this.state.value === '') {
       this.dropdownSelect(options[0]);
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener("click", this.handleWindowOnClick);
+    window.removeEventListener('click', this.handleWindowOnClick);
   }
 
   onKeyPress(value) {
@@ -622,7 +685,7 @@ export class InputDropdown extends Component<
       this.setState({
         label: value,
         value,
-        selected: true
+        selected: true,
       });
       onChange(value);
       this.toggleList();
@@ -660,20 +723,20 @@ export class InputDropdown extends Component<
         <span
           key={label}
           className={classNames({
-            [`${Styles.selected}`]: selected
+            [`${Styles.selected}`]: selected,
           })}
         >
           {currentLabel}
         </span>
         <div
           className={classNames({
-            [`${Styles.active}`]: showList
+            [`${Styles.active}`]: showList,
           })}
         >
           {options.map(option => (
             <button
               className={classNames({
-                [`${Styles.active}`]: option === value
+                [`${Styles.active}`]: option === value,
               })}
               key={option + label}
               value={option}
@@ -685,7 +748,7 @@ export class InputDropdown extends Component<
         </div>
         <select
           className={classNames({
-            [`${Styles.selected}`]: selected
+            [`${Styles.selected}`]: selected,
           })}
           onChange={e => {
             this.dropdownSelect(e.target.value);
@@ -713,10 +776,10 @@ InputDropdown.propTypes = {
   isMobileSmall: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
   className: PropTypes.string,
-  onKeyPress: PropTypes.func
+  onKeyPress: PropTypes.func,
 };
 
 InputDropdown.defaultProps = {
   onKeyPress: null,
-  className: null
+  className: null,
 };

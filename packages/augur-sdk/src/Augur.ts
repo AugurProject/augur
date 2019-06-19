@@ -7,7 +7,7 @@ import { Events } from "./api/Events";
 import { BigNumber } from 'bignumber.js';
 import { Provider } from "./ethereum/Provider";
 import { isSubscriptionEventName, SubscriptionEventNames } from "./constants";
-import { Trade } from "./api/Trade";
+import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
 import { ContractDependenciesEthers, TransactionStatusCallback } from "contract-dependencies-ethers";
 import { Markets } from "./state/getter/Markets";
 import { SyncData } from "./state/getter/sync-data";
@@ -199,4 +199,11 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(SyncData.getSyncData)({});
   }
 
+  public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
+    return this.trade.simulateTrade(params);
+  }
+
+  public async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
+    return this.trade.placeTrade(params);
+  }
 }

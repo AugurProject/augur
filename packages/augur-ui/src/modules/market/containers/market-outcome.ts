@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import getValue from "utils/get-value";
 import * as constants from "modules/common/constants";
-import { CATEGORICAL } from "modules/common/constants";
 
 import Row from "modules/common/row";
 import { ThunkDispatch } from "redux-thunk";
@@ -82,8 +81,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       outcome: true,
       isSingle: true,
       noToggle: true,
-      colorId: oP.marketType === CATEGORICAL && outcome.id,
-      active: oP.marketType === CATEGORICAL && oP.selectedOutcomeId === outcome.id
+      colorId: outcome.id,
+      active: oP.selectedOutcomeId === outcome.id
     }
   };
 };
