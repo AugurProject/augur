@@ -140,9 +140,9 @@ class ForkMigrationTotals extends Component<ForkMigrationTotalsProps, ForkMigrat
       isOpen,
     } = this.state;
 
-    const { reportableOutcomes } = this.props.forkingMarket;
+    const { outcomes } = this.props.forkingMarket;
     const forkMigrationTotals = selectMigrateTotals(
-      reportableOutcomes,
+      outcomes,
       forkMigrationTotalsMap,
     );
 

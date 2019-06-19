@@ -17,12 +17,12 @@ export function sellCompleteSets(
   callback: NodeStyleCallback = logError,
 ) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-    const { loginAccount, marketsData } = getState();
+    const { loginAccount, marketInfos } = getState();
     if (!loginAccount.address) return callback(null);
-    const { numTicks, maxPrice, minPrice } = marketsData[marketId];
+    const { numTicks, maxPrice, minPrice } = marketInfos[marketId];
     const numCompleteSetsOnChain = augur.utils.convertDisplayAmountToOnChainAmount(
       createBigNumber(numCompleteSets.fullPrecision),
-      createBigNumber(maxPrice - minPrice),
+      createBigNumber(maxPrice).minus(minPrice),
       numTicks,
     );
     const pendingHash = `pending-${marketId}-${numCompleteSets.fullPrecision}`;

@@ -172,9 +172,9 @@ export const startOrderSending = (options: any) => (
   getState: () => AppState
 ) => {
   const { marketId } = options;
-  const { loginAccount, marketsData, pendingLiquidityOrders } = getState();
+  const { loginAccount, marketInfos, pendingLiquidityOrders } = getState();
   const bnAllowance = createBigNumber(loginAccount.allowance, 10);
-  const market = marketsData[marketId];
+  const market = marketInfos[marketId];
   const orderBook = Object.assign({}, pendingLiquidityOrders[marketId]);
   // if market is undefined (marketsData not loaded yet), try again...
   if (!market) {

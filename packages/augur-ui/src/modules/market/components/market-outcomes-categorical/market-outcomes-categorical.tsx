@@ -4,9 +4,10 @@ import classNames from "classnames";
 
 import getValue from "utils/get-value";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
-import Styles from "modules/market/components/market-outcomes-categorical/market-outcomes-categorical.styles";
+import Styles from "modules/market/components/market-outcomes-categorical/market-outcomes-categorical.styles.less";
+import { MarketOutcome } from "modules/types";
 
-const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
+const CategoricalOutcome = ({ className, marketOutcome, isMobileSmall }) => (
   <div
     className={className || Styles.MarketOutcomesCategorical__outcome}
     style={{
@@ -19,29 +20,29 @@ const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
       <div className={Styles.MarketOutcomesCategorical__container}>
         <div>
           <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
-            {getValue(outcome, "lastPricePercent.full")}
+            {getValue(marketOutcome, "lastPricePercent.full")}
           </span>
           <MarketOutcomeTradingIndicator
             style={{ marginLeft: "10px" }}
-            outcome={outcome}
+            outcome={marketOutcome}
             location="categorical"
           />
         </div>
         <span className={Styles["MarketOutcomesCategorical__outcome-name"]}>
-          {outcome.name}
+          {marketOutcome.description}
         </span>
       </div>
     ) : (
       <div className={Styles.MarketOutcomesCategorical__container}>
         <span className={Styles["MarketOutcomesCategorical__outcome-name"]}>
-          {outcome.name}
+          {marketOutcome.description}
         </span>
         <span className={Styles["MarketOutcomesCategorical__outcome-value"]}>
-          {getValue(outcome, "lastPricePercent.full")}
+          {getValue(marketOutcome, "lastPricePercent.full")}
         </span>
         <MarketOutcomeTradingIndicator
           style={{ marginLeft: "10px" }}
-          outcome={outcome}
+          outcome={marketOutcome}
           location="categorical"
         />
       </div>
@@ -49,7 +50,26 @@ const CategoricalOutcome = ({ className, outcome, isMobileSmall }) => (
   </div>
 );
 
-class MarketOutcomesCategorical extends Component {
+CategoricalOutcome.propTypes = {
+  marketOutcome: PropTypes.object.isRequired,
+  className: PropTypes.string,
+  isMobileSmall: PropTypes.bool
+};
+
+CategoricalOutcome.defaultProps = {
+  className: null,
+  isMobileSmall: false
+};
+
+interface MarketOutcomesCategoricalProps {
+  marketOutcomes: Array<MarketOutcome>,
+  isMobileSmall: boolean,
+};
+
+class MarketOutcomesCategorical extends Component<MarketOutcomesCategoricalProps> {
+  static defaultProps = {
+    isMobileSmall: false
+  };
   constructor(props) {
     super(props);
 
@@ -73,8 +93,8 @@ class MarketOutcomesCategorical extends Component {
   }
 
   render() {
-    const { outcomes, isMobileSmall } = this.props;
-    const totalOutcomes = outcomes.length;
+    const { marketOutcomes, isMobileSmall } = this.props;
+    const totalOutcomes = marketOutcomes.length;
 
     const numOutcomesToShow = isMobileSmall ? 2 : 3;
     const displayShowMore = totalOutcomes > numOutcomesToShow;
@@ -91,10 +111,10 @@ class MarketOutcomesCategorical extends Component {
         className={Styles.MarketOutcomesCategorical}
         style={outcomeWrapperStyle}
       >
-        {outcomes.length > 0 && (
+        {marketOutcomes.length > 0 && (
           <CategoricalOutcome
             className={Styles["MarketOutcomesCategorical__height-sentinel"]}
-            outcome={outcomes[0]}
+            marketOutcome={marketOutcomes[0]}
             isMobileSmall={isMobileSmall}
           />
         )}
@@ -120,11 +140,11 @@ class MarketOutcomesCategorical extends Component {
             }}
             className={Styles.MarketOutcomesCategorical__outcomes}
           >
-            {outcomes.length > 0 &&
-              outcomes.map(outcome => (
+            {marketOutcomes.length > 0 &&
+              marketOutcomes.map(outcome => (
                 <CategoricalOutcome
                   key={outcome.id}
-                  outcome={outcome}
+                  marketOutcome={outcome}
                   isMobileSmall={isMobileSmall}
                 />
               ))}
@@ -134,25 +154,5 @@ class MarketOutcomesCategorical extends Component {
     );
   }
 }
-
-MarketOutcomesCategorical.propTypes = {
-  outcomes: PropTypes.array.isRequired,
-  isMobileSmall: PropTypes.bool
-};
-
-MarketOutcomesCategorical.defaultProps = {
-  isMobileSmall: false
-};
-
-CategoricalOutcome.propTypes = {
-  outcome: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  isMobileSmall: PropTypes.bool
-};
-
-CategoricalOutcome.defaultProps = {
-  className: null,
-  isMobileSmall: false
-};
 
 export default MarketOutcomesCategorical;

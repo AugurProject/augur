@@ -32,7 +32,7 @@ export const cancelOrder = (
   { orderId, marketId, outcome, orderTypeLabel }: any,
   callback: NodeStyleCallback = logError,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount, orderBooks, outcomesData, marketsData } = getState();
+  const { loginAccount, orderBooks, outcomesData, marketInfos } = getState();
   const order = selectOrder(
     orderId,
     marketId,
@@ -40,7 +40,7 @@ export const cancelOrder = (
     orderTypeLabel,
     orderBooks,
   );
-  const market = marketsData[marketId];
+  const market = marketInfos[marketId];
   if (
     order &&
     market &&

@@ -11,11 +11,11 @@ export const loadMarketOpenOrders = (marketId: string, callback: NodeStyleCallba
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const { marketsData } = getState();
+  const { marketInfos } = getState();
   if (marketId == null) {
     return callback("must specify market ID");
   }
-  const market = marketsData[marketId];
+  const market = marketInfos[marketId];
   if (!market) return callback(`market ${marketId} data not found`);
   augur.trading.getOrders(
     {

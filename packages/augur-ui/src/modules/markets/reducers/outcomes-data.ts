@@ -20,7 +20,7 @@ export default function(
     case UPDATE_MARKETS_DATA:
       return {
         ...outcomesData,
-        ...parseOutcomes(data.marketsData, outcomesData),
+        ...parseOutcomes(data.marketInfos, outcomesData),
       };
     case UPDATE_OUTCOME_PRICE: {
       const { marketId, outcomeId, price } = data;

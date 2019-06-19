@@ -46,7 +46,8 @@ class Confirm extends Component {
     marketType: PropTypes.string.isRequired,
     maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
     minPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    scalarDenomination: PropTypes.string
+    scalarDenomination: PropTypes.string,
+    numOutcomes: PropTypes.number,
   };
 
   static defaultProps = {

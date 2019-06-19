@@ -19,8 +19,8 @@ export const placeMarketTrade = ({
   onComplete = noop,
 }: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
-  const { marketsData } = getState();
-  const market: MarketData = marketsData[marketId];
+  const { marketInfos } = getState();
+  const market: MarketData = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
       `required parameters not found for market ${marketId} outcome ${outcomeId}`,

@@ -1,3 +1,5 @@
+import { MarketInfos } from "modules/types";
+
 export const UPDATE_MARKETS_DATA = "UPDATE_MARKETS_DATA";
 export const CLEAR_MARKETS_DATA = "CLEAR_MARKETS_DATA";
 export const UPDATE_MARKET_CATEGORY = "UPDATE_MARKET_CATEGORY";
@@ -8,9 +10,9 @@ export const UPDATE_MARKETS_DISPUTE_INFO = "UPDATE_MARKETS_DISPUTE_INFO";
 export const UPDATE_MARKET_ETH_BALANCE = "UPDATE_MARKET_ETH_BALANCE";
 export const REMOVE_MARKET = "REMOVE_MARKET";
 
-export const updateMarketsData = (marketsData: any) => ({
+export const updateMarketsData = (marketInfos: MarketInfos) => ({
   type: UPDATE_MARKETS_DATA,
-  data: { marketsData }
+  data: { marketInfos }
 });
 export const clearMarketsData = () => ({ type: CLEAR_MARKETS_DATA });
 export const updateMarketCategory = (marketId: string, category: string) => ({
