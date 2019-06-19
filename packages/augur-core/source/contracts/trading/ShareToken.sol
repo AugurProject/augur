@@ -64,18 +64,18 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
 
     function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
         require(msg.sender == createOrder);
-        return _transfer(_source, _destination, _attotokens, true);
+        return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
     function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
         require(msg.sender == fillOrder);
         // We do not call ERC777 hooks here as it would allow a malicious order creator to halt trading
-        return _transfer(_source, _destination, _attotokens, false);
+        return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
     function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
         require(msg.sender == cancelOrder);
-        return _transfer(_source, _destination, _attotokens, true);
+        return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
     function getTypeName() public view returns(bytes32) {

@@ -565,6 +565,12 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     categoricalMarket = fixture.createReasonableCategoricalMarket(universe, 3)
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
+
+    tokensFail = fixture.upload("solidity_test_helpers/ERC777Fail.sol")
+    erc1820Registry = fixture.contracts['ERC1820Registry']
+    erc1820Registry.setInterfaceImplementer(fixture.accounts[0], erc1820Registry.interfaceHash("ERC777TokensSender"), tokensFail.address)
+    erc1820Registry.setInterfaceImplementer(fixture.accounts[0], erc1820Registry.interfaceHash("ERC777TokensRecipient"), tokensFail.address)
+
     snapshot = fixture.createSnapshot()
     snapshot['universe'] = universe
     snapshot['cash'] = cash
@@ -574,6 +580,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot['scalarMarket'] = scalarMarket
     snapshot['auction'] = fixture.applySignature('Auction', universe.getAuction())
     snapshot['reputationToken'] = fixture.applySignature('ReputationToken', universe.getReputationToken())
+    snapshot['tokensFail'] = tokensFail
     return snapshot
 
 @pytest.fixture
@@ -616,6 +623,10 @@ def auction(kitchenSinkFixture, kitchenSinkSnapshot):
 @pytest.fixture
 def reputationToken(kitchenSinkFixture, kitchenSinkSnapshot):
     return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['reputationToken'].address, kitchenSinkSnapshot['reputationToken'].abi)
+
+@pytest.fixture
+def tokensFail(kitchenSinkFixture, kitchenSinkSnapshot):
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['tokensFail'].address, kitchenSinkSnapshot['tokensFail'].abi)
 
 # TODO: globally replace this with `fixture` and `kitchenSinkSnapshot` as appropriate then delete this
 @pytest.fixture(scope="session")

@@ -28,7 +28,7 @@ beforeAll(async () => {
   api = new API(john.augur, db);
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
-}, 120000);
+}, 200000);
 
 test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   // Create markets with multiple users
@@ -773,4 +773,4 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
       },
     ]
   );
-}, 120000);
+}, 200000);
