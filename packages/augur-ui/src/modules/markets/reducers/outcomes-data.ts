@@ -5,8 +5,7 @@ import {
   YES_NO,
   CATEGORICAL,
   SCALAR,
-  SCALAR_UP_ID,
-  YES_NO_YES_OUTCOME_NAME,
+  SCALAR_DOWN_ID,
   YES_NO_NO_ID
 } from "modules/common/constants";
 import { OutcomesData, BaseAction } from "modules/types";
@@ -66,7 +65,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
       case YES_NO:
         p[marketId] = {
           ...outcomesData[marketId],
-          ...parseYesNoOutcomes(marketData)
+          ...parseYesNoScalarOutcomes(marketData)
         };
         return p;
 
@@ -80,7 +79,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
       case SCALAR:
         p[marketId] = {
           ...outcomesData[marketId],
-          ...parseScalarOutcomes(marketData)
+          ...parseYesNoScalarOutcomes(marketData)
         };
         return p;
 
@@ -95,7 +94,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
     }
   }, {});
 
-  function parseYesNoOutcomes(marketData) {
+  function parseYesNoScalarOutcomes(marketData) {
     return marketData.outcomes.reduce((p, outcome) => {
       if (outcome.id !== YES_NO_NO_ID) {
         p[outcome.id] = { ...outcome };
@@ -107,20 +106,12 @@ function parseOutcomes(newMarketsData, outcomesData) {
     }, {});
   }
 
+  // TODO: remove this when refactoring out outcome `name` and using description
   function parseCategoricalOutcomes(marketData) {
     return marketData.outcomes.reduce((p, outcome) => {
       p[outcome.id] = { ...outcome };
       p[outcome.id].name = outcome.description.toString().trim();
       delete p[outcome.id].id;
-      return p;
-    }, {});
-  }
-
-  function parseScalarOutcomes(marketData) {
-    return marketData.outcomes.reduce((p, outcome) => {
-      if (outcome.id !== SCALAR_UP_ID) return p;
-      p[outcome.id] = { ...outcome };
-      p[outcome.id].name = marketData.description || "N/A";
       return p;
     }, {});
   }

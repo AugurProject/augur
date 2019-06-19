@@ -14,7 +14,7 @@ import {
   updateTradeCost,
   updateTradeShares
 } from "modules/trades/actions/update-trade-cost-shares";
-import { placeTrade } from "modules/trades/actions/place-trade";
+import { placeMarketTrade } from "modules/trades/actions/place-market-trade";
 import {
   updateAuthStatus,
   IS_CONNECTION_TRAY_OPEN
@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     onComplete
   ) =>
     dispatch(
-      placeTrade({
+      placeMarketTrade({
         marketId,
         outcomeId,
         tradeInProgress,

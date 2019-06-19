@@ -18,13 +18,17 @@ import {
   BID,
   ASK,
   ONE,
-  ZERO
+  ZERO,
+  SELL,
+  BUY
 } from "modules/common/constants";
 import getValue from "utils/get-value";
 import { isPopulated } from "utils/is-populated";
 
 import Styles from "modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity.styles";
 import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
+import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
+import { formatDai } from "utils/format-number";
 
 const PRECISION = 4;
 
@@ -362,7 +366,7 @@ export default class CreateMarketLiquidity extends Component {
     updateNewMarket({ orderBookSeries });
   }
 
-  validateForm(orderQuantityRaw, orderPriceRaw) {
+  async validateForm(orderQuantityRaw, orderPriceRaw) {
     const { availableEth, newMarket } = this.props;
     const tickSize = createBigNumber(newMarket.tickSize);
     const sanitizeValue = (value, type) => {
@@ -478,31 +482,15 @@ export default class CreateMarketLiquidity extends Component {
     if (isOrderValid) {
       const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0;
       const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1;
-      const shareBalances = newMarket.outcomes.map(outcome => 0);
-      const outcome =
-        this.props.newMarket.type === CATEGORICAL
-          ? newMarket.outcomes.indexOf(this.state.selectedOutcome)
-          : this.state.selectedOutcome;
-      const orderType = this.state.selectedNav === BID ? 0 : 1;
-      const orderInfo = {
-        orderType,
-        outcome,
-        shares: orderQuantity,
-        price: orderPrice,
-        tokenBalance: availableEth,
-        minPrice,
-        maxPrice,
-        marketCreatorFeeRate: newMarket.settlementFee,
-        reportingFeeRate: 0,
-        shareBalances,
-        singleOutcomeOrderBook: newMarket.orderBook[outcome] || {}
-      };
-      const action = augur.trading.simulateTrade(orderInfo);
+      const orderType = this.state.selectedNav === BID ? BUY : SELL;
+
+      // Calculate amount of DAI needed for order
+      const totalCost = calculateTotalOrderValue(orderQuantity, orderPrice, orderType, minPrice, maxPrice, newMarket.type);
 
       if (
         orderQuantity !== "" &&
         orderPrice !== "" &&
-        createBigNumber(action.tokensDepleted, 10).gt(
+        createBigNumber(totalCost, 10).gt(
           createBigNumber(availableEth)
         )
       ) {
@@ -511,7 +499,8 @@ export default class CreateMarketLiquidity extends Component {
         errors.price.push("Insufficient funds");
         isOrderValid = false;
       }
-      orderEstimate = `${action.tokensDepleted} ETH`;
+      const formattedValue = formatDai(totalCost)
+      orderEstimate = `${formattedValue.formatted} DAI`;
     }
 
     this.setState({

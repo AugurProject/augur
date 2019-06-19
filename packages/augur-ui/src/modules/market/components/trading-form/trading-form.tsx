@@ -36,7 +36,7 @@ interface TradingFormState {
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcomeId: "1",
+    selectedOutcomeId: "2",
   };
 
   state: TradingFormState = {
