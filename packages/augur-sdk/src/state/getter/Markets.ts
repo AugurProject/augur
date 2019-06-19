@@ -498,7 +498,6 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, mar
     });
   } else {
     const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x00" } })).reverse();
-    console.log(marketVolumeChangedLogs[0].outcomeVolumes);
     outcomes.push({
       id: 0,
       price: ordersFilled.length > 0 ? convertOnChainPriceToDisplayPrice(new BigNumber(ordersFilled[0].price), minPrice, tickSize).toString(10) : null,
