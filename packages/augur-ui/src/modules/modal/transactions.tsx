@@ -1,7 +1,5 @@
 import React from "react";
 import moment from "moment";
-import "react-dates/initialize";
-import "react-dates/lib/css/_datepicker.css";
 import {
   PrimaryButton,
   SecondaryButton,
@@ -16,7 +14,8 @@ import {
 } from "modules/common/constants";
 import { Pagination } from "modules/common/pagination";
 import { ValueLabel, TextLabel } from "modules/common/labels";
-import { SquareDropdown, DatePicker } from "modules/common/selection";
+import { SquareDropdown } from "modules/common/selection";
+import { DatePicker } from "modules/common/form";
 import { Title } from "modules/modal/common";
 import { formatEther, formatShares } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
