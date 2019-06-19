@@ -219,7 +219,7 @@ export default class MarketHeaderReporting extends Component {
     }
 
     if (!content) {
-      return <div className={Styles.Break} />;
+      return <div className={Styles.EmptyBreak} />;
     }
 
     let finalizationTimeWithHold = null;
