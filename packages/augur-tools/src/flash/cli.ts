@@ -16,7 +16,8 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
       // depending on the structure of its first argument.
       //   boolean: --foo
       //   string: --foo <bar>
-      v = v.option(`--${option.name}${option.flag ? "" : ` <arg>`}`, option.description);
+      const flag = option.flag || false;
+      v = v.option(`--${option.name}${flag ? "" : ` <arg>`}`, option.description);
     }
 
     v = v.action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args) {

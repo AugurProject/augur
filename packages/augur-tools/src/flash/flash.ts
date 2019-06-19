@@ -10,7 +10,8 @@ import { ContractInterfaces } from "@augurproject/core";
 export interface FlashOption {
   name: string;
   description?: string;
-  flag: boolean;
+  flag?: boolean;
+  required?: boolean;
 }
 
 export interface FlashArguments {
@@ -50,8 +51,21 @@ export class FlashSession {
     this.scripts[script.name] = script;
   }
 
-  call(script: string, args: any): any {
-    return this.scripts[script].call.bind(this)(args);
+  call(name: string, args: FlashArguments): any {
+    const script = this.scripts[name];
+
+    // Make sure required parameters are present.
+    for (const option of script.options) {
+      if (option.required) {
+        const arg = args[option.name];
+        if (typeof arg === "undefined") {
+          this.log(`ERROR: Must specify "--${option.name}"`);
+          return;
+        }
+      }
+    }
+
+    return script.call.bind(this)(args);
   }
 
   loadSeed() {

@@ -74,6 +74,7 @@ export class ContractAPI {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     await this.faucet(marketCreationFee);
     const byteTopic = ethers.utils.formatBytes32String(topic);
+    outcomes = outcomes.map(ethers.utils.formatBytes32String);
 
     const createMarketEvents = await universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
 

@@ -1,5 +1,5 @@
 import { makeGanacheProvider, makeGanacheServer } from "./ganache";
-import { FlashSession } from "./flash";
+import { FlashSession, FlashArguments } from "./flash";
 
 import { ethers } from "ethers";
 import * as ganache from "ganache-core";
@@ -14,10 +14,9 @@ export function addScripts(flash: FlashSession) {
       {
         name: "filepath",
         description: `Sets seed filepath. Initially set to "./seed.json"`,
-        flag: false,
       },
     ],
-    async call(this: FlashSession, args) {
+    async call(this: FlashSession, args: FlashArguments) {
       this.seedFilePath = args.filepath || this.seedFilePath;
 
       await this.ensureSeed();
@@ -34,7 +33,7 @@ export function addScripts(flash: FlashSession) {
         flag: true,
       },
     ],
-    async call(this: FlashSession, args) {
+    async call(this: FlashSession, args: FlashArguments) {
       await this.ensureSeed();
 
       if (args.internal) {
@@ -65,6 +64,38 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
 
       this.market = await user.createReasonableYesNoMarket(user.augur.contracts.universe);
+
+      this.log(`Created market "${this.market.address}".`);
+    },
+  });
+
+  flash.addScript({
+    name: "create-reasonable-categorical-market",
+    options: [
+      {
+        name: "outcomes",
+        description: "Comma-separated.",
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+      const outcomes: string[] = (args.outcomes as string).split(",");
+
+      this.market = await user.createReasonableMarket(user.augur.contracts.universe, outcomes);
+
+      this.log(`Created market "${this.market.address}".`);
+    },
+  });
+
+  flash.addScript({
+    name: "create-reasonable-scalar-market",
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+
+      this.market = await user.createReasonableScalarMarket(user.augur.contracts.universe);
 
       this.log(`Created market "${this.market.address}".`);
     },
