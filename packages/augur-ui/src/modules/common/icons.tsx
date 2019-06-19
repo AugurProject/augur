@@ -22,11 +22,54 @@ export const AugurLoadingLogo = (
 );
 
 export const Ellipsis = (
-  <svg
-    viewBox="0 0 40 40"
-    fill="none"
-  >
+  <svg viewBox="0 0 40 40" fill="none">
     <circle cx="20" cy="20" r="20" />
+  </svg>
+);
+
+export const EmptyRadio = (
+  <svg viewBox="0 0 20 20" fill="none">
+    <circle cx="10" cy="10" r="9" strokeWidth="2" />
+  </svg>
+);
+
+export const FilledRadio = (
+  <svg viewBox="0 0 20 20" fill="none">
+    <circle cx="10" cy="10" r="9" strokeWidth="2" />
+    <circle cx="10" cy="10" r="4" />
+  </svg>
+);
+
+export const EmptyCheckbox = (
+  <svg viewBox="0 0 20 20" fill="none">
+    <rect
+      x="1"
+      y="1"
+      width="18"
+      height="18"
+      rx="2"
+      strokeWidth="2"
+    />
+  </svg>
+);
+
+export const FilledCheckbox = (
+  <svg viewBox="0 0 20 20" fill="none">
+    <rect
+      x="1"
+      y="1"
+      width="18"
+      height="18"
+      rx="1"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M6.38184 10.5L8.1258 12.5L13.756 6.66669"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -35,11 +78,7 @@ export const CollapseIcon = (
     <rect x="1" y="1" width="18" height="28" rx="1" strokeLinecap="round" />
     <path d="M13 9L10 6L7 9" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M10 6.5L10 13.5" strokeLinecap="round" />
-    <path
-      d="M13 21L10 24L7 21"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M13 21L10 24L7 21" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M10 23.5L10 16.5" strokeLinecap="round" />
   </svg>
 );
