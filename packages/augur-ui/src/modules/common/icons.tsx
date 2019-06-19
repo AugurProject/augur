@@ -22,11 +22,54 @@ export const AugurLoadingLogo = (
 );
 
 export const Ellipsis = (
-  <svg
-    viewBox="0 0 40 40"
-    fill="none"
-  >
+  <svg viewBox="0 0 40 40" fill="none">
     <circle cx="20" cy="20" r="20" />
+  </svg>
+);
+
+export const EmptyRadio = (
+  <svg viewBox="0 0 20 20" fill="none">
+    <circle cx="10" cy="10" r="9" strokeWidth="2" />
+  </svg>
+);
+
+export const FilledRadio = (
+  <svg viewBox="0 0 20 20" fill="none">
+    <circle cx="10" cy="10" r="9" strokeWidth="2" />
+    <circle cx="10" cy="10" r="4" />
+  </svg>
+);
+
+export const EmptyCheckbox = (
+  <svg viewBox="0 0 20 20" fill="none">
+    <rect
+      x="1"
+      y="1"
+      width="18"
+      height="18"
+      rx="2"
+      strokeWidth="2"
+    />
+  </svg>
+);
+
+export const FilledCheckbox = (
+  <svg viewBox="0 0 20 20" fill="none">
+    <rect
+      x="1"
+      y="1"
+      width="18"
+      height="18"
+      rx="1"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M6.38184 10.5L8.1258 12.5L13.756 6.66669"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -35,11 +78,7 @@ export const CollapseIcon = (
     <rect x="1" y="1" width="18" height="28" rx="1" strokeLinecap="round" />
     <path d="M13 9L10 6L7 9" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M10 6.5L10 13.5" strokeLinecap="round" />
-    <path
-      d="M13 21L10 24L7 21"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M13 21L10 24L7 21" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M10 23.5L10 16.5" strokeLinecap="round" />
   </svg>
 );
@@ -114,6 +153,13 @@ export const Chevron = (
       clipRule="evenodd"
       d="M1.35355 0.146447C1.15829 -0.0488155 0.841709 -0.0488155 0.646447 0.146447C0.451184 0.341709 0.451184 0.658291 0.646447 0.853553L8.64562 8.85272C8.64589 8.853 8.64617 8.85328 8.64645 8.85355C8.84171 9.04882 9.15829 9.04882 9.35355 8.85355C9.35375 8.85336 9.35394 8.85316 9.35414 8.85297L17.3536 0.853553C17.5488 0.658291 17.5488 0.341709 17.3536 0.146447C17.1583 -0.0488155 16.8417 -0.0488155 16.6464 0.146447L9 7.79289L1.35355 0.146447Z"
     />
+  </svg>
+);
+
+export const OutlineChevron = (
+  <svg viewBox="0 0 32 32" fill="none">
+    <rect x="-0.5" y="0.5" width="31" height="31" rx="2.5" transform="matrix(-1 0 0 1 31 0)"/>
+    <path d="M18 20L14 16L18 12" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 );
 
