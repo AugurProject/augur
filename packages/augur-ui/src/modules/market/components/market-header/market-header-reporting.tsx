@@ -2,21 +2,18 @@ import React, { Component } from "react";
 import classNames from "classnames";
 
 import PropTypes from "prop-types";
-import Styles from "modules/market/components/market-header/market-header-reporting.styles";
+import Styles from "modules/market/components/market-header/market-header-reporting.styles.less";
 import MarketLink from "modules/market/components/market-link/market-link";
 import {
-  CATEGORICAL,
   TYPE_DISPUTE,
   TYPE_REPORT,
   MARKET_STATUS_MESSAGES,
   REPORTING_STATE,
-  CONTRACT_INTERVAL,
 } from "modules/common/constants";
 import {
   CountdownProgress,
   formatTime
 } from "modules/common/progress";
-import { createBigNumber } from "utils/create-big-number";
 import { PrimaryButton } from "modules/common/buttons";
 
 import canClaimProceeds from "utils/can-claim-proceeds";
@@ -222,15 +219,6 @@ export default class MarketHeaderReporting extends Component {
       return <div className={Styles.Break} />;
     }
 
-    let finalizationTimeWithHold = null;
-    if (finalizationTime) {
-      finalizationTimeWithHold = createBigNumber(finalizationTime)
-        .plus(
-          createBigNumber(CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
-        )
-        .toNumber();
-    }
-
     return (
       <>
         {reportingState === REPORTING_STATE.AWAITING_FINALIZATION && (
@@ -250,25 +238,6 @@ export default class MarketHeaderReporting extends Component {
             )}
           </div>
         )}
-        {outstandingReturns &&
-          !canClaim && (
-            <div className={Styles.ClaimHold}>
-              <div>
-                <div>3 day waiting period in progress</div>
-                <div>
-                  Your proceeds will be available to claim once the 3 day period
-                  has ended.
-                </div>
-              </div>
-              <div>
-                <CountdownProgress
-                  label={MARKET_STATUS_MESSAGES.WAITING_PERIOD_ENDS}
-                  time={formatTime(finalizationTimeWithHold)}
-                  currentTime={formatTime(currentTimestamp)}
-                />
-              </div>
-            </div>
-          )}
         {content}
       </>
     );

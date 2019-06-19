@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import { isMarketLoaded } from "modules/markets/helpers/is-market-loaded";
 import {
   updateMarketsData,

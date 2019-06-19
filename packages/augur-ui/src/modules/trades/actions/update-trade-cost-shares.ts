@@ -202,25 +202,6 @@ async function runSimulateTrade(
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
   const outcomeIdx = parseInt(outcomeId, 10);
 
-  /*
-  const simulatedTradeOld = augur.trading.simulateTrade({
-    orderType: newTradeDetails.side === BUY ? 0 : 1,
-    outcome: outcomeIndex,
-    shareBalances: userShareBalance,
-    tokenBalance: (loginAccount.eth && loginAccount.eth.toString()) || '0',
-    userAddress: loginAccount.address,
-    minPrice: market.minPrice,
-    maxPrice: market.maxPrice,
-    price: newTradeDetails.limitPrice,
-    shares: newTradeDetails.numShares,
-    marketCreatorFeeRate: market.marketCreatorFeeRate,
-    singleOutcomeOrderBook:
-      (orderBooks && orderBooks[marketId] && orderBooks[marketId][outcomeId]) ||
-      {},
-    shouldCollectReportingFees: !market.isDisowned,
-    reportingFeeRate: market.reportingFeeRate,
-  });
-*/
   const userShares = ignoreShares ? 0 : userShareBalance[outcomeIdx];
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(

@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const outcome = oP.outcome;
 
-  const outcomeName = getValue(outcome, "description");
+  const outcomeName = outcome.description;
 
   const topBidShares = getValue(outcome, "topBid.shares");
   const topAskShares = getValue(outcome, "topAsk.shares");
@@ -82,7 +82,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       isSingle: true,
       noToggle: true,
       colorId: outcome.id,
-      active: oP.selectedOutcomeId === outcome.id
+      active: oP.selectedOutcomeId === outcome.id,
     }
   };
 };

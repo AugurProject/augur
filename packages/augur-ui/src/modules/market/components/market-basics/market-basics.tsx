@@ -10,12 +10,11 @@ import MarketLink from "modules/market/components/market-link/market-link";
 
 import toggleTag from "modules/routes/helpers/toggle-tag";
 import toggleCategory from "modules/routes/helpers/toggle-category";
-import { formatDate } from "utils/format-date";
 import getValue from "utils/get-value";
 import { YES_NO, SCALAR, CATEGORICAL } from "modules/common/constants";
 
-import CommonStyles from "modules/market/components/common/market-common.styles";
-import Styles from "modules/market/components/market-basics/market-basics.styles";
+import CommonStyles from "modules/market/components/common/market-common.styles.less";
+import Styles from "modules/market/components/market-basics/market-basics.styles.less";
 import SingleSlicePieGraph from "modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph";
 import TimeRemainingIndicatorWrapper from "modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
 import { constants } from "services/augurjs";
@@ -38,13 +37,13 @@ const MarketBasics = ({
     !p.hideReportEndingIndicator
   ) {
     const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph);
-    const endTime = moment(p.endTime.value)
+    const endTime = moment(p.endTimeFormatted.value)
       .add(
         constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS,
         "seconds"
       )
       .toDate();
-    const displayDate = formatDate(endTime);
+    const displayDate = p.endTimeFormatted;
 
     ReportEndingIndicator = () => (
       <div className={Styles.ReportingEnds}>
@@ -54,7 +53,7 @@ const MarketBasics = ({
             : `Reporting Ends ${displayDate.formattedLocalShortTime}`}
         </div>
         <WrappedGraph
-          startDate={p.endTime.value}
+          startDate={p.endTimeFormatted.value}
           endTime={endTime}
           currentTimestamp={p.currentTimestamp}
           backgroundColor="transparent"
@@ -107,9 +106,9 @@ const MarketBasics = ({
 
       {(marketType === YES_NO || marketType === SCALAR) && (
         <MarketOutcomesBinaryScalar
-          outcomes={p.outcomes}
-          min={p.minPrice}
-          max={p.maxPrice}
+          outcomes={p.marketOutcomes}
+          min={p.minPriceBigNumber}
+          max={p.maxPriceBigNumber}
           type={marketType}
           scalarDenomination={p.isMobile ? "" : p.scalarDenomination || "N/A"}
         />
@@ -117,7 +116,7 @@ const MarketBasics = ({
 
       {marketType === CATEGORICAL && (
         <MarketOutcomesCategorical
-          outcomes={p.outcomes}
+          marketOutcomes={p.marketOutcomes}
           isMobileSmall={p.isMobileSmall}
         />
       )}
@@ -134,11 +133,11 @@ MarketBasics.propTypes = {
   marketType: PropTypes.string,
   id: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  minPrice: PropTypes.object,
-  maxPrice: PropTypes.object,
+  minPriceBigNumber: PropTypes.object,
+  maxPriceBigNumber: PropTypes.object,
   reportingState: PropTypes.string,
   scalarDenomination: PropTypes.string,
-  endTime: PropTypes.object.isRequired,
+  endTimeFormatted: PropTypes.object.isRequired,
   outcomes: PropTypes.array.isRequired,
   disputeInfo: PropTypes.object,
   cardStyle: PropTypes.string,

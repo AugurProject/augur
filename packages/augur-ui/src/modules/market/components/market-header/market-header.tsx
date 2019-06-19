@@ -254,7 +254,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                   isFavorite={isFavorite}
                   reportingState={market.reportingState}
                   disputeInfo={market.disputeInfo}
-                  endTime={market.endTime}
+                  endTimeFormatted={market.endTimeFormatted}
                   isLogged={isLogged}
                 />
               )}
@@ -265,7 +265,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                   <MarketTimeline
                     startTime={market.creationTime || 0}
                     currentTime={currentTime || 0}
-                    endTime={market.endTime || 0}
+                    endTime={market.endTimeFormatted}
                   />
                 </div>
               </div>

@@ -245,7 +245,6 @@ const testState = {
     "0xf69b5": {
       testMarketId: {
         marketId: "testMarketId",
-        isScalar: false,
         isIndeterminate: false,
         isSubmitted: false
       }

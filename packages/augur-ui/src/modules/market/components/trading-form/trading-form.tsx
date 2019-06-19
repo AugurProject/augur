@@ -18,7 +18,7 @@ interface TradingFormProps {
   marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
   selectedOrderProperties: Object;
-  selectedOutcomeId: string;
+  selectedOutcomeId: number;
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
   gasPrice: number;
@@ -36,7 +36,7 @@ interface TradingFormState {
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcomeId: "2",
+    selectedOutcomeId: 2,
   };
 
   state: TradingFormState = {
@@ -45,7 +45,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       this.props.market &&
       this.props.market.outcomes &&
       this.props.market.outcomes.find(
-        outcome => outcome.id.toString() === this.props.selectedOutcomeId
+        outcome => outcome.id === this.props.selectedOutcomeId
       ),
   };
 
@@ -61,7 +61,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           market &&
           market.outcomes &&
           market.outcomes.find(
-            outcome => outcome.id.toString() === nextProps.selectedOutcomeId
+            outcome => outcome.id === nextProps.selectedOutcomeId
           );
         this.setState({ selectedOutcome });
       }

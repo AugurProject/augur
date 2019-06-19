@@ -60,7 +60,7 @@ interface MarketViewState {
   extendOrderBook: boolean,
   extendTradeHistory: boolean,
   selectedOrderProperties: DefaultOrderProperties,
-  selectedOutcomeId: string,
+  selectedOutcomeId: number,
   fixedPrecision: number,
   selectedOutcomeProperties: DefaultOrderPropertiesMap,
 }
@@ -81,7 +81,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       extendOrderBook: false,
       extendTradeHistory: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
-      selectedOutcomeId: "2",
+      selectedOutcomeId: 2,
       fixedPrecision: 4,
       selectedOutcomeProperties: {
         1: {
@@ -234,7 +234,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
     } = this.props;
     const s = this.state;
 
-    const outcome = outcomes.find( outcomeValue => outcomeValue.id.toString() === s.selectedOutcomeId)
+    const outcome = outcomes.find( outcomeValue => outcomeValue.id === s.selectedOutcomeId)
     const selectedOutcomeName: string = outcome ? outcome.description : "";
 
     return (

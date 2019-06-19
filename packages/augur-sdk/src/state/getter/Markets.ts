@@ -49,6 +49,7 @@ export interface MarketInfoOutcome {
   id: number;
   price: string;
   description: string;
+  volume: string;
 }
 
 export enum MarketInfoReportingState {
@@ -74,6 +75,7 @@ export interface MarketInfo {
   cumulativeScale: string;
   author: string;
   creationBlock: number;
+  creationTime: number;
   category: string;
   volume: string;
   openInterest: string;
@@ -91,8 +93,10 @@ export interface MarketInfo {
   tickSize: string;
   consensus: Array<string> | null,
   outcomes: Array<MarketInfoOutcome>;
+  marketCreatorFeeRate: string;
   settlementFee: string;
   reportingFeeRate: string;
+  disputeInfo: any;
 }
 
 export interface MarketPriceCandlestick {
@@ -375,9 +379,9 @@ export class Markets {
         scalarDenomination = extraInfo._scalarDenomination ? extraInfo._scalarDenomination : null;
         tags = extraInfo.tags ? extraInfo.tags : [];
       }
-      const defaultPrice = displayMaxPrice.minus(displayMinPrice).dividedBy(2).toString(10);
-      const settlementFee = new BigNumber(marketCreatedLog.feeDivisor).dividedBy(QUINTILLION).toString(10);
       const reportingFeeRate = "0"; // TODO need to pull this from somewhere
+      const marketCreatorFeeRate = new BigNumber(marketCreatedLog.feeDivisor).dividedBy(QUINTILLION).toString(10);
+      const settlementFee = new BigNumber(marketCreatedLog.feeDivisor).plus(reportingFeeRate).dividedBy(QUINTILLION).toString(10);
 
       return Object.assign({
         id: marketCreatedLog.market,
@@ -400,6 +404,7 @@ export class Markets {
         description,
         scalarDenomination,
         settlementFee,
+        marketCreatorFeeRate,
         reportingFeeRate,
         details,
         resolutionSource,
@@ -407,7 +412,7 @@ export class Markets {
         tickSize: tickSize.toString(10),
         consensus,
         tags,
-        outcomes: await getMarketOutcomes(db, marketCreatedLog, scalarDenomination, defaultPrice, )
+        outcomes: await getMarketOutcomes(db, marketCreatedLog, scalarDenomination)
       });
     }));
   }
@@ -467,7 +472,7 @@ async function getMarketOpenInterest(db: DB, marketCreatedLog: MarketCreatedLog)
   return "0";
 }
 
-async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, scalarDenomination: string, defaultPrice: string): Promise<Array<MarketInfoOutcome>> {
+async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, scalarDenomination: string): Promise<Array<MarketInfoOutcome>> {
   let outcomes: Array<MarketInfoOutcome> = [];
   if (marketCreatedLog.outcomes.length === 0) {
     const ordersFilled0 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x00" } })).reverse();
@@ -475,33 +480,38 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, sca
     const ordersFilled2 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x02" } })).reverse();
     outcomes.push({
       id: 0,
-      price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].uint256Data[OrderEventUint256Value.price]).toString(10) : "0",
-      description: "Invalid"
+      price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].uint256Data[OrderEventUint256Value.price]).toString(10) : null,
+      description: "Invalid",
+      volume: "0",
     });
     outcomes.push({
       id: 1,
-      price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].uint256Data[OrderEventUint256Value.price]).toString(10) : defaultPrice,
-      description: (marketCreatedLog.marketType === 0) ? "No" : scalarDenomination
+      price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].uint256Data[OrderEventUint256Value.price]).toString(10) : null,
+      description: (marketCreatedLog.marketType === 0) ? "No" : scalarDenomination,
+      volume: "0",
     });
     outcomes.push({
       id: 2,
-      price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].uint256Data[OrderEventUint256Value.price]).toString(10) : defaultPrice,
-      description: (marketCreatedLog.marketType === 0) ? "Yes" : scalarDenomination
+      price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].uint256Data[OrderEventUint256Value.price]).toString(10) : null,
+      description: (marketCreatedLog.marketType === 0) ? "Yes" : scalarDenomination,
+      volume: "0",
     });
   } else {
     const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x00" } })).reverse();
     outcomes.push({
       id: 0,
-      price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[OrderEventUint256Value.price]).toString(10) : "0",
-      description: "Invalid"
+      price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[OrderEventUint256Value.price]).toString(10) : null,
+      description: "Invalid",
+      volume: "0",
     });
     for (let i = 0; i < marketCreatedLog.outcomes.length; i++) {
       const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, [ORDER_EVENT_OUTCOME]: "0x0" + (i + 1) } })).reverse();
       const outcomeDescription = marketCreatedLog.outcomes[i].replace("0x", "");
       outcomes.push({
         id: i + 1,
-        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[OrderEventUint256Value.price]).toString(10) : defaultPrice,
-        description: Buffer.from(outcomeDescription, "hex").toString()
+        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].uint256Data[OrderEventUint256Value.price]).toString(10) : null,
+        description: Buffer.from(outcomeDescription, "hex").toString(),
+        volume: "0",
       });
     }
   }
