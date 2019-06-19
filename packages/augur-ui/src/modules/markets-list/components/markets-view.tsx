@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { Helmet } from "react-helmet";
+import React, { Component } from 'react';
+import { Helmet } from 'react-helmet';
 
-import MarketsHeader from "modules/markets-list/components/markets-header";
-import MarketsList from "modules/markets-list/components/markets-list";
-import { TYPE_TRADE } from "modules/common/constants";
-import { MarketData } from "modules/types";
+import MarketsHeader from 'modules/markets-list/components/markets-header';
+import MarketsList from 'modules/markets-list/components/markets-list';
+import { TYPE_TRADE } from 'modules/common/constants';
+import { MarketData } from 'modules/types';
 
 interface MarketsViewProps {
   isLogged: boolean;
@@ -14,7 +14,7 @@ interface MarketsViewProps {
   toggleFavorite: (...args: any[]) => any;
   loadMarketsInfoIfNotLoaded: (...args: any[]) => any;
   isMobile: boolean;
-  loadMarketsByFilter:Function;
+  loadMarketsByFilter: Function;
   search?: string;
   category?: string;
   universe?: string;
@@ -33,7 +33,10 @@ interface MarketsViewState {
   isSearchingMarkets: boolean;
 }
 
-export default class MarketsView extends Component<MarketsViewProps, MarketsViewState> {
+export default class MarketsView extends Component<
+  MarketsViewProps,
+  MarketsViewState
+> {
   static defaultProps = {
     search: null,
     category: null,
@@ -81,7 +84,7 @@ export default class MarketsView extends Component<MarketsViewProps, MarketsView
     const { filter, sort, maxFee, hasOrders } = params;
     this.setState(
       { filter, sort, maxFee, hasOrders },
-      this.updateFilteredMarkets,
+      this.updateFilteredMarkets
     );
   }
 
@@ -92,7 +95,7 @@ export default class MarketsView extends Component<MarketsViewProps, MarketsView
     this.loadMarketsByFilter(
       { category, search, filter, sort, maxFee, hasOrders },
       (err, filterSortedMarkets) => {
-        if (err) return console.log("Error loadMarketsFilter:", err);
+        if (err) return console.log('Error loadMarketsFilter:', err);
         if (this.componentWrapper) {
           this.setState({ filterSortedMarkets });
           setTimeout(() => this.setState({ isSearchingMarkets: false }), 500);
@@ -119,10 +122,9 @@ export default class MarketsView extends Component<MarketsViewProps, MarketsView
       filterSortedMarkets,
       isSearchingMarkets,
     } = this.state;
-
     return (
       <section
-        ref={(componentWrapper) => {
+        ref={componentWrapper => {
           this.componentWrapper = componentWrapper;
         }}
       >
