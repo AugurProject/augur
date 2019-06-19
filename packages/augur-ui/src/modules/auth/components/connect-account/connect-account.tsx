@@ -1,40 +1,34 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ConnectDropdown from "modules/auth/containers/connect-dropdown";
 import ChevronFlip from "modules/common/chevron-flip";
 import formatAddress from "modules/auth/helpers/format-address";
 
-import Styles from "modules/auth/components/connect-account/connect-account.styles";
-import ToggleHeightStyles from "utils/toggle-height.styles";
+import Styles from "modules/auth/components/connect-account/connect-account.styles.less";
+import ToggleHeightStyles from "utils/toggle-height.styles.less";
 
-export default class ConnectAccount extends Component {
-  static propTypes = {
-    isLogged: PropTypes.bool.isRequired,
-    isConnectionTrayOpen: PropTypes.bool.isRequired,
-    address: PropTypes.string,
-    className: PropTypes.string,
-    updateConnectionTray: PropTypes.func.isRequired
-  };
+interface ConnectAccountProps {
+  isLogged: boolean;
+  isConnectionTrayOpen: boolean;
+  address?: string;
+  className?: string;
+  updateConnectionTray: Function;
+}
 
+export default class ConnectAccount extends Component<ConnectAccountProps> {
   static defaultProps = {
     address: "",
-    className: undefined
+    className: undefined,
   };
+
+  public connectAccount;
+  public connectDropdown;
 
   constructor(props) {
     super(props);
 
     this.toggleDropdown = this.toggleDropdown.bind(this);
-  }
-
-  componentDidMount() {
-    window.addEventListener("click", this.handleWindowOnClick);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("click", this.handleWindowOnClick);
   }
 
   toggleDropdown(cb) {
@@ -50,25 +44,25 @@ export default class ConnectAccount extends Component {
       <div
         className={classNames(Styles.ConnectAccount, className, {
           [Styles.selected]: isConnectionTrayOpen,
-          [Styles.ConnectAccountLoggedIn]: isLogged
+          [Styles.ConnectAccountLoggedIn]: isLogged,
         })}
-        ref={connectAccount => {
+        ref={(connectAccount) => {
           this.connectAccount = connectAccount;
         }}
       >
         <div
           className={classNames(Styles.container, {
-            [Styles.containerLoggedIn]: isLogged
+            [Styles.containerLoggedIn]: isLogged,
           })}
           onClick={this.toggleDropdown}
           role="button"
-          tabIndex="-1"
+          tabIndex={-1}
         >
-          <div className={Styles.column}>
+          <div>
             <div className={Styles.status}>
               <div
                 className={classNames(Styles.statusIndicator, {
-                  [Styles.statusGreen]: isLogged
+                  [Styles.statusGreen]: isLogged,
                 })}
               />
               {isLogged ? "Connected" : "Disconnected"}
@@ -77,7 +71,7 @@ export default class ConnectAccount extends Component {
               {isLogged ? formatAddress(address) : "Connect A Wallet"}
               <span
                 className={classNames(Styles.arrow, {
-                  [Styles.arrowHide]: isLogged
+                  [Styles.arrowHide]: isLogged,
                 })}
               >
                 <ChevronFlip
@@ -91,15 +85,15 @@ export default class ConnectAccount extends Component {
           </div>
         </div>
         <div
-          ref={ConnectDropdown => {
-            this.ConnectDropdown = ConnectDropdown;
+          ref={(connectDropdown) => {
+            this.connectDropdown = connectDropdown;
           }}
           className={classNames(
             Styles.connectDropdown,
             ToggleHeightStyles.target,
             ToggleHeightStyles.quick,
             {
-              [ToggleHeightStyles.open]: isConnectionTrayOpen
+              [ToggleHeightStyles.open]: isConnectionTrayOpen,
             }
           )}
         >

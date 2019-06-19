@@ -5,13 +5,13 @@ import { logout } from "modules/auth/actions/logout";
 
 const mapStateToProps = state => ({});
 
-const mapDispatchToProps = dispatch => ({
-  loginWithTrezor: (address, connect, addressPath) =>
-    dispatch(loginWithTrezor(address, connect, addressPath)),
-  logout: () => dispatch(logout())
+const mapDispatchToProps = (dispatch) => ({
+  loginWithTrezor: (address, addressPath) =>
+    dispatch(loginWithTrezor(address, addressPath)),
+  logout: () => dispatch(logout()),
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(TrezorConnectWrapper);

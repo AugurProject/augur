@@ -671,6 +671,12 @@ export const Edge = (
   </svg>
 );
 
+// TODO design will replace
+export const Fortmatic = (
+  <svg height="39" viewBox="0 0 39 39" width="39"><g fill="#617bff"><path d="m28.7289 0h-9.5763-9.5763-9.5763v9.5763 9.5763.614 8.9065.0558 9.5205h9.5763v-9.5205-.0558-8.9065-.614-9.5763h9.5763 9.5763 9.5763v-9.5763z"/><path d="m19.207 28.6728h9.5205v9.5763h.3349c2.45-.0014 4.7992-.9757 6.5311-2.7087 1.7319-1.7329 2.7047-4.0826 2.7047-6.5326v-9.8555h-19.0912z"/></g></svg>
+);
+
+// TODO design will replace
 export const Portis = (
   <svg width="25px" height="25px" viewBox="0 0 134 203" version="1.1" >
       <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">

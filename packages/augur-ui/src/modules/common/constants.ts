@@ -3,6 +3,7 @@ import {
   Edge,
   MetaMask,
   Portis,
+  Fortmatic,
   Trezor
 } from "modules/common/icons";
 import { DEFAULT_DERIVATION_PATH } from "modules/auth/helpers/derivation-path";
@@ -70,7 +71,7 @@ export const AUTH_TYPES = {
   [REGISTER]: REGISTER,
   [LOGIN]: LOGIN,
   [IMPORT]: IMPORT,
-  [LOGOUT]: LOGOUT
+  [LOGOUT]: LOGOUT,
 };
 
 export const DEFAULT_AUTH_TYPE = REGISTER;
@@ -81,6 +82,7 @@ export const EDGE_WALLET_TYPE = "wallet:ethereum";
 export const ACCOUNT_TYPES = {
   EDGE: "edge",
   PORTIS: "portis",
+  FORTMATIC: "fortmatic",
   LEDGER: "ledger",
   METAMASK: "metaMask",
   TREZOR: "trezor",
@@ -89,7 +91,7 @@ export const ACCOUNT_TYPES = {
 
 export const WALLET_TYPE = {
   SOFTWARE: "software",
-  HARDWARE: "hardware"
+  HARDWARE: "hardware",
 };
 
 export const ERROR_TYPES = {
@@ -117,13 +119,19 @@ export const ITEMS = [
     param: ACCOUNT_TYPES.PORTIS,
     title: "Portis",
     icon: Portis,
-    type: WALLET_TYPE.SOFTWARE
+    type: WALLET_TYPE.SOFTWARE,
+  },
+  {
+    param: ACCOUNT_TYPES.FORTMATIC,
+    title: "Fortmatic",
+    icon: Fortmatic,
+    type: WALLET_TYPE.SOFTWARE,
   },
   {
     param: ACCOUNT_TYPES.METAMASK,
     title: "Metamask / Web 3 Provider",
     icon: MetaMask,
-    type: WALLET_TYPE.SOFTWARE
+    type: WALLET_TYPE.SOFTWARE,
   },
   {
     param: ACCOUNT_TYPES.TREZOR,
@@ -740,3 +748,10 @@ export const COLUMN_TYPES = {
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
 };
 
+
+// Login method variables
+export const TREZOR_MANIFEST_EMAIL = "team@augur.net";
+export const TREZOR_MANIFEST_APPURL = "https://dev.augur.net";
+export const PORTIS_API_KEY = "b67817cf-8dd0-4116-a0cf-657820ddc019";
+export const FORTMATIC_API_KEY = "pk_live_8001A50CCA35D8CB";
+export const FORTMATIC_API_TEST_KEY = "pk_test_5185BE42CA372148";
