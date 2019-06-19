@@ -24,9 +24,10 @@ export const buildTransaction = async(transaction, address, provider) => {
   if (transaction.gasLimit) {
     transaction.gasLimit = utils.hexlify(transaction.gasLimit as string);
   } else {
-    const gasLimit = await provider.estimateGas(transaction);
-    transaction.gasLimit = utils.hexlify(gasLimit);
-
+    // TODO gasLimit returned by estimateGas is currently failing -- need to look into this
+    // TODO for now using 1500000 as default gas limit
+    // const gasLimit = await provider.estimateGas(transaction);
+    transaction.gasLimit = utils.hexlify(1500000);
   }
 
   transaction.nonce = utils.hexlify(await provider.getTransactionCount(address));

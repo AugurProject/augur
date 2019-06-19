@@ -1,6 +1,5 @@
 import { Signer, utils } from "ethers";
 import { prefixHex } from "speedomatic";
-import { getGasPrice } from "modules/contracts/actions/contractCalls";
 import { augurSdk } from "services/augursdk";
 import { EthersProvider } from "@augurproject/ethersjs-provider/build";
 import { TransactionRequest } from "ethers/providers";
