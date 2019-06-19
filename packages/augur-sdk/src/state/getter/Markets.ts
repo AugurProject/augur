@@ -6,6 +6,7 @@ import {
   MarketType,
   MarketCreatedLog,
   MarketFinalizedLog,
+  MarketVolumeChangedLog,
   OrderEventType,
   ParsedOrderEventLog,
 } from "../logs/types";
@@ -46,6 +47,7 @@ export interface MarketInfoOutcome {
   id: number;
   price: string;
   description: string;
+  volume: string|null;
 }
 
 export enum MarketInfoReportingState {
@@ -404,7 +406,7 @@ export class Markets {
         tickSize: tickSize.toString(10),
         consensus,
         tags,
-        outcomes: await getMarketOutcomes(db, marketCreatedLog, scalarDenomination, defaultPrice, )
+        outcomes: await getMarketOutcomes(db, marketCreatedLog, marketVolumeChangedLogs, scalarDenomination, defaultPrice, )
       });
     }));
   }
@@ -464,7 +466,7 @@ async function getMarketOpenInterest(db: DB, marketCreatedLog: MarketCreatedLog)
   return "0";
 }
 
-async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, scalarDenomination: string, defaultPrice: string): Promise<Array<MarketInfoOutcome>> {
+async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, marketVolumeChangedLogs: Array<MarketVolumeChangedLog>, scalarDenomination: string, defaultPrice: string): Promise<Array<MarketInfoOutcome>> {
   let outcomes: Array<MarketInfoOutcome> = [];
   if (marketCreatedLog.outcomes.length === 0) {
     const ordersFilled0 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x00" } })).reverse();
@@ -473,24 +475,29 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, sca
     outcomes.push({
       id: 0,
       price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].price).toString(10) : "0",
-      description: "Invalid"
+      description: "Invalid",
+      volume: marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
     });
     outcomes.push({
       id: 1,
       price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].price).toString(10) : defaultPrice,
-      description: (marketCreatedLog.marketType === 0) ? "No" : scalarDenomination
+      description: (marketCreatedLog.marketType === 0) ? "No" : scalarDenomination,
+      volume: marketVolumeChangedLogs[0].outcomeVolumes[1] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[1]).toString(10)
     });
     outcomes.push({
       id: 2,
       price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].price).toString(10) : defaultPrice,
-      description: (marketCreatedLog.marketType === 0) ? "Yes" : scalarDenomination
+      description: (marketCreatedLog.marketType === 0) ? "Yes" : scalarDenomination,
+      volume: marketVolumeChangedLogs[0].outcomeVolumes[2] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[2]).toString(10)
     });
   } else {
     const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x00" } })).reverse();
+    console.log(marketVolumeChangedLogs[0].outcomeVolumes);
     outcomes.push({
       id: 0,
       price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : "0",
-      description: "Invalid"
+      description: "Invalid",
+      volume: marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
     });
     for (let i = 0; i < marketCreatedLog.outcomes.length; i++) {
       const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x0" + (i + 1) } })).reverse();
@@ -498,7 +505,8 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, sca
       outcomes.push({
         id: i + 1,
         price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : defaultPrice,
-        description: Buffer.from(outcomeDescription, "hex").toString()
+        description: Buffer.from(outcomeDescription, "hex").toString(),
+        volume: marketVolumeChangedLogs[0].outcomeVolumes[i + 1] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[i + 1]).toString(10)
       });
     }
   }
