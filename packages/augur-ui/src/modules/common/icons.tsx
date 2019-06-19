@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 export const AugurLoadingLogo = (
   <svg viewBox="50 50 205 205">
@@ -21,23 +21,20 @@ export const AugurLoadingLogo = (
   </svg>
 );
 
+export const Ellipsis = (
+  <svg
+    viewBox="0 0 40 40"
+    fill="none"
+  >
+    <circle cx="20" cy="20" r="20" />
+  </svg>
+);
 
 export const CollapseIcon = (
   <svg viewBox="0 0 20 30" fill="none">
-    <rect
-      x="1"
-      y="1"
-      width="18"
-      height="28"
-      rx="1"
-      strokeLinecap="round"
-    />
-    <path
-      d="M13 9L10 6L7 9"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path d="M10 6.5L10 13.5"strokeLinecap="round" />
+    <rect x="1" y="1" width="18" height="28" rx="1" strokeLinecap="round" />
+    <path d="M13 9L10 6L7 9" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M10 6.5L10 13.5" strokeLinecap="round" />
     <path
       d="M13 21L10 24L7 21"
       strokeLinecap="round"
@@ -50,19 +47,8 @@ export const CollapseIcon = (
 export const ExpandIcon = (
   <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
     <g opacity="0.87">
-      <rect
-        x="1"
-        y="12"
-        width="18"
-        height="4"
-        rx="1"
-        strokeLinecap="round"
-      />
-      <path
-        d="M13 6L10 9L7 6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <rect x="1" y="12" width="18" height="4" rx="1" strokeLinecap="round" />
+      <path d="M13 6L10 9L7 6" strokeLinecap="round" strokeLinejoin="round" />
       <line
         x1="0.5"
         y1="-0.5"
@@ -76,17 +62,10 @@ export const ExpandIcon = (
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <line
-        x1="10"
-        y1="20.5"
-        x2="10"
-        y2="27.5"
-        strokeLinecap="round"
-      />
+      <line x1="10" y1="20.5" x2="10" y2="27.5" strokeLinecap="round" />
     </g>
   </svg>
 );
-
 
 export const ViewIcon = (
   <svg viewBox="0 0 10 10">
@@ -235,7 +214,7 @@ export const ExclamationCircle = (
   </svg>
 );
 
-export const InputErrorIcon = (c = "#ff2727") => (
+export const InputErrorIcon = (c = '#ff2727') => (
   <svg viewBox="0 0 16 16">
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g transform="translate(-682.000000, -464.000000)">
@@ -887,7 +866,7 @@ export const LogoutIcon = () => (
     height="16"
     viewBox="0 0 18 18"
     className="nav-logout-icon"
-    style={{ marginLeft: ".28rem", width: "1.2rem" }}
+    style={{ marginLeft: '.28rem', width: '1.2rem' }}
   >
     <g fill="#FFF" fillRule="nonzero">
       <path d="M14.16 10.123H5.624a1.125 1.125 0 0 1 0-2.25h8.534l-1.454-1.455a1.125 1.125 0 0 1 1.59-1.59l3.375 3.374a1.125 1.125 0 0 1 0 1.591l-3.375 3.375a1.125 1.125 0 1 1-1.59-1.59l1.454-1.455z" />
@@ -1009,7 +988,7 @@ export const ChevronDown = p => (
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <g stroke={p.stroke || "#A7A2B2"}>
+      <g stroke={p.stroke || '#A7A2B2'}>
         <polyline
           transform="translate(8.156854, 6.156854) rotate(-225.000000) translate(-8.156854, -6.156854) "
           points="3.65685425 1.65685425 12.6568542 1.65685425 12.6568542 10.6568542"
