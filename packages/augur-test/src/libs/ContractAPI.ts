@@ -153,8 +153,30 @@ export class ContractAPI {
   ): Promise<string> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const orderId = await this.augur.contracts.createOrder.publicCreateOrder_(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
-    await this.augur.contracts.createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
+
+    const publicCreateOrderEvents = await this.augur.contracts.createOrder.publicCreateOrder(
+      type,
+      numShares,
+      price,
+      market,
+      outcome,
+      betterOrderID,
+      worseOrderID,
+      tradeGroupID,
+      false,
+      NULL_ADDRESS
+    );
+    // TODO: turn this into a function
+    let orderId = '';
+    for (const ev of publicCreateOrderEvents) {
+      if (ev.name === 'OrderEvent') {
+        interface OrderEvent {
+          orderId: string;
+        }
+        orderId = (ev.parameters as OrderEvent).orderId;
+      }
+    }
+
     return orderId;
   }
 
