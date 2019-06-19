@@ -95,6 +95,78 @@ export class TextInput extends React.Component<
   }
 }
 
+interface TimeSelectorProps {
+  showPicker: Boolean;
+}
+
+interface TimeSelectorState {
+  showPicker: Boolean;
+}
+
+export class TimeSelector extends React.Component<
+  TimeSelectorProps,
+  TimeSelectorState
+> {
+  state: TimeSelectorState = {
+    showPicker: false,
+    minutes: 0,
+    hours: 12,
+    am: true,
+  }
+
+  toggleSelector = () => {
+    this.setState({showPicker: !this.state.showPicker});
+  }
+
+  render() {
+    const {
+      placeholder
+    } = this.props;
+
+    return (
+      <div className={Styles.TimeSelector}>
+        <button onClick={this.toggleSelector}>Time Selector</button>
+        {this.state.showPicker && 
+          <div>Picker</div>
+        }
+      </div>
+    );
+  }
+}
+
+interface IndividualTimeSelectorProps {
+  showPicker: Boolean;
+}
+
+interface IndividualTimeSelectorState {
+  showPicker: Boolean;
+}
+
+class IndividualTimeSelector extends React.Component<
+  IndividualTimeSelectorProps,
+  IndividualTimeSelectorState
+> {
+  state: IndividualTimeSelectorState = {
+    value: ""
+  }
+
+  onChange = (e: any) => {
+   
+  }
+
+  render() {
+    const {
+      placeholder
+    } = this.props;
+
+    return (
+      <div className={Styles.TimeSelector}>
+        Time Selector
+      </div>
+    );
+  }
+}
+
 export const Checkbox = ({
   id,
   smallOnDesktop = false,
