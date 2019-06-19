@@ -11,76 +11,76 @@ import {
 } from "modules/markets/actions/update-markets-data";
 
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { MarketsData, BaseAction } from "modules/types";
+import { MarketInfos, BaseAction } from "modules/types";
 
-const DEFAULT_STATE: MarketsData = {};
+const DEFAULT_STATE: MarketInfos = {};
 
-export default function(marketsData: MarketsData = DEFAULT_STATE, { type, data }: BaseAction): MarketsData {
+export default function(marketInfos: MarketInfos = DEFAULT_STATE, { type, data }: BaseAction): MarketInfos {
   switch (type) {
     case UPDATE_MARKETS_DATA: // TODO -- allow for the consumption of partial market objects
       return {
-        ...marketsData,
-        ...processMarketsData(data.marketsData, marketsData)
+        ...marketInfos,
+        ...processMarketsData(data.marketInfos, marketInfos)
       };
     case UPDATE_MARKETS_DISPUTE_INFO:
       return {
-        ...marketsData,
+        ...marketInfos,
         ...processMarketsDisputeInfo(
           data.marketsDisputeInfo,
-          marketsData
+          marketInfos
         )
       };
     case UPDATE_MARKET_CATEGORY: {
       const { marketId, category } = data;
-      if (!marketId) return marketsData;
+      if (!marketId) return marketInfos;
       return {
-        ...marketsData,
+        ...marketInfos,
         [marketId]: {
-          ...marketsData[marketId],
+          ...marketInfos[marketId],
           category
         }
       };
     }
     case UPDATE_MARKET_REP_BALANCE: {
       const { marketId, repBalance } = data;
-      if (!marketId) return marketsData;
+      if (!marketId) return marketInfos;
       return {
-        ...marketsData,
+        ...marketInfos,
         [marketId]: {
-          ...marketsData[marketId],
+          ...marketInfos[marketId],
           repBalance
         }
       };
     }
     case UPDATE_MARKET_ETH_BALANCE: {
       const { marketId, ethBalance } = data;
-      if (!marketId) return marketsData;
+      if (!marketId) return marketInfos;
       return {
-        ...marketsData,
+        ...marketInfos,
         [marketId]: {
-          ...marketsData[marketId],
+          ...marketInfos[marketId],
           ethBalance
         }
       };
     }
     case UPDATE_MARKET_FROZEN_SHARES_VALUE: {
       const { marketId, frozenSharesValue } = data;
-      if (!marketId) return marketsData;
+      if (!marketId) return marketInfos;
       return {
-        ...marketsData,
+        ...marketInfos,
         [marketId]: {
-          ...marketsData[marketId],
+          ...marketInfos[marketId],
           frozenSharesValue
         }
       };
     }
     case REMOVE_MARKET:
-      return immutableDelete(marketsData, data.marketId);
+      return immutableDelete(marketInfos, data.marketId);
     case RESET_STATE:
     case CLEAR_MARKETS_DATA:
       return DEFAULT_STATE;
     default:
-      return marketsData;
+      return marketInfos;
   }
 }
 

@@ -19,8 +19,8 @@ const mapStateToProps = (state, ownProps) => {
   const userOrders =
     state.orderBooks[ownProps.marketId] &&
     state.orderBooks[ownProps.marketId][ownProps.selectedOutcome];
-  const minPrice = market.minPrice || createBigNumber(0);
-  const maxPrice = market.maxPrice || createBigNumber(0);
+  const minPrice = market.minPriceBigNumber || createBigNumber(0);
+  const maxPrice = market.maxPriceBigNumber || createBigNumber(0);
   const outcome =
     (market.outcomes || []).find(
       (outcome) => outcome.id === ownProps.selectedOutcome,

@@ -5,22 +5,24 @@ import MarketOutcomesChartHighchart from "modules/market-charts/components/marke
 import { selectMarket } from "modules/markets/selectors/market";
 import selectBucketedPriceTimeSeries from "modules/markets/selectors/select-bucketed-price-time-series";
 import { createBigNumber } from "utils/create-big-number";
+import { SCALAR } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    maxPrice = createBigNumber(1),
-    minPrice = createBigNumber(0),
+    maxPriceBigNumber,
+    minPriceBigNumber,
     outcomes = [],
-    isScalar,
+    marketType,
     scalarDenomination,
   } = selectMarket(ownProps.marketId);
+  const isScalar = marketType === SCALAR;
   const bucketedPriceTimeSeries = selectBucketedPriceTimeSeries(
     ownProps.marketId,
   );
 
   return {
-    maxPrice: maxPrice.toNumber(),
-    minPrice: minPrice.toNumber(),
+    maxPrice: maxPriceBigNumber.toNumber(),
+    minPrice: minPriceBigNumber.toNumber(),
     fixedPrecision: 4,
     pricePrecision: 4,
     outcomes,

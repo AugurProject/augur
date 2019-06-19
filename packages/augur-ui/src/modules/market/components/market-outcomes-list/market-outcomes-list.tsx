@@ -8,41 +8,39 @@ import MarketScalarOutcomeDisplay from "modules/market/components/market-scalar-
 import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";
 import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style.less";
 import HeaderStyles from "modules/portfolio/components/common/data-table-header.styles.less";
-import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketOutcome } from "modules/types";
 
 interface MarketOutcomesListProps {
   marketId: string,
-  outcomes: Array<MarketInfoOutcome>,
+  marketOutcomes: Array<MarketOutcome>,
   updateSelectedOutcome: Function,
-  selectedOutcomeId?: string,
+  selectedOutcomeId: number,
   scalarDenomination: string | undefined,
   marketType: string,
-  minPrice: BigNumber,
-  maxPrice: BigNumber,
+  minPriceBigNumber: BigNumber,
+  maxPriceBigNumber: BigNumber,
   popUp: boolean,
 };
 
 export default class MarketOutcomesList extends Component<MarketOutcomesListProps> {
   static defaultProps = {
-    selectedOutcomeId: "2",
+    selectedOutcomeId: 2,
     scalarDenomination: null,
     marketType: null,
-    outcomes: [],
-    minPrice: null,
-    maxPrice: null,
+    marketOutcomes: [],
     popUp: false
   };
 
   render() {
     const {
       marketId,
-      outcomes,
+      marketOutcomes,
       selectedOutcomeId,
       updateSelectedOutcome,
       marketType,
       scalarDenomination,
-      minPrice,
-      maxPrice,
+      minPriceBigNumber,
+      maxPriceBigNumber,
       popUp
     } = this.props;
 
@@ -60,7 +58,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {outcomes && outcomes.map(outcome => (
+          {marketOutcomes.filter(o => o.isTradable).map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
               outcome={outcome}
@@ -78,9 +76,9 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
         {marketType === SCALAR && (
           <MarketScalarOutcomeDisplay
             scalarDenomination={scalarDenomination}
-            min={minPrice}
-            max={maxPrice}
-            outcomes={outcomes}
+            min={minPriceBigNumber}
+            max={maxPriceBigNumber}
+            outcomes={marketOutcomes}
           />
         )}
       </section>

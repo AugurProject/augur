@@ -28,10 +28,11 @@ import MarketOutcomesChart from "modules/market-charts/containers/market-outcome
 import Styles from "modules/market/components/market-view/market-view.styles.less";
 import { LeftChevron } from "modules/common/icons";
 import { TEMP_TABLET } from "modules/common/constants";
-import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
-import { MarketData } from "modules/types";
+import { MarketData, MarketOutcome } from "modules/types";
 
 interface MarketViewProps {
+  isMarketLoading: boolean,
+  closeMarketLoadingModal: Function,
   market: MarketData,
   marketId: string,
   marketReviewSeen: boolean,
@@ -42,9 +43,10 @@ interface MarketViewProps {
   loadMarketTradingHistory: Function,
   description: string,
   marketType: string,
-  outcomes: Array<MarketInfoOutcome>,
+  outcomes: Array<MarketOutcome>,
   updateModal: Function,
   history: object,
+  showMarketLoadingModal: Function,
 };
 
 interface DefaultOrderProperties {
@@ -60,7 +62,7 @@ interface MarketViewState {
   extendOrderBook: boolean,
   extendTradeHistory: boolean,
   selectedOrderProperties: DefaultOrderProperties,
-  selectedOutcomeId: string,
+  selectedOutcomeId: number,
   fixedPrecision: number,
   selectedOutcomeProperties: DefaultOrderPropertiesMap,
 }
@@ -81,7 +83,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       extendOrderBook: false,
       extendTradeHistory: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
-      selectedOutcomeId: "2",
+      selectedOutcomeId: 2,
       fixedPrecision: 4,
       selectedOutcomeProperties: {
         1: {
@@ -98,6 +100,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
     this.toggleOrderBook = this.toggleOrderBook.bind(this);
     this.toggleTradeHistory = this.toggleTradeHistory.bind(this);
     this.updateSelectedOutcomeSwitch = this.updateSelectedOutcomeSwitch.bind(this);
+    this.showMarketDisclaimer = this.showMarketDisclaimer.bind(this);
   }
 
   componentWillMount() {
@@ -105,7 +108,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       isConnected,
       loadFullMarket,
       marketId,
-      loadMarketTradingHistory
+      loadMarketTradingHistory,
     } = this.props;
     if (isConnected && !!marketId) {
       loadFullMarket(marketId);
@@ -115,22 +118,14 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
 
   componentDidMount() {
     this.node.scrollIntoView();
-
-    if (!this.props.marketReviewSeen) {
-      this.props.marketReviewModal();
-      const localStorageRef =
-        typeof window !== "undefined" && window.localStorage;
-      if (localStorageRef && localStorageRef.setItem) {
-        const value = localStorageRef.getItem(MARKET_REVIEWS);
-        let markets = value ? JSON.parse(value) : [];
-        markets = markets.concat(this.props.marketId);
-        localStorageRef.setItem(MARKET_REVIEWS, JSON.stringify(markets));
-      }
+    const { isMarketLoading, showMarketLoadingModal } = this.props;
+    if (isMarketLoading) {
+      showMarketLoadingModal();
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    const { isConnected, marketId } = this.props;
+  componentWillUpdate(nextProps) {
+    const { isConnected, marketId, isMarketLoading, closeMarketLoadingModal } = this.props;
     if (
       isConnected !== nextProps.isConnected &&
       (nextProps.isConnected &&
@@ -139,6 +134,25 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
     ) {
       nextProps.loadFullMarket(nextProps.marketId);
       nextProps.loadMarketTradingHistory(marketId);
+    }
+    if (isMarketLoading !== nextProps.isMarketLoading) {
+      closeMarketLoadingModal();
+      this.showMarketDisclaimer();
+    }
+  }
+
+  showMarketDisclaimer() {
+    const { marketReviewSeen, marketReviewModal } = this.props;
+    if (!marketReviewSeen) {
+      marketReviewModal();
+      const localStorageRef =
+        typeof window !== "undefined" && window.localStorage;
+      if (localStorageRef && localStorageRef.setItem) {
+        const value = localStorageRef.getItem(MARKET_REVIEWS);
+        let markets = value ? JSON.parse(value) : [];
+        markets = markets.concat(this.props.marketId);
+        localStorageRef.setItem(MARKET_REVIEWS, JSON.stringify(markets));
+      }
     }
   }
 
@@ -224,17 +238,29 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
 
   render() {
     const {
+      isMarketLoading,
       currentTimestamp,
       description,
       marketId,
       outcomes,
       market,
       marketType,
-      history
+      history,
+      closeMarketLoadingModal,
     } = this.props;
     const s = this.state;
 
-    const outcome = outcomes.find( outcomeValue => outcomeValue.id.toString() === s.selectedOutcomeId)
+    if (isMarketLoading) {
+      return (
+        <section
+          ref={node => {
+            this.node = node;
+          }}
+          className={Styles.MarketView} />
+      );
+    }
+
+    const outcome = outcomes.find( outcomeValue => outcomeValue.id === s.selectedOutcomeId)
     const selectedOutcomeName: string = outcome ? outcome.description : "";
 
     return (

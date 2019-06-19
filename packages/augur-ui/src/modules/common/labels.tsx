@@ -25,7 +25,7 @@ import {
 } from "modules/common/constants";
 import { ViewTransactionDetailsButton } from "modules/common/buttons";
 import { formatNumber } from "utils/format-number";
-import { FormattedNumber, SizeTypes } from "modules/types";
+import { FormattedNumber, SizeTypes, DateFormattedObject } from "modules/types";
 
 export interface MarketTypeProps {
   marketType: string;
@@ -40,7 +40,7 @@ export interface MarketStatusProps {
 export interface InReportingLabelProps extends MarketStatusProps {
   reportingState: string;
   disputeInfo: any;
-  endTime: object;
+  endTime: DateFormattedObject;
   reportingWindowStatsEndTime: number;
   currentAugurTimestamp: number;
 }
