@@ -482,19 +482,19 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, mar
       id: 0,
       price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].price).toString(10) : null,
       description: "Invalid",
-      volume: marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
+      volume: marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
     });
     outcomes.push({
       id: 1,
       price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].price).toString(10) : null,
       description: (marketCreatedLog.marketType === 0) ? "No" : scalarDenomination,
-      volume: marketVolumeChangedLogs[0].outcomeVolumes[1] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[1]).toString(10)
+      volume: marketVolumeChangedLogs[0].outcomeVolumes[1] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[1]).toString(10)
     });
     outcomes.push({
       id: 2,
       price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].price).toString(10) : null,
       description: (marketCreatedLog.marketType === 0) ? "Yes" : scalarDenomination,
-      volume: marketVolumeChangedLogs[0].outcomeVolumes[2] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[2]).toString(10)
+      volume: marketVolumeChangedLogs[0].outcomeVolumes[2] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[2]).toString(10)
     });
   } else {
     const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x00" } })).reverse();
@@ -503,7 +503,7 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, mar
       id: 0,
       price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : null,
       description: "Invalid",
-      volume: marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
+      volume: marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
     });
     for (let i = 0; i < marketCreatedLog.outcomes.length; i++) {
       const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x0" + (i + 1) } })).reverse();
@@ -512,7 +512,7 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, mar
         id: i + 1,
         price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : null,
         description: Buffer.from(outcomeDescription, "hex").toString(),
-        volume: marketVolumeChangedLogs[0].outcomeVolumes[i + 1] === "0x00" ? null : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[i + 1]).toString(10)
+        volume: marketVolumeChangedLogs[0].outcomeVolumes[i + 1] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[i + 1]).toString(10)
       });
     }
   }
