@@ -1,5 +1,186 @@
 @import (reference) '~assets/styles/shared';
 
+.RadioStyleSelection {
+  background: @color-theme-primary;
+  border: 1px solid @color-primary-alternate;
+  border-radius: @border-radius-default;
+
+  > h5 {
+    .text-14;
+
+    color: @color-alternate-info-text;
+  }
+
+  > h5,
+  > p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &:hover,
+  &:focus {
+    border: 1px solid @color-primary-alternate-two;
+  }
+
+  &:disabled {
+    border: 1px solid @color-shadow-text;
+
+    > svg > circle {
+      stroke: @color-shadow-text;
+    }
+
+    > h5,
+    > p {
+      color: @color-shadow-text;
+    }
+  }
+}
+
+.CheckboxBar {
+  .RadioStyleSelection;
+
+  align-items: center;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 52px auto @size-16;
+  height: 52px;
+  width: 304px;
+
+  > svg {
+    grid-column: 1;
+    grid-row: 1;
+    height: @size-20;
+    margin: auto;
+    width: @size-20;
+
+    > rect {
+      stroke: @color-primary-alternate-two;
+    }
+
+    > path {
+      stroke: @color-secondary-text;
+    }
+  }
+
+  > h5 {
+    grid-column: 2;
+    grid-row: 1;
+    width: 236px;
+  }
+}
+
+.CheckboxBarChecked {
+  > svg > rect {
+    fill: @color-primary-alternate-two;
+    fill-opacity: 0.3;
+  }
+}
+
+.RadioBar {
+  .RadioStyleSelection;
+
+  align-items: center;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 52px auto @size-16;
+  height: 51px;  
+  width: 304px;
+
+  > svg {
+    height: @size-20;
+    grid-column: 1;
+    grid-row: 1;
+    margin: auto;
+    width: @size-20;
+
+    > circle:first-of-type {
+      stroke: @color-primary-alternate-two;
+      fill: none;
+    }
+
+    > circle {
+      fill: @color-alternate-info-text;
+    }
+  }
+
+  > h5 {
+    grid-column: 2;
+    grid-row: 1;
+    width: 236px;
+  }
+}
+
+.RadioTwoLineBar {
+  .RadioBar;
+
+  height: 82px;
+  grid-template-rows: @size-20 @size-19 @size-4 @size-19 @size-20;
+
+  @media @breakpoint-mobile {
+    height: 128px;
+    grid-template-rows: @size-16 @size-38 @size-8 50px @size-16;
+    width: 312px;
+  }
+
+  > svg {
+    grid-row: 1 / span 5;
+  }
+
+  > h5 {
+    width: 236px;
+    grid-row: 2;
+
+    @media @breakpoint-mobile {
+      .text-14;
+
+      width: 244px;
+    }
+  }
+
+  > p {
+    .text-14;
+
+    color: @color-tertiary-info-text;
+    grid-column: 2;
+    grid-row: 4;
+    width: 236px;
+
+    @media @breakpoint-mobile {
+      .text-12;
+
+      max-height: 50px;
+      white-space: normal;
+      width: 244px;
+    }
+  }
+}
+
+.RadioBarExpanded {
+  grid-template-columns: 52px auto @size-16;
+  grid-template-rows: @size-20 @size-16 @size-12 44px @size-20;
+  height: 113px;
+
+  > svg {
+    grid-row: 1 / span 5;
+  }
+
+  > h5 {
+    grid-row: 2;
+  }
+
+  > input {
+    grid-column: 2;
+    grid-row: 4;
+    width: 210px;
+  }
+}
+
+.RadioBarError {
+  background: @color-secondary-action;
+  border: 1px solid @color-error-text;
+}
+
 .RadioCardGroup {
   margin: @size-20;
   padding: @size-12;
@@ -9,10 +190,8 @@
 }
 
 .RadioCard {
-  background: @color-theme-primary;
-  border: 1px solid @color-primary-alternate;
-  border-radius: @border-radius-default;
-  box-sizing: border-box;
+  .RadioStyleSelection;
+
   display: grid;
   grid-template-rows: @size-20 64px 44px 50px 38px;
   grid-template-columns: 100%;
@@ -28,11 +207,6 @@
     max-width: 312px;
     grid-template-columns: 45px auto;
     grid-template-rows: @size-20 @size-20 auto;
-  }
-
-  &:hover,
-  &:focus {
-    border: 1px solid @color-primary-alternate-two;
   }
 
   > div {
@@ -88,7 +262,6 @@
   > h5 {
     .text-16-bold;
 
-    color: @color-alternate-info-text;
     margin: @size-24 @size-12 0;
     text-align: center;
     text-transform: capitalize;
