@@ -1,12 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+
 import ChevronFlip from 'modules/common/chevron-flip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { PulseLoader } from 'react-spinners';
-import { SearchIcon, XIcon, CheckMark, Ellipsis } from 'modules/common/icons';
+import {
+  SearchIcon,
+  XIcon,
+  CheckMark,
+  OutlineChevron,
+  Ellipsis,
+  EmptyRadio,
+  FilledRadio,
+  EmptyCheckbox,
+  FilledCheckbox,
+} from 'modules/common/icons';
 import debounce from 'utils/debounce';
-import Styles from 'modules/common/form.styles';
+
+import Styles from 'modules/common/form.styles.less';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
+import { SingleDatePicker } from 'react-dates';
 
 interface CheckboxProps {
   id: string;
@@ -17,6 +32,20 @@ interface CheckboxProps {
   onClick: Function;
   small?: boolean;
   smallOnDesktop?: boolean;
+}
+
+interface DatePickerProps {
+  id?: string;
+  date: any;
+  placeholder?: string;
+  onDateChange: Function;
+  isOutsideRange?: Function;
+  focused?: boolean;
+  onFocusChange?: Function;
+  displayFormat: string;
+  numberOfMonths: number;
+  navPrev?: any;
+  navNext?: any;
 }
 
 interface TextInputProps {
@@ -67,6 +96,97 @@ interface RadioCardGroupState {
   selected: string | null;
 }
 
+interface RadioBarProps {
+  header: string;
+  value: string;
+  onChange?: Function;
+  expandable?: boolean;
+  checked?: boolean;
+  error?: boolean;
+  onTextChange?: Function;
+}
+
+interface RadioTwoLineBarProps {
+  header: string;
+  description: string;
+  value: string;
+  onChange?: Function;
+  checked?: boolean;
+  error?: boolean;
+}
+
+interface CheckboxBarProps {
+  header: string;
+  value: string;
+  onChange?: Function;
+  checked?: boolean;
+  error?: boolean;
+}
+
+export const CheckboxBar = ({
+  header,
+  onChange,
+  checked,
+  value,
+  error,
+}: CheckboxBarProps) => (
+  <div
+    className={classNames(Styles.CheckboxBar, {
+      [Styles.RadioBarError]: error,
+      [Styles.CheckboxBarChecked]: checked,
+    })}
+    role="button"
+    onClick={e => onChange(value)}
+  >
+    {checked ? FilledCheckbox : EmptyCheckbox}
+    <h5>{header}</h5>
+  </div>
+);
+
+export const RadioBar = ({
+  header,
+  onChange,
+  checked,
+  value,
+  error,
+  expandable,
+  onTextChange,
+}: RadioBarProps) => (
+  <div
+    className={classNames(Styles.RadioBar, {
+      [Styles.RadioBarExpanded]: checked && expandable,
+      [Styles.RadioBarError]: error,
+    })}
+    role="button"
+    onClick={e => onChange(value)}
+  >
+    {checked ? FilledRadio : EmptyRadio}
+    <h5>{header}</h5>
+    {expandable && checked ? <TextInput onChange={onTextChange} /> : null}
+  </div>
+);
+
+export const RadioTwoLineBar = ({
+  header,
+  onChange,
+  checked,
+  value,
+  error,
+  description,
+}: RadioTwoLineBarProps) => (
+  <div
+    className={classNames(Styles.RadioTwoLineBar, {
+      [Styles.RadioBarError]: error,
+    })}
+    role="button"
+    onClick={e => onChange(value)}
+  >
+    {checked ? FilledRadio : EmptyRadio}
+    <h5>{header}</h5>
+    <p>{description}</p>
+  </div>
+);
+
 export class RadioCardGroup extends Component<
   RadioCardGroupProps,
   RadioCardGroupState
@@ -114,12 +234,9 @@ const RadioCard = ({
     <p>{description}</p>
   </div>
 );
-export class TextInput extends React.Component<
-  TextInputProps,
-  TextInputState
-> {
+export class TextInput extends React.Component<TextInputProps, TextInputState> {
   state: TextInputState = {
-    value: this.props.value
+    value: this.props.value,
   };
 
   componentWillReceiveProps(nextProps: TextInputProps) {
@@ -131,30 +248,23 @@ export class TextInput extends React.Component<
 
   onChange = (e: any) => {
     const value = e.target.value;
-    this.setState({value});
+    this.setState({ value });
     this.props.onChange(value);
-  }
+  };
   render() {
-    const {
-      placeholder,
-      disabled,
-      error,
-      errorMessage
-    } = this.props;
+    const { placeholder, disabled, error, errorMessage } = this.props;
 
     return (
       <>
         <input
           {...this.props}
-          className={classNames(Styles.TextInput, {[Styles.error]: error})}
+          className={classNames(Styles.TextInput, { [Styles.error]: error })}
           value={this.state.value}
           onChange={this.onChange}
           placeholder={placeholder}
           disabled={disabled}
         />
-        {error && 
-          <span className={Styles.ErrorText}>{errorMessage}</span>
-        }
+        {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
       </>
     );
   }
@@ -207,6 +317,25 @@ Checkbox.defaultProps = {
   small: false,
   smallOnDesktop: false,
 };
+
+export const DatePicker = (props: DatePickerProps) => (
+  <div className={Styles.DatePicker}>
+    <SingleDatePicker
+      id={props.id}
+      date={props.date}
+      placeholder={props.placeholder || 'Date (D MMM YYYY)'}
+      onDateChange={props.onDateChange}
+      isOutsideRange={props.isOutsideRange || (() => false)}
+      focused={props.focused}
+      onFocusChange={props.onFocusChange}
+      displayFormat={props.displayFormat || 'D MMM YYYY'}
+      numberOfMonths={props.numberOfMonths}
+      navPrev={props.navPrev || OutlineChevron}
+      navNext={props.navNext || OutlineChevron}
+      weekDayFormat="ddd"
+    />
+  </div>
+);
 
 interface InputProps {
   type?: string;
