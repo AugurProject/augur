@@ -17,7 +17,7 @@
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
     "dp": "ts-node src/dp",
     "deploy": "ts-node src/dp deploy",
-    "flash": "node ./scripts/flash",
+    "flash": "ts-node ./src/flash/cli",
     "blockstream-console": "ts-node ./src/blockstream-console.ts"
   },
   "repository": {
