@@ -11,7 +11,7 @@ import {
   ParsedOrderEventLog,
 } from "../logs/types";
 import { SortLimit } from "./types";
-import { Augur, numTicksToTickSize, QUINTILLION } from "../../index";
+import { Augur, numTicksToTickSize, QUINTILLION, convertOnChainPriceToDisplayPrice } from "../../index";
 import { toAscii } from "../utils/utils";
 
 import * as _ from "lodash";
@@ -412,7 +412,7 @@ export class Markets {
         tickSize: tickSize.toString(10),
         consensus,
         tags,
-        outcomes: await getMarketOutcomes(db, marketCreatedLog, marketVolumeChangedLogs, scalarDenomination )
+        outcomes: await getMarketOutcomes(db, marketCreatedLog, marketVolumeChangedLogs, scalarDenomination, tickSize, minPrice)
       });
     }));
   }
@@ -472,7 +472,7 @@ async function getMarketOpenInterest(db: DB, marketCreatedLog: MarketCreatedLog)
   return "0";
 }
 
-async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, marketVolumeChangedLogs: Array<MarketVolumeChangedLog>, scalarDenomination: string): Promise<Array<MarketInfoOutcome>> {
+async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, marketVolumeChangedLogs: Array<MarketVolumeChangedLog>, scalarDenomination: string, tickSize: BigNumber, minPrice: BigNumber): Promise<Array<MarketInfoOutcome>> {
   let outcomes: Array<MarketInfoOutcome> = [];
   if (marketCreatedLog.outcomes.length === 0) {
     const ordersFilled0 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x00" } })).reverse();
@@ -480,39 +480,39 @@ async function getMarketOutcomes(db: DB, marketCreatedLog: MarketCreatedLog, mar
     const ordersFilled2 = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x02" } })).reverse();
     outcomes.push({
       id: 0,
-      price: ordersFilled0.length > 0 ? new BigNumber(ordersFilled0[0].price).toString(10) : null,
+      price: ordersFilled0.length > 0 ? convertOnChainPriceToDisplayPrice(new BigNumber(ordersFilled0[0].price), minPrice, tickSize).toString(10) : null,
       description: "Invalid",
-      volume: marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
+      volume: marketVolumeChangedLogs.length === 0 || marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
     });
     outcomes.push({
       id: 1,
-      price: ordersFilled1.length > 0 ? new BigNumber(ordersFilled1[0].price).toString(10) : null,
+      price: ordersFilled1.length > 0 ? convertOnChainPriceToDisplayPrice(new BigNumber(ordersFilled1[0].price), minPrice, tickSize).toString(10) : null,
       description: (marketCreatedLog.marketType === 0) ? "No" : scalarDenomination,
-      volume: marketVolumeChangedLogs[0].outcomeVolumes[1] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[1]).toString(10)
+      volume: marketVolumeChangedLogs.length === 0 || marketVolumeChangedLogs[0].outcomeVolumes[1] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[1]).toString(10)
     });
     outcomes.push({
       id: 2,
-      price: ordersFilled2.length > 0 ? new BigNumber(ordersFilled2[0].price).toString(10) : null,
+      price: ordersFilled2.length > 0 ? convertOnChainPriceToDisplayPrice(new BigNumber(ordersFilled2[0].price), minPrice, tickSize).toString(10) : null,
       description: (marketCreatedLog.marketType === 0) ? "Yes" : scalarDenomination,
-      volume: marketVolumeChangedLogs[0].outcomeVolumes[2] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[2]).toString(10)
+      volume: marketVolumeChangedLogs.length === 0 || marketVolumeChangedLogs[0].outcomeVolumes[2] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[2]).toString(10)
     });
   } else {
     const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x00" } })).reverse();
     console.log(marketVolumeChangedLogs[0].outcomeVolumes);
     outcomes.push({
       id: 0,
-      price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : null,
+      price: ordersFilled.length > 0 ? convertOnChainPriceToDisplayPrice(new BigNumber(ordersFilled[0].price), minPrice, tickSize).toString(10) : null,
       description: "Invalid",
-      volume: marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
+      volume: marketVolumeChangedLogs.length === 0 || marketVolumeChangedLogs[0].outcomeVolumes[0] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[0]).toString(10)
     });
     for (let i = 0; i < marketCreatedLog.outcomes.length; i++) {
       const ordersFilled = (await db.findOrderFilledLogs({ selector: { market: marketCreatedLog.market, outcome: "0x0" + (i + 1) } })).reverse();
       const outcomeDescription = marketCreatedLog.outcomes[i].replace("0x", "");
       outcomes.push({
         id: i + 1,
-        price: ordersFilled.length > 0 ? new BigNumber(ordersFilled[0].price).toString(10) : null,
+        price: ordersFilled.length > 0 ? convertOnChainPriceToDisplayPrice(new BigNumber(ordersFilled[0].price), minPrice, tickSize).toString(10) : null,
         description: Buffer.from(outcomeDescription, "hex").toString(),
-        volume: marketVolumeChangedLogs[0].outcomeVolumes[i + 1] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[i + 1]).toString(10)
+        volume: marketVolumeChangedLogs.length === 0 || marketVolumeChangedLogs[0].outcomeVolumes[i + 1] === "0x00" ? "0" : new BigNumber(marketVolumeChangedLogs[0].outcomeVolumes[i + 1]).toString(10)
       });
     }
   }
