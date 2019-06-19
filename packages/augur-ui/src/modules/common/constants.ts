@@ -740,3 +740,6 @@ export const COLUMN_TYPES = {
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
 };
 
+// Time constants
+export const AM = "AM";
+export const PM = "PM";

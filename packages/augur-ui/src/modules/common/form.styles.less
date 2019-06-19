@@ -803,21 +803,31 @@
         background: @color-primary-light;
       }
 
-      &.CalendarDay__selected,
-      &:hover {
+      &.CalendarDay__selected {
         background: @color-primary-alternate-two;
         color: @color-secondary-text;
-      }
-
-      &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2 {
-        background: fade(@color-primary-alternate-two, 10%);
-        border: 1px solid @color-tertiary-text;
-        color: @color-shadow-text;
 
         &:hover {
-          background: fade(@color-primary-alternate-two, 10%);
+          background: @color-primary-alternate-two;
           border: 1px solid @color-tertiary-text;
+          color: @color-secondary-text;
         }
+      }
+
+      &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2,
+      &:hover {
+        background: fade(@color-primary-alternate-two, 10%);
+        border: 1px solid @color-tertiary-text;
+        color: @color-disabled-text-secondary;
+      }
+
+      &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2:hover {
+        background: fade(@color-primary-alternate-two, 10%);
+        border: 1px solid @color-tertiary-text;
+      }
+
+      &:hover {
+        color: @color-shadow-text;
       }
     }
 
@@ -928,22 +938,117 @@
   position: relative;
 
   > button {
-    background: #0F0A19;
-    border: 1px solid #443B59;
-    border-radius: 3px;
-    padding: @size-24;
-    color: #FFFFFF;
+    .mono-12;
+
+    background: @color-theme-primary;
+    border-radius: @border-radius-default;
+    border: 1px solid @color-highlight;
+    color: @color-secondary-text;
+    height: @size-38;
+    max-height: @size-38;
+    padding: @size-11 @size-12 @size-13;
   }
 
   > div {
+    background: @color-secondary-text;
+    border-radius: 3px;
+    border: 1px solid @color-primary-light;
+    color: @color-primary-background;
+    display: flex;
+    left: 0;
+    margin-top: @size-5;
+    padding: @size-24;
     position: absolute;
     top: 100%;
-    margin-top: 5px;
-    left: 0;
-    background: #FFFFFF;
-    border: 1px solid #443B59;
-    border-radius: 3px;
-    padding: @size-24;
-    color: #0F0A19;
+    z-index: @above-all-content;
+
+    > div:first-of-type {
+      margin-right: @size-10;
+    }
+
+    > div:nth-of-type(2) {
+      margin-left: @size-10;
+    }
+
+    > div:last-of-type {
+      margin-left: @size-24;
+    }
+
+    > span {
+      .text-16-medium;
+
+      align-items: center;
+      color: @color-primary-dark;
+      display: flex;
+      margin-top: @size-24;
+    }
   }
 } 
+
+.IndividualTimeSelector {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  
+  > span {
+    .text-11;
+
+    color: @color-primary-background;
+    margin-bottom: @size-14;
+  }
+
+  > input {
+    .mono-14;
+
+    background-color: @color-secondary-text;
+    border: 1px solid @color-tertiary-text;
+    color: @color-shadow-text;
+    height: @size-40;
+    margin: @size-14 0;
+    padding: @size-4;
+    text-align: center;
+    width: @size-40;
+
+    &:hover {
+      border: 1px solid @color-neutral;
+    }
+
+    &:focus {
+      border: 1px solid @color-primary-background;
+    }
+
+    &:disabled {
+      background-color: @color-secondary-text;
+      border: 1px solid @color-tertiary-text;
+      color: @color-shadow-text;
+    }
+  }
+
+  > input[type=number]::-webkit-inner-spin-button, 
+  > input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+
+  > button {
+    > svg {
+      height: @size-8;
+      width: @size-16;
+
+      > path {
+        fill: @color-neutral;
+      }
+    }
+
+    &:hover {
+      > svg > path {
+        fill: @color-primary-background;
+      }
+    }
+  }
+
+  > button:first-of-type > svg {
+    transform: rotate(-180deg);
+  }
+}
+
