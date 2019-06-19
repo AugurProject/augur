@@ -3,7 +3,6 @@ import ConnectDropdown from "modules/auth/components/connect-dropdown/connect-dr
 import { loginWithInjectedWeb3 } from "modules/auth/actions/login-with-injected-web3";
 import { loginWithPortis } from "modules/auth/actions/login-with-portis";
 import { loginWithFortmatic } from "modules/auth/actions/login-with-fortmatic";
-import { loginWithSquarelink } from "modules/auth/actions/login-with-squarelink";
 import { logout } from "modules/auth/actions/logout";
 import { showEdgeLogin } from "modules/auth/actions/show-edge-login";
 
@@ -17,7 +16,6 @@ const mapDispatchToProps = (dispatch) => ({
   connectMetaMask: (cb) => dispatch(loginWithInjectedWeb3(cb)),
   connectPortis: (cb) => dispatch(loginWithPortis(cb)),
   connectFortmatic: (cb) => dispatch(loginWithFortmatic(cb)),
-  connectSquarelink: (cb) => dispatch(loginWithSquarelink(cb)),
   logout: () => dispatch(logout()),
   edgeLoginLink: () => dispatch(showEdgeLogin()),
 });

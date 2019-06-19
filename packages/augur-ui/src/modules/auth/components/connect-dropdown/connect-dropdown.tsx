@@ -20,7 +20,6 @@ interface ConnectDropdownProps {
   connectMetaMask: Function;
   connectPortis: Function;
   connectFortmatic: Function;
-  connectSquarelink: Function;
   toggleDropdown: Function;
   logout: Function;
   edgeLoginLink: Function;
@@ -99,7 +98,7 @@ export default class ConnectDropdown extends Component<ConnectDropdownProps, Con
   }
 
   connect(param) {
-    const { connectMetaMask, connectSquarelink, connectFortmatic, connectPortis, edgeLoginLink } = this.props;
+    const { connectMetaMask, connectFortmatic, connectPortis, edgeLoginLink } = this.props;
     if (param === ACCOUNT_TYPES.METAMASK) {
       if (!isMetaMaskPresent()) {
         this.showError(ERROR_TYPES.UNABLE_TO_CONNECT);
@@ -132,16 +131,6 @@ export default class ConnectDropdown extends Component<ConnectDropdownProps, Con
             subheader: err,
           });
 
-        }
-      });
-    } else if (param === ACCOUNT_TYPES.SQUARELINK) {
-      connectSquarelink((err, res) => {
-        if (err) {
-          console.error(err);
-          this.showError({
-            header: "Unable To Connect",
-            subheader: err,
-          });
         }
       });
     }
