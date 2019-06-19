@@ -1,18 +1,58 @@
 import { seedFileIsOutOfDate, createSeedFile } from "./generate-ganache-seed";
 import { AccountList, makeGanacheProvider, makeGanacheServer } from "./ganache";
+import { ContractAPI } from "./contract-api";
 
 import { GanacheServer } from "ganache-core";
 import { ethers } from "ethers";
+import * as ganache from "ganache-core";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { ContractInterfaces } from "@augurproject/core";
 
 import Vorpal from "vorpal";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import * as ganache from "ganache-core";
 const vorpal = new Vorpal();
 
+function loadSeed(seedFilePath: string) {
+  return require(seedFilePath);
+}
+
+function noProvider(command: Vorpal.CommandInstance) {
+  if (typeof state.provider === "undefined") {
+    command.log("ERROR: Must first connect to node. Consider running `ganache`.");
+    return true;
+  }
+
+  return false;
+}
+
+async function ensureUser(): Promise<ContractAPI> {
+  const seed = loadSeed(state.seedFilePath);
+  state.user = await ContractAPI.userWrapper(state.accounts, 0, state.provider, seed.addresses);
+  await state.user.approveCentralAuthority();
+
+  return state.user;
+}
+
+async function ensureSeed(command: Vorpal.CommandInstance) {
+  if (await seedFileIsOutOfDate(state.seedFilePath)) {
+    command.log("Seed file out of date. Creating/updating...");
+    await createSeedFile(state.seedFilePath, state.accounts);
+  }
+
+  command.log("Seed file is up-to-date!");
+}
+
+
 interface State {
+  // Configuration
   accounts: AccountList;
-  seedFilePath?: string;
+  user?: ContractAPI;
+
+  // Useful defaults
+  market?: ContractInterfaces.Market;
+
+  // Node miscellania
   provider?: EthersProvider;
+  seedFilePath: string;
   ganacheProvider?: ethers.providers.Web3Provider;
   ganacheServer?: GanacheServer;
 }
@@ -27,29 +67,23 @@ const state: State = {
     publicKey: "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb",
     balance: 100000000000000000000,  // 100 ETH
   }],
+  seedFilePath: `${__dirname}/seed.json`,
 };
 
 vorpal
   .command("create-seed-file", "Creates Ganache seed file from compiled Augur contracts.")
   .option("--filepath", `Where is the seed file? Defaults to "./seed.json"`)
   .action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args) {
-    state.seedFilePath = args.options.filepath || `${__dirname}/seed.json`;
-    if (await seedFileIsOutOfDate(state.seedFilePath)) {
-      this.log("Seed file out of date. Creating/updating...");
-      await createSeedFile(state.seedFilePath, state.accounts);
-    } else {
-      this.log("Seed file is up-to-date. No need to update.");
-    }
+    state.seedFilePath = args.options.filepath || state.seedFilePath;
+
+    await ensureSeed(this);
   });
 
 vorpal
   .command("ganache", "Start a Ganache node.")
   .option("--internal", "Prevent node from being available to browsers.")
   .action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args) {
-    if (!state.seedFilePath) {
-      this.log("ERROR: Must set seed file first. Call `create-seed-file`.");
-      return;
-    }
+    await ensureSeed(this);
 
     if (args.options.internal) {
       state.ganacheProvider = await makeGanacheProvider(state.seedFilePath, state.accounts);
@@ -61,12 +95,24 @@ vorpal
     state.provider = new EthersProvider(state.ganacheProvider, 5, 0, 40);
   });
 
-
 vorpal
   .command("gas-limit")
   .action(async function(this: Vorpal.CommandInstance) {
+    if (noProvider(this)) return;
+
     const block = await state.provider.getBlock("latest");
-    this.log(`${block.gasLimit.toNumber()}`);
+    this.log(`Gas limit: ${block.gasLimit.toNumber()}`);
+  });
+
+vorpal
+  .command("create-reasonable-yes-no-market")
+  .action(async function(this: Vorpal.CommandInstance) {
+    if (noProvider(this)) return;
+    const user = await ensureUser();
+
+    state.market = await user.createReasonableYesNoMarket(user.augur.contracts.universe);
+
+    this.log(`Created market "${state.market.address}".`);
   });
 
 vorpal
