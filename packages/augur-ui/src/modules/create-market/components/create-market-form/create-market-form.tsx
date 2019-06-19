@@ -14,11 +14,12 @@ import CreateMarketReview from "modules/create-market/components/create-market-f
 import Styles from "modules/create-market/components/create-market-form/create-market-form.styles";
 import { InputErrorIcon } from "modules/common/icons";
 import { createBigNumber } from "utils/create-big-number";
-import { CATEGORICAL, SCALAR, BID } from "modules/common/constants";
+import { CATEGORICAL, SCALAR, BID, SELL, BUY } from "modules/common/constants";
 import moment from "moment";
 import { formatDate } from "utils/format-date";
 import { RepBalance } from "modules/common/labels";
 import { formatRep } from "utils/format-number";
+import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
 
 const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 const STEP_NAME = {
@@ -278,31 +279,22 @@ export default class CreateMarketForm extends Component {
         break;
     }
 
-    const orderInfo = {
-      orderType: order.type === BID ? 0 : 1,
-      outcome,
-      shares: order.quantity,
-      price: order.price,
-      tokenBalance: availableEth,
-      minPrice,
-      maxPrice,
-      marketCreatorFeeRate: newMarket.settlementFee,
-      reportingFeeRate: 0,
-      shareBalances,
-      singleOutcomeOrderBook: newMarket.orderBook[outcome] || {}
-    };
-    const action = augur.trading.simulateTrade(orderInfo);
+    const orderType = order.type === BID ? BUY : SELL;
+
+    // Calculate amount of DAI needed for order
+    const totalCost = calculateTotalOrderValue(order.quantity, order.price, orderType, minPrice, maxPrice, newMarket.type);
+
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
       initialLiquidityEth = newMarket.initialLiquidityEth.minus(
-        action.tokensDepleted
+        totalCost
       );
       initialLiquidityGas = newMarket.initialLiquidityGas.minus(
         NEW_ORDER_GAS_ESTIMATE
       );
     } else {
       initialLiquidityEth = newMarket.initialLiquidityEth.plus(
-        action.tokensDepleted
+        totalCost
       );
       initialLiquidityGas = newMarket.initialLiquidityGas.plus(
         NEW_ORDER_GAS_ESTIMATE
