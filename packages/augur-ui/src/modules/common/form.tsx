@@ -1,12 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import ChevronFlip from 'modules/common/chevron-flip';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { PulseLoader } from 'react-spinners';
-import { SearchIcon, XIcon, CheckMark, Ellipsis } from 'modules/common/icons';
-import debounce from 'utils/debounce';
-import Styles from 'modules/common/form.styles';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+
+import ChevronFlip from "modules/common/chevron-flip";
+import { BigNumber, createBigNumber } from "utils/create-big-number";
+import { PulseLoader } from "react-spinners";
+import { SearchIcon, XIcon, CheckMark, OutlineChevron, Ellipsis } from "modules/common/icons";
+import debounce from "utils/debounce";
+
+import Styles from "modules/common/form.styles.less";
+import "react-dates/initialize";
+import "react-dates/lib/css/_datepicker.css";
+import { SingleDatePicker } from "react-dates";
 
 interface CheckboxProps {
   id: string;
@@ -17,6 +22,20 @@ interface CheckboxProps {
   onClick: Function;
   small?: boolean;
   smallOnDesktop?: boolean;
+}
+
+interface DatePickerProps {
+  id?: string;
+  date: any;
+  placeholder?: string;
+  onDateChange: Function;
+  isOutsideRange?: Function;
+  focused?: boolean;
+  onFocusChange?: Function;
+  displayFormat: string;
+  numberOfMonths: number;
+  navPrev?: any;
+  navNext?: any;
 }
 
 interface TextInputProps {
@@ -207,6 +226,25 @@ Checkbox.defaultProps = {
   small: false,
   smallOnDesktop: false,
 };
+
+export const DatePicker = (props: DatePickerProps) => (
+  <div className={Styles.DatePicker}>
+    <SingleDatePicker
+      id={props.id}
+      date={props.date}
+      placeholder={props.placeholder || "Date (D MMM YYYY)"}
+      onDateChange={props.onDateChange}
+      isOutsideRange={props.isOutsideRange || (() => false)}
+      focused={props.focused}
+      onFocusChange={props.onFocusChange}
+      displayFormat={props.displayFormat || "D MMM YYYY"}
+      numberOfMonths={props.numberOfMonths}
+      navPrev={props.navPrev || OutlineChevron}
+      navNext={props.navNext || OutlineChevron}
+      weekDayFormat="ddd"
+    />
+  </div>
+);
 
 interface InputProps {
   type?: string;
