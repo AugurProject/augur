@@ -439,6 +439,70 @@
   margin-bottom: @size-4;
 }
 
+div.FormDropdown {
+  .text-14;
+
+  background-color: @color-secondary-action;
+  border-radius: @border-radius-default;
+  border: 1px solid @color-primary-light;
+  margin-bottom: @size-4;
+
+  > div {
+    left: 0;
+  }
+
+  > button {
+    background-color: transparent;
+    color: @color-primary-alternate-two;
+
+    > svg {
+      height: @size-12;
+      width: @size-12;
+
+      > path {
+        stroke: @color-secondary-text;
+      }
+    }
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &:hover {
+    background-color: @color-secondary-action;
+    border: 1px solid @color-highlight;
+    cursor: pointer;
+  }
+
+  &.disabled {
+    background-color: @color-extra-darkpurple;
+    border: 1px solid @color-shadow-text;
+    color: @color-shadow-text;
+    opacity: 0.5;
+  }
+
+  &.error {
+    border: 1px solid fade(@color-error-text, 50%);
+  }
+}
+
+div.FormDropdownActive {
+  > button {
+    background-color: transparent;
+    color: @color-secondary-text;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &:hover {
+    background-color: @color-secondary-action;
+    border: 1px solid @color-primary-light;
+    color: @color-secondary-text;
+  }
+}
 
 .Input {
   .border(true, @border-all, @color-input-border-no-focus, 1px);
