@@ -22,6 +22,7 @@ import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
+import { SquareDropdown } from "modules/common/selection";
 
 interface CheckboxProps {
   id: string;
@@ -77,6 +78,33 @@ interface InputDropdownState {
   showList: Boolean;
   selected: Boolean;
 }
+
+interface FormDropdownProps {
+  id?: string;
+  onChange: any;
+  className?: string;
+  defaultValue?: string | number;
+  options: Array<NameValuePair>;
+  staticLabel?: string;
+  disabled?: Boolean;
+  error?: Boolean;
+  errorMessage?: String;
+  openTop?: Boolean;
+}
+
+export const FormDropdown = (props: FormDropdownProps) => 
+  <>
+    <SquareDropdown 
+      {...props} 
+      className={classNames(Styles.FormDropdown, {[Styles.disabled]: props.disabled, [Styles.error]: props.error})} 
+      activeClassName={Styles.FormDropdownActive}
+    />
+    {props.error && props.errorMessage && 
+      <span className={Styles.ErrorText}>
+        {props.errorMessage}
+      </span>
+    }
+  </>;
 
 interface RadioCardProps {
   value: string;
@@ -234,6 +262,7 @@ const RadioCard = ({
     <p>{description}</p>
   </div>
 );
+
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
   state: TextInputState = {
     value: this.props.value,
