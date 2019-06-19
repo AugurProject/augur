@@ -2,12 +2,12 @@ import { BigNumber } from 'bignumber.js';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import {
-  Address,
   MarketType,
   MarketCreatedLog,
   MarketFinalizedLog,
   MarketVolumeChangedLog,
   OrderEventType,
+  OrderType,
   ParsedOrderEventLog,
 } from '../logs/types';
 import { SortLimit } from './types';
@@ -21,8 +21,9 @@ import { toAscii } from '../utils/utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
+import { Order, Orders, Trading } from './Trading';
 
-const GetMarketsParamsSpecific = t.intersection([
+const getMarketsParamsSpecific = t.intersection([
   t.type({
     universe: t.string,
   }),
@@ -38,7 +39,7 @@ const GetMarketsParamsSpecific = t.intersection([
   }),
 ]);
 
-const OutcomeParam = t.keyof({
+const outcomeParam = t.keyof({
   0: null,
   1: null,
   2: null,
@@ -131,27 +132,53 @@ export interface MarketPriceHistory {
   [outcome: string]: TimestampedPriceAmount[];
 }
 
+export interface OrderBook {
+  price: string;
+  shares: string;
+  cumulativeShares: string;
+  mySize: string;
+}
+
+export interface MarketOrderBook {
+  marketId: string;
+  orderBook: {
+    [outcome: number]: {
+      bids: OrderBook[];
+      asks: OrderBook[];
+    };
+  };
+}
+
+const outcomeIdType = t.union([outcomeParam, t.number, t.null, t.undefined]);
+
 export class Markets {
-  static GetMarketPriceCandlestickParams = t.type({
+  static getMarketPriceCandlestickParams = t.type({
     marketId: t.string,
-    outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
+    outcome: outcomeIdType,
     start: t.union([t.number, t.null, t.undefined]),
     end: t.union([t.number, t.null, t.undefined]),
     period: t.union([t.number, t.null, t.undefined]),
   });
-  static GetMarketPriceHistoryParams = t.type({ marketId: t.string });
-  static GetMarketsParams = t.intersection([
-    GetMarketsParamsSpecific,
+  static getMarketPriceHistoryParams = t.type({ marketId: t.string });
+  static getMarketsParams = t.intersection([
+    getMarketsParamsSpecific,
     SortLimit,
   ]);
-  static GetMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
-  static GetTopics = t.type({ universe: t.string });
+  static getMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
+  static getMarketOrderBookParams = t.intersection([
+    t.type({ marketId: t.string }),
+    t.partial({
+      outcomeId: t.union([outcomeIdType, t.array(outcomeIdType)]),
+    }),
+  ]);
 
-  @Getter('GetMarketPriceCandlestickParams')
+  static getTopicsParams = t.type({ universe: t.string });
+
+  @Getter('getMarketPriceCandlestickParams')
   static async getMarketPriceCandlesticks(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>
+    params: t.TypeOf<typeof Markets.getMarketPriceCandlestickParams>
   ): Promise<MarketPriceCandlesticks> {
     const marketCreatedLogs = await db.findMarketCreatedLogs({
       selector: { market: params.marketId },
@@ -239,11 +266,11 @@ export class Markets {
     });
   }
 
-  @Getter('GetMarketPriceHistoryParams')
+  @Getter('getMarketPriceHistoryParams')
   static async getMarketPriceHistory(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Markets.GetMarketPriceHistoryParams>
+    params: t.TypeOf<typeof Markets.getMarketPriceHistoryParams>
   ): Promise<MarketPriceHistory> {
     const orderFilledLogs = await db.findOrderFilledLogs({
       selector: { market: params.marketId, eventType: OrderEventType.Fill },
@@ -272,12 +299,12 @@ export class Markets {
     );
   }
 
-  @Getter('GetMarketsParams')
+  @Getter('getMarketsParams')
   static async getMarkets(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Markets.GetMarketsParams>
-  ): Promise<Address[]> {
+    params: t.TypeOf<typeof Markets.getMarketsParams>
+  ): Promise<string[]> {
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
@@ -428,11 +455,78 @@ export class Markets {
     return Object.keys(filteredKeyedMarketCreatedLogs);
   }
 
-  @Getter('GetMarketsInfoParams')
+  @Getter('getMarketOrderBookParams')
+  static async getMarketOrderBook(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Markets.getMarketOrderBookParams>
+  ): Promise<MarketOrderBook> {
+    const account = await augur.getAccount();
+    const orders = await Trading.getOrders(augur, db, params);
+
+    const processOrders = (unsortedOrders: {
+      [orderId: string]: Order;
+    }): OrderBook[] => {
+      const orders = Object.values(unsortedOrders).sort((a, b) =>
+        new BigNumber(a.price).minus(b.price).toNumber()
+      );
+      const buckets = _.groupBy<Order>(orders, order => order.price);
+      const result: OrderBook[] = [];
+
+      return Object.values(buckets).reduce((acc, bucket, index) => {
+        const shares = bucket.reduce((v, order, index) => {
+          return v.plus(order.amount);
+        }, new BigNumber(0));
+
+        const mySize = bucket
+          .filter(order => order.owner === account)
+          .reduce((v, order, index) => {
+            return v.plus(order.amount);
+          }, new BigNumber(0));
+
+        const cumulativeShares =
+          index > 0 ? shares.plus(acc[index - 1].cumulativeShares) : shares;
+        acc.push({
+          price: bucket[0].price,
+          cumulativeShares: cumulativeShares.toString(),
+          shares: shares.toString(),
+          mySize: mySize.toString(),
+        });
+        return acc;
+      }, result);
+    };
+
+    const processOutcome = (outcome: {
+      [orderType: string]: { [orderId: string]: Order };
+    }) => {
+      return {
+        asks: processOrders(outcome[OrderType.Ask.toString()]),
+        bids: processOrders(outcome[OrderType.Bid.toString()]),
+      };
+    };
+
+    const processMarket = (orders: Orders) => {
+      const outcomes = Object.values(orders)[0];
+      return Object.keys(outcomes).reduce<MarketOrderBook['orderBook']>(
+        (acc, outcome) => {
+          acc[outcome] = processOutcome(outcomes[outcome]);
+          return acc;
+        },
+        {}
+      );
+    };
+
+    return {
+      marketId: params.marketId,
+      orderBook: processMarket(orders),
+    };
+  }
+
+  @Getter('getMarketsInfoParams')
   static async getMarketsInfo(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Markets.GetMarketsInfoParams>
+    params: t.TypeOf<typeof Markets.getMarketsInfoParams>
   ): Promise<MarketInfo[]> {
     const marketCreatedLogs = await db.findMarketCreatedLogs({
       selector: { market: { $in: params.marketIds } },
@@ -535,8 +629,7 @@ export class Markets {
           cumulativeScale: cumulativeScale.toString(10),
           author: marketCreatedLog.marketCreator,
           creationBlock: marketCreatedLog.blockNumber,
-          creationTime: marketCreatedLog.timestamp,
-          category: Buffer.from(
+          creationTime: marketCreatedLog.timestamp,category: Buffer.from(
             marketCreatedLog.topic.replace('0x', ''),
             'hex'
           ).toString(),
@@ -576,11 +669,11 @@ export class Markets {
     );
   }
 
-  @Getter('GetTopics')
+  @Getter('getTopicsParams')
   static async getTopics(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Markets.GetTopics>
+    params: t.TypeOf<typeof Markets.getTopicsParams>
   ): Promise<string[]> {
     const marketCreatedLogs = await db.findMarketCreatedLogs({
       selector: { universe: params.universe },
@@ -597,7 +690,7 @@ export class Markets {
 
 function filterOrderFilledLogs(
   orderFilledLogs: ParsedOrderEventLog[],
-  params: t.TypeOf<typeof Markets.GetMarketPriceCandlestickParams>
+  params: t.TypeOf<typeof Markets.getMarketPriceCandlestickParams>
 ): ParsedOrderEventLog[] {
   let filteredOrderFilledLogs = orderFilledLogs;
   if (params.outcome || params.start || params.end) {
