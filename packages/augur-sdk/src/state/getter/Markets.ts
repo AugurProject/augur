@@ -8,7 +8,7 @@ import {
   MarketFinalizedLog,
   MarketVolumeChangedLog,
   OrderEventType,
-  ParsedOrderEventLog,
+  ParsedOrderEventLog
 } from "../logs/types";
 import { SortLimit } from "./types";
 import { Augur, numTicksToTickSize, QUINTILLION, convertOnChainPriceToDisplayPrice } from "../../index";
@@ -90,7 +90,7 @@ export interface MarketInfo {
   numTicks: string;
   tags: Array<string>;
   tickSize: string;
-  consensus: Array<string> | null,
+  consensus: Array<string> | null;
   outcomes: Array<MarketInfoOutcome>;
   marketCreatorFeeRate: string;
   settlementFee: string;
@@ -217,7 +217,8 @@ export class Markets {
 
     let marketCreatorFeeDivisor: BigNumber | undefined = undefined;
     if (params.maxFee) {
-      const reportingFeeDivisor = new BigNumber((await augur.contracts.universe.getOrCacheReportingFeeDivisor_()).toNumber());
+      const universe = augur.getUniverse(params.universe);
+      const reportingFeeDivisor = new BigNumber((await universe.getOrCacheReportingFeeDivisor_()).toNumber());
       const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
       const marketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
       marketCreatorFeeDivisor = new BigNumber(10 ** 18).multipliedBy(marketCreatorFee);
@@ -378,9 +379,9 @@ export class Markets {
         scalarDenomination = extraInfo._scalarDenomination ? extraInfo._scalarDenomination : null;
         tags = extraInfo.tags ? extraInfo.tags : [];
       }
-      const reportingFeeRate = "0"; // TODO need to pull this from somewhere
-      const marketCreatorFeeRate = new BigNumber(marketCreatedLog.feeDivisor).dividedBy(QUINTILLION).toString(10);
-      const settlementFee = new BigNumber(marketCreatedLog.feeDivisor).plus(reportingFeeRate).dividedBy(QUINTILLION).toString(10);
+      const marketCreatorFeeRate = new BigNumber(marketCreatedLog.feeDivisor).dividedBy(QUINTILLION);
+      const reportingFeeRate = new BigNumber(await augur.contracts.universe.getOrCacheReportingFeeDivisor_()).dividedBy(QUINTILLION);
+      const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
 
       return Object.assign({
         id: marketCreatedLog.market,
@@ -391,8 +392,8 @@ export class Markets {
         maxPrice: displayMaxPrice.toString(10),
         cumulativeScale: cumulativeScale.toString(10),
         author: marketCreatedLog.marketCreator,
-        designatedReporter: marketCreatedLog.designatedReporter,
         creationBlock: marketCreatedLog.blockNumber,
+        creationTime: marketCreatedLog.timestamp,
         category: Buffer.from(marketCreatedLog.topic.replace("0x", ""), "hex").toString(),
         volume: (marketVolumeChangedLogs.length > 0) ? new BigNumber(marketVolumeChangedLogs[0].volume).dividedBy(QUINTILLION).toString() : "0",
         openInterest: await getMarketOpenInterest(db, marketCreatedLog),
@@ -403,9 +404,9 @@ export class Markets {
         finalizationTime,
         description,
         scalarDenomination,
-        settlementFee,
-        marketCreatorFeeRate,
-        reportingFeeRate,
+        marketCreatorFeeRate: marketCreatorFeeRate.toString(10),
+        settlementFee: settlementFee.toString(10),
+        reportingFeeRate: reportingFeeRate.toString(10),
         details,
         resolutionSource,
         numTicks: numTicks.toString(10),
