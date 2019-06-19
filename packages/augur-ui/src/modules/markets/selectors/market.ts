@@ -37,70 +37,18 @@ import {
 } from "store/select-state";
 import { PositionData, MarketData } from "modules/types";
 import { convertMarketInfoToMarketData } from "utils/convert-marketInfo-marketData";
-import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
 
-const NullMarket: MarketInfo = {
-  id: "",
-  universe: "",
-  numOutcomes: 3,
-  minPrice: "0",
-  maxPrice: "1",
-  cumulativeScale: "1",
-  marketType: YES_NO,
-  author: "",
-  creationBlock: 0,
-  creationTime: 0,
-  category: "",
-  volume: "0",
-  openInterest: "0",
-  reportingState: REPORTING_STATE.PRE_REPORTING,
-  needsMigration: false,
-  endTime: 0,
-  finalizationBlockNumber: null,
-  finalizationTime: null,
-  description: "",
-  scalarDenomination: "N/A",
-  details: null,
-  resolutionSource: null,
-  numTicks: "100",
-  tags: [],
-  tickSize: "0.01",
-  consensus: null,
-  outcomes: [{
-    id: 0,
-    price: "0",
-    description: "Invalid",
-    volume: "0",
-  },
-  {
-    id: 1,
-    price: "0",
-    description: "-",
-    volume: "0",
-  },
-  {
-    id: 2,
-    price: "0",
-    description: "-",
-    volume: "0",
-  }],
-  marketCreatorFeeRate: "0",
-  settlementFee: "0",
-  reportingFeeRate: "0",
-  disputeInfo: null,
-}
-
-export const selectMarket = (marketId): MarketData => {
+export const selectMarket = (marketId): MarketData | null => {
   const state = store.getState();
-  const marketsData = selectMarketsDataState(state);
+  const marketInfo = selectMarketsDataState(state);
 
   if (
     !marketId ||
-    !marketsData ||
-    !marketsData[marketId] ||
-    !marketsData[marketId].id
+    !marketInfo ||
+    !marketInfo[marketId] ||
+    !marketInfo[marketId].id
   ) {
-    return convertMarketInfoToMarketData(NullMarket);
+    return null;
   }
 
   return getMarketSelector(state, marketId);

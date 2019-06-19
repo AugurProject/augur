@@ -7,8 +7,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
 import { PrimaryButton } from 'modules/common/buttons';
-import { MarketData } from 'modules/types';
-import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketData, MarketOutcome } from 'modules/types';
 
 interface TradingFormProps {
   availableFunds: BigNumber;
@@ -31,7 +30,7 @@ interface TradingFormProps {
 
 interface TradingFormState {
   showForm: boolean;
-  selectedOutcome: MarketInfoOutcome | undefined;
+  selectedOutcome: MarketOutcome | undefined;
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
@@ -43,8 +42,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
     showForm: false,
     selectedOutcome:
       this.props.market &&
-      this.props.market.outcomes &&
-      this.props.market.outcomes.find(
+      this.props.market.marketOutcomes &&
+      this.props.market.marketOutcomes.find(
         outcome => outcome.id === this.props.selectedOutcomeId
       ),
   };
@@ -59,8 +58,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       if (nextProps.selectedOutcomeId !== null) {
         const selectedOutcome =
           market &&
-          market.outcomes &&
-          market.outcomes.find(
+          market.marketOutcomes &&
+          market.marketOutcomes.find(
             outcome => outcome.id === nextProps.selectedOutcomeId
           );
         this.setState({ selectedOutcome });

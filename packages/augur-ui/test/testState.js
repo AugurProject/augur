@@ -61,7 +61,7 @@ const testState = {
     rep: 0
   },
   tags: "test testtag",
-  marketsData: {
+  marketInfos: {
     testMarketId: {
       id: "testMarketId",
       consensus: null,

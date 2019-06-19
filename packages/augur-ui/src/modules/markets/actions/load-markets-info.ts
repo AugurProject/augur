@@ -22,14 +22,14 @@ export const loadMarketsInfo = (
     return callback(null, []);
   }
   const augur = augurSdk.get();
-  const marketsDataArray = await augur.getMarketsInfo({ marketIds });
-  if (marketsDataArray == null || !marketsDataArray.length)
+  const marketInfoArray = await augur.getMarketsInfo({ marketIds });
+  if (marketInfoArray == null || !marketInfoArray.length)
     return callback("no markets data received");
   const universeId = getState().universe.id;
-  const marketsData = marketsDataArray
+  const marketInfos = marketInfoArray
     .filter(marketHasData => marketHasData)
     .reduce((p, marketData) => {
-      if (marketData.id == null || marketData.universe !== universeId) return p;
+      if (marketData === null || marketData.id == null || marketData.universe !== universeId) return p;
 
       return {
         ...p,
@@ -37,11 +37,11 @@ export const loadMarketsInfo = (
       };
     }, {});
 
-  if (!Object.keys(marketsData).length)
+  if (!Object.keys(marketInfos).length)
     return callback("no marketIds in collection");
 
-  dispatch(updateMarketsData(marketsData));
-  callback(null, marketsData);
+  dispatch(updateMarketsData(marketInfos));
+  callback(null, marketInfos);
 };
 
 export const loadMarketsInfoIfNotLoaded = (
@@ -51,9 +51,9 @@ export const loadMarketsInfoIfNotLoaded = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { marketsData } = getState();
+  const { marketInfos } = getState();
   const marketIdsToLoad = marketIds.filter(
-    (marketId: string) => !isMarketLoaded(marketId, marketsData)
+    (marketId: string) => !isMarketLoaded(marketId, marketInfos)
   );
 
   if (marketIdsToLoad.length === 0) return callback(null);

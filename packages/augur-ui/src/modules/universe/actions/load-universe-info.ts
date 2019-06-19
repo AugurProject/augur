@@ -31,7 +31,7 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { universe, loginAccount, marketsData } = getState();
+    const { universe, loginAccount, marketInfos } = getState();
     const universeId = universe.id || UNIVERSE_ID;
 
     if (!loginAccount.address) return;
@@ -49,9 +49,9 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
     if (
       universe.isForking &&
       universe.forkingMarket &&
-      marketsData[universe.forkingMarket]
+      marketInfos[universe.forkingMarket]
     ) {
-      const forkingMarket = marketsData[universe.forkingMarket];
+      const forkingMarket = marketInfos[universe.forkingMarket];
       universeData.market = forkingMarket;
       universeData.outcomes = forkingMarket.outcomes;
       universeData.winningChildUniverseId = universe.winningChildUniverse;

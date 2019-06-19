@@ -16,7 +16,7 @@ import {
 import { ValueDenomination } from "modules/common/labels";
 import getValue from "utils/get-value";
 import { dateHasPassed } from "utils/format-date";
-import Styles from "modules/market/components/market-properties/market-properties.styles";
+import Styles from "modules/market/components/market-properties/market-properties.styles.less";
 import ChevronFlip from "modules/common/chevron-flip";
 import { constants } from "services/augurjs";
 import { FavoritesButton } from "modules/common/buttons";

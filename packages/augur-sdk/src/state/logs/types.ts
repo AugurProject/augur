@@ -165,6 +165,28 @@ export interface OrderEventLog extends Log, Doc, Timestamped {
   uint256Data: Array<string>;
 }
 
+export interface ParsedOrderEventLog extends Log, Doc, Timestamped {
+  universe: Address;
+  market: Address;
+  eventType: OrderEventType;
+  orderType: OrderType;
+  orderId: Bytes32;
+  tradeGroupId: Bytes32;
+  kycToken: Address;
+  orderCreator: Address;
+  orderFiller: Address;
+  price: string;
+  amount: string;
+  outcome: string;
+  tokenRefund: string;
+  sharesRefund: string;
+  fees: string;
+  amountFilled: string;
+  timestamp: string;
+  sharesEscrowed: string;
+  tokensEscrowed: string;
+}
+
 export enum OrderType {
   Bid = 0,
   Ask = 1
@@ -176,6 +198,7 @@ export enum OrderEventType {
   PriceChanged = 2,
   Fill = 3,
 }
+
 
 export enum OrderEventAddressValue {
   kycToken = 0,

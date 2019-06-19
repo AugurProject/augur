@@ -10,6 +10,7 @@ import { Action } from 'redux';
 import { NodeStyleCallback, MarketData } from 'modules/types';
 import { simulateTrade } from 'modules/contracts/actions/contractCalls';
 import { SimulateTradeData } from '@augurproject/sdk/build';
+import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
 export function updateTradeCost({
@@ -30,14 +31,14 @@ export function updateTradeCost({
     }
 
     const {
-      marketsData,
+      marketInfos,
       loginAccount,
       orderBooks,
       outcomesData,
       accountPositions,
       accountShareBalances,
     } = getState();
-    const market = marketsData[marketId];
+    const market = marketInfos[marketId];
     const outcome = outcomesData[marketId][outcomeId];
 
     const newTradeDetails = {
@@ -81,14 +82,14 @@ export function updateTradeShares({
     }
 
     const {
-      marketsData,
+      marketInfos,
       loginAccount,
       outcomesData,
       accountPositions,
       accountShareBalances,
       orderBooks,
     } = getState();
-    const market = marketsData[marketId];
+    const market = marketInfos[marketId];
 
     const newTradeDetails: any = {
       side,
@@ -149,7 +150,7 @@ export function updateTradeShares({
 
 async function runSimulateTrade(
   newTradeDetails: any,
-  market: MarketData,
+  market: MarketInfo,
   marketId: any,
   outcomeId: any,
   loginAccount: any,

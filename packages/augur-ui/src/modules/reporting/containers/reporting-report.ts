@@ -19,7 +19,7 @@ const mapStateToProps = state => ({
   // might need to call get market cost breakdown, it's on market from augur-node
   isConnected: state.connection.isConnected,
   universe: state.universe.id,
-  marketsData: state.marketsData,
+  marketInfos: state.marketInfos,
   isMobile: state.appStatus.isMobile,
   availableRep: getValue(state, "loginAccount.rep") || "0",
   userAddress: state.loginAccount.address,
@@ -71,7 +71,7 @@ const mergeProps = (sP, dP, oP) => {
     isDRMarketCreator,
     isLogged: sP.isLogged,
     isConnected: sP.isConnected && getValue(sP, "universe.id") != null,
-    isMarketLoaded: sP.marketsData[marketId] != null,
+    isMarketLoaded: sP.marketInfos[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
     submitInitialReport: ({

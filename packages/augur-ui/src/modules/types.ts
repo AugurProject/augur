@@ -55,8 +55,8 @@ export interface CoreStats {
   totalFunds: ValueLabelPair;
   realizedPL: ValueLabelPair;
 }
-export interface MarketsData {
-  [marketId: string]: MarketData;
+export interface MarketInfos {
+  [marketId: string]: MarketInfo;
 }
 export interface Outcomes extends MarketInfoOutcome {
   name?: string;
