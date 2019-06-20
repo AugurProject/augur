@@ -30,6 +30,7 @@ import ModalClaimProceeds from "modules/modal/containers/modal-claim-proceeds";
 import ModalTradingOverlay from "modules/modal/components/modal-trading-overlay";
 import ModalOpenOrders from "modules/modal/containers/modal-open-orders";
 import ModalMarketLoading from "modules/modal/containers/modal-market-loading";
+import ModalContent from "modules/modal/containers/modal-content";
 
 import * as TYPES from "modules/common/constants";
 
@@ -39,6 +40,8 @@ const ESCAPE_KEYCODE = 27;
 
 function selectModal(type, props, closeModal, modal) {
   switch (type) {
+    case TYPES.MODAL_CONTENT:
+      return <ModalContent {...props} />
     case TYPES.MODAL_SELL_COMPLETE_SETS:
       return <ModalSellCompleteSets {...props} />;
     case TYPES.MODAL_CLAIM_PROCEEDS:

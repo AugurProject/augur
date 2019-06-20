@@ -131,6 +131,29 @@ export interface DepositInfoProps {
   showAirSwap: boolean;
 }
 
+export interface ContentItem {
+  header: string | null;
+  paragraphs: Array<string>;
+}
+
+export interface ContentProps {
+  content: Array<ContentItem>;
+}
+
+export const Content = ({ content }: ContentProps) => (
+  <div className={Styles.Content}>
+    {content.map(item => (
+      <React.Fragment key={item.paragraphs[0].slice(20).replace(/\s+/g, "-")}>
+        {!!item.header && <h5>{item.header}</h5>}
+        {item.paragraphs.map(text => (
+            <p key={text.slice(15).replace(/\s+/g, "_")}>{text}</p>
+          ))
+        }
+      </React.Fragment>
+    ))}
+  </div>
+);
+
 export const Title = (props: TitleProps) => (
   <header className={Styles.TitleHeader}>
     <h1>{props.title}</h1>
@@ -142,7 +165,7 @@ export const Title = (props: TitleProps) => (
 
 export const Description = (props: DescriptionProps) =>
   props.description.map((descriptionText: string) => (
-    <p key={descriptionText.slice(20).replace(" ", "-")}>{descriptionText}</p>
+    <p key={descriptionText.slice(20).replace(/\s+/g, "-")}>{descriptionText}</p>
   ));
 
 export const ButtonsRow = (props: ButtonsRowProps) => (
