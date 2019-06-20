@@ -505,7 +505,7 @@ export interface TimeframeData {
 export interface LoginAccount {
   address?: string;
   displayAddress?: string;
-  meta?: { accountType: string; address: string; signer: EthersSigner, isWeb3: boolean };
+  meta?: { accountType: string; address: string; signer: any | EthersSigner, isWeb3: boolean };
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
@@ -537,4 +537,29 @@ export type DataCallback = (result?: any) => void;
 export interface BaseAction extends AnyAction {
   type: string;
   data?: any;
+}
+
+export interface EthereumWallet {
+  appId: string;
+  appIds: string[];
+  archived: boolean;
+  deleted: boolean;
+  sortIndex: number;
+  id: string;
+  type: string;
+  keys: { ethereumAddress: string };
+}
+
+export interface EdgeUiAccount {
+  signEthereumTransaction: Function;
+  getFirstWalletInfo: Function;
+  createCurrencyWallet: Function;
+  username: string;
+}
+
+export interface WalletObject {
+  address: string;
+  balance: string;
+  derivationPath: Array<number>;
+  serializedPath: string;
 }

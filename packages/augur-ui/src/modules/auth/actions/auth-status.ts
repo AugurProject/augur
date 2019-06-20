@@ -14,7 +14,7 @@ export function updateAuthStatus(
     type: UPDATE_AUTH_STATUS,
     data: {
       statusKey,
-      value
-    }
+      value,
+    },
   };
 }

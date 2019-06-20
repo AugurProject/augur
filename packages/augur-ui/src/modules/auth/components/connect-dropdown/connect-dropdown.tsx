@@ -19,6 +19,7 @@ interface ConnectDropdownProps {
   isLogged: boolean;
   connectMetaMask: Function;
   connectPortis: Function;
+  connectFortmatic: Function;
   toggleDropdown: Function;
   logout: Function;
   edgeLoginLink: Function;
@@ -97,7 +98,7 @@ export default class ConnectDropdown extends Component<ConnectDropdownProps, Con
   }
 
   connect(param) {
-    const { history, connectMetaMask, connectPortis, edgeLoginLink } = this.props;
+    const { connectMetaMask, connectFortmatic, connectPortis, edgeLoginLink } = this.props;
     if (param === ACCOUNT_TYPES.METAMASK) {
       if (!isMetaMaskPresent()) {
         this.showError(ERROR_TYPES.UNABLE_TO_CONNECT);
@@ -109,7 +110,7 @@ export default class ConnectDropdown extends Component<ConnectDropdownProps, Con
         }
       });
     } else if (param === ACCOUNT_TYPES.EDGE) {
-      edgeLoginLink(history);
+      edgeLoginLink();
       this.closeMenu();
     } else if (param === ACCOUNT_TYPES.PORTIS) {
       connectPortis((err, res) => {
@@ -119,6 +120,17 @@ export default class ConnectDropdown extends Component<ConnectDropdownProps, Con
             header: "Unable To Connect",
             subheader: err,
           });
+        }
+      });
+    } else if (param === ACCOUNT_TYPES.FORTMATIC) {
+      connectFortmatic((err, res) => {
+        if (err) {
+          console.error(err);
+          this.showError({
+            header: "Unable To Connect",
+            subheader: err,
+          });
+
         }
       });
     }
@@ -217,7 +229,9 @@ export default class ConnectDropdown extends Component<ConnectDropdownProps, Con
                 <div className={Styles.ConnectDropdown__icon}>{item.icon}</div>
                 <div className={Styles.ConnectDropdown__title}>
                   {item.title}
-                  {s.selectedOption === item.param && (
+                  {s.selectedOption === item.param &&
+                   !s.error &&
+                   !s.showAdvancedButton && (
                     <div style={{ marginLeft: "8px" }}>
                       <PulseLoader
                         color="#FFF"

@@ -1,34 +1,43 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-
-import DerivationPath, {
-  NUM_DERIVATION_PATHS_TO_DISPLAY
-} from "modules/auth/helpers/derivation-path";
-import TrezorConnectImport, { DEVICE_EVENT, DEVICE } from "trezor-connect";
+import DerivationPath, { NUM_DERIVATION_PATHS_TO_DISPLAY } from "modules/auth/helpers/derivation-path";
+import TrezorConnect, { DEVICE_EVENT, DEVICE } from "trezor-connect";
 import HardwareWallet from "modules/auth/components/common/hardware-wallet";
+import { TREZOR_MANIFEST_EMAIL, TREZOR_MANIFEST_APPURL } from "modules/common/constants";
 
-export default class TrezorConnect extends Component {
-  static propTypes = {
-    loginWithTrezor: PropTypes.func.isRequired,
-    showAdvanced: PropTypes.bool.isRequired,
-    showError: PropTypes.func.isRequired,
-    hideError: PropTypes.func.isRequired,
-    error: PropTypes.bool.isRequired,
-    onSuccess: PropTypes.func.isRequired,
-    setIsLoading: PropTypes.func.isRequired,
-    setShowAdvancedButton: PropTypes.func.isRequired,
-    isClicked: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired
-  };
+TrezorConnect.manifest({
+  email: TREZOR_MANIFEST_EMAIL,
+  appUrl: TREZOR_MANIFEST_APPURL,
+});
 
-  static async onDerivationPathChange(derivationPaths, pageNumber = 1) {
-    const paths = [];
+interface TrezorConnectWrapperProps {
+  loginWithTrezor: Function;
+  showAdvanced: boolean;
+  showError: Function;
+  hideError: Function;
+  error: boolean;
+  onSuccess: Function;
+  setIsLoading: Function;
+  setShowAdvancedButton: Function;
+  isClicked: boolean;
+  isLoading: boolean;
+  logout: Function;
+}
 
-    derivationPaths.forEach(derivationPath => {
+interface TrezorPayloadObject {
+  address: string;
+  derivationPath: number[];
+  serializedPath: string;
+}
+
+export default class TrezorConnectWrapper extends Component<TrezorConnectWrapperProps, void> {
+  static async onDerivationPathChange(derivationPaths: string[], pageNumber: number = 1) {
+    const paths: string[] = [];
+
+    derivationPaths.forEach((derivationPath: string) => {
       const components = DerivationPath.parse(derivationPath);
       const numberOfAddresses = NUM_DERIVATION_PATHS_TO_DISPLAY * pageNumber;
       const indexes = Array.from(Array(numberOfAddresses).keys());
-      indexes.forEach(index => {
+      indexes.forEach((index: number) => {
         const derivationPath = DerivationPath.buildString(
           DerivationPath.increment(components, index)
         );
@@ -36,31 +45,32 @@ export default class TrezorConnect extends Component {
       });
     });
 
-    const addresses = [];
+    const addresses: Array<TrezorPayloadObject> = [];
 
-    const bundle = paths.map(path => ({
+    const bundle = paths.map((path: string) => ({
       path,
-      showOnTrezor: false
+      showOnTrezor: false,
     }));
 
-    const response = await TrezorConnectImport.ethereumGetAddress({
-      bundle
-    }).catch(err => {
+    const response = await TrezorConnect.ethereumGetAddress({
+      bundle,
+    }).catch((err: any) => {
       console.log("Error:", err);
       return { success: false };
     });
 
     if (response.success) {
       // parse up the bundle results
-      response.payload.every(item =>
-        addresses.push({
+      response.payload.every((item: { address: string, path: Array<number>, serializedPath: string }) => {
+        return addresses.push({
           address: item.address,
           derivationPath: item.path,
-          serializedPath: item.serializedPath
-        })
-      );
+          serializedPath: item.serializedPath,
+        });
+      });
+
       if (addresses && addresses.length > 0) {
-        if (!addresses.every(element => !element.address)) {
+        if (!addresses.every((element) => !element.address)) {
           return { success: true, addresses };
         }
       }
@@ -69,19 +79,19 @@ export default class TrezorConnect extends Component {
     return { success: false };
   }
 
-  constructor(props) {
+  constructor(props: TrezorConnectWrapperProps) {
     super(props);
 
     this.connectWallet = this.connectWallet.bind(this);
   }
 
-  async connectWallet(derivationPath) {
+  async connectWallet(derivationPath: string) {
     const { loginWithTrezor, logout } = this.props;
-    const result = await TrezorConnectImport.ethereumGetAddress({
-      path: derivationPath
+    const result = await TrezorConnect.ethereumGetAddress({
+      path: derivationPath,
     });
 
-    TrezorConnectImport.on(DEVICE_EVENT, event => {
+    TrezorConnect.on(DEVICE_EVENT, (event: any) => {
       switch (event.type) {
         case DEVICE.DISCONNECT: {
           logout();
@@ -97,14 +107,14 @@ export default class TrezorConnect extends Component {
 
       if (address) {
         this.props.onSuccess();
+
         return loginWithTrezor(
           address.toLowerCase(),
-          TrezorConnectImport,
           derivationPath
         );
       }
     } else {
-      console.error("Could not connect to Trezor");
+      console.error("Could not connect to Trezor", result);
     }
   }
 
@@ -113,7 +123,7 @@ export default class TrezorConnect extends Component {
       <HardwareWallet
         loginWithWallet={this.connectWallet}
         walletName="trezor"
-        onDerivationPathChange={TrezorConnect.onDerivationPathChange}
+        onDerivationPathChange={TrezorConnectWrapper.onDerivationPathChange}
         validation={() => true}
         {...this.props}
       />
