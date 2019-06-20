@@ -85,7 +85,7 @@ contract Augur is IAugur {
     event DisputeWindowCreated(address indexed universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id, bool initial);
     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
-    event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume);
+    event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes);
     event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
     event ParticipationTokensRedeemed(address indexed universe, address indexed disputeWindow, address indexed account, uint256 attoParticipationTokens, uint256 feePayoutShare, uint256 timestamp);
     event TimestampSet(uint256 newTimestamp);
@@ -589,9 +589,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume) public returns (bool) {
+    function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume, uint256[] memory _outcomeVolumes) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
-        emit MarketVolumeChanged(address(_universe), _market, _volume);
+        emit MarketVolumeChanged(address(_universe), _market, _volume, _outcomeVolumes);
         return true;
     }
 

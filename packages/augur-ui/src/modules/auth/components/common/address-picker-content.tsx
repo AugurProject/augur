@@ -1,29 +1,27 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import formatAddress from "modules/auth/helpers/format-address";
 import { prevIcon, nextIcon } from "modules/common/icons";
 import { formatEther } from "utils/format-number";
 
-import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
-import Styles from "modules/auth/components/common/address-picker-content.styles";
+import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles.less";
+import Styles from "modules/auth/components/common/address-picker-content.styles.less";
+import { WalletObject } from "modules/types";
 
-export default class AddressPickerContent extends Component {
-  static propTypes = {
-    addresses: PropTypes.array.isRequired,
-    indexArray: PropTypes.array.isRequired,
-    clickAction: PropTypes.func.isRequired,
-    clickPrevious: PropTypes.func.isRequired,
-    clickNext: PropTypes.func.isRequired,
-    disablePrevious: PropTypes.bool.isRequired,
-    disableNext: PropTypes.bool.isRequired
-  };
+interface AddressPickerContentProps {
+  addresses: WalletObject[];
+  indexArray: string[];
+  clickAction: Function;
+  clickPrevious: Function;
+  clickNext: Function;
+  disablePrevious: boolean;
+  disableNext: boolean;
+}
 
+export default class AddressPickerContent extends Component<AddressPickerContentProps> {
   constructor(props) {
     super(props);
-
-    this.LedgerEthereum = null;
 
     this.clickPrevious = this.clickPrevious.bind(this);
     this.clickNext = this.clickNext.bind(this);
@@ -53,7 +51,7 @@ export default class AddressPickerContent extends Component {
       addresses,
       clickAction,
       disablePrevious,
-      disableNext
+      disableNext,
     } = this.props;
 
     return (
@@ -79,7 +77,7 @@ export default class AddressPickerContent extends Component {
             key={index}
             className={classNames(StylesDropdown.ConnectDropdown__row, {
               [StylesDropdown.FadeInAndOut]: !(addresses[index] || {}).address,
-              [StylesDropdown.ConnectDropdown__rowTransition]: true
+              [StylesDropdown.ConnectDropdown__rowTransition]: true,
             })}
           >
             <button
@@ -92,7 +90,7 @@ export default class AddressPickerContent extends Component {
             </button>
             <div className={StylesDropdown.ConnectDropdown__balanceColumn}>
               {(addresses[index] || {}).balance
-                ? formatEther((addresses[index] || {}).balance).formatted
+                ? formatEther((addresses[index] || {}).balance).fullPrecision
                 : `—`}
             </div>
           </div>
@@ -105,7 +103,7 @@ export default class AddressPickerContent extends Component {
         >
           <button
             className={classNames(Styles.AddressPickerContent__direction, {
-              [Styles.AddressPickerContent__directionDisabled]: disablePrevious
+              [Styles.AddressPickerContent__directionDisabled]: disablePrevious,
             })}
             onClick={this.clickPrevious}
           >
@@ -119,7 +117,7 @@ export default class AddressPickerContent extends Component {
           </button>
           <button
             className={classNames(Styles.AddressPickerContent__direction, {
-              [Styles.AddressPickerContent__directionDisabled]: disableNext
+              [Styles.AddressPickerContent__directionDisabled]: disableNext,
             })}
             onClick={this.clickNext}
             style={{ marginLeft: "24px" }}

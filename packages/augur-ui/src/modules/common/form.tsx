@@ -108,6 +108,23 @@ export const FormDropdown = (props: FormDropdownProps) =>
     }
   </>;
 
+interface TimezoneDropdownProps {
+  id?: string;
+  onChange: any;
+  className?: string;
+  disabled?: Boolean;
+}
+
+export const TimezoneDropdown = (props: TimezoneDropdownProps) => (
+  <FormDropdown
+    {...props}
+    options={[{
+      label: "UTC - 0",
+      value: 0
+    }]}
+  />
+);
+
 interface RadioCardProps {
   value: string;
   header: string;

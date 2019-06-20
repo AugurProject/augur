@@ -18,7 +18,7 @@ import {
   getMinutesRemaining,
   convertUnixToFormattedDate
 } from "utils/format-date";
-import { MarketData, NodeStyleCallback } from "modules/types";
+import { MarketData, NodeStyleCallback, MarketInfos } from "modules/types";
 
 const localStorageRef = typeof window !== "undefined" && window.localStorage;
 

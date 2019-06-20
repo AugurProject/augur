@@ -16,7 +16,7 @@ export interface CountdownProgressProps {
 }
 
 export interface TimeLabelProps {
-  time: DateFormattedObject | number;
+  time: DateFormattedObject;
   label?: string;
 }
 
@@ -29,7 +29,7 @@ export interface TimeProgressBarProps {
 export interface MarketProgressProps {
   reportingState: string;
   currentTime: DateFormattedObject | number;
-  endTime: DateFormattedObject | number;
+  endTime: DateFormattedObject;
   reportingWindowEndtime: DateFormattedObject | number;
   customLabel?: string;
   alignRight?: Boolean;
@@ -61,7 +61,7 @@ const reportingStateToLabelTime = (
       break;
     case REPORTING_STATE.DESIGNATED_REPORTING:
       label = "Designated Reporting";
-      time = formatTime(endTime.timestamp + ThreeDays);
+      time = formatTime(endTime.timestamp + OneDay);
       break;
     case REPORTING_STATE.OPEN_REPORTING:
       label = "Open Reporting";
@@ -104,7 +104,7 @@ export const MarketProgress = (props: MarketProgressProps) => {
     alignRight
   } = props;
   const currTime = formatTime(currentTime);
-  const marketEndTime = formatTime(endTime);
+  const marketEndTime = endTime;
   const reportingEndTime = formatTime(reportingWindowEndtime);
   const { label, time } = reportingStateToLabelTime(
     reportingState,
@@ -186,7 +186,7 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
 
 export const TimeLabel = (props: TimeLabelProps) => {
   const { label, time } = props;
-  let formattedTime: DateFormattedObject | number = time;
+  let formattedTime: DateFormattedObject = time;
   if (typeof time !== "object") {
     formattedTime = format.convertUnixToFormattedDate(time);
   }
@@ -202,13 +202,10 @@ export const TimeLabel = (props: TimeLabelProps) => {
 export const TimeProgressBar = (props: TimeProgressBarProps) => {
   const { startTime, endTime, currentTime } = props;
   let formattedStartTime: DateFormattedObject | number = startTime;
-  let formattedEndTime: DateFormattedObject | number = endTime;
+  let formattedEndTime: DateFormattedObject = endTime;
   let formattedCurrentTime: DateFormattedObject | number = currentTime;
   if (typeof startTime !== "object") {
     formattedStartTime = format.convertUnixToFormattedDate(startTime);
-  }
-  if (typeof endTime !== "object") {
-    formattedEndTime = format.convertUnixToFormattedDate(endTime);
   }
   if (typeof currentTime !== "object") {
     formattedCurrentTime = format.convertUnixToFormattedDate(currentTime);
@@ -237,16 +234,13 @@ export const TimeProgressBar = (props: TimeProgressBarProps) => {
 
 export const MarketTimeline = (props: TimeProgressBarProps) => {
   const { startTime, endTime, currentTime } = props;
-  let formattedEndTime: DateFormattedObject | number = endTime;
+  let formattedEndTime: DateFormattedObject = endTime;
   let formattedCurrentTime: DateFormattedObject | number = currentTime;
 
-  if (!currentTime || !endTime) {
+  if (!currentTime) {
     return null;
   }
 
-  if (typeof endTime !== "object") {
-    formattedEndTime = format.convertUnixToFormattedDate(endTime);
-  }
   if (typeof currentTime !== "object") {
     formattedCurrentTime = format.convertUnixToFormattedDate(currentTime);
   }

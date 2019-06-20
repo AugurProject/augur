@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 
 import Form from "modules/trading/components/form/form";
 import Confirm from "modules/trading/components/confirm/confirm";
 import { generateTrade } from "modules/trades/helpers/generate-trade";
-import getValue from "utils/get-value";
 import {
   SCALAR,
   BUY,
@@ -17,8 +15,7 @@ import Styles from "modules/trading/components/wrapper/wrapper.styles.less";
 import { OrderButton } from "modules/common/buttons";
 import { formatShares } from "utils/format-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
-import { MarketData } from "modules/types";
-import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketData, MarketOutcome } from "modules/types";
 
 // TODO: refactor the need to use this function.
 function pick(object, keys) {
@@ -36,7 +33,7 @@ interface WrapperProps {
   marketReviewTradeModal: Function,
   selectedOrderProperties: object,
   availableFunds: BigNumber,
-  selectedOutcome: MarketInfoOutcome,
+  selectedOutcome: MarketOutcome,
   updateSelectedOrderProperties: Function,
   handleFilledOnly: Function,
   gasPrice: number,
@@ -88,7 +85,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderEscrowdEth: "",
       selectedNav: props.selectedOrderProperties.selectedNav || BUY,
       doNotCreateOrders:
-        props.selectedOrderProperties.doNotCreateOrders || false
+        props.selectedOrderProperties.doNotCreateOrders || false,
+      trade: Wrapper.getDefaultTrade(props)
     };
 
     this.updateState = this.updateState.bind(this);
@@ -98,13 +96,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.updateOrderProperty = this.updateOrderProperty.bind(this);
     this.updateNewOrderProperties = this.updateNewOrderProperties.bind(this);
     this.clearOrderConfirmation = this.clearOrderConfirmation.bind(this);
-  }
-
-  componentWillMount() {
-    this.setState({
-      ...this.state,
-      trade: Wrapper.getDefaultTrade(this.props)
-    });
   }
 
   componentWillUpdate(nextProps) {
@@ -333,6 +324,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       marketReviewTradeSeen,
       marketReviewTradeModal
     } = this.props;
+    const { marketType, minPriceBigNumber, maxPriceBigNumber } = market;
     const s = this.state;
     const {
       selectedNav,
@@ -399,9 +391,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {market && market.marketType && (
             <Form
               market={market}
-              marketType={getValue(this.props, "market.marketType")}
-              maxPrice={getValue(this.props, "market.maxPrice")}
-              minPrice={getValue(this.props, "market.minPrice")}
+              marketType={marketType}
+              maxPrice={maxPriceBigNumber}
+              minPrice={minPriceBigNumber}
               selectedNav={selectedNav}
               orderPrice={orderPrice}
               orderQuantity={orderQuantity}
@@ -415,7 +407,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               updateSelectedOutcome={updateSelectedOutcome}
               updateTradeTotalCost={this.updateTradeTotalCost}
               updateTradeNumShares={this.updateTradeNumShares}
-              updateNewOrderProperties={this.updateNewOrderProperties}
               clearOrderConfirmation={this.clearOrderConfirmation}
             />
           )}
@@ -424,9 +415,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           (s.trade.shareCost.value !== 0 || s.trade.totalCost.value !== 0) && (
             <Confirm
               numOutcomes={market.numOutcomes}
-              marketType={getValue(this.props, "market.marketType")}
-              maxPrice={getValue(this.props, "market.maxPrice")}
-              minPrice={getValue(this.props, "market.minPrice")}
+              marketType={marketType}
+              maxPrice={maxPriceBigNumber}
+              minPrice={minPriceBigNumber}
               trade={s.trade.displayTrade}
               gasPrice={gasPrice}
               availableFunds={availableFunds}

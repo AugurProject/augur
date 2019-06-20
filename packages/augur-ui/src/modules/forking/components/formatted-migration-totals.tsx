@@ -59,9 +59,9 @@ export default class FormattedMigrationTotals extends Component<FormattedMigrati
     const { getForkMigrationTotals, market } = this.props;
     getForkMigrationTotals((err, forkMigrationTotals) => {
       if (err) return console.error(err);
-      const { reportableOutcomes } = market;
+      const { outcomes } = market;
       const formattedMigrationTotals = selectMigrateTotals(
-        reportableOutcomes,
+        outcomes,
         forkMigrationTotals,
       );
       this.setState({

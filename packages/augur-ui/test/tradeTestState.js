@@ -15,7 +15,7 @@ export const tradeTestState = {
     ethTokens: "10000",
     rep: "50.0"
   },
-  marketsData: {
+  marketInfos: {
     testYesNoMarketId: {
       author: "testAuthor1",
       universeId: "0x010101",
