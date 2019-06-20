@@ -1075,7 +1075,7 @@ export class InputDropdown extends Component<
 
   render() {
     const { className, label, options } = this.props;
-    const { showList, selected, currentLabel, value } = this.state;
+    const { showList, selected, label: currentLabel, value } = this.state;
 
     return (
       <div

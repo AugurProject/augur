@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { CreateMarketMessage } from "modules/modal/create-market-message";
+import { CreateMarket } from "modules/modal/create-market";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal())
 });
-
+// TODO: fill out with real content later
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: "Some sort of Content",
   content: [
@@ -48,5 +48,5 @@ export default withRouter(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps,
-  )(CreateMarketMessage),
+  )(CreateMarket),
 );

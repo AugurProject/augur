@@ -5,7 +5,7 @@ import QRCode from "qrcode.react";
 import Clipboard from "clipboard";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles";
-import { Checkbox } from "modules/common/form";
+import { Checkbox, TextInput, InputDropdown } from "modules/common/form";
 import {
   XIcon,
   CopyIcon,
@@ -138,6 +138,56 @@ export interface ContentItem {
 
 export interface ContentProps {
   content: Array<ContentItem>;
+}
+
+export interface CategorySelectionProps {
+  categoriesList: Array<string>;
+  save: Function;
+}
+
+export interface CategorySelectionState {
+  showText: boolean;
+  subCategory: string | null;
+}
+
+export class CategorySelection extends Component<CategorySelectionProps, CategorySelectionState> {
+  state: CategorySelectionState = {
+    showText: false,
+    subCategory: null
+  };
+
+  onChange(subCategory) {
+    const { subCategory: currentCat } = this.state;
+    const { save } = this.props;
+    if (subCategory !== currentCat && currentCat != null) {
+      save(subCategory);
+    }
+    this.setState({ subCategory });
+  }
+
+  render() {
+    const { categoriesList } = this.props;
+    const { showText } = this.state;
+
+    return (
+      <div className={Styles.CategorySelection}>
+        <InputDropdown
+          default={""}
+          label="Select sub-category"
+          options={categoriesList}
+          isMobileSmall={false}
+          onChange={(subCategory) => {
+            if (subCategory === "Other") {
+              this.setState({ showText: true, subCategory: null });
+            } else if (showText) {
+              this.setState({ showText: false, subCategory });
+            }
+          }}
+        />
+        {showText && <TextInput onChange={this.onChange} placeholder="Enter a sub-category" />}
+      </div>
+    );
+  }
 }
 
 export const Content = ({ content }: ContentProps) => (
