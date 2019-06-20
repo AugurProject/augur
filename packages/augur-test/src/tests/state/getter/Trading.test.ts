@@ -7,7 +7,7 @@ import {
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { API } from "@augurproject/sdk/build/state/getter/API";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { MarketTradingHistory, Orders } from "@augurproject/sdk/build/state/getter/Trading";
+import { MarketTradingHistory, AllOrders, Orders } from "@augurproject/sdk/build/state/getter/Trading";
 import { BigNumber } from "bignumber.js";
 import { stringTo32ByteHex } from "../../../libs/Utils";
 
@@ -75,7 +75,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
 
 }, 60000);
 
-test("State API :: Trading :: getOrders", async () => {
+test("State API :: Trading :: getOrders and getAllOrders", async () => {
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
 
@@ -100,10 +100,16 @@ test("State API :: Trading :: getOrders", async () => {
   let orders: Orders = await api.route("getOrders", {
     marketId: market.address,
   });
-
   let order = orders[market.address][0]["0"][orderId];
   await expect(order.price).toEqual("0.22");
   await expect(order.amount).toEqual("0.0005");
+  await expect(order.tokensEscrowed).toEqual("0.00011");
+  await expect(order.sharesEscrowed).toEqual("0");
+
+  let allOrders: AllOrders = await api.route("getAllOrders", {
+    account: john.account,
+  });
+  let allOrder = allOrders.orderId;
   await expect(order.tokensEscrowed).toEqual("0.00011");
   await expect(order.sharesEscrowed).toEqual("0");
 
@@ -117,9 +123,14 @@ test("State API :: Trading :: getOrders", async () => {
   orders = await api.route("getOrders", {
     marketId: market.address,
   });
-
   order = orders[market.address][0]["0"][orderId];
   await expect(order.price).toEqual("0.25");
+  await expect(order.tokensEscrowed).toEqual("0.000125");
+
+  allOrders = await api.route("getAllOrders", {
+    account: john.account,
+  });
+  allOrder = allOrders.orderId;
   await expect(order.tokensEscrowed).toEqual("0.000125");
 
   // Cancel order
@@ -131,27 +142,34 @@ test("State API :: Trading :: getOrders", async () => {
   orders = await api.route("getOrders", {
     marketId: market.address,
   });
-
   order = orders[market.address][0]["0"][orderId];
   await expect(order.price).toEqual("0");
   await expect(order.amount).toEqual("0");
   await expect(order.orderState).toEqual("CANCELED");
   await expect(order.canceledTransactionHash).toEqual(order.transactionHash);
 
+  allOrders = await api.route("getAllOrders", {
+    account: john.account,
+  });
+  await expect(allOrders.orderId).toBeUndefined();
+
   // Get only Open orders
   orders = await api.route("getOrders", {
     marketId: market.address,
     orderState: "OPEN"
   });
-
   await expect(orders).toEqual({});
+
+  allOrders = await api.route("getAllOrders", {
+    account: john.account,
+  });
+  await expect(allOrders).toEqual({});
 
   // Get Canceled orders
   orders = await api.route("getOrders", {
     marketId: market.address,
     orderState: "CANCELED"
   });
-
   order = orders[market.address][0]["0"][orderId];
   await expect(order.price).toEqual("0");
 
@@ -170,7 +188,6 @@ test("State API :: Trading :: getOrders", async () => {
     marketId: market.address,
     latestCreationTime: initialTimestamp.plus(1).toNumber()
   });
-
   order = orders[market.address][0]["0"][orderId];
   await expect(order.orderId).toEqual(orderId);
 
@@ -179,7 +196,6 @@ test("State API :: Trading :: getOrders", async () => {
     marketId: market.address,
     earliestCreationTime: initialTimestamp.plus(1).toNumber()
   });
-
   order = orders[market.address][0]["0"][newOrderId];
   await expect(order.orderId).toEqual(newOrderId);
 

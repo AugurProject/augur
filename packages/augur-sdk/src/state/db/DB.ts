@@ -627,7 +627,7 @@ export class DB {
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<Array<ParsedOrderEventLog>>}
    */
-  public async findCurrentOrders(request: PouchDB.Find.FindRequest<{}>): Promise<Array<ParsedOrderEventLog>> {
+  public async findCurrentOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<ParsedOrderEventLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("CurrentOrders"), request);
     const logs = results.docs as unknown as Array<ParsedOrderEventLog>;
     for (const log of logs) log.timestamp = log.timestamp;
