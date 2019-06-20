@@ -274,9 +274,12 @@ export class Markets {
           }
         }
 
+        // TODO: when currentOrders event table exists just check that
         if (params.hasOrders) {
-          const currentOrderLogs = await db.findCurrentOrderLogs({ selector: { market: marketCreatedLogInfo[0], amount: "0x00" } });
-          if (currentOrderLogs.length === 0) {
+          const orderCreatedLogs = await db.findOrderCreatedLogs({ selector: { market: marketCreatedLogInfo[0] } });
+          const orderCanceledLogs = await db.findOrderCanceledLogs({ selector: { market: marketCreatedLogInfo[0] } });
+          const orderFilledLogs = await db.findOrderFilledLogs({ selector: { market: marketCreatedLogInfo[0], amount: "0x00" } });
+          if (orderCreatedLogs.length - orderCanceledLogs.length === orderFilledLogs.length) {
             includeMarket = false;
           }
         }
