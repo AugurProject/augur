@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertDisplayPriceToOnChainPrice } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { ParsedOrderEventLog } from "../logs/types";
+import { Address, ParsedOrderEventLog } from "../logs/types";
 
 import * as t from "io-ts";
 
@@ -28,6 +28,10 @@ export const OutcomeParam = t.keyof({
   5: null,
   6: null,
   7: null,
+});
+
+export const AllOrdersParams = t.partial({
+  account: t.string,
 });
 
 export const OrdersParams = t.partial({
@@ -62,6 +66,15 @@ export enum OrderState {
   OPEN = "OPEN",
   FILLED = "FILLED",
   CANCELED = "CANCELED",
+}
+
+export interface AllOrders {
+  [orderId: string]: {
+    orderId: Address;
+    tokensEscrowed: string;
+    sharesEscrowed: string;
+    marketId: Address;
+  }
 }
 
 export interface Order {
@@ -113,6 +126,7 @@ export interface BetterWorseResult {
 
 export class Trading {
   public static GetTradingHistoryParams = t.intersection([SortLimit, TradingHistoryParams]);
+  public static GetAllOrdersParams = AllOrdersParams;
   public static GetOrdersParams = t.intersection([SortLimit, OrdersParams]);
   public static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
@@ -181,6 +195,46 @@ export class Trading {
     }, [] as Array<MarketTradingHistory>);
   }
 
+  @Getter("GetAllOrdersParams")
+  public static async getAllOrders(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetAllOrdersParams>): Promise<AllOrders> {
+    if (!params.account) {
+      throw new Error("'getAllOrders' requires an 'account' param be provided");
+    }
+
+    const request = {
+      selector: {
+        orderCreator: params.account,
+        amount: { $gt: "0x00" }
+      }
+    };
+
+    const currentOrdersResponse = await db.findCurrentOrderLogs(request);
+
+    const marketIds = _.map(currentOrdersResponse, "market");
+    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
+    const markets = _.keyBy(marketsResponse, "market");
+
+    return currentOrdersResponse.reduce((orders: AllOrders, orderEventDoc: ParsedOrderEventLog) => {
+      const marketDoc = markets[orderEventDoc.market];
+      if (!marketDoc) return orders;
+      const minPrice = new BigNumber(marketDoc.prices[0]);
+      const maxPrice = new BigNumber(marketDoc.prices[1]);
+      const numTicks = new BigNumber(marketDoc.numTicks);
+      const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+      const marketId = orderEventDoc.market;
+      const orderId = orderEventDoc.orderId;
+      const sharesEscrowed = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.sharesEscrowed, 16), tickSize).toString(10);
+      const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16).dividedBy(10 ** 18).toString(10);
+      orders[orderId] = {
+        orderId,
+        tokensEscrowed,
+        sharesEscrowed,
+        marketId
+      };
+      return orders;
+    }, {} as AllOrders);
+  }
+
   @Getter("GetOrdersParams")
   public static async getOrders(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetOrdersParams>): Promise<Orders> {
     if (!params.universe && !params.marketId) {
@@ -199,9 +253,9 @@ export class Trading {
       skip: params.offset,
     };
 
-    if (params.orderState === "OPEN") request.selector = Object.assign(request.selector, { amount: { $gt: "0x00" } });
-    if (params.orderState === "CANCELED") request.selector = Object.assign(request.selector, { "eventType": 1 });
-    if (params.orderState === "FILLED") request.selector = Object.assign(request.selector, { "eventType": 3 });
+    if (params.orderState === OrderState.OPEN) request.selector = Object.assign(request.selector, { amount: { $gt: "0x00" } });
+    if (params.orderState === OrderState.CANCELED) request.selector = Object.assign(request.selector, { "eventType": 1 });
+    if (params.orderState === OrderState.FILLED) request.selector = Object.assign(request.selector, { "eventType": 3 });
 
     if (params.latestCreationTime && params.earliestCreationTime) {
       request.selector = Object.assign(request.selector, {
@@ -216,7 +270,7 @@ export class Trading {
       request.selector = Object.assign(request.selector, { timestamp: { $gte: `0x${params.earliestCreationTime.toString(16)}` } });
     }
 
-    const currentOrdersResponse = await db.findCurrentOrders(request);
+    const currentOrdersResponse = await db.findCurrentOrderLogs(request);
 
     const orderIds = _.map(currentOrdersResponse, "orderId");
     const originalOrdersResponse = await db.findOrderCreatedLogs({ selector: { orderId: { $in: orderIds } } });
@@ -242,9 +296,9 @@ export class Trading {
       const orderId = orderEventDoc.orderId;
       const sharesEscrowed = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.sharesEscrowed, 16), tickSize).toString(10);
       const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16).dividedBy(10 ** 18).toString(10);
-      let orderState = "OPEN";
+      let orderState = OrderState.OPEN;
       if (amount === "0") {
-        orderState = orderEventDoc.eventType == 1 ? "CANCELED" : "FILLED";
+        orderState = orderEventDoc.eventType == 1 ? OrderState.CANCELED : OrderState.FILLED;
       }
       if (!orders[market]) orders[market] = {};
       if (!orders[market][outcome]) orders[market][outcome] = {};
@@ -284,7 +338,7 @@ export class Trading {
       }
     };
 
-    const currentOrdersResponse = await db.findCurrentOrders(request);
+    const currentOrdersResponse = await db.findCurrentOrderLogs(request);
     const marketReponse = await db.findMarketCreatedLogs({ selector: { market: params.marketId } });
     if (marketReponse.length < 1) throw new Error(`Market ${params.marketId} not found.`);
     const marketDoc = marketReponse[0];
