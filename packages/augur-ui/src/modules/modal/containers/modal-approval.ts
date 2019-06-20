@@ -9,22 +9,23 @@ import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
+  account: state.loginAccount,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  approveAccount: (onSent: Function, onSuccess: Function) =>
-    dispatch(approveAccount(onSent, onSuccess))
+  approveAccount: () =>
+    dispatch(approveAccount())
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: "Approve Augur",
   description: [
-    `In order to trade on Augur you must first approve the Augur Contracts to move Ether on your behalf. You will be unable to trade until approval has completed.`,
-    `After clicking "Approve" you will be asked to sign a transaction, followed by a second transaction to complete your requested trade.`
+    `Current approval is ${sP.account.allowanceFormatted.formatted} DAI`,
+    `In order to trade on Augur you must first approve the Augur Contracts to move DAI on your behalf. You will not be able to trade until approval has completed.`,
+    `After clicking "Approve" you will be asked to sign a transaction. This will approval for 1 million DAI.`
   ],
   closeAction: () => {
-    sP.modal.approveCallback("close_modal");
     dP.closeModal();
   },
   buttons: [

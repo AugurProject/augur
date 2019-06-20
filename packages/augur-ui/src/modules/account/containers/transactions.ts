@@ -8,6 +8,7 @@ import {
   MODAL_DAI_FAUCET,
   MODAL_DEPOSIT,
   MODAL_TRANSACTIONS,
+  MODAL_ACCOUNT_APPROVAL
 } from "modules/common/constants";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
@@ -23,6 +24,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   deposit: () => dispatch(updateModal({ type: MODAL_DEPOSIT })),
   withdraw: () => dispatch(updateModal({ type: MODAL_WITHDRAW })),
   transactions: () => dispatch(updateModal({ type: MODAL_TRANSACTIONS })),
+  approval: () => dispatch(updateModal({ type: MODAL_ACCOUNT_APPROVAL }))
 });
 
 const TransactionsContainer = connect(

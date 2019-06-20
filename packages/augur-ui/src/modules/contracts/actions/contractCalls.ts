@@ -145,8 +145,20 @@ export async function isFinalized(marketId: string) {
 
 export function getDai() {
   const { contracts } = augurSdk.get();
-  return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
+  return contracts.cash.faucet(new BigNumber("1000000000000000000000"));
 }
+
+export async function approveToTrade(account: string, amount: BigNumber) {
+  const { contracts } = augurSdk.get();
+  return contracts.cash.approve(account, amount);
+}
+
+export async function getAllowance(account: string): Promise<BigNumber>  {
+  const { contracts } = augurSdk.get();
+  const augurContract = contracts.augur.address;
+  return contracts.cash.allowance_(account, augurContract);
+}
+
 
 export async function placeTrade(
   direction: number,
