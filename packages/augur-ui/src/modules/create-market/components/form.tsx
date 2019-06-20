@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
+import { LocationDisplay } from "modules/common/form";
 import FormDetails from "modules/create-market/components/form-details";
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
 import Styles from "modules/create-market/components/form.styles";
@@ -52,9 +53,7 @@ export default class Form extends React.Component<
 
     return (
       <div className={Styles.Form}>
-        <div>
-          {s.pages[newMarket.currentStep]}
-        </div>
+        <LocationDisplay currentStep={newMarket.currentStep} pages={s.pages} />
         <span>
           Create a custom market
         </span>
