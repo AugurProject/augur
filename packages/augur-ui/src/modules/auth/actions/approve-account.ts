@@ -39,6 +39,6 @@ export function approveAccount() {
     const { address, meta } = loginAccount;
     // TODO: when we get design this number will come from modal
     const allowance = createBigNumber(1000000).times(TEN_TO_THE_EIGHTEENTH_POWER);
-    approveToTrade(address, allowance);
+    approveToTrade(allowance);
   };
 }

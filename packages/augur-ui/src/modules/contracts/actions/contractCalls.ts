@@ -148,9 +148,10 @@ export function getDai() {
   return contracts.cash.faucet(new BigNumber("1000000000000000000000"));
 }
 
-export async function approveToTrade(account: string, amount: BigNumber) {
+export async function approveToTrade(amount: BigNumber) {
   const { contracts } = augurSdk.get();
-  return contracts.cash.approve(account, amount);
+  const augurContract = contracts.augur.address;
+  return contracts.cash.approve(augurContract, amount);
 }
 
 export async function getAllowance(account: string): Promise<BigNumber>  {
