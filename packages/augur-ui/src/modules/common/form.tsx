@@ -16,7 +16,8 @@ import {
   FilledRadio,
   EmptyCheckbox,
   FilledCheckbox,
-  Chevron
+  Chevron,
+  DirectionArrow
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
 
@@ -279,6 +280,29 @@ const RadioCard = ({
     {icon ? icon : Ellipsis}
     <h5>{header}</h5>
     <p>{description}</p>
+  </div>
+);
+
+interface LocationDisplayProps {
+  currentStep: Number;
+  pages: Array<string>;
+}
+
+export const LocationDisplay = ({
+  currentStep,
+  pages
+}: LocationDisplayProps) => (
+  <div className={Styles.LocationDisplay}>
+    {pages.map((page: string, index: Number) => 
+      <>
+        <span className={classNames({[Styles.Selected]: index === currentStep})}>
+          {page}
+        </span>
+        {index !== pages.length - 1 && 
+          DirectionArrow
+        }
+      </>
+    )}
   </div>
 );
 
