@@ -69,7 +69,7 @@ interface InputDropdownProps {
   onChange: Function;
   default: string;
   options: Array<string>;
-  isMobileSmall: Boolean;
+  isMobileSmall?: Boolean;
   label: string;
   className?: string;
   onKeyPress?: Function;
@@ -324,18 +324,28 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     this.props.onChange(value);
   };
   render() {
-    const { placeholder, disabled, error, errorMessage } = this.props;
+    const { placeholder, disabled, error, errorMessage, type } = this.props;
 
     return (
       <>
-        <input
-          {...this.props}
-          className={classNames(Styles.TextInput, { [Styles.error]: error })}
-          value={this.state.value}
-          onChange={this.onChange}
-          placeholder={placeholder}
-          disabled={disabled}
-        />
+        {type !== "textarea" ? 
+          <input
+            {...this.props}
+            className={classNames(Styles.TextInput, { [Styles.error]: error })}
+            value={this.state.value}
+            onChange={this.onChange}
+            placeholder={placeholder}
+            disabled={disabled}
+          /> : 
+          <textarea
+            {...this.props}
+            className={classNames(Styles.TextInput, { [Styles.error]: error })}
+            value={this.state.value}
+            onChange={this.onChange}
+            placeholder={placeholder}
+            disabled={disabled}
+          />
+        }
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
       </>
     );

@@ -111,17 +111,16 @@
 
   align-items: center;
   display: grid;
-  grid-template-rows: auto;
   grid-template-columns: 52px auto @size-16;
+  grid-template-rows: auto;
   height: 51px;  
-  width: 304px;
+  margin-bottom: @size-8;
 
   > svg {
     height: @size-20;
     grid-column: 1;
     grid-row: 1;
     margin: auto;
-    width: @size-20;
 
     > circle:first-of-type {
       stroke: @color-primary-alternate-two;
@@ -136,7 +135,6 @@
   > h5 {
     grid-column: 2;
     grid-row: 1;
-    width: 236px;
   }
 }
 
@@ -221,6 +219,7 @@
 .RadioCard {
   .RadioStyleSelection;
 
+  cursor: pointer;
   display: grid;
   grid-template-rows: @size-20 64px 44px 50px 38px;
   grid-template-columns: 100%;
@@ -459,6 +458,10 @@
   &.error {
     border: 1px solid fade(@color-error-text, 50%);
   }
+}
+
+textarea.TextInput {
+  min-height: 88px;
 }
 
 .ErrorText {

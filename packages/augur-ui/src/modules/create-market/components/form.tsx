@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { LocationDisplay } from "modules/common/form";
+import { CUSTOM_PAGES } from "modules/common/constants";
+
 import FormDetails from "modules/create-market/components/form-details";
 import Styles from "modules/create-market/components/form.styles";
 
@@ -20,7 +22,7 @@ export default class Form extends React.Component<
   FormState
 > {
   state: FormState = {
-    pages: ["Event details", "Fees & liquidity", "Review"]
+    empty: ""
   };
 
   render() {
@@ -32,7 +34,7 @@ export default class Form extends React.Component<
 
     return (
       <div className={Styles.Form}>
-        <LocationDisplay currentStep={newMarket.currentStep} pages={s.pages} />
+        <LocationDisplay currentStep={newMarket.currentStep} pages={CUSTOM_PAGES} />
         <span>
           Create a custom market
         </span>
