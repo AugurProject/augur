@@ -223,3 +223,7 @@ export async function simulateTrade(
   };
   return Augur.simulateTrade(params);
 }
+
+export function createMarket() {
+  return;
+}

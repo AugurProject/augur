@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 
-import CreateMarketForm from "modules/create-market/components/create-market-form/create-market-form";
+import Form from "modules/create-market/components/form/form";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles";
 
 const CreateMarketView = p => (
@@ -10,7 +10,7 @@ const CreateMarketView = p => (
     <Helmet>
       <title>Create Market</title>
     </Helmet>
-    <CreateMarketForm {...p} />
+    <Form {...p} />
   </section>
 );
 
