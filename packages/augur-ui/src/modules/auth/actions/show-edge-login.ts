@@ -12,7 +12,7 @@ import { AppState } from "store";
 export const BEGIN_EDGE_LOADING = "BEGIN_EDGE_LOADING";
 export const UPDATE_EDGE_CONTEXT = "UPDATE_EDGE_CONTEXT";
 
-export const showEdgeLogin = (history: any) => (
+export const showEdgeLogin = () => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -22,7 +22,7 @@ export const showEdgeLogin = (history: any) => (
 
   if (edgeContext) {
     edgeContext.on("login", (edgeAccount: any) =>
-      dispatch(loginWithEdge(edgeAccount, history))
+      dispatch(loginWithEdge(edgeAccount))
     );
     edgeContext.showLoginWindow();
   } else if (!edgeLoading) {
@@ -38,7 +38,7 @@ export const showEdgeLogin = (history: any) => (
       dispatch(updateAuthStatus(EDGE_LOADING, false));
       dispatch(updateAuthStatus(EDGE_CONTEXT, edgeContext));
       edgeContext.on("login", (edgeAccount: any) =>
-        dispatch(loginWithEdge(edgeAccount, history))
+        dispatch(loginWithEdge(edgeAccount))
       );
       edgeContext.showLoginWindow();
     });
