@@ -161,36 +161,23 @@ export const selectProceedsToClaim = createSelector(
   }
 );
 
-// Get all markets where the user has outstanding returns but needs to wait CLAIM_PROCEEDS_WAIT_TIME
+// Get all markets where the user has outstanding returns
 export const selectProceedsToClaimOnHold = createSelector(
   selectAllProceedsToClaim,
-  selectCurrentTimestampInSeconds,
-  (markets, currentTimestamp) => {
-    if (markets.length > 0 && currentTimestamp) {
+  (markets) => {
+    if (markets.length > 0) {
       return markets
         .filter(
           market =>
             !canClaimProceeds(
               market.finalizationTime,
-              market.outstandingReturns,
-              currentTimestamp
+              market.outstandingReturns
             )
         )
         .map(getRequiredMarketData)
         .map(market => {
-          const finalizationTimeWithHold = createBigNumber(
-            market.finalizationTime
-          )
-            .plus(
-              createBigNumber(
-                CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME
-              )
-            )
-            .toNumber();
-
           return {
-            ...market,
-            finalizationTimeWithHold
+            ...market
           };
         });
     }

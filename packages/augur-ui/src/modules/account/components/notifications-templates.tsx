@@ -7,7 +7,7 @@ import {
   formatTime,
 } from "modules/common/progress";
 import { SubmitTextButton } from "modules/common/buttons";
-import { DateFormattedObject } from "modules/types";
+import { DateFormattedObject, MarketData } from "modules/types";
 
 import Styles from "modules/account/components/notification.styles.less";
 
@@ -16,10 +16,9 @@ import {
   MARKET_STATUS_MESSAGES,
   REPORTING_ENDS,
 } from "modules/common/constants";
-import { Market } from "modules/types";
 
 interface BaseProps {
-  market: Market;
+  market: MarketData;
   type: string;
   currentTime?: DateFormattedObject;
   reportingWindowStatsEndTime?: DateFormattedObject;
@@ -29,42 +28,42 @@ interface BaseProps {
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
-  market: Market;
+  market: MarketData;
 }
 
 interface FinalizeTemplateProps extends BaseProps {
-  market: Market;
+  market: MarketData;
 }
 
 interface UnsignedOrdersTemplateProps extends BaseProps {
-  market: Market;
+  market: MarketData;
 }
 
 interface ReportEndingSoonTemplateProps extends BaseProps {
-  market: Market;
+  market: MarketData;
 }
 
 
 interface DisputeTemplateProps extends BaseProps {
-  market: Market;
+  market: MarketData;
 }
 
 interface SellCompleteSetTemplateProps extends BaseProps {
-  market: Market;
+  market: MarketData;
 }
 
 interface ClaimReportingFeesTemplateTemplateProps extends BaseProps {
-  market: Market;
+  market: MarketData;
   claimReportingFees: any;
 }
 
 interface ProceedsToClaimTemplateProps extends BaseProps {
-  market: Market;
+  market: MarketData;
   totalProceeds: number | undefined;
 }
 
 interface ProceedsToClaimOnHoldTemplateProps extends BaseProps {
-  market: Market;
+  market: MarketData;
 }
 
 interface TemplateProps extends BaseProps {
@@ -92,7 +91,7 @@ const Template = (props: TemplateProps) => (
 );
 
 export interface TemplateBodyProps {
-  market: Market;
+  market: MarketData;
   message: string;
 }
 
@@ -119,7 +118,7 @@ const TemplateBody = (props: TemplateBodyProps) => {
 
 interface CounterProps {
   type: string;
-  market: Market;
+  market: MarketData;
   currentTime?: DateFormattedObject;
   reportingWindowStatsEndTime?: DateFormattedObject;
 }
@@ -133,14 +132,14 @@ const Counter = (props: CounterProps) => {
   ];
 
   if (props.market && notificationsWithCountdown.includes(props.type)) {
-    const { endTime, reportingState, finalizationTimeWithHold } = props.market;
+    const { endTimeFormatted, reportingState, finalizationTimeFormatted } = props.market;
 
-    if (props.type === NOTIFICATION_TYPES.proceedsToClaimOnHold && finalizationTimeWithHold && props.currentTime) {
+    if (props.type === NOTIFICATION_TYPES.proceedsToClaimOnHold && finalizationTimeFormatted && props.currentTime) {
       counter = (
         <div className={Styles.Countdown}>
           <CountdownProgress
             label={MARKET_STATUS_MESSAGES.WAITING_PERIOD_ENDS}
-            time={formatTime(finalizationTimeWithHold)}
+            time={finalizationTimeFormatted}
             currentTime={formatTime(props.currentTime)}
           />
         </div>
@@ -152,7 +151,7 @@ const Counter = (props: CounterProps) => {
             <MarketProgress
               reportingState={reportingState}
               currentTime={props.currentTime}
-              endTime={endTime}
+              endTime={endTimeFormatted}
               reportingWindowEndtime={props.reportingWindowStatsEndTime}
               customLabel={REPORTING_ENDS}
             />

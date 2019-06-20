@@ -57,7 +57,7 @@ const MarketOutcomes = ({
       : getValue(outcomes[0], "lastPricePercent.denomination");
 
   const currentMarketStyles = pos => {
-    let size = getValue(outcomes[0], "lastPricePercent.formatted").toString()
+    let size = getValue(outcomes[1], "lastPricePercent.formatted").toString()
       .length;
     const isMobileAttrs =
       window.outerWidth < 590
@@ -87,13 +87,13 @@ const MarketOutcomes = ({
             className={Styles["MarketOutcomes__current-value"]}
             data-testid="midpoint"
           >
-            {getValue(outcomes[0], "lastPricePercent.formatted")}
+            {getValue(outcomes[1], "lastPricePercent.formatted")}
           </span>
           <span className={Styles["MarketOutcomes__current-denomination"]}>
             {lastPriceDenomination}
           </span>
           <MarketOutcomeTradingIndicator
-            outcome={outcomes[0]}
+            outcome={outcomes[1]}
             location="yes-no-scalar"
           />
         </div>

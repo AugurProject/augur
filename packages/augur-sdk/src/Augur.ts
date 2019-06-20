@@ -144,6 +144,10 @@ export class Augur<TProvider extends Provider = Provider> {
     return await this.dependencies.getDefaultAddress();
   }
 
+  public getUniverse(address: string): ContractInterfaces.Universe {
+    return new ContractInterfaces.Universe(this.dependencies, address);
+  }
+
   public getMarket(address: string): ContractInterfaces.Market {
     return new ContractInterfaces.Market(this.dependencies, address);
   }

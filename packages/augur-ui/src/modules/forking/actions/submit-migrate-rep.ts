@@ -17,13 +17,13 @@ export const submitMigrateREP = ({
   history,
   callback = logError,
 }: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount, marketsData, universe } = getState();
+  const { loginAccount, marketInfos, universe } = getState();
   const outcome = parseFloat(selectedOutcome);
   const universeID = universe.id || UNIVERSE_ID;
 
   if (!marketId || (isNaN(outcome) && !invalid)) return callback(null);
 
-  const market = marketsData[marketId];
+  const market = marketInfos[marketId];
   if (!market) return callback("Market not found");
   const payoutNumerators = getPayoutNumerators(
     market,

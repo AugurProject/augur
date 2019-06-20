@@ -29,6 +29,7 @@ import ModalClaimTradingProceeds from "modules/modal/containers/modal-claim-trad
 import ModalClaimProceeds from "modules/modal/containers/modal-claim-proceeds";
 import ModalTradingOverlay from "modules/modal/components/modal-trading-overlay";
 import ModalOpenOrders from "modules/modal/containers/modal-open-orders";
+import ModalMarketLoading from "modules/modal/containers/modal-market-loading";
 
 import * as TYPES from "modules/common/constants";
 
@@ -95,6 +96,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDisclaimer {...modal} />;
     case TYPES.MODAL_TRADING_OVERLAY:
       return <ModalTradingOverlay {...modal} closeModal={closeModal} />;
+    case TYPES.MODAL_MARKET_LOADING:
+      return <ModalMarketLoading />;
     default:
       return <div />;
   }

@@ -16,7 +16,7 @@ import {
 import { ValueDenomination } from "modules/common/labels";
 import getValue from "utils/get-value";
 import { dateHasPassed } from "utils/format-date";
-import Styles from "modules/market/components/market-properties/market-properties.styles";
+import Styles from "modules/market/components/market-properties/market-properties.styles.less";
 import ChevronFlip from "modules/common/chevron-flip";
 import { constants } from "services/augurjs";
 import { FavoritesButton } from "modules/common/buttons";
@@ -48,12 +48,12 @@ export default class MarketProperties extends Component {
     forkingMarket: PropTypes.string,
     resolutionSource: PropTypes.string,
     marketType: PropTypes.string,
-    openInterest: PropTypes.object,
-    volume: PropTypes.object,
+    openInterestFormatted: PropTypes.object,
+    volumeFormatted: PropTypes.object,
     loginAccount: PropTypes.object,
     reportingState: PropTypes.string,
     settlementFeePercent: PropTypes.object,
-    endTime: PropTypes.object,
+    endTimeFormatted: PropTypes.object,
     id: PropTypes.string,
     isLogged: PropTypes.bool,
     isMobile: PropTypes.bool,

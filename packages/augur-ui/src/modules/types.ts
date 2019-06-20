@@ -55,17 +55,44 @@ export interface CoreStats {
   totalFunds: ValueLabelPair;
   realizedPL: ValueLabelPair;
 }
-export interface MarketsData {
-  [marketId: string]: MarketData;
+export interface MarketInfos {
+  [marketId: string]: MarketInfo;
 }
 export interface Outcomes extends MarketInfoOutcome {
   name?: string;
 }
+export interface Consensus {
+  payout: Array<string>;
+  winningOutcome: string | null;
+  outcomeName: string | null;
+}
+
+export interface MarketOutcome extends MarketInfoOutcome {
+  marketId: string;
+  lastPricePercent: FormattedNumber | null;
+  lastPrice: FormattedNumber | null;
+  isTradable: boolean;
+  volumeFormatted: FormattedNumber;
+}
+
 export interface MarketData extends MarketInfo {
   marketStatus: string;
-  creationTime: DateFormattedObject;
+  minPriceBigNumber: BigNumber;
+  maxPriceBigNumber: BigNumber;
+  creationTimeFormatted: DateFormattedObject;
+  endTimeFormatted: DateFormattedObject;
+  reportingFeeRatePercent: FormattedNumber;
+  marketCreatorFeeRatePercent: FormattedNumber;
+  settlementFeePercent: FormattedNumber;
+  openInterestFormatted: FormattedNumber;
+  volumeFormatted: FormattedNumber;
+  unclaimedCreatorFeesFormatted: FormattedNumber;
+  marketCreatorFeesCollectedFormatted: FormattedNumber;
+  finalizationTimeFormatted: DateFormattedObject | null;
   // TODO: add this to getter MarketInfo
-  disputeInfo: object;
+  // disputeInfo: object; this needs to get filled in on getter
+  consensusFormatted: Consensus | null;
+  marketOutcomes: Array<MarketOutcome>;
 };
 
 export interface OutcomesData {
@@ -86,7 +113,7 @@ export interface Universe {
   forkReputationGoal?: BigNumber;
   forkingMarket?: string;
   isForking?: boolean;
-  reportableOutcomes?: any;
+  outcomes?: any;
   isForkingMarketFinalized?: boolean;
   winningChildUniverseId?: string;
   winningChildUniverse?: string;
@@ -191,18 +218,6 @@ export interface MyPositionsSummary {
   totalReturns: any;
 }
 
-export interface Market {
-  id: string;
-  description: string;
-  reportingState: string;
-  endTime: DateFormattedObject;
-  marketStatus: string;
-  disputeInfo?: DisputeInfo;
-  myPositionsSummary?: MyPositionsSummary;
-  outstandingReturns?: string;
-  finalizationTimeWithHold?: number;
-}
-
 export interface Notification {
   id: string;
   type: string;
@@ -212,7 +227,7 @@ export interface Notification {
   buttonLabel: string;
   buttonAction: ButtonActionType;
   Template: ReactNode;
-  market: Market;
+  market: MarketData;
   markets: Array<string>;
   claimReportingFees?: object;
   totalProceeds?: number;
