@@ -138,6 +138,7 @@ export interface MarketVolumeChangedLog extends Log, Doc {
   universe: Address;
   market: Address;
   volume: string;
+  outcomeVolumes: Array<string>;
 }
 
 //  addressData

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import { AM, PM } from "modules/common/constants";
 import ChevronFlip from 'modules/common/chevron-flip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { PulseLoader } from 'react-spinners';
@@ -15,6 +16,7 @@ import {
   FilledRadio,
   EmptyCheckbox,
   FilledCheckbox,
+  Chevron
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
 
@@ -105,6 +107,23 @@ export const FormDropdown = (props: FormDropdownProps) =>
       </span>
     }
   </>;
+
+interface TimezoneDropdownProps {
+  id?: string;
+  onChange: any;
+  className?: string;
+  disabled?: Boolean;
+}
+
+export const TimezoneDropdown = (props: TimezoneDropdownProps) => (
+  <FormDropdown
+    {...props}
+    options={[{
+      label: "UTC - 0",
+      value: 0
+    }]}
+  />
+);
 
 interface RadioCardProps {
   value: string;
@@ -295,6 +314,233 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
         />
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
       </>
+    );
+  }
+}
+
+interface TimeSelectorProps {
+  showPicker: Boolean;
+}
+
+interface TimeSelectorState {
+  showPicker: Boolean;
+}
+
+export class TimeSelector extends React.Component<
+  TimeSelectorProps,
+  TimeSelectorState
+> {
+  state: TimeSelectorState = {
+    showPicker: false,
+    minutes: "00",
+    hours: "12",
+    timeFormat: 0,
+  }
+
+  componentDidMount() {
+    window.addEventListener("click", this.handleWindowOnClick);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("click", this.handleWindowOnClick);
+  }
+
+  handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (this.timeSelector && !this.timeSelector.contains(event.target)) {
+      this.setState({ showPicker: false });
+    }
+  };
+
+  toggleSelector = () => {
+    this.setState({showPicker: !this.state.showPicker});
+  }
+
+  onChangeMinutes = (value) => {
+    this.setState({minutes: value})
+  } 
+
+  onChangeHours = (value) => {
+    this.setState({hours: value})
+  } 
+
+  onChangeAM = () => {
+    this.setState({am: !this.state.am})
+  } 
+
+  render() {
+    const {
+      placeholder
+    } = this.props;
+
+    const {
+      hours,
+      minutes,
+      timeFormat
+    } = this.state;
+
+    const timeOptions = [AM, PM];
+
+    return (
+      <div 
+        className={Styles.TimeSelector}
+        ref={timeSelector => {
+          this.timeSelector = timeSelector;
+        }}
+      >
+        <button onClick={this.toggleSelector}>
+          {hours}:{minutes} {timeOptions[timeFormat]}
+        </button>
+        {this.state.showPicker && 
+          <div>
+            <IndividualTimeSelector 
+              label="Hours"
+              min={1}
+              max={12}
+              onChange={this.onChangeHours}
+              value={hours}
+            />
+            <span>:</span>
+            <IndividualTimeSelector 
+              label="Minutes"
+              showLeadingZero
+              min={0}
+              max={60}
+              onChange={this.onChangeMinutes}
+              value={minutes}
+            />
+            <IndividualTimeSelector 
+              label="AM/PM"
+              options={timeOptions}
+              onChange={this.onChangeAM}
+              value={timeFormat}
+            />
+          </div>
+        }
+      </div>
+    );
+  }
+}
+
+interface IndividualTimeSelectorProps {
+  options?: Array;
+  label: string;
+  min?: Number;
+  max?: Number;
+  onChange: Function;
+  showColon?: Boolean;
+  value: any;
+  showLeadingZero?: Boolean;
+}
+
+interface IndividualTimeSelectorState {
+  value: any;
+}
+
+class IndividualTimeSelector extends React.Component<
+  IndividualTimeSelectorProps,
+  IndividualTimeSelectorState
+> {
+  state: IndividualTimeSelectorState = {
+    value: this.props.value
+  }
+
+  componentWillReceiveProps(nextProps: IndividualTimeSelectorProps) {
+    const { value } = this.props;
+    if (value !== nextProps.value) {
+      this.setState({ value: nextProps.value });
+    }
+  }
+
+  onChange = (value: any) => {
+    const {
+      showLeadingZero,
+      options,
+      onChange,
+      min,
+      max
+    } = this.props;
+    
+    if (!options && value.toString() !== "") {
+      if (value > max) return;
+      if (value < min) return;
+    }
+
+    if (showLeadingZero && value.toString().length === 1 && value.toString() !== "0") {
+      value = "0" + value;
+    } else if (showLeadingZero && value.toString().length > 2) {
+      value = value.substring(1);
+    }
+    
+    this.setState({ value });
+    onChange(value);
+  };
+
+  increment = () => {
+    let value = this.state.value;
+    if (!this.props.options) {
+      const newValue = parseFloat(value) + 1;
+      this.onChange(newValue)
+    } else {
+      if (value !== this.props.options.length - 1) {
+        this.onChange(value + 1);
+      } else {
+        this.onChange(value - 1);
+      }
+    }
+  }
+
+  decrement = () => {
+    let value = this.state.value;
+    if (!this.props.options) {
+      const newValue = parseFloat(value) - 1;
+      this.onChange(newValue);
+    } else {
+      if (value !== 0) {
+        this.onChange(value - 1);
+      } else {
+        this.onChange(value + 1);
+      }
+    }
+  }
+
+  render() {
+    const {
+      label,
+      onChange,
+      value,
+      options,
+      min,
+      max
+    } = this.props;
+
+    return (
+      <div className={Styles.IndividualTimeSelector}>
+        <span>{label}</span>
+        <button onClick={this.increment}>
+          {Chevron}
+        </button>
+        {options && 
+          <input 
+            type="text"
+            onChange={(e) => this.onChange(e.target.value)} 
+            value={options[this.state.value]}
+            disabled
+          />
+        }
+        {!options && 
+          <input 
+            type="number"
+            min={min}
+            max={max}
+            step="1"
+            onChange={(e) => this.onChange(e.target.value)} 
+            value={this.state.value}
+          />
+        }
+        <button onClick={this.decrement}>
+          {Chevron}
+        </button>
+      </div>
     );
   }
 }

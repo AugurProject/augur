@@ -370,6 +370,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     address public trade;
 
     mapping (address => uint256) public marketVolume;
+    mapping (address => uint256[]) public marketOutcomeVolumes;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
@@ -458,7 +459,13 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _completeSetTokens = _makerSharesDepleted.min(_fillerSharesDepleted).mul(_market.getNumTicks());
         _volume = _volume.add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
         marketVolume[address(_market)] = _volume;
-        augur.logMarketVolumeChanged(_tradeData.contracts.market.getUniverse(), address(_market), _volume);
+        if (marketOutcomeVolumes[address(_market)].length == 0) {
+            for (uint256 i = 0; i < _market.getNumberOfOutcomes(); i++) {
+                marketOutcomeVolumes[address(_market)].push(0);
+            }
+        }
+        marketOutcomeVolumes[address(_market)][_tradeData.order.outcome] = marketOutcomeVolumes[address(_market)][_tradeData.order.outcome].add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
+        augur.logMarketVolumeChanged(_tradeData.contracts.market.getUniverse(), address(_market), _volume, marketOutcomeVolumes[address(_market)]);
         return _volume;
     }
 

@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
-import { LoginAccount } from "modules/types";
+import { LoginAccount, MarketInfos } from "modules/types";
 import { AppState } from "store";
+import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
 
 export const selectAccountNameState = (state: AppState) => state.accountName;
 export const selectAccountPositionsState = (state: AppState) =>
@@ -29,7 +30,7 @@ export const selectLoginAccountTotalsState = (state: AppState) =>
   state.loginAccount.tradingPositionsTotal;
 export const selectMarketReportState = (state: AppState) =>
   state.marketReportState;
-export const selectMarketsDataState = (state: AppState) => state.marketsData;
+export const selectMarketsDataState = (state: AppState): MarketInfos => state.marketInfos;
 export const selectMarketsFilteredSorted = (state: AppState) =>
   state.marketsFilteredSorted;
 export const selectModal = (state: AppState) => state.modal;

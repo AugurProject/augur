@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import Styles from "modules/market/components/market-header/market-header-bar.styles";
+import Styles from "modules/market/components/market-header/market-header-bar.styles.less";
 import { FavoritesButton } from "modules/common/buttons";
 import { InReportingLabel } from "modules/common/labels";
 import { PaperClip, Person } from "modules/common/icons";
 import * as constants from "modules/common/constants";
 import Clipboard from "clipboard";
 import { DotSelection } from "modules/common/selection";
+import { DateFormattedObject } from "modules/types";
 
 export interface MarketHeaderBarProps {
   addToFavorites: Function;
@@ -16,7 +17,7 @@ export interface MarketHeaderBarProps {
   isFavorite: boolean;
   reportingState: string;
   disputeInfo: any;
-  endTime: number;
+  endTimeFormatted: DateFormattedObject;
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
 }
@@ -35,7 +36,7 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
       marketStatus,
       reportingState,
       disputeInfo,
-      endTime,
+      endTimeFormatted,
       currentAugurTimestamp,
       reportingWindowStatsEndTime
     } = this.props;
@@ -45,7 +46,7 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
           marketStatus={marketStatus}
           reportingState={reportingState}
           disputeInfo={disputeInfo}
-          endTime={endTime}
+          endTime={endTimeFormatted}
           currentAugurTimestamp={currentAugurTimestamp}
           reportingWindowStatsEndTime={reportingWindowStatsEndTime}
         />

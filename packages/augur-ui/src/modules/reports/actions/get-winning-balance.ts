@@ -14,12 +14,12 @@ export const getWinningBalance = (marketIds = [], callback: NodeStyleCallback = 
     (err: any, winningBalance: Array<any>) => {
       if (err) return callback(err);
 
-      const { marketsData } = getState();
+      const { marketInfos } = getState();
 
       // clear out outstandingReturns
       marketIds.forEach(marketId => {
-        if (marketsData[marketId] && marketsData[marketId].outstandingReturns) {
-          delete marketsData[marketId].outstandingReturns;
+        if (marketInfos[marketId] && marketInfos[marketId].outstandingReturns) {
+          delete marketInfos[marketId].outstandingReturns;
         }
       });
 

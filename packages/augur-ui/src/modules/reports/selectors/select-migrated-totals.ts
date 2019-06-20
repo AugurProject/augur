@@ -1,7 +1,7 @@
 import { createBigNumber } from "utils/create-big-number";
 import { formatAttoRep } from "utils/format-number";
 
-export default function(reportableOutcomes, forkMigrationTotals) {
+export default function(outcomes, forkMigrationTotals) {
   const invalidMarketId = "0.5";
   const topOutcomes = 8;
 
@@ -9,7 +9,7 @@ export default function(reportableOutcomes, forkMigrationTotals) {
     forkMigrationTotals == null ||
     Object.keys(forkMigrationTotals).length === 0
   ) {
-    return reportableOutcomes.reduce((totals, outcome) => {
+    return outcomes.reduce((totals, outcome) => {
       const result = [
         ...totals,
         {
@@ -28,7 +28,7 @@ export default function(reportableOutcomes, forkMigrationTotals) {
     (totals, curOutcomeId) => {
       const forkMigrationOutcomeData = forkMigrationTotals[curOutcomeId];
       const { isInvalid } = forkMigrationOutcomeData;
-      const outcome = reportableOutcomes.find(
+      const outcome = outcomes.find(
         outcome => outcome.id === curOutcomeId
       );
       const value = {
@@ -46,7 +46,7 @@ export default function(reportableOutcomes, forkMigrationTotals) {
     []
   );
 
-  const migrationTotals = reportableOutcomes
+  const migrationTotals = outcomes
     .reduce((p, outcome) => {
       const found = p.find(total => total.id === outcome.id);
       if (found) return p;

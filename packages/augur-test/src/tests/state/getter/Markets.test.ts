@@ -865,22 +865,28 @@ test("State API :: Markets :: getMarketsInfo", async () => {
           {
             "description": "Invalid",
             "id": 0,
-            "price": "22",
+            "price": "0.22",
+            "volume": "500000000000000",
           },
           {
             "description": "No",
             "id": 1,
-            "price": "22",
+            "price": "0.22",
+            "volume": "500000000000000",
           },
           {
             "description": "Yes",
             "id": 2,
-            "price": "0.5",
+            "price": null,
+            "volume": "0",
           },
         ],
         "reportingState": "FORKING",
         "resolutionSource": null,
         "scalarDenomination": null,
+        "marketCreatorFeeRate": "0.01",
+        "settlementFee": "0.0100000000000001",
+        "reportingFeeRate": "0.0000000000000001",
         "tickSize": "0.01",
         "universe": john.augur.contracts.universe.address,
         "volume": "0.001",
@@ -907,27 +913,34 @@ test("State API :: Markets :: getMarketsInfo", async () => {
           {
             "description": "Invalid",
             "id": 0,
-            "price": "22",
+            "price": "0.22",
+            "volume": "500000000000000",
           },
           {
             "description": "A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
             "id": 1,
-            "price": "22",
+            "price": "0.22",
+            "volume": "110000000000000",
           },
           {
             "description": "B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
             "id": 2,
-            "price": "0.5",
+            "price": null,
+            "volume": "0",
           },
           {
             "description": "C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
             "id": 3,
-            "price": "0.5",
+            "price": null,
+            "volume": "0",
           },
         ],
         "reportingState": "FINALIZED",
         "resolutionSource": null,
         "scalarDenomination": null,
+        "marketCreatorFeeRate": "0.01",
+        "settlementFee": "0.0100000000000001",
+        "reportingFeeRate": "0.0000000000000001",
         "tickSize": "0.01",
         "universe": john.augur.contracts.universe.address,
         "volume": "0.00061",
@@ -947,21 +960,27 @@ test("State API :: Markets :: getMarketsInfo", async () => {
         "numTicks": "20000",
         "openInterest": "0.3",
         "scalarDenomination": "scalar denom 1",
+        "marketCreatorFeeRate": "0.01",
+        "settlementFee": "0.0100000000000001",
+        "reportingFeeRate": "0.0000000000000001",
         "outcomes": [
           {
             "description": "Invalid",
             "id": 0,
-            "price": "22",
+            "price": "50.22",
+            "volume": "100000000000000000",
           },
           {
             "description": "scalar denom 1",
             "id": 1,
-            "price": "22",
+            "price": "50.22",
+            "volume": "110000000000000",
           },
           {
             "description": "scalar denom 1",
             "id": 2,
-            "price": "100",
+            "price": null,
+            "volume": "0",
           },
         ],
         "reportingState": "AWAITING_FORK_MIGRATION",
@@ -976,6 +995,10 @@ test("State API :: Markets :: getMarketsInfo", async () => {
   expect(markets[0]).toHaveProperty("creationBlock");
   expect(markets[1]).toHaveProperty("creationBlock");
   expect(markets[2]).toHaveProperty("creationBlock");
+
+  expect(markets[0]).toHaveProperty("creationTime");
+  expect(markets[1]).toHaveProperty("creationTime");
+  expect(markets[2]).toHaveProperty("creationTime");
 
   expect(markets[0]).toHaveProperty("endTime");
   expect(markets[1]).toHaveProperty("endTime");
@@ -1006,3 +1029,4 @@ test("State API :: Markets :: getTopics", async () => {
     ],
   );
 }, 120000);
+

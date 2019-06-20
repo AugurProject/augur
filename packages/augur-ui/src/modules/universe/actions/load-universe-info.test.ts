@@ -18,7 +18,7 @@ describe("modules/account/actions/load-universe-info.js", () => {
           id: "0xGENESIS",
           isForking: true,
         },
-        marketsData: {
+        marketInfos: {
           "0xMARKET": {
             maxPrice: 1,
             minPrice: 0,

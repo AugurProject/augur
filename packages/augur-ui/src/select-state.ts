@@ -8,7 +8,7 @@ export const selectLoginAccountState = state => state.loginAccount;
 export const selectLoginAccountTotalsState = state =>
   state.loginAccount.tradingPositionsTotal;
 export const selectMarketReportState = state => state.marketReportState;
-export const selectMarketsDataState = state => state.marketsData;
+export const selectMarketsDataState = state => state.marketInfos;
 export const selectReadNotificationState = state => state.readNotifications;
 export const selectPendingOrdersState = state => state.pendingOrders;
 export const selectOrderBooksState = state => state.orderBooks;

@@ -17,7 +17,7 @@ interface MarketOutcomeChartsHighchartsProps {
   bucketedPriceTimeSeries: object;
   isScalar: boolean;
   scalarDenomination: string;
-  selectedOutcomeId: string;
+  selectedOutcomeId: number;
   pricePrecision: number;
   daysPassed: number;
 }

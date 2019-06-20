@@ -7,8 +7,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
 import { PrimaryButton } from 'modules/common/buttons';
-import { MarketData } from 'modules/types';
-import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketData, MarketOutcome } from 'modules/types';
 
 interface TradingFormProps {
   availableFunds: BigNumber;
@@ -18,7 +17,7 @@ interface TradingFormProps {
   marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
   selectedOrderProperties: Object;
-  selectedOutcomeId: string;
+  selectedOutcomeId: number;
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
   gasPrice: number;
@@ -31,21 +30,21 @@ interface TradingFormProps {
 
 interface TradingFormState {
   showForm: boolean;
-  selectedOutcome: MarketInfoOutcome | undefined;
+  selectedOutcome: MarketOutcome | undefined;
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcomeId: "2",
+    selectedOutcomeId: 2,
   };
 
   state: TradingFormState = {
     showForm: false,
     selectedOutcome:
       this.props.market &&
-      this.props.market.outcomes &&
-      this.props.market.outcomes.find(
-        outcome => outcome.id.toString() === this.props.selectedOutcomeId
+      this.props.market.marketOutcomes &&
+      this.props.market.marketOutcomes.find(
+        outcome => outcome.id === this.props.selectedOutcomeId
       ),
   };
 
@@ -59,9 +58,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       if (nextProps.selectedOutcomeId !== null) {
         const selectedOutcome =
           market &&
-          market.outcomes &&
-          market.outcomes.find(
-            outcome => outcome.id.toString() === nextProps.selectedOutcomeId
+          market.marketOutcomes &&
+          market.marketOutcomes.find(
+            outcome => outcome.id === nextProps.selectedOutcomeId
           );
         this.setState({ selectedOutcome });
       }

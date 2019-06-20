@@ -4,52 +4,53 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
 import { Web3Provider } from "ethers/providers";
-import Portis, { INetwork } from "@portis/web3";
+import Fortmatic from 'fortmatic';
 import Web3 from "web3";
 import { updateIsLoggedAndLoadAccountData } from "modules/auth/actions/update-is-logged-and-load-account-data";
-import { ACCOUNT_TYPES, PORTIS_API_KEY } from "modules/common/constants";
+import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY } from "modules/common/constants";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
-const getPortisNetwork = (networkId): false | string | INetwork  => {
-  const myPrivateEthereumNode = {
-    nodeUrl: "http://localhost:8545",
-    chainId: "104",
-  };
+const getFormaticNetwork = (networkId: string): false | string   => {
   if (networkId === "1") {
     return "mainnet";
+  } else if (networkId === "4") {
+    return "ropsten";
+  } else if (networkId === "4") {
+    return "rinkeby";
   } else if (networkId === "42") {
     return "kovan";
   } else if (networkId === "104") {
-    return myPrivateEthereumNode;
+    // TODO: Formatic currently doesn't support local nodes
+    // TODO: Update this when they do
+    return false;
   } else {
     return false;
   }
 };
 
-export const loginWithPortis = (callback: NodeStyleCallback) => async (
+export const loginWithFortmatic = (callback: NodeStyleCallback) => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
 
-  const networkId = getNetworkId();
-  const protisNetwork = getPortisNetwork(networkId);
+  const networkId: string = getNetworkId();
+  const supportedNetwork: string | false = getFormaticNetwork(networkId);
 
-  if (protisNetwork) {
-    const portis = new Portis(PORTIS_API_KEY, protisNetwork);
-    const web3 = new Web3(portis.provider);
-    const provider = new Web3Provider(portis.provider);
-    const isWeb3 = true;
-
+  if (supportedNetwork) {
     try {
+      const fm = new Fortmatic(networkId === "1" ? FORTMATIC_API_KEY : FORTMATIC_API_TEST_KEY, supportedNetwork);
+      const web3 = new Web3(fm.getProvider());
+      const provider = new Web3Provider(fm.getProvider());
+      const isWeb3 = true;
+
       const accounts = await web3.eth.getAccounts();
       const account = accounts[0];
-
       const accountObject = {
         address: account,
         displayAddress: toChecksumAddress(account),
         meta: {
           address: account,
           signer: provider.getSigner(),
-          accountType: ACCOUNT_TYPES.PORTIS,
+          accountType: ACCOUNT_TYPES.FORTMATIC,
           isWeb3,
         },
       };
@@ -62,12 +63,11 @@ export const loginWithPortis = (callback: NodeStyleCallback) => async (
       ));
 
       callback(null, account);
-
     }
     catch (error) {
       callback(error, null);
     }
   } else {
-    callback("Network currently not supported with Portis", null);
+    callback(`Network ${networkId} not supported.`, null);
   }
 };

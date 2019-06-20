@@ -31,7 +31,7 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { universe, loginAccount, marketsData } = getState();
+    const { universe, loginAccount, marketInfos } = getState();
     const universeId = universe.id || UNIVERSE_ID;
 
     if (!loginAccount.address) return;
@@ -43,20 +43,17 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
       id: universeId,
       winningChildUniverse: undefined,
       openInterest: universe.openInterest || "0",
-      reportableOutcomes: null
+      outcomes: null
     };
 
     if (
       universe.isForking &&
       universe.forkingMarket &&
-      marketsData[universe.forkingMarket]
+      marketInfos[universe.forkingMarket]
     ) {
-      const forkingMarket = marketsData[universe.forkingMarket];
+      const forkingMarket = marketInfos[universe.forkingMarket];
       universeData.market = forkingMarket;
-      universeData.reportableOutcomes = selectReportableOutcomes(
-        forkingMarket.marketType,
-        forkingMarket.outcomes
-      );
+      universeData.outcomes = forkingMarket.outcomes;
       universeData.winningChildUniverseId = universe.winningChildUniverse;
     }
 
@@ -120,7 +117,7 @@ export function loadUniverseInfo(callback: NodeStyleCallback = logError) {
 function getUniverseInfo(universeId: string, callback: NodeStyleCallback) {
   const universeData: Universe = {
     id: universeId,
-    reportableOutcomes: undefined,
+    outcomes: undefined,
     winningChildUniverseId: undefined,
     market: undefined,
     openInterest: "0"
@@ -136,12 +133,7 @@ function getUniverseInfo(universeId: string, callback: NodeStyleCallback) {
       });
 
       universeData.market = marketsDataArray[0];
-      universeData.reportableOutcomes = selectReportableOutcomes(
-        // @ts-ignore
-        universeData.market.marketType,
-        // @ts-ignore
-        universeData.market.outcomes
-      );
+      universeData.outcomes = marketsDataArray[0].outcomes;
       augur.api.Market.isFinalized(
         { tx: { to: forkingMarket } },
         (err: any, isForkingMarketFinalized: boolean) => {
@@ -263,13 +255,12 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
   const outcomeId = calculatePayoutNumeratorsValue(
     parentUniverseData.market,
     universeData.payout,
-    universeData.isInvalid
   ).toString();
   if (parentUniverseData.market.marketType === SCALAR) {
     return outcomeId;
   }
 
-  const outcome = parentUniverseData.reportableOutcomes[outcomeId];
+  const outcome = parentUniverseData.outcomes[outcomeId];
   const outComeLabel = outcome && (outcome.description || outcome.name);
   return outComeLabel || "Unidentified";
 }

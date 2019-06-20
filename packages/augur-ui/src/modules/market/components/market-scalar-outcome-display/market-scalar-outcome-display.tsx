@@ -1,29 +1,32 @@
-import React from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
+import React from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-import getValue from "utils/get-value";
-import CustomPropTypes from "utils/custom-prop-types";
-import { createBigNumber } from "utils/create-big-number";
-import { DashlineLong } from "modules/common/labels";
-import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
-import Styles from "modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles.less";
+import getValue from 'utils/get-value';
+import CustomPropTypes from 'utils/custom-prop-types';
+import { createBigNumber } from 'utils/create-big-number';
+import { DashlineLong } from 'modules/common/labels';
+import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
+import Styles from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles.less';
 
 const MarketScalarOutcomeDisplay = ({
   outcomes,
   max,
   min,
-  scalarDenomination = "N/A"
+  scalarDenomination = 'N/A',
 }) => {
   const calculatePosition = (): number => {
-    const lastPrice =
-      getValue(outcomes[0], "lastPricePercent.fullPrecision") || 0;
-
+    const outcome = outcomes[1];
     const range = max.minus(min);
-    return createBigNumber(lastPrice)
+    const percentage =outcomes[0].lastPricePercent.fullPrecision;
+    const pricePercentage = createBigNumber(percentage)
       .minus(min)
       .dividedBy(range)
       .times(createBigNumber(100)).toNumber();
+
+    return outcome.price === null
+      ? 50
+      : pricePercentage
   };
 
   const outcomeVerticalLinePosition = (): string => {
@@ -37,12 +40,12 @@ const MarketScalarOutcomeDisplay = ({
   };
 
   const currentValuePosition = {
-    left: outcomeVerticalLinePosition() + "%"
+    left: outcomeVerticalLinePosition() + '%',
   };
 
   const lastPriceDenomination = getValue(
-    outcomes[0],
-    "lastPricePercent.denomination"
+    outcomes[1],
+    'lastPricePercent.denomination'
   );
 
   return (
@@ -52,12 +55,8 @@ const MarketScalarOutcomeDisplay = ({
         <div>
           <DashlineLong />
           <div style={currentValuePosition}>
-            <span>
-              {getValue(outcomes[0], "lastPricePercent.formatted")}
-            </span>
-            <span>
-              {lastPriceDenomination}
-            </span>
+            <span>{getValue(outcomes[1], 'lastPricePercent.formatted')}</span>
+            <span>{lastPriceDenomination}</span>
             <MarketOutcomeTradingIndicator
               outcome={outcomes[0]}
               location="scalarScale"
@@ -69,15 +68,11 @@ const MarketScalarOutcomeDisplay = ({
       <div>
         <div>
           Min:
-          <span>
-            {`${min}`}
-          </span>
+          <span>{`${min}`}</span>
         </div>
         <div>
           Max:
-          <span>
-            {`${max}`}
-          </span>
+          <span>{`${max}`}</span>
         </div>
       </div>
       <div>
@@ -92,11 +87,11 @@ MarketScalarOutcomeDisplay.propTypes = {
   outcomes: PropTypes.array.isRequired,
   max: CustomPropTypes.bigNumber.isRequired,
   min: CustomPropTypes.bigNumber.isRequired,
-  scalarDenomination: PropTypes.string
+  scalarDenomination: PropTypes.string,
 };
 
 MarketScalarOutcomeDisplay.defaultProps = {
-  scalarDenomination: "N/A"
+  scalarDenomination: 'N/A',
 };
 
 export default MarketScalarOutcomeDisplay;
