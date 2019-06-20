@@ -1,5 +1,34 @@
 @import (reference) "~assets/styles/shared";
 
 .FormDetails {
-	color: white;
+	background: @color-tertiary-background;
+	border-radius: @border-radius-extra-rounded;
+	flex-direction: column;
+	padding: @size-40;
+    display: flex;
+
+	> span:first-of-type {
+		.text-24-bold;
+
+		color: @color-alternate-info-text;
+		margin-bottom: @size-24;
+	}
+
+	> span:nth-of-type(2) {
+		.text-16-medium;
+
+		color: @color-alternate-info-text;
+		margin-bottom: @size-8;
+	}
+
+	> span:nth-of-type(3) {
+		.text-12;
+
+		margin-bottom: @size-8;
+		color: @color-tertiary-info-text;
+
+		> a {
+			color: @color-primary-action;
+		}
+	}
 }

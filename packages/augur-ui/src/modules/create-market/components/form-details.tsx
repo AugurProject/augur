@@ -2,29 +2,34 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
+import { RadioCardGroup } from "modules/common/form";
+import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
+
 import Styles from "modules/create-market/components/form-details.styles";
 
-interface FormProps {
+interface FormDetailsProps {
   updateNewMarket: Function;
   newMarket: Object;
 }
 
-interface FormState {
+interface FormDetailsState {
   selected: number;
 }
 
 export default class FormDetails extends React.Component<
-  FormProps,
-  FormState
+  FormDetailsProps,
+  FormDetailsState
 > {
-  state: OverviewState = {
+  state: FormDetailsState = {
     pages: ["Event details", "Fees & liquidity", "Review"]
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  onChange = (value) => {
+    console.log(value);
   }
 
- prevPage = () => {
+
+  prevPage = () => {
     const { newMarket, updateNewMarket } = this.props;
     const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
     updateNewMarket({ currentStep: newStep });
@@ -32,14 +37,15 @@ export default class FormDetails extends React.Component<
 
   nextPage = () =>  {
     const { newMarket, updateNewMarket } = this.props;
-    if (newMarket.isValid) {
+   // if (newMarket.isValid) {
       const newStep =
         newMarket.currentStep >= this.state.pages.length - 1
           ? this.state.pages.length - 1
           : newMarket.currentStep + 1;
       updateNewMarket({ currentStep: newStep });
-    }
+    //}
   }
+
 
   render() {
     const {
@@ -50,7 +56,33 @@ export default class FormDetails extends React.Component<
 
     return (
       <div className={Styles.FormDetails}>
-        Market Details
+        <span>Market Details</span>
+        <span>Market type</span>
+        <span>Market types vary based on the amount of possible outcomes. <a target="blank" href="https://docs.augur.net">Learn more</a></span>
+        <RadioCardGroup 
+          radioButtons={[
+            {
+              value: 'YesNo',
+              header: 'Yes / No',
+              description: 'There are two possible outcomes: “Yes” or “No”',
+              onChange: this.onChange,
+            },
+            {
+              value: 'MultipleChoice',
+              header: 'Multiple Choice',
+              description: 'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
+              onChange: this.onChange,
+            },
+            {
+              value: 'Scalar',
+              header: 'Scalar',
+              description: 'A range of numeric outcomes: “USD range” between “1” and “100”.',
+              onChange: this.onChange,
+            },
+          ]}
+        />
+        <SecondaryButton text="Back" action={this.prevPage} />
+        <PrimaryButton text="Next" action={this.nextPage} />
       </div>
     );
   }

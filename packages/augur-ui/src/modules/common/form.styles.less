@@ -15,7 +15,6 @@
   > p {
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   &:hover,
@@ -182,11 +181,11 @@
 }
 
 .RadioCardGroup {
-  margin: @size-20;
-  padding: @size-12;
   display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
+
+  > div:not(:last-of-type) {
+    margin-right: @size-20;
+  }
 }
 
 .RadioCard {
