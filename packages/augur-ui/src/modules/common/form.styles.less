@@ -36,6 +36,36 @@
   }
 }
 
+.LocationDisplay {
+  align-items: center;
+  border-radius: @border-radius-default;
+  border: 1px solid @color-primary-light;
+  display: flex;
+  justify-content: center;
+  padding: @size-16 @size-12;
+
+  > span {
+    .text-12-bold;
+
+    color: @color-primary-alternate-two;
+    cursor: default;
+    padding: 0 @size-12;
+
+    &.Selected {
+      color: @color-alternate-info-text;
+    }
+  }
+
+  > svg {
+    width: @size-16;
+    height: @size-16;
+
+    > path {
+       fill: @color-primary-alternate-two;
+    }
+  }
+}
+
 .CheckboxBar {
   .RadioStyleSelection;
 
