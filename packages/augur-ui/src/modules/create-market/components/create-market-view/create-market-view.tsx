@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 
-import Form from "modules/create-market/components/form/form";
+import Form from "modules/create-market/components/form";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles";
 
 const CreateMarketView = p => (
