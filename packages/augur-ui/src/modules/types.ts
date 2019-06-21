@@ -509,7 +509,7 @@ export interface LoginAccount {
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
-  allowance?: string;
+  allowanceFormatted?: FormattedNumber;
   eth?: string;
   rep?: string;
   dai?: string;
