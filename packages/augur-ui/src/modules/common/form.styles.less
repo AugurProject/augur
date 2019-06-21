@@ -15,7 +15,6 @@
   > p {
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   &:hover,
@@ -33,6 +32,36 @@
     > h5,
     > p {
       color: @color-shadow-text;
+    }
+  }
+}
+
+.LocationDisplay {
+  align-items: center;
+  border-radius: @border-radius-default;
+  border: 1px solid @color-primary-light;
+  display: flex;
+  justify-content: center;
+  padding: @size-16 @size-12;
+
+  > span {
+    .text-12-bold;
+
+    color: @color-primary-alternate-two;
+    cursor: default;
+    padding: 0 @size-12;
+
+    &.Selected {
+      color: @color-alternate-info-text;
+    }
+  }
+
+  > svg {
+    width: @size-16;
+    height: @size-16;
+
+    > path {
+       fill: @color-primary-alternate-two;
     }
   }
 }
@@ -82,17 +111,16 @@
 
   align-items: center;
   display: grid;
-  grid-template-rows: auto;
   grid-template-columns: 52px auto @size-16;
+  grid-template-rows: auto;
   height: 51px;  
-  width: 304px;
+  margin-bottom: @size-8;
 
   > svg {
     height: @size-20;
     grid-column: 1;
     grid-row: 1;
     margin: auto;
-    width: @size-20;
 
     > circle:first-of-type {
       stroke: @color-primary-alternate-two;
@@ -107,7 +135,6 @@
   > h5 {
     grid-column: 2;
     grid-row: 1;
-    width: 236px;
   }
 }
 
@@ -182,16 +209,17 @@
 }
 
 .RadioCardGroup {
-  margin: @size-20;
-  padding: @size-12;
   display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
+
+  > div:not(:last-of-type) {
+    margin-right: @size-20;
+  }
 }
 
 .RadioCard {
   .RadioStyleSelection;
 
+  cursor: pointer;
   display: grid;
   grid-template-rows: @size-20 64px 44px 50px 38px;
   grid-template-columns: 100%;
@@ -430,6 +458,10 @@
   &.error {
     border: 1px solid fade(@color-error-text, 50%);
   }
+}
+
+textarea.TextInput {
+  min-height: 88px;
 }
 
 .ErrorText {

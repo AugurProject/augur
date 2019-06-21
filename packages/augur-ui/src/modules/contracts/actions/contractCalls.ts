@@ -10,10 +10,12 @@ import { formatAttoRep, formatAttoEth } from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
   SimulateTradeData,
+  stringTo32ByteHex,
 } from '@augurproject/sdk/build';
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
 import { createBigNumber } from 'utils/create-big-number';
-import { NULL_ADDRESS } from 'modules/common/constants';
+import { NULL_ADDRESS, SCALAR, CATEGORICAL, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/common/constants';
+import { NewMarket } from 'modules/types';
 
 export function clearUserTx(): void {
   const Augur = augurSdk.get();
@@ -146,6 +148,34 @@ export async function isFinalized(marketId: string) {
 export function getDai() {
   const { contracts } = augurSdk.get();
   return contracts.cash.faucet(new BigNumber("1000000000000000000000"));
+}
+
+export function createMarket(newMarket: NewMarket) {
+  const feePerCashInAttoCash = new BigNumber(newMarket.settlementFee).multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
+  const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
+  const byteTopic = stringTo32ByteHex(newMarket.category);
+  const marketEndTime = new BigNumber(newMarket.endTime);
+  const extraInfo = JSON.stringify({
+    longDescription: newMarket.detailsText,
+    resolutionSource: newMarket.expirySource,
+    tags: [newMarket.tag1, newMarket.tag2],
+    scalarDenomination: newMarket.scalarDenomination
+  });
+  const { contracts } = augurSdk.get();
+
+  switch (newMarket.marketType) {
+    case SCALAR: {
+      const prices = [new BigNumber(newMarket.minPrice), new BigNumber(newMarket.maxPrice)];
+      const numTicks = prices[1].minus(prices[0]).dividedBy(new BigNumber(newMarket.tickSize));
+      return contracts.universe.createScalarMarket(marketEndTime, feePerCashInAttoCash, affiliateFeeDivisor, newMarket.designatedReporterAddress, prices, numTicks, byteTopic, extraInfo);
+    }
+    case CATEGORICAL: {
+      return contracts.universe.createCategoricalMarket(marketEndTime, feePerCashInAttoCash, affiliateFeeDivisor, newMarket.designatedReporterAddress, newMarket.outcomes, byteTopic, extraInfo);
+    }
+    default: {
+      return contracts.universe.createYesNoMarket(marketEndTime, feePerCashInAttoCash, affiliateFeeDivisor, newMarket.designatedReporterAddress, byteTopic, extraInfo);
+    }
+  }
 }
 
 export async function approveToTrade(amount: BigNumber) {

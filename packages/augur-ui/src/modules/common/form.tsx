@@ -16,7 +16,8 @@ import {
   FilledRadio,
   EmptyCheckbox,
   FilledCheckbox,
-  Chevron
+  Chevron,
+  DirectionArrow
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
 
@@ -68,7 +69,7 @@ interface InputDropdownProps {
   onChange: Function;
   default: string;
   options: Array<string>;
-  isMobileSmall: Boolean;
+  isMobileSmall?: Boolean;
   label: string;
   className?: string;
   onKeyPress?: Function;
@@ -282,6 +283,29 @@ const RadioCard = ({
   </div>
 );
 
+interface LocationDisplayProps {
+  currentStep: Number;
+  pages: Array<string>;
+}
+
+export const LocationDisplay = ({
+  currentStep,
+  pages
+}: LocationDisplayProps) => (
+  <div className={Styles.LocationDisplay}>
+    {pages.map((page: string, index: Number) => 
+      <>
+        <span className={classNames({[Styles.Selected]: index === currentStep})}>
+          {page}
+        </span>
+        {index !== pages.length - 1 && 
+          DirectionArrow
+        }
+      </>
+    )}
+  </div>
+);
+
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
   state: TextInputState = {
     value: this.props.value,
@@ -300,18 +324,28 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     this.props.onChange(value);
   };
   render() {
-    const { placeholder, disabled, error, errorMessage } = this.props;
+    const { placeholder, disabled, error, errorMessage, type } = this.props;
 
     return (
       <>
-        <input
-          {...this.props}
-          className={classNames(Styles.TextInput, { [Styles.error]: error })}
-          value={this.state.value}
-          onChange={this.onChange}
-          placeholder={placeholder}
-          disabled={disabled}
-        />
+        {type !== "textarea" ? 
+          <input
+            {...this.props}
+            className={classNames(Styles.TextInput, { [Styles.error]: error })}
+            value={this.state.value}
+            onChange={this.onChange}
+            placeholder={placeholder}
+            disabled={disabled}
+          /> : 
+          <textarea
+            {...this.props}
+            className={classNames(Styles.TextInput, { [Styles.error]: error })}
+            value={this.state.value}
+            onChange={this.onChange}
+            placeholder={placeholder}
+            disabled={disabled}
+          />
+        }
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
       </>
     );
