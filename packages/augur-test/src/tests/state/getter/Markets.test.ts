@@ -150,6 +150,26 @@ describe('State API :: Markets :: ', () => {
     });
     expect(markets).toEqual([]);
 
+    // Test maxEndTime
+    markets = await api.route('getMarkets', {
+      universe: universe.address,
+      maxEndTime: endTime.toNumber()
+    });
+    expect(markets).toEqual([]);
+
+    markets = await api.route('getMarkets', {
+      universe: universe.address,
+      maxEndTime: endTime.plus(1).toNumber()
+    });
+    expect(markets).toEqual([
+    yesNoMarket1.address,
+    yesNoMarket2.address,
+    categoricalMarket1.address,
+    categoricalMarket2.address,
+    scalarMarket1.address,
+      scalarMarket2.address,
+    ]);
+
     // Test designatedReporter
     markets = await api.route('getMarkets', {
       universe: universe.address,
