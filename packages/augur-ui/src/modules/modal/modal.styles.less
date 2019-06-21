@@ -107,8 +107,6 @@ div.ButtonsRow:last-of-type {
 .Message {
   .Container;
 
-  max-width: 35rem;
-
   > main > p {
     .text-12-paragraph;
 
@@ -121,6 +119,53 @@ div.ButtonsRow:last-of-type {
   .Container;
 
   max-width: 45rem;
+}
+
+.NoScroll {
+  > main {
+    overflow: visible;
+  }
+}
+
+.CategorySelection {
+  min-height: 44px;
+  max-height: 108px;
+  padding: 0 @size-16;
+
+  @media @breakpoint-mobile {
+    padding: 0 0 @size-8;
+  }
+
+  > div {
+    align-items: center; 
+    background: @color-tertiary-background;
+    border: 1px solid @color-primary-light;
+    border-radius: @border-radius-default;
+    height: 44px;
+
+    > span:first-of-type {
+      .text-14;
+
+      color: @color-primary-alternate-two;
+    }
+
+    > span:last-of-type > svg > g > g > polyline {
+      color: @color-alternate-info-text;
+    }
+
+    > select,
+    > select[class$="selected"] {
+      color: @color-alternate-info-text;
+    }
+
+    > span[class$="selected"]:first-of-type {
+      color: @color-alternate-info-text;
+    }
+  }
+  
+  > input {
+    margin-top: @size-16;
+  }
 }
 
 .bid {
