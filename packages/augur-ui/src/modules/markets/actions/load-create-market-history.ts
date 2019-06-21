@@ -12,8 +12,7 @@ export function loadCreateMarketHistory(
   marketIdAggregator: Function | undefined
 ) {
   return (
-    dispatch: ThunkDispatch<void, any, Action>,
-    getState: () => AppState
+    dispatch: ThunkDispatch<void, any, Action>
   ) => {
     loadCreateMarketHistoryInternal(
       options,
