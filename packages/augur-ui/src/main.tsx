@@ -19,7 +19,15 @@ window.s = () =>
   store.dispatch(
     updateModal({
       type: MODAL_CATEGORIES,
-      modal: { save: cat => console.log('saving:', cat) },
+      save: (cat) => console.log('saving:', cat),
+    })
+  );
+window.st = () =>
+  store.dispatch(
+    updateModal({
+      type: MODAL_CATEGORIES,
+      save: (cat) => console.log('saving:', cat),
+      selectedCategory: "Politics"
     })
   );
 // window.t = () => store.dispatch(updateModal({ type: MODAL_MARKET_TYPE }));

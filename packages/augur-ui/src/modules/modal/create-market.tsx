@@ -1,23 +1,23 @@
-import React from "react";
-
-import { DefaultButtonProps } from "modules/common/buttons";
+import React from 'react';
+import classNames from 'classnames';
+import { DefaultButtonProps } from 'modules/common/buttons';
 import {
   Title,
   ButtonsRow,
   Content,
   ContentProps,
   CategorySelection,
-  CategorySelectionProps
-} from "modules/modal/common";
+  CategorySelectionProps,
+} from 'modules/modal/common';
 
-import Styles from "modules/modal/modal.styles.less";
+import Styles from 'modules/modal/modal.styles.less';
 
 interface CreateMarketProps {
   closeAction: Function;
   title: string;
   buttons: Array<DefaultButtonProps>;
   content?: ContentProps;
-  CategorySelection?: CategorySelectionProps;
+  categorySelection?: CategorySelectionProps;
 }
 
 export const CreateMarket = ({
@@ -25,11 +25,14 @@ export const CreateMarket = ({
   closeAction,
   content,
   buttons,
-  categorySelection
+  categorySelection,
 }: CreateMarketProps) => {
-  console.log(buttons, categorySelection);
   return (
-    <div className={Styles.CreateMarketMessage}>
+    <div
+      className={classNames(Styles.CreateMarketMessage, {
+        [Styles.NoScroll]: !!categorySelection,
+      })}
+    >
       <Title title={title} closeAction={closeAction} />
       <main>
         {/*
@@ -42,4 +45,4 @@ export const CreateMarket = ({
       {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
     </div>
   );
-}
+};

@@ -14,31 +14,44 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal())
 });
 
-const mergeProps = (sP: any, dP: any, oP: any) => ({
-  title: "CHOOSE A SUB-CATEGORY",
-  categorySelection: {
-    categoriesList: ["Politics", "Sports", "Crypto", "Finance", "Other"],
-    save: (cat) => console.log("CategorySelection save from container", cat)
-  },
-  closeAction: () => {
-    dP.closeModal();
-  },
-  buttons: [
-    {
-      text: "Save",
-      action: (category) => {
-        sP.modal.save(category)
-        dP.closeModal();
-      }
+// updateModal should pass: 
+// { type: MODAL_CATEGORIES, categoriesList?, category?, save }
+const mergeProps = (sP: any, dP: any, oP: any) => {
+  const save = (cat) => sP.modal.save(cat);
+  const selectedCategory =  sP.modal.category || "";
+  // categoriesList is a dummy data for now, will need to be passed or come
+  // from a helper/getter... currently setup to be passed from the updateModal
+  // call.
+  const categoriesList = sP.modal.categoriesList || ["Politics", "Sports", "Crypto", "Finance", "Other"];
+  return ({
+    title: "CHOOSE A SUB-CATEGORY",
+    categorySelection: {
+      categoriesList,
+      selectedCategory,
+      save
     },
-    {
-      text: "Close",
-      action: () => {
-        dP.closeModal();
+    closeAction: () => {
+      dP.closeModal();
+    },
+    buttons: [
+      {
+        text: "Save",
+        action: () => {
+          // this modal constantly saves on edits so we just close the modal
+          dP.closeModal();
+        }
+      },
+      {
+        text: "Close",
+        action: () => {
+          dP.closeModal();
+          // cancel save and go back to whatever we had
+          save(selectedCategory);
+        }
       }
-    }
-  ]
-});
+    ]
+  });
+};
 
 export default withRouter(
   connect(

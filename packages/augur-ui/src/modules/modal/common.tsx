@@ -142,49 +142,48 @@ export interface ContentProps {
 
 export interface CategorySelectionProps {
   categoriesList: Array<string>;
+  selectedCategory: string;
   save: Function;
 }
 
 export interface CategorySelectionState {
   showText: boolean;
-  subCategory: string | null;
+  subCategory: string;
 }
 
 export class CategorySelection extends Component<CategorySelectionProps, CategorySelectionState> {
   state: CategorySelectionState = {
     showText: false,
-    subCategory: null
+    subCategory: ""
   };
 
   onChange(subCategory) {
-    const { subCategory: currentCat } = this.state;
     const { save } = this.props;
-    if (subCategory !== currentCat && currentCat != null) {
-      save(subCategory);
-    }
+    save(subCategory);
     this.setState({ subCategory });
   }
 
   render() {
-    const { categoriesList } = this.props;
+    const { categoriesList, selectedCategory, save } = this.props;
     const { showText } = this.state;
 
     return (
       <div className={Styles.CategorySelection}>
         <InputDropdown
-          default={""}
+          default={selectedCategory}
           label="Select sub-category"
           options={categoriesList}
           isMobileSmall={false}
           onChange={(subCategory) => {
             if (subCategory === "Other") {
-              this.setState({ showText: true, subCategory: null });
-            } else if (showText) {
+              this.setState({ showText: true });
+            } else {
+              save(subCategory);
               this.setState({ showText: false, subCategory });
             }
           }}
         />
-        {showText && <TextInput onChange={this.onChange} placeholder="Enter a sub-category" />}
+        {showText && <TextInput onChange={v => (this.onChange(v))} placeholder="Enter a sub-category" />}
       </div>
     );
   }

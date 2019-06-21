@@ -53,7 +53,7 @@ interface DatePickerProps {
 
 interface TextInputProps {
   error?: boolean;
-  errrorMessage?: string;
+  errorMessage?: string;
   disabled?: boolean;
   placeholder?: string;
   onChange: Function;
@@ -284,7 +284,7 @@ const RadioCard = ({
 
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
   state: TextInputState = {
-    value: this.props.value,
+    value: this.props.value || "",
   };
 
   componentWillReceiveProps(nextProps: TextInputProps) {
@@ -296,12 +296,11 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
 
   onChange = (e: any) => {
     const value = e.target.value;
-    this.setState({ value });
     this.props.onChange(value);
+    this.setState({ value });
   };
   render() {
     const { placeholder, disabled, error, errorMessage } = this.props;
-
     return (
       <>
         <input
