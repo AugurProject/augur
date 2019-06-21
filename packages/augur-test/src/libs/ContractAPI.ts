@@ -1,10 +1,10 @@
-import { stringTo32ByteHex, NULL_ADDRESS} from "./Utils";
-import { Augur, PlaceTradeDisplayParams, SimulateTradeData } from "@augurproject/sdk";
-import { ContractInterfaces } from "@augurproject/core";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { AccountList, makeDependencies, makeSigner } from "./LocalAugur";
-import { ContractAddresses } from "@augurproject/artifacts";
-import { BigNumber } from "bignumber.js";
+import {NULL_ADDRESS, stringTo32ByteHex} from "./Utils";
+import {Augur, PlaceTradeDisplayParams, SimulateTradeData} from "@augurproject/sdk";
+import {ContractInterfaces} from "@augurproject/core";
+import {EthersProvider} from "@augurproject/ethersjs-provider";
+import {AccountList, makeDependencies, makeSigner} from "./LocalAugur";
+import {ContractAddresses} from "@augurproject/artifacts";
+import {BigNumber} from "bignumber.js";
 
 const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
 
@@ -56,7 +56,6 @@ export class ContractAPI {
       }
     }
 
-    console.log("Market created with id: ", marketId);
     return this.augur.contracts.marketFromAddress(marketId);
   }
 
@@ -154,9 +153,30 @@ export class ContractAPI {
   ): Promise<string> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const orderId = await this.augur.contracts.createOrder.publicCreateOrder_(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
-    console.log("orderId", orderId);
-    await this.augur.contracts.createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
+
+    const publicCreateOrderEvents = await this.augur.contracts.createOrder.publicCreateOrder(
+      type,
+      numShares,
+      price,
+      market,
+      outcome,
+      betterOrderID,
+      worseOrderID,
+      tradeGroupID,
+      false,
+      NULL_ADDRESS
+    );
+    // TODO: turn this into a function
+    let orderId = '';
+    for (const ev of publicCreateOrderEvents) {
+      if (ev.name === 'OrderEvent') {
+        interface OrderEvent {
+          orderId: string;
+        }
+        orderId = (ev.parameters as OrderEvent).orderId;
+      }
+    }
+
     return orderId;
   }
 
