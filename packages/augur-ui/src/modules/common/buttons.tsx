@@ -248,6 +248,17 @@ export const DAIFaucetButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
+export const ApprovalButton = (props: DefaultActionButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.DAIFaucetButton}
+    disabled={props.disabled}
+    title={props.title || "Approval"}
+  >
+    <span>Approval</span>
+  </button>
+);
+
 export const ExportButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
