@@ -5,6 +5,7 @@ import classNames from "classnames";
 import { RadioCardGroup, FormDropdown, RadioBar, TextInput } from "modules/common/form";
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
 import { CUSTOM_PAGES } from "modules/common/constants";
+import { createMarket } from "modules/contracts/actions/contractCalls";
 
 import Styles from "modules/create-market/components/form-details.styles";
 
@@ -36,7 +37,7 @@ export default class FormDetails extends React.Component<
     updateNewMarket({ currentStep: newStep });
   }
 
-  nextPage = () =>  {
+  nextPage = () => {
     const { newMarket, updateNewMarket } = this.props;
    // if (newMarket.isValid) {
       const newStep =
@@ -47,6 +48,43 @@ export default class FormDetails extends React.Component<
     //}
   }
 
+  submitMarket = () => {
+    createMarket({
+      isValid: true,
+      validations: [],
+      currentStep: 0,
+      type: "yesNo",
+      outcomes: [],
+      scalarSmallNum: "",
+      scalarBigNum: "",
+      scalarDenomination: "",
+      description: "Test market",
+      expirySourceType: "",
+      expirySource: "",
+      designatedReporterType: "",
+      designatedReporterAddress: "0x4EB4F1dd4277B31dbDCD91E93a3319D721CAeEbc",
+      minPrice: "",
+      maxPrice: "",
+      endTime: 0,
+      tickSize: "",
+      hour: "",
+      minute: "",
+      meridiem: "",
+      marketType: "",
+      detailsText: "",
+      category: "",
+      tag1: "",
+      tag2: "",
+      settlementFee: 0,
+      affiliateFee: 0,
+      orderBook: {},
+      orderBookSorted: {},
+      orderBookSeries: {},
+      initialLiquidityEth: 0,
+      initialLiquidityGas: 0,
+      creationError: ""
+    });
+  }
 
   render() {
     const {
@@ -147,6 +185,7 @@ export default class FormDetails extends React.Component<
         </div>
         <div>
           <SecondaryButton text="Back" action={this.prevPage} />
+          <PrimaryButton text="Submit" action={this.submitMarket} />
           <PrimaryButton text="Next" action={this.nextPage} />
         </div>
       </div>
