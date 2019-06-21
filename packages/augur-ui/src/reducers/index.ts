@@ -33,7 +33,6 @@ import readNotifications from "modules/notifications/reducers/read-notifications
 import pendingQueue from "modules/pending-queue/reducers/pending-queue";
 import {
   LoginAccount,
-  MarketTradingHistory,
   AccountPosition,
   AppStatus,
   AuthStatus,
@@ -61,7 +60,8 @@ import {
   TransacitonStatus,
   Universe,
   Versions,
-  AccountShareBalances
+  AccountShareBalances,
+  MarketTradingHistoryState
 } from "modules/types";
 
 export function createReducer() {
@@ -118,7 +118,7 @@ export interface AppStateInterface {
   gasPriceInfo: GasPriceInfo;
   loginAccount: LoginAccount;
   marketReportState: MarketsInReporting;
-  marketTradingHistory: MarketTradingHistory;
+  marketTradingHistory: MarketTradingHistoryState;
   marketInfos: MarketInfos;
   modal: any;
   newMarket: NewMarket;

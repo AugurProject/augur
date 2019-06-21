@@ -2,10 +2,12 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { loadReportingFinal } from "modules/reports/actions/load-reporting-final";
 import { keyArrayBy } from "utils/key-by";
-import { MarketTradingHistory, TradingHistory, NodeStyleCallback } from "modules/types";
+import { TradingHistory, NodeStyleCallback, MarketTradingHistoryState } from "modules/types";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { augurSdk } from "services/augursdk";
+import { MarketTradingHistory } from "@augurproject/sdk/build/state/getter/Trading";
 
 export const UPDATE_MARKET_TRADING_HISTORY = "UPDATE_MARKET_TRADING_HISTORY";
 export const UPDATE_USER_TRADING_HISTORY = "UPDATE_USER_TRADING_HISTORY";
@@ -13,7 +15,7 @@ export const UPDATE_USER_MARKET_TRADING_HISTORY =
   "UPDATE_USER_MARKET_TRADING_HISTORY";
 export const BULK_MARKET_TRADING_HISTORY = "BULK_MARKET_TRADING_HISTORY";
 
-export function bulkMarketTradingHistory(keyedMarketTradingHistory: MarketTradingHistory) {
+export function bulkMarketTradingHistory(keyedMarketTradingHistory: MarketTradingHistoryState) {
   return {
     type: BULK_MARKET_TRADING_HISTORY,
     data: {
@@ -24,7 +26,7 @@ export function bulkMarketTradingHistory(keyedMarketTradingHistory: MarketTradin
 
 export function updateMarketTradingHistory(
   marketId: string,
-  marketTradingHistory: TradingHistory,
+  marketTradingHistory: Array<MarketTradingHistory>,
 ) {
   return {
     type: UPDATE_MARKET_TRADING_HISTORY,
@@ -66,106 +68,44 @@ export function updateUserMarketTradingHistory(
 export const loadMarketTradingHistory = (
   options: any,
   callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (options === null || !options.marketId) return callback(null);
-  getTradingHistory(options, (err: any, tradingHistory: any) => {
-    if (err) return callback(err);
-    if (tradingHistory == null) return callback(null);
-    dispatch(updateMarketTradingHistory(options.marketId, tradingHistory));
-    callback(null, tradingHistory);
-  });
+  const Augur = augurSdk.get();
+  const tradingHistory = await Augur.getTradingHistory({...options});
+  if (tradingHistory == null) return callback(null);
+  dispatch(updateMarketTradingHistory(options.marketId, tradingHistory));
+  callback(null, tradingHistory);
 };
 
 export const loadUserMarketTradingHistory = (
   options = {},
   callback: NodeStyleCallback = logError,
-  marketIdAggregator: any
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  dispatch(
+  marketIdAggregator: Function,
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
     loadUserMarketTradingHistoryInternal(
       options,
       (err: any, { marketIds = [], tradingHistory = {} }: any) => {
-        if (marketIdAggregator && marketIdAggregator(marketIds));
+        if (marketIdAggregator) marketIdAggregator(marketIds);
         if (callback) callback(err, tradingHistory);
       },
-    ),
-  );
+    )
 };
 
 export const loadUserMarketTradingHistoryInternal = (
   options: any,
   callback: NodeStyleCallback,
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount, universe } = getState();
-  if (!loginAccount.address) return callback(null, []);
   const allOptions = Object.assign(
     { account: loginAccount.address, universe: universe.id },
     options,
   );
-  getTradingHistory(allOptions, (err: any, tradingHistory: any) => {
-    if (err) return callback(err, {});
-    if (tradingHistory == null) return callback(null, {});
-    if (!allOptions.marketId) {
-      dispatch(
-        loadReportingFinal((err: any, finalizedMarkets: any) => {
-          // filter out finalized markets
-          if (!err && finalizedMarkets && finalizedMarkets.length > 0) {
-            const userTradedMarketIds = [
-              ...new Set(
-                tradingHistory.reduce((p, t) => [...p, t.marketId], [])
-              )
-            ];
-            const marketIds = [userTradedMarketIds, finalizedMarkets].reduce(
-              (a, b) => a.filter((c: string) => !b.includes(c))
-            );
-            // getTradingHistory `marketId` can be an array
-            getTradingHistory(
-              { marketId: marketIds, universe: universe.id },
-              (err: any, marketTradingHistories: any) => {
-                const keyedMarketTradeHistory = keyArrayBy(
-                  marketTradingHistories,
-                  "marketId"
-                );
-                if (!err) {
-                  dispatch(bulkMarketTradingHistory(keyedMarketTradeHistory));
-                }
-                callback(null, { tradingHistory, marketIds });
-              }
-            );
-          }
-        }),
-      );
-    }
-
-    if (allOptions.marketId) {
-      dispatch(
-        updateUserMarketTradingHistory(
-          loginAccount.address,
-          allOptions.marketId,
-          tradingHistory
-        ),
-      );
-    } else {
-      dispatch(updateUserTradingHistory(loginAccount.address, tradingHistory));
-      callback(err, tradingHistory);
-    }
-  });
-};
-
-const getTradingHistory = (options: any, callback: NodeStyleCallback) => {
-  const allOptions = Object.assign(
-    { sortBy: "timestamp", isSortDescending: true },
-    options,
-  );
-  augur.augurNode.submitRequest(
-    "getTradingHistory",
-    {
-      ...allOptions
-    },
-    (err: any, tradingHistory: any) => {
-      if (err) return callback(err);
-      if (tradingHistory == null) return callback(null);
-      callback(null, tradingHistory);
-    },
-  );
+  const Augur = augurSdk.get();
+  const tradingHistory = await Augur.getTradingHistory(allOptions);
+  const userTradedMarketIds = [
+    ...new Set(
+      tradingHistory.reduce((p, t) => [...p, t.marketId], [])
+    )
+  ];
+  callback(null, { tradingHistory, userTradedMarketIds });
 };

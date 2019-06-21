@@ -2,7 +2,8 @@ import {
   UPDATE_USER_TRADING_HISTORY,
   UPDATE_USER_MARKET_TRADING_HISTORY,
 } from "modules/markets/actions/market-trading-history-management";
-import { FilledOrders, FilledOrder, BaseAction } from "modules/types";
+import { FilledOrders, BaseAction } from "modules/types";
+import { MarketTradingHistory } from "@augurproject/sdk/build/state/getter/Trading";
 
 const DEFAULT_STATE: FilledOrders = {};
 
@@ -20,7 +21,7 @@ export default function(filledOrders: FilledOrders = DEFAULT_STATE, { type, data
 
       return {
         [account]: [
-          ...filledOrders[account].filter((t: FilledOrder) => t.marketId !== marketId),
+          ...filledOrders[account].filter((t: MarketTradingHistory) => t.marketId !== marketId),
           ...userFilledOrders,
         ],
       };
