@@ -18,6 +18,6 @@ export const loadAccountOpenOrders = (
     orderState: OPEN,
   });
   if (marketIdAggregator) marketIdAggregator(Object.keys(orders));
-  updateUserOpenOrders(loginAccount.address, orders);
+  dispatch(updateUserOpenOrders(orders));
 };
 

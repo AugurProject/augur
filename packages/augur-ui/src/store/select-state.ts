@@ -33,6 +33,7 @@ export const selectPendingLiquidityOrders = (state: AppState) =>
 export const selectAccountShareBalance = (state: AppState) =>
   state.accountShareBalances;
 export const selectFilledOrders = (state: AppState) => state.filledOrders;
+export const selectUserMarketOpenOrders = (state: AppState) => state.userOpenOrders;
 
 export const selectCurrentTimestamp = createSelector(
   selectBlockchainState,

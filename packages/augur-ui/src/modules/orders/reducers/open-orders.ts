@@ -8,14 +8,11 @@ const DEFAULT_STATE: OpenOrders = {};
 export default function(userOpenOrders: OpenOrders = DEFAULT_STATE, { type, data }: BaseAction): OpenOrders {
   switch (type) {
     case UPDATE_USER_OPEN_ORDERS: {
-      const { openOrders, account } = data;
+      const { openOrders } = data;
 
       return {
-        [account]:
-        {
-          ...userOpenOrders,
-          ...openOrders,
-        }
+        ...userOpenOrders,
+        ...openOrders,
       };
     }
     default:

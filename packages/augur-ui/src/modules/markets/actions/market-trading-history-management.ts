@@ -56,13 +56,11 @@ export function updateUserFilledOrders(
 }
 
 export function updateUserOpenOrders(
-  account: string,
   openOrders: Orders
 ) {
   return {
     type: UPDATE_USER_OPEN_ORDERS,
     data: {
-      account,
       openOrders,
     },
   };
@@ -95,12 +93,12 @@ export const loadUserFilledOrders = (
     {
       account: loginAccount.address,
       universe: universe.id,
-      orderStatus: FILLED,
+      orderState: FILLED,
     },
     options
   );
   const Augur = augurSdk.get();
   const tradingHistory = await Augur.getTradingOrders(allOptions);
   if (marketIdAggregator) marketIdAggregator(Object.keys(tradingHistory));
-  updateUserFilledOrders(loginAccount.address, tradingHistory);
+  dispatch(updateUserFilledOrders(loginAccount.address, tradingHistory));
 };

@@ -85,6 +85,7 @@ export interface Order {
   orderState: OrderState;
   price: string;
   amount: string;
+  amountFilled: string;
   fullPrecisionPrice: string;
   fullPrecisionAmount: string;
   tokensEscrowed: string; // TODO add to log
@@ -288,7 +289,8 @@ export class Trading {
       const maxPrice = new BigNumber(marketDoc.prices[1]);
       const numTicks = new BigNumber(marketDoc.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.amountFilled, 16), tickSize).toString(10);
+      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.amount, 16), tickSize).toString(10);
+      const amountFilled = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.amountFilled, 16), tickSize).toString(10);
       const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderEventDoc.price, 16), minPrice, tickSize).toString(10);
       const market = orderEventDoc.market;
       const outcome = new BigNumber(orderEventDoc.outcome).toNumber();
@@ -297,8 +299,11 @@ export class Trading {
       const sharesEscrowed = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.sharesEscrowed, 16), tickSize).toString(10);
       const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16).dividedBy(10 ** 18).toString(10);
       let orderState = OrderState.OPEN;
-      if (amount === "0") {
-        orderState = orderEventDoc.eventType == 1 ? OrderState.CANCELED : OrderState.FILLED;
+      if (orderEventDoc.eventType == 3) {
+        orderState = OrderState.FILLED
+      }
+      if (orderEventDoc.eventType == 1) {
+        orderState = OrderState.CANCELED;
       }
       if (!orders[market]) orders[market] = {};
       if (!orders[market][outcome]) orders[market][outcome] = {};
@@ -312,6 +317,7 @@ export class Trading {
         orderState,
         price,
         amount,
+        amountFilled,
         fullPrecisionPrice: price,
         fullPrecisionAmount: amount,
         tokensEscrowed,
