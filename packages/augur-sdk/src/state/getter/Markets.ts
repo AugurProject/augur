@@ -27,6 +27,7 @@ const GetMarketsParamsSpecific = t.intersection([t.type({
   disputeWindow: t.string,
   designatedReporter: t.string,
   maxFee: t.string,
+  maxEndTime: t.number,
   hasOrders: t.boolean,
 })]);
 
@@ -208,6 +209,7 @@ export class Markets {
           universe: params.universe,
           marketCreator: params.creator,
           designatedReporter: params.designatedReporter,
+          endTime: { $lt: params.maxEndTime }
         },
         sort: params.sortBy ? [params.sortBy] : undefined,
         limit: params.limit,
