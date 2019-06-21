@@ -31,6 +31,7 @@ import filledOrders from "modules/orders/reducers/filled-orders";
 import accountShareBalances from "modules/positions/reducers/account-share-balances";
 import readNotifications from "modules/notifications/reducers/read-notifications";
 import pendingQueue from "modules/pending-queue/reducers/pending-queue";
+import userOpenOrders from "modules/orders/reducers/open-orders";
 import {
   LoginAccount,
   AccountPosition,
@@ -61,7 +62,8 @@ import {
   Universe,
   Versions,
   AccountShareBalances,
-  MarketTradingHistoryState
+  MarketTradingHistoryState,
+  OpenOrders,
 } from "modules/types";
 
 export function createReducer() {
@@ -98,7 +100,8 @@ export function createReducer() {
     transactionsStatus,
     universe,
     versions,
-    accountShareBalances
+    accountShareBalances,
+    userOpenOrders,
   };
 }
 
@@ -138,4 +141,5 @@ export interface AppStateInterface {
   universe: Universe;
   versions: Versions;
   accountShareBalances: AccountShareBalances;
+  userOpenOrders: OpenOrders;
 }

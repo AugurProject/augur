@@ -1,29 +1,21 @@
 import {
-  UPDATE_USER_TRADING_HISTORY,
-  UPDATE_USER_MARKET_TRADING_HISTORY,
+  UPDATE_USER_FILLED_ORDERS,
 } from "modules/markets/actions/market-trading-history-management";
 import { FilledOrders, BaseAction } from "modules/types";
-import { MarketTradingHistory } from "@augurproject/sdk/build/state/getter/Trading";
 
 const DEFAULT_STATE: FilledOrders = {};
 
 export default function(filledOrders: FilledOrders = DEFAULT_STATE, { type, data }: BaseAction): FilledOrders {
   switch (type) {
-    case UPDATE_USER_TRADING_HISTORY: {
+    case UPDATE_USER_FILLED_ORDERS: {
       const { userFilledOrders, account } = data;
 
       return {
-        [account]: userFilledOrders,
-      };
-    }
-    case UPDATE_USER_MARKET_TRADING_HISTORY: {
-      const { userFilledOrders, account, marketId } = data;
-
-      return {
-        [account]: [
-          ...filledOrders[account].filter((t: MarketTradingHistory) => t.marketId !== marketId),
+        [account]:
+        {
+          ...filledOrders,
           ...userFilledOrders,
-        ],
+        }
       };
     }
     default:

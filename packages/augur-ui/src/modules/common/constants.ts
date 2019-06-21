@@ -550,6 +550,7 @@ export const BIDS = "bids";
 export const ASKS = "asks";
 export const CANCELED = "CANCELED";
 export const OPEN = "OPEN";
+export const FILLED = "FILLED";
 export const ALL_ORDERS = "ALL";
 export const PRICE = "price";
 export const SHARE = "share";

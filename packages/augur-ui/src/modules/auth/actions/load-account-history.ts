@@ -2,7 +2,7 @@ import { loadAccountPositions } from 'modules/positions/actions/load-account-pos
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
 import { loadReportingHistory } from 'modules/reports/actions/load-reporting-history';
-import { loadUserMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
+import { loadUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
 import { loadAlerts } from 'modules/alerts/actions/alerts';
 import { loadUsershareBalances } from 'modules/positions/actions/load-user-share-balances';
@@ -31,7 +31,7 @@ function loadTransactions(
   const promises = [];
   promises.push(
     new Promise(resolve =>
-      dispatch(loadUserMarketTradingHistory(options, null, resolve))
+      dispatch(loadUserFilledOrders(options, resolve))
     )
   );
   promises.push(
@@ -41,7 +41,7 @@ function loadTransactions(
   );
   promises.push(
     new Promise(resolve =>
-      dispatch(loadAccountOpenOrders(options, null, resolve))
+      dispatch(loadAccountOpenOrders(options, resolve))
     )
   );
   promises.push(

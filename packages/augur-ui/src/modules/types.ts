@@ -4,7 +4,7 @@ import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/para
 import { AnyAction } from "redux";
 import { MarketInfo, MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
-import { MarketTradingHistory } from "@augurproject/sdk/build/state/getter/Trading";
+import { MarketTradingHistory, Orders, Order } from "@augurproject/sdk/build/state/getter/Trading";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -190,7 +190,7 @@ export interface PendingQueue {
   };
 }
 export interface PendingOrders {
-  [marketId: string]: Array<Order>;
+  [marketId: string]: Array<UIOrder>;
 }
 
 export interface OrderBook {
@@ -246,7 +246,7 @@ export interface OrderCancellations {
   [orderId: string]: { status: string };
 }
 
-export interface Order {
+export interface UIOrder {
   id: string;
   outcome: string | number; // TODO: need to be consistent with outcome naming and type
   index: number;
@@ -327,7 +327,11 @@ export interface NewMarket {
 }
 
 export interface FilledOrders {
-  [account: string]: Array<MarketTradingHistory>;
+  [account: string]: Orders;
+}
+
+export interface OpenOrders {
+  [account: string]: Orders;
 }
 
 export interface TradingHistory {
