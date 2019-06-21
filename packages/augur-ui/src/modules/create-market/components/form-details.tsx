@@ -79,7 +79,7 @@ export default class FormDetails extends React.Component<
       hour: "",
       minute: "",
       meridiem: "",
-      marketType: YES_NO, // newMarket.type, // this is used needs to be YesNo, Categorical, Scalar
+      marketType: newMarket.type, // newMarket.type, // this is used needs to be YesNo, Categorical, Scalar
       detailsText: "",
       category: "",
       tag1: "",
