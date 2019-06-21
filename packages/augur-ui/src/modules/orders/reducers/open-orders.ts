@@ -5,20 +5,20 @@ import { BaseAction, OpenOrders } from "modules/types";
 
 const DEFAULT_STATE: OpenOrders = {};
 
-export default function(openOrders: OpenOrders = DEFAULT_STATE, { type, data }: BaseAction): OpenOrders {
+export default function(userOpenOrders: OpenOrders = DEFAULT_STATE, { type, data }: BaseAction): OpenOrders {
   switch (type) {
     case UPDATE_USER_OPEN_ORDERS: {
-      const { userOpenOrders, account } = data;
+      const { openOrders, account } = data;
 
       return {
         [account]:
         {
-          ...openOrders,
           ...userOpenOrders,
+          ...openOrders,
         }
       };
     }
     default:
-      return openOrders;
+      return userOpenOrders;
   }
 }

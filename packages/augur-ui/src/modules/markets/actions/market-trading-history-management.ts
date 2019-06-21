@@ -57,13 +57,13 @@ export function updateUserFilledOrders(
 
 export function updateUserOpenOrders(
   account: string,
-  userOpenOrders: Orders
+  openOrders: Orders
 ) {
   return {
     type: UPDATE_USER_OPEN_ORDERS,
     data: {
       account,
-      userOpenOrders,
+      openOrders,
     },
   };
 }
