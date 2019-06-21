@@ -866,16 +866,19 @@ test("State API :: Markets :: getMarketsInfo", async () => {
             "description": "Invalid",
             "id": 0,
             "price": "0.22",
+            "volume": "500000000000000",
           },
           {
             "description": "No",
             "id": 1,
             "price": "0.22",
+            "volume": "500000000000000",
           },
           {
             "description": "Yes",
             "id": 2,
             "price": null,
+            "volume": "0",
           },
         ],
         "reportingState": "FORKING",
@@ -911,21 +914,25 @@ test("State API :: Markets :: getMarketsInfo", async () => {
             "description": "Invalid",
             "id": 0,
             "price": "0.22",
+            "volume": "500000000000000",
           },
           {
             "description": "A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
             "id": 1,
             "price": "0.22",
+            "volume": "110000000000000",
           },
           {
             "description": "B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
             "id": 2,
             "price": null,
+            "volume": "0",
           },
           {
             "description": "C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
             "id": 3,
             "price": null,
+            "volume": "0",
           },
         ],
         "reportingState": "FINALIZED",
@@ -961,16 +968,19 @@ test("State API :: Markets :: getMarketsInfo", async () => {
             "description": "Invalid",
             "id": 0,
             "price": "50.22",
+            "volume": "100000000000000000",
           },
           {
             "description": "scalar denom 1",
             "id": 1,
             "price": "50.22",
+            "volume": "110000000000000",
           },
           {
             "description": "scalar denom 1",
             "id": 2,
             "price": null,
+            "volume": "0",
           },
         ],
         "reportingState": "AWAITING_FORK_MIGRATION",
@@ -1019,3 +1029,4 @@ test("State API :: Markets :: getTopics", async () => {
     ],
   );
 }, 120000);
+

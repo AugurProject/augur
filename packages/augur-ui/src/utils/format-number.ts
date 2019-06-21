@@ -230,6 +230,10 @@ export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions
   );
 }
 
+export function formatAttoDai(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+  return formatAttoEth(num, opts);
+}
+
 // At some point potentially refactor all this to be more generic (e.g formatAttoAmount)
 export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   if (!num) return formatBlank();
