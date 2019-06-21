@@ -136,6 +136,7 @@ interface RadioCardProps {
 }
 
 interface RadioCardGroupProps {
+  onChange: Function;
   radioButtons: Array<RadioCardProps>;
   defaultSelected?: string | null;
 }
@@ -244,7 +245,7 @@ export class RadioCardGroup extends Component<
   };
 
   render() {
-    const { radioButtons } = this.props;
+    const { radioButtons, onChange } = this.props;
     const { selected } = this.state;
     return (
       <section className={Styles.RadioCardGroup}>
@@ -253,7 +254,10 @@ export class RadioCardGroup extends Component<
             key={radio.value}
             {...radio}
             checked={radio.value === selected}
-            onChange={selected => this.setState({ selected })}
+            onChange={selected => {
+              onChange(selected)
+              this.setState({ selected });
+            }}
           />
         ))}
       </section>

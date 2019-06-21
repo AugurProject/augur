@@ -458,6 +458,16 @@
   &.error {
     border: 1px solid fade(@color-error-text, 50%);
   }
+
+  input[type="number"]::-webkit-inner-spin-button, 
+  input[type="number"]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+}
+
+input.TextInput {
+  max-width: 210px;
 }
 
 textarea.TextInput {
@@ -478,12 +488,16 @@ div.FormDropdown {
   border-radius: @border-radius-default;
   border: 1px solid @color-primary-light;
   margin-bottom: @size-4;
-
+  min-width: 150px;
+  min-height: 44px;
+  
   > div {
     left: 0;
   }
 
   > button {
+    .text-14;
+
     background-color: transparent;
     color: @color-primary-alternate-two;
 
@@ -657,8 +671,8 @@ div.FormDropdownActive {
     appearance: textfield;
   }
 
-  input[type=number]::-webkit-outer-spin-button,
-  input[type=number]::-webkit-inner-spin-button {
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
     appearance: none;
     margin: 0;
   }
