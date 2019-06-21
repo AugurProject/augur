@@ -1,17 +1,17 @@
-import { loadAccountPositions } from "modules/positions/actions/load-account-positions";
-import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";
-import { loadCreateMarketHistory } from "modules/markets/actions/load-create-market-history";
-import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
-import { loadUserMarketTradingHistory } from "modules/markets/actions/market-trading-history-management";
-import { clearTransactions } from "modules/transactions/actions/update-transactions-data";
-import { loadAlerts } from "modules/alerts/actions/alerts";
-import { loadUsershareBalances } from "modules/positions/actions/load-user-share-balances";
-import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-import { ThunkDispatch, ThunkAction } from "redux-thunk";
-import { Action } from "redux";
-import { NodeStyleCallback } from "modules/types";
-import { AppState } from "store";
+import { loadAccountPositions } from 'modules/positions/actions/load-account-positions';
+import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
+import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
+import { loadReportingHistory } from 'modules/reports/actions/load-reporting-history';
+import { loadUserMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
+import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
+import { loadAlerts } from 'modules/alerts/actions/alerts';
+import { loadUsershareBalances } from 'modules/positions/actions/load-user-share-balances';
+import { getWinningBalance } from 'modules/reports/actions/get-winning-balance';
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import { ThunkDispatch, ThunkAction } from 'redux-thunk';
+import { Action } from 'redux';
+import { NodeStyleCallback } from 'modules/types';
+import { AppState } from 'store';
 
 export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -23,7 +23,10 @@ export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   });
 };
 
-function loadTransactions(dispatch: ThunkDispatch<void, any, Action>, callback: NodeStyleCallback) {
+function loadTransactions(
+  dispatch: ThunkDispatch<void, any, Action>,
+  callback: NodeStyleCallback
+) {
   const options = {};
   const promises = [];
   promises.push(
