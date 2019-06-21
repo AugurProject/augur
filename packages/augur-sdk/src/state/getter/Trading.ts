@@ -15,6 +15,7 @@ const TradingHistoryParams = t.partial({
   account: t.string,
   marketId: t.string,
   outcome: t.number,
+  ignoreResolvedMarkets: t.boolean,
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });
@@ -136,6 +137,7 @@ export class Trading {
     if (!params.account && !params.marketId) {
       throw new Error("'getTradingHistory' requires an 'account' or 'marketId' param be provided");
     }
+
     const request = {
       selector: {
         universe: params.universe,
@@ -150,18 +152,22 @@ export class Trading {
       limit: params.limit,
       skip: params.offset,
     };
-
     const orderFilledResponse = await db.findOrderFilledLogs(request);
-
     const orderIds = _.map(orderFilledResponse, "orderId");
-
     const ordersResponse = await db.findOrderCreatedLogs({ selector: { orderId: { $in: orderIds } } });
     const orders = _.keyBy(ordersResponse, "orderId");
 
     const marketIds = _.map(orderFilledResponse, "market");
-
-    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
-    const markets = _.keyBy(marketsResponse, "market");
+    const marketCreatedResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
+    const markets = _.keyBy(marketCreatedResponse, "market");
+    if (params.ignoreResolvedMarkets) {
+      const marketFinalizedResponse = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketIds } } });
+      for (let finalizedMarket of marketFinalizedResponse) {
+        if (markets[finalizedMarket.market]) {
+          delete markets[finalizedMarket.market];
+        }
+      }
+    }
 
     return orderFilledResponse.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
       const orderDoc = orders[orderFilledDoc.orderId];
