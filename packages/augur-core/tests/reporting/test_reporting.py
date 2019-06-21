@@ -17,6 +17,10 @@ def test_designatedReportHappyPath(localFixture, universe, market):
     with raises(TransactionFailed):
         market.doInitialReport([0, 0, 0, 0, market.getNumTicks()], "")
 
+    # We cannot directly call clearCrowdsourcers setting back reporting
+    with raises(AttributeError):
+        market.clearCrowdsourcers()
+
     # do an initial report as the designated reporter
     initialReportLog = {
         "universe": universe.address,
@@ -48,6 +52,7 @@ def test_designatedReportHappyPath(localFixture, universe, market):
         "timestamp": timestamp,
         "winningPayoutNumerators": [0, 0, market.getNumTicks()]
     }
+
     with AssertLog(localFixture, "MarketFinalized", marketFinalizedLog):
         assert market.finalize()
 

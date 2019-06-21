@@ -13,7 +13,7 @@ export const connect = async (env: EnvObject, loginAccount: LoginAccount, callba
     useWeb3Transport: env.useWeb3Transport,
   };
 
-  let provider = new JsonRpcProvider(env["ethereum-node"].http);;
+  let provider = new JsonRpcProvider(env["ethereum-node"].http);
   let isWeb3 = false;
   let account = "";
 

@@ -39,9 +39,6 @@ contract IAugur {
     function logDisputeCrowdsourcerTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance) public returns (bool);
     function logDisputeCrowdsourcerTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logDisputeCrowdsourcerTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
-    function logDisputeOverloadTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance) public returns (bool);
-    function logDisputeOverloadTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
-    function logDisputeOverloadTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logDisputeWindowCreated(IDisputeWindow _disputeWindow, uint256 _id, bool _initial) public returns (bool);
     function logParticipationTokensRedeemed(IUniverse universe, address _sender, uint256 _attoParticipationTokens, uint256 _feePayoutShare) public returns (bool);
     function logTimestampSet(uint256 _newTimestamp) public returns (bool);
@@ -54,7 +51,7 @@ contract IAugur {
     function logParticipationTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logParticipationTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId) public returns (bool);
-    function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume) public returns (bool);
+    function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume, uint256[] memory _outcomeVolumes) public returns (bool);
     function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost) public returns (bool);
     function recordAuctionTokens(IUniverse _universe) public returns (bool);
     function isKnownFeeSender(address _feeSender) public view returns (bool);
@@ -63,4 +60,5 @@ contract IAugur {
     function getTimestamp() public view returns (uint256);
     function getMaximumMarketEndDate() public returns (uint256);
     function isValidMarket(IMarket _market) public view returns (bool);
+    function derivePayoutDistributionHash(uint256[] memory _payoutNumerators, uint256 _numTicks, uint256 numOutcomes) public view returns (bytes32);
 }

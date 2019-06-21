@@ -7,12 +7,8 @@ import { Web3Provider } from "ethers/providers";
 import Portis, { INetwork } from "@portis/web3";
 import Web3 from "web3";
 import { updateIsLoggedAndLoadAccountData } from "modules/auth/actions/update-is-logged-and-load-account-data";
-import { ACCOUNT_TYPES } from "modules/common/constants";
+import { ACCOUNT_TYPES, PORTIS_API_KEY } from "modules/common/constants";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
-
-
-// TODO find home for all wallet API keys
-const PORTIS_API_KEY = "b67817cf-8dd0-4116-a0cf-657820ddc019";
 
 const getPortisNetwork = (networkId): false | string | INetwork  => {
   const myPrivateEthereumNode = {
@@ -31,7 +27,7 @@ const getPortisNetwork = (networkId): false | string | INetwork  => {
 };
 
 export const loginWithPortis = (callback: NodeStyleCallback) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
 
   const networkId = getNetworkId();
@@ -43,33 +39,34 @@ export const loginWithPortis = (callback: NodeStyleCallback) => async (
     const provider = new Web3Provider(portis.provider);
     const isWeb3 = true;
 
-    await web3.eth.getAccounts(async (error, accounts) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        const account = accounts[0];
+    try {
+      const accounts = await web3.eth.getAccounts();
+      const account = accounts[0];
 
-        const accountObject = {
+      const accountObject = {
+        address: account,
+        displayAddress: toChecksumAddress(account),
+        meta: {
           address: account,
-          displayAddress: toChecksumAddress(account),
-          meta: {
-            address: account,
-            signer: provider.getSigner(),
-            accountType: "portis",
-            isWeb3,
-          },
-        };
+          signer: provider.getSigner(),
+          accountType: ACCOUNT_TYPES.PORTIS,
+          isWeb3,
+        },
+      };
 
-        await dispatch(updateSdk(accountObject, provider));
+      await dispatch(updateSdk(accountObject, provider));
 
-        dispatch(updateIsLoggedAndLoadAccountData(
-          account,
-          ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE,
-        ));
+      dispatch(updateIsLoggedAndLoadAccountData(
+        account,
+        ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
+      ));
 
-        callback(null, account);
-      }
-    });
+      callback(null, account);
+
+    }
+    catch (error) {
+      callback(error, null);
+    }
   } else {
     callback("Network currently not supported with Portis", null);
   }

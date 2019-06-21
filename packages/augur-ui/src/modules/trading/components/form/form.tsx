@@ -544,7 +544,8 @@ class Form extends Component<FromProps, FormState> {
     );
 
     const isScalerWithDenomination: boolean = market.marketType === SCALAR;
-    const defaultOutcome = selectedOutcome ? selectedOutcome.id : "Outcome";
+    // TODO: figure out default outcome after we figure out ordering of the outcomes
+    const defaultOutcome = selectedOutcome ? selectedOutcome.id : 2;
 
     return (
       <div className={Styles.TradingForm}>

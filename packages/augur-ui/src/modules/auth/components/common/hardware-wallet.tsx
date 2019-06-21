@@ -11,12 +11,13 @@ import AddressPickerContent from "modules/auth/components/common/address-picker-
 import DerivationPathEditor from "modules/auth/components/common/derivation-path-editor";
 import { ERROR_TYPES } from "modules/common/constants";
 import { errorIcon } from "modules/common/icons";
-import Styles from "modules/auth/components/common/hardware-wallet.styles";
-import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles";
-import StylesError from "modules/auth/components/common/error-container.styles";
-import ToggleHeightStyles from "utils/toggle-height.styles";
+import Styles from "modules/auth/components/common/hardware-wallet.styles.less";
+import StylesDropdown from "modules/auth/components/connect-dropdown/connect-dropdown.styles.less";
+import StylesError from "modules/auth/components/common/error-container.styles.less";
+import ToggleHeightStyles from "utils/toggle-height.styles.less";
 import { getEthBalance } from "modules/contracts/actions/contractCalls";
 import logError from "utils/log-error";
+import { WalletObject } from "modules/types";
 
 interface HardwareWalletProps {
   loginWithWallet: Function;
@@ -36,18 +37,12 @@ interface HardwareWalletProps {
 interface HardwareWalletState {
   displayInstructions: boolean;
   baseDerivationPath: string;
-  walletAddresses: Array<WalletObject>;
+  walletAddresses: WalletObject[];
   addressPageNumber: number;
   showWallet: boolean;
   cachedAddresses: boolean;
 }
 
-interface WalletObject {
-  address: string;
-  balance: string;
-  derivationPath: Array<number>;
-  serializedPath: string;
-}
 
 export default class HardwareWallet extends Component<HardwareWalletProps, HardwareWalletState>  {
   public static sortBalanceDesc(obj1: WalletObject, obj2: WalletObject): number {
@@ -229,7 +224,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
 
           const walletAddressesWithBalances = sortAndfilterBalances
             ? walletAddresses.filter((item: { balance: string }) => item.balance !== "0").sort(
-                HardwareWallet.sortBalanceDesc,
+                HardwareWallet.sortBalanceDesc
               )
             : walletAddresses;
 
@@ -383,7 +378,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
               <div
                 className={classNames(
                   StylesError.ErrorContainer__subheader,
-                  Styles.subheader,
+                  Styles.subheader
                 )}
               >
                 {walletName === "trezor" && (

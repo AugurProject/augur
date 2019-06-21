@@ -5,19 +5,20 @@ import Styles from "modules/market/components/core-properties/core-properties.st
 import getValue from "utils/get-value";
 import { PropertyLabel } from "modules/common/labels";
 
+// TODO: Get market 24 hour volume, currently just using volume
 const CoreProperties = ({ market }) => (
   <div className={Styles.CoreProperties}>
     <PropertyLabel
       label="Total Volume"
-      value={`${market.volume.formatted} DAI`}
+      value={`${market.volumeFormatted.formatted} DAI`}
     />
     <PropertyLabel
       label="Open Interest"
-      value={`${market.openInterest.formatted} DAI`}
+      value={`${market.openInterestFormatted.formatted} DAI`}
     />
     <PropertyLabel
       label="24hr Volume"
-      value={`${market.volume.formatted} DAI`}
+      value={`${market.volumeFormatted.formatted} DAI`}
     />
     <PropertyLabel
       label="Estimated Fee"

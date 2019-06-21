@@ -104,7 +104,7 @@ export const handleMarketCreatedLog = (log: any) => (
         appendCategoryIfNew(
           dispatch,
           getState().categories,
-          getState().marketsData[log.market]
+          getState().marketInfos[log.market]
         );
       })
     );
@@ -284,7 +284,7 @@ export const handleMarketFinalizedLog = (log: any) => (
   dispatch(
     loadMarketsInfo([log.market], (err: any) => {
       if (err) return console.error(err);
-      const { author } = getState().marketsData[log.market];
+      const { author } = getState().marketInfos[log.market];
       dispatch(loadReporting([log.market]));
       dispatch(getWinningBalance([log.market]));
       const isOwnMarket = getState().loginAccount.address === author;

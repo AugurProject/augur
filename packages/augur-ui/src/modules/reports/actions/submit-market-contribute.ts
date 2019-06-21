@@ -18,12 +18,12 @@ export const submitMarketContribute = ({
   returnPath = REPORTING_DISPUTE_MARKETS,
   callback: NodeStyleCallback = logError
 }: any) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount, marketsData } = getState();
+  const { loginAccount, marketInfos } = getState();
   const outcome = parseFloat(selectedOutcome);
 
   if (!marketId || (isNaN(outcome) && !invalid)) return callback(null);
 
-  const market = marketsData[marketId];
+  const market = marketInfos[marketId];
   if (!market) return callback("Market not found");
   const payoutNumerators = getPayoutNumerators(
     market,

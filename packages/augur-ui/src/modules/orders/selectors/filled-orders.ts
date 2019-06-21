@@ -16,7 +16,7 @@ function findOrders(
   tradesCreatedOrFilledByThisAccount,
   accountId,
   outcomesData,
-  marketsData,
+  marketInfos,
   openOrders,
 ) {
   // Each input tradesCreatedOrFilledByThisAccount will be associated with exactly
@@ -65,7 +65,7 @@ function findOrders(
       let typeOp = type;
 
       const outcomeName = getOutcomeName(
-        marketsData,
+        marketInfos,
         (outcomesData || {})[outcome],
       );
 
@@ -86,7 +86,7 @@ function findOrders(
       }
 
       const timestampFormatted = convertUnixToFormattedDate(timestamp);
-      const marketDescription = marketsData.description;
+      const marketDescription = marketInfos[marketId].description;
 
       if (foundOrder) {
         foundOrder.trades.push({
@@ -175,11 +175,11 @@ export const selectUserFilledOrders = createCachedSelector(
   selectOutcomesDataStateMarket,
   selectMarketsDataStateMarket,
   selectUserOpenOrders,
-  (marketTradeHistory, accountId, outcomesData, marketsData, openOrders) => {
+  (marketTradeHistory, accountId, outcomesData, marketInfos, openOrders) => {
     if (
       !marketTradeHistory ||
       marketTradeHistory.length < 1 ||
-      marketsData === undefined
+      marketInfos === undefined
     ) {
       return [];
     }
@@ -192,7 +192,7 @@ export const selectUserFilledOrders = createCachedSelector(
       tradesCreatedOrFilledByThisAccount,
       accountId,
       outcomesData,
-      marketsData,
+      marketInfos,
       openOrders,
     );
     orders

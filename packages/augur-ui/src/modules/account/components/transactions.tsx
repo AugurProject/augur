@@ -1,14 +1,15 @@
-import React from "react";
+import React from 'react';
 
-import QuadBox from "modules/portfolio/components/common/quad-box";
+import QuadBox from 'modules/portfolio/components/common/quad-box';
 import {
   DepositButton,
   WithdrawButton,
   ViewTransactionsButton,
   REPFaucetButton,
   DAIFaucetButton,
-} from "modules/common/buttons";
-import Styles from "modules/account/components/transactions.styles.less";
+  ApprovalButton,
+} from 'modules/common/buttons';
+import Styles from 'modules/account/components/transactions.styles.less';
 
 interface TransactionsProps {
   isMainnet: boolean;
@@ -17,6 +18,7 @@ interface TransactionsProps {
   deposit: Function;
   withdraw: Function;
   transactions: Function;
+  approval: Function;
 }
 
 export const Transactions = ({
@@ -26,6 +28,7 @@ export const Transactions = ({
   isMainnet,
   repFaucet,
   daiFaucet,
+  approval,
 }: TransactionsProps) => (
   <QuadBox
     title="Transactions"
@@ -48,6 +51,10 @@ export const Transactions = ({
             <DAIFaucetButton action={daiFaucet} />
           </div>
         )}
+        <div>
+          <p>Approve for trading</p>
+          <ApprovalButton action={approval} />
+        </div>
       </div>
     }
   />

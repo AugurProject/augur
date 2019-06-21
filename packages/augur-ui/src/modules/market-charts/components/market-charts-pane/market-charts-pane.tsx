@@ -15,7 +15,7 @@ interface MarketChartsPaneProps {
   marketId: string;
   maxPrice: BigNumber;
   minPrice: BigNumber;
-  selectedOutcomeId: string;
+  selectedOutcomeId: number;
   updateSelectedOrderProperties: Function;
   daysPassed?: number;
 }
