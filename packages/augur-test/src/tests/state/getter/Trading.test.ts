@@ -222,17 +222,16 @@ test("State API :: Trading :: getOrders/getAllOrders", async () => {
     marketId: market.address,
     latestCreationTime: initialTimestamp.plus(1).toNumber()
   });
-  order = orders[market.address][0]["0"][orderId];
-  await expect(order.orderId).toEqual(orderId);
+  await expect(Object.keys(orders[market.address][0]["0"]).length).toEqual(1);
+  await expect(orders[market.address][0]["0"][orderId].orderId).toEqual(orderId);
 
   // Get order for the market before the new time
   orders = await api.route("getOrders", {
     marketId: market.address,
     earliestCreationTime: initialTimestamp.plus(1).toNumber()
   });
-  order = orders[market.address][0]["0"][newOrderId];
-  await expect(order.orderId).toEqual(newOrderId);
-
+  await expect(Object.keys(orders[market.address][0]["0"]).length).toEqual(1);
+  await expect(orders[market.address][0]["0"][newOrderId].orderId).toEqual(newOrderId);
 }, 60000);
 
 test("State API :: Trading :: getBetterWorseOrders", async () => {

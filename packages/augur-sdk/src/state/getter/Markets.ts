@@ -35,6 +35,7 @@ const getMarketsParamsSpecific = t.intersection([
     disputeWindow: t.string,
     designatedReporter: t.string,
     maxFee: t.string,
+    maxEndTime: t.number,
     hasOrders: t.boolean,
   }),
 ]);
@@ -308,16 +309,20 @@ export class Markets {
       throw new Error('Unknown universe: ' + params.universe);
     }
 
-    const marketCreatedLogs = await db.findMarketCreatedLogs({
+    const request = {
       selector: {
         universe: params.universe,
         marketCreator: params.creator,
-        designatedReporter: params.designatedReporter,
+        designatedReporter: params.designatedReporter
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
       limit: params.limit,
       skip: params.offset,
-    });
+    };
+    if (params.maxEndTime) {
+      request.selector = Object.assign(request.selector, { endTime: { $lt: `0x${params.maxEndTime.toString(16)}` } });
+    }
+    const marketCreatedLogs = await db.findMarketCreatedLogs(request);
 
     let marketCreatorFeeDivisor: BigNumber | undefined = undefined;
     if (params.maxFee) {
