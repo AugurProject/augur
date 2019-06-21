@@ -4,6 +4,7 @@ import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/para
 import { AnyAction } from "redux";
 import { MarketInfo, MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
+import { MarketTradingHistory, Orders, Order } from "@augurproject/sdk/build/state/getter/Trading";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -189,7 +190,7 @@ export interface PendingQueue {
   };
 }
 export interface PendingOrders {
-  [marketId: string]: Array<Order>;
+  [marketId: string]: Array<UIOrder>;
 }
 
 export interface OrderBook {
@@ -245,7 +246,7 @@ export interface OrderCancellations {
   [orderId: string]: { status: string };
 }
 
-export interface Order {
+export interface UIOrder {
   id: string;
   outcome: string | number; // TODO: need to be consistent with outcome naming and type
   index: number;
@@ -326,28 +327,19 @@ export interface NewMarket {
 }
 
 export interface FilledOrders {
-  [account: string]: Array<FilledOrder>;
+  [account: string]: Orders;
 }
-export interface FilledOrder {
-  creator: string;
-  orderId: string;
-  outcome: string;
-  amount: string;
-  price: string;
-  type: string;
-  timestamp: DateFormattedObject;
-  transactionHash: string;
-  marketId: string;
-  marketDescription: string;
-  logIndex: number;
+
+export interface OpenOrders {
+  [account: string]: Orders;
 }
 
 export interface TradingHistory {
-  trades: Array<FilledOrder>;
+  trades: Array<MarketTradingHistory>;
 }
 
-export interface MarketTradingHistory {
-  [marketId: string]: TradingHistory;
+export interface MarketTradingHistoryState {
+  [marketId: string]: MarketTradingHistory;
 }
 export interface MarketsInReporting {
   designated?: Array<string>;
