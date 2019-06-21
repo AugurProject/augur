@@ -59,6 +59,7 @@ interface TextInputProps {
   placeholder?: string;
   onChange: Function;
   value?: string;
+  trailingLabel?: string;
 }
 
 interface TextInputState {
@@ -328,28 +329,31 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     this.props.onChange(value);
   };
   render() {
-    const { placeholder, disabled, error, errorMessage, type } = this.props;
+    const { placeholder, disabled, error, errorMessage, type, trailingLabel } = this.props;
 
     return (
       <>
-        {type !== "textarea" ? 
-          <input
-            {...this.props}
-            className={classNames(Styles.TextInput, { [Styles.error]: error })}
-            value={this.state.value}
-            onChange={this.onChange}
-            placeholder={placeholder}
-            disabled={disabled}
-          /> : 
-          <textarea
-            {...this.props}
-            className={classNames(Styles.TextInput, { [Styles.error]: error })}
-            value={this.state.value}
-            onChange={this.onChange}
-            placeholder={placeholder}
-            disabled={disabled}
-          />
-        }
+        <div className={Styles.TextInput}>
+          {type !== "textarea" ? 
+            <input
+              {...this.props}
+              className={classNames({ [Styles.error]: error })}
+              value={this.state.value}
+              onChange={this.onChange}
+              placeholder={placeholder}
+              disabled={disabled}
+            /> : 
+            <textarea
+              {...this.props}
+              className={classNames({ [Styles.error]: error })}
+              value={this.state.value}
+              onChange={this.onChange}
+              placeholder={placeholder}
+              disabled={disabled}
+            />
+          }
+          {trailingLabel && <span>{trailingLabel}</span>}
+        </div>
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
       </>
     );
@@ -401,8 +405,8 @@ export class TimeSelector extends React.Component<
     this.setState({hours: value})
   } 
 
-  onChangeAM = () => {
-    this.setState({am: !this.state.am})
+  onChangeAM = (value) => {
+    this.setState({timeFormat: value})
   } 
 
   render() {

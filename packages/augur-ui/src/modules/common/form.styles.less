@@ -421,42 +421,54 @@
 }
 
 .TextInput {
-  .text-14;
+  align-items: center;
+  display: flex;
 
-  background-color: @color-secondary-action;
-  border-radius: @border-radius-default;
-  border: 1px solid @color-primary-light;
-  color: @color-secondary-text;
-  height: 44px;
-  margin-bottom: @size-4;
-  min-width: 150px;
-  
-  &::placeholder {
-    color: @color-primary-alternate-two;
-  }
+  > input,
+  > textarea {
+    .text-14;
 
-  &:hover {
-    border: 1px solid @color-highlight;
-    cursor: pointer;
-  }
-
-  &:focus {
-    border: 1px solid @color-active;
-  }
-
-  &:disabled {
-    background-color: @color-extra-darkpurple;
-    border: 1px solid @color-shadow-text;
-    color: @color-shadow-text;
-    opacity: 0.5;
-
+    background-color: @color-secondary-action;
+    border-radius: @border-radius-default;
+    border: 1px solid @color-primary-light;
+    color: @color-secondary-text;
+    height: 44px;
+    min-width: 150px;
+    
     &::placeholder {
+      color: @color-primary-alternate-two;
+    }
+
+    &:hover {
+      border: 1px solid @color-highlight;
+      cursor: pointer;
+    }
+
+    &:focus {
+      border: 1px solid @color-active;
+    }
+
+    &:disabled {
+      background-color: @color-extra-darkpurple;
+      border: 1px solid @color-shadow-text;
       color: @color-shadow-text;
+      opacity: 0.5;
+
+      &::placeholder {
+        color: @color-shadow-text;
+      }
+    }
+
+    &.error {
+      border: 1px solid fade(@color-error-text, 50%);
     }
   }
 
-  &.error {
-    border: 1px solid fade(@color-error-text, 50%);
+  > span {
+    .text-14;
+    
+    color: @color-tertiary-info-text;
+    margin-left: @size-12;
   }
 
   input[type="number"]::-webkit-inner-spin-button, 
@@ -464,14 +476,14 @@
     -webkit-appearance: none; 
     margin: 0; 
   }
-}
 
-input.TextInput {
-  max-width: 210px;
-}
+  > textarea {
+    min-height: 88px;
+  }
 
-textarea.TextInput {
-  min-height: 88px;
+  > input {
+    min-width: 210px;
+  }
 }
 
 .ErrorText {
@@ -487,8 +499,7 @@ div.FormDropdown {
   background-color: @color-secondary-action;
   border-radius: @border-radius-default;
   border: 1px solid @color-primary-light;
-  margin-bottom: @size-4;
-  min-width: 150px;
+  min-width: 210px;
   min-height: 44px;
   
   > div {
@@ -715,7 +726,6 @@ div.FormDropdownActive {
   :global {
     .SingleDatePicker_1 {
       display: block;
-      max-width: 19.875rem;
       z-index: @above-all-content;
     }
 
@@ -728,18 +738,16 @@ div.FormDropdownActive {
     .DateInput {
       background: none !important;
       border-radius: @border-radius-default !important;
-      height: @size-40;
-      max-height: @size-40;
       width: auto !important;
     }
 
     .DateInput_input_1,
     .DateInput_input__focused,
     .DateInput_input__focused_2 {
-      border: 1px solid @color-highlight;
       border-radius: @border-radius-default;
-      height: @size-38;
-      max-height: @size-38;
+      border: 1px solid @color-primary-light;
+      min-height: 44px;
+      min-width: 210px;
     }
 
     .DateInput_input.DateInput_input_1,
@@ -771,6 +779,10 @@ div.FormDropdownActive {
       top: auto;
     }
 
+    .SingleDatePicker_picker {
+      margin-top: -1px;
+    }
+
     .DayPicker_weekHeader.DayPicker_weekHeader_1 {
       top: 4.2rem;
     }
@@ -785,7 +797,7 @@ div.FormDropdownActive {
     }
 
     .SingleDatePickerInput.SingleDatePickerInput_1 {
-      border: 1px solid @color-highlight;
+      border: 0;
       border-radius: @border-radius-default;
     }
 
@@ -793,18 +805,18 @@ div.FormDropdownActive {
     .SingleDatePickerInput_1 {
       .mono-12;
 
-      background: @color-theme-primary;
-      border: 1px solid @color-highlight;
+      background-color: @color-secondary-action;
+      border: 1px solid @color-primary-light;
       border-radius: @border-radius-default;
       color: @color-secondary-text;
-      max-height: @size-40;
     }
 
     .DateInput_input.DateInput_input_1 {
       .mono-12;
 
-      background: @color-theme-primary;
+      background-color: @color-secondary-action;
       color: @color-secondary-text;
+      border: 1px solid @color-primary-light;
     }
 
     .DateInput_1 {
@@ -1046,17 +1058,20 @@ div.FormDropdownActive {
 
 .TimeSelector {
   position: relative;
+  max-height: 44px;
+  min-width: 210px;
 
   > button {
-    .mono-12;
+    .text-12;
 
-    background: @color-theme-primary;
+    background-color: @color-secondary-action;
     border-radius: @border-radius-default;
-    border: 1px solid @color-highlight;
+    border: 1px solid @color-primary-light;
     color: @color-secondary-text;
-    height: @size-38;
-    max-height: @size-38;
-    padding: @size-11 @size-12 @size-13;
+    height: 44px;
+    padding: @size-12;
+    text-align: left;
+    width: 100%;
   }
 
   > div {

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import moment from "moment";
 
-import { RadioCardGroup, FormDropdown, RadioBar, TextInput } from "modules/common/form";
+import { RadioCardGroup, FormDropdown, RadioBar, TextInput, DatePicker, TimeSelector } from "modules/common/form";
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { Header, Subheaders } from "modules/create-market/components/common";
@@ -54,6 +55,8 @@ export default class FormDetails extends React.Component<
   }
 
   submitMarket = () => {
+    const { newMarket } = this.props;
+    
     createMarket({
       isValid: true,
       validations: [],
@@ -70,7 +73,7 @@ export default class FormDetails extends React.Component<
       designatedReporterAddress: "0x4EB4F1dd4277B31dbDCD91E93a3319D721CAeEbc",
       minPrice: newMarket.minPrice,
       maxPrice: newMarket.maxPrice,
-      endTime: 0,
+      endTime: newMarket.endTime,
       tickSize: maxPrice.tickSize,
       hour: "",
       minute: "",
@@ -126,13 +129,36 @@ export default class FormDetails extends React.Component<
           />
 
           <Subheaders header="Reporting start date and time" subheader="Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. " link />
-          <FormDropdown
-            options={[{
-              label: "Test",
-              value: 0
-            }]}
-            staticLabel="Timezone"
-          />
+          <span>
+            <DatePicker
+              date={0}
+              placeholder="Date"
+              displayFormat="MMM D, YYYY"
+              id="cm__input--date"
+              onDateChange={date => {
+                
+              }}
+              isOutsideRange={day =>
+                day.isAfter(moment(0).add(6, "M")) ||
+                day.isBefore(moment(0))
+              }
+              focused={false}
+              onFocusChange={({ focused }) => {}}
+              numberOfMonths={1}
+            />
+            <TimeSelector
+              date={newMarket.endTime}
+              placeholder="Date"
+              displayFormat="MMM D, YYYY"
+            />
+            <FormDropdown
+              options={[{
+                label: "Test",
+                value: 0
+              }]}
+              staticLabel="Timezone"
+            />
+          </span>
 
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
           <TextInput 
@@ -154,21 +180,26 @@ export default class FormDetails extends React.Component<
                 onChange={(value: string) => this.onChange("scalarDenomination", value)}
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
-              <TextInput 
-                type="number" 
-                placeholder="0"
-                onChange={(value: string) => this.onChange("minPrice", value)}
-              />
-              <TextInput 
-                type="number" 
-                placeholder="100"
-                onChange={(value: string) => this.onChange("maxPrice", value)}
-              />
+              <section>
+                <TextInput 
+                  type="number" 
+                  placeholder="0"
+                  onChange={(value: string) => this.onChange("minPrice", value)}
+                />
+                <span>to</span>
+                <TextInput 
+                  type="number" 
+                  placeholder="100"
+                  onChange={(value: string) => this.onChange("maxPrice", value)}
+                  trailingLabel="Denomination"
+                />
+              </section>
               <Subheaders header="Precision" subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”." link />
               <TextInput 
                 type="number" 
                 placeholder="0"
                 onChange={(value: string) => this.onChange("tickSize", value)}
+                trailingLabel="Denomination"
               /> 
             </>
           }        
