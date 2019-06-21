@@ -1,7 +1,8 @@
 import RunWorker from "./Sync.worker";
 
 import { API } from "@augurproject/sdk/build/state/getter/API";
-import { Callback, Connector } from "@augurproject/sdk/build/connector/connector";
+import { Callback } from "@augurproject/sdk/build/events";
+import { Connector } from "@augurproject/sdk/build/connector/connector";
 import { SubscriptionEventNames } from "@augurproject/sdk/build/constants";
 import { buildAPI } from "@augurproject/sdk";
 

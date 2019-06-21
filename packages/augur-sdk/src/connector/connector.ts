@@ -1,6 +1,5 @@
 import { SubscriptionEventNames } from "../constants";
-
-export type Callback = (...args: Array<any>) => void;
+import { Callback } from "../events";
 
 export abstract class Connector {
   public subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
