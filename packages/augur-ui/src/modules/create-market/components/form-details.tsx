@@ -10,10 +10,11 @@ import { Header, Subheaders } from "modules/create-market/components/common";
 import { YES_NO, SCALAR, CATEGORICAL, CUSTOM_PAGES } from 'modules/common/constants';
 
 import Styles from "modules/create-market/components/form-details.styles";
+import { NewMarket } from "modules/types";
 
 interface FormDetailsProps {
   updateNewMarket: Function;
-  newMarket: Object;
+  newMarket: NewMarket;
 }
 
 interface FormDetailsState {
@@ -56,12 +57,12 @@ export default class FormDetails extends React.Component<
 
   submitMarket = () => {
     const { newMarket } = this.props;
-    
+
     createMarket({
       isValid: true,
       validations: [],
       currentStep: 0,
-      type: newMarket.type,
+      type: newMarket.type, // this isn't used
       outcomes: [],
       scalarSmallNum: "",
       scalarBigNum: "",
@@ -73,12 +74,12 @@ export default class FormDetails extends React.Component<
       designatedReporterAddress: "0x4EB4F1dd4277B31dbDCD91E93a3319D721CAeEbc",
       minPrice: newMarket.minPrice,
       maxPrice: newMarket.maxPrice,
-      endTime: newMarket.endTime,
-      tickSize: maxPrice.tickSize,
+      endTime: 1566423456, // newMarket.endTime, this is a number (timestamp)
+      tickSize: "100", // maxPrice.tickSize, this needs to be a string
       hour: "",
       minute: "",
       meridiem: "",
-      marketType: newMarket.type,
+      marketType: YES_NO, // newMarket.type, // this is used needs to be YesNo, Categorical, Scalar
       detailsText: "",
       category: "",
       tag1: "",
@@ -107,7 +108,7 @@ export default class FormDetails extends React.Component<
           <Header text="Market details" />
 
           <Subheaders header="Market type" link subheader="Market types vary based on the amount of possible outcomes." />
-          <RadioCardGroup 
+          <RadioCardGroup
             onChange={(value: string) => this.onChange("type", value)}
             radioButtons={[
               {
@@ -136,7 +137,7 @@ export default class FormDetails extends React.Component<
               displayFormat="MMM D, YYYY"
               id="cm__input--date"
               onDateChange={date => {
-                
+
               }}
               isOutsideRange={day =>
                 day.isAfter(moment(0).add(6, "M")) ||
@@ -161,12 +162,12 @@ export default class FormDetails extends React.Component<
           </span>
 
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
-          <TextInput 
-            type="textarea" 
+          <TextInput
+            type="textarea"
             placeholder="Example: Will [person] win the [year] [event]?"
             onChange={(value: string) => this.onChange("description", value)}
             rows="3"
-          />    
+          />
 
           {newMarket.type === SCALAR &&
             <>
@@ -181,28 +182,28 @@ export default class FormDetails extends React.Component<
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
               <section>
-                <TextInput 
-                  type="number" 
+                <TextInput
+                  type="number"
                   placeholder="0"
                   onChange={(value: string) => this.onChange("minPrice", value)}
                 />
                 <span>to</span>
-                <TextInput 
-                  type="number" 
+                <TextInput
+                  type="number"
                   placeholder="100"
                   onChange={(value: string) => this.onChange("maxPrice", value)}
                   trailingLabel="Denomination"
                 />
               </section>
               <Subheaders header="Precision" subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”." link />
-              <TextInput 
-                type="number" 
+              <TextInput
+                type="number"
                 placeholder="0"
                 onChange={(value: string) => this.onChange("tickSize", value)}
                 trailingLabel="Denomination"
-              /> 
+              />
             </>
-          }        
+          }
 
           <Subheaders header="Market category" subheader="Categories help users to find your market on Augur." />
           <FormDropdown
@@ -219,10 +220,10 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Resolution source" subheader="Describe what users need to know in order to resolve the market." link/>
           <RadioBar header={"General knowledge"} onChange={this.onChange} />
           <RadioBar header={"Outcome available on a public website"} onChange={this.onChange} />
-          
+
           <Subheaders header="Resolution details" subheader="Describe what users need to know to determine the outcome of the event." link/>
-          <TextInput 
-            type="textarea" 
+          <TextInput
+            type="textarea"
             placeholder="Describe how the event should be resolved under different scenarios."
             rows="3"
             onChange={(value: string) => this.onChange("detailsText", value)}
