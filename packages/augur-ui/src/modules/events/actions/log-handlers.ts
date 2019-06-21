@@ -39,6 +39,7 @@ import { loadUsershareBalances } from "modules/positions/actions/load-user-share
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
+import { updateBlockchain } from "modules/app/actions/update-blockchain";
 
 const handleAlertUpdate = (
   log: any,
@@ -74,12 +75,12 @@ const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch(getWinningBalance([marketId]));
 };
 
-export const handleMarketStateLog = (log: any) => (dispatch: ThunkDispatch<void, any, Action>) => {
+export const handleNewBlockLog = (log: any) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
-    loadMarketsInfo([log.marketId], () => {
-      dispatch(loadReporting([log.marketId]));
-    })
-  );
+    updateBlockchain({
+      currentBlockNumber: log.blockNumber,
+      currentAugurTimestamp: log.timestamp,
+    }));
 };
 
 export const handleMarketCreatedLog = (log: any) => (
