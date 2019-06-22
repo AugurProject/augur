@@ -27,7 +27,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     uint256 public windowId;
     uint256 public duration;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc820RegistryAddress) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         universe = _universe;
@@ -35,8 +35,8 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         windowId = _disputeWindowId;
         cash = ICash(augur.lookup("Cash"));
         startTime = _startTime;
-        erc820Registry = IERC820Registry(_erc820RegistryAddress);
-        initialize820InterfaceImplementations();
+        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
+        initialize1820InterfaceImplementations();
         return true;
     }
 

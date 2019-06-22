@@ -69,7 +69,7 @@ jobs:
     strategy:
       matrix:
         node_10_x:
-          node_version: 10.x
+          node_version: 10.15.x
     steps:
       - checkout: self
       - task: NodeTool@0
@@ -124,7 +124,7 @@ jobs:
           versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
-          versionSpec: '10.x'
+          versionSpec: '10.15.x'
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -182,7 +182,7 @@ jobs:
           versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
-          versionSpec: '10.x'
+          versionSpec: '10.15.x'
       - task: Docker@1
         displayName: docker login
         inputs:

@@ -21,7 +21,7 @@ const OpenOrdersHeader = (props: OpenOrdersHeaderProps) => (
       <li>
         Total Cost
         <br />
-        (Eth)
+        (DAI)
       </li>
     )}
     {props.extendedView && (

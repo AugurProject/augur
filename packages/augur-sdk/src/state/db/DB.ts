@@ -525,7 +525,7 @@ export class DB {
   }
 
   /**
-   * Queries the OrderFilled DB
+   * Queries the OrderEvent DB for Fill events
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<Array<ParsedOrderEventLog>>}
@@ -539,7 +539,7 @@ export class DB {
   }
 
   /**
-   * Queries the OrderFilled DB
+   * Queries the OrderEvent DB for PriceChanged events
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<Array<ParsedOrderEventLog>>}

@@ -11,7 +11,7 @@ import 'ROOT/trading/ICreateOrder.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/IFillOrder.sol';
 import 'ROOT/libraries/Initializable.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 
 
 contract SimulateTrade is Initializable {
@@ -21,7 +21,7 @@ contract SimulateTrade is Initializable {
         Order.Types orderType;
         Order.TradeDirections direction;
         IMarket market;
-        ERC20Token kycToken;
+        IERC20 kycToken;
         uint256 outcome;
         uint256 amount;
         uint256 price;
@@ -47,7 +47,7 @@ contract SimulateTrade is Initializable {
         return true;
     }
 
-    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, address _sender, ERC20Token _kycToken) internal view returns (SimulationData memory) {
+    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, address _sender, IERC20 _kycToken) internal view returns (SimulationData memory) {
         Order.Types _type = Order.getOrderTradingTypeFromFillerDirection(_direction);
         bytes32 _orderId = orders.getBestOrderId(_type, _market, _outcome, _kycToken);
 
@@ -69,7 +69,7 @@ contract SimulateTrade is Initializable {
         });
     }
 
-    function simulateTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, ERC20Token _kycToken, bool _fillOnly) public view returns (uint256 _sharesFilled, uint256 _tokensDepleted, uint256 _sharesDepleted, uint256 _settlementFees) {
+    function simulateTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, IERC20 _kycToken, bool _fillOnly) public view returns (uint256 _sharesFilled, uint256 _tokensDepleted, uint256 _sharesDepleted, uint256 _settlementFees) {
         SimulationData memory _simulationData = create(_direction, _market, _outcome, _amount, _price, _ignoreShares, msg.sender, _kycToken);
         while (_simulationData.orderId != 0 && _simulationData.amount > 0 && gasleft() > GAS_BUFFER && isMatch(_simulationData)) {
             uint256 _fillAmount = _simulationData.amount.min(_simulationData.orderAmount);
