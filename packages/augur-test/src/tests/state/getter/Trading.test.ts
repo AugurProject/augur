@@ -7,7 +7,7 @@ import {
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { API } from "@augurproject/sdk/build/state/getter/API";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketInfoReportingState, SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/getter/Markets";
 import { AllOrders, MarketTradingHistory, Orders, OrderState } from "@augurproject/sdk/build/state/getter/Trading";
 import { BigNumber } from "bignumber.js";
 import { stringTo32ByteHex } from "../../../libs/Utils";
@@ -74,7 +74,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
 
   await expect(trades).toHaveLength(2);
 
-  // Test `ignoreResolvedMarkets` param
+  // Test `ignoreReportingStates` param
   let newTime = (await market.getEndTime_()).plus(1);
   await john.setTimestamp(newTime);
 
@@ -93,7 +93,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
 
   trades = await api.route("getTradingHistory", {
     marketId: market.address,
-    ignoreResolvedMarkets: true
+    ignoreReportingStates: [MarketInfoReportingState.FINALIZED]
   });
 
   await expect(trades).toHaveLength(0);

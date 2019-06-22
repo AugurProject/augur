@@ -2,6 +2,7 @@ import { SortLimit } from './types';
 import { DB } from "../db/DB";
 import * as _ from "lodash";
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertDisplayPriceToOnChainPrice } from "../../index";
+import { getMarketReportingState } from "./Markets";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
 import { Address, ParsedOrderEventLog, OrderEventType } from "../logs/types";
@@ -15,7 +16,7 @@ const TradingHistoryParams = t.partial({
   account: t.string,
   marketId: t.string,
   outcome: t.number,
-  ignoreResolvedMarkets: t.boolean,
+  ignoreReportingStates: t.array(t.string),
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });
@@ -160,11 +161,18 @@ export class Trading {
     const marketIds = _.map(orderFilledResponse, "market");
     const marketCreatedResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
     const markets = _.keyBy(marketCreatedResponse, "market");
-    if (params.ignoreResolvedMarkets) {
-      const marketFinalizedResponse = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketIds } } });
-      for (let finalizedMarket of marketFinalizedResponse) {
-        if (markets[finalizedMarket.market]) {
-          delete markets[finalizedMarket.market];
+    if (params.ignoreReportingStates) {
+      let marketCreatedIds = Object.keys(_.keyBy(marketCreatedResponse, "market"));
+      const marketFinalizedLogs = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketCreatedIds } } });
+
+      for (let marketCreatedLog of marketCreatedResponse) {
+        const reportingState = await getMarketReportingState(
+          db,
+          marketCreatedLog,
+          marketFinalizedLogs
+        );
+        if (params.ignoreReportingStates.includes(reportingState)) {
+          delete markets[marketCreatedLog.market];
         }
       }
     }

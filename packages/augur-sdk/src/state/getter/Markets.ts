@@ -21,7 +21,7 @@ import { toAscii } from '../utils/utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
-import { Order, Orders, Trading } from './Trading';
+import { Order, Orders, OutcomeParam, Trading } from './Trading';
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -39,17 +39,6 @@ const getMarketsParamsSpecific = t.intersection([
     hasOrders: t.boolean,
   }),
 ]);
-
-const outcomeParam = t.keyof({
-  0: null,
-  1: null,
-  2: null,
-  3: null,
-  4: null,
-  5: null,
-  6: null,
-  7: null,
-});
 
 export const SECONDS_IN_A_DAY = 86400;
 
@@ -87,7 +76,7 @@ export interface MarketInfo {
   category: string;
   volume: string;
   openInterest: string;
-  reportingState: string;
+  reportingState: MarketInfoReportingState;
   needsMigration: boolean;
   endTime: number;
   finalizationBlockNumber: number | null;
@@ -149,7 +138,7 @@ export interface MarketOrderBook {
   };
 }
 
-const outcomeIdType = t.union([outcomeParam, t.number, t.null, t.undefined]);
+const outcomeIdType = t.union([OutcomeParam, t.number, t.null, t.undefined]);
 
 export class Markets {
   static getMarketPriceCandlestickParams = t.type({
@@ -902,7 +891,7 @@ async function getMarketOutcomes(
   return outcomes;
 }
 
-async function getMarketReportingState(
+export async function getMarketReportingState(
   db: DB,
   marketCreatedLog: MarketCreatedLog,
   marketFinalizedLogs: MarketFinalizedLog[]
