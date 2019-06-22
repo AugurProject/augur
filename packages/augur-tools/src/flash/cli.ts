@@ -1,8 +1,8 @@
 import { FlashSession } from "./flash";
 import Vorpal from "vorpal";
 import { addScripts } from "./scripts";
+import { ACCOUNTS } from "./constants";
 
-const _100_ETH = 100000000000000000000;
 
 function makeVorpalCLI(flash: FlashSession): Vorpal {
   const vorpal = new Vorpal();
@@ -31,18 +31,10 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
 }
 
 if (require.main === module) {
-  const flash = new FlashSession([
-      {
-        secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
-        publicKey: "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
-        balance: _100_ETH,
-      },
-      {
-        secretKey: "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a",
-        publicKey: "0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb",
-        balance: _100_ETH,
-      }],
-    `${__dirname}/seed.json`);
+  const flash = new FlashSession(
+    ACCOUNTS,
+    `${__dirname}/seed.json`)
+  ;
   addScripts(flash);
 
   const vorpal = makeVorpalCLI(flash);
