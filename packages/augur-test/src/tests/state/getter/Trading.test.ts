@@ -232,6 +232,31 @@ test("State API :: Trading :: getOrders/getAllOrders", async () => {
   });
   await expect(Object.keys(orders[market.address][0]["0"]).length).toEqual(1);
   await expect(orders[market.address][0]["0"][newOrderId].orderId).toEqual(newOrderId);
+
+  // Test `ignoreReportingStates` param
+  orders = await api.route("getOrders", {
+    marketId: market.address,
+    ignoreReportingStates: [MarketInfoReportingState.FINALIZED]
+  });
+  await expect(Object.keys(orders[market.address][0]["0"]).length).toEqual(2);
+
+  allOrders = await api.route("getAllOrders", {
+    account: john.account,
+    ignoreReportingStates: [MarketInfoReportingState.FINALIZED]
+  });
+  await expect(Object.keys(allOrders).length).toEqual(1);
+
+  orders = await api.route("getOrders", {
+    marketId: market.address,
+    ignoreReportingStates: [MarketInfoReportingState.PRE_REPORTING]
+  });
+  await expect(orders).toMatchObject({});
+
+  allOrders = await api.route("getAllOrders", {
+    account: john.account,
+    ignoreReportingStates: [MarketInfoReportingState.PRE_REPORTING]
+  });
+  await expect(orders).toMatchObject({});
 }, 60000);
 
 test("State API :: Trading :: getBetterWorseOrders", async () => {

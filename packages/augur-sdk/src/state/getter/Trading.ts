@@ -34,6 +34,7 @@ export const OutcomeParam = t.keyof({
 
 export const AllOrdersParams = t.partial({
   account: t.string,
+  ignoreReportingStates: t.array(t.string),
 });
 
 export const OrdersParams = t.partial({
@@ -43,6 +44,7 @@ export const OrdersParams = t.partial({
   orderType: t.string,
   creator: t.string,
   orderState: t.string,
+  ignoreReportingStates: t.array(t.string),
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });
@@ -159,13 +161,13 @@ export class Trading {
     const orders = _.keyBy(ordersResponse, "orderId");
 
     const marketIds = _.map(orderFilledResponse, "market");
-    const marketCreatedResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
-    const markets = _.keyBy(marketCreatedResponse, "market");
+    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
+    const markets = _.keyBy(marketsResponse, "market");
     if (params.ignoreReportingStates) {
-      let marketCreatedIds = Object.keys(_.keyBy(marketCreatedResponse, "market"));
+      let marketCreatedIds = Object.keys(_.keyBy(marketsResponse, "market"));
       const marketFinalizedLogs = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketCreatedIds } } });
 
-      for (let marketCreatedLog of marketCreatedResponse) {
+      for (let marketCreatedLog of marketsResponse) {
         const reportingState = await getMarketReportingState(
           db,
           marketCreatedLog,
@@ -228,6 +230,21 @@ export class Trading {
     const marketIds = _.map(currentOrdersResponse, "market");
     const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
     const markets = _.keyBy(marketsResponse, "market");
+    if (params.ignoreReportingStates) {
+      let marketCreatedIds = Object.keys(_.keyBy(marketsResponse, "market"));
+      const marketFinalizedLogs = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketCreatedIds } } });
+      for (let marketCreatedLog of marketsResponse) {
+        const reportingState = await getMarketReportingState(
+          db,
+          marketCreatedLog,
+          marketFinalizedLogs
+        );
+        if (params.ignoreReportingStates.includes(reportingState)) {
+          delete markets[marketCreatedLog.market];
+        }
+      }
+    }
+
 
     return currentOrdersResponse.reduce((orders: AllOrders, orderEventDoc: ParsedOrderEventLog) => {
       const marketDoc = markets[orderEventDoc.market];
@@ -294,6 +311,21 @@ export class Trading {
     const marketIds = _.map(currentOrdersResponse, "market");
     const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
     const markets = _.keyBy(marketsResponse, "market");
+    if (params.ignoreReportingStates) {
+      let marketCreatedIds = Object.keys(_.keyBy(marketsResponse, "market"));
+      const marketFinalizedLogs = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketCreatedIds } } });
+
+      for (let marketCreatedLog of marketsResponse) {
+        const reportingState = await getMarketReportingState(
+          db,
+          marketCreatedLog,
+          marketFinalizedLogs
+        );
+        if (params.ignoreReportingStates.includes(reportingState)) {
+          delete markets[marketCreatedLog.market];
+        }
+      }
+    }
 
     return currentOrdersResponse.reduce((orders: Orders, orderEventDoc: ParsedOrderEventLog) => {
       const marketDoc = markets[orderEventDoc.market];
