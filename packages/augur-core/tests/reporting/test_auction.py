@@ -127,7 +127,7 @@ def test_reporting_fee_from_auction(localFixture, universe, auction, reputationT
     assert time.setTimestamp(startTime)
 
     # Initially the REP price of the auction will simply be what was provided as the constant initialized value
-    assert auction.getRepPriceInAttoCash() == auction.initialRepPriceInAttoCash()
+    assert auction.getRepPriceInAttoCash() == localFixture.contracts["Constants"].AUCTION_INITIAL_REP_PRICE()
     repSalePrice = auction.getRepSalePriceInAttoCash()
     repAuctionToken = localFixture.applySignature("AuctionToken", auction.repAuctionToken())
     cashAuctionToken = localFixture.applySignature("AuctionToken", auction.cashAuctionToken())

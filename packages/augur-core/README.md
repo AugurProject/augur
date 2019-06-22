@@ -24,7 +24,13 @@ yarn
 pip install -r requirements.txt # macOS users will likely need to run this as `sudo pip install -r requirements.txt --ignore-installed`
 ```
 
-Note: on macOS, you need to use [virtualenv](https://python-guide-pt-br.readthedocs.io/en/latest/dev/virtualenvs/) or [homebrew](https://brew.sh/) Python to work around System Integrity Protection.
+Note: on macOS, you need to use [virtualenv](https://python-guide-pt-br.readthedocs.io/en/latest/dev/virtualenvs/) or [homebrew](https://brew.sh/) Python to work around System Integrity Protection. To do this using virtualenv, run:
+
+```bash
+virtualenv -p $(which python3) venv
+source venv/bin/activate
+sudo pip install -r requirements.txt --ignore-installed
+```
 
 ## Deployment
 

@@ -1,15 +1,15 @@
 pragma solidity 0.5.4;
 
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 
 
 contract MaliciousUniverse {
     address public victim;
-    ERC20Token public cash;
+    IERC20 public cash;
     address public augur;
     address public owner;
 
-    constructor(address _victim, ERC20Token _cash, address _augur) public {
+    constructor(address _victim, IERC20 _cash, address _augur) public {
         victim = _victim;
         cash = _cash;
         augur = _augur;
