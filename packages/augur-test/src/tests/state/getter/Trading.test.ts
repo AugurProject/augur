@@ -7,6 +7,7 @@ import {
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { API } from "@augurproject/sdk/build/state/getter/API";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
+import { MarketInfoReportingState, SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/getter/Markets";
 import { AllOrders, MarketTradingHistory, Orders, OrderState } from "@augurproject/sdk/build/state/getter/Trading";
 import { BigNumber } from "bignumber.js";
 import { stringTo32ByteHex } from "../../../libs/Utils";
@@ -73,6 +74,29 @@ test("State API :: Trading :: getTradingHistory", async () => {
 
   await expect(trades).toHaveLength(2);
 
+  // Test `ignoreReportingStates` param
+  let newTime = (await market.getEndTime_()).plus(1);
+  await john.setTimestamp(newTime);
+
+  const noPayoutSet = [
+    new BigNumber(100),
+    new BigNumber(0),
+    new BigNumber(0),
+  ];
+  await john.doInitialReport(market, noPayoutSet);
+
+  await john.setTimestamp(newTime.plus(SECONDS_IN_A_DAY * 7));
+
+  await john.finalizeMarket(market);
+
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+  trades = await api.route("getTradingHistory", {
+    marketId: market.address,
+    ignoreReportingStates: [MarketInfoReportingState.FINALIZED]
+  });
+
+  await expect(trades).toHaveLength(0);
 }, 60000);
 
 test("State API :: Trading :: getOrders/getAllOrders", async () => {
@@ -208,6 +232,31 @@ test("State API :: Trading :: getOrders/getAllOrders", async () => {
   });
   await expect(Object.keys(orders[market.address][0]["0"]).length).toEqual(1);
   await expect(orders[market.address][0]["0"][newOrderId].orderId).toEqual(newOrderId);
+
+  // Test `ignoreReportingStates` param
+  orders = await api.route("getOrders", {
+    marketId: market.address,
+    ignoreReportingStates: [MarketInfoReportingState.FINALIZED]
+  });
+  await expect(Object.keys(orders[market.address][0]["0"]).length).toEqual(2);
+
+  allOrders = await api.route("getAllOrders", {
+    account: john.account,
+    ignoreReportingStates: [MarketInfoReportingState.FINALIZED]
+  });
+  await expect(Object.keys(allOrders).length).toEqual(1);
+
+  orders = await api.route("getOrders", {
+    marketId: market.address,
+    ignoreReportingStates: [MarketInfoReportingState.PRE_REPORTING]
+  });
+  await expect(orders).toMatchObject({});
+
+  allOrders = await api.route("getAllOrders", {
+    account: john.account,
+    ignoreReportingStates: [MarketInfoReportingState.PRE_REPORTING]
+  });
+  await expect(orders).toMatchObject({});
 }, 60000);
 
 test("State API :: Trading :: getBetterWorseOrders", async () => {
