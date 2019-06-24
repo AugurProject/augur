@@ -47,6 +47,7 @@ import {
   MarketInfos,
   NewMarket,
   Alert,
+  Notification,
   OrderBooks,
   OrderCancellations,
   LiquidityOrders,
