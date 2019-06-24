@@ -26,16 +26,18 @@ export class WebWorkerConnector extends Connector {
           this.subscriptions[event.data.subscribed].id = event.data.subscription;
           console.log(this.subscriptions[event.data.subscribed]);
         } else {
-          event.data.map((data: any) => {
-            if (this.subscriptions[data.eventName]) {
-              this.subscriptions[data.eventName].callback(data);
-            }
-          });
+          this.messageReceived(event.data);
         }
       } catch (error) {
         console.error("Bad Web Worker response: " + event);
       }
     };
+  }
+
+  public messageReceived(data: any) {
+    if (this.subscriptions[data.eventName]) {
+      this.subscriptions[data.eventName].callback(data.result);
+    }
   }
 
   public async disconnect(): Promise<any> {

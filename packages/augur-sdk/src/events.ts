@@ -29,8 +29,37 @@ interface FormattedEventLog {
   eventName: string;
   blockHash: Bytes32;
   removed: boolean;
-  [inputName: string]: any;
 }
+
+// event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 timestamp);
+// event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size);
+// event DisputeCrowdsourcerContribution(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountStaked, string description, uint256 timestamp);
+// event DisputeCrowdsourcerCompleted(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256 nextWindowStartTime, bool pacingOn);
+// event InitialReporterRedeemed(address indexed universe, address indexed reporter, address indexed market, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp);
+// event DisputeCrowdsourcerRedeemed(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp);
+// event ReportingParticipantDisavowed(address indexed universe, address indexed market, address reportingParticipant);
+// event MarketParticipantsDisavowed(address indexed universe, address indexed market);
+// event MarketFinalized(address indexed universe, address indexed market, uint256 timestamp, uint256[] winningPayoutNumerators);
+// event MarketMigrated(address indexed market, address indexed originalUniverse, address indexed newUniverse);
+// event UniverseForked(address indexed universe, IMarket forkingMarket);
+// event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators);
+
+// event OrderEvent(address indexed universe, address indexed market, OrderEventType indexed eventType, Order.Types orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data);
+
+// event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 timestamp);
+// event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 fees, uint256 timestamp);
+// event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 fees, uint256 timestamp);
+// event TokensTransferred(address indexed universe, address token, address indexed from, address indexed to, uint256 value, TokenType tokenType, address market);
+// event TokensMinted(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
+// event TokensBurned(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
+// event TokenBalanceChanged(address indexed universe, address indexed owner, address token, TokenType tokenType, address market, uint256 balance, uint256 outcome);
+// event DisputeWindowCreated(address indexed universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id, bool initial);
+// event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
+// event MarketTransferred(address indexed universe, address indexed market, address from, address to);
+// event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes);
+// event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
+// event ParticipationTokensRedeemed(address indexed universe, address indexed disputeWindow, address indexed account, uint256 attoParticipationTokens, uint256 feePayoutShare, uint256 timestamp);
+// event TimestampSet(uint256 newTimestamp);
 
 export interface CompleteSetsPurchased extends FormattedEventLog {
 
@@ -72,7 +101,19 @@ export interface InitialReporterTransferred extends FormattedEventLog {
 }
 
 export interface MarketCreated extends FormattedEventLog {
-
+  universe: Address;
+  endTime: number;
+  topic: string;
+  extraInfo: string;
+  market: Address;
+  marketCreator: Address;
+  designatedReporter: Address;
+  feeDivisor: number;
+  prices: number[];
+  marketType: number;
+  numTicks: number;
+  outcomes: string[];
+  timestamp: number;
 }
 
 export interface MarketFinalized extends FormattedEventLog {

@@ -1,4 +1,5 @@
-import { Connector, Callback } from "./connector";
+import { Callback } from "../events";
+import { Connector } from "./connector";
 import { SubscriptionEventNames } from "../constants";
 import fetch from "cross-fetch";
 
