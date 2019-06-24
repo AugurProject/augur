@@ -182,7 +182,8 @@ contract Market is Initializable, Ownable, IMarket {
         } else {
             require(!disputeWindow.isOver());
         }
-        require(!universe.isForking());
+        // This will require that the universe is not forking
+        universe.updateForkValues();
         IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators, _overload);
         uint256 _actualAmount = _crowdsourcer.contribute(_contributor, _amount, _overload);
         if (!_overload) {
