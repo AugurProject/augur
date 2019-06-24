@@ -3,7 +3,7 @@ pragma solidity 0.5.4;
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/ICash.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/trading/CompleteSets.sol';
@@ -86,16 +86,16 @@ contract ZeroXPoC is ReentrancyGuard {
     / Market Share management
     */
 
-    function deposit(ERC20Token _token, uint256 _amount) public nonReentrant returns (bool) {
-        require(_token != ERC20Token(0));
+    function deposit(IERC20 _token, uint256 _amount) public nonReentrant returns (bool) {
+        require(_token != IERC20(0));
         tokenBalances[address(_token)][msg.sender] = tokenBalances[address(_token)][msg.sender].add(_amount);
         require(_token.transferFrom(msg.sender, address(this), _amount));
         emit Deposit(msg.sender, address(_token), _amount, tokenBalances[address(_token)][msg.sender]);
         return true;
     }
 
-    function withdraw(ERC20Token _token, uint256 _amount) public nonReentrant returns (bool) {
-        require(_token != ERC20Token(0));
+    function withdraw(IERC20 _token, uint256 _amount) public nonReentrant returns (bool) {
+        require(_token != IERC20(0));
         uint256 _heldAmount = tokenBalances[address(_token)][msg.sender];
         tokenBalances[address(_token)][msg.sender] = _heldAmount.sub(_amount);
         require(_heldAmount >= _amount);
@@ -404,7 +404,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return filled[orderHash].add(cancelled[orderHash]);
     }
 
-    function getTokenBalance(ERC20Token token, address owner)
+    function getTokenBalance(IERC20 token, address owner)
         public
         view
         returns (uint)
@@ -420,7 +420,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param token Address of token.
     /// @param owner Address of owner.
     /// @return Token balance of owner.
-    function getBalance(ERC20Token token, address owner)
+    function getBalance(IERC20 token, address owner)
         internal
         returns (uint)
     {
@@ -431,7 +431,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param token Address of token.
     /// @param owner Address of owner.
     /// @return Allowance of token given to this contract by owner.
-    function getAllowance(ERC20Token token, address owner)
+    function getAllowance(IERC20 token, address owner)
         internal
         returns (uint)
     {

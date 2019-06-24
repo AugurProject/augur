@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { selectLoginAccountState } from "select-state";
+import { selectLoginAccountState } from "store/select-state";
 import { formatRep, formatEther, formatDai } from "utils/format-number";
 import generateDownloadAccountLink from "modules/auth/helpers/generate-download-account-link";
 import store from "store";

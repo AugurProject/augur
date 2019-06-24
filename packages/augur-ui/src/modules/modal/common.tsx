@@ -5,7 +5,7 @@ import QRCode from "qrcode.react";
 import Clipboard from "clipboard";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles";
-import { Checkbox } from "modules/common/form";
+import { Checkbox, TextInput, InputDropdown } from "modules/common/form";
 import {
   XIcon,
   CopyIcon,
@@ -131,6 +131,100 @@ export interface DepositInfoProps {
   showAirSwap: boolean;
 }
 
+export interface ContentItem {
+  header: string | null;
+  paragraphs: Array<string>;
+}
+
+export interface ContentProps {
+  content: Array<ContentItem>;
+}
+
+export interface PreviewItem {
+  title: string;
+  description: string;
+}
+
+export interface ExamplesProps {
+  header: string;
+  previews: Array<PreviewItem>;
+}
+
+export interface CategorySelectionProps {
+  categoriesList: Array<string>;
+  selectedCategory: string;
+  save: Function;
+}
+
+export interface CategorySelectionState {
+  showText: boolean;
+  subCategory: string;
+}
+
+export class CategorySelection extends Component<CategorySelectionProps, CategorySelectionState> {
+  state: CategorySelectionState = {
+    showText: false,
+    subCategory: ""
+  };
+
+  onChange(subCategory) {
+    const { save } = this.props;
+    save(subCategory);
+    this.setState({ subCategory });
+  }
+
+  render() {
+    const { categoriesList, selectedCategory, save } = this.props;
+    const { showText } = this.state;
+
+    return (
+      <div className={Styles.CategorySelection}>
+        <InputDropdown
+          default={selectedCategory}
+          label="Select sub-category"
+          options={categoriesList}
+          isMobileSmall={false}
+          onChange={(subCategory) => {
+            if (subCategory === "Other") {
+              this.setState({ showText: true });
+            } else {
+              save(subCategory);
+              this.setState({ showText: false, subCategory });
+            }
+          }}
+        />
+        {showText && <TextInput onChange={v => (this.onChange(v))} placeholder="Enter a sub-category" />}
+      </div>
+    );
+  }
+};
+
+export const Content = ({ content }: ContentProps) => (
+  <div className={Styles.Content}>
+    {content.map(item => (
+      <React.Fragment key={item.paragraphs[0].slice(20).replace(/\s+/g, "-")}>
+        {!!item.header && <h5>{item.header}</h5>}
+        {item.paragraphs.map(text => (
+            <p key={text.slice(15).replace(/\s+/g, "_")}>{text}</p>
+          ))
+        }
+      </React.Fragment>
+    ))}
+  </div>
+);
+
+export const Examples = ({ header, previews }: ExamplesProps) => (
+  <div className={Styles.Examples}>
+    <h5>{header}</h5>
+    {previews.map(item => (
+      <div key={item.title.slice(20).replace(/\s+/g, "-")}>
+        <h6>{item.title}</h6>
+        <p>{item.description}</p>
+      </div>
+    ))}
+  </div>
+);
+
 export const Title = (props: TitleProps) => (
   <header className={Styles.TitleHeader}>
     <h1>{props.title}</h1>
@@ -142,7 +236,7 @@ export const Title = (props: TitleProps) => (
 
 export const Description = (props: DescriptionProps) =>
   props.description.map((descriptionText: string) => (
-    <p key={descriptionText.slice(20).replace(" ", "-")}>{descriptionText}</p>
+    <p key={descriptionText.slice(20).replace(/\s+/g, "-")}>{descriptionText}</p>
   ));
 
 export const ButtonsRow = (props: ButtonsRowProps) => (
