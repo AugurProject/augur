@@ -513,7 +513,7 @@ export class TimeSelector extends React.Component<
                 label="Minutes"
                 showLeadingZero
                 min={0}
-                max={60}
+                max={59}
                 onChange={this.onChangeMinutes}
                 value={minute !== null ? minute : "12"}
               />

@@ -4,7 +4,6 @@ import classNames from "classnames";
 import moment from "moment";
 
 import { RadioCardGroup, FormDropdown, TextInput, DatePicker, TimeSelector, RadioBarGroup, TimezoneDropdown } from "modules/common/form";
-import { createMarket } from "modules/contracts/actions/contractCalls";
 import { Header, Subheaders } from "modules/create-market/components/common";
 import { 
   YES_NO, 
