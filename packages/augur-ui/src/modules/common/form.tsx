@@ -18,6 +18,9 @@ import {
   FilledCheckbox,
   Chevron,
   DirectionArrow,
+  Calendar,
+  Clock,
+  Arrow
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
 
@@ -122,6 +125,7 @@ interface TimezoneDropdownProps {
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => (
   <FormDropdown
     {...props}
+    staticLabel="Timezone"
     options={[
       {
         label: 'UTC - 0',
@@ -161,6 +165,7 @@ interface RadioBarProps {
   checked?: boolean;
   error?: boolean;
   onTextChange?: Function;
+  placeholder?: string;
 }
 
 interface RadioTwoLineBarProps {
@@ -209,7 +214,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     const { radioButtons, onChange } = this.props;
     const { selected } = this.state;
     return (
-      <section>
+      <div>
         {radioButtons.map(radio => (
           <RadioBar
             key={radio.value}
@@ -221,7 +226,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
             }}
           />
         ))}
-      </section>
+      </div>
     );
   }
 };
@@ -234,6 +239,7 @@ export const RadioBar = ({
   error,
   expandable,
   onTextChange,
+  placeholder
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
@@ -245,7 +251,7 @@ export const RadioBar = ({
   >
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
-    {expandable && checked ? <TextInput onChange={onTextChange} /> : null}
+    {expandable && checked ? <TextInput placeholder={placeholder} onChange={onTextChange} /> : null}
   </div>
 );
 
@@ -258,7 +264,7 @@ export class RadioTwoLineBarGroup extends Component<RadioGroupProps, RadioGroupS
     const { radioButtons, onChange } = this.props;
     const { selected } = this.state;
     return (
-      <section>
+      <div>
         {radioButtons.map(radio => (
           <RadioTwoLineBar
             key={radio.value}
@@ -270,7 +276,7 @@ export class RadioTwoLineBarGroup extends Component<RadioGroupProps, RadioGroupS
             }}
           />
         ))}
-      </section>
+      </div>
     );
   }
 }
@@ -308,7 +314,7 @@ export class RadioCardGroup extends Component<
     const { radioButtons, onChange } = this.props;
     const { selected } = this.state;
     return (
-      <section className={Styles.RadioCardGroup}>
+      <div className={Styles.RadioCardGroup}>
         {radioButtons.map(radio => (
           <RadioCard
             key={radio.value}
@@ -320,7 +326,7 @@ export class RadioCardGroup extends Component<
             }}
           />
         ))}
-      </section>
+      </div>
     );
   }
 }
@@ -428,23 +434,18 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
 }
 
 interface TimeSelectorProps {
-  showPicker: Boolean;
-}
-
-interface TimeSelectorState {
-  showPicker: Boolean;
+  minute: string;
+  hour: string;
+  meridiem: string;
+  onFocusChange: Function;
+  onDateChange: Function;
+  focused?: Boolean;
 }
 
 export class TimeSelector extends React.Component<
   TimeSelectorProps,
-  TimeSelectorState
+  {}
 > {
-  state: TimeSelectorState = {
-    showPicker: false,
-    minutes: '00',
-    hours: '12',
-    timeFormat: 0,
-  };
 
   componentDidMount() {
     window.addEventListener('click', this.handleWindowOnClick);
@@ -455,32 +456,29 @@ export class TimeSelector extends React.Component<
   }
 
   handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (this.timeSelector && !this.timeSelector.contains(event.target)) {
-      this.setState({ showPicker: false });
+    if (this.timeSelector && !this.timeSelector.contains(event.target) && this.props.focused) {
+      this.props.onFocusChange(false);
     }
   };
 
   toggleSelector = () => {
-    this.setState({ showPicker: !this.state.showPicker });
+    this.props.onFocusChange(!this.props.focused);
   };
 
   onChangeMinutes = value => {
-    this.setState({ minutes: value });
+    this.props.onChange("minute", value);
   };
 
   onChangeHours = value => {
-    this.setState({ hours: value });
+    this.props.onChange("hour", value);
   };
 
   onChangeAM = value => {
-    this.setState({ timeFormat: value });
+    this.props.onChange("meridiem", value);
   };
 
   render() {
-    const { placeholder } = this.props;
-
-    const { hours, minutes, timeFormat } = this.state;
-
+    const { placeholder, hour, minute, meridiem, focused } = this.props;
     const timeOptions = [AM, PM];
 
     return (
@@ -491,33 +489,42 @@ export class TimeSelector extends React.Component<
         }}
       >
         <button onClick={this.toggleSelector}>
-          {hours}:{minutes} {timeOptions[timeFormat]}
+          <span>
+            {(!hour || !minute || !meridiem) ?
+              "Time"
+              : hour + ":" + minute + " " + meridiem
+            }
+          </span>
+          {Clock}
         </button>
-        {this.state.showPicker && (
-          <div>
-            <IndividualTimeSelector
-              label="Hours"
-              min={1}
-              max={12}
-              onChange={this.onChangeHours}
-              value={hours}
-            />
-            <span>:</span>
-            <IndividualTimeSelector
-              label="Minutes"
-              showLeadingZero
-              min={0}
-              max={60}
-              onChange={this.onChangeMinutes}
-              value={minutes}
-            />
-            <IndividualTimeSelector
-              label="AM/PM"
-              options={timeOptions}
-              onChange={this.onChangeAM}
-              value={timeFormat}
-            />
-          </div>
+        {focused && (
+          <>
+            {Arrow}
+            <div>
+              <IndividualTimeSelector
+                label="Hours"
+                min={1}
+                max={12}
+                onChange={this.onChangeHours}
+                value={hour !== null ? hour : "12"}
+              />
+              <span>:</span>
+              <IndividualTimeSelector
+                label="Minutes"
+                showLeadingZero
+                min={0}
+                max={60}
+                onChange={this.onChangeMinutes}
+                value={minute !== null ? minute : "12"}
+              />
+              <IndividualTimeSelector
+                label="AM/PM"
+                options={timeOptions}
+                onChange={this.onChangeAM}
+                value={meridiem || "AM"}
+              />
+            </div>
+          </>
         )}
       </div>
     );
@@ -582,11 +589,7 @@ class IndividualTimeSelector extends React.Component<
       const newValue = parseFloat(value) + 1;
       this.onChange(newValue);
     } else {
-      if (value !== this.props.options.length - 1) {
-        this.onChange(value + 1);
-      } else {
-        this.onChange(value - 1);
-      }
+      this.onChange(value === "AM" ? "PM" : "AM");
     }
   };
 
@@ -596,11 +599,7 @@ class IndividualTimeSelector extends React.Component<
       const newValue = parseFloat(value) - 1;
       this.onChange(newValue);
     } else {
-      if (value !== 0) {
-        this.onChange(value - 1);
-      } else {
-        this.onChange(value + 1);
-      }
+      this.onChange(value === "AM" ? "PM" : "AM");
     }
   };
 
@@ -615,7 +614,7 @@ class IndividualTimeSelector extends React.Component<
           <input
             type="text"
             onChange={e => this.onChange(e.target.value)}
-            value={options[this.state.value]}
+            value={this.state.value}
             disabled
           />
         )}
@@ -698,6 +697,7 @@ export const DatePicker = (props: DatePickerProps) => (
       navPrev={props.navPrev || OutlineChevron}
       navNext={props.navNext || OutlineChevron}
       weekDayFormat="ddd"
+      customInputIcon={Calendar}
     />
   </div>
 );

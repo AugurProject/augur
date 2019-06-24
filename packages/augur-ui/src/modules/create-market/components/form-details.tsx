@@ -3,22 +3,33 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { RadioCardGroup, FormDropdown, RadioBar, TextInput, DatePicker, TimeSelector } from "modules/common/form";
-import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
+import { RadioCardGroup, FormDropdown, TextInput, DatePicker, TimeSelector, RadioBarGroup, TimezoneDropdown } from "modules/common/form";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { Header, Subheaders } from "modules/create-market/components/common";
-import { YES_NO, SCALAR, CATEGORICAL, CUSTOM_PAGES } from 'modules/common/constants';
+import { 
+  YES_NO, 
+  SCALAR, 
+  CATEGORICAL, 
+  CUSTOM_PAGES,
+  EXPIRY_SOURCE_GENERIC,
+  EXPIRY_SOURCE_SPECIFIC,
+  DESIGNATED_REPORTER_SELF,
+  DESIGNATED_REPORTER_SPECIFIC
+} from 'modules/common/constants';
+import { NewMarket } from "modules/types";
+import { RepLogoIcon } from "modules/common/icons";
 
 import Styles from "modules/create-market/components/form-details.styles";
-import { NewMarket } from "modules/types";
 
 interface FormDetailsProps {
   updateNewMarket: Function;
   newMarket: NewMarket;
+  currentTimestamp: string;
 }
 
 interface FormDetailsState {
-  selected: number;
+  dateFocused: Boolean;
+  timeFocused: Boolean;
 }
 
 export default class FormDetails extends React.Component<
@@ -26,79 +37,20 @@ export default class FormDetails extends React.Component<
   FormDetailsState
 > {
   state: FormDetailsState = {
-    empty: ""
+    dateFocused: false,
+    timeFocused: false,
   };
-
-  onChange = (value) => {
-    console.log(value);
-  }
 
   onChange = (name, value) => {
     const { updateNewMarket } = this.props;
     updateNewMarket({ [name]: value });
   }
 
-  prevPage = () => {
-    const { newMarket, updateNewMarket } = this.props;
-    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
-    updateNewMarket({ currentStep: newStep });
-  }
-
-  nextPage = () => {
-    const { newMarket, updateNewMarket } = this.props;
-   // if (newMarket.isValid) {
-      const newStep =
-        newMarket.currentStep >= CUSTOM_PAGES.length - 1
-          ? CUSTOM_PAGES.length - 1
-          : newMarket.currentStep + 1;
-      updateNewMarket({ currentStep: newStep });
-    //}
-  }
-
-  submitMarket = () => {
-    const { newMarket } = this.props;
-
-    createMarket({
-      isValid: true,
-      validations: [],
-      currentStep: 0,
-      type: newMarket.type, // this isn't used
-      outcomes: [],
-      scalarSmallNum: "",
-      scalarBigNum: "",
-      scalarDenomination: "",
-      description: newMarket.description,
-      expirySourceType: "",
-      expirySource: "",
-      designatedReporterType: "",
-      designatedReporterAddress: "0x4EB4F1dd4277B31dbDCD91E93a3319D721CAeEbc",
-      minPrice: newMarket.minPrice,
-      maxPrice: newMarket.maxPrice,
-      endTime: 1566423456, // newMarket.endTime, this is a number (timestamp)
-      tickSize: "100", // maxPrice.tickSize, this needs to be a string
-      hour: "",
-      minute: "",
-      meridiem: "",
-      marketType: newMarket.type, // newMarket.type, // this is used needs to be YesNo, Categorical, Scalar
-      detailsText: "",
-      category: "",
-      tag1: "",
-      tag2: "",
-      settlementFee: 0,
-      affiliateFee: 0,
-      orderBook: {},
-      orderBookSorted: {},
-      orderBookSeries: {},
-      initialLiquidityEth: 0,
-      initialLiquidityGas: 0,
-      creationError: ""
-    });
-  }
-
   render() {
     const {
       addOrderToNewMarket,
-      newMarket
+      newMarket,
+      currentTimestamp
     } = this.props;
     const s = this.state;
 
@@ -132,33 +84,49 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Reporting start date and time" subheader="Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. " link />
           <span>
             <DatePicker
-              date={0}
-              placeholder="Date"
-              displayFormat="MMM D, YYYY"
-              id="cm__input--date"
-              onDateChange={date => {
-
-              }}
-              isOutsideRange={day =>
-                day.isAfter(moment(0).add(6, "M")) ||
-                day.isBefore(moment(0))
-              }
-              focused={false}
-              onFocusChange={({ focused }) => {}}
-              numberOfMonths={1}
-            />
-            <TimeSelector
               date={newMarket.endTime}
               placeholder="Date"
               displayFormat="MMM D, YYYY"
+              id="input-date"
+              onDateChange={(date: Number) => {
+                this.onChange("endTime", date)
+              }}
+              // isOutsideRange={day =>
+              //   day.isAfter(moment(currentTimestamp).add(6, "M")) ||
+              //   day.isBefore(moment(currentTimestamp))
+              // }
+              numberOfMonths={1}
+              onFocusChange= {({ focused }) => {
+                if (newMarket.endTime === null) {
+                  const date = moment(currentTimestamp * 1000);
+                  this.onChange("endTime", date)
+                }
+                this.setState({ dateFocused: focused });
+              }}
+              focused={s.dateFocused}
             />
-            <FormDropdown
-              options={[{
-                label: "Test",
-                value: 0
-              }]}
-              staticLabel="Timezone"
+            <TimeSelector
+              hour={newMarket.hour}
+              minute={newMarket.minute}
+              meridiem={newMarket.meridiem}
+              onChange={(label: string, value: string) => {
+                this.onChange(label, value)
+              }}
+              onFocusChange= {(focused: Boolean) => {
+                if (!newMarket.hour) {
+                  this.onChange("hour", "12");
+                } 
+                if (!newMarket.minute) {
+                  this.onChange("minute", "00");
+                } 
+                if (!newMarket.meridiem) {
+                  this.onChange("meridiem", "AM");
+                }
+                this.setState({ timeFocused: focused });
+              }}
+              focused={s.timeFocused}
             />
+            <TimezoneDropdown />
           </span>
 
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
@@ -218,8 +186,22 @@ export default class FormDetails extends React.Component<
           <Header text="Resolution information" />
 
           <Subheaders header="Resolution source" subheader="Describe what users need to know in order to resolve the market." link/>
-          <RadioBar header={"General knowledge"} onChange={this.onChange} />
-          <RadioBar header={"Outcome available on a public website"} onChange={this.onChange} />
+          <RadioBarGroup
+            radioButtons={[
+              {
+                header: "General knowledge",
+                value: EXPIRY_SOURCE_GENERIC
+              },
+              {
+                header: "Outcome available on a public website",
+                value: EXPIRY_SOURCE_SPECIFIC,
+                expandable: true,
+                placeholder: "Define URL",
+                onTextChange: (value: string) => this.onChange("expirySource", value)
+              }
+            ]}
+            onChange={(value: string) => this.onChange("expirySourceType", value)}
+          />
 
           <Subheaders header="Resolution details" subheader="Describe what users need to know to determine the outcome of the event." link/>
           <TextInput
@@ -230,13 +212,22 @@ export default class FormDetails extends React.Component<
           />
 
           <Subheaders header="Designated reporter" subheader="The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time)." link/>
-          <RadioBar header={"Myself"} onChange={this.onChange} />
-          <RadioBar header={"Someone else"} onChange={this.onChange} />
-        </div>
-        <div>
-          <SecondaryButton text="Back" action={this.prevPage} />
-          <PrimaryButton text="Submit" action={this.submitMarket} />
-          <PrimaryButton text="Next" action={this.nextPage} />
+          <RadioBarGroup
+            radioButtons={[
+              {
+                header: "Myself",
+                value: DESIGNATED_REPORTER_SELF
+              },
+              {
+                header: "Someone else",
+                value: DESIGNATED_REPORTER_SPECIFIC,
+                expandable: true,
+                placeholder: "Designated reporter address",
+                onTextChange: (value: string) => this.onChange("designatedReporterAddress", value)
+              }
+            ]}
+            onChange={(value: string) => this.onChange("designatedReporterType", value)}
+          />
         </div>
       </div>
     );

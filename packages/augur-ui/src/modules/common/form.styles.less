@@ -750,8 +750,7 @@ div.FormDropdownActive {
       min-width: 210px;
     }
 
-    .DateInput_input.DateInput_input_1,
-    .DateInput_input.DateInput_input_1.DateInput_input__focused.DateInput_input__focused_2 {
+    .DateInput_input.DateInput_input_1 {
       border: none;
     }
 
@@ -812,11 +811,12 @@ div.FormDropdownActive {
     }
 
     .DateInput_input.DateInput_input_1 {
-      .mono-12;
+      .text-14;
 
       background-color: @color-secondary-action;
       color: @color-secondary-text;
       border: 1px solid @color-primary-light;
+
     }
 
     .DateInput_1 {
@@ -830,7 +830,7 @@ div.FormDropdownActive {
     }
 
     .DateInput_displayText.DateInput_displayText_1 {
-      .mono-12;
+      .text-14;
 
       background: none;
       color: @color-secondary-text;
@@ -903,6 +903,21 @@ div.FormDropdownActive {
           > path {
             stroke: @color-primary-light;
           }
+        }
+      }
+    }
+
+    .SingleDatePickerInput_calendarIcon {
+      position: absolute;
+      right: 0;
+      z-index: @default-z-index;
+
+      > svg {
+        height: @size-20;
+        width: @size-20;
+
+        > path {
+          fill: @color-tertiary-info-text;
         }
       }
     }
@@ -1062,26 +1077,40 @@ div.FormDropdownActive {
   min-width: 210px;
 
   > button {
-    .text-12;
+    .text-14;
 
+    align-items: center;
     background-color: @color-secondary-action;
     border-radius: @border-radius-default;
     border: 1px solid @color-primary-light;
     color: @color-secondary-text;
+    display: flex;
     height: 44px;
     padding: @size-12;
     text-align: left;
     width: 100%;
+
+    > span {
+      flex-grow: 1;
+    }
+
+    > svg {
+      height: @size-20;
+      width: @size-20;
+
+      > path {
+        fill: @color-tertiary-info-text;
+      }
+    }
   }
 
   > div {
     background: @color-secondary-text;
-    border-radius: 3px;
     border: 1px solid @color-primary-light;
     color: @color-primary-background;
     display: flex;
     left: 0;
-    margin-top: @size-5;
+    margin-top: @size-24;
     padding: @size-24;
     position: absolute;
     top: 100%;
@@ -1106,6 +1135,24 @@ div.FormDropdownActive {
       color: @color-primary-dark;
       display: flex;
       margin-top: @size-24;
+    }
+  }
+
+  > svg {
+    height: @size-22;
+    left: @size-20;
+    margin-top: @size-15;
+    position: absolute;
+    width: @size-20;
+    z-index: @above-all-content-above;
+
+    > path:first-of-type {
+      fill: @color-secondary-text;
+    }
+
+    > path:last-of-type {
+      stroke: @color-alternate-info-text;
+      fill: transparent;
     }
   }
 } 

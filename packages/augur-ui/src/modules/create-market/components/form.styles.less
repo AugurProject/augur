@@ -50,4 +50,19 @@
 			}
 		}
 	}
+
+	> div:last-of-type {
+		background: @color-tertiary-background;
+		border-radius: @border-radius-extra-rounded;
+		flex-direction: column;
+		padding: @size-40;
+	    display: flex;
+	    min-width: 750px;
+
+	    > div:last-of-type {
+	    	display: flex;
+			margin-top: 54px;    
+	    	justify-content: space-between
+	    }
+	}
 }

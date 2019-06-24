@@ -21,6 +21,25 @@ export const AugurLoadingLogo = (
   </svg>
 );
 
+export const Calendar = (
+  <svg viewBox="0 0 20 20" fill="none">
+    <path d="M16.4 3.45455H15.6V2H14V3.45455H6V2H4.4V3.45455H3.6C2.72 3.45455 2 4.10909 2 4.90909V16.5455C2 17.3455 2.72 18 3.6 18H16.4C17.28 18 18 17.3455 18 16.5455V4.90909C18 4.10909 17.28 3.45455 16.4 3.45455ZM16.4 16.5455H3.6V7.09091H16.4V16.5455Z" />
+  </svg>
+);
+
+export const Clock = (
+  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M10 2C5.6 2 2 5.6 2 10C2 14.4 5.6 18 10 18C14.4 18 18 14.4 18 10C18 5.6 14.4 2 10 2ZM10 16.4C6.48 16.4 3.6 13.52 3.6 10C3.6 6.48 6.48 3.6 10 3.6C13.52 3.6 16.4 6.48 16.4 10C16.4 13.52 13.52 16.4 10 16.4ZM10.4 6H9.2V10.8L13.36 13.36L14 12.32L10.4 10.16V6Z" />
+  </svg>
+);
+
+export const Arrow = (
+  <svg>
+    <path d="M0,10 20,10 10,0z"></path>
+    <path d="M0,10 10,0 20,10"></path>
+  </svg>
+);
+
 export const Ellipsis = (
   <svg viewBox="0 0 40 40" fill="none">
     <circle cx="20" cy="20" r="20" />
