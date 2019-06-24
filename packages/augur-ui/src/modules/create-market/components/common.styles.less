@@ -1,0 +1,38 @@
+@import (reference) "~assets/styles/shared";
+
+.Header {
+	.text-24-bold;
+
+	color: @color-alternate-info-text;
+}
+
+.Subheaders {
+	display: flex;
+	flex-direction: column;
+			
+	> span:first-of-type {
+		.text-16-medium;
+
+		color: @color-alternate-info-text;
+		margin-bottom: @size-8;
+	}
+
+	> span:nth-of-type(2) {
+		.text-12;
+
+		color: @color-tertiary-info-text;
+		line-height: @size-20;
+		margin-bottom: @size-8;
+
+		> a {
+			color: @color-primary-action;
+			margin-left: 3px;
+		}
+	}
+
+	&:not(:first-of-type) {
+		> span:first-of-type {
+			margin-top: @size-32;
+		}
+	}
+}

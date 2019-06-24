@@ -1,17 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import moment from "moment";
 
-import { RadioCardGroup, FormDropdown, RadioBar, TextInput } from "modules/common/form";
+import { RadioCardGroup, FormDropdown, RadioBar, TextInput, DatePicker, TimeSelector } from "modules/common/form";
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
-import { CUSTOM_PAGES } from "modules/common/constants";
 import { createMarket } from "modules/contracts/actions/contractCalls";
+import { Header, Subheaders } from "modules/create-market/components/common";
+import { YES_NO, SCALAR, CATEGORICAL, CUSTOM_PAGES } from 'modules/common/constants';
 
 import Styles from "modules/create-market/components/form-details.styles";
+import { NewMarket } from "modules/types";
 
 interface FormDetailsProps {
   updateNewMarket: Function;
-  newMarket: Object;
+  newMarket: NewMarket;
 }
 
 interface FormDetailsState {
@@ -30,6 +33,10 @@ export default class FormDetails extends React.Component<
     console.log(value);
   }
 
+  onChange = (name, value) => {
+    const { updateNewMarket } = this.props;
+    updateNewMarket({ [name]: value });
+  }
 
   prevPage = () => {
     const { newMarket, updateNewMarket } = this.props;
@@ -49,28 +56,30 @@ export default class FormDetails extends React.Component<
   }
 
   submitMarket = () => {
+    const { newMarket } = this.props;
+
     createMarket({
       isValid: true,
       validations: [],
       currentStep: 0,
-      type: "yesNo",
+      type: newMarket.type, // this isn't used
       outcomes: [],
       scalarSmallNum: "",
       scalarBigNum: "",
       scalarDenomination: "",
-      description: "Test market",
+      description: newMarket.description,
       expirySourceType: "",
       expirySource: "",
       designatedReporterType: "",
       designatedReporterAddress: "0x4EB4F1dd4277B31dbDCD91E93a3319D721CAeEbc",
-      minPrice: "",
-      maxPrice: "",
-      endTime: 0,
-      tickSize: "",
+      minPrice: newMarket.minPrice,
+      maxPrice: newMarket.maxPrice,
+      endTime: 1566423456, // newMarket.endTime, this is a number (timestamp)
+      tickSize: "100", // maxPrice.tickSize, this needs to be a string
       hour: "",
       minute: "",
       meridiem: "",
-      marketType: "",
+      marketType: newMarket.type, // newMarket.type, // this is used needs to be YesNo, Categorical, Scalar
       detailsText: "",
       category: "",
       tag1: "",
@@ -96,92 +105,133 @@ export default class FormDetails extends React.Component<
     return (
       <div className={Styles.FormDetails}>
         <div>
-          <span>Market details</span>
-          <div>
-            <span>Market type</span>
-            <span>Market types vary based on the amount of possible outcomes. <a target="blank" href="https://docs.augur.net">Learn more</a></span>
-            <RadioCardGroup 
-              radioButtons={[
-                {
-                  value: 'YesNo',
-                  header: 'Yes / No',
-                  description: 'There are two possible outcomes: “Yes” or “No”',
-                  onChange: this.onChange,
-                },
-                {
-                  value: 'MultipleChoice',
-                  header: 'Multiple Choice',
-                  description: 'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
-                  onChange: this.onChange,
-                },
-                {
-                  value: 'Scalar',
-                  header: 'Scalar',
-                  description: 'A range of numeric outcomes: “USD range” between “1” and “100”.',
-                  onChange: this.onChange,
-                },
-              ]}
+          <Header text="Market details" />
+
+          <Subheaders header="Market type" link subheader="Market types vary based on the amount of possible outcomes." />
+          <RadioCardGroup
+            onChange={(value: string) => this.onChange("type", value)}
+            radioButtons={[
+              {
+                value: YES_NO,
+                header: 'Yes / No',
+                description: 'There are two possible outcomes: “Yes” or “No”',
+              },
+              {
+                value: CATEGORICAL,
+                header: 'Multiple Choice',
+                description: 'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
+              },
+              {
+                value: SCALAR,
+                header: 'Scalar',
+                description: 'A range of numeric outcomes: “USD range” between “1” and “100”.',
+              },
+            ]}
+          />
+
+          <Subheaders header="Reporting start date and time" subheader="Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. " link />
+          <span>
+            <DatePicker
+              date={0}
+              placeholder="Date"
+              displayFormat="MMM D, YYYY"
+              id="cm__input--date"
+              onDateChange={date => {
+
+              }}
+              isOutsideRange={day =>
+                day.isAfter(moment(0).add(6, "M")) ||
+                day.isBefore(moment(0))
+              }
+              focused={false}
+              onFocusChange={({ focused }) => {}}
+              numberOfMonths={1}
             />
-          </div>
-          <div>
-            <span>Reporting start date and time</span>
-            <span>Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. <a target="blank" href="https://docs.augur.net">Learn more</a></span>
+            <TimeSelector
+              date={newMarket.endTime}
+              placeholder="Date"
+              displayFormat="MMM D, YYYY"
+            />
             <FormDropdown
               options={[{
                 label: "Test",
                 value: 0
               }]}
-              defaultValue={0}
-              onChange={this.onChange}
+              staticLabel="Timezone"
             />
-          </div>
-          <div>
-            <span>Market question</span>
-            <span>What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time. <a target="blank" href="https://docs.augur.net">Learn more</a></span>
-            <TextInput 
-              type="textarea" 
-              placeholder="Example: Will [person] win the [year] [event]?"
-              onChange={this.onChange}
-              rows="3"
-            />
-          </div>
-           <div>
-            <span>Market category</span>
-            <span>Categories help users to find your market on Augur. </span>
-            <FormDropdown
-              options={[{
-                label: "Test",
-                value: 0
-              }]}
-              defaultValue={0}
-              onChange={this.onChange}
-            />
-          </div>
+          </span>
+
+          <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
+          <TextInput
+            type="textarea"
+            placeholder="Example: Will [person] win the [year] [event]?"
+            onChange={(value: string) => this.onChange("description", value)}
+            rows="3"
+          />
+
+          {newMarket.type === SCALAR &&
+            <>
+              <Subheaders header="Unit of measurement" subheader="Choose a denomination for the range." link />
+              <FormDropdown
+                options={[{
+                  label: "Test",
+                  value: 0
+                }]}
+                staticLabel="Denomination"
+                onChange={(value: string) => this.onChange("scalarDenomination", value)}
+              />
+              <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
+              <section>
+                <TextInput
+                  type="number"
+                  placeholder="0"
+                  onChange={(value: string) => this.onChange("minPrice", value)}
+                />
+                <span>to</span>
+                <TextInput
+                  type="number"
+                  placeholder="100"
+                  onChange={(value: string) => this.onChange("maxPrice", value)}
+                  trailingLabel="Denomination"
+                />
+              </section>
+              <Subheaders header="Precision" subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”." link />
+              <TextInput
+                type="number"
+                placeholder="0"
+                onChange={(value: string) => this.onChange("tickSize", value)}
+                trailingLabel="Denomination"
+              />
+            </>
+          }
+
+          <Subheaders header="Market category" subheader="Categories help users to find your market on Augur." />
+          <FormDropdown
+            options={[{
+              label: "Test",
+              value: 0
+            }]}
+            staticLabel="Select category"
+          />
         </div>
         <div>
-          <span>Resolution Information</span>
-          <div>
-            <span>Resolution source</span>
-            <span>Describe what users need to know in order to resolve the market. <a target="blank" href="https://docs.augur.net">Learn more</a></span>
-            <RadioBar header={"General knowledge"} onChange={this.onChange} />
-            <RadioBar header={"Outcome available on a public website"} onChange={this.onChange} />
-          </div>
-          <div>
-            <span>Resolution details</span>
-            <span>Describe what users need to know to determine the outcome of the event. <a target="blank" href="https://docs.augur.net">Learn more</a></span>
-            <TextInput 
-              type="textarea" 
-              placeholder="Describe how the event should be resolved under different scenarios."
-              onChange={this.onChange}
-              rows="3"
-            />
-          </div>
-          <div>
-            <span>Designated reporter</span>
-            <span>The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time). <a target="blank" href="https://docs.augur.net">Learn more</a></span>
-            <RadioBar header={"Myself"} onChange={this.onChange} />
-            <RadioBar header={"Someone else"} onChange={this.onChange} />
-          </div>
+          <Header text="Resolution information" />
+
+          <Subheaders header="Resolution source" subheader="Describe what users need to know in order to resolve the market." link/>
+          <RadioBar header={"General knowledge"} onChange={this.onChange} />
+          <RadioBar header={"Outcome available on a public website"} onChange={this.onChange} />
+
+          <Subheaders header="Resolution details" subheader="Describe what users need to know to determine the outcome of the event." link/>
+          <TextInput
+            type="textarea"
+            placeholder="Describe how the event should be resolved under different scenarios."
+            rows="3"
+            onChange={(value: string) => this.onChange("detailsText", value)}
+          />
+
+          <Subheaders header="Designated reporter" subheader="The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time)." link/>
+          <RadioBar header={"Myself"} onChange={this.onChange} />
+          <RadioBar header={"Someone else"} onChange={this.onChange} />
         </div>
         <div>
           <SecondaryButton text="Back" action={this.prevPage} />

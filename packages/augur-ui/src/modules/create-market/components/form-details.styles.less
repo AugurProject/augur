@@ -14,44 +14,25 @@
     }
 
     > div:not(:last-of-type) {
-    	> span:first-of-type {
-			.text-24-bold;
-
-			color: @color-alternate-info-text;
-		}
-
 		> div:first-of-type {
 			margin-top: @size-24;
 		}
 
-		> div {
-	    	display: flex;
-	    	flex-direction: column;
+		> section {
+			display: flex;
+			align-items: center;
 
-			> span:first-of-type {
-				.text-16-medium;
+			> span {
+				.text-14;
 
+				margin: 0 @size-12;
 				color: @color-alternate-info-text;
-				margin-bottom: @size-8;
 			}
+		}
 
-			> span:nth-of-type(2) {
-				.text-12;
-
-				color: @color-tertiary-info-text;
-				line-height: @size-20;
-				margin-bottom: @size-8;
-
-				> a {
-					color: @color-primary-action;
-				}
-			}
-
-			&:not(:first-of-type) {
-				> span:first-of-type {
-					margin-top: @size-32;
-				}
-			}
+		> span {
+			display: flex;
+			justify-content: space-between;
 		}
     }
 	
