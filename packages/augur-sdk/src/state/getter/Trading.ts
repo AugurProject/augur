@@ -35,6 +35,7 @@ export const OutcomeParam = t.keyof({
 export const AllOrdersParams = t.partial({
   account: t.string,
   ignoreReportingStates: t.array(t.string),
+  isMaker: t.boolean
 });
 
 export const OrdersParams = t.partial({
@@ -45,6 +46,7 @@ export const OrdersParams = t.partial({
   creator: t.string,
   orderState: t.string,
   ignoreReportingStates: t.array(t.string),
+  isMaker: t.boolean,
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });
