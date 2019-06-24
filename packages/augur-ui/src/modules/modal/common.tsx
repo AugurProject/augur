@@ -140,6 +140,16 @@ export interface ContentProps {
   content: Array<ContentItem>;
 }
 
+export interface PreviewItem {
+  title: string;
+  description: string;
+}
+
+export interface ExamplesProps {
+  header: string;
+  previews: Array<PreviewItem>;
+}
+
 export interface CategorySelectionProps {
   categoriesList: Array<string>;
   selectedCategory: string;
@@ -187,7 +197,7 @@ export class CategorySelection extends Component<CategorySelectionProps, Categor
       </div>
     );
   }
-}
+};
 
 export const Content = ({ content }: ContentProps) => (
   <div className={Styles.Content}>
@@ -199,6 +209,18 @@ export const Content = ({ content }: ContentProps) => (
           ))
         }
       </React.Fragment>
+    ))}
+  </div>
+);
+
+export const Examples = ({ header, previews }: ExamplesProps) => (
+  <div className={Styles.Examples}>
+    <h5>{header}</h5>
+    {previews.map(item => (
+      <div key={item.title.slice(20).replace(/\s+/g, "-")}>
+        <h6>{item.title}</h6>
+        <p>{item.description}</p>
+      </div>
     ))}
   </div>
 );

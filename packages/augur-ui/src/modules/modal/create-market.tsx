@@ -8,6 +8,8 @@ import {
   ContentProps,
   CategorySelection,
   CategorySelectionProps,
+  Examples,
+  ExamplesProps
 } from 'modules/modal/common';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -18,6 +20,7 @@ interface CreateMarketProps {
   buttons: Array<DefaultButtonProps>;
   content?: ContentProps;
   categorySelection?: CategorySelectionProps;
+  examples?: ExamplesProps;
 }
 
 export const CreateMarket = ({
@@ -26,6 +29,7 @@ export const CreateMarket = ({
   content,
   buttons,
   categorySelection,
+  examples
 }: CreateMarketProps) => {
   return (
     <div
@@ -38,6 +42,7 @@ export const CreateMarket = ({
         {/*
           // @ts-ignore */}
         {!!content && <Content content={content} />}
+        {!!examples && <Examples {...examples} />}
         {/*
           // @ts-ignore */}
         {!!categorySelection && <CategorySelection {...categorySelection} />}
