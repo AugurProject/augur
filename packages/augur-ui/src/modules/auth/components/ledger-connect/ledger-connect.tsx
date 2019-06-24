@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import Eth from "@ledgerhq/hw-app-eth";
 
@@ -8,20 +7,20 @@ import DerivationPath, {
 } from "modules/auth/helpers/derivation-path";
 import HardwareWallet from "modules/auth/components/common/hardware-wallet";
 
-export default class Ledger extends Component {
-  static propTypes = {
-    loginWithLedger: PropTypes.func.isRequired,
-    showAdvanced: PropTypes.bool.isRequired,
-    showError: PropTypes.func.isRequired,
-    hideError: PropTypes.func.isRequired,
-    error: PropTypes.bool.isRequired,
-    setIsLoading: PropTypes.func.isRequired,
-    setShowAdvancedButton: PropTypes.func.isRequired,
-    logout: PropTypes.func.isRequired,
-    isClicked: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired
-  };
+interface LedgerProps {
+  loginWithLedger: Function;
+  showAdvanced: boolean
+  showError: Function;
+  hideError: Function;
+  error: boolean
+  setIsLoading: Function;
+  setShowAdvancedButton: Function;
+  logout: Function;
+  isClicked: boolean
+  isLoading: boolean;
+}
 
+export default class Ledger extends Component<LedgerProps> {
   static ledgerValidation() {
     if (location.protocol !== "https:") {
       return false;
@@ -40,7 +39,6 @@ export default class Ledger extends Component {
     }
     const addresses = [];
 
-    /* eslint-disable */
     for (const derivationPath of derivationPaths) {
       const components = DerivationPath.parse(derivationPath);
       const numberOfAddresses = NUM_DERIVATION_PATHS_TO_DISPLAY * pageNumber;
@@ -59,7 +57,6 @@ export default class Ledger extends Component {
         addresses.push(result && { address: result.address, derivationPath });
       }
     }
-    /* eslint-enable */
 
     if (addresses && addresses.length > 0) {
       if (!addresses.every(element => !element.address)) {
