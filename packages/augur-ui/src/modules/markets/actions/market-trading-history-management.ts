@@ -11,7 +11,7 @@ import {
   MarketTradingHistory,
   Orders,
 } from '@augurproject/sdk/build/state/getter/Trading';
-import { FILLED } from 'modules/common/constants';
+import { FILLED, FINALIZE } from 'modules/common/constants';
 
 export const UPDATE_MARKET_TRADING_HISTORY = 'UPDATE_MARKET_TRADING_HISTORY';
 export const UPDATE_USER_FILLED_ORDERS = 'UPDATE_USER_FILLED_ORDERS';
@@ -91,9 +91,10 @@ export const loadUserFilledOrders = (
   const { loginAccount, universe } = getState();
   const allOptions = Object.assign(
     {
-      account: loginAccount.address,
+      creator: loginAccount.address,
       universe: universe.id,
       orderState: FILLED,
+      ignoreReportingStates: [FINALIZE]
     },
     options
   );
