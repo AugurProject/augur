@@ -888,7 +888,8 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
             with TokenDelta(cash, expectedAffiliateFees, contractsFixture.accounts[3], "Affiliate did not recieve the correct fees"):
                 assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, False, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
     else:
-        assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, False, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
+        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, False, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
+        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, False, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
 
     assert firstShareToken.balanceOf(contractsFixture.accounts[1]) == 0
     assert secondShareToken.balanceOf(contractsFixture.accounts[1]) == fix(1)
