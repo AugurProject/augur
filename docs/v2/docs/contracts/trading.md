@@ -2113,22 +2113,6 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-### `IOrdersFetcher`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOrdersFetcher.findBoundingOrders(enum Order.Types,uint256,bytes32,bytes32,bytes32,bytes32)"><code class="function-signature">findBoundingOrders(enum Order.Types _type, uint256 _price, bytes32 _bestOrderId, bytes32 _worstOrderId, bytes32 _betterOrderId, bytes32 _worseOrderId)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IOrdersFetcher.findBoundingOrders(enum Order.Types,uint256,bytes32,bytes32,bytes32,bytes32)"></a><code class="function-signature">findBoundingOrders(enum Order.Types _type, uint256 _price, bytes32 _bestOrderId, bytes32 _worstOrderId, bytes32 _betterOrderId, bytes32 _worseOrderId) <span class="return-arrow">→</span> <span class="return-type">bytes32,bytes32</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
 ### `ITrade`
 
 

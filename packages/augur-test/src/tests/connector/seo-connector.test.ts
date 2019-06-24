@@ -113,8 +113,8 @@ test("SEOConnector :: Should route correctly and handle events", async (done) =>
   await connector.on(SubscriptionEventNames.NewBlock, async (...args: Array<any>): Promise<void> => {
     expect(args).toEqual([{
       blocksBehindCurrent: 0,
-      highestAvailableBlockNumber: 89,
-      lastSyncedBlockNumber: 89,
+      highestAvailableBlockNumber: expect.any(Number),
+      lastSyncedBlockNumber: expect.any(Number),
       percentBehindCurrent: "0.0000",
     }]);
 
