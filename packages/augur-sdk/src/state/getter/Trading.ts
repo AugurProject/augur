@@ -14,7 +14,7 @@ const ZERO = new BigNumber(0);
 const TradingHistoryParams = t.partial({
   universe: t.string,
   account: t.string,
-  marketId: t.string,
+  marketIds: t.array(t.string),
   outcome: t.number,
   ignoreReportingStates: t.array(t.string),
   earliestCreationTime: t.number,
@@ -137,14 +137,14 @@ export class Trading {
 
   @Getter("GetTradingHistoryParams")
   public static async getTradingHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<Array<any>> {
-    if (!params.account && !params.marketId) {
+    if (!params.account && params.marketIds.length === 0) {
       throw new Error("'getTradingHistory' requires an 'account' or 'marketId' param be provided");
     }
 
     const request = {
       selector: {
         universe: params.universe,
-        market: params.marketId,
+        market: { $in: params.marketIds },
         outcome: params.outcome,
         $or: [
           { orderCreator: params.account },
@@ -161,23 +161,7 @@ export class Trading {
     const orders = _.keyBy(ordersResponse, "orderId");
 
     const marketIds = _.map(orderFilledResponse, "market");
-    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
-    const markets = _.keyBy(marketsResponse, "market");
-    if (params.ignoreReportingStates) {
-      let marketCreatedIds = Object.keys(_.keyBy(marketsResponse, "market"));
-      const marketFinalizedLogs = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketCreatedIds } } });
-
-      for (let marketCreatedLog of marketsResponse) {
-        const reportingState = await getMarketReportingState(
-          db,
-          marketCreatedLog,
-          marketFinalizedLogs
-        );
-        if (params.ignoreReportingStates.includes(reportingState)) {
-          delete markets[marketCreatedLog.market];
-        }
-      }
-    }
+    const markets = await filterMarketsByReportingState(marketIds, db, params.ignoreReportingStates);
 
     return orderFilledResponse.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
       const orderDoc = orders[orderFilledDoc.orderId];
@@ -228,23 +212,7 @@ export class Trading {
     const currentOrdersResponse = await db.findCurrentOrderLogs(request);
 
     const marketIds = _.map(currentOrdersResponse, "market");
-    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
-    const markets = _.keyBy(marketsResponse, "market");
-    if (params.ignoreReportingStates) {
-      let marketCreatedIds = Object.keys(_.keyBy(marketsResponse, "market"));
-      const marketFinalizedLogs = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketCreatedIds } } });
-      for (let marketCreatedLog of marketsResponse) {
-        const reportingState = await getMarketReportingState(
-          db,
-          marketCreatedLog,
-          marketFinalizedLogs
-        );
-        if (params.ignoreReportingStates.includes(reportingState)) {
-          delete markets[marketCreatedLog.market];
-        }
-      }
-    }
-
+    const markets = await filterMarketsByReportingState(marketIds, db, params.ignoreReportingStates);
 
     return currentOrdersResponse.reduce((orders: AllOrders, orderEventDoc: ParsedOrderEventLog) => {
       const marketDoc = markets[orderEventDoc.market];
@@ -309,23 +277,7 @@ export class Trading {
     const originalOrders = _.keyBy(originalOrdersResponse, "orderId");
 
     const marketIds = _.map(currentOrdersResponse, "market");
-    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
-    const markets = _.keyBy(marketsResponse, "market");
-    if (params.ignoreReportingStates) {
-      let marketCreatedIds = Object.keys(_.keyBy(marketsResponse, "market"));
-      const marketFinalizedLogs = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketCreatedIds } } });
-
-      for (let marketCreatedLog of marketsResponse) {
-        const reportingState = await getMarketReportingState(
-          db,
-          marketCreatedLog,
-          marketFinalizedLogs
-        );
-        if (params.ignoreReportingStates.includes(reportingState)) {
-          delete markets[marketCreatedLog.market];
-        }
-      }
-    }
+    const markets = await filterMarketsByReportingState(marketIds, db, params.ignoreReportingStates);
 
     return currentOrdersResponse.reduce((orders: Orders, orderEventDoc: ParsedOrderEventLog) => {
       const marketDoc = markets[orderEventDoc.market];
@@ -414,4 +366,25 @@ export class Trading {
       };
     }
   }
+}
+
+async function filterMarketsByReportingState(marketIds: string[], db: DB, ignoreReportingStates: string[])  {
+  const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
+  const markets = _.keyBy(marketsResponse, "market");
+  if (ignoreReportingStates) {
+    let marketIds = Object.keys(_.keyBy(marketsResponse, "market"));
+    const marketFinalizedLogs = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketIds } } });
+
+    for (let marketCreatedLog of marketsResponse) {
+      const reportingState = await getMarketReportingState(
+        db,
+        marketCreatedLog,
+        marketFinalizedLogs
+      );
+      if (ignoreReportingStates.includes(reportingState)) {
+        delete markets[marketCreatedLog.market];
+      }
+    }
+  }
+  return markets;
 }
