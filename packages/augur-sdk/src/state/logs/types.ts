@@ -200,6 +200,13 @@ export enum OrderEventType {
   Fill = 3,
 }
 
+export enum OrderState {
+  ALL = "ALL",
+  OPEN = "OPEN",
+  FILLED = "FILLED",
+  CANCELED = "CANCELED",
+}
+
 
 export enum OrderEventAddressValue {
   kycToken = 0,

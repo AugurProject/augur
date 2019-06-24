@@ -28,7 +28,7 @@ import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { startOrderSending } from "modules/orders/actions/liquidity-management";
 import {
   loadMarketTradingHistory,
-  loadUserMarketTradingHistory
+  loadUserFilledOrders
 } from "modules/markets/actions/market-trading-history-management";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
@@ -223,7 +223,7 @@ export const handleOrderFilledLog = (log: any) => (
         new BigNumber(log.price, 10)
       )
     );
-    dispatch(loadUserMarketTradingHistory({ marketId: log.marketId }));
+    dispatch(loadUserFilledOrders({ marketId: log.marketId }));
     dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
   }
   // always reload account positions on trade so we get up to date PL data.
