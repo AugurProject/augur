@@ -7,30 +7,6 @@ import MainErrorBoundary from 'modules/app/components/main-error-boundary';
 
 import store from 'store';
 import { WindowApp } from 'modules/types';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import {
-  MODAL_CONTENT,
-  MODAL_CATEGORIES,
-  MODAL_MARKET_TYPE,
-} from 'modules/common/constants';
-
-window.c = () => store.dispatch(updateModal({ type: MODAL_CONTENT }));
-window.s = () =>
-  store.dispatch(
-    updateModal({
-      type: MODAL_CATEGORIES,
-      save: (cat) => console.log('saving:', cat),
-    })
-  );
-window.st = () =>
-  store.dispatch(
-    updateModal({
-      type: MODAL_CATEGORIES,
-      save: (cat) => console.log('saving:', cat),
-      selectedCategory: "Politics"
-    })
-  );
-// window.t = () => store.dispatch(updateModal({ type: MODAL_MARKET_TYPE }));
 
 console.log(`
   *******************************************
