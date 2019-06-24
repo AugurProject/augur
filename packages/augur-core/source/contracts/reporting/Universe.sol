@@ -6,10 +6,8 @@ import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/factories/IReputationTokenFactory.sol';
 import 'ROOT/factories/IDisputeWindowFactory.sol';
 import 'ROOT/factories/IMarketFactory.sol';
-import 'ROOT/factories/IAuctionFactory.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
-import 'ROOT/reporting/IAuction.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IRepPriceOracle.sol';
@@ -22,10 +20,10 @@ contract Universe is ITyped, IUniverse {
 
     IAugur public augur;
     IUniverse private parentUniverse;
+    IRepPriceOracle public repPriceOracle;
     bytes32 private parentPayoutDistributionHash;
     uint256[] public payoutNumerators;
     IV2ReputationToken private reputationToken;
-    IAuction private auction;
     IMarket private forkingMarket;
     bytes32 private tentativeWinningChildUniversePayoutDistributionHash;
     uint256 private forkEndTime;
@@ -60,10 +58,10 @@ contract Universe is ITyped, IUniverse {
         parentPayoutDistributionHash = _parentPayoutDistributionHash;
         payoutNumerators = _payoutNumerators;
         reputationToken = IReputationTokenFactory(augur.lookup("ReputationTokenFactory")).createReputationToken(augur, this, parentUniverse);
-        auction = IAuctionFactory(augur.lookup("AuctionFactory")).createAuction(augur, this, reputationToken);
         marketFactory = IMarketFactory(augur.lookup("MarketFactory"));
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         completeSets = augur.lookup("CompleteSets");
+        repPriceOracle = IRepPriceOracle(augur.lookup("RepPriceOracle"));
         updateForkValues();
         previousValidityBondInAttoCash = Reporting.getDefaultValidityBond();
         previousDesignatedReportStakeInAttoRep = initialReportMinValue;
@@ -104,10 +102,6 @@ contract Universe is ITyped, IUniverse {
 
     function getReputationToken() public view returns (IV2ReputationToken) {
         return reputationToken;
-    }
-
-    function getAuction() public view returns (IAuction) {
-        return auction;
     }
 
     function getForkingMarket() public view returns (IMarket) {
@@ -326,7 +320,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getRepMarketCapInAttoCash() public view returns (uint256) {
-        uint256 _attoCashPerRep = auction.getRepPriceInAttoCash();
+        uint256 _attoCashPerRep = repPriceOracle.getRepPriceInAttoCash();
         uint256 _repMarketCapInAttoCash = getReputationToken().totalSupply().mul(_attoCashPerRep).div(10 ** 18);
         return _repMarketCapInAttoCash;
     }

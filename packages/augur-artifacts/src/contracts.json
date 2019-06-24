@@ -297,25 +297,6 @@
 							{
 								"name": "_universe",
 								"type": "address"
-							}
-						],
-						"name": "recordAuctionTokens",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
-								"name": "_universe",
-								"type": "address"
 							},
 							{
 								"name": "_from",
@@ -823,41 +804,6 @@
 								"type": "address"
 							},
 							{
-								"name": "_target",
-								"type": "address"
-							},
-							{
-								"name": "_amount",
-								"type": "uint256"
-							},
-							{
-								"name": "_totalSupply",
-								"type": "uint256"
-							},
-							{
-								"name": "_balance",
-								"type": "uint256"
-							}
-						],
-						"name": "logAuctionTokensMinted",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
-								"name": "_universe",
-								"type": "address"
-							},
-							{
 								"name": "_market",
 								"type": "address"
 							},
@@ -933,80 +879,6 @@
 							}
 						],
 						"name": "logCompleteSetsSold",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
-								"name": "_universe",
-								"type": "address"
-							},
-							{
-								"name": "_from",
-								"type": "address"
-							},
-							{
-								"name": "_to",
-								"type": "address"
-							},
-							{
-								"name": "_value",
-								"type": "uint256"
-							},
-							{
-								"name": "_fromBalance",
-								"type": "uint256"
-							},
-							{
-								"name": "_toBalance",
-								"type": "uint256"
-							}
-						],
-						"name": "logAuctionTokensTransferred",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
-								"name": "_universe",
-								"type": "address"
-							},
-							{
-								"name": "_target",
-								"type": "address"
-							},
-							{
-								"name": "_amount",
-								"type": "uint256"
-							},
-							{
-								"name": "_totalSupply",
-								"type": "uint256"
-							},
-							{
-								"name": "_balance",
-								"type": "uint256"
-							}
-						],
-						"name": "logAuctionTokensBurned",
 						"outputs": [
 							{
 								"name": "",
@@ -1434,25 +1306,6 @@
 							}
 						],
 						"name": "isKnownCrowdsourcer",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "view",
-						"type": "function"
-					},
-					{
-						"constant": true,
-						"inputs": [
-							{
-								"name": "_token",
-								"type": "address"
-							}
-						],
-						"name": "isKnownAuctionToken",
 						"outputs": [
 							{
 								"name": "",
@@ -4799,25 +4652,6 @@
 						"constant": false,
 						"inputs": [
 							{
-								"name": "_amountToBurn",
-								"type": "uint256"
-							}
-						],
-						"name": "burnForAuction",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
 								"name": "sender",
 								"type": "address"
 							},
@@ -5038,33 +4872,6 @@
 						"constant": false,
 						"inputs": [
 							{
-								"name": "_source",
-								"type": "address"
-							},
-							{
-								"name": "_destination",
-								"type": "address"
-							},
-							{
-								"name": "_attotokens",
-								"type": "uint256"
-							}
-						],
-						"name": "trustedAuctionTransfer",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
 								"name": "recipient",
 								"type": "address"
 							},
@@ -5188,25 +4995,6 @@
 							}
 						],
 						"name": "trustedReportingParticipantTransfer",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
-								"name": "_amountToMint",
-								"type": "uint256"
-							}
-						],
-						"name": "mintForAuction",
 						"outputs": [
 							{
 								"name": "",
@@ -8727,139 +8515,108 @@
 						"type": "event"
 					},
 					{
-						"anonymous": false,
+						"constant": false,
 						"inputs": [
 							{
-								"indexed": true,
-								"name": "operator",
-								"type": "address"
-							},
+								"name": "_key",
+								"type": "bytes32"
+							}
+						],
+						"name": "remove",
+						"outputs": [
 							{
-								"indexed": true,
-								"name": "from",
-								"type": "address"
-							},
+								"name": "",
+								"type": "bool"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
+					},
+					{
+						"constant": true,
+						"inputs": [],
+						"name": "getCount",
+						"outputs": [
 							{
-								"indexed": true,
-								"name": "to",
-								"type": "address"
-							},
-							{
-								"indexed": false,
-								"name": "amount",
+								"name": "",
 								"type": "uint256"
-							},
-							{
-								"indexed": false,
-								"name": "data",
-								"type": "bytes"
-							},
-							{
-								"indexed": false,
-								"name": "operatorData",
-								"type": "bytes"
 							}
 						],
-						"name": "Sent",
-						"type": "event"
+						"payable": false,
+						"stateMutability": "view",
+						"type": "function"
 					},
 					{
-						"anonymous": false,
+						"constant": false,
 						"inputs": [
 							{
-								"indexed": true,
-								"name": "operator",
+								"name": "_owner",
 								"type": "address"
-							},
-							{
-								"indexed": true,
-								"name": "to",
-								"type": "address"
-							},
-							{
-								"indexed": false,
-								"name": "amount",
-								"type": "uint256"
-							},
-							{
-								"indexed": false,
-								"name": "data",
-								"type": "bytes"
-							},
-							{
-								"indexed": false,
-								"name": "operatorData",
-								"type": "bytes"
 							}
 						],
-						"name": "Minted",
-						"type": "event"
+						"name": "initialize",
+						"outputs": [
+							{
+								"name": "",
+								"type": "bool"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
 					},
 					{
-						"anonymous": false,
+						"constant": true,
 						"inputs": [
 							{
-								"indexed": true,
-								"name": "operator",
-								"type": "address"
-							},
-							{
-								"indexed": true,
-								"name": "from",
-								"type": "address"
-							},
-							{
-								"indexed": false,
-								"name": "amount",
-								"type": "uint256"
-							},
-							{
-								"indexed": false,
-								"name": "data",
-								"type": "bytes"
-							},
-							{
-								"indexed": false,
-								"name": "operatorData",
-								"type": "bytes"
+								"name": "_key",
+								"type": "bytes32"
 							}
 						],
-						"name": "Burned",
-						"type": "event"
+						"name": "getAsAddressOrZero",
+						"outputs": [
+							{
+								"name": "",
+								"type": "address"
+							}
+						],
+						"payable": false,
+						"stateMutability": "view",
+						"type": "function"
 					},
 					{
-						"anonymous": false,
-						"inputs": [
+						"constant": true,
+						"inputs": [],
+						"name": "getInitialized",
+						"outputs": [
 							{
-								"indexed": true,
-								"name": "operator",
-								"type": "address"
-							},
-							{
-								"indexed": true,
-								"name": "tokenHolder",
-								"type": "address"
+								"name": "",
+								"type": "bool"
 							}
 						],
-						"name": "AuthorizedOperator",
-						"type": "event"
+						"payable": false,
+						"stateMutability": "view",
+						"type": "function"
 					},
 					{
-						"anonymous": false,
+						"constant": false,
 						"inputs": [
 							{
-								"indexed": true,
-								"name": "operator",
-								"type": "address"
-							},
-							{
-								"indexed": true,
-								"name": "tokenHolder",
+								"name": "_newOwner",
 								"type": "address"
 							}
 						],
-						"name": "RevokedOperator",
-						"type": "event"
+						"name": "transferOwnership",
+						"outputs": [
+							{
+								"name": "",
+								"type": "bool"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
 					}
 				],
 				"evm": {
@@ -12122,7 +11879,7 @@
 				"abi": [],
 				"evm": {
 					"bytecode": {
-						"object": "604c602c600b82828239805160001a60731460008114601c57601e565bfe5b5030600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea165627a7a72305820d74d8c50a5606f200f74e4389831eb7b36a77e09d7815fb32303f3676ee4359d0029"
+						"object": "604c602c600b82828239805160001a60731460008114601c57601e565bfe5b5030600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea165627a7a7230582066cfe31a3d545f5205b56d7a27f01e5d6a2cede77a46c9d473c6b737ebb16ef80029"
 					}
 				}
 			}
@@ -12361,25 +12118,6 @@
 						"constant": false,
 						"inputs": [
 							{
-								"name": "_amountToBurn",
-								"type": "uint256"
-							}
-						],
-						"name": "burnForAuction",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
 								"name": "sender",
 								"type": "address"
 							},
@@ -12600,33 +12338,6 @@
 						"constant": false,
 						"inputs": [
 							{
-								"name": "_source",
-								"type": "address"
-							},
-							{
-								"name": "_destination",
-								"type": "address"
-							},
-							{
-								"name": "_attotokens",
-								"type": "uint256"
-							}
-						],
-						"name": "trustedAuctionTransfer",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
 								"name": "recipient",
 								"type": "address"
 							},
@@ -12750,25 +12461,6 @@
 							}
 						],
 						"name": "trustedReportingParticipantTransfer",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
-								"name": "_amountToMint",
-								"type": "uint256"
-							}
-						],
-						"name": "mintForAuction",
 						"outputs": [
 							{
 								"name": "",
@@ -13326,6 +13018,20 @@
 					},
 					{
 						"constant": true,
+						"inputs": [],
+						"name": "repPriceOracle",
+						"outputs": [
+							{
+								"name": "",
+								"type": "address"
+							}
+						],
+						"payable": false,
+						"stateMutability": "view",
+						"type": "function"
+					},
+					{
+						"constant": true,
 						"inputs": [
 							{
 								"name": "_timestamp",
@@ -13604,20 +13310,6 @@
 							{
 								"name": "",
 								"type": "uint256[]"
-							}
-						],
-						"payable": false,
-						"stateMutability": "view",
-						"type": "function"
-					},
-					{
-						"constant": true,
-						"inputs": [],
-						"name": "getAuction",
-						"outputs": [
-							{
-								"name": "",
-								"type": "address"
 							}
 						],
 						"payable": false,

@@ -378,7 +378,7 @@ class ContractsFixture:
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
-                if name in ['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
+                if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
                 # if name == 'ReputationTokenFactory': continue # tests use mock
@@ -578,7 +578,6 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot['yesNoMarket'] = yesNoMarket
     snapshot['categoricalMarket'] = categoricalMarket
     snapshot['scalarMarket'] = scalarMarket
-    snapshot['auction'] = fixture.applySignature('Auction', universe.getAuction())
     snapshot['reputationToken'] = fixture.applySignature('ReputationToken', universe.getReputationToken())
     snapshot['tokensFail'] = tokensFail
     return snapshot
@@ -615,10 +614,6 @@ def categoricalMarket(kitchenSinkFixture, kitchenSinkSnapshot):
 @pytest.fixture
 def scalarMarket(kitchenSinkFixture, kitchenSinkSnapshot):
     return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['scalarMarket'].address, kitchenSinkSnapshot['scalarMarket'].abi)
-
-@pytest.fixture
-def auction(kitchenSinkFixture, kitchenSinkSnapshot):
-    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['auction'].address, kitchenSinkSnapshot['auction'].abi)
 
 @pytest.fixture
 def reputationToken(kitchenSinkFixture, kitchenSinkSnapshot):
