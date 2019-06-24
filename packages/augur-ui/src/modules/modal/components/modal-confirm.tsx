@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import ModalDescription from "modules/modal/components/common/modal-description";
 import ModalActions from "modules/modal/components/common/modal-actions";
