@@ -1,11 +1,11 @@
 pragma solidity 0.5.4;
 
 import 'ROOT/libraries/ITyped.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/reporting/IUniverse.sol';
 
 
-contract IReputationToken is ITyped, ERC20Token {
+contract IReputationToken is ITyped, IERC20 {
     function migrateOut(IReputationToken _destination, uint256 _attotokens) public returns (bool);
     function migrateIn(address _reporter, uint256 _attotokens) public returns (bool);
     function trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool);
