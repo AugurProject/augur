@@ -206,18 +206,13 @@ export default class FormDetails extends React.Component<
                 placeholder="100"
                 onChange={(value: string) => this.onChange("maxPrice", value)}
               />
->>>>>>> Stashed changes
               <Subheaders header="Precision" subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”." link />
               <TextInput
                 type="number"
                 placeholder="0"
                 onChange={(value: string) => this.onChange("tickSize", value)}
-<<<<<<< Updated upstream
                 trailingLabel="Denomination"
               />
-=======
-              />
->>>>>>> Stashed changes
             </>
           }
 
