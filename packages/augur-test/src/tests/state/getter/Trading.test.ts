@@ -33,22 +33,27 @@ test("State API :: Trading :: getTradingHistory", async () => {
   await mary.approveCentralAuthority();
 
   // Create a market
-  const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
+  const market1 = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
+  const market2 = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
 
   // Place an order
   const bid = new BigNumber(0);
   const outcome = new BigNumber(0);
   const numShares = new BigNumber(10000000000000);
   const price = new BigNumber(22);
-  await john.placeOrder(market.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(market1.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
+  await john.placeOrder(market2.address, bid, numShares, price, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
 
   // Take half the order using the same account
   const cost = numShares.multipliedBy(78).div(2);
-  const orderId = await john.getBestOrderId(bid, market.address, outcome);
-  await john.fillOrder(orderId, cost, numShares.div(2), "42");
+  const orderId1 = await john.getBestOrderId(bid, market1.address, outcome);
+  const orderId2 = await john.getBestOrderId(bid, market2.address, outcome);
+  await john.fillOrder(orderId1, cost, numShares.div(2), "42");
+  await john.fillOrder(orderId2, cost, numShares.div(2), "42");
 
   // And the rest using another account
-  await mary.fillOrder(orderId, cost, numShares.div(2), "43");
+  await mary.fillOrder(orderId1, cost, numShares.div(2), "43");
+  await mary.fillOrder(orderId2, cost, numShares.div(2), "43");
 
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -57,7 +62,7 @@ test("State API :: Trading :: getTradingHistory", async () => {
     account: mary.account,
   });
 
-  await expect(trades).toHaveLength(1);
+  await expect(trades).toHaveLength(2);
 
   const trade = trades[0];
   await expect(trade.price).toEqual("0.22");
@@ -69,13 +74,13 @@ test("State API :: Trading :: getTradingHistory", async () => {
 
   // Get trades by market
   trades = await api.route("getTradingHistory", {
-    marketId: market.address,
+    marketIds: [market1.address],
   });
 
   await expect(trades).toHaveLength(2);
 
   // Test `ignoreReportingStates` param
-  let newTime = (await market.getEndTime_()).plus(1);
+  let newTime = (await market1.getEndTime_()).plus(1);
   await john.setTimestamp(newTime);
 
   const noPayoutSet = [
@@ -83,20 +88,20 @@ test("State API :: Trading :: getTradingHistory", async () => {
     new BigNumber(0),
     new BigNumber(0),
   ];
-  await john.doInitialReport(market, noPayoutSet);
+  await john.doInitialReport(market1, noPayoutSet);
 
   await john.setTimestamp(newTime.plus(SECONDS_IN_A_DAY * 7));
 
-  await john.finalizeMarket(market);
+  await john.finalizeMarket(market1);
 
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   trades = await api.route("getTradingHistory", {
-    marketId: market.address,
+    marketIds: [market1.address, market2.address],
     ignoreReportingStates: [MarketInfoReportingState.FINALIZED]
   });
 
-  await expect(trades).toHaveLength(0);
+  await expect(trades).toHaveLength(2);
 }, 60000);
 
 test("State API :: Trading :: getOrders/getAllOrders", async () => {
@@ -276,7 +281,6 @@ test("State API :: Trading :: getBetterWorseOrders", async () => {
   await john.placeOrder(market.address, bid, numShares, highPrice, outcome, stringTo32ByteHex(""), stringTo32ByteHex(""), stringTo32ByteHex("42"));
   const highOrderId = await john.getBestOrderId(bid, market.address, outcome);
 
-
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
   // Get better worse order ids for a price in the middle
@@ -311,5 +315,4 @@ test("State API :: Trading :: getBetterWorseOrders", async () => {
 
   await expect(betterWorseOrders.betterOrderId).toEqual(lowOrderId);
   await expect(betterWorseOrders.worseOrderId).toEqual(null);
-
 }, 60000);

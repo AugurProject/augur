@@ -304,7 +304,7 @@ contract Market is Initializable, Ownable, IMarket {
         require(augur.isKnownFeeSender(msg.sender));
         if (_affiliateAddress != NULL_ADDRESS && affiliateFeeDivisor != 0) {
             uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
-            affiliateFeesAttoCash[_affiliateAddress] = _affiliateFees;
+            affiliateFeesAttoCash[_affiliateAddress] += _affiliateFees;
             _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
             totalAffiliateFeesAttoCash = totalAffiliateFeesAttoCash.add(_affiliateFees);
         }
