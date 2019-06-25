@@ -73,18 +73,6 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return true;
     }
 
-    function mintForAuction(uint256 _amountToMint) public returns (bool) {
-        require(universe.getAuction() == IAuction(msg.sender));
-        mint(msg.sender, _amountToMint);
-        return true;
-    }
-
-    function burnForAuction(uint256 _amountToBurn) public returns (bool) {
-        require(universe.getAuction() == IAuction(msg.sender));
-        burn(msg.sender, _amountToBurn);
-        return true;
-    }
-
     function burnForMarket(uint256 _amountToBurn) public returns (bool) {
         require(universe.isContainerForMarket(IMarket(msg.sender)));
         burn(msg.sender, _amountToBurn);
@@ -111,11 +99,6 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
 
     function trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForReportingParticipant(IReportingParticipant(msg.sender)));
-        return internalNoHooksTransfer(_source, _destination, _attotokens);
-    }
-
-    function trustedAuctionTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(universe.getAuction() == (IAuction(msg.sender)));
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
