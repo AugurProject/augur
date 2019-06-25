@@ -16,7 +16,6 @@ const orderAndAssignCumulativeShares = memoize(
     const rawAsks = ((orderBook || {})[ASKS] || []).slice();
     const bidsAsksSort = rawBids
       .concat(rawAsks)
-      .sort((a, b) => createBigNumber(b.shares).minus(createBigNumber(a.shares)));
     const mostShares =
       bidsAsksSort[0] && bidsAsksSort[0].shares && createBigNumber(bidsAsksSort[0].shares);
     const outOf =
@@ -24,7 +23,7 @@ const orderAndAssignCumulativeShares = memoize(
       createBigNumber(mostShares).plus(
         createBigNumber(mostShares).times(createBigNumber(0.15))
       );
-    const bids = rawBids.sort((a, b) => createBigNumber(b.price).minus(createBigNumber(a.price))).reduce(
+    const bids = rawBids.reduce(
       (p, order) => [
         ...p,
         {
@@ -42,7 +41,6 @@ const orderAndAssignCumulativeShares = memoize(
     );
 
     const asks = rawAsks
-      .sort((a, b) => createBigNumber(a.price).minus(createBigNumber(b.price)))
       .reduce(
         (p, order) => [
           ...p,
