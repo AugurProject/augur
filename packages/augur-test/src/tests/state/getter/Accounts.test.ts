@@ -32,9 +32,9 @@ beforeAll(async () => {
 
 test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   // Create markets with multiple users
-  const johnYesNoMarket = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
-  const johnCategoricalMarket = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
-  const johnScalarMarket = await john.createReasonableScalarMarket(john.augur.contracts.universe);
+  const johnYesNoMarket = await john.createReasonableYesNoMarket();
+  const johnCategoricalMarket = await john.createReasonableMarket([stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+  const johnScalarMarket = await john.createReasonableScalarMarket();
 
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -77,7 +77,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '0',
         quantity: '0',
         total: '0',
-      }
+      },
     ]
   );
 
@@ -211,7 +211,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '22',
         quantity: '1000000000000',
         total: '-22000000000000',
-      }
+      },
     ]
   );
 
@@ -333,7 +333,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '22',
         quantity: '700000000000',
         total: '-15400000000000',
-      }
+      },
     ]
   );
 
@@ -360,7 +360,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '0',
         quantity: '0',
         total: '0',
-      }
+      },
     ]
   );
 
@@ -401,7 +401,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '100',
         quantity: '1',
         total: '0',
-      }
+      },
     ]
   );
 
@@ -434,7 +434,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '0',
         quantity: '349680582682291667',
         total: '0',
-      }
+      },
     ]
   );
 
@@ -451,11 +451,11 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
     if (disputeRound % 2 !== 0) {
       await mary.contribute(johnYesNoMarket, yesPayoutSet, new BigNumber(25000));
-      let remainingToFill = await john.getRemainingToFill(johnYesNoMarket, yesPayoutSet);
+      const remainingToFill = await john.getRemainingToFill(johnYesNoMarket, yesPayoutSet);
       await mary.contribute(johnYesNoMarket, yesPayoutSet, remainingToFill);
     } else {
       await john.contribute(johnYesNoMarket, noPayoutSet, new BigNumber(25000));
-      let remainingToFill = await john.getRemainingToFill(johnYesNoMarket, noPayoutSet);
+      const remainingToFill = await john.getRemainingToFill(johnYesNoMarket, noPayoutSet);
       await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
     }
   }
@@ -540,7 +540,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '0',
         quantity: '2098083496093725002',
         total: '0',
-      }
+      },
     ]
   );
 
@@ -566,7 +566,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
   await winningReportingParticipant.redeem(john.account);
 
   // Claim trading proceeds
-  let result = await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(johnYesNoMarket.address, john.account);
+  await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(johnYesNoMarket.address, john.account);
 
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -588,7 +588,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '0',
         quantity: '1',
         total: '1',
-      }
+      },
     ]
   );
 
@@ -646,7 +646,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '0',
         quantity: '0',
         total: '2937316894531250004',
-      }
+      },
     ]
   );
 
@@ -680,7 +680,7 @@ test("State API :: Accounts :: getAccountTransactionHistory", async () => {
         price: '22',
         quantity: '100000000000',
         total: '9899000000000',
-      }
+      },
     ]
   );
 
