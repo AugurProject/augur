@@ -29,7 +29,7 @@ interface MarketsViewState {
   sort: string;
   maxFee: string;
   hasOrders: boolean;
-  filterSortedMarkets: Array<any>;
+  filterSortedMarkets: Array<string>;
   isSearchingMarkets: boolean;
 }
 

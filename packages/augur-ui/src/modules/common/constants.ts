@@ -1,7 +1,21 @@
-import { Edge, Fortmatic, Ledger, MetaMask, Portis, Trezor } from "modules/common/icons";
-import { DEFAULT_DERIVATION_PATH } from "modules/auth/helpers/derivation-path";
-import { timeDay, timeFormat, timeHour, timeMinute, timeMonth, timeSecond } from "d3";
-import { createBigNumber } from "utils/create-big-number";
+import {
+  Edge,
+  Fortmatic,
+  Ledger,
+  MetaMask,
+  Portis,
+  Trezor,
+} from 'modules/common/icons';
+import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
+import {
+  timeDay,
+  timeFormat,
+  timeHour,
+  timeMinute,
+  timeMonth,
+  timeSecond,
+} from 'd3';
+import { createBigNumber } from 'utils/create-big-number';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -175,12 +189,15 @@ export const ASCENDING = 'ascending';
 export const DESCENDING = 'descending';
 
 // # Market Sort Params
-export const MARKET_VOLUME = 'volume';
-export const MARKET_CREATION_TIME = 'creationTime';
-export const MARKET_END_DATE = 'endTime';
-export const MARKET_RECENTLY_TRADED = 'recentlyTraded';
-export const MARKET_FEE = 'marketFee';
-export const MARKET_OPEN_INTEREST = 'openInterest';
+export enum MARKET_SORT_PARAMS {
+  VOLUME = 'volume',
+  CREATION_TIME = 'creationTime',
+  END_DATE = 'endTime',
+  RECENTLY_TRADED = 'recentlyTraded',
+  CREATOR_FEE_RATE = 'marketCreatorFeeRate',
+  OPEN_INTEREST = 'openInterest',
+}
+
 // The user should be able to sort by:
 
 // Volume
@@ -444,7 +461,7 @@ export const MODAL_CLAIM_PROCEEDS = 'MODAL_CLAIM_PROCEEDS';
 export const MODAL_TRADING_OVERLAY = 'MODAL_TRADING_OVERLAY';
 export const MODAL_SELL_COMPLETE_SETS = 'MODAL_SELL_COMPLETE_SETS';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
-export const MODAL_DISCARD = "MODAL_DISCARD";
+export const MODAL_DISCARD = 'MODAL_DISCARD';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
 export const MARKET_REVIEWS = 'marketReviews';
@@ -604,9 +621,9 @@ export const CANCELLING_ORDER = 'cancelling order';
 export const DAY = 'days';
 export const WEEK = 'week';
 export const MONTH = 'month';
-export const EITHER = "either";
-export const MAKER = "maker";
-export const TAKER = "taker";
+export const EITHER = 'either';
+export const MAKER = 'maker';
+export const TAKER = 'taker';
 // for add-transactions.js and transactions.jsx
 export const ALL = 'all';
 export const PUBLIC_TRADE = 'publicTrade';
