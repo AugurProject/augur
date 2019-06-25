@@ -62,9 +62,10 @@ test("State API :: Trading :: getTradingHistory", async () => {
     account: mary.account,
   });
 
-  await expect(trades).toHaveLength(2);
+  await expect(trades[market1.address]).toHaveLength(1);
+  await expect(trades[market2.address]).toHaveLength(1);
 
-  const trade = trades[0];
+  const trade = trades[market1.address][0];
   await expect(trade.price).toEqual("0.22");
   await expect(trade.type).toEqual("sell");
   await expect(trade.amount).toEqual("0.0005");
@@ -77,7 +78,8 @@ test("State API :: Trading :: getTradingHistory", async () => {
     marketIds: [market1.address],
   });
 
-  await expect(trades).toHaveLength(2);
+  await expect(trades[market1.address]).toHaveLength(2);
+  await expect(trades[market2.address]).toBeUndefined();
 
   // Test `ignoreReportingStates` param
   let newTime = (await market1.getEndTime_()).plus(1);
@@ -101,7 +103,8 @@ test("State API :: Trading :: getTradingHistory", async () => {
     ignoreReportingStates: [MarketInfoReportingState.FINALIZED]
   });
 
-  await expect(trades).toHaveLength(2);
+  await expect(trades[market1.address]).toBeUndefined();
+  await expect(trades[market2.address]).toHaveLength(2);
 }, 60000);
 
 test("State API :: Trading :: getOrders/getAllOrders", async () => {
@@ -162,15 +165,47 @@ test("State API :: Trading :: getOrders/getAllOrders", async () => {
   // Get orders for the market
   orders = await api.route("getOrders", {
     marketId: market.address,
+    account: john.account,
+    makerTaker: "either"
   });
-  order = orders[market.address][0]["0"][orderId];
-  await expect(order.price).toEqual("0.25");
-  await expect(order.tokensEscrowed).toEqual("0.000125");
+  await expect(Object.keys(orders[market.address][0]["0"]).length).toEqual(1);
+  await expect(orders[market.address][0]["0"][orderId].price).toEqual("0.25");
+  await expect(orders[market.address][0]["0"][orderId].tokensEscrowed).toEqual("0.000125");
+
+  orders = await api.route("getOrders", {
+    marketId: market.address,
+    account: john.account,
+    makerTaker: "maker"
+  });
+  await expect(Object.keys(orders[market.address][0]["0"]).length).toEqual(1);
+  await expect(orders[market.address][0]["0"][orderId]).not.toBeUndefined();
+
+  orders = await api.route("getOrders", {
+    marketId: market.address,
+    account: john.account,
+    makerTaker: "taker"
+  });
+  await expect(orders).toEqual({});
 
   allOrders = await api.route("getAllOrders", {
     account: john.account,
+    makerTaker: "either"
   });
-  await expect(allOrders[orderId].tokensEscrowed).toEqual("0.000125");
+  await expect(Object.keys(allOrders).length).toEqual(1);
+  await expect(allOrders[orderId]).not.toBeUndefined();
+
+  allOrders = await api.route("getAllOrders", {
+    account: john.account,
+    makerTaker: "maker"
+  });
+  await expect(Object.keys(allOrders).length).toEqual(1);
+  await expect(allOrders[orderId]).not.toBeUndefined();
+
+  allOrders = await api.route("getAllOrders", {
+    account: john.account,
+    makerTaker: "taker"
+  });
+  await expect(allOrders).toEqual({});
 
   // Cancel order
   await john.cancelOrder(orderId);
