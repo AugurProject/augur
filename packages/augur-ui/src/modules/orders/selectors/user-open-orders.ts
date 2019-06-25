@@ -14,7 +14,7 @@ import {
 } from 'modules/common/constants';
 
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import { formatNone, formatEther, formatShares } from 'utils/format-number';
+import { formatNone, formatEther, formatShares, formatDai } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
   selectMarketsDataState,
@@ -171,10 +171,10 @@ function getUserOpenOrders(
       pending: !!orderCancellation[order.orderId],
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
-      avgPrice: formatEther(order.fullPrecisionPrice),
+      avgPrice: formatDai(order.fullPrecisionPrice),
       matchedShares: formatNone(),
       unmatchedShares: formatShares(order.amount),
-      tokensEscrowed: formatEther(order.tokensEscrowed),
+      tokensEscrowed: formatDai(order.tokensEscrowed),
       sharesEscrowed: formatShares(order.sharesEscrowed),
       marketDescription,
       name,

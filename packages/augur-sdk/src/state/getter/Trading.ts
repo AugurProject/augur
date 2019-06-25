@@ -32,16 +32,10 @@ export const OutcomeParam = t.keyof({
   7: null,
 });
 
-export const MakerTaker = t.keyof({
-  either: null,
-  maker: null,
-  taker: null
-});
-
 export const AllOrdersParams = t.partial({
   account: t.string,
   ignoreReportingStates: t.array(t.string),
-  makerTaker: MakerTaker
+  makerTaker: t.union([t.literal("either"), t.literal("maker"), t.literal("taker")]),
 });
 
 export const OrdersParams = t.partial({
@@ -52,7 +46,7 @@ export const OrdersParams = t.partial({
   account: t.string,
   orderState: t.string,
   ignoreReportingStates: t.array(t.string),
-  makerTaker: MakerTaker,
+  makerTaker: t.union([t.literal("either"), t.literal("maker"), t.literal("taker")]),
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });

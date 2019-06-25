@@ -1,7 +1,6 @@
 import logError from 'utils/log-error';
 import {
   NodeStyleCallback,
-  MarketTradingHistoryState,
 } from 'modules/types';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
@@ -11,14 +10,14 @@ import {
   MarketTradingHistory,
   Orders,
 } from '@augurproject/sdk/build/state/getter/Trading';
-import { FILLED, REPORTING_STATE } from 'modules/common/constants';
+import { FILLED, REPORTING_STATE, EITHER } from 'modules/common/constants';
 
 export const UPDATE_USER_FILLED_ORDERS = 'UPDATE_USER_FILLED_ORDERS';
 export const UPDATE_USER_OPEN_ORDERS = 'UPDATE_USER_OPEN_ORDERS';
 export const BULK_MARKET_TRADING_HISTORY = 'BULK_MARKET_TRADING_HISTORY';
 
 export function bulkMarketTradingHistory(
-  keyedMarketTradingHistory: MarketTradingHistoryState
+  keyedMarketTradingHistory: MarketTradingHistory
 ) {
   return {
     type: BULK_MARKET_TRADING_HISTORY,
@@ -88,6 +87,7 @@ export const loadUserFilledOrders = (
   const marketIds = Object.keys(userTradingHistory);
   if (marketIdAggregator) marketIdAggregator(marketIds);
   dispatch(updateUserFilledOrders(loginAccount.address, userTradingHistory));
+  if (!marketIds || marketIds.length === 0) return;
   const tradingHistory = await Augur.getTradingHistory({ marketIds });
   dispatch(bulkMarketTradingHistory(tradingHistory));
 };

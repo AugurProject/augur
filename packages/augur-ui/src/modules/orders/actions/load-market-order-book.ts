@@ -12,7 +12,7 @@ export const loadMarketOrderBook = (marketId: string, callback: NodeStyleCallbac
     return callback("must specify market ID");
   }
   const Augur = augurSdk.get();
-  const orderBook = await Augur.getMarketOrderBook({ marketId });
-  dispatch(updateOrderBook(marketId, orderBook));
-  callback(null, orderBook);
+  const marketOrderBook = await Augur.getMarketOrderBook({ marketId });
+  dispatch(updateOrderBook(marketId, marketOrderBook.orderBook));
+  callback(null, marketOrderBook);
 };
