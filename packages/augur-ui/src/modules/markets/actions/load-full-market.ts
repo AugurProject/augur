@@ -2,7 +2,7 @@ import {
   loadMarketsInfo,
   loadMarketsDisputeInfo
 } from "modules/markets/actions/load-markets-info";
-import { loadMarketOpenOrders } from "modules/orders/actions/load-market-open-orders";
+import { loadMarketOrderBook } from "modules/orders/actions/load-market-order-book";
 import logError from "utils/log-error";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
@@ -17,7 +17,7 @@ export const loadFullMarket = (
     loadMarketsInfo([marketId], (err: any) => {
       if (err) return callback(err);
       dispatch(
-        loadMarketOpenOrders(marketId, (err: any) => {
+        loadMarketOrderBook(marketId, (err: string | Error) => {
           if (err) return callback(err);
           dispatch(loadMarketsDisputeInfo([marketId]));
           callback(null);

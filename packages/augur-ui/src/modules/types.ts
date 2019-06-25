@@ -2,7 +2,7 @@ import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
-import { MarketInfo, MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketInfo, MarketInfoOutcome, MarketOrderBook } from "@augurproject/sdk/build/state/getter/Markets";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
 import { MarketTradingHistory, Orders, Order } from "@augurproject/sdk/build/state/getter/Trading";
 
@@ -193,19 +193,8 @@ export interface PendingOrders {
   [marketId: string]: Array<UIOrder>;
 }
 
-export interface OrderBook {
-  marketId?: string;
-  [outcome: number]: {
-    [BUY]: {
-      [id: string]: Order;
-    };
-    [SELL]: {
-      [id: string]: Order;
-    };
-  };
-}
 export interface OrderBooks {
-  [marketId: string]: OrderBook;
+  [marketId: string]: MarketOrderBook;
 }
 
 export interface DisputeInfo {
@@ -320,7 +309,6 @@ export interface NewMarket {
   settlementFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
   orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
-  orderBookSeries: {[outcome: number]: Array<LiquidityOrder> };
   initialLiquidityEth: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;

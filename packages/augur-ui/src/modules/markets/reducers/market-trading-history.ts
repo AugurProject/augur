@@ -1,7 +1,6 @@
 import {
   BULK_MARKET_TRADING_HISTORY,
-  UPDATE_MARKET_TRADING_HISTORY
-} from "modules/markets/actions/market-trading-history-management";
+ } from "modules/markets/actions/market-trading-history-management";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { MarketTradingHistoryState, BaseAction } from "modules/types";
 
@@ -12,11 +11,6 @@ export default function(
   { type, data }: BaseAction,
 ): MarketTradingHistoryState {
   switch (type) {
-    case UPDATE_MARKET_TRADING_HISTORY:
-      return {
-        ...tradingHistory,
-        [data.marketId]: data.marketTradingHistory
-      };
     case BULK_MARKET_TRADING_HISTORY:
       return {
         ...tradingHistory,

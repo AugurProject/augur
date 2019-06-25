@@ -22,8 +22,8 @@ const mapStateToProps = (state, ownProps) => {
       isLoading: true
     }
   }
-
-  const userOrders =
+  const userOpenOrders = state.userOpenOrders[ownProps.marketId] || [];
+  const outcomeOrderBook =
     state.orderBooks[ownProps.marketId] &&
     state.orderBooks[ownProps.marketId][ownProps.selectedOutcome];
   const minPrice = market.minPriceBigNumber || createBigNumber(0);
@@ -33,8 +33,8 @@ const mapStateToProps = (state, ownProps) => {
       outcome => outcome.id === ownProps.selectedOutcome
     );
   const cumulativeOrderBook = orderAndAssignCumulativeShares(
-    marketOutcome.orderBook,
-    userOrders,
+    outcomeOrderBook,
+    userOpenOrders,
     state.loginAccount.address
   );
   const marketDepth = orderForMarketDepth(cumulativeOrderBook);

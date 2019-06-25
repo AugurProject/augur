@@ -11,9 +11,8 @@ import {
   MarketTradingHistory,
   Orders,
 } from '@augurproject/sdk/build/state/getter/Trading';
-import { FILLED } from 'modules/common/constants';
+import { FILLED, REPORTING_STATE } from 'modules/common/constants';
 
-export const UPDATE_MARKET_TRADING_HISTORY = 'UPDATE_MARKET_TRADING_HISTORY';
 export const UPDATE_USER_FILLED_ORDERS = 'UPDATE_USER_FILLED_ORDERS';
 export const UPDATE_USER_OPEN_ORDERS = 'UPDATE_USER_OPEN_ORDERS';
 export const BULK_MARKET_TRADING_HISTORY = 'BULK_MARKET_TRADING_HISTORY';
@@ -25,19 +24,6 @@ export function bulkMarketTradingHistory(
     type: BULK_MARKET_TRADING_HISTORY,
     data: {
       keyedMarketTradingHistory,
-    },
-  };
-}
-
-export function updateMarketTradingHistory(
-  marketId: string,
-  marketTradingHistory: Array<MarketTradingHistory>
-) {
-  return {
-    type: UPDATE_MARKET_TRADING_HISTORY,
-    data: {
-      marketId,
-      marketTradingHistory,
     },
   };
 }
@@ -67,17 +53,16 @@ export function updateUserOpenOrders(
 }
 
 export const loadMarketTradingHistory = (
-  options: any,
+  marketId: string,
   callback: NodeStyleCallback = logError
 ) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  if (options === null || !options.marketId) return callback(null);
+  if (!marketId) return callback(null);
   const Augur = augurSdk.get();
-  const tradingHistory = await Augur.getTradingHistory({ ...options });
+  const tradingHistory = await Augur.getTradingHistory({ marketIds: [marketId] });
   if (tradingHistory == null) return callback(null);
-  dispatch(updateMarketTradingHistory(options.marketId, tradingHistory));
+  dispatch(bulkMarketTradingHistory(tradingHistory));
   callback(null, tradingHistory);
 };
 
@@ -94,11 +79,15 @@ export const loadUserFilledOrders = (
       account: loginAccount.address,
       universe: universe.id,
       orderState: FILLED,
+      ignoreReportingStates: [REPORTING_STATE.FINALIZED]
     },
     options
   );
   const Augur = augurSdk.get();
-  const tradingHistory = await Augur.getTradingOrders(allOptions);
-  if (marketIdAggregator) marketIdAggregator(Object.keys(tradingHistory));
-  dispatch(updateUserFilledOrders(loginAccount.address, tradingHistory));
+  const userTradingHistory = await Augur.getTradingOrders(allOptions);
+  const marketIds = Object.keys(userTradingHistory);
+  if (marketIdAggregator) marketIdAggregator(marketIds);
+  dispatch(updateUserFilledOrders(loginAccount.address, userTradingHistory));
+  const tradingHistory = await Augur.getTradingHistory({ marketIds });
+  dispatch(bulkMarketTradingHistory(tradingHistory));
 };
