@@ -165,6 +165,7 @@ interface RadioBarProps {
   error?: boolean;
   onTextChange?: Function;
   placeholder?: string;
+  textValue?: string;
 }
 
 interface RadioTwoLineBarProps {
@@ -238,7 +239,8 @@ export const RadioBar = ({
   error,
   expandable,
   onTextChange,
-  placeholder
+  placeholder,
+  textValue
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
@@ -250,7 +252,7 @@ export const RadioBar = ({
   >
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
-    {expandable && checked ? <TextInput placeholder={placeholder} onChange={onTextChange} /> : null}
+    {expandable && checked ? <TextInput placeholder={placeholder} value={textValue} onChange={onTextChange} /> : null}
   </div>
 );
 

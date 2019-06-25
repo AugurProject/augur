@@ -60,6 +60,7 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Market type" link subheader="Market types vary based on the amount of possible outcomes." />
           <RadioCardGroup
             onChange={(value: string) => this.onChange("type", value)}
+            defaultSelected={newMarket.type}
             radioButtons={[
               {
                 value: YES_NO,
@@ -133,6 +134,7 @@ export default class FormDetails extends React.Component<
             placeholder="Example: Will [person] win the [year] [event]?"
             onChange={(value: string) => this.onChange("description", value)}
             rows="3"
+            value={newMarket.description}
           />
 
           {newMarket.type === SCALAR &&
@@ -145,6 +147,7 @@ export default class FormDetails extends React.Component<
                 }]}
                 staticLabel="Denomination"
                 onChange={(value: string) => this.onChange("scalarDenomination", value)}
+                defaultValue={newMarket.scalarDenomination === "" ? null : newMarket.scalarDenomination}
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
               <section>
@@ -152,6 +155,7 @@ export default class FormDetails extends React.Component<
                   type="number"
                   placeholder="0"
                   onChange={(value: string) => this.onChange("minPrice", value)}
+                  value={newMarket.minPrice}
                 />
                 <span>to</span>
                 <TextInput
@@ -159,6 +163,7 @@ export default class FormDetails extends React.Component<
                   placeholder="100"
                   onChange={(value: string) => this.onChange("maxPrice", value)}
                   trailingLabel="Denomination"
+                  value={newMarket.maxPrice}
                 />
               </section>
               <Subheaders header="Precision" subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”." link />
@@ -167,6 +172,7 @@ export default class FormDetails extends React.Component<
                 placeholder="0"
                 onChange={(value: string) => this.onChange("tickSize", value)}
                 trailingLabel="Denomination"
+                value={newMarket.tickSize}
               />
             </>
           }
@@ -199,6 +205,7 @@ export default class FormDetails extends React.Component<
                 onTextChange: (value: string) => this.onChange("expirySource", value)
               }
             ]}
+            defaultSelected={newMarket.expirySourceType}
             onChange={(value: string) => this.onChange("expirySourceType", value)}
           />
 
@@ -207,6 +214,7 @@ export default class FormDetails extends React.Component<
             type="textarea"
             placeholder="Describe how the event should be resolved under different scenarios."
             rows="3"
+            value={newMarket.detailsText}
             onChange={(value: string) => this.onChange("detailsText", value)}
           />
 
@@ -225,6 +233,7 @@ export default class FormDetails extends React.Component<
                 onTextChange: (value: string) => this.onChange("designatedReporterAddress", value)
               }
             ]}
+            defaultSelected={newMarket.designatedReporterType}
             onChange={(value: string) => this.onChange("designatedReporterType", value)}
           />
         </div>
