@@ -15,7 +15,8 @@ import { EventLogDBRouter } from "@augurproject/sdk/build/state/db/EventLogDBRou
 import { BlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import { Markets, SECONDS_IN_A_DAY } from "@augurproject/sdk/build/state/getter/Markets";
 import { SEOConnector } from "@augurproject/sdk/build/connector/seo-connector";
-import { SubscriptionEventNames } from "@augurproject/sdk/build//constants";
+import { SubscriptionEventNames } from "@augurproject/sdk/build/constants";
+import { MarketCreated } from "@augurproject/sdk/build/events";
 
 let connector: SEOConnector;
 let provider: EthersProvider;
@@ -74,7 +75,7 @@ test("SEOConnector :: Should route correctly and handle events", async (done) =>
 
   await connector.connect("");
 
-  await connector.on(SubscriptionEventNames.MarketCreated, async (...args: Array<any>): Promise<void> => {
+  await connector.on(SubscriptionEventNames.MarketCreated, async (...args: Array<MarketCreated>): Promise<void> => {
     expect(args[0]).toHaveProperty("extraInfo", "{\"description\": \"yesNo description 1\", \"longDescription\": \"yesNo longDescription 1\", \"tags\": [\"yesNo tag1-1\", \"yesNo tag1-2\", \"yesNo tag1-3\"]}");
 
     const getMarkets = connector.bindTo(Markets.getMarkets);

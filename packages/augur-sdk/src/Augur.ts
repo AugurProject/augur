@@ -1,4 +1,5 @@
-import { Callback, Connector } from "./connector/connector";
+import { Callback } from "./events";
+import { Connector } from "./connector/connector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
