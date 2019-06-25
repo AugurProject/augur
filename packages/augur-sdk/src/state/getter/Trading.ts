@@ -58,6 +58,10 @@ export const OrdersParams = t.partial({
 });
 
 export interface MarketTradingHistory {
+  [marketId: string]: MarketTrade[]
+}
+
+export interface MarketTrade {
   transactionHash: string;
   logIndex: number;
   orderId: string;
@@ -144,7 +148,7 @@ export class Trading {
   public static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
   @Getter("GetTradingHistoryParams")
-  public static async getTradingHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<Array<any>> {
+  public static async getTradingHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<MarketTradingHistory> {
     if (!params.account && params.marketIds.length === 0) {
       throw new Error("'getTradingHistory' requires an 'account' or 'marketId' param be provided");
     }
@@ -171,7 +175,7 @@ export class Trading {
     const marketIds = _.map(orderFilledResponse, "market");
     const markets = await filterMarketsByReportingState(marketIds, db, params.ignoreReportingStates);
 
-    return orderFilledResponse.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
+    return orderFilledResponse.reduce((trades: MarketTradingHistory, orderFilledDoc) => {
       const orderDoc = orders[orderFilledDoc.orderId];
       if (!orderDoc) return trades;
       const marketDoc = markets[orderFilledDoc.market];
@@ -185,7 +189,10 @@ export class Trading {
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderFilledDoc.amountFilled, 16), tickSize);
       const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderFilledDoc.price, 16), minPrice, tickSize);
-      trades.push(Object.assign(_.pick(orderFilledDoc, [
+      if (typeof trades[orderFilledDoc.market] === "undefined") {
+        trades[orderFilledDoc.market] = [];
+      }
+      trades[orderFilledDoc.market].push(Object.assign(_.pick(orderFilledDoc, [
         "transactionHash",
         "logIndex",
         "orderId",
@@ -199,9 +206,9 @@ export class Trading {
           price: price.toString(10),
           amount: amount.toString(10),
           settlementFees: fees.toString(10),
-        }) as MarketTradingHistory);
+        }) as MarketTrade);
       return trades;
-    }, [] as Array<MarketTradingHistory>);
+    }, {} as MarketTradingHistory);
   }
 
   @Getter("GetAllOrdersParams")
