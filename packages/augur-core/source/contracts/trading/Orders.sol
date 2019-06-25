@@ -204,7 +204,7 @@ contract Orders is IOrders, Initializable {
         return _orderId;
     }
 
-    function removeOrder(bytes32 _orderId) external afterInitialized returns (bool) {
+    function removeOrder(bytes32 _orderId) external returns (bool) {
         require(msg.sender == cancelOrder || msg.sender == address(this));
         removeOrderFromList(_orderId);
         Order.Data storage _order = orders[_orderId];
@@ -213,7 +213,7 @@ contract Orders is IOrders, Initializable {
         return true;
     }
 
-    function recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill) external afterInitialized returns (bool) {
+    function recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill) external returns (bool) {
         require(msg.sender == fillOrder || msg.sender == address(this));
         Order.Data storage _order = orders[_orderId];
         require(_order.outcome < _order.market.getNumberOfOutcomes());
@@ -238,13 +238,13 @@ contract Orders is IOrders, Initializable {
         return true;
     }
 
-    function setPrice(IMarket _market, uint256 _outcome, uint256 _price) external afterInitialized returns (bool) {
+    function setPrice(IMarket _market, uint256 _outcome, uint256 _price) external returns (bool) {
         require(msg.sender == trade);
         marketOrderData[address(_market)].prices[_outcome] = _price;
         return true;
     }
 
-    function setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId) public afterInitialized returns (bool) {
+    function setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId) public returns (bool) {
         Order.Data storage _order = orders[_orderId];
         IMarket _market = _order.market;
         require(msg.sender == _order.creator);

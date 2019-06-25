@@ -31,7 +31,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     /**
      * Buys `_amount` shares of every outcome in the specified market.
     **/
-    function publicBuyCompleteSets(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
+    function publicBuyCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
         this.buyCompleteSets(msg.sender, _market, _amount);
         augur.logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
@@ -58,14 +58,14 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         return true;
     }
 
-    function publicSellCompleteSets(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
+    function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
         (uint256 _creatorFee, uint256 _reportingFee) = this.sellCompleteSets(msg.sender, _market, _amount, address(0));
         augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
         _market.assertBalances();
         return true;
     }
 
-    function sellCompleteSets(address _sender, IMarket _market, uint256 _amount, address _affiliateAddress) external afterInitialized nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
+    function sellCompleteSets(address _sender, IMarket _market, uint256 _amount, address _affiliateAddress) external nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(augur.isValidMarket(_market));
         require(msg.sender == fillOrder || msg.sender == address(this));
         require(_sender != address(0));

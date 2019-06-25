@@ -41,7 +41,7 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
-    function recordFrozenFundChange(IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) public afterInitialized returns (bool) {
+    function recordFrozenFundChange(IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) public returns (bool) {
         require(msg.sender == createOrder || msg.sender == cancelOrder || msg.sender == address(orders) || msg.sender == fillOrder);
         OutcomeData storage _outcomeData = profitLossData[_account][address(_market)][_outcome];
         _outcomeData.frozenFunds += _frozenFundDelta;
@@ -49,14 +49,14 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
-    function recordExternalTransfer(address _source, address _destination, uint256 _value) public afterInitialized returns (bool) {
+    function recordExternalTransfer(address _source, address _destination, uint256 _value) public returns (bool) {
         IShareToken _shareToken = IShareToken(msg.sender);
         require(augur.isKnownShareToken(_shareToken));
         this.recordTrade(_shareToken.getMarket(), _destination, _source, _shareToken.getOutcome(), int256(_value), 0, 0, 0, 0, _value);
         return true;
     }
 
-    function recordTrade(IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) public afterInitialized returns (bool) {
+    function recordTrade(IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) public returns (bool) {
         require(msg.sender == fillOrder || msg.sender == address(this));
         int256 _numTicks = int256(_market.getNumTicks());
         int256  _longFrozenTokenDelta = int256(_numLongTokens).sub(int256(_numLongShares).mul(_numTicks.sub(_price)));
@@ -66,7 +66,7 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
-    function adjustForTrader(IMarket _market, address _address, uint256 _outcome, int256 _amount, int256 _price, int256 _frozenTokenDelta) public afterInitialized returns (bool) {
+    function adjustForTrader(IMarket _market, address _address, uint256 _outcome, int256 _amount, int256 _price, int256 _frozenTokenDelta) public returns (bool) {
         OutcomeData storage _outcomeData = profitLossData[_address][address(_market)][_outcome];
         int256 _newNetPosition = _outcomeData.netPosition.add(_amount);
         bool _sold = _outcomeData.netPosition < 0 &&  _amount > 0 || _outcomeData.netPosition > 0 &&  _amount < 0;
@@ -101,7 +101,7 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
-    function recordClaim(IMarket _market, address _account) public afterInitialized returns (bool) {
+    function recordClaim(IMarket _market, address _account) public returns (bool) {
         require(msg.sender == claimTradingProceeds);
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
         for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {

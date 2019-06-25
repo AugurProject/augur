@@ -75,11 +75,11 @@ contract Trade is Initializable, ReentrancyGuard {
         return create(_direction, _market, _outcome, _totalCost / _price, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, _sender, _kycToken);
     }
 
-    function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external afterInitialized returns (bytes32) {
+    function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external returns (bytes32) {
         return internalTrade(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender, _kycToken);
     }
 
-    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external afterInitialized returns (uint256) {
+    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external returns (uint256) {
         return internalFillBestOrder(_direction, _market, _outcome, _amount, _price, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender, _kycToken);
     }
 

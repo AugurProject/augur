@@ -31,14 +31,14 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         return true;
     }
 
-    function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder) external afterInitialized returns(bool) {
+    function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder) external returns(bool) {
         for (uint256 i=0; i < _markets.length; i++) {
             this.claimTradingProceeds(_markets[i], _shareHolder);
         }
         return true;
     }
 
-    function claimTradingProceeds(IMarket _market, address _shareHolder) external afterInitialized nonReentrant returns(bool) {
+    function claimTradingProceeds(IMarket _market, address _shareHolder) external nonReentrant returns(bool) {
         require(augur.isValidMarket(_market));
         require(_market.isFinalized());
 

@@ -50,30 +50,30 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         return true;
     }
 
-    function createShares(address _owner, uint256 _fxpValue) external afterInitialized returns(bool) {
+    function createShares(address _owner, uint256 _fxpValue) external returns(bool) {
         require(msg.sender == completeSets);
         mint(_owner, _fxpValue);
         return true;
     }
 
-    function destroyShares(address _owner, uint256 _fxpValue) external afterInitialized returns(bool) {
+    function destroyShares(address _owner, uint256 _fxpValue) external returns(bool) {
         require(msg.sender == completeSets || msg.sender == claimTradingProceeds);
         burn(_owner, _fxpValue);
         return true;
     }
 
-    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
+    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
         require(msg.sender == createOrder);
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
-    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
+    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
         require(msg.sender == fillOrder);
         // We do not call ERC777 hooks here as it would allow a malicious order creator to halt trading
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
-    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL afterInitialized returns (bool) {
+    function trustedCancelOrderTransfer(address _source, address _destination, uint256 _attotokens) public doesNotUpdatePL returns (bool) {
         require(msg.sender == cancelOrder);
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }

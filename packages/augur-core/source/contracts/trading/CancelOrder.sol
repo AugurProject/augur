@@ -40,11 +40,11 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
      * @dev Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
      * @return true if successful; throw on failure
      */
-    function cancelOrder(bytes32 _orderId) external afterInitialized nonReentrant returns (bool) {
+    function cancelOrder(bytes32 _orderId) external nonReentrant returns (bool) {
         return cancelOrderInternal(msg.sender, _orderId);
     }
 
-    function cancelOrders(bytes32[] calldata _orderIds) external afterInitialized nonReentrant returns (bool) {
+    function cancelOrders(bytes32[] calldata _orderIds) external nonReentrant returns (bool) {
         for (uint256 i = 0; i < _orderIds.length; i++) {
             cancelOrderInternal(msg.sender, _orderIds[i]);
         }
