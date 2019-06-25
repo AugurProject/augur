@@ -1,10 +1,10 @@
 import { Augur, PlaceTradeDisplayParams, SimulateTradeData } from "@augurproject/sdk";
 import { ContractInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { AccountList, makeDependencies, makeSigner } from "./ganache";
+import { AccountList, makeDependencies, makeSigner, Account } from "./ganache";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";
-import { ethers } from "ethers";
+import { formatBytes32String } from "ethers/utils";
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
@@ -17,13 +17,13 @@ export class ContractAPI {
     const dependencies = makeDependencies(account, provider, signer);
     const augur = await Augur.create(provider, dependencies, addresses);
 
-    return new ContractAPI(augur, provider, account.publicKey);
+    return new ContractAPI(augur, provider, account);
   }
 
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    public account: string // address
+    public account: Account
   ) {}
 
   async approveCentralAuthority(): Promise<void> {
@@ -42,7 +42,7 @@ export class ContractAPI {
   ): Promise<ContractInterfaces.Market> {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     await this.faucet(marketCreationFee);
-    const byteTopic = ethers.utils.formatBytes32String(topic);
+    const byteTopic = formatBytes32String(topic);
 
     const createMarketEvents = await universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
 
@@ -57,7 +57,6 @@ export class ContractAPI {
       }
     }
 
-    console.log("Market created with id: ", marketId);
     return this.augur.contracts.marketFromAddress(marketId);
   }
 
@@ -67,16 +66,22 @@ export class ContractAPI {
     const endTime = new BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new BigNumber(10).pow(16);
     const affiliateFeeDivisor = new BigNumber(25);
-    return this.createYesNoMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, " ", "{\"description\": \"description\"}");
+    return this.createYesNoMarket(universe, endTime, fee, affiliateFeeDivisor, this.account.publicKey, " ", "{\"description\": \"description\"}");
   }
 
   async createCategoricalMarket(universe: ContractInterfaces.Universe, endTime: BigNumber, feePerCashInAttoCash: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string, outcomes: string[], topic: string, extraInfo: string): Promise<ContractInterfaces.Market> {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     await this.faucet(marketCreationFee);
-    const byteTopic = ethers.utils.formatBytes32String(topic);
-    outcomes = outcomes.map(ethers.utils.formatBytes32String);
 
-    const createMarketEvents = await universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
+    const createMarketEvents = await universe.createCategoricalMarket(
+      endTime,
+      feePerCashInAttoCash,
+      affiliateFeeDivisor,
+      designatedReporter,
+      outcomes,
+      formatBytes32String(topic),
+      extraInfo
+    );
 
     // TODO: turn this into a function
     let marketId = "";
@@ -98,7 +103,7 @@ export class ContractAPI {
     const endTime = new BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
     const fee = new BigNumber(10).pow(16);
     const affiliateFeeDivisor = new BigNumber(25);
-    return this.createCategoricalMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, outcomes, " ", "{\"description\": \"description\"}");
+    return this.createCategoricalMarket(universe, endTime, fee, affiliateFeeDivisor, this.account.publicKey, outcomes, " ", "{\"description\": \"description\"}");
   }
 
   async createScalarMarket(
@@ -114,7 +119,7 @@ export class ContractAPI {
     ): Promise<ContractInterfaces.Market> {
     const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
     await this.faucet(marketCreationFee);
-    const byteTopic = ethers.utils.formatBytes32String(topic);
+    const byteTopic = formatBytes32String(topic);
 
     const createMarketEvents = await universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
 
@@ -141,7 +146,7 @@ export class ContractAPI {
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
     const maxPrice = new BigNumber(250).multipliedBy(new BigNumber(10).pow(18));
     const numTicks = new BigNumber(20000);
-    return this.createScalarMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, [minPrice, maxPrice], numTicks, " ", "{\"description\": \"description\", \"_scalarDenomination\": \"scalar denom 1\"}");
+    return this.createScalarMarket(universe, endTime, fee, affiliateFeeDivisor, this.account.publicKey, [minPrice, maxPrice], numTicks, " ", "{\"description\": \"description\", \"_scalarDenomination\": \"scalar denom 1\"}");
   }
 
   async placeOrder(
@@ -156,15 +161,36 @@ export class ContractAPI {
   ): Promise<string> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const orderId = await this.augur.contracts.createOrder.publicCreateOrder_(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
-    console.log("orderId", orderId);
-    await this.augur.contracts.createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
+
+    const events = await this.augur.contracts.createOrder.publicCreateOrder(
+      type,
+      numShares,
+      price,
+      market,
+      outcome,
+      betterOrderID,
+      worseOrderID,
+      tradeGroupID,
+      false,
+      NULL_ADDRESS
+    );
+
+    let orderId = "";
+    for (const ev of events) {
+      if (ev.name === "OrderEvent") {
+        interface HasOrderId {
+          orderId: string;
+        }
+        orderId = (ev.parameters as HasOrderId).orderId;
+      }
+    }
+
     return orderId;
   }
 
   async fillOrder(orderId: string, cost: BigNumber, numShares: BigNumber, tradeGroupId: string) {
     await this.faucet(cost.multipliedBy(10000));
-    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, ethers.utils.formatBytes32String(tradeGroupId), false, NULL_ADDRESS);
+    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), false, NULL_ADDRESS);
   }
 
   async setOrderPrice(orderId: string, price: BigNumber, betterOrderId: string, worseOrderId: string): Promise<void> {
@@ -204,7 +230,7 @@ export class ContractAPI {
       numTicks: await market.getNumTicks_(),
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
-      tradeGroupId: ethers.utils.formatBytes32String("42"),
+      tradeGroupId: formatBytes32String("42"),
       ignoreShares: false,
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
@@ -224,7 +250,7 @@ export class ContractAPI {
       numTicks: await market.getNumTicks_(),
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
-      tradeGroupId: ethers.utils.formatBytes32String("42"),
+      tradeGroupId: formatBytes32String("42"),
       ignoreShares: false,
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
@@ -299,7 +325,7 @@ export class ContractAPI {
   async getNumSharesInMarket(market: ContractInterfaces.Market, outcome: BigNumber): Promise<BigNumber> {
     const shareTokenAddress = await market.getShareToken_(outcome);
     const shareToken = this.augur.contracts.shareTokenFromAddress(shareTokenAddress);
-    return shareToken.balanceOf_(this.account);
+    return shareToken.balanceOf_(this.account.publicKey);
   }
 
   async getDisputeWindow(market: ContractInterfaces.Market): Promise<ContractInterfaces.DisputeWindow> {
@@ -323,12 +349,12 @@ export class ContractAPI {
     return this.augur.contracts.getReportingParticipant(reportingParticipantAddress);
   }
 
-  async buyParticipationTokens(disputeWindowAddress: string, amount: BigNumber, sender: string=this.account): Promise<void> {
+  async buyParticipationTokens(disputeWindowAddress: string, amount: BigNumber, sender: string=this.account.publicKey): Promise<void> {
     const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
     await disputeWindow.buy(amount, {sender});
   }
 
-  async redeemParticipationTokens(disputeWindowAddress: string, account: string=this.account): Promise<void> {
+  async redeemParticipationTokens(disputeWindowAddress: string, account: string=this.account.publicKey): Promise<void> {
     const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
     await disputeWindow.redeem(account);
   }
@@ -371,6 +397,13 @@ export class ContractAPI {
     await this.augur.contracts.cash.faucet(attoCash);
   }
 
+  async repFaucet(attoRep: BigNumber): Promise<void> {
+    const reputationToken = this.augur.contracts.getReputationToken();
+    if (typeof reputationToken['faucet'] === 'function') {
+      await reputationToken['faucet'](attoRep);
+    }
+  }
+
   async approve(wei: BigNumber): Promise<void> {
     await  this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
   }
@@ -400,15 +433,15 @@ export class ContractAPI {
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
   async getEthBalance(): Promise<BigNumber> {
-    const balance = await this.provider.getBalance(this.account);
+    const balance = await this.provider.getBalance(this.account.publicKey);
     return new BigNumber(balance.toString());
   }
 
-  getRepBalance(owner: string=this.account): Promise<BigNumber> {
+  getRepBalance(owner: string=this.account.publicKey): Promise<BigNumber> {
     return this.augur.contracts.getReputationToken().balanceOf_(owner);
   }
 
-  getCashBalance(owner: string=this.account): Promise<BigNumber> {
+  getCashBalance(owner: string=this.account.publicKey): Promise<BigNumber> {
     return this.augur.contracts.cash.balanceOf_(owner);
   }
 
@@ -421,7 +454,7 @@ export class ContractAPI {
     const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, spender));
 
     if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
-      await this.augur.contracts.cash.approve(spender, ETERNAL_APPROVAL_VALUE, { sender: this.account });
+      await this.augur.contracts.cash.approve(spender, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
     }
   }
 }

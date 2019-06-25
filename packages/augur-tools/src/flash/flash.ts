@@ -15,14 +15,14 @@ export interface FlashOption {
 }
 
 export interface FlashArguments {
-  [name: string]: any;
+  [name: string]: string;
 }
 
 export interface FlashScript {
   name: string;
   description?: string;
   options?: FlashOption[];
-  call(this: FlashSession, args: FlashArguments): Promise<any>;
+  call(this: FlashSession, args: FlashArguments): Promise<void>;
 }
 
 export class FlashSession {
@@ -51,11 +51,11 @@ export class FlashSession {
     this.scripts[script.name] = script;
   }
 
-  call(name: string, args: FlashArguments): any {
+  async call(name: string, args: FlashArguments): Promise<void> {
     const script = this.scripts[name];
 
     // Make sure required parameters are present.
-    for (const option of script.options) {
+    for (const option of script.options || []) {
       if (option.required) {
         const arg = args[option.name];
         if (typeof arg === "undefined") {
@@ -65,7 +65,7 @@ export class FlashSession {
       }
     }
 
-    return script.call.bind(this)(args);
+    await script.call.bind(this)(args);
   }
 
   loadSeed() {

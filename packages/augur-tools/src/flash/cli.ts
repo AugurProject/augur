@@ -20,8 +20,8 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
       v = v.option(`--${option.name}${flag ? "" : ` <arg>`}`, option.description);
     }
 
-    v = v.action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args) {
-      return flash.call(script.name, args.options);
+    v = v.action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args): Promise<void> {
+      await flash.call(script.name, args.options).catch(console.error);
     });
   }
 

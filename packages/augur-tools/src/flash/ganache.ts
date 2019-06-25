@@ -46,11 +46,9 @@ export interface UsefulContractObjects {
   addresses: ContractAddresses;
 }
 
-export async function deployContracts(seedFilePath: string, accounts: AccountList): Promise<UsefulContractObjects> {
+export async function deployContracts(provider: EthersProvider, seedFilePath: string, accounts: AccountList): Promise<UsefulContractObjects> {
   const seed = require(seedFilePath);
 
-  const ganacheProvider = await makeGanacheProvider(seedFilePath, accounts);
-  const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
   const signer = await makeSigner(accounts[0], provider);
   const dependencies = makeDependencies(accounts[0], provider, signer);
   const addresses = seed.addresses;
