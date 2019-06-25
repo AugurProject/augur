@@ -49,7 +49,7 @@ contract Market is Initializable, Ownable, IMarket {
     uint256 private finalizationTime;
     uint256 private repBond;
     bool private disputePacingOn;
-    address private repBondOwner;
+    address public repBondOwner;
     uint256 public marketCreatorFeesAttoCash;
     uint256 public totalAffiliateFeesAttoCash;
     IDisputeCrowdsourcer public preemptiveDisputeCrowdsourcer;
@@ -581,6 +581,12 @@ contract Market is Initializable, Ownable, IMarket {
 
     function onTransferOwnership(address _owner, address _newOwner) internal {
         augur.logMarketTransferred(getUniverse(), _owner, _newOwner);
+    }
+
+    function transferRepBondOwnership(address _newOwner) public returns (bool) {
+        require(msg.sender == repBondOwner);
+        repBondOwner = _newOwner;
+        return true;
     }
 
     function assertBalances() public view returns (bool) {
