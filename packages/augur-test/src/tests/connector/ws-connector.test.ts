@@ -1,7 +1,6 @@
 import { Markets } from "@augurproject/sdk/build/state/getter/Markets";
 import { SubscriptionEventNames } from "@augurproject/sdk/build//constants";
 import { WebsocketConnector } from "@augurproject/sdk/build/connector/ws-connector";
-import { addListener } from "cluster";
 
 jest.mock("websocket-as-promised", () => {
   return {
