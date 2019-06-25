@@ -749,16 +749,9 @@ export const COLUMN_TYPES = {
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
 };
 
-// Time constants
-export const AM = "AM";
-export const PM = "PM";
-
 // Login method variables
 export const TREZOR_MANIFEST_EMAIL = "team@augur.net";
 export const TREZOR_MANIFEST_APPURL = "https://dev.augur.net";
 export const PORTIS_API_KEY = "b67817cf-8dd0-4116-a0cf-657820ddc019";
 export const FORTMATIC_API_KEY = "pk_live_8001A50CCA35D8CB";
 export const FORTMATIC_API_TEST_KEY = "pk_test_5185BE42CA372148";
-
-// Market Creation
-export const CUSTOM_PAGES = ["Event details", "Fees & liquidity", "Review"];

@@ -4,9 +4,10 @@ import classNames from "classnames";
 import moment from "moment";
 
 import { LocationDisplay } from "modules/common/form";
-import { CUSTOM_PAGES } from "modules/common/constants";
+import { BACK, NEXT, CREATE, CUSTOM_CONTENT_PAGES, REVIEW, FORM_DETAILS } from "modules/create-market/constants";
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
 import { createMarket } from "modules/contracts/actions/contractCalls";
+import { LargeHeader, ExplainerBlock, ContentBlock } from "modules/create-market/components/common";
 
 import FormDetails from "modules/create-market/containers/form-details";
 import Review from "modules/create-market/containers/review";
@@ -42,8 +43,8 @@ export default class Form extends React.Component<
     const { newMarket, updateNewMarket } = this.props;
    // if (newMarket.isValid) {
       const newStep =
-        newMarket.currentStep >= CUSTOM_PAGES.length - 1
-          ? CUSTOM_PAGES.length - 1
+        newMarket.currentStep >= CUSTOM_CONTENT_PAGES.length - 1
+          ? CUSTOM_CONTENT_PAGES.length - 1
           : newMarket.currentStep + 1;
       updateNewMarket({ currentStep: newStep });
     //}
@@ -96,40 +97,27 @@ export default class Form extends React.Component<
     } = this.props;
     const s = this.state;
 
+    const content = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
+
     return (
       <div className={Styles.Form}>
-        <LocationDisplay currentStep={newMarket.currentStep} pages={CUSTOM_PAGES} />
-        <span>
-          Create a custom market
-        </span>
-        <div>
-          <span>
-            A note on choosing a market
-          </span>
-          <span>
-            Create markets that will have an <span>objective outcome</span> by the events end time. 
-            Avoid creating markets that have subjective or ambiguous outcomes. 
-            If you're not sure that the market's outcome will be known beyond a <span>reasonable doubt</span> by the reporting start time, 
-            you should not create the market.
-          </span>
-          <span>
-            A market only covers events that occur <span>after</span> market creation time and on or <span>before</span> reporting start time. 
-            If the event occurs outside of these bounds it has a high probability as resolving as invalid. 
-          </span>
-        </div>
-        <div>
-          {newMarket.currentStep === 0 &&
-            <FormDetails />
-          }
-          {newMarket.currentStep === 2 &&
-            <Review />
-          }
+        <LocationDisplay currentStep={newMarket.currentStep} pages={CUSTOM_CONTENT_PAGES} />
+        <LargeHeader text={content.largeHeader} />
+        {content.explainerBlockTitle && content.explainerBlockSubtexts && 
+          <ExplainerBlock
+            title={content.explainerBlockTitle}
+            subtexts={content.explainerBlockSubtexts}
+          />
+        }
+        <ContentBlock>
+          {content.mainContent === FORM_DETAILS && <FormDetails />}
+          {content.mainContent === REVIEW && <Review />}
           <div>
-            <SecondaryButton text="Back" action={this.prevPage} />
-            {newMarket.currentStep !== 2 && <PrimaryButton text="Next" action={this.nextPage} />}
-            {newMarket.currentStep === 2 && <PrimaryButton text="Create" action={this.submitMarket} />}
+            {content.firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
+            {content.secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
+            {content.secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
           </div>
-        </div>
+        </ContentBlock>
       </div>
     );
   }

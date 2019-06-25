@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { AM, PM } from 'modules/common/constants';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { PulseLoader } from 'react-spinners';
@@ -355,7 +354,7 @@ const RadioCard = ({
 
 interface LocationDisplayProps {
   currentStep: Number;
-  pages: Array<string>;
+  pages: Array<Object>;
 }
 
 export const LocationDisplay = ({
@@ -363,12 +362,12 @@ export const LocationDisplay = ({
   pages,
 }: LocationDisplayProps) => (
   <div className={Styles.LocationDisplay}>
-    {pages.map((page: string, index: Number) => (
+    {pages.map((page: Object, index: Number) => (
       <>
         <span
           className={classNames({ [Styles.Selected]: index === currentStep })}
         >
-          {page}
+          {page.title}
         </span>
         {index !== pages.length - 1 && DirectionArrow}
       </>
@@ -479,7 +478,6 @@ export class TimeSelector extends React.Component<
 
   render() {
     const { placeholder, hour, minute, meridiem, focused } = this.props;
-    const timeOptions = [AM, PM];
 
     return (
       <div
@@ -519,7 +517,7 @@ export class TimeSelector extends React.Component<
               />
               <IndividualTimeSelector
                 label="AM/PM"
-                options={timeOptions}
+                hasOptions
                 onChange={this.onChangeAM}
                 value={meridiem || "AM"}
               />
@@ -532,7 +530,7 @@ export class TimeSelector extends React.Component<
 }
 
 interface IndividualTimeSelectorProps {
-  options?: Array;
+  hasOptions?: Boolean;
   label: string;
   min?: Number;
   max?: Number;
@@ -562,9 +560,9 @@ class IndividualTimeSelector extends React.Component<
   }
 
   onChange = (value: any) => {
-    const { showLeadingZero, options, onChange, min, max } = this.props;
+    const { showLeadingZero, hasOptions, onChange, min, max } = this.props;
 
-    if (!options && value.toString() !== '') {
+    if (!hasOptions && value.toString() !== '') {
       if (value > max) return;
       if (value < min) return;
     }
@@ -585,7 +583,7 @@ class IndividualTimeSelector extends React.Component<
 
   increment = () => {
     let value = this.state.value;
-    if (!this.props.options) {
+    if (!this.props.hasOptions) {
       const newValue = parseFloat(value) + 1;
       this.onChange(newValue);
     } else {
@@ -595,7 +593,7 @@ class IndividualTimeSelector extends React.Component<
 
   decrement = () => {
     let value = this.state.value;
-    if (!this.props.options) {
+    if (!this.props.hasOptions) {
       const newValue = parseFloat(value) - 1;
       this.onChange(newValue);
     } else {
@@ -604,13 +602,13 @@ class IndividualTimeSelector extends React.Component<
   };
 
   render() {
-    const { label, onChange, value, options, min, max } = this.props;
+    const { label, onChange, value, hasOptions, min, max } = this.props;
 
     return (
       <div className={Styles.IndividualTimeSelector}>
         <span>{label}</span>
         <button onClick={this.increment}>{Chevron}</button>
-        {options && (
+        {hasOptions && (
           <input
             type="text"
             onChange={e => this.onChange(e.target.value)}
@@ -618,7 +616,7 @@ class IndividualTimeSelector extends React.Component<
             disabled
           />
         )}
-        {!options && (
+        {!hasOptions && (
           <input
             type="number"
             min={min}

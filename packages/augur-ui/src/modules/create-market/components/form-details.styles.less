@@ -4,17 +4,7 @@
 	flex-direction: column;
     display: flex;
 
-    > div:first-of-type {
-    	border-bottom: 1px solid @color-primary-alternate;
-    	margin-bottom: @size-24;
-    	padding-bottom: @size-24;
-    }
-
     > div:not(:last-of-type) {
-		> div:first-of-type {
-			margin-top: @size-24;
-		}
-
 		> section {
 			display: flex;
 			align-items: center;
@@ -31,5 +21,10 @@
 			display: flex;
 			justify-content: space-between;
 		}
+    }
+
+    > div {
+    	display: flex;
+    	flex-direction: column;
     }
 }

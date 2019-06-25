@@ -4,12 +4,11 @@ import classNames from "classnames";
 import moment from "moment";
 
 import { RadioCardGroup, FormDropdown, TextInput, DatePicker, TimeSelector, RadioBarGroup, TimezoneDropdown } from "modules/common/form";
-import { Header, Subheaders } from "modules/create-market/components/common";
+import { Header, Subheaders, LineBreak } from "modules/create-market/components/common";
 import { 
   YES_NO, 
   SCALAR, 
   CATEGORICAL, 
-  CUSTOM_PAGES,
   EXPIRY_SOURCE_GENERIC,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
@@ -181,6 +180,7 @@ export default class FormDetails extends React.Component<
             staticLabel="Select category"
           />
         </div>
+        <LineBreak />
         <div>
           <Header text="Resolution information" />
 
@@ -195,7 +195,7 @@ export default class FormDetails extends React.Component<
                 header: "Outcome available on a public website",
                 value: EXPIRY_SOURCE_SPECIFIC,
                 expandable: true,
-                placeholder: "Define URL",
+                placeholder: "Enter website",
                 onTextChange: (value: string) => this.onChange("expirySource", value)
               }
             ]}
@@ -221,7 +221,7 @@ export default class FormDetails extends React.Component<
                 header: "Someone else",
                 value: DESIGNATED_REPORTER_SPECIFIC,
                 expandable: true,
-                placeholder: "Designated reporter address",
+                placeholder: "Enter wallet address",
                 onTextChange: (value: string) => this.onChange("designatedReporterAddress", value)
               }
             ]}
