@@ -150,10 +150,10 @@ contract Market is Initializable, Ownable, IMarket {
         uint256 _initialReportStake = repBond;
         // If the designated reporter showed up and is not also the rep bond owner return the rep bond to the bond owner. Otherwise it will be used as stake in the first report.
         if (_reporter == _initialReporter.getDesignatedReporter() && _reporter != repBondOwner) {
-            require(_reputationToken.transfer(repBondOwner, _initialReportStake));
+            require(_reputationToken.noHooksTransfer(repBondOwner, _initialReportStake));
             _reputationToken.trustedMarketTransfer(_reporter, address(_initialReporter), _initialReportStake);
         } else {
-            require(_reputationToken.transfer(address(_initialReporter), _initialReportStake));
+            require(_reputationToken.noHooksTransfer(address(_initialReporter), _initialReportStake));
         }
         repBond = 0;
         return _initialReportStake;
@@ -285,7 +285,7 @@ contract Market is Initializable, Ownable, IMarket {
             if (_reportingParticipant.getPayoutDistributionHash() == winningPayoutDistributionHash) {
                 // The last participant's owed REP will not actually be 40% ROI in the event it was created through pre-emptive contributions. We just give them all the remaining non burn REP
                 uint256 amountToTransfer = j == participants.length - 1 ? _reputationToken.balanceOf(address(this)) : _reportingParticipant.getSize().mul(2) / 5;
-                require(_reputationToken.transfer(address(_reportingParticipant), amountToTransfer));
+                require(_reputationToken.noHooksTransfer(address(_reportingParticipant), amountToTransfer));
             }
         }
         return true;
@@ -303,7 +303,7 @@ contract Market is Initializable, Ownable, IMarket {
         require(augur.isKnownFeeSender(msg.sender));
         if (_affiliateAddress != NULL_ADDRESS && affiliateFeeDivisor != 0) {
             uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
-            affiliateFeesAttoCash[_affiliateAddress] = _affiliateFees;
+            affiliateFeesAttoCash[_affiliateAddress] += _affiliateFees;
             _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
             totalAffiliateFeesAttoCash = totalAffiliateFeesAttoCash.add(_affiliateFees);
         }
@@ -422,7 +422,7 @@ contract Market is Initializable, Ownable, IMarket {
         // Send REP from the rep bond back to the address that placed it. If a report has been made tell the InitialReporter to return that REP and reset
         if (repBond > 0) {
             IV2ReputationToken _reputationToken = getReputationToken();
-            require(_reputationToken.transfer(repBondOwner, repBond));
+            require(_reputationToken.noHooksTransfer(repBondOwner, repBond));
             repBond = 0;
         } else {
             _initialParticipant.returnRepFromDisavow();

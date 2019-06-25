@@ -16,7 +16,7 @@
     "build": "npm run build:source && npm run lint && npm run build:contracts && npm run build:interfaces && npm run build:source && npm run build:artifacts",
     "build:debug": "npm run build:source && npm run lint && cross-env ENABLE_SOLIDITY_DEBUG=true npm run build:interfaces && npm run build:source",
     "build:artifacts": "cross-env OUTPUT_PATH='../augur-artifacts/src' npm run build:contracts",
-    "build:documentation": "yarn solidity-docgen -s ./output/contracts/contracts_full.json -c ./source/contracts -o ../../docs/v2/docs/contracts",
+    "build:documentation": "yarn solidity-docgen -s ./output/contracts/contracts_full.json -o ../../docs/v2/docs/contracts",
     "preversion": "npm run build",
     "version": "git add source/libraries/ContractInterfaces.ts",
     "release": "npm version prerelease && npm publish",

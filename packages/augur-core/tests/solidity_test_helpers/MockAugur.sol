@@ -1,7 +1,7 @@
 pragma solidity 0.5.4;
 
 
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
@@ -21,7 +21,7 @@ contract MockAugur {
         logMarketFinalizedCalledValue = false;
     }
 
-    function trustedTransfer(ERC20Token _token, address _from, address _to, uint256 _amount) public returns (bool) {
+    function trustedTransfer(IERC20 _token, address _from, address _to, uint256 _amount) public returns (bool) {
         return true;
     }
 
@@ -104,7 +104,7 @@ contract MockAugur {
         return true;
     }
 
-    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _sender, uint256 _tradeGroupId, uint256 _sharesEscrowed, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, IMarket _market, ERC20Token _kycToken, uint256 _outcome) public returns (bool) {
+    function logOrderCreated(Order.Types _orderType, uint256 _amount, uint256 _price, address _sender, uint256 _tradeGroupId, uint256 _sharesEscrowed, bytes32 _tradeGroupId, bytes32 _orderId, IUniverse _universe, IMarket _market, IERC20 _kycToken, uint256 _outcome) public returns (bool) {
         return true;
     }
 

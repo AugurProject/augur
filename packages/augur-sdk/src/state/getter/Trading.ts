@@ -2,9 +2,10 @@ import { SortLimit } from './types';
 import { DB } from "../db/DB";
 import * as _ from "lodash";
 import { Augur, numTicksToTickSize, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertDisplayPriceToOnChainPrice } from "../../index";
+import { getMarketReportingState } from "./Markets";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { Address, ParsedOrderEventLog } from "../logs/types";
+import { Address, ParsedOrderEventLog, OrderEventType } from "../logs/types";
 
 import * as t from "io-ts";
 
@@ -13,8 +14,9 @@ const ZERO = new BigNumber(0);
 const TradingHistoryParams = t.partial({
   universe: t.string,
   account: t.string,
-  marketId: t.string,
+  marketIds: t.array(t.string),
   outcome: t.number,
+  ignoreReportingStates: t.array(t.string),
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });
@@ -32,6 +34,7 @@ export const OutcomeParam = t.keyof({
 
 export const AllOrdersParams = t.partial({
   account: t.string,
+  ignoreReportingStates: t.array(t.string),
 });
 
 export const OrdersParams = t.partial({
@@ -41,6 +44,7 @@ export const OrdersParams = t.partial({
   orderType: t.string,
   creator: t.string,
   orderState: t.string,
+  ignoreReportingStates: t.array(t.string),
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });
@@ -85,6 +89,7 @@ export interface Order {
   orderState: OrderState;
   price: string;
   amount: string;
+  amountFilled: string;
   fullPrecisionPrice: string;
   fullPrecisionAmount: string;
   tokensEscrowed: string; // TODO add to log
@@ -132,13 +137,14 @@ export class Trading {
 
   @Getter("GetTradingHistoryParams")
   public static async getTradingHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<Array<any>> {
-    if (!params.account && !params.marketId) {
+    if (!params.account && params.marketIds.length === 0) {
       throw new Error("'getTradingHistory' requires an 'account' or 'marketId' param be provided");
     }
+
     const request = {
       selector: {
         universe: params.universe,
-        market: params.marketId,
+        market: { $in: params.marketIds },
         outcome: params.outcome,
         $or: [
           { orderCreator: params.account },
@@ -149,25 +155,20 @@ export class Trading {
       limit: params.limit,
       skip: params.offset,
     };
-
     const orderFilledResponse = await db.findOrderFilledLogs(request);
-
     const orderIds = _.map(orderFilledResponse, "orderId");
-
     const ordersResponse = await db.findOrderCreatedLogs({ selector: { orderId: { $in: orderIds } } });
     const orders = _.keyBy(ordersResponse, "orderId");
 
     const marketIds = _.map(orderFilledResponse, "market");
-
-    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
-    const markets = _.keyBy(marketsResponse, "market");
+    const markets = await filterMarketsByReportingState(marketIds, db, params.ignoreReportingStates);
 
     return orderFilledResponse.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
       const orderDoc = orders[orderFilledDoc.orderId];
       if (!orderDoc) return trades;
       const marketDoc = markets[orderFilledDoc.market];
       if (!marketDoc) return trades;
-      const isMaker: boolean | null = params.account == null ? false : params.account === orderFilledDoc.orderCreator;
+      const isMaker: boolean | null = params.account === null ? false : params.account === orderFilledDoc.orderCreator;
       const orderType = orderDoc.orderType === 0 ? "buy" : "sell";
       const fees = new BigNumber(orderFilledDoc.fees);
       const minPrice = new BigNumber(marketDoc.prices[0]);
@@ -211,8 +212,7 @@ export class Trading {
     const currentOrdersResponse = await db.findCurrentOrderLogs(request);
 
     const marketIds = _.map(currentOrdersResponse, "market");
-    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
-    const markets = _.keyBy(marketsResponse, "market");
+    const markets = await filterMarketsByReportingState(marketIds, db, params.ignoreReportingStates);
 
     return currentOrdersResponse.reduce((orders: AllOrders, orderEventDoc: ParsedOrderEventLog) => {
       const marketDoc = markets[orderEventDoc.market];
@@ -277,8 +277,7 @@ export class Trading {
     const originalOrders = _.keyBy(originalOrdersResponse, "orderId");
 
     const marketIds = _.map(currentOrdersResponse, "market");
-    const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
-    const markets = _.keyBy(marketsResponse, "market");
+    const markets = await filterMarketsByReportingState(marketIds, db, params.ignoreReportingStates);
 
     return currentOrdersResponse.reduce((orders: Orders, orderEventDoc: ParsedOrderEventLog) => {
       const marketDoc = markets[orderEventDoc.market];
@@ -288,7 +287,8 @@ export class Trading {
       const maxPrice = new BigNumber(marketDoc.prices[1]);
       const numTicks = new BigNumber(marketDoc.numTicks);
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
-      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.amountFilled, 16), tickSize).toString(10);
+      const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.amount, 16), tickSize).toString(10);
+      const amountFilled = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.amountFilled, 16), tickSize).toString(10);
       const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderEventDoc.price, 16), minPrice, tickSize).toString(10);
       const market = orderEventDoc.market;
       const outcome = new BigNumber(orderEventDoc.outcome).toNumber();
@@ -297,8 +297,11 @@ export class Trading {
       const sharesEscrowed = convertOnChainAmountToDisplayAmount(new BigNumber(orderEventDoc.sharesEscrowed, 16), tickSize).toString(10);
       const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16).dividedBy(10 ** 18).toString(10);
       let orderState = OrderState.OPEN;
-      if (amount === "0") {
-        orderState = orderEventDoc.eventType == 1 ? OrderState.CANCELED : OrderState.FILLED;
+      if (orderEventDoc.eventType === OrderEventType.Fill) {
+        orderState = OrderState.FILLED
+      }
+      if (orderEventDoc.eventType === OrderEventType.Cancel) {
+        orderState = OrderState.CANCELED;
       }
       if (!orders[market]) orders[market] = {};
       if (!orders[market][outcome]) orders[market][outcome] = {};
@@ -312,13 +315,14 @@ export class Trading {
         orderState,
         price,
         amount,
+        amountFilled,
         fullPrecisionPrice: price,
         fullPrecisionAmount: amount,
         tokensEscrowed,
         sharesEscrowed,
-        canceledBlockNumber: orderEventDoc.eventType == 1 ? String(orderEventDoc.blockNumber) : undefined,
-        canceledTransactionHash: orderEventDoc.eventType == 1 ? orderEventDoc.transactionHash : undefined,
-        canceledTime: orderEventDoc.eventType == 1 ? orderEventDoc.timestamp : undefined,
+        canceledBlockNumber: orderEventDoc.eventType === OrderEventType.Cancel ? String(orderEventDoc.blockNumber) : undefined,
+        canceledTransactionHash: orderEventDoc.eventType === OrderEventType.Cancel ? orderEventDoc.transactionHash : undefined,
+        canceledTime: orderEventDoc.eventType === OrderEventType.Cancel ? orderEventDoc.timestamp : undefined,
         creationTime: originalOrderDoc ? originalOrderDoc.timestamp : 0,
         creationBlockNumber: originalOrderDoc ? originalOrderDoc.blockNumber : 0,
         originalFullPrecisionAmount: originalOrderDoc ? convertOnChainAmountToDisplayAmount(new BigNumber(originalOrderDoc.amount, 16), tickSize).toString(10) : 0,
@@ -362,4 +366,25 @@ export class Trading {
       };
     }
   }
+}
+
+async function filterMarketsByReportingState(marketIds: string[], db: DB, ignoreReportingStates: string[])  {
+  const marketsResponse = await db.findMarketCreatedLogs({ selector: { market: { $in: marketIds } } });
+  const markets = _.keyBy(marketsResponse, "market");
+  if (ignoreReportingStates) {
+    let marketIds = Object.keys(_.keyBy(marketsResponse, "market"));
+    const marketFinalizedLogs = await db.findMarketFinalizedLogs({ selector: { market: { $in: marketIds } } });
+
+    for (let marketCreatedLog of marketsResponse) {
+      const reportingState = await getMarketReportingState(
+        db,
+        marketCreatedLog,
+        marketFinalizedLogs
+      );
+      if (ignoreReportingStates.includes(reportingState)) {
+        delete markets[marketCreatedLog.market];
+      }
+    }
+  }
+  return markets;
 }

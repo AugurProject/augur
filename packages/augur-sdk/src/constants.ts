@@ -1,5 +1,5 @@
-import { utils as ethersUtils } from "ethers";
-import { BigNumber } from "bignumber.js";
+import {utils as ethersUtils} from "ethers";
+import {BigNumber} from "bignumber.js";
 
 export enum ACCOUNT_TYPES {
   U_PORT = "uPort",
@@ -108,4 +108,9 @@ export const WORST_CASE_FILL = {
   6: new BigNumber("1888494", 10),
   7: new BigNumber("2127244", 10),
   8: new BigNumber("2365994", 10),
+};
+
+export const ORDER_TYPES = {
+  BID: new BigNumber(0),
+  ASK: new BigNumber(1)
 };

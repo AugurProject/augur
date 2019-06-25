@@ -89,7 +89,7 @@ const mergeProps = (sP, dP, oP) => {
         value: formatEther(gasCost).full,
       },
       {
-        label: "Total Cost (ETH)",
+        label: "Total Cost (DAI)",
         // @ts-ignore
         value: formatEther(totalCost.toFixed()).full,
         highlight: true,

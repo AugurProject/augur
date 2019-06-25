@@ -12,6 +12,7 @@ import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
 import { ContractDependenciesEthers, TransactionStatusCallback } from "contract-dependencies-ethers";
 import { Markets } from "./state/getter/Markets";
 import { SyncData } from "./state/getter/sync-data";
+import { Trading } from "./state/getter/Trading";
 
 export interface CustomEvent {
   name: string;
@@ -203,6 +204,10 @@ export class Augur<TProvider extends Provider = Provider> {
   public getSyncData = () => {
     return this.bindTo(SyncData.getSyncData)({});
   }
+
+  public getTradingHistory = this.bindTo(Trading.getTradingHistory);
+  public getAllOrders = this.bindTo(Trading.getAllOrders);
+  public getTradingOrders = this.bindTo(Trading.getOrders);
 
   public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
