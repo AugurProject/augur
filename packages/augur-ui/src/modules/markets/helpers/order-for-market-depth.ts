@@ -41,7 +41,7 @@ const orderForMarketDepth = orderBook => {
   if (bids.length > 0) {
     const minBidDepthOrder = bids.reduce(
       (lastValue, nextValue) =>
-        createBigNumber(lastValue[0]).lte(createBigNumber(nextValue[0])) ? lastValue : nextValue,
+        createBigNumber(lastValue[0]).gte(createBigNumber(nextValue[0])) ? lastValue : nextValue,
       bids[0]
     );
     bids.unshift([
