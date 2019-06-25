@@ -202,6 +202,7 @@ export default class FormDetails extends React.Component<
                 value: EXPIRY_SOURCE_SPECIFIC,
                 expandable: true,
                 placeholder: "Enter website",
+                textValue: newMarket.expirySource,
                 onTextChange: (value: string) => this.onChange("expirySource", value)
               }
             ]}
@@ -230,6 +231,7 @@ export default class FormDetails extends React.Component<
                 value: DESIGNATED_REPORTER_SPECIFIC,
                 expandable: true,
                 placeholder: "Enter wallet address",
+                textValue: newMarket.designatedReporterAddress,
                 onTextChange: (value: string) => this.onChange("designatedReporterAddress", value)
               }
             ]}
