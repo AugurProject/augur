@@ -92,14 +92,16 @@ export const loadMarketsByFilter = (
     }
   }
 
-  const params = {
+  const params:Parameters<typeof augur.getMarkets>[0] = {
     universe: universe.id,
-    //category: filterOptions.category,
-    // search: filterOptions.search,
     maxFee: filterOptions.maxFee,
     hasOrders: filterOptions.hasOrders,
-    ...sort
+    ...sort,
   };
+
+  if(filterOptions.category) params.category = filterOptions.category;
+  if(filterOptions.search) params.search = filterOptions.search;
+
   switch (filterOptions.filter) {
     case MARKET_REPORTING: {
       // reporting markets only:
