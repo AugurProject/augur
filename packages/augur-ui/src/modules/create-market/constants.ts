@@ -1,10 +1,15 @@
+import {
+  YES_NO,
+  SCALAR,
+  CATEGORICAL
+} from "modules/common/constants";
 
 // Button Types
 export const BACK = "back";
 export const NEXT = "next";
 export const CREATE = "create";
 
-// Page content
+// Page Content
 export const REVIEW = "review";
 export const FORM_DETAILS = "formDetails";
 
@@ -45,3 +50,10 @@ export const CUSTOM_CONTENT_PAGES = [
 	LiquidityContent, 
 	ReviewContent
 ];
+
+// Market Type Names
+export const MARKET_TYPE_NAME = {
+  [YES_NO]: "Yes/No",
+  [SCALAR]: "Scalar",
+  [CATEGORICAL]: "Categorical"
+};

@@ -5,6 +5,11 @@ import moment from "moment";
 
 import { Header, LineBreak, SmallSubheaders, Subheaders } from "modules/create-market/components/common";
 import { LinearPropertyLabel } from "modules/common/labels";
+import {
+  EXPIRY_SOURCE_GENERIC,
+  DESIGNATED_REPORTER_SELF
+} from "modules/common/constants";
+import { MARKET_TYPE_NAME } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/components/review.styles";
 
@@ -36,19 +41,31 @@ export default class Review extends React.Component<
       <div className={Styles.Review}>
         <Header text="Market details" />
         <div>
-          <SmallSubheaders header="Market Type" subheader={newMarket.type} />
-          <SmallSubheaders header="Category" subheader="Yes/No" />
-          <SmallSubheaders header="Sub-category" subheader="Yes/No" />
+          <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[newMarket.type]} />
+          <SmallSubheaders header="Category" subheader={newMarket.category} />
+          <SmallSubheaders header="Sub-category" subheader={newMarket.tag1} />
           <SmallSubheaders header="Market Question" subheader={newMarket.description} />
         </div>
 
         <LineBreak />
         <Header text="Resolution information" />
         <div>
-          <SmallSubheaders header="Reporting start date and time" subheader={newMarket.endTime && newMarket.endTime.unix()} />
+          <SmallSubheaders header="Reporting start date and time" subheader={(newMarket.endTime || {}).formattedUtc} />
           <SmallSubheaders header="resolution details" subheader={newMarket.detailsText} />
-          <SmallSubheaders header="Resolution source" subheader={newMarket.expirySource} />
-          <SmallSubheaders header="Designated Reporter" subheader={newMarket.designatedReporterAddress} />
+          <SmallSubheaders 
+            header="Resolution source" 
+            subheader={newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC
+              ? "General knowledge"
+              : `Outcome will be detailed on public website: ${
+                  newMarket.expirySource
+                }`} 
+          />
+          <SmallSubheaders 
+            header="Designated Reporter" 
+            subheader={newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF
+                  ? "Myself"
+                  : `Someone else: ${newMarket.designatedReporterAddress}`}
+          />
         </div>
 
         <LineBreak />
