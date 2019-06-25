@@ -47,6 +47,7 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
     function contribute(address _participant, uint256 _amount, bool _overload) public returns (uint256) {
         require(IMarket(msg.sender) == market);
         if (_overload) {
+            universe.updateForkValues();
             _amount = _amount.min(universe.getDisputeThresholdForDisputePacing().sub(totalSupply()));
         } else {
             _amount = _amount.min(size.sub(totalSupply()));
