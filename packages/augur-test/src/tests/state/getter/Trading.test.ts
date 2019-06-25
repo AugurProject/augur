@@ -62,9 +62,10 @@ test("State API :: Trading :: getTradingHistory", async () => {
     account: mary.account,
   });
 
-  await expect(trades).toHaveLength(2);
+  await expect(trades[market1.address]).toHaveLength(1);
+  await expect(trades[market2.address]).toHaveLength(1);
 
-  const trade = trades[0];
+  const trade = trades[market1.address][0];
   await expect(trade.price).toEqual("0.22");
   await expect(trade.type).toEqual("sell");
   await expect(trade.amount).toEqual("0.0005");
@@ -77,7 +78,8 @@ test("State API :: Trading :: getTradingHistory", async () => {
     marketIds: [market1.address],
   });
 
-  await expect(trades).toHaveLength(2);
+  await expect(trades[market1.address]).toHaveLength(2);
+  await expect(trades[market2.address]).toBeUndefined();
 
   // Test `ignoreReportingStates` param
   let newTime = (await market1.getEndTime_()).plus(1);
@@ -101,7 +103,8 @@ test("State API :: Trading :: getTradingHistory", async () => {
     ignoreReportingStates: [MarketInfoReportingState.FINALIZED]
   });
 
-  await expect(trades).toHaveLength(2);
+  await expect(trades[market1.address]).toBeUndefined();
+  await expect(trades[market2.address]).toHaveLength(2);
 }, 60000);
 
 test("State API :: Trading :: getOrders/getAllOrders", async () => {
