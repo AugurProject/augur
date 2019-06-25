@@ -71,6 +71,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function fork() public returns (bool) {
+        updateForkValues();
         require(!isForking());
         require(isContainerForMarket(IMarket(msg.sender)));
         forkingMarket = IMarket(msg.sender);
@@ -350,6 +351,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getOrCacheDesignatedReportStake() public returns (uint256) {
+        updateForkValues();
         IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
         IDisputeWindow _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow(false);
         uint256 _currentDesignatedReportStakeInAttoRep = designatedReportStakeInAttoRep[address(_disputeWindow)];

@@ -21,7 +21,6 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     IUniverse internal universe;
     IUniverse internal parentUniverse;
     uint256 internal totalMigrated;
-    uint256 internal totalTheoreticalSupply;
     IERC20 public legacyRepToken;
     IAugur public augur;
 
@@ -31,7 +30,6 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         universe = _universe;
         parentUniverse = _parentUniverse;
         legacyRepToken = IERC20(augur.lookup("LegacyReputationToken"));
-        updateTotalTheoreticalSupply();
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
     }
@@ -150,19 +148,14 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return legacyRepToken;
     }
 
-    function updateTotalTheoreticalSupply() public returns (bool) {
-        if (parentUniverse == IUniverse(0)) {
-            totalTheoreticalSupply = Reporting.getInitialREPSupply();
-        } else if (augur.getTimestamp() >= parentUniverse.getForkEndTime()) {
-            totalTheoreticalSupply = totalSupply();
-        } else {
-            totalTheoreticalSupply = totalSupply() + parentUniverse.getReputationToken().totalSupply();
-        }
-        return true;
-    }
-
     function getTotalTheoreticalSupply() public view returns (uint256) {
-        return totalTheoreticalSupply;
+        if (parentUniverse == IUniverse(0)) {
+            return Reporting.getInitialREPSupply();
+        } else if (augur.getTimestamp() >= parentUniverse.getForkEndTime()) {
+            return totalSupply();
+        } else {
+            return totalSupply() + parentUniverse.getReputationToken().totalSupply();
+        }
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
@@ -181,6 +174,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     }
 
     function migrateFromLegacyReputationToken() public returns (bool) {
+        require(parentUniverse == IUniverse(0));
         uint256 _legacyBalance = legacyRepToken.balanceOf(msg.sender);
         require(legacyRepToken.transferFrom(msg.sender, address(1), _legacyBalance));
         mint(msg.sender, _legacyBalance);
