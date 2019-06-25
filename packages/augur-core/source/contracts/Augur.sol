@@ -15,6 +15,7 @@ import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/ITime.sol';
 
 
@@ -23,6 +24,7 @@ import 'ROOT/ITime.sol';
 /// @title Augur
 contract Augur is IAugur {
     using SafeMathUint256 for uint256;
+    using ContractExists for address;
 
     enum TokenType {
         ReputationToken,
@@ -112,6 +114,7 @@ contract Augur is IAugur {
     function registerContract(bytes32 _key, address _address) public returns (bool) {
         require(msg.sender == uploader);
         require(registry[_key] == address(0));
+        require(_address.exists(), "Augur.registerContract: Contract address is not actually a contract");
         registry[_key] = _address;
         if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds" || _key == "MarketFactory") {
             trustedSender[_address] = true;
