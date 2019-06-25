@@ -20,8 +20,10 @@ contract VariableSupplyToken is StandardToken {
     }
 
     // Subclasses of this token may want to send additional logs through the centralized Augur log emitter contract
-    function onMint(address, uint256) internal;
+    function onMint(address, uint256) internal {
+    }
 
     // Subclasses of this token may want to send additional logs through the centralized Augur log emitter contract
-    function onBurn(address, uint256) internal;
+    function onBurn(address, uint256) internal {
+    }
 }
