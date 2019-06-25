@@ -13,6 +13,7 @@ import 'ROOT/trading/IShareToken.sol';
 
 contract IUniverse is ITyped {
     function fork() public returns (bool);
+    function updateForkValues() public returns (bool);
     function getParentUniverse() public view returns (IUniverse);
     function createChildUniverse(uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function getChildUniverse(bytes32 _parentPayoutDistributionHash) public view returns (IUniverse);
