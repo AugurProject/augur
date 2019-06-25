@@ -24,15 +24,12 @@ contract LegacyReputationToken is OldLegacyReputationToken {
         return true;
     }
 
-    function onMint(address, uint256) internal returns (bool) {
-        return true;
+    function onMint(address, uint256) internal {
     }
 
-    function onBurn(address, uint256) internal returns (bool) {
-        return true;
+    function onBurn(address, uint256) internal {
     }
 
-    function onTokenTransfer(address, address, uint256) internal returns (bool) {
-        return true;
+    function onTokenTransfer(address, address, uint256) internal {
     }
 }

@@ -107,12 +107,11 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
-    function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view returns (bool) {
+    function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view {
         IUniverse _shadyUniverse = _shadyReputationToken.getUniverse();
         require(universe.isParentOf(_shadyUniverse));
         IUniverse _legitUniverse = _shadyUniverse;
         require(_legitUniverse.getReputationToken() == _shadyReputationToken);
-        return true;
     }
 
     function getTypeName() public view returns (bytes32) {
@@ -141,19 +140,16 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         }
     }
 
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal {
         augur.logReputationTokensTransferred(universe, _from, _to, _value, balances[_from], balances[_to]);
-        return true;
     }
 
-    function onMint(address _target, uint256 _amount) internal returns (bool) {
+    function onMint(address _target, uint256 _amount) internal {
         augur.logReputationTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 
-    function onBurn(address _target, uint256 _amount) internal returns (bool) {
+    function onBurn(address _target, uint256 _amount) internal {
         augur.logReputationTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 
     function migrateFromLegacyReputationToken() public returns (bool) {

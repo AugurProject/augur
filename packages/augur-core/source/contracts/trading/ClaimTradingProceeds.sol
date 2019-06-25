@@ -23,12 +23,11 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
     IProfitLoss public profitLoss;
     ICash public cash;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
         cash = ICash(augur.lookup("Cash"));
-        return true;
     }
 
     function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder) external returns(bool) {
@@ -66,7 +65,7 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         return true;
     }
 
-    function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) private returns (bool) {
+    function distributeProceeds(IMarket _market, address _shareHolder, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) private {
         if (_shareHolderShare > 0) {
             require(cash.transferFrom(address(_market), _shareHolder, _shareHolderShare));
         }
@@ -76,12 +75,10 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         if (_reporterShare > 0) {
             require(cash.transferFrom(address(_market), address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reporterShare));
         }
-        return true;
     }
 
-    function logTradingProceedsClaimed(IMarket _market, uint256 _outcome, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) private returns (bool) {
+    function logTradingProceedsClaimed(IMarket _market, uint256 _outcome, address _shareToken, address _sender, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) private {
         augur.logTradingProceedsClaimed(_market.getUniverse(), _shareToken, _sender, address(_market), _outcome, _numShares, _numPayoutTokens, _sender.balance.add(_numPayoutTokens), _fees);
-        return true;
     }
 
     function divideUpWinnings(IMarket _market, uint256 _outcome, uint256 _numberOfShares) public returns (uint256 _proceeds, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) {

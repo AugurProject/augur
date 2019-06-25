@@ -20,12 +20,11 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     ICash public cash;
     address public fillOrder;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         fillOrder = augur.lookup("FillOrder");
         cash = ICash(augur.lookup("Cash"));
-        return true;
     }
 
     /**

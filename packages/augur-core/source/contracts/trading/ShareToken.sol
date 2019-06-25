@@ -34,7 +34,7 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         shouldUpdatePL = true;
     }
 
-    function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) external beforeInitialized returns(bool) {
+    function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) external beforeInitialized {
         endInitialization();
         market = _market;
         outcome = _outcome;
@@ -47,7 +47,6 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         profitLoss = IProfitLoss(_augur.lookup("ProfitLoss"));
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
-        return true;
     }
 
     function createShares(address _owner, uint256 _fxpValue) external returns(bool) {
@@ -90,21 +89,18 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         return outcome;
     }
 
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal {
         if (shouldUpdatePL) {
             profitLoss.recordExternalTransfer(_from, _to, _value);
         }
         augur.logShareTokensTransferred(market.getUniverse(), _from, _to, _value, balances[_from], balances[_to], outcome);
-        return true;
     }
 
-    function onMint(address _target, uint256 _amount) internal returns (bool) {
+    function onMint(address _target, uint256 _amount) internal {
         augur.logShareTokensMinted(market.getUniverse(), _target, _amount, totalSupply(), balances[_target], outcome);
-        return true;
     }
 
-    function onBurn(address _target, uint256 _amount) internal returns (bool) {
+    function onBurn(address _target, uint256 _amount) internal {
         augur.logShareTokensBurned(market.getUniverse(), _target, _amount, totalSupply(), balances[_target], outcome);
-        return true;
     }
 }

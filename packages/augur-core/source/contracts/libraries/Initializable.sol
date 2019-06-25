@@ -9,9 +9,8 @@ contract Initializable {
         _;
     }
 
-    function endInitialization() internal beforeInitialized returns (bool) {
+    function endInitialization() internal beforeInitialized {
         initialized = true;
-        return true;
     }
 
     function getInitialized() public view returns (bool) {

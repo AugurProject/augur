@@ -27,13 +27,12 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
     ICash public cash;
     IProfitLoss public profitLoss;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
         cash = ICash(augur.lookup("Cash"));
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
-        return true;
     }
 
     /**

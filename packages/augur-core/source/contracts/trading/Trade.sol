@@ -41,14 +41,13 @@ contract Trade is Initializable, ReentrancyGuard {
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant DEFAULT_LOOP_LIMIT = 3;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         createOrder = ICreateOrder(augur.lookup("CreateOrder"));
         fillOrder = IFillOrder(augur.lookup("FillOrder"));
         orders = IOrders(augur.lookup("Orders"));
         cash = ICash(augur.lookup("Cash"));
-        return true;
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, IERC20 _kycToken) internal pure returns (Data memory) {

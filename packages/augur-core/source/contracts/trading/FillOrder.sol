@@ -372,13 +372,12 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     mapping (address => uint256) public marketVolume;
     mapping (address => uint256[]) public marketOutcomeVolumes;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
         trade = augur.lookup("Trade");
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
-        return true;
     }
 
     function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external returns (uint256) {

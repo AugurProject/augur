@@ -10,10 +10,9 @@ contract Map is Ownable, Initializable, IMap {
     mapping(bytes32 => address) private items;
     uint256 private count;
 
-    function initialize(address _owner) public beforeInitialized returns (bool) {
+    function initialize(address _owner) public beforeInitialized {
         endInitialization();
         owner = _owner;
-        return true;
     }
 
     function add(bytes32 _key, address _value) public onlyOwner returns (bool) {

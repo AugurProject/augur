@@ -30,7 +30,7 @@ contract ProfitLoss is Initializable {
     // User => Market => Outcome => Data
     mapping (address => mapping(address => mapping(uint256 => OutcomeData))) private profitLossData;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         createOrder = augur.lookup("CreateOrder");
@@ -38,7 +38,6 @@ contract ProfitLoss is Initializable {
         fillOrder = augur.lookup("FillOrder");
         claimTradingProceeds = augur.lookup("ClaimTradingProceeds");
         orders = IOrders(augur.lookup("Orders"));
-        return true;
     }
 
     function recordFrozenFundChange(IMarket _market, address _account, uint256 _outcome, int256 _frozenFundDelta) public returns (bool) {

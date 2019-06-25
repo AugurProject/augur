@@ -14,13 +14,12 @@ contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, II
     address private actualReporter;
     uint256 private reportTimestamp;
 
-    function initialize(IAugur _augur, IMarket _market, address _designatedReporter) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IMarket _market, address _designatedReporter) public beforeInitialized {
         endInitialization();
         augur = _augur;
         market = _market;
         reputationToken = market.getUniverse().getReputationToken();
         designatedReporter = _designatedReporter;
-        return true;
     }
 
     function redeem(address) public returns (bool) {
@@ -36,7 +35,7 @@ contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, II
         return true;
     }
 
-    function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, uint256 _initialReportStake) public returns (bool) {
+    function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, uint256 _initialReportStake) public {
         require(IMarket(msg.sender) == market);
         require(reportTimestamp == 0);
         uint256 _timestamp = augur.getTimestamp();
@@ -49,21 +48,18 @@ contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, II
         reportTimestamp = _timestamp;
         payoutNumerators = _payoutNumerators;
         size = _initialReportStake;
-        return true;
     }
 
-    function returnRepFromDisavow() public returns (bool) {
+    function returnRepFromDisavow() public {
         require(IMarket(msg.sender) == market);
         require(reputationToken.transfer(owner, reputationToken.balanceOf(address(this))));
         reportTimestamp = 0;
-        return true;
     }
 
-    function migrateToNewUniverse(address _designatedReporter) public returns (bool) {
+    function migrateToNewUniverse(address _designatedReporter) public {
         require(IMarket(msg.sender) == market);
         designatedReporter = _designatedReporter;
         reputationToken = market.getUniverse().getReputationToken();
-        return true;
     }
 
     function forkAndRedeem() public returns (bool) {

@@ -37,7 +37,7 @@ contract Orders is IOrders, Initializable {
     address public createOrder;
     IProfitLoss public profitLoss;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         createOrder = augur.lookup("CreateOrder");
@@ -46,7 +46,6 @@ contract Orders is IOrders, Initializable {
         trade = augur.lookup("Trade");
         cash = ICash(augur.lookup("Cash"));
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
-        return true;
     }
 
     // Getters

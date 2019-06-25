@@ -46,7 +46,7 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         _;
     }
 
-    function initialize(IUniverse _universe) public beforeInitialized returns (bool) {
+    function initialize(IUniverse _universe) public beforeInitialized {
         endInitialization();
         require(_universe != IUniverse(0));
         universe = _universe;
@@ -55,7 +55,6 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         // Initialize migration related state. If this is Genesis universe REP the balances from the Legacy contract must be migrated before we enable usage
         isMigratingFromLegacy = _universe.getParentUniverse() == IUniverse(0);
         targetSupply = _legacyRepToken.totalSupply();
-        return true;
     }
 
     function migrateOutByPayout(uint256[] memory _payoutNumerators, uint256 _attotokens) public whenNotMigratingFromLegacy returns (bool) {
@@ -136,12 +135,11 @@ contract OldLegacyReputationToken is DelegationTarget, ITyped, Initializable, Va
         return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
-    function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view returns (bool) {
+    function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view {
         IUniverse _shadyUniverse = _shadyReputationToken.getUniverse();
         require(universe.isParentOf(_shadyUniverse));
         IUniverse _legitUniverse = _shadyUniverse;
         require(_legitUniverse.getReputationToken() == _shadyReputationToken);
-        return true;
     }
 
     function getTypeName() public view returns (bytes32) {

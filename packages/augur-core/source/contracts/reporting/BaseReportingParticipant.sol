@@ -14,15 +14,14 @@ contract BaseReportingParticipant is IReportingParticipant {
     IReputationToken internal reputationToken;
     IAugur public augur;
 
-    function liquidateLosing() public returns (bool) {
+    function liquidateLosing() public {
         require(IMarket(msg.sender) == market);
         require(market.getWinningPayoutDistributionHash() != getPayoutDistributionHash() && market.getWinningPayoutDistributionHash() != bytes32(0));
         IReputationToken _reputationToken = market.getReputationToken();
         require(_reputationToken.transfer(address(market), _reputationToken.balanceOf(address(this))));
-        return true;
     }
 
-    function fork() internal returns (bool) {
+    function fork() internal {
         require(market == market.getUniverse().getForkingMarket());
         IUniverse _newUniverse = market.getUniverse().createChildUniverse(payoutNumerators);
         IReputationToken _newReputationToken = _newUniverse.getReputationToken();
@@ -32,7 +31,6 @@ contract BaseReportingParticipant is IReportingParticipant {
         reputationToken = _newReputationToken;
         augur.logReportingParticipantDisavowed(market.getUniverse(), market);
         market = IMarket(0);
-        return true;
     }
 
     function getSize() public view returns (uint256) {
