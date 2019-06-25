@@ -589,9 +589,8 @@ contract Market is Initializable, Ownable, IMarket {
         return false;
     }
 
-    function onTransferOwnership(address _owner, address _newOwner) internal returns (bool) {
+    function onTransferOwnership(address _owner, address _newOwner) internal {
         augur.logMarketTransferred(getUniverse(), _owner, _newOwner);
-        return true;
     }
 
     function assertBalances() public view returns (bool) {

@@ -99,8 +99,7 @@ contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, II
         return payoutDistributionHash == market.getWinningPayoutDistributionHash();
     }
 
-    function onTransferOwnership(address _owner, address _newOwner) internal returns (bool) {
+    function onTransferOwnership(address _owner, address _newOwner) internal {
         augur.logInitialReporterTransferred(market.getUniverse(), market, _owner, _newOwner);
-        return true;
     }
 }

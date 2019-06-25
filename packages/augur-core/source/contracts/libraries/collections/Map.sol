@@ -53,7 +53,6 @@ contract Map is Ownable, Initializable, IMap {
         return count;
     }
 
-    function onTransferOwnership(address, address) internal returns (bool) {
-        return true;
+    function onTransferOwnership(address, address) internal {
     }
 }
