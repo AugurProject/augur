@@ -75,8 +75,8 @@ beforeAll(async () => {
 }, 120000);
 
 test("State API :: Users :: getProfitLoss & getProfitLossSummary ", async () => {
-  const market1 = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
-  const market2 = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const market1 = await john.createReasonableYesNoMarket();
+  const market2 = await john.createReasonableYesNoMarket();
 
   const startTime = await john.getTimestamp();
   let timestamp = startTime;
@@ -168,7 +168,7 @@ test("State API :: Users :: getProfitLoss & getProfitLossSummary ", async () => 
 }, 60000);
 
 test("State API :: Users :: getUserTradingPositions binary-1", async () => {
-  const market = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const market = await john.createReasonableYesNoMarket();
 
   const trades: Array<UTPTradeData> = [
     {
@@ -223,7 +223,7 @@ test("State API :: Users :: getUserTradingPositions binary-1", async () => {
 }, 60000);
 
 test("State API :: Users :: getUserTradingPositions cat3-1", async () => {
-  const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+  const market = await john.createReasonableMarket([stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
 
   const trades: Array<UTPTradeData> = [
     {
@@ -269,7 +269,7 @@ test("State API :: Users :: getUserTradingPositions cat3-1", async () => {
 }, 60000);
 
 test("State API :: Users :: getUserTradingPositions cat3-2", async () => {
-  const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+  const market = await john.createReasonableMarket([stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
 
   const trades: Array<UTPTradeData> = [
     {
@@ -315,7 +315,7 @@ test("State API :: Users :: getUserTradingPositions cat3-2", async () => {
 }, 60000);
 
 test("State API :: Users :: getUserTradingPositions cat3-3", async () => {
-  const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
+  const market = await john.createReasonableMarket([stringTo32ByteHex("A"), stringTo32ByteHex("B"), stringTo32ByteHex("C")]);
 
   const trades: Array<UTPTradeData> = [
     {
@@ -389,7 +389,7 @@ test("State API :: Users :: getUserTradingPositions cat3-3", async () => {
 }, 60000);
 
 test("State API :: Users :: getUserTradingPositions scalar", async () => {
-  const market = await john.createReasonableScalarMarket(john.augur.contracts.universe);
+  const market = await john.createReasonableScalarMarket();
 
   const trades: Array<UTPTradeData> = [
     {

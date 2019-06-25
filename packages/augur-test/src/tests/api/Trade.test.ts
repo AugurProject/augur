@@ -19,7 +19,7 @@ beforeAll(async () => {
 }, 120000);
 
 test("Trade :: placeTrade", async () => {
-  const market1 = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const market1 = await john.createReasonableYesNoMarket();
 
   await john.placeBasicYesNoTrade(0, market1, 1, new BigNumber(1), new BigNumber(0.4), new BigNumber(0));
 
@@ -36,7 +36,7 @@ test("Trade :: placeTrade", async () => {
 }, 15000);
 
 test("Trade :: simulateTrade", async () => {
-  const market1 = await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+  const market1 = await john.createReasonableYesNoMarket();
 
   const orderAmount = new BigNumber(1);
   const orderPrice = new BigNumber(0.4)

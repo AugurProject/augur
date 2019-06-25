@@ -40,16 +40,15 @@ test("UserSynableDB.sync", async () => {
   //        value: [BigNumber],
   //        tokenType: 0,
   //        market: '0x0000000000000000000000000000000000000000' } },
-  await john.createCategoricalMarket(
-    universe,
-    new BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60),
-    (new BigNumber(10)).pow(16),
-    new BigNumber(25),
-    sender,
-    [stringTo32ByteHex("big"), stringTo32ByteHex("small")],
-    "boba",
-    JSON.stringify({ description: "Will big or small boba be the most popular in 2019?" }),
-  );
+  await john.createCategoricalMarket({
+    endTime: new BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60),
+    feePerCashInAttoCash: (new BigNumber(10)).pow(16),
+    affiliateFeeDivisor: new BigNumber(25),
+    designatedReporter: sender,
+    outcomes: [stringTo32ByteHex("big"), stringTo32ByteHex("small")],
+    topic: "boba",
+    extraInfo: JSON.stringify({ description: "Will big or small boba be the most popular in 2019?" }),
+  });
 
   const tokensTransferredEventDefinition = john.augur.userSpecificEvents.find((x) => x.name === "TokensTransferred");
   if (!tokensTransferredEventDefinition) {
