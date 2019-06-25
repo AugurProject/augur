@@ -1,16 +1,22 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import moment from "moment";
 
 import { LocationDisplay } from "modules/common/form";
 import { CUSTOM_PAGES } from "modules/common/constants";
+import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
+import { createMarket } from "modules/contracts/actions/contractCalls";
 
-import FormDetails from "modules/create-market/components/form-details";
+import FormDetails from "modules/create-market/containers/form-details";
+import Review from "modules/create-market/containers/review";
+
 import Styles from "modules/create-market/components/form.styles";
 
 interface FormProps {
-  updateNewMarket: Function;
   newMarket: Object;
+  updateNewMarket: Function;
+  address: String;
 }
 
 interface FormState {
@@ -25,9 +31,67 @@ export default class Form extends React.Component<
     empty: ""
   };
 
+
+  prevPage = () => {
+    const { newMarket, updateNewMarket } = this.props;
+    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    updateNewMarket({ currentStep: newStep });
+  }
+
+  nextPage = () => {
+    const { newMarket, updateNewMarket } = this.props;
+   // if (newMarket.isValid) {
+      const newStep =
+        newMarket.currentStep >= CUSTOM_PAGES.length - 1
+          ? CUSTOM_PAGES.length - 1
+          : newMarket.currentStep + 1;
+      updateNewMarket({ currentStep: newStep });
+    //}
+  }
+
+
+  submitMarket = () => {
+    const { newMarket, address } = this.props;
+
+    createMarket({
+      isValid: true,
+      validations: newMarket.validations,
+      currentStep: newMarket.currentStep,
+      type: newMarket.type, // this isn't used
+      outcomes: [],
+      scalarSmallNum: newMarket.minPrice,
+      scalarBigNum: newMarket.maxPrice,
+      scalarDenomination: newMarket.scalarDenomination,
+      description: newMarket.description,
+      expirySourceType: newMarket.expirySourceType,
+      expirySource: newMarket.expirySource,
+      designatedReporterType: newMarket.designatedReporterType,
+      designatedReporterAddress: (newMarket.designatedReporterAddress === "") ? address : newMarket.designatedReporterAddress,
+      minPrice: newMarket.minPrice,
+      maxPrice: newMarket.maxPrice,
+      endTime: newMarket.endTime.unix(), // newMarket.endTime, this is a number (timestamp)
+      tickSize: newMarket.tickSize, // maxPrice.tickSize, this needs to be a string
+      hour: newMarket.hour,
+      minute: newMarket.minute,
+      meridiem: newMarket.meridiem,
+      marketType: newMarket.type,
+      detailsText: newMarket.detailsText,
+      category: "",
+      tag1: "",
+      tag2: "",
+      settlementFee: 0,
+      affiliateFee: 0,
+      orderBook: {},
+      orderBookSorted: {},
+      orderBookSeries: {},
+      initialLiquidityEth: 0,
+      initialLiquidityGas: 0,
+      creationError: ""
+    });
+  }
+
   render() {
     const {
-      updateNewMarket,
       newMarket
     } = this.props;
     const s = this.state;
@@ -53,7 +117,19 @@ export default class Form extends React.Component<
             If the event occurs outside of these bounds it has a high probability as resolving as invalid. 
           </span>
         </div>
-        <FormDetails newMarket={newMarket} updateNewMarket={updateNewMarket} />
+        <div>
+          {newMarket.currentStep === 0 &&
+            <FormDetails />
+          }
+          {newMarket.currentStep === 2 &&
+            <Review />
+          }
+          <div>
+            <SecondaryButton text="Back" action={this.prevPage} />
+            {newMarket.currentStep !== 2 && <PrimaryButton text="Next" action={this.nextPage} />}
+            {newMarket.currentStep === 2 && <PrimaryButton text="Create" action={this.submitMarket} />}
+          </div>
+        </div>
       </div>
     );
   }
