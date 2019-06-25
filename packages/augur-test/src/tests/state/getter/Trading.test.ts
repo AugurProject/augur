@@ -33,8 +33,8 @@ test("State API :: Trading :: getTradingHistory", async () => {
   await mary.approveCentralAuthority();
 
   // Create a market
-  const market1 = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
-  const market2 = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
+  const market1 = await john.createReasonableMarket([stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
+  const market2 = await john.createReasonableMarket([stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
 
   // Place an order
   const bid = new BigNumber(0);
@@ -112,7 +112,7 @@ test("State API :: Trading :: getOrders/getAllOrders", async () => {
   await mary.approveCentralAuthority();
 
   // Create a market
-  const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
+  const market = await john.createReasonableMarket([stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
 
   // Place an order
   const bid = new BigNumber(0);
@@ -303,7 +303,7 @@ test("State API :: Trading :: getBetterWorseOrders", async () => {
   await john.approveCentralAuthority();
 
   // Create a market
-  const market = await john.createReasonableMarket(john.augur.contracts.universe, [stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
+  const market = await john.createReasonableMarket([stringTo32ByteHex("A"), stringTo32ByteHex("B")]);
 
   // Place orders of varying price
   const bid = new BigNumber(0);

@@ -5,6 +5,7 @@ import {EthersProvider} from "@augurproject/ethersjs-provider";
 import {AccountList, makeDependencies, makeSigner} from "./LocalAugur";
 import {ContractAddresses} from "@augurproject/artifacts";
 import {BigNumber} from "bignumber.js";
+import { CreateScalarMarketParams, CreateYesNoMarketParams, CreateCategoricalMarketParams } from "@augurproject/sdk";
 
 const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
 
@@ -30,115 +31,72 @@ export class ContractAPI {
     await this.augur.contracts.cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
   }
 
-  public async createYesNoMarket(
-    universe: ContractInterfaces.Universe,
-    endTime: BigNumber,
-    feePerCashInAttoCash: BigNumber,
-    affiliateFeeDivisor: BigNumber,
-    designatedReporter: string,
-    topic: string,
-    extraInfo:string
-  ): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+  async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheMarketCreationCost_();
     await this.faucet(marketCreationFee);
-    const byteTopic = stringTo32ByteHex(topic);
 
-    const createMarketEvents = await universe.createYesNoMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, byteTopic, extraInfo);
-
-    // TODO: turn this into a function
-    let marketId = "";
-    for (const ev of createMarketEvents) {
-      if (ev.name === "MarketCreated") {
-        interface HasMarket {
-          market: string;
-        }
-        marketId = (ev.parameters as HasMarket).market;
-      }
-    }
-
-    return this.augur.contracts.marketFromAddress(marketId);
+    return this.augur.createYesNoMarket(params);
   }
 
-  public async createReasonableYesNoMarket(universe: ContractInterfaces.Universe): Promise<ContractInterfaces.Market> {
+  async createReasonableYesNoMarket(): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
     const currentTimestamp = (await time.getTimestamp_()).toNumber();
-    const endTime = new BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
-    const fee = new BigNumber(10).pow(16);
-    const affiliateFeeDivisor = new BigNumber(25);
-    return this.createYesNoMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, " ", "{\"description\": \"description\"}");
+
+    return this.createYesNoMarket({
+      endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
+      feePerCashInAttoCash: new BigNumber(10).pow(16),
+      affiliateFeeDivisor: new BigNumber(25),
+      designatedReporter: this.account,
+      topic: " ",
+      extraInfo: JSON.stringify({description: "description"}),
+    });
   }
 
-  public async createCategoricalMarket(universe: ContractInterfaces.Universe, endTime: BigNumber, feePerCashInAttoCash: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string, outcomes: Array<string>, topic: string, extraInfo: string): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+  async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheMarketCreationCost_();
     await this.faucet(marketCreationFee);
-    const byteTopic = stringTo32ByteHex(topic);
 
-    const createMarketEvents = await universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, outcomes, byteTopic, extraInfo);
-
-    // TODO: turn this into a function
-    let marketId = "";
-    for (const ev of createMarketEvents) {
-      if (ev.name === "MarketCreated") {
-        interface HasMarket {
-          market: string;
-        }
-        marketId = (ev.parameters as HasMarket).market;
-      }
-    }
-
-    return this.augur.contracts.marketFromAddress(marketId);
+    return this.augur.createCategoricalMarket(params);
   }
 
-  public async createReasonableMarket(universe: ContractInterfaces.Universe, outcomes: Array<string>): Promise<ContractInterfaces.Market> {
+  async createReasonableMarket(outcomes: string[]): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
     const currentTimestamp = (await time.getTimestamp_()).toNumber();
-    const endTime = new BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
-    const fee = new BigNumber(10).pow(16);
-    const affiliateFeeDivisor = new BigNumber(25);
-    return this.createCategoricalMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, outcomes, " ", "{\"description\": \"description\"}");
+
+    return this.createCategoricalMarket({
+      endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
+      feePerCashInAttoCash: new BigNumber(10).pow(16),
+      affiliateFeeDivisor: new BigNumber(25),
+      designatedReporter: this.account,
+      topic: " ",
+      extraInfo: JSON.stringify({description: "description"}),
+      outcomes,
+    });
   }
 
-  public async createScalarMarket(
-    universe: ContractInterfaces.Universe,
-    endTime: BigNumber,
-    feePerCashInAttoCash: BigNumber,
-    affiliateFeeDivisor: BigNumber,
-    designatedReporter: string,
-    prices: Array<BigNumber>,
-    numTicks: BigNumber,
-    topic: string,
-    extraInfo: string,
-    ): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+  async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheMarketCreationCost_();
     await this.faucet(marketCreationFee);
-    const byteTopic = stringTo32ByteHex(topic);
 
-    const createMarketEvents = await universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporter, prices, numTicks, byteTopic, extraInfo);
-
-    // TODO: turn this into a function
-    let marketId = "";
-    for (const ev of createMarketEvents) {
-      if (ev.name === "MarketCreated") {
-        interface HasMarket {
-          market: string;
-        }
-        marketId = (ev.parameters as HasMarket).market;
-      }
-    }
-
-    return this.augur.contracts.marketFromAddress(marketId);
+    return this.augur.createScalarMarket(params);
   }
 
-  public async createReasonableScalarMarket(universe: ContractInterfaces.Universe): Promise<ContractInterfaces.Market> {
+  async createReasonableScalarMarket(): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
     const currentTimestamp = (await time.getTimestamp_()).toNumber();
-    const endTime = new BigNumber(currentTimestamp + 30 * 24 * 60 * 60);
-    const fee = new BigNumber(10).pow(16);
-    const affiliateFeeDivisor = new BigNumber(25);
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
     const maxPrice = new BigNumber(250).multipliedBy(new BigNumber(10).pow(18));
-    const numTicks = new BigNumber(20000);
-    return this.createScalarMarket(universe, endTime, fee, affiliateFeeDivisor, this.account, [minPrice, maxPrice], numTicks, " ", "{\"description\": \"description\", \"_scalarDenomination\": \"scalar denom 1\"}");
+
+    return this.createScalarMarket({
+      endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
+      feePerCashInAttoCash: new BigNumber(10).pow(16),
+      affiliateFeeDivisor: new BigNumber(25),
+      designatedReporter: this.account,
+      topic: " ",
+      extraInfo: JSON.stringify({description: "description", _scalarDenomination: "scalar denom 1"}),
+      numTicks: new BigNumber(20000),
+      prices: [minPrice, maxPrice],
+    });
   }
 
   public async placeOrder(
