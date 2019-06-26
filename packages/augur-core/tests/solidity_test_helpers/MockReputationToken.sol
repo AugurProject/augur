@@ -3,7 +3,7 @@ pragma solidity ^0.5.4;
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/Initializable.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/Reporting.sol';
@@ -162,7 +162,7 @@ contract MockReputationToken is ITyped, Initializable, MockVariableSupplyToken, 
         return setUniverseValue;
     }
 
-    function migrateFromLegacyReputationToken() public afterInitialized returns (bool) {
+    function migrateFromLegacyReputationToken() public returns (bool) {
         return setMigrateFromLegacyReputationTokenValue;
     }
 

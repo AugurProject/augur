@@ -179,7 +179,7 @@ export default class HardwareWallet extends Component<HardwareWalletProps, Hardw
 
     const walletAddresses = await this.getBulkWalletAddressesWithBalances(
       derivationPath,
-      1,
+      1
     );
 
     if (walletAddresses.length > 0) {

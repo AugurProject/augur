@@ -1,6 +1,6 @@
 pragma solidity 0.5.4;
 
-import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/libraries/IERC1820Registry.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/reporting/BaseReportingParticipant.sol';
@@ -15,7 +15,7 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
     string constant public name = "Dispute Crowdsourcer Token";
     string constant public symbol = "DISP";
 
-    function initialize(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, address _erc820RegistryAddress) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, address _erc1820RegistryAddress) public beforeInitialized {
         endInitialization();
         augur = _augur;
         market = _market;
@@ -24,9 +24,8 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
         size = _size;
         payoutNumerators = _payoutNumerators;
         payoutDistributionHash = _payoutDistributionHash;
-        erc820Registry = IERC820Registry(_erc820RegistryAddress);
-        initialize820InterfaceImplementations();
-        return true;
+        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
+        initialize1820InterfaceImplementations();
     }
 
     function redeem(address _redeemer) public returns (bool) {
@@ -47,6 +46,7 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
     function contribute(address _participant, uint256 _amount, bool _overload) public returns (uint256) {
         require(IMarket(msg.sender) == market);
         if (_overload) {
+            universe.updateForkValues();
             _amount = _amount.min(universe.getDisputeThresholdForDisputePacing().sub(totalSupply()));
         } else {
             _amount = _amount.min(size.sub(totalSupply()));
@@ -70,29 +70,25 @@ contract DisputeCrowdsourcer is VariableSupplyToken, BaseReportingParticipant, I
         return size.sub(totalSupply());
     }
 
-    function setSize(uint256 _size) public returns (bool) {
+    function setSize(uint256 _size) public {
         require(IMarket(msg.sender) == market);
         size = _size;
-        return true;
     }
 
     function getStake() public view returns (uint256) {
         return totalSupply();
     }
 
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal {
         augur.logDisputeCrowdsourcerTokensTransferred(universe, _from, _to, _value, balances[_from], balances[_to]);
-        return true;
     }
 
-    function onMint(address _target, uint256 _amount) internal returns (bool) {
+    function onMint(address _target, uint256 _amount) internal {
         augur.logDisputeCrowdsourcerTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 
-    function onBurn(address _target, uint256 _amount) internal returns (bool) {
+    function onBurn(address _target, uint256 _amount) internal {
         augur.logDisputeCrowdsourcerTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 
     function getReputationToken() public view returns (IReputationToken) {

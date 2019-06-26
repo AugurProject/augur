@@ -55,7 +55,6 @@ const DEFAULT_STATE: NewMarket = {
   settlementFee: SETTLEMENT_FEE_DEFAULT,
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
-  orderBookSeries: {}, // for order book chart
   initialLiquidityEth: createBigNumber(0),
   initialLiquidityGas: createBigNumber(0),
   creationError:

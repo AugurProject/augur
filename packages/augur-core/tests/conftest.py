@@ -95,13 +95,13 @@ def new_get_storage(self, address: Address, slot: int, from_journal: bool=True) 
         return rlp.decode(encoded_value, sedes=rlp.sedes.big_endian_int)
 
 def dumb_gas_search(*args) -> int:
-    return 7500000
+    return 7900000
 
 def dumb_get_buffered_gas_estimate(web3, transaction, gas_buffer=100000):
-    return 7500000
+    return 7900000
 
 def dumb_estimateGas(self, transaction, block_identifier=None):
-    return 7000000
+    return 7900000
 
 def new_create_header_from_parent(self,
                                 parent_header: BlockHeader,
@@ -378,7 +378,7 @@ class ContractsFixture:
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
-                if name in ['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
+                if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
                 # if name == 'ReputationTokenFactory': continue # tests use mock
@@ -407,10 +407,10 @@ class ContractsFixture:
                 self.upload(path.join(directory, filename), constructorArgs=constructorArgs)
 
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','Cash','LegacyReputationToken','ProfitLoss','SimulateTrade']
+        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade']
         for contractName in contractsToInitialize:
-            if getattr(self.contracts[contractName], "initializeERC820", None):
-                self.contracts[contractName].initializeERC820(self.contracts['Augur'].address)
+            if getattr(self.contracts[contractName], "initializeERC1820", None):
+                self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)
             elif getattr(self.contracts[contractName], "initialize", None):
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
@@ -565,6 +565,12 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     categoricalMarket = fixture.createReasonableCategoricalMarket(universe, 3)
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
+
+    tokensFail = fixture.upload("solidity_test_helpers/ERC777Fail.sol")
+    erc1820Registry = fixture.contracts['ERC1820Registry']
+    erc1820Registry.setInterfaceImplementer(fixture.accounts[0], erc1820Registry.interfaceHash("ERC777TokensSender"), tokensFail.address)
+    erc1820Registry.setInterfaceImplementer(fixture.accounts[0], erc1820Registry.interfaceHash("ERC777TokensRecipient"), tokensFail.address)
+
     snapshot = fixture.createSnapshot()
     snapshot['universe'] = universe
     snapshot['cash'] = cash
@@ -572,8 +578,8 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot['yesNoMarket'] = yesNoMarket
     snapshot['categoricalMarket'] = categoricalMarket
     snapshot['scalarMarket'] = scalarMarket
-    snapshot['auction'] = fixture.applySignature('Auction', universe.getAuction())
     snapshot['reputationToken'] = fixture.applySignature('ReputationToken', universe.getReputationToken())
+    snapshot['tokensFail'] = tokensFail
     return snapshot
 
 @pytest.fixture
@@ -610,12 +616,12 @@ def scalarMarket(kitchenSinkFixture, kitchenSinkSnapshot):
     return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['scalarMarket'].address, kitchenSinkSnapshot['scalarMarket'].abi)
 
 @pytest.fixture
-def auction(kitchenSinkFixture, kitchenSinkSnapshot):
-    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['auction'].address, kitchenSinkSnapshot['auction'].abi)
-
-@pytest.fixture
 def reputationToken(kitchenSinkFixture, kitchenSinkSnapshot):
     return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['reputationToken'].address, kitchenSinkSnapshot['reputationToken'].abi)
+
+@pytest.fixture
+def tokensFail(kitchenSinkFixture, kitchenSinkSnapshot):
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['tokensFail'].address, kitchenSinkSnapshot['tokensFail'].abi)
 
 # TODO: globally replace this with `fixture` and `kitchenSinkSnapshot` as appropriate then delete this
 @pytest.fixture(scope="session")

@@ -6,7 +6,7 @@ export { getMarketPriceHistory, MarketPriceHistoryParams } from "./get-market-pr
 export { getMarketPriceCandlesticks, MarketPriceCandlesticksParams } from "./get-market-price-candlesticks";
 export { getUserTradingPositions, UserTradingPositionsParams } from "./get-user-trading-positions";
 export { getUserShareBalances, UserShareBalancesParams } from "./get-user-share-balances";
-export { getAccountTransactionHistory, GetAccountTransactionHistoryParams } from "./get-account-transaction-history";
+export { getAccountTransactionHistory, getAccountTransactionHistoryParams } from "./get-account-transaction-history";
 export { FeeWindowParams, getFeeWindow } from "./get-fee-window";
 export {
   getUnclaimedMarketCreatorFees,

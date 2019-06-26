@@ -33,10 +33,14 @@ test("State API :: SyncData :: getSyncData", async () => {
 
   const syncData = await api.route("getSyncData", {});
 
+  const highestAvailableBlockNumber = syncData.highestAvailableBlockNumber;
+  const blocksBehindCurrent = highestAvailableBlockNumber - 10;
+  const percentBehindCurrent = (blocksBehindCurrent * 100 / highestAvailableBlockNumber).toFixed(4);
+
   expect(syncData).toEqual({
-    highestAvailableBlockNumber: 87,
+    highestAvailableBlockNumber: highestAvailableBlockNumber,
     lastSyncedBlockNumber: 10,
-    blocksBehindCurrent: 77,
-    percentBehindCurrent: "88.5057",
+    blocksBehindCurrent: blocksBehindCurrent,
+    percentBehindCurrent: percentBehindCurrent,
   });
 });

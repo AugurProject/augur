@@ -9,17 +9,17 @@ const orderForMarketDepth = orderBook => {
   const bids = rawBids.reduce(
     (p, order) => [
       ...p,
-      [order.cumulativeShares, order.price.value, order.shares.value, true]
+      [order.cumulativeShares, order.price, order.shares, true]
     ],
     []
   );
   const rawAsks = ((orderBook || {})[ASKS] || []).slice();
   const asks = rawAsks
-    .sort((a, b) => a.price.value - b.price.value)
+    .sort((a, b) => createBigNumber(a.price).minus(createBigNumber(b.price)))
     .reduce(
       (p, order) => [
         ...p,
-        [order.cumulativeShares, order.price.value, order.shares.value, true]
+        [order.cumulativeShares, order.price, order.shares, true]
       ],
       []
     );
@@ -27,7 +27,7 @@ const orderForMarketDepth = orderBook => {
   if (asks.length > 0) {
     const minAsksDepthOrder = asks.reduce(
       (lastValue, nextValue) =>
-        lastValue[0].lte(nextValue[0]) ? lastValue : nextValue,
+        createBigNumber(lastValue[0]).lte(createBigNumber(nextValue[0])) ? lastValue : nextValue,
       asks[0]
     );
     asks.unshift([
@@ -41,7 +41,7 @@ const orderForMarketDepth = orderBook => {
   if (bids.length > 0) {
     const minBidDepthOrder = bids.reduce(
       (lastValue, nextValue) =>
-        lastValue[0].lte(nextValue[0]) ? lastValue : nextValue,
+        createBigNumber(lastValue[0]).gte(createBigNumber(nextValue[0])) ? lastValue : nextValue,
       bids[0]
     );
     bids.unshift([

@@ -1,16 +1,16 @@
 pragma solidity 0.5.4;
 
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/trading/Order.sol';
 
 
 contract IAugur {
     function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function isKnownUniverse(IUniverse _universe) public view returns (bool);
-    function trustedTransfer(ERC20Token _token, address _from, address _to, uint256 _amount) public returns (bool);
+    function trustedTransfer(IERC20 _token, address _from, address _to, uint256 _amount) public returns (bool);
     function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool);
     function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool);
     function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] memory _payoutNumerators, string memory description) public returns (bool);
@@ -44,21 +44,17 @@ contract IAugur {
     function logTimestampSet(uint256 _newTimestamp) public returns (bool);
     function logInitialReporterTransferred(IUniverse _universe, IMarket _market, address _from, address _to) public returns (bool);
     function logMarketTransferred(IUniverse _universe, address _from, address _to) public returns (bool);
-    function logAuctionTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance) public returns (bool);
-    function logAuctionTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
-    function logAuctionTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logParticipationTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance) public returns (bool);
     function logParticipationTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logParticipationTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool);
     function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId) public returns (bool);
     function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume, uint256[] memory _outcomeVolumes) public returns (bool);
     function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost) public returns (bool);
-    function recordAuctionTokens(IUniverse _universe) public returns (bool);
     function isKnownFeeSender(address _feeSender) public view returns (bool);
     function isKnownShareToken(IShareToken _token) public view returns (bool);
     function lookup(bytes32 _key) public view returns (address);
     function getTimestamp() public view returns (uint256);
     function getMaximumMarketEndDate() public returns (uint256);
-    function isValidMarket(IMarket _market) public view returns (bool);
+    function isKnownMarket(IMarket _market) public view returns (bool);
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators, uint256 _numTicks, uint256 numOutcomes) public view returns (bytes32);
 }

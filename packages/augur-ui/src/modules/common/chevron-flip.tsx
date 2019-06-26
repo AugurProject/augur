@@ -14,7 +14,7 @@ const ChevronFlipIcon = (className = "", fillColor = "#A7A2B2") => (
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <g stroke={fillColor}>
+      <g>
         <polyline
           transform="translate(8.156854, 11.156854) scale(1, -1) rotate(-225.000000) translate(-8.156854, -11.156854) "
           points="3.65685425 6.65685425 12.6568542 6.65685425 12.6568542 15.6568542"

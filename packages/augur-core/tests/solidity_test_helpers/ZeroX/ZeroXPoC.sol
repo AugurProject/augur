@@ -3,7 +3,7 @@ pragma solidity 0.5.4;
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/ICash.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/trading/CompleteSets.sol';
@@ -57,7 +57,7 @@ contract ZeroXPoC is ReentrancyGuard {
         uint256 orderType;
         uint256 amount;
         uint256 price;
-        uint expirationTimestampInSec;
+        uint256 expirationTimestampInSec;
         bytes32 orderHash;
     }
 
@@ -86,16 +86,16 @@ contract ZeroXPoC is ReentrancyGuard {
     / Market Share management
     */
 
-    function deposit(ERC20Token _token, uint256 _amount) public nonReentrant returns (bool) {
-        require(_token != ERC20Token(0));
+    function deposit(IERC20 _token, uint256 _amount) public nonReentrant returns (bool) {
+        require(_token != IERC20(0));
         tokenBalances[address(_token)][msg.sender] = tokenBalances[address(_token)][msg.sender].add(_amount);
         require(_token.transferFrom(msg.sender, address(this), _amount));
         emit Deposit(msg.sender, address(_token), _amount, tokenBalances[address(_token)][msg.sender]);
         return true;
     }
 
-    function withdraw(ERC20Token _token, uint256 _amount) public nonReentrant returns (bool) {
-        require(_token != ERC20Token(0));
+    function withdraw(IERC20 _token, uint256 _amount) public nonReentrant returns (bool) {
+        require(_token != IERC20(0));
         uint256 _heldAmount = tokenBalances[address(_token)][msg.sender];
         tokenBalances[address(_token)][msg.sender] = _heldAmount.sub(_amount);
         require(_heldAmount >= _amount);
@@ -121,7 +121,7 @@ contract ZeroXPoC is ReentrancyGuard {
     function fillOrder(
           address[2] memory orderAddresses,
           uint[6] memory orderValues,
-          uint fillAmount,
+          uint256 fillAmount,
           uint8 v,
           bytes32 r,
           bytes32 s)
@@ -155,8 +155,8 @@ contract ZeroXPoC is ReentrancyGuard {
             return false;
         }
 
-        uint _remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
-        uint _toFillAmount = fillAmount.min(_remainingAmount);
+        uint256 _remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
+        uint256 _toFillAmount = fillAmount.min(_remainingAmount);
         if (_toFillAmount == 0) {
             emit Error(uint8(Errors.ORDER_FULLY_FILLED_OR_CANCELLED), order.orderHash);
             return false;
@@ -178,7 +178,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return true;
     }
 
-    function tradeMakerSharesForFillerShares(Order memory order, uint _toFillAmount) private returns (uint256) {
+    function tradeMakerSharesForFillerShares(Order memory order, uint256 _toFillAmount) private returns (uint256) {
         if (_toFillAmount == 0) {
             return _toFillAmount;
         }
@@ -206,7 +206,7 @@ contract ZeroXPoC is ReentrancyGuard {
 
     function sellCompleteSets(Order memory order, uint256 _numCompleteSets, address _shortParticipant, address _longParticipant, IShareToken _longShareToken, IShareToken[] memory _shortShareTokens) private returns (bool) {
         uint256 _startingBalance = cash.balanceOf(address(this));
-        completeSets.publicSellCompleteSetsWithCash(order.market, _numCompleteSets);
+        completeSets.publicSellCompleteSets(order.market, _numCompleteSets);
 
         uint256 _payout = cash.balanceOf(address(this)).sub(_startingBalance);
 
@@ -223,7 +223,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return true;
     }
 
-    function tradeMakerSharesForFillerTokens(Order memory order, uint _toFillAmount) private returns (uint256) {
+    function tradeMakerSharesForFillerTokens(Order memory order, uint256 _toFillAmount) private returns (uint256) {
         if (_toFillAmount == 0) {
             return _toFillAmount;
         }
@@ -251,7 +251,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return _toFillAmount.sub(_amountToTrade);
     }
 
-    function tradeMakerTokensForFillerShares(Order memory order, uint _toFillAmount) private returns (uint256) {
+    function tradeMakerTokensForFillerShares(Order memory order, uint256 _toFillAmount) private returns (uint256) {
         // TODO
         return _toFillAmount;
     }
@@ -269,7 +269,7 @@ contract ZeroXPoC is ReentrancyGuard {
         uint256 _shortPrice = order.orderType == 0 ? order.market.getNumTicks().sub(order.price) : order.price;
         uint256 _longPrice = order.orderType == 0 ? order.price : order.market.getNumTicks().sub(order.price);
 
-        completeSets.publicBuyCompleteSetsWithCash(order.market, _toFillAmount);
+        completeSets.publicBuyCompleteSets(order.market, _toFillAmount);
         tokenBalances[address(_longShareToken)][_longParticipant] = tokenBalances[address(_longShareToken)][_longParticipant].add(_toFillAmount);
         for (uint256 _i = 0; _i < _shortShareTokens.length; ++_i) {
             tokenBalances[address(_shortShareTokens[_i])][_shortParticipant] = tokenBalances[address(_shortShareTokens[_i])][_shortParticipant].add(_toFillAmount);
@@ -301,7 +301,7 @@ contract ZeroXPoC is ReentrancyGuard {
     function cancelOrder(
         address[2] memory orderAddresses,
         uint[6] memory orderValues,
-        uint cancelAmount)
+        uint256 cancelAmount)
         public
         nonReentrant
         returns (bool)
@@ -325,8 +325,8 @@ contract ZeroXPoC is ReentrancyGuard {
             return false;
         }
 
-        uint remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
-        uint cancelledAmount = cancelAmount.min(remainingAmount);
+        uint256 remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
+        uint256 cancelledAmount = cancelAmount.min(remainingAmount);
         if (cancelledAmount == 0) {
             emit Error(uint8(Errors.ORDER_FULLY_FILLED_OR_CANCELLED), order.orderHash);
             return false;
@@ -404,7 +404,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return filled[orderHash].add(cancelled[orderHash]);
     }
 
-    function getTokenBalance(ERC20Token token, address owner)
+    function getTokenBalance(IERC20 token, address owner)
         public
         view
         returns (uint)
@@ -420,7 +420,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param token Address of token.
     /// @param owner Address of owner.
     /// @return Token balance of owner.
-    function getBalance(ERC20Token token, address owner)
+    function getBalance(IERC20 token, address owner)
         internal
         returns (uint)
     {
@@ -431,7 +431,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param token Address of token.
     /// @param owner Address of owner.
     /// @return Allowance of token given to this contract by owner.
-    function getAllowance(ERC20Token token, address owner)
+    function getAllowance(IERC20 token, address owner)
         internal
         returns (uint)
     {

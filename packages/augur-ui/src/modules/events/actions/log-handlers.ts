@@ -4,7 +4,7 @@ import {
   loadMarketAccountPositions,
   loadAccountPositionsTotals
 } from "modules/positions/actions/load-account-positions";
-import { loadMarketOpenOrders } from "modules/orders/actions/load-market-open-orders";
+import { loadMarketOrderBook } from "modules/orders/actions/load-market-order-book";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
 import { removeMarket } from "modules/markets/actions/update-markets-data";
@@ -28,7 +28,7 @@ import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { startOrderSending } from "modules/orders/actions/liquidity-management";
 import {
   loadMarketTradingHistory,
-  loadUserMarketTradingHistory
+  loadUserFilledOrders
 } from "modules/markets/actions/market-trading-history-management";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
@@ -185,7 +185,7 @@ export const handleOrderCreatedLog = (log: any) => (
     dispatch(loadAccountPositionsTotals());
   }
   if (isCurrentMarket(log.marketId))
-    dispatch(loadMarketOpenOrders(log.marketId));
+    dispatch(loadMarketOrderBook(log.marketId));
 };
 
 export const handleOrderCanceledLog = (log: any) => (
@@ -202,7 +202,7 @@ export const handleOrderCanceledLog = (log: any) => (
     dispatch(loadAccountPositionsTotals());
   }
   if (isCurrentMarket(log.marketId))
-    dispatch(loadMarketOpenOrders(log.marketId));
+    dispatch(loadMarketOrderBook(log.marketId));
 };
 
 export const handleOrderFilledLog = (log: any) => (
@@ -223,14 +223,14 @@ export const handleOrderFilledLog = (log: any) => (
         new BigNumber(log.price, 10)
       )
     );
-    dispatch(loadUserMarketTradingHistory({ marketId: log.marketId }));
+    dispatch(loadUserFilledOrders({ marketId: log.marketId }));
     dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
   }
   // always reload account positions on trade so we get up to date PL data.
   dispatch(loadUserPositionsAndBalances(log.marketId));
-  dispatch(loadMarketTradingHistory({ marketId: log.marketId }));
+  dispatch(loadMarketTradingHistory(log.marketId));
   if (isCurrentMarket(log.marketId))
-    dispatch(loadMarketOpenOrders(log.marketId));
+    dispatch(loadMarketOrderBook(log.marketId));
 };
 
 export const handleTradingProceedsClaimedLog = (log: any) => (
@@ -243,7 +243,7 @@ export const handleTradingProceedsClaimedLog = (log: any) => (
     dispatch(updateLoggedTransactions(log));
     dispatch(loadUserPositionsAndBalances(log.market));
   }
-  if (isCurrentMarket(log.market)) dispatch(loadMarketOpenOrders(log.market));
+  if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
 };
 
 export const handleInitialReportSubmittedLog = (log: any) => (
