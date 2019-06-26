@@ -1,5 +1,4 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { augur } from 'services/augurjs';
 import { BUY, ZERO } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
@@ -8,7 +7,7 @@ import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback, MarketData } from 'modules/types';
-import { simulateTrade } from 'modules/contracts/actions/contractCalls';
+import { simulateTrade, simulateTradeGasLimit } from 'modules/contracts/actions/contractCalls';
 import { SimulateTradeData } from '@augurproject/sdk/build';
 import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 
@@ -222,6 +221,23 @@ async function runSimulateTrade(
     userShares
   );
 
+  const gasLimit = await simulateTradeGasLimit(
+    orderType,
+    marketId,
+    market.numOutcomes,
+    parseInt(outcomeId, 10),
+    ignoreShares,
+    affiliateAddress,
+    kycToken,
+    doNotCreateOrders,
+    market.numTicks,
+    market.minPrice,
+    market.maxPrice,
+    newTradeDetails.numShares,
+    newTradeDetails.limitPrice,
+    userShares
+  );
+
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
   newTradeDetails.totalCost = simulateTradeValue.tokensDepleted;
@@ -251,5 +267,5 @@ async function runSimulateTrade(
     })
   );
 
-  if (callback) callback(null, { ...order, ...simulateTradeValue, displayTrade });
+  if (callback) callback(null, { ...order, ...simulateTradeValue, displayTrade, gasLimit });
 }

@@ -26,12 +26,12 @@ import {
 } from "modules/common/icons";
 import classNames from "classnames";
 
-import Styles from "modules/common/buttons.styles";
+import Styles from "modules/common/buttons.styles.less";
 import { AppState } from "store";
 
 export interface DefaultButtonProps {
   id?: string;
-  text: string;
+  text?: string;
   action: Function;
   disabled?: boolean;
   title?: string;
@@ -275,7 +275,7 @@ export const DirectionButton = (props: DirectionButtonProps) => (
   <button
     onClick={e => props.action(e)}
     className={classNames(Styles.DirectionButton, {
-      [Styles.left]: props.left
+      [Styles.left]: props.left,
     })}
     disabled={props.disabled}
     title={props.title}
@@ -313,7 +313,7 @@ export const SortButton = (props: SortButtonProps) => (
     onClick={e => props.action(e)}
     className={classNames(Styles.SortButton, {
       [Styles.Ascending]: props.sortOption === ASCENDING,
-      [Styles.Descending]: props.sortOption === DESCENDING
+      [Styles.Descending]: props.sortOption === DESCENDING,
     })}
     disabled={props.disabled}
   >
@@ -337,14 +337,14 @@ interface EtherscanLinkTSXProps {
   baseUrl?: string | null;
   txhash: string;
   label: string;
-  showNonLink?: Boolean;
+  showNonLink?: boolean;
 }
 
 const EtherscanLinkTSX = ({
   baseUrl,
   txhash,
   label,
-  showNonLink
+  showNonLink,
 }: EtherscanLinkTSXProps) => (
   <span>
     {baseUrl && (
@@ -360,16 +360,21 @@ EtherscanLinkTSX.propTypes = {
   baseUrl: PropTypes.string,
   txhash: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  showNonLink: PropTypes.bool
+  showNonLink: PropTypes.bool,
 };
 
 EtherscanLinkTSX.defaultProps = {
   baseUrl: null,
-  showNonLink: false
+  showNonLink: false,
 };
 
 const mapStateToPropsEtherScanLink = (state: AppState) => {
   const networkId = state.connection.augurNodeNetworkId;
+
+  if (!networkId) {
+    return null;
+  }
+
   const networkLink = {
     1: "https://etherscan.io/tx/",
     3: "https://ropsten.etherscan.io/tx/",

@@ -231,4 +231,8 @@ export class Augur<TProvider extends Provider = Provider> {
   public async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
     return this.market.createScalarMarket(params);
   }
+
+  public async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
+    return this.trade.simulateTradeGasLimit(params);
+  }
 }

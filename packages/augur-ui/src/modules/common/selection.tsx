@@ -107,9 +107,10 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       stretchOutOnMobile,
       openTop,
       className,
-      activeClassName
+      activeClassName,
     } = this.props;
     const { selected, showList } = this.state;
+
     return (
       <div
         style={sortByStyles}
@@ -133,7 +134,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         </button>
         <div
           className={classNames(Styles.Dropdown_list, {
-            [`${Styles.active}`]: showList
+            [`${Styles.active}`]: showList,
           })}
         >
           {options.map(option => (
