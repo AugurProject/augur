@@ -35,7 +35,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     }
 
     function migrateOutByPayout(uint256[] memory _payoutNumerators, uint256 _attotokens) public returns (bool) {
-        require(_attotokens > 0);
+        require(_attotokens > 0, "ReputationToken.migrateOutByPayout: Cannot migrate 0 tokens");
         IUniverse _destinationUniverse = universe.createChildUniverse(_payoutNumerators);
         IReputationToken _destination = _destinationUniverse.getReputationToken();
         burn(msg.sender, _attotokens);
@@ -44,7 +44,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     }
 
     function migrateOut(IReputationToken _destination, uint256 _attotokens) public returns (bool) {
-        require(_attotokens > 0);
+        require(_attotokens > 0, "ReputationToken.migrateOut: Cannot migrate 0 tokens");
         assertReputationTokenIsLegitSibling(_destination);
         burn(msg.sender, _attotokens);
         _destination.migrateIn(msg.sender, _attotokens);
@@ -54,7 +54,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     function migrateIn(address _reporter, uint256 _attotokens) public returns (bool) {
         IUniverse _parentUniverse = universe.getParentUniverse();
         require(ReputationToken(msg.sender) == _parentUniverse.getReputationToken());
-        require(augur.getTimestamp() < _parentUniverse.getForkEndTime());
+        require(augur.getTimestamp() < _parentUniverse.getForkEndTime(), "ReputationToken.migrateIn: Cannot migrate after fork end");
         mint(_reporter, _attotokens);
         totalMigrated += _attotokens;
         // Update the fork tentative winner and finalize if we can
@@ -102,9 +102,9 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
 
     function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view {
         IUniverse _shadyUniverse = _shadyReputationToken.getUniverse();
-        require(universe.isParentOf(_shadyUniverse));
+        require(universe.isParentOf(_shadyUniverse), "ReputationToken.assertReputationTokenIsLegitSibling: Rep token is not sibling");
         IUniverse _legitUniverse = _shadyUniverse;
-        require(_legitUniverse.getReputationToken() == _shadyReputationToken);
+        require(_legitUniverse.getReputationToken() == _shadyReputationToken, "ReputationToken.assertReputationTokenIsLegitSibling: Rep token is not sibling");
     }
 
     function getTypeName() public view returns (bytes32) {
@@ -146,7 +146,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     }
 
     function migrateFromLegacyReputationToken() public returns (bool) {
-        require(parentUniverse == IUniverse(0));
+        require(parentUniverse == IUniverse(0), "ReputationToken.migrateFromLegacyReputationToken: Can only migrate into genesis universe");
         uint256 _legacyBalance = legacyRepToken.balanceOf(msg.sender);
         require(legacyRepToken.transferFrom(msg.sender, address(1), _legacyBalance));
         mint(msg.sender, _legacyBalance);

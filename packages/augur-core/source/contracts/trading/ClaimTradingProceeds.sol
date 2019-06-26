@@ -39,7 +39,7 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
 
     function claimTradingProceeds(IMarket _market, address _shareHolder) external nonReentrant returns(bool) {
         require(augur.isKnownMarket(_market));
-        require(_market.isFinalized());
+        require(_market.isFinalized(), "ClaimTradingProceeds.claimTradingProceeds: Market is not finalized");
 
         for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
             IShareToken _shareToken = _market.getShareToken(_outcome);

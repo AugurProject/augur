@@ -73,16 +73,16 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     }
 
     function buy(uint256 _attotokens) public returns (bool) {
-        require(_attotokens > 0);
-        require(isActive());
-        require(!universe.isForking());
+        require(_attotokens > 0, "DisputeWindow.buy: amount cannot be 0");
+        require(isActive(), "DisputeWindow.buy: window is not active");
+        require(!universe.isForking(), "DisputeWindow.buy: universe is forking");
         getReputationToken().trustedDisputeWindowTransfer(msg.sender, address(this), _attotokens);
         mint(msg.sender, _attotokens);
         return true;
     }
 
     function redeem(address _account) public returns (bool) {
-        require(isOver() || universe.isForking());
+        require(isOver() || universe.isForking(), "DisputeWindow.redeem: window is not over");
 
         uint256 _attoParticipationTokens = balances[_account];
 

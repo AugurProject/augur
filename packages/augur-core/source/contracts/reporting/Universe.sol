@@ -83,7 +83,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function updateForkValues() public returns (bool) {
-        require(!isForking());
+        require(!isForking(), "Universe.updateForkValues: Cannot update values during fork");
         uint256 _totalRepSupply = reputationToken.getTotalTheoreticalSupply();
         forkReputationGoal = _totalRepSupply.div(2); // 50% of REP migrating results in a victory in a fork
         disputeThresholdForFork = _totalRepSupply.div(Reporting.getForkThresholdDivisor()); // 2.5% of the total rep supply
@@ -233,11 +233,11 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getWinningChildUniverse() public view returns (IUniverse) {
-        require(isForking());
-        require(tentativeWinningChildUniversePayoutDistributionHash != bytes32(0));
+        require(isForking(), "Universe.getWinningChildUniverse: Must be forking to have winning child");
+        require(tentativeWinningChildUniversePayoutDistributionHash != bytes32(0), "Universe.getWinningChildUniverse: No winning universe");
         IUniverse _tentativeWinningUniverse = getChildUniverse(tentativeWinningChildUniversePayoutDistributionHash);
         uint256 _winningAmount = _tentativeWinningUniverse.getReputationToken().getTotalMigrated();
-        require(_winningAmount >= forkReputationGoal || augur.getTimestamp() > forkEndTime);
+        require(_winningAmount >= forkReputationGoal || augur.getTimestamp() > forkEndTime, "Universe.getWinningChildUniverse: No winning universe");
         return _tentativeWinningUniverse;
     }
 
@@ -486,9 +486,9 @@ contract Universe is ITyped, IUniverse {
     }
 
     function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
-        require(_prices.length == 2);
-        require(_prices[0] < _prices[1]);
-        require(_numTicks.isMultipleOf(2));
+        require(_prices.length == 2, "Universe.createScalarMarket: Prices length is incorrect");
+        require(_prices[0] < _prices[1], "Universe.createScalarMarket: Min price must be less than max price");
+        require(_numTicks.isMultipleOf(2), "Universe.createScalarMarket: numTicks must be multiple of 2");
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, _numTicks);
         augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks);
         return _newMarket;

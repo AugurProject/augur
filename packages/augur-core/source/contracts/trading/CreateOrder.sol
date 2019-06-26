@@ -35,24 +35,24 @@ contract CreateOrder is Initializable, ReentrancyGuard {
 
     function createOrder(address _creator, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, uint256 _outcome, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, bool _ignoreShares, IERC20 _kycToken) external nonReentrant returns (bytes32) {
         require(augur.isKnownMarket(_market));
-        require(_kycToken == IERC20(0) || _kycToken.balanceOf(_creator) > 0);
+        require(_kycToken == IERC20(0) || _kycToken.balanceOf(_creator) > 0, "Createorder.createOrder: KYC token failure");
         require(msg.sender == trade || msg.sender == address(this));
         Order.Data memory _orderData = Order.create(augur, _creator, _outcome, _type, _attoshares, _price, _market, _betterOrderId, _worseOrderId, _ignoreShares, _kycToken);
         Order.escrowFunds(_orderData);
-        require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0);
+        require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0, "Createorder.createOrder: Order duplication in same block");
         profitLoss.recordFrozenFundChange(_market, _creator, _outcome, int256(_orderData.moneyEscrowed));
         return Order.saveOrder(_orderData, _tradeGroupId);
     }
 
     function publicCreateOrders(uint256[] memory _outcomes, Order.Types[] memory _types, uint256[] memory _attoshareAmounts, uint256[] memory _prices, IMarket _market, bool _ignoreShares, bytes32 _tradeGroupId, IERC20 _kycToken) public nonReentrant returns (bytes32[] memory _orders) {
         require(augur.isKnownMarket(_market));
-        require(_kycToken == IERC20(0) || _kycToken.balanceOf(msg.sender) > 0);
+        require(_kycToken == IERC20(0) || _kycToken.balanceOf(msg.sender) > 0, "Createorder.publicCreateOrders: KYC token failure");
         _orders = new bytes32[]( _types.length);
 
         for (uint256 i = 0; i <  _types.length; i++) {
             Order.Data memory _orderData = Order.create(augur, msg.sender, _outcomes[i], _types[i], _attoshareAmounts[i], _prices[i], _market, bytes32(0), bytes32(0), _ignoreShares, _kycToken);
             Order.escrowFunds(_orderData);
-            require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0);
+            require(_orderData.orders.getAmount(_orderData.getOrderId()) == 0, "Createorder.publicCreateOrders: Order duplication in same block");
             profitLoss.recordFrozenFundChange(_market, msg.sender, _outcomes[i], int256(_orderData.moneyEscrowed));
             _orders[i] = Order.saveOrder(_orderData, _tradeGroupId);
         }

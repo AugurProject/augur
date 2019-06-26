@@ -389,7 +389,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external nonReentrant returns (uint256) {
         require(msg.sender == trade || msg.sender == address(this));
         Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _ignoreShares, _affiliateAddress);
-        require(_tradeData.order.kycToken == IERC20(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0);
+        require(_tradeData.order.kycToken == IERC20(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
         uint256 _price = orders.getPrice(_orderId);

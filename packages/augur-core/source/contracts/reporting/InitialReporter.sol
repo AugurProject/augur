@@ -37,11 +37,11 @@ contract InitialReporter is Ownable, BaseReportingParticipant, Initializable, II
 
     function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, uint256 _initialReportStake) public {
         require(IMarket(msg.sender) == market);
-        require(reportTimestamp == 0);
+        require(reportTimestamp == 0, "InitialReporter.report: Report has already been placed");
         uint256 _timestamp = augur.getTimestamp();
         bool _isDesignatedReporter = _reporter == getDesignatedReporter();
         bool _designatedReportingExpired = _timestamp > market.getDesignatedReportingEndTime();
-        require(_designatedReportingExpired || _isDesignatedReporter);
+        require(_designatedReportingExpired || _isDesignatedReporter, "InitialReporter.report: Reporting time not started");
         actualReporter = _reporter;
         owner = _reporter;
         payoutDistributionHash = _payoutDistributionHash;

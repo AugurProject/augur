@@ -51,7 +51,7 @@ contract Trade is Initializable, ReentrancyGuard {
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, IERC20 _kycToken) internal pure returns (Data memory) {
-        require(_amount > 0);
+        require(_amount > 0, "Trade.create: Trade amount cannot be 0");
 
         return Data({
             direction: _direction,

@@ -144,12 +144,12 @@ contract Orders is IOrders, Initializable {
     }
 
     function assertIsNotBetterPrice(Order.Types _type, uint256 _price, bytes32 _betterOrderId) public view returns (bool) {
-        require(!isBetterPrice(_type, _price, _betterOrderId));
+        require(!isBetterPrice(_type, _price, _betterOrderId), "Orders.assertIsNotBetterPrice: Is better price");
         return true;
     }
 
     function assertIsNotWorsePrice(Order.Types _type, uint256 _price, bytes32 _worseOrderId) public returns (bool) {
-        require(!isWorsePrice(_type, _price, _worseOrderId));
+        require(!isWorsePrice(_type, _price, _worseOrderId), "Orders.assertIsNotWorsePrice: Is worse price");
         return true;
     }
 
@@ -183,7 +183,7 @@ contract Orders is IOrders, Initializable {
 
     function saveOrder(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, IERC20 _kycToken) external returns (bytes32 _orderId) {
         require(msg.sender == createOrder || msg.sender == address(this));
-        require(_outcome < _market.getNumberOfOutcomes());
+        require(_outcome < _market.getNumberOfOutcomes(), "Orders.saveOrder: Outcome not in market range");
         _orderId = getOrderId(_type, _market, _amount, _price, _sender, block.number, _outcome, _moneyEscrowed, _sharesEscrowed, _kycToken);
         Order.Data storage _order = orders[_orderId];
         _order.orders = this;
@@ -215,19 +215,19 @@ contract Orders is IOrders, Initializable {
     function recordFillOrder(bytes32 _orderId, uint256 _sharesFilled, uint256 _tokensFilled, uint256 _fill) external returns (bool) {
         require(msg.sender == fillOrder || msg.sender == address(this));
         Order.Data storage _order = orders[_orderId];
-        require(_order.outcome < _order.market.getNumberOfOutcomes());
-        require(_orderId != bytes32(0));
-        require(_sharesFilled <= _order.sharesEscrowed);
-        require(_tokensFilled <= _order.moneyEscrowed);
-        require(_order.price <= _order.market.getNumTicks());
-        require(_fill <= _order.amount);
+        require(_order.outcome < _order.market.getNumberOfOutcomes(), "Orders.recordFillOrder: Outcome is not in market range");
+        require(_orderId != bytes32(0), "Orders.recordFillOrder: orderId is 0x0");
+        require(_sharesFilled <= _order.sharesEscrowed, "Orders.recordFillOrder: shares filled higher than order amount");
+        require(_tokensFilled <= _order.moneyEscrowed, "Orders.recordFillOrder: tokens filled higher than order amount");
+        require(_order.price <= _order.market.getNumTicks(), "Orders.recordFillOrder: Price outside of market range");
+        require(_fill <= _order.amount, "Orders.recordFillOrder: Fill higher than order amount");
         _order.amount -= _fill;
         _order.moneyEscrowed -= _tokensFilled;
         marketOrderData[address(_order.market)].totalEscrowed -= _tokensFilled;
         _order.sharesEscrowed -= _sharesFilled;
         if (_order.amount == 0) {
-            require(_order.moneyEscrowed == 0);
-            require(_order.sharesEscrowed == 0);
+            require(_order.moneyEscrowed == 0, "Orders.recordFillOrder: Money left in filled order");
+            require(_order.sharesEscrowed == 0, "Orders.recordFillOrder: Shares left in filled order");
             removeOrderFromList(_orderId);
             _order.price = 0;
             _order.creator = address(0);
@@ -246,11 +246,11 @@ contract Orders is IOrders, Initializable {
     function setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId) public returns (bool) {
         Order.Data storage _order = orders[_orderId];
         IMarket _market = _order.market;
-        require(msg.sender == _order.creator);
-        require(_order.amount > 0);
-        require(_price != 0);
-        require(_price < _market.getNumTicks());
-        require(_price != _order.price);
+        require(msg.sender == _order.creator, "Orders.setPrice: Sender is not order creator");
+        require(_order.amount > 0, "Orders.setPrice: Order is filled or canceled");
+        require(_price != 0, "Orders.setPrice: Price cannot be 0");
+        require(_price < _market.getNumTicks(), "Orders.setPrice: Price outside of market range");
+        require(_price != _order.price, "Orders.setPrice: Price must change in setOrderPrice");
         removeOrderFromList(_orderId);
         bool _isRefund = true;
         uint256 _moneyEscrowedDelta = 0;

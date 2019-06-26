@@ -51,7 +51,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
     }
 
     function cancelOrderInternal(address _sender, bytes32 _orderId) internal returns (bool) {
-        require(_orderId != bytes32(0));
+        require(_orderId != bytes32(0), "CancelOrder.cancelOrderInternal: Order id is 0x0");
 
         // Look up the order the sender wants to cancel
         uint256 _moneyEscrowed = orders.getOrderMoneyEscrowed(_orderId);
@@ -62,7 +62,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         address _creator = orders.getOrderCreator(_orderId);
 
         // Check that the order ID is correct and that the sender owns the order
-        require(_sender == _creator);
+        require(_sender == _creator, "CancelOrder.cancelOrderInternal: sender is not order owner");
 
         // Clear the order first
         orders.removeOrder(_orderId);

@@ -102,7 +102,7 @@ contract Augur is IAugur {
     uint256 public upgradeTimestamp;
 
     modifier onlyUploader() {
-        require(msg.sender == uploader);
+        require(msg.sender == uploader, "Augur: Uploader only function called by non-uploader");
         _;
     }
 
@@ -116,7 +116,7 @@ contract Augur is IAugur {
     //
 
     function registerContract(bytes32 _key, address _address) public onlyUploader returns (bool) {
-        require(registry[_key] == address(0));
+        require(registry[_key] == address(0), "Augur.registerContract: key has already been used in registry");
         require(_address.exists(), "Augur.registerContract: Contract address is not actually a contract");
         registry[_key] = _address;
         if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds" || _key == "MarketFactory") {
@@ -238,13 +238,13 @@ contract Augur is IAugur {
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes) public view returns (bytes32) {
         uint256 _sum = 0;
         // This is to force an Invalid report to be entirely payed out to Invalid
-        require(_payoutNumerators[0] == 0 || _payoutNumerators[0] == _numTicks);
-        require(_payoutNumerators.length == _numOutcomes);
+        require(_payoutNumerators[0] == 0 || _payoutNumerators[0] == _numTicks, "Augur.derivePayoutDistributionHash: Malformed Invalid payout");
+        require(_payoutNumerators.length == _numOutcomes, "Augur.derivePayoutDistributionHash: Malformed payout length");
         for (uint256 i = 0; i < _payoutNumerators.length; i++) {
             uint256 _value = _payoutNumerators[i];
             _sum = _sum.add(_value);
         }
-        require(_sum == _numTicks);
+        require(_sum == _numTicks, "Augur.derivePayoutDistributionHash: Malformed payout sum");
         return keccak256(abi.encodePacked(_payoutNumerators));
     }
 
