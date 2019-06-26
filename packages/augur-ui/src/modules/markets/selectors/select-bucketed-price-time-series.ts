@@ -133,8 +133,7 @@ function getTradeInTimeRange(timeSeries, startTime, endTime) {
   });
 
   return {
-    trimmedTimeSeries: (timeSeries, bucket) =>
-      timeSeries.filter(v => !bucket.includes(v)),
+    trimmedTimeSeries: timeSeries.filter(v => !bucket.includes(v)),
     trades: bucket
       .sort((a, b) => b.logIndex - a.logIndex)
       .sort((a, b) => b.timestamp - a.timestamp)

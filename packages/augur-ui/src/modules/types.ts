@@ -496,6 +496,7 @@ export interface LoginAccount {
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;
+  allowance?: BigNumber;
   eth?: string;
   rep?: string;
   dai?: string;
