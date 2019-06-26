@@ -4,7 +4,7 @@ export { getReportingSummary, ReportingSummaryParams } from "./get-reporting-sum
 export { getTradingHistory, TradingHistoryParams } from "./get-trading-history";
 export { getMarketPriceHistory, MarketPriceHistoryParams } from "./get-market-price-history";
 export { getMarketPriceCandlesticks, MarketPriceCandlesticksParams } from "./get-market-price-candlesticks";
-export { getUserTradingPositions, UserTradingPositionsParams } from "./get-user-trading-positions";
+export { getUserTradingPositions, userTradingPositionsParams } from "./get-user-trading-positions";
 export { getUserShareBalances, UserShareBalancesParams } from "./get-user-share-balances";
 export { getAccountTransactionHistory, GetAccountTransactionHistoryParams } from "./get-account-transaction-history";
 export { FeeWindowParams, getFeeWindow } from "./get-fee-window";
@@ -31,9 +31,9 @@ export { getReportingFees, ReportingFeesParams } from "./get-reporting-fees";
 export { getUniversesInfo, UniverseInfoParams } from "./get-universes-info";
 export {
   getProfitLoss,
-  GetProfitLossParams,
+  getProfitLossParams,
   getProfitLossSummary,
-  GetProfitLossSummaryParams
+  getProfitLossSummaryParams
 } from "./get-profit-loss";
 export { getWinningBalance, WinningBalanceParams } from "./get-winning-balance";
 export { CategoriesParams, getCategories } from "./get-categories";
