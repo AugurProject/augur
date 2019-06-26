@@ -62,8 +62,8 @@ import {
   Universe,
   Versions,
   AccountShareBalances,
-  MarketTradingHistoryState,
   OpenOrders,
+  MarketTradingHistoryState,
 } from "modules/types";
 
 export function createReducer() {
