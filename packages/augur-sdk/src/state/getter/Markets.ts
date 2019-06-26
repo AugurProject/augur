@@ -379,7 +379,7 @@ export class Markets {
               marketCreatedLogInfo[0]
             );
             const disputeWindowAddress = await market.getDisputeWindow_();
-            if (params.disputeWindow != disputeWindowAddress) {
+            if (params.disputeWindow !== disputeWindowAddress) {
               includeMarket = false;
             }
           }
@@ -559,7 +559,6 @@ export class Markets {
         let finalizationTime = null;
         if (marketFinalizedLogs.length > 0) {
           consensus = [];
-          marketFinalizedLogs[0].winningPayoutNumerators;
           for (
             let i = 0;
             i < marketFinalizedLogs[0].winningPayoutNumerators.length;
