@@ -34,7 +34,7 @@ const DEFAULT_STATE: NewMarket = {
   ],
   currentStep: 0,
   type: "",
-  outcomes: Array(8).fill(""),
+  outcomes: Array(2).fill(""),
   scalarSmallNum: "",
   scalarBigNum: "",
   scalarDenomination: "",
