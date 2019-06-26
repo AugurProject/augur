@@ -1,38 +1,106 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 .Header {
-	.text-24-bold;
+  .text-24-bold;
 
-	color: @color-alternate-info-text;
+  color: @color-alternate-info-text;
 }
 
 .Subheaders {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
+
+  > span:first-of-type {
+    .text-16-medium;
+
+    color: @color-alternate-info-text;
+    margin-bottom: @size-8;
+  }
+
+  > span:nth-of-type(2) {
+    .text-12;
+
+    color: @color-tertiary-info-text;
+    line-height: @size-20;
+    margin-bottom: @size-8;
+
+    > a {
+      color: @color-primary-action;
+      margin-left: 3px;
+    }
+  }
+
+  &:not(:first-of-type) {
+    > span:first-of-type {
+      margin-top: @size-32;
+    }
+  }
+}
+
+.NumberedList {
+  > li {
+    margin-bottom: @size-12;
+  }
+
+  > li:last-of-type {
+    margin-bottom: 0;
+
+    > button {
+			display: flex;
+			margin-left: 44px;
+
+      > svg {
+        height: @size-16;
+        width: @size-16;
+        margin-right: @size-8;
+
+        > path {
+          fill: @color-alternate-info-text;
+        }
+			}
+
+			&:hover:enabled {
+				> svg > path {
+					fill: @color-secondary-text;
+				}
+			}
 			
-	> span:first-of-type {
-		.text-16-medium;
+			&:disabled {
+				> svg > path {
+					fill: @color-neutral;
+				}
+			}
+    }
+  }
+}
 
-		color: @color-alternate-info-text;
-		margin-bottom: @size-8;
+.NumberedInput {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+
+  > span {
+    .text-14;
+
+    color: @color-alternate-info-text;
+    flex: 0 0 auto;
+    padding: @size-16;
+	}
+	
+	> div {
+		width: 440px;
 	}
 
-	> span:nth-of-type(2) {
-		.text-12;
+  > button {
+    margin: @size-16;
 
-		color: @color-tertiary-info-text;
-		line-height: @size-20;
-		margin-bottom: @size-8;
+		svg {
+			height: @size-10;
+			width: @size-10;
 
-		> a {
-			color: @color-primary-action;
-			margin-left: 3px;
+			> path {
+				stroke: @color-alternate-info-text;
+			}
 		}
-	}
-
-	&:not(:first-of-type) {
-		> span:first-of-type {
-			margin-top: @size-32;
-		}
-	}
+  }
 }
