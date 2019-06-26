@@ -38,7 +38,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     }
 
     function buyCompleteSets(address _sender, IMarket _market, uint256 _amount) external nonReentrant returns (bool) {
-        require(augur.isValidMarket(_market));
+        require(augur.isKnownMarket(_market));
         require(msg.sender == fillOrder || msg.sender == address(this));
         require(_sender != address(0));
 
@@ -65,7 +65,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     }
 
     function sellCompleteSets(address _sender, IMarket _market, uint256 _amount, address _affiliateAddress) external nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
-        require(augur.isValidMarket(_market));
+        require(augur.isKnownMarket(_market));
         require(msg.sender == fillOrder || msg.sender == address(this));
         require(_sender != address(0));
 

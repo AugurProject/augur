@@ -221,7 +221,7 @@ contract Augur is IAugur {
     // Markets
     //
 
-    function isValidMarket(IMarket _market) public view returns (bool) {
+    function isKnownMarket(IMarket _market) public view returns (bool) {
         return markets[address(_market)];
     }
 
