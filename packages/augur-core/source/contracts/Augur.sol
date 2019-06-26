@@ -10,7 +10,6 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
-import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/Order.sol';
@@ -102,6 +101,11 @@ contract Augur is IAugur {
 
     uint256 public upgradeTimestamp;
 
+    modifier onlyUploader() {
+        require(msg.sender == uploader);
+        _;
+    }
+
     constructor() public {
         uploader = msg.sender;
         upgradeTimestamp = Reporting.getInitialUpgradeTimestamp();
@@ -111,8 +115,7 @@ contract Augur is IAugur {
     // Registry
     //
 
-    function registerContract(bytes32 _key, address _address) public returns (bool) {
-        require(msg.sender == uploader);
+    function registerContract(bytes32 _key, address _address) public onlyUploader returns (bool) {
         require(registry[_key] == address(0));
         require(_address.exists(), "Augur.registerContract: Contract address is not actually a contract");
         registry[_key] = _address;
@@ -129,8 +132,7 @@ contract Augur is IAugur {
         return registry[_key];
     }
 
-    function finishDeployment() public returns (bool) {
-        require(msg.sender == uploader);
+    function finishDeployment() public onlyUploader returns (bool) {
         uploader = address(1);
         return true;
     }
@@ -139,8 +141,7 @@ contract Augur is IAugur {
     // Universe
     //
 
-    function createGenesisUniverse() public returns (IUniverse) {
-        require(msg.sender == uploader);
+    function createGenesisUniverse() public onlyUploader returns (IUniverse) {
         return createUniverse(IUniverse(0), bytes32(0), new uint256[](0));
     }
 
@@ -220,7 +221,7 @@ contract Augur is IAugur {
     // Markets
     //
 
-    function isValidMarket(IMarket _market) public view returns (bool) {
+    function isKnownMarket(IMarket _market) public view returns (bool) {
         return markets[address(_market)];
     }
 
@@ -397,7 +398,7 @@ contract Augur is IAugur {
     }
 
     function logUniverseForked(IMarket _forkingMarket) public returns (bool) {
-        require(universes[msg.sender]);
+        require(isKnownUniverse(IUniverse(msg.sender)));
         emit UniverseForked(msg.sender, _forkingMarket);
         return true;
     }
@@ -466,7 +467,7 @@ contract Augur is IAugur {
     }
 
     function logDisputeWindowCreated(IDisputeWindow _disputeWindow, uint256 _id, bool _initial) public returns (bool) {
-        require(universes[msg.sender]);
+        require(isKnownUniverse(IUniverse(msg.sender)));
         emit DisputeWindowCreated(msg.sender, address(_disputeWindow), _disputeWindow.getStartTime(), _disputeWindow.getEndTime(), _id, _initial);
         return true;
     }
