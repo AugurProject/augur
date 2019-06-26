@@ -1488,7 +1488,7 @@ describe('State API :: Markets :: ', () => {
     );
 
     // Skip to open reporting
-    newTime = newTime.plus(SECONDS_IN_A_DAY * 7);
+    newTime = newTime.plus(SECONDS_IN_A_DAY.times(7));
     await john.setTimestamp(newTime);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -1591,7 +1591,7 @@ describe('State API :: Markets :: ', () => {
       MarketInfoReportingState.OPEN_REPORTING
     );
 
-    newTime = newTime.plus(SECONDS_IN_A_DAY * 7);
+    newTime = newTime.plus(SECONDS_IN_A_DAY.times(7));
     await john.setTimestamp(newTime);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -1631,7 +1631,8 @@ describe('State API :: Markets :: ', () => {
         );
         await john.contribute(yesNoMarket, noPayoutSet, remainingToFill);
       }
-      newTime = newTime.plus(SECONDS_IN_A_DAY * 7);
+      newTime = newTime.plus(SECONDS_IN_A_DAY.times(7))
+      ;
       await john.setTimestamp(newTime);
     }
 

@@ -40,7 +40,7 @@ const getMarketsParamsSpecific = t.intersection([
   }),
 ]);
 
-export const SECONDS_IN_A_DAY = 86400;
+export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 
 export interface MarketInfoOutcome {
   id: number;
@@ -302,14 +302,16 @@ export class Markets {
       selector: {
         universe: params.universe,
         marketCreator: params.creator,
-        designatedReporter: params.designatedReporter
+        designatedReporter: params.designatedReporter,
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
       limit: params.limit,
       skip: params.offset,
     };
     if (params.maxEndTime) {
-      request.selector = Object.assign(request.selector, { endTime: { $lt: `0x${params.maxEndTime.toString(16)}` } });
+      request.selector = Object.assign(request.selector, {
+        endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
+      });
     }
     const marketCreatedLogs = await db.findMarketCreatedLogs(request);
 
@@ -622,7 +624,8 @@ export class Markets {
           cumulativeScale: cumulativeScale.toString(10),
           author: marketCreatedLog.marketCreator,
           creationBlock: marketCreatedLog.blockNumber,
-          creationTime: marketCreatedLog.timestamp,category: Buffer.from(
+          creationTime: marketCreatedLog.timestamp,
+          category: Buffer.from(
             marketCreatedLog.topic.replace('0x', ''),
             'hex'
           ).toString(),
