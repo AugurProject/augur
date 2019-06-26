@@ -228,7 +228,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function finalize() public returns (bool) {
-        require(winningPayoutDistributionHash == bytes32(0));
+        require(!isFinalized());
         uint256[] memory _winningPayoutNumerators;
         if (universe.getForkingMarket() == this) {
             IUniverse _winningUniverse = universe.getWinningChildUniverse();
@@ -237,7 +237,7 @@ contract Market is Initializable, Ownable, IMarket {
         } else {
             require(disputeWindow.isOver());
             require(!universe.isForking());
-            IReportingParticipant _reportingParticipant = participants[participants.length-1];
+            IReportingParticipant _reportingParticipant = getWinningReportingParticipant();
             winningPayoutDistributionHash = _reportingParticipant.getPayoutDistributionHash();
             _winningPayoutNumerators = _reportingParticipant.getPayoutNumerators();
             // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
