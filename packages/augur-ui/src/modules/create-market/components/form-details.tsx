@@ -162,7 +162,7 @@ export default class FormDetails extends React.Component<
               <NumberedList
                 initialList={outcomes}
                 minShown={2}
-                maxList={6}
+                maxList={7}
                 placeholder={"Enter outcome"}
                 updateList={(value: Array<string>) => this.onChange("outcomes", value)}
               />

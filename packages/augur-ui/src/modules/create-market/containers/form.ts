@@ -7,12 +7,11 @@ import {
   updateNewMarket
 } from "modules/markets/actions/update-new-market";
 import Form from "modules/create-market/components/form";
-import { selectCurrentTimestamp } from "select-state";
 import getValue from "utils/get-value";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
-  currentTimestamp: selectCurrentTimestamp(state),
+  currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
   address: getValue(state, "loginAccount.address"),
 });
 
