@@ -7,9 +7,12 @@ import { HoverValueLabel } from "modules/common/labels";
 import { ASKS, BIDS, BUY, SELL } from "modules/common/constants";
 
 import Styles from "modules/market-charts/components/order-book/order-book.styles.less";
+import { OutcomeOrderBook } from "modules/types";
+import { createBigNumber } from "utils/create-big-number";
+import { formatShares } from "utils/format-number";
 
 interface OrderBookSideProps {
-  orderBook: object;
+  orderBook: OutcomeOrderBook;
   updateSelectedOrderProperties: Function;
   hasOrders: boolean;
   orderBookKeys: object;
@@ -21,7 +24,7 @@ interface OrderBookSideProps {
 }
 
 interface OrderBookProps {
-  orderBook: object;
+  orderBook: OutcomeOrderBook;
   updateSelectedOrderProperties: Function;
   hasOrders: boolean;
   orderBookKeys: object;
@@ -109,8 +112,8 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
               }}
               onClick={() =>
                 updateSelectedOrderProperties({
-                  orderPrice: order.price.value.toString(),
-                  orderQuantity: order.cumulativeShares.toString(),
+                  orderPrice: order.price,
+                  orderQuantity: order.cumulativeShares,
                   selectedNav: type === ASKS ? BUY : SELL,
                   selfTrade: order.mySize !== null
                 })
@@ -126,7 +129,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                   [Styles.Bid]: type === BIDS
                 })}
               >
-                <HoverValueLabel value={order.shares} />
+                <HoverValueLabel value={formatShares(order.shares)} showEmptyDash={true} showDenomination={false} />
               </div>
               <div
                 className={classNames({
@@ -134,7 +137,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                   [Styles.Bid]: type === BIDS
                 })}
               >
-                {order.price.value.toFixed(pricePrecision)}
+                {createBigNumber(order.price).toFixed(pricePrecision)}
               </div>
               <div
                 className={classNames({
@@ -143,7 +146,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                 })}
               >
                 {order.mySize
-                  ? order.mySize.value.toFixed(fixedPrecision).toString()
+                  ? createBigNumber(order.mySize).toFixed(fixedPrecision).toString()
                   : "—"}
               </div>
             </button>
@@ -213,7 +216,7 @@ export default class OrderBook extends Component<
               <div>
                 <span>Spread:</span>
                 {orderBookKeys.spread
-                  ? orderBookKeys.spread.toFixed(pricePrecision)
+                  ? createBigNumber(orderBookKeys.spread).toFixed(pricePrecision)
                   : "—"}
                 {orderBookKeys.spread && <span>DAI</span>}
               </div>

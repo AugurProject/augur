@@ -614,6 +614,9 @@ export const CANCELLING_ORDER = "cancelling order";
 export const DAY = "days";
 export const WEEK = "week";
 export const MONTH = "month";
+export const EITHER = "either";
+export const MAKER = "maker";
+export const TAKER = "taker";
 // for add-transactions.js and transactions.jsx
 export const ALL = "all";
 export const PUBLIC_TRADE = "publicTrade";

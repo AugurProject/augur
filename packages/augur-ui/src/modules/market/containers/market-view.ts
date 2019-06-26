@@ -59,7 +59,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>
-    dispatch(loadMarketTradingHistory({ marketId })),
+    dispatch(loadMarketTradingHistory(marketId)),
   marketReviewModal: modal =>
     dispatch(
       updateModal({
