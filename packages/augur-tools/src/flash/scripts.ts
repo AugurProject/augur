@@ -35,6 +35,10 @@ export function addScripts(flash: FlashSession) {
         description: "Prevent node from being available to browsers.",
         flag: true,
       },
+      {
+        name: "port",
+        description: "Local node's port. Defaults to 8545.",
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       await this.ensureSeed();
@@ -42,8 +46,12 @@ export function addScripts(flash: FlashSession) {
       if (args.internal) {
         this.ganacheProvider = await makeGanacheProvider(this.seedFilePath, this.accounts);
       } else {
+        const port = args.port || 8545;
+
         this.ganacheServer = await makeGanacheServer(this.seedFilePath, this.accounts);
         this.ganacheProvider = new ethers.providers.Web3Provider(this.ganacheServer.ganacheProvider);
+        this.ganacheServer.listen(8545, () => null);
+        this.log(`Server started on port ${port}`);
       }
 
       this.provider = new EthersProvider(this.ganacheProvider, 5, 0, 40);
@@ -169,6 +177,7 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: "all-logs",
     async call(this: FlashSession) {
+      if (this.noProvider()) return;
       const user = await this.ensureUser();
 
       const logs = await this.provider.getLogs({
