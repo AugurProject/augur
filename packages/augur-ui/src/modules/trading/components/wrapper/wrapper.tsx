@@ -281,7 +281,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   updateTradeNumShares(order) {
-    const { updateTradeShares, selectedOutcome, market } = this.props;
+    const { updateTradeShares, selectedOutcome, market, gasPrice } = this.props;
     this.updateState(
       {
         ...order,
@@ -308,6 +308,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               }
             ).rounded;
 
+            const formattedGasCost = formatGasCostToEther(newOrder.gasLimit, { decimalsRounded: 4 }, String(gasPrice));
+
             this.updateState(
               {
                 ...this.state,
@@ -315,6 +317,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 orderQuantity: numShares,
                 orderEscrowdEth: newOrder.potentialEthLoss.formatted,
                 trade: newOrder,
+                gasCostEst: formattedGasCost,
               },
               () => {
                 this.updateParentOrderValues();

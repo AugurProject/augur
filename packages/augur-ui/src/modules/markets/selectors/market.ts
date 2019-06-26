@@ -7,6 +7,7 @@ import {
 } from "utils/format-number";
 import {
   ZERO,
+  YES_NO,
 } from "modules/common/constants";
 
 import { getOutcomeName } from "utils/get-outcome";
