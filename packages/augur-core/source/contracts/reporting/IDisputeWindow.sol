@@ -20,7 +20,7 @@ contract IDisputeWindow is ITyped, IERC20 {
     uint256 public designatedReportNoShowsTotal;
     uint256 public designatedReporterNoShowBondTotal;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public returns (bool);
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public;
     function getUniverse() public view returns (IUniverse);
     function getReputationToken() public view returns (IReputationToken);
     function getStartTime() public view returns (uint256);
@@ -28,6 +28,6 @@ contract IDisputeWindow is ITyped, IERC20 {
     function getWindowId() public view returns (uint256);
     function isActive() public view returns (bool);
     function isOver() public view returns (bool);
-    function onMarketFinalized() public returns (bool);
+    function onMarketFinalized() public;
     function redeem(address _account) public returns (bool);
 }

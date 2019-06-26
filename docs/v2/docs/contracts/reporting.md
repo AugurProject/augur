@@ -14,13 +14,13 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="BaseReportingParticipant.liquidateLosing()"></a><code class="function-signature">liquidateLosing() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="BaseReportingParticipant.liquidateLosing()"></a><code class="function-signature">liquidateLosing()</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="BaseReportingParticipant.fork()"></a><code class="function-signature">fork() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="BaseReportingParticipant.fork()"></a><code class="function-signature">fork()</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -386,7 +386,7 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IDisputeCrowdsourcer.initialize(contract IAugur,contract IMarket,uint256,bytes32,uint256[],address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, address _erc1820RegistryAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IDisputeCrowdsourcer.initialize(contract IAugur,contract IMarket,uint256,bytes32,uint256[],address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, address _erc1820RegistryAddress)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -398,7 +398,7 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IDisputeCrowdsourcer.setSize(uint256)"></a><code class="function-signature">setSize(uint256 _size) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IDisputeCrowdsourcer.setSize(uint256)"></a><code class="function-signature">setSize(uint256 _size)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -426,7 +426,7 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -474,7 +474,7 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.onMarketFinalized()"></a><code class="function-signature">onMarketFinalized() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.onMarketFinalized()"></a><code class="function-signature">onMarketFinalized()</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -554,13 +554,13 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.initialize(contract IAugur,contract IMarket,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, address _designatedReporter) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.initialize(contract IAugur,contract IMarket,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, address _designatedReporter)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.report(address,bytes32,uint256[],uint256)"></a><code class="function-signature">report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.report(address,bytes32,uint256[],uint256)"></a><code class="function-signature">report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -590,13 +590,13 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.migrateToNewUniverse(address)"></a><code class="function-signature">migrateToNewUniverse(address _designatedReporter) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.migrateToNewUniverse(address)"></a><code class="function-signature">migrateToNewUniverse(address _designatedReporter)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.returnRepFromDisavow()"></a><code class="function-signature">returnRepFromDisavow() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.returnRepFromDisavow()"></a><code class="function-signature">returnRepFromDisavow()</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -612,7 +612,7 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IMarket.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IMarket.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -984,7 +984,7 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IReportingParticipant.liquidateLosing()"></a><code class="function-signature">liquidateLosing() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IReportingParticipant.liquidateLosing()"></a><code class="function-signature">liquidateLosing()</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1106,7 +1106,7 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IShareToken.initialize(contract IAugur,contract IMarket,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IShareToken.initialize(contract IAugur,contract IMarket,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, uint256 _outcome, address _erc1820RegistryAddress)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -1636,7 +1636,7 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.initialize(contract IAugur,contract IMarket,uint256,bytes32,uint256[],address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, address _erc1820RegistryAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.initialize(contract IAugur,contract IMarket,uint256,bytes32,uint256[],address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, address _erc1820RegistryAddress)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1666,7 +1666,7 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.setSize(uint256)"></a><code class="function-signature">setSize(uint256 _size) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.setSize(uint256)"></a><code class="function-signature">setSize(uint256 _size)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1678,19 +1678,19 @@ title: Reporting
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.onMint(address,uint256)"></a><code class="function-signature">onMint(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.onMint(address,uint256)"></a><code class="function-signature">onMint(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeCrowdsourcer.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -1864,7 +1864,7 @@ Burn tokens
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC777.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ERC777.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2185,7 +2185,7 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Initializable.endInitialization()"></a><code class="function-signature">endInitialization() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Initializable.endInitialization()"></a><code class="function-signature">endInitialization()</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2259,13 +2259,13 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address, uint256) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address, uint256)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address, uint256) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address, uint256)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2297,13 +2297,13 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.onMarketFinalized()"></a><code class="function-signature">onMarketFinalized() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.onMarketFinalized()"></a><code class="function-signature">onMarketFinalized()</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2369,19 +2369,19 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.onMint(address,uint256)"></a><code class="function-signature">onMint(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.onMint(address,uint256)"></a><code class="function-signature">onMint(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="DisputeWindow.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2445,7 +2445,7 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="InitialReporter.initialize(contract IAugur,contract IMarket,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, address _designatedReporter) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="InitialReporter.initialize(contract IAugur,contract IMarket,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, address _designatedReporter)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2457,19 +2457,19 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="InitialReporter.report(address,bytes32,uint256[],uint256)"></a><code class="function-signature">report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="InitialReporter.report(address,bytes32,uint256[],uint256)"></a><code class="function-signature">report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="InitialReporter.returnRepFromDisavow()"></a><code class="function-signature">returnRepFromDisavow() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="InitialReporter.returnRepFromDisavow()"></a><code class="function-signature">returnRepFromDisavow()</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="InitialReporter.migrateToNewUniverse(address)"></a><code class="function-signature">migrateToNewUniverse(address _designatedReporter) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="InitialReporter.migrateToNewUniverse(address)"></a><code class="function-signature">migrateToNewUniverse(address _designatedReporter)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2517,7 +2517,7 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="InitialReporter.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address _owner, address _newOwner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="InitialReporter.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address _owner, address _newOwner)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2553,7 +2553,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Ownable.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Ownable.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2585,7 +2585,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IMap.initialize(address)"></a><code class="function-signature">initialize(address _owner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IMap.initialize(address)"></a><code class="function-signature">initialize(address _owner)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2653,7 +2653,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Map.initialize(address)"></a><code class="function-signature">initialize(address _owner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Map.initialize(address)"></a><code class="function-signature">initialize(address _owner)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2695,7 +2695,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Map.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Map.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2723,11 +2723,11 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Market.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#Market.increaseValidityBond(uint256)"><code class="function-signature">increaseValidityBond(uint256 _attoCASH)</code></a></li><li><a href="#Market.approveSpenders()"><code class="function-signature">approveSpenders()</code></a></li><li><a href="#Market.doInitialReport(uint256[],string)"><code class="function-signature">doInitialReport(uint256[] _payoutNumerators, string _description)</code></a></li><li><a href="#Market.contributeToTentative(uint256[],uint256,string)"><code class="function-signature">contributeToTentative(uint256[] _payoutNumerators, uint256 _amount, string _description)</code></a></li><li><a href="#Market.contribute(uint256[],uint256,string)"><code class="function-signature">contribute(uint256[] _payoutNumerators, uint256 _amount, string _description)</code></a></li><li><a href="#Market.internalContribute(address,bytes32,uint256[],uint256,bool,string)"><code class="function-signature">internalContribute(address _contributor, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _amount, bool _overload, string _description)</code></a></li><li><a href="#Market.finalize()"><code class="function-signature">finalize()</code></a></li><li><a href="#Market.getMarketCreatorSettlementFeeDivisor()"><code class="function-signature">getMarketCreatorSettlementFeeDivisor()</code></a></li><li><a href="#Market.deriveMarketCreatorFeeAmount(uint256)"><code class="function-signature">deriveMarketCreatorFeeAmount(uint256 _amount)</code></a></li><li><a href="#Market.recordMarketCreatorFees(uint256,address)"><code class="function-signature">recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress)</code></a></li><li><a href="#Market.withdrawAffiliateFees(address)"><code class="function-signature">withdrawAffiliateFees(address _affiliate)</code></a></li><li><a href="#Market.migrateThroughOneFork(uint256[],string)"><code class="function-signature">migrateThroughOneFork(uint256[] _payoutNumerators, string _description)</code></a></li><li><a href="#Market.disavowCrowdsourcers()"><code class="function-signature">disavowCrowdsourcers()</code></a></li><li><a href="#Market.getHighestNonTentativeParticipantStake()"><code class="function-signature">getHighestNonTentativeParticipantStake()</code></a></li><li><a href="#Market.getParticipantStake()"><code class="function-signature">getParticipantStake()</code></a></li><li><a href="#Market.getStakeInOutcome(bytes32)"><code class="function-signature">getStakeInOutcome(bytes32 _payoutDistributionHash)</code></a></li><li><a href="#Market.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#Market.getWinningPayoutDistributionHash()"><code class="function-signature">getWinningPayoutDistributionHash()</code></a></li><li><a href="#Market.isFinalized()"><code class="function-signature">isFinalized()</code></a></li><li><a href="#Market.getDesignatedReporter()"><code class="function-signature">getDesignatedReporter()</code></a></li><li><a href="#Market.designatedReporterShowed()"><code class="function-signature">designatedReporterShowed()</code></a></li><li><a href="#Market.designatedReporterWasCorrect()"><code class="function-signature">designatedReporterWasCorrect()</code></a></li><li><a href="#Market.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#Market.isInvalid()"><code class="function-signature">isInvalid()</code></a></li><li><a href="#Market.getInitialReporter()"><code class="function-signature">getInitialReporter()</code></a></li><li><a href="#Market.getReportingParticipant(uint256)"><code class="function-signature">getReportingParticipant(uint256 _index)</code></a></li><li><a href="#Market.getCrowdsourcer(bytes32)"><code class="function-signature">getCrowdsourcer(bytes32 _payoutDistributionHash)</code></a></li><li><a href="#Market.getWinningReportingParticipant()"><code class="function-signature">getWinningReportingParticipant()</code></a></li><li><a href="#Market.getWinningPayoutNumerator(uint256)"><code class="function-signature">getWinningPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#Market.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#Market.getDisputeWindow()"><code class="function-signature">getDisputeWindow()</code></a></li><li><a href="#Market.getFinalizationTime()"><code class="function-signature">getFinalizationTime()</code></a></li><li><a href="#Market.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#Market.getNumberOfOutcomes()"><code class="function-signature">getNumberOfOutcomes()</code></a></li><li><a href="#Market.getNumTicks()"><code class="function-signature">getNumTicks()</code></a></li><li><a href="#Market.getShareToken(uint256)"><code class="function-signature">getShareToken(uint256 _outcome)</code></a></li><li><a href="#Market.getDesignatedReportingEndTime()"><code class="function-signature">getDesignatedReportingEndTime()</code></a></li><li><a href="#Market.getNumParticipants()"><code class="function-signature">getNumParticipants()</code></a></li><li><a href="#Market.getValidityBondAttoCash()"><code class="function-signature">getValidityBondAttoCash()</code></a></li><li><a href="#Market.getDisputePacingOn()"><code class="function-signature">getDisputePacingOn()</code></a></li><li><a href="#Market.derivePayoutDistributionHash(uint256[])"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators)</code></a></li><li><a href="#Market.isContainerForShareToken(contract IShareToken)"><code class="function-signature">isContainerForShareToken(contract IShareToken _shadyShareToken)</code></a></li><li><a href="#Market.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _shadyReportingParticipant)</code></a></li><li><a href="#Market.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address _owner, address _newOwner)</code></a></li><li><a href="#Market.assertBalances()"><code class="function-signature">assertBalances()</code></a></li><li class="inherited"><a href="reporting#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="reporting#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="reporting#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="reporting#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="reporting#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Market.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#Market.increaseValidityBond(uint256)"><code class="function-signature">increaseValidityBond(uint256 _attoCASH)</code></a></li><li><a href="#Market.approveSpenders()"><code class="function-signature">approveSpenders()</code></a></li><li><a href="#Market.doInitialReport(uint256[],string)"><code class="function-signature">doInitialReport(uint256[] _payoutNumerators, string _description)</code></a></li><li><a href="#Market.contributeToTentative(uint256[],uint256,string)"><code class="function-signature">contributeToTentative(uint256[] _payoutNumerators, uint256 _amount, string _description)</code></a></li><li><a href="#Market.contribute(uint256[],uint256,string)"><code class="function-signature">contribute(uint256[] _payoutNumerators, uint256 _amount, string _description)</code></a></li><li><a href="#Market.internalContribute(address,bytes32,uint256[],uint256,bool,string)"><code class="function-signature">internalContribute(address _contributor, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _amount, bool _overload, string _description)</code></a></li><li><a href="#Market.finalize()"><code class="function-signature">finalize()</code></a></li><li><a href="#Market.getMarketCreatorSettlementFeeDivisor()"><code class="function-signature">getMarketCreatorSettlementFeeDivisor()</code></a></li><li><a href="#Market.deriveMarketCreatorFeeAmount(uint256)"><code class="function-signature">deriveMarketCreatorFeeAmount(uint256 _amount)</code></a></li><li><a href="#Market.recordMarketCreatorFees(uint256,address)"><code class="function-signature">recordMarketCreatorFees(uint256 _marketCreatorFees, address _affiliateAddress)</code></a></li><li><a href="#Market.withdrawAffiliateFees(address)"><code class="function-signature">withdrawAffiliateFees(address _affiliate)</code></a></li><li><a href="#Market.migrateThroughOneFork(uint256[],string)"><code class="function-signature">migrateThroughOneFork(uint256[] _payoutNumerators, string _description)</code></a></li><li><a href="#Market.disavowCrowdsourcers()"><code class="function-signature">disavowCrowdsourcers()</code></a></li><li><a href="#Market.getHighestNonTentativeParticipantStake()"><code class="function-signature">getHighestNonTentativeParticipantStake()</code></a></li><li><a href="#Market.getParticipantStake()"><code class="function-signature">getParticipantStake()</code></a></li><li><a href="#Market.getStakeInOutcome(bytes32)"><code class="function-signature">getStakeInOutcome(bytes32 _payoutDistributionHash)</code></a></li><li><a href="#Market.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#Market.getWinningPayoutDistributionHash()"><code class="function-signature">getWinningPayoutDistributionHash()</code></a></li><li><a href="#Market.isFinalized()"><code class="function-signature">isFinalized()</code></a></li><li><a href="#Market.getDesignatedReporter()"><code class="function-signature">getDesignatedReporter()</code></a></li><li><a href="#Market.designatedReporterShowed()"><code class="function-signature">designatedReporterShowed()</code></a></li><li><a href="#Market.designatedReporterWasCorrect()"><code class="function-signature">designatedReporterWasCorrect()</code></a></li><li><a href="#Market.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#Market.isInvalid()"><code class="function-signature">isInvalid()</code></a></li><li><a href="#Market.getInitialReporter()"><code class="function-signature">getInitialReporter()</code></a></li><li><a href="#Market.getReportingParticipant(uint256)"><code class="function-signature">getReportingParticipant(uint256 _index)</code></a></li><li><a href="#Market.getCrowdsourcer(bytes32)"><code class="function-signature">getCrowdsourcer(bytes32 _payoutDistributionHash)</code></a></li><li><a href="#Market.getWinningReportingParticipant()"><code class="function-signature">getWinningReportingParticipant()</code></a></li><li><a href="#Market.getWinningPayoutNumerator(uint256)"><code class="function-signature">getWinningPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#Market.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#Market.getDisputeWindow()"><code class="function-signature">getDisputeWindow()</code></a></li><li><a href="#Market.getFinalizationTime()"><code class="function-signature">getFinalizationTime()</code></a></li><li><a href="#Market.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#Market.getNumberOfOutcomes()"><code class="function-signature">getNumberOfOutcomes()</code></a></li><li><a href="#Market.getNumTicks()"><code class="function-signature">getNumTicks()</code></a></li><li><a href="#Market.getShareToken(uint256)"><code class="function-signature">getShareToken(uint256 _outcome)</code></a></li><li><a href="#Market.getDesignatedReportingEndTime()"><code class="function-signature">getDesignatedReportingEndTime()</code></a></li><li><a href="#Market.getNumParticipants()"><code class="function-signature">getNumParticipants()</code></a></li><li><a href="#Market.getValidityBondAttoCash()"><code class="function-signature">getValidityBondAttoCash()</code></a></li><li><a href="#Market.getDisputePacingOn()"><code class="function-signature">getDisputePacingOn()</code></a></li><li><a href="#Market.derivePayoutDistributionHash(uint256[])"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators)</code></a></li><li><a href="#Market.isContainerForShareToken(contract IShareToken)"><code class="function-signature">isContainerForShareToken(contract IShareToken _shadyShareToken)</code></a></li><li><a href="#Market.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _shadyReportingParticipant)</code></a></li><li><a href="#Market.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address _owner, address _newOwner)</code></a></li><li><a href="#Market.transferRepBondOwnership(address)"><code class="function-signature">transferRepBondOwnership(address _newOwner)</code></a></li><li><a href="#Market.assertBalances()"><code class="function-signature">assertBalances()</code></a></li><li class="inherited"><a href="reporting#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="reporting#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="reporting#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="reporting#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="reporting#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Market.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Market.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2763,7 +2763,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Market.internalContribute(address,bytes32,uint256[],uint256,bool,string)"></a><code class="function-signature">internalContribute(address _contributor, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _amount, bool _overload, string _description) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Market.internalContribute(address,bytes32,uint256[],uint256,bool,string)"></a><code class="function-signature">internalContribute(address _contributor, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _amount, bool _overload, string _description)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2991,7 +2991,13 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Market.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address _owner, address _newOwner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Market.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address _owner, address _newOwner)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Market.transferRepBondOwnership(address)"></a><code class="function-signature">transferRepBondOwnership(address _newOwner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3325,19 +3331,19 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ReputationToken.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ReputationToken.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ReputationToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ReputationToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ReputationToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ReputationToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
 
 
