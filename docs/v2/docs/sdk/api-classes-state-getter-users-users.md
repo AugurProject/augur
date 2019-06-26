@@ -14,9 +14,9 @@ sidebar_label: Users
 
 ### Properties
 
-* [GetProfitLossParams](api-classes-state-getter-users-users.md#getprofitlossparams)
-* [GetProfitLossSummaryParams](api-classes-state-getter-users-users.md#getprofitlosssummaryparams)
-* [GetUserTradingPositionsParams](api-classes-state-getter-users-users.md#getusertradingpositionsparams)
+* [getProfitLossParams](api-classes-state-getter-users-users.md#getprofitlossparams)
+* [getProfitLossSummaryParams](api-classes-state-getter-users-users.md#getprofitlosssummaryparams)
+* [getUserTradingPositionsParams](api-classes-state-getter-users-users.md#getusertradingpositionsparams)
 
 ### Methods
 
@@ -30,27 +30,27 @@ sidebar_label: Users
 
 <a id="getprofitlossparams"></a>
 
-### `<Static>` GetProfitLossParams
+### `<Static>` getProfitLossParams
 
-**● GetProfitLossParams**: *`any`* =  GetProfitLossParams
+**● getProfitLossParams**: *`any`* =  getProfitLossParams
 
 *Defined in [state/getter/Users.ts:90](https://github.com/AugurProject/augur/blob/06e47ad207/packages/augur-sdk/src/state/getter/Users.ts#L90)*
 
 ___
 <a id="getprofitlosssummaryparams"></a>
 
-### `<Static>` GetProfitLossSummaryParams
+### `<Static>` getProfitLossSummaryParams
 
-**● GetProfitLossSummaryParams**: *`any`* =  GetProfitLossSummaryParams
+**● getProfitLossSummaryParams**: *`any`* =  getProfitLossSummaryParams
 
 *Defined in [state/getter/Users.ts:91](https://github.com/AugurProject/augur/blob/06e47ad207/packages/augur-sdk/src/state/getter/Users.ts#L91)*
 
 ___
 <a id="getusertradingpositionsparams"></a>
 
-### `<Static>` GetUserTradingPositionsParams
+### `<Static>` getUserTradingPositionsParams
 
-**● GetUserTradingPositionsParams**: *`any`* =  t.intersection([UserTradingPositionsParams, SortLimit])
+**● getUserTradingPositionsParams**: *`any`* =  t.intersection([userTradingPositionsParams, SortLimit])
 
 *Defined in [state/getter/Users.ts:89](https://github.com/AugurProject/augur/blob/06e47ad207/packages/augur-sdk/src/state/getter/Users.ts#L89)*
 
