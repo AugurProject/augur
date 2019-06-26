@@ -8,15 +8,15 @@ import { BigNumber as BigNumberJS } from "bignumber.js";
 import { ZERO } from "../../constants";
 import { getAllOutcomesProfitLoss, ProfitLossResult, sumProfitLossResults } from "./get-profit-loss";
 
-export const UserTradingPositionsParamsSpecific = t.type({
+export const userTradingPositionsParamsSpecific = t.type({
   universe: t.union([t.string, t.null, t.undefined]),
   marketId: t.union([t.string, t.null, t.undefined]),
   account: t.union([t.string, t.null, t.undefined]),
   outcome: t.union([OutcomeParam, t.number, t.null, t.undefined]),
 });
 
-export const UserTradingPositionsParams = t.intersection([
-  UserTradingPositionsParamsSpecific,
+export const userTradingPositionsParams = t.intersection([
+  userTradingPositionsParamsSpecific,
   SortLimitParams,
   t.partial({
     endTime: t.number,
@@ -38,7 +38,7 @@ async function queryUniverse(db: Knex, marketId: Address): Promise<Address> {
   return market.universe;
 }
 
-export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.TypeOf<typeof UserTradingPositionsParams>): Promise<Array<TradingPosition>> {
+export async function getUserTradingPositions(db: Knex, augur: Augur, params: t.TypeOf<typeof userTradingPositionsParams>): Promise<Array<TradingPosition>> {
   if (params.universe == null && params.marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
   if (params.account == null) throw new Error("Missing required parameter: account");
 
