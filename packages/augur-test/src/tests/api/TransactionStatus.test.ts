@@ -27,7 +27,7 @@ import { TransactionStatus, TransactionMetadata } from "contract-dependencies-et
         hashes.push(hash);
     });  
 
-    await john.createReasonableYesNoMarket(john.augur.contracts.universe);
+    await john.createReasonableYesNoMarket();
 
     await expect(statuses[0]).toEqual(TransactionStatus.AWAITING_SIGNING);
     await expect(statuses[1]).toEqual(TransactionStatus.PENDING);
@@ -45,4 +45,3 @@ import { TransactionStatus, TransactionMetadata } from "contract-dependencies-et
     await expect(tx.params._affiliateFeeDivisor).toEqual(new BigNumber(25));
 
   }, 15000);
-  

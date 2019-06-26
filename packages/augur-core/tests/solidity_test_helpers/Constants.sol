@@ -28,8 +28,6 @@ contract Constants {
 
     function INITIAL_REP_SUPPLY() public returns (uint256) { return Reporting.getInitialREPSupply(); }
 
-    function AUCTION_INITIAL_REP_PRICE() public returns (uint256) { return Reporting.getAuctionInitialRepPrice(); }
-
     function BID() public returns (uint256) { return uint256(Order.Types.Bid); }
     function ASK() public returns (uint256) { return uint256(Order.Types.Ask); }
     function LONG() public returns (uint256) { return uint256(Order.TradeDirections.Long); }

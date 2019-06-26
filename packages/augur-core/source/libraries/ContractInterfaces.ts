@@ -11,6 +11,8 @@ export class ERC1820Registry extends c.ERC1820Registry<BigNumber> {
 }
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
 }
+export class RepPriceOracle extends c.RepPriceOracle<BigNumber> {
+}
 export class TestNetReputationToken extends c.TestNetReputationToken<BigNumber> {
 }
 export class TestOrders extends c.TestOrders<BigNumber> {
@@ -18,10 +20,6 @@ export class TestOrders extends c.TestOrders<BigNumber> {
 export class Time extends c.Time<BigNumber> {
 }
 export class TimeControlled extends c.TimeControlled<BigNumber> {
-}
-export class AuctionFactory extends c.AuctionFactory<BigNumber> {
-}
-export class AuctionTokenFactory extends c.AuctionTokenFactory<BigNumber> {
 }
 export class DisputeCrowdsourcerFactory extends c.DisputeCrowdsourcerFactory<BigNumber> {
 }
@@ -44,10 +42,6 @@ export class UniverseFactory extends c.UniverseFactory<BigNumber> {
 export class DelegationTarget extends c.DelegationTarget<BigNumber> {
 }
 export class Map extends c.Map<BigNumber> {
-}
-export class Auction extends c.Auction<BigNumber> {
-}
-export class AuctionToken extends c.AuctionToken<BigNumber> {
 }
 export class DisputeCrowdsourcer extends c.DisputeCrowdsourcer<BigNumber> {
 }
