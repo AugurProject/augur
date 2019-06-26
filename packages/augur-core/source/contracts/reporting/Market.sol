@@ -452,7 +452,7 @@ contract Market is Initializable, Ownable, IMarket {
             if (_reportingParticipant.getPayoutDistributionHash() != _payoutDistributionHash) {
                 continue;
             }
-            _sum += _reportingParticipant.getStake();
+            _sum = _sum.add(_reportingParticipant.getStake());
         }
         return _sum;
     }

@@ -147,7 +147,7 @@ contract Universe is ITyped, IUniverse {
     function getDisputeWindowId(uint256 _timestamp, bool _initial) public view returns (uint256) {
         uint256 _windowId = _timestamp.div(getDisputeRoundDurationInSeconds(_initial));
         if (_initial) {
-            _windowId += INITIAL_WINDOW_ID_BUFFER;
+            _windowId = _windowId.add(INITIAL_WINDOW_ID_BUFFER);
         }
         return _windowId;
     }
