@@ -22,7 +22,7 @@ import * as t from 'io-ts';
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
-const UserTradingPositionsParams = t.intersection([
+const userTradingPositionsParams = t.intersection([
   t.type({
     account: t.string,
   }),
@@ -33,14 +33,14 @@ const UserTradingPositionsParams = t.intersection([
   }),
 ]);
 
-const GetProfitLossSummaryParams = t.partial({
+const getProfitLossSummaryParams = t.partial({
   universe: t.string,
   account: t.string,
   endTime: t.number,
 });
 
-const GetProfitLossParams = t.intersection([
-  GetProfitLossSummaryParams,
+const getProfitLossParams = t.intersection([
+  getProfitLossSummaryParams,
   t.partial({
     startTime: t.number,
     periodInterval: t.number,
@@ -105,18 +105,18 @@ export interface ProfitLossResult {
 }
 
 export class Users {
-  static GetUserTradingPositionsParams = t.intersection([
-    UserTradingPositionsParams,
+  static getUserTradingPositionsParams = t.intersection([
+    userTradingPositionsParams,
     SortLimit,
   ]);
-  static GetProfitLossParams = GetProfitLossParams;
-  static GetProfitLossSummaryParams = GetProfitLossSummaryParams;
+  static getProfitLossParams = getProfitLossParams;
+  static getProfitLossSummaryParams = getProfitLossSummaryParams;
 
-  @Getter('GetUserTradingPositionsParams')
+  @Getter('getUserTradingPositionsParams')
   static async getUserTradingPositions(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>
+    params: t.TypeOf<typeof Users.getUserTradingPositionsParams>
   ): Promise<UserTradingPositions> {
     if (!params.universe && !params.marketId) {
       throw new Error(
@@ -272,11 +272,11 @@ export class Users {
     };
   }
 
-  @Getter('GetProfitLossParams')
+  @Getter('getProfitLossParams')
   static async getProfitLoss(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Users.GetProfitLossParams>
+    params: t.TypeOf<typeof Users.getProfitLossParams>
   ): Promise<MarketTradingPosition[]> {
     if (!params.startTime) {
       throw new Error(
@@ -414,11 +414,11 @@ export class Users {
     });
   }
 
-  @Getter('GetProfitLossSummaryParams')
+  @Getter('getProfitLossSummaryParams')
   static async getProfitLossSummary(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Users.GetProfitLossSummaryParams>
+    params: t.TypeOf<typeof Users.getProfitLossSummaryParams>
   ): Promise<NumericDictionary<MarketTradingPosition>> {
     const result: NumericDictionary<MarketTradingPosition> = {};
     const now = await augur.contracts.augur.getTimestamp_();
@@ -552,15 +552,19 @@ function bucketRangeByInterval(
   startTime: number,
   endTime: number,
   periodInterval: number | null
-): Array<BigNumber> {
-  if (startTime < 0)
+): BigNumber[] {
+  if (startTime < 0) {
     throw new Error('startTime must be a valid unix timestamp, greater than 0');
-  if (endTime < 0)
+  }
+  if (endTime < 0) {
     throw new Error('endTime must be a valid unix timestamp, greater than 0');
-  if (endTime < startTime)
+  }
+  if (endTime < startTime) {
     throw new Error('endTime must be greater than or equal startTime');
-  if (periodInterval !== null && periodInterval <= 0)
+  }
+  if (periodInterval !== null && periodInterval <= 0) {
     throw new Error('periodInterval must be positive integer (seconds)');
+  }
 
   const interval =
     periodInterval == null
