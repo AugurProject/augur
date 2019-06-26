@@ -211,6 +211,7 @@ contract Market is Initializable, Ownable, IMarket {
             IDisputeCrowdsourcer _newCrowdsourcer = preemptiveDisputeCrowdsourcer;
             preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
             bytes32 _payoutDistributionHash = _newCrowdsourcer.getPayoutDistributionHash();
+            // The size of any dispute bond should be (2 * ALL STAKE) - (3 * STAKE IN OUTCOME)
             uint256 _correctSize = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
             _newCrowdsourcer.setSize(_correctSize);
             if (_newCrowdsourcer.getStake() >= _correctSize) {
@@ -342,6 +343,7 @@ contract Market is Initializable, Ownable, IMarket {
             DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
             uint256 _participantStake = getParticipantStake();
             if (_overload) {
+                // The stake of a dispute bond is (2 * ALL STAKE) - (3 * STAKE IN OUTCOME)
                 _participantStake = _participantStake.add(_participantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
             }
             uint256 _size = _participantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));

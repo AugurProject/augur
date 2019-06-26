@@ -326,6 +326,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getTargetRepMarketCapInAttoCash() public view returns (uint256) {
+        // Target MCAP = OI * TARGET_MULTIPLIER
         return getOpenInterestInAttoCash().mul(Reporting.getTargetRepMarketCapMultiplier()).div(Reporting.getTargetRepMarketCapDivisor());
     }
 
