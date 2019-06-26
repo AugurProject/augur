@@ -95,7 +95,7 @@ contract Augur is IAugur {
     mapping(address => bool) private trustedSender;
 
     address public uploader;
-    mapping(bytes32 => address) public registry;
+    mapping(bytes32 => address) private registry;
 
     ITime public time;
 
