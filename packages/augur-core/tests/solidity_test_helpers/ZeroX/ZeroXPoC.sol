@@ -57,7 +57,7 @@ contract ZeroXPoC is ReentrancyGuard {
         uint256 orderType;
         uint256 amount;
         uint256 price;
-        uint expirationTimestampInSec;
+        uint256 expirationTimestampInSec;
         bytes32 orderHash;
     }
 
@@ -121,7 +121,7 @@ contract ZeroXPoC is ReentrancyGuard {
     function fillOrder(
           address[2] memory orderAddresses,
           uint[6] memory orderValues,
-          uint fillAmount,
+          uint256 fillAmount,
           uint8 v,
           bytes32 r,
           bytes32 s)
@@ -155,8 +155,8 @@ contract ZeroXPoC is ReentrancyGuard {
             return false;
         }
 
-        uint _remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
-        uint _toFillAmount = fillAmount.min(_remainingAmount);
+        uint256 _remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
+        uint256 _toFillAmount = fillAmount.min(_remainingAmount);
         if (_toFillAmount == 0) {
             emit Error(uint8(Errors.ORDER_FULLY_FILLED_OR_CANCELLED), order.orderHash);
             return false;
@@ -178,7 +178,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return true;
     }
 
-    function tradeMakerSharesForFillerShares(Order memory order, uint _toFillAmount) private returns (uint256) {
+    function tradeMakerSharesForFillerShares(Order memory order, uint256 _toFillAmount) private returns (uint256) {
         if (_toFillAmount == 0) {
             return _toFillAmount;
         }
@@ -223,7 +223,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return true;
     }
 
-    function tradeMakerSharesForFillerTokens(Order memory order, uint _toFillAmount) private returns (uint256) {
+    function tradeMakerSharesForFillerTokens(Order memory order, uint256 _toFillAmount) private returns (uint256) {
         if (_toFillAmount == 0) {
             return _toFillAmount;
         }
@@ -251,7 +251,7 @@ contract ZeroXPoC is ReentrancyGuard {
         return _toFillAmount.sub(_amountToTrade);
     }
 
-    function tradeMakerTokensForFillerShares(Order memory order, uint _toFillAmount) private returns (uint256) {
+    function tradeMakerTokensForFillerShares(Order memory order, uint256 _toFillAmount) private returns (uint256) {
         // TODO
         return _toFillAmount;
     }
@@ -301,7 +301,7 @@ contract ZeroXPoC is ReentrancyGuard {
     function cancelOrder(
         address[2] memory orderAddresses,
         uint[6] memory orderValues,
-        uint cancelAmount)
+        uint256 cancelAmount)
         public
         nonReentrant
         returns (bool)
@@ -325,8 +325,8 @@ contract ZeroXPoC is ReentrancyGuard {
             return false;
         }
 
-        uint remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
-        uint cancelledAmount = cancelAmount.min(remainingAmount);
+        uint256 remainingAmount = order.amount.sub(getUnavailableAmount(order.orderHash));
+        uint256 cancelledAmount = cancelAmount.min(remainingAmount);
         if (cancelledAmount == 0) {
             emit Error(uint8(Errors.ORDER_FULLY_FILLED_OR_CANCELLED), order.orderHash);
             return false;

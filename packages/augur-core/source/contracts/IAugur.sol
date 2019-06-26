@@ -3,7 +3,7 @@ pragma solidity 0.5.4;
 import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/trading/Order.sol';
 
 
@@ -55,6 +55,6 @@ contract IAugur {
     function lookup(bytes32 _key) public view returns (address);
     function getTimestamp() public view returns (uint256);
     function getMaximumMarketEndDate() public returns (uint256);
-    function isValidMarket(IMarket _market) public view returns (bool);
+    function isKnownMarket(IMarket _market) public view returns (bool);
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators, uint256 _numTicks, uint256 numOutcomes) public view returns (bytes32);
 }

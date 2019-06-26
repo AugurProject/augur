@@ -26,7 +26,7 @@ contract Market is Initializable, Ownable, IMarket {
 
     // Constants
     uint256 private constant MAX_FEE_PER_CASH_IN_ATTOCASH = 15 * 10**16; // 15%
-    uint256 private constant APPROVAL_AMOUNT = 2 ** 256 - 1;
+    uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant MIN_OUTCOMES = 3; // Includes INVALID
     uint256 private constant MAX_OUTCOMES = 8;
@@ -115,10 +115,10 @@ contract Market is Initializable, Ownable, IMarket {
     function approveSpenders() public returns (bool) {
         bytes32[5] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("ClaimTradingProceeds"), bytes32("Orders")];
         for (uint256 i = 0; i < _names.length; i++) {
-            require(cash.approve(augur.lookup(_names[i]), APPROVAL_AMOUNT));
+            require(cash.approve(augur.lookup(_names[i]), MAX_APPROVAL_AMOUNT));
         }
         for (uint256 j = 0; j < numOutcomes; j++) {
-            require(shareTokens[j].approve(augur.lookup("FillOrder"), APPROVAL_AMOUNT));
+            require(shareTokens[j].approve(augur.lookup("FillOrder"), MAX_APPROVAL_AMOUNT));
         }
         return true;
     }
@@ -144,6 +144,7 @@ contract Market is Initializable, Ownable, IMarket {
     function distributeInitialReportingRep(address _reporter, IInitialReporter _initialReporter) private returns (uint256) {
         IV2ReputationToken _reputationToken = getReputationToken();
         uint256 _initialReportStake = repBond;
+        repBond = 0;
         // If the designated reporter showed up and is not also the rep bond owner return the rep bond to the bond owner. Otherwise it will be used as stake in the first report.
         if (_reporter == _initialReporter.getDesignatedReporter() && _reporter != repBondOwner) {
             require(_reputationToken.noHooksTransfer(repBondOwner, _initialReportStake));
@@ -151,7 +152,6 @@ contract Market is Initializable, Ownable, IMarket {
         } else {
             require(_reputationToken.noHooksTransfer(address(_initialReporter), _initialReportStake));
         }
-        repBond = 0;
         return _initialReportStake;
     }
 
@@ -228,7 +228,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function finalize() public returns (bool) {
-        require(winningPayoutDistributionHash == bytes32(0));
+        require(!isFinalized());
         uint256[] memory _winningPayoutNumerators;
         if (universe.getForkingMarket() == this) {
             IUniverse _winningUniverse = universe.getWinningChildUniverse();
@@ -237,7 +237,7 @@ contract Market is Initializable, Ownable, IMarket {
         } else {
             require(disputeWindow.isOver());
             require(!universe.isForking());
-            IReportingParticipant _reportingParticipant = participants[participants.length-1];
+            IReportingParticipant _reportingParticipant = getWinningReportingParticipant();
             winningPayoutDistributionHash = _reportingParticipant.getPayoutDistributionHash();
             _winningPayoutNumerators = _reportingParticipant.getPayoutNumerators();
             // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
@@ -301,27 +301,28 @@ contract Market is Initializable, Ownable, IMarket {
         }
         marketCreatorFeesAttoCash = marketCreatorFeesAttoCash.add(_marketCreatorFees);
         if (isFinalized()) {
-            distributeMarketCreatorFees(_affiliateAddress);
+            distributeMarketCreatorAndAffiliateFees(_affiliateAddress);
         }
     }
 
     function distributeValidityBondAndMarketCreatorFees() private {
         // If the market resolved to invalid the bond gets sent to the dispute window. Otherwise it gets returned to the market creator.
         marketCreatorFeesAttoCash = validityBondAttoCash.add(marketCreatorFeesAttoCash);
-        distributeMarketCreatorFees(NULL_ADDRESS);
+        distributeMarketCreatorAndAffiliateFees(NULL_ADDRESS);
     }
 
-    function distributeMarketCreatorFees(address _affiliateAddress) private {
+    function distributeMarketCreatorAndAffiliateFees(address _affiliateAddress) private {
+        uint256 _marketCreatorFeesAttoCash = marketCreatorFeesAttoCash;
+        marketCreatorFeesAttoCash = 0;
         if (!isInvalid()) {
-            cash.transfer(owner, marketCreatorFeesAttoCash);
+            cash.transfer(owner, _marketCreatorFeesAttoCash);
             if (_affiliateAddress != NULL_ADDRESS) {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash));
+            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash));
             totalAffiliateFeesAttoCash = 0;
         }
-        marketCreatorFeesAttoCash = 0;
     }
 
     function withdrawAffiliateFees(address _affiliate) public returns (bool) {
@@ -410,15 +411,16 @@ contract Market is Initializable, Ownable, IMarket {
         }
         delete participants;
         participants.push(_initialParticipant);
+        clearCrowdsourcers();
         // Send REP from the rep bond back to the address that placed it. If a report has been made tell the InitialReporter to return that REP and reset
         if (repBond > 0) {
             IV2ReputationToken _reputationToken = getReputationToken();
-            require(_reputationToken.noHooksTransfer(repBondOwner, repBond));
+            uint256 _repBond = repBond;
+            require(_reputationToken.noHooksTransfer(repBondOwner, _repBond));
             repBond = 0;
         } else {
             _initialParticipant.returnRepFromDisavow();
         }
-        clearCrowdsourcers();
         augur.logMarketParticipantsDisavowed(universe);
         return true;
     }
@@ -452,7 +454,7 @@ contract Market is Initializable, Ownable, IMarket {
             if (_reportingParticipant.getPayoutDistributionHash() != _payoutDistributionHash) {
                 continue;
             }
-            _sum += _reportingParticipant.getStake();
+            _sum = _sum.add(_reportingParticipant.getStake());
         }
         return _sum;
     }

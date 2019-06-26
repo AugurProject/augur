@@ -590,25 +590,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"name": "_market",
-					"type": "address"
-				}
-			],
-			"name": "isValidMarket",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -1614,6 +1595,25 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "isKnownMarket",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -4527,15 +4527,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_from",
+					"name": "holder",
 					"type": "address"
 				},
 				{
-					"name": "_to",
+					"name": "recipient",
 					"type": "address"
 				},
 				{
-					"name": "_value",
+					"name": "amount",
 					"type": "uint256"
 				}
 			],
@@ -4945,11 +4945,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_to",
+					"name": "recipient",
 					"type": "address"
 				},
 				{
-					"name": "_value",
+					"name": "amount",
 					"type": "uint256"
 				}
 			],
@@ -10365,15 +10365,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_from",
+					"name": "holder",
 					"type": "address"
 				},
 				{
-					"name": "_to",
+					"name": "recipient",
 					"type": "address"
 				},
 				{
-					"name": "_value",
+					"name": "amount",
 					"type": "uint256"
 				}
 			],
@@ -10764,11 +10764,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_to",
+					"name": "recipient",
 					"type": "address"
 				},
 				{
-					"name": "_value",
+					"name": "amount",
 					"type": "uint256"
 				}
 			],

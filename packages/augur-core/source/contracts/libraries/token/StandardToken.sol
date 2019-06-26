@@ -22,14 +22,14 @@ contract StandardToken is ERC777, IStandardToken {
         return true;
     }
 
-    function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
+    function increaseApproval(address _spender, uint256 _addedValue) public returns (bool) {
         uint256 _newValue = _allowances[msg.sender][_spender].add(_addedValue);
         _approve(msg.sender, _spender, _newValue);
         return true;
     }
 
-    function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
-        uint _oldValue = _allowances[msg.sender][_spender];
+    function decreaseApproval(address _spender, uint256 _subtractedValue) public returns (bool) {
+        uint256 _oldValue = _allowances[msg.sender][_spender];
         if (_subtractedValue > _oldValue) {
             _approve(msg.sender, _spender, 0);
         } else {
