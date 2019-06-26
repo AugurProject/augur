@@ -57,7 +57,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         require(augur.getTimestamp() < _parentUniverse.getForkEndTime());
         mint(_reporter, _attotokens);
         totalMigrated += _attotokens;
-        // Update the fork tenative winner and finalize if we can
+        // Update the fork tentative winner and finalize if we can
         if (!_parentUniverse.getForkingMarket().isFinalized()) {
             _parentUniverse.updateTentativeWinningChildUniverse(universe.getParentPayoutDistributionHash());
         }
