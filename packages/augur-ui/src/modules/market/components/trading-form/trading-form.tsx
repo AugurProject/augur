@@ -11,13 +11,16 @@ import { MarketData, MarketOutcome } from 'modules/types';
 
 interface TradingFormProps {
   availableFunds: BigNumber;
+  availableDai: BigNumber;
   isLogged: boolean;
+  allowanceAmount: string;
   isConnectionTrayOpen: boolean;
   market: MarketData;
   marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
   selectedOrderProperties: Object;
   selectedOutcomeId: number;
+  sortedOutcomes: MarketOutcome[];
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
   gasPrice: number;
@@ -73,7 +76,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
 
   render() {
     const {
+      allowanceAmount,
       availableFunds,
+      availableDai,
       isLogged,
       isConnectionTrayOpen,
       market,
@@ -87,6 +92,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       onSubmitPlaceTrade,
       marketReviewTradeSeen,
       marketReviewTradeModal,
+      sortedOutcomes,
     } = this.props;
     const s = this.state;
 
@@ -114,10 +120,13 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
         <Wrapper
           market={market}
           isLogged={isLogged}
+          allowanceAmount={allowanceAmount}
           selectedOutcome={s.selectedOutcome}
           selectedOrderProperties={selectedOrderProperties}
+          sortedOutcomes={sortedOutcomes}
           toggleForm={this.toggleForm}
           availableFunds={availableFunds}
+          availableDai={availableDai}
           updateSelectedOrderProperties={
             this.props.updateSelectedOrderProperties
           }

@@ -1,13 +1,9 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { augur } from "services/augurjs";
 import classNames from "classnames";
 import {
   SCALAR,
-  YES_NO,
   BUY,
   SELL,
-  ZERO,
   BUYING,
   SELLING,
   BUYING_BACK,
@@ -17,8 +13,8 @@ import {
   UPPER_FIXED_PRECISION_BOUND
 } from "modules/common/constants";
 import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/tooltip.styles";
-import Styles from "modules/trading/components/confirm/confirm.styles";
+import TooltipStyles from "modules/common/tooltip.styles.less";
+import Styles from "modules/trading/components/confirm/confirm.styles.less";
 import {
   XIcon,
   ExclamationCircle,
@@ -27,37 +23,43 @@ import {
 import { formatGasCostToEther, formatShares } from "utils/format-number";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import { LinearPropertyLabel } from "modules/common/labels";
+import { FormattedNumber, Trade } from "modules/types";
+import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
 
-class Confirm extends Component {
-  static propTypes = {
-    trade: PropTypes.shape({
-      numShares: PropTypes.string,
-      limitPrice: PropTypes.string,
-      potentialEthProfit: PropTypes.object,
-      potentialEthLoss: PropTypes.object,
-      totalCost: PropTypes.object,
-      shareCost: PropTypes.object,
-      orderShareProfit: PropTypes.object,
-      orderShareTradingFee: PropTypes.object
-    }).isRequired,
-    gasPrice: PropTypes.number.isRequired,
-    availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
-    selectedOutcome: PropTypes.object.isRequired,
-    marketType: PropTypes.string.isRequired,
-    maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    minPrice: PropTypes.instanceOf(BigNumber).isRequired,
-    scalarDenomination: PropTypes.string,
-    numOutcomes: PropTypes.number,
-  };
+interface Message {
+  header: string;
+  type: string;
+  message: string;
+}
 
+interface ConfirmProps {
+  allowanceAmount: FormattedNumber;
+  trade: Trade;
+  gasPrice: number;
+  gasLimit: number;
+  availableFunds: BigNumber;
+  availableDai: BigNumber;
+  selectedOutcome: MarketInfoOutcome;
+  marketType: string;
+  maxPrice: BigNumber;
+  minPrice: BigNumber;
+  scalarDenomination: string | null;
+  numOutcomes: number;
+}
+
+interface ConfirmState {
+  messages: Message | null;
+}
+
+class Confirm extends Component<ConfirmProps, ConfirmState> {
   static defaultProps = {
-    scalarDenomination: ""
+    scalarDenomination: "",
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      messages: this.constructMessages(props)
+      messages: this.constructMessages(props),
     };
 
     this.constructMessages = this.constructMessages.bind(this);
@@ -72,61 +74,76 @@ class Confirm extends Component {
       availableFunds !== nextProps.availableFunds
     ) {
       this.setState({
-        messages: this.constructMessages(nextProps)
+        messages: this.constructMessages(nextProps),
       });
     }
   }
 
   constructMessages(props) {
-    const { trade, numOutcomes, gasPrice, availableFunds } =
+    const { trade, allowanceAmount, gasPrice, gasLimit, availableFunds, availableDai } =
       props || this.props;
 
-    const { totalCost, selfTrade } = trade;
+    const { totalCost, selfTrade, potentialEthLoss } = trade;
 
-    let messages = null;
-    const gasValues = {
-      fillGasLimit: augur.constants.WORST_CASE_FILL[numOutcomes],
-      placeOrderNoSharesGasLimit:
-        augur.constants.PLACE_ORDER_NO_SHARES[numOutcomes],
-      placeOrderWithSharesGasLimit:
-        augur.constants.PLACE_ORDER_WITH_SHARES[numOutcomes]
-    };
-    const gas =
-      trade.shareCost.fullPrecision > 0
-        ? gasValues.placeOrderWithSharesGasLimit
-        : gasValues.fillGasLimit;
-    const gasCost = formatGasCostToEther(gas, { decimalsRounded: 4 }, gasPrice);
+    let messages: Message | null = null;
     const tradeTotalCost = createBigNumber(totalCost.fullPrecision, 10);
+    const gasCost = formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, gasPrice);
 
     if (selfTrade) {
       messages = {
         header: "CONSUMING OWN ORDER",
         type: WARNING,
-        message: "You are trading against one of your existing orders"
+        message: "You are trading against one of your existing orders",
       };
     }
 
+    // TODO remove for now since we don't have a way to convert gas cost of Order into DAI
+    // if (
+    //   tradeTotalCost.gt(ZERO) &&
+    //   createBigNumber(gasCost).gt(createBigNumber(tradeTotalCost))
+    // ) {
+    //   messages = {
+    //     header: "Gas Higher than Order",
+    //     type: WARNING,
+    //     message: `Est. gas cost ${gasCost} ETH, higher than order cost`,
+    //   };
+    // }
+
     if (
-      tradeTotalCost.gt(ZERO) &&
-      createBigNumber(gasCost).gt(createBigNumber(tradeTotalCost))
+      totalCost &&
+      createBigNumber(gasCost, 10).gte(
+        createBigNumber(availableFunds, 10)
+      )
     ) {
       messages = {
-        header: "Gas Higher than Order",
-        type: WARNING,
-        message: `Est. gas cost ${gasCost} ETH, higher than order cost`
+        header: "Insufficient ETH",
+        type: ERROR,
+        message: `You do not have enough funds to place this order. ${gasCost} ETH required for gas.`,
       };
     }
 
     if (
       totalCost &&
-      createBigNumber(totalCost.fullPrecision, 10).gte(
-        createBigNumber(availableFunds, 10)
+      createBigNumber(potentialEthLoss.fullPrecision, 10).gt(
+        createBigNumber(availableDai, 10)
       )
     ) {
       messages = {
-        header: "Insufficient Funds",
+        header: "Insufficient DAI",
         type: ERROR,
-        message: "You do not have enough funds to place this order"
+        message: "You do not have enough DAI to place this order",
+      };
+    }
+
+    if (totalCost &&
+      allowanceAmount &&
+      createBigNumber(potentialEthLoss.fullPrecision, 10).gt(
+        createBigNumber(allowanceAmount.fullPrecision, 10)
+      )) {
+        messages = {
+        header: "Insufficient Approved Funds",
+        type: ERROR,
+        message: "You do not have enough approved funds to place this order.",
       };
     }
 
@@ -144,7 +161,7 @@ class Confirm extends Component {
       marketType,
       maxPrice,
       minPrice,
-      scalarDenomination
+      scalarDenomination,
     } = this.props;
 
     const {
@@ -156,13 +173,12 @@ class Confirm extends Component {
       shareCost,
       side,
       orderShareProfit,
-      orderShareTradingFee
+      orderShareTradingFee,
     } = trade;
 
     const { messages } = this.state;
 
-    const outcomeName =
-      marketType === YES_NO ? "this event" : selectedOutcome.name;
+    const outcomeName = selectedOutcome.description;
     const greaterLess = side === BUY ? "greater" : "less";
     const higherLower = side === BUY ? "higher" : "lower";
 
@@ -188,7 +204,7 @@ class Confirm extends Component {
       newOrderAmount = formatShares(
         createBigNumber(numShares).minus(shareCost.fullPrecision),
         {
-          decimalsRounded: UPPER_FIXED_PRECISION_BOUND
+          decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
         }
       ).rounded;
     }
@@ -215,7 +231,7 @@ class Confirm extends Component {
                 <span
                   className={classNames({
                     [Styles.long]: side === BUY,
-                    [Styles.short]: side === SELL
+                    [Styles.short]: side === SELL,
                   })}
                 >
                   {side !== BUY ? SELLING_OUT : BUYING_BACK}
@@ -270,7 +286,7 @@ class Confirm extends Component {
                 <span
                   className={classNames({
                     [Styles.long]: side === BUY,
-                    [Styles.short]: side === SELL
+                    [Styles.short]: side === SELL,
                   })}
                 >
                   {side === BUY ? BUYING : SELLING}
@@ -293,7 +309,7 @@ class Confirm extends Component {
             className={classNames(
               Styles.TradingConfirm__error_message_container,
               {
-                [Styles.error]: messages.type === ERROR
+                [Styles.error]: messages.type === ERROR,
               }
             )}
           >
@@ -301,7 +317,7 @@ class Confirm extends Component {
               className={classNames({
                 [Styles.TradingConfirm__message__warning]:
                   messages.type === WARNING,
-                [Styles.TradingConfirm__message__error]: messages.type === ERROR
+                [Styles.TradingConfirm__message__error]: messages.type === ERROR,
               })}
             >
               {ExclamationCircle}
