@@ -32,9 +32,16 @@ export const OutcomeParam = t.keyof({
   7: null,
 });
 
+export const MakerTaker = t.keyof({
+  either: null,
+  maker: null,
+  taker: null
+});
+
 export const AllOrdersParams = t.partial({
   account: t.string,
   ignoreReportingStates: t.array(t.string),
+  makerTaker: MakerTaker
 });
 
 export const OrdersParams = t.partial({
@@ -42,14 +49,19 @@ export const OrdersParams = t.partial({
   marketId: t.string,
   outcome: OutcomeParam,
   orderType: t.string,
-  creator: t.string,
+  account: t.string,
   orderState: t.string,
   ignoreReportingStates: t.array(t.string),
+  makerTaker: MakerTaker,
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });
 
 export interface MarketTradingHistory {
+  [marketId: string]: MarketTrade[]
+}
+
+export interface MarketTrade {
   transactionHash: string;
   logIndex: number;
   orderId: string;
@@ -136,7 +148,7 @@ export class Trading {
   public static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
   @Getter("GetTradingHistoryParams")
-  public static async getTradingHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<Array<any>> {
+  public static async getTradingHistory(augur: Augur, db: DB, params: t.TypeOf<typeof Trading.GetTradingHistoryParams>): Promise<MarketTradingHistory> {
     if (!params.account && params.marketIds.length === 0) {
       throw new Error("'getTradingHistory' requires an 'account' or 'marketId' param be provided");
     }
@@ -163,7 +175,7 @@ export class Trading {
     const marketIds = _.map(orderFilledResponse, "market");
     const markets = await filterMarketsByReportingState(marketIds, db, params.ignoreReportingStates);
 
-    return orderFilledResponse.reduce((trades: Array<MarketTradingHistory>, orderFilledDoc) => {
+    return orderFilledResponse.reduce((trades: MarketTradingHistory, orderFilledDoc) => {
       const orderDoc = orders[orderFilledDoc.orderId];
       if (!orderDoc) return trades;
       const marketDoc = markets[orderFilledDoc.market];
@@ -177,7 +189,10 @@ export class Trading {
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       const amount = convertOnChainAmountToDisplayAmount(new BigNumber(orderFilledDoc.amountFilled, 16), tickSize);
       const price = convertOnChainPriceToDisplayPrice(new BigNumber(orderFilledDoc.price, 16), minPrice, tickSize);
-      trades.push(Object.assign(_.pick(orderFilledDoc, [
+      if (typeof trades[orderFilledDoc.market] === "undefined") {
+        trades[orderFilledDoc.market] = [];
+      }
+      trades[orderFilledDoc.market].push(Object.assign(_.pick(orderFilledDoc, [
         "transactionHash",
         "logIndex",
         "orderId",
@@ -191,9 +206,9 @@ export class Trading {
           price: price.toString(10),
           amount: amount.toString(10),
           settlementFees: fees.toString(10),
-        }) as MarketTradingHistory);
+        }) as MarketTrade);
       return trades;
-    }, [] as Array<MarketTradingHistory>);
+    }, {} as MarketTradingHistory);
   }
 
   @Getter("GetAllOrdersParams")
@@ -201,13 +216,18 @@ export class Trading {
     if (!params.account) {
       throw new Error("'getAllOrders' requires an 'account' param be provided");
     }
+    if (!params.makerTaker) {
+      params.makerTaker = "either";
+    }
 
     const request = {
       selector: {
-        orderCreator: params.account,
         amount: { $gt: "0x00" }
       }
     };
+    if (params.makerTaker === "either") request.selector = Object.assign(request.selector, { $or: [ { orderCreator: params.account }, {orderFiller: params.account } ] });
+    if (params.makerTaker === "maker") request.selector = Object.assign(request.selector, { orderCreator: params.account });
+    if (params.makerTaker === "taker") request.selector = Object.assign(request.selector, { orderFiller: params.account });
 
     const currentOrdersResponse = await db.findCurrentOrderLogs(request);
 
@@ -240,18 +260,24 @@ export class Trading {
     if (!params.universe && !params.marketId) {
       throw new Error("'getOrders' requires a 'universe' or 'marketId' param be provided");
     }
+    if (!params.makerTaker) {
+      params.makerTaker = "either";
+    }
+
     const request = {
       selector: {
         universe: params.universe,
         market: params.marketId,
         outcome: params.outcome,
         orderType: params.orderType,
-        orderCreator: params.creator,
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
       limit: params.limit,
       skip: params.offset,
     };
+    if (params.makerTaker === "either") request.selector = Object.assign(request.selector, { $or: [ { orderCreator: params.account }, {orderFiller: params.account } ] });
+    if (params.makerTaker === "maker") request.selector = Object.assign(request.selector, { orderCreator: params.account });
+    if (params.makerTaker === "taker") request.selector = Object.assign(request.selector, { orderFiller: params.account });
 
     if (params.orderState === OrderState.OPEN) request.selector = Object.assign(request.selector, { amount: { $gt: "0x00" } });
     if (params.orderState === OrderState.CANCELED) request.selector = Object.assign(request.selector, { "eventType": 1 });

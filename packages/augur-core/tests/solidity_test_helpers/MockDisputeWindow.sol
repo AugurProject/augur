@@ -186,7 +186,7 @@ contract MockDisputeWindow is Initializable, MockVariableSupplyToken, IDisputeWi
     /*
     * Impl of IDisputeWindow and ITyped
      */
-    function getTypeName() public afterInitialized view returns (bytes32) {
+    function getTypeName() public view returns (bytes32) {
         return "DisputeWindow";
     }
 

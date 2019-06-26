@@ -273,7 +273,6 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
 
     assert universe.getOpenInterestInAttoCash() == 0
 
-
     # The dispute crowdsourcer has been disavowed
     newUniverse = localFixture.applySignature("Universe", categoricalMarket.getUniverse())
     assert newUniverse.address != universe.address
@@ -309,6 +308,14 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     newUniverseREP = localFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
     initialReporter = localFixture.applySignature('InitialReporter', scalarMarket.getInitialReporter())
     assert newUniverseREP.balanceOf(initialReporter.address) == newUniverse.getOrCacheDesignatedReportNoShowBond()
+
+    # We cannot migrate legacy REP to the new Universe REP
+    legacyRepToken = localFixture.applySignature('LegacyReputationToken', newUniverseREP.getLegacyRepToken())
+    assert legacyRepToken.faucet(500)
+    totalSupply = legacyRepToken.balanceOf(localFixture.accounts[0])
+    legacyRepToken.approve(newUniverseREP.address, totalSupply)
+    with raises(TransactionFailed):
+        newUniverseREP.migrateFromLegacyReputationToken()
 
     # We can finalize this market as well
     proceedToNextRound(localFixture, scalarMarket)
@@ -381,42 +388,28 @@ def test_forking_values(localFixture, universe, market):
     # finalize the fork
     finalize(localFixture, market, universe)
 
-    # We can see that the theoretical total REP supply in the winning child universe is equal to the parent supply
+    # We can see that the theoretical total REP supply in the winning child universe is a lower total to account for sibling migrations
     winningPayoutHash = market.getWinningPayoutDistributionHash()
     childUniverse = localFixture.applySignature("Universe", universe.getChildUniverse(winningPayoutHash))
     childUniverseReputationToken = localFixture.applySignature("ReputationToken", childUniverse.getReputationToken())
     childUniverseTheoreticalSupply = childUniverseReputationToken.getTotalTheoreticalSupply()
-    assert childUniverseTheoreticalSupply == reputationToken.getTotalTheoreticalSupply()
-
-    # If we nudge the reputation token to update its theoretical balance we can see a lower total to account for sibling migrations
-    assert childUniverseReputationToken.updateTotalTheoreticalSupply()
     assert childUniverseReputationToken.getTotalTheoreticalSupply() <= childUniverseTheoreticalSupply
-    childUniverseTheoreticalSupply = childUniverseReputationToken.getTotalTheoreticalSupply()
 
-    # If we migrate some REP to another Universe we can recalculate and see that amount deducted from the theoretical supply
+    # If we migrate some REP to another Universe we can see that amount deducted from the theoretical supply
     losingPayoutNumerators = [0, 0, market.getNumTicks()]
     losingUniverse =  localFixture.applySignature('Universe', universe.createChildUniverse(losingPayoutNumerators))
     losingUniverseReputationToken = localFixture.applySignature('ReputationToken', losingUniverse.getReputationToken())
     assert reputationToken.migrateOut(losingUniverseReputationToken.address, 100, sender=localFixture.accounts[1])
-    assert childUniverseReputationToken.updateTotalTheoreticalSupply()
     lowerChildUniverseTheoreticalSupply = childUniverseReputationToken.getTotalTheoreticalSupply()
     assert lowerChildUniverseTheoreticalSupply == childUniverseTheoreticalSupply - 100
 
-    # If we move past the forking window end time and we update the theoretical supply however we will see that some REP was trapped in the parent and deducted from the supply
+    # If we move past the forking window end time however we will see that some REP was trapped in the parent and deducted from the supply
     localFixture.contracts["Time"].setTimestamp(universe.getForkEndTime() + 1)
-    assert childUniverseReputationToken.updateTotalTheoreticalSupply()
     childUniverseTheoreticalSupply = childUniverseReputationToken.getTotalTheoreticalSupply()
     assert childUniverseTheoreticalSupply < lowerChildUniverseTheoreticalSupply
 
-    # The universe needs to be nudged to actually update values since there are potentially unbounded universes and updating the values derived by this total is not essential as a matter of normal procedure
     # In a forked universe the total supply will be different so its childrens goals will not be the same initially
-    if not localFixture.subFork:
-        assert childUniverse.getForkReputationGoal() == universe.getForkReputationGoal()
-        assert childUniverse.getDisputeThresholdForFork() == universe.getDisputeThresholdForFork()
-        assert childUniverse.getInitialReportMinValue() == universe.getInitialReportMinValue()
-
-    # The universe uses this theoretical total to calculate values such as the fork goal, fork dispute threshhold and the initial reporting defaults and floors
-    assert childUniverse.updateForkValues()
+    childUniverse.updateForkValues()
     assert childUniverse.getForkReputationGoal() == int(Decimal(childUniverseTheoreticalSupply) / 2)
     assert childUniverse.getDisputeThresholdForFork() == int(Decimal(childUniverseTheoreticalSupply) / 40)
     assert childUniverse.getInitialReportMinValue() == int(Decimal(childUniverse.getDisputeThresholdForFork()) / 3 / 2**18 + 1)
@@ -429,18 +422,17 @@ def test_forking_values(localFixture, universe, market):
     # finalize the fork
     finalize(localFixture, newMarket, childUniverse)
 
-    # The total theoretical supply is again the same as the parents during the fork
+    # The total theoretical supply is the total supply of the token plus that of the parent
     childWinningPayoutHash = newMarket.getWinningPayoutDistributionHash()
     leafUniverse = localFixture.applySignature("Universe", childUniverse.getChildUniverse(childWinningPayoutHash))
     leafUniverseReputationToken = localFixture.applySignature("ReputationToken", leafUniverse.getReputationToken())
     leafUniverseTheoreticalSupply = leafUniverseReputationToken.getTotalTheoreticalSupply()
-    assert leafUniverseTheoreticalSupply == childUniverseReputationToken.getTotalTheoreticalSupply()
+    assert leafUniverseTheoreticalSupply == leafUniverseReputationToken.totalSupply() + childUniverseReputationToken.totalSupply()
 
     # After the fork window ends however we can again recalculate
     localFixture.contracts["Time"].setTimestamp(childUniverse.getForkEndTime() + 1)
-    assert leafUniverseReputationToken.updateTotalTheoreticalSupply()
     leafUniverseTheoreticalSupply = leafUniverseReputationToken.getTotalTheoreticalSupply()
-    assert leafUniverseTheoreticalSupply < childUniverseReputationToken.getTotalTheoreticalSupply()
+    assert leafUniverseTheoreticalSupply == leafUniverseReputationToken.totalSupply()
 
 
 def test_fee_window_record_keeping(localFixture, universe, market, categoricalMarket, scalarMarket):

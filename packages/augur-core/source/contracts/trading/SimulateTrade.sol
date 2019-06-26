@@ -40,11 +40,10 @@ contract SimulateTrade is Initializable {
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant GAS_BUFFER = 50000;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
-        return true;
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, address _sender, IERC20 _kycToken) internal view returns (SimulationData memory) {

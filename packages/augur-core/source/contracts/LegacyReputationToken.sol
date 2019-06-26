@@ -9,7 +9,7 @@ contract LegacyReputationToken is OldLegacyReputationToken {
 
     string public constant name = "Reputation";
     string public constant symbol = "REP";
-    uint256 public constant decimals = 18;
+    uint8 public constant decimals = 18;
 
     function initializeERC1820(IAugur _augur) public returns (bool) {
         erc1820Registry = IERC1820Registry(_augur.lookup("ERC1820Registry"));
@@ -24,15 +24,12 @@ contract LegacyReputationToken is OldLegacyReputationToken {
         return true;
     }
 
-    function onMint(address, uint256) internal returns (bool) {
-        return true;
+    function onMint(address, uint256) internal {
     }
 
-    function onBurn(address, uint256) internal returns (bool) {
-        return true;
+    function onBurn(address, uint256) internal {
     }
 
-    function onTokenTransfer(address, address, uint256) internal returns (bool) {
-        return true;
+    function onTokenTransfer(address, address, uint256) internal {
     }
 }

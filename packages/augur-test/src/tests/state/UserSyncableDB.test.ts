@@ -40,16 +40,15 @@ test("UserSynableDB.sync", async () => {
   //        value: [BigNumber],
   //        tokenType: 0,
   //        market: '0x0000000000000000000000000000000000000000' } },
-  await john.createCategoricalMarket(
-    universe,
-    new BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60),
-    (new BigNumber(10)).pow(16),
-    new BigNumber(25),
-    sender,
-    [stringTo32ByteHex("big"), stringTo32ByteHex("small")],
-    "boba",
-    JSON.stringify({ description: "Will big or small boba be the most popular in 2019?" }),
-  );
+  await john.createCategoricalMarket({
+    endTime: new BigNumber(Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60),
+    feePerCashInAttoCash: (new BigNumber(10)).pow(16),
+    affiliateFeeDivisor: new BigNumber(25),
+    designatedReporter: sender,
+    outcomes: [stringTo32ByteHex("big"), stringTo32ByteHex("small")],
+    topic: "boba",
+    extraInfo: JSON.stringify({ description: "Will big or small boba be the most popular in 2019?" }),
+  });
 
   const tokensTransferredEventDefinition = john.augur.userSpecificEvents.find((x) => x.name === "TokensTransferred");
   if (!tokensTransferredEventDefinition) {
@@ -96,10 +95,10 @@ test("UserSynableDB.sync", async () => {
     transactionHash: expect.stringMatching(new RegExp("0x[0-f]{64}")),
     logIndex: expect.any(Number),
     topics: [
-      "0x3c67396e9c55d2fc8ad68875fc5beca1d96ad2a2f23b210ccc1d986551ab6fdf",
-      "0x0000000000000000000000004112a78f07d155884b239a29e378d1f853edd128",
-      "0x0000000000000000000000008fff40efec989fc938bba8b19584da08ead986ee",
-      "0x000000000000000000000000aa2e22968cb6660de7ac605043eab08a54e8bcb4",
+      expect.stringMatching(new RegExp("0x[0-f]{64}")),
+      expect.stringMatching(new RegExp("0x[0-f]{64}")),
+      expect.stringMatching(new RegExp("0x[0-f]{64}")),
+      expect.stringMatching(new RegExp("0x[0-f]{64}")),
     ],
     _id: doc.id,
     _rev: doc.value.rev,

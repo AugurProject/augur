@@ -206,7 +206,7 @@ contract ZeroXPoC is ReentrancyGuard {
 
     function sellCompleteSets(Order memory order, uint256 _numCompleteSets, address _shortParticipant, address _longParticipant, IShareToken _longShareToken, IShareToken[] memory _shortShareTokens) private returns (bool) {
         uint256 _startingBalance = cash.balanceOf(address(this));
-        completeSets.publicSellCompleteSetsWithCash(order.market, _numCompleteSets);
+        completeSets.publicSellCompleteSets(order.market, _numCompleteSets);
 
         uint256 _payout = cash.balanceOf(address(this)).sub(_startingBalance);
 
@@ -269,7 +269,7 @@ contract ZeroXPoC is ReentrancyGuard {
         uint256 _shortPrice = order.orderType == 0 ? order.market.getNumTicks().sub(order.price) : order.price;
         uint256 _longPrice = order.orderType == 0 ? order.price : order.market.getNumTicks().sub(order.price);
 
-        completeSets.publicBuyCompleteSetsWithCash(order.market, _toFillAmount);
+        completeSets.publicBuyCompleteSets(order.market, _toFillAmount);
         tokenBalances[address(_longShareToken)][_longParticipant] = tokenBalances[address(_longShareToken)][_longParticipant].add(_toFillAmount);
         for (uint256 _i = 0; _i < _shortShareTokens.length; ++_i) {
             tokenBalances[address(_shortShareTokens[_i])][_shortParticipant] = tokenBalances[address(_shortShareTokens[_i])][_shortParticipant].add(_toFillAmount);
