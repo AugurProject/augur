@@ -10,19 +10,24 @@ function calculateQuantityScale(outOfBN, sharesBN) {
   );
 }
 
+function calculateMaxValues(mostShares) {
+  return mostShares &&
+  createBigNumber(mostShares).plus(
+    createBigNumber(mostShares).times(createBigNumber(0.15))
+  );
+}
 const orderAndAssignCumulativeShares = memoize(
   (orderBook) => {
     const rawBids = ((orderBook || {})[BIDS] || []).slice();
     const rawAsks = ((orderBook || {})[ASKS] || []).slice();
-    const bidsAsksSort = rawBids
-      .concat(rawAsks)
-    const mostShares =
-      bidsAsksSort[0] && bidsAsksSort[0].shares && createBigNumber(bidsAsksSort[0].shares);
-    const outOf =
-      mostShares &&
-      createBigNumber(mostShares).plus(
-        createBigNumber(mostShares).times(createBigNumber(0.15))
-      );
+
+    const mostBidShares =
+      Math.max(...rawBids.map(bid => createBigNumber(bid.shares).toNumber()))
+    const mostAskShares =
+      Math.max(...rawAsks.map(ask => createBigNumber(ask.shares).toNumber()))
+    const outOfBids = calculateMaxValues(mostBidShares);
+    const outOfAsks = calculateMaxValues(mostAskShares);
+
     const bids = rawBids.reduce(
       (p, order) => [
         ...p,
@@ -30,7 +35,7 @@ const orderAndAssignCumulativeShares = memoize(
           price: order.price,
           shares: order.shares,
           quantityScale: calculateQuantityScale(
-            outOf,
+            outOfBids,
             createBigNumber(order.shares)
           ).toString(),
           cumulativeShares: order.cumulativeShares,
@@ -48,7 +53,7 @@ const orderAndAssignCumulativeShares = memoize(
             price: order.price,
             shares: order.shares,
             quantityScale: calculateQuantityScale(
-              outOf,
+              outOfAsks,
               createBigNumber(order.shares)
             ).toString(),
             cumulativeShares: order.cumulativeShares,
