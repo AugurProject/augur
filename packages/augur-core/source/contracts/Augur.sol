@@ -10,7 +10,6 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
-import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/Order.sol';
@@ -399,7 +398,7 @@ contract Augur is IAugur {
     }
 
     function logUniverseForked(IMarket _forkingMarket) public returns (bool) {
-        require(isKnownUniverse(IUniverse(msg.sender));
+        require(isKnownUniverse(IUniverse(msg.sender)));
         emit UniverseForked(msg.sender, _forkingMarket);
         return true;
     }
@@ -468,7 +467,7 @@ contract Augur is IAugur {
     }
 
     function logDisputeWindowCreated(IDisputeWindow _disputeWindow, uint256 _id, bool _initial) public returns (bool) {
-        require(isKnownUniverse(IUniverse(msg.sender));
+        require(isKnownUniverse(IUniverse(msg.sender)));
         emit DisputeWindowCreated(msg.sender, address(_disputeWindow), _disputeWindow.getStartTime(), _disputeWindow.getEndTime(), _id, _initial);
         return true;
     }

@@ -3,7 +3,7 @@ pragma solidity 0.5.4;
 import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
+import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/trading/Order.sol';
 
 

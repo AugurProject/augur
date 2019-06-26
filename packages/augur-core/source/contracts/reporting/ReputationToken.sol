@@ -79,14 +79,6 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return true;
     }
 
-    function transfer(address _to, uint256 _value) public returns (bool) {
-        return super.transfer(_to, _value);
-    }
-
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
-        return super.transferFrom(_from, _to, _value);
-    }
-
     function trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(IUniverse(msg.sender) == universe);
         return internalNoHooksTransfer(_source, _destination, _attotokens);
