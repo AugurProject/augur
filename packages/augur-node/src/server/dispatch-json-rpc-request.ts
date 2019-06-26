@@ -15,7 +15,7 @@ import {
   ForkMigrationTotalsParams,
   getAccountTimeRangedStats,
   getAccountTransactionHistory,
-  GetAccountTransactionHistoryParams, getAccountTransferHistory,
+  getAccountTransactionHistoryParams, getAccountTransferHistory,
   getAllOrders, getBetterWorseOrders,
   getCategories,
   getCompleteSets,
@@ -126,7 +126,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserShareBalances":
       return dispatchResponse(getUserShareBalances, UserShareBalancesParams.decode(request.params));
     case "getAccountTransactionHistory":
-      return dispatchResponse(getAccountTransactionHistory, GetAccountTransactionHistoryParams.decode(request.params));
+      return dispatchResponse(getAccountTransactionHistory, getAccountTransactionHistoryParams.decode(request.params));
     case "getProfitLoss":
       return dispatchResponse(getProfitLoss, getProfitLossParams.decode(request.params));
     case "getProfitLossSummary":

@@ -22,7 +22,7 @@ import * as t from 'io-ts';
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
-const userTradingPositionsParams = t.intersection([
+const UserTradingPositionsParams = t.intersection([
   t.type({
     account: t.string,
   }),
@@ -33,14 +33,14 @@ const userTradingPositionsParams = t.intersection([
   }),
 ]);
 
-const getProfitLossSummaryParams = t.partial({
+const GetProfitLossSummaryParams = t.partial({
   universe: t.string,
   account: t.string,
   endTime: t.number,
 });
 
-const getProfitLossParams = t.intersection([
-  getProfitLossSummaryParams,
+const GetProfitLossParams = t.intersection([
+  GetProfitLossSummaryParams,
   t.partial({
     startTime: t.number,
     periodInterval: t.number,
@@ -85,7 +85,7 @@ export interface TradingPosition {
 }
 
 export interface UserTradingPositions {
-  tradingPositions: TradingPosition[]; // per-outcome TradingPosition, where unrealized profit is relative to an outcome's last price (as traded by anyone)
+  tradingPositions: Array<TradingPosition>; // per-outcome TradingPosition, where unrealized profit is relative to an outcome's last price (as traded by anyone)
   tradingPositionsPerMarket: {
     // per-market rollup of trading positions
     [marketId: string]: MarketTradingPosition;
@@ -104,18 +104,18 @@ export interface ProfitLossResult {
 }
 
 export class Users {
-  static getUserTradingPositionsParams = t.intersection([
-    userTradingPositionsParams,
+  public static GetUserTradingPositionsParams = t.intersection([
+    UserTradingPositionsParams,
     SortLimit,
   ]);
-  static getProfitLossParams = getProfitLossParams;
-  static getProfitLossSummaryParams = getProfitLossSummaryParams;
+  public static GetProfitLossParams = GetProfitLossParams;
+  public static GetProfitLossSummaryParams = GetProfitLossSummaryParams;
 
-  @Getter('getUserTradingPositionsParams')
-  static async getUserTradingPositions(
+  @Getter('GetUserTradingPositionsParams')
+  public static async getUserTradingPositions(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Users.getUserTradingPositionsParams>
+    params: t.TypeOf<typeof Users.GetUserTradingPositionsParams>
   ): Promise<UserTradingPositions> {
     if (!params.universe && !params.marketId) {
       throw new Error(
@@ -267,12 +267,12 @@ export class Users {
     };
   }
 
-  @Getter('getProfitLossParams')
-  static async getProfitLoss(
+  @Getter('GetProfitLossParams')
+  public static async getProfitLoss(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Users.getProfitLossParams>
-  ): Promise<MarketTradingPosition[]> {
+    params: t.TypeOf<typeof Users.GetProfitLossParams>
+  ): Promise<Array<MarketTradingPosition>> {
     if (!params.startTime) {
       throw new Error(
         "'getProfitLoss' requires a 'startTime' param be provided"
@@ -353,7 +353,7 @@ export class Users {
           return _.mapValues(
             profitLossByOutcome,
             (outcomePLValues, outcome) => {
-              const latestOutcomePLValue = getLastDocBeforeTimestamp<
+              let latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
               if (!latestOutcomePLValue) {
@@ -402,18 +402,18 @@ export class Users {
         }
       );
 
-      const tradingPositions: MarketTradingPosition[] = _.flattenDeep(
+      const tradingPositions: Array<MarketTradingPosition> = _.flattenDeep(
         _.map(_.values(tradingPositionsByMarketAndOutcome), _.values)
       );
       return sumTradingPositions(tradingPositions);
     });
   }
 
-  @Getter('getProfitLossSummaryParams')
-  static async getProfitLossSummary(
+  @Getter('GetProfitLossSummaryParams')
+  public static async getProfitLossSummary(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Users.getProfitLossSummaryParams>
+    params: t.TypeOf<typeof Users.GetProfitLossSummaryParams>
   ): Promise<NumericDictionary<MarketTradingPosition>> {
     const result: NumericDictionary<MarketTradingPosition> = {};
     const now = await augur.contracts.augur.getTimestamp_();
@@ -434,11 +434,10 @@ export class Users {
         }
       );
 
-      if (rest.length !== 0) {
+      if (rest.length !== 0)
         throw new Error(
           'PL calculation in summary returning more thant two bucket'
         );
-      }
 
       const negativeStartProfit: MarketTradingPosition = {
         timestamp: startProfit.timestamp,
@@ -464,7 +463,7 @@ export class Users {
 }
 
 export function sumTradingPositions(
-  tradingPositions: MarketTradingPosition[]
+  tradingPositions: Array<MarketTradingPosition>
 ): MarketTradingPosition {
   const summedTrade = _.reduce(
     tradingPositions,
@@ -547,26 +546,22 @@ function bucketRangeByInterval(
   startTime: number,
   endTime: number,
   periodInterval: number | null
-): BigNumber[] {
-  if (startTime < 0) {
+): Array<BigNumber> {
+  if (startTime < 0)
     throw new Error('startTime must be a valid unix timestamp, greater than 0');
-  }
-  if (endTime < 0) {
+  if (endTime < 0)
     throw new Error('endTime must be a valid unix timestamp, greater than 0');
-  }
-  if (endTime < startTime) {
+  if (endTime < startTime)
     throw new Error('endTime must be greater than or equal startTime');
-  }
-  if (periodInterval !== null && periodInterval <= 0) {
+  if (periodInterval !== null && periodInterval <= 0)
     throw new Error('periodInterval must be positive integer (seconds)');
-  }
 
   const interval =
     periodInterval == null
       ? Math.ceil((endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS)
       : periodInterval;
 
-  const buckets: BigNumber[] = [];
+  const buckets: Array<BigNumber> = [];
   for (
     let bucketEndTime = startTime;
     bucketEndTime < endTime;
@@ -583,7 +578,7 @@ async function getProfitLossRecordsByMarketAndOutcome(
   db: DB,
   account: string,
   request: PouchDB.Find.FindRequest<{}>
-): Promise<_.Dictionary<_.Dictionary<ProfitLossChangedLog[]>>> {
+): Promise<_.Dictionary<_.Dictionary<Array<ProfitLossChangedLog>>>> {
   const profitLossResult = await db.findProfitLossChangedLogs(account, request);
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(
     profitLossResult
@@ -593,7 +588,7 @@ async function getProfitLossRecordsByMarketAndOutcome(
 async function getOrderFilledRecordsByMarketAndOutcome(
   db: DB,
   request: PouchDB.Find.FindRequest<{}>
-): Promise<_.Dictionary<_.Dictionary<ParsedOrderEventLog[]>>> {
+): Promise<_.Dictionary<_.Dictionary<Array<ParsedOrderEventLog>>>> {
   const orderFilled = await db.findOrderFilledLogs(request);
   return groupDocumentsByMarketAndOutcome<ParsedOrderEventLog>(
     orderFilled,
@@ -602,9 +597,9 @@ async function getOrderFilledRecordsByMarketAndOutcome(
 }
 
 function groupDocumentsByMarketAndOutcome<TDoc extends Doc>(
-  docs: TDoc[],
-  outcomeField = 'outcome'
-): _.Dictionary<_.Dictionary<TDoc[]>> {
+  docs: Array<TDoc>,
+  outcomeField: string = 'outcome'
+): _.Dictionary<_.Dictionary<Array<TDoc>>> {
   const byMarket = _.groupBy(docs, 'market');
   return _.mapValues(byMarket, marketResult => {
     const outcomeResultsInMarket = _.groupBy(marketResult, outcomeField);
@@ -615,7 +610,7 @@ function groupDocumentsByMarketAndOutcome<TDoc extends Doc>(
 }
 
 function reduceMarketAndOutcomeDocsToOnlyLatest<TDoc extends Doc>(
-  docs: _.Dictionary<_.Dictionary<TDoc[]>>
+  docs: _.Dictionary<_.Dictionary<Array<TDoc>>>
 ): _.Dictionary<_.Dictionary<TDoc>> {
   return _.mapValues(docs, marketResults => {
     return _.mapValues(marketResults, outcomeResults => {
@@ -637,10 +632,10 @@ function reduceMarketAndOutcomeDocsToOnlyLatest<TDoc extends Doc>(
 }
 
 function getLastDocBeforeTimestamp<TDoc extends Timestamped>(
-  docs: TDoc[],
+  docs: Array<TDoc>,
   timestamp: BigNumber
 ): TDoc | undefined {
-  const allBeforeTimestamp = _.takeWhile(docs, doc =>
+  let allBeforeTimestamp = _.takeWhile(docs, doc =>
     timestamp.gte(doc.timestamp, 16)
   );
   if (allBeforeTimestamp.length > 0) {
