@@ -93,7 +93,7 @@ describe('State API :: Trading :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Get trades by user
-    let trades: Array<MarketTradingHistory> = await api.route(
+    let trades: MarketTradingHistory[] = await api.route(
       'getTradingHistory',
       {
         account: mary.account,
@@ -120,7 +120,7 @@ describe('State API :: Trading :: ', () => {
     await expect(trades[market2.address]).toBeUndefined();
 
     // Test `ignoreReportingStates` param
-    let newTime = (await market1.getEndTime_()).plus(1);
+    const newTime = (await market1.getEndTime_()).plus(1);
     await john.setTimestamp(newTime);
 
     const noPayoutSet = [new BigNumber(100), new BigNumber(0), new BigNumber(0)];

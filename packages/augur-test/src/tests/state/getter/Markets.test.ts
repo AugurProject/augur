@@ -56,7 +56,7 @@ describe('State API :: Markets :: ', () => {
       affiliateFeeDivisor,
       designatedReporter,
       topic: 'yesNo topic 1',
-      extraInfo: '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}'
+      extraInfo: '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
     });
     const yesNoMarket2 = await john.createYesNoMarket({
       endTime,
@@ -64,7 +64,7 @@ describe('State API :: Markets :: ', () => {
       affiliateFeeDivisor,
       designatedReporter,
       topic: 'yesNo topic 2',
-      extraInfo: '{"description": "yesNo description 2", "longDescription": "yesNo longDescription 2", "tags": ["yesNo tag2-1", "yesNo tag2-2", "yesNo tag2-3"]}'
+      extraInfo: '{"description": "yesNo description 2", "longDescription": "yesNo longDescription 2", "tags": ["yesNo tag2-1", "yesNo tag2-2", "yesNo tag2-3"]}',
     });
     const categoricalMarket1 = await john.createCategoricalMarket({
       endTime,
@@ -73,7 +73,7 @@ describe('State API :: Markets :: ', () => {
       designatedReporter,
       outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
       topic: 'categorical topic 1',
-      extraInfo: '{"description": "categorical description 1", "longDescription": "categorical longDescription 1", "tags": ["categorical tag1-1", "categorical tag1-2", "categorical tag1-3"]}'
+      extraInfo: '{"description": "categorical description 1", "longDescription": "categorical longDescription 1", "tags": ["categorical tag1-1", "categorical tag1-2", "categorical tag1-3"]}',
     });
     const categoricalMarket2 = await john.createCategoricalMarket({
       endTime,
@@ -82,7 +82,7 @@ describe('State API :: Markets :: ', () => {
       designatedReporter,
       outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
       topic: 'categorical topic 2',
-      extraInfo: '{"description": "categorical description 2", "longDescription": "categorical longDescription 2", "tags": ["categorical tag2-1", "categorical tag2-2", "categorical tag2-3"]}'
+      extraInfo: '{"description": "categorical description 2", "longDescription": "categorical longDescription 2", "tags": ["categorical tag2-1", "categorical tag2-2", "categorical tag2-3"]}',
     });
     const scalarMarket1 = await john.createScalarMarket({
       endTime,
@@ -92,7 +92,7 @@ describe('State API :: Markets :: ', () => {
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
       topic: 'scalar topic 1',
-      extraInfo: '{"description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1", "tags": ["scalar tag1-1", "scalar tag1-2", "scalar tag1-3"]}'
+      extraInfo: '{"description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1", "tags": ["scalar tag1-1", "scalar tag1-2", "scalar tag1-3"]}',
     });
     const scalarMarket2 = await john.createScalarMarket({
       endTime,
@@ -102,7 +102,7 @@ describe('State API :: Markets :: ', () => {
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
       topic: 'scalar topic 2',
-      extraInfo: '{"description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2", "tags": ["scalar tag2-1", "scalar tag2-2", "scalar tag2-3"]}'
+      extraInfo: '{"description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2", "tags": ["scalar tag2-1", "scalar tag2-2", "scalar tag2-3"]}',
     });
 
     const actualDB = await db;
@@ -147,13 +147,13 @@ describe('State API :: Markets :: ', () => {
     // Test maxEndTime
     markets = await api.route('getMarkets', {
       universe: universe.address,
-      maxEndTime: endTime.toNumber()
+      maxEndTime: endTime.toNumber(),
     });
     expect(markets).toEqual([]);
 
     markets = await api.route('getMarkets', {
       universe: universe.address,
-      maxEndTime: endTime.plus(1).toNumber()
+      maxEndTime: endTime.plus(1).toNumber(),
     });
     expect(markets).toEqual([
     yesNoMarket1.address,

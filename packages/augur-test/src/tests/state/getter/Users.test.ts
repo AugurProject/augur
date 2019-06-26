@@ -87,11 +87,10 @@ describe('State API :: Users :: ', () => {
     const market2 = await john.createReasonableYesNoMarket();
 
     const startTime = await john.getTimestamp();
-    let timestamp = startTime;
 
     const day = 60 * 60 * 24;
 
-    const trades: Array<PLTradeData> = [
+    const trades: PLTradeData[] = [
       {
         direction: LONG,
         outcome: YES,
@@ -134,7 +133,7 @@ describe('State API :: Users :: ', () => {
       },
     ];
 
-    for (let trade of trades) {
+    for (const trade of trades) {
       await john.setTimestamp(new BigNumber(trade.timestamp));
       await doTrade(trade, trade.market);
     }
@@ -147,7 +146,7 @@ describe('State API :: Users :: ', () => {
       startTime: startTime.toNumber(),
     });
 
-    for (let trade of trades) {
+    for (const trade of trades) {
       const plFrame = _.find(profitLoss, pl => {
         return new BigNumber(pl.timestamp).gte(trade.timestamp);
       });
@@ -182,7 +181,7 @@ describe('State API :: Users :: ', () => {
   test(':getUserTradingPositions binary-1', async () => {
     const market = await john.createReasonableYesNoMarket();
 
-    const trades: Array<UTPTradeData> = [
+    const trades: UTPTradeData[] = [
       {
         direction: SHORT,
         outcome: YES,
@@ -245,7 +244,7 @@ describe('State API :: Users :: ', () => {
       stringTo32ByteHex('C'),
     ]);
 
-    const trades: Array<UTPTradeData> = [
+    const trades: UTPTradeData[] = [
       {
         direction: LONG,
         outcome: A,
@@ -298,7 +297,7 @@ describe('State API :: Users :: ', () => {
       stringTo32ByteHex('C'),
     ]);
 
-    const trades: Array<UTPTradeData> = [
+    const trades: UTPTradeData[] = [
       {
         direction: SHORT,
         outcome: A,
@@ -351,7 +350,7 @@ describe('State API :: Users :: ', () => {
       stringTo32ByteHex('C'),
     ]);
 
-    const trades: Array<UTPTradeData> = [
+    const trades: UTPTradeData[] = [
       {
         direction: LONG,
         outcome: INVALID,
@@ -430,7 +429,7 @@ describe('State API :: Users :: ', () => {
   test(':getUserTradingPositions scalar', async () => {
     const market = await john.createReasonableScalarMarket();
 
-    const trades: Array<UTPTradeData> = [
+    const trades: UTPTradeData[] = [
       {
         direction: LONG,
         outcome: YES,
@@ -493,13 +492,13 @@ describe('State API :: Users :: ', () => {
   }, 60000);
 
   async function processTrades(
-    tradeData: Array<UTPTradeData>,
+    tradeData: UTPTradeData[],
     market: ContractInterfaces.Market,
     universe: string,
     minPrice: BigNumber = DEFAULT_MIN_PRICE,
     maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE
   ): Promise<void> {
-    for (let trade of tradeData) {
+    for (const trade of tradeData) {
       await doTrade(trade, market, minPrice, maxPrice);
 
       await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -511,7 +510,7 @@ describe('State API :: Users :: ', () => {
       });
 
       const tradingPosition = _.find(tradingPositions, position => {
-        return position.outcome == trade.outcome;
+        return position.outcome === trade.outcome;
       });
 
       await expect(tradingPosition.netPosition).toEqual(

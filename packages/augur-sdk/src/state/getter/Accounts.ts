@@ -42,16 +42,16 @@ export enum Coin {
   REP = 'REP',
 }
 
-export const KeyOfAction = t.keyof(Action);
-export const KeyOfCoin = t.keyof(Coin);
+export const actionnDeserializer = t.keyof(Action);
+export const coinDeserializer = t.keyof(Coin);
 
-const GetAccountTransactionHistoryParamsSpecific = t.type({
+const getAccountTransactionHistoryParamsSpecific = t.type({
   universe: t.string,
   account: t.string,
   earliestTransactionTime: t.union([t.number, t.null, t.undefined]),
   latestTransactionTime: t.union([t.number, t.null, t.undefined]),
-  coin: t.union([KeyOfCoin, t.null, t.undefined]),
-  action: t.union([KeyOfAction, t.null, t.undefined]),
+  coin: t.union([coinDeserializer, t.null, t.undefined]),
+  action: t.union([actionnDeserializer, t.null, t.undefined]),
 });
 
 export interface AccountTransaction {
@@ -74,25 +74,27 @@ export interface MarketCreatedInfo {
 }
 
 export class Accounts<TBigNumber> {
-  public static GetAccountTransactionHistoryParams = t.intersection([
-    GetAccountTransactionHistoryParamsSpecific,
+  static getAccountTransactionHistoryParams = t.intersection([
+    getAccountTransactionHistoryParamsSpecific,
     SortLimit,
   ]);
 
-  @Getter('GetAccountTransactionHistoryParams')
-  public static async getAccountTransactionHistory<TBigNumber>(
+  @Getter('getAccountTransactionHistoryParams')
+  static async getAccountTransactionHistory<TBigNumber>(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-  ): Promise<Array<AccountTransaction>> {
+    params: t.TypeOf<typeof Accounts.getAccountTransactionHistoryParams>
+  ): Promise<AccountTransaction[]> {
     if (!params.earliestTransactionTime) params.earliestTransactionTime = 0;
-    if (!params.latestTransactionTime)
+    if (!params.latestTransactionTime) {
       params.latestTransactionTime = (await augur.contracts.augur.getTimestamp_()).toNumber();
+    }
     if (!params.coin) params.coin = Coin.ALL;
     if (!params.action) params.action = Action.ALL;
     if (!params.sortBy) params.sortBy = 'timestamp';
-    if (typeof params.isSortDescending === 'undefined')
+    if (typeof params.isSortDescending === 'undefined') {
       params.isSortDescending = true;
+    }
 
     let actionCoinComboIsValid = false;
     let allFormattedLogs: any = [];
@@ -150,7 +152,7 @@ export class Accounts<TBigNumber> {
         orderCanceledLogs
       );
       allFormattedLogs = allFormattedLogs.concat(
-        formatOrderCanceledLogs(orderCanceledLogs, marketInfo, params)
+        formatOrderCanceledLogs(orderCanceledLogs, marketInfo)
       );
       actionCoinComboIsValid = true;
     }
@@ -174,8 +176,7 @@ export class Accounts<TBigNumber> {
       );
       allFormattedLogs = allFormattedLogs.concat(
         formatParticipationTokensRedeemedLogs(
-          participationTokensRedeemedLogs,
-          params
+          participationTokensRedeemedLogs
         )
       );
       actionCoinComboIsValid = true;
@@ -206,8 +207,7 @@ export class Accounts<TBigNumber> {
         await formatTradingProceedsClaimedLogs(
           tradingProceedsClaimedLogs,
           marketInfo,
-          db,
-          params
+          db
         )
       );
       actionCoinComboIsValid = true;
@@ -236,7 +236,6 @@ export class Accounts<TBigNumber> {
       allFormattedLogs = allFormattedLogs.concat(
         await formatCrowdsourcerRedeemedLogs(
           initialReporterRedeemedLogs,
-          augur,
           marketInfo,
           params
         )
@@ -260,7 +259,6 @@ export class Accounts<TBigNumber> {
       allFormattedLogs = allFormattedLogs.concat(
         await formatCrowdsourcerRedeemedLogs(
           disputeCrowdsourcerRedeemedLogs,
-          augur,
           marketInfo,
           params
         )
@@ -283,7 +281,7 @@ export class Accounts<TBigNumber> {
           },
         },
       });
-      const marketInfo = formatMarketCreatedLogs(marketCreatedLogs, params);
+      const marketInfo = formatMarketCreatedLogs(marketCreatedLogs);
       allFormattedLogs = allFormattedLogs.concat(marketInfo);
       actionCoinComboIsValid = true;
     }
@@ -312,8 +310,7 @@ export class Accounts<TBigNumber> {
         await formatDisputeCrowdsourcerContributionLogs(
           disputeCrowdsourcerContributionLogs,
           augur,
-          marketInfo,
-          params
+          marketInfo
         )
       );
       actionCoinComboIsValid = true;
@@ -344,8 +341,7 @@ export class Accounts<TBigNumber> {
         await formatInitialReportSubmittedLogs(
           initialReportSubmittedLogs,
           augur,
-          marketInfo,
-          params
+          marketInfo
         )
       );
       actionCoinComboIsValid = true;
@@ -373,8 +369,7 @@ export class Accounts<TBigNumber> {
       allFormattedLogs = allFormattedLogs.concat(
         formatCompleteSetsPurchasedLogs(
           completeSetsPurchasedLogs,
-          marketInfo,
-          params
+          marketInfo
         )
       );
       const completeSetsSoldLogs = await db.findCompleteSetsSoldLogs({
@@ -392,13 +387,14 @@ export class Accounts<TBigNumber> {
         completeSetsSoldLogs
       );
       allFormattedLogs = allFormattedLogs.concat(
-        formatCompleteSetsSoldLogs(completeSetsSoldLogs, marketInfo, params)
+        formatCompleteSetsSoldLogs(completeSetsSoldLogs, marketInfo)
       );
       actionCoinComboIsValid = true;
     }
 
-    if (!actionCoinComboIsValid)
+    if (!actionCoinComboIsValid) {
       throw new Error('Invalid action/coin combination');
+    }
 
     const order = params.isSortDescending ? 'desc' : 'asc';
     allFormattedLogs.sort(compareObjects(params.sortBy, order));
@@ -432,7 +428,7 @@ export class Accounts<TBigNumber> {
     const markets = transactionLogs.map(
       transactionLogs => transactionLogs.market
     );
-    let marketCreatedLogs = await db.findMarketCreatedLogs({
+    const marketCreatedLogs = await db.findMarketCreatedLogs({
       selector: { market: { $in: markets } },
     });
     const marketCreatedInfo: MarketCreatedInfo = {};
@@ -469,8 +465,7 @@ function getOutcomeDescriptionFromOutcome(
 }
 
 function getOutcomeFromPayoutNumerators(
-  payoutNumerators: Array<BigNumber>,
-  market: MarketCreatedLog
+  payoutNumerators: BigNumber[]
 ): number {
   let outcome = 0;
   for (; outcome < payoutNumerators.length; outcome++) {
@@ -482,11 +477,11 @@ function getOutcomeFromPayoutNumerators(
 }
 
 function formatOrderFilledLogs(
-  transactionLogs: Array<ParsedOrderEventLog>,
+  transactionLogs: ParsedOrderEventLog[],
   marketInfo: MarketCreatedInfo,
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Array<AccountTransaction> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  params: t.TypeOf<typeof Accounts.getAccountTransactionHistoryParams>
+): AccountTransaction[] {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const price = new BigNumber(transactionLogs[i].price);
     const quantity = new BigNumber(transactionLogs[i].amount);
@@ -494,9 +489,9 @@ function formatOrderFilledLogs(
     if (
       (params.action === Action.BUY || params.action === Action.ALL) &&
       ((transactionLogs[i].orderType === OrderType.Bid &&
-        transactionLogs[i].orderCreator == params.account) ||
+        transactionLogs[i].orderCreator === params.account) ||
         (transactionLogs[i].orderType === OrderType.Ask &&
-          transactionLogs[i].orderFiller == params.account))
+          transactionLogs[i].orderFiller === params.account))
     ) {
       formattedLogs.push({
         action: Action.BUY,
@@ -528,9 +523,9 @@ function formatOrderFilledLogs(
     if (
       (params.action === Action.SELL || params.action === Action.ALL) &&
       ((transactionLogs[i].orderType === OrderType.Ask &&
-        transactionLogs[i].orderCreator == params.account) ||
+        transactionLogs[i].orderCreator === params.account) ||
         (transactionLogs[i].orderType === OrderType.Bid &&
-          transactionLogs[i].orderFiller == params.account))
+          transactionLogs[i].orderFiller === params.account))
     ) {
       formattedLogs.push({
         action: Action.SELL,
@@ -564,11 +559,10 @@ function formatOrderFilledLogs(
 }
 
 function formatOrderCanceledLogs(
-  transactionLogs: Array<ParsedOrderEventLog>,
-  marketInfo: MarketCreatedInfo,
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Array<AccountTransaction> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  transactionLogs: ParsedOrderEventLog[],
+  marketInfo: MarketCreatedInfo
+): AccountTransaction[] {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     formattedLogs.push({
       action: Action.CANCEL,
@@ -597,10 +591,9 @@ function formatOrderCanceledLogs(
 }
 
 function formatParticipationTokensRedeemedLogs(
-  transactionLogs: Array<ParticipationTokensRedeemedLog>,
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Array<AccountTransaction> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  transactionLogs: ParticipationTokensRedeemedLog[]
+): AccountTransaction[] {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     formattedLogs.push({
       action: Action.CLAIM_PARTICIPATION_TOKENS,
@@ -623,12 +616,11 @@ function formatParticipationTokensRedeemedLogs(
 }
 
 async function formatTradingProceedsClaimedLogs(
-  transactionLogs: Array<TradingProceedsClaimedLog>,
+  transactionLogs: TradingProceedsClaimedLog[],
   marketInfo: MarketCreatedInfo,
-  db: DB,
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Promise<Array<AccountTransaction>> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  db: DB
+): Promise<AccountTransaction[]> {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const outcome = new BigNumber(transactionLogs[i].outcome).toNumber();
     const outcomeDescription = getOutcomeDescriptionFromOutcome(
@@ -671,18 +663,14 @@ async function formatTradingProceedsClaimedLogs(
 
 async function formatCrowdsourcerRedeemedLogs(
   transactionLogs:
-    | Array<InitialReporterRedeemedLog>
-    | Array<DisputeCrowdsourcerRedeemedLog>,
-  augur: Augur,
+    | InitialReporterRedeemedLog[]
+    | DisputeCrowdsourcerRedeemedLog[],
   marketInfo: MarketCreatedInfo,
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Promise<Array<AccountTransaction>> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  params: t.TypeOf<typeof Accounts.getAccountTransactionHistoryParams>
+): Promise<AccountTransaction[]> {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
-    const reportingParticipant = augur.contracts.getInitialReporter(
-      transactionLogs[i].market
-    );
-    let payoutNumerators: Array<BigNumber> = [];
+    const payoutNumerators: BigNumber[] = [];
     for (
       let numeratorIndex = 0;
       numeratorIndex < transactionLogs[i].payoutNumerators.length;
@@ -693,8 +681,7 @@ async function formatCrowdsourcerRedeemedLogs(
       );
     }
     const outcome = getOutcomeFromPayoutNumerators(
-      payoutNumerators,
-      marketInfo[transactionLogs[i].market]
+      payoutNumerators
     );
     const outcomeDescription = getOutcomeDescriptionFromOutcome(
       outcome,
@@ -749,10 +736,9 @@ async function formatCrowdsourcerRedeemedLogs(
 }
 
 function formatMarketCreatedLogs(
-  transactionLogs: MarketCreatedLog[],
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Array<AccountTransaction> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  transactionLogs: MarketCreatedLog[]
+): AccountTransaction[] {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     formattedLogs.push({
       action: Action.MARKET_CREATION,
@@ -777,19 +763,17 @@ function formatMarketCreatedLogs(
 }
 
 async function formatDisputeCrowdsourcerContributionLogs(
-  transactionLogs: Array<DisputeCrowdsourcerContributionLog>,
+  transactionLogs: DisputeCrowdsourcerContributionLog[],
   augur: Augur,
-  marketInfo: MarketCreatedInfo,
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Promise<Array<AccountTransaction>> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  marketInfo: MarketCreatedInfo
+): Promise<AccountTransaction[]> {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const reportingParticipant = augur.contracts.getReportingParticipant(
       transactionLogs[i].disputeCrowdsourcer
     );
     const outcome = getOutcomeFromPayoutNumerators(
-      await reportingParticipant.getPayoutNumerators_(),
-      marketInfo[transactionLogs[i].market]
+      await reportingParticipant.getPayoutNumerators_()
     );
     const outcomeDescription = getOutcomeDescriptionFromOutcome(
       outcome,
@@ -819,12 +803,11 @@ async function formatDisputeCrowdsourcerContributionLogs(
 }
 
 async function formatInitialReportSubmittedLogs(
-  transactionLogs: Array<InitialReportSubmittedLog>,
+  transactionLogs: InitialReportSubmittedLog[],
   augur: Augur,
-  marketInfo: MarketCreatedInfo,
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Promise<Array<AccountTransaction>> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  marketInfo: MarketCreatedInfo
+): Promise<AccountTransaction[]> {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     const reportingParticipantAddress = await augur.contracts
       .marketFromAddress(transactionLogs[i].market)
@@ -833,8 +816,7 @@ async function formatInitialReportSubmittedLogs(
       reportingParticipantAddress
     );
     const outcome = getOutcomeFromPayoutNumerators(
-      await reportingParticipant.getPayoutNumerators_(),
-      marketInfo[transactionLogs[i].market]
+      await reportingParticipant.getPayoutNumerators_()
     );
     const outcomeDescription = getOutcomeDescriptionFromOutcome(
       outcome,
@@ -864,11 +846,10 @@ async function formatInitialReportSubmittedLogs(
 }
 
 function formatCompleteSetsPurchasedLogs(
-  transactionLogs: Array<CompleteSetsPurchasedLog>,
-  marketInfo: MarketCreatedInfo,
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Array<AccountTransaction> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  transactionLogs: CompleteSetsPurchasedLog[],
+  marketInfo: MarketCreatedInfo
+): AccountTransaction[] {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     formattedLogs.push({
       action: Action.COMPLETE_SETS,
@@ -896,11 +877,10 @@ function formatCompleteSetsPurchasedLogs(
 }
 
 function formatCompleteSetsSoldLogs(
-  transactionLogs: Array<CompleteSetsSoldLog>,
-  marketInfo: MarketCreatedInfo,
-  params: t.TypeOf<typeof Accounts.GetAccountTransactionHistoryParams>
-): Array<AccountTransaction> {
-  let formattedLogs: Array<AccountTransaction> = [];
+  transactionLogs: CompleteSetsSoldLog[],
+  marketInfo: MarketCreatedInfo
+): AccountTransaction[] {
+  const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
     formattedLogs.push({
       action: Action.COMPLETE_SETS,
