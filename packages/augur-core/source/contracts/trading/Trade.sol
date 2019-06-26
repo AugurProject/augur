@@ -41,14 +41,13 @@ contract Trade is Initializable, ReentrancyGuard {
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant DEFAULT_LOOP_LIMIT = 3;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         createOrder = ICreateOrder(augur.lookup("CreateOrder"));
         fillOrder = IFillOrder(augur.lookup("FillOrder"));
         orders = IOrders(augur.lookup("Orders"));
         cash = ICash(augur.lookup("Cash"));
-        return true;
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, IERC20 _kycToken) internal pure returns (Data memory) {
@@ -75,11 +74,11 @@ contract Trade is Initializable, ReentrancyGuard {
         return create(_direction, _market, _outcome, _totalCost / _price, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, _sender, _kycToken);
     }
 
-    function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external afterInitialized returns (bytes32) {
+    function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external returns (bytes32) {
         return internalTrade(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender, _kycToken);
     }
 
-    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external afterInitialized returns (uint256) {
+    function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external returns (uint256) {
         return internalFillBestOrder(_direction, _market, _outcome, _amount, _price, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender, _kycToken);
     }
 
@@ -133,21 +132,5 @@ contract Trade is Initializable, ReentrancyGuard {
             return false;
         }
         return _type == Order.Types.Bid ? _orderPrice >= _price : _orderPrice <= _price;
-    }
-
-    function publicTradeWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external afterInitialized returns (bytes32) {
-        require(augur.isValidMarket(_market));
-        Data memory _tradeData = createWithTotalCost(_direction, _market, _outcome, _totalCost, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender, _kycToken);
-        bytes32 _result = trade(_tradeData);
-        _market.assertBalances();
-        return _result;
-    }
-
-    function publicFillBestOrderWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external afterInitialized returns (uint256) {
-        require(augur.isValidMarket(_market));
-        Data memory _tradeData = createWithTotalCost(_direction, _market, _outcome, _totalCost, _price, bytes32(0), bytes32(0), _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender, _kycToken);
-        uint256 _result = fillBestOrder(_tradeData);
-        _market.assertBalances();
-        return _result;
     }
 }

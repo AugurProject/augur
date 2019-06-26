@@ -23,6 +23,10 @@ def test_log_requires(augur, universe):
     with raises(TransactionFailed):
         augur.logInitialReportSubmitted(augur.address, augur.address, augur.address, 1, False, [0, 0, 100], "")
 
+def test_register_non_contract(localFixture, augur):
+    with raises(TransactionFailed):
+        augur.registerContract("Testing", localFixture.accounts[0])
+
 @pytest_fixture(scope="session")
 def localSnapshot(fixture, kitchenSinkSnapshot):
     fixture.resetToSnapshot(kitchenSinkSnapshot)

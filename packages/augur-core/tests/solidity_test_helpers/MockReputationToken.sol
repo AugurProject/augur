@@ -162,7 +162,7 @@ contract MockReputationToken is ITyped, Initializable, MockVariableSupplyToken, 
         return setUniverseValue;
     }
 
-    function migrateFromLegacyReputationToken() public afterInitialized returns (bool) {
+    function migrateFromLegacyReputationToken() public returns (bool) {
         return setMigrateFromLegacyReputationTokenValue;
     }
 

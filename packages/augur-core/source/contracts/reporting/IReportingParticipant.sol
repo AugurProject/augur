@@ -7,7 +7,7 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 contract IReportingParticipant {
     function getStake() public view returns (uint256);
     function getPayoutDistributionHash() public view returns (bytes32);
-    function liquidateLosing() public returns (bool);
+    function liquidateLosing() public;
     function redeem(address _redeemer) public returns (bool);
     function isDisavowed() public view returns (bool);
     function getPayoutNumerator(uint256 _outcome) public view returns (uint256);
