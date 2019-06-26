@@ -4,7 +4,7 @@ import classNames from "classnames";
 import moment from "moment";
 
 import { RadioCardGroup, FormDropdown, TextInput, DatePicker, TimeSelector, RadioBarGroup, TimezoneDropdown } from "modules/common/form";
-import { Header, Subheaders, LineBreak } from "modules/create-market/components/common";
+import { Header, Subheaders, LineBreak, NumberedList } from "modules/create-market/components/common";
 import { 
   YES_NO, 
   SCALAR, 
@@ -52,6 +52,25 @@ export default class FormDetails extends React.Component<
     } = this.props;
     const s = this.state;
 
+    const {
+      outcomes,
+      type,
+      endTime,
+      hour,
+      minute,
+      meridiem,
+      description,
+      scalarDenomination,
+      minPrice,
+      maxPrice,
+      tickSize,
+      detailsText,
+      expirySource,
+      expirySourceType,
+      designatedReporterAddress,
+      designatedReporterType
+    } = newMarket;
+
     return (
       <div className={Styles.FormDetails}>
         <div>
@@ -60,7 +79,7 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Market type" link subheader="Market types vary based on the amount of possible outcomes." />
           <RadioCardGroup
             onChange={(value: string) => this.onChange("type", value)}
-            defaultSelected={newMarket.type}
+            defaultSelected={type}
             radioButtons={[
               {
                 value: YES_NO,
@@ -83,7 +102,7 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Reporting start date and time" subheader="Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. " link />
           <span>
             <DatePicker
-              date={newMarket.endTime}
+              date={endTime}
               placeholder="Date"
               displayFormat="MMM D, YYYY"
               id="input-date"
@@ -96,7 +115,7 @@ export default class FormDetails extends React.Component<
               // }
               numberOfMonths={1}
               onFocusChange= {({ focused }) => {
-                if (newMarket.endTime === null) {
+                if (endTime === null) {
                   const date = moment(currentTimestamp * 1000);
                   this.onChange("endTime", date)
                 }
@@ -105,20 +124,20 @@ export default class FormDetails extends React.Component<
               focused={s.dateFocused}
             />
             <TimeSelector
-              hour={newMarket.hour}
-              minute={newMarket.minute}
-              meridiem={newMarket.meridiem}
+              hour={hour}
+              minute={minute}
+              meridiem={meridiem}
               onChange={(label: string, value: string) => {
                 this.onChange(label, value)
               }}
               onFocusChange= {(focused: Boolean) => {
-                if (!newMarket.hour) {
+                if (!hour) {
                   this.onChange("hour", "12");
                 } 
-                if (!newMarket.minute) {
+                if (!minute) {
                   this.onChange("minute", "00");
                 } 
-                if (!newMarket.meridiem) {
+                if (!meridiem) {
                   this.onChange("meridiem", "AM");
                 }
                 this.setState({ timeFocused: focused });
@@ -134,10 +153,23 @@ export default class FormDetails extends React.Component<
             placeholder="Example: Will [person] win the [year] [event]?"
             onChange={(value: string) => this.onChange("description", value)}
             rows="3"
-            value={newMarket.description}
+            value={description}
           />
 
-          {newMarket.type === SCALAR &&
+          {type === CATEGORICAL && 
+            <>
+              <Subheaders header="Outcomes" subheader="List the outcomes people can choose from." link />
+              <NumberedList
+                initialList={outcomes}
+                minShown={2}
+                maxList={6}
+                placeholder={"Enter outcome"}
+                updateList={(value: Array<string>) => this.onChange("outcomes", value)}
+              />
+            </>
+          }
+
+          {type === SCALAR &&
             <>
               <Subheaders header="Unit of measurement" subheader="Choose a denomination for the range." link />
               <FormDropdown
@@ -147,7 +179,7 @@ export default class FormDetails extends React.Component<
                 }]}
                 staticLabel="Denomination"
                 onChange={(value: string) => this.onChange("scalarDenomination", value)}
-                defaultValue={newMarket.scalarDenomination === "" ? null : newMarket.scalarDenomination}
+                defaultValue={scalarDenomination === "" ? null : scalarDenomination}
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
               <section>
@@ -155,7 +187,7 @@ export default class FormDetails extends React.Component<
                   type="number"
                   placeholder="0"
                   onChange={(value: string) => this.onChange("minPrice", value)}
-                  value={newMarket.minPrice}
+                  value={minPrice}
                 />
                 <span>to</span>
                 <TextInput
@@ -163,7 +195,7 @@ export default class FormDetails extends React.Component<
                   placeholder="100"
                   onChange={(value: string) => this.onChange("maxPrice", value)}
                   trailingLabel="Denomination"
-                  value={newMarket.maxPrice}
+                  value={maxPrice}
                 />
               </section>
               <Subheaders header="Precision" subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”." link />
@@ -172,7 +204,7 @@ export default class FormDetails extends React.Component<
                 placeholder="0"
                 onChange={(value: string) => this.onChange("tickSize", value)}
                 trailingLabel="Denomination"
-                value={newMarket.tickSize}
+                value={tickSize}
               />
             </>
           }
@@ -202,11 +234,11 @@ export default class FormDetails extends React.Component<
                 value: EXPIRY_SOURCE_SPECIFIC,
                 expandable: true,
                 placeholder: "Enter website",
-                textValue: newMarket.expirySource,
+                textValue: expirySource,
                 onTextChange: (value: string) => this.onChange("expirySource", value)
               }
             ]}
-            defaultSelected={newMarket.expirySourceType}
+            defaultSelected={expirySourceType}
             onChange={(value: string) => this.onChange("expirySourceType", value)}
           />
 
@@ -215,7 +247,7 @@ export default class FormDetails extends React.Component<
             type="textarea"
             placeholder="Describe how the event should be resolved under different scenarios."
             rows="3"
-            value={newMarket.detailsText}
+            value={detailsText}
             onChange={(value: string) => this.onChange("detailsText", value)}
           />
 
@@ -231,11 +263,11 @@ export default class FormDetails extends React.Component<
                 value: DESIGNATED_REPORTER_SPECIFIC,
                 expandable: true,
                 placeholder: "Enter wallet address",
-                textValue: newMarket.designatedReporterAddress,
+                textValue: designatedReporterAddress,
                 onTextChange: (value: string) => this.onChange("designatedReporterAddress", value)
               }
             ]}
-            defaultSelected={newMarket.designatedReporterType}
+            defaultSelected={designatedReporterType}
             onChange={(value: string) => this.onChange("designatedReporterType", value)}
           />
         </div>

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import moment from "moment";
 
 import { Header, LineBreak, SmallSubheaders, Subheaders } from "modules/create-market/components/common";
-import { LinearPropertyLabel } from "modules/common/labels";
+import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
   EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF
@@ -90,7 +90,7 @@ export default class Review extends React.Component<
               label={"Valididty Bond"}
               value={"3.44 DAI"}
             />
-            <LinearPropertyLabel
+            <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}
               value={"0.0040 ETH"}
             />
@@ -102,7 +102,7 @@ export default class Review extends React.Component<
               label={"No-Show Bond"}
               value={"44 REP"}
             />
-            <LinearPropertyLabel
+            <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}
               value={"0.0040 ETH"}
             />
@@ -114,7 +114,7 @@ export default class Review extends React.Component<
               label={"Initial Liquidity"}
               value={"121.00 DAI"}
             />
-            <LinearPropertyLabel
+            <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}
               value={"0.0060 ETH"}
             />

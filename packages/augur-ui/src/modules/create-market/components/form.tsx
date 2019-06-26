@@ -103,13 +103,12 @@ export default class Form extends React.Component<
       firstButton, 
       secondButton, 
       explainerBlockSubtexts, 
-      largeHeader, 
-      currentStep 
+      largeHeader
     } = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
 
     return (
       <div className={Styles.Form}>
-        <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
+        <LocationDisplay currentStep={newMarket.currentStep} pages={CUSTOM_CONTENT_PAGES} />
         <LargeHeader text={largeHeader} />
         {explainerBlockTitle && explainerBlockSubtexts && 
           <ExplainerBlock
