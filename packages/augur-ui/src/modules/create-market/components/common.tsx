@@ -57,13 +57,13 @@ export interface ExplainerBlockProps {
 
 export const ExplainerBlock = (props: ExplainerBlockProps) => (
   <div className={Styles.ExplainerBlock}>
-    <span>
+    <h2>
       {props.title}
-    </span>
+    </h2>
     {props.subtexts.map(subtext => 
-      <span>
+      <p>
         {subtext}
-      </span>
+      </p>
     )}
   </div>      
 );

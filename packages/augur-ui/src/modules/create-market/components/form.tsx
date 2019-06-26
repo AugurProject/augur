@@ -97,25 +97,33 @@ export default class Form extends React.Component<
     } = this.props;
     const s = this.state;
 
-    const content = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
+    const { 
+      mainContent, 
+      explainerBlockTitle, 
+      firstButton, 
+      secondButton, 
+      explainerBlockSubtexts, 
+      largeHeader, 
+      currentStep 
+    } = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
 
     return (
       <div className={Styles.Form}>
-        <LocationDisplay currentStep={newMarket.currentStep} pages={CUSTOM_CONTENT_PAGES} />
-        <LargeHeader text={content.largeHeader} />
-        {content.explainerBlockTitle && content.explainerBlockSubtexts && 
+        <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
+        <LargeHeader text={largeHeader} />
+        {explainerBlockTitle && explainerBlockSubtexts && 
           <ExplainerBlock
-            title={content.explainerBlockTitle}
-            subtexts={content.explainerBlockSubtexts}
+            title={explainerBlockTitle}
+            subtexts={explainerBlockSubtexts}
           />
         }
         <ContentBlock>
-          {content.mainContent === FORM_DETAILS && <FormDetails />}
-          {content.mainContent === REVIEW && <Review />}
+          {mainContent === FORM_DETAILS && <FormDetails />}
+          {mainContent === REVIEW && <Review />}
           <div>
-            {content.firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
-            {content.secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
-            {content.secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
+            {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
+            {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
+            {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
           </div>
         </ContentBlock>
       </div>

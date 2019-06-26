@@ -37,34 +37,47 @@ export default class Review extends React.Component<
     } = this.props;
     const s = this.state;
 
+    const {
+      category,
+      tag1,
+      type,
+      description,
+      endTime,
+      detailsText,
+      expirySourceType,
+      expirySource,
+      designatedReporterType,
+      designatedReporterAddress
+    } = newMarket;
+
     return (
       <div className={Styles.Review}>
         <Header text="Market details" />
         <div>
-          <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[newMarket.type]} />
-          <SmallSubheaders header="Category" subheader={newMarket.category} />
-          <SmallSubheaders header="Sub-category" subheader={newMarket.tag1} />
-          <SmallSubheaders header="Market Question" subheader={newMarket.description} />
+          <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[type]} />
+          <SmallSubheaders header="Category" subheader={category} />
+          <SmallSubheaders header="Sub-category" subheader={tag1} />
+          <SmallSubheaders header="Market Question" subheader={description} />
         </div>
 
         <LineBreak />
         <Header text="Resolution information" />
         <div>
-          <SmallSubheaders header="Reporting start date and time" subheader={(newMarket.endTime || {}).formattedUtc} />
-          <SmallSubheaders header="resolution details" subheader={newMarket.detailsText} />
+          <SmallSubheaders header="Reporting start date and time" subheader={(endTime || {}).formattedUtc} />
+          <SmallSubheaders header="resolution details" subheader={detailsText} />
           <SmallSubheaders 
             header="Resolution source" 
-            subheader={newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC
+            subheader={expirySourceType === EXPIRY_SOURCE_GENERIC
               ? "General knowledge"
               : `Outcome will be detailed on public website: ${
-                  newMarket.expirySource
+                  expirySource
                 }`} 
           />
           <SmallSubheaders 
             header="Designated Reporter" 
-            subheader={newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF
+            subheader={designatedReporterType === DESIGNATED_REPORTER_SELF
                   ? "Myself"
-                  : `Someone else: ${newMarket.designatedReporterAddress}`}
+                  : `Someone else: ${designatedReporterAddress}`}
           />
         </div>
 

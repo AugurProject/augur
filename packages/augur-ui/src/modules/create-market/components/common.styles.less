@@ -77,19 +77,18 @@
 	display: flex;
 	flex-direction: column;
 
-	> span:first-of-type {
+	> h2 {
 		.text-18-bold;
 
 		color: @color-alternate-info-text;
 		margin-bottom: @size-8;
 	}
 
-	> span:nth-of-type(2) {
+	> p:not(:last-of-type) {
 		margin-bottom: @size-8;
 	}
 
-	> span:nth-of-type(2),
-	> span:last-of-type {
+	> p {
 		.text-14;
 
 		color: @color-tertiary-info-text;
