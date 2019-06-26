@@ -27,7 +27,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     uint256 public windowId;
     uint256 public duration;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public beforeInitialized {
         endInitialization();
         augur = _augur;
         universe = _universe;
@@ -37,10 +37,9 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         startTime = _startTime;
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
-        return true;
     }
 
-    function onMarketFinalized() public afterInitialized returns (bool) {
+    function onMarketFinalized() public {
         IMarket _market = IMarket(msg.sender);
         require(universe.isContainerForMarket(_market));
 
@@ -71,10 +70,9 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
                 designatedReportNoShowsTotal = designatedReportNoShowsTotal.add(_repBond);
             }
         }
-        return true;
     }
 
-    function buy(uint256 _attotokens) public afterInitialized returns (bool) {
+    function buy(uint256 _attotokens) public returns (bool) {
         require(_attotokens > 0);
         require(isActive());
         require(!universe.isForking());
@@ -83,7 +81,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return true;
     }
 
-    function redeem(address _account) public afterInitialized returns (bool) {
+    function redeem(address _account) public returns (bool) {
         require(isOver() || universe.isForking());
 
         uint256 _attoParticipationTokens = balances[_account];
@@ -112,23 +110,23 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return true;
     }
 
-    function getTypeName() public afterInitialized view returns (bytes32) {
+    function getTypeName() public view returns (bytes32) {
         return "DisputeWindow";
     }
 
-    function getUniverse() public afterInitialized view returns (IUniverse) {
+    function getUniverse() public view returns (IUniverse) {
         return universe;
     }
 
-    function getReputationToken() public afterInitialized view returns (IReputationToken) {
+    function getReputationToken() public view returns (IReputationToken) {
         return universe.getReputationToken();
     }
 
-    function getStartTime() public afterInitialized view returns (uint256) {
+    function getStartTime() public view returns (uint256) {
         return startTime;
     }
 
-    function getEndTime() public afterInitialized view returns (uint256) {
+    function getEndTime() public view returns (uint256) {
         return getStartTime().add(duration);
     }
 
@@ -136,7 +134,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return windowId;
     }
 
-    function isActive() public afterInitialized view returns (bool) {
+    function isActive() public view returns (bool) {
         if (augur.getTimestamp() <= getStartTime()) {
             return false;
         }
@@ -146,22 +144,19 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return true;
     }
 
-    function isOver() public afterInitialized view returns (bool) {
+    function isOver() public view returns (bool) {
         return augur.getTimestamp() >= getEndTime();
     }
 
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal {
         augur.logParticipationTokensTransferred(universe, _from, _to, _value, balances[_from], balances[_to]);
-        return true;
     }
 
-    function onMint(address _target, uint256 _amount) internal returns (bool) {
+    function onMint(address _target, uint256 _amount) internal {
         augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 
-    function onBurn(address _target, uint256 _amount) internal returns (bool) {
+    function onBurn(address _target, uint256 _amount) internal {
         augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 }

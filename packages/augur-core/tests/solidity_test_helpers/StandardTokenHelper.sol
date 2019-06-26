@@ -17,7 +17,6 @@ contract StandardTokenHelper is StandardToken {
         return true;
     }
 
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
-        return true;
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal {
     }
 }

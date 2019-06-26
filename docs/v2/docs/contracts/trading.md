@@ -14,7 +14,7 @@ title: Trading
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="CancelOrder.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="CancelOrder.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -373,7 +373,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IDisputeCrowdsourcer.initialize(contract IAugur,contract IMarket,uint256,bytes32,uint256[],address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, address _erc1820RegistryAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IDisputeCrowdsourcer.initialize(contract IAugur,contract IMarket,uint256,bytes32,uint256[],address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket market, uint256 _size, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, address _erc1820RegistryAddress)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -385,7 +385,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IDisputeCrowdsourcer.setSize(uint256)"></a><code class="function-signature">setSize(uint256 _size) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IDisputeCrowdsourcer.setSize(uint256)"></a><code class="function-signature">setSize(uint256 _size)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -413,7 +413,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -461,7 +461,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.onMarketFinalized()"></a><code class="function-signature">onMarketFinalized() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IDisputeWindow.onMarketFinalized()"></a><code class="function-signature">onMarketFinalized()</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -541,13 +541,13 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.initialize(contract IAugur,contract IMarket,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, address _designatedReporter) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.initialize(contract IAugur,contract IMarket,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, address _designatedReporter)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.report(address,bytes32,uint256[],uint256)"></a><code class="function-signature">report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.report(address,bytes32,uint256[],uint256)"></a><code class="function-signature">report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -577,13 +577,13 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.migrateToNewUniverse(address)"></a><code class="function-signature">migrateToNewUniverse(address _designatedReporter) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.migrateToNewUniverse(address)"></a><code class="function-signature">migrateToNewUniverse(address _designatedReporter)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.returnRepFromDisavow()"></a><code class="function-signature">returnRepFromDisavow() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IInitialReporter.returnRepFromDisavow()"></a><code class="function-signature">returnRepFromDisavow()</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -599,7 +599,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IMarket.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IMarket.initialize(contract IAugur,contract IUniverse,uint256,uint256,uint256,address,address,uint256,uint256)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -959,7 +959,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IProfitLoss.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1011,7 +1011,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IReportingParticipant.liquidateLosing()"></a><code class="function-signature">liquidateLosing() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IReportingParticipant.liquidateLosing()"></a><code class="function-signature">liquidateLosing()</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1133,7 +1133,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IShareToken.initialize(contract IAugur,contract IMarket,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IShareToken.initialize(contract IAugur,contract IMarket,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, uint256 _outcome, address _erc1820RegistryAddress)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -1525,7 +1525,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Initializable.endInitialization()"></a><code class="function-signature">endInitialization() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Initializable.endInitialization()"></a><code class="function-signature">endInitialization()</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -1679,7 +1679,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ClaimTradingProceeds.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ClaimTradingProceeds.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1855,23 +1855,17 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#CompleteSets.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#CompleteSets.publicBuyCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#CompleteSets.publicBuyCompleteSetsWithCash(contract IMarket,uint256)"><code class="function-signature">publicBuyCompleteSetsWithCash(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#CompleteSets.buyCompleteSets(address,contract IMarket,uint256)"><code class="function-signature">buyCompleteSets(address _sender, contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#CompleteSets.publicSellCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicSellCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#CompleteSets.publicSellCompleteSetsWithCash(contract IMarket,uint256)"><code class="function-signature">publicSellCompleteSetsWithCash(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#CompleteSets.sellCompleteSets(address,contract IMarket,uint256,address)"><code class="function-signature">sellCompleteSets(address _sender, contract IMarket _market, uint256 _amount, address _affiliateAddress)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#CompleteSets.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#CompleteSets.publicBuyCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#CompleteSets.buyCompleteSets(address,contract IMarket,uint256)"><code class="function-signature">buyCompleteSets(address _sender, contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#CompleteSets.publicSellCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicSellCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#CompleteSets.sellCompleteSets(address,contract IMarket,uint256,address)"><code class="function-signature">sellCompleteSets(address _sender, contract IMarket _market, uint256 _amount, address _affiliateAddress)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="CompleteSets.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="CompleteSets.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="CompleteSets.publicBuyCompleteSets(contract IMarket,uint256)"></a><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CompleteSets.publicBuyCompleteSetsWithCash(contract IMarket,uint256)"></a><code class="function-signature">publicBuyCompleteSetsWithCash(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -1884,12 +1878,6 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 <h4><a class="anchor" aria-hidden="true" id="CompleteSets.publicSellCompleteSets(contract IMarket,uint256)"></a><code class="function-signature">publicSellCompleteSets(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="CompleteSets.publicSellCompleteSetsWithCash(contract IMarket,uint256)"></a><code class="function-signature">publicSellCompleteSetsWithCash(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -1933,7 +1921,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="CreateOrder.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="CreateOrder.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1989,7 +1977,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="FillOrder.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="FillOrder.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2041,11 +2029,11 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Trade.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#Trade.create(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,address,contract IERC20)"><code class="function-signature">create(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.createWithTotalCost(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,address,contract IERC20)"><code class="function-signature">createWithTotalCost(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.publicTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,contract IERC20)"><code class="function-signature">publicTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.publicFillBestOrder(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,uint256,bool,address,contract IERC20)"><code class="function-signature">publicFillBestOrder(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.internalTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,address,contract IERC20)"><code class="function-signature">internalTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.internalFillBestOrder(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,uint256,bool,address,address,contract IERC20)"><code class="function-signature">internalFillBestOrder(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.trade(struct Trade.Data)"><code class="function-signature">trade(struct Trade.Data _tradeData)</code></a></li><li><a href="#Trade.fillBestOrder(struct Trade.Data)"><code class="function-signature">fillBestOrder(struct Trade.Data _tradeData)</code></a></li><li><a href="#Trade.publicTradeWithTotalCost(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,contract IERC20)"><code class="function-signature">publicTradeWithTotalCost(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.publicFillBestOrderWithTotalCost(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,uint256,bool,address,contract IERC20)"><code class="function-signature">publicFillBestOrderWithTotalCost(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, contract IERC20 _kycToken)</code></a></li><li class="inherited"><a href="trading#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="trading#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Trade.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#Trade.create(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,address,contract IERC20)"><code class="function-signature">create(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.createWithTotalCost(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,address,contract IERC20)"><code class="function-signature">createWithTotalCost(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.publicTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,contract IERC20)"><code class="function-signature">publicTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.publicFillBestOrder(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,uint256,bool,address,contract IERC20)"><code class="function-signature">publicFillBestOrder(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.internalTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,address,contract IERC20)"><code class="function-signature">internalTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.internalFillBestOrder(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,uint256,bool,address,address,contract IERC20)"><code class="function-signature">internalFillBestOrder(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#Trade.trade(struct Trade.Data)"><code class="function-signature">trade(struct Trade.Data _tradeData)</code></a></li><li><a href="#Trade.fillBestOrder(struct Trade.Data)"><code class="function-signature">fillBestOrder(struct Trade.Data _tradeData)</code></a></li><li class="inherited"><a href="trading#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="trading#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Trade.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Trade.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2099,18 +2087,6 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Trade.publicTradeWithTotalCost(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,bytes32,uint256,bool,address,contract IERC20)"></a><code class="function-signature">publicTradeWithTotalCost(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, contract IERC20 _kycToken) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Trade.publicFillBestOrderWithTotalCost(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,uint256,bool,address,contract IERC20)"></a><code class="function-signature">publicFillBestOrderWithTotalCost(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, contract IERC20 _kycToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
 
 
 ### `ITrade`
@@ -2155,7 +2131,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Orders.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Orders.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2421,7 +2397,7 @@ Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ProfitLoss.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ProfitLoss.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2659,7 +2635,7 @@ Burn tokens
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC777.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ERC777.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2980,7 +2956,7 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ShareToken.initialize(contract IAugur,contract IMarket,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ShareToken.initialize(contract IAugur,contract IMarket,uint256,address)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, uint256 _outcome, address _erc1820RegistryAddress)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3034,19 +3010,19 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ShareToken.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ShareToken.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ShareToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ShareToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ShareToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ShareToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -3114,13 +3090,13 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address, uint256) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address, uint256)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address, uint256) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address, uint256)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -3136,7 +3112,7 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 

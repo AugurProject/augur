@@ -423,5 +423,5 @@ contract ERC777 is IERC777, IERC20 {
     }
 
     // Subclasses of this token generally want to send additional logs through the centralized Augur log emitter contract
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool);
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal;
 }

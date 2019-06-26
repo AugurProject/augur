@@ -372,23 +372,22 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     mapping (address => uint256) public marketVolume;
     mapping (address => uint256[]) public marketOutcomeVolumes;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
         trade = augur.lookup("Trade");
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
-        return true;
     }
 
-    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (uint256) {
+    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external returns (uint256) {
         uint256 _result = this.fillOrder(msg.sender, _orderId, _amountFillerWants, _tradeGroupId, _ignoreShares, _affiliateAddress);
         IMarket _market = orders.getMarket(_orderId);
         _market.assertBalances();
         return _result;
     }
 
-    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external afterInitialized nonReentrant returns (uint256) {
+    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external nonReentrant returns (uint256) {
         require(msg.sender == trade || msg.sender == address(this));
         Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _ignoreShares, _affiliateAddress);
         require(_tradeData.order.kycToken == IERC20(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0);

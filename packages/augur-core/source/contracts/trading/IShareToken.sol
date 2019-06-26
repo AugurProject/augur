@@ -8,7 +8,7 @@ import 'ROOT/IAugur.sol';
 
 
 contract IShareToken is ITyped, IERC20 {
-    function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) external returns (bool);
+    function initialize(IAugur _augur, IMarket _market, uint256 _outcome, address _erc1820RegistryAddress) external;
     function createShares(address _owner, uint256 _amount) external returns (bool);
     function destroyShares(address, uint256 balance) external returns (bool);
     function getMarket() external view returns (IMarket);
