@@ -51,6 +51,10 @@ contract Universe is ITyped, IUniverse {
     address public completeSets;
 
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
+    int256 constant public DEFAULT_MIN_PRICE = 0;
+    int256 constant public DEFAULT_MAX_PRICE = 1 ether;
+    uint256 constant public DEFAULT_NUM_OUTCOMES = 2;
+    uint256 constant public DEFAULT_NUM_TICKS = 100;
 
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
         augur = _augur;
@@ -82,9 +86,9 @@ contract Universe is ITyped, IUniverse {
         require(!isForking());
         uint256 _totalRepSupply = reputationToken.getTotalTheoreticalSupply();
         forkReputationGoal = _totalRepSupply.div(2); // 50% of REP migrating results in a victory in a fork
-        disputeThresholdForFork = _totalRepSupply.div(40); // 2.5% of the total rep supply
-        initialReportMinValue = disputeThresholdForFork.div(3).div(2**18).add(1); // This value will result in a maximum 20 round dispute sequence
-        disputeThresholdForDisputePacing = disputeThresholdForFork.div(2**9); // Disputes begin normal pacing once there are 8 rounds remaining in the fastest case to fork. The "last" round is the one that causes a fork and requires no time so the exponent here is 9 to provide for that many rounds actually occurring.
+        disputeThresholdForFork = _totalRepSupply.div(Reporting.getForkThresholdDivisor()); // 2.5% of the total rep supply
+        initialReportMinValue = disputeThresholdForFork.div(3).div(2**(Reporting.getMaximumDisputeRounds()-2)).add(1); // This value will result in a maximum 20 round dispute sequence
+        disputeThresholdForDisputePacing = disputeThresholdForFork.div(2**(Reporting.getMinimumSlowRounds()-1)); // Disputes begin normal pacing once there are 8 rounds remaining in the fastest case to fork. The "last" round is the one that causes a fork and requires no time so the exponent here is 9 to provide for that many rounds actually occurring.
         return true;
     }
 
@@ -464,19 +468,19 @@ contract Universe is ITyped, IUniverse {
     }
 
     function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, 100);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, DEFAULT_NUM_TICKS);
         int256[] memory _prices = new int256[](2);
-        _prices[0] = 0;
-        _prices[1] = 1 ether;
-        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100);
+        _prices[0] = DEFAULT_MIN_PRICE;
+        _prices[1] = DEFAULT_MAX_PRICE;
+        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, DEFAULT_NUM_TICKS);
         return _newMarket;
     }
 
     function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), 100);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), DEFAULT_NUM_TICKS);
         int256[] memory _prices = new int256[](2);
-        _prices[0] = 0;
-        _prices[1] = 1 ether;
+        _prices[0] = DEFAULT_MIN_PRICE;
+        _prices[1] = DEFAULT_MAX_PRICE;
         augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, _outcomes);
         return _newMarket;
     }
@@ -485,7 +489,7 @@ contract Universe is ITyped, IUniverse {
         require(_prices.length == 2);
         require(_prices[0] < _prices[1]);
         require(_numTicks.isMultipleOf(2));
-        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, 2, _numTicks);
+        _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, _numTicks);
         augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks);
         return _newMarket;
     }

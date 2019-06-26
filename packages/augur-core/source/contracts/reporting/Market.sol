@@ -223,6 +223,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function correctLastParticipantSize() private {
+        // A dispute has occured if there is more than one completed reporting participant
         if (participants.length > 1) {
             IDisputeCrowdsourcer(address(getWinningReportingParticipant())).correctSize();
         }

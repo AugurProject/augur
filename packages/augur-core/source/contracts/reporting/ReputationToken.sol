@@ -68,6 +68,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         IUniverse _parentUniverse = universe.getParentUniverse();
         IReportingParticipant _reportingParticipant = IReportingParticipant(msg.sender);
         require(_parentUniverse.isContainerForReportingParticipant(_reportingParticipant));
+        // simulate a 40% ROI which would have occured during a normal dispute had this participant's outcome won the dispute
         uint256 _bonus = _amountMigrated.mul(2) / 5;
         mint(address(_reportingParticipant), _bonus);
         return true;
