@@ -8,8 +8,6 @@ import {
 } from '@augurproject/sdk/build/state/getter/Markets';
 import {
   AllOrders,
-  Orders,
-  OrderState,
 } from '@augurproject/sdk/build/state/getter/Trading';
 import {
   ACCOUNTS,
