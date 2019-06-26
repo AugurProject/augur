@@ -203,8 +203,6 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   public getMarkets = (params: Parameters<typeof Markets.getMarkets>[2]) => {
-    // sortBy param broken. See #2437.
-    delete params.sortBy;
     return this.bindTo(Markets.getMarkets)(params);
   }
 

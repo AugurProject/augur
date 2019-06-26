@@ -305,12 +305,21 @@ export class Markets {
         marketCreator: params.creator,
         designatedReporter: params.designatedReporter,
       },
-      sort: params.sortBy ? [params.sortBy] : undefined,
-      limit: params.limit,
-      skip: params.offset,
     };
+
+    if(params.sortBy) {
+      Object.assign(request, {
+        sort: [params.sortBy],
+        limit: params.limit,
+        skip: params.offset,
+      });
+
+      // We must add sort by column to selector.
+      request.selector[params.sortBy] = {$exists: true};
+    }
+
     if (params.maxEndTime) {
-      request.selector = Object.assign(request.selector, {
+      Object.assign(request.selector, {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
       });
     }
