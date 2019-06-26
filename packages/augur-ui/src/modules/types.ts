@@ -549,3 +549,15 @@ export interface WalletObject {
   derivationPath: Array<number>;
   serializedPath: string;
 }
+
+export interface Trade {
+  numShares: FormattedNumber;
+  limitPrice: FormattedNumber;
+  potentialEthProfit: FormattedNumber;
+  potentialEthLoss: FormattedNumber;
+  totalCost: FormattedNumber;
+  shareCost: FormattedNumber;
+  side: typeof BUY | typeof SELL;
+  orderShareProfit: FormattedNumber;
+  orderShareTradingFee: FormattedNumber;
+}
