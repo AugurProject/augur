@@ -6,9 +6,7 @@ import {
   MarketInfoReportingState,
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
-import {
-  AllOrders,
-} from '@augurproject/sdk/build/state/getter/Trading';
+import { AllOrders } from '@augurproject/sdk/build/state/getter/Trading';
 import {
   ACCOUNTS,
   makeDbMock,
@@ -1046,7 +1044,9 @@ describe('State API :: Accounts :: ', () => {
 
     allOrders = await api.route('getAllOrders', {
       account: john.account,
-      ignoreReportingStates: [MarketInfoReportingState.AWAITING_NO_REPORT_MIGRATION],
+      ignoreReportingStates: [
+        MarketInfoReportingState.AWAITING_NO_REPORT_MIGRATION,
+      ],
     });
     await expect(Object.keys(allOrders).length).toEqual(8);
 

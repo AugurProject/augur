@@ -175,9 +175,7 @@ export class Accounts<TBigNumber> {
         }
       );
       allFormattedLogs = allFormattedLogs.concat(
-        formatParticipationTokensRedeemedLogs(
-          participationTokensRedeemedLogs
-        )
+        formatParticipationTokensRedeemedLogs(participationTokensRedeemedLogs)
       );
       actionCoinComboIsValid = true;
     }
@@ -367,10 +365,7 @@ export class Accounts<TBigNumber> {
         completeSetsPurchasedLogs
       );
       allFormattedLogs = allFormattedLogs.concat(
-        formatCompleteSetsPurchasedLogs(
-          completeSetsPurchasedLogs,
-          marketInfo
-        )
+        formatCompleteSetsPurchasedLogs(completeSetsPurchasedLogs, marketInfo)
       );
       const completeSetsSoldLogs = await db.findCompleteSetsSoldLogs({
         selector: {
@@ -464,9 +459,7 @@ function getOutcomeDescriptionFromOutcome(
   }
 }
 
-function getOutcomeFromPayoutNumerators(
-  payoutNumerators: BigNumber[]
-): number {
+function getOutcomeFromPayoutNumerators(payoutNumerators: BigNumber[]): number {
   let outcome = 0;
   for (; outcome < payoutNumerators.length; outcome++) {
     if (payoutNumerators[outcome].toNumber() > 0) {
@@ -680,9 +673,7 @@ async function formatCrowdsourcerRedeemedLogs(
         new BigNumber(transactionLogs[i].payoutNumerators[numeratorIndex])
       );
     }
-    const outcome = getOutcomeFromPayoutNumerators(
-      payoutNumerators
-    );
+    const outcome = getOutcomeFromPayoutNumerators(payoutNumerators);
     const outcomeDescription = getOutcomeDescriptionFromOutcome(
       outcome,
       marketInfo[transactionLogs[i].market]

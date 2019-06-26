@@ -519,7 +519,9 @@ describe('State API :: Users :: ', () => {
       await expect(tradingPosition.averagePrice).toEqual(
         trade.avgPrice.toString()
       );
-      await expect(tradingPosition.realized).toEqual(trade.realizedPL.toString());
+      await expect(tradingPosition.realized).toEqual(
+        trade.realizedPL.toString()
+      );
       await expect(tradingPosition.frozenFunds).toEqual(
         trade.frozenFunds.toString()
       );

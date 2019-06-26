@@ -93,12 +93,9 @@ describe('State API :: Trading :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Get trades by user
-    let trades: MarketTradingHistory[] = await api.route(
-      'getTradingHistory',
-      {
-        account: mary.account,
-      }
-    );
+    let trades: MarketTradingHistory[] = await api.route('getTradingHistory', {
+      account: mary.account,
+    });
 
     await expect(trades[market1.address]).toHaveLength(1);
     await expect(trades[market2.address]).toHaveLength(1);
@@ -123,7 +120,11 @@ describe('State API :: Trading :: ', () => {
     const newTime = (await market1.getEndTime_()).plus(1);
     await john.setTimestamp(newTime);
 
-    const noPayoutSet = [new BigNumber(100), new BigNumber(0), new BigNumber(0)];
+    const noPayoutSet = [
+      new BigNumber(100),
+      new BigNumber(0),
+      new BigNumber(0),
+    ];
     await john.doInitialReport(market1, noPayoutSet);
 
     await john.setTimestamp(newTime.plus(SECONDS_IN_A_DAY.times(7)));
@@ -215,9 +216,9 @@ describe('State API :: Trading :: ', () => {
     });
     await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
     await expect(orders[market.address][0]['0'][orderId].price).toEqual('0.25');
-    await expect(orders[market.address][0]['0'][orderId].tokensEscrowed).toEqual(
-      '0.000125'
-    );
+    await expect(
+      orders[market.address][0]['0'][orderId].tokensEscrowed
+    ).toEqual('0.000125');
 
     orders = await api.route('getOrders', {
       marketId: market.address,
