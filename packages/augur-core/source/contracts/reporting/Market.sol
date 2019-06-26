@@ -26,7 +26,7 @@ contract Market is Initializable, Ownable, IMarket {
 
     // Constants
     uint256 private constant MAX_FEE_PER_CASH_IN_ATTOCASH = 15 * 10**16; // 15%
-    uint256 private constant APPROVAL_AMOUNT = 2 ** 256 - 1;
+    uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant MIN_OUTCOMES = 3; // Includes INVALID
     uint256 private constant MAX_OUTCOMES = 8;
@@ -115,10 +115,10 @@ contract Market is Initializable, Ownable, IMarket {
     function approveSpenders() public returns (bool) {
         bytes32[5] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("ClaimTradingProceeds"), bytes32("Orders")];
         for (uint256 i = 0; i < _names.length; i++) {
-            require(cash.approve(augur.lookup(_names[i]), APPROVAL_AMOUNT));
+            require(cash.approve(augur.lookup(_names[i]), MAX_APPROVAL_AMOUNT));
         }
         for (uint256 j = 0; j < numOutcomes; j++) {
-            require(shareTokens[j].approve(augur.lookup("FillOrder"), APPROVAL_AMOUNT));
+            require(shareTokens[j].approve(augur.lookup("FillOrder"), MAX_APPROVAL_AMOUNT));
         }
         return true;
     }
@@ -301,17 +301,17 @@ contract Market is Initializable, Ownable, IMarket {
         }
         marketCreatorFeesAttoCash = marketCreatorFeesAttoCash.add(_marketCreatorFees);
         if (isFinalized()) {
-            distributeMarketCreatorFees(_affiliateAddress);
+            distributeMarketCreatorAndAffiliateFees(_affiliateAddress);
         }
     }
 
     function distributeValidityBondAndMarketCreatorFees() private {
         // If the market resolved to invalid the bond gets sent to the dispute window. Otherwise it gets returned to the market creator.
         marketCreatorFeesAttoCash = validityBondAttoCash.add(marketCreatorFeesAttoCash);
-        distributeMarketCreatorFees(NULL_ADDRESS);
+        distributeMarketCreatorAndAffiliateFees(NULL_ADDRESS);
     }
 
-    function distributeMarketCreatorFees(address _affiliateAddress) private {
+    function distributeMarketCreatorAndAffiliateFees(address _affiliateAddress) private {
         if (!isInvalid()) {
             cash.transfer(owner, marketCreatorFeesAttoCash);
             if (_affiliateAddress != NULL_ADDRESS) {
