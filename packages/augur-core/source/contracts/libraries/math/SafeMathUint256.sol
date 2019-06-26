@@ -59,6 +59,7 @@ library SafeMathUint256 {
     }
 
     function getUint256Max() internal pure returns (uint256) {
+        // 2 ** 256 - 1
         return 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
     }
 
