@@ -358,7 +358,10 @@ library Trade {
     }
 }
 
-
+/**
+ * @title Fill Order
+ * @notice Exposes functions to fill an order on the book
+ */
 contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     using SafeMathUint256 for uint256;
     using Trade for Trade.Data;
@@ -379,6 +382,15 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
     }
 
+    /**
+     * @notice Fill an order
+     * @param _orderId The id of the order to fill
+     * @param _amountFillerWants The number of attoShares desired
+     * @param _tradeGroupId A Bytes32 value used when attempting to associate multiple orderbook actions with a single TX
+     * @param _ignoreShares Boolean indicating whether to ignore available shares when using owned assets for the trade
+     * @param _affiliateAddress Address of an affiliate to receive a portion of settlement fees from this trade should settlement occur
+     * @return The amount remaining the filler wants
+     */
     function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external returns (uint256) {
         uint256 _result = this.fillOrder(msg.sender, _orderId, _amountFillerWants, _tradeGroupId, _ignoreShares, _affiliateAddress);
         IMarket _market = orders.getMarket(_orderId);

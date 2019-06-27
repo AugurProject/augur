@@ -13,8 +13,8 @@ import 'ROOT/libraries/Initializable.sol';
 
 
 /**
- * @title ClaimTradingProceeds
- * @dev This allows users to claim their money from a market by exchanging their shares
+ * @title Claim Trading Proceeds
+ * @notice This allows users to claim their money from a market by exchanging their shares
  */
 contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingProceeds {
     using SafeMathUint256 for uint256;
@@ -30,6 +30,12 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         cash = ICash(augur.lookup("Cash"));
     }
 
+    /**
+     * @notice Claims winnings for multiple markets and for a particular shareholder
+     * @param _markets Array of markets to claim winnings for
+     * @param _shareHolder The account to claim winnings for
+     * @return Bool True
+     */
     function claimMarketsProceeds(IMarket[] calldata _markets, address _shareHolder) external returns(bool) {
         for (uint256 i=0; i < _markets.length; i++) {
             this.claimTradingProceeds(_markets[i], _shareHolder);
@@ -37,6 +43,12 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         return true;
     }
 
+    /**
+     * @notice Claims winnings for a market and for a particular shareholder
+     * @param _market The market to claim winnings for
+     * @param _shareHolder The account to claim winnings for
+     * @return Bool True
+     */
     function claimTradingProceeds(IMarket _market, address _shareHolder) external nonReentrant returns(bool) {
         require(augur.isKnownMarket(_market));
         require(_market.isFinalized(), "ClaimTradingProceeds.claimTradingProceeds: Market is not finalized");

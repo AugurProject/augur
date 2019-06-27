@@ -13,7 +13,7 @@ import 'ROOT/trading/IProfitLoss.sol';
 
 /**
  * @title Orders
- * @dev Storage of all data associated with orders
+ * @notice Storage of all data associated with orders
  */
 contract Orders is IOrders, Initializable {
     using Order for Order.Data;
@@ -48,39 +48,74 @@ contract Orders is IOrders, Initializable {
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
     }
 
-    // Getters
+    /**
+     * @param _orderId The id of the order
+     * @return The market associated with the order id
+     */
     function getMarket(bytes32 _orderId) public view returns (IMarket) {
         return orders[_orderId].market;
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The order type (BID==0,ASK==1) associated with the order
+     */
     function getOrderType(bytes32 _orderId) public view returns (Order.Types) {
         return orders[_orderId].orderType;
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The outcome associated with the order
+     */
     function getOutcome(bytes32 _orderId) public view returns (uint256) {
         return orders[_orderId].outcome;
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The KYC token associated with the order
+     */
     function getKYCToken(bytes32 _orderId) public view returns (IERC20) {
         return orders[_orderId].kycToken;
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The remaining amount of the order
+     */
     function getAmount(bytes32 _orderId) public view returns (uint256) {
         return orders[_orderId].amount;
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The price of the order
+     */
     function getPrice(bytes32 _orderId) public view returns (uint256) {
         return orders[_orderId].price;
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The creator of the order
+     */
     function getOrderCreator(bytes32 _orderId) public view returns (address) {
         return orders[_orderId].creator;
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The remaining shares escrowed in the order
+     */
     function getOrderSharesEscrowed(bytes32 _orderId) public view returns (uint256) {
         return orders[_orderId].sharesEscrowed;
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The remaining Cash tokens escrowed in the order
+     */
     function getOrderMoneyEscrowed(bytes32 _orderId) public view returns (uint256) {
         return orders[_orderId].moneyEscrowed;
     }
@@ -99,30 +134,74 @@ contract Orders is IOrders, Initializable {
         return (_order.orderType, _addressData, _uint256Data);
     }
 
+    /**
+     * @param _market The address of the market
+     * @return The amount of Cash escrowed for all orders for the specified market
+     */
     function getTotalEscrowed(IMarket _market) public view returns (uint256) {
         return marketOrderData[address(_market)].totalEscrowed;
     }
 
+    /**
+     * @param _market The address of the market
+     * @param _outcome The outcome number
+     * @return The price for the last completed trade for the specified market and outcome
+     */
     function getLastOutcomePrice(IMarket _market, uint256 _outcome) public view returns (uint256) {
         return marketOrderData[address(_market)].prices[_outcome];
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The id (if there is one) of the next order better than the provided one
+     */
     function getBetterOrderId(bytes32 _orderId) public view returns (bytes32) {
         return orders[_orderId].betterOrderId;
     }
 
+    /**
+     * @param _orderId The id of the order
+     * @return The id (if there is one) of the next order worse than the provided one
+     */
     function getWorseOrderId(bytes32 _orderId) public view returns (bytes32) {
         return orders[_orderId].worseOrderId;
     }
 
+    /**
+     * @param _type The type of order. Either BID==0, or ASK==1
+     * @param _market The market of the order
+     * @param _outcome The outcome of the order
+     * @param _kycToken The KYC token of the order
+     * @return The id (if there is one) of the best order that satisfies the given parameters
+     */
     function getBestOrderId(Order.Types _type, IMarket _market, uint256 _outcome, IERC20 _kycToken) public view returns (bytes32) {
         return bestOrder[getBestOrderWorstOrderHash(_market, _outcome, _type, _kycToken)];
     }
 
+    /**
+     * @param _type The type of order. Either BID==0, or ASK==1
+     * @param _market The market of the order
+     * @param _outcome The outcome of the order
+     * @param _kycToken The KYC token of the order
+     * @return The id (if there is one) of the worst order that satisfies the given parameters
+     */
     function getWorstOrderId(Order.Types _type, IMarket _market, uint256 _outcome, IERC20 _kycToken) public view returns (bytes32) {
         return worstOrder[getBestOrderWorstOrderHash(_market, _outcome, _type, _kycToken)];
     }
 
+    /**
+     * @param _type The type of order. Either BID==0, or ASK==1
+     * @param _market The market of the order
+     * @param _amount The amount of the order
+     * @param _price The price of the order
+     * @param _sender The creator of the order
+     * @param _blockNumber The blockNumber which the order was created in
+     * @param _outcome The outcome of the order
+     * @param _moneyEscrowed The amount of Cash tokens escrowed in the order
+     * @param _sharesEscrowed The outcome Share tokens escrowed in the order
+     * @param _kycToken The KYC token of the order
+     * @return The order id that satisfies the given parameters
+     */
     function getOrderId(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _blockNumber, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, IERC20 _kycToken) public pure returns (bytes32) {
         return sha256(abi.encodePacked(_type, _market, _amount, _price, _sender, _blockNumber, _outcome, _moneyEscrowed, _sharesEscrowed, _kycToken));
     }
@@ -243,6 +322,14 @@ contract Orders is IOrders, Initializable {
         return true;
     }
 
+    /**
+     * @notice Set the price of an existing order
+     * @param _orderId The type of order. Either BID==0, or ASK==1
+     * @param _price The price in attoCash. Must be within the market range (1 to numTicks-1) and must be different than the current order price
+     * @param _betterOrderId The id of an order which is better than this one (post price change). Used to reduce gas costs when sorting
+     * @param _worseOrderId The id of an order which is worse than this one (post price change). Used to reduce gas costs when sorting
+     * @return Bool True
+     */
     function setOrderPrice(bytes32 _orderId, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId) public returns (bool) {
         Order.Data storage _order = orders[_orderId];
         IMarket _market = _order.market;

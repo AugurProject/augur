@@ -17,8 +17,8 @@ import 'ROOT/trading/IProfitLoss.sol';
 
 
 /**
- * @title CancelOrder
- * @dev This allows you to cancel orders on the book.
+ * @title Cancel Order
+ * @notice This allows you to cancel orders on the book.
  */
 contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
 
@@ -36,13 +36,19 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
     }
 
     /**
-     * @dev Cancellation: cancels an order, if a bid refunds money, if an ask returns shares
-     * @return true if successful; throw on failure
+     * @notice Cancels an order and refunds escrowed assets
+     * @param _orderId The id of the order to cancel
+     * @return Bool True
      */
     function cancelOrder(bytes32 _orderId) external nonReentrant returns (bool) {
         return cancelOrderInternal(msg.sender, _orderId);
     }
 
+    /**
+     * @notice Cancels multiple orders and refunds escrowed assets
+     * @param _orderIds Array of order ids to cancel
+     * @return Bool True
+     */
     function cancelOrders(bytes32[] calldata _orderIds) external nonReentrant returns (bool) {
         for (uint256 i = 0; i < _orderIds.length; i++) {
             cancelOrderInternal(msg.sender, _orderIds[i]);
@@ -76,9 +82,6 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
         return true;
     }
 
-    /**
-     * @dev Issue refunds
-     */
     function refundOrder(address _sender, Order.Types _type, uint256 _sharesEscrowed, uint256 _moneyEscrowed, IMarket _market, uint256 _outcome) private returns (bool) {
         if (_sharesEscrowed > 0) {
             // Return to user sharesEscrowed that weren't filled yet for all outcomes except the order outcome

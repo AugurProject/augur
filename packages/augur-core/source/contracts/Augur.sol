@@ -20,7 +20,10 @@ import 'ROOT/ITime.sol';
 
 // Centralized approval authority and event emissions
 
-/// @title Augur
+/**
+ * @title Augur
+ * @notice The core global contract of the Augur platform. Provides a contract registry and and authority on which contracts should be trusted.
+ */
 contract Augur is IAugur {
     using SafeMathUint256 for uint256;
     using ContractExists for address;
@@ -128,6 +131,11 @@ contract Augur is IAugur {
         return true;
     }
 
+    /**
+     * @notice Find the contract address for a particular key
+     * @param _key The key to lookup
+     * @return the address of the registered contract if one exists for the given key
+     */
     function lookup(bytes32 _key) public view returns (address) {
         return registry[_key];
     }
@@ -211,7 +219,7 @@ contract Augur is IAugur {
     // Time
     //
 
-    /// @dev Returns Augur’s internal Unix timestamp.
+    /// @notice Returns Augur’s internal Unix timestamp.
     /// @return (uint256) Augur’s internal Unix timestamp
     function getTimestamp() public view returns (uint256) {
         return time.getTimestamp();

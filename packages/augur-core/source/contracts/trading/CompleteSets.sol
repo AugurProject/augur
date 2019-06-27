@@ -13,6 +13,10 @@ import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/IAugur.sol';
 
 
+/**
+ * @title Complete Sets
+ * @notice Exposes functions to purchase or sell complete sets of shares for a market
+ */
 contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     using SafeMathUint256 for uint256;
 
@@ -28,8 +32,11 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     }
 
     /**
-     * Buys `_amount` shares of every outcome in the specified market.
-    **/
+     * @notice Buy some amount of complete sets for a market
+     * @param _market The market to purchase complete sets in
+     * @param _amount The number of complete sets to purchase
+     * @return Bool True
+     */
     function publicBuyCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
         this.buyCompleteSets(msg.sender, _market, _amount);
         augur.logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
@@ -57,6 +64,12 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         return true;
     }
 
+    /**
+     * @notice Sell some amount of complete sets for a market
+     * @param _market The market to sell complete sets in
+     * @param _amount The number of complete sets to sell
+     * @return Bool True
+     */
     function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
         (uint256 _creatorFee, uint256 _reportingFee) = this.sellCompleteSets(msg.sender, _market, _amount, address(0));
         augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
