@@ -18,7 +18,7 @@ let john: ContractAPI;
 beforeAll(async () => {
   const { provider, addresses } = await deployContracts(ACCOUNTS, compilerOutput);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   db = mock.makeDB(john.augur, ACCOUNTS);
   api = new API(john.augur, db);
   await john.approveCentralAuthority();

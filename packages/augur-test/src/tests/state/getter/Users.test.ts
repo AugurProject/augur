@@ -74,8 +74,8 @@ describe('State API :: Users :: ', () => {
       compilerOutput
     );
 
-    john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
@@ -142,7 +142,7 @@ describe('State API :: Users :: ', () => {
 
     const profitLoss = await api.route('getProfitLoss', {
       universe: john.augur.contracts.universe.address,
-      account: mary.account,
+      account: mary.account.publicKey,
       startTime: startTime.toNumber(),
     });
 
@@ -161,7 +161,7 @@ describe('State API :: Users :: ', () => {
 
     const profitLossSummary = await api.route('getProfitLossSummary', {
       universe: john.augur.contracts.universe.address,
-      account: mary.account,
+      account: mary.account.publicKey,
     });
 
     const oneDayPLSummary = profitLossSummary['1'];
@@ -505,7 +505,7 @@ describe('State API :: Users :: ', () => {
 
       const { tradingPositions } = await api.route('getUserTradingPositions', {
         universe,
-        account: mary.account,
+        account: mary.account.publicKey,
         marketId: market.address,
       });
 

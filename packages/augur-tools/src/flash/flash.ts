@@ -83,7 +83,7 @@ export class FlashSession {
 
   async ensureUser(): Promise<ContractAPI> {
     const seed = this.loadSeed();
-    this.user = await ContractAPI.userWrapper(this.accounts, 0, this.provider, seed.addresses);
+    this.user = await ContractAPI.userWrapper(this.accounts[0], this.provider, seed.addresses);
     await this.user.approveCentralAuthority();
 
     return this.user;

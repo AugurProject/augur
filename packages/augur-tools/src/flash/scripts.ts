@@ -1,7 +1,7 @@
 import { makeGanacheProvider, makeGanacheServer, deployContracts } from "./ganache";
 import { FlashSession, FlashArguments } from "./flash";
 import { createCannedMarketsAndOrders } from "./create-canned-markets-and-orders";
-import { _100_ETH, _1_ETH } from "./constants";
+import { _1_ETH } from "./constants";
 
 import { ethers } from "ethers";
 import * as ganache from "ganache-core";
@@ -127,7 +127,7 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
-      this.market = await user.createReasonableYesNoMarket(user.augur.contracts.universe);
+      this.market = await user.createReasonableYesNoMarket();
 
       this.log(`Created market "${this.market.address}".`);
     },
@@ -147,7 +147,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
       const outcomes: string[] = (args.outcomes as string).split(",");
 
-      this.market = await user.createReasonableMarket(user.augur.contracts.universe, outcomes);
+      this.market = await user.createReasonableMarket(outcomes);
 
       this.log(`Created market "${this.market.address}".`);
     },
@@ -159,7 +159,7 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
-      this.market = await user.createReasonableScalarMarket(user.augur.contracts.universe);
+      this.market = await user.createReasonableScalarMarket();
 
       this.log(`Created market "${this.market.address}".`);
     },

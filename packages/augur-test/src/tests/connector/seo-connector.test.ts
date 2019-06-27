@@ -58,7 +58,7 @@ beforeAll(async () => {
   provider = contractData.provider;
   addresses = contractData.addresses;
 
-  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   db = mock.makeDB(john.augur, ACCOUNTS);
 
   await john.approveCentralAuthority();
@@ -69,7 +69,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
-    designatedReporter: john.account,
+    designatedReporter: john.account.publicKey,
     topic: 'yesNo topic 1',
     extraInfo:
       '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
@@ -105,7 +105,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
-    designatedReporter: john.account,
+    designatedReporter: john.account.publicKey,
     topic: 'yesNo topic 1',
     extraInfo:
       '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',

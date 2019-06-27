@@ -19,6 +19,7 @@ export interface Account {
 export type AccountList = Array<Account>;
 
 const augurCorePath = path.join(__dirname, "../../../augur-core/");
+const seedPath = path.join(__dirname, "../../../augur-tools/src/flash/seed.json");
 
 export function makeDeployerConfiguration(writeArtifacts: boolean = true) {
   const contractInputRoot = path.join(augurCorePath, "../augur-artifacts/src");
@@ -47,7 +48,7 @@ export interface UsefulContractObjects {
 }
 
 export async function deployContracts(accounts: AccountList, ignored: any): Promise<UsefulContractObjects> {
-  const seed = require("../../seed.json");
+  const seed = require(seedPath);
 
   const ganacheProvider = await makeGanacheProvider(accounts);
   const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
@@ -58,7 +59,7 @@ export async function deployContracts(accounts: AccountList, ignored: any): Prom
 }
 
 export async function makeGanacheProvider(accounts: AccountList): Promise<ethers.providers.Web3Provider> {
-  const seed = require("../../seed.json");
+  const seed = require(seedPath);
 
   const db = memdown();
   await new Promise((resolve, reject) => {
@@ -81,7 +82,7 @@ export async function makeGanacheProvider(accounts: AccountList): Promise<ethers
 }
 
 export async function makeSigner(account: Account, provider: EthersProvider) {
-  return await EthersFastSubmitWallet.create(account.secretKey, provider);
+  return EthersFastSubmitWallet.create(account.secretKey, provider);
 }
 
 export function makeDependencies(account: Account, provider: EthersProvider, signer: EthersFastSubmitWallet) {

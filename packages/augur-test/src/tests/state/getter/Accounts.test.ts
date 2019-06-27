@@ -30,8 +30,8 @@ describe('State API :: Accounts :: ', () => {
       compilerOutput
     );
 
-    john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
@@ -735,22 +735,22 @@ describe('State API :: Accounts :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address, john.account);
+    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
 
     // Claim initial reporter
     const initialReporter = await john.getInitialReporter(johnYesNoMarket);
-    await initialReporter.redeem(john.account);
+    await initialReporter.redeem(john.account.publicKey);
 
     // Claim winning crowdsourcers
     const winningReportingParticipant = await john.getWinningReportingParticipant(
       johnYesNoMarket
     );
-    await winningReportingParticipant.redeem(john.account);
+    await winningReportingParticipant.redeem(john.account.publicKey);
 
     // Claim trading proceeds
     await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
       johnYesNoMarket.address,
-      john.account
+      john.account.publicKey
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -978,72 +978,72 @@ describe('State API :: Accounts :: ', () => {
 
   test(':getAllOrders', async () => {
     let allOrders: AllOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
     });
     await expect(Object.keys(allOrders).length).toEqual(8);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       makerTaker: 'either',
     });
     await expect(Object.keys(allOrders).length).toEqual(8);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       makerTaker: 'maker',
     });
     await expect(Object.keys(allOrders).length).toEqual(8);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       makerTaker: 'taker',
     });
     await expect(allOrders).toEqual({});
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       ignoreReportingStates: [MarketInfoReportingState.PRE_REPORTING],
     });
     await expect(Object.keys(allOrders).length).toEqual(8);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       ignoreReportingStates: [MarketInfoReportingState.DESIGNATED_REPORTING],
     });
     await expect(Object.keys(allOrders).length).toEqual(8);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       ignoreReportingStates: [MarketInfoReportingState.OPEN_REPORTING],
     });
     await expect(Object.keys(allOrders).length).toEqual(3);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       ignoreReportingStates: [MarketInfoReportingState.CROWDSOURCING_DISPUTE],
     });
     await expect(Object.keys(allOrders).length).toEqual(8);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       ignoreReportingStates: [MarketInfoReportingState.AWAITING_NEXT_WINDOW],
     });
     await expect(Object.keys(allOrders).length).toEqual(8);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       ignoreReportingStates: [MarketInfoReportingState.FINALIZED],
     });
     await expect(Object.keys(allOrders).length).toEqual(5);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       ignoreReportingStates: [MarketInfoReportingState.FORKING],
     });
     await expect(Object.keys(allOrders).length).toEqual(8);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       ignoreReportingStates: [
         MarketInfoReportingState.AWAITING_NO_REPORT_MIGRATION,
       ],
@@ -1051,7 +1051,7 @@ describe('State API :: Accounts :: ', () => {
     await expect(Object.keys(allOrders).length).toEqual(8);
 
     allOrders = await api.route('getAllOrders', {
-      account: john.account,
+      account: john.account.publicKey,
       ignoreReportingStates: [MarketInfoReportingState.AWAITING_FORK_MIGRATION],
     });
     await expect(Object.keys(allOrders).length).toEqual(8);

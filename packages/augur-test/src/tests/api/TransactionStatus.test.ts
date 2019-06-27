@@ -12,7 +12,7 @@ import { TransactionStatus, TransactionMetadata } from "contract-dependencies-et
   beforeAll(async () => {
     const {provider, addresses} = await deployContracts(ACCOUNTS, compilerOutput);
   
-    john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
     await john.approveCentralAuthority();
   }, 120000);
   

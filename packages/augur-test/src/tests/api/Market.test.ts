@@ -11,8 +11,8 @@ let mary: ContractAPI;
 beforeAll(async () => {
   const {provider, addresses} = await deployContracts(ACCOUNTS, null);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-  mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+  mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
 }, 120000);

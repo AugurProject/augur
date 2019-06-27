@@ -34,8 +34,8 @@ describe('State API :: Markets :: ', () => {
       compilerOutput
     );
 
-    john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
@@ -49,7 +49,7 @@ describe('State API :: Markets :: ', () => {
     const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
     const highFeePerCashInAttoCash = new BigNumber(10).pow(18).div(10); // 10% creator fee
     const affiliateFeeDivisor = new BigNumber(0);
-    const designatedReporter = john.account;
+    const designatedReporter = john.account.publicKey;
     const yesNoMarket1 = await john.createYesNoMarket({
       endTime,
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
@@ -1658,7 +1658,7 @@ describe('State API :: Markets :: ', () => {
 
     expect(markets).toMatchObject([
     {
-        author: john.account,
+        author: john.account.publicKey,
         category:
           ' \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
         consensus: null,
@@ -1703,7 +1703,7 @@ describe('State API :: Markets :: ', () => {
       volume: '0.001',
     },
     {
-        author: john.account,
+        author: john.account.publicKey,
         category:
           ' \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
         consensus: ['100', '0', '0', '0'],
@@ -1756,7 +1756,7 @@ describe('State API :: Markets :: ', () => {
       volume: '0.00061',
     },
     {
-      author: john.account,
+      author: john.account.publicKey,
       category:
         ' \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
       consensus: null,

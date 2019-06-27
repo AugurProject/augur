@@ -33,8 +33,8 @@ describe('State API :: Trading :: ', () => {
       compilerOutput
     );
 
-    john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
   }, 120000);
@@ -94,7 +94,7 @@ describe('State API :: Trading :: ', () => {
 
     // Get trades by user
     let trades: MarketTradingHistory[] = await api.route('getTradingHistory', {
-      account: mary.account,
+      account: mary.account.publicKey,
     });
 
     await expect(trades[market1.address]).toHaveLength(1);
@@ -211,7 +211,7 @@ describe('State API :: Trading :: ', () => {
     // Get orders for the market
     orders = await api.route('getOrders', {
       marketId: market.address,
-      account: john.account,
+      account: john.account.publicKey,
       makerTaker: 'either',
     });
     await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
@@ -222,7 +222,7 @@ describe('State API :: Trading :: ', () => {
 
     orders = await api.route('getOrders', {
       marketId: market.address,
-      account: john.account,
+      account: john.account.publicKey,
       makerTaker: 'maker',
     });
     await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
@@ -230,7 +230,7 @@ describe('State API :: Trading :: ', () => {
 
     orders = await api.route('getOrders', {
       marketId: market.address,
-      account: john.account,
+      account: john.account.publicKey,
       makerTaker: 'taker',
     });
     await expect(orders).toEqual({});

@@ -2,7 +2,12 @@
   "name": "@augurproject/tools",
   "version": "6.0.0",
   "description": "Tools and dev dependencies",
-  "main": "index.js",
+  "author": "Augur Team <team@augur.net>",
+  "license": "MIT",
+  "main": "build",
+  "directories": {
+    "src": "src"
+  },
   "scripts": {
     "build": "tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -24,19 +29,7 @@
     "type": "git",
     "url": "git+https://github.com/augurproject/augur.git"
   },
-  "files": [
-    ".babelrc.js"
-  ],
-  "keywords": [
-    "ethereum",
-    "augur",
-    "prediction",
-    "market",
-    "dapp",
-    "crypto"
-  ],
-  "author": "Augur Team <team@augur.net>",
-  "license": "MIT",
+
   "bugs": {
     "url": "https://github.com/augurproject/augur/issues"
   },

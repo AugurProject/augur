@@ -33,6 +33,7 @@
     "@augurproject/core": "2.0.0-0",
     "@augurproject/ethersjs-provider": "1.0.0-0",
     "@augurproject/sdk": "1.0.0-0",
+    "@augurproject/tools": "6.0.0",
     "contract-dependencies-ethers": "1.0.0-0",
     "ethers": "4.0.24",
     "levelup": "4.0.1",
