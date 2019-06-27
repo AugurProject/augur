@@ -459,11 +459,16 @@ export class Markets {
     const account = await augur.getAccount();
     const orders = await Trading.getOrders(augur, db, params);
 
-    const processOrders = (unsortedOrders: {
-      [orderId: string]: Order;
-    }): OrderBook[] => {
+    const processOrders = (
+      unsortedOrders: {
+        [orderId: string]: Order;
+      },
+      isbids: boolean = false
+    ): OrderBook[] => {
       const orders = Object.values(unsortedOrders).sort((a, b) =>
-        new BigNumber(a.price).minus(b.price).toNumber()
+        isbids
+          ? new BigNumber(b.price).minus(a.price).toNumber()
+          : new BigNumber(a.price).minus(b.price).toNumber()
       );
       const buckets = _.groupBy<Order>(orders, order => order.price);
       const result: OrderBook[] = [];
@@ -481,6 +486,7 @@ export class Markets {
 
         const cumulativeShares =
           index > 0 ? shares.plus(acc[index - 1].cumulativeShares) : shares;
+
         acc.push({
           price: bucket[0].price,
           cumulativeShares: cumulativeShares.toString(),
@@ -496,7 +502,7 @@ export class Markets {
     }) => {
       return {
         asks: processOrders(outcome[OrderType.Ask.toString()]),
-        bids: processOrders(outcome[OrderType.Bid.toString()]),
+        bids: processOrders(outcome[OrderType.Bid.toString()], true),
       };
     };
 
