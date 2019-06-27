@@ -2,8 +2,9 @@ import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
-import { MarketInfo, MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketInfo, MarketInfoOutcome, MarketOrderBook, OrderBook } from "@augurproject/sdk/build/state/getter/Markets";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
+import { MarketTradingHistory, Orders, Order } from "@augurproject/sdk/build/state/getter/Trading";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -55,22 +56,49 @@ export interface CoreStats {
   totalFunds: ValueLabelPair;
   realizedPL: ValueLabelPair;
 }
-export interface MarketsData {
+export interface MarketInfos {
   [marketId: string]: MarketInfo;
 }
 export interface Outcomes extends MarketInfoOutcome {
   name?: string;
 }
+export interface Consensus {
+  payout: Array<string>;
+  winningOutcome: string | null;
+  outcomeName: string | null;
+}
+
+export interface MarketOutcome extends MarketInfoOutcome {
+  marketId: string;
+  lastPricePercent: FormattedNumber | null;
+  lastPrice: FormattedNumber | null;
+  isTradable: boolean;
+  volumeFormatted: FormattedNumber;
+}
+
 export interface MarketData extends MarketInfo {
   marketStatus: string;
-  creationTime: DateFormattedObject;
+  minPriceBigNumber: BigNumber;
+  maxPriceBigNumber: BigNumber;
+  creationTimeFormatted: DateFormattedObject;
+  endTimeFormatted: DateFormattedObject;
+  reportingFeeRatePercent: FormattedNumber;
+  marketCreatorFeeRatePercent: FormattedNumber;
+  settlementFeePercent: FormattedNumber;
+  openInterestFormatted: FormattedNumber;
+  volumeFormatted: FormattedNumber;
+  unclaimedCreatorFeesFormatted: FormattedNumber;
+  marketCreatorFeesCollectedFormatted: FormattedNumber;
+  finalizationTimeFormatted: DateFormattedObject | null;
   // TODO: add this to getter MarketInfo
-  disputeInfo: object;
+  // disputeInfo: object; this needs to get filled in on getter
+  consensusFormatted: Consensus | null;
+  marketOutcomes: Array<MarketOutcome>;
 };
 
 export interface OutcomesData {
   [marketId: string]: {
-    [outcomeId: string]: MarketInfo;
+    [outcomeId: string]: MarketData;
   };
 }
 export interface TransacitonStatus {
@@ -86,7 +114,7 @@ export interface Universe {
   forkReputationGoal?: BigNumber;
   forkingMarket?: string;
   isForking?: boolean;
-  reportableOutcomes?: any;
+  outcomes?: any;
   isForkingMarketFinalized?: boolean;
   winningChildUniverseId?: string;
   winningChildUniverse?: string;
@@ -162,24 +190,23 @@ export interface PendingQueue {
   };
 }
 export interface PendingOrders {
-  [marketId: string]: Array<Order>;
+  [marketId: string]: Array<UIOrder>;
 }
 
-export interface OrderBook {
-  marketId?: string;
-  [outcome: number]: {
-    [BUY]: {
-      [id: string]: Order;
-    };
-    [SELL]: {
-      [id: string]: Order;
-    };
-  };
-}
 export interface OrderBooks {
-  [marketId: string]: OrderBook;
+  [marketId: string]: IndividualOrderBook;
 }
 
+export interface OutcomeOrderBook {
+  bids: OrderBook[];
+  asks: OrderBook[];
+}
+export interface IndividualOrderBook {
+    [outcome: number]: {
+      bids: OrderBook[];
+      asks: OrderBook[];
+    };
+}
 export interface DisputeInfo {
   disputeRound: number;
 }
@@ -191,18 +218,6 @@ export interface MyPositionsSummary {
   totalReturns: any;
 }
 
-export interface Market {
-  id: string;
-  description: string;
-  reportingState: string;
-  endTime: DateFormattedObject;
-  marketStatus: string;
-  disputeInfo?: DisputeInfo;
-  myPositionsSummary?: MyPositionsSummary;
-  outstandingReturns?: string;
-  finalizationTimeWithHold?: number;
-}
-
 export interface Notification {
   id: string;
   type: string;
@@ -212,7 +227,7 @@ export interface Notification {
   buttonLabel: string;
   buttonAction: ButtonActionType;
   Template: ReactNode;
-  market: Market;
+  market: MarketData;
   markets: Array<string>;
   claimReportingFees?: object;
   totalProceeds?: number;
@@ -230,7 +245,7 @@ export interface OrderCancellations {
   [orderId: string]: { status: string };
 }
 
-export interface Order {
+export interface UIOrder {
   id: string;
   outcome: string | number; // TODO: need to be consistent with outcome naming and type
   index: number;
@@ -283,7 +298,7 @@ export interface NewMarket {
   >;
   currentStep: number;
   type: string;
-  outcomes: Array<string | number>;
+  outcomes: Array<string>;
   scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
@@ -292,47 +307,37 @@ export interface NewMarket {
   expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
-  endTime: any;
+  minPrice: string;
+  maxPrice: string;
+  endTime: number;
   tickSize: string;
   hour: string;
   minute: string;
   meridiem: string;
+  marketType: string;
   detailsText: string;
   category: string;
   tag1: string;
   tag2: string;
   settlementFee: number;
+  affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
   orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
-  orderBookSeries: {[outcome: number]: Array<LiquidityOrder> };
   initialLiquidityEth: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
 }
 
 export interface FilledOrders {
-  [account: string]: Array<FilledOrder>;
-}
-export interface FilledOrder {
-  creator: string;
-  orderId: string;
-  outcome: string;
-  amount: string;
-  price: string;
-  type: string;
-  timestamp: DateFormattedObject;
-  transactionHash: string;
-  marketId: string;
-  marketDescription: string;
-  logIndex: number;
+  [account: string]: Orders;
 }
 
-export interface TradingHistory {
-  trades: Array<FilledOrder>;
+export interface OpenOrders {
+  [account: string]: Orders;
 }
 
-export interface MarketTradingHistory {
-  [marketId: string]: TradingHistory;
+export interface MarketTradingHistoryState extends MarketTradingHistory {
+
 }
 export interface MarketsInReporting {
   designated?: Array<string>;
@@ -490,11 +495,11 @@ export interface TimeframeData {
 export interface LoginAccount {
   address?: string;
   displayAddress?: string;
-  meta?: { accountType: string; address: string; signer: EthersSigner, isWeb3: boolean };
+  meta?: { accountType: string; address: string; signer: any | EthersSigner, isWeb3: boolean };
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
-  allowance?: string;
+  allowanceFormatted?: FormattedNumber;
   eth?: string;
   rep?: string;
   dai?: string;
@@ -522,4 +527,41 @@ export type DataCallback = (result?: any) => void;
 export interface BaseAction extends AnyAction {
   type: string;
   data?: any;
+}
+
+export interface EthereumWallet {
+  appId: string;
+  appIds: string[];
+  archived: boolean;
+  deleted: boolean;
+  sortIndex: number;
+  id: string;
+  type: string;
+  keys: { ethereumAddress: string };
+}
+
+export interface EdgeUiAccount {
+  signEthereumTransaction: Function;
+  getFirstWalletInfo: Function;
+  createCurrencyWallet: Function;
+  username: string;
+}
+
+export interface WalletObject {
+  address: string;
+  balance: string;
+  derivationPath: Array<number>;
+  serializedPath: string;
+}
+
+export interface Trade {
+  numShares: FormattedNumber;
+  limitPrice: FormattedNumber;
+  potentialEthProfit: FormattedNumber;
+  potentialEthLoss: FormattedNumber;
+  totalCost: FormattedNumber;
+  shareCost: FormattedNumber;
+  side: typeof BUY | typeof SELL;
+  orderShareProfit: FormattedNumber;
+  orderShareTradingFee: FormattedNumber;
 }

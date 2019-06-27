@@ -12,7 +12,7 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/IOrders.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 
 
 // CONSIDER: Is `price` the most appropriate name for the value being used? It does correspond 1:1 with the attoCASH per share, but the range might be considered unusual?
@@ -32,7 +32,7 @@ library Order {
         IOrders orders;
         IMarket market;
         IAugur augur;
-        ERC20Token kycToken;
+        IERC20 kycToken;
         ICash cash;
 
         // Order
@@ -50,7 +50,7 @@ library Order {
     }
 
     // No validation is needed here as it is simply a librarty function for organizing data
-    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, ERC20Token _kycToken) internal view returns (Data memory) {
+    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, IERC20 _kycToken) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes());
         require(_price != 0);
         require(_price < _market.getNumTicks());

@@ -12,7 +12,7 @@ import gasPriceInfo from "modules/app/reducers/gas-price-info";
 import loginAccount from "modules/auth/reducers/login-account";
 import marketTradingHistory from "modules/markets/reducers/market-trading-history";
 import marketReportState from "modules/reports/reducers/market-report-state";
-import marketsData from "modules/markets/reducers/markets-data";
+import marketInfos from "modules/markets/reducers/market-infos";
 import modal from "modules/modal/reducers/modal";
 import newMarket from "modules/markets/reducers/new-market";
 import alerts from "modules/alerts/reducers/alerts";
@@ -31,9 +31,9 @@ import filledOrders from "modules/orders/reducers/filled-orders";
 import accountShareBalances from "modules/positions/reducers/account-share-balances";
 import readNotifications from "modules/notifications/reducers/read-notifications";
 import pendingQueue from "modules/pending-queue/reducers/pending-queue";
+import userOpenOrders from "modules/orders/reducers/open-orders";
 import {
   LoginAccount,
-  MarketTradingHistory,
   AccountPosition,
   AppStatus,
   AuthStatus,
@@ -45,7 +45,7 @@ import {
   FilterSortOptions,
   GasPriceInfo,
   MarketsInReporting,
-  MarketsData,
+  MarketInfos,
   NewMarket,
   Alert,
   OrderBooks,
@@ -61,7 +61,9 @@ import {
   TransacitonStatus,
   Universe,
   Versions,
-  AccountShareBalances
+  AccountShareBalances,
+  OpenOrders,
+  MarketTradingHistoryState,
 } from "modules/types";
 
 export function createReducer() {
@@ -80,7 +82,7 @@ export function createReducer() {
     loginAccount,
     marketReportState,
     marketTradingHistory,
-    marketsData,
+    marketInfos,
     modal,
     newMarket,
     readNotifications,
@@ -98,7 +100,8 @@ export function createReducer() {
     transactionsStatus,
     universe,
     versions,
-    accountShareBalances
+    accountShareBalances,
+    userOpenOrders,
   };
 }
 
@@ -118,8 +121,8 @@ export interface AppStateInterface {
   gasPriceInfo: GasPriceInfo;
   loginAccount: LoginAccount;
   marketReportState: MarketsInReporting;
-  marketTradingHistory: MarketTradingHistory;
-  marketsData: MarketsData;
+  marketTradingHistory: MarketTradingHistoryState;
+  marketInfos: MarketInfos;
   modal: any;
   newMarket: NewMarket;
   readNotifications: Array<Notification>;
@@ -138,4 +141,5 @@ export interface AppStateInterface {
   universe: Universe;
   versions: Versions;
   accountShareBalances: AccountShareBalances;
+  userOpenOrders: OpenOrders;
 }

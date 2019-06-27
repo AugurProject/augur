@@ -6,8 +6,8 @@ import 'ROOT/libraries/token/StandardToken.sol';
 
 contract StandardTokenHelper is StandardToken {
     function initialize(IAugur _augur) public returns (bool) {
-        erc820Registry = IERC820Registry(_augur.lookup("ERC820Registry"));
-        initialize820InterfaceImplementations();
+        erc1820Registry = IERC1820Registry(_augur.lookup("ERC1820Registry"));
+        initialize1820InterfaceImplementations();
         return true;
     }
 
@@ -17,7 +17,6 @@ contract StandardTokenHelper is StandardToken {
         return true;
     }
 
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
-        return true;
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal {
     }
 }

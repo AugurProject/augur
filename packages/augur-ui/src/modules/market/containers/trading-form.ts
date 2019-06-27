@@ -5,7 +5,7 @@ import { createBigNumber } from "utils/create-big-number";
 import { windowRef } from "utils/window-ref";
 import {
   MARKET_REVIEW_TRADE_SEEN,
-  MODAL_MARKET_REVIEW_TRADE
+  MODAL_MARKET_REVIEW_TRADE,
 } from "modules/common/constants";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
@@ -14,20 +14,25 @@ import {
   updateTradeCost,
   updateTradeShares
 } from "modules/trades/actions/update-trade-cost-shares";
-import { placeTrade } from "modules/trades/actions/place-trade";
+import { placeMarketTrade } from "modules/trades/actions/place-market-trade";
 import {
   updateAuthStatus,
   IS_CONNECTION_TRAY_OPEN
 } from "modules/auth/actions/auth-status";
+import { selectSortedMarketOutcomes } from "modules/markets/selectors/market";
+
 
 const mapStateToProps = (state, ownProps) => {
-  const { authStatus, appStatus } = state;
+  const { authStatus, loginAccount } = state;
 
   return {
     gasPrice: getGasPrice(state),
     availableFunds: createBigNumber(state.loginAccount.eth || 0),
+    availableDai: createBigNumber(state.loginAccount.dai || 0),
     isLogged: authStatus.isLogged,
+    allowanceAmount: loginAccount.allowanceFormatted,
     isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
+    sortedOutcomes: selectSortedMarketOutcomes(ownProps.market.marketType, ownProps.market.marketOutcomes),
   };
 };
 
@@ -43,7 +48,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(
       updateModal({
         type: MODAL_MARKET_REVIEW_TRADE,
-        ...modal
+        ...modal,
       })
     ),
   onSubmitPlaceTrade: (
@@ -55,13 +60,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     onComplete
   ) =>
     dispatch(
-      placeTrade({
+      placeMarketTrade({
         marketId,
         outcomeId,
         tradeInProgress,
         doNotCreateOrders,
         callback,
-        onComplete
+        onComplete,
       })
     )
 });
@@ -76,7 +81,7 @@ const mergeProps = (sP, dP, oP) => {
     ...oP,
     ...sP,
     ...dP,
-    marketReviewTradeSeen: !!marketReviewTradeSeen
+    marketReviewTradeSeen: !!marketReviewTradeSeen,
   };
 };
 

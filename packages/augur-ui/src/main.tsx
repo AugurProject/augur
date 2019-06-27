@@ -1,12 +1,12 @@
-import React from "react";
-import { Provider } from "react-redux";
-import ReactDOM from "react-dom";
-import { HashRouter } from "react-router-dom";
+import React from 'react';
+import { Provider } from 'react-redux';
+import ReactDOM from 'react-dom';
+import { HashRouter } from 'react-router-dom';
 
-import MainErrorBoundary from "modules/app/components/main-error-boundary";
+import MainErrorBoundary from 'modules/app/components/main-error-boundary';
 
-import store from "store";
-import { WindowApp } from "modules/types";
+import store from 'store';
+import { WindowApp } from 'modules/types';
 
 console.log(`
   *******************************************
@@ -34,17 +34,17 @@ function render(Root) {
         </MainErrorBoundary>
       </HashRouter>
     </Provider>,
-    document.getElementById("app")
+    document.getElementById('app')
   );
 }
 
 handleRender();
 
 function handleRender() {
-  const UpdatedRoot = require("modules/app/containers/app").default;
+  const UpdatedRoot = require('modules/app/containers/app').default;
 
   // NOTE --  These are attached for convenience when built for development or debug
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     (window as WindowApp).app = UpdatedRoot;
   }
 

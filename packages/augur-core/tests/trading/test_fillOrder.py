@@ -113,7 +113,7 @@ def test_publicFillOrder_bid_scalar(contractsFixture, cash, scalarMarket, univer
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
     assert fillOrderID == 0
 
-def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash, market, universe):
+def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash, market, universe, tokensFail):
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
@@ -125,17 +125,20 @@ def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash
     with BuyWithCash(cash, fix('1', '100'), contractsFixture.accounts[1], "buy complete set"):
         assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[1])
     assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == fix(1)
-    with BuyWithCash(cash, fix('1', '100'), contractsFixture.accounts[2], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(market.address, fix(1), sender=contractsFixture.accounts[2])
-    assert noShareToken.balanceOf(contractsFixture.accounts[2]) == fix(1)
+    with BuyWithCash(cash, fix('1', '100'), contractsFixture.accounts[0], "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(market.address, fix(1))
+    assert noShareToken.balanceOf(contractsFixture.accounts[0]) == fix(1)
 
     # create order with shares
     orderID = createOrder.publicCreateOrder(ASK, fix(1), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender=contractsFixture.accounts[1])
     assert orderID
 
     # fill order with shares
-    assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, "0x0000000000000000000000000000000000000000", sender=contractsFixture.accounts[2]) == 0
+    tokensFail.setFail(True)
+    assert fillOrder.publicFillOrder(orderID, fix(1), "43", False, "0x0000000000000000000000000000000000000000") == 0
 
+    tokensFail.setFail(False)
+    assert noShareToken.balanceOf(contractsFixture.accounts[0]) == 0
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
     assert orders.getOrderCreator(orderID) == longToHexString(0)

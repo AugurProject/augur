@@ -22,9 +22,9 @@ sidebar_label: state/getter/Users
 ### Variables
 
 * [DEFAULT_NUMBER_OF_BUCKETS](api-modules-state-getter-users-module.md#default_number_of_buckets)
-* [GetProfitLossParams](api-modules-state-getter-users-module.md#getprofitlossparams)
-* [GetProfitLossSummaryParams](api-modules-state-getter-users-module.md#getprofitlosssummaryparams)
-* [UserTradingPositionsParams](api-modules-state-getter-users-module.md#usertradingpositionsparams)
+* [getProfitLossParams](api-modules-state-getter-users-module.md#getprofitlossparams)
+* [getProfitLossSummaryParams](api-modules-state-getter-users-module.md#getprofitlosssummaryparams)
+* [userTradingPositionsParams](api-modules-state-getter-users-module.md#usertradingpositionsparams)
 
 ### Functions
 
@@ -52,9 +52,9 @@ sidebar_label: state/getter/Users
 ___
 <a id="getprofitlossparams"></a>
 
-### `<Const>` GetProfitLossParams
+### `<Const>` getProfitLossParams
 
-**● GetProfitLossParams**: *`any`* =  t.intersection([GetProfitLossSummaryParams, t.partial({
+**● getProfitLossParams**: *`any`* =  t.intersection([getProfitLossSummaryParams, t.partial({
   startTime: t.number,
   periodInterval: t.number,
   outcome: t.number,
@@ -65,9 +65,9 @@ ___
 ___
 <a id="getprofitlosssummaryparams"></a>
 
-### `<Const>` GetProfitLossSummaryParams
+### `<Const>` getProfitLossSummaryParams
 
-**● GetProfitLossSummaryParams**: *`any`* =  t.partial({
+**● getProfitLossSummaryParams**: *`any`* =  t.partial({
   universe: t.string,
   account: t.string,
   endTime: t.number,
@@ -78,9 +78,9 @@ ___
 ___
 <a id="usertradingpositionsparams"></a>
 
-### `<Const>` UserTradingPositionsParams
+### `<Const>` userTradingPositionsParams
 
-**● UserTradingPositionsParams**: *`any`* =  t.intersection([t.type({
+**● userTradingPositionsParams**: *`any`* =  t.intersection([t.type({
   account: t.string,
 }), t.partial({
   universe: t.string,

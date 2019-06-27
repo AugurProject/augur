@@ -26,7 +26,8 @@
         }
       }
 
-      &:last-child {
+      &:last-child,
+      &:nth-last-child(1) {
         align-items: center;
         border: none;
         flex-direction: row;
@@ -34,7 +35,7 @@
 
         > label {
           color: @color-secondary-text;
-          padding: 2px 0 0 @size-24;
+          padding: @size-7 0 0 @size-32;
         }
       }
 
@@ -71,7 +72,8 @@
           }
         }
 
-        &:last-child {
+        &:last-child,
+        &:nth-last-child(2) {
           align-items: center;
           border: none;
           display: flex;

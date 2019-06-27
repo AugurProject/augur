@@ -1,7 +1,7 @@
 pragma solidity 0.5.4;
 
 import 'ROOT/IAugur.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/factories/IUniverseFactory.sol';
 import 'ROOT/reporting/IUniverse.sol';
@@ -10,13 +10,11 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
-import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/Order.sol';
-import 'ROOT/reporting/IAuction.sol';
-import 'ROOT/reporting/IAuctionToken.sol';
 import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/ITime.sol';
 
 
@@ -25,6 +23,7 @@ import 'ROOT/ITime.sol';
 /// @title Augur
 contract Augur is IAugur {
     using SafeMathUint256 for uint256;
+    using ContractExists for address;
 
     enum TokenType {
         ReputationToken,
@@ -32,7 +31,6 @@ contract Augur is IAugur {
         DisputeCrowdsourcer,
         FeeWindow, // No longer a valid type but here for backward compat with Augur Node processing
         FeeToken, // No longer a valid type but here for backward compat with Augur Node processing
-        AuctionToken,
         ParticipationToken
     }
 
@@ -85,7 +83,7 @@ contract Augur is IAugur {
     event DisputeWindowCreated(address indexed universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id, bool initial);
     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
-    event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume);
+    event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes);
     event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
     event ParticipationTokensRedeemed(address indexed universe, address indexed disputeWindow, address indexed account, uint256 attoParticipationTokens, uint256 feePayoutShare, uint256 timestamp);
     event TimestampSet(uint256 newTimestamp);
@@ -94,7 +92,6 @@ contract Augur is IAugur {
     mapping(address => bool) private universes;
     mapping(address => bool) private crowdsourcers;
     mapping(address => bool) private shareTokens;
-    mapping(address => bool) private auctionTokens;
     mapping(address => bool) private trustedSender;
 
     address public uploader;
@@ -103,6 +100,11 @@ contract Augur is IAugur {
     ITime public time;
 
     uint256 public upgradeTimestamp;
+
+    modifier onlyUploader() {
+        require(msg.sender == uploader);
+        _;
+    }
 
     constructor() public {
         uploader = msg.sender;
@@ -113,9 +115,9 @@ contract Augur is IAugur {
     // Registry
     //
 
-    function registerContract(bytes32 _key, address _address) public returns (bool) {
-        require(msg.sender == uploader);
+    function registerContract(bytes32 _key, address _address) public onlyUploader returns (bool) {
         require(registry[_key] == address(0));
+        require(_address.exists(), "Augur.registerContract: Contract address is not actually a contract");
         registry[_key] = _address;
         if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds" || _key == "MarketFactory") {
             trustedSender[_address] = true;
@@ -130,8 +132,7 @@ contract Augur is IAugur {
         return registry[_key];
     }
 
-    function finishDeployment() public returns (bool) {
-        require(msg.sender == uploader);
+    function finishDeployment() public onlyUploader returns (bool) {
         uploader = address(1);
         return true;
     }
@@ -140,8 +141,7 @@ contract Augur is IAugur {
     // Universe
     //
 
-    function createGenesisUniverse() public returns (IUniverse) {
-        require(msg.sender == uploader);
+    function createGenesisUniverse() public onlyUploader returns (IUniverse) {
         return createUniverse(IUniverse(0), bytes32(0), new uint256[](0));
     }
 
@@ -155,7 +155,6 @@ contract Augur is IAugur {
         IUniverseFactory _universeFactory = IUniverseFactory(registry["UniverseFactory"]);
         IUniverse _newUniverse = _universeFactory.createUniverse(this, _parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
         universes[address(_newUniverse)] = true;
-        trustedSender[address(_newUniverse.getAuction())] = true;
         emit UniverseCreated(address(_parentUniverse), address(_newUniverse), _parentPayoutNumerators);
         return _newUniverse;
     }
@@ -199,30 +198,10 @@ contract Augur is IAugur {
     }
 
     //
-    // Auction Tokens
-    //
-    function recordAuctionTokens(IUniverse _universe) public returns (bool) {
-        require(isKnownUniverse(_universe));
-        IAuction _auction = _universe.getAuction();
-        IAuctionToken _cashAuctionToken = _auction.cashAuctionToken();
-        IAuctionToken _repAuctionToken = _auction.repAuctionToken();
-        if (_cashAuctionToken != IAuctionToken(0)) {
-            auctionTokens[address(_cashAuctionToken)] = true;
-        }
-        if (_repAuctionToken != IAuctionToken(0)) {
-            auctionTokens[address(_repAuctionToken)] = true;
-        }
-    }
-
-    function isKnownAuctionToken(IAuctionToken _token) public view returns (bool) {
-        return auctionTokens[address(_token)];
-    }
-
-    //
     // Transfer
     //
 
-    function trustedTransfer(ERC20Token _token, address _from, address _to, uint256 _amount) public returns (bool) {
+    function trustedTransfer(IERC20 _token, address _from, address _to, uint256 _amount) public returns (bool) {
         require(trustedSender[msg.sender]);
         require(_token.transferFrom(_from, _to, _amount));
         return true;
@@ -242,7 +221,7 @@ contract Augur is IAugur {
     // Markets
     //
 
-    function isValidMarket(IMarket _market) public view returns (bool) {
+    function isKnownMarket(IMarket _market) public view returns (bool) {
         return markets[address(_market)];
     }
 
@@ -419,7 +398,7 @@ contract Augur is IAugur {
     }
 
     function logUniverseForked(IMarket _forkingMarket) public returns (bool) {
-        require(universes[msg.sender]);
+        require(isKnownUniverse(IUniverse(msg.sender)));
         emit UniverseForked(msg.sender, _forkingMarket);
         return true;
     }
@@ -488,7 +467,7 @@ contract Augur is IAugur {
     }
 
     function logDisputeWindowCreated(IDisputeWindow _disputeWindow, uint256 _id, bool _initial) public returns (bool) {
-        require(universes[msg.sender]);
+        require(isKnownUniverse(IUniverse(msg.sender)));
         emit DisputeWindowCreated(msg.sender, address(_disputeWindow), _disputeWindow.getStartTime(), _disputeWindow.getEndTime(), _id, _initial);
         return true;
     }
@@ -519,24 +498,6 @@ contract Augur is IAugur {
         IMarket _market = IMarket(msg.sender);
         require(_universe.isContainerForMarket(_market));
         emit MarketTransferred(address(_universe), address(_market), _from, _to);
-        return true;
-    }
-
-    function logAuctionTokensTransferred(IUniverse _universe, address _from, address _to, uint256 _value, uint256 _fromBalance, uint256 _toBalance) public returns (bool) {
-        require(isKnownAuctionToken(IAuctionToken(msg.sender)));
-        logTokensTransferred(address(_universe), msg.sender, _from, _to, _value, TokenType.AuctionToken, address(0), _fromBalance, _toBalance, 0);
-        return true;
-    }
-
-    function logAuctionTokensBurned(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool) {
-        require(isKnownAuctionToken(IAuctionToken(msg.sender)));
-        logTokensBurned(address(_universe), msg.sender, _target, _amount, TokenType.AuctionToken, address(0), _totalSupply, _balance, 0);
-        return true;
-    }
-
-    function logAuctionTokensMinted(IUniverse _universe, address _target, uint256 _amount, uint256 _totalSupply, uint256 _balance) public returns (bool) {
-        require(isKnownAuctionToken(IAuctionToken(msg.sender)));
-        logTokensMinted(address(_universe), msg.sender, _target, _amount, TokenType.AuctionToken, address(0), _totalSupply, _balance, 0);
         return true;
     }
 
@@ -589,9 +550,9 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume) public returns (bool) {
+    function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume, uint256[] memory _outcomeVolumes) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
-        emit MarketVolumeChanged(address(_universe), _market, _volume);
+        emit MarketVolumeChanged(address(_universe), _market, _volume, _outcomeVolumes);
         return true;
     }
 

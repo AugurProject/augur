@@ -7,18 +7,20 @@ import makePath from 'modules/routes/helpers/make-path';
 import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
 import { PrimaryButton } from 'modules/common/buttons';
-import { MarketData } from 'modules/types';
-import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketData, MarketOutcome, FormattedNumber } from 'modules/types';
 
 interface TradingFormProps {
   availableFunds: BigNumber;
+  availableDai: BigNumber;
   isLogged: boolean;
+  allowanceAmount: FormattedNumber;
   isConnectionTrayOpen: boolean;
   market: MarketData;
   marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
-  selectedOrderProperties: Object;
-  selectedOutcomeId: string;
+  selectedOrderProperties: object;
+  selectedOutcomeId: number;
+  sortedOutcomes: MarketOutcome[];
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
   gasPrice: number;
@@ -31,21 +33,21 @@ interface TradingFormProps {
 
 interface TradingFormState {
   showForm: boolean;
-  selectedOutcome: MarketInfoOutcome | undefined;
+  selectedOutcome: MarketOutcome | undefined;
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
   static defaultProps = {
-    selectedOutcomeId: "1",
+    selectedOutcomeId: 2,
   };
 
   state: TradingFormState = {
     showForm: false,
     selectedOutcome:
       this.props.market &&
-      this.props.market.outcomes &&
-      this.props.market.outcomes.find(
-        outcome => outcome.id.toString() === this.props.selectedOutcomeId
+      this.props.market.marketOutcomes &&
+      this.props.market.marketOutcomes.find(
+        outcome => outcome.id === this.props.selectedOutcomeId
       ),
   };
 
@@ -59,9 +61,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       if (nextProps.selectedOutcomeId !== null) {
         const selectedOutcome =
           market &&
-          market.outcomes &&
-          market.outcomes.find(
-            outcome => outcome.id.toString() === nextProps.selectedOutcomeId
+          market.marketOutcomes &&
+          market.marketOutcomes.find(
+            outcome => outcome.id === nextProps.selectedOutcomeId
           );
         this.setState({ selectedOutcome });
       }
@@ -74,7 +76,9 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
 
   render() {
     const {
+      allowanceAmount,
       availableFunds,
+      availableDai,
       isLogged,
       isConnectionTrayOpen,
       market,
@@ -88,6 +92,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       onSubmitPlaceTrade,
       marketReviewTradeSeen,
       marketReviewTradeModal,
+      sortedOutcomes,
     } = this.props;
     const s = this.state;
 
@@ -114,11 +119,12 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       <section className={Styles.TradingForm}>
         <Wrapper
           market={market}
-          isLogged={isLogged}
+          allowanceAmount={allowanceAmount}
           selectedOutcome={s.selectedOutcome}
           selectedOrderProperties={selectedOrderProperties}
-          toggleForm={this.toggleForm}
+          sortedOutcomes={sortedOutcomes}
           availableFunds={availableFunds}
+          availableDai={availableDai}
           updateSelectedOrderProperties={
             this.props.updateSelectedOrderProperties
           }

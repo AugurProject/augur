@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "react-dates/initialize";
-import "react-dates/lib/css/_datepicker.css";
 import { InputDropdown } from "modules/common/form";
-import { SingleDatePicker } from "react-dates";
+import { DatePicker } from "modules/common/form";
 import {
   ChevronLeft,
   ChevronRight,
@@ -32,7 +30,7 @@ export const MarketCreateFormTime = ({
     <label htmlFor="cm__input--date">
       <span>Reporting Starts Date</span>
     </label>
-    <SingleDatePicker
+    <DatePicker
       id="cm__input--date"
       date={date}
       placeholder="Date"
@@ -58,8 +56,6 @@ export const MarketCreateFormTime = ({
       }}
       displayFormat="MMM D, YYYY"
       numberOfMonths={1}
-      navPrev={ChevronLeft}
-      navNext={ChevronRight}
     />
     <label htmlFor="cm__input--time">
       <span>Reporting Starts Time (UTC -0)</span>

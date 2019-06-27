@@ -1,7 +1,5 @@
 import React from "react";
 import moment from "moment";
-import "react-dates/initialize";
-import "react-dates/lib/css/_datepicker.css";
 import {
   PrimaryButton,
   SecondaryButton,
@@ -16,10 +14,12 @@ import {
 } from "modules/common/constants";
 import { Pagination } from "modules/common/pagination";
 import { ValueLabel, TextLabel } from "modules/common/labels";
-import { SquareDropdown, DatePicker } from "modules/common/selection";
+import { SquareDropdown } from "modules/common/selection";
+import { DatePicker } from "modules/common/form";
 import { Title } from "modules/modal/common";
 import { formatEther, formatShares } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
+import { FormDropdown } from "modules/common/form";
 
 interface TransactionsProps {
   closeAction: Function;
@@ -441,14 +441,14 @@ export class Transactions extends React.Component<
           <span>Date To</span>
           <span>Action</span>
           <span>Coin</span>
-          <SquareDropdown
+          <FormDropdown
             options={paginationOptions}
             defaultValue={itemsPerPage}
             onChange={(itemsPerPage: number) => this.setState({ itemsPerPage })}
           />
           <DatePicker {...startDatePicker} />
           <DatePicker {...endDatePicker} />
-          <SquareDropdown
+          <FormDropdown
             options={actionOptions}
             defaultValue={action}
             onChange={(action: string) =>
@@ -462,7 +462,7 @@ export class Transactions extends React.Component<
               })
             }
           />
-          <SquareDropdown
+          <FormDropdown
             options={coinOptions}
             defaultValue={coin}
             onChange={(coin: string) =>
@@ -525,7 +525,7 @@ export class Transactions extends React.Component<
         <div>
           <Pagination {...pageInfo} />
           <span>Show</span>
-          <SquareDropdown
+          <FormDropdown
             options={paginationOptions}
             defaultValue={itemsPerPage}
             onChange={(itemsPerPage: number) => this.setState({ itemsPerPage })}

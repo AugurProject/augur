@@ -1,5 +1,5 @@
 import { BigNumber } from "bignumber.js";
-import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, convertOnChainAmountToDisplayAmount, QUINTILLION } from '../utils';
+import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, convertOnChainAmountToDisplayAmount, QUINTILLION, numTicksToTickSizeWithDisplayPrices } from '../utils';
 import * as _ from "lodash";
 import * as constants from '../constants';
 import { Augur } from './../Augur';
@@ -25,8 +25,8 @@ export interface PlaceTradeParams {
 };
 
 export interface PlaceTradeDisplayParams extends PlaceTradeParams {
-  minPrice: BigNumber,
-  maxPrice: BigNumber,
+  displayMinPrice: BigNumber,
+  displayMaxPrice: BigNumber,
   displayAmount: BigNumber,
   displayPrice: BigNumber,
   displayShares: BigNumber,
@@ -81,10 +81,17 @@ export class Trade {
     return await this.placeOnChainTrade(onChainTradeParams);
   }
 
+
+  public async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
+    const onChainTradeParams = this.getOnChainTradeParams(params);
+    const { gasLimit } = await this.getTradeTransactionLimits(onChainTradeParams);
+    return gasLimit;
+  }
+
   public getOnChainTradeParams(params: PlaceTradeDisplayParams): PlaceTradeChainParams {
-    const tickSize = numTicksToTickSize(params.numTicks, params.minPrice, params.maxPrice);
+    const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
     const onChainAmount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
-    const onChainPrice = convertDisplayPriceToOnChainPrice(params.displayPrice, params.minPrice, tickSize);
+    const onChainPrice = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
     const onChainShares = convertDisplayAmountToOnChainAmount(params.displayShares, tickSize);
     return Object.assign(params, {
       amount: onChainAmount,
@@ -119,7 +126,7 @@ export class Trade {
 
   public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
-    const tickSize = numTicksToTickSize(params.numTicks, params.minPrice, params.maxPrice);
+    const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
     const simulationData: Array<BigNumber> = <Array<BigNumber>><unknown> await this.augur.contracts.simulateTrade.simulateTrade_(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), onChainTradeParams.amount, onChainTradeParams.price, params.ignoreShares, params.kycToken, params.doNotCreateOrders);
     const displaySharesFilled = convertOnChainAmountToDisplayAmount(simulationData[0], tickSize);
     const displaySharesDepleted = convertOnChainAmountToDisplayAmount(simulationData[2], tickSize);

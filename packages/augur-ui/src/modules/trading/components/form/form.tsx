@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import {
-  YES_NO,
-  CATEGORICAL,
   SCALAR,
   MIN_QUANTITY,
   UPPER_FIXED_PRECISION_BOUND,
@@ -16,7 +14,7 @@ import { SquareDropdown } from 'modules/common/selection';
 import { Checkbox } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData } from 'modules/types';
+import { MarketData, MarketOutcome } from 'modules/types';
 import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
 
 interface FromProps {
@@ -28,9 +26,11 @@ interface FromProps {
   orderPrice: string;
   orderEthEstimate: string;
   orderEscrowdEth: string;
+  gasCostEst: string;
   selectedNav: string;
   selectedOutcome: MarketInfoOutcome;
   updateState: Function;
+  sortedOutcomes: MarketOutcome[];
   updateOrderProperty: Function;
   doNotCreateOrders: boolean;
   updateSelectedOutcome: Function;
@@ -53,6 +53,7 @@ interface FormState {
   errors: object;
   errorCount: number;
 }
+
 class Form extends Component<FromProps, FormState> {
   INPUT_TYPES: {
     QUANTITY: string;
@@ -179,8 +180,11 @@ class Form extends Component<FromProps, FormState> {
     let errorCount = 0;
     let passedTest = !!isOrderValid;
     const precision = getPrecision(value, 0);
-    if (!BigNumber.isBigNumber(value))
+
+    if (!BigNumber.isBigNumber(value)) {
       return { isOrderValid: false, errors, errorCount };
+    }
+
     if (value && value.lte(0)) {
       errorCount += 1;
       passedTest = false;
@@ -214,8 +218,11 @@ class Form extends Component<FromProps, FormState> {
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
     let passedTest = !!isOrderValid;
-    if (!BigNumber.isBigNumber(value))
+
+    if (!BigNumber.isBigNumber(value)) {
       return { isOrderValid: false, errors, errorCount };
+    }
+
     if (value && (value.lte(minPrice) || value.gte(maxPrice))) {
       errorCount += 1;
       passedTest = false;
@@ -524,7 +531,9 @@ class Form extends Component<FromProps, FormState> {
       minPrice,
       updateState,
       orderEscrowdEth,
+      gasCostEst,
       updateSelectedOutcome,
+      sortedOutcomes,
     } = this.props;
     const s = this.state;
 
@@ -544,30 +553,23 @@ class Form extends Component<FromProps, FormState> {
     );
 
     const isScalerWithDenomination: boolean = market.marketType === SCALAR;
-    const defaultOutcome = selectedOutcome ? selectedOutcome.id : "Outcome";
+    // TODO: figure out default outcome after we figure out ordering of the outcomes
+    const defaultOutcome = selectedOutcome ? selectedOutcome.id : 2;
 
     return (
       <div className={Styles.TradingForm}>
-        {market.marketType === CATEGORICAL && (
-          <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
-            <SquareDropdown
-              defaultValue={defaultOutcome}
-              onChange={value => updateSelectedOutcome(value)}
-              options={market.outcomes.map(outcome => ({
-                label: outcome.description,
-                value: outcome.id,
-              }))}
-              large
-            />
-          </div>
-        )}
-        {market.marketType === YES_NO && (
-          <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
-            <div className={Styles.Yes}>
-              <span>Outcome:</span> Yes
-            </div>
-          </div>
-        )}
+        <div className={classNames(Styles.Outcome, Styles.HideOnMobile)}>
+          <SquareDropdown
+            defaultValue={defaultOutcome}
+            onChange={value => updateSelectedOutcome(value)}
+            options={sortedOutcomes
+              .map(outcome => ({
+              label: outcome.description,
+              value: outcome.id,
+            }))}
+            large
+          />
+        </div>
         <ul>
           <li>
             <label htmlFor="tr__input--quantity">Quantity</label>
@@ -695,6 +697,12 @@ class Form extends Component<FromProps, FormState> {
               <label className={Styles.smallLabel}>
                 {ExclamationCircle}
                 {` Max cost of ${orderEscrowdEth} DAI will be escrowed`}
+              </label>
+            )}
+            {gasCostEst && (
+              <label className={Styles.smallLabel}>
+                {ExclamationCircle}
+                {` Max cost of ${gasCostEst} ETH required for gas`}
               </label>
             )}
           </li>

@@ -1,17 +1,17 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import MarketOutcomesList from "modules/market/components/market-outcomes-list/market-outcomes-list";
-import { selectMarket } from "modules/markets/selectors/market";
+import { selectMarket, selectSortedMarketOutcomes } from "modules/markets/selectors/market";
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);
 
   return {
-    marketType: market.marketType,
     scalarDenomination: market.scalarDenomination,
-    outcomes: market.outcomes,
-    minPrice: market.minPrice,
-    maxPrice: market.maxPrice
+    marketOutcomes: selectSortedMarketOutcomes(market.marketType, market.marketOutcomes),
+    marketType: market.marketType,
+    minPriceBigNumber: market.minPriceBigNumber,
+    maxPriceBigNumber: market.maxPriceBigNumber
   };
 };
 

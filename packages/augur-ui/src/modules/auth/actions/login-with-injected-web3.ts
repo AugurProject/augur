@@ -7,10 +7,11 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
 import { Web3Provider } from "ethers/providers";
+import { ACCOUNT_TYPES } from "modules/common/constants";
 
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = (callback: NodeStyleCallback = logError) => (
-  dispatch: ThunkDispatch<void, any, Action>,
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
   const failure = () => callback("NOT_SIGNED_IN");
   const success = async (account: string) => {
@@ -25,7 +26,8 @@ export const loginWithInjectedWeb3 = (callback: NodeStyleCallback = logError) =>
       meta: {
         address: account,
         signer: provider.getSigner(),
-        accountType: "metaMask", // TODO replace reference with something more general
+        // TODO change constant for METAMASK, account for other injected web3 clients (i.e, dapper, coinbase wallet)
+        accountType: ACCOUNT_TYPES.METAMASK,
         isWeb3,
       },
     };
@@ -37,5 +39,5 @@ export const loginWithInjectedWeb3 = (callback: NodeStyleCallback = logError) =>
 
   windowRef.ethereum
     .enable()
-    .then((resolve: Array<string>) => success(resolve[0]), failure);
+    .then((resolve: string[]) => success(resolve[0]), failure);
 };

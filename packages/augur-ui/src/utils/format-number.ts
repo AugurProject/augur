@@ -61,7 +61,7 @@ export const SHARES_NUMBER_OF_DECIMALS = 4;
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
 
-export function formatEther(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatEther(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -74,7 +74,7 @@ export function formatEther(num: NumStrBigNumber, opts: FormattedNumberOptions =
   });
 }
 
-export function formatEtherEstimate(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatEtherEstimate(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -87,7 +87,7 @@ export function formatEtherEstimate(num: NumStrBigNumber, opts: FormattedNumberO
   });
 }
 
-export function formatPercent(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatPercent(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 0,
@@ -100,7 +100,7 @@ export function formatPercent(num: NumStrBigNumber, opts: FormattedNumberOptions
   });
 }
 
-export function formatShares(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatShares(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
   const formattedShares = formatNumber(num, {
     decimals: SHARES_NUMBER_OF_DECIMALS,
     decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
@@ -120,7 +120,7 @@ export function formatShares(num: NumStrBigNumber, opts: FormattedNumberOptions 
   return formattedShares;
 }
 
-export function formatDai(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatDai(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
@@ -133,7 +133,7 @@ export function formatDai(num: NumStrBigNumber, opts: FormattedNumberOptions = o
   });
 }
 
-export function formatRep(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatRep(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
   return formatNumber(num, {
     decimals: 4,
     decimalsRounded: 0,
@@ -146,7 +146,7 @@ export function formatRep(num: NumStrBigNumber, opts: FormattedNumberOptions = o
   });
 }
 
-export function formatRepTokens(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatRepTokens(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
@@ -230,6 +230,10 @@ export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions
   );
 }
 
+export function formatAttoDai(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+  return formatAttoEth(num, opts);
+}
+
 // At some point potentially refactor all this to be more generic (e.g formatAttoAmount)
 export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   if (!num) return formatBlank();
@@ -241,7 +245,7 @@ export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions
   );
 }
 
-export function formatGasCost(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatGasCost(num: NumStrBigNumber, opts: FormattedNumberOptions): FormattedNumber {
   return formatNumber(num, {
     decimals: 0,
     decimalsRounded: 0,

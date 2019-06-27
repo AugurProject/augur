@@ -16,7 +16,7 @@ const mapStateToProps = (state) => ({
   isLogged: state.authStatus.isLogged,
   isConnected: state.connection.isConnected,
   universe: state.universe.id,
-  marketsData: state.marketsData,
+  marketInfos: state.marketInfos,
   isMobile: state.appStatus.isMobile,
   accountREP: state.loginAccount.rep,
   currentBlockNumber: state.blockchain.currentBlockNumber,
@@ -59,7 +59,7 @@ const mergeProps = (sP, dP, oP) => {
     marketId,
     isLogged: sP.isLogged,
     isConnected: sP.isConnected && getValue(sP, "universe.id") != null,
-    isMarketLoaded: sP.marketsData[marketId] != null,
+    isMarketLoaded: sP.marketInfos[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
     submitMigrateREP: ({

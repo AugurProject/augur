@@ -1,0 +1,30 @@
+@import (reference) "~assets/styles/shared";
+
+.FormDetails {
+	flex-direction: column;
+    display: flex;
+
+    > div:not(:last-of-type) {
+		> section {
+			display: flex;
+			align-items: center;
+
+			> span {
+				.text-14;
+
+				margin: 0 @size-12;
+				color: @color-alternate-info-text;
+			}
+		}
+
+		> span {
+			display: flex;
+			justify-content: space-between;
+		}
+    }
+
+    > div {
+    	display: flex;
+    	flex-direction: column;
+    }
+}

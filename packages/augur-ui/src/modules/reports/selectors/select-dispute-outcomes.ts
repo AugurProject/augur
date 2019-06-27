@@ -15,9 +15,9 @@ export default function(
 ) {
   const TopOutcomeCount = 8;
   const invalidMarketId = "0.5";
-  if (isEmpty(disputeStakes)) return market.reportableOutcomes;
-  const { marketType, reportableOutcomes } = market;
-  const outcomes = reportableOutcomes.slice();
+  if (isEmpty(disputeStakes)) return market.outcomes;
+  const { marketType, outcomes: marketOutcomes } = market;
+  const outcomes = marketOutcomes.slice();
   const defaultStake = {
     stakeCurrent: "0",
     accountStakeCurrent: "0",
@@ -139,7 +139,7 @@ const populateFromOutcome = (
   let outcome;
   if (stake.isInvalid) {
     // '0.5' is the indetermine/invalid id from reportable outcomes
-    outcome = outcomes.find(outcome => outcome.id === "0.5");
+    outcome = outcomes.find(outcome => outcome.id === 0);
     return { ...outcome, ...stake, potentialFork };
   }
 

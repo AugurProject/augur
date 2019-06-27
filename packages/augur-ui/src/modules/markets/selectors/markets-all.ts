@@ -12,6 +12,7 @@ import {
   selectAccountPositionsState
 } from "store/select-state";
 import { createSelector } from "reselect";
+import { MarketData } from "modules/types";
 
 export default function() {
   return selectMarkets(store.getState());
@@ -37,11 +38,11 @@ export const selectMarkets = createSelector(
     accountShareBalances,
     pendingOrders,
     accountPositions
-  ) => {
+  ): Array<MarketData> => {
     if (!marketsData) return [];
-    return Object.keys(marketsData).map(marketId => {
-      if (!marketId || !marketsData[marketId]) return {};
-      return selectMarket(marketId);
-    });
+    return Object.keys(marketsData).reduce((p, marketId) => {
+      if (!marketId || !marketsData[marketId]) return p;
+      return [...p, selectMarket(marketId)];
+    }, []);
   }
 );

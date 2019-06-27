@@ -29,6 +29,10 @@ import ModalClaimTradingProceeds from "modules/modal/containers/modal-claim-trad
 import ModalClaimProceeds from "modules/modal/containers/modal-claim-proceeds";
 import ModalTradingOverlay from "modules/modal/components/modal-trading-overlay";
 import ModalOpenOrders from "modules/modal/containers/modal-open-orders";
+import ModalMarketLoading from "modules/modal/containers/modal-market-loading";
+import ModalContent from "modules/modal/containers/modal-content";
+import ModalCategories from "modules/modal/containers/modal-categories";
+import ModalMarketType from "modules/modal/containers/modal-market-type";
 
 import * as TYPES from "modules/common/constants";
 
@@ -38,6 +42,12 @@ const ESCAPE_KEYCODE = 27;
 
 function selectModal(type, props, closeModal, modal) {
   switch (type) {
+    case TYPES.MODAL_MARKET_TYPE:
+      return <ModalMarketType {...props} />;
+    case TYPES.MODAL_CATEGORIES:
+      return <ModalCategories {...props} />;
+    case TYPES.MODAL_CONTENT:
+      return <ModalContent {...props} />;
     case TYPES.MODAL_SELL_COMPLETE_SETS:
       return <ModalSellCompleteSets {...props} />;
     case TYPES.MODAL_CLAIM_PROCEEDS:
@@ -95,6 +105,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDisclaimer {...modal} />;
     case TYPES.MODAL_TRADING_OVERLAY:
       return <ModalTradingOverlay {...modal} closeModal={closeModal} />;
+    case TYPES.MODAL_MARKET_LOADING:
+      return <ModalMarketLoading />;
     default:
       return <div />;
   }

@@ -1,11 +1,9 @@
 pragma solidity 0.5.4;
 
+import 'ROOT/libraries/token/IStandardToken.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 
 
-contract IV2ReputationToken is IReputationToken {
-    function trustedAuctionTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool);
-    function mintForAuction(uint256 _amountToMint) public returns (bool);
-    function burnForAuction(uint256 _amountToMint) public returns (bool);
+contract IV2ReputationToken is IReputationToken, IStandardToken {
     function burnForMarket(uint256 _amountToBurn) public returns (bool);
 }

@@ -34,7 +34,7 @@ const DEFAULT_STATE: NewMarket = {
   ],
   currentStep: 0,
   type: "",
-  outcomes: Array(8).fill(""),
+  outcomes: Array(2).fill(""),
   scalarSmallNum: "",
   scalarBigNum: "",
   scalarDenomination: "",
@@ -43,11 +43,11 @@ const DEFAULT_STATE: NewMarket = {
   expirySource: "",
   designatedReporterType: "",
   designatedReporterAddress: "",
-  endTime: {},
+  endTime: null,
   tickSize: DEFAULT_SCALAR_TICK_SIZE,
-  hour: "",
-  minute: "",
-  meridiem: "",
+  hour: null,
+  minute: null,
+  meridiem: null,
   detailsText: "",
   category: "",
   tag1: "",
@@ -55,7 +55,6 @@ const DEFAULT_STATE: NewMarket = {
   settlementFee: SETTLEMENT_FEE_DEFAULT,
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
-  orderBookSeries: {}, // for order book chart
   initialLiquidityEth: createBigNumber(0),
   initialLiquidityGas: createBigNumber(0),
   creationError:

@@ -12,7 +12,7 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
     numTicks: 10000,
     numOutcomes: 2,
     marketType: YES_NO,
-    reportableOutcomes: [
+    outcomes: [
       { id: "0", name: "No" },
       { id: "1", name: "Yes" },
       { id: "0.5", name: "Indeterminate" }
@@ -25,7 +25,7 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
     numTicks: 10003,
     numOutcomes: 7,
     marketType: CATEGORICAL,
-    reportableOutcomes: [
+    outcomes: [
       { id: "0", name: "Bob" },
       { id: "1", name: "Sue" },
       { id: "2", name: "John" },
@@ -44,7 +44,7 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
     tickSize: 4,
     numOutcomes: 2,
     marketType: SCALAR,
-    reportableOutcomes: [{ id: "0.5", name: "Indeterminate" }]
+    outcomes: [{ id: "0.5", name: "Indeterminate" }]
   };
 
   beforeEach(() => {
@@ -165,7 +165,7 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
     ];
 
     const actual = selectMigratedTotals(
-      marketScalar.reportableOutcomes,
+      marketScalar.outcomes,
       totals
     );
     expect(actual).toEqual(expected);
@@ -282,29 +282,29 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
       }
     ];
     const actual = selectMigratedTotals(
-      marketScalar.reportableOutcomes,
+      marketScalar.outcomes,
       totals
     );
     expect(actual).toEqual(expected);
   });
 
   test(`yes/no  market with NO disputes`, () => {
-    const actual = selectMigratedTotals(marketBinary.reportableOutcomes, {});
+    const actual = selectMigratedTotals(marketBinary.outcomes, {});
     const expected = [
       {
-        ...marketBinary.reportableOutcomes[0],
+        ...marketBinary.outcomes[0],
         rep: "0",
         winner: false,
         isInvalid: false
       },
       {
-        ...marketBinary.reportableOutcomes[1],
+        ...marketBinary.outcomes[1],
         rep: "0",
         winner: false,
         isInvalid: false
       },
       {
-        ...marketBinary.reportableOutcomes[2],
+        ...marketBinary.outcomes[2],
         rep: "0",
         winner: false,
         isInvalid: true
@@ -316,54 +316,54 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
 
   test(`category market with NO disputes`, () => {
     const actual = selectMigratedTotals(
-      marketCategorical.reportableOutcomes,
+      marketCategorical.outcomes,
       {}
     );
     const expected = [
       {
-        ...marketCategorical.reportableOutcomes[0],
+        ...marketCategorical.outcomes[0],
         rep: "0",
         winner: false,
         isInvalid: false
       },
       {
-        ...marketCategorical.reportableOutcomes[1],
+        ...marketCategorical.outcomes[1],
         rep: "0",
         winner: false,
         isInvalid: false
       },
       {
-        ...marketCategorical.reportableOutcomes[2],
+        ...marketCategorical.outcomes[2],
         rep: "0",
         winner: false,
         isInvalid: false
       },
       {
-        ...marketCategorical.reportableOutcomes[3],
+        ...marketCategorical.outcomes[3],
         rep: "0",
         winner: false,
         isInvalid: false
       },
       {
-        ...marketCategorical.reportableOutcomes[4],
+        ...marketCategorical.outcomes[4],
         rep: "0",
         winner: false,
         isInvalid: false
       },
       {
-        ...marketCategorical.reportableOutcomes[5],
+        ...marketCategorical.outcomes[5],
         rep: "0",
         winner: false,
         isInvalid: false
       },
       {
-        ...marketCategorical.reportableOutcomes[6],
+        ...marketCategorical.outcomes[6],
         rep: "0",
         winner: false,
         isInvalid: false
       },
       {
-        ...marketCategorical.reportableOutcomes[7],
+        ...marketCategorical.outcomes[7],
         rep: "0",
         winner: false,
         isInvalid: true
@@ -373,7 +373,7 @@ describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
   });
 
   test(`scalar market with NO disputes`, () => {
-    const actual = selectMigratedTotals(marketScalar.reportableOutcomes, {});
+    const actual = selectMigratedTotals(marketScalar.outcomes, {});
     const expected = [
       {
         id: "0.5",

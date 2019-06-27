@@ -6,10 +6,8 @@ import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/factories/IReputationTokenFactory.sol';
 import 'ROOT/factories/IDisputeWindowFactory.sol';
 import 'ROOT/factories/IMarketFactory.sol';
-import 'ROOT/factories/IAuctionFactory.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
-import 'ROOT/reporting/IAuction.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IRepPriceOracle.sol';
@@ -22,10 +20,10 @@ contract Universe is ITyped, IUniverse {
 
     IAugur public augur;
     IUniverse private parentUniverse;
+    IRepPriceOracle public repPriceOracle;
     bytes32 private parentPayoutDistributionHash;
     uint256[] public payoutNumerators;
     IV2ReputationToken private reputationToken;
-    IAuction private auction;
     IMarket private forkingMarket;
     bytes32 private tentativeWinningChildUniversePayoutDistributionHash;
     uint256 private forkEndTime;
@@ -60,10 +58,10 @@ contract Universe is ITyped, IUniverse {
         parentPayoutDistributionHash = _parentPayoutDistributionHash;
         payoutNumerators = _payoutNumerators;
         reputationToken = IReputationTokenFactory(augur.lookup("ReputationTokenFactory")).createReputationToken(augur, this, parentUniverse);
-        auction = IAuctionFactory(augur.lookup("AuctionFactory")).createAuction(augur, this, reputationToken);
         marketFactory = IMarketFactory(augur.lookup("MarketFactory"));
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         completeSets = augur.lookup("CompleteSets");
+        repPriceOracle = IRepPriceOracle(augur.lookup("RepPriceOracle"));
         updateForkValues();
         previousValidityBondInAttoCash = Reporting.getDefaultValidityBond();
         previousDesignatedReportStakeInAttoRep = initialReportMinValue;
@@ -71,6 +69,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function fork() public returns (bool) {
+        updateForkValues();
         require(!isForking());
         require(isContainerForMarket(IMarket(msg.sender)));
         forkingMarket = IMarket(msg.sender);
@@ -85,7 +84,7 @@ contract Universe is ITyped, IUniverse {
         forkReputationGoal = _totalRepSupply.div(2); // 50% of REP migrating results in a victory in a fork
         disputeThresholdForFork = _totalRepSupply.div(40); // 2.5% of the total rep supply
         initialReportMinValue = disputeThresholdForFork.div(3).div(2**18).add(1); // This value will result in a maximum 20 round dispute sequence
-        disputeThresholdForDisputePacing = disputeThresholdForFork.div(2**9); // Disputes begin normal pacing once there are 8 rounds remaining in the fastest case to fork. The "last" round is the one that causes a fork and requires no time so the exponent here is 9 to provide for that many rounds actually occuring.
+        disputeThresholdForDisputePacing = disputeThresholdForFork.div(2**9); // Disputes begin normal pacing once there are 8 rounds remaining in the fastest case to fork. The "last" round is the one that causes a fork and requires no time so the exponent here is 9 to provide for that many rounds actually occurring.
         return true;
     }
 
@@ -103,10 +102,6 @@ contract Universe is ITyped, IUniverse {
 
     function getReputationToken() public view returns (IV2ReputationToken) {
         return reputationToken;
-    }
-
-    function getAuction() public view returns (IAuction) {
-        return auction;
     }
 
     function getForkingMarket() public view returns (IMarket) {
@@ -152,7 +147,7 @@ contract Universe is ITyped, IUniverse {
     function getDisputeWindowId(uint256 _timestamp, bool _initial) public view returns (uint256) {
         uint256 _windowId = _timestamp.div(getDisputeRoundDurationInSeconds(_initial));
         if (_initial) {
-            _windowId += INITIAL_WINDOW_ID_BUFFER;
+            _windowId = _windowId.add(INITIAL_WINDOW_ID_BUFFER);
         }
         return _windowId;
     }
@@ -325,7 +320,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getRepMarketCapInAttoCash() public view returns (uint256) {
-        uint256 _attoCashPerRep = auction.getRepPriceInAttoCash();
+        uint256 _attoCashPerRep = repPriceOracle.getRepPriceInAttoCash();
         uint256 _repMarketCapInAttoCash = getReputationToken().totalSupply().mul(_attoCashPerRep).div(10 ** 18);
         return _repMarketCapInAttoCash;
     }
@@ -350,6 +345,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function getOrCacheDesignatedReportStake() public returns (uint256) {
+        updateForkValues();
         IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
         IDisputeWindow _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow(false);
         uint256 _currentDesignatedReportStakeInAttoRep = designatedReportStakeInAttoRep[address(_disputeWindow)];
@@ -393,7 +389,7 @@ contract Universe is ITyped, IUniverse {
         // Modify the amount based on the previous amount and the number of markets fitting the failure criteria. We want the amount to be somewhere in the range of 0.9 to 2 times its previous value where ALL markets with the condition results in 2x and 0 results in 0.9x.
         // Safe math div is redundant so we avoid here as we're at the stack limit.
         if (_totalBad <= _total / _targetDivisor) {
-            // FXP formula: previous_amount * actual_percent / (10 * target_percent) + 0.9;
+            // FXP formula: previous_amount * (actual_percent / (10 * target_percent) + 0.9);
             _newValue = _totalBad
                 .mul(_previousValue)
                 .mul(_targetDivisor);
@@ -401,7 +397,7 @@ contract Universe is ITyped, IUniverse {
             _newValue = _newValue / 10;
             _newValue = _newValue.add(_previousValue * 9 / 10);
         } else {
-            // FXP formula: previous_amount * (1/(1 - target_percent)) * (actual_percent - target_percent) + 1;
+            // FXP formula: previous_amount * ((1/(1 - target_percent)) * (actual_percent - target_percent) + 1);
             _newValue = _targetDivisor
                 .mul(_previousValue
                     .mul(_totalBad)

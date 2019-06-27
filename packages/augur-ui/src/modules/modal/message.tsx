@@ -19,6 +19,8 @@ import {
   MarketReviewProps,
   CheckboxCTA,
   CheckboxCTAProps,
+  Content,
+  ContentProps,
 } from "modules/modal/common";
 import {
   LinearPropertyLabelProps,
@@ -30,6 +32,7 @@ interface MessageProps {
   closeAction: Function;
   title: string;
   buttons: Array<DefaultButtonProps>;
+  content?: ContentProps;
   alertMessage?: AlertMessageProps;
   marketTitle?: string;
   callToAction?: string;
@@ -41,22 +44,39 @@ interface MessageProps {
   checkbox?: CheckboxCTAProps;
 }
 
-export const Message = (props: MessageProps) => (
+export const Message = ({
+  title,
+  closeAction,
+  alertMessage,
+  marketTitle,
+  callToAction,
+  description,
+  breakdown,
+  readableAddress,
+  depositInfo,
+  marketReview,
+  checkbox,
+  content,
+  buttons
+}: MessageProps) => (
   <div className={Styles.Message}>
-    <Title title={props.title} closeAction={props.closeAction} />
+    <Title title={title} closeAction={closeAction} />
     <main>
-      {props.alertMessage && <AlertMessage {...props.alertMessage} />}
-      {props.marketTitle && <MarketTitle title={props.marketTitle} />}
-      {props.callToAction && <CallToAction callToAction={props.callToAction} />}
+      {alertMessage && <AlertMessage {...alertMessage} />}
+      {marketTitle && <MarketTitle title={marketTitle} />}
+      {callToAction && <CallToAction callToAction={callToAction} />}
       {/*
         // @ts-ignore */}
-      {props.description && <Description description={props.description} />}
-      {props.breakdown && <Breakdown rows={props.breakdown} />}
-      {props.readableAddress && <ReadableAddress {...props.readableAddress} />}
-      {props.depositInfo && <DepositInfo {...props.depositInfo} />}
-      {props.marketReview && <MarketReview {...props.marketReview} />}
-      {props.checkbox && <CheckboxCTA {...props.checkbox} />}
+      {content && <Content content={content} />}
+      {/*
+        // @ts-ignore */}
+      {description && <Description description={description} />}
+      {breakdown && <Breakdown rows={breakdown} />}
+      {readableAddress && <ReadableAddress {...readableAddress} />}
+      {depositInfo && <DepositInfo {...depositInfo} />}
+      {marketReview && <MarketReview {...marketReview} />}
+      {checkbox && <CheckboxCTA {...checkbox} />}
     </main>
-    {props.buttons.length > 0 && <ButtonsRow buttons={props.buttons} />}
+    {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>
 );

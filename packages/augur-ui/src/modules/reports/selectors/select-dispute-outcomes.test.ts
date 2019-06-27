@@ -23,7 +23,7 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
     numTicks: 10000,
     numOutcomes: 2,
     marketType: YES_NO,
-    reportableOutcomes: [
+    outcomes: [
       { id: "0", name: "No" },
       { id: "1", name: "Yes" },
       { id: "0.5", name: "Indeterminate" }
@@ -36,7 +36,7 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
     numTicks: 10003,
     numOutcomes: 7,
     marketType: CATEGORICAL,
-    reportableOutcomes: [
+    outcomes: [
       { id: "0", name: "Bob" },
       { id: "1", name: "Sue" },
       { id: "2", name: "John" },
@@ -55,7 +55,7 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
     tickSize: 4,
     numOutcomes: 2,
     marketType: SCALAR,
-    reportableOutcomes: [{ id: "0.5", name: "Indeterminate" }]
+    outcomes: [{ id: "0.5", name: "Indeterminate" }]
   };
 
   const calculatePayoutNumeratorsValueStubb = sinon.stub().returns(null);
@@ -736,19 +736,19 @@ describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
 
   test(`yes/no  market with NO disputes`, () => {
     const actual = selectDisputeOutcomes(marketBinary, []);
-    const expected = marketBinary.reportableOutcomes;
+    const expected = marketBinary.outcomes;
     expect(actual).toEqual(expected);
   });
 
   test(`category market with NO disputes`, () => {
     const actual = selectDisputeOutcomes(marketCategorical, []);
-    const expected = marketCategorical.reportableOutcomes;
+    const expected = marketCategorical.outcomes;
     expect(actual).toEqual(expected);
   });
 
   test(`scalar market with NO disputes`, () => {
     const actual = selectDisputeOutcomes(marketScalar, []);
-    const expected = marketScalar.reportableOutcomes;
+    const expected = marketScalar.outcomes;
     expect(actual).toEqual(expected);
   });
 });

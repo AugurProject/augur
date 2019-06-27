@@ -1,4 +1,3 @@
-import { prefixHex } from "speedomatic";
 import { EDGE_WALLET_TYPE, ACCOUNT_TYPES } from "modules/common/constants";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import {
@@ -8,45 +7,46 @@ import {
 import logError from "utils/log-error";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { NodeStyleCallback } from "modules/types";
+import { updateSdk } from "modules/auth/actions/update-sdk";
+import EdgeSigner from "modules/auth/helpers/edge-signer";
+import { EdgeUiAccount, EthereumWallet } from "modules/types";
 
 export const loginWithEdgeEthereumWallet = (
-  edgeUiAccount: any,
-  ethereumWallet: any,
-  history: any
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
+  edgeUiAccount: EdgeUiAccount,
+  ethereumWallet: EthereumWallet
+) => async (dispatch: ThunkDispatch<void, any, Action>) => {
   const mixedCaseAddress: string = ethereumWallet.keys.ethereumAddress;
   const lowerCaseAddress: string = mixedCaseAddress.toLowerCase();
-  dispatch(updateAuthStatus(IS_LOGGED, true));
-  dispatch(
-    loadAccountData({
+  const edgeSigner = new EdgeSigner(edgeUiAccount, ethereumWallet);
+
+  const loginAccount = {
+    address: lowerCaseAddress,
+    displayAddress: mixedCaseAddress,
+    meta: {
       address: lowerCaseAddress,
-      displayAddress: mixedCaseAddress,
-      meta: {
-        address: lowerCaseAddress,
-        signer: (tx: any, callback: NodeStyleCallback) => {
-          edgeUiAccount
-            .signEthereumTransaction(ethereumWallet.id, tx)
-            .then(signed => callback(null, prefixHex(signed)))
-            .catch(e => callback(e));
-        },
-        accountType: ACCOUNT_TYPES.EDGE
-      },
-      name: edgeUiAccount.username,
-      edgeUiAccount
-    })
-  );
+      signer: edgeSigner,
+      accountType: ACCOUNT_TYPES.EDGE,
+      isWeb3: false,
+    },
+    name: edgeUiAccount.username,
+    edgeUiAccount,
+  };
+
+  await dispatch(updateSdk(loginAccount, null));
+
+  dispatch(updateAuthStatus(IS_LOGGED, true));
+  dispatch(loadAccountData(loginAccount));
+
+
 };
 
 export const loginWithEdge = (
-  edgeAccount: any,
-  history: any,
-  callback: NodeStyleCallback = logError
+  edgeAccount: EdgeUiAccount
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   const ethereumWallet = edgeAccount.getFirstWalletInfo(EDGE_WALLET_TYPE);
   if (ethereumWallet != null) {
     return dispatch(
-      loginWithEdgeEthereumWallet(edgeAccount, ethereumWallet, history)
+      loginWithEdgeEthereumWallet(edgeAccount, ethereumWallet)
     );
   }
 
@@ -55,8 +55,8 @@ export const loginWithEdge = (
     .createCurrencyWallet(EDGE_WALLET_TYPE)
     .then(() => {
       const ethereumWallet = edgeAccount.getFirstWalletInfo(EDGE_WALLET_TYPE);
-      dispatch(
-        loginWithEdgeEthereumWallet(edgeAccount, ethereumWallet, history)
+      return dispatch(
+        loginWithEdgeEthereumWallet(edgeAccount, ethereumWallet)
       );
     })
     .catch(() => logError({ code: 0, message: "could not create wallet" }));

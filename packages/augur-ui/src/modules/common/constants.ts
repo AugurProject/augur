@@ -3,6 +3,7 @@ import {
   Edge,
   MetaMask,
   Portis,
+  Fortmatic,
   Trezor
 } from "modules/common/icons";
 import { DEFAULT_DERIVATION_PATH } from "modules/auth/helpers/derivation-path";
@@ -70,7 +71,7 @@ export const AUTH_TYPES = {
   [REGISTER]: REGISTER,
   [LOGIN]: LOGIN,
   [IMPORT]: IMPORT,
-  [LOGOUT]: LOGOUT
+  [LOGOUT]: LOGOUT,
 };
 
 export const DEFAULT_AUTH_TYPE = REGISTER;
@@ -81,6 +82,7 @@ export const EDGE_WALLET_TYPE = "wallet:ethereum";
 export const ACCOUNT_TYPES = {
   EDGE: "edge",
   PORTIS: "portis",
+  FORTMATIC: "fortmatic",
   LEDGER: "ledger",
   METAMASK: "metaMask",
   TREZOR: "trezor",
@@ -89,7 +91,7 @@ export const ACCOUNT_TYPES = {
 
 export const WALLET_TYPE = {
   SOFTWARE: "software",
-  HARDWARE: "hardware"
+  HARDWARE: "hardware",
 };
 
 export const ERROR_TYPES = {
@@ -117,13 +119,19 @@ export const ITEMS = [
     param: ACCOUNT_TYPES.PORTIS,
     title: "Portis",
     icon: Portis,
-    type: WALLET_TYPE.SOFTWARE
+    type: WALLET_TYPE.SOFTWARE,
+  },
+  {
+    param: ACCOUNT_TYPES.FORTMATIC,
+    title: "Fortmatic",
+    icon: Fortmatic,
+    type: WALLET_TYPE.SOFTWARE,
   },
   {
     param: ACCOUNT_TYPES.METAMASK,
     title: "Metamask / Web 3 Provider",
     icon: MetaMask,
-    type: WALLET_TYPE.SOFTWARE
+    type: WALLET_TYPE.SOFTWARE,
   },
   {
     param: ACCOUNT_TYPES.TREZOR,
@@ -420,6 +428,9 @@ export const LOWER_FIXED_PRECISION_BOUND = 0;
 // # Modal Constants
 export const MODAL_LEDGER = "MODAL_LEDGER";
 export const MODAL_TREZOR = "MODAL_TREZOR";
+export const MODAL_CONTENT = "MODAL_CONTENT";
+export const MODAL_CATEGORIES = "MODAL_CATEGORIES";
+export const MODAL_MARKET_TYPE = "MODAL_MARKET_TYPE";
 export const MODAL_NETWORK_MISMATCH = "MODAL_NETWORK_MISMATCH";
 export const MODAL_NETWORK_CONNECT = "MODAL_NETWORK_CONNECT";
 export const MODAL_NETWORK_DISCONNECTED = "MODAL_NETWORK_DISCONNECTED";
@@ -452,6 +463,7 @@ export const MARKET_REVIEW_TRADE_SEEN = "marketReviewTradeSeen";
 export const MODAL_MARKET_REVIEW = "MODAL_MARKET_REVIEW";
 export const MODAL_MARKET_REVIEW_TRADE = "MODAL_MARKET_REVIEW_TRADE";
 export const MODAL_OPEN_ORDERS = "MODAL_OPEN_ORDERS";
+export const MODAL_MARKET_LOADING = "MODAL_MARKET_LOADING";
 
 // # Alerts
 export const CRITICAL = "CRITICAL";
@@ -541,11 +553,15 @@ export const BIDS = "bids";
 export const ASKS = "asks";
 export const CANCELED = "CANCELED";
 export const OPEN = "OPEN";
+export const FILLED = "FILLED";
+export const ALL_ORDERS = "ALL";
 export const PRICE = "price";
 export const SHARE = "share";
 export const SHARES = "Shares";
 export const BUY = "buy";
 export const SELL = "sell";
+export const BUY_INDEX = 0;
+export const SELL_INDEX = 1;
 export const BOUGHT = "bought";
 export const SOLD = "sold";
 export const BUYING = "buying";
@@ -598,6 +614,9 @@ export const CANCELLING_ORDER = "cancelling order";
 export const DAY = "days";
 export const WEEK = "week";
 export const MONTH = "month";
+export const EITHER = "either";
+export const MAKER = "maker";
+export const TAKER = "taker";
 // for add-transactions.js and transactions.jsx
 export const ALL = "all";
 export const PUBLIC_TRADE = "publicTrade";
@@ -740,3 +759,9 @@ export const COLUMN_TYPES = {
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
 };
 
+// Login method variables
+export const TREZOR_MANIFEST_EMAIL = "team@augur.net";
+export const TREZOR_MANIFEST_APPURL = "https://dev.augur.net";
+export const PORTIS_API_KEY = "b67817cf-8dd0-4116-a0cf-657820ddc019";
+export const FORTMATIC_API_KEY = "pk_live_8001A50CCA35D8CB";
+export const FORTMATIC_API_TEST_KEY = "pk_test_5185BE42CA372148";

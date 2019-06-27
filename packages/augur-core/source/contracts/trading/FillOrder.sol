@@ -14,7 +14,6 @@ import 'ROOT/trading/Order.sol';
 import 'ROOT/libraries/Initializable.sol';
 
 
-// CONSIDER: At some point it would probably be a good idea to shift much of the logic from trading contracts into extensions. In particular this means sorting for making and WCL calculcations + order walking for taking.
 library Trade {
     using SafeMathUint256 for uint256;
 
@@ -36,7 +35,7 @@ library Trade {
     struct FilledOrder {
         bytes32 orderId;
         uint256 outcome;
-        ERC20Token kycToken;
+        IERC20 kycToken;
         uint256 sharePriceRange;
         uint256 sharePriceLong;
         uint256 sharePriceShort;
@@ -370,27 +369,27 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     address public trade;
 
     mapping (address => uint256) public marketVolume;
+    mapping (address => uint256[]) public marketOutcomeVolumes;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
         trade = augur.lookup("Trade");
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
-        return true;
     }
 
-    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (uint256) {
+    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external returns (uint256) {
         uint256 _result = this.fillOrder(msg.sender, _orderId, _amountFillerWants, _tradeGroupId, _ignoreShares, _affiliateAddress);
         IMarket _market = orders.getMarket(_orderId);
         _market.assertBalances();
         return _result;
     }
 
-    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external afterInitialized nonReentrant returns (uint256) {
+    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external nonReentrant returns (uint256) {
         require(msg.sender == trade || msg.sender == address(this));
         Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _ignoreShares, _affiliateAddress);
-        require(_tradeData.order.kycToken == ERC20Token(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0);
+        require(_tradeData.order.kycToken == IERC20(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0);
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
         uint256 _price = orders.getPrice(_orderId);
@@ -458,7 +457,13 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         uint256 _completeSetTokens = _makerSharesDepleted.min(_fillerSharesDepleted).mul(_market.getNumTicks());
         _volume = _volume.add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
         marketVolume[address(_market)] = _volume;
-        augur.logMarketVolumeChanged(_tradeData.contracts.market.getUniverse(), address(_market), _volume);
+        if (marketOutcomeVolumes[address(_market)].length == 0) {
+            for (uint256 i = 0; i < _market.getNumberOfOutcomes(); i++) {
+                marketOutcomeVolumes[address(_market)].push(0);
+            }
+        }
+        marketOutcomeVolumes[address(_market)][_tradeData.order.outcome] = marketOutcomeVolumes[address(_market)][_tradeData.order.outcome].add(_makerTokensDepleted).add(_fillerTokensDepleted).add(_completeSetTokens);
+        augur.logMarketVolumeChanged(_tradeData.contracts.market.getUniverse(), address(_market), _volume, marketOutcomeVolumes[address(_market)]);
         return _volume;
     }
 

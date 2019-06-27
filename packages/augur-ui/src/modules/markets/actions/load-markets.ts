@@ -1,5 +1,5 @@
-import { augurSdk } from "services/augursdk";
-import logError from "utils/log-error";
+import { augurSdk } from 'services/augursdk';
+import logError from 'utils/log-error';
 import {
   MARKET_CREATION_TIME,
   MARKET_END_DATE,
@@ -9,45 +9,53 @@ import {
   MARKET_REPORTING,
   MARKET_CLOSED,
   REPORTING_STATE,
-} from "modules/common/constants";
-import { updateMarketsData } from "modules/markets/actions/update-markets-data";
-import { NodeStyleCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { AppState } from "store";
+} from 'modules/common/constants';
+import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
+import { NodeStyleCallback } from 'modules/types';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { AppState } from 'store';
 
 // NOTE -- We ONLY load the market ids during this step.
-// From here we populate the marketsData
-export const loadMarkets = (type: any, callback: NodeStyleCallback = logError) => async (
+// From here we populate the marketInfos
+export const loadMarkets = (
+  type: any,
+  callback: NodeStyleCallback = logError
+) => async (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+  getState: () => AppState
 ) => {
   const augur = augurSdk.get();
 
   const { universe } = getState();
 
-  if(!(universe && universe.id)) return;
+  if (!(universe && universe.id)) return;
   const marketsArray = await augur.getMarkets({ universe: universe.id });
+  // TODO: this needs to be refactored we don't want to add partial marketInfo objects to marketInfos state
   const marketsData = marketsArray.reduce(
     (p: any, id: string) => ({
       ...p,
-      [id]: { id }
+      [id]: { id },
     }),
     {}
   );
 
-    dispatch(updateMarketsData(marketsData));
-    callback(null, marketsArray);
+  console.log('adding partial market infos to state, REFACTOR THIS!');
+  dispatch(updateMarketsData(marketsData));
+  callback(null, marketsArray);
 };
 
-export const loadMarketsByFilter = (filterOptions, cb:Function = () => {}) => async (
+export const loadMarketsByFilter = (
+  filterOptions,
+  cb: Function = () => {}
+) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const augur = augurSdk.get();
   const { universe } = getState();
 
-  if(!(universe && universe.id)) return;
+  if (!(universe && universe.id)) return;
 
   const filter: Array<any> = [];
   const sort: any = {};
@@ -55,30 +63,30 @@ export const loadMarketsByFilter = (filterOptions, cb:Function = () => {}) => as
   switch (filterOptions.sort) {
     case MARKET_RECENTLY_TRADED: {
       // Sort By Recently Traded:
-      sort.sortBy = "lastTradeTime";
+      sort.sortBy = 'lastTradeTime';
       sort.isSortDescending = true;
       break;
     }
     case MARKET_END_DATE: {
       // Sort By End Date (soonest first):
-      sort.sortBy = "endTime";
+      sort.sortBy = 'endTime';
       sort.isSortDescending = false;
       break;
     }
     case MARKET_CREATION_TIME: {
       // Sort By Creation Date (most recent first):
-      sort.sortBy = "creationBlockNumber";
+      sort.sortBy = 'creationBlockNumber';
       sort.isSortDescending = true;
       break;
     }
     case MARKET_FEE: {
       // Sort By Fee (lowest first):
-      sort.sortBy = "marketCreatorFeeRate";
+      sort.sortBy = 'marketCreatorFeeRate';
       sort.isSortDescending = false;
       break;
     }
     case MARKET_OPEN_INTEREST: {
-      sort.sortBy = "openInterest";
+      sort.sortBy = 'openInterest';
       sort.isSortDescending = true;
       break;
     }
@@ -105,7 +113,7 @@ export const loadMarketsByFilter = (filterOptions, cb:Function = () => {}) => as
         REPORTING_STATE.OPEN_REPORTING,
         REPORTING_STATE.CROWDSOURCING_DISPUTE,
         REPORTING_STATE.AWAITING_NEXT_WINDOW,
-        REPORTING_STATE.AWAITING_FORK_MIGRATION
+        REPORTING_STATE.AWAITING_FORK_MIGRATION,
       ]);
       break;
     }
@@ -113,7 +121,7 @@ export const loadMarketsByFilter = (filterOptions, cb:Function = () => {}) => as
       // resolved markets only:
       filter.push([
         REPORTING_STATE.AWAITING_FINALIZATION,
-        REPORTING_STATE.FINALIZED
+        REPORTING_STATE.FINALIZED,
       ]);
       break;
     }
@@ -124,10 +132,12 @@ export const loadMarketsByFilter = (filterOptions, cb:Function = () => {}) => as
     }
   }
 
-  const requests = filter.map((filterType) => augur.getMarkets({ ...params, reportingState: filterType }));
+  const requests = filter.map(filterType =>
+    augur.getMarkets({ ...params, reportingState: filterType })
+  );
   const nestedMarkets = await Promise.all(requests);
   // flatten, when we upgrade to es2019 we can use nestedMarkets.flat() instead
-  const markets = nestedMarkets.reduce( (a, b) => a.concat(b), []);
+  const markets = nestedMarkets.reduce((a, b) => a.concat(b), []);
 
   cb(null, markets);
 };

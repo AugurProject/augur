@@ -1,35 +1,35 @@
-import memoize from "memoizee";
-import { createBigNumber } from "utils/create-big-number";
-import createCachedSelector from "re-reselect";
-import store from "store";
+import memoize from 'memoizee';
+import { createBigNumber } from 'utils/create-big-number';
+import createCachedSelector from 're-reselect';
+import store from 'store';
 
-import { isOrderOfUser } from "modules/orders/helpers/is-order-of-user";
+import { isOrderOfUser } from 'modules/orders/helpers/is-order-of-user';
 
-import { BUY, SELL } from "modules/common/constants";
+import {
+  BUY_INDEX,
+  SELL_INDEX,
+  SELL,
+  BUY,
+  OPEN,
+} from 'modules/common/constants';
 
-import { convertUnixToFormattedDate } from "utils/format-date";
-import { formatNone, formatEther, formatShares } from "utils/format-number";
-import { cancelOrder } from "modules/orders/actions/cancel-order";
-import { getOutcomeName } from "utils/get-outcome";
+import { convertUnixToFormattedDate } from 'utils/format-date';
+import { formatNone, formatEther, formatShares, formatDai } from 'utils/format-number';
+import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
   selectMarketsDataState,
-  selectOutcomesDataState,
-  selectOrderBooksState,
+  selectUserMarketOpenOrders,
   selectOrderCancellationState,
   selectPendingOrdersState,
   selectLoginAccountAddress,
-} from "store/select-state";
+} from 'store/select-state';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketsDataState(state)[marketId];
 }
 
-function selectOutcomesDataStateMarket(state, marketId) {
-  return selectOutcomesDataState(state)[marketId];
-}
-
-function selectOrderBooksStateMarket(state, marketId) {
-  return selectOrderBooksState(state)[marketId];
+function selectUserMarketOpenOrdersMarket(state, marketId) {
+  return selectUserMarketOpenOrders(state)[marketId];
 }
 
 function selectPendingOrdersStateMarket(state, marketId) {
@@ -44,25 +44,24 @@ export default function(marketId) {
 
 export const selectUserOpenOrders = createCachedSelector(
   selectMarketsDataStateMarket,
-  selectOutcomesDataStateMarket,
-  selectOrderBooksStateMarket,
+  selectUserMarketOpenOrdersMarket,
   selectOrderCancellationState,
   selectPendingOrdersStateMarket,
   selectLoginAccountAddress,
-  (market, outcomes, orderBook, orderCancellation, pendingOrders, account) => {
+  (market, userMarketOpenOrders, orderCancellation, pendingOrders, account) => {
     let userOpenOrders =
-      Object.keys(outcomes || {})
-        .map((outcomeId) =>
+      market.outcomes
+        .map(outcome =>
           selectUserOpenOrdersInternal(
             market.id,
-            outcomeId,
-            orderBook,
+            outcome.id,
+            userMarketOpenOrders,
             orderCancellation,
             market.description,
-            getOutcomeName(market, outcomes[outcomeId]),
-          ),
+            outcome.description
+          )
         )
-        .filter((collection) => collection.length !== 0)
+        .filter(collection => collection.length !== 0)
         .flat() || [];
 
     // add pending orders
@@ -71,28 +70,28 @@ export const selectUserOpenOrders = createCachedSelector(
     }
 
     return userOpenOrders || [];
-  },
+  }
 )((state, marketId) => marketId);
 
 function selectUserOpenOrdersInternal(
   marketId,
   outcomeId,
-  marketOrderBook,
+  userMarketOpenOrders,
   orderCancellation,
   marketDescription,
-  name,
+  name
 ) {
   const { loginAccount } = store.getState();
-  if (!loginAccount.address || marketOrderBook == null) return [];
+  if (!loginAccount.address || userMarketOpenOrders == null) return [];
 
   return userOpenOrders(
     marketId,
     outcomeId,
     loginAccount,
-    marketOrderBook,
+    userMarketOpenOrders,
     orderCancellation,
     marketDescription,
-    name,
+    name
   );
 }
 
@@ -101,46 +100,46 @@ const userOpenOrders = memoize(
     marketId,
     outcomeId,
     loginAccount,
-    marketOrderBook,
+    userMarketOpenOrders,
     orderCancellation,
     marketDescription,
-    name,
+    name
   ) => {
-    const orderData = marketOrderBook[outcomeId];
+    const orderData = userMarketOpenOrders[outcomeId];
 
     const userBids =
-      orderData == null || orderData.buy == null
+      orderData == null || orderData[BUY_INDEX] == null
         ? []
         : getUserOpenOrders(
             marketId,
-            marketOrderBook[outcomeId],
-            BUY,
+            userMarketOpenOrders[outcomeId],
+            BUY_INDEX,
             outcomeId,
             loginAccount.address,
             orderCancellation,
             marketDescription,
-            name,
+            name
           );
     const userAsks =
-      orderData == null || orderData.sell == null
+      orderData == null || orderData[SELL_INDEX] == null
         ? []
         : getUserOpenOrders(
             marketId,
-            marketOrderBook[outcomeId],
-            SELL,
+            userMarketOpenOrders[outcomeId],
+            SELL_INDEX,
             outcomeId,
             loginAccount.address,
             orderCancellation,
             marketDescription,
-            name,
+            name
           );
 
     const orders = userAsks.concat(userBids);
     return orders.sort(
-      (a, b) => b.creationTime.timestamp - a.creationTime.timestamp,
+      (a, b) => b.creationTime.timestamp - a.creationTime.timestamp
     );
   },
-  { max: 10 },
+  { max: 10 }
 );
 
 function getUserOpenOrders(
@@ -150,34 +149,32 @@ function getUserOpenOrders(
   outcomeId,
   userId,
   orderCancellation = {},
-  marketDescription = "",
-  name = "",
+  marketDescription = '',
+  name = ''
 ) {
   const typeOrders = orders[orderType];
 
   return Object.keys(typeOrders)
-    .map((orderId) => typeOrders[orderId])
-    .filter(
-      (order) => isOrderOfUser(order, userId) && order.orderState === "OPEN",
-    )
+    .map(orderId => typeOrders[orderId])
+    .filter(order => isOrderOfUser(order, userId) && order.orderState === OPEN)
     .sort((order1, order2) =>
       createBigNumber(order2.price, 10).comparedTo(
-        createBigNumber(order1.price, 10),
-      ),
+        createBigNumber(order1.price, 10)
+      )
     )
-    .map((order) => ({
+    .map(order => ({
       id: order.orderId,
-      type: orderType,
+      type: orderType === BUY_INDEX ? BUY : SELL,
       marketId,
       outcomeId,
       creationTime: convertUnixToFormattedDate(order.creationTime),
       pending: !!orderCancellation[order.orderId],
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
-      avgPrice: formatEther(order.fullPrecisionPrice),
+      avgPrice: formatDai(order.fullPrecisionPrice),
       matchedShares: formatNone(),
       unmatchedShares: formatShares(order.amount),
-      tokensEscrowed: formatEther(order.tokensEscrowed),
+      tokensEscrowed: formatDai(order.tokensEscrowed),
       sharesEscrowed: formatShares(order.sharesEscrowed),
       marketDescription,
       name,
@@ -188,7 +185,7 @@ function getUserOpenOrders(
             marketId,
             outcome: outcomeId,
             orderTypeLabel: type,
-          }),
+          })
         );
       },
     }));

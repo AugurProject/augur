@@ -102,11 +102,7 @@ def test_one_bid_on_books_buy_partial_order_fill_loop_limit(contractsFixture, ca
     assert orders.getWorseOrderId(orderID) == longTo32Bytes(0)
     assert fillOrderID == longTo32Bytes(1)
 
-@mark.parametrize('withTotalCost', [
-    True,
-    False
-])
-def test_one_bid_on_books_buy_excess_order(withTotalCost, contractsFixture, cash, market, universe):
+def test_one_bid_on_books_buy_excess_order(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts['CreateOrder']
     trade = contractsFixture.contracts['Trade']
     fillOrder = contractsFixture.contracts['FillOrder']
@@ -130,12 +126,8 @@ def test_one_bid_on_books_buy_excess_order(withTotalCost, contractsFixture, cash
     }
     with AssertLog(contractsFixture, "OrderEvent", orderFilledEventLog):
         with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog, skip=1):
-            if withTotalCost:
-                with BuyWithCash(cash, fix('5', '40'), contractsFixture.accounts[2], "tradeWithTotalCost"):
-                    fillOrderID = trade.publicTradeWithTotalCost(SHORT,market.address, YES, fix(5, 60), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender=contractsFixture.accounts[2])
-            else:
-                with BuyWithCash(cash, fix('5', '40'), contractsFixture.accounts[2], "trade"):
-                    fillOrderID = trade.publicTrade(SHORT,market.address, YES, fix(5), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender=contractsFixture.accounts[2])
+            with BuyWithCash(cash, fix('5', '40'), contractsFixture.accounts[2], "trade"):
+                fillOrderID = trade.publicTrade(SHORT,market.address, YES, fix(5), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender=contractsFixture.accounts[2])
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -298,11 +290,7 @@ def test_two_bids_on_books_buy_one_full_then_create(contractsFixture, cash, mark
     assert orders.getBetterOrderId(fillOrderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(fillOrderID) == longTo32Bytes(0)
 
-@mark.parametrize('withTotalCost', [
-    True,
-    False
-])
-def test_one_ask_on_books_buy_full_order(withTotalCost, contractsFixture, cash, market, universe):
+def test_one_ask_on_books_buy_full_order(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts['CreateOrder']
     trade = contractsFixture.contracts['Trade']
     fillOrder = contractsFixture.contracts['FillOrder']
@@ -314,12 +302,8 @@ def test_one_ask_on_books_buy_full_order(withTotalCost, contractsFixture, cash, 
         orderID = createOrder.publicCreateOrder(ASK, fix(12), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, False, nullAddress, sender = contractsFixture.accounts[1])
 
     # fill best order
-    if withTotalCost:
-        with BuyWithCash(cash, fix('12', '60'), contractsFixture.accounts[2], "buy complete set"):
-            fillOrderID = trade.publicTradeWithTotalCost(LONG, market.address, YES, fix(12, 60), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = contractsFixture.accounts[2])
-    else:
-        with BuyWithCash(cash, fix('12', '60'), contractsFixture.accounts[2], "buy complete set"):
-            fillOrderID = trade.publicTrade(LONG, market.address, YES, fix(12), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = contractsFixture.accounts[2])
+    with BuyWithCash(cash, fix('12', '60'), contractsFixture.accounts[2], "buy complete set"):
+        fillOrderID = trade.publicTrade(LONG, market.address, YES, fix(12), 60, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = contractsFixture.accounts[2])
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -495,11 +479,7 @@ def test_two_asks_on_books_buy_one_full_then_create(contractsFixture, cash, mark
     assert orders.getBetterOrderId(fillOrderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(fillOrderID) == longTo32Bytes(0)
 
-@mark.parametrize('withTotalCost', [
-    True,
-    False
-])
-def test_take_best_order(withTotalCost, contractsFixture, cash, market):
+def test_take_best_order(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']
     trade = contractsFixture.contracts['Trade']
     orders = contractsFixture.contracts['Orders']
@@ -510,12 +490,8 @@ def test_take_best_order(withTotalCost, contractsFixture, cash, market):
     assert orderID
 
     # fill order with cash using on-chain matcher
-    if withTotalCost:
-        with BuyWithCash(cash, fix('1', '60'), contractsFixture.accounts[2], "fill best order"):
-            assert trade.publicFillBestOrderWithTotalCost(BID, market.address, YES, fix(1, 60), 60, "43", 6, False, nullAddress, nullAddress, sender=contractsFixture.accounts[2]) == 0
-    else:
-        with BuyWithCash(cash, fix('1', '60'), contractsFixture.accounts[2], "fill best order"):
-            assert trade.publicFillBestOrder(BID, market.address, YES, fix(1), 60, "43", 6, False, nullAddress, nullAddress, sender=contractsFixture.accounts[2]) == 0
+    with BuyWithCash(cash, fix('1', '60'), contractsFixture.accounts[2], "fill best order"):
+        assert trade.publicFillBestOrder(BID, market.address, YES, fix(1), 60, "43", 6, False, nullAddress, nullAddress, sender=contractsFixture.accounts[2]) == 0
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -685,11 +661,7 @@ def test_trade_with_self(contractsFixture, cash, market, universe):
     assert orders.getBetterOrderId(fillOrderID) == longTo32Bytes(0)
     assert orders.getWorseOrderId(fillOrderID) == longTo32Bytes(0)
 
-@mark.parametrize('withTotalCost', [
-    True,
-    False
-])
-def test_trade_with_self_take_order_make_order(withTotalCost, contractsFixture, cash, market):
+def test_trade_with_self_take_order_make_order(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']
     trade = contractsFixture.contracts['Trade']
     orders = contractsFixture.contracts['Orders']
@@ -702,11 +674,8 @@ def test_trade_with_self_take_order_make_order(withTotalCost, contractsFixture, 
 
     # fill best order
     takeCost = fix('1', '50')
-    with BuyWithCash(cash, takeCost, contractsFixture.accounts[1], "publicTradeWithTotalCost"):
-        if withTotalCost:
-            fillOrderID = trade.publicTradeWithTotalCost(BID, market.address, YES, takeCost, 50, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = contractsFixture.accounts[1])
-        else:
-            fillOrderID = trade.publicTrade(BID, market.address, YES, fix(1), 50, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = contractsFixture.accounts[1])
+    with BuyWithCash(cash, takeCost, contractsFixture.accounts[1], "publicTrade"):
+        fillOrderID = trade.publicTrade(BID, market.address, YES, fix(1), 50, "0", "0", tradeGroupID, 6, False, nullAddress, nullAddress, sender = contractsFixture.accounts[1])
 
     assert orders.getAmount(orderID) == 0
     assert orders.getPrice(orderID) == 0
@@ -888,7 +857,8 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
             with TokenDelta(cash, expectedAffiliateFees, contractsFixture.accounts[3], "Affiliate did not recieve the correct fees"):
                 assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, False, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
     else:
-        assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, False, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
+        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, False, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
+        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, False, contractsFixture.accounts[3], nullAddress, sender=contractsFixture.accounts[2]) == 0
 
     assert firstShareToken.balanceOf(contractsFixture.accounts[1]) == 0
     assert secondShareToken.balanceOf(contractsFixture.accounts[1]) == fix(1)

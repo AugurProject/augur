@@ -1,13 +1,15 @@
-import { createBigNumber } from "utils/create-big-number";
-import { augur } from "services/augurjs";
-import { BUY, ZERO } from "modules/common/constants";
-import logError from "utils/log-error";
-import { generateTrade } from "modules/trades/helpers/generate-trade";
-import { buildDisplayTrade } from "modules/trades/helpers/build-display-trade";
-import { AppState } from "store";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { NodeStyleCallback } from "modules/types";
+import { createBigNumber } from 'utils/create-big-number';
+import { BUY, ZERO } from 'modules/common/constants';
+import logError from 'utils/log-error';
+import { generateTrade } from 'modules/trades/helpers/generate-trade';
+import { buildDisplayTrade } from 'modules/trades/helpers/build-display-trade';
+import { AppState } from 'store';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { NodeStyleCallback, MarketData } from 'modules/types';
+import { simulateTrade, simulateTradeGasLimit } from 'modules/contracts/actions/contractCalls';
+import { SimulateTradeData } from '@augurproject/sdk/build';
+import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
 export function updateTradeCost({
@@ -19,28 +21,31 @@ export function updateTradeCost({
   selfTrade,
   callback = logError,
 }: any) {
-  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     if (!side || !numShares || !limitPrice) {
-      return callback("side or numShare or limitPrice is not provided");
+      return callback('side or numShare or limitPrice is not provided');
     }
 
     const {
-      marketsData,
+      marketInfos,
       loginAccount,
       orderBooks,
       outcomesData,
       accountPositions,
       accountShareBalances,
     } = getState();
-    const market = marketsData[marketId];
+    const market = marketInfos[marketId];
     const outcome = outcomesData[marketId][outcomeId];
 
     const newTradeDetails = {
       side,
       numShares,
       limitPrice,
-      totalFee: "0",
-      totalCost: "0",
+      totalFee: '0',
+      totalCost: '0',
       selfTrade,
     };
 
@@ -54,7 +59,7 @@ export function updateTradeCost({
       outcome,
       accountPositions,
       accountShareBalances,
-      callback,
+      callback
     );
   };
 }
@@ -67,27 +72,30 @@ export function updateTradeShares({
   limitPrice,
   callback = logError,
 }: any) {
-  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     if (!side || !maxCost || !limitPrice) {
-      return callback("side or numShare or limitPrice is not provided");
+      return callback('side or numShare or limitPrice is not provided');
     }
 
     const {
-      marketsData,
+      marketInfos,
       loginAccount,
       outcomesData,
       accountPositions,
       accountShareBalances,
       orderBooks,
     } = getState();
-    const market = marketsData[marketId];
+    const market = marketInfos[marketId];
 
     const newTradeDetails: any = {
       side,
       maxCost,
       limitPrice,
-      totalFee: "0",
-      totalCost: "0",
+      totalFee: '0',
+      totalCost: '0',
     };
 
     /*
@@ -113,7 +121,7 @@ export function updateTradeShares({
     const scaledPrice = createBigNumber(limitPrice).plus(marketMinPrice.abs());
 
     let newShares = createBigNumber(maxCost).dividedBy(
-      marketRange.minus(scaledPrice),
+      marketRange.minus(scaledPrice)
     );
     if (side === BUY) {
       newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
@@ -134,14 +142,14 @@ export function updateTradeShares({
       outcome,
       accountPositions,
       accountShareBalances,
-      callback,
+      callback
     );
   };
 }
 
-function runSimulateTrade(
+async function runSimulateTrade(
   newTradeDetails: any,
-  market: any,
+  market: MarketInfo,
   marketId: any,
   outcomeId: any,
   loginAccount: any,
@@ -149,19 +157,22 @@ function runSimulateTrade(
   outcome: any,
   accountPositions: any,
   accountShareBalances: any,
-  callback: NodeStyleCallback,
+  callback: NodeStyleCallback
 ) {
-  let userShareBalance = new Array(market.numOutcomes).fill("0");
-  let userNetPositions = new Array(market.numOutcomes).fill("0");
-  let sharesFilledAvgPrice = "";
+  let userShareBalance = new Array(market.numOutcomes).fill('0');
+  let userNetPositions = new Array(market.numOutcomes).fill('0');
+  let sharesFilledAvgPrice = '';
   let reversal = null;
   const userMarketShareBalances = accountShareBalances[marketId];
   const positions = (accountPositions[marketId] || {}).tradingPositions;
   if (positions) {
-    userNetPositions = Object.keys(positions).reduce((r: any, outcomeId: any) => {
-      r[outcomeId] = positions[outcomeId].netPosition;
-      return r;
-    }, userNetPositions);
+    userNetPositions = Object.keys(positions).reduce(
+      (r: any, outcomeId: any) => {
+        r[outcomeId] = positions[outcomeId].netPosition;
+        return r;
+      },
+      userNetPositions
+    );
     userShareBalance = userMarketShareBalances || [];
     sharesFilledAvgPrice = (positions[outcomeId] || {}).averagePrice;
     const outcomeIndex = parseInt(outcomeId, 10);
@@ -184,39 +195,61 @@ function runSimulateTrade(
     }
   }
 
-  const simulatedTrade = augur.trading.simulateTrade({
-    orderType: newTradeDetails.side === BUY ? 0 : 1,
-    outcome: parseInt(outcomeId, 10),
-    shareBalances: userShareBalance,
-    tokenBalance: (loginAccount.eth && loginAccount.eth.toString()) || "0",
-    userAddress: loginAccount.address,
-    minPrice: market.minPrice,
-    maxPrice: market.maxPrice,
-    price: newTradeDetails.limitPrice,
-    shares: newTradeDetails.numShares,
-    marketCreatorFeeRate: market.marketCreatorFeeRate,
-    singleOutcomeOrderBook:
-      (orderBooks && orderBooks[marketId] && orderBooks[marketId][outcomeId]) ||
-      {},
-    shouldCollectReportingFees: !market.isDisowned,
-    reportingFeeRate: market.reportingFeeRate,
-  });
-  const totalFee = createBigNumber(simulatedTrade.settlementFees, 10);
+  const orderType: 0 | 1 = newTradeDetails.side === BUY ? 0 : 1;
+  const ignoreShares = false; // TODO: get this from order form
+  const affiliateAddress = undefined; // TODO: get this from state
+  const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
+  const doNotCreateOrders = false; // TODO: this needs to be passed from order form
+  const outcomeIdx = parseInt(outcomeId, 10);
+
+  const userShares = ignoreShares ? 0 : userShareBalance[outcomeIdx];
+
+  const simulateTradeValue: SimulateTradeData = await simulateTrade(
+    orderType,
+    marketId,
+    market.numOutcomes,
+    parseInt(outcomeId, 10),
+    ignoreShares,
+    affiliateAddress,
+    kycToken,
+    doNotCreateOrders,
+    market.numTicks,
+    market.minPrice,
+    market.maxPrice,
+    newTradeDetails.numShares,
+    newTradeDetails.limitPrice,
+    userShares
+  );
+
+  const gasLimit = await simulateTradeGasLimit(
+    orderType,
+    marketId,
+    market.numOutcomes,
+    parseInt(outcomeId, 10),
+    ignoreShares,
+    affiliateAddress,
+    kycToken,
+    doNotCreateOrders,
+    market.numTicks,
+    market.minPrice,
+    market.maxPrice,
+    newTradeDetails.numShares,
+    newTradeDetails.limitPrice,
+    userShares
+  );
+
+  const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
-  newTradeDetails.totalCost = simulatedTrade.tokensDepleted;
-  newTradeDetails.shareCost = Number(simulatedTrade.sharesDepleted)
-    ? simulatedTrade.sharesDepleted
-    : simulatedTrade.otherSharesDepleted;
+  newTradeDetails.totalCost = simulateTradeValue.tokensDepleted;
+  newTradeDetails.shareCost = simulateTradeValue.sharesDepleted;
   newTradeDetails.feePercent = totalFee
-    .dividedBy(createBigNumber(simulatedTrade.tokensDepleted, 10))
+    .dividedBy(createBigNumber(simulateTradeValue.tokensDepleted, 10))
     .toFixed();
-  if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = "0";
-  // @ts-ignore
-  simulatedTrade.tradeGroupId = augur.trading.generateTradeGroupId();
+  if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
 
   const tradeInfo = {
     ...newTradeDetails,
-    ...simulatedTrade,
+    ...simulateTradeValue,
     sharesFilledAvgPrice,
     userNetPositions,
     userShareBalance,
@@ -231,8 +264,8 @@ function runSimulateTrade(
     buildDisplayTrade({
       ...tradeInfo,
       outcomeId,
-    }),
+    })
   );
 
-  if (callback) callback(null, { ...order, ...simulatedTrade, displayTrade });
+  if (callback) callback(null, { ...order, ...simulateTradeValue, displayTrade, gasLimit });
 }
