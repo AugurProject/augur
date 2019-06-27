@@ -35,8 +35,8 @@ export interface SubheadersProps {
   subheader: string;
   link?: Boolean;
   href?: string;
-  underlineLink?: Boolean;
-  linkOwnLine?: Boolean;
+  underline?: Boolean;
+  ownLine?: Boolean;
 }
 
 export const Subheaders = (props: SubheadersProps) => (
@@ -45,7 +45,7 @@ export const Subheaders = (props: SubheadersProps) => (
     <p>
       <span>{props.subheader}</span>
       {props.link && (
-        <Link href={props.href} underline={props.underlineLink} ownLine={props.linkOwnLine} />
+        <Link href={props.href} underline={props.underline} ownLine={props.ownLine} />
       )}
     </p>
   </div>        
@@ -70,15 +70,15 @@ export interface HeaderLinkProps {
   text: string;
   href?: string;
   link?: Boolean;
-  linkOwnLine?: Boolean;
-  underlineLink?: Boolean;
+  ownLine?: Boolean;
+  underline?: Boolean;
 }
 
 export const SmallHeaderLink = (props: HeaderLinkProps) => (
   <p className={Styles.SmallHeaderLink}>
     <span>{props.text}</span>
     {props.link && (
-      <Link href={props.href} underline={props.underlineLink} ownLine={props.linkOwnLine} />
+      <Link href={props.href} underline={props.underline} ownLine={props.ownLine} />
     )}
   </p>
 );
@@ -89,8 +89,8 @@ export const LargeSubheaders = (props: SubheadersProps) => (
     <SmallHeaderLink 
       text={props.subheader} 
       href={props.href} 
-      underline={props.underlineLink} 
-      ownLine={props.linkOwnLine} 
+      underline={props.underline} 
+      ownLine={props.ownLine} 
       link={props.link} 
     />
   </div>        

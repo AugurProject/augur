@@ -36,7 +36,8 @@ export default class Landing extends React.Component<
           <ContentBlock>
             <LargeSubheaders
               link
-              underlineLink
+              underline
+              ownLine
               header="Use a market template"
               subheader="Templates simplify the creation of new markets and reduce errors in the market making process. "
             />
@@ -44,7 +45,7 @@ export default class Landing extends React.Component<
               onChange={(value: string) => updatePage(TEMPLATE)}
               radioButtons={MARKET_TEMPLATES}
             >
-              <SmallHeaderLink text="Don't see your category?" link linkOwnLine/> 
+              <SmallHeaderLink text="Don't see your category?" link ownLine /> 
             </RadioCardGroup>
           </ContentBlock>
 
