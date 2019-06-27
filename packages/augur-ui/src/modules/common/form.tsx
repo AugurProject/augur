@@ -150,6 +150,7 @@ interface RadioGroupProps {
     | Array<RadioBarProps>
     | Array<RadioTwoLineBarProps>;
   defaultSelected?: string | null;
+  children?: Array<any>;
 }
 
 interface RadioGroupState {
@@ -312,7 +313,7 @@ export class RadioCardGroup extends Component<
   };
 
   render() {
-    const { radioButtons, onChange } = this.props;
+    const { radioButtons, onChange, children } = this.props;
     const { selected } = this.state;
     return (
       <div className={Styles.RadioCardGroup}>
@@ -327,6 +328,7 @@ export class RadioCardGroup extends Component<
             }}
           />
         ))}
+        <div className={Styles.Additional}>{children}</div>
       </div>
     );
   }
@@ -343,6 +345,7 @@ const RadioCard = ({
   <div
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
+      [Styles.CustomIcon]: icon
     })}
     role="button"
     onClick={e => onChange(value)}

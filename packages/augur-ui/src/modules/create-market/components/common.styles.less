@@ -15,35 +15,84 @@
 	margin-bottom: @size-24;
 }
 
+.MediumHeader {
+	.text-default;
+
+	color: @color-tertiary-info-text;
+
+	> span {
+		.text-16-bold;
+	}
+}
+
 .Subheaders {
   display: flex;
   flex-direction: column;
 
-  > span:first-of-type {
+  > h1 {
     .text-16-medium;
 
     color: @color-alternate-info-text;
     margin-bottom: @size-8;
   }
 
-  > span:nth-of-type(2) {
+  > p {
     .text-12;
 
     color: @color-tertiary-info-text;
     line-height: @size-20;
+    margin: 0;
     margin-bottom: @size-8;
 
-    > a {
-      color: @color-primary-action;
-      margin-left: 3px;
+    > span {
+    	margin-right: 3px;
     }
   }
 
   &:not(:first-of-type) {
-    > span:first-of-type {
+    > h1 {
       margin-top: @size-32;
     }
   }
+}
+
+.XLargeSubheaders {
+	flex-direction: column;
+    align-items: center;
+    display: flex;
+    margin: 64px 0;
+
+	> span:first-of-type {
+		margin-bottom: @size-4;
+		margin-top: 0;
+	}
+}
+
+.Link {
+	white-space: nowrap;
+    color: @color-primary-action;
+
+	&.underline {
+		text-decoration: underline;
+	}
+
+	&.ownLine {
+		display: block;
+	}
+}
+
+.SmallHeaderLink {	
+	.text-14;
+
+	color: @color-alternate-info-text;
+}
+
+.LargeSubheaders {
+	.Subheaders;
+
+	> h1 {
+		.text-24-bold;
+	}
 }
 
 .NumberedList {
@@ -176,10 +225,9 @@
     display: flex;
     min-width: 750px;
 
-    > div:last-of-type {
-    	display: flex;
-		margin-top: 54px;    
-    	justify-content: space-between
+    > button {
+    	margin-top: @size-24;
+    	max-width: 200px;
     }
 }
 

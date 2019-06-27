@@ -5,10 +5,13 @@
 	display: flex;
     align-items: center;
     flex-direction: column;
-    max-width: 750px;
     padding-bottom: 87px;
 
-    > div {
-    	max-width: 750px;
+    > div:last-of-type {
+    	> div:last-of-type {
+	    	display: flex;
+			margin-top: 54px;    
+	    	justify-content: space-between
+	   	}
     }
 }
