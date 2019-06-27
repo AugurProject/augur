@@ -1,8 +1,8 @@
 import {
     ACCOUNTS,
     deployContracts,
-    ContractAPI,
   } from "../../libs";
+import { ContractAPI } from "@augurproject/tools";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";
 import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers";

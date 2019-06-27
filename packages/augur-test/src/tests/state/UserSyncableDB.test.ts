@@ -1,8 +1,9 @@
-import { ACCOUNTS, ContractAPI, deployContracts, makeDbMock } from '../../libs';
+import { ACCOUNTS, deployContracts, makeDbMock } from '../../libs';
 import { UserSyncableDB } from '@augurproject/sdk/build/state/db/UserSyncableDB';
 import { stringTo32ByteHex } from '@augurproject/core/build/libraries/HelperFunctions';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
+import { ContractAPI } from "@augurproject/tools";
 
 const mock = makeDbMock();
 

@@ -1,8 +1,8 @@
 import {
   ACCOUNTS,
   deployContracts,
-  ContractAPI,
 } from "../../libs";
+import { ContractAPI } from "@augurproject/tools";
 import { formatBytes32String } from "ethers/utils";
 
 let john: ContractAPI;

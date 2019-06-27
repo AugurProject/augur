@@ -5,14 +5,13 @@ import {
   MarketOrderBook,
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
-import { Contracts as compilerOutput } from '@augurproject/artifacts';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import {
   ACCOUNTS,
-  ContractAPI,
   deployContracts,
   makeDbMock,
 } from '../../../libs';
+import { ContractAPI } from "@augurproject/tools";
 import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
@@ -29,10 +28,7 @@ describe('State API :: Markets :: ', () => {
   let mary: ContractAPI;
 
   beforeAll(async () => {
-    const { provider, addresses } = await deployContracts(
-      ACCOUNTS,
-      compilerOutput
-    );
+    const { provider, addresses } = await deployContracts(ACCOUNTS, null);
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);

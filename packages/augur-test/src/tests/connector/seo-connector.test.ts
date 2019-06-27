@@ -1,5 +1,6 @@
-import { ACCOUNTS, makeDbMock, deployContracts, ContractAPI } from '../../libs';
+import { ACCOUNTS, makeDbMock, deployContracts } from '../../libs';
 
+import { ContractAPI } from "@augurproject/tools";
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BigNumber } from 'bignumber.js';
 import { ContractAddresses } from '@augurproject/artifacts';

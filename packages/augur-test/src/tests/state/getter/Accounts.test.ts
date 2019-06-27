@@ -1,5 +1,4 @@
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { Contracts as compilerOutput } from '@augurproject/artifacts';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
 import {
@@ -11,8 +10,8 @@ import {
   ACCOUNTS,
   makeDbMock,
   deployContracts,
-  ContractAPI,
 } from '../../../libs';
+import { ContractAPI } from "@augurproject/tools";
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 
@@ -25,10 +24,7 @@ describe('State API :: Accounts :: ', () => {
   let mary: ContractAPI;
 
   beforeAll(async () => {
-    const { provider, addresses } = await deployContracts(
-      ACCOUNTS,
-      compilerOutput
-    );
+    const { provider, addresses } = await deployContracts(ACCOUNTS, null);
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);

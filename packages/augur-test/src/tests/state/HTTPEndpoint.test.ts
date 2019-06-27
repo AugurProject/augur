@@ -4,7 +4,6 @@ import { API } from "@augurproject/sdk/build/state/getter/API";
 import { Augur } from "@augurproject/sdk";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../libs";
-import {SEOConnector} from "@augurproject/sdk";
 
 const mock = makeDbMock();
 

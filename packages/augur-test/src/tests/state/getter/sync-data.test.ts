@@ -5,8 +5,8 @@ import {
   ACCOUNTS,
   makeDbMock,
   deployContracts,
-  ContractAPI,
 } from "../../../libs";
+import { ContractAPI } from "@augurproject/tools";
 
 const mock = makeDbMock();
 

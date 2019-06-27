@@ -2,8 +2,8 @@ import {
   ACCOUNTS,
   makeDbMock,
   deployContracts,
-  ContractAPI,
 } from '../../../libs';
+import { ContractAPI } from "@augurproject/tools";
 import { Contracts as compilerOutput } from '@augurproject/artifacts';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
