@@ -1,19 +1,19 @@
-import { SortLimit } from './types';
-import { DB } from '../db/DB';
-import * as _ from 'lodash';
+import { SortLimit } from "./types";
+import { DB } from "../db/DB";
+import * as _ from "lodash";
 import {
   Augur,
-  numTicksToTickSize,
+  convertDisplayPriceToOnChainPrice,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
-  convertDisplayPriceToOnChainPrice,
-} from '../../index';
-import { getMarketReportingState } from './Markets';
-import { BigNumber } from 'bignumber.js';
-import { Getter } from './Router';
-import { Address, ParsedOrderEventLog, OrderEventType } from '../logs/types';
+  numTicksToTickSize,
+} from "../../index";
+import { getMarketReportingState } from "./Markets";
+import { BigNumber } from "bignumber.js";
+import { Getter } from "./Router";
+import { Address, OrderEventType, ParsedOrderEventLog } from "../logs/types";
 
-import * as t from 'io-ts';
+import * as t from "io-ts";
 
 const ZERO = new BigNumber(0);
 
@@ -38,19 +38,13 @@ export const OutcomeParam = t.keyof({
   7: null,
 });
 
-const MakerTakerValues = {
+export const makerTakerValues = {
   'either': 'either',
   'maker': 'maker',
   'taker': 'taker',
 };
 
-export const MakerTaker = t.keyof(MakerTakerValues);
-
-export const AllOrdersParams = t.partial({
-  account: t.string,
-  ignoreReportingStates: t.array(t.string),
-  makerTaker: MakerTaker,
-});
+const makerTaker = t.keyof(makerTakerValues);
 
 export const OrdersParams = t.partial({
   universe: t.string,
@@ -60,7 +54,7 @@ export const OrdersParams = t.partial({
   account: t.string,
   orderState: t.string,
   ignoreReportingStates: t.array(t.string),
-  makerTaker: MakerTaker,
+  makerTaker,
   earliestCreationTime: t.number,
   latestCreationTime: t.number,
 });
@@ -154,7 +148,11 @@ export class Trading {
     SortLimit,
     TradingHistoryParams,
   ]);
-  static GetAllOrdersParams = AllOrdersParams;
+  static GetAllOrdersParams = t.partial({
+    account: t.string,
+    ignoreReportingStates: t.array(t.string),
+    makerTaker,
+  });
   static GetOrdersParams = t.intersection([SortLimit, OrdersParams]);
   static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
