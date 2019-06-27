@@ -25,11 +25,8 @@ contract Market is Initializable, Ownable, IMarket {
     using SafeMathInt256 for int256;
 
     // Constants
-    uint256 private constant MAX_FEE_PER_CASH_IN_ATTOCASH = 15 * 10**16; // 15%
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
     address private constant NULL_ADDRESS = address(0);
-    uint256 private constant MIN_OUTCOMES = 3; // Includes INVALID
-    uint256 private constant MAX_OUTCOMES = 8;
 
     // Contract Refs
     IUniverse private universe;
@@ -63,17 +60,9 @@ contract Market is Initializable, Ownable, IMarket {
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
         endInitialization();
         augur = _augur;
+        require(msg.sender == augur.lookup("MarketFactory"));
         _numOutcomes += 1; // The INVALID outcome is always first
-        require(MIN_OUTCOMES <= _numOutcomes && _numOutcomes <= MAX_OUTCOMES);
-        require(_designatedReporterAddress != NULL_ADDRESS);
-        require((_numTicks >= _numOutcomes));
-        require(_feePerCashInAttoCash <= MAX_FEE_PER_CASH_IN_ATTOCASH);
-        require(_creator != NULL_ADDRESS);
-        uint256 _timestamp = augur.getTimestamp();
-        require(_timestamp < _endTime);
-        require(_endTime < augur.getMaximumMarketEndDate());
         universe = _universe;
-        require(!universe.isForking());
         cash = ICash(augur.lookup("Cash"));
         owner = _creator;
         repBondOwner = owner;
@@ -132,7 +121,7 @@ contract Market is Initializable, Ownable, IMarket {
         require(!universe.isForking());
         IInitialReporter _initialReporter = getInitialReporter();
         uint256 _timestamp = augur.getTimestamp();
-        require(_timestamp > endTime);
+        require(_timestamp > endTime, "Market.doInitialReportInternal: Market has not reached Reporting phase");
         uint256 _initialReportStake = distributeInitialReportingRep(_reporter, _initialReporter);
         // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
@@ -187,7 +176,7 @@ contract Market is Initializable, Ownable, IMarket {
             if (_amountRemainingToFill == 0) {
                 finishedCrowdsourcingDisputeBond(_crowdsourcer);
             } else {
-                require(_amountRemainingToFill >= getInitialReporter().getSize());
+                require(_amountRemainingToFill >= getInitialReporter().getSize(), "Market.internalContribute: Must totally fill bond or leave initial report amount");
             }
         }
         augur.logDisputeCrowdsourcerContribution(universe, _contributor, address(this), address(_crowdsourcer), _actualAmount, _description);
