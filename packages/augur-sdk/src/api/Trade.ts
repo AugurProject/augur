@@ -81,6 +81,13 @@ export class Trade {
     return await this.placeOnChainTrade(onChainTradeParams);
   }
 
+
+  public async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
+    const onChainTradeParams = this.getOnChainTradeParams(params);
+    const { gasLimit } = await this.getTradeTransactionLimits(onChainTradeParams);
+    return gasLimit;
+  }
+
   public getOnChainTradeParams(params: PlaceTradeDisplayParams): PlaceTradeChainParams {
     const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
     const onChainAmount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);

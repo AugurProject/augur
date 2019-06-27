@@ -264,5 +264,45 @@ export async function simulateTrade(
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
   };
+
   return Augur.simulateTrade(params);
+}
+
+export async function simulateTradeGasLimit(
+  direction: number,
+  marketId: string,
+  numOutcomes: number,
+  outcomeId: number,
+  ignoreShares: boolean,
+  affiliateAddress: string = NULL_ADDRESS,
+  kycToken: string = NULL_ADDRESS,
+  doNotCreateOrders: boolean,
+  numTicks: BigNumber | string,
+  minPrice: BigNumber | string,
+  maxPrice: BigNumber | string,
+  displayAmount: BigNumber | string,
+  displayPrice: BigNumber | string,
+  displayShares: BigNumber | string,
+): Promise<SimulateTradeData> {
+  const Augur = augurSdk.get();
+  const tradeGroupId = generateTradeGroupId();
+  const params: PlaceTradeDisplayParams = {
+    direction: direction as 0 | 1,
+    market: marketId,
+    numTicks: createBigNumber(numTicks),
+    numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
+    outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+    tradeGroupId,
+    ignoreShares,
+    affiliateAddress,
+    kycToken,
+    doNotCreateOrders,
+    displayMinPrice: createBigNumber(minPrice),
+    displayMaxPrice: createBigNumber(maxPrice),
+    displayAmount: createBigNumber(displayAmount),
+    displayPrice: createBigNumber(displayPrice),
+    displayShares: createBigNumber(displayShares),
+  };
+
+  return Augur.simulateTradeGasLimit(params);
 }

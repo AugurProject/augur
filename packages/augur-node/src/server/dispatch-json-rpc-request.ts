@@ -28,9 +28,9 @@ import {
   GetMarketsParams,
   getOrders,
   getPlatformActivityStats, getProfitLoss,
-  GetProfitLossParams,
+  getProfitLossParams,
   getProfitLossSummary,
-  GetProfitLossSummaryParams, getReportingFees, getReportingHistory,
+  getProfitLossSummaryParams, getReportingFees, getReportingHistory,
   getReportingSummary,
   getSyncData,
   getTradingHistory, getUnclaimedMarketCreatorFees,
@@ -48,7 +48,7 @@ import {
   UnclaimedMarketCreatorFeesParams,
   UniverseInfoParams,
   UserShareBalancesParams,
-  UserTradingPositionsParams,
+  userTradingPositionsParams,
   WinningBalanceParams
 } from "./getters";
 
@@ -94,7 +94,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getMarketPriceCandlesticks":
       return dispatchResponse(getMarketPriceCandlesticks, MarketPriceCandlesticksParams.decode(request.params));
     case "getUserTradingPositions":
-      return dispatchResponse(getUserTradingPositions, UserTradingPositionsParams.decode(request.params));
+      return dispatchResponse(getUserTradingPositions, userTradingPositionsParams.decode(request.params));
     case "getFeeWindowCurrent":
       return dispatchResponse(getFeeWindow, FeeWindowParams.decode(Object.assign({ feeWindowState: "current" }, request.params)));
     case "getFeeWindow":
@@ -128,9 +128,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getAccountTransactionHistory":
       return dispatchResponse(getAccountTransactionHistory, getAccountTransactionHistoryParams.decode(request.params));
     case "getProfitLoss":
-      return dispatchResponse(getProfitLoss, GetProfitLossParams.decode(request.params));
+      return dispatchResponse(getProfitLoss, getProfitLossParams.decode(request.params));
     case "getProfitLossSummary":
-      return dispatchResponse(getProfitLossSummary, GetProfitLossSummaryParams.decode(request.params));
+      return dispatchResponse(getProfitLossSummary, getProfitLossSummaryParams.decode(request.params));
     default:
       throw new Error(`unknown json rpc method ${request.method}`);
   }

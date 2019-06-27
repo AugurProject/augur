@@ -150,16 +150,16 @@ export interface BetterWorseResult {
 }
 
 export class Trading {
-  public static GetTradingHistoryParams = t.intersection([
+  static GetTradingHistoryParams = t.intersection([
     SortLimit,
     TradingHistoryParams,
   ]);
-  public static GetAllOrdersParams = AllOrdersParams;
-  public static GetOrdersParams = t.intersection([SortLimit, OrdersParams]);
-  public static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
+  static GetAllOrdersParams = AllOrdersParams;
+  static GetOrdersParams = t.intersection([SortLimit, OrdersParams]);
+  static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
   @Getter('GetTradingHistoryParams')
-  public static async getTradingHistory(
+  static async getTradingHistory(
     augur: Augur,
     db: DB,
     params: t.TypeOf<typeof Trading.GetTradingHistoryParams>
@@ -243,6 +243,7 @@ export class Trading {
             price: price.toString(10),
             amount: amount.toString(10),
             settlementFees: fees.toString(10),
+            timestamp: new BigNumber(orderFilledDoc.timestamp).toNumber(),
           }
         ) as MarketTrade);
         return trades;
@@ -252,7 +253,7 @@ export class Trading {
   }
 
   @Getter('GetAllOrdersParams')
-  public static async getAllOrders(
+  static async getAllOrders(
     augur: Augur,
     db: DB,
     params: t.TypeOf<typeof Trading.GetAllOrdersParams>
@@ -324,7 +325,7 @@ export class Trading {
   }
 
   @Getter('GetOrdersParams')
-  public static async getOrders(
+  static async getOrders(
     augur: Augur,
     db: DB,
     params: t.TypeOf<typeof Trading.GetOrdersParams>
@@ -499,7 +500,7 @@ export class Trading {
   }
 
   @Getter('GetBetterWorseOrdersParams')
-  public static async getBetterWorseOrders(
+  static async getBetterWorseOrders(
     augur: Augur,
     db: DB,
     params: t.TypeOf<typeof Trading.GetBetterWorseOrdersParams>
@@ -573,12 +574,12 @@ async function filterMarketsByReportingState(
   });
   const markets = _.keyBy(marketsResponse, 'market');
   if (ignoreReportingStates) {
-    let marketIds = Object.keys(_.keyBy(marketsResponse, 'market'));
+    const marketIds = Object.keys(_.keyBy(marketsResponse, 'market'));
     const marketFinalizedLogs = await db.findMarketFinalizedLogs({
       selector: { market: { $in: marketIds } },
     });
 
-    for (let marketCreatedLog of marketsResponse) {
+    for (const marketCreatedLog of marketsResponse) {
       const reportingState = await getMarketReportingState(
         db,
         marketCreatedLog,
