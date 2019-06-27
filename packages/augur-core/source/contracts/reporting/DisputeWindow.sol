@@ -15,7 +15,10 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/IAugur.sol';
 
-
+/**
+ * @title Dispute Window
+ * @notice A contract used to encapsulate a window of time in which markets can be disputed as well as the pot where reporting fees are collected and distributed.
+ */
 contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     using SafeMathUint256 for uint256;
 
@@ -72,6 +75,11 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         }
     }
 
+    /**
+     * @notice Buy tokens which can be redeemed for reporting fees
+     * @param _attotokens The number of tokens to purchase
+     * @return bool True
+     */
     function buy(uint256 _attotokens) public returns (bool) {
         require(_attotokens > 0, "DisputeWindow.buy: amount cannot be 0");
         require(isActive(), "DisputeWindow.buy: window is not active");
@@ -81,6 +89,11 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return true;
     }
 
+    /**
+     * @notice Redeem tokens for reporting fees
+     * @param _account The account to redeem tokens for
+     * @return bool True
+     */
     function redeem(address _account) public returns (bool) {
         require(isOver() || universe.isForking(), "DisputeWindow.redeem: window is not over");
 
@@ -114,18 +127,30 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return "DisputeWindow";
     }
 
+    /**
+     * @return The universe associated with this window
+     */
     function getUniverse() public view returns (IUniverse) {
         return universe;
     }
 
+    /**
+     * @return The reputation token associated with this window
+     */
     function getReputationToken() public view returns (IReputationToken) {
         return universe.getReputationToken();
     }
 
+    /**
+     * @return When the window begins as a uint256 timestamp
+     */
     function getStartTime() public view returns (uint256) {
         return startTime;
     }
 
+    /**
+     * @return When the window ends as a uint256 timestamp
+     */
     function getEndTime() public view returns (uint256) {
         return getStartTime().add(duration);
     }
@@ -134,6 +159,9 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return windowId;
     }
 
+    /**
+     * @return Bool indicating if the window has begun and has not yet ended
+     */
     function isActive() public view returns (bool) {
         if (augur.getTimestamp() <= getStartTime()) {
             return false;
@@ -144,6 +172,9 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return true;
     }
 
+    /**
+     * @return Bool indicating if the window has ended
+     */
     function isOver() public view returns (bool) {
         return augur.getTimestamp() >= getEndTime();
     }

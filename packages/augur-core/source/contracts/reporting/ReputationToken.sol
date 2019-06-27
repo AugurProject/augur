@@ -13,6 +13,10 @@ import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
+/**
+ * @title Reputation Token
+ * @notice The Reputation Token for a particular universe
+ */
 contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     using SafeMathUint256 for uint256;
 
@@ -34,6 +38,12 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         initialize1820InterfaceImplementations();
     }
 
+    /**
+     * @notice Migrate to a Child Universe by indicating the Market payout associated with it
+     * @param _payoutNumerators The array of payouts for the market associated with the desired universe
+     * @param _attotokens The amount of tokens to migrate
+     * @return Bool True
+     */
     function migrateOutByPayout(uint256[] memory _payoutNumerators, uint256 _attotokens) public returns (bool) {
         require(_attotokens > 0, "ReputationToken.migrateOutByPayout: Cannot migrate 0 tokens");
         IUniverse _destinationUniverse = universe.createChildUniverse(_payoutNumerators);
@@ -43,6 +53,12 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return true;
     }
 
+    /**
+     * @notice Migrate to a Child Universe by indicating the Reputation Token associated with it
+     * @param _destination The Reputation Token associated with the desired universe
+     * @param _attotokens The amount of tokens to migrate
+     * @return Bool True
+     */
     function migrateOut(IReputationToken _destination, uint256 _attotokens) public returns (bool) {
         require(_attotokens > 0, "ReputationToken.migrateOut: Cannot migrate 0 tokens");
         assertReputationTokenIsLegitSibling(_destination);
@@ -111,18 +127,30 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return "ReputationToken";
     }
 
+    /**
+     * @return The universe associated with this Reputation Token
+     */
     function getUniverse() public view returns (IUniverse) {
         return universe;
     }
 
+    /**
+     * @return The total amount of parent REP migrated into this version of REP
+     */
     function getTotalMigrated() public view returns (uint256) {
         return totalMigrated;
     }
 
+    /**
+     * @return The V1 Rep token
+     */
     function getLegacyRepToken() public view returns (IERC20) {
         return legacyRepToken;
     }
 
+    /**
+     * @return The maximum possible total supply for this version of REP.
+     */
     function getTotalTheoreticalSupply() public view returns (uint256) {
         if (parentUniverse == IUniverse(0)) {
             return Reporting.getInitialREPSupply();
@@ -145,6 +173,11 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         augur.logReputationTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
     }
 
+    /**
+     * @notice Migrate V1 REP to V2
+     * @dev This can only be done for the Genesis Universe in V2. If a fork occurs and the window ends V1 REP is stuck in V1 forever
+     * @return Bool True
+     */
     function migrateFromLegacyReputationToken() public returns (bool) {
         require(parentUniverse == IUniverse(0), "ReputationToken.migrateFromLegacyReputationToken: Can only migrate into genesis universe");
         uint256 _legacyBalance = legacyRepToken.balanceOf(msg.sender);

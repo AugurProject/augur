@@ -14,7 +14,10 @@ import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/IAugur.sol';
 
-
+/**
+ * @title Universe
+ * @notice A Universe encapsulates a whole instance of Augur. In the event of a fork in a Universe it will split into child Universes which each represent a different version of the truth with respect to how the forking market should resolve.
+ */
 contract Universe is ITyped, IUniverse {
     using SafeMathUint256 for uint256;
 
@@ -96,58 +99,104 @@ contract Universe is ITyped, IUniverse {
         return "Universe";
     }
 
+    /**
+     * @return This Universe's parent universe or 0x0 if this is the Genesis universe
+     */
     function getParentUniverse() public view returns (IUniverse) {
         return parentUniverse;
     }
 
+    /**
+     * @return The Bytes32 payout distribution hash of the parent universe or 0x0 if this is the Genesis universe
+     */
     function getParentPayoutDistributionHash() public view returns (bytes32) {
         return parentPayoutDistributionHash;
     }
 
+    /**
+     * @return The REP token associated with this Universe
+     */
     function getReputationToken() public view returns (IV2ReputationToken) {
         return reputationToken;
     }
 
+    /**
+     * @return The market in this universe that has triggered a fork if there is one
+     */
     function getForkingMarket() public view returns (IMarket) {
         return forkingMarket;
     }
 
+    /**
+     * @return The end of the window to migrate REP for the fork if one has occurred in this Universe
+     */
     function getForkEndTime() public view returns (uint256) {
         return forkEndTime;
     }
 
+    /**
+     * @return The amount of REP migrated into a child universe needed to win a fork
+     */
     function getForkReputationGoal() public view returns (uint256) {
         return forkReputationGoal;
     }
 
+    /**
+     * @return The amount of REP in a single bond that will trigger a fork if filled
+     */
     function getDisputeThresholdForFork() public view returns (uint256) {
         return disputeThresholdForFork;
     }
 
+    /**
+     * @return The amount of REP in a single bond that will trigger slow dispute rounds for a market
+     */
     function getDisputeThresholdForDisputePacing() public view returns (uint256) {
         return disputeThresholdForDisputePacing;
     }
 
+    /**
+     * @return The minimum size of the initial report bond
+     */
     function getInitialReportMinValue() public view returns (uint256) {
         return initialReportMinValue;
     }
 
+    /**
+     * @return The payout array associated with this universe if it is a child universe from a fork
+     */
     function getPayoutNumerators() public view returns (uint256[] memory) {
         return payoutNumerators;
     }
 
+    /**
+     * @param _disputeWindowId The id for a dispute window.
+     * @return The dispute window for the associated id
+     */
     function getDisputeWindow(uint256 _disputeWindowId) public view returns (IDisputeWindow) {
         return disputeWindows[_disputeWindowId];
     }
 
+    /**
+     * @return a Bool indicating if this Universe is forking or has forked
+     */
     function isForking() public view returns (bool) {
         return forkingMarket != IMarket(0);
     }
 
+    /**
+     * @param _parentPayoutDistributionHash The payout distribution hash associated with a child Universe to get
+     * @return a Universe contract
+     */
     function getChildUniverse(bytes32 _parentPayoutDistributionHash) public view returns (IUniverse) {
         return childUniverses[_parentPayoutDistributionHash];
     }
 
+    /**
+     * @param _timestamp The timestamp of the desired dispute window 
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The id of the specified dispute window
+     */
     function getDisputeWindowId(uint256 _timestamp, bool _initial) public view returns (uint256) {
         uint256 _windowId = _timestamp.div(getDisputeRoundDurationInSeconds(_initial));
         if (_initial) {
@@ -156,10 +205,19 @@ contract Universe is ITyped, IUniverse {
         return _windowId;
     }
 
+    /**
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The duration in seconds for a dispute window
+     */
     function getDisputeRoundDurationInSeconds(bool _initial) public view returns (uint256) {
         return _initial ? Reporting.getInitialDisputeRoundDurationSeconds() : Reporting.getDisputeRoundDurationSeconds();
     }
 
+    /**
+     * @param _timestamp The timestamp of the desired dispute window 
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The dispute window for the specified params
+     */
     function getOrCreateDisputeWindowByTimestamp(uint256 _timestamp, bool _initial) public returns (IDisputeWindow) {
         uint256 _windowId = getDisputeWindowId(_timestamp, _initial);
         if (disputeWindows[_windowId] == IDisputeWindow(0)) {
@@ -172,39 +230,76 @@ contract Universe is ITyped, IUniverse {
         return disputeWindows[_windowId];
     }
 
+    /**
+     * @param _timestamp The timestamp of the desired dispute window 
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The dispute window for the specified params if it exists
+     */
     function getDisputeWindowByTimestamp(uint256 _timestamp, bool _initial) public view returns (IDisputeWindow) {
         uint256 _windowId = getDisputeWindowId(_timestamp, _initial);
         return disputeWindows[_windowId];
     }
 
+    /**
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The dispute window before the previous one
+     */
     function getOrCreatePreviousPreviousDisputeWindow(bool _initial) public returns (IDisputeWindow) {
         return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds(_initial).mul(2)), _initial);
     }
 
+    /**
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The dispute window before the current one
+     */
     function getOrCreatePreviousDisputeWindow(bool _initial) public returns (IDisputeWindow) {
         return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds(_initial)), _initial);
     }
 
+    /**
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The dispute window before the current one if it exists
+     */
     function getPreviousDisputeWindow(bool _initial) public view returns (IDisputeWindow) {
         return getDisputeWindowByTimestamp(augur.getTimestamp().sub(getDisputeRoundDurationInSeconds(_initial)), _initial);
     }
 
+    /**
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The current dispute window
+     */
     function getOrCreateCurrentDisputeWindow(bool _initial) public returns (IDisputeWindow) {
         return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp(), _initial);
     }
 
+    /**
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The current dispute window if it exists
+     */
     function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow) {
         return getDisputeWindowByTimestamp(augur.getTimestamp(), _initial);
     }
 
+    /**
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The dispute window after the current one
+     */
     function getOrCreateNextDisputeWindow(bool _initial) public returns (IDisputeWindow) {
         return getOrCreateDisputeWindowByTimestamp(augur.getTimestamp().add(getDisputeRoundDurationInSeconds(_initial)), _initial);
     }
 
+    /**
+     * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
+     * @return The dispute window after the current one if it exists
+     */
     function getNextDisputeWindow(bool _initial) public view returns (IDisputeWindow) {
         return getDisputeWindowByTimestamp(augur.getTimestamp().add(getDisputeRoundDurationInSeconds(_initial)), _initial);
     }
 
+    /**
+     * @param _parentPayoutNumerators Array of payouts for each outcome associated with the desired child Universe
+     * @return The specified Universe
+     */
     function createChildUniverse(uint256[] memory _parentPayoutNumerators) public returns (IUniverse) {
         bytes32 _parentPayoutDistributionHash = forkingMarket.derivePayoutDistributionHash(_parentPayoutNumerators);
         IUniverse _childUniverse = getChildUniverse(_parentPayoutDistributionHash);
@@ -232,6 +327,9 @@ contract Universe is ITyped, IUniverse {
         return true;
     }
 
+    /**
+     * @return The child Universe which won in a fork if one exists
+     */
     function getWinningChildUniverse() public view returns (IUniverse) {
         require(isForking(), "Universe.getWinningChildUniverse: Must be forking to have winning child");
         require(tentativeWinningChildUniversePayoutDistributionHash != bytes32(0), "Universe.getWinningChildUniverse: No winning universe");
@@ -319,21 +417,34 @@ contract Universe is ITyped, IUniverse {
         return true;
     }
 
+    /**
+     * @return The total amount of Cash in the system which is at risk (Held in escrow for Shares)
+     */
     function getOpenInterestInAttoCash() public view returns (uint256) {
         return openInterestInAttoCash;
     }
 
+    /**
+     * @return The Market Cap of this Universe's REP
+     */
     function getRepMarketCapInAttoCash() public view returns (uint256) {
+        // TODO: Must pass this Universe's REP token to the oracle. Not just one REP!
         uint256 _attoCashPerRep = repPriceOracle.getRepPriceInAttoCash();
         uint256 _repMarketCapInAttoCash = getReputationToken().totalSupply().mul(_attoCashPerRep).div(10 ** 18);
         return _repMarketCapInAttoCash;
     }
 
+    /**
+     * @return The Target Market Cap of this Universe's REP for use in calculating the Reporting Fee
+     */
     function getTargetRepMarketCapInAttoCash() public view returns (uint256) {
         // Target MCAP = OI * TARGET_MULTIPLIER
         return getOpenInterestInAttoCash().mul(Reporting.getTargetRepMarketCapMultiplier()).div(Reporting.getTargetRepMarketCapDivisor());
     }
 
+    /**
+     * @return The Validity bond required for this dispute window
+     */
     function getOrCacheValidityBond() public returns (uint256) {
         IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
         IDisputeWindow  _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow(false);
@@ -349,6 +460,9 @@ contract Universe is ITyped, IUniverse {
         return _currentValidityBondInAttoCash;
     }
 
+    /**
+     * @return The Designated Report stake for this dispute window
+     */
     function getOrCacheDesignatedReportStake() public returns (uint256) {
         updateForkValues();
         IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
@@ -366,6 +480,9 @@ contract Universe is ITyped, IUniverse {
         return _currentDesignatedReportStakeInAttoRep;
     }
 
+    /**
+     * @return The No Show bond for this dispute window
+     */
     function getOrCacheDesignatedReportNoShowBond() public returns (uint256) {
         IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
         IDisputeWindow _previousDisputeWindow = getOrCreatePreviousPreviousDisputeWindow(false);
@@ -382,6 +499,9 @@ contract Universe is ITyped, IUniverse {
         return _currentDesignatedReportNoShowBondInAttoRep;
     }
 
+    /**
+     * @return The required REP bond for market creation this dispute window
+     */
     function getOrCacheMarketRepBond() public returns (uint256) {
         return getOrCacheDesignatedReportNoShowBond().max(getOrCacheDesignatedReportStake());
     }
@@ -416,6 +536,10 @@ contract Universe is ITyped, IUniverse {
         return _newValue;
     }
 
+    /**
+     * @dev this should be used in contracts so that the fee is actually set
+     * @return The reporting fee for this dispute window
+     */
     function getOrCacheReportingFeeDivisor() public returns (uint256) {
         IDisputeWindow _disputeWindow = getOrCreateCurrentDisputeWindow(false);
         uint256 _currentFeeDivisor = shareSettlementFeeDivisor[address(_disputeWindow)];
@@ -430,6 +554,10 @@ contract Universe is ITyped, IUniverse {
         return _currentFeeDivisor;
     }
 
+    /**
+     * @dev this should be used for estimation purposes as it is a view and does not actually freeze the rate
+     * @return The reporting fee for this dispute window
+     */
     function getReportingFeeDivisor() public view returns (uint256) {
         IDisputeWindow _disputeWindow = getCurrentDisputeWindow(false);
         uint256 _currentFeeDivisor = shareSettlementFeeDivisor[address(_disputeWindow)];
@@ -459,14 +587,23 @@ contract Universe is ITyped, IUniverse {
         return _reportingFeeDivisor;
     }
 
+    /**
+     * @return The validity bond required for market creation
+     */
     function getOrCacheMarketCreationCost() public returns (uint256) {
         return getOrCacheValidityBond();
     }
 
-    function getInitialReportStakeSize() public returns (uint256) {
-        return getOrCacheDesignatedReportNoShowBond().max(getOrCacheDesignatedReportStake());
-    }
-
+    /**
+     * @notice Create a Yes / No Market
+     * @param _endTime The time at which the event should be reported on. This should be safely after the event outcome is known and verifiable
+     * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
+     * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
+     * @param _designatedReporterAddress The address which will provide the initial report on the market
+     * @param _topic bytes32 string to be used as the top level category for this market. Useful for applications built on top of Augur to categorize market displays
+     * @param _extraInfo Additional info about the market in JSON format.
+     * @return The created Market
+     */
     function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, DEFAULT_NUM_TICKS);
         int256[] memory _prices = new int256[](2);
@@ -476,6 +613,17 @@ contract Universe is ITyped, IUniverse {
         return _newMarket;
     }
 
+    /**
+     * @notice Create a Categorical Market
+     * @param _endTime The time at which the event should be reported on. This should be safely after the event outcome is known and verifiable
+     * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
+     * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
+     * @param _designatedReporterAddress The address which will provide the initial report on the market
+     * @param _outcomes Array of outcome labels / descriptions
+     * @param _topic bytes32 string to be used as the top level category for this market. Useful for applications built on top of Augur to categorize market displays
+     * @param _extraInfo Additional info about the market in JSON format.
+     * @return The created Market
+     */
     function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), DEFAULT_NUM_TICKS);
         int256[] memory _prices = new int256[](2);
@@ -485,6 +633,18 @@ contract Universe is ITyped, IUniverse {
         return _newMarket;
     }
 
+    /**
+     * @notice Create a Scalar Market
+     * @param _endTime The time at which the event should be reported on. This should be safely after the event outcome is known and verifiable
+     * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
+     * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
+     * @param _designatedReporterAddress The address which will provide the initial report on the market
+     * @param _prices 2 element Array comprising a min price and max price in atto units in order to support decimal values. For example if the display range should be between .1 and .5 the prices should be 10**17 and 5 * 10 ** 17 respectively
+     * @param _numTicks The number of ticks for the market. This controls the valid price range. Assume a market with min/maxPrices of 0 and 10**18. A numTicks of 100 would mean that the available valid display prices would be .01 to .99 with step size .01. Similarly a numTicks of 10 would be .1 to .9 with a step size of .1.
+     * @param _topic bytes32 string to be used as the top level category for this market. Useful for applications built on top of Augur to categorize market displays
+     * @param _extraInfo Additional info about the market in JSON format.
+     * @return The created Market
+     */
     function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
         require(_prices.length == 2, "Universe.createScalarMarket: Prices length is incorrect");
         require(_prices[0] < _prices[1], "Universe.createScalarMarket: Min price must be less than max price");
@@ -501,6 +661,12 @@ contract Universe is ITyped, IUniverse {
         return _newMarket;
     }
 
+    /**
+     * @notice Redeems stake for multiple dispute bonds or Participation Tokens
+     * @param _reportingParticipants Winning Initial Reporter or Dispute Crowdsourcer bonds the msg sender has stake in
+     * @param _disputeWindows Dispute Windows (Participation Tokens) the msg sender has tokens for
+     * @return Bool True
+     */
     function redeemStake(IReportingParticipant[] memory _reportingParticipants, IDisputeWindow[] memory _disputeWindows) public returns (bool) {
         for (uint256 i=0; i < _reportingParticipants.length; i++) {
             _reportingParticipants[i].redeem(msg.sender);
