@@ -759,10 +759,6 @@ export const COLUMN_TYPES = {
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
 };
 
-// Time constants
-export const AM = "AM";
-export const PM = "PM";
-
 // Login method variables
 export const TREZOR_MANIFEST_EMAIL = "team@augur.net";
 export const TREZOR_MANIFEST_APPURL = "https://dev.augur.net";
