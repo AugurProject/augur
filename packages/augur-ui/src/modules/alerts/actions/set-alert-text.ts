@@ -401,7 +401,7 @@ export default function setAlertText(alert: any, callback: any) {
               const outcome =
                 alert.log.outcome !== undefined &&
                 marketInfo.outcomes.find(
-                  (o: any) => o.id === alert.log.outcome.toString(),
+                  (o: any) => o.id === alert.log.outcome,
                 );
               const outcomeDescription = getOutcomeName(marketInfo, outcome);
               alert.description = `Place ${orderType} order for ${

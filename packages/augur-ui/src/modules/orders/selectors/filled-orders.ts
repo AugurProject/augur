@@ -64,11 +64,6 @@ function findOrders(
       const priceBN = createBigNumber(price);
       let typeOp = type;
 
-      const outcomeName = getOutcomeName(
-        marketInfos,
-        (outcomesData || {})[outcome],
-      );
-
       let originalQuantity = amountBN;
       if (accountId === creator && !foundOrder) {
         typeOp = type === BUY ? SELL : BUY; // marketTradingHistory is from filler perspective
@@ -86,11 +81,11 @@ function findOrders(
       }
 
       const timestampFormatted = convertUnixToFormattedDate(timestamp);
-      const marketDescription = marketInfos[marketId].description;
+      const marketDescription = marketInfos.description;
 
       if (foundOrder) {
         foundOrder.trades.push({
-          outcome: outcomeName,
+          outcome: outcome.description,
           amount: amountBN,
           price: priceBN,
           type: typeOp,
