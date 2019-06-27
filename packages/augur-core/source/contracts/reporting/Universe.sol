@@ -61,7 +61,7 @@ contract Universe is ITyped, IUniverse {
         parentUniverse = _parentUniverse;
         parentPayoutDistributionHash = _parentPayoutDistributionHash;
         payoutNumerators = _payoutNumerators;
-        reputationToken = IReputationTokenFactory(augur.lookup("ReputationTokenFactory")).createReputationToken(augur, this, parentUniverse);
+        reputationToken = IReputationTokenFactory(augur.lookup("ReputationTokenFactory")).createReputationToken(augur, parentUniverse);
         marketFactory = IMarketFactory(augur.lookup("MarketFactory"));
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         completeSets = augur.lookup("CompleteSets");
@@ -165,7 +165,7 @@ contract Universe is ITyped, IUniverse {
         if (disputeWindows[_windowId] == IDisputeWindow(0)) {
             uint256 _duration = getDisputeRoundDurationInSeconds(_initial);
             uint256 _startTime = _timestamp.div(_duration).mul(_duration);
-            IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, this, _windowId, _duration, _startTime);
+            IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, _windowId, _duration, _startTime);
             disputeWindows[_windowId] = _disputeWindow;
             augur.logDisputeWindowCreated(_disputeWindow, _windowId, _initial);
         }

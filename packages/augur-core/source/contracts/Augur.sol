@@ -153,7 +153,7 @@ contract Augur is IAugur {
 
     function createUniverse(IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) private returns (IUniverse) {
         IUniverseFactory _universeFactory = IUniverseFactory(registry["UniverseFactory"]);
-        IUniverse _newUniverse = _universeFactory.createUniverse(this, _parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
+        IUniverse _newUniverse = _universeFactory.createUniverse(_parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
         universes[address(_newUniverse)] = true;
         emit UniverseCreated(address(_parentUniverse), address(_newUniverse), _parentPayoutNumerators);
         return _newUniverse;

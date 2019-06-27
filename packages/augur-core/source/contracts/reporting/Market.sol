@@ -8,7 +8,7 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
-import 'ROOT/factories/DisputeCrowdsourcerFactory.sol';
+import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
 import 'ROOT/trading/ICash.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/factories/ShareTokenFactory.sol';
@@ -73,7 +73,7 @@ contract Market is Initializable, Ownable, IMarket {
         feeDivisor = _feePerCashInAttoCash == 0 ? 0 : 1 ether / _feePerCashInAttoCash;
         affiliateFeeDivisor = _affiliateFeeDivisor;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
-        participants.push(_initialReporterFactory.createInitialReporter(augur, this, _designatedReporterAddress));
+        participants.push(_initialReporterFactory.createInitialReporter(augur, _designatedReporterAddress));
         mapFactory = MapFactory(augur.lookup("MapFactory"));
         clearCrowdsourcers();
         for (uint256 _outcome = 0; _outcome < numOutcomes; _outcome++) {
@@ -97,7 +97,7 @@ contract Market is Initializable, Ownable, IMarket {
     }
 
     function createShareToken(uint256 _outcome) private returns (IShareToken) {
-        return ShareTokenFactory(augur.lookup("ShareTokenFactory")).createShareToken(augur, this, _outcome);
+        return ShareTokenFactory(augur.lookup("ShareTokenFactory")).createShareToken(augur, _outcome);
     }
 
     // This will need to be called manually for each open market if a spender contract is updated
@@ -330,14 +330,14 @@ contract Market is Initializable, Ownable, IMarket {
     function getOrCreateDisputeCrowdsourcer(bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, bool _overload) private returns (IDisputeCrowdsourcer) {
         IDisputeCrowdsourcer _crowdsourcer = _overload ? preemptiveDisputeCrowdsourcer : IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
         if (_crowdsourcer == IDisputeCrowdsourcer(0)) {
-            DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
+            IDisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = IDisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
             uint256 _participantStake = getParticipantStake();
             if (_overload) {
                 // The stake of a dispute bond is (2 * ALL STAKE) - (3 * STAKE IN OUTCOME)
                 _participantStake = _participantStake.add(_participantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
             }
             uint256 _size = _participantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
-            _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, this, _size, _payoutDistributionHash, _payoutNumerators);
+            _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, _size, _payoutDistributionHash, _payoutNumerators);
             if (!_overload) {
                 crowdsourcers.add(_payoutDistributionHash, address(_crowdsourcer));
             } else {
