@@ -40,7 +40,7 @@ const getMarketsParamsSpecific = t.intersection([
   }),
 ]);
 
-export const SECONDS_IN_A_DAY = 86400;
+export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 
 export interface MarketInfoOutcome {
   id: number;
@@ -302,14 +302,16 @@ export class Markets {
       selector: {
         universe: params.universe,
         marketCreator: params.creator,
-        designatedReporter: params.designatedReporter
+        designatedReporter: params.designatedReporter,
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
       limit: params.limit,
       skip: params.offset,
     };
     if (params.maxEndTime) {
-      request.selector = Object.assign(request.selector, { endTime: { $lt: `0x${params.maxEndTime.toString(16)}` } });
+      request.selector = Object.assign(request.selector, {
+        endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
+      });
     }
     const marketCreatedLogs = await db.findMarketCreatedLogs(request);
 
@@ -377,7 +379,7 @@ export class Markets {
               marketCreatedLogInfo[0]
             );
             const disputeWindowAddress = await market.getDisputeWindow_();
-            if (params.disputeWindow != disputeWindowAddress) {
+            if (params.disputeWindow !== disputeWindowAddress) {
               includeMarket = false;
             }
           }
@@ -457,11 +459,16 @@ export class Markets {
     const account = await augur.getAccount();
     const orders = await Trading.getOrders(augur, db, params);
 
-    const processOrders = (unsortedOrders: {
-      [orderId: string]: Order;
-    }): OrderBook[] => {
+    const processOrders = (
+      unsortedOrders: {
+        [orderId: string]: Order;
+      },
+      isbids: boolean = false
+    ): OrderBook[] => {
       const orders = Object.values(unsortedOrders).sort((a, b) =>
-        new BigNumber(a.price).minus(b.price).toNumber()
+        isbids
+          ? new BigNumber(b.price).minus(a.price).toNumber()
+          : new BigNumber(a.price).minus(b.price).toNumber()
       );
       const buckets = _.groupBy<Order>(orders, order => order.price);
       const result: OrderBook[] = [];
@@ -479,6 +486,7 @@ export class Markets {
 
         const cumulativeShares =
           index > 0 ? shares.plus(acc[index - 1].cumulativeShares) : shares;
+
         acc.push({
           price: bucket[0].price,
           cumulativeShares: cumulativeShares.toString(),
@@ -494,7 +502,7 @@ export class Markets {
     }) => {
       return {
         asks: processOrders(outcome[OrderType.Ask.toString()]),
-        bids: processOrders(outcome[OrderType.Bid.toString()]),
+        bids: processOrders(outcome[OrderType.Bid.toString()], true),
       };
     };
 
@@ -557,7 +565,6 @@ export class Markets {
         let finalizationTime = null;
         if (marketFinalizedLogs.length > 0) {
           consensus = [];
-          marketFinalizedLogs[0].winningPayoutNumerators;
           for (
             let i = 0;
             i < marketFinalizedLogs[0].winningPayoutNumerators.length;
@@ -622,7 +629,8 @@ export class Markets {
           cumulativeScale: cumulativeScale.toString(10),
           author: marketCreatedLog.marketCreator,
           creationBlock: marketCreatedLog.blockNumber,
-          creationTime: marketCreatedLog.timestamp,category: Buffer.from(
+          creationTime: marketCreatedLog.timestamp,
+          category: Buffer.from(
             marketCreatedLog.topic.replace('0x', ''),
             'hex'
           ).toString(),

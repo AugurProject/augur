@@ -11,7 +11,7 @@ import * as isCurrentMarketModule from "modules/trades/helpers/is-current-market
 import * as convertLogsToTransactionsModule from "modules/transactions/actions/convert-logs-to-transactions";
 import * as loadReportingWindowBoundsModule from "modules/reports/actions/load-reporting-window-bounds";
 import * as getWinningBalanceModule from "modules/reports/actions/get-winning-balance";
-import * as loadMarketOpenOrdersModule from "modules/orders/actions/load-market-open-orders";
+import * as loadMarketOpenOrdersModule from "modules/orders/actions/load-market-order-book";
 import * as updateAssetsModule from "modules/auth/actions/update-assets";
 import * as loadAccountPositionsModule from "modules/positions/actions/load-account-positions";
 
@@ -58,7 +58,7 @@ describe("modules/events/actions/log-handlers.js", () => {
           }
         }));
       loadMarketOpenOrdersSpy = jest
-        .spyOn(loadMarketOpenOrdersModule, "loadMarketOpenOrders")
+        .spyOn(loadMarketOpenOrdersModule, "loadMarketOrderBook")
         .mockImplementation(options => ({
           type: ACTIONS.LOAD_MARKET_OPEN_ORDERS,
           data: {

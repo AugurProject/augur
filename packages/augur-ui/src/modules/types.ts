@@ -2,7 +2,7 @@ import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
-import { MarketInfo, MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketInfo, MarketInfoOutcome, MarketOrderBook, OrderBook } from "@augurproject/sdk/build/state/getter/Markets";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
 import { MarketTradingHistory, Orders, Order } from "@augurproject/sdk/build/state/getter/Trading";
 
@@ -96,11 +96,6 @@ export interface MarketData extends MarketInfo {
   marketOutcomes: Array<MarketOutcome>;
 };
 
-export interface OutcomesData {
-  [marketId: string]: {
-    [outcomeId: string]: MarketData;
-  };
-}
 export interface TransacitonStatus {
   [pendingId: string]: {
     status: string;
@@ -193,21 +188,20 @@ export interface PendingOrders {
   [marketId: string]: Array<UIOrder>;
 }
 
-export interface OrderBook {
-  marketId?: string;
-  [outcome: number]: {
-    [BUY]: {
-      [id: string]: Order;
-    };
-    [SELL]: {
-      [id: string]: Order;
-    };
-  };
-}
 export interface OrderBooks {
-  [marketId: string]: OrderBook;
+  [marketId: string]: IndividualOrderBook;
 }
 
+export interface OutcomeOrderBook {
+  bids: OrderBook[];
+  asks: OrderBook[];
+}
+export interface IndividualOrderBook {
+    [outcome: number]: {
+      bids: OrderBook[];
+      asks: OrderBook[];
+    };
+}
 export interface DisputeInfo {
   disputeRound: number;
 }
@@ -299,7 +293,7 @@ export interface NewMarket {
   >;
   currentStep: number;
   type: string;
-  outcomes: Array<string | number>;
+  outcomes: Array<string>;
   scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
@@ -308,19 +302,22 @@ export interface NewMarket {
   expirySource: string;
   designatedReporterType: string;
   designatedReporterAddress: string;
-  endTime: any;
+  minPrice: string;
+  maxPrice: string;
+  endTime: number;
   tickSize: string;
   hour: string;
   minute: string;
   meridiem: string;
+  marketType: string;
   detailsText: string;
   category: string;
   tag1: string;
   tag2: string;
   settlementFee: number;
+  affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
   orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
-  orderBookSeries: {[outcome: number]: Array<LiquidityOrder> };
   initialLiquidityEth: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
@@ -334,12 +331,8 @@ export interface OpenOrders {
   [account: string]: Orders;
 }
 
-export interface TradingHistory {
-  trades: Array<MarketTradingHistory>;
-}
+export interface MarketTradingHistoryState extends MarketTradingHistory {
 
-export interface MarketTradingHistoryState {
-  [marketId: string]: MarketTradingHistory;
 }
 export interface MarketsInReporting {
   designated?: Array<string>;
@@ -502,6 +495,7 @@ export interface LoginAccount {
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;
+  allowance?: BigNumber;
   eth?: string;
   rep?: string;
   dai?: string;
@@ -554,4 +548,16 @@ export interface WalletObject {
   balance: string;
   derivationPath: Array<number>;
   serializedPath: string;
+}
+
+export interface Trade {
+  numShares: FormattedNumber;
+  limitPrice: FormattedNumber;
+  potentialEthProfit: FormattedNumber;
+  potentialEthLoss: FormattedNumber;
+  totalCost: FormattedNumber;
+  shareCost: FormattedNumber;
+  side: typeof BUY | typeof SELL;
+  orderShareProfit: FormattedNumber;
+  orderShareTradingFee: FormattedNumber;
 }

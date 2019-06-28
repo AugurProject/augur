@@ -1,0 +1,22 @@
+@import (reference) "~assets/styles/shared";
+
+.Landing {
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    > div {
+    	> div:not(:last-of-type) {
+    		margin-bottom: @size-24;
+    	}
+
+    	> div:first-of-type > div:last-of-type {
+    		margin-top: @size-24;
+    	}
+    }
+
+    > div:last-of-type {
+    	margin-bottom: 102px;
+    }
+}

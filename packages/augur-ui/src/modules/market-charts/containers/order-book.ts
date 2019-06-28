@@ -1,40 +1,33 @@
 import { connect } from "react-redux";
 import { isEmpty } from "utils/is-populated";
-
 import { createBigNumber } from "utils/create-big-number";
-
 import OrderBook from "modules/market-charts/components/order-book/order-book";
-
 import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-assign-cumulative-shares";
 import orderForMarketDepth from "modules/markets/helpers/order-for-market-depth";
 import getOrderBookKeys from "modules/markets/helpers/get-orderbook-keys";
-
 import { selectMarket } from "modules/markets/selectors/market";
-
 import { ASKS, BIDS } from "modules/common/constants";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId);
-  const userOrders =
+  const outcomeOrderBook =
     state.orderBooks[ownProps.marketId] &&
-    state.orderBooks[ownProps.marketId][ownProps.selectedOutcome];
+    state.orderBooks[ownProps.marketId][ownProps.selectedOutcomeId];
   const minPrice = market.minPriceBigNumber || createBigNumber(0);
   const maxPrice = market.maxPriceBigNumber || createBigNumber(0);
   const outcome =
-    (market.outcomes || []).find(
-      (outcome) => outcome.id === ownProps.selectedOutcome,
-    ) || {};
+    (market.marketOutcomes || []).find(
+      (outcome) => outcome.id === ownProps.selectedOutcomeId,
+    );
   const cumulativeOrderBook = orderAndAssignCumulativeShares(
-    outcome.orderBook,
-    userOrders,
-    state.loginAccount.address,
+    outcomeOrderBook
   );
 
   const marketDepth = orderForMarketDepth(cumulativeOrderBook);
   const orderBookKeys = getOrderBookKeys(marketDepth, minPrice, maxPrice);
   return {
-    outcomeName: outcome.name,
+    outcomeName: outcome.description,
     selectedOutcome: outcome,
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
     orderBook: cumulativeOrderBook,

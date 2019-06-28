@@ -1,5 +1,4 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { augur } from 'services/augurjs';
 import { BUY, ZERO } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
@@ -7,8 +6,8 @@ import { buildDisplayTrade } from 'modules/trades/helpers/build-display-trade';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback, MarketData } from 'modules/types';
-import { simulateTrade } from 'modules/contracts/actions/contractCalls';
+import { NodeStyleCallback, MarketData, LoginAccount } from 'modules/types';
+import { simulateTrade, simulateTradeGasLimit } from 'modules/contracts/actions/contractCalls';
 import { SimulateTradeData } from '@augurproject/sdk/build';
 import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 
@@ -34,12 +33,11 @@ export function updateTradeCost({
       marketInfos,
       loginAccount,
       orderBooks,
-      outcomesData,
       accountPositions,
       accountShareBalances,
     } = getState();
     const market = marketInfos[marketId];
-    const outcome = outcomesData[marketId][outcomeId];
+    const outcome = market.outcomes.find(o => o.id === outcomeId);
 
     const newTradeDetails = {
       side,
@@ -84,12 +82,12 @@ export function updateTradeShares({
     const {
       marketInfos,
       loginAccount,
-      outcomesData,
       accountPositions,
       accountShareBalances,
       orderBooks,
     } = getState();
     const market = marketInfos[marketId];
+    const outcome = market.outcomes.find(o => o.id === outcomeId);
 
     const newTradeDetails: any = {
       side,
@@ -131,7 +129,6 @@ export function updateTradeShares({
       .abs()
       .toNumber()
       .toString();
-    const outcome = outcomesData[marketId][outcomeId];
 
     return runSimulateTrade(
       newTradeDetails,
@@ -153,7 +150,7 @@ async function runSimulateTrade(
   market: MarketInfo,
   marketId: any,
   outcomeId: any,
-  loginAccount: any,
+  loginAccount: LoginAccount,
   orderBooks: any,
   outcome: any,
   accountPositions: any,
@@ -222,6 +219,23 @@ async function runSimulateTrade(
     userShares
   );
 
+  const gasLimit = await simulateTradeGasLimit(
+    orderType,
+    marketId,
+    market.numOutcomes,
+    parseInt(outcomeId, 10),
+    ignoreShares,
+    affiliateAddress,
+    kycToken,
+    doNotCreateOrders,
+    market.numTicks,
+    market.minPrice,
+    market.maxPrice,
+    newTradeDetails.numShares,
+    newTradeDetails.limitPrice,
+    userShares
+  );
+
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
   newTradeDetails.totalCost = simulateTradeValue.tokensDepleted;
@@ -251,5 +265,5 @@ async function runSimulateTrade(
     })
   );
 
-  if (callback) callback(null, { ...order, ...simulateTradeValue, displayTrade });
+  if (callback) callback(null, { ...order, ...simulateTradeValue, displayTrade, gasLimit });
 }

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { AM, PM } from "modules/common/constants";
 import ChevronFlip from 'modules/common/chevron-flip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { PulseLoader } from 'react-spinners';
@@ -16,7 +15,11 @@ import {
   FilledRadio,
   EmptyCheckbox,
   FilledCheckbox,
-  Chevron
+  Chevron,
+  DirectionArrow,
+  Calendar,
+  Clock,
+  Arrow
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
 
@@ -24,7 +27,7 @@ import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
-import { SquareDropdown } from "modules/common/selection";
+import { SquareDropdown } from 'modules/common/selection';
 
 interface CheckboxProps {
   id: string;
@@ -58,6 +61,7 @@ interface TextInputProps {
   placeholder?: string;
   onChange: Function;
   value?: string;
+  trailingLabel?: string;
 }
 
 interface TextInputState {
@@ -68,7 +72,7 @@ interface InputDropdownProps {
   onChange: Function;
   default: string;
   options: Array<string>;
-  isMobileSmall: Boolean;
+  isMobileSmall?: Boolean;
   label: string;
   className?: string;
   onKeyPress?: Function;
@@ -94,19 +98,21 @@ interface FormDropdownProps {
   openTop?: Boolean;
 }
 
-export const FormDropdown = (props: FormDropdownProps) => 
+export const FormDropdown = (props: FormDropdownProps) => (
   <>
-    <SquareDropdown 
-      {...props} 
-      className={classNames(Styles.FormDropdown, {[Styles.disabled]: props.disabled, [Styles.error]: props.error})} 
+    <SquareDropdown
+      {...props}
+      className={classNames(Styles.FormDropdown, {
+        [Styles.disabled]: props.disabled,
+        [Styles.error]: props.error,
+      })}
       activeClassName={Styles.FormDropdownActive}
     />
-    {props.error && props.errorMessage && 
-      <span className={Styles.ErrorText}>
-        {props.errorMessage}
-      </span>
-    }
-  </>;
+    {props.error && props.errorMessage && (
+      <span className={Styles.ErrorText}>{props.errorMessage}</span>
+    )}
+  </>
+);
 
 interface TimezoneDropdownProps {
   id?: string;
@@ -118,10 +124,13 @@ interface TimezoneDropdownProps {
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => (
   <FormDropdown
     {...props}
-    options={[{
-      label: "UTC - 0",
-      value: 0
-    }]}
+    staticLabel="Timezone"
+    options={[
+      {
+        label: 'UTC - 0',
+        value: 0,
+      },
+    ]}
   />
 );
 
@@ -134,12 +143,17 @@ interface RadioCardProps {
   icon?: SVGElement;
 }
 
-interface RadioCardGroupProps {
-  radioButtons: Array<RadioCardProps>;
+interface RadioGroupProps {
+  onChange: Function;
+  radioButtons:
+    | Array<RadioCardProps>
+    | Array<RadioBarProps>
+    | Array<RadioTwoLineBarProps>;
   defaultSelected?: string | null;
+  children?: Array<any>;
 }
 
-interface RadioCardGroupState {
+interface RadioGroupState {
   selected: string | null;
 }
 
@@ -151,13 +165,15 @@ interface RadioBarProps {
   checked?: boolean;
   error?: boolean;
   onTextChange?: Function;
+  placeholder?: string;
+  textValue?: string;
 }
 
 interface RadioTwoLineBarProps {
   header: string;
   description: string;
   value: string;
-  onChange?: Function;
+  onChange: Function;
   checked?: boolean;
   error?: boolean;
 }
@@ -165,7 +181,7 @@ interface RadioTwoLineBarProps {
 interface CheckboxBarProps {
   header: string;
   value: string;
-  onChange?: Function;
+  onChange: Function;
   checked?: boolean;
   error?: boolean;
 }
@@ -190,6 +206,32 @@ export const CheckboxBar = ({
   </div>
 );
 
+export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
+  state: RadioGroupState = {
+    selected: this.props.defaultSelected || null,
+  };
+
+  render() {
+    const { radioButtons, onChange } = this.props;
+    const { selected } = this.state;
+    return (
+      <div>
+        {radioButtons.map(radio => (
+          <RadioBar
+            key={radio.value}
+            {...radio}
+            checked={radio.value === selected}
+            onChange={selected => {
+              onChange(selected);
+              this.setState({ selected });
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+};
+
 export const RadioBar = ({
   header,
   onChange,
@@ -198,6 +240,8 @@ export const RadioBar = ({
   error,
   expandable,
   onTextChange,
+  placeholder,
+  textValue
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
@@ -209,9 +253,35 @@ export const RadioBar = ({
   >
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
-    {expandable && checked ? <TextInput onChange={onTextChange} /> : null}
+    {expandable && checked ? <TextInput placeholder={placeholder} value={textValue} onChange={onTextChange} /> : null}
   </div>
 );
+
+export class RadioTwoLineBarGroup extends Component<RadioGroupProps, RadioGroupState> {
+  state: RadioGroupState = {
+    selected: this.props.defaultSelected || null,
+  };
+
+  render() {
+    const { radioButtons, onChange } = this.props;
+    const { selected } = this.state;
+    return (
+      <div>
+        {radioButtons.map(radio => (
+          <RadioTwoLineBar
+            key={radio.value}
+            {...radio}
+            checked={radio.value === selected}
+            onChange={selected => {
+              onChange(selected);
+              this.setState({ selected });
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+}
 
 export const RadioTwoLineBar = ({
   header,
@@ -235,27 +305,31 @@ export const RadioTwoLineBar = ({
 );
 
 export class RadioCardGroup extends Component<
-  RadioCardGroupProps,
-  RadioCardGroupState
+  RadioGroupProps,
+  RadioGroupState
 > {
-  state: RadioCardGroupState = {
+  state: RadioGroupState = {
     selected: this.props.defaultSelected || null,
   };
 
   render() {
-    const { radioButtons } = this.props;
+    const { radioButtons, onChange, children } = this.props;
     const { selected } = this.state;
     return (
-      <section className={Styles.RadioCardGroup}>
+      <div className={Styles.RadioCardGroup}>
         {radioButtons.map(radio => (
           <RadioCard
             key={radio.value}
             {...radio}
             checked={radio.value === selected}
-            onChange={selected => this.setState({ selected })}
+            onChange={selected => {
+              onChange(selected);
+              this.setState({ selected });
+            }}
           />
         ))}
-      </section>
+        <div className={Styles.Additional}>{children}</div>
+      </div>
     );
   }
 }
@@ -271,6 +345,7 @@ const RadioCard = ({
   <div
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
+      [Styles.CustomIcon]: icon
     })}
     role="button"
     onClick={e => onChange(value)}
@@ -279,6 +354,29 @@ const RadioCard = ({
     {icon ? icon : Ellipsis}
     <h5>{header}</h5>
     <p>{description}</p>
+  </div>
+);
+
+interface LocationDisplayProps {
+  currentStep: Number;
+  pages: Array<Object>;
+}
+
+export const LocationDisplay = ({
+  currentStep,
+  pages,
+}: LocationDisplayProps) => (
+  <div className={Styles.LocationDisplay}>
+    {pages.map((page: Object, index: Number) => (
+      <>
+        <span
+          className={classNames({ [Styles.Selected]: index === currentStep })}
+        >
+          {page.title}
+        </span>
+        {index !== pages.length - 1 && DirectionArrow}
+      </>
+    ))}
   </div>
 );
 
@@ -300,17 +398,39 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     this.setState({ value });
   };
   render() {
-    const { placeholder, disabled, error, errorMessage } = this.props;
+    const {
+      placeholder,
+      disabled,
+      error,
+      errorMessage,
+      type,
+      trailingLabel,
+    } = this.props;
+
     return (
       <>
-        <input
-          {...this.props}
-          className={classNames(Styles.TextInput, { [Styles.error]: error })}
-          value={this.state.value}
-          onChange={this.onChange}
-          placeholder={placeholder}
-          disabled={disabled}
-        />
+        <div className={Styles.TextInput}>
+          {type !== 'textarea' ? (
+            <input
+              {...this.props}
+              className={classNames({ [Styles.error]: error })}
+              value={this.state.value}
+              onChange={this.onChange}
+              placeholder={placeholder}
+              disabled={disabled}
+            />
+          ) : (
+            <textarea
+              {...this.props}
+              className={classNames({ [Styles.error]: error })}
+              value={this.state.value}
+              onChange={this.onChange}
+              placeholder={placeholder}
+              disabled={disabled}
+            />
+          )}
+          {trailingLabel && <span>{trailingLabel}</span>}
+        </div>
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
       </>
     );
@@ -318,110 +438,104 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
 }
 
 interface TimeSelectorProps {
-  showPicker: Boolean;
-}
-
-interface TimeSelectorState {
-  showPicker: Boolean;
+  minute: string;
+  hour: string;
+  meridiem: string;
+  onFocusChange: Function;
+  onDateChange: Function;
+  focused?: Boolean;
 }
 
 export class TimeSelector extends React.Component<
   TimeSelectorProps,
-  TimeSelectorState
+  {}
 > {
-  state: TimeSelectorState = {
-    showPicker: false,
-    minutes: "00",
-    hours: "12",
-    timeFormat: 0,
-  }
 
   componentDidMount() {
-    window.addEventListener("click", this.handleWindowOnClick);
+    window.addEventListener('click', this.handleWindowOnClick);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("click", this.handleWindowOnClick);
+    window.removeEventListener('click', this.handleWindowOnClick);
   }
 
   handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (this.timeSelector && !this.timeSelector.contains(event.target)) {
-      this.setState({ showPicker: false });
+    if (this.timeSelector && !this.timeSelector.contains(event.target) && this.props.focused) {
+      this.props.onFocusChange(false);
     }
   };
 
   toggleSelector = () => {
-    this.setState({showPicker: !this.state.showPicker});
-  }
+    this.props.onFocusChange(!this.props.focused);
+  };
 
-  onChangeMinutes = (value) => {
-    this.setState({minutes: value})
-  } 
+  onChangeMinutes = value => {
+    this.props.onChange("minute", value);
+  };
 
-  onChangeHours = (value) => {
-    this.setState({hours: value})
-  } 
+  onChangeHours = value => {
+    this.props.onChange("hour", value);
+  };
 
-  onChangeAM = () => {
-    this.setState({am: !this.state.am})
-  } 
+  onChangeAM = value => {
+    this.props.onChange("meridiem", value);
+  };
 
   render() {
-    const {
-      placeholder
-    } = this.props;
-
-    const {
-      hours,
-      minutes,
-      timeFormat
-    } = this.state;
-
-    const timeOptions = [AM, PM];
+    const { placeholder, hour, minute, meridiem, focused } = this.props;
 
     return (
-      <div 
+      <div
         className={Styles.TimeSelector}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
         }}
       >
         <button onClick={this.toggleSelector}>
-          {hours}:{minutes} {timeOptions[timeFormat]}
+          <span>
+            {(!hour || !minute || !meridiem) ?
+              "Time"
+              : hour + ":" + minute + " " + meridiem
+            }
+          </span>
+          {Clock}
         </button>
-        {this.state.showPicker && 
-          <div>
-            <IndividualTimeSelector 
-              label="Hours"
-              min={1}
-              max={12}
-              onChange={this.onChangeHours}
-              value={hours}
-            />
-            <span>:</span>
-            <IndividualTimeSelector 
-              label="Minutes"
-              showLeadingZero
-              min={0}
-              max={60}
-              onChange={this.onChangeMinutes}
-              value={minutes}
-            />
-            <IndividualTimeSelector 
-              label="AM/PM"
-              options={timeOptions}
-              onChange={this.onChangeAM}
-              value={timeFormat}
-            />
-          </div>
-        }
+        {focused && (
+          <>
+            {Arrow}
+            <div>
+              <IndividualTimeSelector
+                label="Hours"
+                min={1}
+                max={12}
+                onChange={this.onChangeHours}
+                value={hour !== null ? hour : "12"}
+              />
+              <span>:</span>
+              <IndividualTimeSelector
+                label="Minutes"
+                showLeadingZero
+                min={0}
+                max={59}
+                onChange={this.onChangeMinutes}
+                value={minute !== null ? minute : "12"}
+              />
+              <IndividualTimeSelector
+                label="AM/PM"
+                hasOptions
+                onChange={this.onChangeAM}
+                value={meridiem || "AM"}
+              />
+            </div>
+          </>
+        )}
       </div>
     );
   }
 }
 
 interface IndividualTimeSelectorProps {
-  options?: Array;
+  hasOptions?: Boolean;
   label: string;
   min?: Number;
   max?: Number;
@@ -440,8 +554,8 @@ class IndividualTimeSelector extends React.Component<
   IndividualTimeSelectorState
 > {
   state: IndividualTimeSelectorState = {
-    value: this.props.value
-  }
+    value: this.props.value,
+  };
 
   componentWillReceiveProps(nextProps: IndividualTimeSelectorProps) {
     const { value } = this.props;
@@ -451,94 +565,73 @@ class IndividualTimeSelector extends React.Component<
   }
 
   onChange = (value: any) => {
-    const {
-      showLeadingZero,
-      options,
-      onChange,
-      min,
-      max
-    } = this.props;
-    
-    if (!options && value.toString() !== "") {
+    const { showLeadingZero, hasOptions, onChange, min, max } = this.props;
+
+    if (!hasOptions && value.toString() !== '') {
       if (value > max) return;
       if (value < min) return;
     }
 
-    if (showLeadingZero && value.toString().length === 1 && value.toString() !== "0") {
-      value = "0" + value;
+    if (
+      showLeadingZero &&
+      value.toString().length === 1 &&
+      value.toString() !== '0'
+    ) {
+      value = '0' + value;
     } else if (showLeadingZero && value.toString().length > 2) {
       value = value.substring(1);
     }
-    
+
     this.setState({ value });
     onChange(value);
   };
 
   increment = () => {
     let value = this.state.value;
-    if (!this.props.options) {
+    if (!this.props.hasOptions) {
       const newValue = parseFloat(value) + 1;
-      this.onChange(newValue)
+      this.onChange(newValue);
     } else {
-      if (value !== this.props.options.length - 1) {
-        this.onChange(value + 1);
-      } else {
-        this.onChange(value - 1);
-      }
+      this.onChange(value === "AM" ? "PM" : "AM");
     }
-  }
+  };
 
   decrement = () => {
     let value = this.state.value;
-    if (!this.props.options) {
+    if (!this.props.hasOptions) {
       const newValue = parseFloat(value) - 1;
       this.onChange(newValue);
     } else {
-      if (value !== 0) {
-        this.onChange(value - 1);
-      } else {
-        this.onChange(value + 1);
-      }
+      this.onChange(value === "AM" ? "PM" : "AM");
     }
-  }
+  };
 
   render() {
-    const {
-      label,
-      onChange,
-      value,
-      options,
-      min,
-      max
-    } = this.props;
+    const { label, onChange, value, hasOptions, min, max } = this.props;
 
     return (
       <div className={Styles.IndividualTimeSelector}>
         <span>{label}</span>
-        <button onClick={this.increment}>
-          {Chevron}
-        </button>
-        {options && 
-          <input 
+        <button onClick={this.increment}>{Chevron}</button>
+        {hasOptions && (
+          <input
             type="text"
-            onChange={(e) => this.onChange(e.target.value)} 
-            value={options[this.state.value]}
+            onChange={e => this.onChange(e.target.value)}
+            value={this.state.value}
             disabled
           />
-        }
-        {!options && 
-          <input 
+        )}
+        {!hasOptions && (
+          <input
             type="number"
             min={min}
             max={max}
             step="1"
-            onChange={(e) => this.onChange(e.target.value)} 
+            onChange={e => this.onChange(e.target.value)}
             value={this.state.value}
           />
-        }
-        <button onClick={this.decrement}>
-          {Chevron}
-        </button>
+        )}
+        <button onClick={this.decrement}>{Chevron}</button>
       </div>
     );
   }
@@ -607,6 +700,7 @@ export const DatePicker = (props: DatePickerProps) => (
       navPrev={props.navPrev || OutlineChevron}
       navNext={props.navNext || OutlineChevron}
       weekDayFormat="ddd"
+      customInputIcon={Calendar}
     />
   </div>
 );

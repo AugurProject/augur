@@ -14,6 +14,7 @@ import { Markets } from "./state/getter/Markets";
 import { SyncData } from "./state/getter/sync-data";
 import { Trading } from "./state/getter/Trading";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market} from "./api/Market";
+import { Users } from "./state/getter/Users";
 
 export interface CustomEvent {
   name: string;
@@ -211,7 +212,9 @@ export class Augur<TProvider extends Provider = Provider> {
   public getTradingHistory = this.bindTo(Trading.getTradingHistory);
   public getAllOrders = this.bindTo(Trading.getAllOrders);
   public getTradingOrders = this.bindTo(Trading.getOrders);
+  public getMarketOrderBook = this.bindTo(Markets.getMarketOrderBook);
 
+  public getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
   public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
   }
@@ -230,5 +233,9 @@ export class Augur<TProvider extends Provider = Provider> {
 
   public async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
     return this.market.createScalarMarket(params);
+  }
+
+  public async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
+    return this.trade.simulateTradeGasLimit(params);
   }
 }

@@ -4,13 +4,9 @@ import {
   formatShares,
   formatEther,
   formatPercent,
-  formatNumber
 } from "utils/format-number";
 import {
-  SCALAR,
   ZERO,
-  OPEN,
-  REPORTING_STATE,
   YES_NO,
 } from "modules/common/constants";
 
@@ -18,19 +14,10 @@ import { getOutcomeName } from "utils/get-outcome";
 
 import store from "store";
 
-import {
-  selectAggregateOrderBook,
-  selectTopBid,
-  selectTopAsk
-} from "modules/orders/helpers/select-order-book";
-import getOrderBookSeries from "modules/orders/selectors/order-book-series";
-
 import { positionSummary } from "modules/positions/selectors/positions-summary";
 
 import {
   selectMarketsDataState,
-  selectOutcomesDataState,
-  selectOrderBooksState,
   selectOrderCancellationState,
   selectAccountShareBalance,
   selectAccountPositionsState
@@ -58,14 +45,6 @@ function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketsDataState(state)[marketId];
 }
 
-function selectOutcomesDataStateMarket(state, marketId) {
-  return selectOutcomesDataState(state)[marketId];
-}
-
-function selectOrderBooksStateMarket(state, marketId) {
-  return selectOrderBooksState(state)[marketId];
-}
-
 function selectAccountShareBalanceMarket(state, marketId) {
   return selectAccountShareBalance(state)[marketId];
 }
@@ -76,23 +55,17 @@ function selectAccountPositionsStateMarket(state, marketId) {
 
 const getMarketSelector = createCachedSelector(
   selectMarketsDataStateMarket,
-  selectOutcomesDataStateMarket,
-  selectOrderBooksStateMarket,
   selectOrderCancellationState,
   selectAccountShareBalanceMarket,
   selectAccountPositionsStateMarket,
   (
     marketData,
-    marketOutcomesData,
-    orderBooks,
     orderCancellation,
     accountShareBalances,
     accountPositions
   ) =>
     assembleMarket(
       marketData,
-      marketOutcomesData,
-      orderBooks,
       orderCancellation,
       accountShareBalances,
       accountPositions
@@ -101,8 +74,6 @@ const getMarketSelector = createCachedSelector(
 
 const assembleMarket = (
   marketData,
-  marketOutcomesData,
-  orderBooks,
   orderCancellation,
   accountShareBalances,
   accountPositions
@@ -141,19 +112,14 @@ const assembleMarket = (
   }
 
   // TODO: move order book out of market selector when getter is ready
+/*
   market.marketOutcomes.map(outcome => {
-    const orderBook = selectAggregateOrderBook(
-      outcome.id,
-      orderBooks,
-      orderCancellation
-    );
     outcome.orderBook = orderBook;
-    outcome.orderBookSeries = getOrderBookSeries(orderBook);
     outcome.topBid = selectTopBid(orderBook, false);
     outcome.topAsk = selectTopAsk(orderBook, false);
 
   })
-
+*/
 
   market.tags = (market.tags || []).filter(tag => !!tag);
 
@@ -194,4 +160,24 @@ const assembleMarket = (
   }
 
   return market;
+};
+
+export const selectSortedMarketOutcomes = (marketType, outcomes) => {
+  const sortedOutcomes = [...outcomes];
+
+  if (marketType === YES_NO) {
+    return sortedOutcomes
+      // Only keep Invalid [0] / Yes [2]
+      .filter(outcome => outcome.id !== 1)
+      // Only tradable
+      .filter(outcome => outcome.isTradable)
+       // Move invalid to the end
+      .reverse();
+  } else {
+    // Move invalid to the end
+    sortedOutcomes.push(sortedOutcomes.shift());
+    return sortedOutcomes
+      // Only tradable
+      .filter(outcome => outcome.isTradable);
+  }
 };

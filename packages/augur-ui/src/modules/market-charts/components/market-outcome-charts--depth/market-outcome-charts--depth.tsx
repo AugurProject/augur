@@ -425,7 +425,7 @@ function determineDrawParams(options) {
     Object.keys(marketDepth)
       .reduce((p, side) => {
         if (marketDepth[side].length > 0) {
-          const result = marketDepth[side][marketDepth[side].length - 1][0];
+          const result = createBigNumber(marketDepth[side][marketDepth[side].length - 1][0]);
           if (result.gt(p)) return result;
         }
         return p;

@@ -614,6 +614,9 @@ export const CANCELLING_ORDER = "cancelling order";
 export const DAY = "days";
 export const WEEK = "week";
 export const MONTH = "month";
+export const EITHER = "either";
+export const MAKER = "maker";
+export const TAKER = "taker";
 // for add-transactions.js and transactions.jsx
 export const ALL = "all";
 export const PUBLIC_TRADE = "publicTrade";
@@ -755,10 +758,6 @@ export const COLUMN_TYPES = {
   [CANCEL_TEXT_BUTTON]: CANCEL_TEXT_BUTTON,
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
 };
-
-// Time constants
-export const AM = "AM";
-export const PM = "PM";
 
 // Login method variables
 export const TREZOR_MANIFEST_EMAIL = "team@augur.net";
