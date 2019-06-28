@@ -1,25 +1,20 @@
-import { createBigNumber } from "utils/create-big-number";
-import createCachedSelector from "re-reselect";
-import store from "store";
-import { ZERO } from "modules/common/constants";
+import { createBigNumber } from 'utils/create-big-number';
+import createCachedSelector from 're-reselect';
+import store from 'store';
+import { ZERO } from 'modules/common/constants';
 import {
   convertUnixToFormattedDate,
-  roundTimestampToPastDayMidnight
-} from "utils/format-date";
+  roundTimestampToPastDayMidnight,
+} from 'utils/format-date';
 import {
   selectMarketsDataState,
-  selectOutcomesDataState,
   selectCurrentTimestamp,
-  selectMarketTradingHistoryState
-} from "store/select-state";
-import { selectPriceTimeSeries } from "modules/markets/selectors/price-time-series";
+  selectMarketTradingHistoryState,
+} from 'store/select-state';
+import { selectPriceTimeSeries } from 'modules/markets/selectors/price-time-series';
 
 function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketsDataState(state)[marketId] || {};
-}
-
-function selectOutcomesDataStateMarket(state, marketId) {
-  return selectOutcomesDataState(state)[marketId] || {};
+  return selectMarketsDataState(state)[marketId];
 }
 
 function selectMarketTradingHistoryStateMarket(state, marketId) {
@@ -31,21 +26,23 @@ export default function(marketId) {
 }
 
 export const bucketedPriceTimeSeries = createCachedSelector(
-  selectOutcomesDataStateMarket,
   selectCurrentTimestamp,
   selectMarketsDataStateMarket,
   selectMarketTradingHistoryStateMarket,
-  (outcomesData, currentTimestamp, marketData, marketTradeHistory) => {
+  (currentTimestamp, marketData, marketTradeHistory) => {
+    if (marketData === null) return [];
+
     const creationTime = convertUnixToFormattedDate(
-      (marketData || {}).creationTime || 0
+      marketData.creationTime
     ).value.getTime();
+
     const outcomes =
-      Object.keys(outcomesData).map(oId => ({
-        ...outcomesData[oId],
+      Object.keys(marketData.outcomes).map(oId => ({
+        ...marketData.outcomes[oId],
         priceTimeSeries: selectPriceTimeSeries(
-          outcomesData[oId],
+          marketData.outcomes[oId],
           marketTradeHistory
-        )
+        ),
       })) || [];
     const currentTime = currentTimestamp || Date.now();
     return bucketedPriceTimeSeriesInternal(creationTime, currentTime, outcomes);
@@ -89,7 +86,7 @@ const bucketedPriceTimeSeriesInternal = (
   }, {});
 
   return {
-    priceTimeSeries
+    priceTimeSeries,
   };
 };
 
@@ -120,7 +117,7 @@ function getTradeInTimeRange(timeSeries, startTime, endTime) {
   if (!timeSeries || timeSeries.length === 0) {
     return {
       trades: bucket,
-      trimmedTimeSeries: timeSeries
+      trimmedTimeSeries: timeSeries,
     };
   }
 
@@ -136,6 +133,6 @@ function getTradeInTimeRange(timeSeries, startTime, endTime) {
     trimmedTimeSeries: timeSeries.filter(v => !bucket.includes(v)),
     trades: bucket
       .sort((a, b) => b.logIndex - a.logIndex)
-      .sort((a, b) => b.timestamp - a.timestamp)
+      .sort((a, b) => b.timestamp - a.timestamp),
   };
 }
