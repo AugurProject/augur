@@ -174,8 +174,8 @@ export default class FormDetails extends React.Component<
               <Subheaders header="Unit of measurement" subheader="Choose a denomination for the range." link />
               <FormDropdown
                 options={[{
-                  label: "Test",
-                  value: 0
+                  label: "Dollars",
+                  value: "Dollars"
                 }]}
                 staticLabel="Denomination"
                 onChange={(value: string) => this.onChange("scalarDenomination", value)}
@@ -194,7 +194,7 @@ export default class FormDetails extends React.Component<
                   type="number"
                   placeholder="100"
                   onChange={(value: string) => this.onChange("maxPrice", value)}
-                  trailingLabel="Denomination"
+                  trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                   value={maxPrice}
                 />
               </section>
@@ -203,7 +203,7 @@ export default class FormDetails extends React.Component<
                 type="number"
                 placeholder="0"
                 onChange={(value: string) => this.onChange("tickSize", value)}
-                trailingLabel="Denomination"
+                trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                 value={tickSize}
               />
             </>
