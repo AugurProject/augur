@@ -17,7 +17,7 @@ export const getOutcomeName = (
   if (!marketType) return YES_NO_YES_OUTCOME_NAME;
   switch (marketType) {
     case YES_NO: {
-      if (!alwaysReturnYesForBinaryMarket && outcome.id.toString() === "0") {
+      if (!alwaysReturnYesForBinaryMarket && outcome.id === 0) {
         return "No";
       }
       return YES_NO_YES_OUTCOME_NAME;

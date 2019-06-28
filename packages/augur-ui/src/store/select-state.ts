@@ -24,7 +24,6 @@ export const selectPendingOrdersState = (state: AppState) =>
 export const selectOrderBooksState = (state: AppState) => state.orderBooks;
 export const selectOrderCancellationState = (state: AppState) =>
   state.orderCancellation;
-export const selectOutcomesDataState = (state: AppState) => state.outcomesData;
 export const selectMarketTradingHistoryState = (state: AppState) =>
   state.marketTradingHistory;
 export const selectUniverseState = (state: AppState) => state.universe;

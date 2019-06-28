@@ -38,7 +38,30 @@ export const tradeTestState = {
       tradingPeriod: 8653,
       marketType: "yes/no ",
       volume: "3030",
-      isDisowned: false
+      isDisowned: false,
+      outcomes: [
+        {
+          id: 0,
+          description: "Invalid",
+          outstandingShares: "2025",
+          price: "0.5",
+          sharesPurchased: "0"
+        },
+        {
+          id: 1,
+          description: "No",
+          outstandingShares: "2025",
+          price: "0.5",
+          sharesPurchased: "0"
+        },
+        {
+          id: 2,
+          description: "Yes",
+          outstandingShares: "1005",
+          price: "0.5",
+          sharesPurchased: "0"
+        }
+      ]
     },
     testCategoricalMarketId: {
       author: "testAuthor2",
@@ -64,7 +87,37 @@ export const tradeTestState = {
       tradingPeriod: 11959,
       marketType: "categorical",
       volume: "0",
-      isDisowned: false
+      isDisowned: false,
+      outcomes: [
+        {
+          id: 0,
+          description: "Democratic",
+          outstandingShares: "0",
+          price: "0",
+          sharesPurchased: "0"
+        },
+        {
+          id: 1,
+          description: "Republican",
+          outstandingShares: "0",
+          price: "0",
+          sharesPurchased: "0"
+        },
+        {
+          id: 2,
+          description: "Libertarian",
+          outstandingShares: "0",
+          price: "0",
+          sharesPurchased: "0"
+        },
+        {
+          id: 3,
+          description: "Other",
+          outstandingShares: "0",
+          price: "0",
+          sharesPurchased: "0"
+        }
+      ]
     },
     testScalarMarketId: {
       author: "testAuthor3",
@@ -89,67 +142,30 @@ export const tradeTestState = {
       tradingPeriod: 8544,
       marketType: "scalar",
       volume: "0",
-      isDisowned: false
-    }
-  },
-  outcomesData: {
-    testYesNoMarketId: {
-      1: {
-        id: 1,
-        name: "Yes",
-        outstandingShares: "1005",
-        price: "0.5",
-        sharesPurchased: "0"
-      },
-      0: {
-        id: 0,
-        name: "No",
-        outstandingShares: "2025",
-        price: "0.5",
-        sharesPurchased: "0"
-      }
-    },
-    testCategoricalMarketId: {
-      0: {
-        name: "Democratic",
-        outstandingShares: "0",
-        price: "0",
-        sharesPurchased: "0"
-      },
-      1: {
-        name: "Republican",
-        outstandingShares: "0",
-        price: "0",
-        sharesPurchased: "0"
-      },
-      2: {
-        name: "Libertarian",
-        outstandingShares: "0",
-        price: "0",
-        sharesPurchased: "0"
-      },
-      3: {
-        name: "Other",
-        outstandingShares: "0",
-        price: "0",
-        sharesPurchased: "0"
-      }
-    },
-    testScalarMarketId: {
-      0: {
-        id: 0,
-        name: "",
-        outstandingShares: "0",
-        price: "50",
-        sharesPurchased: "0"
-      },
-      1: {
-        id: 1,
-        name: "",
-        outstandingShares: "0",
-        price: "50",
-        sharesPurchased: "0"
-      }
+      isDisowned: false,
+      outcomes: [
+        {
+          id: 0,
+          description: "Invalid",
+          outstandingShares: "2025",
+          price: "0",
+          sharesPurchased: "0"
+        },
+        {
+          id: 1,
+          description: "widgets",
+          outstandingShares: "2025",
+          price: "5",
+          sharesPurchased: "0"
+        },
+        {
+          id: 2,
+          description: "widget",
+          outstandingShares: "1005",
+          price: "11",
+          sharesPurchased: "0"
+        }
+      ]
     }
   },
   orderBooks: {

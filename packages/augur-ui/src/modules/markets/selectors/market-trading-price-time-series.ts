@@ -9,7 +9,7 @@ export const marketTradingPriceTimeSeries = (marketPriceHistory, outcome) => {
     ["desc", "desc"]
   );
   const datedPriceHistory = sortedPriceHistory.reduce((p, item, i) => {
-    if (item.outcome.toString() !== outcome) return p;
+    if (item.outcome !== outcome) return p;
     const dateBreakDown = convertUnixToFormattedDate(item.timestamp);
     const date = dateBreakDown.formattedShortDate;
     const time = dateBreakDown.formattedShortTime;
