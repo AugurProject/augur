@@ -24,6 +24,7 @@
     "test:unit:all": "python3 -m pytest tests -vv",
     "test:integration": "jest --detectOpenHandles --verbose=true",
     "deploy:net": "bash ./source/support/deploy/run.sh direct",
+    "deploy:local": "npm run deploy:net -- environment",
     "deploy:aura": "npm run deploy:net -- aura",
     "deploy:clique": "npm run deploy:net -- clique",
     "deploy:rinkeby": "npm run deploy:net -- rinkeby",

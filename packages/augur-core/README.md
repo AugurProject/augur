@@ -1,23 +1,21 @@
 # augur-core
 
-[![Build Status](https://travis-ci.com/AugurProject/augur-core.svg)](https://travis-ci.com/AugurProject/augur-core)
-
 Smart contracts for [Augur](https://augur.net), a decentralized prediction market platform on the [Ethereum](https://ethereum.org) blockchain.
 
 ## Quick Setup
 
-If you just want to clone the repo and quickly have a couple local proof of authority networks (Geth/Clique and Parity/Aura) running with the contracts deployed then you can just clone the repo and run:
+If you just want to clone the repo and quickly have a local proof of authority network running with the contracts deployed then you can just clone the repo and run:
 ```
-docker-compose -f source/support/test/integration/docker-compose-[geth/parity].yml up --build --force-recreate
+docker run -it -p 8545:8545 -p 8546:8546 augurproject/dev-node-geth:latest
+yarn deploy:local
 ```
-* Parity HTTP RPC will be available on localhost port `47622`.
-* Geth HTTP RPC will be available on localhost port `47624`.
+* Geth HTTP RPC will be available on localhost port `8545`.
 * An abundant supply of ETH is available using the private key `0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a`.
 * The log output will let you know what the address of the various Augur contracts are.
 
 ## Installation
 
-You need system-wide installations of Python 2.7.6+, Node.js 8+, and [Solidity 0.5.4](https://github.com/ethereum/solidity/releases/tag/v0.5.4).  (Or Docker; see below.)  Install the dependencies:
+You need system-wide installations of Python 3.6+, Node.js 10+, and [Solidity 0.5.4](https://github.com/ethereum/solidity/releases/tag/v0.5.4).  (Or Docker; see below.)  Install the dependencies:
 
 ```bash
 yarn
@@ -58,9 +56,8 @@ The tests directory (augur-core/tests) contain tests and test fixtures to test t
 - sandbox.py -- used for testing miscellaneous Solidity behaviors
 - reporting -- contains tests for reporting purposes.
 - trading -- contains tests for trading purposes.
+- libraries -- tests for the libraries we use. Include Token tests, math, and various utility contracts
 - solidity_test_helpers -- small contracts to help run tests.
-- test_mutex.py -- tests mutex functionalities.
-- test_helpers.py -- tests safeMath and assertNoValue macros.
 - test_legacyRep.py -- tests for legacyRepToken's functionalities.
 - utils.py -- contains useful functions for testing, such as conversion between different data types.
 - wcl-in-python.py -- contains functions for making and taking various types of bids.
@@ -69,13 +66,13 @@ The tests directory (augur-core/tests) contain tests and test fixtures to test t
 Use pytest to run Augur's test suite:
 
 ```bash
-pytest tests
+python3 -m pytest tests
 ```
 
 This executes all the tests. To run a test individually, run the following:
 
 ```bash
-pytest path/to/test_file.py -k 'name_of_test'
+python3 -m pytest tests::'name_of_test'
 ```
 
 When writing tests, it is highly recommended to make use of the ContractFixtures class for "placeholder" variables. Python's unit testing framework comes handy here; encapsulate tests within functions that start with "test\_", and use `assert` statements when testing for certain values. Parameterized tests are recommended as well to test various possibilities and edge cases.
@@ -121,15 +118,6 @@ For quicker iteration on integration tests follow the instructions here to run t
 
 https://github.com/AugurProject/augur-core/blob/7272124d985a4c38a2b4f6f599cc16014615cec9/.vscode/launch.json#L28-L35
 
-## Running Oyente ##
-
-Install Oyente locally. This can be done by following the instructions on their GitHub: https://github.com/melonproject/oyente
-
-Run the oyente script with this command to get the output for all contracts:
-
-```
-python source/tools/runOyente.py -p
-```
 
 ## Source code organization
 
