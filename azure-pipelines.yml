@@ -147,7 +147,7 @@ jobs:
       - bash: |
           set -euo pipefail
           yarn build
-        displayName: yarn build
+        displayName: yarn build typescript
       - bash: |
           set -euo pipefail
           yarn docker:build:augur
@@ -361,6 +361,10 @@ jobs:
           docker images
           docker push augurproject/augur-build:latest
         displayName: 'publish docker images on merge to master'
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/ui build
+        displayName: yarn build ui
       - task: Docker@1
         displayName: docker logout
         inputs:
