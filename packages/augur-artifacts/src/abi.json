@@ -3683,11 +3683,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -4792,11 +4792,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -6484,10 +6484,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
 					"name": "_size",
 					"type": "uint256"
 				},
@@ -6521,10 +6517,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_disputeWindowId",
 					"type": "uint256"
 				},
@@ -6555,10 +6547,6 @@
 			"inputs": [
 				{
 					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_market",
 					"type": "address"
 				},
 				{
@@ -6665,10 +6653,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_parentUniverse",
 					"type": "address"
 				}
@@ -6691,10 +6675,6 @@
 			"inputs": [
 				{
 					"name": "_augur",
-					"type": "address"
-				},
-				{
-					"name": "_market",
 					"type": "address"
 				},
 				{
@@ -6723,10 +6703,6 @@
 					"type": "address"
 				},
 				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_parentUniverse",
 					"type": "address"
 				}
@@ -6747,10 +6723,6 @@
 		{
 			"constant": false,
 			"inputs": [
-				{
-					"name": "_augur",
-					"type": "address"
-				},
 				{
 					"name": "_parentUniverse",
 					"type": "address"
@@ -7403,11 +7375,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -8277,11 +8249,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -10512,11 +10484,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -11851,20 +11823,6 @@
 			"constant": false,
 			"inputs": [],
 			"name": "getOrCacheValidityBond",
-			"outputs": [
-				{
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [],
-			"name": "getInitialReportStakeSize",
 			"outputs": [
 				{
 					"name": "",
@@ -15125,11 +15083,11 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
