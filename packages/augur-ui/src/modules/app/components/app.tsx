@@ -372,11 +372,11 @@ export default class AppView extends Component<AppProps, AppState> {
     updateMobileMenuState(MOBILE_MENU_STATES.SUBMENU_OPEN);
   }
 
-  handleWindowResize() {
+  handleWindowResize = () => {
     this.checkIsMobile();
   }
 
-  checkIsMobile() {
+  checkIsMobile = () => {
     const { updateIsMobile, updateIsMobileSmall } = this.props;
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
