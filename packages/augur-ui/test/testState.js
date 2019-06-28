@@ -82,7 +82,27 @@ const testState = {
       details: "some extra info",
       settlementFee: "0.000100000001193046",
       reportingFeeRate: 0.0001,
-      marketCreatorFeeRate: 0.00000000001193046
+      marketCreatorFeeRate: 0.00000000001193046,
+      outcomes: [
+        {
+          id: 0,
+          outstandingShares: "47",
+          description: "Invalid",
+          price: "0.5"
+        },
+        {
+          id: 1,
+          outstandingShares: "156",
+          name: "testOutcome 1",
+          price: "0.5"
+        },
+        {
+          id: 2,
+          outstandingShares: "56",
+          name: "testOutcome 2",
+          price: "0.5"
+        }
+      ]
     },
     testMarketId2: {
       id: "testMarketId2",
@@ -104,7 +124,27 @@ const testState = {
       numOutcomes: 2,
       settlementFee: "0.000100000001193046",
       reportingFeeRate: 0.0001,
-      marketCreatorFeeRate: 0.00000000001193046
+      marketCreatorFeeRate: 0.00000000001193046,
+      outcomes: [
+        {
+          id: 0,
+          outstandingShares: "47",
+          description: "Invalid",
+          price: "0.5"
+        },
+        {
+          id: 1,
+          outstandingShares: "156",
+          name: "testOutcome 1",
+          price: "0.5"
+        },
+        {
+          id: 2,
+          outstandingShares: "56",
+          name: "testOutcome 2",
+          price: "0.5"
+        }
+      ]
     }
   },
   orderBooks: {
@@ -209,22 +249,6 @@ const testState = {
   },
   orderCancellation: {
     "an orderId": "a status"
-  },
-  outcomesData: {
-    testMarketId: {
-      1: {
-        id: "1",
-        outstandingShares: "47",
-        name: "testOutcome",
-        price: "0.5"
-      },
-      2: {
-        id: "2",
-        outstandingShares: "156",
-        name: "testOutcome 2",
-        price: "0.5"
-      }
-    }
   },
   pagination: {
     numPerPage: 10,

@@ -46,7 +46,7 @@ const PortfolioView = () => (
                     </div>
                   </>
                 ) : (
-                  <>
+                <>
                     <div>
                       <MyPositions />
                       <MyMarkets />
