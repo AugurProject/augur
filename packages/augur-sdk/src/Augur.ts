@@ -11,7 +11,7 @@ import { isSubscriptionEventName, SubscriptionEventNames } from "./constants";
 import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
 import { ContractDependenciesEthers, TransactionStatusCallback } from "contract-dependencies-ethers";
 import { Markets } from "./state/getter/Markets";
-import { SyncData } from "./state/getter/sync-data";
+import { Status } from "./state/getter/status";
 import { Trading } from "./state/getter/Trading";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market} from "./api/Market";
 import { Users } from "./state/getter/Users";
@@ -206,7 +206,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   public getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
   public getSyncData = () => {
-    return this.bindTo(SyncData.getSyncData)({});
+    return this.bindTo(Status.getSyncData)({});
   }
 
   public getTradingHistory = this.bindTo(Trading.getTradingHistory);
