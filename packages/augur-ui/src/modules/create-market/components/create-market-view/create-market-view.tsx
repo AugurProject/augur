@@ -2,17 +2,48 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 
+import { LANDING, SCRATCH } from "modules/create-market/constants";
+
 import Form from "modules/create-market/containers/form";
+import Landing from "modules/create-market/containers/landing";
+
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles";
 
-const CreateMarketView = p => (
-  <section className={Styles.CreateMarketView}>
-    <Helmet>
-      <title>Create Market</title>
-    </Helmet>
-    <Form {...p} />
-  </section>
-);
+interface CreateMarketViewProps {
+}
+
+interface CreateMarketViewPState {
+  selected: number;
+}
+
+export default class CreateMarketView extends React.Component<
+  CreateMarketViewProps,
+  CreateMarketViewState
+> {
+  state: FormState = {
+    page: LANDING
+  };
+
+  updatePage = (page: string) => {
+    this.setState({page});
+  }
+
+  render() {
+    const { page } = this.state;
+
+    return (
+      <section className={Styles.CreateMarketView}>
+        <Helmet>
+          <title>Create Market</title>
+        </Helmet>
+        {page === LANDING &&
+          <Landing updatePage={this.updatePage} />
+        }
+        {page === SCRATCH && <Form {...this.props} updatePage={this.updatePage} />}
+      </section>
+    );
+  }
+}
 
 CreateMarketView.propTypes = {
   categories: PropTypes.array.isRequired,
@@ -36,5 +67,3 @@ CreateMarketView.defaultProps = {
   availableEth: "0",
   availableRep: "0"
 };
-
-export default CreateMarketView;
