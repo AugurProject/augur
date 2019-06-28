@@ -190,5 +190,6 @@ export const selectUserFilledOrders = createCachedSelector(
 )((state, marketId) => marketId);
 
 function isOwner(property: string, owner: string) {
+  if (property === undefined || owner === undefined) return false;
   return property.toLowerCase() === owner.toLowerCase();
 }
