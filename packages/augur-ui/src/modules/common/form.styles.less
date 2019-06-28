@@ -209,11 +209,20 @@
 }
 
 .RadioCardGroup {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-row-gap: 20px;
 
   > div:not(:last-of-type) {
     margin-right: @size-20;
   }
+}
+
+.Additional {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .RadioCard {
@@ -318,6 +327,17 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+    }
+  }
+
+  &.CustomIcon {
+    > svg {
+      width: @size-48;
+      height: @size-48;
+
+      > path {
+        stroke: @color-alternate-info-text;
+      }
     }
   }
 }

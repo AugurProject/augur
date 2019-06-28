@@ -3,13 +3,25 @@ import {
   SCALAR,
   CATEGORICAL
 } from "modules/common/constants";
+import { Sports, Politics, Finance, Crypto, Entertainment } from "modules/common/icons";
 
 // Button Types
 export const BACK = "back";
 export const NEXT = "next";
 export const CREATE = "create";
 
-// Page Content
+// Pages
+export const LANDING = "LANDING";
+export const SCRATCH = "SCRATCH";
+export const TEMPLATE = "TEMPLATE";
+
+export const MARKET_CREATION_PAGES = [
+	LANDING,
+	SCRATCH, 
+	TEMPLATE
+];
+
+// Scratch Page Content
 export const REVIEW = "review";
 export const FORM_DETAILS = "formDetails";
 
@@ -57,3 +69,44 @@ export const MARKET_TYPE_NAME = {
   [SCALAR]: "Scalar",
   [CATEGORICAL]: "Categorical"
 };
+
+// Market templates
+export const SPORTS = "Sports";
+export const POLITICS = "Politics";
+export const FINANCE = "Finance";
+export const ENTERTAINMENT = "Entertainment";
+export const CRYPTO = "Crypto";
+
+
+export const MARKET_TEMPLATES = [
+	{
+	  value: SPORTS,
+	  header: SPORTS,
+	  description: "80 Markets  |  76.1k",
+	  icon: Sports
+	},
+	{
+	  value: POLITICS,
+	  header: POLITICS,
+	  description: "110 Markets  |  134.5k",
+	  icon: Politics
+	},
+	{
+	  value: FINANCE,
+	  header: FINANCE,
+	  description: "100 Markets  |  127.4k",
+	  icon: Finance
+	},
+	{
+	  value: ENTERTAINMENT,
+	  header: ENTERTAINMENT,
+	  description: "125 Markets  |  717.2k",
+	  icon: Entertainment
+	},
+	{
+	  value: CRYPTO,
+	  header: CRYPTO,
+	  description: "148 Markets  |  827.4k",
+	  icon: Crypto
+	},
+]
