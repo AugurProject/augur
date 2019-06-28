@@ -118,7 +118,7 @@
 	display: flex;
 	flex-direction: column;
 			
-	> span:first-of-type {
+	> h1 {
 		.mono-10;
 
 		color: @color-tertiary-info-text;
@@ -126,7 +126,8 @@
 		text-transform: uppercase;
 	}
 
-	> span:nth-of-type(2) {
+	> span,
+	> div > span {
 		.text-16-medium;
 
 		color: @color-alternate-info-text;
@@ -134,6 +135,19 @@
 
 	&:not(:last-of-type) {
 		margin-bottom: @size-32;
+	}
+}
+
+.OutcomesList {
+	.SmallSubheaders;
+
+	> div {
+		display: flex;
+    	flex-direction: column;
+
+    	> span:not(:last-of-type) {
+    		margin-bottom: @size-8;
+    	}
 	}
 }
 

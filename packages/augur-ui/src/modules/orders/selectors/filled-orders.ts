@@ -4,18 +4,15 @@ import { BUY, SELL } from "modules/common/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import {
   selectMarketsDataState,
-  selectOutcomesDataState,
   selectMarketTradingHistoryState,
   selectLoginAccountAddress,
 } from "store/select-state";
 import createCachedSelector from "re-reselect";
 import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
-import { getOutcomeName } from "utils/get-outcome";
 
 function findOrders(
   tradesCreatedOrFilledByThisAccount,
   accountId,
-  outcomesData,
   marketInfos,
   openOrders,
 ) {
@@ -32,7 +29,7 @@ function findOrders(
   // fake order is never reused, it's only used for the single self-filled trade.
   const tradesIncludingSelfTrades = tradesCreatedOrFilledByThisAccount.concat(
     tradesCreatedOrFilledByThisAccount
-      .filter((trade) => trade.creator === trade.filler)
+      .filter((trade) => isOwner(trade.creator, trade.filler))
       .map((selfFilledTrade) =>
         Object.assign({}, selfFilledTrade, {
           orderId: `${selfFilledTrade.transactionHash}-${
@@ -64,13 +61,8 @@ function findOrders(
       const priceBN = createBigNumber(price);
       let typeOp = type;
 
-      const outcomeName = getOutcomeName(
-        marketInfos,
-        (outcomesData || {})[outcome],
-      );
-
       let originalQuantity = amountBN;
-      if (accountId === creator && !foundOrder) {
+      if (isOwner(creator, accountId) && !foundOrder) {
         typeOp = type === BUY ? SELL : BUY; // marketTradingHistory is from filler perspective
 
         const matchingOpenOrder = openOrders.find(
@@ -86,11 +78,11 @@ function findOrders(
       }
 
       const timestampFormatted = convertUnixToFormattedDate(timestamp);
-      const marketDescription = marketInfos[marketId].description;
-
+      const marketDescription = marketInfos.description;
+      const outcomeValue = marketInfos.outcomes.find(o => o.id === outcome);
       if (foundOrder) {
         foundOrder.trades.push({
-          outcome: outcomeName,
+          outcome: outcomeValue.description,
           amount: amountBN,
           price: priceBN,
           type: typeOp,
@@ -112,14 +104,14 @@ function findOrders(
 
         foundOrder.timestamp = foundOrder.trades[0].timestamp;
 
-        if (accountId !== creator) {
+        if (!isOwner(creator, accountId)) {
           foundOrder.originalQuantity = foundOrder.amount;
         }
       } else {
         order.push({
           id: orderId,
           timestamp: timestampFormatted,
-          outcome: outcomeName,
+          outcome: outcomeValue.description,
           type: typeOp,
           price: priceBN,
           amount: amountBN,
@@ -129,7 +121,7 @@ function findOrders(
           logIndex,
           trades: [
             {
-              outcome: outcomeName,
+              outcome: outcomeValue.description,
               amount: amountBN,
               price: priceBN,
               type: typeOp,
@@ -160,10 +152,6 @@ function selectMarketTradingHistoryStateMarket(state, marketId) {
   return selectMarketTradingHistoryState(state)[marketId];
 }
 
-function selectOutcomesDataStateMarket(state, marketId) {
-  return selectOutcomesDataState(state)[marketId];
-}
-
 export default function(marketId) {
   if (!marketId) return [];
   return selectUserFilledOrders(store.getState(), marketId);
@@ -172,10 +160,9 @@ export default function(marketId) {
 export const selectUserFilledOrders = createCachedSelector(
   selectMarketTradingHistoryStateMarket,
   selectLoginAccountAddress,
-  selectOutcomesDataStateMarket,
   selectMarketsDataStateMarket,
   selectUserOpenOrders,
-  (marketTradeHistory, accountId, outcomesData, marketInfos, openOrders) => {
+  (marketTradeHistory, accountId, marketInfos, openOrders) => {
     if (
       !marketTradeHistory ||
       marketTradeHistory.length < 1 ||
@@ -185,13 +172,12 @@ export const selectUserFilledOrders = createCachedSelector(
     }
 
     const tradesCreatedOrFilledByThisAccount = marketTradeHistory.filter(
-      (trade) => trade.creator === accountId || trade.filler === accountId,
+      (trade) => isOwner(trade.creator, accountId) || isOwner(trade.filler, accountId),
     );
 
     const orders = findOrders(
       tradesCreatedOrFilledByThisAccount,
       accountId,
-      outcomesData,
       marketInfos,
       openOrders,
     );
@@ -202,3 +188,7 @@ export const selectUserFilledOrders = createCachedSelector(
     return orders || [];
   },
 )((state, marketId) => marketId);
+
+function isOwner(property: string, owner: string) {
+  return property.toLowerCase() === owner.toLowerCase();
+}

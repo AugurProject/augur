@@ -77,6 +77,8 @@ export interface MarketTrade {
   outcome: number;
   timestamp: number;
   tradeGroupId: string | null;
+  creator: string;
+  filler: string;
 }
 
 export enum OrderState {
@@ -242,6 +244,8 @@ export class Trading {
             amount: amount.toString(10),
             settlementFees: fees.toString(10),
             timestamp: new BigNumber(orderFilledDoc.timestamp).toNumber(),
+            creator: orderFilledDoc.orderCreator,
+            filler: orderFilledDoc.orderFiller,
           }
         ) as MarketTrade);
         return trades;

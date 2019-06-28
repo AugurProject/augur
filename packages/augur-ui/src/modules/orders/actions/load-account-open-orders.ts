@@ -14,7 +14,7 @@ export const loadAccountOpenOrders = (
   const orders = await Augur.getTradingOrders({
     ...options,
     universe: universe.id,
-    creator: loginAccount.address,
+    account: loginAccount.address,
     orderState: OPEN,
     ignoreReportingStates: [REPORTING_STATE.FINALIZED]
   });
