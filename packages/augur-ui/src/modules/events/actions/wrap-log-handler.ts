@@ -27,9 +27,6 @@ export const wrapLogHandler = (
           dispatch(logHandler(log));
       });
     } else {
-      const isInCurrentUniverse = Object.values(log).find(
-        value => universeId === value
-      );
       if (
         isInCurrentUniverse ||
         (log.contractName === "Cash" && log.eventName === "Approval")

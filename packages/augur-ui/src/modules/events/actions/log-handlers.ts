@@ -78,7 +78,10 @@ const loadUserPositionsAndBalances = (marketId: string) => (
 export const handleNewBlockLog = (log: any) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(
     updateBlockchain({
-      currentBlockNumber: log.blockNumber,
+      currentBlockNumber: log.highestAvailableBlockNumber,
+      blocksBehindCurrent: log.blocksBehindCurrent,
+      lastSyncedBlockNumber: log.lastSyncedBlockNumber,
+      percentBehindCurrent: log.percentBehindCurrent,
       currentAugurTimestamp: log.timestamp,
     }));
 };
