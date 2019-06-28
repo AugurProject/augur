@@ -96,11 +96,6 @@ export interface MarketData extends MarketInfo {
   marketOutcomes: Array<MarketOutcome>;
 };
 
-export interface OutcomesData {
-  [marketId: string]: {
-    [outcomeId: string]: MarketData;
-  };
-}
 export interface TransacitonStatus {
   [pendingId: string]: {
     status: string;
