@@ -84,7 +84,7 @@ export const SmallHeaderLink = (props: HeaderLinkProps) => (
 );
 
 export const LargeSubheaders = (props: SubheadersProps) => (
-  <div className={Styles.LargeSubheaders}>
+  <div className={Styles.Subheaders}>
     <Header text={props.header} />
     <SmallHeaderLink 
       text={props.subheader} 
