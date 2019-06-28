@@ -4,7 +4,6 @@ import MarketOutcomesChartHighchart from "modules/market-charts/components/marke
 
 import { selectMarket } from "modules/markets/selectors/market";
 import selectBucketedPriceTimeSeries from "modules/markets/selectors/select-bucketed-price-time-series";
-import { createBigNumber } from "utils/create-big-number";
 import { SCALAR } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {

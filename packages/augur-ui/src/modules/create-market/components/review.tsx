@@ -3,9 +3,17 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { Header, LineBreak, SmallSubheaders, Subheaders } from "modules/create-market/components/common";
+import { 
+  Header, 
+  LineBreak, 
+  SmallSubheaders, 
+  Subheaders, 
+  OutcomesList
+} from "modules/create-market/components/common";
 import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
+  SCALAR, 
+  CATEGORICAL, 
   EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF
 } from "modules/common/constants";
@@ -47,7 +55,12 @@ export default class Review extends React.Component<
       expirySourceType,
       expirySource,
       designatedReporterType,
-      designatedReporterAddress
+      designatedReporterAddress,
+      scalarDenomination,
+      minPrice,
+      maxPrice,
+      tickSize,
+      outcomes
     } = newMarket;
 
     return (
@@ -58,6 +71,18 @@ export default class Review extends React.Component<
           <SmallSubheaders header="Category" subheader={category} />
           <SmallSubheaders header="Sub-category" subheader={tag1} />
           <SmallSubheaders header="Market Question" subheader={description} />
+          {type === SCALAR &&
+            <>
+              <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
+              <SmallSubheaders header="Numeric range" subheader={minPrice + "-" + maxPrice} />
+              <SmallSubheaders header="precision" subheader={tickSize} />
+            </>
+          }
+          {type === CATEGORICAL &&
+            <OutcomesList 
+              outcomes={outcomes}
+            />
+          }
         </div>
 
         <LineBreak />

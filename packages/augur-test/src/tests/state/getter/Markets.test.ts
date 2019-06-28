@@ -1225,16 +1225,16 @@ describe('State API :: Markets :: ', () => {
             ],
             bids: [
               {
-                price: '0.21',
-                shares: '0.002',
-                cumulativeShares: '0.002',
-                mySize: '0.002',
-              },
-              {
                 price: '0.22',
                 shares: '0.003',
-                cumulativeShares: '0.005',
+                cumulativeShares: '0.003',
                 mySize: '0.003',
+              },
+              {
+                price: '0.21',
+                shares: '0.002',
+                cumulativeShares: '0.005',
+                mySize: '0.002',
               },
             ],
           },
@@ -1255,16 +1255,16 @@ describe('State API :: Markets :: ', () => {
             ],
             bids: [
               {
-                price: '0.21',
-                shares: '0.002',
-                cumulativeShares: '0.002',
-                mySize: '0.002',
-              },
-              {
                 price: '0.22',
                 shares: '0.003',
-                cumulativeShares: '0.005',
+                cumulativeShares: '0.003',
                 mySize: '0.003',
+              },
+              {
+                price: '0.21',
+                shares: '0.002',
+                cumulativeShares: '0.005',
+                mySize: '0.002',
               },
             ],
           },

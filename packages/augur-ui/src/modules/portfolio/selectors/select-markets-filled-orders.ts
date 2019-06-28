@@ -1,16 +1,16 @@
-import { createSelector } from "reselect";
-import store from "store";
-import * as constants from "modules/common/constants";
+import { createSelector } from 'reselect';
+import store from 'store';
+import * as constants from 'modules/common/constants';
 import {
   selectMarketReportState,
   selectLoginAccountAddress,
   selectFilledOrders,
-} from "store/select-state";
-import { selectMarket } from "modules/markets/selectors/market";
-import { keyArrayBy } from "utils/key-by";
-import getUserFilledOrders from "modules/orders/selectors/filled-orders";
-import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
-import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
+} from 'store/select-state';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { keyArrayBy } from 'utils/key-by';
+import getUserFilledOrders from 'modules/orders/selectors/filled-orders';
+import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
+import getMarketsPositionsRecentlyTraded from 'modules/portfolio/selectors/select-markets-positions-recently-traded';
 
 export default function() {
   return marketsFilledOrders(store.getState());
@@ -21,18 +21,13 @@ export const marketsFilledOrders = createSelector(
   selectLoginAccountAddress,
   selectFilledOrders,
   getMarketsPositionsRecentlyTraded,
-  (
-    marketReportState,
-    loginAccountAddress,
-    filledOrders,
-    timestamps,
-  ) => {
+  (marketReportState, loginAccountAddress, filledOrders, timestamps) => {
     const marketIds = filterMarketIds(
       filledOrders[loginAccountAddress] || [],
-      marketReportState.resolved,
+      marketReportState.resolved
     );
     const markets = filterMarketsByStatus(marketIds, timestamps).sort(
-      (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp,
+      (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
     );
     const allFilledOrders = getAllUserFilledOrders(marketIds);
 
@@ -42,23 +37,19 @@ export const marketsFilledOrders = createSelector(
       ordersObj: keyObjectsById(allFilledOrders),
       filledOrders: allFilledOrders,
     };
-  },
+  }
 );
 
 const filterMarketIds = (userFilledOrders, resolvedMarkets) =>
-  Object.keys(
-    keyArrayBy(
-      userFilledOrders.reduce(
-        (p, m) => (resolvedMarkets.indexOf(m.marketId) === -1 ? [...p, m] : p),
-        [],
-      ),
-      "marketId",
-    ),
+  Object.keys(userFilledOrders).reduce(
+    (p, m) => (resolvedMarkets.indexOf(m) === -1 ? [...p, m] : p),
+    []
   );
 
 const filterMarketsByStatus = (marketIds, marketsPositionsRecentlyTraded) =>
   marketIds.reduce((p, m) => {
     const market = selectMarket(m);
+    if (!market) return [...p];
     if (
       Object.keys(market).length === 0 ||
       market.marketStatus === constants.MARKET_CLOSED
@@ -79,13 +70,13 @@ const filterMarketsByStatus = (marketIds, marketsPositionsRecentlyTraded) =>
     ];
   }, []);
 
-const getAllUserFilledOrders = (marketIds) =>
+const getAllUserFilledOrders = marketIds =>
   marketIds.reduce(
     (p, marketId) => [...p, ...(getUserFilledOrders(marketId) || [])],
-    [],
+    []
   );
 
-const keyObjectsById = (array) =>
+const keyObjectsById = array =>
   array.reduce((obj, o) => {
     obj[o.id] = o;
     return obj;

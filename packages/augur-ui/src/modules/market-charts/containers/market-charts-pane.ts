@@ -19,8 +19,8 @@ const mapStateToProps = (state: AppState, ownProps: any) => {
   return {
     currentTimestamp,
     daysPassed,
-    minPrice: market.minPrice || createBigNumber(0),
-    maxPrice: market.maxPrice || createBigNumber(0),
+    minPrice: market.minPriceBigNumber || createBigNumber(0),
+    maxPrice: market.maxPriceBigNumber || createBigNumber(0),
   };
 };
 

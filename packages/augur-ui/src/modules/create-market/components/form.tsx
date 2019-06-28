@@ -4,7 +4,7 @@ import classNames from "classnames";
 import moment from "moment";
 
 import { LocationDisplay } from "modules/common/form";
-import { BACK, NEXT, CREATE, CUSTOM_CONTENT_PAGES, REVIEW, FORM_DETAILS } from "modules/create-market/constants";
+import { BACK, NEXT, CREATE, CUSTOM_CONTENT_PAGES, REVIEW, FORM_DETAILS, LANDING } from "modules/create-market/constants";
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { LargeHeader, ExplainerBlock, ContentBlock } from "modules/create-market/components/common";
@@ -18,6 +18,7 @@ interface FormProps {
   newMarket: Object;
   updateNewMarket: Function;
   address: String;
+  updatePage: Function;
 }
 
 interface FormState {
@@ -32,9 +33,13 @@ export default class Form extends React.Component<
     empty: ""
   };
 
-
   prevPage = () => {
-    const { newMarket, updateNewMarket } = this.props;
+    const { newMarket, updateNewMarket, updatePage } = this.props;
+
+    if (newMarket.currentStep <= 0) {
+      updatePage(LANDING);
+    }
+
     const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
     updateNewMarket({ currentStep: newStep });
   }

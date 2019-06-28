@@ -128,18 +128,20 @@ test('UserSynableDB.sync', async () => {
 test('props', async () => {
   const dbController = await mock.makeDB(john.augur, ACCOUNTS);
 
-  const eventName = 'foo';
-  const user = 'artistotle';
-  const db = new UserSyncableDB(
-    john.augur,
-    dbController,
-    mock.constants.networkId,
-    eventName,
-    user,
-    2,
-    [0]
-  );
+  function createDB() {
+    const eventName = 'foo';
+    const user = 'artistotle';
+    return new UserSyncableDB(
+      john.augur,
+      dbController,
+      mock.constants.networkId,
+      eventName,
+      user,
+      2,
+      [0]
+    );
+  }
 
   // @ts-ignore - verify private property "additionalTopics"
-  expect(db.additionalTopics).toEqual([['0x000000000000000000000000tistotle']]);
+  expect(createDB).toThrowError('invalid address (arg="address", value="artistotle", version=4.0.24)');
 });
