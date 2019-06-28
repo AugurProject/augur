@@ -114,7 +114,7 @@ function findOrders(
         order.push({
           id: orderId,
           timestamp: timestampFormatted,
-          outcome: outcomeName,
+          outcome: outcome.description,
           type: typeOp,
           price: priceBN,
           amount: amountBN,
@@ -124,7 +124,7 @@ function findOrders(
           logIndex,
           trades: [
             {
-              outcome: outcomeName,
+              outcome: outcome.description,
               amount: amountBN,
               price: priceBN,
               type: typeOp,
