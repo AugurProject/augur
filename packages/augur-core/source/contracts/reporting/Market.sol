@@ -95,13 +95,13 @@ contract Market is Initializable, Ownable, IMarket {
 
     /**
      * @notice Increase the validity bond by sending more Cash to this contract
-     * @param _attoCASH the amount of Cash to send and increase the validity bond by
+     * @param _attoCash the amount of Cash to send and increase the validity bond by
      * @return Bool True
      */
-    function increaseValidityBond(uint256 _attoCASH) public returns (bool) {
+    function increaseValidityBond(uint256 _attoCash) public returns (bool) {
         require(!isFinalized());
-        cash.transferFrom(msg.sender, address(this), _attoCASH);
-        validityBondAttoCash = validityBondAttoCash.add(_attoCASH);
+        cash.transferFrom(msg.sender, address(this), _attoCash);
+        validityBondAttoCash = validityBondAttoCash.add(_attoCash);
         return true;
     }
 

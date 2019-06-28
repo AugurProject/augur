@@ -12,7 +12,7 @@ import 'ROOT/IAugur.sol';
 /**
  * @title Market Factory
  * @notice A Factory contract to create Market delegate contracts
- * @dev This factory is a trusted Augur contract which means it has REP transfer priveleges. The additional validation logic that occurs here and not in the Market contract itself is to reduce the Market contract's size as each require error message adds an additional ~100 bytes 
+ * @dev This factory is a trusted Augur contract which means it has REP transfer privileges. The additional validation logic that occurs here and not in the Market contract itself is to reduce the Market contract's size as each require error message adds an additional ~100 bytes
  */
 contract MarketFactory is CloneFactory, IMarketFactory {
     uint256 private constant MAX_FEE_PER_CASH_IN_ATTOCASH = 15 * 10**16; // 15%

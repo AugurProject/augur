@@ -9474,7 +9474,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_attoCASH",
+					"name": "_attoCash",
 					"type": "uint256"
 				}
 			],

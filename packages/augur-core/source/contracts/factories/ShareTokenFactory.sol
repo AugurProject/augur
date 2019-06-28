@@ -9,7 +9,7 @@ import 'ROOT/IAugur.sol';
 /**
  * @title Share Token Factory
  * @notice A Factory contract to create Share Token contracts
- * @dev Should not be used directly. Only instended to be used by Market contracts
+ * @dev Should not be used directly. Only intended to be used by Market contracts.
  */
 contract ShareTokenFactory is CloneFactory {
     function createShareToken(IAugur _augur, uint256 _outcome) public returns (IShareToken) {
