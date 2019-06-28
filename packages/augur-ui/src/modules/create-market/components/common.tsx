@@ -114,10 +114,27 @@ export const Link = (props: LinkProps) => (
 
 export const SmallSubheaders = (props: SubheadersProps) => (
   <div className={Styles.SmallSubheaders}>
-    <span>{props.header}</span>
+    <h1>{props.header}</h1>
     <span>
       {props.subheader}
     </span>
+  </div>        
+);
+
+export interface OutcomesListProps {
+  outcomes: Array<string>;
+}
+
+export const OutcomesList = (props: OutcomesListProps) => (
+  <div className={Styles.OutcomesList}>
+    <h1>Outcomes</h1>
+    <div>
+      {props.outcomes.map((outcome:string, index: Number) => 
+        <span>
+          {index + 1}. {outcome}
+        </span>
+      )}
+    </div>
   </div>        
 );
 
