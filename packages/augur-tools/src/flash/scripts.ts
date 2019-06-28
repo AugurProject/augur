@@ -170,7 +170,7 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession) {
       const user = await this.ensureUser();
       await user.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-      await createCannedMarketsAndOrders(user);
+      return createCannedMarketsAndOrders(user);
     },
   });
 

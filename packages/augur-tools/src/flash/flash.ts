@@ -21,7 +21,7 @@ export interface FlashScript {
   name: string;
   description?: string;
   options?: FlashOption[];
-  call(this: FlashSession, args: FlashArguments): Promise<void>;
+  call(this: FlashSession, args: FlashArguments): Promise<any>;
 }
 
 export class FlashSession {
@@ -50,7 +50,7 @@ export class FlashSession {
     this.scripts[script.name] = script;
   }
 
-  async call(name: string, args: FlashArguments): Promise<void> {
+  async call(name: string, args: FlashArguments): Promise<any> {
     const script = this.scripts[name];
 
     // Make sure required parameters are present.
@@ -64,7 +64,7 @@ export class FlashSession {
       }
     }
 
-    await script.call.bind(this)(args);
+    return script.call.bind(this)(args);
   }
 
   loadSeed() {

@@ -6,17 +6,19 @@ import { formatBytes32String } from "ethers/utils";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from "@augurproject/sdk";
 
-import { ContractAPI } from "../libs/contract-api";
+import { ContractAPI } from "..";
 import { cannedMarkets, CannedMarket } from "./data/canned-markets";
 
-async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<GenericAugurInterfaces.Market<BigNumber>> {
+type Market = GenericAugurInterfaces.Market<BigNumber>;
+
+async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<Market> {
   console.log("CREATING CANNED MARKET: ", can.extraInfo.description);
 
   const { endTime, affiliateFeeDivisor } = can;
   const feePerEthInWei = new BigNumber(10).pow(16);
   const designatedReporter = person.account.publicKey;
 
-  let market: GenericAugurInterfaces.Market<BigNumber>;
+  let market: Market;
   switch (can.marketType) {
     case "yesNo":
       market = await person.createYesNoMarket({
@@ -79,7 +81,7 @@ function generateRandom32ByteHex() {
 }
 
 async function placeOrder(person: ContractAPI,
-                          market: GenericAugurInterfaces.Market<BigNumber>,
+                          market: Market,
                           can: CannedMarket,
                           tradeGroupId: string,
                           outcome: BigNumber,
@@ -111,7 +113,7 @@ async function placeOrder(person: ContractAPI,
   );
 }
 
-async function createOrderBook(person: ContractAPI, market: GenericAugurInterfaces.Market<BigNumber>, can: CannedMarket) {
+async function createOrderBook(person: ContractAPI, market: Market, can: CannedMarket) {
   const tradeGroupId = generateRandom32ByteHex();
 
   for (let a = 0; a < Object.keys(can.orderBook).length; a++) {
@@ -132,9 +134,12 @@ async function createOrderBook(person: ContractAPI, market: GenericAugurInterfac
   }
 }
 
-export async function createCannedMarketsAndOrders(person: ContractAPI) {
+export async function createCannedMarketsAndOrders(person: ContractAPI): Promise<Market[]> {
+  const markets = [];
   for (const can of cannedMarkets) {
     const market = await createCannedMarket(person, can);
+    markets.push(market);
     await createOrderBook(person, market, can);
   }
+  return markets;
 }
