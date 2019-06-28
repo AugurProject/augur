@@ -1,13 +1,11 @@
-import { ACCOUNTS, deployContracts } from '../../libs';
+import { makeProvider, seedPath } from "../../libs";
 import { Contracts } from '@augurproject/sdk/build/api/Contracts';
+import { deployContracts, ACCOUNTS } from '@augurproject/tools';
 import { GenericAugurInterfaces } from '@augurproject/core';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from "ethers/utils";
-import {
-  ContractAddresses,
-  Contracts as compilerOutput,
-} from '@augurproject/artifacts';
+import { ContractAddresses } from '@augurproject/artifacts';
 
 interface MarketCreatedEvent {
   name: 'MarketCreated';
@@ -20,7 +18,8 @@ let addresses: ContractAddresses;
 let dependencies: ContractDependenciesEthers;
 let contracts: Contracts;
 beforeAll(async () => {
-  const result = await deployContracts(ACCOUNTS, compilerOutput);
+  const provider = await makeProvider(ACCOUNTS);
+  const result = await deployContracts(provider, seedPath, ACCOUNTS);
   addresses = result.addresses;
   dependencies = result.dependencies;
   contracts = new Contracts(addresses, dependencies);

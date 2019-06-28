@@ -1,10 +1,9 @@
-import { AccountList } from "./ganache";
+import { Account } from "./libs/ganache";
 
 export const _1_ETH = 1000000000000000000;
-export const _100_ETH = _1_ETH * 100;
 export const _10000_ETH = _1_ETH * 10000;
 
-export const ACCOUNTS: AccountList = [
+export const ACCOUNTS: Account[] = [
   {
     secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
     publicKey: "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",

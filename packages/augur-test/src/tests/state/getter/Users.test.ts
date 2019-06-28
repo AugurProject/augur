@@ -1,10 +1,9 @@
 import {
-  ACCOUNTS,
   makeDbMock,
-  deployContracts,
+  makeProvider,
+  seedPath,
 } from '../../../libs';
-import { ContractAPI } from "@augurproject/tools";
-import { Contracts as compilerOutput } from '@augurproject/artifacts';
+import { ContractAPI, deployContracts, ACCOUNTS } from "@augurproject/tools";
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import {
@@ -69,10 +68,9 @@ describe('State API :: Users :: ', () => {
   let mary: ContractAPI;
 
   beforeAll(async () => {
-    const { provider, addresses } = await deployContracts(
-      ACCOUNTS,
-      compilerOutput
-    );
+    const provider = await makeProvider(ACCOUNTS);
+    const { addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
+
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);

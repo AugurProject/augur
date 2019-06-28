@@ -6,7 +6,7 @@ import { formatBytes32String } from "ethers/utils";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from "@augurproject/sdk";
 
-import { ContractAPI } from "./contract-api";
+import { ContractAPI } from "../libs/contract-api";
 import { cannedMarkets, CannedMarket } from "./data/canned-markets";
 
 async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<GenericAugurInterfaces.Market<BigNumber>> {

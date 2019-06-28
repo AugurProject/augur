@@ -7,11 +7,9 @@ import {
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import {
-  ACCOUNTS,
-  deployContracts,
-  makeDbMock,
-} from '../../../libs';
-import { ContractAPI } from "@augurproject/tools";
+  makeDbMock, makeProvider, seedPath
+} from "../../../libs";
+import { ContractAPI, ACCOUNTS, deployContracts } from "@augurproject/tools";
 import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
@@ -28,7 +26,8 @@ describe('State API :: Markets :: ', () => {
   let mary: ContractAPI;
 
   beforeAll(async () => {
-    const { provider, addresses } = await deployContracts(ACCOUNTS, null);
+    const provider = await makeProvider(ACCOUNTS);
+    const { addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);

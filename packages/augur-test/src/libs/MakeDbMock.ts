@@ -2,7 +2,7 @@ import { PouchDBFactoryType } from "@augurproject/sdk/build/state/db/AbstractDB"
 import PouchDB from "pouchdb";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Augur } from "@augurproject/sdk";
-import { AccountList } from "./LocalAugur";
+import { Account } from "@augurproject/tools";
 import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import * as _ from "lodash";
 
@@ -101,7 +101,7 @@ export function makeDbMock() {
       mockState.failCountdown = -1;
       mockState.alwaysFail = false;
     },
-    makeDB: (augur: Augur, accounts: AccountList) => DB.createAndInitializeDB(
+    makeDB: (augur: Augur, accounts: Account[]) => DB.createAndInitializeDB(
       constants.networkId,
       constants.blockstreamDelay,
       constants.defaultStartSyncBlockNumber,

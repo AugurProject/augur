@@ -1,6 +1,5 @@
 import { seedFileIsOutOfDate, createSeedFile } from "./generate-ganache-seed";
-import { AccountList } from "./ganache";
-import { ContractAPI } from "./contract-api";
+import { ContractAPI, Account } from "..";
 
 import { GanacheServer } from "ganache-core";
 import { ethers } from "ethers";
@@ -27,7 +26,7 @@ export interface FlashScript {
 
 export class FlashSession {
   // Configuration
-  accounts: AccountList;
+  accounts: Account[];
   user?: ContractAPI;
   readonly scripts: {[name: string]: FlashScript} = {};
   log: (s: string) => void = console.log;
@@ -41,7 +40,7 @@ export class FlashSession {
   ganacheProvider?: ethers.providers.Web3Provider;
   ganacheServer?: GanacheServer;
 
-  constructor(accounts: AccountList, seedFilePath?: string, logger?: (s: string) => void) {
+  constructor(accounts: Account[], seedFilePath?: string, logger?: (s: string) => void) {
     this.accounts = accounts;
     this.seedFilePath = seedFilePath || this.seedFilePath;
     this.log = logger || this.log;

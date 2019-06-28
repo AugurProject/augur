@@ -1,7 +1,7 @@
-import { makeGanacheProvider, makeGanacheServer, deployContracts } from "./ganache";
+import { makeGanacheProvider, makeGanacheServer, deployContracts } from "../libs/ganache";
 import { FlashSession, FlashArguments } from "./flash";
 import { createCannedMarketsAndOrders } from "./create-canned-markets-and-orders";
-import { _1_ETH } from "./constants";
+import { _1_ETH } from "../constants";
 
 import { ethers } from "ethers";
 import * as ganache from "ganache-core";

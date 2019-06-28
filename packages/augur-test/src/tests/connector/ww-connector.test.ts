@@ -1,8 +1,7 @@
-import {
-  ACCOUNTS,
-  makeDbMock,
-  deployContracts,
-} from "../../libs";
+// import {
+//   ACCOUNTS,
+//   makeDbMock,
+// } from "../../libs";
 
 import { API } from "@augurproject/sdk/build/state/getter/API";
 import { BigNumber } from "bignumber.js";
@@ -19,7 +18,7 @@ import { SubscriptionEventNames } from "@augurproject/sdk/build/constants";
 // let addresses: any;
 // let db: Promise<DB>;
 
-const mock = makeDbMock();
+// const mock = makeDbMock();
 
 // jest.mock("@augurproject/sdk/build/state/Sync.worker", () => {
 //   return {

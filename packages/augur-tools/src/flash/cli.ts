@@ -1,7 +1,7 @@
 import { FlashSession } from "./flash";
 import Vorpal from "vorpal";
 import { addScripts } from "./scripts";
-import { ACCOUNTS } from "./constants";
+import { ACCOUNTS } from "../constants";
 import { ArgumentParser } from "argparse";
 import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
 import { providers } from "ethers";

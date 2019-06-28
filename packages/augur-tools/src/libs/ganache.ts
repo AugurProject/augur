@@ -16,8 +16,6 @@ export interface Account {
   balance: number;
 }
 
-export type AccountList = Account[];
-
 const augurCorePath = path.join(__dirname, "../../../augur-core/");
 
 export function makeDeployerConfiguration(writeArtifacts = true) {
@@ -46,7 +44,7 @@ export interface UsefulContractObjects {
   addresses: ContractAddresses;
 }
 
-export async function deployContracts(provider: EthersProvider, seedFilePath: string, accounts: AccountList): Promise<UsefulContractObjects> {
+export async function deployContracts(provider: EthersProvider, seedFilePath: string, accounts: Account[]): Promise<UsefulContractObjects> {
   const seed = require(seedFilePath);
 
   const signer = await makeSigner(accounts[0], provider);
@@ -55,12 +53,12 @@ export async function deployContracts(provider: EthersProvider, seedFilePath: st
   return {provider, signer, dependencies, addresses};
 }
 
-export async function makeGanacheProvider(seedFilePath: string, accounts: AccountList): Promise<ethers.providers.Web3Provider> {
+export async function makeGanacheProvider(seedFilePath: string, accounts: Account[]): Promise<ethers.providers.Web3Provider> {
   const db = await setupGanacheDb(seedFilePath);
   return new ethers.providers.Web3Provider(ganache.provider(makeGanacheOpts(accounts, db)));
 }
 
-export async function makeGanacheServer(seedFilePath: string, accounts: AccountList): Promise<ganache.GanacheServer> {
+export async function makeGanacheServer(seedFilePath: string, accounts: Account[]): Promise<ganache.GanacheServer> {
   const db = await setupGanacheDb(seedFilePath);
   return ganache.server(makeGanacheOpts(accounts, db));
 }
@@ -80,7 +78,7 @@ async function setupGanacheDb(seedFilePath: string): Promise<MemDown> {
   return db;
 }
 
-function makeGanacheOpts(accounts: AccountList, db: MemDown) {
+function makeGanacheOpts(accounts: Account[], db: MemDown) {
   return {
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
