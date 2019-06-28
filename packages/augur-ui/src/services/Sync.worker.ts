@@ -8,8 +8,11 @@ const subscriptions = new Subscriptions(augurEmitter);
 
 ctx.addEventListener("message", async (message: any) => {
   if (message.data.subscribe) {
-    const subscription: string = subscriptions.subscribe(message.data.subscribe, (data: {}): void => {
-      ctx.postMessage(data);
+    const subscription: string = subscriptions.subscribe(message.data.subscribe, (data: {eventName: string}): void => {
+      ctx.postMessage({
+        eventName: data.eventName,
+        result: data,
+      });
     });
 
     ctx.postMessage({ subscribed: message.data.subscribe, subscription });

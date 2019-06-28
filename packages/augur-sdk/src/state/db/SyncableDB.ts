@@ -192,7 +192,10 @@ export class SyncableDB extends AbstractDB {
     if (success) {
       if (documents && (documents as Array<any>).length) {
         _.each(documents, (document: any) => {
-          augurEmitter.emit(this.eventName, document);
+          augurEmitter.emit(this.eventName, {
+            eventName: this.eventName,
+            ...document,
+          });
         });
       }
 
@@ -212,6 +215,7 @@ export class SyncableDB extends AbstractDB {
       const percentBehindCurrent = (blocksBehindCurrent / highestAvailableBlockNumber * 100).toFixed(4);
 
       augurEmitter.emit(SubscriptionEventNames.NewBlock, {
+        eventName: SubscriptionEventNames.NewBlock,
         highestAvailableBlockNumber,
         lastSyncedBlockNumber: blockNumber,
         blocksBehindCurrent,

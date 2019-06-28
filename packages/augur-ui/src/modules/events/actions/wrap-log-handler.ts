@@ -5,11 +5,10 @@ import { AppState } from "store";
 
 export const wrapLogHandler = (
   logHandler: any = defaultLogHandler
-): ThunkAction<any, any, any, any> => (
+) => (log: any):ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
-) => (err: any, log: any) => {
-  if (err) return console.error((log || {}).eventName, err, log);
+) => {
   if (log) {
     // console.info(`${new Date().toISOString()} LOG ${log.removed ? 'REMOVED' : 'ADDED'} ${log.eventName} ${JSON.stringify(log)}`)
     const universeId: string = getState().universe.id;
