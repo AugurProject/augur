@@ -139,5 +139,5 @@ test('props', async () => {
   );
 
   // @ts-ignore - verify private property "additionalTopics"
-  expect(db.additionalTopics).toEqual([['0x000000000000000000000000tistotle']]);
+  expect(db.additionalTopics).toEqual([['0x000000000000000000000000000000000000000000000000000000artistotle']]);
 });
