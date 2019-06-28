@@ -1,0 +1,21 @@
+@import (reference) "~assets/styles/shared";
+
+.Review {
+	display: flex;
+    flex-direction: column;
+
+    > div:first-of-type {
+	    grid-template-columns: repeat(3, 1fr);
+    	display: grid;
+    }
+
+    > div:last-of-type {
+    	> span > div {
+    		max-width: 260px;
+
+            > span > div {
+                max-width: 260px;
+            }
+    	}
+    }
+}

@@ -56,7 +56,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   state: DropdownState = {
     selected: this.props.defaultValue
       ? this.props.options.find(o => o.value === this.props.defaultValue)
-      : this.props.options[0],
+      : (this.props.staticLabel ? null : this.props.options[0]),
     showList: false
   };
 
@@ -108,6 +108,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       openTop,
       className,
       activeClassName,
+      staticLabel
     } = this.props;
     const { selected, showList } = this.state;
 
@@ -130,7 +131,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         onClick={this.toggleList}
       >
         <button className={Styles.Dropdown_label}>
-          {selected.label} {large ? TwoArrows : Chevron}
+          {selected ? selected.label : staticLabel} {large ? TwoArrows : Chevron}
         </button>
         <div
           className={classNames(Styles.Dropdown_list, {
@@ -147,18 +148,20 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             </button>
           ))}
         </div>
-        <select
-          onChange={e => {
-            this.dropdownSelect(e.target.options[e.target.selectedIndex]);
-          }}
-          value={selected.value}
-        >
-          {options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        {selected && 
+          <select
+            onChange={e => {
+              this.dropdownSelect(e.target.options[e.target.selectedIndex]);
+            }}
+            value={selected.value}
+          >
+            {options.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        }
       </div>
     );
   }
