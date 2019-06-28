@@ -126,8 +126,11 @@ export default class Form extends React.Component<
           {mainContent === REVIEW && <Review />}
           <div>
             {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
-            {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
-            {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
+            <div>
+              <SecondaryButton text="Save draft" action={this.nextPage} />
+              {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
+              {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
+            </div>
           </div>
         </ContentBlock>
       </div>

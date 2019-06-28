@@ -6,6 +6,7 @@ import { RadioCardGroup } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
 import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
+import SavedDrafts from "modules/create-market/saved-drafts";
 
 import Styles from "modules/create-market/landing.styles";
 
@@ -33,6 +34,7 @@ export default class Landing extends React.Component<
         </XLargeSubheaders>
 
         <div>
+          <SavedDrafts />
           <ContentBlock>
             <LargeSubheaders
               link
