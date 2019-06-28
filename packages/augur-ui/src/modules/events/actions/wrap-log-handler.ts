@@ -12,9 +12,11 @@ export const wrapLogHandler = (
   if (log) {
     // console.info(`${new Date().toISOString()} LOG ${log.removed ? 'REMOVED' : 'ADDED'} ${log.eventName} ${JSON.stringify(log)}`)
     const universeId: string = getState().universe.id;
-    const isInCurrentUniverse = Object.values(log).find(
-      value => universeId === value
-    );
+    const isInCurrentUniverse = true;
+    // TODO: process universe when Events have universe propety, for now assume all events are good
+    // const isInCurrentUniverse = Object.values(log).find(
+    //   value => universeId === value
+    // );
     if (Array.isArray(log)) {
       if (isInCurrentUniverse) dispatch(logHandler(log));
       log.forEach(log => {
