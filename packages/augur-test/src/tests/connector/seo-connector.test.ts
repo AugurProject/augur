@@ -119,6 +119,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     async (...args: any[]): Promise<void> => {
       expect(args).toEqual([
         {
+          eventName: SubscriptionEventNames.NewBlock,
           blocksBehindCurrent: 0,
           highestAvailableBlockNumber: expect.any(Number),
           lastSyncedBlockNumber: expect.any(Number),
