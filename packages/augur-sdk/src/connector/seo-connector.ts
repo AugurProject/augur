@@ -1,9 +1,9 @@
 import * as Sync from "../state/Sync";
 import { API } from "../state/getter/API";
-import { Callback, Connector } from "./connector";
+import { Connector } from "./connector";
 import { SubscriptionEventNames } from "../constants";
 import { Subscriptions } from "../subscriptions";
-import { augurEmitter } from "../events";
+import { Callback, augurEmitter } from "../events";
 
 export class SEOConnector extends Connector {
   private api: API;

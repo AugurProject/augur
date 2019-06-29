@@ -66,7 +66,6 @@ export interface MarketTradingPosition {
 
 export interface TradingPosition {
   timestamp: number;
-  position: string;
   frozenFunds: string;
   marketId: string;
   outcome: number; // user's position is in this market outcome
@@ -215,7 +214,7 @@ export class Users {
               profitLossResult,
               marketDoc,
               outcomeValue,
-              0
+              new BigNumber(profitLossResult.timestamp).toNumber()
             );
             let rawPosition = new BigNumber(0);
             if (
@@ -229,7 +228,6 @@ export class Users {
                 ].balance
               );
             }
-            tradingPosition.position = rawPosition.toFixed();
             return tradingPosition;
           }
         );
@@ -261,8 +259,13 @@ export class Users {
     );
     // TODO add market validity bond to total. Need to send a log for this since it is variable over time.
 
-    const universe = params.universe ? params.universe : await (await augur.getMarket(params.marketId)).getUniverse_();
-    const profitLossSummary = await Users.getProfitLossSummary(augur, db, {universe, account: params.account});
+    const universe = params.universe
+      ? params.universe
+      : await (await augur.getMarket(params.marketId)).getUniverse_();
+    const profitLossSummary = await Users.getProfitLossSummary(augur, db, {
+      universe,
+      account: params.account,
+    });
 
     return {
       tradingPositions,
@@ -703,7 +706,9 @@ function getTradingPositionFromProfitLossFrame(
         ? avgPrice.minus(lastTradePrice)
         : lastTradePrice.minus(avgPrice)
     );
-  const realizedPercent = realizedProfit.dividedBy(realizedCost);
+  const realizedPercent = realizedCost.isZero()
+    ? new BigNumber(0)
+    : realizedProfit.dividedBy(realizedCost);
   const unrealizedPercent = unrealized.dividedBy(unrealizedCost);
   const totalPercent = realizedProfit
     .plus(unrealized)
@@ -711,7 +716,6 @@ function getTradingPositionFromProfitLossFrame(
 
   return {
     timestamp,
-    position: '0',
     frozenFunds: frozenFunds.toFixed(),
     marketId: profitLossFrame.market,
     outcome: new BigNumber(profitLossFrame.outcome).toNumber(),

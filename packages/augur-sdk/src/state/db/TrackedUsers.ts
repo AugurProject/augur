@@ -1,4 +1,5 @@
-import {AbstractDB, PouchDBFactoryType} from "./AbstractDB";
+import { getAddress } from "ethers/utils/address";
+import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
 import * as _ from "lodash";
 
 export class TrackedUsers extends AbstractDB {
@@ -6,11 +7,16 @@ export class TrackedUsers extends AbstractDB {
     super(networkId, networkId + "-TrackedUsers", dbFactory);
   }
 
-  public async setUserTracked(user: string): Promise<PouchDB.Core.Response> {
-    return this.upsertDocument(user, {});
+  async setUserTracked(user: string): Promise<PouchDB.Core.Response> {
+    try {
+      const formattedUser = getAddress(user);
+      return this.upsertDocument(formattedUser, {});
+    } catch (err) {
+      throw err;
+    }
   }
 
-  public async getUsers(): Promise<Array<string>> {
+  async getUsers(): Promise<string[]> {
     const docs = await this.db.allDocs();
     return _.map(docs.rows, "id");
   }

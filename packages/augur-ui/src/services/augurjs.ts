@@ -2,11 +2,11 @@ import Augur from "@augurproject/augur.js";
 import logError from "utils/log-error";
 import { augurSdk } from "services/augursdk";
 import { JsonRpcProvider, Web3Provider } from "ethers/providers";
-import { LoginAccount, NodeStyleCallback, Connection, EnvObject } from "modules/types";
+import { NodeStyleCallback, Connection, EnvObject } from "modules/types";
 import { windowRef } from "utils/window-ref";
 import getInjectedWeb3Accounts from "utils/get-injected-web3-accounts";
 
-export const connect = async (env: EnvObject, loginAccount: LoginAccount, callback: NodeStyleCallback = logError) => {
+export const connect = async (env: EnvObject, callback: NodeStyleCallback = logError) => {
   const connectOptions = {
     augurNode: env["augur-node"],
     ethereumNode: env["ethereum-node"],
