@@ -66,7 +66,6 @@ export interface MarketTradingPosition {
 
 export interface TradingPosition {
   timestamp: number;
-  position: string;
   frozenFunds: string;
   marketId: string;
   outcome: number; // user's position is in this market outcome
@@ -229,9 +228,7 @@ export class Users {
                 ].balance
               );
             }
-            tradingPosition.position = rawPosition
-              .dividedBy(10 ** 18)
-              .toFixed();
+
             return tradingPosition;
           }
         );
@@ -720,7 +717,6 @@ function getTradingPositionFromProfitLossFrame(
 
   return {
     timestamp,
-    position: '0',
     frozenFunds: frozenFunds.toFixed(),
     marketId: profitLossFrame.market,
     outcome: new BigNumber(profitLossFrame.outcome).toNumber(),

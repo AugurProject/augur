@@ -5,17 +5,18 @@ import { AppState } from "store";
 
 export const wrapLogHandler = (
   logHandler: any = defaultLogHandler
-): ThunkAction<any, any, any, any> => (
+) => (log: any):ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
-) => (err: any, log: any) => {
-  if (err) return console.error((log || {}).eventName, err, log);
+) => {
   if (log) {
     // console.info(`${new Date().toISOString()} LOG ${log.removed ? 'REMOVED' : 'ADDED'} ${log.eventName} ${JSON.stringify(log)}`)
     const universeId: string = getState().universe.id;
-    const isInCurrentUniverse = Object.values(log).find(
-      value => universeId === value
-    );
+    const isInCurrentUniverse = true;
+    // TODO: process universe when Events have universe propety, for now assume all events are good
+    // const isInCurrentUniverse = Object.values(log).find(
+    //   value => universeId === value
+    // );
     if (Array.isArray(log)) {
       if (isInCurrentUniverse) dispatch(logHandler(log));
       log.forEach(log => {
@@ -26,9 +27,6 @@ export const wrapLogHandler = (
           dispatch(logHandler(log));
       });
     } else {
-      const isInCurrentUniverse = Object.values(log).find(
-        value => universeId === value
-      );
       if (
         isInCurrentUniverse ||
         (log.contractName === "Cash" && log.eventName === "Approval")

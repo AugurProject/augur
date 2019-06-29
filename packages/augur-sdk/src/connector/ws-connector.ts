@@ -1,5 +1,6 @@
-import {Callback, Connector} from "./connector";
-import {SubscriptionEventNames} from "../constants";
+import { Callback } from "../events";
+import { Connector } from "./connector";
+import { SubscriptionEventNames } from "../constants";
 import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
 
