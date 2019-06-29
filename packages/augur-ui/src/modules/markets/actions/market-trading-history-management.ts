@@ -75,7 +75,7 @@ export const loadUserFilledOrders = (
   const { loginAccount, universe } = getState();
   const allOptions = Object.assign(
     {
-      account: loginAccount.address,
+      creator: loginAccount.address,
       universe: universe.id,
       orderState: FILLED,
       ignoreReportingStates: [REPORTING_STATE.FINALIZED]
