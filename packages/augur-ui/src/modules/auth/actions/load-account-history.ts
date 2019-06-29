@@ -46,7 +46,7 @@ function loadTransactions(
   );
   promises.push(
     new Promise(resolve =>
-      dispatch(loadCreateMarketHistory(options, null, resolve))
+      dispatch(loadCreateMarketHistory(options, resolve))
     )
   );
   promises.push(
