@@ -22,7 +22,7 @@ contract MarketFactory is CloneFactory, IMarketFactory {
 
     function createMarket(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _sender, uint256 _numOutcomes, uint256 _numTicks) public returns (IMarket _market) {
         _market = IMarket(createClone(_augur.lookup("Market")));
-        require(_augur.isKnownUniverse(_universe));
+        require(_augur.isKnownUniverse(_universe), "MarketFactory: Universe specified is unrecognized by Augur");
         IReputationToken _reputationToken = _universe.getReputationToken();
         require(_reputationToken.transfer(address(_market), _reputationToken.balanceOf(address(this))));
         require(_augur.trustedTransfer(ICash(_augur.lookup("Cash")), _sender, address(_market), _universe.getOrCacheValidityBond()));

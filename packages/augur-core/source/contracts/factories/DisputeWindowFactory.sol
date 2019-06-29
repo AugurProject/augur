@@ -16,7 +16,7 @@ import 'ROOT/reporting/Reporting.sol';
 contract DisputeWindowFactory is CloneFactory, IDisputeWindowFactory {
     function createDisputeWindow(IAugur _augur, uint256 _disputeWindowId, uint256 _windowDuration, uint256 _startTime) public returns (IDisputeWindow) {
         IUniverse _universe = IUniverse(msg.sender);
-        require(_augur.isKnownUniverse(_universe));
+        require(_augur.isKnownUniverse(_universe), "DisputeWindowFactory: Universe specified is unrecognized by Augur");
         IDisputeWindow _disputeWindow = IDisputeWindow(createClone(_augur.lookup("DisputeWindow")));
         _disputeWindow.initialize(_augur, _universe, _disputeWindowId, _windowDuration, _startTime, _augur.lookup("ERC1820Registry"));
         return _disputeWindow;

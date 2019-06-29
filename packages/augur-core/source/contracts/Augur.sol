@@ -346,7 +346,7 @@ contract Augur is IAugur {
     }
 
     function logOrderCanceled(IUniverse _universe, IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId) public returns (bool) {
-        require(msg.sender == registry["CancelOrder"]);
+        require(msg.sender == registry["CancelOrder"], "Augur: CancelOrder only function called by non-CancelOrder");
         IOrders _orders = IOrders(registry["Orders"]);
         (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
         _addressData[1] = _creator;

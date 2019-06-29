@@ -64,7 +64,7 @@ contract Market is Initializable, Ownable, IMarket {
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
         endInitialization();
         augur = _augur;
-        require(msg.sender == augur.lookup("MarketFactory"));
+        require(msg.sender == augur.lookup("MarketFactory"), "Market: MarketFactory only function called by non-MarketFactory");
         _numOutcomes += 1; // The INVALID outcome is always first
         universe = _universe;
         cash = ICash(augur.lookup("Cash"));
