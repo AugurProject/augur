@@ -1,21 +1,17 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { AppState } from "store";
-import { selectMarket } from "modules/markets/selectors/market";
 import { MarketPositionsTable } from "modules/portfolio/components/common/market-positions-table";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_SELL_COMPLETE_SETS } from "modules/common/constants";
+import { selectUserMarketPositions } from "modules/markets/selectors/select-user-market-positions";
 
 const mapStateToProps = (state: AppState, ownProps: any) => {
-  const market = ownProps.market || selectMarket(ownProps.marketId);
-  const positions = market.userPositions || [];
+  const positions = selectUserMarketPositions(state, ownProps.marketId);
 
   return {
     positions,
-    numCompleteSets:
-      (market.myPositionsSummary &&
-        market.myPositionsSummary.numCompleteSets) ||
-      undefined,
+    numCompleteSets: undefined,
     transactionsStatus: state.transactionsStatus
   };
 };
