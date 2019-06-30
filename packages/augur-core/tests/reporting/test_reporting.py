@@ -304,7 +304,10 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     reputationToken = localFixture.applySignature("ReputationToken", universe.getReputationToken())
     previousREPBalance = reputationToken.balanceOf(scalarMarket.address)
     assert previousREPBalance > 0
-    assert scalarMarket.migrateThroughOneFork([0,0,scalarMarket.getNumTicks()], "")
+    newReputationToken = localFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
+    with TokenDelta(reputationToken, previousREPBalance, scalarMarket.repBondOwner(), "Market did not transfer rep balance to rep bond owner"):
+        with TokenDelta(newReputationToken, -newUniverse.getOrCacheMarketRepBond(), localFixture.accounts[0], "Migrator did not pay new REP bond"):
+            assert scalarMarket.migrateThroughOneFork([0,0,scalarMarket.getNumTicks()], "")
     newUniverseREP = localFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
     initialReporter = localFixture.applySignature('InitialReporter', scalarMarket.getInitialReporter())
     assert newUniverseREP.balanceOf(initialReporter.address) == newUniverse.getOrCacheDesignatedReportNoShowBond()

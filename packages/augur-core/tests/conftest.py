@@ -127,7 +127,7 @@ def new_create_header_from_parent(self,
     header = self.get_vm_class_for_block_number(
         block_number=parent_header.block_number + 1,
     ).create_header_from_parent(parent_header, **header_params)
-    header._gas_limit = 800000000000
+    header._gas_limit = 800000000
     return header
 
 def new_apply_create_message(self) -> BaseComputation:
@@ -543,14 +543,15 @@ class ContractsFixture:
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
+    def createReasonableYesNoMarket(self, universe, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0, designatedReporterAddress=None):
         sender = sender or self.accounts[0]
+        designatedReporter = designatedReporterAddress or sender
         return self.createYesNoMarket(
             universe = universe,
             endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 4,
-            designatedReporterAddress = sender,
+            designatedReporterAddress = designatedReporter,
             sender = sender,
             topic= topic,
             extraInfo= extraInfo,

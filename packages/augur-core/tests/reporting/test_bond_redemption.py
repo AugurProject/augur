@@ -81,7 +81,11 @@ def test_failed_crowdsourcer(finalize, localFixture, universe, market, cash, rep
     with TokenDelta(reputationToken, partialFill, localFixture.accounts[2], "Redeeming did not refund REP"):
         assert failedCrowdsourcer.redeem(localFixture.accounts[2])
 
-def test_one_round_crowdsourcer(localFixture, universe, market, cash, reputationToken):
+@mark.parametrize('finalize', [
+    True,
+    False,
+])
+def test_one_round_crowdsourcer(finalize, localFixture, universe, market, cash, reputationToken):
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     constants = localFixture.contracts["Constants"]
 
@@ -102,10 +106,15 @@ def test_one_round_crowdsourcer(localFixture, universe, market, cash, reputation
 
     # Fast forward time until the new dispute window is over and we can redeem our winning stake, and dispute bond tokens
     localFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
-    assert market.finalize()
+    if finalize:
+        assert market.finalize()
 
     initialReporter = localFixture.applySignature('InitialReporter', market.getReportingParticipant(0))
     marketDisputeCrowdsourcer = localFixture.applySignature('DisputeCrowdsourcer', market.getReportingParticipant(1))
+
+    # The initial reporter does not get their REP back
+    with TokenDelta(reputationToken, 0, localFixture.accounts[0], "Redeeming didn't refund REP"):
+        assert initialReporter.redeem(localFixture.accounts[0])
 
     expectedRep = reputationToken.balanceOf(marketDisputeCrowdsourcer.address)
     disputeCrowdsourcerRedeemedLog = {
@@ -120,10 +129,6 @@ def test_one_round_crowdsourcer(localFixture, universe, market, cash, reputation
     with AssertLog(localFixture, "DisputeCrowdsourcerRedeemed", disputeCrowdsourcerRedeemedLog):
         with TokenDelta(reputationToken, expectedRep, localFixture.accounts[1], "Redeeming didn't refund REP"):
             assert marketDisputeCrowdsourcer.redeem(localFixture.accounts[1], sender=localFixture.accounts[1])
-
-    # The initial reporter does not get their REP back
-    with TokenDelta(reputationToken, 0, localFixture.accounts[0], "Redeeming didn't refund REP"):
-        assert initialReporter.redeem(localFixture.accounts[0])
 
 def test_multiple_round_crowdsourcer(localFixture, universe, market, cash, reputationToken):
     constants = localFixture.contracts["Constants"]
@@ -339,7 +344,7 @@ def test_preemptive_crowdsourcer_contributions_disputed_twice_wins(localFixture,
     # We can pre-emptively stake REP in case someone disputes our initial report
     preemptiveBondSize = 200 * 10 ** 18
 
-    # We'll have one user buy all the stake that will award an ROI and another user buy the remaining stake which will not
+    # We'll have two users buy stake in varying amounts
     initialStake = market.getParticipantStake()
     realBondSize = initialStake * 3
     assert market.contributeToTentative([0, market.getNumTicks(), 0], realBondSize, "")
@@ -374,6 +379,55 @@ def test_preemptive_crowdsourcer_contributions_disputed_twice_wins(localFixture,
     expectedWinnings = overloadStake * .4
     with TokenDelta(reputationToken, overloadStake + expectedWinnings, localFixture.accounts[1], "Redeeming didn't refund REP"):
         assert preemptiveDisputeCrowdsourcer.redeem(localFixture.accounts[1])
+
+def test_preemptive_crowdsourcer_contributions_dont_fill_bonds(localFixture, universe, market, reputationToken):
+    # We can pre-emptively stake REP in case someone disputes our initial report
+    preemptiveBondSize = 1
+
+    initialStake = market.getParticipantStake()
+    realBondSize = initialStake * 3
+    assert market.contributeToTentative([0, market.getNumTicks(), 0], preemptiveBondSize, "")
+    preemptiveDisputeCrowdsourcer = localFixture.applySignature('DisputeCrowdsourcer', market.preemptiveDisputeCrowdsourcer())
+
+    # Now we'll dispute the initial report
+    proceedToNextRound(localFixture, market)
+
+    # We can see that the tentative winning outcome is the one suggested in the dispute still since not enouhg pre-emptive REP was placed to fill the bond
+    assert market.getWinningReportingParticipant() != preemptiveDisputeCrowdsourcer.address
+    assert market.getCrowdsourcer(preemptiveDisputeCrowdsourcer.getPayoutDistributionHash()) == preemptiveDisputeCrowdsourcer.address
+
+def test_preemptive_crowdsourcer_after_initial(localFixture, universe, market, reputationToken):
+    initialStake = market.getParticipantStake()
+    # First we'll dispute the intial report
+    proceedToNextRound(localFixture, market)
+
+    # Now we'll place a large pre-emptive bond
+    largeBond = initialStake * 50
+    assert market.contributeToTentative([0, 0, market.getNumTicks()], largeBond, "")
+    preemptiveDisputeCrowdsourcer = localFixture.applySignature('DisputeCrowdsourcer', market.preemptiveDisputeCrowdsourcer())
+
+    # Now we'll dispute the dispute
+    proceedToNextRound(localFixture, market)
+
+    # By disputing we actually cause the preemptive bond to get placed.
+    assert market.getParticipantStake() == largeBond + initialStake * 6
+
+    # We'll dispute this newly placed bond made from the preemptive contributions
+    proceedToNextRound(localFixture, market)
+
+    # And now we'll do one more dispute in favor of the initial dispute
+    proceedToNextRound(localFixture, market)
+
+    # Now we finalize the market
+    disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+
+    # Time marches on and the market can be finalized
+    localFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert market.finalize()
+
+    # Because the overloaded bond was disputed there is now sufficient REP to award the overload tokens with ROI as well
+    with TokenDelta(reputationToken, largeBond * 1.4, localFixture.accounts[0], "Redeeming didn't refund REP"):
+        assert preemptiveDisputeCrowdsourcer.redeem(localFixture.accounts[0])
 
 @fixture(scope="session")
 def localSnapshot(fixture, kitchenSinkSnapshot):
