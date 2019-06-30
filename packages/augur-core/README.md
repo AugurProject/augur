@@ -82,7 +82,7 @@ When writing tests, it is highly recommended to make use of the ContractFixtures
 To generate a coverage report simply run the command:
 
 ```
-node --max-old-space-size=12288 source/tools/generateCoverageReport.js
+yarn test:coverage
 ```
 
 The results will be displayed on the command line and a much richer HTML output will be generated in the `coverage` folder of the project.

@@ -54,12 +54,30 @@ from eth.rlp.headers import (
     HeaderParams,
 )
 
+from eth_hash.auto import keccak
+from eth_utils import (
+    encode_hex,
+)
+
+from eth import constants
+from eth.exceptions import (
+    OutOfGas,
+)
+from eth.vm.computation import BaseComputation
+from eth.vm.forks.homestead.computation import (
+    HomesteadComputation,
+)
+
+from eth.vm.forks.spurious_dragon.opcodes import SPURIOUS_DRAGON_OPCODES
+
+from hexbytes.main import HexBytes
+
 import rlp
 
 import web3
 
 genesis_overrides = {
-    'gas_limit': 8000000
+    'gas_limit': 800000000
 }
 custom_genesis_params = PyEVMBackend._generate_genesis_params(overrides=genesis_overrides)
 custom_genesis_state = PyEVMBackend._generate_genesis_state(num_accounts=9)
@@ -95,13 +113,13 @@ def new_get_storage(self, address: Address, slot: int, from_journal: bool=True) 
         return rlp.decode(encoded_value, sedes=rlp.sedes.big_endian_int)
 
 def dumb_gas_search(*args) -> int:
-    return 7900000
+    return 790000000
 
 def dumb_get_buffered_gas_estimate(web3, transaction, gas_buffer=100000):
-    return 7900000
+    return 790000000
 
 def dumb_estimateGas(self, transaction, block_identifier=None):
-    return 7900000
+    return 790000000
 
 def new_create_header_from_parent(self,
                                 parent_header: BlockHeader,
@@ -109,10 +127,52 @@ def new_create_header_from_parent(self,
     header = self.get_vm_class_for_block_number(
         block_number=parent_header.block_number + 1,
     ).create_header_from_parent(parent_header, **header_params)
-    header._gas_limit = 8000000
+    header._gas_limit = 800000000000
     return header
 
+def new_apply_create_message(self) -> BaseComputation:
+        snapshot = self.state.snapshot()
+
+        # EIP161 nonce incrementation
+        self.state.account_db.increment_nonce(self.msg.storage_address)
+
+        computation = self.apply_message()
+
+        if computation.is_error:
+            self.state.revert(snapshot)
+            return computation
+        else:
+            contract_code = computation.output
+
+            if contract_code:
+                contract_code_gas_cost = len(contract_code) * constants.GAS_CODEDEPOSIT
+                try:
+                    computation.consume_gas(
+                        contract_code_gas_cost,
+                        reason="Write contract code for CREATE",
+                    )
+                except OutOfGas as err:
+                    # Different from Frontier: reverts state on gas failure while
+                    # writing contract code.
+                    computation._error = err
+                    self.state.revert(snapshot)
+                else:
+                    if self.logger:
+                        self.logger.debug2(
+                            "SETTING CODE: %s -> length: %s | hash: %s",
+                            encode_hex(self.msg.storage_address),
+                            len(contract_code),
+                            encode_hex(keccak(contract_code))
+                        )
+
+                    self.state.account_db.set_code(self.msg.storage_address, contract_code)
+                    self.state.commit(snapshot)
+            else:
+                self.state.commit(snapshot)
+            return computation
+
 eth.vm.code_stream.CodeStream.is_valid_opcode = new_is_valid_opcode
+eth.vm.forks.spurious_dragon.computation.SpuriousDragonComputation.apply_create_message = new_apply_create_message
 eth.tools.logging.ExtendedDebugLogger.debug2 = new_debug2
 eth.db.account.AccountDB.get_storage = new_get_storage
 web3.manager.RequestManager.default_middlewares = new_default_middlewares
@@ -166,14 +226,23 @@ class ContractsFixture:
         self.relativeContractsPath = '../source/contracts'
         self.relativeTestContractsPath = 'solidity_test_helpers'
         # self.relativeTestContractsPath = 'mock_templates/contracts'
-        self.externalContractsPath = '../source/contracts/external'
         self.coverageMode = request.config.option.cover
         self.subFork = request.config.option.subFork
+        self.logListener = None
         if self.coverageMode:
-            self.chain.head_state.log_listeners.append(self.writeLogToFile)
+            self.logListener = self.writeLogToFile
             self.relativeContractsPath = '../coverageEnv/contracts'
             self.relativeTestContractsPath = '../coverageEnv/solidity_test_helpers'
-            self.externalContractsPath = '../coverageEnv/contracts/external'
+
+    def writeLogToFile(self, message):
+        with open('./allFiredEvents', 'a') as logsFile:
+            logData = message.__dict__
+            for key, value in logData.items():
+                if type(value) == HexBytes:
+                    logData[key] = value.hex()[2:]
+            logData['topics'] = [val.hex()[2:] for val in logData['topics']]
+            logData['data'] = logData['data'][2:]
+            logsFile.write(json_dumps(logData) + '\n')
 
     def generateSignature(self, relativeFilePath):
         ContractsFixture.ensureCacheDirectoryExists()
@@ -325,10 +394,12 @@ class ContractsFixture:
         signature = ContractsFixture.signatures[signatureKey]
         W3Contract = self.w3.eth.contract(abi=signature, bytecode=compiledCode)
         deploy_address = self.accounts[0]
-        tx_hash = W3Contract.constructor(*constructorArgs).transact({'from': deploy_address, 'gasPrice': 1, 'gas': 7500000})
+        tx_hash = W3Contract.constructor(*constructorArgs).transact({'from': deploy_address, 'gasPrice': 1, 'gas': 750000000})
         tx_receipt = self.w3.eth.waitForTransactionReceipt(tx_hash, 180)
+        if tx_receipt.status == 0:
+            raise Exception("Contract upload %s failed" % lookupKey)
         w3Contract = W3Contract(tx_receipt.contractAddress)
-        contract = Contract(self.w3, w3Contract)
+        contract = Contract(self.w3, w3Contract, self.logListener, self.coverageMode)
         self.contracts[lookupKey] = contract
         return contract
 
@@ -338,7 +409,7 @@ class ContractsFixture:
             signature = ContractsFixture.signatures[signatureName]
         W3Contract = self.w3.eth.contract(abi=signature)
         w3Contract = W3Contract(address)
-        contract = Contract(self.w3, w3Contract)
+        contract = Contract(self.w3, w3Contract, self.logListener, self.coverageMode)
         return contract
 
     def createSnapshot(self):
@@ -357,8 +428,6 @@ class ContractsFixture:
         if not 'snapshot_id' in snapshot: raise "snapshot is missing 'snapshot_id'"
         if not 'contracts' in snapshot: raise "snapshot is missing 'contracts'"
         self.eth_tester.revert_to_snapshot(snapshot['snapshot_id'])
-        #if self.coverageMode:
-        #    self.chain.head_state.log_listeners.append(self.writeLogToFile)
         self.contracts = {}
         for contractName in snapshot['contracts']:
             contract = snapshot['contracts'][contractName]
@@ -396,15 +465,6 @@ class ContractsFixture:
                     self.uploadAndAddToAugur(path.join(directory, filename), lookupKey = "Orders", signatureKey = "TestOrders")
                 else:
                     self.uploadAndAddToAugur(path.join(directory, filename))
-
-    def uploadExternalContracts(self):
-        for directory, _, filenames in walk(resolveRelativePath(self.externalContractsPath)):
-            for filename in filenames:
-                name = path.splitext(filename)[0]
-                extension = path.splitext(filename)[1]
-                if extension != '.sol': continue
-                constructorArgs = []
-                self.upload(path.join(directory, filename), constructorArgs=constructorArgs)
 
     def initializeAllContracts(self):
         contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade']
@@ -539,7 +599,6 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadAllContracts()
     fixture.initializeAllContracts()
     fixture.approveCentralAuthority()
-    fixture.uploadExternalContracts()
     return fixture.createSnapshot()
 
 @pytest.fixture(scope="session")
