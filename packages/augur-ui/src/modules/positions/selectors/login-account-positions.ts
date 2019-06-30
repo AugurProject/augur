@@ -1,25 +1,32 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect';
 
-import store from "store";
-import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { selectAccountPositionsState } from "store/select-state";
+import store from 'store';
+import { selectAccountPositionsState } from 'store/select-state';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { selectMarketPositionsSummary } from 'modules/markets/selectors/select-market-position-summary';
+import { selectUserMarketPositions } from 'modules/markets/selectors/select-user-market-positions';
 
-// TODO
 export default function() {
   const markets = selectLoginAccountPositionsMarkets(store.getState());
 
+  const marketsWithPositions = markets.map(market => ({
+    ...market,
+    userPositions: selectUserMarketPositions(store.getState(), market.id),
+    myPositionsSummary: selectMarketPositionsSummary(store.getState(), market.id)
+  }));
+
   return {
-    markets,
+    markets: marketsWithPositions,
   };
 }
 
 export const selectLoginAccountPositionsMarkets = createSelector(
-  selectMarkets,
   selectAccountPositionsState,
-  (markets, positions) => {
-    if (!markets || !positions || Object.keys(positions).length === 0) {
-      return [];
-    }
-    return markets.filter((market) => positions[market.id] != null);
-  },
+  positions => {
+    return Object.keys(positions)
+      .map(marketId => ({
+        ...selectMarket(marketId)
+      }))
+      .filter(m => m);
+  }
 );

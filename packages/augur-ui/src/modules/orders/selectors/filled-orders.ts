@@ -3,7 +3,7 @@ import { createBigNumber } from "utils/create-big-number";
 import { BUY, SELL } from "modules/common/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import {
-  selectMarketsDataState,
+  selectMarketInfosState,
   selectMarketTradingHistoryState,
   selectLoginAccountAddress,
 } from "store/select-state";
@@ -145,7 +145,7 @@ function findOrders(
 }
 
 function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketsDataState(state)[marketId];
+  return selectMarketInfosState(state)[marketId];
 }
 
 function selectMarketTradingHistoryStateMarket(state, marketId) {

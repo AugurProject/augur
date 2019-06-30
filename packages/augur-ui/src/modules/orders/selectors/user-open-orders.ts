@@ -17,7 +17,7 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { formatNone, formatEther, formatShares, formatDai } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
-  selectMarketsDataState,
+  selectMarketInfosState,
   selectUserMarketOpenOrders,
   selectOrderCancellationState,
   selectPendingOrdersState,
@@ -25,7 +25,7 @@ import {
 } from 'store/select-state';
 
 function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketsDataState(state)[marketId];
+  return selectMarketInfosState(state)[marketId];
 }
 
 function selectUserMarketOpenOrdersMarket(state, marketId) {
@@ -49,6 +49,7 @@ export const selectUserOpenOrders = createCachedSelector(
   selectPendingOrdersStateMarket,
   selectLoginAccountAddress,
   (market, userMarketOpenOrders, orderCancellation, pendingOrders, account) => {
+    if (!market) return [];
     let userOpenOrders =
       market.outcomes
         .map(outcome =>

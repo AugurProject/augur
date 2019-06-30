@@ -5,7 +5,8 @@ import {
   selectReportingWindowStats,
   selectPendingLiquidityOrders,
   selectCurrentTimestampInSeconds,
-  selectReadNotificationState
+  selectReadNotificationState,
+  selectAccountPositionsState
 } from "store/select-state";
 
 import { createBigNumber } from "utils/create-big-number";
@@ -65,9 +66,11 @@ export const selectReportOnMarkets = createSelector(
 // Get all the users markets that are in FINALIZATION
 export const selectFinalizeMarkets = createSelector(
   selectMarkets,
+  selectAccountPositionsState,
   selectLoginAccountAddress,
-  (markets, address) => {
+  (markets, positions, address) => {
     if (markets.length > 0) {
+      const positionsMarkets = Object.keys(positions);
       return markets
         .filter(
           market =>
@@ -75,7 +78,7 @@ export const selectFinalizeMarkets = createSelector(
             REPORTING_STATE.AWAITING_FINALIZATION
         )
         .filter(
-          market => market.userPositions.length > 0 || address === market.author
+          market => positionsMarkets.indexOf(market.id) > -1 || address === market.author
         )
         .map(getRequiredMarketData);
     }
@@ -84,17 +87,14 @@ export const selectFinalizeMarkets = createSelector(
 );
 
 // Get all the users markets where the user has COMPLETE SETS of SHARES
+// TODO: remove all complete sets logic in UI, github tix already created
 export const selectCompleteSetPositions = createSelector(
   selectMarkets,
   markets => {
     if (markets.length > 0) {
       return markets
         .filter(market => {
-          const numCompleteSets =
-            (market.myPositionsSummary &&
-              market.myPositionsSummary.numCompleteSets) ||
-            undefined;
-          return numCompleteSets && numCompleteSets.value > 0;
+          return false
         })
         .map(getRequiredMarketData);
     }
@@ -105,9 +105,11 @@ export const selectCompleteSetPositions = createSelector(
 // Get all markets in dispute, for market creators and user with positions in disputed markets
 export const selectMarketsInDispute = createSelector(
   selectMarkets,
+  selectAccountPositionsState,
   selectLoginAccountAddress,
-  (markets, address) => {
+  (markets, positions, address) => {
     if (markets.length > 0) {
+      const positionsMarkets = Object.keys(positions);
       return markets
         .filter(
           market =>
@@ -116,7 +118,7 @@ export const selectMarketsInDispute = createSelector(
         )
         .filter(
           market =>
-            market.userPositions.length > 0 ||
+          positionsMarkets.indexOf(market.id) > -1 ||
             market.designatedReporter === address
         )
         .map(getRequiredMarketData);

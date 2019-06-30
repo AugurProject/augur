@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import { EthPercentButton } from "modules/common/buttons";
+import { DaiPercentButton } from "modules/common/buttons";
 
 import Styles from "modules/portfolio/components/common/data-table-header.styles.less";
 import SharedStyles from "modules/common/row.styles.less";
@@ -56,7 +56,7 @@ const PositionsHeader = (props: PositionsHeaderProps) => (
           <br />
           Returns
         </span>
-        <EthPercentButton
+        <DaiPercentButton
           showEth={props.showPercent}
           title="eth/percent"
           action={props.updateShowPercent}
