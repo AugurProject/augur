@@ -1,4 +1,3 @@
-import createCachedSelector from 're-reselect';
 import { formatDai } from 'utils/format-number';
 import { YES_NO } from 'modules/common/constants';
 import store from 'store';
