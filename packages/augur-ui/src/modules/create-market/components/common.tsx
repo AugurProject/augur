@@ -9,46 +9,110 @@ import Styles from 'modules/create-market/components/common.styles';
 
 export interface HeaderProps {
   text: string;
+  children?: Array<any>;
 }
 
 export const Header = (props: HeaderProps) => (
-  <span className={Styles.Header}>{props.text}</span>
+  <h1 className={Styles.Header}>
+    {props.children ? props.children : props.text}
+  </h1>
 );
 
-export interface LargeHeaderProps {
-  text: string;
-}
-
 export const LargeHeader = (props: HeaderProps) => (
-  <span className={Styles.LargeHeader}>{props.text}</span>
+  <span className={Styles.LargeHeader}>
+    {props.children ? props.children : props.text}
+  </span>
+);
+
+export const MediumHeader = (props: HeaderProps) => (
+  <span className={Styles.MediumHeader}>
+    {props.children ? props.children : props.text}
+  </span>
 );
 
 export interface SubheadersProps {
   header: string;
   subheader: string;
   link?: Boolean;
+  href?: string;
+  underline?: Boolean;
+  ownLine?: Boolean;
 }
 
 export const Subheaders = (props: SubheadersProps) => (
   <div className={Styles.Subheaders}>
-    <span>{props.header}</span>
-    <span>
-      {props.subheader}
+    <h1>{props.header}</h1>
+    <p>
+      <span>{props.subheader}</span>
       {props.link && (
-        <a target="blank" href="https://docs.augur.net">
-          Learn more
-        </a>
+        <Link href={props.href} underline={props.underline} ownLine={props.ownLine} />
       )}
-    </span>
+    </p>
   </div>        
 );
 
-export interface SmallSubheadersProps {
+export interface XLargeSubheadersProps {
   header: string;
   subheader: string;
+  children?: Array<any>;
 }
 
-export const SmallSubheaders = (props: SmallSubheadersProps) => (
+export const XLargeSubheaders = (props: XLargeSubheadersProps) => (
+  <div className={Styles.XLargeSubheaders}>
+    <LargeHeader text={props.header} />
+    <MediumHeader text={props.subheader}>
+      {props.children}
+    </MediumHeader>
+  </div>        
+);
+
+export interface HeaderLinkProps {
+  text: string;
+  href?: string;
+  link?: Boolean;
+  ownLine?: Boolean;
+  underline?: Boolean;
+}
+
+export const SmallHeaderLink = (props: HeaderLinkProps) => (
+  <p className={Styles.SmallHeaderLink}>
+    <span>{props.text}</span>
+    {props.link && (
+      <Link href={props.href} underline={props.underline} ownLine={props.ownLine} />
+    )}
+  </p>
+);
+
+export const LargeSubheaders = (props: SubheadersProps) => (
+  <div className={Styles.Subheaders}>
+    <Header text={props.header} />
+    <SmallHeaderLink 
+      text={props.subheader} 
+      href={props.href} 
+      underline={props.underline} 
+      ownLine={props.ownLine} 
+      link={props.link} 
+    />
+  </div>        
+);
+
+export interface LinkProps {
+  href?: string;
+  underline?: Boolean;
+  ownLine?: Boolean;
+}
+
+export const Link = (props: LinkProps) => (
+  <a 
+    className={classNames(Styles.Link, {[Styles.underline]: props.underline, [Styles.ownLine]: props.ownLine})} 
+    target="blank" 
+    href={props.href || "https://docs.augur.net"}
+  >
+    Learn more
+  </a>      
+);
+
+export const SmallSubheaders = (props: SubheadersProps) => (
   <div className={Styles.SmallSubheaders}>
     <h1>{props.header}</h1>
     <span>

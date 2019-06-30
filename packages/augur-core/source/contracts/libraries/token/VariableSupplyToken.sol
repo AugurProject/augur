@@ -4,6 +4,10 @@ pragma solidity 0.5.4;
 import 'ROOT/libraries/token/StandardToken.sol';
 
 
+/**
+ * @title Variable Supply Token
+ * @notice A Standard Token wrapper which adds the ability to internally burn and mint tokens
+ */
 contract VariableSupplyToken is StandardToken {
     using SafeMathUint256 for uint256;
 

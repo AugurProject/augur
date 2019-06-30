@@ -98,7 +98,7 @@ test('UserSynableDB.sync', async () => {
     token: augur.contracts.getReputationToken().address,
     from: sender,
     // Since this is from market creation: REP is sent to the MarketFactory, which then passes it along to the market.
-    to: await augur.contracts.augur.registry_(
+    to: await augur.contracts.augur.lookup_(
       formatBytes32String('MarketFactory')
     ),
     value: marketRepBond,
@@ -126,18 +126,20 @@ test('UserSynableDB.sync', async () => {
 test('props', async () => {
   const dbController = await mock.makeDB(john.augur, ACCOUNTS);
 
-  const eventName = 'foo';
-  const user = 'artistotle';
-  const db = new UserSyncableDB(
-    john.augur,
-    dbController,
-    mock.constants.networkId,
-    eventName,
-    user,
-    2,
-    [0]
-  );
+  function createDB() {
+    const eventName = 'foo';
+    const user = 'artistotle';
+    return new UserSyncableDB(
+      john.augur,
+      dbController,
+      mock.constants.networkId,
+      eventName,
+      user,
+      2,
+      [0]
+    );
+  }
 
   // @ts-ignore - verify private property "additionalTopics"
-  expect(db.additionalTopics).toEqual([['0x000000000000000000000000tistotle']]);
+  expect(createDB).toThrowError('invalid address (arg="address", value="artistotle", version=4.0.24)');
 });
