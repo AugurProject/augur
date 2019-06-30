@@ -76,6 +76,11 @@ Deploying to: ${networkConfiguration.networkName}
             await this.augur!.registerContract(stringTo32ByteHex("Cash"), this.configuration.cashAddress);
             contract = await this.contracts.get("Cash");
             contract.address = this.configuration.cashAddress;
+
+            console.log(`Registering Rep Price Oracle Contract at ${this.configuration.repPriceOracleAddress}`);
+            await this.augur!.registerContract(stringTo32ByteHex("RepPriceOracle"), this.configuration.repPriceOracleAddress);
+            contract = await this.contracts.get("RepPriceOracle");
+            contract.address = this.configuration.repPriceOracleAddress;
         }
 
         await this.initializeAllContracts();
@@ -131,7 +136,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.relativeFilePath.startsWith('legacy_reputation/')) continue;
             if (contract.relativeFilePath.startsWith('external/')) continue;
             if (contract.contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) continue;
-            if (['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) continue;
+            if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
             // @ts-ignore
             mapping[contract.contractName] = contract.address;
@@ -190,8 +195,9 @@ Deploying to: ${networkConfiguration.networkName}
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
         if (this.configuration.isProduction && contractName === 'LegacyReputationToken') return;
         if (this.configuration.isProduction && contractName === 'Cash') return;
+        if (this.configuration.isProduction && contractName === 'RepPriceOracle') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
-        if (['IAugur', 'IAuction', 'IAuctionToken', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) return;
+        if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) return;
         console.log(`Uploading new version of contract for ${contractName}`);
         contract.address = await this.uploadAndAddToAugur(contract, contractName, []);
     }
@@ -243,10 +249,6 @@ Deploying to: ${networkConfiguration.networkName}
         const orders = new Orders(this.dependencies, ordersContract);
         promises.push(orders.initialize(this.augur!.address));
 
-        const cashContract = await this.getContractAddress("Cash");
-        const cash = new Cash(this.dependencies, cashContract);
-        promises.push(cash.initialize(this.augur!.address));
-
         const profitLossContract = await this.getContractAddress("ProfitLoss");
         const profitLoss = new ProfitLoss(this.dependencies, profitLossContract);
         promises.push(profitLoss.initialize(this.augur!.address));
@@ -266,7 +268,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async initializeLegacyRep(): Promise<void> {
         const legacyReputationToken = new LegacyReputationToken(this.dependencies, this.getContractAddress('LegacyReputationToken'));
-        await legacyReputationToken.initializeERC820(this.augur!.address);
+        await legacyReputationToken.initializeERC1820(this.augur!.address);
         await legacyReputationToken.faucet(new BigNumber(10).pow(18).multipliedBy(new BigNumber(11000000)));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await legacyReputationToken.balanceOf_(defaultAddress);
@@ -277,7 +279,6 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async initializeCash(): Promise<void> {
         const cash = new LegacyReputationToken(this.dependencies, this.getContractAddress('Cash'));
-        await cash.initialize(this.augur!.address);
         await cash.faucet(new BigNumber(10).pow(18).multipliedBy(new BigNumber(1000)));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await cash.balanceOf_(defaultAddress);

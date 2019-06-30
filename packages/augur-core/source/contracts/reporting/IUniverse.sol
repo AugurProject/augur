@@ -7,17 +7,16 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
-import 'ROOT/reporting/IAuction.sol';
 import 'ROOT/trading/IShareToken.sol';
 
 
 contract IUniverse is ITyped {
     function fork() public returns (bool);
+    function updateForkValues() public returns (bool);
     function getParentUniverse() public view returns (IUniverse);
     function createChildUniverse(uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function getChildUniverse(bytes32 _parentPayoutDistributionHash) public view returns (IUniverse);
     function getReputationToken() public view returns (IV2ReputationToken);
-    function getAuction() public view returns (IAuction);
     function getForkingMarket() public view returns (IMarket);
     function getForkEndTime() public view returns (uint256);
     function getForkReputationGoal() public view returns (uint256);

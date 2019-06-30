@@ -1,4 +1,4 @@
-import { augur } from "services/augursdk";
+import { augurSdk } from "services/augursdk";
 import * as AugurJS from "services/augurjs";
 import { updateBlockchain } from "modules/app/actions/update-blockchain";
 import { updateAssets } from "modules/auth/actions/update-assets";
@@ -12,7 +12,7 @@ import { Action } from "redux";
 const GET_GAS_BLOCK_LIMIT = 100;
 const MAINNET_ID = 1;
 
-export const syncBlockchain = (cb: Function) => (
+export const syncBlockchain = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -20,6 +20,7 @@ export const syncBlockchain = (cb: Function) => (
   const { gasPriceInfo } = getState();
   const currentBlockNumber = getCurrentBlock();
   const currentAugurTimestamp = getTimestamp();
+  const augur = augurSdk.get();
 
   dispatch(
       updateBlockchain({
@@ -39,18 +40,13 @@ export const syncBlockchain = (cb: Function) => (
       dispatch(loadGasPriceInfo());
     }
 
-  cb && cb();
-  
-  AugurJS.augur.augurNode.submitRequest("getSyncData", {}, (err, result) => {
-    if (!err && result) {
-      dispatch(
-        updateBlockchain({
-          highestBlock: result.highestBlock.number,
-          lastProcessedBlock: result.lastProcessedBlock.number,
-        }),
-      );
-    }
-  });
+  const { highestAvailableBlockNumber, lastSyncedBlockNumber } = await augur.getSyncData();
+  dispatch(
+    updateBlockchain({
+      highestBlock: highestAvailableBlockNumber,
+      lastProcessedBlock: lastSyncedBlockNumber,
+    }),
+  );
 
   dispatch(updateAssets());
 };

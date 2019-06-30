@@ -11,9 +11,13 @@ import 'ROOT/trading/ICreateOrder.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/IFillOrder.sol';
 import 'ROOT/libraries/Initializable.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 
 
+/**
+ * @title Simulate Trade
+ * @notice Provides a function to simulate a trade with the current orderbook in order to estimate the cost and the resulting position
+ */
 contract SimulateTrade is Initializable {
     using SafeMathUint256 for uint256;
 
@@ -21,7 +25,7 @@ contract SimulateTrade is Initializable {
         Order.Types orderType;
         Order.TradeDirections direction;
         IMarket market;
-        ERC20Token kycToken;
+        IERC20 kycToken;
         uint256 outcome;
         uint256 amount;
         uint256 price;
@@ -40,14 +44,13 @@ contract SimulateTrade is Initializable {
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant GAS_BUFFER = 50000;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
-        return true;
     }
 
-    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, address _sender, ERC20Token _kycToken) internal view returns (SimulationData memory) {
+    function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, address _sender, IERC20 _kycToken) internal view returns (SimulationData memory) {
         Order.Types _type = Order.getOrderTradingTypeFromFillerDirection(_direction);
         bytes32 _orderId = orders.getBestOrderId(_type, _market, _outcome, _kycToken);
 
@@ -69,7 +72,19 @@ contract SimulateTrade is Initializable {
         });
     }
 
-    function simulateTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, ERC20Token _kycToken, bool _fillOnly) public view returns (uint256 _sharesFilled, uint256 _tokensDepleted, uint256 _sharesDepleted, uint256 _settlementFees) {
+    /**
+     * @notice Simulate performing a trade
+     * @param _direction The trade direction of order. Either LONG==0, or SHORT==1
+     * @param _market The associated market
+     * @param _outcome The associated outcome of the market
+     * @param _amount The number of attoShares desired
+     * @param _price The price in attoCash. Must be within the market range (1 to numTicks-1)
+     * @param _ignoreShares Boolean indicating whether to ignore available shares when escrowing funds for the order
+     * @param _kycToken KYC token address if applicable. Specifying this will use an orderbook that is only available to acounts which have a non-zero balance of the specified token
+     * @param _fillOnly Boolean indicating whether to only fill existing orders or to also create an order if an amount remains
+     * @return uint256_sharesFilled: The amount taken from existing orders, uint256 _tokensDepleted: The amount of Cash tokens used, uint256 _sharesDepleted: The amount of Share tokens used, uint256 _settlementFees: The totals fees taken from settlement that occurred
+     */
+    function simulateTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, IERC20 _kycToken, bool _fillOnly) public view returns (uint256 _sharesFilled, uint256 _tokensDepleted, uint256 _sharesDepleted, uint256 _settlementFees) {
         SimulationData memory _simulationData = create(_direction, _market, _outcome, _amount, _price, _ignoreShares, msg.sender, _kycToken);
         while (_simulationData.orderId != 0 && _simulationData.amount > 0 && gasleft() > GAS_BUFFER && isMatch(_simulationData)) {
             uint256 _fillAmount = _simulationData.amount.min(_simulationData.orderAmount);

@@ -7,11 +7,13 @@ const DB_FACTORY = PouchDBFactory({adapter: "memory"});
 test("track a user", async () => {
   const trackedUsers = new TrackedUsers(TEST_NETWORK_ID, DB_FACTORY);
 
-  expect(await trackedUsers.setUserTracked("mock")).toMatchObject({
-    ok: true,
-    id: "mock",
-    rev: expect.any(String),
-  });
-  await trackedUsers.getUsers();
-  expect(await trackedUsers.getUsers()).toEqual(["mock"]);
+  let err: Error;
+  try {
+    await trackedUsers.setUserTracked("mock")
+  } catch (e) {
+    err = e;
+  }
+  expect(err.message).toMatch('invalid address (arg="address", value="mock", version=4.0.24)');
+
+  expect(await trackedUsers.getUsers()).toEqual([]);
 });

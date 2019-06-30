@@ -15,7 +15,10 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/IAugur.sol';
 
-
+/**
+ * @title Dispute Window
+ * @notice A contract used to encapsulate a window of time in which markets can be disputed as well as the pot where reporting fees are collected and distributed.
+ */
 contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     using SafeMathUint256 for uint256;
 
@@ -27,7 +30,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     uint256 public windowId;
     uint256 public duration;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc820RegistryAddress) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _disputeWindowId, uint256 _duration, uint256 _startTime, address _erc1820RegistryAddress) public beforeInitialized {
         endInitialization();
         augur = _augur;
         universe = _universe;
@@ -35,12 +38,11 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         windowId = _disputeWindowId;
         cash = ICash(augur.lookup("Cash"));
         startTime = _startTime;
-        erc820Registry = IERC820Registry(_erc820RegistryAddress);
-        initialize820InterfaceImplementations();
-        return true;
+        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
+        initialize1820InterfaceImplementations();
     }
 
-    function onMarketFinalized() public afterInitialized returns (bool) {
+    function onMarketFinalized() public {
         IMarket _market = IMarket(msg.sender);
         require(universe.isContainerForMarket(_market));
 
@@ -71,20 +73,29 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
                 designatedReportNoShowsTotal = designatedReportNoShowsTotal.add(_repBond);
             }
         }
-        return true;
     }
 
-    function buy(uint256 _attotokens) public afterInitialized returns (bool) {
-        require(_attotokens > 0);
-        require(isActive());
-        require(!universe.isForking());
+    /**
+     * @notice Buy tokens which can be redeemed for reporting fees
+     * @param _attotokens The number of tokens to purchase
+     * @return bool True
+     */
+    function buy(uint256 _attotokens) public returns (bool) {
+        require(_attotokens > 0, "DisputeWindow.buy: amount cannot be 0");
+        require(isActive(), "DisputeWindow.buy: window is not active");
+        require(!universe.isForking(), "DisputeWindow.buy: universe is forking");
         getReputationToken().trustedDisputeWindowTransfer(msg.sender, address(this), _attotokens);
         mint(msg.sender, _attotokens);
         return true;
     }
 
-    function redeem(address _account) public afterInitialized returns (bool) {
-        require(isOver() || universe.isForking());
+    /**
+     * @notice Redeem tokens for reporting fees
+     * @param _account The account to redeem tokens for
+     * @return bool True
+     */
+    function redeem(address _account) public returns (bool) {
+        require(isOver() || universe.isForking(), "DisputeWindow.redeem: window is not over");
 
         uint256 _attoParticipationTokens = balances[_account];
 
@@ -112,23 +123,35 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return true;
     }
 
-    function getTypeName() public afterInitialized view returns (bytes32) {
+    function getTypeName() public view returns (bytes32) {
         return "DisputeWindow";
     }
 
-    function getUniverse() public afterInitialized view returns (IUniverse) {
+    /**
+     * @return The universe associated with this window
+     */
+    function getUniverse() public view returns (IUniverse) {
         return universe;
     }
 
-    function getReputationToken() public afterInitialized view returns (IReputationToken) {
+    /**
+     * @return The reputation token associated with this window
+     */
+    function getReputationToken() public view returns (IReputationToken) {
         return universe.getReputationToken();
     }
 
-    function getStartTime() public afterInitialized view returns (uint256) {
+    /**
+     * @return When the window begins as a uint256 timestamp
+     */
+    function getStartTime() public view returns (uint256) {
         return startTime;
     }
 
-    function getEndTime() public afterInitialized view returns (uint256) {
+    /**
+     * @return When the window ends as a uint256 timestamp
+     */
+    function getEndTime() public view returns (uint256) {
         return getStartTime().add(duration);
     }
 
@@ -136,7 +159,10 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return windowId;
     }
 
-    function isActive() public afterInitialized view returns (bool) {
+    /**
+     * @return Bool indicating if the window has begun and has not yet ended
+     */
+    function isActive() public view returns (bool) {
         if (augur.getTimestamp() <= getStartTime()) {
             return false;
         }
@@ -146,22 +172,22 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         return true;
     }
 
-    function isOver() public afterInitialized view returns (bool) {
+    /**
+     * @return Bool indicating if the window has ended
+     */
+    function isOver() public view returns (bool) {
         return augur.getTimestamp() >= getEndTime();
     }
 
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal {
         augur.logParticipationTokensTransferred(universe, _from, _to, _value, balances[_from], balances[_to]);
-        return true;
     }
 
-    function onMint(address _target, uint256 _amount) internal returns (bool) {
+    function onMint(address _target, uint256 _amount) internal {
         augur.logParticipationTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 
-    function onBurn(address _target, uint256 _amount) internal returns (bool) {
+    function onBurn(address _target, uint256 _amount) internal {
         augur.logParticipationTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 }

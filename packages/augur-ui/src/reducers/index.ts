@@ -18,7 +18,6 @@ import newMarket from "modules/markets/reducers/new-market";
 import alerts from "modules/alerts/reducers/alerts";
 import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
-import outcomesData from "modules/markets/reducers/outcomes-data";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
 import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
 import reports from "modules/reports/reducers/reports";
@@ -31,9 +30,9 @@ import filledOrders from "modules/orders/reducers/filled-orders";
 import accountShareBalances from "modules/positions/reducers/account-share-balances";
 import readNotifications from "modules/notifications/reducers/read-notifications";
 import pendingQueue from "modules/pending-queue/reducers/pending-queue";
+import userOpenOrders from "modules/orders/reducers/open-orders";
 import {
   LoginAccount,
-  MarketTradingHistory,
   AccountPosition,
   AppStatus,
   AuthStatus,
@@ -50,7 +49,6 @@ import {
   Alert,
   OrderBooks,
   OrderCancellations,
-  OutcomesData,
   LiquidityOrders,
   PendingOrders,
   PendingQueue,
@@ -61,7 +59,9 @@ import {
   TransacitonStatus,
   Universe,
   Versions,
-  AccountShareBalances
+  AccountShareBalances,
+  OpenOrders,
+  MarketTradingHistoryState,
 } from "modules/types";
 
 export function createReducer() {
@@ -86,7 +86,6 @@ export function createReducer() {
     readNotifications,
     orderBooks,
     orderCancellation,
-    outcomesData,
     pendingLiquidityOrders,
     pendingOrders,
     pendingQueue,
@@ -98,7 +97,8 @@ export function createReducer() {
     transactionsStatus,
     universe,
     versions,
-    accountShareBalances
+    accountShareBalances,
+    userOpenOrders,
   };
 }
 
@@ -118,14 +118,13 @@ export interface AppStateInterface {
   gasPriceInfo: GasPriceInfo;
   loginAccount: LoginAccount;
   marketReportState: MarketsInReporting;
-  marketTradingHistory: MarketTradingHistory;
+  marketTradingHistory: MarketTradingHistoryState;
   marketInfos: MarketInfos;
   modal: any;
   newMarket: NewMarket;
   readNotifications: Array<Notification>;
   orderBooks: OrderBooks;
   orderCancellation: OrderCancellations;
-  outcomesData: OutcomesData;
   pendingLiquidityOrders: LiquidityOrders;
   pendingOrders: PendingOrders;
   pendingQueue: PendingQueue;
@@ -138,4 +137,5 @@ export interface AppStateInterface {
   universe: Universe;
   versions: Versions;
   accountShareBalances: AccountShareBalances;
+  userOpenOrders: OpenOrders;
 }

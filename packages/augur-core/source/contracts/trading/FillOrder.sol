@@ -14,7 +14,6 @@ import 'ROOT/trading/Order.sol';
 import 'ROOT/libraries/Initializable.sol';
 
 
-// CONSIDER: At some point it would probably be a good idea to shift much of the logic from trading contracts into extensions. In particular this means sorting for making and WCL calculcations + order walking for taking.
 library Trade {
     using SafeMathUint256 for uint256;
 
@@ -36,7 +35,7 @@ library Trade {
     struct FilledOrder {
         bytes32 orderId;
         uint256 outcome;
-        ERC20Token kycToken;
+        IERC20 kycToken;
         uint256 sharePriceRange;
         uint256 sharePriceLong;
         uint256 sharePriceShort;
@@ -359,7 +358,10 @@ library Trade {
     }
 }
 
-
+/**
+ * @title Fill Order
+ * @notice Exposes functions to fill an order on the book
+ */
 contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     using SafeMathUint256 for uint256;
     using Trade for Trade.Data;
@@ -372,26 +374,34 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     mapping (address => uint256) public marketVolume;
     mapping (address => uint256[]) public marketOutcomeVolumes;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
         trade = augur.lookup("Trade");
         profitLoss = IProfitLoss(augur.lookup("ProfitLoss"));
-        return true;
     }
 
-    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external afterInitialized returns (uint256) {
+    /**
+     * @notice Fill an order
+     * @param _orderId The id of the order to fill
+     * @param _amountFillerWants The number of attoShares desired
+     * @param _tradeGroupId A Bytes32 value used when attempting to associate multiple orderbook actions with a single TX
+     * @param _ignoreShares Boolean indicating whether to ignore available shares when using owned assets for the trade
+     * @param _affiliateAddress Address of an affiliate to receive a portion of settlement fees from this trade should settlement occur
+     * @return The amount remaining the filler wants
+     */
+    function publicFillOrder(bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external returns (uint256) {
         uint256 _result = this.fillOrder(msg.sender, _orderId, _amountFillerWants, _tradeGroupId, _ignoreShares, _affiliateAddress);
         IMarket _market = orders.getMarket(_orderId);
         _market.assertBalances();
         return _result;
     }
 
-    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external afterInitialized nonReentrant returns (uint256) {
+    function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, bool _ignoreShares, address _affiliateAddress) external nonReentrant returns (uint256) {
         require(msg.sender == trade || msg.sender == address(this));
         Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _ignoreShares, _affiliateAddress);
-        require(_tradeData.order.kycToken == ERC20Token(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0);
+        require(_tradeData.order.kycToken == IERC20(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
         uint256 _price = orders.getPrice(_orderId);

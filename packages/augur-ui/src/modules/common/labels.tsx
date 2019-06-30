@@ -7,7 +7,8 @@ import { ClipLoader } from "react-spinners";
 import {
   MarketIcon,
   InfoIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  HintAlternate
 } from "modules/common/icons";
 import { MarketProgress } from "modules/common/progress";
 import ReactTooltip from "react-tooltip";
@@ -88,12 +89,9 @@ export interface LinearPropertyLabelProps {
   showDenomination?: boolean;
 }
 
-export interface LinearPropertyLabelPercentProps {
+export interface LinearPropertyLabelTooltipProps {
   label: string;
   value: string;
-  accentValue?: boolean;
-  numberValue: number;
-  highlightFirst?: boolean;
 }
 
 export interface LinearPropertyLabelPercentMovementProps {
@@ -802,6 +800,37 @@ export const LinearPropertyLabelMovement = (
       size={SizeTypes.NORMAL}
       value={props.numberValue}
     />
+  </span>
+);
+
+export const LinearPropertyLabelTooltip = (
+  props: LinearPropertyLabelTooltipProps
+) => (
+  <span className={Styles.LinearPropertyLabelTooltip}>
+    <LinearPropertyLabel
+      label={props.label}
+      value={props.value}
+    />
+    <div>
+      <label
+        className={TooltipStyles.TooltipHint}
+        data-tip
+        data-for={`tooltip-${props.label}`}
+      >
+        {HintAlternate}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${props.label}`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        data-event="mouseover"
+        data-event-off="blur scroll"
+      >
+        Information text
+      </ReactTooltip>
+    </div>
   </span>
 );
 

@@ -8,7 +8,7 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
-import 'ROOT/factories/DisputeCrowdsourcerFactory.sol';
+import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
 import 'ROOT/trading/ICash.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/factories/ShareTokenFactory.sol';
@@ -18,19 +18,19 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
-import 'ROOT/reporting/IAuction.sol';
 
 
+/**
+ * @title Market
+ * @notice The contract which encapsulates event data and payout resolution for the event
+ */
 contract Market is Initializable, Ownable, IMarket {
     using SafeMathUint256 for uint256;
     using SafeMathInt256 for int256;
 
     // Constants
-    uint256 private constant MAX_FEE_PER_CASH_IN_ATTOCASH = 15 * 10**16; // 15%
-    uint256 private constant APPROVAL_AMOUNT = 2 ** 256 - 1;
+    uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
     address private constant NULL_ADDRESS = address(0);
-    uint256 private constant MIN_OUTCOMES = 3; // Includes INVALID
-    uint256 private constant MAX_OUTCOMES = 8;
 
     // Contract Refs
     IUniverse private universe;
@@ -50,7 +50,7 @@ contract Market is Initializable, Ownable, IMarket {
     uint256 private finalizationTime;
     uint256 private repBond;
     bool private disputePacingOn;
-    address private repBondOwner;
+    address public repBondOwner;
     uint256 public marketCreatorFeesAttoCash;
     uint256 public totalAffiliateFeesAttoCash;
     IDisputeCrowdsourcer public preemptiveDisputeCrowdsourcer;
@@ -61,20 +61,12 @@ contract Market is Initializable, Ownable, IMarket {
     IShareToken[] private shareTokens;
     mapping (address => uint256) public affiliateFeesAttoCash;
 
-    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized returns (bool _success) {
+    function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
         endInitialization();
         augur = _augur;
+        require(msg.sender == augur.lookup("MarketFactory"), "Market: MarketFactory only function called by non-MarketFactory");
         _numOutcomes += 1; // The INVALID outcome is always first
-        require(MIN_OUTCOMES <= _numOutcomes && _numOutcomes <= MAX_OUTCOMES);
-        require(_designatedReporterAddress != NULL_ADDRESS);
-        require((_numTicks >= _numOutcomes));
-        require(_feePerCashInAttoCash <= MAX_FEE_PER_CASH_IN_ATTOCASH);
-        require(_creator != NULL_ADDRESS);
-        uint256 _timestamp = augur.getTimestamp();
-        require(_timestamp < _endTime);
-        require(_endTime < augur.getMaximumMarketEndDate());
         universe = _universe;
-        require(!universe.isForking());
         cash = ICash(augur.lookup("Cash"));
         owner = _creator;
         repBondOwner = owner;
@@ -85,80 +77,96 @@ contract Market is Initializable, Ownable, IMarket {
         feeDivisor = _feePerCashInAttoCash == 0 ? 0 : 1 ether / _feePerCashInAttoCash;
         affiliateFeeDivisor = _affiliateFeeDivisor;
         InitialReporterFactory _initialReporterFactory = InitialReporterFactory(augur.lookup("InitialReporterFactory"));
-        participants.push(_initialReporterFactory.createInitialReporter(augur, this, _designatedReporterAddress));
+        participants.push(_initialReporterFactory.createInitialReporter(augur, _designatedReporterAddress));
         mapFactory = MapFactory(augur.lookup("MapFactory"));
         clearCrowdsourcers();
         for (uint256 _outcome = 0; _outcome < numOutcomes; _outcome++) {
             shareTokens.push(createShareToken(_outcome));
         }
         approveSpenders();
-        return true;
     }
 
-    function assessFees() private returns (bool) {
+    function assessFees() private {
         repBond = universe.getOrCacheMarketRepBond();
         require(getReputationToken().balanceOf(address(this)) >= repBond);
         validityBondAttoCash = cash.balanceOf(address(this));
         require(validityBondAttoCash >= universe.getOrCacheValidityBond());
-        return true;
     }
 
-    function increaseValidityBond(uint256 _attoCASH) public returns (bool) {
+    /**
+     * @notice Increase the validity bond by sending more Cash to this contract
+     * @param _attoCash the amount of Cash to send and increase the validity bond by
+     * @return Bool True
+     */
+    function increaseValidityBond(uint256 _attoCash) public returns (bool) {
         require(!isFinalized());
-        cash.transferFrom(msg.sender, address(this), _attoCASH);
-        validityBondAttoCash = validityBondAttoCash.add(_attoCASH);
+        cash.transferFrom(msg.sender, address(this), _attoCash);
+        validityBondAttoCash = validityBondAttoCash.add(_attoCash);
         return true;
     }
 
     function createShareToken(uint256 _outcome) private returns (IShareToken) {
-        return ShareTokenFactory(augur.lookup("ShareTokenFactory")).createShareToken(augur, this, _outcome);
+        return ShareTokenFactory(augur.lookup("ShareTokenFactory")).createShareToken(augur, _outcome);
     }
 
     // This will need to be called manually for each open market if a spender contract is updated
     function approveSpenders() public returns (bool) {
         bytes32[5] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("ClaimTradingProceeds"), bytes32("Orders")];
         for (uint256 i = 0; i < _names.length; i++) {
-            require(cash.approve(augur.lookup(_names[i]), APPROVAL_AMOUNT));
+            require(cash.approve(augur.lookup(_names[i]), MAX_APPROVAL_AMOUNT));
         }
         for (uint256 j = 0; j < numOutcomes; j++) {
-            require(shareTokens[j].approve(augur.lookup("FillOrder"), APPROVAL_AMOUNT));
+            require(shareTokens[j].approve(augur.lookup("FillOrder"), MAX_APPROVAL_AMOUNT));
         }
         return true;
     }
 
+    /**
+     * @notice Do the initial report for the market.
+     * @param _payoutNumerators An array indicating the payout for each market outcome
+     * @param _description Any additional information or justification for this report
+     * @return Bool True
+     */
     function doInitialReport(uint256[] memory _payoutNumerators, string memory _description) public returns (bool) {
         doInitialReportInternal(msg.sender, _payoutNumerators, _description);
         return true;
     }
 
-    function doInitialReportInternal(address _reporter, uint256[] memory _payoutNumerators, string memory _description) private returns (bool) {
+    function doInitialReportInternal(address _reporter, uint256[] memory _payoutNumerators, string memory _description) private {
         require(!universe.isForking());
         IInitialReporter _initialReporter = getInitialReporter();
         uint256 _timestamp = augur.getTimestamp();
-        require(_timestamp > endTime);
+        require(_timestamp > endTime, "Market.doInitialReportInternal: Market has not reached Reporting phase");
         uint256 _initialReportStake = distributeInitialReportingRep(_reporter, _initialReporter);
         // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
         disputeWindow = universe.getOrCreateNextDisputeWindow(true);
         _initialReporter.report(_reporter, _payoutDistributionHash, _payoutNumerators, _initialReportStake);
         augur.logInitialReportSubmitted(universe, _reporter, address(this), _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description);
-        return true;
     }
 
     function distributeInitialReportingRep(address _reporter, IInitialReporter _initialReporter) private returns (uint256) {
         IV2ReputationToken _reputationToken = getReputationToken();
         uint256 _initialReportStake = repBond;
+        repBond = 0;
         // If the designated reporter showed up and is not also the rep bond owner return the rep bond to the bond owner. Otherwise it will be used as stake in the first report.
         if (_reporter == _initialReporter.getDesignatedReporter() && _reporter != repBondOwner) {
-            require(_reputationToken.transfer(repBondOwner, _initialReportStake));
+            require(_reputationToken.noHooksTransfer(repBondOwner, _initialReportStake));
             _reputationToken.trustedMarketTransfer(_reporter, address(_initialReporter), _initialReportStake);
         } else {
-            require(_reputationToken.transfer(address(_initialReporter), _initialReportStake));
+            require(_reputationToken.noHooksTransfer(address(_initialReporter), _initialReportStake));
         }
-        repBond = 0;
         return _initialReportStake;
     }
 
+    /**
+     * @notice Contribute REP to the tentative winning outcome in anticipation of a dispute
+     * @dev This will escrow REP in a bond which will be active immediately if the tentative outcome is successfully disputed.
+     * @param _payoutNumerators An array indicating the payout for each market outcome
+     * @param _amount The amount of REP to contribute
+     * @param _description Any additional information or justification for this dispute
+     * @return Bool True
+     */
     function contributeToTentative(uint256[] memory _payoutNumerators, uint256 _amount, string memory _description) public returns (bool) {
         require(!disputePacingOn);
         // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
@@ -168,6 +176,13 @@ contract Market is Initializable, Ownable, IMarket {
         return true;
     }
 
+    /**
+     * @notice Contribute REP to a payout other than the tenative winning outcome in order to dispute it
+     * @param _payoutNumerators An array indicating the payout for each market outcome
+     * @param _amount The amount of REP to contribute
+     * @param _description Any additional information or justification for this dispute
+     * @return Bool True
+     */
     function contribute(uint256[] memory _payoutNumerators, uint256 _amount, string memory _description) public returns (bool) {
         // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
@@ -176,13 +191,14 @@ contract Market is Initializable, Ownable, IMarket {
         return true;
     }
 
-    function internalContribute(address _contributor, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, uint256 _amount, bool _overload, string memory _description) internal returns (bool) {
+    function internalContribute(address _contributor, bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, uint256 _amount, bool _overload, string memory _description) internal {
         if (disputePacingOn) {
             require(disputeWindow.isActive());
         } else {
             require(!disputeWindow.isOver());
         }
-        require(!universe.isForking());
+        // This will require that the universe is not forking
+        universe.updateForkValues();
         IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators, _overload);
         uint256 _actualAmount = _crowdsourcer.contribute(_contributor, _amount, _overload);
         if (!_overload) {
@@ -190,14 +206,13 @@ contract Market is Initializable, Ownable, IMarket {
             if (_amountRemainingToFill == 0) {
                 finishedCrowdsourcingDisputeBond(_crowdsourcer);
             } else {
-                require(_amountRemainingToFill >= getInitialReporter().getSize());
+                require(_amountRemainingToFill >= getInitialReporter().getSize(), "Market.internalContribute: Must totally fill bond or leave initial report amount");
             }
         }
         augur.logDisputeCrowdsourcerContribution(universe, _contributor, address(this), address(_crowdsourcer), _actualAmount, _description);
-        return true;
     }
 
-    function finishedCrowdsourcingDisputeBond(IDisputeCrowdsourcer _crowdsourcer) private returns (bool) {
+    function finishedCrowdsourcingDisputeBond(IDisputeCrowdsourcer _crowdsourcer) private {
         correctLastParticipantSize();
         participants.push(_crowdsourcer);
         clearCrowdsourcers(); // disavow other crowdsourcers
@@ -215,6 +230,7 @@ contract Market is Initializable, Ownable, IMarket {
             IDisputeCrowdsourcer _newCrowdsourcer = preemptiveDisputeCrowdsourcer;
             preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
             bytes32 _payoutDistributionHash = _newCrowdsourcer.getPayoutDistributionHash();
+            // The size of any dispute bond should be (2 * ALL STAKE) - (3 * STAKE IN OUTCOME)
             uint256 _correctSize = getParticipantStake().mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
             _newCrowdsourcer.setSize(_correctSize);
             if (_newCrowdsourcer.getStake() >= _correctSize) {
@@ -223,19 +239,21 @@ contract Market is Initializable, Ownable, IMarket {
                 crowdsourcers.add(_payoutDistributionHash, address(_newCrowdsourcer));
             }
         }
-        return true;
     }
 
-    function correctLastParticipantSize() private returns (bool) {
-        if (participants.length < 2) {
-            return true;
+    function correctLastParticipantSize() private {
+        // A dispute has occured if there is more than one completed reporting participant
+        if (participants.length > 1) {
+            IDisputeCrowdsourcer(address(getWinningReportingParticipant())).correctSize();
         }
-        IDisputeCrowdsourcer(address(getWinningReportingParticipant())).correctSize();
-        return true;
     }
 
+    /**
+     * @notice Finalize a market
+     * @return Bool True
+     */
     function finalize() public returns (bool) {
-        require(winningPayoutDistributionHash == bytes32(0));
+        require(!isFinalized());
         uint256[] memory _winningPayoutNumerators;
         if (universe.getForkingMarket() == this) {
             IUniverse _winningUniverse = universe.getWinningChildUniverse();
@@ -244,7 +262,7 @@ contract Market is Initializable, Ownable, IMarket {
         } else {
             require(disputeWindow.isOver());
             require(!universe.isForking());
-            IReportingParticipant _reportingParticipant = participants[participants.length-1];
+            IReportingParticipant _reportingParticipant = getWinningReportingParticipant();
             winningPayoutDistributionHash = _reportingParticipant.getPayoutDistributionHash();
             _winningPayoutNumerators = _reportingParticipant.getPayoutNumerators();
             // Make sure the dispute window for which we record finalization is the standard cadence window and not an initial dispute window
@@ -259,10 +277,10 @@ contract Market is Initializable, Ownable, IMarket {
         return true;
     }
 
-    function redistributeLosingReputation() private returns (bool) {
+    function redistributeLosingReputation() private {
         // If no disputes occurred early exit
         if (participants.length == 1) {
-            return true;
+            return;
         }
 
         IReportingParticipant _reportingParticipant;
@@ -285,16 +303,22 @@ contract Market is Initializable, Ownable, IMarket {
             if (_reportingParticipant.getPayoutDistributionHash() == winningPayoutDistributionHash) {
                 // The last participant's owed REP will not actually be 40% ROI in the event it was created through pre-emptive contributions. We just give them all the remaining non burn REP
                 uint256 amountToTransfer = j == participants.length - 1 ? _reputationToken.balanceOf(address(this)) : _reportingParticipant.getSize().mul(2) / 5;
-                require(_reputationToken.transfer(address(_reportingParticipant), amountToTransfer));
+                require(_reputationToken.noHooksTransfer(address(_reportingParticipant), amountToTransfer));
             }
         }
-        return true;
     }
 
+    /**
+     * @return The amount any settlement proceeds are divided by in order to calculate the market creator fee portion
+     */
     function getMarketCreatorSettlementFeeDivisor() public view returns (uint256) {
         return feeDivisor;
     }
 
+    /**
+     * @param _amount The total settlement proceeds of a trade or claim
+     * @return The amount of fees the market creator will receive
+     */
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256) {
         return feeDivisor == 0 ? 0 : _amount / feeDivisor;
     }
@@ -303,36 +327,42 @@ contract Market is Initializable, Ownable, IMarket {
         require(augur.isKnownFeeSender(msg.sender));
         if (_affiliateAddress != NULL_ADDRESS && affiliateFeeDivisor != 0) {
             uint256 _affiliateFees = _marketCreatorFees / affiliateFeeDivisor;
-            affiliateFeesAttoCash[_affiliateAddress] = _affiliateFees;
+            affiliateFeesAttoCash[_affiliateAddress] += _affiliateFees;
             _marketCreatorFees = _marketCreatorFees.sub(_affiliateFees);
             totalAffiliateFeesAttoCash = totalAffiliateFeesAttoCash.add(_affiliateFees);
         }
         marketCreatorFeesAttoCash = marketCreatorFeesAttoCash.add(_marketCreatorFees);
         if (isFinalized()) {
-            distributeMarketCreatorFees(_affiliateAddress);
+            distributeMarketCreatorAndAffiliateFees(_affiliateAddress);
         }
     }
 
-    function distributeValidityBondAndMarketCreatorFees() private returns (bool) {
-        // If the market resolved to invalid the bond gets sent to the auction. Otherwise it gets returned to the market creator.
+    function distributeValidityBondAndMarketCreatorFees() private {
+        // If the market resolved to invalid the bond gets sent to the dispute window. Otherwise it gets returned to the market creator.
         marketCreatorFeesAttoCash = validityBondAttoCash.add(marketCreatorFeesAttoCash);
-        return distributeMarketCreatorFees(NULL_ADDRESS);
+        distributeMarketCreatorAndAffiliateFees(NULL_ADDRESS);
     }
 
-    function distributeMarketCreatorFees(address _affiliateAddress) private returns (bool) {
+    function distributeMarketCreatorAndAffiliateFees(address _affiliateAddress) private {
+        uint256 _marketCreatorFeesAttoCash = marketCreatorFeesAttoCash;
+        marketCreatorFeesAttoCash = 0;
         if (!isInvalid()) {
-            cash.transfer(owner, marketCreatorFeesAttoCash);
+            cash.transfer(owner, _marketCreatorFeesAttoCash);
             if (_affiliateAddress != NULL_ADDRESS) {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash));
+            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash));
             totalAffiliateFeesAttoCash = 0;
         }
-        marketCreatorFeesAttoCash = 0;
-        return true;
     }
 
+    /**
+     * @notice Redeems any owed affiliate fees for a particular address
+     * @dev Will fail if the market is Invalid
+     * @param _affiliate The address that is owed affiliate fees
+     * @return Bool True
+     */
     function withdrawAffiliateFees(address _affiliate) public returns (bool) {
         require(!isInvalid());
         uint256 _affiliateBalance = affiliateFeesAttoCash[_affiliate];
@@ -347,13 +377,14 @@ contract Market is Initializable, Ownable, IMarket {
     function getOrCreateDisputeCrowdsourcer(bytes32 _payoutDistributionHash, uint256[] memory _payoutNumerators, bool _overload) private returns (IDisputeCrowdsourcer) {
         IDisputeCrowdsourcer _crowdsourcer = _overload ? preemptiveDisputeCrowdsourcer : IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
         if (_crowdsourcer == IDisputeCrowdsourcer(0)) {
-            DisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = DisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
+            IDisputeCrowdsourcerFactory _disputeCrowdsourcerFactory = IDisputeCrowdsourcerFactory(augur.lookup("DisputeCrowdsourcerFactory"));
             uint256 _participantStake = getParticipantStake();
             if (_overload) {
+                // The stake of a dispute bond is (2 * ALL STAKE) - (3 * STAKE IN OUTCOME)
                 _participantStake = _participantStake.add(_participantStake.mul(2).sub(getHighestNonTentativeParticipantStake().mul(3)));
             }
             uint256 _size = _participantStake.mul(2).sub(getStakeInOutcome(_payoutDistributionHash).mul(3));
-            _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, this, _size, _payoutDistributionHash, _payoutNumerators);
+            _crowdsourcer = _disputeCrowdsourcerFactory.createDisputeCrowdsourcer(augur, _size, _payoutDistributionHash, _payoutNumerators);
             if (!_overload) {
                 crowdsourcers.add(_payoutDistributionHash, address(_crowdsourcer));
             } else {
@@ -364,6 +395,13 @@ contract Market is Initializable, Ownable, IMarket {
         return _crowdsourcer;
     }
 
+    /**
+     * @notice Migrates the market through a fork into the winning Universe
+     * @dev This will extract a new REP no show bond from whoever calls this and if the market is in the reporting phase will require a report be made as well
+     * @param _payoutNumerators An array indicating the payout for each market outcome
+     * @param _description Any additional information or justification for this report
+     * @return Bool True
+     */
     function migrateThroughOneFork(uint256[] memory _payoutNumerators, string memory _description) public returns (bool) {
         // only proceed if the forking market is finalized
         IMarket _forkingMarket = universe.getForkingMarket();
@@ -419,22 +457,22 @@ contract Market is Initializable, Ownable, IMarket {
         }
         delete participants;
         participants.push(_initialParticipant);
+        clearCrowdsourcers();
         // Send REP from the rep bond back to the address that placed it. If a report has been made tell the InitialReporter to return that REP and reset
         if (repBond > 0) {
             IV2ReputationToken _reputationToken = getReputationToken();
-            require(_reputationToken.transfer(repBondOwner, repBond));
+            uint256 _repBond = repBond;
+            require(_reputationToken.noHooksTransfer(repBondOwner, _repBond));
             repBond = 0;
         } else {
             _initialParticipant.returnRepFromDisavow();
         }
-        clearCrowdsourcers();
         augur.logMarketParticipantsDisavowed(universe);
         return true;
     }
 
-    function clearCrowdsourcers() private returns (bool) {
+    function clearCrowdsourcers() private {
         crowdsourcers = mapFactory.createMap(augur, address(this));
-        return true;
     }
 
     function getHighestNonTentativeParticipantStake() public view returns (uint256) {
@@ -445,6 +483,10 @@ contract Market is Initializable, Ownable, IMarket {
         return getStakeInOutcome(_payoutDistributionHash);
     }
 
+    /**
+     * @notice Gets all REP stake in completed bonds for this market
+     * @return uint256 indicating sum of all stake
+     */
     function getParticipantStake() public view returns (uint256) {
         uint256 _sum;
         // Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21
@@ -454,6 +496,10 @@ contract Market is Initializable, Ownable, IMarket {
         return _sum;
     }
 
+    /**
+     * @param _payoutDistributionHash the payout distribution hash being checked
+     * @return uint256 indicating the REP stake in a single outcome for a particular payout hash
+     */
     function getStakeInOutcome(bytes32 _payoutDistributionHash) public view returns (uint256) {
         uint256 _sum;
         // Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21
@@ -462,108 +508,188 @@ contract Market is Initializable, Ownable, IMarket {
             if (_reportingParticipant.getPayoutDistributionHash() != _payoutDistributionHash) {
                 continue;
             }
-            _sum += _reportingParticipant.getStake();
+            _sum = _sum.add(_reportingParticipant.getStake());
         }
         return _sum;
     }
 
+    /**
+     * @return The forking market for the associated universe if one exists
+     */
     function getForkingMarket() public view returns (IMarket) {
         return universe.getForkingMarket();
     }
 
+    /**
+     * @return The current bytes32 winning distribution hash if one exists
+     */
     function getWinningPayoutDistributionHash() public view returns (bytes32) {
         return winningPayoutDistributionHash;
     }
 
+    /**
+     * @return Bool indicating if the market is finalized
+     */
     function isFinalized() public view returns (bool) {
         return winningPayoutDistributionHash != bytes32(0);
     }
 
+    /**
+     * @return The designated reporter
+     */
     function getDesignatedReporter() public view returns (address) {
         return getInitialReporter().getDesignatedReporter();
     }
 
+    /**
+     * @return Bool indicating if the designated reporter showed
+     */
     function designatedReporterShowed() public view returns (bool) {
         return getInitialReporter().designatedReporterShowed();
     }
 
+    /**
+     * @return Bool indicating if the initial reporter was correct
+     */
     function designatedReporterWasCorrect() public view returns (bool) {
         return getInitialReporter().designatedReporterWasCorrect();
     }
 
+    /**
+     * @return Time at which the event is considered ready to report on
+     */
     function getEndTime() public view returns (uint256) {
         return endTime;
     }
 
+    /**
+     * @return Bool indicating if the market resolved as anything other than Invalid
+     */
     function isInvalid() public view returns (bool) {
         require(isFinalized());
         return getWinningReportingParticipant().getPayoutNumerator(0) > 0;
     }
 
+    /**
+     * @return The Initial Reporter contract
+     */
     function getInitialReporter() public view returns (IInitialReporter) {
         return IInitialReporter(address(participants[0]));
     }
 
+    /**
+     * @param _index The filled report or dispute at the given index
+     * @return The Initial Reporter or a Dispute Crowdsourcer contract
+     */
     function getReportingParticipant(uint256 _index) public view returns (IReportingParticipant) {
         return participants[_index];
     }
 
+    /**
+     * @param _payoutDistributionHash The payout distribution hash for a Dispute Crowdsourcer contract for this round of disputing
+     * @return The associated Dispute Crowdsourcer contract for this round of disputing
+     */
     function getCrowdsourcer(bytes32 _payoutDistributionHash) public view returns (IDisputeCrowdsourcer) {
         return  IDisputeCrowdsourcer(crowdsourcers.getAsAddressOrZero(_payoutDistributionHash));
     }
 
+    /**
+     * @return The associated Initial Reporter or a Dispute Crowdsourcer contract for the current tentative winning payout
+     */
     function getWinningReportingParticipant() public view returns (IReportingParticipant) {
         return participants[participants.length-1];
     }
 
+    /**
+     * @param _outcome The outcome to get a payout for
+     * @return The payout for a particular outcome for the tentative winning payout
+     */
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256) {
         return getWinningReportingParticipant().getPayoutNumerator(_outcome);
     }
 
+    /**
+     * @return The Universe associated with this Market
+     */
     function getUniverse() public view returns (IUniverse) {
         return universe;
     }
 
+    /**
+     * @return The Dispute Window currently associated with this Market
+     */
     function getDisputeWindow() public view returns (IDisputeWindow) {
         return disputeWindow;
     }
 
+    /**
+     * @return The time the Market was finalzied as a uint256 timestmap if the market was finalized
+     */
     function getFinalizationTime() public view returns (uint256) {
         return finalizationTime;
     }
 
+    /**
+     * @return The REP token associated with this Market
+     */
     function getReputationToken() public view returns (IV2ReputationToken) {
         return universe.getReputationToken();
     }
 
+    /**
+     * @return The number of outcomes (including invalid) this market has
+     */
     function getNumberOfOutcomes() public view returns (uint256) {
         return numOutcomes;
     }
 
+    /**
+     * @return The number of ticks for this market. The number of ticks determines the possible on chain prices for Shares of the market. (e.g. A Market with 10 ticks can have prices 1-9 and a complete set will cost 10)
+     */
     function getNumTicks() public view returns (uint256) {
         return numTicks;
     }
 
+    /**
+     * @param _outcome The outcome to get the associated Share Token for
+     * @return The Share Token associated with the provided outcome
+     */
     function getShareToken(uint256 _outcome) public view returns (IShareToken) {
         return shareTokens[_outcome];
     }
 
+    /**
+     * @return The uint256 timestamp for when the designated reporting period is over and anyone may report
+     */
     function getDesignatedReportingEndTime() public view returns (uint256) {
         return endTime.add(Reporting.getDesignatedReportingDurationSeconds());
     }
 
+    /**
+     * @return The number of rounds of reporting + disputing that have occured
+     */
     function getNumParticipants() public view returns (uint256) {
         return participants.length;
     }
 
+    /**
+     * @return The size of the validity bond
+     */
     function getValidityBondAttoCash() public view returns (uint256) {
         return validityBondAttoCash;
     }
 
+    /**
+     * @return Bool indicating if slow dispute rounds have turned on
+     */
     function getDisputePacingOn() public view returns (bool) {
         return disputePacingOn;
     }
 
+    /**
+     * @param _payoutNumerators array of payouts per outcome
+     * @return Bytes32 has of the payout for use in other functions
+     */
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators) public view returns (bytes32) {
         return augur.derivePayoutDistributionHash(_payoutNumerators, numTicks, numOutcomes);
     }
@@ -589,8 +715,18 @@ contract Market is Initializable, Ownable, IMarket {
         return false;
     }
 
-    function onTransferOwnership(address _owner, address _newOwner) internal returns (bool) {
+    function onTransferOwnership(address _owner, address _newOwner) internal {
         augur.logMarketTransferred(getUniverse(), _owner, _newOwner);
+    }
+
+    /**
+     * @notice Transfers ownership of the REP no-show bond
+     * @param _newOwner The new REP no show bond owner
+     * @return Bool True
+     */
+    function transferRepBondOwnership(address _newOwner) public returns (bool) {
+        require(msg.sender == repBondOwner);
+        repBondOwner = _newOwner;
         return true;
     }
 

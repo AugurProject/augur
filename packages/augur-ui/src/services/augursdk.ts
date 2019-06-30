@@ -33,8 +33,6 @@ export class SDK {
       new WebWorkerConnector()
     );
 
-    this.wireUpEvents();
-
     // This is temporary to get SOME diagnostic info out there....
 /*
     ethersProvider.on("block", ((sdk) => () => {
@@ -45,21 +43,8 @@ export class SDK {
   }
 
   public async destroy() {
-    this.unwireEvents();
     if(this.sdk) this.sdk.disconnect();
     this.sdk = null;
-  }
-
-  private async wireUpEvents() {
-    const events = listenToUpdates();
-    Object.keys(events).map(e => {
-      if (this.sdk) this.sdk.on(e, events[e]);
-    })
-  }
-
-  private async unwireEvents() {
-    // TODO: have sdk unwire events on disconnect
-    console.log("unwiring up sdk events");
   }
 
   public get(): Augur<Provider> {

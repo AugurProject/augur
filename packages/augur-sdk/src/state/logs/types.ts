@@ -1,6 +1,6 @@
 export type Address = string;
 export type Bytes32 = string;
-export type PayoutNumerators = Array<string>;
+export type PayoutNumerators = string[];
 export type Timestamp = string;
 
 export interface Doc {
@@ -46,7 +46,10 @@ export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
   pacingOn: boolean;
 }
 
-export interface DisputeCrowdsourcerContributionLog extends Log, Doc, Timestamped {
+export interface DisputeCrowdsourcerContributionLog
+  extends Log,
+    Doc,
+    Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -110,16 +113,17 @@ export interface MarketCreatedLog extends Log, Doc, Timestamped {
   marketCreator: Address;
   designatedReporter: Address;
   feeDivisor: string;
-  prices: Array<string>;
+  prices: string[];
   marketType: MarketType;
   numTicks: string;
-  outcomes: Array<string>;
+  outcomes: string[];
+  timestamp: string;
 }
 
 export interface MarketFinalizedLog extends Log, Doc, Timestamped {
   universe: Address;
   market: Address;
-  winningPayoutNumerators: Array<string>;
+  winningPayoutNumerators: string[];
 }
 
 export interface MarketMigratedLog extends Log, Doc {
@@ -131,14 +135,14 @@ export interface MarketMigratedLog extends Log, Doc {
 export enum MarketType {
   YesNo = 0,
   Categorical = 1,
-  Scalar = 2
+  Scalar = 2,
 }
 
 export interface MarketVolumeChangedLog extends Log, Doc {
   universe: Address;
   market: Address;
   volume: string;
-  outcomeVolumes: Array<string>;
+  outcomeVolumes: string[];
 }
 
 //  addressData
@@ -162,8 +166,8 @@ export interface OrderEventLog extends Log, Doc, Timestamped {
   orderType: OrderType;
   orderId: Bytes32;
   tradeGroupId: Bytes32;
-  addressData: Array<Address>;
-  uint256Data: Array<string>;
+  addressData: Address[];
+  uint256Data: string[];
 }
 
 export interface ParsedOrderEventLog extends Log, Doc, Timestamped {
@@ -190,7 +194,7 @@ export interface ParsedOrderEventLog extends Log, Doc, Timestamped {
 
 export enum OrderType {
   Bid = 0,
-  Ask = 1
+  Ask = 1,
 }
 
 export enum OrderEventType {
@@ -200,6 +204,12 @@ export enum OrderEventType {
   Fill = 3,
 }
 
+export enum OrderState {
+  ALL = 'ALL',
+  OPEN = 'OPEN',
+  FILLED = 'FILLED',
+  CANCELED = 'CANCELED',
+}
 
 export enum OrderEventAddressValue {
   kycToken = 0,
@@ -220,19 +230,19 @@ export enum OrderEventUint256Value {
   tokensEscrowed = 9,
 }
 
-export const ORDER_EVENT_KYC_TOKEN = "addressData.0";
-export const ORDER_EVENT_CREATOR = "addressData.1";
-export const ORDER_EVENT_FILLER = "addressData.2";
-export const ORDER_EVENT_PRICE = "uint256Data.0";
-export const ORDER_EVENT_AMOUNT = "uint256Data.1";
-export const ORDER_EVENT_OUTCOME = "uint256Data.2";
-export const ORDER_EVENT_TOKEN_REFUND = "uint256Data.3";
-export const ORDER_EVENT_SHARES_REFUND = "uint256Data.4";
-export const ORDER_EVENT_FEES = "uint256Data.5";
-export const ORDER_EVENT_AMOUNT_FILLED = "uint256Data.6";
-export const ORDER_EVENT_TIMESTAMP = "uint256Data.7";
-export const ORDER_EVENT_SHARES_ESCROWED = "uint256Data.8";
-export const ORDER_EVENT_TOKENS_ESCROWED = "uint256Data.9";
+export const ORDER_EVENT_KYC_TOKEN = 'addressData.0';
+export const ORDER_EVENT_CREATOR = 'addressData.1';
+export const ORDER_EVENT_FILLER = 'addressData.2';
+export const ORDER_EVENT_PRICE = 'uint256Data.0';
+export const ORDER_EVENT_AMOUNT = 'uint256Data.1';
+export const ORDER_EVENT_OUTCOME = 'uint256Data.2';
+export const ORDER_EVENT_TOKEN_REFUND = 'uint256Data.3';
+export const ORDER_EVENT_SHARES_REFUND = 'uint256Data.4';
+export const ORDER_EVENT_FEES = 'uint256Data.5';
+export const ORDER_EVENT_AMOUNT_FILLED = 'uint256Data.6';
+export const ORDER_EVENT_TIMESTAMP = 'uint256Data.7';
+export const ORDER_EVENT_SHARES_ESCROWED = 'uint256Data.8';
+export const ORDER_EVENT_TOKENS_ESCROWED = 'uint256Data.9';
 
 export interface ParticipationTokensRedeemedLog extends Log, Doc, Timestamped {
   universe: Address;
@@ -271,8 +281,8 @@ export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
   universe: Address;
   shareToken: Address;
   sender: Address;
-  market: Address,
-  outcome: string,
+  market: Address;
+  outcome: string;
   numShares: string;
   numPayoutTokens: string;
   finalTokenBalance: string;

@@ -37,6 +37,8 @@ import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { NodeStyleCallback, WindowApp } from "modules/types";
+import { augurSdk } from "services/augursdk";
+import { listenToUpdates } from "modules/events/actions/listen-to-updates";
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -198,7 +200,6 @@ export function connectAugur(
     const { modal, loginAccount } = getState();
     AugurJS.connect(
       env,
-      loginAccount,
       async (err: any, ConnectionInfo: any) => {
         if (err || !ConnectionInfo.ethereumNode) {
           return callback(err, ConnectionInfo);
@@ -244,6 +245,11 @@ export function connectAugur(
         } else {
           doIt();
         }
+
+        // wire up events for sdk
+        const Augur = augurSdk.get();
+        dispatch(listenToUpdates(Augur));
+
       }
     );
   };

@@ -8,12 +8,15 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/trading/ICash.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
-import 'ROOT/reporting/IAuction.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/IAugur.sol';
 
 
+/**
+ * @title Complete Sets
+ * @notice Exposes functions to purchase or sell complete sets of shares for a market
+ */
 contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     using SafeMathUint256 for uint256;
 
@@ -21,25 +24,20 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     ICash public cash;
     address public fillOrder;
 
-    function initialize(IAugur _augur) public beforeInitialized returns (bool) {
+    function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         augur = _augur;
         fillOrder = augur.lookup("FillOrder");
         cash = ICash(augur.lookup("Cash"));
-        return true;
     }
 
     /**
-     * Buys `_amount` shares of every outcome in the specified market.
-    **/
-    function publicBuyCompleteSets(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
-        this.buyCompleteSets(msg.sender, _market, _amount);
-        augur.logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
-        _market.assertBalances();
-        return true;
-    }
-
-    function publicBuyCompleteSetsWithCash(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
+     * @notice Buy some amount of complete sets for a market
+     * @param _market The market to purchase complete sets in
+     * @param _amount The number of complete sets to purchase
+     * @return Bool True
+     */
+    function publicBuyCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
         this.buyCompleteSets(msg.sender, _market, _amount);
         augur.logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
         _market.assertBalances();
@@ -47,7 +45,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
     }
 
     function buyCompleteSets(address _sender, IMarket _market, uint256 _amount) external nonReentrant returns (bool) {
-        require(augur.isValidMarket(_market));
+        require(augur.isKnownMarket(_market));
         require(msg.sender == fillOrder || msg.sender == address(this));
         require(_sender != address(0));
 
@@ -66,22 +64,21 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         return true;
     }
 
-    function publicSellCompleteSets(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
+    /**
+     * @notice Sell some amount of complete sets for a market
+     * @param _market The market to sell complete sets in
+     * @param _amount The number of complete sets to sell
+     * @return Bool True
+     */
+    function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
         (uint256 _creatorFee, uint256 _reportingFee) = this.sellCompleteSets(msg.sender, _market, _amount, address(0));
         augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
         _market.assertBalances();
         return true;
     }
 
-    function publicSellCompleteSetsWithCash(IMarket _market, uint256 _amount) external afterInitialized returns (bool) {
-        (uint256 _creatorFee, uint256 _reportingFee) = this.sellCompleteSets(msg.sender, _market, _amount, address(0));
-        augur.logCompleteSetsSold(_market.getUniverse(), _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
-        _market.assertBalances();
-        return true;
-    }
-
-    function sellCompleteSets(address _sender, IMarket _market, uint256 _amount, address _affiliateAddress) external afterInitialized nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
-        require(augur.isValidMarket(_market));
+    function sellCompleteSets(address _sender, IMarket _market, uint256 _amount, address _affiliateAddress) external nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
+        require(augur.isKnownMarket(_market));
         require(msg.sender == fillOrder || msg.sender == address(this));
         require(_sender != address(0));
 

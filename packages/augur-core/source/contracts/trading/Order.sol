@@ -12,7 +12,7 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/IOrders.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 
 
 // CONSIDER: Is `price` the most appropriate name for the value being used? It does correspond 1:1 with the attoCASH per share, but the range might be considered unusual?
@@ -32,7 +32,7 @@ library Order {
         IOrders orders;
         IMarket market;
         IAugur augur;
-        ERC20Token kycToken;
+        IERC20 kycToken;
         ICash cash;
 
         // Order
@@ -50,12 +50,12 @@ library Order {
     }
 
     // No validation is needed here as it is simply a librarty function for organizing data
-    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, ERC20Token _kycToken) internal view returns (Data memory) {
-        require(_outcome < _market.getNumberOfOutcomes());
-        require(_price != 0);
-        require(_price < _market.getNumTicks());
-        require(_attoshares > 0);
-        require(_creator != address(0));
+    function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, IERC20 _kycToken) internal view returns (Data memory) {
+        require(_outcome < _market.getNumberOfOutcomes(), "Order.create: Outcome is not within market range");
+        require(_price != 0, "Order.create: Price may not be 0");
+        require(_price < _market.getNumTicks(), "Order.create: Price is outside of market range");
+        require(_attoshares > 0, "Order.create: Cannot use amount of 0");
+        require(_creator != address(0), "Order.create: Creator is 0x0");
 
         IOrders _orders = IOrders(_augur.lookup("Orders"));
 
@@ -86,7 +86,7 @@ library Order {
     function getOrderId(Order.Data memory _orderData) internal view returns (bytes32) {
         if (_orderData.id == bytes32(0)) {
             bytes32 _orderId = _orderData.orders.getOrderId(_orderData.orderType, _orderData.market, _orderData.amount, _orderData.price, _orderData.creator, block.number, _orderData.outcome, _orderData.moneyEscrowed, _orderData.sharesEscrowed, _orderData.kycToken);
-            require(_orderData.orders.getAmount(_orderId) == 0);
+            require(_orderData.orders.getAmount(_orderId) == 0, "Order.getOrderId: New order had amount. This should not be possible");
             _orderData.id = _orderId;
         }
         return _orderData.id;
@@ -117,8 +117,8 @@ library Order {
     //
 
     function escrowFundsForBid(Order.Data memory _orderData) private returns (bool) {
-        require(_orderData.moneyEscrowed == 0);
-        require(_orderData.sharesEscrowed == 0);
+        require(_orderData.moneyEscrowed == 0, "Order.escrowFundsForBid: New order had money escrowed. This should not be possible");
+        require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForBid: New order had shares escrowed. This should not be possible");
         uint256 _attosharesToCover = _orderData.amount;
         uint256 _numberOfOutcomes = _orderData.market.getNumberOfOutcomes();
 
@@ -154,8 +154,8 @@ library Order {
     }
 
     function escrowFundsForAsk(Order.Data memory _orderData) private returns (bool) {
-        require(_orderData.moneyEscrowed == 0);
-        require(_orderData.sharesEscrowed == 0);
+        require(_orderData.moneyEscrowed == 0, "Order.escrowFundsForAsk: New order had money escrowed. This should not be possible");
+        require(_orderData.sharesEscrowed == 0, "Order.escrowFundsForAsk: New order had shares escrowed. This should not be possible");
         IShareToken _shareToken = _orderData.market.getShareToken(_orderData.outcome);
         uint256 _attosharesToCover = _orderData.amount;
 

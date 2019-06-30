@@ -25,7 +25,7 @@ beforeAll(async () => {
 }, 120000);
 
 // NOTE: Full-text searching is tested more in SyncableDB.test.ts
-test("State API :: SyncData :: getSyncData", async () => {
+test("State API :: Status :: getSyncData", async () => {
   const dbName = (await db).getDatabaseName("MarketCreated");
 
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -33,10 +33,14 @@ test("State API :: SyncData :: getSyncData", async () => {
 
   const syncData = await api.route("getSyncData", {});
 
+  const highestAvailableBlockNumber = syncData.highestAvailableBlockNumber;
+  const blocksBehindCurrent = highestAvailableBlockNumber - 10;
+  const percentBehindCurrent = (blocksBehindCurrent * 100 / highestAvailableBlockNumber).toFixed(4);
+
   expect(syncData).toEqual({
-    highestAvailableBlockNumber: 87,
+    highestAvailableBlockNumber: highestAvailableBlockNumber,
     lastSyncedBlockNumber: 10,
-    blocksBehindCurrent: 77,
-    percentBehindCurrent: "88.5057",
+    blocksBehindCurrent: blocksBehindCurrent,
+    percentBehindCurrent: percentBehindCurrent,
   });
 });

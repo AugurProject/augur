@@ -64,7 +64,7 @@ export interface AccountTransactionHistoryRow<BigNumberType> {
   reporterFees: BigNumberType;
 }
 
-export const GetAccountTransactionHistoryParams = t.intersection([
+export const getAccountTransactionHistoryParams = t.intersection([
   SortLimitParams,
   t.type({
     universe: t.string,
@@ -75,9 +75,9 @@ export const GetAccountTransactionHistoryParams = t.intersection([
     action: t.union([t.string, t.null, t.undefined]),
   }),
 ]);
-type GetAccountTransactionHistoryParamsType = t.TypeOf<typeof GetAccountTransactionHistoryParams>;
+type getAccountTransactionHistoryParamsType = t.TypeOf<typeof getAccountTransactionHistoryParams>;
 
-export async function getAccountTransactionHistory(db: Knex, augur: {}, params: GetAccountTransactionHistoryParamsType) {
+export async function getAccountTransactionHistory(db: Knex, augur: {}, params: getAccountTransactionHistoryParamsType) {
   return [
     {
       action: Action.BUY,

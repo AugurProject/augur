@@ -7,7 +7,7 @@ library Reporting {
     uint256 private constant INITIAL_DISPUTE_ROUND_DURATION_SECONDS = 1 days;
     uint256 private constant FORK_DURATION_SECONDS = 60 days;
 
-    uint256 private constant BASE_MARKET_DURATION_MAXIMUM = 30 days; // A market of 30 day length can always
+    uint256 private constant BASE_MARKET_DURATION_MAXIMUM = 30 days; // A market of 30 day length can always be created
     uint256 private constant UPGRADE_CADENCE = 365 days;
     uint256 private constant INITIAL_UPGRADE_TIMESTAMP = 1626307484; // July 15th 2021
 
@@ -25,10 +25,9 @@ library Reporting {
     uint256 private constant TARGET_REP_MARKET_CAP_MULTIPLIER = 5; // We multiply and divide by constants since we may want to multiply by a fractional amount
     uint256 private constant TARGET_REP_MARKET_CAP_DIVISOR = 1;
 
-    uint256 private constant AUCTION_INITIAL_REP_PRICE = 15 * 10**18; // Initial REP price for the auction in CASH
-    uint256 private constant AUCTION_TARGET_SUPPLY_DIVISOR = 11000; // 1/11000 * supply. The target REP balance to auction off relative to the total supply of tokens
-    uint256 private constant AUCTION_INITIAL_PRICE_MULTIPLIER = 4; // Where to start the price of REP and CASH at the beginning of an auction relative to the last discovered price
-    uint256 private constant AUCTION_DURATION = 1 days; // Each auction lasts one day
+    uint256 private constant FORK_THRESHOLD_DIVISOR = 40; // 2.5% of the total REP supply being filled in a single dispute bond will trigger a fork
+    uint256 private constant MAXIMUM_DISPUTE_ROUNDS = 20; // We ensure that after 20 rounds of disputes a fork will occur
+    uint256 private constant MINIMUM_SLOW_ROUNDS = 8; // We ensure that at least 8 dispute rounds take DISPUTE_ROUND_DURATION_SECONDS+ seconds to complete until the next round begins
 
     function getDesignatedReportingDurationSeconds() internal pure returns (uint256) { return DESIGNATED_REPORTING_DURATION_SECONDS; }
     function getInitialDisputeRoundDurationSeconds() internal pure returns (uint256) { return INITIAL_DISPUTE_ROUND_DURATION_SECONDS; }
@@ -48,8 +47,7 @@ library Reporting {
     function getMinimumReportingFeeDivisor() internal pure returns (uint256) { return MINIMUM_REPORTING_FEE_DIVISOR; }
     function getDefaultReportingFeeDivisor() internal pure returns (uint256) { return DEFAULT_REPORTING_FEE_DIVISOR; }
     function getInitialREPSupply() internal pure returns (uint256) { return INITIAL_REP_SUPPLY; }
-    function getAuctionInitialRepPrice() internal pure returns (uint256) { return AUCTION_INITIAL_REP_PRICE; }
-    function getAuctionTargetSupplyDivisor() internal pure returns (uint256) { return AUCTION_TARGET_SUPPLY_DIVISOR; }
-    function getAuctionInitialPriceMultiplier() internal pure returns (uint256) { return AUCTION_INITIAL_PRICE_MULTIPLIER; }
-    function getAuctionDuration() internal pure returns (uint256) { return AUCTION_DURATION; }
+    function getForkThresholdDivisor() internal pure returns (uint256) { return FORK_THRESHOLD_DIVISOR; }
+    function getMaximumDisputeRounds() internal pure returns (uint256) { return MAXIMUM_DISPUTE_ROUNDS; }
+    function getMinimumSlowRounds() internal pure returns (uint256) { return MINIMUM_SLOW_ROUNDS; }
 }

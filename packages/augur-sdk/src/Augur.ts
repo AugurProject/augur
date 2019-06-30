@@ -11,7 +11,10 @@ import { isSubscriptionEventName, SubscriptionEventNames } from "./constants";
 import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
 import { ContractDependenciesEthers, TransactionStatusCallback } from "contract-dependencies-ethers";
 import { Markets } from "./state/getter/Markets";
-import { SyncData } from "./state/getter/sync-data";
+import { Status } from "./state/getter/status";
+import { Trading } from "./state/getter/Trading";
+import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market} from "./api/Market";
+import { Users } from "./state/getter/Users";
 
 export interface CustomEvent {
   name: string;
@@ -33,6 +36,7 @@ export class Augur<TProvider extends Provider = Provider> {
   public readonly addresses: ContractAddresses;
   public readonly contracts: Contracts;
   public readonly trade: Trade;
+  public readonly market: Market;
   public static connector: Connector;
 
   // TODO Set genericEventNames & userSpecificEvents using
@@ -102,6 +106,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.addresses = addresses;
     this.contracts = new Contracts(this.addresses, this.dependencies);
     this.trade = new Trade(this);
+    this.market = new Market(this);
     this.events = new Events(this.provider, this.addresses.Augur);
   }
 
@@ -146,7 +151,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   public getUniverse(address: string): ContractInterfaces.Universe {
-    return new ContractInterfaces.Universe(this.dependencies, address);
+    return this.contracts.universeFromAddress(address);
   }
 
   public getMarket(address: string): ContractInterfaces.Market {
@@ -201,14 +206,36 @@ export class Augur<TProvider extends Provider = Provider> {
 
   public getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
   public getSyncData = () => {
-    return this.bindTo(SyncData.getSyncData)({});
+    return this.bindTo(Status.getSyncData)({});
   }
 
+  public getTradingHistory = this.bindTo(Trading.getTradingHistory);
+  public getAllOrders = this.bindTo(Trading.getAllOrders);
+  public getTradingOrders = this.bindTo(Trading.getOrders);
+  public getMarketOrderBook = this.bindTo(Markets.getMarketOrderBook);
+
+  public getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
   public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
   }
 
   public async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
     return this.trade.placeTrade(params);
+  }
+
+  public async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
+    return this.market.createYesNoMarket(params);
+  }
+
+  public async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
+    return this.market.createCategoricalMarket(params);
+  }
+
+  public async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
+    return this.market.createScalarMarket(params);
+  }
+
+  public async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
+    return this.trade.simulateTradeGasLimit(params);
   }
 }

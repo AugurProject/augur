@@ -1,10 +1,10 @@
 pragma solidity 0.5.4;
 
-import 'ROOT/libraries/IERC820Registry.sol';
+import 'ROOT/libraries/IERC1820Registry.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
-import 'ROOT/libraries/token/ERC20Token.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/Reporting.sol';
@@ -13,6 +13,10 @@ import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
+/**
+ * @title Reputation Token
+ * @notice The Reputation Token for a particular universe
+ */
 contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     using SafeMathUint256 for uint256;
 
@@ -21,23 +25,27 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     IUniverse internal universe;
     IUniverse internal parentUniverse;
     uint256 internal totalMigrated;
-    uint256 internal totalTheoreticalSupply;
-    ERC20Token public legacyRepToken;
+    IERC20 public legacyRepToken;
     IAugur public augur;
 
-    constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse, address _erc820RegistryAddress) public {
+    constructor(IAugur _augur, IUniverse _universe, IUniverse _parentUniverse, address _erc1820RegistryAddress) public {
         require(_universe != IUniverse(0));
         augur = _augur;
         universe = _universe;
         parentUniverse = _parentUniverse;
-        legacyRepToken = ERC20Token(augur.lookup("LegacyReputationToken"));
-        updateTotalTheoreticalSupply();
-        erc820Registry = IERC820Registry(_erc820RegistryAddress);
-        initialize820InterfaceImplementations();
+        legacyRepToken = IERC20(augur.lookup("LegacyReputationToken"));
+        erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
+        initialize1820InterfaceImplementations();
     }
 
+    /**
+     * @notice Migrate to a Child Universe by indicating the Market payout associated with it
+     * @param _payoutNumerators The array of payouts for the market associated with the desired universe
+     * @param _attotokens The amount of tokens to migrate
+     * @return Bool True
+     */
     function migrateOutByPayout(uint256[] memory _payoutNumerators, uint256 _attotokens) public returns (bool) {
-        require(_attotokens > 0);
+        require(_attotokens > 0, "ReputationToken.migrateOutByPayout: Cannot migrate 0 tokens");
         IUniverse _destinationUniverse = universe.createChildUniverse(_payoutNumerators);
         IReputationToken _destination = _destinationUniverse.getReputationToken();
         burn(msg.sender, _attotokens);
@@ -45,8 +53,14 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return true;
     }
 
+    /**
+     * @notice Migrate to a Child Universe by indicating the Reputation Token associated with it
+     * @param _destination The Reputation Token associated with the desired universe
+     * @param _attotokens The amount of tokens to migrate
+     * @return Bool True
+     */
     function migrateOut(IReputationToken _destination, uint256 _attotokens) public returns (bool) {
-        require(_attotokens > 0);
+        require(_attotokens > 0, "ReputationToken.migrateOut: Cannot migrate 0 tokens");
         assertReputationTokenIsLegitSibling(_destination);
         burn(msg.sender, _attotokens);
         _destination.migrateIn(msg.sender, _attotokens);
@@ -56,10 +70,10 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
     function migrateIn(address _reporter, uint256 _attotokens) public returns (bool) {
         IUniverse _parentUniverse = universe.getParentUniverse();
         require(ReputationToken(msg.sender) == _parentUniverse.getReputationToken());
-        require(augur.getTimestamp() < _parentUniverse.getForkEndTime());
+        require(augur.getTimestamp() < _parentUniverse.getForkEndTime(), "ReputationToken.migrateIn: Cannot migrate after fork end");
         mint(_reporter, _attotokens);
         totalMigrated += _attotokens;
-        // Update the fork tenative winner and finalize if we can
+        // Update the fork tentative winner and finalize if we can
         if (!_parentUniverse.getForkingMarket().isFinalized()) {
             _parentUniverse.updateTentativeWinningChildUniverse(universe.getParentPayoutDistributionHash());
         }
@@ -70,20 +84,9 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         IUniverse _parentUniverse = universe.getParentUniverse();
         IReportingParticipant _reportingParticipant = IReportingParticipant(msg.sender);
         require(_parentUniverse.isContainerForReportingParticipant(_reportingParticipant));
+        // simulate a 40% ROI which would have occured during a normal dispute had this participant's outcome won the dispute
         uint256 _bonus = _amountMigrated.mul(2) / 5;
         mint(address(_reportingParticipant), _bonus);
-        return true;
-    }
-
-    function mintForAuction(uint256 _amountToMint) public returns (bool) {
-        require(universe.getAuction() == IAuction(msg.sender));
-        mint(msg.sender, _amountToMint);
-        return true;
-    }
-
-    function burnForAuction(uint256 _amountToBurn) public returns (bool) {
-        require(universe.getAuction() == IAuction(msg.sender));
-        burn(msg.sender, _amountToBurn);
         return true;
     }
 
@@ -93,96 +96,92 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         return true;
     }
 
-    function transfer(address _to, uint _value) public returns (bool) {
-        return super.transfer(_to, _value);
-    }
-
-    function transferFrom(address _from, address _to, uint _value) public returns (bool) {
-        return super.transferFrom(_from, _to, _value);
-    }
-
     function trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(IUniverse(msg.sender) == universe);
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
     function trustedMarketTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForMarket(IMarket(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
     function trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForReportingParticipant(IReportingParticipant(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens, true);
-    }
-
-    function trustedAuctionTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(universe.getAuction() == (IAuction(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
     function trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
         require(universe.isContainerForDisputeWindow(IDisputeWindow(msg.sender)));
-        return internalTransfer(_source, _destination, _attotokens, true);
+        return internalNoHooksTransfer(_source, _destination, _attotokens);
     }
 
-    function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view returns (bool) {
+    function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view {
         IUniverse _shadyUniverse = _shadyReputationToken.getUniverse();
-        require(universe.isParentOf(_shadyUniverse));
+        require(universe.isParentOf(_shadyUniverse), "ReputationToken.assertReputationTokenIsLegitSibling: Rep token is not sibling");
         IUniverse _legitUniverse = _shadyUniverse;
-        require(_legitUniverse.getReputationToken() == _shadyReputationToken);
-        return true;
+        require(_legitUniverse.getReputationToken() == _shadyReputationToken, "ReputationToken.assertReputationTokenIsLegitSibling: Rep token is not sibling");
     }
 
     function getTypeName() public view returns (bytes32) {
         return "ReputationToken";
     }
 
+    /**
+     * @return The universe associated with this Reputation Token
+     */
     function getUniverse() public view returns (IUniverse) {
         return universe;
     }
 
+    /**
+     * @return The total amount of parent REP migrated into this version of REP
+     */
     function getTotalMigrated() public view returns (uint256) {
         return totalMigrated;
     }
 
-    function getLegacyRepToken() public view returns (ERC20Token) {
+    /**
+     * @return The V1 Rep token
+     */
+    function getLegacyRepToken() public view returns (IERC20) {
         return legacyRepToken;
     }
 
-    function updateTotalTheoreticalSupply() public returns (bool) {
-        if (parentUniverse == IUniverse(0)) {
-            totalTheoreticalSupply = Reporting.getInitialREPSupply();
-        } else if (augur.getTimestamp() >= parentUniverse.getForkEndTime()) {
-            totalTheoreticalSupply = totalSupply();
-        } else {
-            totalTheoreticalSupply = totalSupply() + parentUniverse.getReputationToken().totalSupply();
-        }
-        return true;
-    }
-
+    /**
+     * @return The maximum possible total supply for this version of REP.
+     */
     function getTotalTheoreticalSupply() public view returns (uint256) {
-        return totalTheoreticalSupply;
+        if (parentUniverse == IUniverse(0)) {
+            return Reporting.getInitialREPSupply();
+        } else if (augur.getTimestamp() >= parentUniverse.getForkEndTime()) {
+            return totalSupply();
+        } else {
+            return totalSupply() + parentUniverse.getReputationToken().totalSupply();
+        }
     }
 
-    function onTokenTransfer(address _from, address _to, uint256 _value) internal returns (bool) {
+    function onTokenTransfer(address _from, address _to, uint256 _value) internal {
         augur.logReputationTokensTransferred(universe, _from, _to, _value, balances[_from], balances[_to]);
-        return true;
     }
 
-    function onMint(address _target, uint256 _amount) internal returns (bool) {
+    function onMint(address _target, uint256 _amount) internal {
         augur.logReputationTokensMinted(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 
-    function onBurn(address _target, uint256 _amount) internal returns (bool) {
+    function onBurn(address _target, uint256 _amount) internal {
         augur.logReputationTokensBurned(universe, _target, _amount, totalSupply(), balances[_target]);
-        return true;
     }
 
+    /**
+     * @notice Migrate V1 REP to V2
+     * @dev This can only be done for the Genesis Universe in V2. If a fork occurs and the window ends V1 REP is stuck in V1 forever
+     * @return Bool True
+     */
     function migrateFromLegacyReputationToken() public returns (bool) {
+        require(parentUniverse == IUniverse(0), "ReputationToken.migrateFromLegacyReputationToken: Can only migrate into genesis universe");
         uint256 _legacyBalance = legacyRepToken.balanceOf(msg.sender);
-        require(legacyRepToken.transferFrom(msg.sender, address(0), _legacyBalance));
+        require(legacyRepToken.transferFrom(msg.sender, address(1), _legacyBalance));
         mint(msg.sender, _legacyBalance);
         return true;
     }

@@ -45,5 +45,5 @@ contract Ownable is IOwnable {
     }
 
     // Subclasses of this token may want to send additional logs through the centralized Augur log emitter contract
-    function onTransferOwnership(address, address) internal returns (bool);
+    function onTransferOwnership(address, address) internal;
 }
