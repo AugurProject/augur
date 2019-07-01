@@ -5,6 +5,7 @@ import {
 } from "store/select-state";
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
+import { isSameAddress } from "utils/isSameAddress";
 
 export const selectAuthorOwnedMarkets = createSelector(
   selectAllMarkets,
@@ -13,7 +14,7 @@ export const selectAuthorOwnedMarkets = createSelector(
   (allMarkets, marketTradingHistory, authorId) => {
     if (!allMarkets || !authorId) return null;
     const filteredMarkets = allMarkets.filter(
-      market => market.author === authorId
+      market => isSameAddress(market.author, authorId)
     );
     return filteredMarkets.map(m => ({
       ...m,
