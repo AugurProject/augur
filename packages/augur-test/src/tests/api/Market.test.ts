@@ -1,13 +1,13 @@
 import { makeProvider, seedPath } from "../../libs";
-import { ContractAPI, deployContracts, ACCOUNTS } from "@augurproject/tools";
+import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
 import { formatBytes32String } from "ethers/utils";
 
 let john: ContractAPI;
 let mary: ContractAPI;
 
 beforeAll(async () => {
+  const { addresses } = loadSeed(seedPath);
   const provider = await makeProvider(ACCOUNTS);
-  const { addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
 
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);

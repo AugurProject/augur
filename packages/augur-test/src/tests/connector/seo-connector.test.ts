@@ -1,5 +1,5 @@
 import { makeDbMock, makeProvider, seedPath } from "../../libs";
-import { ContractAPI, deployContracts, ACCOUNTS } from "@augurproject/tools";
+import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BigNumber } from 'bignumber.js';
 import { ContractAddresses } from '@augurproject/artifacts';
@@ -56,9 +56,8 @@ jest.mock('@augurproject/sdk/build/state/index', () => {
 beforeAll(async () => {
   connector = new SEOConnector();
 
+  addresses = loadSeed(seedPath).addresses;
   provider = await makeProvider(ACCOUNTS);
-  const contractData = await deployContracts(provider, seedPath, ACCOUNTS);
-  addresses = contractData.addresses;
 
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   db = mock.makeDB(john.augur, ACCOUNTS);

@@ -1,7 +1,6 @@
 import { Augur } from "@augurproject/sdk";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { deployContracts, ACCOUNTS } from "@augurproject/tools";
-import { makeDbMock, makeProvider, seedPath } from "../../libs";
+import { ACCOUNTS } from "@augurproject/tools";
+import { makeDbMock, makeTestAugur } from "../../libs";
 import { stringTo32ByteHex } from "../../libs/Utils";
 import { toAscii } from "@augurproject/sdk/build/state/utils/utils";
 
@@ -15,13 +14,8 @@ beforeEach(async () => {
 });
 
 let augur: Augur;
-let ethersProvider: EthersProvider;
 beforeAll(async () => {
-  const provider = await makeProvider(ACCOUNTS);
-  const { dependencies, addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
-
-  augur = await Augur.create(provider, dependencies, addresses);
-  ethersProvider = provider;
+  augur = await makeTestAugur(ACCOUNTS);
 }, 120000);
 
 test("Flexible Search", async () => {
@@ -40,8 +34,8 @@ test("Flexible Search", async () => {
         resolutionSource: "http://www.blah.com",
         _scalarDenomination: "fake scalar denomination",
         tags: ["humanity", "30"],
-      })
-    }
+      }),
+    },
   ];
   await db.addNewBlock(syncableDBName, blockLogs);
   await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);

@@ -5,6 +5,7 @@ import { GanacheServer } from "ganache-core";
 import { ethers } from "ethers";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractInterfaces } from "@augurproject/core";
+import { loadSeed } from "../libs/ganache";
 
 export interface FlashOption {
   name: string;
@@ -14,7 +15,7 @@ export interface FlashOption {
 }
 
 export interface FlashArguments {
-  [name: string]: string;
+  [name: string]: string|boolean;
 }
 
 export interface FlashScript {
@@ -68,7 +69,7 @@ export class FlashSession {
   }
 
   loadSeed() {
-    return require(this.seedFilePath);
+    return loadSeed(this.seedFilePath);
   }
 
   noProvider() {
