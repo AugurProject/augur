@@ -6,6 +6,7 @@ import { BigNumber } from 'bignumber.js';
 // Always make sure it is present without having to specify in every .emit call
 class EventNameEmitter extends EventEmitter {
   public emit(eventName: SubscriptionEventNames | string, ...args: Array<any>): boolean {
+    console.log("Event emitter args are", args);
     return super.emit(eventName, ...args);
   }
 }

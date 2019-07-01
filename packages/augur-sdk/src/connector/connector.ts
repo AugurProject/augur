@@ -18,12 +18,12 @@ export abstract class Connector {
     console.log("TYPE is", type);
     return (...args: SubscriptionTypes[]): void => {
       console.log("FOO FOO ARGS: ", this.create(args, type));
+      callback([this.create(args, type)] as SubscriptionTypes[]);
       //callback(args.map((arg: object) => this.create(arg, type)));
     };
   }
 
   private create<T extends SubscriptionTypes>(arg: object, type: { new(): T; }): T {
-    console.log("new type is", type);
     const t = new type();
 
     t.ingestEvent(arg);
