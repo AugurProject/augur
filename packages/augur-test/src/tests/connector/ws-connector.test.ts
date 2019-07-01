@@ -1,5 +1,6 @@
 import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
-import { SubscriptionEventNames } from '@augurproject/sdk/build//constants';
+import { NewBlock } from '@augurproject/sdk/build/events';
+import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { WebsocketConnector } from '@augurproject/sdk/build/connector/ws-connector';
 
 jest.mock('websocket-as-promised', () => {
@@ -9,13 +10,13 @@ jest.mock('websocket-as-promised', () => {
       open: () => true,
       close: () => true,
       onError: {
-        addListener: () => {},
+        addListener: () => { },
       },
       onMessage: {
-        addListener: () => {},
+        addListener: () => { },
       },
       onClose: {
-        addListener: () => {},
+        addListener: () => { },
       },
       sendRequest: (message: any): Promise<any> => {
         return new Promise((resolve, reject) => {
@@ -41,17 +42,11 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
   await connector.connect('');
 
   await connector.on(
-    SubscriptionEventNames.NewBlock,
-    async (...args: Array<any>): Promise<void> => {
-      expect(args).toEqual([
-        {
-          eventName: SubscriptionEventNames.NewBlock,
-          highestAvailableBlockNumber: 88,
-          lastSyncedBlockNumber: 88,
-          blocksBehindCurrent: 0,
-          percentBehindCurrent: '0.0000',
-        },
-      ]);
+    SubscriptionEventName.NewBlock,
+    async (arg: NewBlock): Promise<void> => {
+      expect(arg).toEqual(
+        { "0": { "blocksBehindCurrent": 0, "eventName": "NewBlock", "highestAvailableBlockNumber": 88, "lastSyncedBlockNumber": 88, "percentBehindCurrent": "0.0000" } }
+      );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
       const markets = await getMarkets({
@@ -59,7 +54,7 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
       });
       expect(markets).toEqual(['0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407']);
 
-      await connector.off(SubscriptionEventNames.NewBlock);
+      await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});
       connector.disconnect();
       done();
@@ -69,10 +64,10 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
   // this should invoke the callback ... if not done won't be called
   setTimeout(() => {
     connector.messageReceived({
-      eventName: SubscriptionEventNames.NewBlock,
+      eventName: SubscriptionEventName.NewBlock,
       result: [
         {
-          eventName: SubscriptionEventNames.NewBlock,
+          eventName: SubscriptionEventName.NewBlock,
           highestAvailableBlockNumber: 88,
           lastSyncedBlockNumber: 88,
           blocksBehindCurrent: 0,
