@@ -375,7 +375,7 @@ def test_fork_migration_no_report(localFixture, universe, market):
     oldBalance = oldReputationToken.balanceOf(longMarket.address)
     newUniverse = localFixture.applySignature("Universe", universe.getChildUniverse(market.getWinningPayoutDistributionHash()))
     newReputationToken = localFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
-    with TokenDelta(oldReputationToken, 0, longMarket.address, "Migrating didn't disavow old no show bond"):
+    with TokenDelta(oldReputationToken, -oldBalance, longMarket.address, "Migrating didn't disavow old no show bond"):
         with TokenDelta(newReputationToken, oldBalance, longMarket.address, "Migrating didn't place new no show bond"):
             assert longMarket.migrateThroughOneFork([], "")
 
