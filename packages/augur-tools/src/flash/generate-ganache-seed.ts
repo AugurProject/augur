@@ -2,12 +2,12 @@ import * as fs from "async-file";
 import { ethers } from "ethers";
 import * as ganache from "ganache-core";
 import {
-  AccountList, ACCOUNTS,
+  Account,
   makeDependencies,
   makeDeployerConfiguration,
   makeSigner,
   UsefulContractObjects,
-} from "../libs";
+} from "../libs/ganache";
 import { CompilerOutput } from "solc";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import {ContractDeployer} from "@augurproject/core";
@@ -18,7 +18,7 @@ import crypto from "crypto";
 const memdown = require("memdown");
 const levelup = require("levelup");
 
-export async function deployContracts(ganacheProvider: ethers.providers.Web3Provider,  accounts: AccountList, compiledContracts: CompilerOutput): Promise<UsefulContractObjects> {
+export async function deployContracts(ganacheProvider: ethers.providers.Web3Provider,  accounts: Account[], compiledContracts: CompilerOutput): Promise<UsefulContractObjects> {
   const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
   const signer = await makeSigner(accounts[0], provider);
   const dependencies = makeDependencies(accounts[0], provider, signer);
@@ -31,7 +31,7 @@ export async function deployContracts(ganacheProvider: ethers.providers.Web3Prov
 }
 
 const db = memdown();
-function makeGanacheProvider(accounts: AccountList): ethers.providers.Web3Provider {
+function makeGanacheProvider(accounts: Account[]): ethers.providers.Web3Provider {
   return new ethers.providers.Web3Provider(ganache.provider({
     accounts,
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
@@ -52,7 +52,7 @@ function hashContracts(): string {
   return md5.digest("hex");
 }
 
-export async function seedFileIsOutOfDate(filePath: string = DEFAULT_SEED_FILE): Promise<boolean> {
+export async function seedFileIsOutOfDate(filePath = DEFAULT_SEED_FILE): Promise<boolean> {
   const exists = await fs.exists(filePath);
   if (!exists) {
     return true;
@@ -69,14 +69,15 @@ interface LevelDBRow {
   type: "put";
 }
 
-export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE): Promise<void> {
-  const ganacheProvider = makeGanacheProvider(ACCOUNTS);
-  const { addresses } = await deployContracts(ganacheProvider, ACCOUNTS, compilerOutput);
+export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE, accounts: Account[]): Promise<void> {
+  const ganacheProvider = makeGanacheProvider(accounts);
+  const { addresses } = await deployContracts(ganacheProvider, accounts, compilerOutput);
   const contractsHash = hashContracts();
 
   const leveledDB = levelup(db);
 
-  const payload: Array<LevelDBRow> = [];
+  const payload: LevelDBRow[] = [];
+
   await new Promise((resolve, reject) => {
     leveledDB.createReadStream({
       keyAsBuffer: false,
