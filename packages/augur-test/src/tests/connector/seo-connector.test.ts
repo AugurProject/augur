@@ -13,8 +13,8 @@ import {
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { SEOConnector } from '@augurproject/sdk/build/connector/seo-connector';
-import { SubscriptionEventNames } from '@augurproject/sdk/build/constants';
-import { SubscriptionTypes, NewBlock } from '@augurproject/sdk/build/events';
+import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
+import { SubscriptionType, NewBlock } from '@augurproject/sdk/build/events';
 import { MarketCreated } from "@augurproject/sdk/build/events";
 
 let connector: SEOConnector;
@@ -81,9 +81,9 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
 
   console.log("Waiting", SubscriptionEventNames.MarketCreated, MarketCreated)
   await connector.on(
-    SubscriptionEventNames.MarketCreated,
+    SubscriptionEventName.MarketCreated,
     MarketCreated,
-    async (...args: SubscriptionTypes[]): Promise<void> => {
+    async (...args: SubscriptionType[]): Promise<void> => {
       expect(args[0]).toHaveProperty(
         'extraInfo',
         '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}'
@@ -95,7 +95,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       });
       expect(markets).toEqual([yesNoMarket1.address]);
 
-      await connector.off(SubscriptionEventNames.MarketCreated);
+      await connector.off(SubscriptionEventName.MarketCreated);
       expect(connector.subscriptions).toEqual({});
       done();
     }
@@ -118,13 +118,13 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
 //   await connector.connect('');
 
 //   await connector.on(
-//     SubscriptionEventNames.NewBlock,
+//     SubscriptionEventName.NewBlock,
 //     NewBlock,
 //     async function(args: any[]): Promise<void> {
 //       console.log("blah XXXXXXXXXXXXXXXXA");
 //       expect(args).toEqual([
 //         {
-//           eventName: SubscriptionEventNames.NewBlock,
+//           eventName: SubscriptionEventName.NewBlock,
 //           blocksBehindCurrent: 0,
 //           highestAvailableBlockNumber: expect.any(Number),
 //           lastSyncedBlockNumber: expect.any(Number),
@@ -138,7 +138,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
 //       });
 //       expect(markets[markets.length - 1]).toEqual(yesNoMarket1.address);
 
-//       await connector.off(SubscriptionEventNames.NewBlock);
+//       await connector.off(SubscriptionEventName.NewBlock);
 //       expect(connector.subscriptions).toEqual({});
 //       done();
 //     }

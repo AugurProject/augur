@@ -1,5 +1,5 @@
 import { SubscriptionEventNames } from "../constants";
-import { Callback, SubscriptionTypes } from "../events";
+import { Callback, SubscriptionType } from "../events";
 
 export abstract class Connector {
   public subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
@@ -11,22 +11,28 @@ export abstract class Connector {
   // bind API calls
   public abstract bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R>;
 
-  public abstract async on<T extends SubscriptionTypes>(eventName: SubscriptionEventNames | string, type: { new(): T; }, callback: Callback): Promise<void>;
+  public abstract async on<T extends SubscriptionType>(eventName: SubscriptionEventNames | string, type: { new(): T; }, callback: Callback): Promise<void>;
   public abstract async off(eventName: SubscriptionEventNames | string): Promise<void>;
 
-  public callbackWrapper<T extends SubscriptionTypes>(callback: Callback, type: { new(): T; }): (...args: SubscriptionTypes[]) => void {
+  protected callbackWrapper<T extends SubscriptionType>(callback: Callback, type: { new(): T; }): (...args: SubscriptionType[]) => void {
     console.log("TYPE is", type);
-    return (...args: SubscriptionTypes[]): void => {
+
+    return (...args: SubscriptionType[]): void => {
+      console.log("Args are", args);
       console.log("FOO FOO ARGS: ", this.create(args, type));
-      callback([this.create(args, type)] as SubscriptionTypes[]);
-      //callback(args.map((arg: object) => this.create(arg, type)));
+      //callback(this.create(args, type));
+      callback(args.map((arg: object) => this.create(arg, type)));
     };
   }
 
-  private create<T extends SubscriptionTypes>(arg: object, type: { new(): T; }): T {
+  private create<T extends SubscriptionType>(arg: object, type: { new(): T; }): SubscriptionType {
+    console.log("Testing type creation");
     const t = new type();
+    console.log("Type created", t);
 
-    t.ingestEvent(arg);
+    Object.assign(t, arg);
+    console.log("Assigned data to", t);
+
     return t;
   }
 }

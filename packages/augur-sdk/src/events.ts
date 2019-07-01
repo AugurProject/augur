@@ -18,21 +18,17 @@ augurEmitter.setMaxListeners(0);
 type Address = string;
 type Bytes32 = string;
 
-// These are the subscription event types used in Augur and the Connectors. 
+// These are the subscription event types used in Augur and the Connectors.
 
 class FormattedEventLog {
   private _address: Address;
 
-  public ingestEvent(arg: object) {
-    // XXX: TODO
-  }
-
-  public set address(address: Address) { this.address = address; }
-  public get address() { return this._address; }
+  set address(address: Address) { this.address = address; }
+  get address() { return this._address; }
 
   private _blockNumber: BigNumber;
-  public set blockNumber(value: BigNumber) { console.log("Setter called"); this._blockNumber = value; }
-  public get blockNumber() { return this._blockNumber; }
+  set blockNumber(value: BigNumber) { console.log("Setter called"); this._blockNumber = value; }
+  get blockNumber() { return this._blockNumber; }
 
   private _logIndex: number;
   private _transactionHash: Bytes32;
@@ -86,15 +82,15 @@ export class InitialReporterTransferred extends FormattedEventLog {
 }
 
 export class MarketCreated extends FormattedEventLog {
-  universe: Address;
-  endTime: number;
-  topic: string;
+  universe: BigNumber;
+  endTime: BigNumber;
+  topic: BigNumber;
   extraInfo: string;
-  market: Address;
-  marketCreator: Address;
-  designatedReporter: Address;
+  market: BigNumber;
+  marketCreator: BigNumber;
+  designatedReporter: BigNumber;
   feeDivisor: number;
-  prices: number[];
+  prices: BigNumber[];
   marketType: number;
   numTicks: number;
   outcomes: string[];
@@ -173,6 +169,6 @@ export class UniverseForked extends FormattedEventLog {
   // event UniverseForked(address indexed universe, IMarket forkingMarket);
 }
 
-export type SubscriptionTypes = MarketCreated | InitialReportSubmitted | DisputeCrowdsourcerCreated | DisputeCrowdsourcerContribution | DisputeCrowdsourcerCompleted | InitialReporterRedeemed | DisputeCrowdsourcerRedeemed | ReportingParticipantDisavowed | MarketParticipantsDisavowed | MarketFinalized | MarketMigrated | UniverseForked | UniverseCreated | OrderEvent | CompleteSetsPurchased | CompleteSetsSold | TradingProceedsClaimed | TokensTransferred | TokensMinted | TokensBurned | TokenBalanceChanged | DisputeWindowCreated | InitialReporterTransferred | MarketTransferred | MarketVolumeChanged | ProfitLossChanged | ParticipationTokensRedeemed | TimestampSet;
+export type SubscriptionType = MarketCreated | InitialReportSubmitted | DisputeCrowdsourcerCreated | DisputeCrowdsourcerContribution | DisputeCrowdsourcerCompleted | InitialReporterRedeemed | DisputeCrowdsourcerRedeemed | ReportingParticipantDisavowed | MarketParticipantsDisavowed | MarketFinalized | MarketMigrated | UniverseForked | UniverseCreated | OrderEvent | CompleteSetsPurchased | CompleteSetsSold | TradingProceedsClaimed | TokensTransferred | TokensMinted | TokensBurned | TokenBalanceChanged | DisputeWindowCreated | InitialReporterTransferred | MarketTransferred | MarketVolumeChanged | ProfitLossChanged | ParticipationTokensRedeemed | TimestampSet;
 
-export type Callback = (...args: SubscriptionTypes[]) => void;
+export type Callback = (...args: SubscriptionType[]) => void;

@@ -1,5 +1,5 @@
-import {utils as ethersUtils} from "ethers";
-import {BigNumber} from "bignumber.js";
+import { utils as ethersUtils } from "ethers";
+import { BigNumber } from "bignumber.js";
 
 export enum ACCOUNT_TYPES {
   U_PORT = "uPort",
@@ -11,7 +11,7 @@ export enum ACCOUNT_TYPES {
   EDGE = "edge",
 }
 
-export enum SubscriptionEventNames {
+export enum SubscriptionEventName {
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
