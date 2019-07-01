@@ -228,6 +228,7 @@ export class Users {
                 ].balance
               );
             }
+
             return tradingPosition;
           }
         );

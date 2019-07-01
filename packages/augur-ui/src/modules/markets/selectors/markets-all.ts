@@ -1,7 +1,7 @@
 import store from "store";
 import { selectMarket } from "modules/markets/selectors/market";
 import {
-  selectMarketsDataState,
+  selectMarketInfosState,
   selectMarketTradingHistoryState,
   selectOrderBooksState,
   selectOrderCancellationState,
@@ -18,7 +18,7 @@ export default function() {
 }
 
 export const selectMarkets = createSelector(
-  selectMarketsDataState,
+  selectMarketInfosState,
   selectMarketTradingHistoryState,
   selectOrderBooksState,
   selectOrderCancellationState,
