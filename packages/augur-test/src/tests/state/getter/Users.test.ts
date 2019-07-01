@@ -1,10 +1,9 @@
 import {
-  ACCOUNTS,
   makeDbMock,
-  deployContracts,
-  ContractAPI,
+  makeProvider,
+  seedPath,
 } from '../../../libs';
-import { Contracts as compilerOutput } from '@augurproject/artifacts';
+import { ContractAPI, deployContracts, ACCOUNTS } from "@augurproject/tools";
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import {
@@ -69,13 +68,12 @@ describe('State API :: Users :: ', () => {
   let mary: ContractAPI;
 
   beforeAll(async () => {
-    const { provider, addresses } = await deployContracts(
-      ACCOUNTS,
-      compilerOutput
-    );
+    const provider = await makeProvider(ACCOUNTS);
+    const { addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
 
-    john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
@@ -142,7 +140,7 @@ describe('State API :: Users :: ', () => {
 
     const profitLoss = await api.route('getProfitLoss', {
       universe: john.augur.contracts.universe.address,
-      account: mary.account,
+      account: mary.account.publicKey,
       startTime: startTime.toNumber(),
     });
 
@@ -161,7 +159,7 @@ describe('State API :: Users :: ', () => {
 
     const profitLossSummary = await api.route('getProfitLossSummary', {
       universe: john.augur.contracts.universe.address,
-      account: mary.account,
+      account: mary.account.publicKey,
     });
 
     const oneDayPLSummary = profitLossSummary['1'];
@@ -176,7 +174,7 @@ describe('State API :: Users :: ', () => {
     await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
       9.5
     );
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions binary-1', async () => {
     const market = await john.createReasonableYesNoMarket();
@@ -235,7 +233,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions cat3-1', async () => {
     const market = await john.createReasonableMarket([
@@ -288,7 +286,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions cat3-2', async () => {
     const market = await john.createReasonableMarket([
@@ -341,7 +339,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions cat3-3', async () => {
     const market = await john.createReasonableMarket([
@@ -424,7 +422,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions scalar', async () => {
     const market = await john.createReasonableScalarMarket();
@@ -489,7 +487,7 @@ describe('State API :: Users :: ', () => {
       new BigNumber(50),
       new BigNumber(250)
     );
-  }, 60000);
+  }, 120000);
 
   async function processTrades(
     tradeData: UTPTradeData[],
@@ -505,7 +503,7 @@ describe('State API :: Users :: ', () => {
 
       const { tradingPositions } = await api.route('getUserTradingPositions', {
         universe,
-        account: mary.account,
+        account: mary.account.publicKey,
         marketId: market.address,
       });
 

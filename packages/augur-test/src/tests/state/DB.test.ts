@@ -1,6 +1,7 @@
 import { TrackedUsers } from '@augurproject/sdk/build/state/db/TrackedUsers';
 import { Augur } from '@augurproject/sdk';
-import { makeTestAugur, ACCOUNTS, makeDbMock } from '../../libs';
+import { makeTestAugur, makeDbMock } from '../../libs';
+import { ACCOUNTS } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
@@ -27,13 +28,15 @@ test('database failure during trackedUsers.getUsers() call', async () => {
     mock.makeFactory()
   );
 
-  expect(await trackedUsers.setUserTracked('mock')).toMatchObject({
-    ok: true,
-    id: 'mock',
-    rev: expect.any(String),
-  });
+  let err: Error;
+  try {
+    await trackedUsers.setUserTracked("mock")
+  } catch (e) {
+    err = e;
+  }
+  expect(err.message).toMatch('invalid address (arg="address", value="mock", version=4.0.24)');
   mock.failNext();
-  await expect(trackedUsers.getUsers()).rejects.toThrow();
+    await expect(trackedUsers.getUsers()).rejects.toThrow();
 });
 
 test('database failure during sync, followed by another sync', async () => {

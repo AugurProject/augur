@@ -24,6 +24,9 @@
     },
     {
       "path": "../augur-artifacts"
+    },
+    {
+      "path": "../augur-tools"
     }
   ]
 }

@@ -207,10 +207,11 @@ export interface DisputeInfo {
 }
 
 export interface MyPositionsSummary {
-  currentValue: any;
-  numCompleteSets: any;
-  totalPercent: any;
-  totalReturns: any;
+  currentValue: FormattedNumber;
+  numCompleteSets?: FormattedNumber;
+  totalPercent: FormattedNumber;
+  totalReturns: FormattedNumber;
+  valueChange: FormattedNumber;
 }
 
 export interface Notification {

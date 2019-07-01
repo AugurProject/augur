@@ -8,7 +8,7 @@ import { SizeTypes } from "modules/types";
 import Styles from "modules/account/components/open-markets.styles.less";
 
 function filterComp(input: any, market: any) {
-  return market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  return market && market.description ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0 : true;
 }
 
 interface OpenMarketsProps {

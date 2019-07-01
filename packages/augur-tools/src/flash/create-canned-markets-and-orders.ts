@@ -3,21 +3,22 @@
 import { BigNumber } from "bignumber.js";
 import { formatBytes32String } from "ethers/utils";
 
-import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { GenericAugurInterfaces } from "@augurproject/core";
-import { ContractAddresses } from "@augurproject/artifacts";
 import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from "@augurproject/sdk";
 
-import { AccountList, ContractAPI } from "../libs";
+import { ContractAPI } from "..";
 import { cannedMarkets, CannedMarket } from "./data/canned-markets";
 
-async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<GenericAugurInterfaces.Market<BigNumber>> {
+type Market = GenericAugurInterfaces.Market<BigNumber>;
+
+async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<Market> {
   console.log("CREATING CANNED MARKET: ", can.extraInfo.description);
+
   const { endTime, affiliateFeeDivisor } = can;
   const feePerEthInWei = new BigNumber(10).pow(16);
-  const designatedReporter = person.account;
+  const designatedReporter = person.account.publicKey;
 
-  let market: GenericAugurInterfaces.Market<BigNumber>;
+  let market: Market;
   switch (can.marketType) {
     case "yesNo":
       market = await person.createYesNoMarket({
@@ -55,7 +56,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
       break;
     case "categorical":
       if (typeof can.outcomes === "undefined") {
-        throw Error(`CannedMarket.outcomes must not be undefined in a scalar market`);
+        throw Error(`CannedMarket.outcomes must not be undefined in a categorical market`);
       }
       market = await person.createCategoricalMarket({
         endTime: new BigNumber(endTime),
@@ -80,13 +81,13 @@ function generateRandom32ByteHex() {
 }
 
 async function placeOrder(person: ContractAPI,
-                          market: GenericAugurInterfaces.Market<BigNumber>,
+                          market: Market,
                           can: CannedMarket,
                           tradeGroupId: string,
                           outcome: BigNumber,
                           orderType: BigNumber,
                           shares: BigNumber,
-                          price: BigNumber) {
+                          price: BigNumber): Promise<string> {
   const tickSize = can.tickSize
     ? new BigNumber(can.tickSize)
     : numTicksToTickSize(new BigNumber("100"), new BigNumber("0"), new BigNumber("0x0de0b6b3a7640000"));
@@ -112,7 +113,7 @@ async function placeOrder(person: ContractAPI,
   );
 }
 
-async function createOrderBook(person: ContractAPI, market: GenericAugurInterfaces.Market<BigNumber>, can: CannedMarket) {
+async function createOrderBook(person: ContractAPI, market: Market, can: CannedMarket) {
   const tradeGroupId = generateRandom32ByteHex();
 
   for (let a = 0; a < Object.keys(can.orderBook).length; a++) {
@@ -121,30 +122,24 @@ async function createOrderBook(person: ContractAPI, market: GenericAugurInterfac
 
     const { buy, sell } = buySell;
 
-    const promises = [];
-
     for (const { shares, price } of buy) {
       const buyOrderType = new BigNumber(0);
-      promises.push(placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), buyOrderType, new BigNumber(shares), new BigNumber(price)));
+      await placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), buyOrderType, new BigNumber(shares), new BigNumber(price));
     }
 
     for (const { shares, price } of sell) {
       const sellOrderType = new BigNumber(1);
-      promises.push(placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), sellOrderType, new BigNumber(shares), new BigNumber(price)));
+      await placeOrder(person, market, can, tradeGroupId, new BigNumber(outcome), sellOrderType, new BigNumber(shares), new BigNumber(price));
     }
-
-    await Promise.all(promises);
   }
 }
 
-export async function createCannedMarketsAndOrders(accounts: AccountList, provider: EthersProvider, addresses: ContractAddresses) {
-  const person = await ContractAPI.userWrapper(accounts, 0, provider, addresses);
-  await person.approveCentralAuthority();
-
-  await person.faucet(new BigNumber(10).pow(18).multipliedBy(1000000));
-
-  await Promise.all(cannedMarkets.map(async (can) => {
+export async function createCannedMarketsAndOrders(person: ContractAPI): Promise<Market[]> {
+  const markets = [];
+  for (const can of cannedMarkets) {
     const market = await createCannedMarket(person, can);
+    markets.push(market);
     await createOrderBook(person, market, can);
-  }));
+  }
+  return markets;
 }

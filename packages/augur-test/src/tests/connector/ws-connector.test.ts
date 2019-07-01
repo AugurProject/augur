@@ -45,6 +45,7 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
     async (...args: Array<any>): Promise<void> => {
       expect(args).toEqual([
         {
+          eventName: SubscriptionEventNames.NewBlock,
           highestAvailableBlockNumber: 88,
           lastSyncedBlockNumber: 88,
           blocksBehindCurrent: 0,
@@ -71,6 +72,7 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
       eventName: SubscriptionEventNames.NewBlock,
       result: [
         {
+          eventName: SubscriptionEventNames.NewBlock,
           highestAvailableBlockNumber: 88,
           lastSyncedBlockNumber: 88,
           blocksBehindCurrent: 0,

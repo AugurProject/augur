@@ -1,6 +1,5 @@
 pragma solidity 0.5.4;
 
-
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/libraries/Initializable.sol';
@@ -8,6 +7,10 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/math/SafeMathInt256.sol';
 
 
+/**
+ * @title Profit Loss
+ * @notice Storage of Profit Loss data. 
+ */
 contract ProfitLoss is Initializable {
     using SafeMathUint256 for uint256;
     using SafeMathInt256 for int256;
