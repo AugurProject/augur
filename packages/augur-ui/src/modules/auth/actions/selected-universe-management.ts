@@ -12,7 +12,7 @@ export const setSelectedUniverse = (selectedUniverseId: string | null = null) =>
 ) => {
   const { loginAccount, env, connection } = getState();
   const { address } = loginAccount;
-  const { augurNodeNetworkId } = connection;
+  const networkId = getNetworkId();
   const defaultUniverseId =
     env.universe ||
     augur.contracts.addresses[getNetworkId()].Universe;
@@ -28,7 +28,7 @@ export const setSelectedUniverse = (selectedUniverseId: string | null = null) =>
           ...accountStorage,
           selectedUniverse: {
             ...accountStorage.selectedUniverse,
-            [augurNodeNetworkId]: selectedUniverseId || defaultUniverseId
+            [networkId]: selectedUniverseId || defaultUniverseId
           }
         })
       );

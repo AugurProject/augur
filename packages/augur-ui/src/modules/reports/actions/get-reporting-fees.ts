@@ -29,7 +29,7 @@ export const getReportingFees = (
   // TODO: getting users reporting fees, keeping code for reference
   return;
   /*
-  augur.augurNode.submitRequest(
+
     "getReportingFees",
     {
       universe: universe.id,

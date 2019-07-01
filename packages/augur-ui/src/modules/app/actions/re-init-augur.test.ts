@@ -11,7 +11,6 @@ describe("app/actions/re-init-augur", () => {
     state: {
       connection: {
         isConnected: false,
-        isConnectedToAugurNode: true,
         isReconnectionPaused: false
       }
     },
@@ -32,7 +31,6 @@ describe("app/actions/re-init-augur", () => {
               type: "MODAL_NETWORK_DISCONNECTED",
               connection: {
                 isConnected: false,
-                isConnectedToAugurNode: true,
                 isReconnectionPaused: false
               },
               env: undefined
@@ -46,7 +44,6 @@ describe("app/actions/re-init-augur", () => {
               type: "MODAL_NETWORK_DISCONNECTED",
               connection: {
                 isConnected: false,
-                isConnectedToAugurNode: true,
                 isReconnectionPaused: false
               },
               env: undefined
@@ -60,7 +57,6 @@ describe("app/actions/re-init-augur", () => {
               type: "MODAL_NETWORK_DISCONNECTED",
               connection: {
                 isConnected: false,
-                isConnectedToAugurNode: true,
                 isReconnectionPaused: false
               },
               env: undefined
@@ -74,7 +70,6 @@ describe("app/actions/re-init-augur", () => {
               type: "MODAL_NETWORK_DISCONNECTED",
               connection: {
                 isConnected: false,
-                isConnectedToAugurNode: true,
                 isReconnectionPaused: false
               },
               env: undefined

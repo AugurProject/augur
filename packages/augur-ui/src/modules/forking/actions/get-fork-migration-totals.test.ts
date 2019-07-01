@@ -42,15 +42,6 @@ describe("modules/forking/actions/get-fork-migration-totals.js", () => {
         });
         return callback(null, "0xMARKET");
       });
-    jest
-      .spyOn(augur.augurNode, "submitRequest")
-      .mockImplementation((methodName, args, callback: any) => {
-        expect(methodName).toEqual("getForkMigrationTotals");
-        expect(args).toEqual({
-          parentUniverse: "0xUNIVERSE",
-        });
-        return callback(null, forkMigrationTotalsData);
-      });
 
     const expected = {
       0: {

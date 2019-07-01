@@ -9,7 +9,7 @@ describe("utils/edit-endpoint-params.js", () => {
     windowRef = {
       location: {
         search:
-          "?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546&some_other_param=somevalue",
+          "?ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546&some_other_param=somevalue",
         origin: "http://example.com",
         hash: "#/markets",
         get href() {
@@ -58,7 +58,7 @@ describe("utils/edit-endpoint-params.js", () => {
       });
       expect(
         spy.calledWith(
-          "http://example.com?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F111.1.1.1%3A1111&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546&some_other_param=somevalue#/markets"
+          "http://example.com?ethereum_node_http=http%3A%2F%2F111.1.1.1%3A1111&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546&some_other_param=somevalue#/markets"
         )
       ).toBeTruthy();
     });
@@ -71,7 +71,7 @@ describe("utils/edit-endpoint-params.js", () => {
       });
       expect(
         spy.calledWith(
-          "http://example.com?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F222.2.2.2%3A2222&some_other_param=somevalue#/markets"
+          "http://example.com?ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F222.2.2.2%3A2222&some_other_param=somevalue#/markets"
         )
       ).toBeTruthy();
     });

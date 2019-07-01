@@ -8,7 +8,6 @@ import getInjectedWeb3Accounts from "utils/get-injected-web3-accounts";
 
 export const connect = async (env: EnvObject, callback: NodeStyleCallback = logError) => {
   const connectOptions = {
-    augurNode: "not-needed",
     ethereumNode: env["ethereum-node"],
     useWeb3Transport: env.useWeb3Transport,
   };
