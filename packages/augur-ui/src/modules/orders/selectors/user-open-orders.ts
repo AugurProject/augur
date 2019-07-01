@@ -50,6 +50,7 @@ export const selectUserOpenOrders = createCachedSelector(
   selectLoginAccountAddress,
   (market, userMarketOpenOrders, orderCancellation, pendingOrders, account) => {
     if (!market) return [];
+
     let userOpenOrders =
       market.outcomes
         .map(outcome =>
