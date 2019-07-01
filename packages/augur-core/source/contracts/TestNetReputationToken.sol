@@ -15,7 +15,7 @@ contract TestNetReputationToken is ReputationToken {
         if (_amount == 0) {
             _amount = DEFAULT_FAUCET_AMOUNT;
         }
-        require(_amount < 2 ** 128);
+        require(_amount < 2 ** 128, "TestNetReputationToken.faucet: amount is greater than 2**128");
         mint(msg.sender, _amount);
         return true;
     }

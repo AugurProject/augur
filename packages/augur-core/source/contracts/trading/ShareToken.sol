@@ -10,6 +10,10 @@ import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/IAugur.sol';
 
 
+/**
+ * @title Share Token
+ * @notice Storage of all data associated with orders
+ */
 contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
 
     string constant public name = "Shares";
@@ -81,10 +85,16 @@ contract ShareToken is ITyped, Initializable, VariableSupplyToken, IShareToken {
         return "ShareToken";
     }
 
+    /**
+     * @return The market associated with this Share Token
+     */
     function getMarket() external view returns(IMarket) {
         return market;
     }
 
+    /**
+     * @return The outcome associated with this Share Token
+     */
     function getOutcome() external view returns(uint256) {
         return outcome;
     }

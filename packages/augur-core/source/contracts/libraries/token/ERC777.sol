@@ -41,9 +41,9 @@ contract ERC777 is IERC777, IERC20 {
     // Production 1820 is 0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24
     IERC1820Registry public erc1820Registry;
 
-    mapping(address => uint256) public balances;
+    mapping(address => uint256) internal balances;
 
-    uint256 public supply;
+    uint256 internal supply;
 
     // Always returns 18, as per the
     // [ERC777 EIP](https://eips.ethereum.org/EIPS/eip-777#backward-compatibility).
