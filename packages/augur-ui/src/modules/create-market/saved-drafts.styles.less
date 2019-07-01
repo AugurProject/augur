@@ -11,37 +11,44 @@
   padding: @size-16 @size-40;
   background-color: @color-tertiary-background;
   flex-direction: row;
+  cursor: pointer;
 
-  > div {
-  	display: flex;
-    flex-direction: column;
+  > button:first-of-type {
+    display: flex;
     flex: 1;
-  	
-  	> span:first-of-type {
-  		.text-12-medium;
 
-  		color: @color-alternate-info-text;
-  	}
+    > div {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      
+      > span:first-of-type {
+        .text-12-medium;
 
-  	> span:last-of-type {
-  		.mono-12;
+        color: @color-alternate-info-text;
+      }
 
-  		color: @color-tertiary-info-text;
-  		margin-top: @size-4;
-  	}
+      > span:last-of-type {
+        .mono-12;
+
+        color: @color-tertiary-info-text;
+        margin-top: @size-4;
+      }
+    }
+
+    > span {
+      max-height: fit-content;
+      padding: @size-6 @size-8;
+      margin-right: @size-28;
+    }
   }
-
-  > span {
-  	max-height: fit-content;
-    padding: @size-6 @size-8;
-    margin-right: @size-28;
-  }
-
-  > button {
+  
+  > button:last-of-type {
   	.mono-12;
 
-	color: @color-primary-action;
-	text-transform: uppercase;
+  	color: @color-primary-action;
+  	text-transform: uppercase;
   }
 
   &:not(:last-of-type) {

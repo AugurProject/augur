@@ -4,18 +4,16 @@ import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
   addOrderToNewMarket,
   removeOrderFromNewMarket,
-  updateNewMarket,
-  clearNewMarket
+  updateNewMarket
 } from "modules/markets/actions/update-new-market";
-import Form from "modules/create-market/components/form";
+import SavedDrafts from "modules/create-market/saved-drafts";
 import getValue from "utils/get-value";
-import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
+import { addDraft, updateDraft, removeDraft } from "modules/create-market/actions/update-drafts";
 
 const mapStateToProps = state => ({
-  newMarket: state.newMarket,
+  drafts: state.drafts,
   currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
   address: getValue(state, "loginAccount.address"),
-  drafts: state.drafts,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -23,15 +21,15 @@ const mapDispatchToProps = dispatch => ({
   submitNewMarket: (data, history, cb) =>
     dispatch(submitNewMarket(data, history, cb)),
   addDraft: (key, data) => dispatch(addDraft(key, data)),
-  clearNewMarket: () => dispatch(clearNewMarket()),
   updateDraft: (key, data) => dispatch(updateDraft(key, data)),
+  removeDraft: (key) => dispatch(removeDraft(key)),
 });
 
-const FormContainer = withRouter(
+const SavedDraftsContainer = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(Form)
+  )(SavedDrafts)
 );
 
-export default FormContainer;
+export default SavedDraftsContainer;

@@ -2,16 +2,19 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
+import { formatDate } from "utils/format-date";
 import QuadBox from "modules/portfolio/components/common/quad-box";
 import { PillLabel } from "modules/common/labels";
+import { SCRATCH } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/saved-drafts.styles";
 
 interface SavedDraftsProps {
-  newMarket: Object;
+  drafts: Object;
   updateNewMarket: Function;
   address: String;
   updatePage: Function;
+  removeDraft: Function;
 }
 
 interface DraftRowProps {
@@ -19,14 +22,22 @@ interface DraftRowProps {
 }
 
 const DraftRow = (props: DraftRowProps) => {
+  const date = new Date(props.draft.updated); // should be formatDate(props.draft.updated).formattedLocalShortTime
   return (
     <div className={Styles.DraftRow}>
-      <PillLabel label="Draft" />
-      <div>
-        <span>{props.draft.description}</span>
-        <span>Saved: {props.draft.createdTime}</span>
-      </div>
-      <button>
+      <button 
+        onClick={() => {
+          props.updateNewMarket(props.draft);
+          props.updatePage(SCRATCH);
+        }}
+      >
+        <PillLabel label="Draft" />
+        <div>
+          <span>{props.draft.description}</span>
+          <span>Saved: {date.toString()}</span>
+        </div>
+      </button>
+      <button onClick={() => props.removeDraft(props.draft.uniqueId)}>
         Delete
       </button>
     </div>
@@ -40,35 +51,15 @@ export default class SavedDrafts extends React.Component<
 > {
   render() {
     const {
-      updatePage
+      updatePage,
+      drafts,
+      removeDraft,
+      updateNewMarket
     } = this.props;
 
-    const drafts = [
-      {
-        description: "Will antibiotics be outlawed for agricultural use in China by the end of 2019?",
-        createdTime: "May 01, 2019 09:32pm"
-      },
-      {
-        description: "Will antibiotics be outlawed for agricultural use in China by the end of 2019?",
-        createdTime: "May 01, 2019 09:32pm"
-      },
-      {
-        description: "Will antibiotics be outlawed for agricultural use in China by the end of 2019?",
-        createdTime: "May 01, 2019 09:32pm"
-      },
-      {
-        description: "Will antibiotics be outlawed for agricultural use in China by the end of 2019?",
-        createdTime: "May 01, 2019 09:32pm"
-      },
-      {
-        description: "Will antibiotics be outlawed for agricultural use in China by the end of 2019?",
-        createdTime: "May 01, 2019 09:32pm"
-      },
-      {
-        description: "Will antibiotics be outlawed for agricultural use in China by the end of 2019?",
-        createdTime: "May 01, 2019 09:32pm"
-      }
-    ];
+    if (!Object.keys(drafts).length) return null;
+
+    const draftsSorted = Object.keys(drafts).sort(function(a, b) { return drafts[b].updated - drafts[a].updated});
 
     return (
       <QuadBox
@@ -76,8 +67,8 @@ export default class SavedDrafts extends React.Component<
         extraTitlePadding
         content={
           <div className={Styles.SavedDrafts}>
-            {drafts.map(draft => 
-              <DraftRow draft={draft} />
+            {draftsSorted.map(key => 
+              <DraftRow draft={drafts[key]} removeDraft={removeDraft} updateNewMarket={updateNewMarket} updatePage={updatePage} />
             )}
           </div>
         }

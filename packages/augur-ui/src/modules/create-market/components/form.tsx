@@ -19,6 +19,10 @@ interface FormProps {
   updateNewMarket: Function;
   address: String;
   updatePage: Function;
+  addDraft: Function;
+  drafts: Object;
+  updateDraft: Function;
+  clearNewMarket: Function;
 }
 
 interface FormState {
@@ -34,10 +38,11 @@ export default class Form extends React.Component<
   };
 
   prevPage = () => {
-    const { newMarket, updateNewMarket, updatePage } = this.props;
+    const { newMarket, updateNewMarket, updatePage, clearNewMarket } = this.props;
 
     if (newMarket.currentStep <= 0) {
       updatePage(LANDING);
+      clearNewMarket();
     }
 
     const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
@@ -55,6 +60,45 @@ export default class Form extends React.Component<
     //}
   }
 
+  saveDraft = () => {
+    const {
+      addDraft, 
+      currentTimestamp,
+      newMarket,
+      updateNewMarket,
+      drafts,
+      updateDraft
+    } = this.props;
+
+    if (newMarket.uniqueId && drafts[newMarket.uniqueId]) {
+      // update draft
+      const updatedDate = Date.now(); // should be currentTimestamp
+      const draftMarket = {
+        ...newMarket,
+        updated: updatedDate
+      };
+      updateDraft(newMarket.uniqueId, draftMarket);
+       updateNewMarket({ 
+        updated: updatedDate 
+      });
+    } else {
+      // create new draft
+      const createdDate = Date.now(); // should be currentTimestamp
+      const draftMarket = {
+        ...newMarket,
+        uniqueId: createdDate,
+        created: createdDate,
+        updated: createdDate
+      }
+
+      addDraft(createdDate, draftMarket);
+      updateNewMarket({ 
+        uniqueId: createdDate,
+        created: createdDate,
+        updated: createdDate 
+      });
+    }
+  }
 
   submitMarket = () => {
     const { newMarket, address } = this.props;
@@ -98,7 +142,8 @@ export default class Form extends React.Component<
 
   render() {
     const {
-      newMarket
+      newMarket,
+      drafts
     } = this.props;
     const s = this.state;
 
@@ -110,6 +155,9 @@ export default class Form extends React.Component<
       explainerBlockSubtexts, 
       largeHeader
     } = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
+
+    const savedDraft = drafts[newMarket.uniqueId];
+    const disabledSave = newMarket.description === "" || (savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft));
 
     return (
       <div className={Styles.Form}>
@@ -127,7 +175,7 @@ export default class Form extends React.Component<
           <div>
             {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
             <div>
-              <SecondaryButton text="Save draft" action={this.nextPage} />
+              <SecondaryButton text="Save draft" disabled={disabledSave} action={this.saveDraft} />
               {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
               {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
             </div>
