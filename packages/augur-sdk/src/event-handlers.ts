@@ -17,8 +17,8 @@ export interface CompleteSetsPurchased extends FormattedEventLog {
   universe: Address;
   market: Address;
   account: Address;
-  numCompleteSets: number;
-  marketOI: number;
+  numCompleteSets: string;
+  marketOI: string;
   timetamp: number;
 }
 
@@ -26,9 +26,9 @@ export interface CompleteSetsSold extends FormattedEventLog {
   universe: Address;
   market: Address;
   account: Address;
-  numCompleteSets: number;
-  marketOI: number;
-  fees: number;
+  numCompleteSets: string;
+  marketOI: string;
+  fees: string;
   timestamp: number;
 }
 
@@ -36,7 +36,7 @@ export interface DisputeCrowdsourcerCompleted extends FormattedEventLog {
   universe: Address;
   market: Address;
   disputeCrowdsourcer: Address;
-  nextWindowStartTime: number;
+  nextWindowStartTime: string;
   pacingOn: boolean;
 }
 
@@ -45,7 +45,7 @@ export interface DisputeCrowdsourcerContribution extends FormattedEventLog {
   reporter: Address;
   market: Address;
   disputeCrowdsourcer: Address;
-  amountStaked: number;
+  amountStaked: string;
   description: string;
   timestamp: number;
 }
@@ -54,7 +54,7 @@ export interface DisputeCrowdsourcerCreated extends FormattedEventLog {
   universe: Address;
   market: Address;
   disputeCrowdsourcer: Address;
-  payoutNumerators: number[];
+  payoutNumerators: string[];
   size: number;
 }
 
@@ -63,9 +63,9 @@ export interface DisputeCrowdsourcerRedeemed extends FormattedEventLog {
   reporter: Address;
   market: Address;
   disputeCrowdsourcer: Address;
-  amountRedeemed: number;
-  repReceived: number;
-  payoutNumerators: number[];
+  amountRedeemed: string;
+  repReceived: string;
+  payoutNumerators: string[];
   timestamp: number;
 }
 
@@ -82,9 +82,9 @@ export interface InitialReportSubmitted extends FormattedEventLog {
   universe: Address;
   reporter: Address;
   market: Address;
-  amountStaked: number;
+  amountStaked: string;
   isDesignatedReporter: boolean;
-  payoutNumerators: number[];
+  payoutNumerators: string[];
   description: string;
   timestamp: number;
 
@@ -94,9 +94,9 @@ export interface InitialReporterRedeemed extends FormattedEventLog {
   universe: Address;
   reporter: Address;
   market: Address;
-  amountRedeemed: number;
-  repReceived: number;
-  payoutNumerators: number[];
+  amountRedeemed: string;
+  repReceived: string;
+  payoutNumerators: string[];
   timestamp: number;
 }
 
@@ -118,7 +118,7 @@ export interface MarketCreated extends FormattedEventLog {
   feeDivisor: number;
   prices: string[];
   marketType: number;
-  numTicks: number;
+  numTicks: string;
   outcomes: string[];
   timestamp: number;
 }
@@ -127,7 +127,7 @@ export interface MarketFinalized extends FormattedEventLog {
   universe: Address;
   market: Address;
   timestamp: number;
-  winningPayoutNumerators: number[];
+  winningPayoutNumerators: string[];
 }
 
 export interface MarketMigrated extends FormattedEventLog {
@@ -152,7 +152,7 @@ export interface MarketVolumeChanged extends FormattedEventLog {
   universe: Address;
   market: Address;
   volume: number;
-  outcomeVolumes: number[];
+  outcomeVolumes: string[];
 }
 
 export interface NewBlock extends FormattedEventLog {
@@ -172,15 +172,15 @@ export interface OrderEvent extends FormattedEventLog {
   orderId: Bytes32;
   tradeGroupId: Bytes32;
   addressData: Address[];
-  uint256Data: number[];
+  uint256Data: string[];
 }
 
 export interface ParticipationTokensRedeemed extends FormattedEventLog {
   universe: Address;
   disputeWindow: Address;
   account: Address;
-  attoParticipationTokens: number;
-  feePayoutShare: number;
+  attoParticipationTokens: string;
+  feePayoutShare: string;
   timestamp: number;
 }
 
@@ -188,11 +188,11 @@ export interface ProfitLossChanged extends FormattedEventLog {
   universe: Address;
   market: Address;
   account: Address;
-  outcome: number;
-  netPosition: number;
-  avgPrice: number;
-  frozenFunds: number;
-  realizedCost: number;
+  outcome: string;
+  netPosition: string;
+  avgPrice: string;
+  frozenFunds: string;
+  realizedCost: string;
   timestamp: number;
 }
 
@@ -212,28 +212,28 @@ export interface TokenBalanceChanged extends FormattedEventLog {
   token: Address;
   TokeyType: string;
   market: Address;
-  balance: number;
-  outcome: number;
+  balance: string;
+  outcome: string;
 }
 
 export interface TokensBurned extends FormattedEventLog {
   universe: Address;
   token: Address;
   target: Address;
-  amount: number;
+  amount: string;
   tokenType: string;
   market: Address;
-  totalSupply: number;
+  totalSupply: string;
 }
 
 export interface TokensMinted extends FormattedEventLog {
   universe: Address;
   token: Address;
   target: Address;
-  amount: number;
+  amount: string;
   tokenType: string;
   market: Address;
-  totalSupply: number;
+  totalSupply: string;
 }
 
 export interface TokensTransferred extends FormattedEventLog {
@@ -241,7 +241,7 @@ export interface TokensTransferred extends FormattedEventLog {
   token: Address;
   from: Address;
   to: Address;
-  value: number;
+  value: string;
   tokenType: string;
   market: Address;
 }
@@ -251,18 +251,18 @@ export interface TradingProceedsClaimed extends FormattedEventLog {
   shareToken; Address;
   sender: Address;
   market: Address;
-  outcome: number;
-  numShares: number;
-  numPayoutTokens: number;
-  finalTokenBalance: number;
-  fees: number;
+  outcome: string;
+  numShares: string;
+  numPayoutTokens: string;
+  finalTokenBalance: string;
+  fees: string;
   timestamp: number;
 }
 
 export interface UniverseCreated extends FormattedEventLog {
   parentUniverse: Address;
   childUniverse: Address;
-  payoutNumerators: number[];
+  payoutNumerators: string[];
 }
 
 export interface UniverseForked extends FormattedEventLog {

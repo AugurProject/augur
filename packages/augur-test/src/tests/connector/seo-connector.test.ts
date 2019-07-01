@@ -14,7 +14,7 @@ import {
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { SEOConnector } from '@augurproject/sdk/build/connector/seo-connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
-import { SubscriptionType, NewBlock } from '@augurproject/sdk/build/events';
+import { NewBlock } from '@augurproject/sdk/build/events';
 import { MarketCreated } from "@augurproject/sdk/build/events";
 
 let connector: SEOConnector;
