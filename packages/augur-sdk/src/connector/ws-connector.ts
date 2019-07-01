@@ -1,6 +1,6 @@
-import { Callback } from "../events";
+import { Callback, SubscriptionType } from "../events";
 import { Connector } from "./connector";
-import { SubscriptionEventNames } from "../constants";
+import { SubscriptionEventName } from "../constants";
 import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
 
@@ -40,7 +40,7 @@ export class WebsocketConnector extends Connector {
   public messageReceived(message: any) {
     if (message.result) {
       if (this.subscriptions[message.eventName]) {
-        this.subscriptions[message.eventName].callback(...(message.result));
+        this.subscriptions[message.eventName].callback(message.result);
       }
     }
   }
@@ -55,12 +55,13 @@ export class WebsocketConnector extends Connector {
     };
   }
 
-  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
+  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+
     const response: any = await this.socket.sendRequest({ method: "subscribe", eventName, jsonrpc: "2.0", params: [eventName] });
-    this.subscriptions[eventName] = { id: response.result.subscription, callback };
+    this.subscriptions[eventName] = { id: response.result.subscription, callback: super.callbackWrapper(callback) };
   }
 
-  public async off(eventName: SubscriptionEventNames | string): Promise<void> {
+  public async off(eventName: SubscriptionEventName | string): Promise<void> {
     const subscription = this.subscriptions[eventName];
     if (subscription) {
       await this.socket.sendRequest({ method: "unsubscribe", subscription: subscription.id, jsonrpc: "2.0", params: [subscription.id] });

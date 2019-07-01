@@ -1,9 +1,9 @@
 import * as Sync from "../state/Sync";
 import { API } from "../state/getter/API";
 import { Connector } from "./connector";
-import { SubscriptionEventNames } from "../constants";
+import { SubscriptionEventName } from "../constants";
 import { Subscriptions } from "../subscriptions";
-import { Callback, augurEmitter } from "../events";
+import { Callback, augurEmitter, SubscriptionType } from "../events";
 
 export class SEOConnector extends Connector {
   private api: API;
@@ -23,12 +23,14 @@ export class SEOConnector extends Connector {
     };
   }
 
-  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
-    const subscription: string = this.events.subscribe(eventName, callback);
-    this.subscriptions[eventName] = { id: subscription, callback };
+  public async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+    const wrappedCallack = super.callbackWrapper(callback);
+
+    const subscription: string = this.events.subscribe(eventName, wrappedCallack);
+    this.subscriptions[eventName] = { id: subscription, callback: wrappedCallack };
   }
 
-  public async off(eventName: SubscriptionEventNames | string): Promise<void> {
+  public async off(eventName: SubscriptionEventName | string): Promise<void> {
     const subscription = this.subscriptions[eventName];
     if (subscription) {
       delete this.subscriptions[eventName];

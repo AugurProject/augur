@@ -20,6 +20,7 @@ export class Status {
     const lastSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(dbName);
     const blocksBehindCurrent = (highestAvailableBlockNumber - lastSyncedBlockNumber);
     const percentBehindCurrent = (blocksBehindCurrent / highestAvailableBlockNumber * 100).toFixed(4);
+    const timestamp = 10;
 
     return {
       highestAvailableBlockNumber,
