@@ -118,7 +118,6 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
   await connector.on(
     SubscriptionEventName.NewBlock,
     async (arg: NewBlock): Promise<void> => {
-      console.log("New block", arg);
       expect(arg).toEqual(
         {
           eventName: SubscriptionEventName.NewBlock,

@@ -43,9 +43,8 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
 
   await connector.on(
     SubscriptionEventName.NewBlock,
-    NewBlock,
-    async (...args: Array<any>): Promise<void> => {
-      expect(args).toEqual([
+    async (arg: NewBlock): Promise<void> => {
+      expect(arg).toEqual(
         {
           eventName: SubscriptionEventName.NewBlock,
           highestAvailableBlockNumber: 88,
@@ -53,7 +52,7 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
           blocksBehindCurrent: 0,
           percentBehindCurrent: '0.0000',
         },
-      ]);
+      );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
       const markets = await getMarkets({

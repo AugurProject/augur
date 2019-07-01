@@ -23,7 +23,7 @@ export function makeConnectorMock(json: object): Connector {
       };
     }
 
-    public async on<T extends FormattedEventLog>(eventName: SubscriptionEventName | string, type: ({ new(): T; }), callback: Callback): Promise<void> {
+    public async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
     }
 
     public async off(eventName: SubscriptionEventName | string): Promise<any> {

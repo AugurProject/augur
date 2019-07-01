@@ -199,11 +199,12 @@ export class SyncableDB extends AbstractDB {
         });
       }
 
-      await this.notifyNewBlockEvent(blocknumber);
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
     } else {
       throw new Error(`Unable to add new block`);
     }
+
+    await this.notifyNewBlockEvent(blocknumber);
 
     return blocknumber;
   }
