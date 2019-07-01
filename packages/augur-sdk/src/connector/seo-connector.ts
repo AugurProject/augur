@@ -23,8 +23,8 @@ export class SEOConnector extends Connector {
     };
   }
 
-  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, type: { new(): T; }, callback: Callback): Promise<void> {
-    const wrappedCallack = super.callbackWrapper(callback, type);
+  public async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+    const wrappedCallack = super.callbackWrapper(callback);
 
     const subscription: string = this.events.subscribe(eventName, wrappedCallack);
     this.subscriptions[eventName] = { id: subscription, callback: wrappedCallack };

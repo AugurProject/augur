@@ -79,12 +79,10 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
 
   await connector.connect('');
 
-  console.log("Waiting", SubscriptionEventName.MarketCreated, MarketCreated)
   await connector.on(
     SubscriptionEventName.MarketCreated,
-    MarketCreated,
-    async (...args: MarketCreated[]): Promise<void> => {
-      expect(args[0]).toHaveProperty(
+    async (arg: MarketCreated): Promise<void> => {
+      expect(arg).toHaveProperty(
         'extraInfo',
         '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}'
       );
@@ -104,45 +102,44 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 }, 15000);
 
-// test('SEOConnector :: Should route correctly and handle events', async done => {
-//   const yesNoMarket1 = await john.createYesNoMarket({
-//     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
-//     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
-//     affiliateFeeDivisor: new BigNumber(0),
-//     designatedReporter: john.account,
-//     topic: 'yesNo topic 1',
-//     extraInfo:
-//       '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
-//   });
+test('SEOConnector :: Should route correctly and handle events', async done => {
+  const yesNoMarket1 = await john.createYesNoMarket({
+    endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
+    feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
+    affiliateFeeDivisor: new BigNumber(0),
+    designatedReporter: john.account,
+    topic: 'yesNo topic 1',
+    extraInfo:
+      '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
+  });
 
-//   await connector.connect('');
+  await connector.connect('');
 
-//   await connector.on(
-//     SubscriptionEventName.NewBlock,
-//     NewBlock,
-//     async function(args: any[]): Promise<void> {
-//       console.log("blah XXXXXXXXXXXXXXXXA");
-//       expect(args).toEqual([
-//         {
-//           eventName: SubscriptionEventName.NewBlock,
-//           blocksBehindCurrent: 0,
-//           highestAvailableBlockNumber: expect.any(Number),
-//           lastSyncedBlockNumber: expect.any(Number),
-//           percentBehindCurrent: '0.0000',
-//         },
-//       ]);
+  await connector.on(
+    SubscriptionEventName.NewBlock,
+    async (arg: NewBlock): Promise<void> => {
+      console.log("New block", arg);
+      expect(arg).toEqual(
+        {
+          eventName: SubscriptionEventName.NewBlock,
+          blocksBehindCurrent: 0,
+          highestAvailableBlockNumber: expect.any(Number),
+          lastSyncedBlockNumber: expect.any(Number),
+          percentBehindCurrent: '0.0000',
+        },
+      );
 
-//       const getMarkets = connector.bindTo(Markets.getMarkets);
-//       const markets = await getMarkets({
-//         universe: john.augur.contracts.universe.address,
-//       });
-//       expect(markets[markets.length - 1]).toEqual(yesNoMarket1.address);
+      const getMarkets = connector.bindTo(Markets.getMarkets);
+      const markets = await getMarkets({
+        universe: john.augur.contracts.universe.address,
+      });
+      expect(markets[markets.length - 1]).toEqual(yesNoMarket1.address);
 
-//       await connector.off(SubscriptionEventName.NewBlock);
-//       expect(connector.subscriptions).toEqual({});
-//       done();
-//     }
-//   );
+      await connector.off(SubscriptionEventName.NewBlock);
+      expect(connector.subscriptions).toEqual({});
+      done();
+    }
+  );
 
-//   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-// }, 15000);
+  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+}, 15000);

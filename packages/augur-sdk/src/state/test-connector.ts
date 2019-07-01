@@ -25,7 +25,6 @@ console.log("Starting web worker");
 
     connector.on(
       SubscriptionEventName.MarketCreated,
-      MarketCreated,
       (...args: SubscriptionType[]): void => {
         console.log(args);
         augur.off(SubscriptionEventName.CompleteSetsPurchased);

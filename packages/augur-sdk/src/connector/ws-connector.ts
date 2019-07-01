@@ -55,10 +55,10 @@ export class WebsocketConnector extends Connector {
     };
   }
 
-  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, type: { new(): T; }, callback: Callback): Promise<void> {
+  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
 
     const response: any = await this.socket.sendRequest({ method: "subscribe", eventName, jsonrpc: "2.0", params: [eventName] });
-    this.subscriptions[eventName] = { id: response.result.subscription, callback: super.callbackWrapper(callback, type) };
+    this.subscriptions[eventName] = { id: response.result.subscription, callback: super.callbackWrapper(callback) };
   }
 
   public async off(eventName: SubscriptionEventName | string): Promise<void> {

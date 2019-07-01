@@ -1,11 +1,9 @@
 type Address = string;
 type Bytes32 = string;
 
-// These are the subscription event types used in Augur and the Connectors.
-
-export class FormattedEventLog {
+export interface FormattedEventLog {
   address: Address;
-  blockNumber: BigNumber;
+  blockNumber: number;
   logIndex: number;
   transactionHash: Bytes32;
   transactionIndex: number;
@@ -15,134 +13,262 @@ export class FormattedEventLog {
   removed: boolean;
 }
 
-export class CompleteSetsPurchased extends FormattedEventLog {
-  // event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 timestamp);
+export interface CompleteSetsPurchased extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  account: Address;
+  numCompleteSets: number;
+  marketOI: number;
+  timetamp: number;
 }
 
-export class CompleteSetsSold extends FormattedEventLog {
-  // event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 fees, uint256 timestamp);
+export interface CompleteSetsSold extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  account: Address;
+  numCompleteSets: number;
+  marketOI: number;
+  fees: number;
+  timestamp: number;
 }
 
-export class DisputeCrowdsourcerCompleted extends FormattedEventLog {
-  // event DisputeCrowdsourcerCompleted(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256 nextWindowStartTime, bool pacingOn);
+export interface DisputeCrowdsourcerCompleted extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  disputeCrowdsourcer: Address;
+  nextWindowStartTime: number;
+  pacingOn: boolean;
+}
+
+export interface DisputeCrowdsourcerContribution extends FormattedEventLog {
+  universe: Address;
+  reporter: Address;
+  market: Address;
+  disputeCrowdsourcer: Address;
+  amountStaked: number;
+  description: string;
+  timestamp: number;
+}
+
+export interface DisputeCrowdsourcerCreated extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  disputeCrowdsourcer: Address;
+  payoutNumerators: number[];
+  size: number;
+}
+
+export interface DisputeCrowdsourcerRedeemed extends FormattedEventLog {
+  universe: Address;
+  reporter: Address;
+  market: Address;
+  disputeCrowdsourcer: Address;
+  amountRedeemed: number;
+  repReceived: number;
+  payoutNumerators: number[];
+  timestamp: number;
+}
+
+export interface DisputeWindowCreated extends FormattedEventLog {
+  universe: Address;
+  disputeWindow: Address;
+  startTime: number;
+  endTime: number;
+  id: number;
+  initial: boolean;
+}
+
+export interface InitialReportSubmitted extends FormattedEventLog {
+  universe: Address;
+  reporter: Address;
+  market: Address;
+  amountStaked: number;
+  isDesignatedReporter: boolean;
+  payoutNumerators: number[];
+  description: string;
+  timestamp: number;
 
 }
 
-export class DisputeCrowdsourcerContribution extends FormattedEventLog {
-  // event DisputeCrowdsourcerContribution(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountStaked, string description, uint256 timestamp);
+export interface InitialReporterRedeemed extends FormattedEventLog {
+  universe: Address;
+  reporter: Address;
+  market: Address;
+  amountRedeemed: number;
+  repReceived: number;
+  payoutNumerators: number[];
+  timestamp: number;
 }
 
-export class DisputeCrowdsourcerCreated extends FormattedEventLog {
-  // event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size);
+export interface InitialReporterTransferred extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  from: Address;
+  to: Address;
 }
 
-export class DisputeCrowdsourcerRedeemed extends FormattedEventLog {
-  // event DisputeCrowdsourcerRedeemed(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp);
-}
-
-export class DisputeWindowCreated extends FormattedEventLog {
-  // event DisputeWindowCreated(address indexed universe, address disputeWindow, uint256 startTime, uint256 endTime, uint256 id, bool initial);
-}
-
-export class InitialReportSubmitted extends FormattedEventLog {
-  // event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 timestamp);
-
-}
-
-export class InitialReporterRedeemed extends FormattedEventLog {
-
-}
-
-export class InitialReporterTransferred extends FormattedEventLog {
-  // event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
-}
-
-export class MarketCreated extends FormattedEventLog {
+export interface MarketCreated extends FormattedEventLog {
   universe: Address;
   endTime: Address;
   topic: Address;
   extraInfo: string;
-  market: BigNumber;
+  market: Address;
   marketCreator: Address;
   designatedReporter: Address;
   feeDivisor: number;
-  prices: BigNumber[];
+  prices: string[];
   marketType: number;
   numTicks: number;
   outcomes: string[];
   timestamp: number;
 }
 
-export class MarketFinalized extends FormattedEventLog {
-  // event MarketFinalized(address indexed universe, address indexed market, uint256 timestamp, uint256[] winningPayoutNumerators);
+export interface MarketFinalized extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  timestamp: number;
+  winningPayoutNumerators: number[];
 }
 
-export class MarketMigrated extends FormattedEventLog {
-  // event MarketMigrated(address indexed market, address indexed originalUniverse, address indexed newUniverse);
+export interface MarketMigrated extends FormattedEventLog {
+  market: Address;
+  originalUniverse: Address;
+  newUniverse: Address;
 }
 
-export class MarketParticipantsDisavowed extends FormattedEventLog {
-  // event MarketParticipantsDisavowed(address indexed universe, address indexed market);
+export interface MarketParticipantsDisavowed extends FormattedEventLog {
+  universe: Address;
+  market: Address;
 }
 
-export class MarketTransferred extends FormattedEventLog {
-  // event MarketTransferred(address indexed universe, address indexed market, address from, address to);
+export interface MarketTransferred extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  from: Address;
+  to: Address;
 }
 
-export class MarketVolumeChanged extends FormattedEventLog {
-  // event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes);
+export interface MarketVolumeChanged extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  volume: number;
+  outcomeVolumes: number[];
 }
 
-export class NewBlock extends FormattedEventLog {
-
+export interface NewBlock extends FormattedEventLog {
+  blocksBehindCurrent: number;
+  highestAvailableBlockNumber: number;
+  lastSyncedBlockNumber: number;
+  percentBehindCurrent: string;
+  timestamp: number;
 }
 
-export class OrderEvent extends FormattedEventLog {
-  // event OrderEvent(address indexed universe, address indexed market, OrderEventType indexed eventType, Order.Types orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data);
+// XXX: TODO - verify eventType and orderType somehow
+export interface OrderEvent extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  eventType: string;
+  orderType: string;
+  orderId: Bytes32;
+  tradeGroupId: Bytes32;
+  addressData: Address[];
+  uint256Data: number[];
 }
 
-export class ParticipationTokensRedeemed extends FormattedEventLog {
-  // event ParticipationTokensRedeemed(address indexed universe, address indexed disputeWindow, address indexed account, uint256 attoParticipationTokens, uint256 feePayoutShare, uint256 timestamp);
+export interface ParticipationTokensRedeemed extends FormattedEventLog {
+  universe: Address;
+  disputeWindow: Address;
+  account: Address;
+  attoParticipationTokens: number;
+  feePayoutShare: number;
+  timestamp: number;
 }
 
-export class ProfitLossChanged extends FormattedEventLog {
-  // event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
+export interface ProfitLossChanged extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  account: Address;
+  outcome: number;
+  netPosition: number;
+  avgPrice: number;
+  frozenFunds: number;
+  realizedCost: number;
+  timestamp: number;
 }
 
-export class ReportingParticipantDisavowed extends FormattedEventLog {
-  // event ReportingParticipantDisavowed(address indexed universe, address indexed market, address reportingParticipant);
+export interface ReportingParticipantDisavowed extends FormattedEventLog {
+  univeres: Address;
+  market: Address;
+  reportingParticipant: Address;
 }
 
-export class TimestampSet extends FormattedEventLog {
-  // event TimestampSet(uint256 newTimestamp);
+export interface TimestampSet extends FormattedEventLog {
+  newTimestamp: number;
 }
 
-export class TokenBalanceChanged extends FormattedEventLog {
-  // event TokenBalanceChanged(address indexed universe, address indexed owner, address token, TokenType tokenType, address market, uint256 balance, uint256 outcome);
+export interface TokenBalanceChanged extends FormattedEventLog {
+  universe: Address;
+  owner: Address;
+  token: Address;
+  TokeyType: string;
+  market: Address;
+  balance: number;
+  outcome: number;
 }
 
-export class TokensBurned extends FormattedEventLog {
-  // event TokensBurned(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
+export interface TokensBurned extends FormattedEventLog {
+  universe: Address;
+  token: Address;
+  target: Address;
+  amount: number;
+  tokenType: string;
+  market: Address;
+  totalSupply: number;
 }
 
-export class TokensMinted extends FormattedEventLog {
-  // event TokensMinted(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
+export interface TokensMinted extends FormattedEventLog {
+  universe: Address;
+  token: Address;
+  target: Address;
+  amount: number;
+  tokenType: string;
+  market: Address;
+  totalSupply: number;
 }
 
-export class TokensTransferred extends FormattedEventLog {
-  // event TokensTransferred(address indexed universe, address token, address indexed from, address indexed to, uint256 value, TokenType tokenType, address market);
+export interface TokensTransferred extends FormattedEventLog {
+  universe: Address;
+  token: Address;
+  from: Address;
+  to: Address;
+  value: number;
+  tokenType: string;
+  market: Address;
 }
 
-export class TradingProceedsClaimed extends FormattedEventLog {
-  // event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 fees, uint256 timestamp);
+export interface TradingProceedsClaimed extends FormattedEventLog {
+  universe: Address;
+  shareToken; Address;
+  sender: Address;
+  market: Address;
+  outcome: number;
+  numShares: number;
+  numPayoutTokens: number;
+  finalTokenBalance: number;
+  fees: number;
+  timestamp: number;
 }
 
-export class UniverseCreated extends FormattedEventLog {
-  // event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators);
+export interface UniverseCreated extends FormattedEventLog {
+  parentUniverse: Address;
+  childUniverse: Address;
+  payoutNumerators: number[];
 }
 
-export class UniverseForked extends FormattedEventLog {
-  // event UniverseForked(address indexed universe, IMarket forkingMarket);
+export interface UniverseForked extends FormattedEventLog {
+  address: Address;
+  universe: Address;
+  forkingMarket: Address;
 }
 
 export type SubscriptionType = MarketCreated | InitialReportSubmitted | DisputeCrowdsourcerCreated | DisputeCrowdsourcerContribution | DisputeCrowdsourcerCompleted | InitialReporterRedeemed | DisputeCrowdsourcerRedeemed | ReportingParticipantDisavowed | MarketParticipantsDisavowed | MarketFinalized | MarketMigrated | UniverseForked | UniverseCreated | OrderEvent | CompleteSetsPurchased | CompleteSetsSold | TradingProceedsClaimed | TokensTransferred | TokensMinted | TokensBurned | TokenBalanceChanged | DisputeWindowCreated | InitialReporterTransferred | MarketTransferred | MarketVolumeChanged | ProfitLossChanged | ParticipationTokensRedeemed | TimestampSet;

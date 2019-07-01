@@ -186,9 +186,9 @@ export class Augur<TProvider extends Provider = Provider> {
     return Augur.connector.bindTo(f);
   }
 
-  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, callback: Callback, type: { new(): T; }): Promise<void> {
+  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
-      return Augur.connector.on(eventName, type, callback);
+      return Augur.connector.on(eventName, callback);
     }
   }
 
