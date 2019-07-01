@@ -49,8 +49,8 @@ export class WebWorkerConnector extends Connector {
     };
   }
 
-  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
-    this.subscriptions[eventName] = { id: "", callback };
+  public async on<T>(eventName: SubscriptionEventNames | string, callback: Callback, type: { new(): T; }): Promise<void> {
+    this.subscriptions[eventName] = { id: "", callback: super.this.callbackWrapper(callback, type) };
     this.worker.postMessage({ subscribe: eventName });
   }
 

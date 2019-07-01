@@ -6,6 +6,7 @@ import { Augur } from "../Augur";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
+import { MarketCreated, SubscriptionTypes } from "../events";
 import { Markets } from "./getter/Markets";
 import { SubscriptionEventNames } from "../constants";
 import { SEOConnector } from "../connector/seo-connector";
@@ -22,10 +23,13 @@ console.log("Starting web worker");
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector);
     await augur.connect("");
 
-    augur.on(SubscriptionEventNames.CompleteSetsPurchased, (data: any): void => {
-      console.log(data);
-      augur.off(SubscriptionEventNames.CompleteSetsPurchased);
-    });
+    connector.on(
+      SubscriptionEventNames.MarketCreated,
+      MarketCreated,
+      (...args: SubscriptionTypes[]): void => {
+        console.log(args);
+        augur.off(SubscriptionEventNames.CompleteSetsPurchased);
+      });
 
     const markets = await augur.getMarkets({
       universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",

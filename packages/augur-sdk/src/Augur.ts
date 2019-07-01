@@ -1,4 +1,4 @@
-import { Callback } from "./events";
+import { Callback, SubscriptionTypes } from "./events";
 import { Connector } from "./connector/connector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { ContractInterfaces } from "@augurproject/core";
@@ -13,7 +13,7 @@ import { ContractDependenciesEthers, TransactionStatusCallback } from "contract-
 import { Markets } from "./state/getter/Markets";
 import { Status } from "./state/getter/status";
 import { Trading } from "./state/getter/Trading";
-import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market} from "./api/Market";
+import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
 import { Users } from "./state/getter/Users";
 
 export interface CustomEvent {
@@ -186,9 +186,9 @@ export class Augur<TProvider extends Provider = Provider> {
     return Augur.connector.bindTo(f);
   }
 
-  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
+  public async on<T extends SubscriptionTypes>(eventName: SubscriptionEventNames | string, callback: Callback, type: { new(): T; }): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
-      return Augur.connector.on(eventName, callback);
+      return Augur.connector.on(eventName, type, callback);
     }
   }
 

@@ -1,4 +1,4 @@
-import { Callback } from "../events";
+import { Callback, SubscriptionTypes } from "../events";
 import { Connector } from "./connector";
 import { SubscriptionEventNames } from "../constants";
 
@@ -17,7 +17,7 @@ export class EmptyConnector extends Connector {
     };
   }
 
-  public async on(eventName: SubscriptionEventNames, callback: Callback): Promise<void> {
+  public async on<T extends SubscriptionTypes>(eventName: SubscriptionEventNames | string, type: { new(): T; }, callback: Callback): Promise<void> {
   }
 
   public async off(eventName: SubscriptionEventNames): Promise<void> {

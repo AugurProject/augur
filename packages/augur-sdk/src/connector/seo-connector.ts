@@ -3,7 +3,7 @@ import { API } from "../state/getter/API";
 import { Connector } from "./connector";
 import { SubscriptionEventNames } from "../constants";
 import { Subscriptions } from "../subscriptions";
-import { Callback, augurEmitter } from "../events";
+import { Callback, augurEmitter, SubscriptionTypes } from "../events";
 
 export class SEOConnector extends Connector {
   private api: API;
@@ -23,9 +23,11 @@ export class SEOConnector extends Connector {
     };
   }
 
-  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
-    const subscription: string = this.events.subscribe(eventName, callback);
-    this.subscriptions[eventName] = { id: subscription, callback };
+  public async on<T extends SubscriptionTypes>(eventName: SubscriptionEventNames | string, type: { new(): T; }, callback: Callback): Promise<void> {
+    const wrappedCallack = super.callbackWrapper(callback, type)
+
+    const subscription: string = this.events.subscribe(eventName, wrappedCallack);
+    this.subscriptions[eventName] = { id: subscription, callback: wrappedCallack };
   }
 
   public async off(eventName: SubscriptionEventNames | string): Promise<void> {

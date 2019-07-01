@@ -1,5 +1,6 @@
 import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
-import { SubscriptionEventNames } from '@augurproject/sdk/build//constants';
+import { NewBlock } from '@augurproject/sdk/build/events';
+import { SubscriptionEventNames } from '@augurproject/sdk/build/constants';
 import { WebsocketConnector } from '@augurproject/sdk/build/connector/ws-connector';
 
 jest.mock('websocket-as-promised', () => {
@@ -9,13 +10,13 @@ jest.mock('websocket-as-promised', () => {
       open: () => true,
       close: () => true,
       onError: {
-        addListener: () => {},
+        addListener: () => { },
       },
       onMessage: {
-        addListener: () => {},
+        addListener: () => { },
       },
       onClose: {
-        addListener: () => {},
+        addListener: () => { },
       },
       sendRequest: (message: any): Promise<any> => {
         return new Promise((resolve, reject) => {
@@ -42,6 +43,7 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
 
   await connector.on(
     SubscriptionEventNames.NewBlock,
+    NewBlock,
     async (...args: Array<any>): Promise<void> => {
       expect(args).toEqual([
         {
