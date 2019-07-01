@@ -36,7 +36,8 @@ const sortByOptions = [
 ];
 
 function filterComp(input, market) {
-  return market ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0 : false;
+  if (!market) return false;
+  return market.description ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0 : true;
 }
 
 function renderToggleContent(market) {
@@ -47,12 +48,12 @@ function renderToggleContent(market) {
           <LinearPropertyLabel
             label="Volume"
             highlightFirst
-            value={`${market.volume.formatted} DAI`}
+            value={`${market.volumeFormatted.formatted} DAI`}
           />
           <LinearPropertyLabel
             label="Open Interest"
             highlightFirst
-            value={`${market.openInterest.formatted} DAI`}
+            value={`${market.openInterestFormatted.formatted} DAI`}
           />
         </div>
       </div>
