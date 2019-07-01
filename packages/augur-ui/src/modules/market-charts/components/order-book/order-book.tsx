@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-import OrderHeader from "modules/market-charts/components/order-header/order-header";
-import { HoverValueLabel } from "modules/common/labels";
-import { ASKS, BIDS, BUY, SELL } from "modules/common/constants";
+import OrderHeader from 'modules/market-charts/components/order-header/order-header';
+import { HoverValueLabel } from 'modules/common/labels';
+import { ASKS, BIDS, BUY, SELL } from 'modules/common/constants';
 
-import Styles from "modules/market-charts/components/order-book/order-book.styles.less";
-import { OutcomeOrderBook } from "modules/types";
-import { createBigNumber } from "utils/create-big-number";
-import { formatShares } from "utils/format-number";
+import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
+import { OutcomeOrderBook } from 'modules/types';
+import { createBigNumber } from 'utils/create-big-number';
+import { formatShares } from 'utils/format-number';
 
 interface OrderBookSideProps {
   orderBook: OutcomeOrderBook;
@@ -44,7 +44,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
   static defaultProps = {
     fixedPrecision: 4,
     pricePrecision: 4,
-    scrollToTop: false
+    scrollToTop: false,
   };
 
   componentDidMount() {
@@ -71,7 +71,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
       hoveredSide,
       hoveredOrderIndex,
       setHovers,
-      type
+      type,
     } = this.props;
 
     const orderBookOrders =
@@ -102,7 +102,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                   (hoveredOrderIndex !== null &&
                     type === BIDS &&
                     hoveredSide === BIDS &&
-                    i < hoveredOrderIndex)
+                    i < hoveredOrderIndex),
               })}
               onMouseEnter={() => {
                 setHovers(i, type);
@@ -115,26 +115,30 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                   orderPrice: order.price,
                   orderQuantity: order.cumulativeShares,
                   selectedNav: type === ASKS ? BUY : SELL,
-                  selfTrade: order.mySize !== null
+                  selfTrade: order.mySize !== '0',
                 })
               }
             >
               <div
                 className={classNames({ [Styles.Neg]: type === ASKS })}
-                style={{ right: order.quantityScale + "%" }}
+                style={{ right: order.quantityScale + '%' }}
               />
               <div
                 className={classNames({
                   [Styles.Ask]: type === ASKS,
-                  [Styles.Bid]: type === BIDS
+                  [Styles.Bid]: type === BIDS,
                 })}
               >
-                <HoverValueLabel value={formatShares(order.shares)} showEmptyDash={true} showDenomination={false} />
+                <HoverValueLabel
+                  value={formatShares(order.shares)}
+                  showEmptyDash={true}
+                  showDenomination={false}
+                />
               </div>
               <div
                 className={classNames({
                   [Styles.Ask]: type === ASKS,
-                  [Styles.Bid]: type === BIDS
+                  [Styles.Bid]: type === BIDS,
                 })}
               >
                 {createBigNumber(order.price).toFixed(pricePrecision)}
@@ -142,12 +146,14 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
               <div
                 className={classNames({
                   [Styles.Ask]: type === ASKS,
-                  [Styles.Bid]: type === BIDS
+                  [Styles.Bid]: type === BIDS,
                 })}
               >
-                {order.mySize
-                  ? createBigNumber(order.mySize).toFixed(fixedPrecision).toString()
-                  : "—"}
+                {order.mySize !== '0'
+                  ? createBigNumber(order.mySize)
+                      .toFixed(fixedPrecision)
+                      .toString()
+                  : '—'}
               </div>
             </button>
           ))}
@@ -167,18 +173,18 @@ export default class OrderBook extends Component<
     extend: false,
     hide: false,
     fixedPrecision: 4,
-    pricePrecision: 4
+    pricePrecision: 4,
   };
 
   state: OrderBookState = {
     hoveredOrderIndex: null,
-    hoveredSide: null
+    hoveredSide: null,
   };
 
   setHovers = (hoveredOrderIndex: number, hoveredSide: number) => {
     this.setState({
       hoveredOrderIndex: hoveredOrderIndex,
-      hoveredSide: hoveredSide
+      hoveredSide: hoveredSide,
     });
   };
 
@@ -189,7 +195,7 @@ export default class OrderBook extends Component<
       orderBookKeys,
       toggle,
       extend,
-      hide
+      hide,
     } = this.props;
     const s = this.state;
 
@@ -197,7 +203,7 @@ export default class OrderBook extends Component<
       <section className={Styles.OrderBook}>
         <OrderHeader
           title="Order Book"
-          headers={["quantity", "price", "my quantity"]}
+          headers={['quantity', 'price', 'my quantity']}
           toggle={toggle}
           extended={extend}
           hide={hide}
@@ -216,8 +222,10 @@ export default class OrderBook extends Component<
               <div>
                 <span>Spread:</span>
                 {orderBookKeys.spread
-                  ? createBigNumber(orderBookKeys.spread).toFixed(pricePrecision)
-                  : "—"}
+                  ? createBigNumber(orderBookKeys.spread).toFixed(
+                      pricePrecision
+                    )
+                  : '—'}
                 {orderBookKeys.spread && <span>DAI</span>}
               </div>
             )}

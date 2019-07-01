@@ -330,7 +330,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
         <label
           ref={ref => (this.labelRef = ref)}
           data-tip
-          data-for={`${keyId}-${text.replace(/\s+/g, "-")}`}
+          data-for={`${keyId}-${text ? text.replace(/\s+/g, "-") : ""}`}
         >
           {text}
         </label>

@@ -2,7 +2,7 @@ import React from "react";
 
 import * as constants from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
-import { EthIcon } from "modules/common/icons";
+import { DaiLogoIcon } from "modules/common/icons";
 import ProfitLossChart from "modules/account/components/profit-loss-chart";
 import { MovementLabel } from "modules/common/labels";
 import Styles from "modules/account/components/overview-chart.styles.less";
@@ -164,7 +164,7 @@ export default class OverviewChart extends React.Component<
           </div>
           <div>
             {profitLossValue}
-            {EthIcon}
+            {DaiLogoIcon}
           </div>
           <ProfitLossChart
             // @ts-ignore

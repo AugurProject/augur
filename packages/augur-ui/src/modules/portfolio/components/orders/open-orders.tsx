@@ -40,12 +40,7 @@ export default class OpenOrders extends Component {
   }
 
   filterComp(input, data) {
-    if (this.state.viewByMarkets) {
-      return data.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-    }
-    return (
-      data.name && data.name.toLowerCase().indexOf(input.toLowerCase()) >= 0
-    );
+    return data.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
   }
 
   switchView() {
