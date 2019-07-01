@@ -37,6 +37,10 @@ export default class Form extends React.Component<
     empty: ""
   };
 
+  componentDidMount() {
+    this.node.scrollIntoView();
+  }
+
   prevPage = () => {
     const { newMarket, updateNewMarket, updatePage, clearNewMarket } = this.props;
 
@@ -160,7 +164,12 @@ export default class Form extends React.Component<
     const disabledSave = newMarket.description === "" || (savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft));
 
     return (
-      <div className={Styles.Form}>
+      <div 
+        ref={node => {
+          this.node = node;
+        }}
+        className={Styles.Form}
+      >
         <LocationDisplay currentStep={newMarket.currentStep} pages={CUSTOM_CONTENT_PAGES} />
         <LargeHeader text={largeHeader} />
         {explainerBlockTitle && explainerBlockSubtexts && 
