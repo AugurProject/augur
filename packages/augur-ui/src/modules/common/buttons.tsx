@@ -12,7 +12,6 @@ import {
   StarIcon,
   XIcon,
   SortIcon,
-  EthIcon,
   PercentIcon,
   QRCodeIcon,
   PaperAirplaneIcon,
@@ -156,14 +155,14 @@ export const CompactButton = (props: DefaultButtonProps) => (
   </button>
 );
 
-export const EthPercentButton = (props: EthPercentProps) => (
+export const DaiPercentButton = (props: EthPercentProps) => (
   <button
     onClick={e => props.action(e)}
-    className={classNames(Styles.CompactButton, Styles.EthPercentButton)}
+    className={classNames(Styles.CompactButton, Styles.DaiPercentButton)}
     disabled={props.disabled}
     title={props.title}
   >
-    {!props.showEth ? EthIcon : PercentIcon}
+    {!props.showEth ? DaiLogoIcon : PercentIcon}
   </button>
 );
 
