@@ -1,24 +1,19 @@
 import { API } from "@augurproject/sdk/build/state/getter/API";
-import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import {
-  ACCOUNTS,
-  makeDbMock,
-  deployContracts,
-  ContractAPI,
-} from "../../../libs";
+import { makeDbMock, makeProvider, seedPath } from "../../../libs";
+import { ContractAPI, deployContracts, ACCOUNTS } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
 let db: Promise<DB>;
 let api: API;
 let john: ContractAPI;
-// let mary: ContractAPI;
 
 beforeAll(async () => {
-  const { provider, addresses } = await deployContracts(ACCOUNTS, compilerOutput);
+  const provider = await makeProvider(ACCOUNTS);
+  const { addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   db = mock.makeDB(john.augur, ACCOUNTS);
   api = new API(john.augur, db);
   await john.approveCentralAuthority();

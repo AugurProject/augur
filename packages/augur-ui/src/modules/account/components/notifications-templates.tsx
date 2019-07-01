@@ -224,23 +224,11 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
   );
 };
 
+// TODO: remvoe all complete sets stuff
 export const SellCompleteSetTemplate = (props: SellCompleteSetTemplateProps) => {
-  const { description, myPositionsSummary } = props.market;
 
-  if (!myPositionsSummary) {
-    return null;
-  }
+  return null;
 
-  const { numCompleteSets } = myPositionsSummary;
-
-  return (
-    <Template
-      message={`You currently have ${
-        numCompleteSets.full
-      } of all outcomes in: "${description}"`}
-      {...props}
-    />
-  );
 };
 
 export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {

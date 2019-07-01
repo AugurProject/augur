@@ -1,7 +1,7 @@
 import { Augur } from "@augurproject/sdk";
-import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ACCOUNTS, deployContracts, makeDbMock } from "../../libs";
+import { deployContracts, ACCOUNTS } from "@augurproject/tools";
+import { makeDbMock, makeProvider, seedPath } from "../../libs";
 import { stringTo32ByteHex } from "../../libs/Utils";
 import { toAscii } from "@augurproject/sdk/build/state/utils/utils";
 
@@ -17,7 +17,9 @@ beforeEach(async () => {
 let augur: Augur;
 let ethersProvider: EthersProvider;
 beforeAll(async () => {
-  const {provider, dependencies, addresses} = await deployContracts(ACCOUNTS, compilerOutput);
+  const provider = await makeProvider(ACCOUNTS);
+  const { dependencies, addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
+
   augur = await Augur.create(provider, dependencies, addresses);
   ethersProvider = provider;
 }, 120000);
