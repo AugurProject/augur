@@ -36,7 +36,7 @@ const sortByOptions = [
 ];
 
 function filterComp(input, market) {
-  return market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  return market ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0 : false;
 }
 
 function renderToggleContent(market) {

@@ -69,4 +69,4 @@ export const positionSummary = memoize(
   },
 );
 
-const timesHundred = (value) => createBigNumber(value).times(100);
+const timesHundred = (value) => isNaN(value) ? "0" : createBigNumber(value).times(100);

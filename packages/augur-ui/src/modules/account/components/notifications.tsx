@@ -118,17 +118,11 @@ class Notifications extends React.Component<
         };
         break;
 
+      // TODO: remove all complete sets stuff in UI
       case NOTIFICATION_TYPES.completeSetPositions:
         buttonAction = () => {
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
-          if (notification.market && notification.market.myPositionsSummary) {
-            this.props.sellCompleteSetsModal(
-              notification.market.id,
-              notification.market.myPositionsSummary.numCompleteSets,
-              () => this.disableNotification(notification.id, false),
-            );
-          }
         };
         break;
 

@@ -7,14 +7,14 @@ import {
   roundTimestampToPastDayMidnight,
 } from 'utils/format-date';
 import {
-  selectMarketsDataState,
+  selectMarketInfosState,
   selectCurrentTimestamp,
   selectMarketTradingHistoryState,
 } from 'store/select-state';
 import { selectPriceTimeSeries } from 'modules/markets/selectors/price-time-series';
 
 function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketsDataState(state)[marketId];
+  return selectMarketInfosState(state)[marketId];
 }
 
 function selectMarketTradingHistoryStateMarket(state, marketId) {
