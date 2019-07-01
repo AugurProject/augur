@@ -12,7 +12,7 @@ contract TestOrders is Orders {
 
     constructor() public {
         // This is to confirm we are not on foundation network
-        require(!FOUNDATION_REP_ADDRESS.exists());
+        require(!FOUNDATION_REP_ADDRESS.exists(), "TestOrders: Deploying test contract to production");
     }
 
     function testSaveOrder(Order.Types _type, IMarket _market, uint256 _amount, uint256 _price, address _sender, uint256 _outcome, uint256 _moneyEscrowed, uint256 _sharesEscrowed, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, IERC20 _kycToken) public returns (bytes32 _orderId) {
