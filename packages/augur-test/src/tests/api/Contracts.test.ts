@@ -1,13 +1,11 @@
-import { ACCOUNTS, deployContracts } from '../../libs';
+import { makeProvider, seedPath } from "../../libs";
 import { Contracts } from '@augurproject/sdk/build/api/Contracts';
+import { deployContracts, ACCOUNTS } from '@augurproject/tools';
 import { GenericAugurInterfaces } from '@augurproject/core';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
-import { stringTo32ByteHex } from '@augurproject/core/build/libraries/HelperFunctions';
 import { BigNumber } from 'bignumber.js';
-import {
-  ContractAddresses,
-  Contracts as compilerOutput,
-} from '@augurproject/artifacts';
+import { formatBytes32String } from "ethers/utils";
+import { ContractAddresses } from '@augurproject/artifacts';
 
 interface MarketCreatedEvent {
   name: 'MarketCreated';
@@ -20,7 +18,8 @@ let addresses: ContractAddresses;
 let dependencies: ContractDependenciesEthers;
 let contracts: Contracts;
 beforeAll(async () => {
-  const result = await deployContracts(ACCOUNTS, compilerOutput);
+  const provider = await makeProvider(ACCOUNTS);
+  const result = await deployContracts(provider, seedPath, ACCOUNTS);
   addresses = result.addresses;
   dependencies = result.dependencies;
   contracts = new Contracts(addresses, dependencies);
@@ -84,13 +83,13 @@ test('Contract :: Universe :: Create Market', async () => {
   );
   const fee = new BigNumber(10).pow(16);
   const affiliateFeeDivisor = new BigNumber(25);
-  const outcomes: Array<string> = [
-    stringTo32ByteHex('big'),
-    stringTo32ByteHex('small'),
+  const outcomes: string[] = [
+    formatBytes32String('big'),
+    formatBytes32String('small'),
   ];
-  const topic = stringTo32ByteHex('boba');
+  const topic = formatBytes32String('boba');
   const description = 'Will big or small boba be the most popular in 2019?';
-  const extraInfo = '';
+  const extraInfo = JSON.stringify({ description });
   const maybeMarketCreatedEvent = (await universe.createCategoricalMarket(
     endTime,
     fee,
