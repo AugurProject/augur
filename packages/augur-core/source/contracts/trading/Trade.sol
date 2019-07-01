@@ -14,6 +14,10 @@ import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 
 
+/**
+ * @title Trade
+ * @notice Provides functions to perform actions on an orderbook which will fill or create orders as appropriate
+ */
 contract Trade is Initializable, ReentrancyGuard {
 
     struct Data {
@@ -51,7 +55,7 @@ contract Trade is Initializable, ReentrancyGuard {
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, IERC20 _kycToken) internal pure returns (Data memory) {
-        require(_amount > 0);
+        require(_amount > 0, "Trade.create: Trade amount cannot be 0");
 
         return Data({
             direction: _direction,
@@ -70,14 +74,40 @@ contract Trade is Initializable, ReentrancyGuard {
         });
     }
 
-    function createWithTotalCost(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _totalCost, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, address _sender, IERC20 _kycToken) internal pure returns (Data memory) {
-        return create(_direction, _market, _outcome, _totalCost / _price, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, _sender, _kycToken);
-    }
-
+    /**
+     * @notice Perform a trade which will fill orders and if a desired amount remains will create an order
+     * @param _direction The trade direction of order. Either LONG==0, or SHORT==1
+     * @param _market The associated market
+     * @param _outcome The associated outcome of the market
+     * @param _amount The number of attoShares desired
+     * @param _price The price in attoCash. Must be within the market range (1 to numTicks-1)
+     * @param _betterOrderId The id of an order which is better than this one. Used to reduce gas costs when sorting
+     * @param _worseOrderId The id of an order which is worse than this one. Used to reduce gas costs when sorting
+     * @param _tradeGroupId A Bytes32 value used when attempting to associate multiple orderbook actions with a single TX
+     * @param _loopLimit The number of orders to take from the book before completing the tx. Used to limit gas cost
+     * @param _ignoreShares Boolean indicating whether to ignore available shares when escrowing funds for the order
+     * @param _affiliateAddress Address of an affiliate to give a portion of market creator fees to if any fills trigger settlement
+     * @param _kycToken KYC token address if applicable. Specifying this will use an orderbook that is only available to acounts which have a non-zero balance of the specified token
+     * @return The Bytes32 orderid of the created order
+     */
     function publicTrade(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external returns (bytes32) {
         return internalTrade(_direction, _market, _outcome, _amount, _price, _betterOrderId, _worseOrderId, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender, _kycToken);
     }
 
+    /**
+     * @notice Perform a trade which will only fill orders
+     * @param _direction The trade direction of order. Either LONG==0, or SHORT==1
+     * @param _market The associated market
+     * @param _outcome The associated outcome of the market
+     * @param _amount The number of attoShares desired
+     * @param _price The price in attoCash. Must be within the market range (1 to numTicks-1)
+     * @param _tradeGroupId A Bytes32 value used when attempting to associate multiple orderbook actions with a single TX
+     * @param _loopLimit The number of orders to take from the book before completing the tx. Used to limit gas cost
+     * @param _ignoreShares Boolean indicating whether to ignore available shares when escrowing funds for the order
+     * @param _affiliateAddress Address of an affiliate to give a portion of market creator fees to if any fills trigger settlement
+     * @param _kycToken KYC token address if applicable. Specifying this will use an orderbook that is only available to acounts which have a non-zero balance of the specified token
+     * @return The desired amount remaining that was not filled
+     */
     function publicFillBestOrder(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _tradeGroupId, uint256 _loopLimit, bool _ignoreShares, address _affiliateAddress, IERC20 _kycToken) external returns (uint256) {
         return internalFillBestOrder(_direction, _market, _outcome, _amount, _price, _tradeGroupId, _loopLimit, _ignoreShares, _affiliateAddress, msg.sender, _kycToken);
     }

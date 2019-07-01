@@ -20,7 +20,7 @@ beforeAll(async () => {
 }, 120000);
 
 // NOTE: Full-text searching is tested more in SyncableDB.test.ts
-test("State API :: SyncData :: getSyncData", async () => {
+test("State API :: Status :: getSyncData", async () => {
   const dbName = (await db).getDatabaseName("MarketCreated");
 
   await (await db).sync(john.augur, mock.constants.chunkSize, 0);

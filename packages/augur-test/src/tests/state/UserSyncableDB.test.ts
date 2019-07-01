@@ -100,7 +100,7 @@ test('UserSynableDB.sync', async () => {
     token: augur.contracts.getReputationToken().address,
     from: sender,
     // Since this is from market creation: REP is sent to the MarketFactory, which then passes it along to the market.
-    to: await augur.contracts.augur.registry_(
+    to: await augur.contracts.augur.lookup_(
       formatBytes32String('MarketFactory')
     ),
     value: marketRepBond,

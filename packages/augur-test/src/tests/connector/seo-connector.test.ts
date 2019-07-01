@@ -13,7 +13,8 @@ import {
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { SEOConnector } from '@augurproject/sdk/build/connector/seo-connector';
-import { SubscriptionEventNames } from '@augurproject/sdk/build//constants';
+import { SubscriptionEventNames } from '@augurproject/sdk/build/constants';
+import { MarketCreated } from "@augurproject/sdk/build/events";
 
 let connector: SEOConnector;
 let provider: EthersProvider;
@@ -79,7 +80,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
 
   await connector.on(
     SubscriptionEventNames.MarketCreated,
-    async (...args: any[]): Promise<void> => {
+    async (...args: Array<MarketCreated>): Promise<void> => {
       expect(args[0]).toHaveProperty(
         'extraInfo',
         '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}'
@@ -118,6 +119,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     async (...args: any[]): Promise<void> => {
       expect(args).toEqual([
         {
+          eventName: SubscriptionEventNames.NewBlock,
           blocksBehindCurrent: 0,
           highestAvailableBlockNumber: expect.any(Number),
           lastSyncedBlockNumber: expect.any(Number),

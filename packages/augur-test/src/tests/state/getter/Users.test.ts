@@ -174,7 +174,7 @@ describe('State API :: Users :: ', () => {
     await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
       9.5
     );
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions binary-1', async () => {
     const market = await john.createReasonableYesNoMarket();
@@ -233,7 +233,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions cat3-1', async () => {
     const market = await john.createReasonableMarket([
@@ -286,7 +286,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions cat3-2', async () => {
     const market = await john.createReasonableMarket([
@@ -339,7 +339,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions cat3-3', async () => {
     const market = await john.createReasonableMarket([
@@ -422,7 +422,7 @@ describe('State API :: Users :: ', () => {
     ];
 
     await processTrades(trades, market, john.augur.contracts.universe.address);
-  }, 60000);
+  }, 120000);
 
   test(':getUserTradingPositions scalar', async () => {
     const market = await john.createReasonableScalarMarket();
@@ -487,7 +487,7 @@ describe('State API :: Users :: ', () => {
       new BigNumber(50),
       new BigNumber(250)
     );
-  }, 60000);
+  }, 120000);
 
   async function processTrades(
     tradeData: UTPTradeData[],

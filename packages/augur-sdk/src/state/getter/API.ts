@@ -8,7 +8,7 @@ import "./Ping";
 import "./Trading";
 import "./Users";
 import "./Accounts";
-import "./sync-data";
+import "./status";
 
 export class API {
   private readonly router: Router;

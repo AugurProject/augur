@@ -20,7 +20,10 @@ import 'ROOT/ITime.sol';
 
 // Centralized approval authority and event emissions
 
-/// @title Augur
+/**
+ * @title Augur
+ * @notice The core global contract of the Augur platform. Provides a contract registry and and authority on which contracts should be trusted.
+ */
 contract Augur is IAugur {
     using SafeMathUint256 for uint256;
     using ContractExists for address;
@@ -95,14 +98,14 @@ contract Augur is IAugur {
     mapping(address => bool) private trustedSender;
 
     address public uploader;
-    mapping(bytes32 => address) public registry;
+    mapping(bytes32 => address) private registry;
 
     ITime public time;
 
     uint256 public upgradeTimestamp;
 
     modifier onlyUploader() {
-        require(msg.sender == uploader);
+        require(msg.sender == uploader, "Augur: Uploader only function called by non-uploader");
         _;
     }
 
@@ -116,7 +119,7 @@ contract Augur is IAugur {
     //
 
     function registerContract(bytes32 _key, address _address) public onlyUploader returns (bool) {
-        require(registry[_key] == address(0));
+        require(registry[_key] == address(0), "Augur.registerContract: key has already been used in registry");
         require(_address.exists(), "Augur.registerContract: Contract address is not actually a contract");
         registry[_key] = _address;
         if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds" || _key == "MarketFactory") {
@@ -128,6 +131,11 @@ contract Augur is IAugur {
         return true;
     }
 
+    /**
+     * @notice Find the contract address for a particular key
+     * @param _key The key to lookup
+     * @return the address of the registered contract if one exists for the given key
+     */
     function lookup(bytes32 _key) public view returns (address) {
         return registry[_key];
     }
@@ -153,7 +161,7 @@ contract Augur is IAugur {
 
     function createUniverse(IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) private returns (IUniverse) {
         IUniverseFactory _universeFactory = IUniverseFactory(registry["UniverseFactory"]);
-        IUniverse _newUniverse = _universeFactory.createUniverse(this, _parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
+        IUniverse _newUniverse = _universeFactory.createUniverse(_parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
         universes[address(_newUniverse)] = true;
         emit UniverseCreated(address(_parentUniverse), address(_newUniverse), _parentPayoutNumerators);
         return _newUniverse;
@@ -211,7 +219,7 @@ contract Augur is IAugur {
     // Time
     //
 
-    /// @dev Returns Augur’s internal Unix timestamp.
+    /// @notice Returns Augur’s internal Unix timestamp.
     /// @return (uint256) Augur’s internal Unix timestamp
     function getTimestamp() public view returns (uint256) {
         return time.getTimestamp();
@@ -238,13 +246,13 @@ contract Augur is IAugur {
     function derivePayoutDistributionHash(uint256[] memory _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes) public view returns (bytes32) {
         uint256 _sum = 0;
         // This is to force an Invalid report to be entirely payed out to Invalid
-        require(_payoutNumerators[0] == 0 || _payoutNumerators[0] == _numTicks);
-        require(_payoutNumerators.length == _numOutcomes);
+        require(_payoutNumerators[0] == 0 || _payoutNumerators[0] == _numTicks, "Augur.derivePayoutDistributionHash: Malformed Invalid payout");
+        require(_payoutNumerators.length == _numOutcomes, "Augur.derivePayoutDistributionHash: Malformed payout length");
         for (uint256 i = 0; i < _payoutNumerators.length; i++) {
             uint256 _value = _payoutNumerators[i];
             _sum = _sum.add(_value);
         }
-        require(_sum == _numTicks);
+        require(_sum == _numTicks, "Augur.derivePayoutDistributionHash: Malformed payout sum");
         return keccak256(abi.encodePacked(_payoutNumerators));
     }
 
@@ -338,7 +346,7 @@ contract Augur is IAugur {
     }
 
     function logOrderCanceled(IUniverse _universe, IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId) public returns (bool) {
-        require(msg.sender == registry["CancelOrder"]);
+        require(msg.sender == registry["CancelOrder"], "Augur: CancelOrder only function called by non-CancelOrder");
         IOrders _orders = IOrders(registry["Orders"]);
         (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
         _addressData[1] = _creator;

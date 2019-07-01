@@ -1,4 +1,5 @@
-import { Connector, Callback } from "@augurproject/sdk/build/connector/connector";
+import { Callback } from "@augurproject/sdk/build/events";
+import { Connector } from "@augurproject/sdk/build/connector/connector";
 import { SubscriptionEventNames } from "@augurproject/sdk/build/constants";
 
 export function makeConnectorMock(json: object): Connector {
