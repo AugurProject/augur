@@ -89,8 +89,8 @@ We are going to use environment variables for convenience. ENDPOINT_HTTP and END
 
 
     # (ONLY NEEDED FOR BLANK NODE dev-node-geth docker image) 
-    # Use dp to deploy to the configuration specified in your local environment (above)
-    npx dp deploy
+    # Use flash to deploy to the configuration specified in your local environment (above)
+    npx flash run deploy
 
     # quick commmand to clean augur-node env and build and start
     npm run clean-start
