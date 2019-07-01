@@ -22,6 +22,11 @@ export default class Landing extends React.Component<
   LandingProps,
   {}
 > {
+
+  componentDidMount() {
+    this.node.scrollIntoView();
+  }
+
   render() {
     const {
       updatePage
@@ -29,7 +34,12 @@ export default class Landing extends React.Component<
     const s = this.state;
 
     return (
-      <div className={Styles.Landing}>
+      <div 
+        ref={node => {
+          this.node = node;
+        }}
+        className={Styles.Landing}
+      >
         <XLargeSubheaders header={"Create a new market"}>
           Augur allows <span>anyone</span>, <span>anywhere</span>, to create a market on <span>anything</span>
         </XLargeSubheaders>
