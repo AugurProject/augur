@@ -1,4 +1,4 @@
-import { Callback, SubscriptionTypes } from "./events";
+import { Callback, SubscriptionType } from "./events";
 import { Connector } from "./connector/connector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { ContractInterfaces } from "@augurproject/core";
@@ -7,7 +7,7 @@ import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { BigNumber } from 'bignumber.js';
 import { Provider } from "./ethereum/Provider";
-import { isSubscriptionEventName, SubscriptionEventNames } from "./constants";
+import { isSubscriptionEventName, SubscriptionEventName } from "./constants";
 import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
 import { ContractDependenciesEthers, TransactionStatusCallback } from "contract-dependencies-ethers";
 import { Markets } from "./state/getter/Markets";
@@ -186,13 +186,13 @@ export class Augur<TProvider extends Provider = Provider> {
     return Augur.connector.bindTo(f);
   }
 
-  public async on<T extends SubscriptionTypes>(eventName: SubscriptionEventNames | string, callback: Callback, type: { new(): T; }): Promise<void> {
+  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, callback: Callback, type: { new(): T; }): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
       return Augur.connector.on(eventName, type, callback);
     }
   }
 
-  public async off(eventName: SubscriptionEventNames | string): Promise<void> {
+  public async off(eventName: SubscriptionEventName | string): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
       return Augur.connector.off(eventName);
     }

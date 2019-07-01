@@ -79,11 +79,11 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
 
   await connector.connect('');
 
-  console.log("Waiting", SubscriptionEventNames.MarketCreated, MarketCreated)
+  console.log("Waiting", SubscriptionEventName.MarketCreated, MarketCreated)
   await connector.on(
     SubscriptionEventName.MarketCreated,
     MarketCreated,
-    async (...args: SubscriptionType[]): Promise<void> => {
+    async (...args: MarketCreated[]): Promise<void> => {
       expect(args[0]).toHaveProperty(
         'extraInfo',
         '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}'

@@ -28,7 +28,7 @@ console.log("Starting web worker");
       MarketCreated,
       (...args: SubscriptionType[]): void => {
         console.log(args);
-        augur.off(SubscriptionEventNames.CompleteSetsPurchased);
+        augur.off(SubscriptionEventName.CompleteSetsPurchased);
       });
 
     const markets = await augur.getMarkets({

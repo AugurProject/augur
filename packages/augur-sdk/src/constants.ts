@@ -46,7 +46,7 @@ export enum SubscriptionEventName {
 export function isSubscriptionEventName(eventName: string): string | null {
   let retVal: number = -1;
 
-  Object.values(SubscriptionEventNames).every((value: any, index: number): boolean => {
+  Object.values(SubscriptionEventName).every((value: any, index: number): boolean => {
     if (value === eventName) {
       retVal = index;
       return false;
