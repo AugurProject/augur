@@ -13,7 +13,6 @@ export const handleAugurNodeDisconnect = (history: any, event: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.warn("Disconnected from augur-node", event);
   const { connection, env } = getState();
   if (connection.isConnectedToAugurNode) {
     dispatch(

@@ -7,9 +7,7 @@ import {
 import { updateEnv } from "modules/app/actions/update-env";
 import {
   updateConnectionStatus,
-  updateAugurNodeConnectionStatus
 } from "modules/app/actions/update-connection";
-import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
 import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
 import { logout } from "modules/auth/actions/logout";
 import { verifyMatchingNetworkIds } from "modules/app/actions/verify-matching-network-ids";
@@ -19,8 +17,6 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { closeModal } from "modules/modal/actions/close-modal";
 import logError from "utils/log-error";
 import networkConfig from "config/network.json";
-import { version } from "version";
-import { updateVersions } from "modules/app/actions/update-versions";
 import { isEmpty } from "utils/is-populated";
 import {
   MODAL_NETWORK_MISMATCH,

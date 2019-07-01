@@ -54,7 +54,6 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
     }
 
     this.state = {
-      augurNode: props.env["augur-node"] || "",
       ethereumNode,
       connectErrors: [],
       formErrors: {
@@ -115,7 +114,6 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
     // because we prioritize, lets wipe out all previous connection options but not remove things like timeout.
     const updatedEnv = {
       ...env,
-      "augur-node": augurNode,
       "ethereum-node": {
         ...env["ethereum-node"],
         ipc: "",
@@ -125,7 +123,6 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
       },
     };
     const endpoints = {
-      augurNode: updatedEnv["augur-node"],
       ethereumNodeHTTP: updatedEnv["ethereum-node"].http,
       ethereumNodeWS: updatedEnv["ethereum-node"].ws,
     };

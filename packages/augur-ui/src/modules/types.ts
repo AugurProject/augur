@@ -370,7 +370,6 @@ export interface EthereumNodeOptions {
 }
 
 export interface EnvObject {
-  "augur-node"?: string;
   "ethereum-node": EthereumNodeOptions;
   universe?: string;
   useWeb3Transport: boolean;

@@ -17,10 +17,7 @@ const allNetworkIdsMatch = (networkIds: NetworkIdsObject, callback: NodeStyleCal
       `One or more network IDs not found: ${JSON.stringify(networkIds)}`,
     );
   }
-  if (new Set(networkIdValues).size > 1) {
-    console.error(`Network ID mismatch: ${JSON.stringify(networkIds)}`);
-    return callback(null, networkIds.augurNode); // augur-node's network id is the expected network id
-  }
+
   callback(null);
 };
 

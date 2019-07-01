@@ -26,6 +26,9 @@ export const getReportingFees = (
 ) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address === undefined) return callback(null);
+  // TODO: getting users reporting fees, keeping code for reference
+  return;
+  /*
   augur.augurNode.submitRequest(
     "getReportingFees",
     {
@@ -152,4 +155,5 @@ export const getReportingFees = (
       });
     }
   );
+  */
 };
