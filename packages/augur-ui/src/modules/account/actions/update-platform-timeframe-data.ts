@@ -1,4 +1,3 @@
-import { augur } from 'services/augurjs';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import logError from 'utils/log-error';
 import { AppState } from 'store';

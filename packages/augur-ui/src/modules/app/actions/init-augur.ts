@@ -169,17 +169,18 @@ export function connectAugur(
     getState: () => AppState
   ) => {
     const { modal, loginAccount } = getState();
+    const Augur = augurSdk.get();
     AugurJS.connect(
       env,
-      async (err: any, ConnectionInfo: any) => {
-        if (err || !ConnectionInfo.ethereumNode) {
-          return callback(err, ConnectionInfo);
+      async (err: any) => {
+        if (err) {
+          return callback(err, null);
         }
         dispatch(updateConnectionStatus(true));
         const windowApp = windowRef as WindowApp;
         let universeId =
           env.universe ||
-          AugurJS.augur.contracts.addresses[getNetworkId()].Universe;
+          Augur.contracts.universe;
         if (
           windowApp.localStorage &&
           windowApp.localStorage.getItem &&
@@ -217,7 +218,6 @@ export function connectAugur(
         }
 
         // wire up events for sdk
-        const Augur = augurSdk.get();
         dispatch(listenToUpdates(Augur));
       }
     );

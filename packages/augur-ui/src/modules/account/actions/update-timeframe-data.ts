@@ -1,4 +1,3 @@
-import { augur } from 'services/augurjs';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import logError from 'utils/log-error';
 import { TimeframeData } from 'modules/types';

@@ -1,4 +1,3 @@
-import Augur from "@augurproject/augur.js";
 import logError from "utils/log-error";
 import { augurSdk } from "services/augursdk";
 import { JsonRpcProvider, Web3Provider } from "ethers/providers";
@@ -7,10 +6,6 @@ import { windowRef } from "utils/window-ref";
 import getInjectedWeb3Accounts from "utils/get-injected-web3-accounts";
 
 export const connect = async (env: EnvObject, callback: NodeStyleCallback = logError) => {
-  const connectOptions = {
-    ethereumNode: env["ethereum-node"],
-    useWeb3Transport: env.useWeb3Transport,
-  };
 
   let provider = new JsonRpcProvider(env["ethereum-node"].http);
   let isWeb3 = false;
@@ -18,15 +13,6 @@ export const connect = async (env: EnvObject, callback: NodeStyleCallback = logE
 
   const bootstrap = async (provider, account, isWeb3) => {
     await augurSdk.makeApi(provider, account, provider.getSigner(), isWeb3);
-
-    augur.connect(
-      connectOptions,
-      (err: any, connectionInfo: Connection) => {
-        if (err) return callback(err);
-        console.log("connected:", connectionInfo);
-        callback(null, connectionInfo);
-      },
-    );
   };
 
   const injectedAccount = await getInjectedWeb3Accounts();
@@ -41,6 +27,3 @@ export const connect = async (env: EnvObject, callback: NodeStyleCallback = logE
 
   await bootstrap(provider, account, isWeb3);
 };
-
-export const augur = new Augur();
-export const { constants } = augur;
