@@ -1,6 +1,5 @@
 {
   "dev": {
-    "augur-node": "ws://127.0.0.1:9001",
     "ethereum-node": {
       "http": "http://127.0.0.1:8545",
       "ws": "ws://127.0.0.1:8546",
@@ -15,7 +14,6 @@
     }
   },
   "thunder": {
-    "augur-node": "ws://127.0.0.1:9001",
     "ethereum-node": {
       "http": "http://manual-auger-development-2001306376.us-west-2.elb.amazonaws.com:8545",
       "ws": null,
@@ -30,7 +28,6 @@
     }
   },
   "thunder-nodepool": {
-    "augur-node": "ws://127.0.0.1:9001",
     "ethereum-node": {
       "http": "http://testnet-rpc.thundercore.com:8545",
       "ws": null,
@@ -45,7 +42,6 @@
     }
   },
   "ropsten": {
-    "augur-node": "wss://ropsten.augur.nodes.augur.net",
     "ethereum-node": {
       "http": "https://ropsten.ethereum.nodes.augur.net",
       "ws": null,
@@ -60,7 +56,6 @@
     }
   },
   "rinkeby": {
-    "augur-node": "wss://dev.augur.net/augur-node",
     "ethereum-node": {
       "http": "https://eth-rinkeby.alchemyapi.io/jsonrpc/xWkVwAbM7Qr-p8j-Zu_PPwldZJKmaKjx",
       "ws": "",
@@ -75,7 +70,6 @@
     }
   },
   "kovan": {
-    "augur-node": "wss://kovan.augur.net/augur-node",
     "ethereum-node": {
       "http": "https://kovan.augur.net/ethereum-http",
       "ws": null,
@@ -90,7 +84,6 @@
     }
   },
   "srt": {
-    "augur-node": "wss://srt.augur.net/augur-node",
     "ethereum-node": {
       "http": "https://srt.augur.net/ethereum-http",
       "ws": "wss://srt.augur.net/ethereum-ws",
@@ -105,7 +98,6 @@
     }
   },
   "aura": {
-    "augur-node": "wss://aura.augur.nodes.augur.net",
     "ethereum-node": {
       "http": "https://aura.ethereum.nodes.augur.net",
       "ws": null,
@@ -120,7 +112,6 @@
     }
   },
   "clique": {
-    "augur-node": "wss://clique.augur.nodes.augur.net",
     "ethereum-node": {
       "http": "https://clique.ethereum.nodes.augur.net",
       "ws": null,
@@ -135,7 +126,6 @@
     }
   },
   "mainnet": {
-    "augur-node": "ws://127.0.0.1:9001",
     "ethereum-node": {
       "http": "http://127.0.0.1:8545",
       "ws": "ws://127.0.0.1:8546",

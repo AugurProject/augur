@@ -35,7 +35,6 @@ import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { appendCategoryIfNew } from "modules/categories/actions/append-category";
 import { removePendingOrder } from "modules/orders/actions/pending-orders-management";
 import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";
-import { loadUsershareBalances } from "modules/positions/actions/load-user-share-balances";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
@@ -71,7 +70,6 @@ const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   dispatch(loadMarketAccountPositions(marketId));
-  dispatch(loadUsershareBalances([marketId]));
   dispatch(getWinningBalance([marketId]));
 };
 

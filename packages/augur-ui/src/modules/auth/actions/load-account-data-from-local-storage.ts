@@ -12,6 +12,7 @@ import { setSelectedUniverse } from "./selected-universe-management";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -19,7 +20,6 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
 ) => {
   const localStorageRef = typeof window !== "undefined" && window.localStorage;
   const { universe, connection } = getState();
-  const { augurNodeNetworkId } = connection;
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {
@@ -30,8 +30,9 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
       if (readNotifications) {
         dispatch(updateReadNotifications(readNotifications));
       }
-      if (selectedUniverse && selectedUniverse[augurNodeNetworkId]) {
-        const selectedUniverseId = selectedUniverse[augurNodeNetworkId];
+      const networkId = getNetworkId();
+      if (selectedUniverse) {
+        const selectedUniverseId = selectedUniverse[networkId];
         if (universe.id !== selectedUniverseId) {
           dispatch(updateUniverse({ id: selectedUniverseId }));
         }
@@ -42,11 +43,11 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
       if (
         favorites &&
         isNewFavoritesStyle(favorites) &&
-        favorites[augurNodeNetworkId] &&
-        favorites[augurNodeNetworkId][universe.id]
+        favorites[networkId] &&
+        favorites[networkId][universe.id]
       ) {
         dispatch(
-          loadFavoritesMarkets(favorites[augurNodeNetworkId][universe.id])
+          loadFavoritesMarkets(favorites[networkId][universe.id])
         );
       }
       const {

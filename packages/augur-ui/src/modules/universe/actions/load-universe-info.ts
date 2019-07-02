@@ -163,7 +163,9 @@ function getUniversesInfoWithParentContext(
   grandParentUniverseData: any,
   callback: NodeStyleCallback
 ) {
-  augur.augurNode.submitRequest(
+  return {};
+  // TODO: this is needed for getting parent stats
+  /*
     "getUniversesInfo",
     {
       universe: currentUniverseData.id,
@@ -244,6 +246,7 @@ function getUniversesInfoWithParentContext(
       );
     }
   );
+  */
 }
 
 function getUniverseName(parentUniverseData: any, universeData: any) {

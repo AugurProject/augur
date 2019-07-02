@@ -16,14 +16,14 @@ describe("modules/app/hocs/rewrite-url-params/index.jsx", () => {
             origin: "http://example.com",
             search: "",
             href:
-              "http://example.com/#/markets?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546&some_other_param=somevalue"
+              "http://example.com/#/markets?ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546&some_other_param=somevalue"
           }
         };
 
         routerLocationRef = {
           pathname: "/markets",
           search:
-            "?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546&some_other_param=somevalue",
+            "?ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546&some_other_param=somevalue",
           hash: ""
         };
       });
@@ -33,7 +33,7 @@ describe("modules/app/hocs/rewrite-url-params/index.jsx", () => {
         shallow(<Cmp location={routerLocationRef} />);
 
         expect(windowRef.location.href).toEqual(
-          "http://example.com?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546#/markets?some_other_param=somevalue"
+          "http://example.com?ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546#/markets?some_other_param=somevalue"
         );
       });
     });
@@ -43,9 +43,9 @@ describe("modules/app/hocs/rewrite-url-params/index.jsx", () => {
         windowRef = {
           location: {
             search:
-              "?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546",
+              "?ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546",
             href:
-              "http://example.com?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546#/markets?some_other_param=somevalue"
+              "http://example.com?ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546#/markets?some_other_param=somevalue"
           }
         };
 
@@ -61,13 +61,12 @@ describe("modules/app/hocs/rewrite-url-params/index.jsx", () => {
 
       test("should do nothing to the url", () => {
         expect(windowRef.location.href).toEqual(
-          "http://example.com?augur_node=ws%3A%2F%2F127.0.0.1%3A9001&ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546#/markets?some_other_param=somevalue"
+          "http://example.com?ethereum_node_http=http%3A%2F%2F127.0.0.1%3A8545&ethereum_node_ws=ws%3A%2F%2F127.0.0.1%3A8546#/markets?some_other_param=somevalue"
         );
       });
 
       test("should pass endpoints as props to wrapped component", () => {
         const wrappedCmp = cmp.find(EmptyComponent);
-        expect(wrappedCmp.props().augurNode).toBe("ws://127.0.0.1:9001");
         expect(wrappedCmp.props().ethereumNodeHttp).toBe(
           "http://127.0.0.1:8545"
         );

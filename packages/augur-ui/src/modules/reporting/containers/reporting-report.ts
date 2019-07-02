@@ -16,7 +16,6 @@ import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
-  // might need to call get market cost breakdown, it's on market from augur-node
   isConnected: state.connection.isConnected,
   universe: state.universe.id,
   marketInfos: state.marketInfos,

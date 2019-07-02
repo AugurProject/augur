@@ -116,13 +116,10 @@ export interface Universe {
   openInterest?: BigNumber | string;
   forkThreshold?: BigNumber;
 }
-export interface AccountShareBalances {
-  [marketId: string]: Array<string>;
-}
+
 export interface Versions {
   augurui: string | null;
   augurjs: string | null;
-  augurNode: string | null;
 }
 export interface TransacitonData {
   [transactionId: string]: {
@@ -370,7 +367,6 @@ export interface EthereumNodeOptions {
 }
 
 export interface EnvObject {
-  "augur-node"?: string;
   "ethereum-node": EthereumNodeOptions;
   universe?: string;
   useWeb3Transport: boolean;
@@ -378,7 +374,6 @@ export interface EnvObject {
 
 export interface QueryEndpoints {
   ethereum_node_http?: string;
-  augur_node?: string;
   ethereum_node_ws?: string;
   [MARKET_ID_PARAM_NAME]?: string;
   [RETURN_PARAM_NAME]?: string;
@@ -387,14 +382,11 @@ export interface QueryEndpoints {
 }
 export interface Endpoints {
   ethereumNodeHTTP: string;
-  augurNode: string;
   ethereumNodeWS: string;
 }
 
 export interface Connection {
   isConnected: boolean;
-  isConnectedToAugurNode: boolean;
-  augurNodeNetworkId?: string;
   isReconnectionPaused: boolean;
 }
 

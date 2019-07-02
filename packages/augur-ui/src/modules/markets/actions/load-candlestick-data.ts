@@ -1,7 +1,7 @@
-import { augur } from "services/augurjs";
-import logError from "utils/log-error";
+import { augur } from 'services/augurjs';
+import logError from 'utils/log-error';
 // TODO: remove these lodash functions.
-import { map, mapValues } from "lodash/fp";
+import { map, mapValues } from 'lodash/fp';
 
 const mutatePeriod = map(
   ({
@@ -12,7 +12,7 @@ const mutatePeriod = map(
     startTimestamp,
     volume,
     tokenVolume,
-    shareVolume
+    shareVolume,
   }) => ({
     period: startTimestamp * 1000,
     open: parseFloat(start),
@@ -20,7 +20,7 @@ const mutatePeriod = map(
     low: parseFloat(min),
     close: parseFloat(end),
     volume: parseFloat(volume),
-    shareVolume: parseFloat(shareVolume || tokenVolume)
+    shareVolume: parseFloat(shareVolume || tokenVolume),
   })
 );
 
@@ -41,15 +41,23 @@ const mutateOutcome = mapValues(mutatePeriod);
  * @param {LoadCandleStickDataOptions} options
  * @param {function} callback
  */
-export const loadCandleStickData = (options = {}, callback: NodeStyleCallback = logError) => {
-  augur.augurNode.submitRequest(
-    "getMarketPriceCandlesticks",
-    options,
-    (err: any, data: any) => {
-      if (err) return callback(err);
-
-      const mutatedData = mutateOutcome(data);
-      callback(null, mutatedData);
-    }
-  );
+export const loadCandleStickData = (
+  options = {},
+  callback: NodeStyleCallback = logError
+) => {
+  // TODO: get market candlestick, call Markets.ts
+  // replace below with real data
+  const mutatedData = mutateOutcome([
+    {
+      max: 0,
+      min: 0,
+      start: 0,
+      end: 0,
+      startTimestamp: 0,
+      volume: 0,
+      tokenVolumn: 0,
+      shareVolume: 0,
+    },
+  ]);
+  callback(null, mutatedData);
 };
