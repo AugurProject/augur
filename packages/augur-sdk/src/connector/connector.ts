@@ -1,5 +1,5 @@
-import { SubscriptionEventNames } from "../constants";
-import { Callback } from "../events";
+import { SubscriptionEventName } from "../constants";
+import { Callback, SubscriptionType } from "../events";
 
 export abstract class Connector {
   public subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
@@ -11,6 +11,16 @@ export abstract class Connector {
   // bind API calls
   public abstract bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R>;
 
-  public abstract async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void>;
-  public abstract async off(eventName: SubscriptionEventNames | string): Promise<void>;
+  public abstract async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void>;
+  public abstract async off(eventName: SubscriptionEventName | string): Promise<void>;
+
+  protected callbackWrapper<T extends SubscriptionType>(callback: Callback): (...args: SubscriptionType[]) => void {
+    return (...args: T[]): void => {
+      args.map((arg: object) => {
+        const t = {} as SubscriptionType;
+        Object.assign(t, arg);
+        callback(t);
+      });
+    };
+  }
 }

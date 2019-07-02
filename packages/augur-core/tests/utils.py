@@ -134,6 +134,10 @@ class AssertLog():
         if args[1]:
             raise args[1]
 
+        # In coverage mode log capture doesn't work, but we dont really care for that case
+        if self.fixture.coverageMode:
+            return
+
         foundLog = None
         for log in self.contract.getLogs(self.eventName):
             if (self.skip == 0):
