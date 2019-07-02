@@ -1,6 +1,6 @@
 import Knex from "knex";
-import * as getters  from "./server/getters";
-import {Augur} from "./types";
+import * as getters from "./server/getters";
+import { Augur } from "./types";
 
 type GetterFunction = (db: Knex, augur: Augur, params: any) => Promise<any>;
 type GetterParamType<T extends GetterFunction> = Parameters<T>[2];

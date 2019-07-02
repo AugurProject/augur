@@ -3,7 +3,7 @@ import { AbstractDB, BaseDocument } from "./AbstractDB";
 import { Augur } from "../../Augur";
 import { DB } from "./DB";
 import { Log, ParsedLog } from "@augurproject/types";
-import { SubscriptionEventNames } from "../../constants";
+import { SubscriptionEventName } from "../../constants";
 import { SyncStatus } from "./SyncStatus";
 import { augurEmitter } from "../../events";
 import { toAscii } from "../utils/utils";
@@ -199,11 +199,12 @@ export class SyncableDB extends AbstractDB {
         });
       }
 
-      await this.notifyNewBlockEvent(blocknumber);
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
     } else {
       throw new Error(`Unable to add new block`);
     }
+
+    await this.notifyNewBlockEvent(blocknumber);
 
     return blocknumber;
   }
@@ -214,8 +215,8 @@ export class SyncableDB extends AbstractDB {
       const blocksBehindCurrent = (highestAvailableBlockNumber - blockNumber);
       const percentBehindCurrent = (blocksBehindCurrent / highestAvailableBlockNumber * 100).toFixed(4);
 
-      augurEmitter.emit(SubscriptionEventNames.NewBlock, {
-        eventName: SubscriptionEventNames.NewBlock,
+      augurEmitter.emit(SubscriptionEventName.NewBlock, {
+        eventName: SubscriptionEventName.NewBlock,
         highestAvailableBlockNumber,
         lastSyncedBlockNumber: blockNumber,
         blocksBehindCurrent,

@@ -10,10 +10,11 @@ A = 1
 B = 2
 C = 3
 
-def test_binary(contractsFixture, cash, market, universe):
+def test_binary_and_claim(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
     profitLoss = contractsFixture.contracts["ProfitLoss"]
+    claimTradingProceeds = contractsFixture.contracts['ClaimTradingProceeds']
     test_data = [
         {
             "direction": SHORT,
@@ -64,6 +65,26 @@ def test_binary(contractsFixture, cash, market, universe):
     ]
 
     process_trades(contractsFixture, test_data, cash, market, createOrder, fillOrder, profitLoss)
+
+    contractsFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
+    market.doInitialReport([0, 0, market.getNumTicks()], "")
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert market.finalize()
+
+    # Claim proceeds
+    claimTradingProceeds.claimTradingProceeds(market.address, contractsFixture.accounts[1])
+    claimTradingProceeds.claimTradingProceeds(market.address, contractsFixture.accounts[2])
+
+    assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[1], YES) == 0
+    assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[1], YES) == 0
+    assert profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[1], YES) == -376
+    assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[1], YES) == 0
+
+    assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[2], YES) == 0
+    assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[2], YES) == 0
+    assert profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[2], YES) == 376
+    assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[2], YES) == 0
 
 def test_cat3_1(contractsFixture, cash, categoricalMarket, universe):
     createOrder = contractsFixture.contracts["CreateOrder"]
@@ -425,7 +446,6 @@ def test_share_transfer(contractsFixture, cash, market, universe):
     with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLogSender):
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLogReceiver, skip=1):
             assert yesShares.transfer(contractsFixture.accounts[2], 100)
-
 
 def process_trades(contractsFixture, trade_data, cash, market, createOrder, fillOrder, profitLoss, minPrice = 0, displayRange = 1):
     for trade in trade_data:

@@ -48,7 +48,7 @@ contract Market is Initializable, Ownable, IMarket {
     bytes32 private winningPayoutDistributionHash;
     uint256 public validityBondAttoCash;
     uint256 private finalizationTime;
-    uint256 private repBond;
+    uint256 public repBond;
     bool private disputePacingOn;
     address public repBondOwner;
     uint256 public marketCreatorFeesAttoCash;
@@ -451,10 +451,6 @@ contract Market is Initializable, Ownable, IMarket {
         require(_forkingMarket != IMarket(NULL_ADDRESS));
         require(!isFinalized());
         IInitialReporter _initialParticipant = getInitialReporter();
-        // Early out if already disavowed or nothing to disavow
-        if (_initialParticipant.getReportTimestamp() == 0) {
-            return true;
-        }
         delete participants;
         participants.push(_initialParticipant);
         clearCrowdsourcers();
