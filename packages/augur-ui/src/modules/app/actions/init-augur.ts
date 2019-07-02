@@ -169,13 +169,13 @@ export function connectAugur(
     getState: () => AppState
   ) => {
     const { modal, loginAccount } = getState();
-    const Augur = augurSdk.get();
     AugurJS.connect(
       env,
       async (err: any) => {
         if (err) {
           return callback(err, null);
         }
+        const Augur = augurSdk.get();
         dispatch(updateConnectionStatus(true));
         const windowApp = windowRef as WindowApp;
         let universeId =
