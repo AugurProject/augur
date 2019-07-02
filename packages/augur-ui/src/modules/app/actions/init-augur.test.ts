@@ -1,9 +1,9 @@
-import thunk from 'redux-thunk';
-import configureMockStore from 'redux-mock-store';
-import realStore from 'store';
-import * as augur from 'services/augurjs';
+import thunk from "redux-thunk";
+import configureMockStore from "redux-mock-store";
+import realStore from "store";
+import * as augur from "services/augurjs";
 
-import { initAugur, connectAugur } from 'modules/app/actions/init-augur';
+import { connectAugur, initAugur } from "modules/app/actions/init-augur";
 
 jest.mock('services/augurjs');
 
@@ -21,7 +21,6 @@ jest.mock('modules/auth/actions/use-unlocked-account', () => {});
 
 jest.mock('config/network.json', () => ({
   test: {
-    'augur-node': 'ws://127.0.0.1:9001',
     'ethereum-node': {
       http: 'http://127.0.0.1:8545',
       ws: 'ws://127.0.0.1:8546',
