@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
+import { Drafts} from "modules/types";
 import { formatDate } from "utils/format-date";
 import QuadBox from "modules/portfolio/components/common/quad-box";
 import { PillLabel } from "modules/common/labels";
@@ -10,7 +11,7 @@ import { SCRATCH } from "modules/create-market/constants";
 import Styles from "modules/create-market/saved-drafts.styles";
 
 interface SavedDraftsProps {
-  drafts: Object;
+  drafts: Drafts;
   updateNewMarket: Function;
   address: String;
   updatePage: Function;
