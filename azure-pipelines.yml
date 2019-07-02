@@ -110,10 +110,10 @@ jobs:
     - TestAndLint
     - PreFlightCheck
     condition: |
-      and
+      or
       (
-        succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        and( succeeded(), eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')),
+        eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
