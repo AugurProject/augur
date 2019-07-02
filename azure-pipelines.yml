@@ -358,8 +358,14 @@ jobs:
           set -euo pipefail
           docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          docker tag augurproject/augur-build:latest augurproject/augur-build:$(Build.SourceVersion)
+          yarn workspace @augurproject/ui docker:build
+          docker tag augurproject/augur-ui:latest augurproject/augur-ui:$(Build.SourceVersion)
           docker images
+          docker push augurproject/augur-build:$(Build.SourceVersion)
           docker push augurproject/augur-build:latest
+          docker push augurproject/augur-ui:$(Build.SourceVersion)
+          docker push augurproject/augur-ui:latest
         displayName: 'publish docker images on merge to master'
       - bash: |
           set -euo pipefail
