@@ -255,7 +255,7 @@ contract Market is Initializable, Ownable, IMarket {
     function finalize() public returns (bool) {
         require(!isFinalized());
         uint256[] memory _winningPayoutNumerators;
-        if (universe.getForkingMarket() == this) {
+        if (isForkingMarket()) {
             IUniverse _winningUniverse = universe.getWinningChildUniverse();
             winningPayoutDistributionHash = _winningUniverse.getParentPayoutDistributionHash();
             _winningPayoutNumerators = _winningUniverse.getPayoutNumerators();
@@ -271,8 +271,8 @@ contract Market is Initializable, Ownable, IMarket {
             universe.decrementOpenInterestFromMarket(this);
             redistributeLosingReputation();
         }
-        distributeValidityBondAndMarketCreatorFees();
         finalizationTime = augur.getTimestamp();
+        distributeValidityBondAndMarketCreatorFees();
         augur.logMarketFinalized(universe, _winningPayoutNumerators);
         return true;
     }
@@ -563,6 +563,9 @@ contract Market is Initializable, Ownable, IMarket {
      */
     function isInvalid() public view returns (bool) {
         require(isFinalized());
+        if (isForkingMarket()) {
+            return getWinningChildPayout(0) > 0;
+        }
         return getWinningReportingParticipant().getPayoutNumerator(0) > 0;
     }
 
@@ -601,6 +604,9 @@ contract Market is Initializable, Ownable, IMarket {
      * @return The payout for a particular outcome for the tentative winning payout
      */
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256) {
+        if (isForkingMarket()) {
+            return getWinningChildPayout(_outcome);
+        }
         return getWinningReportingParticipant().getPayoutNumerator(_outcome);
     }
 
@@ -729,5 +735,13 @@ contract Market is Initializable, Ownable, IMarket {
     function assertBalances() public view returns (bool) {
         universe.assertMarketBalance();
         return true;
+    }
+
+    function isForkingMarket() public view returns (bool) {
+        return universe.isForkingMarket();
+    }
+
+    function getWinningChildPayout(uint256 _outcome) public view returns (uint256) {
+        return universe.getWinningChildPayoutNumerator(_outcome);
     }
 }
