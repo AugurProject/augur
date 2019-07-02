@@ -8,17 +8,22 @@ import { BACK, NEXT, CREATE, CUSTOM_CONTENT_PAGES, REVIEW, FORM_DETAILS, LANDING
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { LargeHeader, ExplainerBlock, ContentBlock } from "modules/create-market/components/common";
-
+import { NewMarket, Drafts } from "modules/types";
 import FormDetails from "modules/create-market/containers/form-details";
 import Review from "modules/create-market/containers/review";
 
 import Styles from "modules/create-market/components/form.styles";
 
 interface FormProps {
-  newMarket: Object;
+  newMarket: NewMarket;
   updateNewMarket: Function;
   address: String;
   updatePage: Function;
+  addDraft: Function;
+  drafts: Drafts;
+  updateDraft: Function;
+  clearNewMarket: Function;
+  discardModal: Function;
 }
 
 interface FormState {
@@ -32,6 +37,22 @@ export default class Form extends React.Component<
   state: FormState = {
     empty: ""
   };
+
+  componentDidMount() {
+    this.node.scrollIntoView();
+    window.addEventListener("beforeunload", this.onUnload)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("beforeunload", this.onUnload)
+  }
+
+  onUnload(event) {
+    this.props.discardModal();
+    const confirmationMessage = '';
+    e.returnValue = confirmationMessage;
+    return confirmationMessage; 
+  }
 
   prevPage = () => {
     const { newMarket, updateNewMarket, updatePage } = this.props;

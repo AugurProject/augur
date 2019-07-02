@@ -454,6 +454,7 @@ export const MODAL_CLAIM_PROCEEDS = "MODAL_CLAIM_PROCEEDS";
 export const MODAL_TRADING_OVERLAY = "MODAL_TRADING_OVERLAY";
 export const MODAL_SELL_COMPLETE_SETS = "MODAL_SELL_COMPLETE_SETS";
 export const MODAL_FINALIZE_MARKET = "MODAL_FINALIZE_MARKET";
+export const MODAL_DISCARD = "MODAL_DISCARD";
 export const DISCLAIMER_SEEN = "disclaimerSeen";
 export const MARKET_REVIEW_SEEN = "marketReviewSeen";
 export const MARKET_REVIEWS = "marketReviews";

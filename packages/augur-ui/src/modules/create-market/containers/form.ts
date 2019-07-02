@@ -8,6 +8,13 @@ import {
 } from "modules/markets/actions/update-new-market";
 import Form from "modules/create-market/components/form";
 import getValue from "utils/get-value";
+<<<<<<< Updated upstream
+=======
+import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
+import {
+  MODAL_DISCARD
+} from "modules/common/constants";
+>>>>>>> Stashed changes
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
@@ -19,6 +26,14 @@ const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   submitNewMarket: (data, history, cb) =>
     dispatch(submitNewMarket(data, history, cb)),
+<<<<<<< Updated upstream
+=======
+  addDraft: (key, data) => dispatch(addDraft(key, data)),
+  clearNewMarket: () => dispatch(clearNewMarket()),
+  updateDraft: (key, data) => dispatch(updateDraft(key, data)),
+  discardModal: (cb: NodeStyleCallback) =>
+    dispatch(updateModal({ type: MODAL_DISCARD, cb })),
+>>>>>>> Stashed changes
 });
 
 const FormContainer = withRouter(
