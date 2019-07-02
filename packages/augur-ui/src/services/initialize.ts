@@ -12,7 +12,7 @@ export const connect = async (env: EnvObject, callback: NodeStyleCallback = logE
   let account = "";
 
   const bootstrap = async (provider, account, isWeb3) => {
-    await augurSdk.makeApi(provider, account, provider.getSigner(), isWeb3);
+    await augurSdk.makeApi(provider, account, provider.getSigner(), env, isWeb3);
   };
 
   const injectedAccount = await getInjectedWeb3Accounts();
