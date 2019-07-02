@@ -15,7 +15,6 @@ import { submitMarketContribute } from "modules/reports/actions/submit-market-co
 
 const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
-  // might need to call get market cost breakdown, it's on market from augur-node
   isConnected: state.connection.isConnected,
   universe: state.universe.id,
   marketsData: state.marketsData,

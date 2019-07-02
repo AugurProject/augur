@@ -5,7 +5,6 @@ import { Versions, BaseAction } from "modules/types";
 const DEFAULT_STATE: Versions = {
   augurui: null,
   augurjs: null,
-  augurNode: null,
 };
 
 export default function(

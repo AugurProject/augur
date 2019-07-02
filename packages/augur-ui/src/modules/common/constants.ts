@@ -53,8 +53,6 @@ export const GAS_SPEED_LABELS = {
   FAST: "Fast",
   SLOW: "Slow"
 };
-// augurNode
-export const AUGUR_NODE_URL = "augur_node";
 // ethereumNodeHttp
 export const ETHEREUM_NODE_HTTP = "ethereum_node_http";
 // ethereumNodeWs

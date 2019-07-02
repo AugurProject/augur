@@ -1,8 +1,8 @@
 # Augur | Local Node Configuration
 
-This is for developers already familiar with the code repositories and who want to run a private local node and do end-to-end testing.  
-This process uses a docker container to upload the smart contracts, point to the local augur-node and spin up the augur client.  
-The document is organized into setup per layer: augur.js (middleware), augur-node, and augur (UI).  
+This is for developers already familiar with the code repositories and who want to run a private local node and do end-to-end testing.
+This process uses a docker container to upload the smart contracts, point to the local augur-node and spin up the augur client.
+The document is organized into setup per layer: augur.js (middleware), augur-node, and augur (UI).
 Calls to execute smart contracts are made through the middleware.
 
 ## Requirements
@@ -41,8 +41,8 @@ There is a history of versions of populate node docker images based on the augur
 Since the contracts have already been deploy the contract address are know, the :core-####### docker image will match the version of augur-core that augur.js has a package dependency.
 
 If you are using a past version of the dev-pop-geth docker image you can get the contract addresses and upload block number with these commmands:
-    
-    #run in augur.js root 
+
+    #run in augur.js root
     docker run --rm --entrypoint cat augurproject/dev-pop-geth:core-####### /augur.js/src/contracts/addresses.json > ./src/contracts/addresses.json
     docker run --rm --entrypoint cat augurproject/dev-pop-geth:core-####### /augur.js/src/contracts/upload-block-numbers.json > ./src/contracts/upload-block-numbers.json
 
@@ -87,8 +87,7 @@ We are going to use environment variables for convenience. ENDPOINT_HTTP and END
     # default user wallet to use for scripts (0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb)
     export ETHEREUM_PRIVATE_KEY="fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a"
 
-
-    # (ONLY NEEDED FOR BLANK NODE dev-node-geth docker image) 
+    # (ONLY NEEDED FOR BLANK NODE dev-node-geth docker image)
     # Use flash to deploy to the configuration specified in your local environment (above)
     npx flash run deploy
 
@@ -170,8 +169,8 @@ For more information on the script tool [disco parrot](https://github.com/AugurP
 
 Here are misc. script to do operations on the local node and to change time. More scripts will be created as they are needed. Environment variables can be used or passed into the command like ETHEREUM_PRIVATE_KEY is in the examples below:
 
-Note: for convenience create alias for `flash` 
-    
+Note: for convenience create alias for `flash`
+
     alias flash='node scripts/flash $*'
 
 For changing time on the contracts, use flash in augur.js:
@@ -187,7 +186,7 @@ For changing time on the contracts, use flash in augur.js:
 
 
 There is a `augur.js` utility named `flash` to help with changing time and other sorted operations
-    
+
 A few caveats about pushing time: `augur-node` maintains a state machine, so once the time has been pushed to a certain market state that market can not go back. Time can be push and pulled, forward and backwards but know that once a block has been mined with a timestamp that changes the market state then that market can not go back:
 
     To get flash help and command names
@@ -200,15 +199,15 @@ A few caveats about pushing time: `augur-node` maintains a state machine, so onc
     flash set-timestamp -t 1525392001  # sets contract time to your local time
 
     ** do initial reporter
-    flash designate-report -m <market id> -o <market outcome> 
+    flash designate-report -m <market id> -o <market outcome>
 
     ** show initial report
     # shows if market has been reported on and gives details
-    flash show-initial-reporter -m <market id>  
+    flash show-initial-reporter -m <market id>
 
     ** finialize market
     # will push time so market can be finalized, needs initial report
-    flash finalize-market -m <market id>  
+    flash finalize-market -m <market id>
 
     General helpers
     ** get account balances

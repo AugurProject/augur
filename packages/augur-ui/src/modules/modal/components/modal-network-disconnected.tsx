@@ -61,16 +61,7 @@ export default class ModalNetworkDisconnected extends Component<ModalNetworkDisc
     let nodeTitleText = "";
     let nodeDescriptionText = "";
     if (
-      connectionStatus.isConnected &&
-      !connectionStatus.isConnectedToAugurNode
-    ) {
-      // augurNode disconnected only
-      nodeTitleText = " to Augur Node";
-      nodeDescriptionText = " from your Augur Node";
-    }
-    if (
-      !connectionStatus.isConnected &&
-      connectionStatus.isConnectedToAugurNode
+      !connectionStatus.isConnected
     ) {
       // ethereumNode disconnected only
       nodeTitleText = " to Ethereum Node";

@@ -12,33 +12,6 @@ import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
-// TODO: is this even in use? on a search, i never see it imported...
-export const loadParticipationTokens = (
-  includeCurrent: boolean = true,
-  callback: NodeStyleCallback = logError,
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount, universe } = getState();
-  const universeID = universe.id || UNIVERSE_ID;
-
-  augur.augurNode.submitRequest(
-    "getFeeWindows",
-    { universe: universeID, account: loginAccount.address, includeCurrent },
-    (err: any, feeWindowsWithUnclaimedTokens: string) => {
-      if (err) return callback(err);
-      Object.keys(feeWindowsWithUnclaimedTokens).forEach((feeWindowID) => {
-        augur.api.FeeWindow.withdrawInEmergency({
-          tx: { estimateGas: true, to: feeWindowID },
-          meta: loginAccount.meta,
-          onSent: noop,
-          onSuccess: noop,
-          onFailed: callback,
-        });
-      });
-      callback(null, feeWindowsWithUnclaimedTokens);
-    },
-  );
-};
-
 export const purchaseParticipationTokens = (
   amount: string,
   estimateGas = false,
