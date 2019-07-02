@@ -1,4 +1,4 @@
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import logError from "utils/log-error";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import {
@@ -37,13 +37,13 @@ export const loadReporting = (
           if (marketData) {
             Object.keys(marketData).forEach(marketId => {
               const state = marketData[marketId].reportingState;
-              if (state === constants.REPORTING_STATE.PRE_REPORTING) {
+              if (state === REPORTING_STATE.PRE_REPORTING) {
                 preReporting.push(marketId);
               }
-              if (state === constants.REPORTING_STATE.DESIGNATED_REPORTING) {
+              if (state === REPORTING_STATE.DESIGNATED_REPORTING) {
                 designatedReporting.push(marketId);
               }
-              if (state === constants.REPORTING_STATE.OPEN_REPORTING) {
+              if (state === REPORTING_STATE.OPEN_REPORTING) {
                 openReporting.push(marketId);
               }
             });
@@ -59,21 +59,21 @@ export const loadReporting = (
   const augur = augurSdk.get();
   if (loginAccount.address) {
     const preReportingIds = await augur.getMarkets({
-      reportingState: constants.REPORTING_STATE.PRE_REPORTING,
+      reportingState: REPORTING_STATE.PRE_REPORTING,
       sortBy: "endTime",
       ...designatedReportingParams
     });
     dispatch(updateUpcomingDesignatedReportingMarkets(preReportingIds));
 
     const designatedIds = await augur.getMarkets({
-      reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
+      reportingState: REPORTING_STATE.DESIGNATED_REPORTING,
       sortBy: "endTime",
       ...designatedReportingParams
     });
     dispatch(updateDesignatedReportingMarkets(designatedIds));
 
     const marketIds = await augur.getMarkets({
-      reportingState: constants.REPORTING_STATE.OPEN_REPORTING,
+      reportingState: REPORTING_STATE.OPEN_REPORTING,
       sortBy: "endTime",
       universe: universe.id
     });

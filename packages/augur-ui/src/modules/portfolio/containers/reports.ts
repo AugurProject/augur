@@ -1,4 +1,4 @@
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { selectCurrentTimestamp } from "store/select-state";

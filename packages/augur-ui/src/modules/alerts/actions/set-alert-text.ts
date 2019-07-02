@@ -534,7 +534,6 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = "Withdraw funds";
         break;
 
-      // augur.js functions
       case SENDETHER:
         alert.title = "Send ETH";
         if (!alert.description && alert.params) {
