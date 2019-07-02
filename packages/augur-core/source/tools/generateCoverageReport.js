@@ -10,23 +10,24 @@ const replace = require("replace");
 const rimraf = require('rimraf');
 const fs = require('fs');
 
+const COMPILE_COMMAND = "INPUT_PATH=coverageEnv OUTPUT_PATH=coverageEnv/build/ yarn build:contracts"
+
 const config = {
     dir: './source',
     skipFiles: [],
     copyNodeModules: false,
+    compileCommand: "echo SKIPPING COMPILE"
 }
 
 const app = new App(config);
-app.postProcessPure = function () {};
 
 death((signal, err) => app.cleanUp(err));
 
-app.generateCoverageEnvironment();
+rimraf.sync('./coverageEnv');
+fs.mkdirSync('./coverageEnv')
+copydir.sync('./source/contracts', './coverageEnv/contracts')
 
 app.instrumentTarget();
-
-rimraf.sync('./coverageEnv/solidity_test_helpers');
-fs.mkdirSync('./coverageEnv/solidity_test_helpers')
 
 copydir.sync('./tests/solidity_test_helpers', './coverageEnv/solidity_test_helpers')
 
@@ -37,8 +38,15 @@ replace({
     silent: false,
 })
 
+replace({
+    regex: " view | pure ",
+    replacement: " ",
+    paths: fs.readdirSync('./coverageEnv/solidity_test_helpers/ZeroX').map(filename => './coverageEnv/solidity_test_helpers/ZeroX/' + filename),
+    silent: false,
+})
+
 try {
-    execSync('pytest --cover', {stdio:[0,1,2]});
+    execSync('python3 -m pytest tests --cover', {stdio:[0,1,2]});
 } catch (err) {
     console.log(err);
 }

@@ -16,7 +16,7 @@ case "$environment" in
     ;;
   "direct")
     echo "Deploying to $@"
-    node -r ts-node/register ./source/deployment/deployNetworks.js $@
+    node -r ts-node/register ./source/deployment/deployNetworks.ts $@
     ;;
   *)
     echo "Must specifiy either docker or direct as first argument"
