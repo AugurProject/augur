@@ -1,0 +1,57 @@
+@import (reference) "~assets/styles/shared";
+
+.SavedDrafts {
+	max-height: 250px;
+}
+
+.DraftRow {
+  border-bottom: 2px solid @color-theme-primary;
+  display: flex;
+  flex-grow: 1;
+  padding: @size-16 @size-40;
+  background-color: @color-tertiary-background;
+  flex-direction: row;
+  cursor: pointer;
+
+  > button:first-of-type {
+    display: flex;
+    flex: 1;
+
+    > div {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      
+      > span:first-of-type {
+        .text-12-medium;
+
+        color: @color-alternate-info-text;
+      }
+
+      > span:last-of-type {
+        .mono-12;
+
+        color: @color-tertiary-info-text;
+        margin-top: @size-4;
+      }
+    }
+
+    > span {
+      max-height: fit-content;
+      padding: @size-6 @size-8;
+      margin-right: @size-28;
+    }
+  }
+  
+  > button:last-of-type {
+  	.mono-12;
+
+  	color: @color-primary-action;
+  	text-transform: uppercase;
+  }
+
+  &:not(:last-of-type) {
+    margin-bottom: 2px;
+  }
+}

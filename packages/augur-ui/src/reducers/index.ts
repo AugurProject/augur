@@ -30,6 +30,7 @@ import filledOrders from "modules/orders/reducers/filled-orders";
 import readNotifications from "modules/notifications/reducers/read-notifications";
 import pendingQueue from "modules/pending-queue/reducers/pending-queue";
 import userOpenOrders from "modules/orders/reducers/open-orders";
+import drafts from "modules/create-market/reducers/drafts";
 import {
   LoginAccount,
   AccountPosition,
@@ -96,6 +97,7 @@ export function createReducer() {
     universe,
     versions,
     userOpenOrders,
+    drafts,
   };
 }
 
@@ -135,4 +137,5 @@ export interface AppStateInterface {
   versions: Versions;
   accountShareBalances: AccountShareBalances;
   userOpenOrders: OpenOrders;
+  drafts: Drafts;
 }
