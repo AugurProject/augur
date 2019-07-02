@@ -70,9 +70,7 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      console.log(typeof args.writeArtifacts)
-      console.log(args.writeArtifacts)
-      const writeArtifacts = args.writeArtifacts as boolean;
+      const writeArtifacts = args.write_artifacts as boolean;
       if (this.noProvider()) return;
 
       await deployContracts(this.provider, this.accounts, compilerOutput, writeArtifacts);

@@ -87,6 +87,10 @@ function makeProvider(config: NetworkConfiguration): EthersProvider {
   return new EthersProvider(provider, 5, 0, 40);
 }
 
+async function getNetworkId(provider: EthersProvider): Promise<string> {
+  return (await provider.getNetwork()).chainId.toString();
+}
+
 if (require.main === module) {
   const flash = new FlashSession(
     ACCOUNTS,
@@ -103,10 +107,9 @@ if (require.main === module) {
   } else {
     const networkConfiguration = NetworkConfiguration.create(args.network);
     flash.provider = makeProvider(networkConfiguration);
-
-    const addresses = Addresses[networkConfiguration.]
-
-    flash.contractAddresses =
-    flash.call(args.command, args).catch(console.error);
+    getNetworkId(flash.provider).then((networkId) => {
+      flash.contractAddresses = Addresses[networkId];
+      flash.call(args.command, args).catch(console.error);
+    });
   }
 }
