@@ -447,6 +447,7 @@ class ContractsFixture:
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
+                if name in ['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin']: continue # We upload the Test Dai contracts manually after this process
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
@@ -465,6 +466,13 @@ class ContractsFixture:
                     self.uploadAndAddToAugur(path.join(directory, filename), lookupKey = "Orders", signatureKey = "TestOrders")
                 else:
                     self.uploadAndAddToAugur(path.join(directory, filename))
+
+    def uploadTestDaiContracts(self):
+        self.uploadAndAddToAugur("../source/contracts/Cash.sol")
+        self.uploadAndAddToAugur("../source/contracts/TestNetDaiVat.sol", lookupKey = "DaiVat", signatureKey = "DaiVat")
+        self.uploadAndAddToAugur("../source/contracts/TestNetDaiPot.sol", lookupKey = "DaiPot", signatureKey = "DaiPot", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Time'].address])
+        self.uploadAndAddToAugur("../source/contracts/TestNetDaiJoin.sol", lookupKey = "DaiJoin", signatureKey = "DaiJoin", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Cash'].address])
+        self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
     def initializeAllContracts(self):
         contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade']
@@ -598,6 +606,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.resetToSnapshot(baseSnapshot)
     fixture.uploadAugur()
     fixture.uploadAllContracts()
+    fixture.uploadTestDaiContracts()
     fixture.initializeAllContracts()
     fixture.approveCentralAuthority()
     return fixture.createSnapshot()
@@ -625,6 +634,8 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     categoricalMarket = fixture.createReasonableCategoricalMarket(universe, 3)
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
+    fixture.contracts['DaiPot'].setDSR(1000000564701133626865910626) # 5% a day
+    # TODO assert universe.toggleDSR()
 
     tokensFail = fixture.upload("solidity_test_helpers/ERC777Fail.sol")
     erc1820Registry = fixture.contracts['ERC1820Registry']
