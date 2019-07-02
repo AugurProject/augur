@@ -99,6 +99,14 @@ contract Universe is ITyped, IUniverse {
         return "Universe";
     }
 
+    function getPayoutNumerator(uint256 _outcome) public view returns (uint256) {
+        return payoutNumerators[_outcome];
+    }
+
+    function getWinningChildPayoutNumerator(uint256 _outcome) public view returns (uint256) {
+        return getWinningChildUniverse().getPayoutNumerator(_outcome);
+    }
+
     /**
      * @return This Universe's parent universe or 0x0 if this is the Genesis universe
      */
@@ -182,6 +190,10 @@ contract Universe is ITyped, IUniverse {
      */
     function isForking() public view returns (bool) {
         return forkingMarket != IMarket(0);
+    }
+
+    function isForkingMarket() public view returns (bool) {
+        return forkingMarket == IMarket(msg.sender);
     }
 
     /**
@@ -683,9 +695,8 @@ contract Universe is ITyped, IUniverse {
         uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(_market);
         // Market Open Interest. If we're finalized we need actually calculate the value
         if (_market.isFinalized()) {
-            IReportingParticipant _winningReportingPartcipant = _market.getWinningReportingParticipant();
             for (uint256 i = 0; i < _market.getNumberOfOutcomes(); i++) {
-                _expectedBalance = _expectedBalance.add(_market.getShareToken(i).totalSupply().mul(_winningReportingPartcipant.getPayoutNumerator(i)));
+                _expectedBalance = _expectedBalance.add(_market.getShareToken(i).totalSupply().mul(_market.getWinningPayoutNumerator(i)));
             }
         } else {
             _expectedBalance = _expectedBalance.add(_market.getShareToken(0).totalSupply().mul(_market.getNumTicks()));
