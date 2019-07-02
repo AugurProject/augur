@@ -38,15 +38,15 @@ const localStorageMiddleware = store => next => action => {
     readNotifications,
     pendingOrders,
     pendingQueue,
+    drafts,
     env,
     connection
   } = state;
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp.localStorage && windowApp.localStorage.setItem) {
     const { localStorage } = windowApp;
-    // TODO: defaulting augur node, all augur-node references will be removed
-    const { augurNodeNetworkId = 0, isConnected } = connection;
-    const networkIdToUse: number = isConnected ? getNetworkId() : augurNodeNetworkId;
+    const { isConnected } = connection;
+    const networkIdToUse: number = isConnected ? parseInt(getNetworkId(), 10) : 1;
     const universeIdToUse =
       env.universe || augur.contracts.addresses[networkIdToUse].Universe;
     const accountValue = localStorage.getItem(address) || "{}";
@@ -72,6 +72,7 @@ const localStorageMiddleware = store => next => action => {
         readNotifications,
         pendingOrders,
         pendingQueue,
+        drafts,
         gasPriceInfo: {
           userDefinedGasPrice: state.gasPriceInfo.userDefinedGasPrice
         },

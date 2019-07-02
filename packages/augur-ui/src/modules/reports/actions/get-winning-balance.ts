@@ -8,7 +8,8 @@ export const getWinningBalance = (marketIds = [], callback: NodeStyleCallback = 
   getState: () => AppState
 ) => {
   const { loginAccount } = getState();
-  augur.augurNode.submitRequest(
+  // TODO: get winning balance for user and market
+/*
     "getWinningBalance",
     { marketIds, account: loginAccount.address },
     (err: any, winningBalance: Array<any>) => {
@@ -41,4 +42,5 @@ export const getWinningBalance = (marketIds = [], callback: NodeStyleCallback = 
       callback(null, updatedMarketsData);
     }
   );
+  */
 };

@@ -13,9 +13,9 @@ export interface HeaderProps {
 }
 
 export const Header = (props: HeaderProps) => (
-  <h1 className={Styles.Header}>
+  <h2 className={Styles.Header}>
     {props.children ? props.children : props.text}
-  </h1>
+  </h2>
 );
 
 export const LargeHeader = (props: HeaderProps) => (
@@ -84,7 +84,7 @@ export const SmallHeaderLink = (props: HeaderLinkProps) => (
 );
 
 export const LargeSubheaders = (props: SubheadersProps) => (
-  <div className={Styles.Subheaders}>
+  <div className={Styles.LargeSubheaders}>
     <Header text={props.header} />
     <SmallHeaderLink 
       text={props.subheader} 

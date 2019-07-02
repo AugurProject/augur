@@ -28,12 +28,6 @@ jest.mock("services/augurjs", () => ({
         }
       }
     },
-    augurNode: {
-      getSyncData: () => ({
-        highestBlock: { number: 111 },
-        lastProcessedBlock: { number: 110 }
-      })
-    }
   }
 }));
 

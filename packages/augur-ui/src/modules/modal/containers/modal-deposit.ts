@@ -14,7 +14,7 @@ import { Action } from "redux";
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   address: state.loginAccount.displayAddress,
-  augurNodeNetworkId: state.connection.augurNodeNetworkId,
+  networkId: getNetworkId(),
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -110,9 +110,9 @@ function airSwapOnClick(e) {
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const show0xInstant = [NETWORK_IDS.Mainnet, NETWORK_IDS.Kovan].includes(
-    sP.augurNodeNetworkId,
+    sP.networkId,
   );
-  const showAirSwap = NETWORK_IDS.Mainnet === sP.augurNodeNetworkId;
+  const showAirSwap = NETWORK_IDS.Mainnet === sP.networkId;
   return {
     title: "Receive Funds",
     description: [

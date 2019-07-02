@@ -13,15 +13,6 @@ export const getDisputeInfo = (
   getState: () => AppState,
 ): void => {
   const { loginAccount } = getState();
-  augur.augurNode.submitRequest(
-    "getDisputeInfo",
-    {
-      marketIds,
-      account: loginAccount.address,
-    },
-    (err: any, result: any) => {
-      if (err) return callback(err);
-      callback(null, result);
-    },
-  );
+  // TODO: get dispute information from middleware
+  callback(null, []);
 };

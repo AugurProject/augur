@@ -26,7 +26,7 @@ const loadCategories = (callback: NodeStyleCallback = logError) => (
       // sorted; to enable users to discover interesting markets, sort categories
       // and their nested tags by non-finalized open interest. Do this here
       // because this sort is expensive and we only want to do it once, upstream
-      // of redux store. Possibly this could be done in augur-node instead,
+      // of redux store. Possibly this could be done in middleware instead,
       // such that the UI would just rely on categories already being sorted.
       categories.sort(sortByNonFinalizedOpenInterestDescending);
       categories.forEach((c: any) =>

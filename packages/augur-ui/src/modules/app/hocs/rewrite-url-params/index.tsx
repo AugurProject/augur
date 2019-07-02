@@ -10,17 +10,16 @@ export const RewriteUrlParams = windowRef => BaseCmp => {
     const { location } = props;
     const searchValues = parseQuery(location.search);
     const {
-      augur_node,
       ethereum_node_http,
       ethereum_node_ws,
       ...remainingSearchValues
     } = searchValues;
-    if (augur_node || ethereum_node_http || ethereum_node_ws) {
+    if (ethereum_node_http || ethereum_node_ws) {
       const path = createPath({
         ...location,
         search: makeQuery(remainingSearchValues)
       });
-      const paramsToMove = { augur_node, ethereum_node_http, ethereum_node_ws };
+      const paramsToMove = { ethereum_node_http, ethereum_node_ws };
       // filter out the undefined paramsToMove key/values
       Object.keys(paramsToMove).forEach(
         key => !paramsToMove[key] && delete paramsToMove[key]
@@ -36,7 +35,6 @@ export const RewriteUrlParams = windowRef => BaseCmp => {
     // Discover params added to window location and pass to wrapped component.
     const parsedParams = parseQuery(windowRef.location.search);
     const windowParams = {
-      augurNode: parsedParams.augur_node,
       ethereumNodeHttp: parsedParams.ethereum_node_http,
       ethereumNodeWs: parsedParams.ethereum_node_ws
     };

@@ -6,14 +6,11 @@ import { WindowApp, Endpoints, QueryEndpoints } from "modules/types";
 
 export const editEndpointParams = (
   windowRef: WindowApp,
-  { augurNode, ethereumNodeHTTP, ethereumNodeWS }: Endpoints,
+  { ethereumNodeHTTP, ethereumNodeWS }: Endpoints,
 ) => {
   const existingParams = parseQuery(windowRef.location.search);
   const paramsToModify: QueryEndpoints = {};
 
-  if (augurNode && existingParams.augur_node !== augurNode) {
-    paramsToModify.augur_node = augurNode;
-  }
   if (
     ethereumNodeHTTP &&
     existingParams.ethereum_node_http !== ethereumNodeHTTP

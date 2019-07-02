@@ -49,8 +49,6 @@ export default class ReportingReport extends Component {
       isMarketInValid: null,
       selectedOutcome: "",
       selectedOutcomeName: "",
-      // need to get value from augur-node for
-      // designated reporter or initial reporter (open reporting)
       stake: formatRep("0"),
       validations: {
         selectedOutcome: null
