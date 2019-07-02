@@ -1,6 +1,5 @@
 import BaseInnerNav from "modules/app/components/inner-nav/base-inner-nav";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
-import { augur } from "services/augurjs";
 
 import {
   ACCOUNT_DEPOSIT,

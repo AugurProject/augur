@@ -1,31 +1,32 @@
-import { eachOfSeries, eachOfLimit } from "async";
-import { augur } from "services/augurjs";
-import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
-import { updateModal } from "modules/modal/actions/update-modal";
-import { checkAccountAllowance } from "modules/auth/actions/approve-account";
-import { createBigNumber } from "utils/create-big-number";
+import { eachOfSeries, eachOfLimit } from 'async';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { createBigNumber } from 'utils/create-big-number';
 
 import {
   CATEGORICAL,
   MODAL_ACCOUNT_APPROVAL,
-  BID
-} from "modules/common/constants";
-import { OrderBook, BaseAction } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { AppState } from "store";
-
-export const UPDATE_LIQUIDITY_ORDER = "UPDATE_LIQUIDITY_ORDER";
-export const ADD_MARKET_LIQUIDITY_ORDERS = "ADD_MARKET_LIQUIDITY_ORDERS";
-export const REMOVE_LIQUIDITY_ORDER = "REMOVE_LIQUIDITY_ORDER";
-export const LOAD_PENDING_LIQUIDITY_ORDERS = "LOAD_PENDING_LIQUIDITY_ORDERS";
-export const CLEAR_ALL_MARKET_ORDERS = "CLEAR_ALL_MARKET_ORDERS";
+  BID,
+} from 'modules/common/constants';
+import { OrderBook, BaseAction } from 'modules/types';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { AppState } from 'store';
+import { placeTrade } from 'modules/contracts/actions/contractCalls';
+export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
+export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
+export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
+export const LOAD_PENDING_LIQUIDITY_ORDERS = 'LOAD_PENDING_LIQUIDITY_ORDERS';
+export const CLEAR_ALL_MARKET_ORDERS = 'CLEAR_ALL_MARKET_ORDERS';
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
-export const loadPendingLiquidityOrders = (pendingLiquidityOrders: OrderBook) => ({
+export const loadPendingLiquidityOrders = (
+  pendingLiquidityOrders: OrderBook
+) => ({
   type: LOAD_PENDING_LIQUIDITY_ORDERS,
-  data: { pendingLiquidityOrders }
+  data: { pendingLiquidityOrders },
 });
 
 export const addMarketLiquidityOrders = ({
@@ -35,37 +36,37 @@ export const addMarketLiquidityOrders = ({
   type: ADD_MARKET_LIQUIDITY_ORDERS,
   data: {
     liquidityOrders,
-    marketId
-  }
+    marketId,
+  },
 });
 
 export const clearMarketLiquidityOrders = (marketId: string) => ({
   type: CLEAR_ALL_MARKET_ORDERS,
-  data: { marketId }
+  data: { marketId },
 });
 
 export const updateLiquidityOrder = ({
   order,
   updates,
   marketId,
-  outcomeId
+  outcomeId,
 }: BaseAction) => ({
   type: UPDATE_LIQUIDITY_ORDER,
   data: {
     order,
     updates,
     marketId,
-    outcomeId
-  }
+    outcomeId,
+  },
 });
 
 export const removeLiquidityOrder = ({
   marketId,
   outcomeId,
-  orderId
+  orderId,
 }: BaseAction) => ({
   type: REMOVE_LIQUIDITY_ORDER,
-  data: { marketId, outcomeId, orderId }
+  data: { marketId, outcomeId, orderId },
 });
 
 export const sendLiquidityOrder = (options: any) => (
@@ -85,23 +86,30 @@ export const sendLiquidityOrder = (options: any) => (
     loginAccount,
     orderCB,
     seriesCB,
-    outcome
+    outcome,
   } = options;
-  const outcomeIndex =
-    marketType === CATEGORICAL ? marketOutcomesArray.indexOf(outcome) : 1; // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeId 1
-  const outcomeId = marketType === CATEGORICAL ? outcome : 1;
   const orderType = order.type === BID ? 0 : 1;
-  const tradeCost = augur.trading.calculateTradeCost({
-    displayPrice: order.price,
-    displayAmount: order.quantity,
-    sharesProvided: "0",
-    numTicks,
-    orderType,
-    minDisplayPrice: minPrice || 0,
-    maxDisplayPrice: maxPrice || 1
-  });
-  const { onChainAmount, onChainPrice, cost } = tradeCost;
-  const sendOrder = () => {
+
+  const sendOrder = async () => {
+    const result = await placeTrade(
+      orderType,
+      marketId,
+      marketOutcomesArray.length,
+      outcome,
+      true,
+      null,
+      null,
+      false,
+      numTicks,
+      minPrice,
+      maxPrice,
+      order.quantity,
+      order.price,
+      '0'
+    );
+    orderCB();
+    // TODO: handle update liquidity when pending tx has been added.
+    /*
     augur.api.CreateOrder.publicCreateOrder({
       meta: loginAccount.meta,
       tx: { value: augur.utils.convertBigNumberToHexString(cost) },
@@ -137,6 +145,7 @@ export const sendLiquidityOrder = (options: any) => (
         orderCB();
       }
     });
+    */
   };
 
   const promptApprovalandSend = () => {
@@ -148,7 +157,7 @@ export const sendLiquidityOrder = (options: any) => (
         },
         approveCallback: (err: any, res: any) => {
           if (err) return seriesCB(err);
-        }
+        },
       })
     );
   };
@@ -156,7 +165,7 @@ export const sendLiquidityOrder = (options: any) => (
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(cost))) {
     dispatch(
       checkAccountAllowance((err: any, allowance: string) => {
-        if (allowance === "0") {
+        if (allowance === '0') {
           promptApprovalandSend();
         } else {
           sendOrder();
@@ -218,18 +227,18 @@ export const startOrderSending = (options: any) => (
               loginAccount,
               orderCB,
               seriesCB,
-              outcome
+              outcome,
             })
           );
         },
         err => {
-          if (err !== null) console.error("ERROR: ", err);
+          if (err !== null) console.error('ERROR: ', err);
           seriesCB();
         }
       );
     },
     err => {
-      if (err !== null) console.error("ERROR: ", err);
+      if (err !== null) console.error('ERROR: ', err);
     }
   );
 };

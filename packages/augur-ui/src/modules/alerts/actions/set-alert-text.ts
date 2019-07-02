@@ -224,7 +224,7 @@ export default function setAlertText(alert: any, callback: any) {
                   (outcome: Outcomes) =>
                     outcome.id ===
                     createBigNumber(alert.params._outcome).toFixed(),
-                ).name,
+                ).description,
               );
 
               alert.description = `Fill ${

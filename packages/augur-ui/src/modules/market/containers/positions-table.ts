@@ -7,7 +7,11 @@ import { MODAL_SELL_COMPLETE_SETS } from "modules/common/constants";
 import { selectUserMarketPositions } from "modules/markets/selectors/select-user-market-positions";
 
 const mapStateToProps = (state: AppState, ownProps: any) => {
-  const positions = ownProps.marketId || selectUserMarketPositions(state, ownProps.market.id);
+  let marketId = ownProps.marketId;
+  if (!marketId) {
+    marketId = ownProps.market.id;
+  }
+  const positions = selectUserMarketPositions(state, marketId);
 
   return {
     positions,

@@ -1,36 +1,36 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { augur } from "services/augurjs";
-import { createBigNumber } from "utils/create-big-number";
-import getValue from "utils/get-value";
-import insufficientFunds from "modules/markets/helpers/insufficient-funds";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { createBigNumber } from 'utils/create-big-number';
+import getValue from 'utils/get-value';
+import insufficientFunds from 'modules/markets/helpers/insufficient-funds';
 
-import MarkdownRenderer from "modules/common/markdown-renderer";
+import MarkdownRenderer from 'modules/common/markdown-renderer';
 import {
   formatEtherEstimate,
   formatGasCostToEther,
-  formatPercent
-} from "utils/format-number";
+  formatPercent,
+} from 'utils/format-number';
 import {
   EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF,
   YES_NO,
   SCALAR,
-  CATEGORICAL
-} from "modules/common/constants";
+  CATEGORICAL,
+} from 'modules/common/constants';
 
-import classNames from "classnames";
-import { InputErrorIcon } from "modules/common/icons";
-import Styles from "modules/create-market/components/create-market-form-review/create-market-form-review.styles";
-import StylesForm from "modules/create-market/components/create-market-form/create-market-form.styles";
-import InvalidMessageStyles from "modules/reporting/components/invalid-message/invalid-message.styles";
-import { DisplayOutcomes } from "modules/create-market/components/create-market-form-review/create-market-form-outcomes-display";
-import { MarketCreationTimeDisplay } from "modules/create-market/components/create-market-form-time/market-create-time-display";
+import classNames from 'classnames';
+import { InputErrorIcon } from 'modules/common/icons';
+import Styles from 'modules/create-market/components/create-market-form-review/create-market-form-review.styles';
+import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles';
+import InvalidMessageStyles from 'modules/reporting/components/invalid-message/invalid-message.styles';
+import { DisplayOutcomes } from 'modules/create-market/components/create-market-form-review/create-market-form-outcomes-display';
+import { MarketCreationTimeDisplay } from 'modules/create-market/components/create-market-form-time/market-create-time-display';
+import { getCreateMarketBreakdown } from 'modules/contracts/actions/contractCalls';
 
 const MARKET_TYPE_NAME = {
-  [YES_NO]: "Yes No",
-  [SCALAR]: "Scalar",
-  [CATEGORICAL]: "Categorical"
+  [YES_NO]: 'Yes No',
+  [SCALAR]: 'Scalar',
+  [CATEGORICAL]: 'Categorical',
 };
 
 export default class CreateMarketReview extends Component {
@@ -42,12 +42,12 @@ export default class CreateMarketReview extends Component {
     updateStateValue: PropTypes.func.isRequired,
     availableEth: PropTypes.string,
     availableRep: PropTypes.string,
-    meta: PropTypes.object.isRequired
+    meta: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
-    availableEth: "0",
-    availableRep: "0"
+    availableEth: '0',
+    availableRep: '0',
   };
 
   constructor(props) {
@@ -57,7 +57,7 @@ export default class CreateMarketReview extends Component {
       gasCost: null,
       validityBond: null,
       designatedReportNoShowReputationBond: null,
-      insufficientFundsString: "",
+      insufficientFundsString: '',
       formattedInitialLiquidityEth: formatEtherEstimate(
         this.props.newMarket.initialLiquidityEth
       ),
@@ -67,7 +67,7 @@ export default class CreateMarketReview extends Component {
           { decimalsRounded: 4 },
           props.gasPrice
         )
-      )
+      ),
     };
 
     this.calculateMarketCreationCosts = this.calculateMarketCreationCosts.bind(
@@ -89,7 +89,7 @@ export default class CreateMarketReview extends Component {
       this.setState({
         formattedInitialLiquidityEth: formatEtherEstimate(
           nextProps.newMarket.initialLiquidityEth
-        )
+        ),
       });
     if (
       newMarket.initialLiquidityGas !==
@@ -104,7 +104,7 @@ export default class CreateMarketReview extends Component {
               { decimalsRounded: 4 },
               gasPrice
             )
-          )
+          ),
         },
         () => {
           this.calculateMarketCreationCosts();
@@ -130,31 +130,31 @@ export default class CreateMarketReview extends Component {
   getFundsString(testWithLiquidity = false) {
     const { availableEth, availableRep } = this.props;
     const s = this.state;
-    let insufficientFundsString = "";
+    let insufficientFundsString = '';
 
     if (s.validityBond) {
-      const validityBond = getValue(s, "validityBond.formattedValue");
-      const gasCost = getValue(s, "gasCost.formattedValue");
+      const validityBond = getValue(s, 'validityBond.formattedValue');
+      const gasCost = getValue(s, 'gasCost.formattedValue');
       const designatedReportNoShowReputationBond = getValue(
         s,
-        "designatedReportNoShowReputationBond.formattedValue"
+        'designatedReportNoShowReputationBond.formattedValue'
       );
       const formattedInitialLiquidityGas = getValue(
         s,
-        "formattedInitialLiquidityGas.formattedValue"
+        'formattedInitialLiquidityGas.formattedValue'
       );
       const formattedInitialLiquidityEth = getValue(
         s,
-        "formattedInitialLiquidityEth.formattedValue"
+        'formattedInitialLiquidityEth.formattedValue'
       );
       insufficientFundsString = insufficientFunds(
         validityBond,
-        gasCost || "0",
+        gasCost || '0',
         designatedReportNoShowReputationBond,
         createBigNumber(availableEth, 10),
         createBigNumber(availableRep, 10),
-        formattedInitialLiquidityGas || "0",
-        formattedInitialLiquidityEth || "0",
+        formattedInitialLiquidityGas || '0',
+        formattedInitialLiquidityEth || '0',
         testWithLiquidity
       );
     }
@@ -164,52 +164,45 @@ export default class CreateMarketReview extends Component {
 
   updateFunds(insufficientFundsString) {
     const { updateStateValue } = this.props;
-    updateStateValue("insufficientFunds", insufficientFundsString !== "");
+    updateStateValue('insufficientFunds', insufficientFundsString !== '');
     this.setState({ insufficientFundsString });
   }
 
-  calculateMarketCreationCosts() {
+  async calculateMarketCreationCosts() {
     const { meta, universe, newMarket, gasPrice } = this.props;
 
-    augur.createMarket.getMarketCreationCostBreakdown(
-      { universe: universe.id, meta },
-      (err, marketCreationCostBreakdown) => {
-        if (err) return console.error(err);
-        // TODO add designatedReportNoShowReputationBond to state / display
+    const marketCreationCostBreakdown = await getCreateMarketBreakdown();
+    this.setState(
+      {
+        designatedReportNoShowReputationBond: formatEtherEstimate(
+          marketCreationCostBreakdown.designatedReportNoShowReputationBond
+        ),
+        validityBond: formatEtherEstimate(
+          marketCreationCostBreakdown.validityBond
+        ),
+      },
+      () => {
+        const funds = this.getFundsString();
+        if (funds) {
+          return this.updateFunds(funds);
+        }
 
-        this.setState(
-          {
-            designatedReportNoShowReputationBond: formatEtherEstimate(
-              marketCreationCostBreakdown.designatedReportNoShowReputationBond
-            ),
-            validityBond: formatEtherEstimate(
-              marketCreationCostBreakdown.validityBond
-            )
-          },
-          () => {
-            const funds = this.getFundsString();
-            if (funds) {
-              return this.updateFunds(funds);
-            }
-
-            this.props.estimateSubmitNewMarket(
-              newMarket,
-              (err, gasEstimateValue) => {
-                if (err) console.error(err);
-                this.setState(
-                  {
-                    gasCost: formatEtherEstimate(
-                      formatGasCostToEther(
-                        gasEstimateValue || "0",
-                        { decimalsRounded: 4 },
-                        gasPrice
-                      )
-                    )
-                  },
-                  () => {
-                    this.updateFunds(this.getFundsString(true));
-                  }
-                );
+        this.props.estimateSubmitNewMarket(
+          newMarket,
+          (err, gasEstimateValue) => {
+            if (err) console.error(err);
+            this.setState(
+              {
+                gasCost: formatEtherEstimate(
+                  formatGasCostToEther(
+                    gasEstimateValue || '0',
+                    { decimalsRounded: 4 },
+                    gasPrice
+                  )
+                ),
+              },
+              () => {
+                this.updateFunds(this.getFundsString(true));
               }
             );
           }
@@ -236,7 +229,7 @@ export default class CreateMarketReview extends Component {
                 <span>
                   {newMarket.tag1 ||
                     (newMarket.tag2 &&
-                      [newMarket.tag1, newMarket.tag2].join(","))}
+                      [newMarket.tag1, newMarket.tag2].join(','))}
                 </span>
               </div>
             </div>
@@ -246,14 +239,14 @@ export default class CreateMarketReview extends Component {
             </div>
             <div
               className={Styles.CreateMarketReview_inline_property}
-              style={{ marginTop: "1.5rem" }}
+              style={{ marginTop: '1.5rem' }}
             >
               <span>Additional Details</span>
               <span>
                 <MarkdownRenderer
-                  text={newMarket.detailsText || "None"}
+                  text={newMarket.detailsText || 'None'}
                   className={
-                    Styles["CreateMarketReview__AdditionalDetails-text"]
+                    Styles['CreateMarketReview__AdditionalDetails-text']
                   }
                 />
               </span>
@@ -265,7 +258,7 @@ export default class CreateMarketReview extends Component {
               </h4>
               <p className={Styles.CreateMarketReview__smallparagraph}>
                 {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC
-                  ? "General knowledge"
+                  ? 'General knowledge'
                   : `Outcome will be detailed on public website: ${
                       newMarket.expirySource
                     }`}
@@ -278,7 +271,7 @@ export default class CreateMarketReview extends Component {
               </h4>
               <p className={Styles.CreateMarketReview__smallparagraph}>
                 {newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF
-                  ? "Myself"
+                  ? 'Myself'
                   : `Someone Else: ${newMarket.designatedReporterAddress}`}
               </p>
             </div>
@@ -343,7 +336,7 @@ export default class CreateMarketReview extends Component {
                     <span>No-Show Bond</span>
                     <span>
                       {s.designatedReportNoShowReputationBond &&
-                        s.designatedReportNoShowReputationBond.rounded}{" "}
+                        s.designatedReportNoShowReputationBond.rounded}{' '}
                       REP
                     </span>
                   </li>
@@ -369,10 +362,10 @@ export default class CreateMarketReview extends Component {
                 </ul>
               </div>
             </div>
-            {s.insufficientFundsString !== "" && (
+            {s.insufficientFundsString !== '' && (
               <span
                 className={
-                  StylesForm["CreateMarketForm__error--insufficient-funds"]
+                  StylesForm['CreateMarketForm__error--insufficient-funds']
                 }
               >
                 {InputErrorIcon()}
@@ -398,19 +391,19 @@ export default class CreateMarketReview extends Component {
             >
               <div className={InvalidMessageStyles.textFlow}>
                 <div>
-                  Review the markets details to confirm that there are{" "}
+                  Review the markets details to confirm that there are{' '}
                   <span className={InvalidMessageStyles.bolden}>
                     no conflicts
-                  </span>{" "}
-                  between the{" "}
+                  </span>{' '}
+                  between the{' '}
                   <span className={InvalidMessageStyles.bolden}>
                     Market Question
                   </span>
-                  ,{" "}
+                  ,{' '}
                   <span className={InvalidMessageStyles.bolden}>
                     Additional Details
-                  </span>{" "}
-                  and{" "}
+                  </span>{' '}
+                  and{' '}
                   <span className={InvalidMessageStyles.bolden}>
                     Reporting Start Time
                   </span>
@@ -418,7 +411,7 @@ export default class CreateMarketReview extends Component {
                 </div>
                 <div>
                   If they don’t match up, or there are any conflicts between
-                  them, there is a high probability that the market will{" "}
+                  them, there is a high probability that the market will{' '}
                   <span className={InvalidMessageStyles.bolden}>
                     resolve as invalid
                   </span>

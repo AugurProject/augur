@@ -17,7 +17,7 @@ When outputting decimal numbers to the UI, the following rules should be adhered
 5. At most, only 8 decimals should ever be displayed. Any number not containing significant digits in the first 8 decimals should just be displayed as 0.0000.
 
 Dates/Timestamps
------ 
+-----
 In general, the current timestamp should only ever be obtained using the value `blockchain.currentAugurTimestamp` (as opposed to calling the JavaScript function `Date.now`). This value can be obtained using the selectors `getCurrentTimestampInSeconds` (which returns the timestamp of the latest block on the Ethereum blockchain) or `getCurrentTimestamp` (which returns the same timestamp, in milliseconds). This means that `Date.now()` should not be used, and `moment()` and `new Date()` should not be used for getting the current timestamp.
 
 Modules
@@ -28,8 +28,7 @@ Modules
   // Order: 3rd party modules > services > components/selectors/reducers/actions
   // > constants > utils
   import React, { Component } from 'react';
-  import { augur } from 'services/augurjs';
-  import Input from 'modules/common/components/input';
+    import Input from 'modules/common/components/input';
   import { BUY, SELL } from 'modules/trade/constants/types';
   import trimString from 'utils/trim-string';
 

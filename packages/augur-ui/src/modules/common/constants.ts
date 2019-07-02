@@ -582,6 +582,7 @@ export const TEN = createBigNumber(10, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber("0.00000001");
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
+export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const ETHER = createBigNumber(10).pow(18);
 
 // # Positions

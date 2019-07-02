@@ -1,11 +1,10 @@
 import generateDownloadAccountLink from "modules/auth/helpers/generate-download-account-link";
 import keythereum from "keythereum";
 import * as speedomatic from "speedomatic";
-import { augur } from "services/augurjs";
 
 jest.mock("keythereum");
 jest.mock("speedomatic");
-jest.mock("services/augurjs");
+jest.mock("services/initialize");
 
 describe("modules/auth/helpers/generate-download-account-link.js", () => {
   test(`should return the expected values + call the expected methods`, () => {
@@ -14,11 +13,6 @@ describe("modules/auth/helpers/generate-download-account-link.js", () => {
     );
 
     keythereum.generateKeystoreFilename.mockImplementation(address => address);
-    augur.accounts = {
-      account: {
-        privateKey: "123privatekey"
-      }
-    };
 
     const actual = generateDownloadAccountLink(
       "0xtest",

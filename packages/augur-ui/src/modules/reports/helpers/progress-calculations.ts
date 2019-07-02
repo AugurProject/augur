@@ -1,7 +1,6 @@
 import { formatAttoRep } from "utils/format-number";
 import { createBigNumber } from "utils/create-big-number";
-import { augur } from "services/augurjs";
-import { ETHER } from "modules/common/constants";
+import { ETHER, ZERO } from "modules/common/constants";
 
 const ONE = createBigNumber(1);
 const ONE_HUNDRED = createBigNumber(100);
@@ -72,6 +71,6 @@ export const calculateTentativeCurrentRep = (
 };
 
 const convertRepToAttoRep = num => {
-  if (!num || num.isEqualTo(0)) return augur.constants.ZERO;
+  if (!num || num.isEqualTo(0)) return ZERO;
   return num.times(ETHER);
 };

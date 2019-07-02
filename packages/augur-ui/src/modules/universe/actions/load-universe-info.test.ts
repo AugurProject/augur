@@ -3,7 +3,7 @@ import { YES_NO } from "modules/common-elements/constants";
 // @ts-ignore
 import { loadUniverseInfo } from "modules/universe/actions/load-universe-info";
 
-jest.mock("services/augurjs");
+jest.mock("services/initialize");
 
 describe("modules/account/actions/load-universe-info.js", () => {
   describe("loadUniverseInfo", () => {

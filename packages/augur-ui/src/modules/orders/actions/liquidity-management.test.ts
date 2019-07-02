@@ -1,22 +1,11 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { startOrderSending } from "modules/orders/actions/liquidity-management";
-import { augur } from "services/augurjs";
 import { YES_NO } from "modules/common-elements/constants";
 
-jest.mock("services/augurjs");
+jest.mock("services/initialize");
 
 describe(`modules/orders/actions/liquidity-management.js`, () => {
-  augur.api = jest.fn(() => {});
-  augur.api.CreateOrder = jest.fn(() => {});
-  augur.api.CreateOrder.publicCreateOrder = jest.fn(() => {});
-  augur.trading = jest.fn(() => {});
-  augur.trading.calculateTradeCost = jest.fn(() => ({
-    onChainAmount: "0x0001",
-    onChainPrice: "0x001",
-    cost: "0x001"
-  }));
-  augur.trading.generateTradeGroupId = jest.fn(() => {});
 
   const mockStore = configureMockStore([thunk]);
   const stateData = {
@@ -40,10 +29,7 @@ describe(`modules/orders/actions/liquidity-management.js`, () => {
   };
 
   beforeAll(() => {
-    augur.api.CreateOrder.publicCreateOrder.mockImplementation(params => {
-      params.onSent({ hash: "0xdeadbeef", callReturn: "0x1" });
-      params.onSuccess({});
-    });
+
   });
 
   test("should handle startOrderSending", () => {

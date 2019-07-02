@@ -180,7 +180,7 @@ export function connectAugur(
         const windowApp = windowRef as WindowApp;
         let universeId =
           env.universe ||
-          Augur.contracts.universe;
+          Augur.contracts.universe.address;
         if (
           windowApp.localStorage &&
           windowApp.localStorage.getItem &&
