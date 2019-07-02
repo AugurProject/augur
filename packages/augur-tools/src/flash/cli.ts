@@ -4,6 +4,7 @@ import { addScripts } from "./scripts";
 import { ACCOUNTS } from "../constants";
 import { ArgumentParser } from "argparse";
 import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
+import { Addresses } from "@augurproject/artifacts";
 import { providers } from "ethers";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 
@@ -102,6 +103,10 @@ if (require.main === module) {
   } else {
     const networkConfiguration = NetworkConfiguration.create(args.network);
     flash.provider = makeProvider(networkConfiguration);
+
+    const addresses = Addresses[networkConfiguration.]
+
+    flash.contractAddresses =
     flash.call(args.command, args).catch(console.error);
   }
 }
