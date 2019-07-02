@@ -12,6 +12,7 @@ export interface BoxHeaderProps {
   switchHeaders?: boolean;
   noBackgroundBottom?: boolean;
   mostRightContent?: ReactNode;
+  extraTitlePadding?: boolean;
 }
 
 const BoxHeader = (props: BoxHeaderProps) => (
@@ -46,7 +47,7 @@ const BoxHeader = (props: BoxHeaderProps) => (
         </div>
       )}
     </div>
-    <div className={classNames(Styles.BoxHeader, Styles.HideOnMobile)}>
+    <div className={classNames(Styles.BoxHeader, Styles.HideOnMobile, {[Styles.ExtraTitlePadding]: props.extraTitlePadding})}>
       <div>
         <div>{props.title}</div>
         <div>

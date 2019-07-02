@@ -45,6 +45,7 @@ const localStorageMiddleware = store => next => action => {
     readNotifications,
     pendingOrders,
     pendingQueue,
+    drafts,
     env,
     connection,
   } = state;
@@ -84,6 +85,7 @@ const localStorageMiddleware = store => next => action => {
         readNotifications,
         pendingOrders,
         pendingQueue,
+        drafts,
         gasPriceInfo: {
           userDefinedGasPrice: state.gasPriceInfo.userDefinedGasPrice,
         },
