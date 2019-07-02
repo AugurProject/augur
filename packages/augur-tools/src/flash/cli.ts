@@ -1,11 +1,13 @@
 import { FlashSession } from "./flash";
 import Vorpal from "vorpal";
 import { addScripts } from "./scripts";
+import { Account } from "..";
 import { ACCOUNTS } from "../constants";
 import { ArgumentParser } from "argparse";
 import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
 import { Addresses } from "@augurproject/artifacts";
 import { providers } from "ethers";
+import { computeAddress } from "ethers/utils";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 
 interface Args {
@@ -92,8 +94,28 @@ async function getNetworkId(provider: EthersProvider): Promise<string> {
 }
 
 if (require.main === module) {
+  let accounts: Account[];
+  if (process.env.ETHEREUM_PRIVATE_KEY) {
+    let key = process.env.ETHEREUM_PRIVATE_KEY;
+    if (key.slice(0, 2) !== "0x") {
+      key = `0x${key}`;
+    }
+
+    accounts = [
+      {
+        secretKey: key,
+        publicKey: computeAddress(key),
+        balance: 0,
+      },
+    ];
+  } else {
+    accounts = ACCOUNTS;
+  }
+
+  console.log(accounts);
+
   const flash = new FlashSession(
-    ACCOUNTS,
+    accounts,
     `${__dirname}/seed.json`)
   ;
   addScripts(flash);
