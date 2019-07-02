@@ -48,9 +48,8 @@ export class WebWorkerConnector extends Connector {
       return (await this.api).route(f.name, params);
     };
   }
-
-  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
-    this.subscriptions[eventName] = { id: "", callback };
+  public async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+    this.subscriptions[eventName] = { id: "", callback: this.callbackWrapper(callback) };
     this.worker.postMessage({ subscribe: eventName });
   }
 

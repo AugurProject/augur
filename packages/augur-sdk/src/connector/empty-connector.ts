@@ -1,6 +1,6 @@
-import { Callback } from "../events";
+import { Callback, SubscriptionType } from "../events";
 import { Connector } from "./connector";
-import { SubscriptionEventNames } from "../constants";
+import { SubscriptionEventName } from "../constants";
 
 export class EmptyConnector extends Connector {
   public async connect(ethNodeUrl: string, account?: string): Promise<any> {
@@ -17,9 +17,9 @@ export class EmptyConnector extends Connector {
     };
   }
 
-  public async on(eventName: SubscriptionEventNames, callback: Callback): Promise<void> {
+  public async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
   }
 
-  public async off(eventName: SubscriptionEventNames): Promise<void> {
+  public async off(eventName: SubscriptionEventName): Promise<void> {
   }
 }
