@@ -1,7 +1,6 @@
 /**
  * @todo Update text for FINALIZE once alert triggering is moved
  */
-import { augur } from "services/augurjs";
 import { isEmpty } from "utils/is-populated";
 import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
@@ -207,6 +206,15 @@ export default function setAlertText(alert: any, callback: any) {
       case PUBLICFILLORDER:
         alert.title = "Place trade";
         if (!alert.description && alert.log) {
+          const price = "mock value"
+          /*
+          // this won't be needed with new log emitted.
+          const price = convertOnChainPriceToDisplayPrice(
+            createBigNumber(alert.params._price),
+            createBigNumber(marketInfo.minPrice),
+            marketInfo.tickSize
+          )
+          */
           dispatch(
             loadMarketsInfoIfNotLoaded([alert.params._market], () => {
               const marketInfo = selectMarket(alert.params._market);
@@ -232,11 +240,7 @@ export default function setAlertText(alert: any, callback: any) {
                   alert.log.orderType === BUY ? "sell" : "buy"
                 } ${alert.log.difference || ""} ${
                   formatShares(alert.log.difference || 10).denomination
-                } of "${outcomeDescription}" at ${augur.utils.convertOnChainPriceToDisplayPrice(
-                  createBigNumber(alert.params._price),
-                  createBigNumber(marketInfo.minPrice),
-                  marketInfo.tickSize
-                )} ETH.`;
+                } of "${outcomeDescription}" at ${price} ETH.`;
               }
               return dispatch(callback(alert));
             })

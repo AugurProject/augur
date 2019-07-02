@@ -26,4 +26,5 @@ export const connect = async (env: EnvObject, callback: NodeStyleCallback = logE
   }
 
   await bootstrap(provider, account, isWeb3);
+  callback(null);
 };

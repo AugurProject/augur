@@ -1,4 +1,4 @@
-import * as AugurJS from 'services/augurjs';
+import { connect } from 'services/initialize';
 import {
   checkIsKnownUniverse,
   getNetworkId,
@@ -169,7 +169,7 @@ export function connectAugur(
     getState: () => AppState
   ) => {
     const { modal, loginAccount } = getState();
-    AugurJS.connect(
+    connect(
       env,
       async (err: any) => {
         if (err) {
