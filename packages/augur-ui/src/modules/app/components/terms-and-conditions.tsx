@@ -6,7 +6,6 @@ import Styles from "modules/app/components/terms-and-conditions.styles";
 const TermsAndConditions = ({
   augurui,
   augurjs,
-  augurNode
 }: Versions) => (
   <div className={Styles.TermsAndConditions}>
     <div>
@@ -30,9 +29,6 @@ const TermsAndConditions = ({
       <span>
         AugurJS: <span>{augurjs}</span>
       </span>
-      <span>
-        AugurNode: <span>{augurNode}</span>
-      </span>
     </div>
   </div>
 );
@@ -40,8 +36,7 @@ const TermsAndConditions = ({
 TermsAndConditions.propTypes = {
   versions: PropTypes.shape({
     augurui: PropTypes.string,
-    augurjs: PropTypes.string,
-    augurNode: PropTypes.string
+    augurjs: PropTypes.string
   }).isRequired
 };
 

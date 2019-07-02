@@ -6,7 +6,6 @@ import ModalNetworkConnect from "modules/modal/components/modal-network-connect"
 import { closeModal } from "modules/modal/actions/close-modal";
 import { updateEnv } from "modules/app/actions/update-env";
 import { connectAugur } from "modules/app/actions/init-augur";
-import isAugurJSVersionsEqual from "modules/auth/helpers/is-augurjs-versions-equal";
 import { isWeb3Transport } from "modules/contracts/actions/contractCalls";
 import { EnvObject } from "modules/types";
 
@@ -30,7 +29,6 @@ const mapDispatchToProps = (dispatch) => ({
   submitForm: (e: Event) => e.preventDefault(),
   updateEnv: (env: EnvObject) => dispatch(updateEnv(env)),
   closeModal: () => dispatch(closeModal()),
-  isAugurJSVersionsEqual,
   connectAugur: (history, env, isInitialConnection, cb) =>
     dispatch(connectAugur(history, env, isInitialConnection, cb)),
 });

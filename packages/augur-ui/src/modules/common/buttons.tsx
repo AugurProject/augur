@@ -24,7 +24,7 @@ import {
   Filter
 } from "modules/common/icons";
 import classNames from "classnames";
-
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import Styles from "modules/common/buttons.styles.less";
 import { AppState } from "store";
 
@@ -370,7 +370,7 @@ EtherscanLinkTSX.defaultProps = {
 };
 
 const mapStateToPropsEtherScanLink = (state: AppState) => {
-  const networkId = state.connection.augurNodeNetworkId;
+  const networkId = getNetworkId();
 
   if (!networkId) {
     return null;

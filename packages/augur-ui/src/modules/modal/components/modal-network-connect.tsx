@@ -22,11 +22,9 @@ interface ModalNetworkConnectProps {
 }
 
 interface ModalNetworkConnectState {
-  augurNode: string;
   ethereumNode: string;
   connectErrors: Array<string>;
   formErrors: {
-    augurNode: Array<string>;
     ethereumNode: Array<string>;
   };
   [x: number]: any;
@@ -54,11 +52,9 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
     }
 
     this.state = {
-      augurNode: props.env["augur-node"] || "",
       ethereumNode,
       connectErrors: [],
       formErrors: {
-        augurNode: [],
         ethereumNode: [],
       },
     };
@@ -94,16 +90,15 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
 
   isFormInvalid() {
     const { isConnectedThroughWeb3 } = this.props;
-    const { augurNode, ethereumNode } = this.state;
+    const { ethereumNode } = this.state;
     return !(
-      augurNode.length &&
       (ethereumNode.length || isConnectedThroughWeb3)
     );
   }
 
   submitForm(e) {
     const { submitForm, env } = this.props;
-    const { ethereumNode, augurNode } = this.state;
+    const { ethereumNode } = this.state;
     let ethNode = {};
     const protocol = this.calcProtocol(ethereumNode);
     if (protocol) {
@@ -115,7 +110,6 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
     // because we prioritize, lets wipe out all previous connection options but not remove things like timeout.
     const updatedEnv = {
       ...env,
-      "augur-node": augurNode,
       "ethereum-node": {
         ...env["ethereum-node"],
         ipc: "",
@@ -125,7 +119,6 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
       },
     };
     const endpoints = {
-      augurNode: updatedEnv["augur-node"],
       ethereumNodeHTTP: updatedEnv["ethereum-node"].http,
       ethereumNodeWS: updatedEnv["ethereum-node"].ws,
     };
@@ -139,8 +132,7 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
 
   render() {
     const { isConnectedThroughWeb3, modal } = this.props;
-    const { formErrors, connectErrors, augurNode, ethereumNode } = this.state;
-    const AugurNodeInValid = formErrors.augurNode.length > 0;
+    const { formErrors, connectErrors, ethereumNode } = this.state;
     const ethereumNodeInValid = formErrors.ethereumNode.length > 0;
     const hasConnectionErrors = connectErrors.length > 0;
     const formInvalid = this.isFormInvalid();
@@ -152,26 +144,6 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
         })}
       >
         <h1>Connect to Augur</h1>
-        <label htmlFor="modal__augurNode-input">Augur Node Address:</label>
-        {/*
-            // @ts-ignore */}
-        <Input
-          id="modal__augurNode-input"
-          type="text"
-          className={classNames({
-            [`${Styles.ErrorField}`]: AugurNodeInValid,
-          })}
-          value={augurNode}
-          placeholder="Enter the augurNode address you would like to connect to."
-          onChange={(value) => this.validateField("augurNode", value)}
-          required
-        />
-        {AugurNodeInValid &&
-          formErrors.augurNode.map((error) => (
-            <p key={error} className={Styles.Error}>
-              {InputErrorIcon()} {error}
-            </p>
-          ))}
         <label htmlFor="modal__ethNode-input">Ethereum Node address:</label>
         {isConnectedThroughWeb3 && (
           <div>

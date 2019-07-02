@@ -21,10 +21,12 @@ export interface QuadBoxProps {
   switchHeaders?: boolean;
   noBackgroundBottom?: boolean;
   search?: string;
+  extraTitlePadding?: boolean;
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
   <BoxHeader
+    extraTitlePadding={props.extraTitlePadding}
     title={props.title}
     switchHeaders={props.switchHeaders}
     rightContent={

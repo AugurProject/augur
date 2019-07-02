@@ -1,7 +1,7 @@
 import { updateCategories } from "modules/categories/actions/update-categories";
 
 // makeUICategory returns a new category literal, ie. an
-// object matching the type of augur-node's UICategory<string>.
+// object matching the type of middleware UICategory<string>.
 function makeUICategory(
   categoryName: string,
   tagName1: string,

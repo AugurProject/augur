@@ -39,6 +39,9 @@ contract IUniverse is ITyped {
     function getInitialReportMinValue() public view returns (uint256);
     function getPayoutNumerators() public view returns (uint256[] memory);
     function getReportingFeeDivisor() public view returns (uint256);
+    function getPayoutNumerator(uint256 _outcome) public view returns (uint256);
+    function getWinningChildPayoutNumerator(uint256 _outcome) public view returns (uint256);
+    function isForkingMarket() public view returns (bool);
     function calculateFloatingValue(uint256 _badMarkets, uint256 _totalMarkets, uint256 _targetDivisor, uint256 _previousValue, uint256 _floor) public pure returns (uint256 _newValue);
     function getOrCacheMarketCreationCost() public returns (uint256);
     function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow);

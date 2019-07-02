@@ -15,6 +15,7 @@ import { Status } from "./state/getter/status";
 import { Trading } from "./state/getter/Trading";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
 import { Users } from "./state/getter/Users";
+import { Accounts } from "./state/getter/Accounts";
 
 export interface CustomEvent {
   name: string;
@@ -215,6 +216,9 @@ export class Augur<TProvider extends Provider = Provider> {
   public getMarketOrderBook = this.bindTo(Markets.getMarketOrderBook);
 
   public getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
+  public getProfitLoss = this.bindTo(Users.getProfitLoss);
+  public getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
+
   public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
   }

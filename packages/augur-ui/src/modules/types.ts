@@ -116,13 +116,10 @@ export interface Universe {
   openInterest?: BigNumber | string;
   forkThreshold?: BigNumber;
 }
-export interface AccountShareBalances {
-  [marketId: string]: Array<string>;
-}
+
 export interface Versions {
   augurui: string | null;
   augurjs: string | null;
-  augurNode: string | null;
 }
 export interface TransacitonData {
   [transactionId: string]: {
@@ -323,6 +320,45 @@ export interface NewMarket {
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
 }
+export interface Draft {
+  uniqueId: number;
+  created: number;
+  updated: number;
+  isValid: boolean;
+  validations: Array<
+    NewMarketPropertiesValidations | NewMarketPropertyValidations
+  >;
+  currentStep: number;
+  type: string;
+  outcomes: Array<string>;
+  scalarSmallNum: string;
+  scalarBigNum: string;
+  scalarDenomination: string;
+  description: string;
+  expirySourceType: string;
+  expirySource: string;
+  designatedReporterType: string;
+  designatedReporterAddress: string;
+  minPrice: string;
+  maxPrice: string;
+  endTime: number;
+  tickSize: string;
+  hour: string;
+  minute: string;
+  meridiem: string;
+  marketType: string;
+  detailsText: string;
+  category: string;
+  tag1: string;
+  tag2: string;
+  settlementFee: number;
+  affiliateFee: number;
+  orderBook: {[outcome: number]: Array<LiquidityOrder> };
+  orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
+  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityGas: any; // TODO: big number type
+  creationError: string;
+}
 
 export interface FilledOrders {
   [account: string]: Orders;
@@ -370,7 +406,6 @@ export interface EthereumNodeOptions {
 }
 
 export interface EnvObject {
-  "augur-node"?: string;
   "ethereum-node": EthereumNodeOptions;
   universe?: string;
   useWeb3Transport: boolean;
@@ -378,7 +413,6 @@ export interface EnvObject {
 
 export interface QueryEndpoints {
   ethereum_node_http?: string;
-  augur_node?: string;
   ethereum_node_ws?: string;
   [MARKET_ID_PARAM_NAME]?: string;
   [RETURN_PARAM_NAME]?: string;
@@ -387,14 +421,11 @@ export interface QueryEndpoints {
 }
 export interface Endpoints {
   ethereumNodeHTTP: string;
-  augurNode: string;
   ethereumNodeWS: string;
 }
 
 export interface Connection {
   isConnected: boolean;
-  isConnectedToAugurNode: boolean;
-  augurNodeNetworkId?: string;
   isReconnectionPaused: boolean;
 }
 

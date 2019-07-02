@@ -350,10 +350,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param orderAddresses Array of order's maker and market.
     /// @param orderValues Array of order's outcome, orderType, amount, price, expirationTimestampInSec, and salt.
     /// @return Keccak-256 hash of order.
-    function getOrderHash(address[2] memory orderAddresses, uint[6] memory orderValues)
-        public
-        view
-        returns (bytes32)
+    function getOrderHash(address[2] memory orderAddresses, uint[6] memory orderValues) public view returns (bytes32)
     {
         return keccak256(abi.encodePacked(
             address(this),
@@ -375,16 +372,7 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @param r ECDSA signature parameters r.
     /// @param s ECDSA signature parameters s.
     /// @return Validity of order signature.
-    function isValidSignature(
-        address signer,
-        bytes32 hash,
-        uint8 v,
-        bytes32 r,
-        bytes32 s)
-        public
-        pure
-        returns (bool)
-    {
+    function isValidSignature(address signer, bytes32 hash, uint8 v, bytes32 r, bytes32 s) public pure returns (bool) {
         return signer == ecrecover(
             keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)),
             v,
@@ -396,19 +384,11 @@ contract ZeroXPoC is ReentrancyGuard {
     /// @dev Calculates the sum of values already filled and cancelled for a given order.
     /// @param orderHash The Keccak-256 hash of the given order.
     /// @return Sum of values already filled and cancelled.
-    function getUnavailableAmount(bytes32 orderHash)
-        public
-        view
-        returns (uint)
-    {
+    function getUnavailableAmount(bytes32 orderHash) public view returns (uint) {
         return filled[orderHash].add(cancelled[orderHash]);
     }
 
-    function getTokenBalance(IERC20 token, address owner)
-        public
-        view
-        returns (uint)
-    {
+    function getTokenBalance(IERC20 token, address owner) public view returns (uint) {
         return tokenBalances[address(token)][owner];
     }
 
