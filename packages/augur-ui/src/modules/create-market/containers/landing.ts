@@ -4,7 +4,8 @@ import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
   addOrderToNewMarket,
   removeOrderFromNewMarket,
-  updateNewMarket
+  updateNewMarket,
+  clearNewMarket
 } from "modules/markets/actions/update-new-market";
 import Landing from "modules/create-market/landing";
 import getValue from "utils/get-value";
@@ -17,6 +18,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
+  clearNewMarket: () => dispatch(clearNewMarket()),
 });
 
 const LandingContainer = withRouter(

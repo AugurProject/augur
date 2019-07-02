@@ -1,4 +1,5 @@
 import { loadFavoritesMarkets } from "modules/markets/actions/update-favorites";
+import { loadDrafts } from "modules/create-market/actions/update-drafts";
 import { addAlert } from "modules/alerts/actions/alerts";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
@@ -40,7 +41,7 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         // we have a no selectedUniveres for this account, default to default universe for this network.
         dispatch(setSelectedUniverse());
       }
-      if (
+       if (
         favorites &&
         isNewFavoritesStyle(favorites) &&
         favorites[networkId] &&
@@ -54,8 +55,14 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         alerts,
         pendingLiquidityOrders,
         pendingOrders,
-        gasPriceInfo
+        gasPriceInfo,
+        drafts
       } = storedAccountData;
+      if (drafts) {
+        dispatch(
+          loadDrafts(drafts)
+        );
+      }
       if (alerts) {
         alerts.map(n => dispatch(addAlert(n)));
       }

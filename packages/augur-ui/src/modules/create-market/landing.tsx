@@ -6,6 +6,7 @@ import { RadioCardGroup } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
 import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
+import SavedDrafts from "modules/create-market/containers/saved-drafts";
 
 import Styles from "modules/create-market/landing.styles";
 
@@ -14,12 +15,18 @@ interface LandingProps {
   updateNewMarket: Function;
   address: String;
   updatePage: Function;
+  clearNewMarket: Function;
 }
 
 export default class Landing extends React.Component<
   LandingProps,
   {}
 > {
+
+  componentDidMount() {
+    this.node.scrollIntoView();
+  }
+
   render() {
     const {
       updatePage
@@ -27,12 +34,19 @@ export default class Landing extends React.Component<
     const s = this.state;
 
     return (
-      <div className={Styles.Landing}>
+      <div 
+        ref={node => {
+          this.node = node;
+        }}
+        className={Styles.Landing}
+      >
         <XLargeSubheaders header={"Create a new market"}>
           Augur allows <span>anyone</span>, <span>anywhere</span>, to create a market on <span>anything</span>
         </XLargeSubheaders>
 
         <div>
+          <SavedDrafts updatePage={updatePage}/>
+
           <ContentBlock>
             <LargeSubheaders
               link
@@ -41,12 +55,14 @@ export default class Landing extends React.Component<
               header="Use a market template"
               subheader="Templates simplify the creation of new markets and reduce errors in the market making process. "
             />
-            <RadioCardGroup
-              onChange={(value: string) => updatePage(TEMPLATE)}
-              radioButtons={MARKET_TEMPLATES}
-            >
-              <SmallHeaderLink text="Don't see your category?" link ownLine /> 
-            </RadioCardGroup>
+            <section>
+              <RadioCardGroup
+                onChange={(value: string) => updatePage(TEMPLATE)}
+                radioButtons={MARKET_TEMPLATES}
+              >
+                <SmallHeaderLink text="Don't see your category?" link ownLine /> 
+              </RadioCardGroup>
+            </section>
           </ContentBlock>
 
           <ContentBlock>
@@ -57,7 +73,10 @@ export default class Landing extends React.Component<
             />
             <SecondaryButton 
               text="Create a custom market" 
-              action={() => updatePage(SCRATCH)}
+              action={() => {
+                updatePage(SCRATCH);
+                this.props.clearNewMarket();
+              }}
             />
           </ContentBlock>
 
