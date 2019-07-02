@@ -58,16 +58,6 @@ export async function deployContracts(provider: EthersProvider,  accounts: Accou
   return {provider, signer, dependencies, addresses};
 }
 
-//
-// export async function deployContracts(provider: EthersProvider, seedFilePath: string, accounts: Account[]): Promise<UsefulContractObjects> {
-//   const seed = require(seedFilePath);
-//
-//   const signer = await makeSigner(accounts[0], provider);
-//   const dependencies = makeDependencies(accounts[0], provider, signer);
-//   const addresses = seed.addresses;
-//   return {provider, signer, dependencies, addresses};
-// }
-
 export async function makeGanacheProvider(seedFilePath: string, accounts: Account[]): Promise<ethers.providers.Web3Provider> {
   const db = await setupGanacheDb(seedFilePath);
   return new ethers.providers.Web3Provider(ganache.provider(makeGanacheOpts(accounts, db)));
