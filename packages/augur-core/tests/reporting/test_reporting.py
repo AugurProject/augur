@@ -4,6 +4,7 @@ from pytest import fixture, mark, raises
 from utils import longTo32Bytes, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash
 from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalize
 from decimal import Decimal
+from constants import YES, NO
 
 def test_designatedReportHappyPath(localFixture, universe, market):
     # proceed to the designated reporting period
@@ -196,6 +197,8 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
     (False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
+    claimTradingProceeds = localFixture.contracts["ClaimTradingProceeds"]
+
     # Let's go into the one dispute round for the categorical market
     proceedToNextRound(localFixture, categoricalMarket)
     proceedToNextRound(localFixture, categoricalMarket)
@@ -254,13 +257,36 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
         categoricalMarket.contribute([0,2,2,categoricalMarket.getNumTicks()-4], 1, "")
 
     newUniverseAddress = universe.getWinningChildUniverse()
+    newUniverse = localFixture.applySignature("Universe", newUniverseAddress)
 
-    # buy some complete sets to change OI
+    # Let's make sure fork payouts work correctly for the forking market
     completeSets = localFixture.contracts['CompleteSets']
     numSets = 10
+    cost = market.getNumTicks() * numSets
+    with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(market.address, numSets)
+
+    yesShare = localFixture.applySignature("ShareToken", market.getShareToken(YES))
+    noShare = localFixture.applySignature("ShareToken", market.getShareToken(NO))
+
+    noShare.transfer(localFixture.accounts[1], noShare.balanceOf(localFixture.accounts[0]))
+
+    expectedYesOutcomePayout = newUniverse.payoutNumerators(YES)
+    expectedNoOutcomePayout = newUniverse.payoutNumerators(NO)
+
+    expectedYesPayout = expectedYesOutcomePayout * yesShare.balanceOf(localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
+    with TokenDelta(cash, expectedYesPayout, localFixture.accounts[0], "Payout for Yes Shares was wrong in forking market"):
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[0])
+
+    expectedNoPayout = expectedNoOutcomePayout * noShare.balanceOf(localFixture.accounts[1]) * .98 # to account for fees
+    with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1])
+
+    # buy some complete sets to change OI of the cat market
+    numSets = 10
     cost = categoricalMarket.getNumTicks() * numSets
-    with BuyWithCash(cash, cost, localFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(categoricalMarket.address, 10, sender=localFixture.accounts[1])
+    with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(categoricalMarket.address, numSets)
     assert universe.getOpenInterestInAttoCash() == cost
 
     marketMigratedLog = {
