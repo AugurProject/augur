@@ -3,15 +3,15 @@ import { UserSyncableDB } from '@augurproject/sdk/build/state/db/UserSyncableDB'
 import { stringTo32ByteHex } from '@augurproject/core/build/libraries/HelperFunctions';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { ContractAPI, deployContracts, ACCOUNTS } from "@augurproject/tools";
+import { ContractAPI, ACCOUNTS, loadSeed } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
 let john: ContractAPI;
 
 beforeAll(async () => {
+  const { addresses } = loadSeed(seedPath);
   const provider = await makeProvider(ACCOUNTS);
-  const { addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
 
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   await john.approveCentralAuthority();

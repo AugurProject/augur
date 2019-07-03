@@ -2,6 +2,7 @@ import { makeGanacheProvider, makeGanacheServer, deployContracts } from "../libs
 import { FlashSession, FlashArguments } from "./flash";
 import { createCannedMarketsAndOrders } from "./create-canned-markets-and-orders";
 import { _1_ETH } from "../constants";
+import { Contracts as compilerOutput } from "@augurproject/artifacts";
 
 import { ethers } from "ethers";
 import * as ganache from "ganache-core";
@@ -20,7 +21,7 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      this.seedFilePath = args.filepath || this.seedFilePath;
+      this.seedFilePath = args.filepath as string || this.seedFilePath;
 
       await this.ensureSeed();
     },
@@ -61,12 +62,18 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: "deploy",
     description: "Upload contracts to blockchain and register them with the Augur contract.",
-    options: [],
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: "write-artifacts",
+        description: "Overwrite addresses.json.",
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const writeArtifacts = args.write_artifacts as boolean;
       if (this.noProvider()) return;
-      await this.ensureSeed();
 
-      await deployContracts(this.provider, this.seedFilePath, this.accounts);
+      await deployContracts(this.provider, this.accounts, compilerOutput, writeArtifacts);
     },
   });
 

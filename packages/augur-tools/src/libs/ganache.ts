@@ -6,9 +6,11 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { DeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { ContractDeployer } from "@augurproject/core";
 
 import memdown from "memdown";
 import { MemDown } from "memdown";
+import { CompilerOutput } from "solc";
 
 export interface Account {
   secretKey: string;
@@ -44,12 +46,15 @@ export interface UsefulContractObjects {
   addresses: ContractAddresses;
 }
 
-export async function deployContracts(provider: EthersProvider, seedFilePath: string, accounts: Account[]): Promise<UsefulContractObjects> {
-  const seed = require(seedFilePath);
 
+export async function deployContracts(provider: EthersProvider,  accounts: Account[], compiledContracts: CompilerOutput, writeArtifacts = false): Promise<UsefulContractObjects> {
   const signer = await makeSigner(accounts[0], provider);
   const dependencies = makeDependencies(accounts[0], provider, signer);
-  const addresses = seed.addresses;
+
+  const deployerConfiguration = makeDeployerConfiguration(writeArtifacts);
+  const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider.provider, signer, compiledContracts);
+  const addresses = await contractDeployer.deploy();
+
   return {provider, signer, dependencies, addresses};
 }
 
@@ -97,4 +102,8 @@ export async function makeSigner(account: Account, provider: EthersProvider) {
 
 export function makeDependencies(account: Account, provider: EthersProvider, signer: EthersFastSubmitWallet) {
   return new ContractDependenciesEthers(provider, signer, account.publicKey);
+}
+
+export function loadSeed(seedFilePath: string) {
+  return require(seedFilePath);
 }
