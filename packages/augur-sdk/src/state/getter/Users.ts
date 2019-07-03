@@ -585,10 +585,8 @@ async function getProfitLossRecordsByMarketAndOutcome(
   request: PouchDB.Find.FindRequest<{}>
 ): Promise<_.Dictionary<_.Dictionary<ProfitLossChangedLog[]>>> {
   const profitLossResult = await db.findProfitLossChangedLogs(account, request);
-  // TODO: is this the best place to filter our avg price is 0, how does 0 price show up in these logs
-  const filteredPLResult = profitLossResult.filter(p => p.avgPrice !== "0x00")
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(
-    filteredPLResult
+    profitLossResult
   );
 }
 
