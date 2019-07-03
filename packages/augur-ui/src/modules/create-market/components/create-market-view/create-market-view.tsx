@@ -31,8 +31,6 @@ export default class CreateMarketView extends React.Component<
   render() {
     const { page } = this.state;
 
-    console.log(this.props.history);
-
     return (
       <section className={Styles.CreateMarketView}>
         <Helmet>
