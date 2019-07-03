@@ -705,12 +705,7 @@ contract Universe is ITyped, IUniverse {
         uint256 _dsr = daiPot.dsr();
         uint256 _maxDSRMovement = 10**20; // TODO: Get from MKR contract when this is available
         uint256 _dsrThreshold = DAI_ONE.add(_maxDSRMovement);
-        if (useDSR && _dsr < _dsrThreshold) {
-            return true;
-        } else if (!useDSR && _dsr >= _dsrThreshold) {
-            return true;
-        }
-        return false;
+        return useDSR ? _dsr < _dsrThreshold : _dsr >= _dsrThreshold;
     }
 
     function toggleDSR() public returns (bool) {

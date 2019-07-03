@@ -5279,29 +5279,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_attotokens",
-					"type": "uint256"
-				}
-			],
-			"name": "migrateOut",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -5682,20 +5659,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getTypeName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -11059,29 +11022,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_destination",
-					"type": "address"
-				},
-				{
-					"name": "_attotokens",
-					"type": "uint256"
-				}
-			],
-			"name": "migrateOut",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -11466,20 +11406,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "getTypeName",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"name": "holder",
@@ -11777,41 +11703,6 @@
 			"constant": true,
 			"inputs": [
 				{
-					"name": "_totalBad",
-					"type": "uint256"
-				},
-				{
-					"name": "_total",
-					"type": "uint256"
-				},
-				{
-					"name": "_targetDivisor",
-					"type": "uint256"
-				},
-				{
-					"name": "_previousValue",
-					"type": "uint256"
-				},
-				{
-					"name": "_floor",
-					"type": "uint256"
-				}
-			],
-			"name": "calculateFloatingValue",
-			"outputs": [
-				{
-					"name": "_newValue",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
 					"name": "_shadyDisputeWindow",
 					"type": "address"
 				}
@@ -11944,20 +11835,6 @@
 				}
 			],
 			"name": "getPreviousDisputeWindow",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "repPriceOracle",
 			"outputs": [
 				{
 					"name": "",
@@ -12527,29 +12404,6 @@
 				}
 			],
 			"name": "migrateMarketIn",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_reportingParticipants",
-					"type": "address[]"
-				},
-				{
-					"name": "_disputeWindows",
-					"type": "address[]"
-				}
-			],
-			"name": "redeemStake",
 			"outputs": [
 				{
 					"name": "",
@@ -16919,6 +16773,108 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_previousDisputeWindow",
+					"type": "address"
+				},
+				{
+					"name": "_previousValidityBondInAttoCash",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateValidityBond",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_previousDisputeWindow",
+					"type": "address"
+				},
+				{
+					"name": "_previousDesignatedReportStakeInAttoRep",
+					"type": "uint256"
+				},
+				{
+					"name": "_initialReportMinValue",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateDesignatedReportStake",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_previousDisputeWindow",
+					"type": "address"
+				},
+				{
+					"name": "_previousDesignatedReportNoShowBondInAttoRep",
+					"type": "uint256"
+				},
+				{
+					"name": "_initialReportMinValue",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateDesignatedReportNoShowBond",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		}
+	],
+	"RedeemStake": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_reportingParticipants",
+					"type": "address[]"
+				},
+				{
+					"name": "_disputeWindows",
+					"type": "address[]"
+				}
+			],
+			"name": "redeemStake",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	]

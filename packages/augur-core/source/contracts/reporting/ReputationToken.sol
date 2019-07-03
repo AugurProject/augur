@@ -138,12 +138,13 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
      * @return The maximum possible total supply for this version of REP.
      */
     function getTotalTheoreticalSupply() public view returns (uint256) {
+        uint256 _totalSupply = totalSupply();
         if (parentUniverse == IUniverse(0)) {
-            return Reporting.getInitialREPSupply().max(totalSupply());
+            return Reporting.getInitialREPSupply().max(_totalSupply);
         } else if (augur.getTimestamp() >= parentUniverse.getForkEndTime()) {
-            return totalSupply();
+            return _totalSupply;
         } else {
-            return totalSupply() + parentUniverse.getReputationToken().totalSupply();
+            return _totalSupply + parentUniverse.getReputationToken().totalSupply();
         }
     }
 
