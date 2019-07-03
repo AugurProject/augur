@@ -2,7 +2,6 @@ import { createBigNumber } from 'utils/create-big-number';
 import { BUY, ZERO } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
-import { buildDisplayTrade } from 'modules/trades/helpers/build-display-trade';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';

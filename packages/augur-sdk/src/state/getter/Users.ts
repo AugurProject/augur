@@ -667,11 +667,18 @@ function getTradingPositionFromProfitLossFrame(
   const onChainRealizedProfit = new BigNumber(profitLossFrame.realizedProfit);
   const onChainRealizedCost = new BigNumber(profitLossFrame.realizedCost);
   let onChainRawPosition = new BigNumber(0);
-  if (shareTokenBalancesByMarketandOutcome && shareTokenBalancesByMarketandOutcome[marketDoc.market]) {
-    onChainRawPosition = new BigNumber(
+  if (
+    shareTokenBalancesByMarketandOutcome &&
+    shareTokenBalancesByMarketandOutcome[marketDoc.market] &&
     shareTokenBalancesByMarketandOutcome[marketDoc.market][
       profitLossFrame.outcome
-    ].balance);
+    ]
+  ) {
+    onChainRawPosition = new BigNumber(
+      shareTokenBalancesByMarketandOutcome[marketDoc.market][
+        profitLossFrame.outcome
+      ].balance
+    );
   }
   const onChainAvgCost = onChainNetPosition.isNegative()
     ? numTicks.minus(onChainAvgPrice)
