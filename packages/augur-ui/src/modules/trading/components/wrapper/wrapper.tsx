@@ -15,7 +15,7 @@ import Styles from "modules/trading/components/wrapper/wrapper.styles.less";
 import { OrderButton } from "modules/common/buttons";
 import { formatShares, formatGasCostToEther } from "utils/format-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
-import { MarketData, MarketOutcome, FormattedNumber } from "modules/types";
+import { MarketData, OutcomeFormatted, FormattedNumber } from "modules/types";
 
 // TODO: refactor the need to use this function.
 function pick(object, keys) {
@@ -35,8 +35,8 @@ interface WrapperProps {
   selectedOrderProperties: object;
   availableFunds: BigNumber;
   availableDai: BigNumber;
-  selectedOutcome: MarketOutcome;
-  sortedOutcomes: MarketOutcome[];
+  selectedOutcome: OutcomeFormatted;
+  sortedOutcomes: OutcomeFormatted[];
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
   gasPrice: number;

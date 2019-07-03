@@ -28,7 +28,7 @@ import MarketOutcomesChart from "modules/market-charts/containers/market-outcome
 import Styles from "modules/market/components/market-view/market-view.styles.less";
 import { LeftChevron } from "modules/common/icons";
 import { TEMP_TABLET } from "modules/common/constants";
-import { MarketData, MarketOutcome } from "modules/types";
+import { MarketData, OutcomeFormatted } from "modules/types";
 
 interface MarketViewProps {
   isMarketLoading: boolean,
@@ -43,7 +43,7 @@ interface MarketViewProps {
   loadMarketTradingHistory: Function,
   description: string,
   marketType: string,
-  outcomes: Array<MarketOutcome>,
+  outcomes: OutcomeFormatted[],
   updateModal: Function,
   history: object,
   showMarketLoadingModal: Function,

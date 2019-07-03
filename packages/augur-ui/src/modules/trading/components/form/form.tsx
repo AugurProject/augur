@@ -14,7 +14,7 @@ import { SquareDropdown } from 'modules/common/selection';
 import { Checkbox } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData, MarketOutcome } from 'modules/types';
+import { MarketData, OutcomeFormatted } from 'modules/types';
 import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
 
 interface FromProps {
@@ -30,7 +30,7 @@ interface FromProps {
   selectedNav: string;
   selectedOutcome: MarketInfoOutcome;
   updateState: Function;
-  sortedOutcomes: MarketOutcome[];
+  sortedOutcomes: OutcomeFormatted[];
   updateOrderProperty: Function;
   doNotCreateOrders: boolean;
   updateSelectedOutcome: Function;

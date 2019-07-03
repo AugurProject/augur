@@ -8,11 +8,11 @@ import MarketScalarOutcomeDisplay from "modules/market/components/market-scalar-
 import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles.less";
 import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style.less";
 import HeaderStyles from "modules/portfolio/components/common/data-table-header.styles.less";
-import { MarketOutcome } from "modules/types";
+import { OutcomeFormatted } from "modules/types";
 
 interface MarketOutcomesListProps {
   marketId: string,
-  marketOutcomes: Array<MarketOutcome>,
+  outcomesFormatted: OutcomeFormatted[],
   updateSelectedOutcome: Function,
   selectedOutcomeId: number,
   scalarDenomination: string | undefined,
@@ -27,14 +27,14 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
     selectedOutcomeId: 2,
     scalarDenomination: null,
     marketType: null,
-    marketOutcomes: [],
+    outcomesFormatted: [],
     popUp: false
   };
 
   render() {
     const {
       marketId,
-      marketOutcomes,
+      outcomesFormatted,
       selectedOutcomeId,
       updateSelectedOutcome,
       marketType,
@@ -58,7 +58,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {marketOutcomes.filter(o => o.isTradable).map(outcome => (
+          {outcomesFormatted.filter(o => o.isTradable).map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
               outcome={outcome}
@@ -78,7 +78,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
             scalarDenomination={scalarDenomination}
             min={minPriceBigNumber}
             max={maxPriceBigNumber}
-            outcomes={marketOutcomes}
+            outcomes={outcomesFormatted}
           />
         )}
       </section>

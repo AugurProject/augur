@@ -7,7 +7,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
 import { PrimaryButton } from 'modules/common/buttons';
-import { MarketData, MarketOutcome, FormattedNumber } from 'modules/types';
+import { MarketData, OutcomeFormatted, FormattedNumber } from 'modules/types';
 
 interface TradingFormProps {
   availableFunds: BigNumber;
@@ -20,7 +20,7 @@ interface TradingFormProps {
   marketReviewTradeModal: Function;
   selectedOrderProperties: object;
   selectedOutcomeId: number;
-  sortedOutcomes: MarketOutcome[];
+  sortedOutcomes: OutcomeFormatted[];
   updateSelectedOrderProperties: Function;
   handleFilledOnly: Function;
   gasPrice: number;
@@ -33,7 +33,7 @@ interface TradingFormProps {
 
 interface TradingFormState {
   showForm: boolean;
-  selectedOutcome: MarketOutcome | undefined;
+  selectedOutcome: OutcomeFormatted | undefined;
 }
 
 class TradingForm extends Component<TradingFormProps, TradingFormState> {
@@ -45,8 +45,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
     showForm: false,
     selectedOutcome:
       this.props.market &&
-      this.props.market.marketOutcomes &&
-      this.props.market.marketOutcomes.find(
+      this.props.market.outcomesFormatted &&
+      this.props.market.outcomesFormatted.find(
         outcome => outcome.id === this.props.selectedOutcomeId
       ),
   };
@@ -61,8 +61,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       if (nextProps.selectedOutcomeId !== null) {
         const selectedOutcome =
           market &&
-          market.marketOutcomes &&
-          market.marketOutcomes.find(
+          market.outcomesFormatted &&
+          market.outcomesFormatted.find(
             outcome => outcome.id === nextProps.selectedOutcomeId
           );
         this.setState({ selectedOutcome });

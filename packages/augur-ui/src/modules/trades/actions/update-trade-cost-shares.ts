@@ -34,7 +34,6 @@ export function updateTradeCost({
       loginAccount,
       orderBooks,
       accountPositions,
-      accountShareBalances,
     } = getState();
     const market = marketInfos[marketId];
     const outcome = market.outcomes.find(o => o.id === outcomeId);
@@ -57,7 +56,6 @@ export function updateTradeCost({
       orderBooks,
       outcome,
       accountPositions,
-      accountShareBalances,
       callback
     );
   };
@@ -83,7 +81,6 @@ export function updateTradeShares({
       marketInfos,
       loginAccount,
       accountPositions,
-      accountShareBalances,
       orderBooks,
     } = getState();
     const market = marketInfos[marketId];
@@ -139,7 +136,6 @@ export function updateTradeShares({
       orderBooks,
       outcome,
       accountPositions,
-      accountShareBalances,
       callback
     );
   };
@@ -154,14 +150,13 @@ async function runSimulateTrade(
   orderBooks: any,
   outcome: any,
   accountPositions: any,
-  accountShareBalances: any,
   callback: NodeStyleCallback
 ) {
+  // TODO: figure out user share balance
   let userShareBalance = new Array(market.numOutcomes).fill('0');
   let userNetPositions = new Array(market.numOutcomes).fill('0');
   let sharesFilledAvgPrice = '';
   let reversal = null;
-  const userMarketShareBalances = accountShareBalances[marketId];
   const positions = (accountPositions[marketId] || {}).tradingPositions;
   if (positions) {
     userNetPositions = Object.keys(positions).reduce(
@@ -171,7 +166,6 @@ async function runSimulateTrade(
       },
       userNetPositions
     );
-    userShareBalance = userMarketShareBalances || [];
     sharesFilledAvgPrice = (positions[outcomeId] || {}).averagePrice;
     const outcomeIndex = parseInt(outcomeId, 10);
     const outcomeNetPosition = createBigNumber(userNetPositions[outcomeIndex]);
