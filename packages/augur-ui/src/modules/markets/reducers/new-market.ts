@@ -10,7 +10,7 @@ import { SETTLEMENT_FEE_DEFAULT } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
 
-const DEFAULT_STATE: NewMarket = {
+export const DEFAULT_STATE: NewMarket = {
   isValid: false,
   validations: [
     {

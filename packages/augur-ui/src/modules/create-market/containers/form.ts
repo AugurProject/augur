@@ -13,6 +13,7 @@ import {
   MODAL_DISCARD
 } from "modules/common/constants";
 import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
+import { updateModal } from "modules/modal/actions/update-modal";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,

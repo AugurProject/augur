@@ -11,6 +11,12 @@ import { LargeHeader, ExplainerBlock, ContentBlock } from "modules/create-market
 import { NewMarket, Drafts } from "modules/types";
 import FormDetails from "modules/create-market/containers/form-details";
 import Review from "modules/create-market/containers/review";
+import makePath from "modules/routes/helpers/make-path";
+import {
+  CREATE_MARKET
+} from "modules/routes/constants/views";
+import { SCRATCH } from "modules/create-market/constants";
+import { DEFAULT_STATE } from "modules/markets/reducers/new-market";
 
 import Styles from "modules/create-market/components/form.styles";
 
@@ -40,26 +46,50 @@ export default class Form extends React.Component<
 
   componentDidMount() {
     this.node.scrollIntoView();
-    window.addEventListener("beforeunload", this.onUnload)
   }
 
   componentWillUnmount() {
-    window.removeEventListener("beforeunload", this.onUnload)
+    this.unblock();
   }
 
-  onUnload(event) {
-    this.props.discardModal();
-    const confirmationMessage = '';
-    e.returnValue = confirmationMessage;
-    return confirmationMessage; 
+  unblock = (cb?: Function) => {
+    const {
+      drafts,
+      newMarket,
+      discardModal
+    } = this.props;
+
+    const savedDraft = drafts[newMarket.uniqueId];
+    const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+    const unsaved = !newMarket.uniqueId && JSON.stringify(newMarket) !== JSON.stringify(DEFAULT_STATE);
+
+    if (unsaved || disabledSave === false) {
+      discardModal((close: Boolean) => {
+        if (!close) {
+          this.props.history.push({
+            pathname: makePath(CREATE_MARKET, null),
+            state: SCRATCH,
+          });
+          cb && cb(false);
+        } else {
+          cb && cb(true);
+        }
+      });
+    } else {
+      cb && cb(true);
+    }
   }
 
   prevPage = () => {
     const { newMarket, updateNewMarket, updatePage, clearNewMarket } = this.props;
 
     if (newMarket.currentStep <= 0) {
-      updatePage(LANDING);
-      clearNewMarket();
+      this.unblock((goBack: Boolean) => {
+        if (goBack) {
+          updatePage(LANDING);
+          clearNewMarket();
+        }
+      });
     }
 
     const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
@@ -86,6 +116,10 @@ export default class Form extends React.Component<
       drafts,
       updateDraft
     } = this.props;
+
+    if (newMarket.description === DEFAULT_STATE.description) {
+      return;
+    }
 
     if (newMarket.uniqueId && drafts[newMarket.uniqueId]) {
       // update draft
@@ -174,8 +208,7 @@ export default class Form extends React.Component<
     } = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
 
     const savedDraft = drafts[newMarket.uniqueId];
-    const disabledSave = newMarket.description === "" || (savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft));
-
+    const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
     return (
       <div 
         ref={node => {
@@ -197,7 +230,7 @@ export default class Form extends React.Component<
           <div>
             {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
             <div>
-              <SecondaryButton text="Save draft" disabled={disabledSave} action={this.saveDraft} />
+              <SecondaryButton text={disabledSave ? "Saved": "Save draft"} disabled={disabledSave} action={this.saveDraft} />
               {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
               {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
             </div>

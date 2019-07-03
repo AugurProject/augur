@@ -21,23 +21,34 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: "Discard draft?",
    description: [
-    "You will love any data you have entered."
+    "You will lose any data you have entered."
   ],
-  callToAction: "Discard draft.",
   closeAction: () => {
     dP.closeModal();
     if (sP.modal.cb) {
-      sP.modal.cb();
+      sP.modal.cb(false);
     }
   },
   buttons: [
     {
       text: "Discard draft",
       action: () => {
-        dP.finalizeMarket(sP.modal.marketId, sP.modal.cb);
         dP.closeModal();
+        if (sP.modal.cb) {
+          sP.modal.cb(true);
+        }
       },
     },
+    {
+      text: "Cancel",
+      type: "gray",
+      action: () => {
+        dP.closeModal();
+        if (sP.modal.cb) {
+          sP.modal.cb(false);
+        }
+      },
+    }
   ],
 });
 

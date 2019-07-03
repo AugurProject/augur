@@ -21,7 +21,7 @@ export default class CreateMarketView extends React.Component<
   CreateMarketViewState
 > {
   state: FormState = {
-    page: LANDING
+    page: this.props.history.location.state || LANDING
   };
 
   updatePage = (page: string) => {
@@ -30,6 +30,8 @@ export default class CreateMarketView extends React.Component<
 
   render() {
     const { page } = this.state;
+
+    console.log(this.props.history);
 
     return (
       <section className={Styles.CreateMarketView}>
