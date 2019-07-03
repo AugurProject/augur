@@ -5,8 +5,8 @@ import { JsonRpcProvider } from "ethers/providers";
 
 export function updateSdk(loginAccount: LoginAccount, injectedProvider: JsonRpcProvider | null) {
   return async () => {
-    const { displayAddress, meta }  = loginAccount;
-    if (!meta || !displayAddress) return;
+    const { address, meta }  = loginAccount;
+    if (!meta || !address) return;
 
     if (!augurSdk.sdk) return;
 
@@ -21,7 +21,7 @@ export function updateSdk(loginAccount: LoginAccount, injectedProvider: JsonRpcP
       await augurSdk.destroy();
       await augurSdk.makeApi(
         provider,
-        displayAddress,
+        address,
         meta.signer,
         env,
         meta.isWeb3
