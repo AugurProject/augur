@@ -9,11 +9,11 @@ WORKDIR /augur
 
 RUN set -ex; \
     if [ "$BUILD_ENVIRONMENT" = "dev" ]; then \
-        ETHEREUM_NETWORK=$ethereum_network yarn workspace @augurproject/ui build --dev --augur-hosted --disableMainnet; \
+        yarn workspace @augurproject/ui build --dev --augur-hosted --disableMainnet; \
     elif [ "$BUILD_ENVIRONMENT" = "dev-optimized" ]; then \
-        ETHEREUM_NETWORK=$ethereum_network yarn workspace @augurproject/ui build --production --augur-hosted --disableMainnet; \
+        yarn workspace @augurproject/ui build --production --augur-hosted --disableMainnet; \
     elif [ "$BUILD_ENVIRONMENT" = "release" ]; then \
-        ETHEREUM_NETWORK=$ethereum_network yarn workspace @augurproject/ui build --production --augur-hosted; \
+        yarn workspace @augurproject/ui build --production --augur-hosted; \
     fi;
 
 FROM nginx:alpine
