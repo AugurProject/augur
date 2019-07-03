@@ -70,6 +70,7 @@ export interface TradingPosition {
   marketId: string;
   outcome: number; // user's position is in this market outcome
   netPosition: string; // current quantity of shares in user's position for this market outcome. "net" position because if user bought 4 shares and sold 6 shares, netPosition would be -2 shares (ie. 4 - 6 = -2). User is "long" this market outcome (gets paid if this outcome occurs) if netPosition is positive. User is "short" this market outcome (gets paid if this outcome does not occur) if netPosition is negative
+  rawPosition: string; // non synthetic, actual shares on outcome
   averagePrice: string; // denominated in tokens/share. average price user paid for shares in the current open position
   realized: string; // realized profit in tokens (eg. ETH) user already got from this market outcome. "realized" means the user bought/sold shares in such a way that the profit is already in the user's wallet
   unrealized: string; // unrealized profit in tokens (eg. ETH) user could get from this market outcome. "unrealized" means the profit isn't in the user's wallet yet; the user could close the position to "realize" the profit, but instead is holding onto the shares. Computed using last trade price.
@@ -214,20 +215,9 @@ export class Users {
               profitLossResult,
               marketDoc,
               outcomeValue,
-              new BigNumber(profitLossResult.timestamp).toNumber()
+              new BigNumber(profitLossResult.timestamp).toNumber(),
+              shareTokenBalancesByMarketandOutcome
             );
-            let rawPosition = new BigNumber(0);
-            if (
-              shareTokenBalancesByMarketandOutcome[profitLossResult.market][
-                profitLossResult.outcome
-              ]
-            ) {
-              rawPosition = new BigNumber(
-                shareTokenBalancesByMarketandOutcome[profitLossResult.market][
-                  profitLossResult.outcome
-                ].balance
-              );
-            }
 
             return tradingPosition;
           }
@@ -404,7 +394,8 @@ export class Users {
                 latestOutcomePLValue,
                 marketDoc,
                 outcomeValue,
-                bucketTimestamp.toNumber()
+                bucketTimestamp.toNumber(),
+                null
               );
             }
           );
@@ -662,7 +653,8 @@ function getTradingPositionFromProfitLossFrame(
   profitLossFrame: ProfitLossChangedLog,
   marketDoc: MarketCreatedLog,
   onChainOutcomeValue: BigNumber,
-  timestamp: number
+  timestamp: number,
+  shareTokenBalancesByMarketandOutcome
 ): TradingPosition {
   const minPrice = new BigNumber(marketDoc.prices[0]);
   const maxPrice = new BigNumber(marketDoc.prices[1]);
@@ -674,6 +666,13 @@ function getTradingPositionFromProfitLossFrame(
   const onChainAvgPrice = new BigNumber(profitLossFrame.avgPrice);
   const onChainRealizedProfit = new BigNumber(profitLossFrame.realizedProfit);
   const onChainRealizedCost = new BigNumber(profitLossFrame.realizedCost);
+  let onChainRawPosition = new BigNumber(0);
+  if (shareTokenBalancesByMarketandOutcome && shareTokenBalancesByMarketandOutcome[marketDoc.market]) {
+    onChainRawPosition = new BigNumber(
+    shareTokenBalancesByMarketandOutcome[marketDoc.market][
+      profitLossFrame.outcome
+    ].balance);
+  }
   const onChainAvgCost = onChainNetPosition.isNegative()
     ? numTicks.minus(onChainAvgPrice)
     : onChainAvgPrice;
@@ -684,6 +683,10 @@ function getTradingPositionFromProfitLossFrame(
   const frozenFunds = onChainFrozenFunds.dividedBy(10 ** 18);
   const netPosition: BigNumber = convertOnChainAmountToDisplayAmount(
     onChainNetPosition,
+    tickSize
+  );
+  const rawPosition: BigNumber = convertOnChainAmountToDisplayAmount(
+    onChainRawPosition,
     tickSize
   );
   const realizedProfit = onChainRealizedProfit.dividedBy(10 ** 18);
@@ -721,6 +724,7 @@ function getTradingPositionFromProfitLossFrame(
     marketId: profitLossFrame.market,
     outcome: new BigNumber(profitLossFrame.outcome).toNumber(),
     netPosition: netPosition.toFixed(),
+    rawPosition: rawPosition.toFixed(),
     averagePrice: avgPrice.toFixed(),
     realized: realizedProfit.toFixed(),
     unrealized: unrealized.toFixed(),

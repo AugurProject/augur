@@ -439,7 +439,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               marketType={marketType}
               maxPrice={maxPriceBigNumber}
               minPrice={minPriceBigNumber}
-              trade={s.trade.displayTrade}
+              trade={s.trade}
               gasPrice={gasPrice}
               gasLimit={s.trade.gasLimit}
               availableFunds={availableFunds}

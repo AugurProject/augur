@@ -52,9 +52,6 @@ export function updateTradeCost({
       market,
       marketId,
       outcomeId,
-      loginAccount,
-      orderBooks,
-      outcome,
       accountPositions,
       callback
     );
@@ -132,9 +129,6 @@ export function updateTradeShares({
       market,
       marketId,
       outcomeId,
-      loginAccount,
-      orderBooks,
-      outcome,
       accountPositions,
       callback
     );
@@ -144,39 +138,25 @@ export function updateTradeShares({
 async function runSimulateTrade(
   newTradeDetails: any,
   market: MarketInfo,
-  marketId: any,
-  outcomeId: any,
-  loginAccount: LoginAccount,
-  orderBooks: any,
-  outcome: any,
+  marketId: string,
+  outcomeId: number,
   accountPositions: any,
   callback: NodeStyleCallback
 ) {
-  // TODO: figure out user share balance
-  let userShareBalance = new Array(market.numOutcomes).fill('0');
-  let userNetPositions = new Array(market.numOutcomes).fill('0');
   let sharesFilledAvgPrice = '';
   let reversal = null;
+  let outcomeRawPosition = ZERO;
   const positions = (accountPositions[marketId] || {}).tradingPositions;
-  if (positions) {
-    userNetPositions = Object.keys(positions).reduce(
-      (r: any, outcomeId: any) => {
-        r[outcomeId] = positions[outcomeId].netPosition;
-        return r;
-      },
-      userNetPositions
-    );
-    sharesFilledAvgPrice = (positions[outcomeId] || {}).averagePrice;
-    const outcomeIndex = parseInt(outcomeId, 10);
-    const outcomeNetPosition = createBigNumber(userNetPositions[outcomeIndex]);
+  if (positions && positions[outcomeId]) {
+    const position = positions[outcomeId];
+    sharesFilledAvgPrice = position.averagePrice;
+    outcomeRawPosition = createBigNumber(position.rawPosition || 0);
     const isReversal =
       newTradeDetails.side === BUY
-        ? outcomeNetPosition.lt(ZERO)
-        : outcomeNetPosition.gt(ZERO);
+        ? createBigNumber(position.netPosition).lt(ZERO)
+        : createBigNumber(position.netPosition).gt(ZERO);
     if (isReversal) {
-      const { netPosition: quantity, averagePrice: price } = positions[
-        outcomeIndex
-      ];
+      const { netPosition: quantity, averagePrice: price } = position
       // @ts-ignore
       reversal = {
         quantity: createBigNumber(quantity)
@@ -192,15 +172,14 @@ async function runSimulateTrade(
   const affiliateAddress = undefined; // TODO: get this from state
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
-  const outcomeIdx = parseInt(outcomeId, 10);
 
-  const userShares = ignoreShares ? 0 : userShareBalance[outcomeIdx];
+  const userShares = ignoreShares ? ZERO : createBigNumber(outcomeRawPosition);
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(
     orderType,
     marketId,
     market.numOutcomes,
-    parseInt(outcomeId, 10),
+    outcomeId,
     ignoreShares,
     affiliateAddress,
     kycToken,
@@ -210,14 +189,14 @@ async function runSimulateTrade(
     market.maxPrice,
     newTradeDetails.numShares,
     newTradeDetails.limitPrice,
-    userShares
+    userShares,
   );
 
   const gasLimit = await simulateTradeGasLimit(
     orderType,
     marketId,
     market.numOutcomes,
-    parseInt(outcomeId, 10),
+    outcomeId,
     ignoreShares,
     affiliateAddress,
     kycToken,
@@ -234,6 +213,7 @@ async function runSimulateTrade(
   newTradeDetails.totalFee = totalFee.toFixed();
   newTradeDetails.totalCost = simulateTradeValue.tokensDepleted;
   newTradeDetails.shareCost = simulateTradeValue.sharesDepleted;
+  newTradeDetails.sharesFilled = simulateTradeValue.sharesFilled;
   newTradeDetails.feePercent = totalFee
     .dividedBy(createBigNumber(simulateTradeValue.tokensDepleted, 10))
     .toFixed();
@@ -243,21 +223,10 @@ async function runSimulateTrade(
     ...newTradeDetails,
     ...simulateTradeValue,
     sharesFilledAvgPrice,
-    userNetPositions,
-    userShareBalance,
     reversal,
   };
 
   const order = generateTrade(market, tradeInfo);
 
-  // build display values for order form confirmation
-  const displayTrade = generateTrade(
-    market,
-    buildDisplayTrade({
-      ...tradeInfo,
-      outcomeId,
-    })
-  );
-
-  if (callback) callback(null, { ...order, ...simulateTradeValue, displayTrade, gasLimit });
+  if (callback) callback(null, { ...order, ...simulateTradeValue, gasLimit });
 }
