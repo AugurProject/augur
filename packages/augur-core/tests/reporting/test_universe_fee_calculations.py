@@ -191,7 +191,7 @@ def test_dr_report_stake_min(contractsFixture, universe, market):
     disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newDesignatedReportStake = universe.getOrCacheDesignatedReportStake()
-    assert newDesignatedReportStake == designatedReportStake
+    assert newDesignatedReportStake >= designatedReportStake
 
 def test_dr_report_stake_down(contractsFixture, universe, market, categoricalMarket, cash):
     designatedReportStake = universe.getOrCacheDesignatedReportStake()
@@ -288,7 +288,7 @@ def test_no_show_bond_min(contractsFixture, universe, market):
     disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     newNoShowBond = universe.getOrCacheDesignatedReportNoShowBond()
-    assert newNoShowBond == noShowBond
+    assert newNoShowBond >= noShowBond
 
 def test_no_show_bond_down(contractsFixture, universe, market, categoricalMarket, cash):
     noShowBond = universe.getOrCacheDesignatedReportNoShowBond()

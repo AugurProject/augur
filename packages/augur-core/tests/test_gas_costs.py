@@ -8,7 +8,7 @@ from trading.test_claimTradingProceeds import acquireLongShares, finalizeMarket
 from reporting_utils import proceedToNextRound, proceedToFork, finalize, proceedToDesignatedReporting
 
 # Market Methods
-MARKET_CREATION =               2292216
+MARKET_CREATION =               2409638
 MARKET_FINALIZATION =           948446
 INITIAL_REPORT =                554349
 FIRST_CONTRIBUTE =              830811
@@ -28,13 +28,16 @@ FILL_ORDER =        808067
 CLAIM_PROCEEDS =    667419
 
 # Other
-UNIVERSE_CREATE =   6392431
+UNIVERSE_CREATE =   7752505
 
-pytestmark = mark.skip(reason="Just for testing gas cost")
+#pytestmark = mark.skip(reason="Just for testing gas cost")
 
-def test_universe_creation(localFixture, augur):
+def test_universe_creation(localFixture, augur, market, universe):
+    proceedToFork(localFixture, market, universe)
+    finalize(localFixture, market, universe)
+
     with PrintGasUsed(localFixture, "UNIVERSE_CREATE", UNIVERSE_CREATE):
-        augur.createGenesisUniverse()
+        universe.createChildUniverse([0, 1, market.getNumTicks()-1])
 
 def test_disputeWindowCreation(localFixture, augur, universe, cash):
     endTime = augur.getTimestamp() + timedelta(days=365).total_seconds()

@@ -17,7 +17,7 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
  * @title Reputation Token
  * @notice The Reputation Token for a particular universe
  */
-contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
+contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     using SafeMathUint256 for uint256;
 
     string constant public name = "Reputation";
@@ -45,7 +45,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
      * @return Bool True
      */
     function migrateOutByPayout(uint256[] memory _payoutNumerators, uint256 _attotokens) public returns (bool) {
-        require(_attotokens > 0, "ReputationToken.migrateOutByPayout: Cannot migrate 0 tokens");
+        require(_attotokens > 0);
         IUniverse _destinationUniverse = universe.createChildUniverse(_payoutNumerators);
         IReputationToken _destination = _destinationUniverse.getReputationToken();
         burn(msg.sender, _attotokens);
@@ -60,7 +60,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
      * @return Bool True
      */
     function migrateOut(IReputationToken _destination, uint256 _attotokens) public returns (bool) {
-        require(_attotokens > 0, "ReputationToken.migrateOut: Cannot migrate 0 tokens");
+        require(_attotokens > 0);
         assertReputationTokenIsLegitSibling(_destination);
         burn(msg.sender, _attotokens);
         _destination.migrateIn(msg.sender, _attotokens);
@@ -87,6 +87,12 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
         // simulate a 40% ROI which would have occured during a normal dispute had this participant's outcome won the dispute
         uint256 _bonus = _amountMigrated.mul(2) / 5;
         mint(address(_reportingParticipant), _bonus);
+        return true;
+    }
+
+    function mintForUniverse(uint256 _amountToMint, address _target) public returns (bool) {
+        require(universe == IUniverse(msg.sender));
+        mint(_target, _amountToMint);
         return true;
     }
 
@@ -118,13 +124,9 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
 
     function assertReputationTokenIsLegitSibling(IReputationToken _shadyReputationToken) private view {
         IUniverse _shadyUniverse = _shadyReputationToken.getUniverse();
-        require(universe.isParentOf(_shadyUniverse), "ReputationToken.assertReputationTokenIsLegitSibling: Rep token is not sibling");
+        require(universe.isParentOf(_shadyUniverse));
         IUniverse _legitUniverse = _shadyUniverse;
-        require(_legitUniverse.getReputationToken() == _shadyReputationToken, "ReputationToken.assertReputationTokenIsLegitSibling: Rep token is not sibling");
-    }
-
-    function getTypeName() public view returns (bytes32) {
-        return "ReputationToken";
+        require(_legitUniverse.getReputationToken() == _shadyReputationToken);
     }
 
     /**
@@ -153,7 +155,7 @@ contract ReputationToken is ITyped, VariableSupplyToken, IV2ReputationToken {
      */
     function getTotalTheoreticalSupply() public view returns (uint256) {
         if (parentUniverse == IUniverse(0)) {
-            return Reporting.getInitialREPSupply();
+            return Reporting.getInitialREPSupply().max(totalSupply());
         } else if (augur.getTimestamp() >= parentUniverse.getForkEndTime()) {
             return totalSupply();
         } else {

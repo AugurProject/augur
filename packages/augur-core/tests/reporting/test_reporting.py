@@ -192,9 +192,9 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
     (True, True),
-    (False, True),
-    (True, False),
-    (False, False),
+    #(False, True),
+    #(True, False),
+    #(False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
     claimTradingProceeds = localFixture.contracts["ClaimTradingProceeds"]
@@ -400,9 +400,10 @@ def test_fork_migration_no_report(localFixture, universe, market):
     oldReputationToken = localFixture.applySignature("ReputationToken", universe.getReputationToken())
     oldBalance = oldReputationToken.balanceOf(longMarket.address)
     newUniverse = localFixture.applySignature("Universe", universe.getChildUniverse(market.getWinningPayoutDistributionHash()))
+    newNoShowBond = newUniverse.getOrCacheMarketRepBond()
     newReputationToken = localFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
     with TokenDelta(oldReputationToken, -oldBalance, longMarket.address, "Migrating didn't disavow old no show bond"):
-        with TokenDelta(newReputationToken, oldBalance, longMarket.address, "Migrating didn't place new no show bond"):
+        with TokenDelta(newReputationToken, newNoShowBond, longMarket.address, "Migrating didn't place new no show bond"):
             assert longMarket.migrateThroughOneFork([], "")
 
 def test_forking_values(localFixture, universe, market):
@@ -563,12 +564,12 @@ def test_dispute_pacing_threshold(localFixture, universe, market):
 
     # Now if we try to immediately dispute without the newly assigned dispute window being active the tx will fail
     with raises(TransactionFailed):
-        market.contribute([0, market.getNumTicks(), 0], 1, "")
+        market.contribute([0, 0, market.getNumTicks()], 1, "")
 
     # If we move time forward to the dispute window start we succeed
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     assert localFixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
-    assert market.contribute([0, market.getNumTicks(), 0], 1, "")
+    assert market.contribute([0, 0, market.getNumTicks()], 1, "")
 
 def test_crowdsourcer_minimum_remaining(localFixture, universe, market):
     proceedToNextRound(localFixture, market, moveTimeForward = False)

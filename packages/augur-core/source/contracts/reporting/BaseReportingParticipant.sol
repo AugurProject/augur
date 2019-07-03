@@ -21,7 +21,7 @@ contract BaseReportingParticipant is IReportingParticipant {
         require(_reputationToken.transfer(address(market), _reputationToken.balanceOf(address(this))));
     }
 
-    function fork() internal {
+    function fork() public {
         require(market == market.getUniverse().getForkingMarket());
         IUniverse _newUniverse = market.getUniverse().createChildUniverse(payoutNumerators);
         IReputationToken _newReputationToken = _newUniverse.getReputationToken();

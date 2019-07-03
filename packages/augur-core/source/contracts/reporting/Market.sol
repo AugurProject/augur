@@ -70,6 +70,7 @@ contract Market is Initializable, Ownable, IMarket {
         cash = ICash(augur.lookup("Cash"));
         owner = _creator;
         repBondOwner = owner;
+        cash.approve(address(augur), MAX_APPROVAL_AMOUNT);
         assessFees();
         endTime = _endTime;
         numOutcomes = _numOutcomes;
@@ -91,6 +92,7 @@ contract Market is Initializable, Ownable, IMarket {
         require(getReputationToken().balanceOf(address(this)) >= repBond);
         validityBondAttoCash = cash.balanceOf(address(this));
         require(validityBondAttoCash >= universe.getOrCacheValidityBond());
+        universe.deposit(address(this), validityBondAttoCash, address(this));
     }
 
     /**
@@ -101,6 +103,7 @@ contract Market is Initializable, Ownable, IMarket {
     function increaseValidityBond(uint256 _attoCash) public returns (bool) {
         require(!isFinalized());
         cash.transferFrom(msg.sender, address(this), _attoCash);
+        universe.deposit(address(this), _attoCash, address(this));
         validityBondAttoCash = validityBondAttoCash.add(_attoCash);
         return true;
     }
@@ -109,7 +112,6 @@ contract Market is Initializable, Ownable, IMarket {
         return ShareTokenFactory(augur.lookup("ShareTokenFactory")).createShareToken(augur, _outcome);
     }
 
-    // This will need to be called manually for each open market if a spender contract is updated
     function approveSpenders() public returns (bool) {
         bytes32[5] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("ClaimTradingProceeds"), bytes32("Orders")];
         for (uint256 i = 0; i < _names.length; i++) {
@@ -347,12 +349,12 @@ contract Market is Initializable, Ownable, IMarket {
         uint256 _marketCreatorFeesAttoCash = marketCreatorFeesAttoCash;
         marketCreatorFeesAttoCash = 0;
         if (!isInvalid()) {
-            cash.transfer(owner, _marketCreatorFeesAttoCash);
+            universe.withdraw(owner, _marketCreatorFeesAttoCash, address(this));
             if (_affiliateAddress != NULL_ADDRESS) {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash));
+            universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash), address(this));
             totalAffiliateFeesAttoCash = 0;
         }
     }
@@ -370,7 +372,7 @@ contract Market is Initializable, Ownable, IMarket {
             return true;
         }
         affiliateFeesAttoCash[_affiliate] = 0;
-        cash.transfer(_affiliate, _affiliateBalance);
+        universe.withdraw(_affiliate, _affiliateBalance, address(this));
         return true;
     }
 
@@ -410,22 +412,16 @@ contract Market is Initializable, Ownable, IMarket {
 
         disavowCrowdsourcers();
 
-        IUniverse _currentUniverse = universe;
         bytes32 _winningForkPayoutDistributionHash = _forkingMarket.getWinningPayoutDistributionHash();
-        IUniverse _destinationUniverse = _currentUniverse.getChildUniverse(_winningForkPayoutDistributionHash);
-
-        universe.decrementOpenInterestFromMarket(this);
+        IUniverse _destinationUniverse = universe.getChildUniverse(_winningForkPayoutDistributionHash);
 
         // follow the forking market to its universe
         if (disputeWindow != IDisputeWindow(0)) {
             // Markets go into the standard resolution period during fork migration even if they were in the initial dispute window. We want to give some time for REP to migrate.
             disputeWindow = _destinationUniverse.getOrCreateNextDisputeWindow(false);
         }
-        _destinationUniverse.addMarketTo();
-        _currentUniverse.removeMarketFrom();
+        universe.migrateMarketOut(_destinationUniverse);
         universe = _destinationUniverse;
-
-        universe.incrementOpenInterestFromMarket(this);
 
         // Pay the REP bond.
         repBond = universe.getOrCacheMarketRepBond();

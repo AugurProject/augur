@@ -81,3 +81,5 @@ export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 }
 export class Trade extends c.Trade<BigNumber> {
 }
+export class Formulas extends c.Formulas<BigNumber> {
+}
