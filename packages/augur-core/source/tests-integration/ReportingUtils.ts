@@ -105,7 +105,7 @@ export class ReportingUtils {
         }
     }
 
-    public async proceedToFork(fixture: TestFixture, market: Market) {
+    public async proceedToFork(fixture: TestFixture, market: Market, universe: Universe) {
         let forkingMarket = await market.getForkingMarket_();
         let disputeRound = 0;
         while (forkingMarket === ZERO_ADDRESS) {
@@ -122,8 +122,10 @@ export class ReportingUtils {
         for (let i = 0; i < numParticipants.toNumber(); i++) {
             const reportingParticipantAddress = await market.getReportingParticipant_(new BigNumber(i));
             const reportingParticipant = await fixture.getReportingParticipant(reportingParticipantAddress);
-            await reportingParticipant.fork();
-            await reportingParticipant.redeem(fixture.account);
+            console.log(`Creating universe for participant: ${i}`);
+            await universe.createChildUniverse(await reportingParticipant.getPayoutNumerators_());
+            console.log(`Calling forkAndRedeem for participant: ${i}`);
+            await reportingParticipant.forkAndRedeem(fixture.account);
 
             const reportingParticipantStake = await reportingParticipant.getStake_();
             expect(reportingParticipantStake === new BigNumber(0));

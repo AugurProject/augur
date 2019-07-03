@@ -38,9 +38,10 @@ ONE = 10 ** 18
     #Floor test
     (0, 1, ONE / 100, ONE / 100),
 ])
-def test_floating_amount_calculation(numWithCondition, targetWithConditionPerHundred, previousAmount, expectedValue, contractsFixture, universe):
+def test_floating_amount_calculation(numWithCondition, targetWithConditionPerHundred, previousAmount, expectedValue, contractsFixture):
+    formulas = contractsFixture.contracts["Formulas"]
     targetDivisor = 100 / targetWithConditionPerHundred
-    newAmount = universe.calculateFloatingValue(numWithCondition, 100, targetDivisor, previousAmount, ONE / 100)
+    newAmount = formulas.calculateFloatingValue(numWithCondition, 100, targetDivisor, previousAmount, ONE / 100)
     assert newAmount == expectedValue
 
 def test_reporter_fees(contractsFixture, universe, market, cash):
@@ -430,9 +431,11 @@ def test_bond_weight(contractsFixture, universe, cash):
     totalNoShowBondsInPreviousWindow = previousDisputeWindow.designatedReporterNoShowBondTotal()
     designatedReportNoShowBondsInPreviousWindow = previousDisputeWindow.designatedReportNoShowsTotal()
 
+    formulas = contractsFixture.contracts["Formulas"]
+
     oldNoShowBond = newNoShowBond
     newNoShowBond = universe.getOrCacheDesignatedReportNoShowBond()
-    assert newNoShowBond == universe.calculateFloatingValue(1, 3, 20, oldNoShowBond, 0)
+    assert newNoShowBond == formulas.calculateFloatingValue(1, 3, 20, oldNoShowBond, 0)
 
 @fixture(scope="session")
 def reportingSnapshot(fixture, kitchenSinkSnapshot):

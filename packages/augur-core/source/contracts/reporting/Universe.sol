@@ -655,22 +655,6 @@ contract Universe is ITyped, IUniverse {
         return _newMarket;
     }
 
-    /**
-     * @notice Redeems stake for multiple dispute bonds or Participation Tokens
-     * @param _reportingParticipants Winning Initial Reporter or Dispute Crowdsourcer bonds the msg sender has stake in
-     * @param _disputeWindows Dispute Windows (Participation Tokens) the msg sender has tokens for
-     * @return Bool True
-     */
-    function redeemStake(IReportingParticipant[] memory _reportingParticipants, IDisputeWindow[] memory _disputeWindows) public returns (bool) {
-        for (uint256 i=0; i < _reportingParticipants.length; i++) {
-            _reportingParticipants[i].redeem(msg.sender);
-        }
-        for (uint256 i=0; i < _disputeWindows.length; i++) {
-            _disputeWindows[i].redeem(msg.sender);
-        }
-        return true;
-    }
-
     function saveDaiInDSR(uint256 _amount) private returns (bool) {
         daiJoin.join(address(this), _amount);
         uint256 _sDaiAmount = _amount.mul(DAI_ONE) / daiPot.chi(); // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount

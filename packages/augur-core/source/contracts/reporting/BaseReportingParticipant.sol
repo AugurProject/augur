@@ -26,7 +26,7 @@ contract BaseReportingParticipant is IReportingParticipant {
         IUniverse _newUniverse = market.getUniverse().createChildUniverse(payoutNumerators);
         IReputationToken _newReputationToken = _newUniverse.getReputationToken();
         uint256 _balance = reputationToken.balanceOf(address(this));
-        reputationToken.migrateOut(_newReputationToken, _balance);
+        reputationToken.migrateOutByPayout(_newUniverse.getPayoutNumerators(), _balance);
         _newReputationToken.mintForReportingParticipant(size);
         reputationToken = _newReputationToken;
         augur.logReportingParticipantDisavowed(market.getUniverse(), market);
