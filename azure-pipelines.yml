@@ -363,7 +363,7 @@ jobs:
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
           # when we get deploy going we will swap these commands out for
           # docker:release
-          yarn workspace @augurproject/ui build
+          yarn workspace @augurproject/ui docker:build
           docker push augurproject/augur-ui:latest
           #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
         displayName: 'publish docker images on merge to master'
