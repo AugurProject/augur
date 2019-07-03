@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import { BigNumber } from "bignumber.js";
 import { expect } from "chai";
 import { TestFixture } from './TestFixture';
-import { Market } from '../libraries/ContractInterfaces';
+import { Market, Universe } from '../libraries/ContractInterfaces';
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -125,7 +125,7 @@ export class ReportingUtils {
             console.log(`Creating universe for participant: ${i}`);
             await universe.createChildUniverse(await reportingParticipant.getPayoutNumerators_());
             console.log(`Calling forkAndRedeem for participant: ${i}`);
-            await reportingParticipant.forkAndRedeem(fixture.account);
+            await reportingParticipant.forkAndRedeem();
 
             const reportingParticipantStake = await reportingParticipant.getStake_();
             expect(reportingParticipantStake === new BigNumber(0));

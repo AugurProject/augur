@@ -83,3 +83,5 @@ export class Trade extends c.Trade<BigNumber> {
 }
 export class Formulas extends c.Formulas<BigNumber> {
 }
+export class RedeemStake extends c.RedeemStake<BigNumber> {
+}
