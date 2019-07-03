@@ -110,10 +110,10 @@ jobs:
     - TestAndLint
     - PreFlightCheck
     condition: |
-      and
+      or
       (
-        succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        and( succeeded(), eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')),
+        eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -147,7 +147,7 @@ jobs:
       - bash: |
           set -euo pipefail
           yarn build
-        displayName: yarn build
+        displayName: yarn build typescript
       - bash: |
           set -euo pipefail
           yarn docker:build:augur
@@ -358,9 +358,19 @@ jobs:
           set -euo pipefail
           docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          docker tag augurproject/augur-build:latest augurproject/augur-build:$(Build.SourceVersion)
+          yarn workspace @augurproject/ui docker:build
+          docker tag augurproject/augur-ui:latest augurproject/augur-ui:$(Build.SourceVersion)
           docker images
+          docker push augurproject/augur-build:$(Build.SourceVersion)
           docker push augurproject/augur-build:latest
+          docker push augurproject/augur-ui:$(Build.SourceVersion)
+          docker push augurproject/augur-ui:latest
         displayName: 'publish docker images on merge to master'
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/ui build
+        displayName: yarn build ui
       - task: Docker@1
         displayName: docker logout
         inputs:
