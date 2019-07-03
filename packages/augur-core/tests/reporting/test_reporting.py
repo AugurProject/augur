@@ -429,7 +429,7 @@ def test_forking_values(localFixture, universe, market):
     losingPayoutNumerators = [0, 0, market.getNumTicks()]
     losingUniverse =  localFixture.applySignature('Universe', universe.createChildUniverse(losingPayoutNumerators))
     losingUniverseReputationToken = localFixture.applySignature('ReputationToken', losingUniverse.getReputationToken())
-    assert reputationToken.migrateOut(losingUniverseReputationToken.address, 100, sender=localFixture.accounts[1])
+    assert reputationToken.migrateOutByPayout(losingPayoutNumerators, 100, sender=localFixture.accounts[1])
     lowerChildUniverseTheoreticalSupply = childUniverseReputationToken.getTotalTheoreticalSupply()
     assert lowerChildUniverseTheoreticalSupply == childUniverseTheoreticalSupply - 100
 
