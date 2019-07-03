@@ -10,6 +10,7 @@ import { EnvObject } from "modules/types";
 export class SDK {
   public sdk: Augur<Provider> | null = null;
   public isWeb3Transport: boolean = false;
+  public env: EnvObject = null;
 
   public async makeApi(
     provider: JsonRpcProvider,
@@ -19,7 +20,7 @@ export class SDK {
     isWeb3: boolean = false,
   ) {
     this.isWeb3Transport = isWeb3;
-    const endpoint = env["ethereum-node"].http
+    this.env = env;
     const ethersProvider = new EthersProvider(provider, 10, 0, 40);
     const networkId = await ethersProvider.getNetworkId();
     const contractDependencies = new ContractDependenciesEthers(
@@ -41,7 +42,7 @@ export class SDK {
       sdk.getSyncData().then((syncData) => console.table({0: syncData}));
     })(this.sdk));
 */
-    this.sdk.connect(endpoint ? endpoint : "http://localhost:8545", account);
+    this.sdk.connect(env["ethereum-node"].http ? env["ethereum-node"].http : "http://localhost:8545", account);
   }
 
   public async destroy() {
