@@ -10,7 +10,7 @@ from json import dump as json_dump, load as json_load, dumps as json_dumps
 from os import path, walk, makedirs, remove as remove_file
 from re import findall
 from contract import Contract
-from utils import stringToBytes, BuyWithCash
+from utils import stringToBytes, BuyWithCash, PrintGasUsed
 
 from web3 import (
     EthereumTesterProvider,
@@ -360,6 +360,7 @@ class ContractsFixture:
 
     def uploadAndAddToAugur(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=[]):
         lookupKey = lookupKey if lookupKey else path.splitext(path.basename(relativeFilePath))[0]
+        #with PrintGasUsed(self, "UPLOAD CONTRACT %s" % lookupKey, 0):
         contract = self.upload(relativeFilePath, lookupKey, signatureKey, constructorArgs)
         if not contract: return None
         self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
@@ -498,11 +499,13 @@ class ContractsFixture:
 
     def uploadAugur(self):
         # We have to upload Augur first
-        return self.upload("../source/contracts/Augur.sol")
+        with PrintGasUsed(self, "AUGUR CREATION", 0):
+            return self.upload("../source/contracts/Augur.sol")
 
     def createUniverse(self):
         augur = self.contracts['Augur']
-        assert augur.createGenesisUniverse(getReturnData=False)
+        with PrintGasUsed(self, "GENESIS CREATION", 0):
+            assert augur.createGenesisUniverse(getReturnData=False)
         universeCreatedLogs = augur.getLogs("UniverseCreated")
         universeAddress = universeCreatedLogs[0].args.childUniverse
         universe = self.applySignature('Universe', universeAddress)
@@ -635,7 +638,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
     fixture.contracts['DaiPot'].setDSR(1000000564701133626865910626) # 5% a day
-    # TODO assert universe.toggleDSR()
+    assert universe.toggleDSR()
 
     tokensFail = fixture.upload("solidity_test_helpers/ERC777Fail.sol")
     erc1820Registry = fixture.contracts['ERC1820Registry']

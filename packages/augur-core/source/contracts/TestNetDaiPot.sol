@@ -23,7 +23,7 @@ contract TestNetDaiPot is IDaiPot {
         rho = time.getTimestamp();
     }
 
-    function rpow(uint x, uint n, uint base) public pure returns (uint z) {
+    function rpow(uint x, uint n, uint base) internal pure returns (uint z) {
         assembly {
             switch x case 0 {switch n case 0 {z := base} default {z := 0}}
             default {

@@ -116,20 +116,21 @@ export class ReportingUtils {
         }
 
         let ethBalance = await fixture.getEthBalance();
-        console.log("ethBalance before calling forkAndRedeem", ethBalance.toString());
+        console.log("ethBalance before calling for and redeem", ethBalance.toString());
 
         const numParticipants = await market.getNumParticipants_();
         for (let i = 0; i < numParticipants.toNumber(); i++) {
             const reportingParticipantAddress = await market.getReportingParticipant_(new BigNumber(i));
             const reportingParticipant = await fixture.getReportingParticipant(reportingParticipantAddress);
-            await reportingParticipant.forkAndRedeem();
+            await reportingParticipant.fork();
+            await reportingParticipant.redeem(fixture.account);
 
             const reportingParticipantStake = await reportingParticipant.getStake_();
             expect(reportingParticipantStake === new BigNumber(0));
         }
 
         ethBalance = await fixture.getEthBalance();
-        console.log("ethBalance after calling forkAndRedeem", ethBalance.toString());
+        console.log("ethBalance after calling fork and redeem", ethBalance.toString());
 
         console.log("\nCalled forkAndRedeem on reporting participants");
     }
