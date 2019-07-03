@@ -1,30 +1,30 @@
-import React, { Component } from "react";
-import classNames from "classnames";
-import { BigNumber, createBigNumber } from "utils/create-big-number";
+import React, { Component } from 'react';
+import classNames from 'classnames';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 
-import Form from "modules/trading/components/form/form";
-import Confirm from "modules/trading/components/confirm/confirm";
-import { generateTrade } from "modules/trades/helpers/generate-trade";
+import Form from 'modules/trading/components/form/form';
+import Confirm from 'modules/trading/components/confirm/confirm';
+import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import {
   SCALAR,
   BUY,
   SELL,
-  UPPER_FIXED_PRECISION_BOUND
-} from "modules/common/constants";
-import Styles from "modules/trading/components/wrapper/wrapper.styles.less";
-import { OrderButton } from "modules/common/buttons";
-import { formatShares, formatGasCostToEther } from "utils/format-number";
-import convertExponentialToDecimal from "utils/convert-exponential";
-import { MarketData, OutcomeFormatted, FormattedNumber } from "modules/types";
+  UPPER_FIXED_PRECISION_BOUND,
+} from 'modules/common/constants';
+import Styles from 'modules/trading/components/wrapper/wrapper.styles.less';
+import { OrderButton } from 'modules/common/buttons';
+import { formatShares, formatGasCostToEther } from 'utils/format-number';
+import convertExponentialToDecimal from 'utils/convert-exponential';
+import { MarketData, OutcomeFormatted, FormattedNumber } from 'modules/types';
 
 // TODO: refactor the need to use this function.
 function pick(object, keys) {
   return keys.reduce((obj, key) => {
-     if (object && object.hasOwnProperty(key)) {
-        obj[key] = object[key];
-     }
-     return obj;
-   }, {});
+    if (object && object.hasOwnProperty(key)) {
+      obj[key] = object[key];
+    }
+    return obj;
+  }, {});
 }
 
 interface WrapperProps {
@@ -84,11 +84,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     super(props);
 
     this.state = {
-      orderPrice: props.selectedOrderProperties.price || "",
-      orderQuantity: props.selectedOrderProperties.quantity || "",
-      orderEthEstimate: "",
-      orderEscrowdEth: "",
-      gasCostEst: "",
+      orderPrice: props.selectedOrderProperties.price || '',
+      orderQuantity: props.selectedOrderProperties.quantity || '',
+      orderEthEstimate: '',
+      orderEscrowdEth: '',
+      gasCostEst: '',
       selectedNav: props.selectedOrderProperties.selectedNav || BUY,
       doNotCreateOrders:
         props.selectedOrderProperties.doNotCreateOrders || false,
@@ -139,7 +139,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   updateState(stateValues, cb: () => void) {
-    this.setState(currentState => ({ ...currentState, ...stateValues }), cb );
+    this.setState(currentState => ({ ...currentState, ...stateValues }), cb);
   }
 
   clearOrderConfirmation() {
@@ -153,11 +153,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     if (wholeForm) {
       this.updateState(
         {
-          orderPrice: "",
-          orderQuantity: "",
-          orderEthEstimate: "",
-          orderEscrowdEth: "",
-          gasCostEst: "",
+          orderPrice: '',
+          orderQuantity: '',
+          orderEthEstimate: '',
+          orderEscrowdEth: '',
+          gasCostEst: '',
           doNotCreateOrders: false,
           selectedNav: this.state.selectedNav,
           trade,
@@ -202,12 +202,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     const { updateTradeCost, selectedOutcome, market, gasPrice } = this.props;
     let useValues = {
       ...order,
-      orderEthEstimate: "",
+      orderEthEstimate: '',
     };
     if (!fromOrderBook) {
       useValues = {
         ...this.state,
-        orderEthEstimate: "",
+        orderEthEstimate: '',
       };
     }
     this.updateState(
@@ -228,13 +228,16 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           (err, newOrder) => {
             if (err) {
               // just update properties for form
-              return this.updateState({
-                ...this.state,
-                ...order,
-                orderEthEstimate: "",
-                orderEscrowdEth: "",
-                gasCostEst: "",
-              }, () => {});
+              return this.updateState(
+                {
+                  ...this.state,
+                  ...order,
+                  orderEthEstimate: '',
+                  orderEscrowdEth: '',
+                  gasCostEst: '',
+                },
+                () => {}
+              );
             }
 
             const newOrderEthEstimate = formatShares(
@@ -244,15 +247,22 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               }
             ).rounded;
 
-            const formattedGasCost = formatGasCostToEther(newOrder.gasLimit, { decimalsRounded: 4 }, String(gasPrice));
-            this.updateState({
-              ...this.state,
-              ...order,
-              orderEthEstimate: newOrderEthEstimate,
-              orderEscrowdEth: newOrder.potentialEthLoss.formatted,
-              trade: newOrder,
-              gasCostEst: formattedGasCost,
-            }, () => {});
+            const formattedGasCost = formatGasCostToEther(
+              newOrder.gasLimit,
+              { decimalsRounded: 4 },
+              String(gasPrice)
+            );
+            this.updateState(
+              {
+                ...this.state,
+                ...order,
+                orderEthEstimate: newOrderEthEstimate,
+                orderEscrowdEth: newOrder.potentialEthLoss.formatted,
+                trade: newOrder,
+                gasCostEst: formattedGasCost,
+              },
+              () => {}
+            );
           }
         );
       }
@@ -285,9 +295,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.updateState(
       {
         ...order,
-        orderQuantity: "",
-        orderEscrowdEth: "",
-        gasCostEst: "",
+        orderQuantity: '',
+        orderEscrowdEth: '',
+        gasCostEst: '',
       },
       () =>
         updateTradeShares(
@@ -308,7 +318,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               }
             ).rounded;
 
-            const formattedGasCost = formatGasCostToEther(newOrder.gasLimit, { decimalsRounded: 4 }, String(gasPrice));
+            const formattedGasCost = formatGasCostToEther(
+              newOrder.gasLimit,
+              { decimalsRounded: 4 },
+              String(gasPrice)
+            );
 
             this.updateState(
               {
@@ -432,7 +446,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           )}
         </div>
         {s.trade &&
-          (s.trade.shareCost.value !== 0 || s.trade.totalCost.value !== 0) && (
+          (s.trade.shareCost.value !== 0 ||
+            s.trade.totalCost.value !== 0 ||
+            (s.trade.sharesFilled && s.trade.sharesFilled.value !== 0)) && (
             <Confirm
               allowanceAmount={allowanceAmount}
               numOutcomes={market.numOutcomes}

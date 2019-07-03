@@ -588,6 +588,7 @@ export interface Trade {
   potentialEthProfit: FormattedNumber;
   potentialEthLoss: FormattedNumber;
   totalCost: FormattedNumber;
+  sharesFilled: FormattedNumber;
   shareCost: FormattedNumber;
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;
