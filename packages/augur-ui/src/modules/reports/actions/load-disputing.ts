@@ -1,4 +1,3 @@
-import { augur, constants } from "services/augurjs";
 import logError from "utils/log-error";
 import {
   updateAwaitingDisputeMarkets,
@@ -11,6 +10,7 @@ import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
 import { augurSdk } from "services/augursdk";
+import { REPORTING_STATE } from "modules/common/constants";
 
 export const loadDisputing = (
   callback: NodeStyleCallback = logError
@@ -27,13 +27,13 @@ export const loadDisputing = (
   const augur = augurSdk.get();
   const disputingMarkets =         {
     reportingState: [
-      constants.REPORTING_STATE.CROWDSOURCING_DISPUTE,
-      constants.REPORTING_STATE.AWAITING_FORK_MIGRATION
+      REPORTING_STATE.CROWDSOURCING_DISPUTE,
+      REPORTING_STATE.AWAITING_FORK_MIGRATION
     ],
     ...args
   };
   const awaitingMarkets = {
-    reportingState: constants.REPORTING_STATE.AWAITING_NEXT_WINDOW,
+    reportingState: REPORTING_STATE.AWAITING_NEXT_WINDOW,
     ...args
   };
   const disputing = await augur.getMarkets(disputingMarkets);

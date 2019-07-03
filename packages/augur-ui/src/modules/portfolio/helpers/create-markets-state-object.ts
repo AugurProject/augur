@@ -1,9 +1,9 @@
-import { constants } from "services/augurjs";
 import {
   ALL_MARKETS,
   MARKET_OPEN,
   MARKET_REPORTING,
   MARKET_CLOSED,
+  REPORTING_STATE,
 } from "modules/common/constants";
 import { orderBy } from "lodash";
 import { MarketData } from "modules/types";
@@ -13,15 +13,13 @@ export const createMarketsStateObject = (markets) => {
   const reportingMarkets: Array<MarketData> = [];
   const closedMarkets: Array<MarketData> = [];
 
-  const reportingStates = constants.REPORTING_STATE;
-
   markets.forEach((market) => {
     if (
-      market.reportingState === reportingStates.FINALIZED ||
-      market.reportingState === reportingStates.AWAITING_FINALIZATION
+      market.reportingState === REPORTING_STATE.FINALIZED ||
+      market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION
     ) {
       closedMarkets.push(market);
-    } else if (market.reportingState !== reportingStates.PRE_REPORTING) {
+    } else if (market.reportingState !== REPORTING_STATE.PRE_REPORTING) {
       reportingMarkets.push(market);
     } else {
       openPositionMarkets.push(market);

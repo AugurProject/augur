@@ -1,5 +1,4 @@
 import { augurSdk } from "services/augursdk";
-import * as AugurJS from "services/augurjs";
 import { updateBlockchain } from "modules/app/actions/update-blockchain";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { createBigNumber } from "utils/create-big-number";

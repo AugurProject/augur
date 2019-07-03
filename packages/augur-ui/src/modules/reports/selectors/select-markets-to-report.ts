@@ -1,5 +1,5 @@
 import store from "store";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import { MarketData } from "modules/types";
 
 function filterForkedMarket(market) {
@@ -17,20 +17,20 @@ export const selectMarketsToReport = (marketsData: Array<MarketData>, loginAddre
     .filter(
       market =>
         market.reportingState ===
-          constants.REPORTING_STATE.DESIGNATED_REPORTING &&
+          REPORTING_STATE.DESIGNATED_REPORTING &&
         market.designatedReporter === loginAddress
     )
     .sort((a, b) => a.endTime - b.endTime);
   markets.open = marketsData
     .filter(
       market =>
-        market.reportingState === constants.REPORTING_STATE.OPEN_REPORTING
+        market.reportingState === REPORTING_STATE.OPEN_REPORTING
     )
     .sort((a, b) => a.endTime - b.endTime);
   markets.upcoming = marketsData
     .filter(
       market =>
-        market.reportingState === constants.REPORTING_STATE.PRE_REPORTING &&
+        market.reportingState === REPORTING_STATE.PRE_REPORTING &&
         market.designatedReporter === loginAddress &&
         filterForkedMarket(market)
     )

@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { createBigNumber } from "utils/create-big-number";
 import {

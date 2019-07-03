@@ -1,7 +1,7 @@
 import { API } from "@augurproject/sdk/build/state/getter/API";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { makeDbMock, makeProvider, seedPath } from "../../../libs";
-import { ContractAPI, deployContracts, ACCOUNTS } from "@augurproject/tools";
+import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
@@ -10,8 +10,8 @@ let api: API;
 let john: ContractAPI;
 
 beforeAll(async () => {
+  const { addresses } = loadSeed(seedPath);
   const provider = await makeProvider(ACCOUNTS);
-  const { addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
 
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   db = mock.makeDB(john.augur, ACCOUNTS);

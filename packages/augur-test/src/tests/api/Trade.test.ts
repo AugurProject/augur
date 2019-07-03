@@ -1,4 +1,4 @@
-import { ContractAPI, ACCOUNTS, deployContracts } from "@augurproject/tools";
+import { ContractAPI, ACCOUNTS, loadSeed } from "@augurproject/tools";
 import { BigNumber } from 'bignumber.js';
 import { makeProvider, seedPath } from "../../libs";
 
@@ -6,8 +6,8 @@ let john: ContractAPI;
 let mary: ContractAPI;
 
 beforeAll(async () => {
+  const { addresses } = loadSeed(seedPath);
   const provider = await makeProvider(ACCOUNTS);
-  const { addresses } = await deployContracts(provider, seedPath, ACCOUNTS);
 
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);

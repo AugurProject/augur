@@ -3,7 +3,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { augur } from "services/augurjs";
 
 import CreateMarketDefine from "modules/create-market/components/create-market-form-define/create-market-form-define";
 import CreateMarketOutcome from "modules/create-market/components/create-market-form-outcome/create-market-form-outcome";

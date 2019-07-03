@@ -4,9 +4,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
-import { constants } from "services/augurjs";
 
-import { YES_NO, CATEGORICAL, SCALAR } from "modules/common/constants";
+import { YES_NO, CATEGORICAL, SCALAR, REPORTING_STATE } from "modules/common/constants";
 import FormStyles from "modules/common/form-styles";
 import Styles from "modules/reporting/components/reporting-report-form/reporting-report-form.styles";
 import { InputErrorIcon } from "modules/common/icons";
@@ -76,7 +75,7 @@ export default class ReportingReportForm extends Component {
     const updatedValidations = { ...validations };
     if (
       reportingState !== this.props.market.reportingState &&
-      reportingState === constants.REPORTING_STATE.AWAITING_NEXT_WINDOW
+      reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW
     ) {
       updatedValidations.neverReported = false;
       this.props.updateState({
@@ -192,7 +191,7 @@ export default class ReportingReportForm extends Component {
     if (
       !isDesignatedReporter &&
       !isOpenReporting &&
-      reportingState !== constants.REPORTING_STATE.AWAITING_NEXT_WINDOW
+      reportingState !== REPORTING_STATE.AWAITING_NEXT_WINDOW
     ) {
       errorMessage =
         "You are not the Designated Reporter for this market. Only the Designated Reporter may submit a report.";

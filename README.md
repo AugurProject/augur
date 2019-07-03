@@ -31,7 +31,7 @@
 
 <p align="center"><a href="https://github.com/AugurProject/augur-app/releases/latest"> <img width="200" src="https://augur.net/dist/images/meta_logo.png"> </a></p>
 
-## Repository Typescript build commands 
+## Repository Typescript build commands
 
 NOTE: Run `yarn` at the base of the repository to install dependencies before running any of the following.
 
@@ -56,8 +56,6 @@ Run the following 4 commands, each in a separate terminal session from the root 
    - 5 second block times, real time, has contracts and canned market data
  * `yarn workspace @augurproject/tools docker:geth`
    - 5 second block times, no contracts uploaded, use `dp` to upload contracts ...
-
-`yarn workspace @augurproject/node clean-start`
 
 `yarn workspace @augurproject/ui dev`
 

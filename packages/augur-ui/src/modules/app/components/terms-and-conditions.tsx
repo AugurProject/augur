@@ -26,9 +26,6 @@ const TermsAndConditions = ({
       <span>
         AugurUI: <span>{augurui}</span>
       </span>
-      <span>
-        AugurJS: <span>{augurjs}</span>
-      </span>
     </div>
   </div>
 );

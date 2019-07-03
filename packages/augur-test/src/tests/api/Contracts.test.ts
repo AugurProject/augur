@@ -1,6 +1,6 @@
 import { makeProvider, seedPath } from "../../libs";
 import { Contracts } from '@augurproject/sdk/build/api/Contracts';
-import { deployContracts, ACCOUNTS } from '@augurproject/tools';
+import { ACCOUNTS, loadSeed, makeSigner, makeDependencies } from '@augurproject/tools';
 import { GenericAugurInterfaces } from '@augurproject/core';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { BigNumber } from 'bignumber.js';
@@ -19,9 +19,10 @@ let dependencies: ContractDependenciesEthers;
 let contracts: Contracts;
 beforeAll(async () => {
   const provider = await makeProvider(ACCOUNTS);
-  const result = await deployContracts(provider, seedPath, ACCOUNTS);
-  addresses = result.addresses;
-  dependencies = result.dependencies;
+  addresses = loadSeed(seedPath).addresses;
+  const signer = await makeSigner(ACCOUNTS[0], provider);
+  dependencies = makeDependencies(ACCOUNTS[0], provider, signer);
+
   contracts = new Contracts(addresses, dependencies);
 }, 120000);
 

@@ -14,8 +14,9 @@ sleep 10s
 cd /augur
 
 # couldn't get dp deploy to work had to split it up, contract addresses were reloaded
-yarn workspace @augurproject/tools flash run deploy
+yarn workspace @augurproject/tools flash run deploy --write-artifacts
 yarn workspace @augurproject/tools build
+yarn workspace @augurproject/tools flash run faucet --amount 10000000000000000000
 yarn workspace @augurproject/tools flash run rep-faucet --amount 100000
 yarn workspace @augurproject/tools flash run create-canned-markets-and-orders
 

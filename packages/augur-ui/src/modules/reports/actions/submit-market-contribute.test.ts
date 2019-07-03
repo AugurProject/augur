@@ -3,11 +3,10 @@ import testState from "test/testState";
 import configureMockStore from "redux-mock-store";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 import { removeAccountDispute } from "modules/reports/actions/update-account-disputes";
-import { augur } from "services/augurjs";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { submitMarketContribute } from "modules/reports/actions/submit-market-contribute";
 
-jest.mock("services/augurjs");
+jest.mock("services/initialize");
 jest.mock("modules/reports/selectors/get-payout-numerators");
 jest.mock("modules/reports/actions/update-account-disputes");
 
@@ -31,12 +30,7 @@ describe(`modules/reports/actions/submit-market-contribute.js`, () => {
 
   describe("augur successful", () => {
     beforeEach(() => {
-      augur.api.Market.contribute.mockImplementation(
-        ({ onSent, onSuccess }) => {
-          onSent();
-          onSuccess();
-        }
-      );
+
     });
 
     test(`should call callback and history with good data`, () => {
@@ -144,10 +138,7 @@ describe(`modules/reports/actions/submit-market-contribute.js`, () => {
 
   describe("augur failed", () => {
     beforeEach(() => {
-      augur.api.Market.contribute.mockImplementation(({ onSent, onFailed }) => {
-        onSent();
-        onFailed();
-      });
+
     });
     test(`should call both callback and history with good data`, () => {
       store.dispatch(

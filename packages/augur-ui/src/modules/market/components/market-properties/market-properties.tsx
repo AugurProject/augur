@@ -18,7 +18,7 @@ import getValue from "utils/get-value";
 import { dateHasPassed } from "utils/format-date";
 import Styles from "modules/market/components/market-properties/market-properties.styles.less";
 import ChevronFlip from "modules/common/chevron-flip";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import { FavoritesButton } from "modules/common/buttons";
 
 const {
@@ -26,7 +26,7 @@ const {
   OPEN_REPORTING,
   CROWDSOURCING_DISPUTE,
   AWAITING_NEXT_WINDOW
-} = constants.REPORTING_STATE;
+} = REPORTING_STATE;
 const ShowResolutionStates = [
   DESIGNATED_REPORTING,
   OPEN_REPORTING,
