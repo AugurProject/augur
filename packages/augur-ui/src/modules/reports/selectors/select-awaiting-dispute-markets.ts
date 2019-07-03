@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createBigNumber } from "utils/create-big-number";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import store from "store";
 import { orderBy } from "lodash";
 import { isEmpty } from "utils/is-populated";
@@ -23,7 +23,7 @@ export const selectMarketsAwaitingDispute = createSelector(
     let filteredMarkets = markets.filter(
       market =>
         market.reportingState ===
-          constants.REPORTING_STATE.AWAITING_NEXT_WINDOW &&
+          REPORTING_STATE.AWAITING_NEXT_WINDOW &&
         market.id !== universe.forkingMarket
     );
     // Sort disputed markets by: 1) dispute round, and 2) highest percent staked in non-tentative-winning outcome

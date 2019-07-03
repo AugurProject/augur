@@ -25,60 +25,60 @@ import {
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Augur, SubscriptionEventNames, Provider } from '@augurproject/sdk';
+import { Augur, SubscriptionEventName, Provider } from '@augurproject/sdk';
 
 const EVENTS = {
-  [SubscriptionEventNames.NewBlock]: wrapLogHandler(handleNewBlockLog),
-  [SubscriptionEventNames.MarketCreated]: wrapLogHandler(
+  [SubscriptionEventName.NewBlock]: wrapLogHandler(handleNewBlockLog),
+  [SubscriptionEventName.MarketCreated]: wrapLogHandler(
     handleMarketCreatedLog
   ),
-  [SubscriptionEventNames.MarketMigrated]: wrapLogHandler(
+  [SubscriptionEventName.MarketMigrated]: wrapLogHandler(
     handleMarketMigratedLog
   ),
-  [SubscriptionEventNames.TokensTransferred]: wrapLogHandler(
+  [SubscriptionEventName.TokensTransferred]: wrapLogHandler(
     handleTokensTransferredLog
   ),
-  // [SubscriptionEventNames.OrderCreated]: wrapLogHandler(handleOrderCreatedLog),
-  // [SubscriptionEventNames.OrderCanceled]: wrapLogHandler(handleOrderCanceledLog),
-  // [SubscriptionEventNames.OrderFilled]: wrapLogHandler(handleOrderFilledLog),
-  [SubscriptionEventNames.TradingProceedsClaimed]: wrapLogHandler(
+  // [SubscriptionEventName.OrderCreated]: wrapLogHandler(handleOrderCreatedLog),
+  // [SubscriptionEventName.OrderCanceled]: wrapLogHandler(handleOrderCanceledLog),
+  // [SubscriptionEventName.OrderFilled]: wrapLogHandler(handleOrderFilledLog),
+  [SubscriptionEventName.TradingProceedsClaimed]: wrapLogHandler(
     handleTradingProceedsClaimedLog
   ),
-  [SubscriptionEventNames.InitialReportSubmitted]: wrapLogHandler(
+  [SubscriptionEventName.InitialReportSubmitted]: wrapLogHandler(
     handleInitialReportSubmittedLog
   ),
-  [SubscriptionEventNames.InitialReporterRedeemed]: wrapLogHandler(
+  [SubscriptionEventName.InitialReporterRedeemed]: wrapLogHandler(
     handleInitialReporterRedeemedLog
   ),
-  [SubscriptionEventNames.MarketFinalized]: wrapLogHandler(
+  [SubscriptionEventName.MarketFinalized]: wrapLogHandler(
     handleMarketFinalizedLog
   ),
-  [SubscriptionEventNames.DisputeCrowdsourcerCreated]: wrapLogHandler(
+  [SubscriptionEventName.DisputeCrowdsourcerCreated]: wrapLogHandler(
     handleDisputeCrowdsourcerCreatedLog
   ),
-  [SubscriptionEventNames.DisputeCrowdsourcerContribution]: wrapLogHandler(
+  [SubscriptionEventName.DisputeCrowdsourcerContribution]: wrapLogHandler(
     handleDisputeCrowdsourcerContributionLog
   ),
-  [SubscriptionEventNames.DisputeCrowdsourcerCompleted]: wrapLogHandler(
+  [SubscriptionEventName.DisputeCrowdsourcerCompleted]: wrapLogHandler(
     handleDisputeCrowdsourcerCompletedLog
   ),
-  // [SubscriptionEventNames.DisputeCrowdsourcerRedeemed]:
+  // [SubscriptionEventName.DisputeCrowdsourcerRedeemed]:
   //   wrapLogHandler(handleDisputeCrowdsourcerRedeemedLog)
   // ),
-  // [SubscriptionEventNames.UniverseForked]: wrapLogHandler()),
-  [SubscriptionEventNames.CompleteSetsPurchased]: wrapLogHandler(),
-  [SubscriptionEventNames.CompleteSetsSold]: wrapLogHandler(
+  // [SubscriptionEventName.UniverseForked]: wrapLogHandler()),
+  [SubscriptionEventName.CompleteSetsPurchased]: wrapLogHandler(),
+  [SubscriptionEventName.CompleteSetsSold]: wrapLogHandler(
     handleCompleteSetsSoldLog
   ),
-  // [SubscriptionEventNames.TokensMinted]: wrapLogHandler(handleTokensMintedLog)),
-  [SubscriptionEventNames.TokensBurned]: wrapLogHandler(handleTokensBurnedLog),
-  // [SubscriptionEventNames.FeeWindowCreated]: wrapLogHandler(handleFeeWindowCreatedLog)),
-  // [SubscriptionEventNames.FeeWindowOpened]: wrapLogHandler(handleFeeWindowOpenedLog)),
-  [SubscriptionEventNames.InitialReporterTransferred]: wrapLogHandler(),
-  // [SubscriptionEventNames.TimestampSet]: wrapLogHandler()),
-  // [SubscriptionEventNames.FeeWindowRedeemed]: wrapLogHandler(handleFeeWindowRedeemedLog)),
-  [SubscriptionEventNames.UniverseCreated]: wrapLogHandler(),
-  // [SubscriptionEventNames.Approval]: wrapLogHandler(handleApprovalLog))
+  // [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog)),
+  [SubscriptionEventName.TokensBurned]: wrapLogHandler(handleTokensBurnedLog),
+  // [SubscriptionEventName.FeeWindowCreated]: wrapLogHandler(handleFeeWindowCreatedLog)),
+  // [SubscriptionEventName.FeeWindowOpened]: wrapLogHandler(handleFeeWindowOpenedLog)),
+  [SubscriptionEventName.InitialReporterTransferred]: wrapLogHandler(),
+  // [SubscriptionEventName.TimestampSet]: wrapLogHandler()),
+  // [SubscriptionEventName.FeeWindowRedeemed]: wrapLogHandler(handleFeeWindowRedeemedLog)),
+  [SubscriptionEventName.UniverseCreated]: wrapLogHandler(),
+  // [SubscriptionEventName.Approval]: wrapLogHandler(handleApprovalLog))
 };
 
 export const listenToUpdates = (Augur: Augur<Provider>) => (

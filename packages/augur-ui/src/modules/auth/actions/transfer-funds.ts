@@ -1,11 +1,11 @@
 import * as speedomatic from "speedomatic";
-import { augur } from "services/augurjs";
 import { updateAlert, addAlert } from "modules/alerts/actions/alerts";
 import { selectCurrentTimestampInSeconds as getTime } from "store/select-state";
 import { ETH, REP, CONFIRMED, FAILED } from "modules/common/constants";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { sendRep, sendEthers } from "modules/contracts/actions/contractCalls";
 
 export function transferFunds(
   amount: string,
@@ -25,8 +25,12 @@ export function transferFunds(
         })
       );
     };
+    // TODO: need to add ability to transfer DAI
     switch (currency) {
       case ETH:
+        // TODO: alerts will be handled by pending tx event stuff.
+        return sendEthers(to, amount);
+        /*
         return augur.assets.sendEther({
           meta: loginAccount.meta,
           to,
@@ -51,7 +55,11 @@ export function transferFunds(
           onSuccess: (tx: any) => update(tx.hash, CONFIRMED),
           onFailed: (tx: any) => update(tx.hash, FAILED)
         });
+        */
       case REP:
+        return sendRep(to, amount);
+        // TODO: alerts will be handled by pending tx event stuff.
+        /*
         return augur.assets.sendReputation({
           meta: loginAccount.meta,
           universe: universe.id,
@@ -80,6 +88,7 @@ export function transferFunds(
           onSuccess: (tx: any) => update(tx.hash, CONFIRMED),
           onFailed: (tx: any) => update(tx.hash, FAILED)
         });
+        */
       default:
         console.error("transferFunds: unknown currency", currency);
     }

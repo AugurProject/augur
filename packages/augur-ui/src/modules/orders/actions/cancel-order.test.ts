@@ -1,14 +1,9 @@
 import mocks from "test/mockStore";
 import { CANCEL_ORDER, BID, ASK } from "modules/common-elements/constants";
-import { augur } from "services/augurjs";
 
-jest.mock("services/augurjs");
+jest.mock("services/initialize");
 
 describe("modules/orders/actions/cancel-order.js", () => {
-  augur.api = jest.fn(() => {});
-  augur.api.CancelOrder = jest.fn(() => {});
-  augur.api.CancelOrder.cancelOrder = jest.fn(() => {});
-
   const { mockStore, state } = mocks;
   const cancelOrderModule = require("modules/orders/actions/cancel-order");
 

@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createBigNumber } from "utils/create-big-number";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import { orderBy } from "lodash";
 import { isEmpty } from "utils/is-populated";
 import selectDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
@@ -19,9 +19,9 @@ export const selectMarketsInDisputeSelector = () =>
       let filteredMarkets = markets.filter(
         market =>
           market.reportingState ===
-            constants.REPORTING_STATE.AWAITING_FORK_MIGRATION ||
+            REPORTING_STATE.AWAITING_FORK_MIGRATION ||
           market.reportingState ===
-            constants.REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+            REPORTING_STATE.CROWDSOURCING_DISPUTE ||
           market.id === universe.forkingMarket
       );
       // Sort disputed markets by: 1) dispute round, and 2) highest percent staked in non-tentative-winning outcome

@@ -438,12 +438,14 @@ export default class ReportingHeader extends Component {
                       </div>
                     </div>
                   </div>
+                  {/*
                   <TimeProgressBar
                     endTime={parseInt(reportingWindowStats.endTime, 10)}
                     currentTime={currentTime}
                     startTime={reportingWindowStats.startTime}
                     timePeriodLabel="Dispute Window"
                   />
+                  */}
                 </div>
               </div>
             )}

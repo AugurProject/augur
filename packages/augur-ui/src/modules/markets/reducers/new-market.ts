@@ -6,7 +6,6 @@ import {
 } from "modules/markets/actions/update-new-market";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { SETTLEMENT_FEE_DEFAULT } from "modules/common/constants";
-import { DEFAULT_SCALAR_TICK_SIZE } from "@augurproject/augur.js/src/constants";
 
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
@@ -44,7 +43,7 @@ const DEFAULT_STATE: NewMarket = {
   designatedReporterType: "",
   designatedReporterAddress: "",
   endTime: null,
-  tickSize: DEFAULT_SCALAR_TICK_SIZE,
+  tickSize: 100,
   hour: null,
   minute: null,
   meridiem: null,

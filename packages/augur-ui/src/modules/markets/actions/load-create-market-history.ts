@@ -1,4 +1,3 @@
-import { augur } from 'services/augurjs';
 import { augurSdk } from 'services/augursdk';
 import logError from 'utils/log-error';
 import { AppState } from 'store';

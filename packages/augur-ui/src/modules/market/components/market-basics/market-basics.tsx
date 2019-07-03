@@ -17,7 +17,7 @@ import CommonStyles from "modules/market/components/common/market-common.styles.
 import Styles from "modules/market/components/market-basics/market-basics.styles.less";
 import SingleSlicePieGraph from "modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph";
 import TimeRemainingIndicatorWrapper from "modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE, CONTRACT_INTERVAL } from "modules/common/constants";
 import moment from "moment";
 import { CategoryTagTrail } from "modules/common/labels";
 import { MARKETS } from "modules/routes/constants/views";
@@ -33,13 +33,13 @@ const MarketBasics = ({
 }) => {
   let ReportEndingIndicator: any = () => null;
   if (
-    p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING &&
+    p.reportingState === REPORTING_STATE.DESIGNATED_REPORTING &&
     !p.hideReportEndingIndicator
   ) {
     const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph);
     const endTime = moment(p.endTimeFormatted.value)
       .add(
-        constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS,
+        CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS,
         "seconds"
       )
       .toDate();

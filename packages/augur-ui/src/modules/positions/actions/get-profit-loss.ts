@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
@@ -20,6 +19,8 @@ export default function getProfitLoss({
     const { loginAccount } = getState();
     if (!loginAccount.address) return callback("not logged in");
     const Augur = augurSdk.get();
+    // TODO: figure this out
+    /*
     const result = Augur.getProfitLoss({
       universe,
       account: loginAccount.address,
@@ -29,5 +30,6 @@ export default function getProfitLoss({
       marketId,
     })
     callback(result);
+    */
   };
 }

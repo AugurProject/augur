@@ -15,6 +15,8 @@ export const updateTopBarPL = (
     return callback(null);
 
   const Augur = augurSdk.get();
+  // TODO: figure out issue with get profit and loss
+  /*
   const data = await Augur.getProfitLoss({
     universe: universe.id,
     account: loginAccount.address,
@@ -22,9 +24,11 @@ export const updateTopBarPL = (
     endTime: null,
     periodInterval: null,
   });
+
   updateLoginAccount({
     // @ts-ignore
     realizedPL: data[data.length - 1].realized,
     realizedPLPercent: data[data.length - 1].realizedPercent,
   });
+  */
 };

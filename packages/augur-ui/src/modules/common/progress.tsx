@@ -1,9 +1,9 @@
 import * as React from "react";
-import Styles from "modules/common/progress.styles";
+import Styles from "modules/common/progress.styles.less";
 import * as format from "utils/format-date";
 import classNames from "classnames";
-import { constants } from "services/augurjs";
 import { DateFormattedObject } from "modules/types";
+import { REPORTING_STATE } from "modules/common/constants";
 
 export interface CountdownProgressProps {
   time: DateFormattedObject | null;
@@ -51,7 +51,6 @@ const reportingStateToLabelTime = (
   endTime: DateFormattedObject,
   reportingEndTime: DateFormattedObject
 ) => {
-  const { REPORTING_STATE } = constants;
   let label: string = "";
   let time: DateFormattedObject | null = null;
   switch (reportingState) {

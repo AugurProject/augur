@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { formatGasCostToEther } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
@@ -14,7 +13,9 @@ export const migrateMarketThroughFork = (
   callback: NodeStyleCallback = logError,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount } = getState();
-  augur.api.Market.migrateThroughOneFork({
+  // TODO: call contract methods as needed as part of forking redesign
+  /*
+  api.Market.migrateThroughOneFork({
     tx: {
       to: marketId,
       estimateGas
@@ -37,4 +38,5 @@ export const migrateMarketThroughFork = (
     },
     onFailed: (err: any) => callback(err)
   });
+  */
 };

@@ -2,7 +2,6 @@ import makePath from "modules/routes/helpers/make-path";
 import logError from "utils/log-error";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { removeAccountDispute } from "modules/reports/actions/update-account-disputes";
-import { augur } from "services/augurjs";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
@@ -30,8 +29,9 @@ export const submitMarketContribute = ({
     selectedOutcome,
     invalid
   );
-
-  augur.api.Market.contribute({
+    // TODO: allow user to dispute as part of the reporting redsign
+    /*
+  .api.Market.contribute({
     meta: loginAccount.meta,
     tx: { to: marketId, estimateGas },
     _invalid: !!invalid,
@@ -54,4 +54,5 @@ export const submitMarketContribute = ({
       callback(err);
     }
   });
+  */
 };
