@@ -13,7 +13,7 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 interface Args {
   mode: "interactive"|"run";
   command?: string;
-  network?: NETWORKS;
+  network?: NETWORKS | "none";
   [commandArgument: string]: string;
 }
 
@@ -33,7 +33,7 @@ function parse(flash: FlashSession): Args {
   commandMeta.addArgument(
     [ '-n', '--network' ],
     {
-      help: "Name of network to run on.",
+      help: `Name of network to run on. Use "none" for commands that don't use a network.`,
       defaultValue: "environment", // local node
     }
   );
@@ -112,8 +112,6 @@ if (require.main === module) {
     accounts = ACCOUNTS;
   }
 
-  console.log(accounts);
-
   const flash = new FlashSession(
     accounts,
     `${__dirname}/seed.json`)
@@ -127,11 +125,15 @@ if (require.main === module) {
     flash.log = vorpal.log.bind(vorpal);
     vorpal.show();
   } else {
-    const networkConfiguration = NetworkConfiguration.create(args.network);
-    flash.provider = makeProvider(networkConfiguration);
-    getNetworkId(flash.provider).then((networkId) => {
-      flash.contractAddresses = Addresses[networkId];
+    if (args.network === "none") {
       flash.call(args.command, args).catch(console.error);
-    });
+    } else {
+      const networkConfiguration = NetworkConfiguration.create(args.network);
+      flash.provider = makeProvider(networkConfiguration);
+      getNetworkId(flash.provider).then((networkId) => {
+        flash.contractAddresses = Addresses[networkId];
+        return flash.call(args.command, args);
+      }).catch(console.error);
+    }
   }
 }
