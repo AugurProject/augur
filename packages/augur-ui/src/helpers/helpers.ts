@@ -10,7 +10,6 @@ import { selectCurrentTimestamp } from "store/select-state";
 import { logout } from "modules/auth/actions/logout";
 import { formatRep, formatEther } from "utils/format-number";
 import getRep from "modules/account/actions/get-rep";
-import { augur } from "services/augurjs";
 import getMarketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import {
   getDaysRemaining,
@@ -92,13 +91,16 @@ const getRepTokens = (callback: NodeStyleCallback = logError) => dispatch => {
 const getMarketCosts = (callback: NodeStyleCallback = logError) => (dispatch, getState: () => AppState) => {
   const { universe } = getState();
 
-  augur.createMarket.getMarketCreationCostBreakdown(
+  // TODO: get market creation breakdown costs when available from middleware.
+  /*
+  createMarket.getMarketCreationCostBreakdown(
     { universe: universe.id },
     (err: any, marketCreationCostBreakdown) => {
       if (err) return callback(err);
       return callback(null, { data: marketCreationCostBreakdown });
     }
   );
+  */
 };
 
 const getDaysRemainingTime = (

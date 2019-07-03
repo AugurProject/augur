@@ -32,8 +32,8 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         dispatch(updateReadNotifications(readNotifications));
       }
       const networkId = getNetworkId();
-      if (selectedUniverse) {
-        const selectedUniverseId = selectedUniverse[networkId];
+      const selectedUniverseId = selectedUniverse[networkId];
+      if (selectedUniverseId) {
         if (universe.id !== selectedUniverseId) {
           dispatch(updateUniverse({ id: selectedUniverseId }));
         }

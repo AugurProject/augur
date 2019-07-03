@@ -1,4 +1,4 @@
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import { augurSdk } from "services/augursdk";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import logError from "utils/log-error";
@@ -20,7 +20,7 @@ export const loadDesignatedReporterMarkets = (
     DESIGNATED_REPORTING,
     OPEN_REPORTING,
     PRE_REPORTING
-  } = constants.REPORTING_STATE;
+  } = REPORTING_STATE;
 
   const designatedReportingQuery = {
     universe: universe.id,

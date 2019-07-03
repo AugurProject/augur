@@ -9,9 +9,6 @@ tmux split-window -v -t server
 
 tmux send-keys -t augur 'yarn build:watch' C-m
 
-tmux split-window -v -t augur
-tmux send-keys -t augur 'yarn workspace @augurproject/node clean-start' C-m
-
 tmux split-window -h -t augur
 tmux send-keys -t augur 'yarn workspace @augurproject/ui dev' C-m
 

@@ -17,11 +17,13 @@ export function updateSdk(loginAccount: LoginAccount, injectedProvider: JsonRpcP
     }
 
     try {
+      const env = augurSdk.env;
       await augurSdk.destroy();
       await augurSdk.makeApi(
         provider,
         address,
         meta.signer,
+        env,
         meta.isWeb3
       );
     } catch (error) {

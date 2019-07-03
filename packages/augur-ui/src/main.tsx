@@ -21,7 +21,6 @@ console.log(`
 
     app element       -- window.app
     state data        -- window.state
-    augur.js API      -- window.augur
   *******************************************
 `);
 

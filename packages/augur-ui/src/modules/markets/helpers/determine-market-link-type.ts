@@ -6,7 +6,7 @@ import {
   TYPE_FINALIZE_MARKET,
   TYPE_CLAIM_PROCEEDS
 } from "modules/common/constants";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import { isEmpty } from "utils/is-populated";
 
 export const determineMarketLinkType = (market, loginAccount) => {
@@ -16,27 +16,27 @@ export const determineMarketLinkType = (market, loginAccount) => {
     market.designatedReporter === loginAccount.address;
   const { reportingState } = market;
   switch (reportingState) {
-    case constants.REPORTING_STATE.PRE_REPORTING:
+    case REPORTING_STATE.PRE_REPORTING:
       return TYPE_TRADE;
 
-    case constants.REPORTING_STATE.DESIGNATED_REPORTING:
+    case REPORTING_STATE.DESIGNATED_REPORTING:
       if (isDesignatedReporter) return TYPE_REPORT;
 
       return TYPE_VIEW;
 
-    case constants.REPORTING_STATE.OPEN_REPORTING:
+    case REPORTING_STATE.OPEN_REPORTING:
       return TYPE_REPORT;
 
-    case constants.REPORTING_STATE.CROWDSOURCING_DISPUTE:
+    case REPORTING_STATE.CROWDSOURCING_DISPUTE:
       return TYPE_DISPUTE;
 
-    case constants.REPORTING_STATE.AWAITING_NEXT_WINDOW:
+    case REPORTING_STATE.AWAITING_NEXT_WINDOW:
       return TYPE_VIEW;
 
-    case constants.REPORTING_STATE.AWAITING_FINALIZATION:
+    case REPORTING_STATE.AWAITING_FINALIZATION:
       return TYPE_FINALIZE_MARKET;
 
-    case constants.REPORTING_STATE.FINALIZED:
+    case REPORTING_STATE.FINALIZED:
       return TYPE_CLAIM_PROCEEDS;
 
     default:

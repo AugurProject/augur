@@ -2,7 +2,6 @@ import { REPORTING_REPORT_MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 import logError from "utils/log-error";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
-import { augur } from "services/augurjs";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -28,8 +27,9 @@ export const submitInitialReport = ({
     selectedOutcome,
     invalid
   );
-
-  augur.api.Market.doInitialReport({
+    // TODO: allow user to initially report as part of the reporting redesign
+    /*
+  .api.Market.doInitialReport({
     meta: loginAccount.meta,
     tx: { to: marketId, estimateGas },
     _invalid: invalid,
@@ -48,4 +48,5 @@ export const submitInitialReport = ({
     },
     onFailed: (err: any) => callback(err)
   });
+  */
 };

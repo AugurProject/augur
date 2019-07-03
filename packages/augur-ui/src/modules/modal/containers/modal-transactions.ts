@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Transactions } from "modules/modal/transactions";
-import { augur } from "services/augurjs";
 import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";

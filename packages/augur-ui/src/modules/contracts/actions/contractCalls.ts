@@ -22,8 +22,10 @@ import {
   SCALAR,
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
+  SENDREPUTATION,
 } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
+import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 
 export function clearUserTx(): void {
   const Augur = augurSdk.get();
@@ -103,6 +105,28 @@ export async function getDaiBalance(address: string) {
   return formatAttoEth(balance).formattedValue;
 }
 
+export async function sendEthers(address: string, amount: string) {
+  const Augur = augurSdk.get();
+  // TODO: have middleware supprt for transferring ETH
+  return Promise.resolve();
+}
+
+export async function sendRep(address: string, amount: string) {
+  const { contracts } = augurSdk.get();
+  const RepToken = contracts.getReputationToken();
+  const onChainAmount = createBigNumber(amount).multipliedBy(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+  const result = await RepToken.send(address, onChainAmount, '');
+  return result;
+}
+
+export async function sendDai(address: string, amount: string) {
+  const Augur = augurSdk.get();
+  // TODO: have middleware supprt for transferring DAI
+  return Promise.resolve();
+}
+
 export async function getDisputeThresholdForFork() {
   const { contracts } = augurSdk.get();
   const disputeThresholdForFork = await contracts.universe.getDisputeThresholdForFork_();
@@ -158,6 +182,19 @@ export function getDai() {
   return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
 }
 
+export function getRep() {
+  const { contracts } = augurSdk.get();
+  const rep = contracts.reputationToken as TestNetReputationToken<BigNumber>;
+  return rep.faucet(new BigNumber('100000000000000000000'));
+}
+
+export async function getCreateMarketBreakdown() {
+  const { contracts } = augurSdk.get();
+  const validityBond = await contracts.universe.getOrCacheValidityBond_();
+  const designatedReportNoShowReputationBond = await contracts.universe.getOrCacheDesignatedReportNoShowBond_();
+  return { validityBond, designatedReportNoShowReputationBond };
+}
+
 export function createMarket(newMarket: NewMarket) {
   const feePerCashInAttoCash = new BigNumber(
     newMarket.settlementFee
@@ -165,6 +202,7 @@ export function createMarket(newMarket: NewMarket) {
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
   const marketEndTime = new BigNumber(newMarket.endTime);
   const extraInfo = JSON.stringify({
+    description: newMarket.description,
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
     tags: [newMarket.tag1, newMarket.tag2],

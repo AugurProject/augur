@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import makePath from "modules/routes/helpers/make-path";
 import { UNIVERSE_ID } from "modules/common/constants";
@@ -31,11 +30,13 @@ export const submitMigrateREP = ({
     invalid
   );
 
-  augur.api.Universe.getReputationToken(
+  // TODO: refactor to call contract methods as part of forking redesign
+  /*
+  api.Universe.getReputationToken(
     { tx: { to: universeID } },
     (err: any, reputationTokenAddress: string) => {
       if (err) return callback(err);
-      augur.api.ReputationToken.migrateOutByPayout({
+      api.ReputationToken.migrateOutByPayout({
         meta: loginAccount.meta,
         tx: { to: reputationTokenAddress, estimateGas },
         _invalid: invalid,
@@ -59,4 +60,5 @@ export const submitMigrateREP = ({
       });
     },
   );
+  */
 };

@@ -7,7 +7,7 @@ import {
   MODAL_CLAIM_TRADING_PROCEEDS
 } from "modules/common/constants";
 import { selectCurrentTimestamp } from "store/select-state";
-import { constants } from "services/augurjs";
+import { CONTRACT_INTERVAL } from "modules/common/constants";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { createBigNumber } from "utils/create-big-number";
 import { cancelAllOpenOrders } from "modules/orders/actions/cancel-order";
@@ -21,7 +21,7 @@ const mapStateToProps = (state, ownProps) => {
   let canClaim = false;
   if (market.finalizationTime) {
     const endTimestamp = createBigNumber(market.finalizationTime).plus(
-      createBigNumber(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
+      createBigNumber(CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
     );
     const currentTimestamp = selectCurrentTimestamp(state);
     const timeHasPassed = createBigNumber(currentTimestamp).minus(endTimestamp);

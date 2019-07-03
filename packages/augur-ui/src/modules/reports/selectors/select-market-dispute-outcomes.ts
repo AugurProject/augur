@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import store from "store";
 import { isEmpty } from "utils/is-populated";
 
@@ -22,10 +22,10 @@ export const selectMarketDisputeOutcomes = createSelector(
     const disputeMarkets = markets.filter(
       market =>
         market.reportingState ===
-          constants.REPORTING_STATE.AWAITING_FORK_MIGRATION ||
+          REPORTING_STATE.AWAITING_FORK_MIGRATION ||
         market.reportingState ===
-          constants.REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-        market.reportingState === constants.REPORTING_STATE.AWAITING_NEXT_WINDOW
+          REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+        market.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW
     );
     const disputeOutcomes = {};
     const outcomes = disputeMarkets.reduce((p, m) => {
