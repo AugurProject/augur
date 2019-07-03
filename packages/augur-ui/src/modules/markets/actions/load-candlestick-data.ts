@@ -1,4 +1,3 @@
-import { augur } from 'services/augurjs';
 import logError from 'utils/log-error';
 // TODO: remove these lodash functions.
 import { map, mapValues } from 'lodash/fp';

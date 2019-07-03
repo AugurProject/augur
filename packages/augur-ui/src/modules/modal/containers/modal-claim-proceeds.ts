@@ -12,7 +12,7 @@ import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { formatGasCostToEther, formatEther } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { Proceeds } from "modules/modal/proceeds";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import { ActionRowsProps } from "modules/modal/common";
 import { CLAIM_PROCEEDS } from "modules/common/constants";
 import { AppState } from "store";
@@ -52,7 +52,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     const market = selectMarket(marketId);
     if (
       market &&
-      market.reportingState === constants.REPORTING_STATE.FINALIZED
+      market.reportingState === REPORTING_STATE.FINALIZED
     ) {
       const winningOutcomeShares = formatEther(market.outstandingReturns);
 

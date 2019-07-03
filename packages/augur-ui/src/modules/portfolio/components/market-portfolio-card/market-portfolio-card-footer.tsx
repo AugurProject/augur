@@ -6,9 +6,8 @@ import { convertUnixToFormattedDate } from "utils/format-date";
 import TimeRemainingIndicatorWrapper from "modules/market/components/common/time-remaining-indicator/time-remaining-indicator";
 import { createBigNumber } from "utils/create-big-number";
 import moment from "moment";
-import { TYPE_CLAIM_PROCEEDS } from "modules/common/constants";
+import { CONTRACT_INTERVAL, TYPE_CLAIM_PROCEEDS } from "modules/common/constants";
 import Styles from "modules/portfolio/components/market-portfolio-card/market-portfolio-card.styles.less";
-import { constants } from "services/augurjs";
 import { formatEther } from "utils/format-number";
 import { FormattedNumber } from "modules/types";
 
@@ -47,10 +46,10 @@ const MarketPortfolioCardFooter = ({
   if (finalizationTime) {
     startTime = new Date(finalizationTime * 1000);
     finalTime = moment(startTime)
-      .add(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, "seconds")
+      .add(CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, "seconds")
       .toDate();
     endTimestamp = createBigNumber(finalizationTime).plus(
-      createBigNumber(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME),
+      createBigNumber(CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME),
     );
     const timeHasPassed = createBigNumber(currentTimestamp).minus(endTimestamp);
     canClaim = linkType === TYPE_CLAIM_PROCEEDS && timeHasPassed.toNumber() > 0;

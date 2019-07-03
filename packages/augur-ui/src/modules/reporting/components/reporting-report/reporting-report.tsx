@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Helmet } from "react-helmet";
-import { augur } from "services/augurjs";
 import { createBigNumber } from "utils/create-big-number";
 
 import {

@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import * as speedomatic from "speedomatic";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";

@@ -1,21 +1,15 @@
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
 import generateDownloadAccountLink from "modules/auth/helpers/generate-download-account-link";
-import { augur } from "services/augurjs";
 
 import { formatRep, formatEther } from "utils/format-number";
 
 jest.mock("modules/auth/helpers/generate-download-account-link");
-jest.mock("services/augurjs");
+jest.mock("services/initialize");
 
 describe(`modules/auth/selectors/login-account.js`, () => {
   describe("selectLoginAccount", () => {
     beforeEach(() => {
       generateDownloadAccountLink.mockImplementation(() => {});
-      augur.accounts = {
-        account: {
-          keystore: ""
-        }
-      };
     });
 
     test(`should return the expected object when user is unlogged`, () => {

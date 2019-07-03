@@ -73,6 +73,7 @@ export const AUTH_TYPES = {
 };
 
 export const DEFAULT_AUTH_TYPE = REGISTER;
+const SECONDS_PER_DAY = 3600 * 24;
 
 export const EDGE_WALLET_TYPE = "wallet:ethereum";
 
@@ -223,6 +224,9 @@ export const REPORTING_STATE = {
 // TODO: this no longer exists and can be removed during refactor of claiming winnings
 export const CONTRACT_INTERVAL = {
   CLAIM_PROCEEDS_WAIT_TIME: 0,
+  DESIGNATED_REPORTING_DURATION_SECONDS: 3 * SECONDS_PER_DAY,
+  DISPUTE_ROUND_DURATION_SECONDS: 7 * SECONDS_PER_DAY,
+  FORK_DURATION_SECONDS: 60 * SECONDS_PER_DAY,
 }
 
 // # Market States
@@ -578,6 +582,7 @@ export const TEN = createBigNumber(10, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber("0.00000001");
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
+export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const ETHER = createBigNumber(10).pow(18);
 
 // # Positions

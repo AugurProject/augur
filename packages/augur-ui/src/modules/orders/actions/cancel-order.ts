@@ -1,5 +1,4 @@
 import { eachOf } from "async";
-import { augur } from "services/augurjs";
 import {
   CLOSE_DIALOG_CLOSING,
   CLOSE_DIALOG_FAILED,
@@ -57,7 +56,9 @@ export const cancelOrder = (
       );
     };
     updateStatus(CLOSE_DIALOG_PENDING);
-    augur.api.CancelOrder.cancelOrder({
+    // TODO add ability to cancel order
+    /*
+    api.CancelOrder.cancelOrder({
       meta: loginAccount.meta,
       _orderId: orderId,
       onSent: () => updateStatus(CLOSE_DIALOG_PENDING),
@@ -74,5 +75,6 @@ export const cancelOrder = (
         callback(err);
       },
     });
+    */
   }
 };

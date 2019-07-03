@@ -11,7 +11,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
 import { submitInitialReport } from "modules/reports/actions/submit-initial-report";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const mapStateToProps = state => ({
@@ -58,7 +58,7 @@ const mergeProps = (sP, dP, oP) => {
     returnPath = returnPath.substring(3, returnPath.length);
   }
   const isOpenReporting =
-    market.reportingState === constants.REPORTING_STATE.OPEN_REPORTING;
+    market.reportingState === REPORTING_STATE.OPEN_REPORTING;
   const isDesignatedReporter = market.designatedReporter === sP.userAddress;
   const isDRMarketCreator = market.author === market.designatedReporter;
   return {

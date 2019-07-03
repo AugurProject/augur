@@ -4,11 +4,10 @@ import thunk from "redux-thunk";
 import { submitInitialReport } from "modules/reports/actions/submit-initial-report";
 import { REPORTING_REPORT_MARKETS } from "modules/routes/constants/views";
 
-import { augur } from "services/augurjs";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 
 jest.mock("modules/reports/selectors/get-payout-numerators");
-jest.mock("services/augurjs");
+jest.mock("services/initialize");
 
 describe(`modules/reports/actions/submit-initial-report.js`, () => {
   const state = Object.assign({}, testState);
@@ -29,12 +28,7 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
 
   describe("augur successful", () => {
     beforeEach(() => {
-      augur.api.Market.doInitialReport.mockImplementation(
-        ({ onSent, onSuccess }) => {
-          onSent();
-          onSuccess();
-        }
-      );
+
     });
 
     test(`should call callback and history`, () => {
@@ -136,12 +130,7 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
 
   describe("augur failed", () => {
     beforeEach(() => {
-      augur.api.Market.doInitialReport.mockImplementation(
-        ({ onSent, onFailed }) => {
-          onSent();
-          onFailed();
-        }
-      );
+
     });
 
     test(`should call both callback and history with good data not invalid`, () => {

@@ -5,6 +5,8 @@ import { GanacheServer } from "ganache-core";
 import { ethers } from "ethers";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractInterfaces } from "@augurproject/core";
+import { ContractAddresses } from "@augurproject/artifacts";
+import { loadSeed } from "../libs/ganache";
 
 export interface FlashOption {
   name: string;
@@ -14,7 +16,7 @@ export interface FlashOption {
 }
 
 export interface FlashArguments {
-  [name: string]: string;
+  [name: string]: string|boolean;
 }
 
 export interface FlashScript {
@@ -37,6 +39,7 @@ export class FlashSession {
   // Node miscellanea
   provider?: EthersProvider;
   seedFilePath = `${__dirname}/seed.json`;
+  contractAddresses?: ContractAddresses;
   ganacheProvider?: ethers.providers.Web3Provider;
   ganacheServer?: GanacheServer;
 
@@ -68,7 +71,9 @@ export class FlashSession {
   }
 
   loadSeed() {
-    return require(this.seedFilePath);
+    const seed = loadSeed(this.seedFilePath);
+    this.contractAddresses = seed.addresses;
+    return seed;
   }
 
   noProvider() {
@@ -81,8 +86,11 @@ export class FlashSession {
   }
 
   async ensureUser(): Promise<ContractAPI> {
-    const seed = this.loadSeed();
-    this.user = await ContractAPI.userWrapper(this.accounts[0], this.provider, seed.addresses);
+    if (typeof this.contractAddresses === "undefined") {
+      throw Error("ERROR: Must load contract addresses first. Maybe run `ganache`?");
+    }
+
+    this.user = await ContractAPI.userWrapper(this.accounts[0], this.provider, this.contractAddresses);
     await this.user.approveCentralAuthority();
 
     return this.user;
@@ -95,5 +103,7 @@ export class FlashSession {
     }
 
     this.log("Seed file is up-to-date!");
+
+    return this.loadSeed();
   }
 }

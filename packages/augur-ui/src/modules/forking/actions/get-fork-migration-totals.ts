@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 import { AppState } from "store";

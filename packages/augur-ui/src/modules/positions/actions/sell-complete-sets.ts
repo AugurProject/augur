@@ -1,26 +1,30 @@
-import { augur } from "services/augurjs";
-import { createBigNumber } from "utils/create-big-number";
-import logError from "utils/log-error";
+import { createBigNumber } from 'utils/create-big-number';
+import logError from 'utils/log-error';
 import {
   updateTransactionStatus,
   clearTransactionStatus,
-} from "modules/transactions/actions/update-transactions-status";
-import { AWAITING_SIGNATURE, PENDING } from "modules/common/constants";
-import { AppState } from "store";
-import { NodeStyleCallback } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
+} from 'modules/transactions/actions/update-transactions-status';
+import { AWAITING_SIGNATURE, PENDING } from 'modules/common/constants';
+import { AppState } from 'store';
+import { NodeStyleCallback } from 'modules/types';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 
 export function sellCompleteSets(
   marketId: string,
   numCompleteSets: any,
-  callback: NodeStyleCallback = logError,
+  callback: NodeStyleCallback = logError
 ) {
-  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ) => {
     const { loginAccount, marketInfos } = getState();
     if (!loginAccount.address) return callback(null);
+    // TODO: dealing with complete sets isn't needed anymore this can be removed
+    /*
     const { numTicks, maxPrice, minPrice } = marketInfos[marketId];
-    const numCompleteSetsOnChain = augur.utils.convertDisplayAmountToOnChainAmount(
+    const numCompleteSetsOnChain = utils.convertDisplayAmountToOnChainAmount(
       createBigNumber(numCompleteSets.fullPrecision),
       createBigNumber(maxPrice).minus(minPrice),
       numTicks,
@@ -45,6 +49,8 @@ export function sellCompleteSets(
       },
     };
     dispatch(updateTransactionStatus(pendingHash, null, AWAITING_SIGNATURE));
-    augur.api.CompleteSets.publicSellCompleteSets(sellCompleteSetsParams);
+
+  };
+  */
   };
 }

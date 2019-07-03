@@ -1,34 +1,15 @@
 import * as fs from "async-file";
 import { ethers } from "ethers";
 import * as ganache from "ganache-core";
-import {
-  Account,
-  makeDependencies,
-  makeDeployerConfiguration,
-  makeSigner,
-  UsefulContractObjects,
-} from "../libs/ganache";
-import { CompilerOutput } from "solc";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import {ContractDeployer} from "@augurproject/core";
+import { Account, deployContracts } from "../libs/ganache";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import * as path from "path";
 import crypto from "crypto";
+import { EthersProvider } from "@augurproject/ethersjs-provider/build";
 
 const memdown = require("memdown");
 const levelup = require("levelup");
 
-export async function deployContracts(ganacheProvider: ethers.providers.Web3Provider,  accounts: Account[], compiledContracts: CompilerOutput): Promise<UsefulContractObjects> {
-  const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
-  const signer = await makeSigner(accounts[0], provider);
-  const dependencies = makeDependencies(accounts[0], provider, signer);
-
-  const deployerConfiguration = makeDeployerConfiguration(false);
-  const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, ganacheProvider, signer, compiledContracts);
-  const addresses = await contractDeployer.deploy();
-
-  return {provider, signer, dependencies, addresses};
-}
 
 const db = memdown();
 function makeGanacheProvider(accounts: Account[]): ethers.providers.Web3Provider {
@@ -71,7 +52,8 @@ interface LevelDBRow {
 
 export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE, accounts: Account[]): Promise<void> {
   const ganacheProvider = makeGanacheProvider(accounts);
-  const { addresses } = await deployContracts(ganacheProvider, accounts, compilerOutput);
+  const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
+  const { addresses } = await deployContracts(provider, accounts, compilerOutput);
   const contractsHash = hashContracts();
 
   const leveledDB = levelup(db);

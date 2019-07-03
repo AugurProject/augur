@@ -1,16 +1,19 @@
 import { FlashSession } from "./flash";
 import Vorpal from "vorpal";
 import { addScripts } from "./scripts";
+import { Account } from "..";
 import { ACCOUNTS } from "../constants";
 import { ArgumentParser } from "argparse";
 import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
+import { Addresses } from "@augurproject/artifacts";
 import { providers } from "ethers";
+import { computeAddress } from "ethers/utils";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 
 interface Args {
   mode: "interactive"|"run";
   command?: string;
-  network?: NETWORKS;
+  network?: NETWORKS | "none";
   [commandArgument: string]: string;
 }
 
@@ -30,7 +33,7 @@ function parse(flash: FlashSession): Args {
   commandMeta.addArgument(
     [ '-n', '--network' ],
     {
-      help: "Name of network to run on.",
+      help: `Name of network to run on. Use "none" for commands that don't use a network.`,
       defaultValue: "environment", // local node
     }
   );
@@ -86,9 +89,31 @@ function makeProvider(config: NetworkConfiguration): EthersProvider {
   return new EthersProvider(provider, 5, 0, 40);
 }
 
+async function getNetworkId(provider: EthersProvider): Promise<string> {
+  return (await provider.getNetwork()).chainId.toString();
+}
+
 if (require.main === module) {
+  let accounts: Account[];
+  if (process.env.ETHEREUM_PRIVATE_KEY) {
+    let key = process.env.ETHEREUM_PRIVATE_KEY;
+    if (key.slice(0, 2) !== "0x") {
+      key = `0x${key}`;
+    }
+
+    accounts = [
+      {
+        secretKey: key,
+        publicKey: computeAddress(key),
+        balance: 0,
+      },
+    ];
+  } else {
+    accounts = ACCOUNTS;
+  }
+
   const flash = new FlashSession(
-    ACCOUNTS,
+    accounts,
     `${__dirname}/seed.json`)
   ;
   addScripts(flash);
@@ -100,8 +125,15 @@ if (require.main === module) {
     flash.log = vorpal.log.bind(vorpal);
     vorpal.show();
   } else {
-    const networkConfiguration = NetworkConfiguration.create(args.network);
-    flash.provider = makeProvider(networkConfiguration);
-    flash.call(args.command, args).catch(console.error);
+    if (args.network === "none") {
+      flash.call(args.command, args).catch(console.error);
+    } else {
+      const networkConfiguration = NetworkConfiguration.create(args.network);
+      flash.provider = makeProvider(networkConfiguration);
+      getNetworkId(flash.provider).then((networkId) => {
+        flash.contractAddresses = Addresses[networkId];
+        return flash.call(args.command, args);
+      }).catch(console.error);
+    }
   }
 }

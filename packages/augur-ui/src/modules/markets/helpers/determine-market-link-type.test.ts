@@ -1,4 +1,4 @@
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import {
   TYPE_VIEW,
   TYPE_REPORT,
@@ -16,7 +16,7 @@ describe(`modules/markets/helpers/determine-market-link-type.js`, () => {
 
   test(`should be type_view result for reporting state`, () => {
     const market = {
-      reportingState: constants.REPORTING_STATE.PRE_REPORTING
+      reportingState: REPORTING_STATE.PRE_REPORTING
     };
     expect(determineMarketLinkType(market, {})).toEqual(TYPE_VIEW);
   });
@@ -27,14 +27,14 @@ describe(`modules/markets/helpers/determine-market-link-type.js`, () => {
 
   test(`should call the expected method`, () => {
     const market = {
-      reportingState: constants.REPORTING_STATE.PRE_REPORTING
+      reportingState: REPORTING_STATE.PRE_REPORTING
     };
     expect(determineMarketLinkType(market, account)).toEqual(TYPE_TRADE);
   });
 
   test(`should call the expected method`, () => {
     const market = {
-      reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
+      reportingState: REPORTING_STATE.DESIGNATED_REPORTING,
       designatedReporter: account.address
     };
     expect(determineMarketLinkType(market, account)).toEqual(TYPE_REPORT);
@@ -42,7 +42,7 @@ describe(`modules/markets/helpers/determine-market-link-type.js`, () => {
 
   test(`should call the expected method`, () => {
     const market = {
-      reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
+      reportingState: REPORTING_STATE.DESIGNATED_REPORTING,
       designatedReporter: "snuggles"
     };
     expect(determineMarketLinkType(market, account)).toEqual(TYPE_VIEW);
@@ -50,14 +50,14 @@ describe(`modules/markets/helpers/determine-market-link-type.js`, () => {
 
   test(`should call the expected method`, () => {
     const market = {
-      reportingState: constants.REPORTING_STATE.OPEN_REPORTING
+      reportingState: REPORTING_STATE.OPEN_REPORTING
     };
     expect(determineMarketLinkType(market, account)).toEqual(TYPE_REPORT);
   });
 
   test(`should call the expected method`, () => {
     const market = {
-      reportingState: constants.REPORTING_STATE.CROWDSOURCING_DISPUTE
+      reportingState: REPORTING_STATE.CROWDSOURCING_DISPUTE
     };
     expect(determineMarketLinkType(market, account)).toEqual(TYPE_DISPUTE);
   });

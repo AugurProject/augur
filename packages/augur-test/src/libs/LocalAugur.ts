@@ -1,6 +1,6 @@
 import { Augur } from "@augurproject/sdk";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { Account, deployContracts, makeGanacheProvider } from "@augurproject/tools";
+import { Account, makeGanacheProvider, loadSeed, makeSigner, makeDependencies } from "@augurproject/tools";
 
 import * as path from "path";
 
@@ -12,7 +12,9 @@ export async function makeProvider(accounts: Account[]): Promise<EthersProvider>
 
 export async function makeTestAugur(accounts: Account[]): Promise<Augur> {
   const provider = await makeProvider(accounts);
+  const { addresses } = loadSeed(seedPath);
+  const signer = await makeSigner(accounts[0], provider);
+  const dependencies = makeDependencies(accounts[0], provider, signer);
 
-  const { dependencies, addresses } = await deployContracts(provider, seedPath, accounts);
   return Augur.create(provider, dependencies, addresses);
 }

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { constants } from "services/augurjs";
+import { REPORTING_STATE } from "modules/common/constants";
 import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
 import { loadReportingFinal } from "modules/reports/actions/load-reporting-final";
 
@@ -13,8 +13,8 @@ const mapStateToProps = state => {
   const marketsData = selectMarkets(state);
   const resolvedMarkets = marketsData.filter(
     market =>
-      market.reportingState === constants.REPORTING_STATE.FINALIZED ||
-      market.reportingState === constants.REPORTING_STATE.AWAITING_FINALIZATION
+      market.reportingState === REPORTING_STATE.FINALIZED ||
+      market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION
   );
   const resolvedMarketIds = state.marketReportState.resolved || [];
 
