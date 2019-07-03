@@ -32,6 +32,7 @@ export class SyncableDB extends AbstractDB {
   private syncStatus: SyncStatus;
   private idFields: Array<string>;
   private flexSearch?: FlexSearch;
+  private syncing: boolean;
 
   constructor(
     augur: Augur,
@@ -70,6 +71,8 @@ export class SyncableDB extends AbstractDB {
   }
 
   public async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
+    this.syncing = true;
+
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
     while (highestSyncedBlockNumber < goalBlock) {
@@ -77,6 +80,9 @@ export class SyncableDB extends AbstractDB {
       const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
       highestSyncedBlockNumber = await this.addNewBlock(endBlockNumber, logs);
     }
+
+    this.syncing = false;
+    await this.syncStatus.updateSyncingToFalse(this.dbName);
 
     this.syncFullTextSearch();
 
@@ -199,30 +205,15 @@ export class SyncableDB extends AbstractDB {
         });
       }
 
-      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
+      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
+
+      // let the controller know a new block was added so it can update the UI
+      augurEmitter.emit("controller:new:block", {});
     } else {
       throw new Error(`Unable to add new block`);
     }
 
-    await this.notifyNewBlockEvent(blocknumber);
-
     return blocknumber;
-  }
-
-  public notifyNewBlockEvent = async (blockNumber: number): Promise<void> => {
-    if (blockNumber > await this.syncStatus.getHighestSyncBlock()) {
-      const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
-      const blocksBehindCurrent = (highestAvailableBlockNumber - blockNumber);
-      const percentBehindCurrent = (blocksBehindCurrent / highestAvailableBlockNumber * 100).toFixed(4);
-
-      augurEmitter.emit(SubscriptionEventName.NewBlock, {
-        eventName: SubscriptionEventName.NewBlock,
-        highestAvailableBlockNumber,
-        lastSyncedBlockNumber: blockNumber,
-        blocksBehindCurrent,
-        percentBehindCurrent,
-      });
-    }
   }
 
   public async rollback(blockNumber: number): Promise<void> {
