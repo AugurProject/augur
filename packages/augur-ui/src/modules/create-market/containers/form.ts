@@ -9,7 +9,11 @@ import {
 } from "modules/markets/actions/update-new-market";
 import Form from "modules/create-market/components/form";
 import getValue from "utils/get-value";
+import {
+  MODAL_DISCARD
+} from "modules/common/constants";
 import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
+import { updateModal } from "modules/modal/actions/update-modal";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
@@ -25,6 +29,8 @@ const mapDispatchToProps = dispatch => ({
   addDraft: (key, data) => dispatch(addDraft(key, data)),
   clearNewMarket: () => dispatch(clearNewMarket()),
   updateDraft: (key, data) => dispatch(updateDraft(key, data)),
+  discardModal: (cb: NodeStyleCallback) =>
+    dispatch(updateModal({ type: MODAL_DISCARD, cb })),
 });
 
 const FormContainer = withRouter(

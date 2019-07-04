@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { BigNumber } from 'bignumber.js';
 import { TransactionRequest, TransactionResponse } from "ethers/providers";
 import { isInstanceOfBigNumber, isInstanceOfEthersBigNumber, isInstanceOfArray } from "./utils";
+import { getAddress } from "ethers/utils/address";
 import * as _ from "lodash";
 
 export interface EthersSigner {
@@ -111,15 +112,15 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
     public async getDefaultAddress(): Promise<string> {
         if (this.signer) {
-            return this.signer.getAddress();
+            return getAddress(await this.signer.getAddress());
         }
 
-        if (this.address) return this.address;
+        if (this.address) return getAddress(this.address);
 
         const addresses = await this.provider.listAccounts();
-        if (addresses.length > 0) return addresses[0];
+        if (addresses.length > 0) return getAddress(addresses[0]);
 
-        return <string>this.address;
+        return <string>getAddress(this.address);
     }
 
     public registerTransactionStatusCallback(key: string, callback: TransactionStatusCallback): void {

@@ -21,7 +21,7 @@ import { toAscii } from '../utils/utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
-import { Order, Orders, OutcomeParam, Trading } from './Trading';
+import { Order, Orders, OutcomeParam, Trading, OrderState } from './Trading';
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -457,7 +457,10 @@ export class Markets {
     params: t.TypeOf<typeof Markets.getMarketOrderBookParams>
   ): Promise<MarketOrderBook> {
     const account = await augur.getAccount();
-    const orders = await Trading.getOrders(augur, db, params);
+    const orders = await Trading.getOrders(augur, db, {
+      ...params,
+      orderState: OrderState.OPEN,
+    });
 
     const processOrders = (
       unsortedOrders: {

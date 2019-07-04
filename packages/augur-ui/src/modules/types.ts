@@ -68,7 +68,7 @@ export interface Consensus {
   outcomeName: string | null;
 }
 
-export interface MarketOutcome extends MarketInfoOutcome {
+export interface OutcomeFormatted extends MarketInfoOutcome {
   marketId: string;
   lastPricePercent: FormattedNumber | null;
   lastPrice: FormattedNumber | null;
@@ -93,7 +93,7 @@ export interface MarketData extends MarketInfo {
   // TODO: add this to getter MarketInfo
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: Consensus | null;
-  marketOutcomes: Array<MarketOutcome>;
+  outcomesFormatted: OutcomeFormatted[];
 };
 
 export interface TransacitonStatus {
@@ -310,8 +310,6 @@ export interface NewMarket {
   marketType: string;
   detailsText: string;
   category: string;
-  tag1: string;
-  tag2: string;
   settlementFee: number;
   affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
@@ -359,6 +357,49 @@ export interface Draft {
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
 }
+
+export interface Draft {
+  uniqueId: number;
+  created: number;
+  updated: number;
+  isValid: boolean;
+  validations: Array<
+    NewMarketPropertiesValidations | NewMarketPropertyValidations
+  >;
+  currentStep: number;
+  type: string;
+  outcomes: Array<string>;
+  scalarSmallNum: string;
+  scalarBigNum: string;
+  scalarDenomination: string;
+  description: string;
+  expirySourceType: string;
+  expirySource: string;
+  designatedReporterType: string;
+  designatedReporterAddress: string;
+  minPrice: string;
+  maxPrice: string;
+  endTime: number;
+  tickSize: string;
+  hour: string;
+  minute: string;
+  meridiem: string;
+  marketType: string;
+  detailsText: string;
+  category: string;
+  settlementFee: number;
+  affiliateFee: number;
+  orderBook: {[outcome: number]: Array<LiquidityOrder> };
+  orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
+  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityGas: any; // TODO: big number type
+  creationError: string;
+}
+
+export interface Drafts {
+  [uniqueId: string]: Draft;
+}
+
 
 export interface FilledOrders {
   [account: string]: Orders;
@@ -588,6 +629,7 @@ export interface Trade {
   potentialEthProfit: FormattedNumber;
   potentialEthLoss: FormattedNumber;
   totalCost: FormattedNumber;
+  sharesFilled: FormattedNumber;
   shareCost: FormattedNumber;
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;

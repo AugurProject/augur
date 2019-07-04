@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
     isLogged: authStatus.isLogged,
     allowanceAmount: loginAccount.allowanceFormatted,
     isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
-    sortedOutcomes: selectSortedMarketOutcomes(ownProps.market.marketType, ownProps.market.marketOutcomes),
+    sortedOutcomes: selectSortedMarketOutcomes(ownProps.market.marketType, ownProps.market.outcomesFormatted),
   };
 };
 
