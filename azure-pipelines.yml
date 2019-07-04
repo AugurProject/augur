@@ -110,10 +110,10 @@ jobs:
     - TestAndLint
     - PreFlightCheck
     condition: |
-      and
+      or
       (
-        succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        and( succeeded(), eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')),
+        eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -154,7 +154,12 @@ jobs:
           docker images
           docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker push augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-        displayName: docker build
+      - bash: |
+          set -euo pipefail
+          docker images
+          docker push augurproject/augur-build:latest
+        displayName: docker push latest
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
       - task: Docker@1
         displayName: docker logout
         inputs:
@@ -334,11 +339,9 @@ jobs:
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
 
-  - job: publish_docker_images
+  - job: publish_augur_ui_docker_image
     dependsOn:
     - Augur_build_docker_image
-    - Build_Core_Docker
-    - Test_Augur_Core
     condition: |
       and
       (
@@ -358,8 +361,11 @@ jobs:
           set -euo pipefail
           docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          docker images
-          docker push augurproject/augur-build:latest
+          # when we get deploy going we will swap these commands out for
+          # docker:release
+          yarn workspace @augurproject/ui docker:build
+          docker push augurproject/augur-ui:latest
+          #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
         displayName: 'publish docker images on merge to master'
       - task: Docker@1
         displayName: docker logout

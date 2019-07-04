@@ -31,8 +31,8 @@ export default function(
       };
     case ADD_MARKET_LIQUIDITY_ORDERS: {
       const { liquidityOrders, marketId } = data;
-      const marketOutcomes = Object.keys(liquidityOrders);
-      const updatedOrderBook = marketOutcomes.reduce((acc, outcome) => {
+      const outcomesFormatted = Object.keys(liquidityOrders);
+      const updatedOrderBook = outcomesFormatted.reduce((acc, outcome) => {
         acc[outcome] = liquidityOrders[outcome].map((order, index, array) => ({
           ...array[index],
           index,
@@ -66,12 +66,12 @@ export default function(
     case REMOVE_LIQUIDITY_ORDER: {
       // data: marketId, outcomeId, orderId (index)
       const { marketId, outcomeId, orderId } = data;
-      const marketOutcomes = Object.keys(pendingLiquidityOrders[marketId]);
+      const outcomesFormatted = Object.keys(pendingLiquidityOrders[marketId]);
       // if removing this order will clear the order array, delete the outcome/market if no other outcomes
       if (pendingLiquidityOrders[marketId][outcomeId].length === 1) {
         if (
-          marketOutcomes.length === 1 &&
-          marketOutcomes.includes(outcomeId.toString())
+          outcomesFormatted.length === 1 &&
+          outcomesFormatted.includes(outcomeId.toString())
         ) {
           // remove market completely as this is the last outcome and it's about to be empty
           delete pendingLiquidityOrders[marketId];

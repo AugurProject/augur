@@ -8,7 +8,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     scalarDenomination: market.scalarDenomination,
-    marketOutcomes: selectSortedMarketOutcomes(market.marketType, market.marketOutcomes),
+    outcomesFormatted: selectSortedMarketOutcomes(market.marketType, market.outcomesFormatted),
     marketType: market.marketType,
     minPriceBigNumber: market.minPriceBigNumber,
     maxPriceBigNumber: market.maxPriceBigNumber
