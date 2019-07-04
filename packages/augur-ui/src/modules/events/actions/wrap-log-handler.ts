@@ -1,11 +1,11 @@
-import { defaultLogHandler } from "modules/events/actions/default-log-handler";
-import { ThunkDispatch, ThunkAction } from "redux-thunk";
-import { Action } from "redux";
-import { AppState } from "store";
+import { defaultLogHandler } from 'modules/events/actions/default-log-handler';
+import { ThunkDispatch, ThunkAction } from 'redux-thunk';
+import { Action } from 'redux';
+import { AppState } from 'store';
 
-export const wrapLogHandler = (
-  logHandler: any = defaultLogHandler
-) => (log: any):ThunkAction<any, any, any, any> => (
+export const wrapLogHandler = (logHandler: any = defaultLogHandler) => (
+  log: any
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -17,21 +17,12 @@ export const wrapLogHandler = (
     // const isInCurrentUniverse = Object.values(log).find(
     //   value => universeId === value
     // );
-    if (Array.isArray(log)) {
-      if (isInCurrentUniverse) dispatch(logHandler(log));
+    if (Array.isArray(log) && isInCurrentUniverse) {
       log.forEach(log => {
-        if (
-          Object.values(log).find(value => universeId === value) ||
-          (log.contractName === "Cash" && log.eventName === "Approval")
-        )
-          dispatch(logHandler(log));
+        return dispatch(logHandler(log));
       });
-    } else {
-      if (
-        isInCurrentUniverse ||
-        (log.contractName === "Cash" && log.eventName === "Approval")
-      )
-        dispatch(logHandler(log));
     }
+    // TODO: will need to filter out some redundent events like token transfers in some instances
+    if (isInCurrentUniverse) return dispatch(logHandler(log));
   }
 };
