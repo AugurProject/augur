@@ -126,7 +126,7 @@ export default class MarketLiquidity extends Component {
       pendingLiquidityOrders && pendingLiquidityOrders[marketId]
     );
     const marketOrders = isNullState ? {} : pendingLiquidityOrders[marketId];
-    const marketOutcomes = Object.keys(marketOrders);
+    const outcomesFormatted = Object.keys(marketOrders);
     let headerPadding = "0px";
     if (
       this.tableScroll &&
@@ -139,7 +139,7 @@ export default class MarketLiquidity extends Component {
     }
     let runningTotal = 0;
     let tenOrLess = true;
-    marketOutcomes.forEach(outcome => {
+    outcomesFormatted.forEach(outcome => {
       runningTotal += marketOrders[outcome].length;
       tenOrLess = runningTotal <= 10;
     });
@@ -193,8 +193,8 @@ export default class MarketLiquidity extends Component {
                 })}
               >
                 <div className={Styles.MarketLiquidity__TableWrapper}>
-                  {marketOutcomes &&
-                    marketOutcomes.map(outcome => (
+                  {outcomesFormatted &&
+                    outcomesFormatted.map(outcome => (
                       <MarketLiquidityTable
                         key={`${outcome}-${marketId}-${market.marketType}`}
                         marketType={market.marketType}

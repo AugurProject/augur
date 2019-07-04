@@ -5,7 +5,7 @@ import classNames from "classnames";
 import getValue from "utils/get-value";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 import Styles from "modules/market/components/market-outcomes-categorical/market-outcomes-categorical.styles.less";
-import { MarketOutcome } from "modules/types";
+import { OutcomeFormatted } from "modules/types";
 
 const CategoricalOutcome = ({ className, marketOutcome, isMobileSmall }) => (
   <div
@@ -62,7 +62,7 @@ CategoricalOutcome.defaultProps = {
 };
 
 interface MarketOutcomesCategoricalProps {
-  marketOutcomes: Array<MarketOutcome>,
+  outcomesFormatted: OutcomeFormatted[],
   isMobileSmall: boolean,
 };
 
@@ -93,8 +93,8 @@ class MarketOutcomesCategorical extends Component<MarketOutcomesCategoricalProps
   }
 
   render() {
-    const { marketOutcomes, isMobileSmall } = this.props;
-    const totalOutcomes = marketOutcomes.length;
+    const { outcomesFormatted, isMobileSmall } = this.props;
+    const totalOutcomes = outcomesFormatted.length;
 
     const numOutcomesToShow = isMobileSmall ? 2 : 3;
     const displayShowMore = totalOutcomes > numOutcomesToShow;
@@ -111,10 +111,10 @@ class MarketOutcomesCategorical extends Component<MarketOutcomesCategoricalProps
         className={Styles.MarketOutcomesCategorical}
         style={outcomeWrapperStyle}
       >
-        {marketOutcomes.length > 0 && (
+        {outcomesFormatted.length > 0 && (
           <CategoricalOutcome
             className={Styles["MarketOutcomesCategorical__height-sentinel"]}
-            marketOutcome={marketOutcomes[0]}
+            marketOutcome={outcomesFormatted[0]}
             isMobileSmall={isMobileSmall}
           />
         )}
@@ -140,8 +140,8 @@ class MarketOutcomesCategorical extends Component<MarketOutcomesCategoricalProps
             }}
             className={Styles.MarketOutcomesCategorical__outcomes}
           >
-            {marketOutcomes.length > 0 &&
-              marketOutcomes.map(outcome => (
+            {outcomesFormatted.length > 0 &&
+              outcomesFormatted.map(outcome => (
                 <CategoricalOutcome
                   key={outcome.id}
                   marketOutcome={outcome}
