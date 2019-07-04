@@ -307,7 +307,7 @@ jobs:
       )
     pool:
       vmImage: 'Ubuntu 16.04'
-    timeoutInMinutes: 120
+    timeoutInMinutes: 240
     steps:
       - checkout: self
       - task: Docker@1
