@@ -2,7 +2,7 @@ import {
   MarketInfo,
   MarketInfoOutcome,
 } from '@augurproject/sdk/build/state/getter/Markets';
-import { MarketData, Consensus, MarketOutcome } from 'modules/types';
+import { MarketData, Consensus, OutcomeFormatted } from 'modules/types';
 import {
   REPORTING_STATE,
   MARKET_OPEN,
@@ -23,7 +23,7 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
     ...marketInfo,
     minPriceBigNumber: createBigNumber(marketInfo.minPrice),
     maxPriceBigNumber: createBigNumber(marketInfo.maxPrice),
-    marketOutcomes: processOutcomes(marketInfo),
+    outcomesFormatted: processOutcomes(marketInfo),
     marketStatus: getMarketStatus(marketInfo.reportingState),
     endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
     creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
@@ -74,7 +74,7 @@ function getMarketStatus(reportingState: string) {
   return marketStatus;
 }
 
-function processOutcomes(market: MarketInfo): Array<MarketOutcome> {
+function processOutcomes(market: MarketInfo): OutcomeFormatted[] {
   return market.outcomes.map(outcome => ({
       ...outcome,
       marketId: market.id,

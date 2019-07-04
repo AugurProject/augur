@@ -68,7 +68,7 @@ export interface Consensus {
   outcomeName: string | null;
 }
 
-export interface MarketOutcome extends MarketInfoOutcome {
+export interface OutcomeFormatted extends MarketInfoOutcome {
   marketId: string;
   lastPricePercent: FormattedNumber | null;
   lastPrice: FormattedNumber | null;
@@ -93,7 +93,7 @@ export interface MarketData extends MarketInfo {
   // TODO: add this to getter MarketInfo
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: Consensus | null;
-  marketOutcomes: Array<MarketOutcome>;
+  outcomesFormatted: OutcomeFormatted[];
 };
 
 export interface TransacitonStatus {
@@ -588,6 +588,7 @@ export interface Trade {
   potentialEthProfit: FormattedNumber;
   potentialEthLoss: FormattedNumber;
   totalCost: FormattedNumber;
+  sharesFilled: FormattedNumber;
   shareCost: FormattedNumber;
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import classNames from "classnames";
+import React, { Component } from 'react';
+import classNames from 'classnames';
 import {
   SCALAR,
   BUY,
@@ -10,21 +10,17 @@ import {
   SELLING_OUT,
   WARNING,
   ERROR,
-  UPPER_FIXED_PRECISION_BOUND
-} from "modules/common/constants";
-import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/tooltip.styles.less";
-import Styles from "modules/trading/components/confirm/confirm.styles.less";
-import {
-  XIcon,
-  ExclamationCircle,
-  InfoIcon
-} from "modules/common/icons";
-import { formatGasCostToEther, formatShares } from "utils/format-number";
-import { BigNumber, createBigNumber } from "utils/create-big-number";
-import { LinearPropertyLabel } from "modules/common/labels";
-import { FormattedNumber, Trade } from "modules/types";
-import { MarketInfoOutcome } from "@augurproject/sdk/build/state/getter/Markets";
+  UPPER_FIXED_PRECISION_BOUND,
+} from 'modules/common/constants';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import Styles from 'modules/trading/components/confirm/confirm.styles.less';
+import { XIcon, ExclamationCircle, InfoIcon } from 'modules/common/icons';
+import { formatGasCostToEther, formatShares } from 'utils/format-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { LinearPropertyLabel } from 'modules/common/labels';
+import { FormattedNumber, Trade } from 'modules/types';
+import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
 
 interface Message {
   header: string;
@@ -53,7 +49,7 @@ interface ConfirmState {
 
 class Confirm extends Component<ConfirmProps, ConfirmState> {
   static defaultProps = {
-    scalarDenomination: "",
+    scalarDenomination: '',
   };
 
   constructor(props) {
@@ -80,43 +76,39 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   }
 
   constructMessages(props) {
-    const { trade, allowanceAmount, gasPrice, gasLimit, availableFunds, availableDai } =
-      props || this.props;
+    const {
+      trade,
+      allowanceAmount,
+      gasPrice,
+      gasLimit,
+      availableFunds,
+      availableDai,
+    } = props || this.props;
 
     const { totalCost, selfTrade, potentialEthLoss } = trade;
 
     let messages: Message | null = null;
     const tradeTotalCost = createBigNumber(totalCost.fullPrecision, 10);
-    const gasCost = formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, gasPrice);
+    const gasCost = formatGasCostToEther(
+      gasLimit,
+      { decimalsRounded: 4 },
+      gasPrice
+    );
 
     if (selfTrade) {
       messages = {
-        header: "CONSUMING OWN ORDER",
+        header: 'CONSUMING OWN ORDER',
         type: WARNING,
-        message: "You are trading against one of your existing orders",
+        message: 'You are trading against one of your existing orders',
       };
     }
 
-    // TODO remove for now since we don't have a way to convert gas cost of Order into DAI
-    // if (
-    //   tradeTotalCost.gt(ZERO) &&
-    //   createBigNumber(gasCost).gt(createBigNumber(tradeTotalCost))
-    // ) {
-    //   messages = {
-    //     header: "Gas Higher than Order",
-    //     type: WARNING,
-    //     message: `Est. gas cost ${gasCost} ETH, higher than order cost`,
-    //   };
-    // }
-
     if (
       totalCost &&
-      createBigNumber(gasCost, 10).gte(
-        createBigNumber(availableFunds, 10)
-      )
+      createBigNumber(gasCost, 10).gte(createBigNumber(availableFunds, 10))
     ) {
       messages = {
-        header: "Insufficient ETH",
+        header: 'Insufficient ETH',
         type: ERROR,
         message: `You do not have enough funds to place this order. ${gasCost} ETH required for gas.`,
       };
@@ -129,21 +121,23 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       )
     ) {
       messages = {
-        header: "Insufficient DAI",
+        header: 'Insufficient DAI',
         type: ERROR,
-        message: "You do not have enough DAI to place this order",
+        message: 'You do not have enough DAI to place this order',
       };
     }
 
-    if (totalCost &&
+    if (
+      totalCost &&
       allowanceAmount &&
       createBigNumber(potentialEthLoss.fullPrecision, 10).gt(
         createBigNumber(allowanceAmount.fullPrecision, 10)
-      )) {
-        messages = {
-        header: "Insufficient Approved Funds",
+      )
+    ) {
+      messages = {
+        header: 'Insufficient Approved Funds',
         type: ERROR,
-        message: "You do not have enough approved funds to place this order.",
+        message: 'You do not have enough approved funds to place this order.',
       };
     }
 
@@ -171,6 +165,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       potentialEthLoss,
       totalCost,
       shareCost,
+      sharesFilled,
       side,
       orderShareProfit,
       orderShareTradingFee,
@@ -179,8 +174,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const { messages } = this.state;
 
     const outcomeName = selectedOutcome.description;
-    const greaterLess = side === BUY ? "greater" : "less";
-    const higherLower = side === BUY ? "higher" : "lower";
+    const greaterLess = side === BUY ? 'greater' : 'less';
+    const higherLower = side === BUY ? 'higher' : 'lower';
 
     const marketRange = maxPrice.minus(minPrice).abs();
 
@@ -199,7 +194,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     than ${limitPrice} ${scalarDenomination}`;
     }
 
-    let newOrderAmount = formatShares("0").rounded;
+    let newOrderAmount = formatShares('0').rounded;
     if (numShares && totalCost.fullPrecision && shareCost.fullPrecision) {
       newOrderAmount = formatShares(
         createBigNumber(numShares).minus(shareCost.fullPrecision),
@@ -221,37 +216,36 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           (totalCost && totalCost.value !== 0)) && (
           <div className={Styles.TrandingConfirm__topBorder} />
         )}
-        {shareCost &&
-          shareCost.value !== 0 && (
-            <div className={Styles.TradingConfirm__details}>
-              <div className={Styles.TradingConfirm__position__properties}>
-                CLOSING POSITION
-              </div>
-              <div className={Styles.TradingConfirm__agg_position}>
-                <span
-                  className={classNames({
-                    [Styles.long]: side === BUY,
-                    [Styles.short]: side === SELL,
-                  })}
-                >
-                  {side !== BUY ? SELLING_OUT : BUYING_BACK}
-                </span>
-                <span> {shareCost.fullPrecision} </span>
-                Shares @ <span> {limitPrice}</span>
-              </div>
-              <LinearPropertyLabel
-                label="Estimated Fee"
-                value={`${orderShareTradingFee.rounded} DAI`}
-              />
-              <LinearPropertyLabel
-                label="Profit"
-                value={`${orderShareProfit.rounded} DAI`}
-                accentValue={notProfitable}
-              />
+        {shareCost && shareCost.value !== 0 && (
+          <div className={Styles.TradingConfirm__details}>
+            <div className={Styles.TradingConfirm__position__properties}>
+              CLOSING POSITION
             </div>
-          )}
-        {totalCost &&
-          totalCost.value !== 0 && (
+            <div className={Styles.TradingConfirm__agg_position}>
+              <span
+                className={classNames({
+                  [Styles.long]: side === BUY,
+                  [Styles.short]: side === SELL,
+                })}
+              >
+                {side !== BUY ? SELLING_OUT : BUYING_BACK}
+              </span>
+              <span> {shareCost.fullPrecision} </span>
+              Shares @ <span> {limitPrice}</span>
+            </div>
+            <LinearPropertyLabel
+              label="Estimated Fee"
+              value={`${orderShareTradingFee.rounded} DAI`}
+            />
+            <LinearPropertyLabel
+              label="Profit"
+              value={`${orderShareProfit.rounded} DAI`}
+              accentValue={notProfitable}
+            />
+          </div>
+        )}
+        {(totalCost && totalCost.value !== 0) ||
+          (sharesFilled && sharesFilled.value !== 0 && (
             <div className={Styles.TradingConfirm__details}>
               <div
                 className={classNames(
@@ -303,7 +297,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 value={`${potentialEthLoss.rounded} DAI`}
               />
             </div>
-          )}
+          ))}
         {messages && (
           <div
             className={classNames(
@@ -317,7 +311,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               className={classNames({
                 [Styles.TradingConfirm__message__warning]:
                   messages.type === WARNING,
-                [Styles.TradingConfirm__message__error]: messages.type === ERROR,
+                [Styles.TradingConfirm__message__error]:
+                  messages.type === ERROR,
               })}
             >
               {ExclamationCircle}
