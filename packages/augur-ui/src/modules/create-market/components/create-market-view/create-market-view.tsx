@@ -21,7 +21,7 @@ export default class CreateMarketView extends React.Component<
   CreateMarketViewState
 > {
   state: FormState = {
-    page: LANDING
+    page: this.props.history.location.state || LANDING
   };
 
   updatePage = (page: string) => {
