@@ -149,6 +149,7 @@ export class Trade {
 
     if (cost.gt(0)) {
       const account = await this.augur.getAccount();
+      if (!account) return null;
       const cashAllowance = await this.augur.contracts.cash.allowance_(account, this.augur.contracts.augur.address);
       if (cashAllowance.lt(cost)) return `Cash allowance: ${cashAllowance.toString()} will not cover trade cost: ${cost.toString()}`;
 
