@@ -5,6 +5,8 @@ import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import { TYPE_TRADE } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
+import { categories } from 'modules/categories/set-categories';
+import { CategoryMultiSelect } from 'modules/common/form';
 
 interface MarketsViewProps {
   isLogged: boolean;
@@ -131,6 +133,10 @@ export default class MarketsView extends Component<
         <Helmet>
           <title>Markets</title>
         </Helmet>
+        <CategoryMultiSelect
+          updateSelection={v => console.log(v)}
+          sortedGroup={categories}
+        />
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearchingMarkets}
