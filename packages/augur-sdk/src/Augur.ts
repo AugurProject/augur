@@ -16,6 +16,7 @@ import { Trading } from "./state/getter/Trading";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
 import { Users } from "./state/getter/Users";
 import { Accounts } from "./state/getter/Accounts";
+import { getAddress } from "ethers/utils/address";
 
 export interface CustomEvent {
   name: string;
@@ -147,8 +148,10 @@ export class Augur<TProvider extends Provider = Provider> {
     return new BigNumber(balance.toString());
   }
 
-  public async getAccount(): Promise<string> {
-    return await this.dependencies.getDefaultAddress();
+  public async getAccount(): Promise<string | null> {
+    const account = await this.dependencies.address;
+    if (!account) return account;
+    return getAddress(account);
   }
 
   public getUniverse(address: string): ContractInterfaces.Universe {
