@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
@@ -79,6 +78,9 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
 
     return (
       <div className={Styles.Side}>
+        {orderBookOrders.length === 0 &&
+          <div className={Styles.NoOrders}>No Orders</div>
+        }
         <div
           className={classNames({ [Styles.Asks]: type === ASKS })}
           ref={side => {
@@ -192,7 +194,6 @@ export default class OrderBook extends Component<
     const {
       pricePrecision,
       hasOrders,
-      orderBookKeys,
       toggle,
       extend,
       hide,
