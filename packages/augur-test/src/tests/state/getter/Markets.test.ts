@@ -1209,6 +1209,7 @@ describe('State API :: Markets :: ', () => {
         marketId: yesNoMarket.address,
         orderBook: {
           [outcome0.toString()]: {
+            spread: "0",
             asks: [
               {
                 price: '0.22',
@@ -1239,6 +1240,7 @@ describe('State API :: Markets :: ', () => {
             ],
           },
           [outcome1.toString()]: {
+            spread: "0",
             asks: [
               {
                 price: '0.22',
@@ -1282,6 +1284,7 @@ describe('State API :: Markets :: ', () => {
         marketId: yesNoMarket.address,
         orderBook: {
           [outcome0.toString()]: {
+            spread: null,
             asks: [
               {
                 mySize: '0',
@@ -1300,6 +1303,7 @@ describe('State API :: Markets :: ', () => {
             ],
           },
           [outcome1.toString()]: {
+            spread: null,
             asks: [
               {
                 mySize: '0',

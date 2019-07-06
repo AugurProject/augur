@@ -470,15 +470,19 @@ export class Markets {
       isbids: boolean = false
     ): OrderBook[] => {
       const orders = Object.values(unsortedOrders).sort((a, b) =>
-        isbids
-          ? new BigNumber(b.price).minus(a.price).toNumber()
-          : new BigNumber(a.price).minus(b.price).toNumber()
-      );
+      isbids
+        ? new BigNumber(b.price).minus(a.price).toNumber()
+        : new BigNumber(a.price).minus(b.price).toNumber()
+    );
       const buckets = _.groupBy<Order>(orders, order => order.price);
+      const askKeysSorted = Object.keys(buckets).sort((a, b) => new BigNumber(a).minus(b).toNumber());
+      const bidKeysSorted = Object.keys(buckets).sort((a, b) => new BigNumber(b).minus(a).toNumber());
+      const bidsBuckets = bidKeysSorted.map(k => buckets[k]);
+      const askBuckets = askKeysSorted.map(k => buckets[k]);
       const result: OrderBook[] = [];
 
-      const items = isbids ? Object.values(buckets).reverse() : Object.values(buckets)
-      return items.reduce((acc, bucket, index) => {
+      const items = isbids ? Object.values(bidsBuckets) : Object.values(askBuckets);
+      const values = items.reduce((acc, bucket, index) => {
         const shares = bucket.reduce((v, order, index) => {
           return v.plus(order.amount);
         }, new BigNumber(0));
@@ -500,6 +504,12 @@ export class Markets {
         });
         return acc;
       }, result);
+
+      return values.sort((a, b) =>
+        isbids
+          ? new BigNumber(b.price).minus(a.price).toNumber()
+          : new BigNumber(a.price).minus(b.price).toNumber()
+      );
     };
 
     const processOutcome = (outcome: {
@@ -509,8 +519,14 @@ export class Markets {
       const bids = processOrders(outcome[OrderType.Bid.toString()], true);
       let spread = null;
       if (asks.length > 0 && bids.length > 0) {
-        const bestAsk = asks.reduce((p, a) => new BigNumber(a.price).lt(p) ? new BigNumber(a.price) : p, new BigNumber(asks[0].price));
-        const bestBid = bids.reduce((p, b) => new BigNumber(b.price).gt(p) ? new BigNumber(b.price) : p, new BigNumber(bids[0].price));
+        const bestAsk = asks.reduce(
+          (p, a) => (new BigNumber(a.price).lt(p) ? new BigNumber(a.price) : p),
+          new BigNumber(asks[0].price)
+        );
+        const bestBid = bids.reduce(
+          (p, b) => (new BigNumber(b.price).gt(p) ? new BigNumber(b.price) : p),
+          new BigNumber(bids[0].price)
+        );
         spread = bestAsk.minus(bestBid).toString();
       }
       return {
@@ -522,6 +538,13 @@ export class Markets {
 
     const processMarket = (orders: Orders) => {
       const outcomes = Object.values(orders)[0];
+      if (!outcomes) {
+        return {
+          spread: null,
+          asks: [],
+          bids: [],
+        };
+      }
       return Object.keys(outcomes).reduce<MarketOrderBook['orderBook']>(
         (acc, outcome) => {
           acc[outcome] = processOutcome(outcomes[outcome]);
@@ -533,7 +556,7 @@ export class Markets {
 
     return {
       marketId: params.marketId,
-      orderBook: processMarket(orders)
+      orderBook: processMarket(orders),
     };
   }
 
