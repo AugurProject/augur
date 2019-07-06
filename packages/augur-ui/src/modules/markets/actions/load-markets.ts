@@ -10,7 +10,6 @@ import {
   MARKET_CLOSED,
   REPORTING_STATE,
 } from 'modules/common/constants';
-import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
 import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -18,30 +17,17 @@ import { AppState } from 'store';
 
 // NOTE -- We ONLY load the market ids during this step.
 // From here we populate the marketInfos
-export const loadMarkets = (
-  type: any,
+export const loadAllMarketIds = (
   callback: NodeStyleCallback = logError
 ) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const augur = augurSdk.get();
-
   const { universe } = getState();
-
   if (!(universe && universe.id)) return;
   const marketsArray = await augur.getMarkets({ universe: universe.id });
-  // TODO: this needs to be refactored we don't want to add partial marketInfo objects to marketInfos state
-  const marketsData = marketsArray.reduce(
-    (p: any, id: string) => ({
-      ...p,
-      [id]: { id },
-    }),
-    {}
-  );
 
-  console.log('adding partial market infos to state, REFACTOR THIS!');
-  dispatch(updateMarketsData(marketsData));
   callback(null, marketsArray);
 };
 
