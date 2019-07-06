@@ -132,6 +132,7 @@ export interface MarketOrderBook {
   marketId: string;
   orderBook: {
     [outcome: number]: {
+      spread: string | null;
       bids: OrderBook[];
       asks: OrderBook[];
     };
@@ -504,9 +505,18 @@ export class Markets {
     const processOutcome = (outcome: {
       [orderType: string]: { [orderId: string]: Order };
     }) => {
+      const asks = processOrders(outcome[OrderType.Ask.toString()]);
+      const bids = processOrders(outcome[OrderType.Bid.toString()], true);
+      let spread = null;
+      if (asks.length > 0 && bids.length > 0) {
+        const bestAsk = asks.reduce((p, a) => new BigNumber(a.price).lt(p) ? new BigNumber(a.price) : p, new BigNumber(asks[0].price));
+        const bestBid = bids.reduce((p, b) => new BigNumber(b.price).gt(p) ? new BigNumber(b.price) : p, new BigNumber(bids[0].price));
+        spread = bestAsk.minus(bestBid).toString();
+      }
       return {
-        asks: processOrders(outcome[OrderType.Ask.toString()]),
-        bids: processOrders(outcome[OrderType.Bid.toString()], true),
+        spread,
+        asks,
+        bids,
       };
     };
 
@@ -523,7 +533,7 @@ export class Markets {
 
     return {
       marketId: params.marketId,
-      orderBook: processMarket(orders),
+      orderBook: processMarket(orders)
     };
   }
 

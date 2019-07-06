@@ -172,8 +172,8 @@ export default class OrderBook extends Component<
     toggle: () => {},
     extend: false,
     hide: false,
-    fixedPrecision: 4,
-    pricePrecision: 4,
+    fixedPrecision: 2,
+    pricePrecision: 2,
   };
 
   state: OrderBookState = {
@@ -196,6 +196,7 @@ export default class OrderBook extends Component<
       toggle,
       extend,
       hide,
+      orderBook
     } = this.props;
     const s = this.state;
 
@@ -221,12 +222,12 @@ export default class OrderBook extends Component<
             {hasOrders && (
               <div>
                 <span>Spread:</span>
-                {orderBookKeys.spread
-                  ? createBigNumber(orderBookKeys.spread).toFixed(
+                {orderBook.spread
+                  ? createBigNumber(orderBook.spread).toFixed(
                       pricePrecision
                     )
                   : '—'}
-                {orderBookKeys.spread && <span>DAI</span>}
+                {orderBook.spread && <span>DAI</span>}
               </div>
             )}
           </div>
