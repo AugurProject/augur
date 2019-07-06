@@ -1284,7 +1284,7 @@ describe('State API :: Markets :: ', () => {
         marketId: yesNoMarket.address,
         orderBook: {
           [outcome0.toString()]: {
-            spread: null,
+            spread: "0",
             asks: [
               {
                 mySize: '0',
@@ -1303,7 +1303,7 @@ describe('State API :: Markets :: ', () => {
             ],
           },
           [outcome1.toString()]: {
-            spread: null,
+            spread: "0",
             asks: [
               {
                 mySize: '0',

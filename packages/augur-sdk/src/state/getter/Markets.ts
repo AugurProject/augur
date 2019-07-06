@@ -469,20 +469,20 @@ export class Markets {
       },
       isbids: boolean = false
     ): OrderBook[] => {
-      const orders = Object.values(unsortedOrders).sort((a, b) =>
-      isbids
-        ? new BigNumber(b.price).minus(a.price).toNumber()
-        : new BigNumber(a.price).minus(b.price).toNumber()
-    );
+      const orders = Object.values(unsortedOrders);
       const buckets = _.groupBy<Order>(orders, order => order.price);
-      const askKeysSorted = Object.keys(buckets).sort((a, b) => new BigNumber(a).minus(b).toNumber());
-      const bidKeysSorted = Object.keys(buckets).sort((a, b) => new BigNumber(b).minus(a).toNumber());
-      const bidsBuckets = bidKeysSorted.map(k => buckets[k]);
-      const askBuckets = askKeysSorted.map(k => buckets[k]);
+      const keysSorted: string[] = isbids
+        ? Object.keys(buckets).sort((a, b) =>
+            new BigNumber(b).minus(a).toNumber()
+          )
+        : Object.keys(buckets).sort((a, b) =>
+            new BigNumber(a).minus(b).toNumber()
+          );
+
+      const sortedBuckets = keysSorted.map(k => buckets[k]);
       const result: OrderBook[] = [];
 
-      const items = isbids ? Object.values(bidsBuckets) : Object.values(askBuckets);
-      const values = items.reduce((acc, bucket, index) => {
+      return Object.values(sortedBuckets).reduce((acc, bucket, index) => {
         const shares = bucket.reduce((v, order, index) => {
           return v.plus(order.amount);
         }, new BigNumber(0));
@@ -504,12 +504,6 @@ export class Markets {
         });
         return acc;
       }, result);
-
-      return values.sort((a, b) =>
-        isbids
-          ? new BigNumber(b.price).minus(a.price).toNumber()
-          : new BigNumber(a.price).minus(b.price).toNumber()
-      );
     };
 
     const processOutcome = (outcome: {
