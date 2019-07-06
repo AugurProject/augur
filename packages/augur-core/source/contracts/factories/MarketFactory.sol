@@ -6,6 +6,7 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/trading/ICash.sol';
 import 'ROOT/factories/IMarketFactory.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/IAugur.sol';
 
 
@@ -15,6 +16,8 @@ import 'ROOT/IAugur.sol';
  * @dev This factory is a trusted Augur contract which means it has REP transfer privileges. The additional validation logic that occurs here and not in the Market contract itself is to reduce the Market contract's size as each require error message adds an additional ~100 bytes
  */
 contract MarketFactory is CloneFactory, IMarketFactory {
+    using SafeMathUint256 for uint256;
+
     uint256 private constant MAX_FEE_PER_CASH_IN_ATTOCASH = 15 * 10**16; // 15%
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant MIN_OUTCOMES = 2; // Does not Include Invalid
@@ -28,6 +31,7 @@ contract MarketFactory is CloneFactory, IMarketFactory {
         require(_augur.trustedTransfer(ICash(_augur.lookup("Cash")), _sender, address(_market), _universe.getOrCacheValidityBond()));
 
         // Market param validation
+        require(_numTicks.isMultipleOf(2), "MarketFactory.createMarket: numTicks must be multiple of 2");
         require(MIN_OUTCOMES <= _numOutcomes && _numOutcomes <= MAX_OUTCOMES, "MarketFactory.createMarket: numOutcomes out of range");
         require(_designatedReporterAddress != NULL_ADDRESS, "MarketFactory.createMarket: designated rpeorter address is 0x0");
         require(_numTicks >= _numOutcomes, "MarketFactory.createMarket: numTicks lower than numOutcomes");

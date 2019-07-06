@@ -81,6 +81,27 @@ Deploying to: ${networkConfiguration.networkName}
             await this.augur!.registerContract(stringTo32ByteHex("RepPriceOracle"), this.configuration.repPriceOracleAddress);
             contract = await this.contracts.get("RepPriceOracle");
             contract.address = this.configuration.repPriceOracleAddress;
+
+            // Dai Vat
+            console.log(`Registering Vat Contract at ${this.configuration.vatAddress}`);
+            await this.augur!.registerContract(stringTo32ByteHex("DaiVat"), this.configuration.vatAddress);
+            contract = await this.contracts.get("DaiVat");
+            contract.address = this.configuration.vatAddress;
+
+            // Dai Pot
+            console.log(`Registering Pot Contract at ${this.configuration.potAddress}`);
+            await this.augur!.registerContract(stringTo32ByteHex("DaiPot"), this.configuration.potAddress);
+            contract = await this.contracts.get("DaiPot");
+            contract.address = this.configuration.potAddress;
+
+            // Dai Join
+            console.log(`Registering Join Contract at ${this.configuration.joinAddress}`);
+            await this.augur!.registerContract(stringTo32ByteHex("DaiJoin"), this.configuration.joinAddress);
+            contract = await this.contracts.get("DaiJoin");
+            contract.address = this.configuration.joinAddress;
+        } else {
+            console.log(`Uploading Test Dai Contracts`);
+            await this.uploadTestDaiContracts();
         }
 
         await this.initializeAllContracts();
@@ -136,6 +157,7 @@ Deploying to: ${networkConfiguration.networkName}
             if (contract.relativeFilePath.startsWith('legacy_reputation/')) continue;
             if (contract.relativeFilePath.startsWith('external/')) continue;
             if (contract.contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) continue;
+            if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) continue;
             if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
             // @ts-ignore
@@ -163,6 +185,23 @@ Deploying to: ${networkConfiguration.networkName}
         }
         console.log(`Augur address: ${augur.address}`);
         return augur;
+    }
+
+    private async uploadTestDaiContracts(): Promise<void> {
+        const cashContract = await this.contracts.get("Cash");
+        cashContract.address = await this.uploadAndAddToAugur(cashContract, "Cash", []);
+
+        const vatContract = await this.contracts.get("TestNetDaiVat");
+        vatContract.address = await this.uploadAndAddToAugur(vatContract, "DaiVat", []);
+
+        const potContract = await this.contracts.get("TestNetDaiPot");
+        potContract.address = await this.uploadAndAddToAugur(potContract, "DaiPot", [vatContract.address, await this.augur!.lookup_(stringTo32ByteHex("Time"))]);
+
+        const joinContract = await this.contracts.get("TestNetDaiJoin");
+        joinContract.address = await this.uploadAndAddToAugur(joinContract, "DaiJoin", [vatContract.address, cashContract.address]);
+
+        const cash = new Cash(this.dependencies, cashContract.address);
+        await cash.initialize(this.augur!.address);
     }
 
     public async uploadLegacyRep(): Promise<string> {
@@ -197,6 +236,7 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.configuration.isProduction && contractName === 'Cash') return;
         if (this.configuration.isProduction && contractName === 'RepPriceOracle') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
+        if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) return;
         if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) return;
         console.log(`Uploading new version of contract for ${contractName}`);
         contract.address = await this.uploadAndAddToAugur(contract, contractName, []);
