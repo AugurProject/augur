@@ -476,7 +476,8 @@ export class Markets {
       const buckets = _.groupBy<Order>(orders, order => order.price);
       const result: OrderBook[] = [];
 
-      return Object.values(buckets).reduce((acc, bucket, index) => {
+      const items = isbids ? Object.values(buckets).reverse() : Object.values(buckets)
+      return items.reduce((acc, bucket, index) => {
         const shares = bucket.reduce((v, order, index) => {
           return v.plus(order.amount);
         }, new BigNumber(0));
