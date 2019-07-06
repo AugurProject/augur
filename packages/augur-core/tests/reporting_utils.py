@@ -92,10 +92,10 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
     amount = 10 ** 6 * 10 ** 18
 
     with raises(TransactionFailed):
-        reputationToken.migrateOut(yesUniverseReputationToken.address, 0)
+        reputationToken.migrateOutByPayout(yesPayoutNumerators, 0)
 
     with TokenDelta(yesUniverseReputationToken, amount, account0, "Yes REP token balance was no correct"):
-        reputationToken.migrateOut(yesUniverseReputationToken.address, amount)
+        reputationToken.migrateOutByPayout(yesPayoutNumerators, amount)
 
     # Attempting to finalize the fork now will not succeed as a majority or REP has not yet migrated and fork end time has not been reached
     with raises(TransactionFailed):
@@ -110,7 +110,7 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
         }
         with AssertLog(fixture, "MarketFinalized", marketFinalizedLog):
             with TokenDelta(noUniverseReputationToken, amount, account0, "No REP token balance was no correct"):
-                reputationToken.migrateOut(noUniverseReputationToken.address, amount)
+                reputationToken.migrateOutByPayout(noPayoutNumerators, amount)
         assert reputationToken.balanceOf(account0) == 20
         assert market.getWinningPayoutDistributionHash() == noUniverse.getParentPayoutDistributionHash()
     else:
@@ -125,7 +125,7 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
         assert market.getWinningPayoutDistributionHash() == yesUniverse.getParentPayoutDistributionHash()
         # If the fork is past the fork period we can not migrate
         with raises(TransactionFailed):
-            reputationToken.migrateOut(yesUniverseReputationToken.address, 1)
+            reputationToken.migrateOutByPayout(noPayoutNumerators, 1)
 
     # Finalize fork cannot be called again
     with raises(TransactionFailed):

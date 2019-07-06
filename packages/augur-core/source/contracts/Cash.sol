@@ -1,189 +1,157 @@
 pragma solidity 0.5.4;
 
+import 'ROOT/IAugur.sol';
 import 'ROOT/trading/ICash.sol';
-import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/ITyped.sol';
+import 'ROOT/external/IDaiVat.sol';
+import 'ROOT/external/IDaiJoin.sol';
 
 
 /**
  * @title Cash
- * @dev Test contract for CASH
+ * @dev Test contract for CASH (Dai)
  */
-contract Cash is ICash {
+contract Cash is ITyped, ICash {
     using SafeMathUint256 for uint256;
+    uint256 public constant ETERNAL_APPROVAL_VALUE = 2 ** 256 - 1;
+
+    event Mint(address indexed target, uint256 value);
+    event Burn(address indexed target, uint256 value);
+
+    mapping (address => uint) public wards;
+    modifier auth {
+        require(wards[msg.sender] == 1);
+        _;
+    }
 
     string constant public name = "Cash";
     string constant public symbol = "CASH";
-    uint256 constant public decimals = 18;
 
-    mapping (address => uint256) private _balances;
+    uint256 constant public DAI_ONE = 10 ** 27;
 
-    mapping (address => mapping (address => uint256)) private _allowances;
+    mapping(address => uint) internal balances;
+    uint256 public supply;
+    mapping(address => mapping(address => uint256)) internal allowed;
 
-    uint256 private _totalSupply;
+    uint8 constant public decimals = 18;
 
-    /**
-     * @dev See `IERC20.totalSupply`.
-     */
+    IDaiVat public daiVat;
+    IDaiJoin public daiJoin;
+
+    function initialize(IAugur _augur) public returns (bool) {
+        daiJoin = IDaiJoin(_augur.lookup("DaiJoin"));
+        daiVat = IDaiVat(_augur.lookup("DaiVat"));
+        wards[address(this)] = 1;
+        wards[address(daiJoin)] = 1;
+        return true;
+    }
+
+    function transfer(address _to, uint256 _amount) public returns (bool) {
+        require(_to != address(0), "Cannot send to 0x0");
+        internalTransfer(msg.sender, _to, _amount);
+        return true;
+    }
+
+    function transferFrom(address _from, address _to, uint256 _amount) public returns (bool) {
+        uint256 _allowance = allowed[_from][msg.sender];
+        require(_amount <= _allowance, "Not enough funds allowed");
+
+        if (_allowance != ETERNAL_APPROVAL_VALUE) {
+            allowed[_from][msg.sender] = _allowance.sub(_amount);
+        }
+
+        internalTransfer(_from, _to, _amount);
+        return true;
+    }
+
+    function internalTransfer(address _from, address _to, uint256 _amount) internal returns (bool) {
+        require(_to != address(0), "Cannot send to 0x0");
+        require(balances[_from] >= _amount, "SEND Not enough funds");
+
+        balances[_from] = balances[_from].sub(_amount);
+        balances[_to] = balances[_to].add(_amount);
+        emit Transfer(_from, _to, _amount);
+        return true;
+    }
+
     function totalSupply() public view returns (uint256) {
-        return _totalSupply;
+        return supply;
     }
 
-    /**
-     * @dev See `IERC20.balanceOf`.
-     */
-    function balanceOf(address account) public view returns (uint256) {
-        return _balances[account];
+    function balanceOf(address _owner) public view returns (uint256) {
+        return balances[_owner];
     }
 
-    /**
-     * @dev See `IERC20.transfer`.
-     *
-     * Requirements:
-     *
-     * - `recipient` cannot be the zero address.
-     * - the caller must have a balance of at least `amount`.
-     */
-    function transfer(address recipient, uint256 amount) public returns (bool) {
-        _transfer(msg.sender, recipient, amount);
+    function approve(address _spender, uint256 _amount) public returns (bool) {
+        approveInternal(msg.sender, _spender, _amount);
         return true;
     }
 
-    /**
-     * @dev See `IERC20.allowance`.
-     */
-    function allowance(address owner, address spender) public view returns (uint256) {
-        return _allowances[owner][spender];
-    }
-
-    /**
-     * @dev See `IERC20.approve`.
-     *
-     * Requirements:
-     *
-     * - `spender` cannot be the zero address.
-     */
-    function approve(address spender, uint256 value) public returns (bool) {
-        _approve(msg.sender, spender, value);
+    function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
+        approveInternal(msg.sender, _spender, allowed[msg.sender][_spender].add(_addedValue));
         return true;
     }
 
-    /**
-     * @dev See `IERC20.transferFrom`.
-     *
-     * Emits an `Approval` event indicating the updated allowance. This is not
-     * required by the EIP. See the note at the beginning of `ERC20`;
-     *
-     * Requirements:
-     * - `sender` and `recipient` cannot be the zero address.
-     * - `sender` must have a balance of at least `value`.
-     * - the caller must have allowance for `sender`'s tokens of at least
-     * `amount`.
-     */
-    function transferFrom(address sender, address recipient, uint256 amount) public returns (bool) {
-        _transfer(sender, recipient, amount);
-        _approve(sender, msg.sender, _allowances[sender][msg.sender].sub(amount));
+    function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
+        uint oldValue = allowed[msg.sender][_spender];
+        if (_subtractedValue > oldValue) {
+            approveInternal(msg.sender, _spender, 0);
+        } else {
+            approveInternal(msg.sender, _spender, oldValue.sub(_subtractedValue));
+        }
         return true;
     }
 
-    /**
-     * @dev Atomically increases the allowance granted to `spender` by the caller.
-     *
-     * This is an alternative to `approve` that can be used as a mitigation for
-     * problems described in `IERC20.approve`.
-     *
-     * Emits an `Approval` event indicating the updated allowance.
-     *
-     * Requirements:
-     *
-     * - `spender` cannot be the zero address.
-     */
-    function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
-        _approve(msg.sender, spender, _allowances[msg.sender][spender].add(addedValue));
+    function approveInternal(address _owner, address _spender, uint256 _allowance) internal returns (bool) {
+        allowed[_owner][_spender] = _allowance;
+        emit Approval(_owner, _spender, _allowance);
         return true;
     }
 
-    /**
-     * @dev Atomically decreases the allowance granted to `spender` by the caller.
-     *
-     * This is an alternative to `approve` that can be used as a mitigation for
-     * problems described in `IERC20.approve`.
-     *
-     * Emits an `Approval` event indicating the updated allowance.
-     *
-     * Requirements:
-     *
-     * - `spender` cannot be the zero address.
-     * - `spender` must have allowance for the caller of at least
-     * `subtractedValue`.
-     */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
-        _approve(msg.sender, spender, _allowances[msg.sender][spender].sub(subtractedValue));
-        return true;
-    }
-
-    /**
-     * @dev Moves tokens `amount` from `sender` to `recipient`.
-     *
-     * This is internal function is equivalent to `transfer`, and can be used to
-     * e.g. implement automatic token fees, slashing mechanisms, etc.
-     *
-     * Emits a `Transfer` event.
-     *
-     * Requirements:
-     *
-     * - `sender` cannot be the zero address.
-     * - `recipient` cannot be the zero address.
-     * - `sender` must have a balance of at least `amount`.
-     */
-    function _transfer(address sender, address recipient, uint256 amount) internal {
-        require(sender != address(0), "ERC20: transfer from the zero address");
-        require(recipient != address(0), "ERC20: transfer to the zero address");
-
-        _balances[sender] = _balances[sender].sub(amount);
-        _balances[recipient] = _balances[recipient].add(amount);
-        emit Transfer(sender, recipient, amount);
-    }
-
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
-     * the total supply.
-     *
-     * Emits a `Transfer` event with `from` set to the zero address.
-     *
-     * Requirements
-     *
-     * - `to` cannot be the zero address.
-     */
-    function _mint(address account, uint256 amount) internal {
-        require(account != address(0), "ERC20: mint to the zero address");
-
-        _totalSupply = _totalSupply.add(amount);
-        _balances[account] = _balances[account].add(amount);
-        emit Transfer(address(0), account, amount);
+    function allowance(address _owner, address _spender) public view returns (uint256) {
+        return allowed[_owner][_spender];
     }
 
     function faucet(uint256 _amount) public returns (bool) {
-        _mint(msg.sender, _amount);
+        daiVat.faucet(address(daiJoin), _amount * DAI_ONE);
+        mint(msg.sender, _amount);
         return true;
     }
 
-    /**
-     * @dev Sets `amount` as the allowance of `spender` over the `owner`s tokens.
-     *
-     * This is internal function is equivalent to `approve`, and can be used to
-     * e.g. set automatic allowances for certain subsystems, etc.
-     *
-     * Emits an `Approval` event.
-     *
-     * Requirements:
-     *
-     * - `owner` cannot be the zero address.
-     * - `spender` cannot be the zero address.
-     */
-    function _approve(address owner, address spender, uint256 value) internal {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
+    function sub(uint x, uint y) internal pure returns (uint z) {
+        require((z = x - y) <= x, "math-sub-underflow");
+    }
 
-        _allowances[owner][spender] = value;
-        emit Approval(owner, spender, value);
+    function joinMint(address usr, uint wad) public auth returns (bool) {
+        return mint(usr, wad);
+    }
+
+    function joinBurn(address usr, uint wad) public returns (bool) {
+        if (usr != msg.sender && allowed[usr][msg.sender] != uint(-1)) {
+            allowed[usr][msg.sender] = sub(allowed[usr][msg.sender], wad);
+        }
+        return burn(usr, wad);
+    }
+
+    function mint(address _target, uint256 _amount) internal returns (bool) {
+        balances[_target] = balances[_target].add(_amount);
+        supply = supply.add(_amount);
+        emit Mint(_target, _amount);
+        emit Transfer(address(0), _target, _amount);
+        return true;
+    }
+
+    function burn(address _target, uint256 _amount) internal returns (bool) {
+        require(balanceOf(_target) >= _amount, "BURN Not enough funds");
+
+        balances[_target] = balances[_target].sub(_amount);
+        supply = supply.sub(_amount);
+
+        emit Burn(_target, _amount);
+        return true;
+    }
+
+    function getTypeName() public view returns (bytes32) {
+        return "Cash";
     }
 }

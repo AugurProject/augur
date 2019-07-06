@@ -13,6 +13,12 @@ export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
 }
 export class RepPriceOracle extends c.RepPriceOracle<BigNumber> {
 }
+export class TestNetDaiJoin extends c.TestNetDaiJoin<BigNumber> {
+}
+export class TestNetDaiPot extends c.TestNetDaiPot<BigNumber> {
+}
+export class TestNetDaiVat extends c.TestNetDaiVat<BigNumber> {
+}
 export class TestNetReputationToken extends c.TestNetReputationToken<BigNumber> {
 }
 export class TestOrders extends c.TestOrders<BigNumber> {
@@ -74,4 +80,8 @@ export class ShareToken extends c.ShareToken<BigNumber> {
 export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 }
 export class Trade extends c.Trade<BigNumber> {
+}
+export class Formulas extends c.Formulas<BigNumber> {
+}
+export class RedeemStake extends c.RedeemStake<BigNumber> {
 }

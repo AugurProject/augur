@@ -15,6 +15,7 @@ pragma solidity 0.5.4;
   }
 */
 
+
 contract CloneFactory {
     function createClone(address target) internal returns (address result) {
         // convert address to bytes20 for assembly use
