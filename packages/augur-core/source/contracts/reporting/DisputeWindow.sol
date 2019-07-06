@@ -15,6 +15,7 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/IAugur.sol';
 
+
 /**
  * @title Dispute Window
  * @notice A contract used to encapsulate a window of time in which markets can be disputed as well as the pot where reporting fees are collected and distributed.

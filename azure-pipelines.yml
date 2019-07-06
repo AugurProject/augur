@@ -307,7 +307,21 @@ jobs:
       )
     pool:
       vmImage: 'Ubuntu 16.04'
-    timeoutInMinutes: 120
+    timeoutInMinutes: 240
+    strategy:
+      matrix:
+        dev-pop-geth-v2:
+          IMAGE_NAME: augurproject/dev-pop-geth-v2
+          NETWORK_ID: 102
+          NORMAL_TIME: false
+        dev-pop-normtime-geth-v2:
+          IMAGE_NAME: augurproject/dev-pop-normtime-geth-v2
+          NETWORK_ID: 103
+          NORMAL_TIME: true
+        dev-pop-geth-15-v2:
+          IMAGE_NAME: augurproject/dev-pop-geth-15-v2
+          NETWORK_ID: 104
+          NORMAL_TIME: false
     steps:
       - checkout: self
       - task: Docker@1
@@ -326,12 +340,23 @@ jobs:
           docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
           docker images
           yarn
-          yarn workspace @augurproject/tools docker:build
+
+          # replaces @augurproject/tools docker:build
+          docker pull augurproject/dev-node-geth:latest
+          MONO_ROOT=../../
+          CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
+          # Build and copy to merge with current address.json/upload-block-numbers.json
+          cd packages/augur-tools
+          docker build --no-cache -f docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) $MONO_ROOT
+          ./scripts/copy-docker-files.sh $(IMAGE_NAME)
+          docker tag $(IMAGE_NAME) $(IMAGE_NAME):$CONTRACT_SHA
+
+
           if [[ "$(Build.SourceBranchName)" == "master" ]]; then
               docker push augurproject/augur-core:monorepo
           fi
-          yarn workspace @augurproject/tools docker:push
-        displayName: 'build and push core images'
+          docker push $(IMAGE_NAME):$CONTRACT_SHA
+        displayName: 'build and push $(IMAGE_NAME) image'
       - task: Docker@1
         displayName: docker logout
         inputs:
