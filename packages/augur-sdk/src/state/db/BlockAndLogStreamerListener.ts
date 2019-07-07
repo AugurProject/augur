@@ -1,17 +1,33 @@
-import { EthersProviderBlockStreamAdapter, ExtendedLog } from "blockstream-adapters";
-import { Block, BlockAndLogStreamer, Log as BlockStreamLog } from "ethereumjs-blockstream";
-import { Filter } from "ethereumjs-blockstream/output/source/models/filters";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { Log, ParsedLog } from "@augurproject/types";
-import { EventLogDBRouter } from "./EventLogDBRouter";
+import {
+  EthersProviderBlockStreamAdapter,
+  ExtendedLog,
+} from 'blockstream-adapters';
+import {
+  Block,
+  BlockAndLogStreamer,
+  Log as BlockStreamLog,
+} from 'ethereumjs-blockstream';
+import { Filter } from 'ethereumjs-blockstream/output/source/models/filters';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { Log, ParsedLog } from '@augurproject/types';
+import { EventLogDBRouter } from './EventLogDBRouter';
 
-export interface BlockAndLogStreamerInterface<TBlock extends Block, TLog extends BlockStreamLog> {
+export interface BlockAndLogStreamerInterface<
+  TBlock extends Block,
+  TLog extends BlockStreamLog
+> {
   reconcileNewBlock: (block: TBlock) => Promise<void>;
   addLogFilter: (filter: Filter) => string;
   subscribeToOnBlockAdded: (onBlockAdded: (block: TBlock) => void) => string;
-  subscribeToOnBlockRemoved: (onBlockRemoved: (block: TBlock) => void) => string;
-  subscribeToOnLogsAdded: (onLogsAdded: (blockHash: string, logs: TLog[]) => void) => string;
-  subscribeToOnLogsRemoved: (onLogsRemoved: (blockHash: string, logs: TLog[]) => void) => string;
+  subscribeToOnBlockRemoved: (
+    onBlockRemoved: (block: TBlock) => void
+  ) => string;
+  subscribeToOnLogsAdded: (
+    onLogsAdded: (blockHash: string, logs: TLog[]) => void
+  ) => string;
+  subscribeToOnLogsRemoved: (
+    onLogsRemoved: (blockHash: string, logs: TLog[]) => void
+  ) => string;
 }
 
 export interface BlockAndLogStreamerListenerDependencies {
@@ -19,23 +35,27 @@ export interface BlockAndLogStreamerListenerDependencies {
   blockAndLogStreamer: BlockAndLogStreamerInterface<Block, ExtendedLog>;
   getBlockByHash: (hashOrTag: string) => Promise<Block>;
   eventLogDBRouter: EventLogDBRouter;
-  getEventTopics: (eventName: string) => Array<string>;
+  getEventTopics: (eventName: string) => string[];
   // TODO Use an emitter?
   listenForNewBlocks: (callback: (block: Block) => Promise<void>) => void;
 }
 
 type GenericLogCallbackType<T, P> = (blockIdentifier: T, logs: P[]) => void;
 
-export type BlockstreamLogCallbackType = GenericLogCallbackType<string, Log>
-export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>
+export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>;
 
-export interface IBlockAndLogStreamerListener {
-  listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogRemoved?: LogCallbackType): void;
+export interface BlockAndLogStreamerListenerInterface {
+  listenForEvent(
+    eventName: string,
+    onLogsAdded: LogCallbackType,
+    additionalTopics?: string[]
+  ): void;
   listenForBlockRemoved(callback: (blockNumber: number) => void): void;
   startBlockStreamListener(): void;
 }
 
-export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener {
+export class BlockAndLogStreamerListener
+  implements BlockAndLogStreamerListenerInterface {
   private address: string;
 
   constructor(private deps: BlockAndLogStreamerListenerDependencies) {
@@ -43,11 +63,20 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
     deps.blockAndLogStreamer.subscribeToOnLogsAdded(this.onLogsAdded);
   }
 
-  public static create(provider: EthersProvider, eventLogDBRouter: EventLogDBRouter, address: string, getEventTopics: ((eventName: string) => Array<string>)) {
+  static create(
+    provider: EthersProvider,
+    eventLogDBRouter: EventLogDBRouter,
+    address: string,
+    getEventTopics: ((eventName: string) => string[])
+  ) {
     const dependencies = new EthersProviderBlockStreamAdapter(provider);
-    const blockAndLogStreamer = new BlockAndLogStreamer<Block, ExtendedLog>(dependencies.getBlockByHash, dependencies.getLogs, (error: Error) => {
-      console.error(error);
-    });
+    const blockAndLogStreamer = new BlockAndLogStreamer<Block, ExtendedLog>(
+      dependencies.getBlockByHash,
+      dependencies.getLogs,
+      (error: Error) => {
+        console.error(error);
+      }
+    );
 
     return new BlockAndLogStreamerListener({
       address,
@@ -55,23 +84,39 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
       eventLogDBRouter,
       getEventTopics,
       getBlockByHash: dependencies.getBlockByHash,
-      listenForNewBlocks: dependencies.startPollingForBlocks
+      listenForNewBlocks: dependencies.startPollingForBlocks,
     });
   }
 
-  public listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogsRemoved?: LogCallbackType): void {
+  listenForEvent(
+    eventName: string,
+    onLogsAdded: LogCallbackType,
+    additionalTopics: string[] = []
+  ): void {
     const topics = this.deps.getEventTopics(eventName);
 
-    this.deps.blockAndLogStreamer.addLogFilter({
-      address: this.address,
-      topics
-    });
+    if (additionalTopics.length === 0) {
+      this.addLogFilter(topics);
+    } else {
+      for (const additionalTopic of additionalTopics) {
+        this.addLogFilter([...topics, additionalTopic]);
+      }
+    }
 
     this.deps.eventLogDBRouter.addLogCallback(topics[0], onLogsAdded);
   }
 
-  public listenForBlockRemoved(callback: (blockNumber: number) => void): void {
-    const wrapper = (callback: (blockNumber: number) => void) => (block: Block) => {
+  private addLogFilter = (topics: string[]) => {
+    this.deps.blockAndLogStreamer.addLogFilter({
+      address: this.address,
+      topics,
+    });
+  };
+
+  listenForBlockRemoved(callback: (blockNumber: number) => void): void {
+    const wrapper = (callback: (blockNumber: number) => void) => (
+      block: Block
+    ) => {
       const blockNumber: number = parseInt(block.number);
       callback(blockNumber);
     };

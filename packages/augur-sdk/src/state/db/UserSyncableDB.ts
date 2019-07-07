@@ -9,21 +9,21 @@ import { DB } from "./DB";
  */
 export class UserSyncableDB extends SyncableDB {
   readonly user: string;
-  private additionalTopics: Array<Array<string | string[]>>;
 
   constructor(augur: Augur, dbController: DB, networkId: number, eventName: string, user: string, numAdditionalTopics: number, userTopicIndicies: number[], idFields: string[] = []) {
     try {
       const formattedUser = getAddress(user);
-      super(augur, dbController, networkId, eventName, dbController.getDatabaseName(eventName, formattedUser), idFields);
       this.user = formattedUser;
       const bytes32User = `0x000000000000000000000000${formattedUser.substr(2).toLowerCase()}`;
-      this.additionalTopics = [];
+      const additionalTopics = [];
       for (const userTopicIndex of userTopicIndicies) {
         const topics: Array<string | string[]> = [];
         topics.fill("", numAdditionalTopics);
         topics[userTopicIndex] = bytes32User;
-        this.additionalTopics.push(topics);
+        additionalTopics.push(topics);
       }
+
+      super(augur, dbController, networkId, eventName, dbController.getDatabaseName(eventName, formattedUser), idFields, additionalTopics);
     } catch (err) {
       throw err;
     }

@@ -1,24 +1,24 @@
 import { Augur } from "../Augur";
 import { DB } from "./db/DB";
-import { IBlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
+import { BlockAndLogStreamerListenerInterface } from "./db/BlockAndLogStreamerListener";
 
 const settings = require("./settings.json");
 
 export class Controller {
 
-  public constructor(
+  constructor(
     private augur: Augur,
     private db: Promise<DB>,
-    private blockAndLogStreamerListener: IBlockAndLogStreamerListener,
+    private blockAndLogStreamerListener: BlockAndLogStreamerListenerInterface,
   ) {
   }
 
-  public async fullTextSearch(eventName: string, query: string) {
+  async fullTextSearch(eventName: string, query: string) {
     const db = await this.db;
     return db.fullTextSearch(eventName, query);
   }
 
-  public async run(): Promise<void> {
+  async run(): Promise<void> {
     try {
       const db = await this.db;
       await db.sync(
