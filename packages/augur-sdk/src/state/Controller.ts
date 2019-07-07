@@ -20,8 +20,7 @@ export class Controller {
 
   public async run(): Promise<void> {
     try {
-      const db = await this.db;
-      db.sync(
+      await (await this.db).sync(
         this.augur,
         settings.chunkSize,
         settings.blockstreamDelay,
