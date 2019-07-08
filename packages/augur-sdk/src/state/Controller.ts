@@ -5,7 +5,6 @@ import { Block } from "ethers/providers";
 import { augurEmitter } from "../events";
 import { SubscriptionEventName } from "../constants";
 import { Subscriptions } from "../subscriptions";
-import { Subscription } from "chnl/types/channel";
 
 const settings = require("./settings.json");
 
@@ -44,6 +43,7 @@ export class Controller {
   }
 
   private async notifyNewBlockEvent(): Promise<void> {
+    console.log("DBDBDBDBDBD", this.db);
     const lowestBlock = await (await this.db).syncStatus.getLowestSyncingBlockForAllDBs();
     const block = await this.getLatestBlock();
 

@@ -234,7 +234,7 @@ export class SyncableDB extends AbstractDB {
       for (let doc of blocksToRemove.docs) {
         await this.db.remove(doc._id, doc._rev);
       }
-      await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber);
+      await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing);
     } catch (err) {
       console.error(err);
     }
@@ -259,7 +259,7 @@ export class SyncableDB extends AbstractDB {
           await this.db.remove(doc._id, doc._rev);
         }
       }
-      await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber);
+      await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing);
     } catch (err) {
       console.error(err);
     }
