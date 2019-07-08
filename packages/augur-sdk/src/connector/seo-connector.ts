@@ -10,9 +10,7 @@ export class SEOConnector extends Connector {
   private events = new Subscriptions(augurEmitter);
 
   public async connect(ethNodeUrl: string, account?: string): Promise<any> {
-    console.log("YYYYYYYYYYYYYYY");
     this.api = await Sync.start(ethNodeUrl, account, { adapter: "memory" });
-    console.log("AFTER YYYYYY")
   }
 
   public async disconnect(): Promise<any> {

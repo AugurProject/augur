@@ -25,7 +25,7 @@ let db: Promise<DB>;
 
 const mock = makeDbMock();
 
-jest.mock('@augurproject/sdk/build/state/index', () => {
+jest.mock('@augurproject/sdk/build/state/create-api', () => {
   return {
     __esModule: true,
     buildAPI: () => {
@@ -120,11 +120,12 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       expect(arg).toEqual(
         {
           eventName: SubscriptionEventName.NewBlock,
-          blocksBehindCurrent: 0,
+          blocksBehindCurrent: expect.any(Number),
           highestAvailableBlockNumber: expect.any(Number),
           lastSyncedBlockNumber: expect.any(Number),
-          percentBehindCurrent: '0.0000',
-        },
+          percentBehindCurrent: expect.any(String),
+          timestamp: expect.any(Number),
+        }
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);

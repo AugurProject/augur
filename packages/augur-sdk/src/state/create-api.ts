@@ -14,12 +14,10 @@ import { DB } from "./db/DB";
 const settings = require("./settings.json");
 
 async function buildDeps(ethNodeUrl: string, account?: string, dbArgs: PouchDB.Configuration.DatabaseConfiguration = {}) {
-  console.log("EEEEEEEEEEEE");
   const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);
   const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, account);
   const networkId = await ethersProvider.getNetworkId();
 
-  console.log("FFFFFFFFFFF1111111111")
   const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[networkId]);
   const eventLogDBRouter = new EventLogDBRouter(augur.events.parseLogs);
   const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(ethersProvider, eventLogDBRouter, Addresses[networkId].Augur, augur.events.getEventTopics);
