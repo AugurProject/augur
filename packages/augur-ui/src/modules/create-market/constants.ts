@@ -23,6 +23,7 @@ export const MARKET_CREATION_PAGES = [
 
 // Scratch Page Content
 export const REVIEW = "review";
+export const FEES_LIQUIDITY = "feesLiquidity";
 export const FORM_DETAILS = "formDetails";
 
 const EventDetailsContent = {
@@ -41,6 +42,8 @@ const EventDetailsContent = {
 const LiquidityContent = {
 	title: "Fees & liquidity",
 	largeHeader: "Fee & liquidity",
+	noDarkBackground: true,
+	mainContent: FEES_LIQUIDITY,
 	firstButton: BACK,
 	secondButton: NEXT
 };

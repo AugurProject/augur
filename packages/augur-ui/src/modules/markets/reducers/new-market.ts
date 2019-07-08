@@ -5,7 +5,7 @@ import {
   CLEAR_NEW_MARKET
 } from "modules/markets/actions/update-new-market";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { SETTLEMENT_FEE_DEFAULT } from "modules/common/constants";
+import { SETTLEMENT_FEE_DEFAULT, AFFILIATE_FEE_DEFAULT, YES_NO } from "modules/common/constants";
 
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
@@ -32,8 +32,24 @@ export const DEFAULT_STATE: NewMarket = {
     }
   ],
   currentStep: 0,
-  type: "",
+  marketType: YES_NO,
   outcomes: Array(2).fill(""),
+  outcomesFormatted: [
+    {
+      id: 0,
+      description: "Invalid",
+      isTradable: true,
+    },
+    {
+      id: 1,
+      description: "No"
+    },
+    {
+      id: 2,
+      description: "Yes",
+      isTradable: true,
+    },
+  ],
   scalarSmallNum: "",
   scalarBigNum: "",
   scalarDenomination: "",
@@ -43,7 +59,7 @@ export const DEFAULT_STATE: NewMarket = {
   designatedReporterType: "",
   designatedReporterAddress: "",
   endTime: null,
-  tickSize: 100,
+  tickSize: 0.01,
   hour: null,
   minute: null,
   meridiem: null,
@@ -52,8 +68,11 @@ export const DEFAULT_STATE: NewMarket = {
   tag1: "",
   tag2: "",
   settlementFee: SETTLEMENT_FEE_DEFAULT,
+  affiliateFee: AFFILIATE_FEE_DEFAULT,
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
+  minPrice: 0,
+  maxPrice: 1,
   initialLiquidityEth: createBigNumber(0),
   initialLiquidityGas: createBigNumber(0),
   creationError:

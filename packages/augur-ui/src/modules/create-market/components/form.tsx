@@ -4,13 +4,14 @@ import classNames from "classnames";
 import moment from "moment";
 
 import { LocationDisplay } from "modules/common/form";
-import { BACK, NEXT, CREATE, CUSTOM_CONTENT_PAGES, REVIEW, FORM_DETAILS, LANDING } from "modules/create-market/constants";
+import { BACK, NEXT, CREATE, CUSTOM_CONTENT_PAGES, REVIEW, FORM_DETAILS, LANDING, FEES_LIQUIDITY } from "modules/create-market/constants";
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { LargeHeader, ExplainerBlock, ContentBlock } from "modules/create-market/components/common";
 import { NewMarket, Drafts } from "modules/types";
 import FormDetails from "modules/create-market/containers/form-details";
 import Review from "modules/create-market/containers/review";
+import FeesLiquidity from "modules/create-market/containers/fees-liquidity";
 import makePath from "modules/routes/helpers/make-path";
 import {
   CREATE_MARKET
@@ -175,7 +176,7 @@ export default class Form extends React.Component<
       hour: newMarket.hour,
       minute: newMarket.minute,
       meridiem: newMarket.meridiem,
-      marketType: newMarket.type,
+      marketType: newMarket.marketType,
       detailsText: newMarket.detailsText,
       category: "",
       tag1: "",
@@ -204,7 +205,8 @@ export default class Form extends React.Component<
       firstButton, 
       secondButton, 
       explainerBlockSubtexts, 
-      largeHeader
+      largeHeader,
+      noDarkBackground
     } = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
 
     const savedDraft = drafts[newMarket.uniqueId];
@@ -224,8 +226,9 @@ export default class Form extends React.Component<
             subtexts={explainerBlockSubtexts}
           />
         }
-        <ContentBlock>
+        <ContentBlock noDarkBackground={noDarkBackground}>
           {mainContent === FORM_DETAILS && <FormDetails />}
+          {mainContent === FEES_LIQUIDITY && <FeesLiquidity />}
           {mainContent === REVIEW && <Review />}
           <div>
             {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}

@@ -62,6 +62,7 @@ interface TextInputProps {
   onChange: Function;
   value?: string;
   trailingLabel?: string;
+  innerLabel?: string;
 }
 
 interface TextInputState {
@@ -382,7 +383,7 @@ export const LocationDisplay = ({
 
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
   state: TextInputState = {
-    value: this.props.value || "",
+    value: this.props.value === null ? "" : this.props.value,
   };
 
   componentWillReceiveProps(nextProps: TextInputProps) {
@@ -405,20 +406,24 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       errorMessage,
       type,
       trailingLabel,
+      innerLabel
     } = this.props;
 
     return (
       <>
         <div className={Styles.TextInput}>
           {type !== 'textarea' ? (
-            <input
-              {...this.props}
-              className={classNames({ [Styles.error]: error })}
-              value={this.state.value}
-              onChange={this.onChange}
-              placeholder={placeholder}
-              disabled={disabled}
-            />
+            <>
+              <input
+                {...this.props}
+                className={classNames({ [Styles.error]: error })}
+                value={this.state.value}
+                onChange={this.onChange}
+                placeholder={placeholder}
+                disabled={disabled}
+              />
+              {innerLabel && <span className={Styles.Inner}>{innerLabel}</span>}
+            </>
           ) : (
             <textarea
               {...this.props}
@@ -429,7 +434,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
               disabled={disabled}
             />
           )}
-          {trailingLabel && <span>{trailingLabel}</span>}
+          {trailingLabel && <span className={Styles.Trailing}>{trailingLabel}</span>}
         </div>
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
       </>
