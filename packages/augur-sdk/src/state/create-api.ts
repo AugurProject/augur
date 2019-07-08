@@ -38,14 +38,13 @@ async function buildDeps(ethNodeUrl: string, account?: string, dbArgs: PouchDB.C
 }
 
 export async function create(ethNodeUrl: string, account?: string, dbArgs: DatabaseConfiguration = {}): Promise<{ api: API, controller: Controller }> {
-  console.log("BLAKABL HALBHALHBA")
   const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, dbArgs);
 
   const controller = new Controller(augur, db, blockAndLogStreamerListener);
   const api = new API(augur, db);
 
   return { api, controller };
-};
+}
 
 export async function buildAPI(ethNodeUrl: string, account?: string, dbArgs: DatabaseConfiguration = {}): Promise<API> {
   const { augur, blockAndLogStreamerListener, db } = await buildDeps(ethNodeUrl, account, dbArgs);
