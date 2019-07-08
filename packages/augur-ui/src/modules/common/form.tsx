@@ -251,11 +251,11 @@ export class CategoryMultiSelect extends Component<
     };
   }
 
-  determineVisible(tertiaryOptions, values, selected) {
-    const showSecondaryDropdown = values[0] !== '';
+  determineVisible(values, secondaryOptions, tertiaryOptions, selected) {
+    const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 1;
     const showTertiaryDropdown = tertiaryOptions.length > 1 && values[1] !== '';
     const customPrimary = selected[0] === CUSTOM;
-    const customSecondary = showSecondaryDropdown && selected[1] === CUSTOM;
+    const customSecondary = selected[1] === CUSTOM || !showSecondaryDropdown && customPrimary && values[0] !== '';
     const customTertiary =
       selected[2] === CUSTOM || (!showTertiaryDropdown && values[1] !== '');
     return {
@@ -307,7 +307,7 @@ export class CategoryMultiSelect extends Component<
       customPrimary,
       customSecondary,
       customTertiary,
-    } = this.determineVisible(tertiaryOptions, values, selected);
+    } = this.determineVisible(values, secondaryOptions, tertiaryOptions, selected);
 
     return (
       <ul className={Styles.CategoryMultiSelect}>
