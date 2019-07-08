@@ -781,6 +781,7 @@ async function getMarketOutcomes(
   minPrice: BigNumber
 ): Promise<MarketInfoOutcome[]> {
   const outcomes: MarketInfoOutcome[] = [];
+  const denomination = scalarDenomination ? scalarDenomination : "N/A";
   if (marketCreatedLog.outcomes.length === 0) {
     const ordersFilled0 = (await db.findOrderFilledLogs({
       selector: { market: marketCreatedLog.market, outcome: '0x00' },
@@ -821,7 +822,7 @@ async function getMarketOutcomes(
             ).toString(10)
           : null,
       description:
-        marketCreatedLog.marketType === 0 ? 'No' : scalarDenomination,
+        marketCreatedLog.marketType === 0 ? 'No' : denomination,
       volume:
         marketVolumeChangedLogs.length === 0 ||
         marketVolumeChangedLogs[0].outcomeVolumes[1] === '0x00'
@@ -841,7 +842,7 @@ async function getMarketOutcomes(
             ).toString(10)
           : null,
       description:
-        marketCreatedLog.marketType === 0 ? 'Yes' : scalarDenomination,
+        marketCreatedLog.marketType === 0 ? 'Yes' : denomination,
       volume:
         marketVolumeChangedLogs.length === 0 ||
         marketVolumeChangedLogs[0].outcomeVolumes[2] === '0x00'
