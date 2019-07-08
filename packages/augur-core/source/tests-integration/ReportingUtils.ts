@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import { BigNumber } from "bignumber.js";
 import { expect } from "chai";
 import { TestFixture } from './TestFixture';
-import { Market } from '../libraries/ContractInterfaces';
+import { Market, Universe } from '../libraries/ContractInterfaces';
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -105,7 +105,7 @@ export class ReportingUtils {
         }
     }
 
-    public async proceedToFork(fixture: TestFixture, market: Market) {
+    public async proceedToFork(fixture: TestFixture, market: Market, universe: Universe) {
         let forkingMarket = await market.getForkingMarket_();
         let disputeRound = 0;
         while (forkingMarket === ZERO_ADDRESS) {
@@ -116,12 +116,15 @@ export class ReportingUtils {
         }
 
         let ethBalance = await fixture.getEthBalance();
-        console.log("ethBalance before calling forkAndRedeem", ethBalance.toString());
+        console.log("ethBalance before calling for and redeem", ethBalance.toString());
 
         const numParticipants = await market.getNumParticipants_();
         for (let i = 0; i < numParticipants.toNumber(); i++) {
             const reportingParticipantAddress = await market.getReportingParticipant_(new BigNumber(i));
             const reportingParticipant = await fixture.getReportingParticipant(reportingParticipantAddress);
+            console.log(`Creating universe for participant: ${i}`);
+            await universe.createChildUniverse(await reportingParticipant.getPayoutNumerators_());
+            console.log(`Calling forkAndRedeem for participant: ${i}`);
             await reportingParticipant.forkAndRedeem();
 
             const reportingParticipantStake = await reportingParticipant.getStake_();
@@ -129,7 +132,7 @@ export class ReportingUtils {
         }
 
         ethBalance = await fixture.getEthBalance();
-        console.log("ethBalance after calling forkAndRedeem", ethBalance.toString());
+        console.log("ethBalance after calling fork and redeem", ethBalance.toString());
 
         console.log("\nCalled forkAndRedeem on reporting participants");
     }
