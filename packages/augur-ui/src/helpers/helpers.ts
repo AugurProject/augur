@@ -2,7 +2,7 @@ import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import logError from "utils/log-error";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
-import { loadMarkets } from "modules/markets/actions/load-markets";
+import { loadAllMarketIds } from "modules/markets/actions/load-markets";
 import store, { AppState } from "store";
 import { DISCLAIMER_SEEN } from "modules/common/constants";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
@@ -17,7 +17,7 @@ import {
   getMinutesRemaining,
   convertUnixToFormattedDate
 } from "utils/format-date";
-import { MarketData, NodeStyleCallback, MarketInfos } from "modules/types";
+import { MarketData, NodeStyleCallback } from "modules/types";
 
 const localStorageRef = typeof window !== "undefined" && window.localStorage;
 
@@ -31,7 +31,7 @@ const findMarketByDesc = (
   );
   if (!market) {
     dispatch(
-      loadMarkets((err: string, marketIds) => {
+      loadAllMarketIds((err: string | Error, marketIds) => {
         if (err) return callback(err);
         dispatch(
           loadMarketsInfo(marketIds, (err, markets) => {
