@@ -469,17 +469,7 @@ export class Markets {
       },
       isbids: boolean = false
     ): OrderBook[] => {
-      const orders = Object.values(unsortedOrders);
-      const buckets = _.groupBy<Order>(orders, order => order.price);
-      const keysSorted: string[] = isbids
-        ? Object.keys(buckets).sort((a, b) =>
-            new BigNumber(b).minus(a).toNumber()
-          )
-        : Object.keys(buckets).sort((a, b) =>
-            new BigNumber(a).minus(b).toNumber()
-          );
-
-      const sortedBuckets = keysSorted.map(k => buckets[k]);
+      const sortedBuckets = bucketAndSortOrdersByPrice(unsortedOrders, isbids);
       const result: OrderBook[] = [];
 
       return Object.values(sortedBuckets).reduce((acc, bucket, index) => {
@@ -529,6 +519,26 @@ export class Markets {
         bids,
       };
     };
+
+    const bucketAndSortOrdersByPrice = (unsortedOrders: {
+      [orderId: string]: Order;
+    },
+    sortDescending: boolean = true
+    ) => {
+      const bucketsByPrice = _.groupBy<Order>(
+        Object.values(unsortedOrders),
+        order => order.price
+      );
+      const prickKeysSorted: string[] = sortDescending
+        ? Object.keys(bucketsByPrice).sort((a, b) =>
+            new BigNumber(b).minus(a).toNumber()
+          )
+        : Object.keys(bucketsByPrice).sort((a, b) =>
+            new BigNumber(a).minus(b).toNumber()
+          );
+
+      return prickKeysSorted.map(k => bucketsByPrice[k]);
+    }
 
     const processMarket = (orders: Orders) => {
       const outcomes = Object.values(orders)[0];
