@@ -30,6 +30,8 @@ import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
 
+const CUSTOM = "Custom";
+
 interface CheckboxProps {
   id: string;
   isChecked: boolean;
@@ -219,8 +221,8 @@ export class CategoryMultiSelect extends Component<
   };
 
   createOptions(sortedGroup) {
-    let options = sortedGroup.map(item => item.value);
-    options.push('Custom');
+    let options = sortedGroup.map(item => ({ label: item.value, value: item.value }));
+    options.push({ label: CUSTOM, value: CUSTOM });
     return options;
   }
 
@@ -234,12 +236,12 @@ export class CategoryMultiSelect extends Component<
     }
   }
 
-  createGroups(groups, selected) {
+  createGroups(groups, values) {
     const primaryOptions = this.createOptions(groups);
-    const primarySubgroup = this.findSubgroup(groups, selected[0]);
+    const primarySubgroup = this.findSubgroup(groups, values[0]);
     const secondaryOptions = this.createOptions(primarySubgroup);
     const tertiaryOptions = this.createOptions(
-      this.findSubgroup(primarySubgroup, selected[1])
+      this.findSubgroup(primarySubgroup, values[1])
     );
 
     return {
@@ -252,10 +254,10 @@ export class CategoryMultiSelect extends Component<
   determineVisible(tertiaryOptions, values, selected) {
     const showSecondaryDropdown = values[0] !== '';
     const showTertiaryDropdown = tertiaryOptions.length > 1 && values[1] !== '';
-    const customPrimary = selected[0] === 'Custom';
-    const customSecondary = showSecondaryDropdown && selected[1] === 'Custom';
+    const customPrimary = selected[0] === CUSTOM;
+    const customSecondary = showSecondaryDropdown && selected[1] === CUSTOM;
     const customTertiary =
-      selected[2] === 'Custom' || (!showTertiaryDropdown && values[1] !== '');
+      selected[2] === CUSTOM || (!showTertiaryDropdown && values[1] !== '');
     return {
       showSecondaryDropdown,
       showTertiaryDropdown,
@@ -266,7 +268,6 @@ export class CategoryMultiSelect extends Component<
   }
 
   getNewValues(value, position) {
-    console.log('updateValue', value, position);
     const { values } = this.state;
     const updatedValues = values;
     updatedValues[position] = value;
@@ -274,7 +275,6 @@ export class CategoryMultiSelect extends Component<
   }
 
   getNewSelected(selection, position) {
-    console.log('updateSelection', selection, position);
     const { selected } = this.state;
     const updatedSelected = selected;
     updatedSelected[position] = selection;
@@ -283,7 +283,7 @@ export class CategoryMultiSelect extends Component<
 
   onChangeDropdown(choice, position) {
     let value = choice;
-    if (choice === 'Custom') value = '';
+    if (choice === CUSTOM) value = '';
     const selected = this.getNewSelected(choice, position);
     const values = this.getNewValues(value, position);
     this.handleUpdate(selected, values);
@@ -300,7 +300,7 @@ export class CategoryMultiSelect extends Component<
       primaryOptions,
       secondaryOptions,
       tertiaryOptions,
-    } = this.createGroups(groups, selected);
+    } = this.createGroups(groups, values);
     const {
       showSecondaryDropdown,
       showTertiaryDropdown,
@@ -308,32 +308,24 @@ export class CategoryMultiSelect extends Component<
       customSecondary,
       customTertiary,
     } = this.determineVisible(tertiaryOptions, values, selected);
-    // console.log(showSecondaryDropdown,
-    //   showTertiaryDropdown,
-    //   customPrimary,
-    //   customSecondary,
-    //   customTertiary,
-    //   selected,
-    //   values);
+
     return (
       <ul className={Styles.CategoryMultiSelect}>
-        <InputDropdown
-          default=""
-          label="Select Category"
+        <FormDropdown
+          staticLabel="Primary Category"
           onChange={choice => this.onChangeDropdown(choice, 0)}
           options={primaryOptions}
         />
         {customPrimary && (
           <TextInput
             value={values[0]}
-            placeholder="Enter Primary Category"
+            placeholder="Custom Primary Category"
             onChange={v => this.handleUpdate(selected, this.getNewValues(v, 0))}
           />
         )}
         {showSecondaryDropdown && (
-          <InputDropdown
-            default=""
-            label="Select Category"
+          <FormDropdown
+            staticLabel="Secondary Category"
             onChange={choice => this.onChangeDropdown(choice, 1)}
             options={secondaryOptions}
           />
@@ -341,14 +333,13 @@ export class CategoryMultiSelect extends Component<
         {customSecondary && (
           <TextInput
             value={values[1]}
-            placeholder="Enter Secondary Category"
+            placeholder="Custom Secondary Category"
             onChange={v => this.handleUpdate(selected, this.getNewValues(v, 1))}
           />
         )}
         {showTertiaryDropdown && (
-          <InputDropdown
-            default=""
-            label="Select Category"
+          <FormDropdown
+            staticLabel="Tertiary Category"
             onChange={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
           />
@@ -356,7 +347,7 @@ export class CategoryMultiSelect extends Component<
         {customTertiary && (
           <TextInput
             value={values[2]}
-            placeholder="Enter Tertiary Category"
+            placeholder="Custom Tertiary Category"
             onChange={v => this.handleUpdate(selected, this.getNewValues(v, 2))}
           />
         )}
