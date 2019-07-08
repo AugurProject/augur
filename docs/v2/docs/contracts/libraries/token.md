@@ -66,7 +66,7 @@ Also emits a [`Transfer`](../trading#ERC777.Transfer(address,address,uint256)) e
 
 <h4><a class="anchor" aria-hidden="true" id="ERC777.transfer(address,uint256)"></a><code class="function-signature">transfer(address recipient, uint256 amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
-See [`IERC20.transfer`](../trading#IERC20.transfer(address,uint256)).
+See [`IERC20.transfer`](../utility#IERC20.transfer(address,uint256)).
 
 Unlike [`send`](../trading#ERC777.send(address,uint256,bytes)), `recipient` is _not_ required to implement the `tokensReceived`
 interface if it is a contract.
@@ -115,7 +115,7 @@ Emits [`Sent`](../trading#ERC777.Sent(address,address,address,uint256,bytes,byte
 
 <h4><a class="anchor" aria-hidden="true" id="ERC777.allowance(address,address)"></a><code class="function-signature">allowance(address holder, address spender) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
-See [`IERC20.allowance`](../trading#IERC20.allowance(address,address)).
+See [`IERC20.allowance`](../utility#IERC20.allowance(address,address)).
 
 Note that operator and allowance concepts are orthogonal: operators may
 not have allowance, and accounts with allowance may not be operators
@@ -125,7 +125,7 @@ themselves.
 
 <h4><a class="anchor" aria-hidden="true" id="ERC777.approve(address,uint256)"></a><code class="function-signature">approve(address spender, uint256 value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
-See [`IERC20.approve`](../trading#IERC20.approve(address,uint256)).
+See [`IERC20.approve`](../utility#IERC20.approve(address,uint256)).
 
 Note that accounts cannot have allowance issued by their operators.
 
@@ -133,7 +133,7 @@ Note that accounts cannot have allowance issued by their operators.
 
 <h4><a class="anchor" aria-hidden="true" id="ERC777.transferFrom(address,address,uint256)"></a><code class="function-signature">transferFrom(address holder, address recipient, uint256 amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
-See [`IERC20.transferFrom`](../trading#IERC20.transferFrom(address,address,uint256)).
+See [`IERC20.transferFrom`](../utility#IERC20.transferFrom(address,address,uint256)).
 
 Note that operator and allowance concepts are orthogonal: operators cannot
 call [`transferFrom`](../trading#ERC777.transferFrom(address,address,uint256)) (unless they have allowance), and accounts with
