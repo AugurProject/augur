@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 import memoize from "memoizee";
-import { formatEther } from "utils/format-number";
+import { formatDai } from "utils/format-number";
 import {
   calcOrderProfitLossPercents,
   calcOrderShareProfitLoss,
@@ -84,35 +84,35 @@ export const generateTrade = memoize(
       sharesFilled,
       selfTrade: !!outcomeTradeInProgress.selfTrade,
       totalOrderValue: totalOrderValue
-        ? formatEtherValue(totalOrderValue)
+        ? formatDaiValue(totalOrderValue)
         : null,
       orderShareProfit: orderShareProfitLoss
-        ? formatEtherValue(orderShareProfitLoss.potentialEthProfit)
+        ? formatDaiValue(orderShareProfitLoss.potentialEthProfit)
         : null,
       orderShareTradingFee: orderShareProfitLoss
-        ? formatEtherValue(orderShareProfitLoss.tradingFees)
+        ? formatDaiValue(orderShareProfitLoss.tradingFees)
         : null,
       potentialEthProfit: preOrderProfitLoss
-        ? formatEtherValue(preOrderProfitLoss.potentialEthProfit)
+        ? formatDaiValue(preOrderProfitLoss.potentialEthProfit)
         : null,
       potentialEthLoss: preOrderProfitLoss
-        ? formatEtherValue(preOrderProfitLoss.potentialEthLoss)
+        ? formatDaiValue(preOrderProfitLoss.potentialEthLoss)
         : null,
       potentialLossPercent: preOrderProfitLoss
-        ? formatEtherValue(preOrderProfitLoss.potentialLossPercent)
+        ? formatDaiValue(preOrderProfitLoss.potentialLossPercent)
         : null,
       potentialProfitPercent: preOrderProfitLoss
-        ? formatEtherValue(preOrderProfitLoss.potentialProfitPercent)
+        ? formatDaiValue(preOrderProfitLoss.potentialProfitPercent)
         : null,
       tradingFees: preOrderProfitLoss
-        ? formatEtherValue(preOrderProfitLoss.tradingFees)
+        ? formatDaiValue(preOrderProfitLoss.tradingFees)
         : null,
-      totalFee: formatEtherValue(totalFee, { blankZero: true }),
-      totalFeePercent: formatEtherValue(feePercent, { blankZero: true }),
-      totalCost: formatEtherValue(totalCost.abs().toFixed(), {
+      totalFee: formatDaiValue(totalFee, { blankZero: true }),
+      totalFeePercent: formatDaiValue(feePercent, { blankZero: true }),
+      totalCost: formatDaiValue(totalCost.abs().toFixed(), {
         blankZero: false,
       }),
-      shareCost: formatEtherValue(shareCost.abs().toFixed(), {
+      shareCost: formatDaiValue(shareCost.abs().toFixed(), {
         blankZero: false,
       }), // These are actually shares, but they can be formatted like DAI
     };
@@ -120,8 +120,8 @@ export const generateTrade = memoize(
   { max: 5 },
 );
 
-const formatEtherValue = (value, options = {}) =>
-  formatEther(
+const formatDaiValue = (value, options = {}) =>
+  formatDai(
     value,
     Object.assign(
       { decimalsRounded: constants.UPPER_FIXED_PRECISION_BOUND },

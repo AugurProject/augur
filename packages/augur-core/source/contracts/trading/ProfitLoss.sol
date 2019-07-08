@@ -9,7 +9,7 @@ import 'ROOT/libraries/math/SafeMathInt256.sol';
 
 /**
  * @title Profit Loss
- * @notice Storage of Profit Loss data. 
+ * @notice Storage of Profit Loss data.
  */
 contract ProfitLoss is Initializable {
     using SafeMathUint256 for uint256;

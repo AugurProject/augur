@@ -66,11 +66,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
 
     # Create order
     fixture.contracts['Cash'].faucet(creatorTokens, sender=creatorKey)
-    try:
-        orderId = createOrder.publicCreateOrder(orderType, orderSize, orderPrice, market.address, orderOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = creatorKey)
-    except Exception:
-        import pdb;pdb.set_trace()
-        raise
+    orderId = createOrder.publicCreateOrder(orderType, orderSize, orderPrice, market.address, orderOutcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), False, nullAddress, sender = creatorKey)
 
     # Validate order
     assert orders.getAmount(orderId) == orderSize
@@ -85,12 +81,20 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     acquireLongShares(orderOutcome, fillerLongShares, fillOrder.address, sender = fillerKey)
     acquireShortShareSet(orderOutcome, fillerShortShares, fillOrder.address, sender = fillerKey)
 
+    # Move time and sweep interest
+    assert fixture.contracts['Time'].incrementTimestamp(50000)
+    assert universe.sweepInterest()
+
     # Fill order
     fixture.contracts['Cash'].faucet(fillerTokens, sender=fillerKey)
     remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), False, "0x0000000000000000000000000000000000000000", sender = fillerKey)
     assert not remaining
 
-    # Assert final state
+    # Move time and sweep interest
+    assert fixture.contracts['Time'].incrementTimestamp(50000)
+    assert universe.sweepInterest()
+
+    # Assert final state of positions
     assert fixture.contracts['Cash'].balanceOf(creatorAddress) == int(expectedMakerTokens)
     assert fixture.contracts['Cash'].balanceOf(fillerAddress) == int(expectedFillerTokens)
     for outcome in range(0, market.getNumberOfOutcomes()):
@@ -101,6 +105,19 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
         else:
             assert shareToken.balanceOf(creatorAddress) == expectedMakerShortShares
             assert shareToken.balanceOf(fillerAddress) == expectedFillerShortShares
+
+    # Finalize and claim proceeds
+    fixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
+    payoutNumerators = [0, 0, market.getNumTicks()] if market.getNumberOfOutcomes() == 3 else [0, 0, 0, market.getNumTicks()]
+    market.doInitialReport(payoutNumerators, "")
+    disputeWindow = fixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    fixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert market.finalize()
+
+    claimTradingProceeds = fixture.contracts['ClaimTradingProceeds']
+    assert claimTradingProceeds.claimTradingProceeds(market.address, account1)
+    assert claimTradingProceeds.claimTradingProceeds(market.address, account2)
+
 
 def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):
     longCost = amount * fxpPrice

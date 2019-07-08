@@ -110,10 +110,10 @@ jobs:
     - TestAndLint
     - PreFlightCheck
     condition: |
-      and
+      or
       (
-        succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        and( succeeded(), eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')),
+        eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -154,7 +154,12 @@ jobs:
           docker images
           docker tag augurproject/augur-build:latest augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker push augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
-        displayName: docker build
+      - bash: |
+          set -euo pipefail
+          docker images
+          docker push augurproject/augur-build:latest
+        displayName: docker push latest
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
       - task: Docker@1
         displayName: docker logout
         inputs:
@@ -302,7 +307,21 @@ jobs:
       )
     pool:
       vmImage: 'Ubuntu 16.04'
-    timeoutInMinutes: 120
+    timeoutInMinutes: 240
+    strategy:
+      matrix:
+        dev-pop-geth-v2:
+          IMAGE_NAME: augurproject/dev-pop-geth-v2
+          NETWORK_ID: 102
+          NORMAL_TIME: false
+        dev-pop-normtime-geth-v2:
+          IMAGE_NAME: augurproject/dev-pop-normtime-geth-v2
+          NETWORK_ID: 103
+          NORMAL_TIME: true
+        dev-pop-geth-15-v2:
+          IMAGE_NAME: augurproject/dev-pop-geth-15-v2
+          NETWORK_ID: 104
+          NORMAL_TIME: false
     steps:
       - checkout: self
       - task: Docker@1
@@ -321,12 +340,23 @@ jobs:
           docker tag augurproject/augur-core:$(DOCKER_CI_BUILD_TAG) augurproject/augur-core:monorepo
           docker images
           yarn
-          yarn workspace @augurproject/tools docker:build
+
+          # replaces @augurproject/tools docker:build
+          docker pull augurproject/dev-node-geth:latest
+          MONO_ROOT=../../
+          CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
+          # Build and copy to merge with current address.json/upload-block-numbers.json
+          cd packages/augur-tools
+          docker build --no-cache -f docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) $MONO_ROOT
+          ./scripts/copy-docker-files.sh $(IMAGE_NAME)
+          docker tag $(IMAGE_NAME) $(IMAGE_NAME):$CONTRACT_SHA
+
+
           if [[ "$(Build.SourceBranchName)" == "master" ]]; then
               docker push augurproject/augur-core:monorepo
           fi
-          yarn workspace @augurproject/tools docker:push
-        displayName: 'build and push core images'
+          docker push $(IMAGE_NAME):$CONTRACT_SHA
+        displayName: 'build and push $(IMAGE_NAME) image'
       - task: Docker@1
         displayName: docker logout
         inputs:
@@ -334,11 +364,9 @@ jobs:
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
 
-  - job: publish_docker_images
+  - job: publish_augur_ui_docker_image
     dependsOn:
     - Augur_build_docker_image
-    - Build_Core_Docker
-    - Test_Augur_Core
     condition: |
       and
       (
@@ -358,8 +386,11 @@ jobs:
           set -euo pipefail
           docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
-          docker images
-          docker push augurproject/augur-build:latest
+          # when we get deploy going we will swap these commands out for
+          # docker:release
+          yarn workspace @augurproject/ui docker:build
+          docker push augurproject/augur-ui:latest
+          #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
         displayName: 'publish docker images on merge to master'
       - task: Docker@1
         displayName: docker logout

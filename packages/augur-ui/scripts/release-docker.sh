@@ -23,11 +23,6 @@ case ${augur_env} in
         cluster="dev-augur-net"
         augur_service="dev-augur-ui"
         ;;
-    stable)
-        network="stable"
-        cluster="stable-augur-net"
-        augur_service="stable-augur-ui"
-        ;;
     kovan)
         network="kovan"
         cluster="kovan-augur-net"
@@ -38,12 +33,6 @@ case ${augur_env} in
         cluster="try-augur-net"
         augur_service="try-augur-ui"
         build_environment="dev-optimized"
-        ;;
-    sneakpeak)
-        network="rinkeby"
-        cluster="sneakpeak-augur-net"
-        build_environment="dev-optimized"
-        augur_service="sneakpeak-ui"
         ;;
     release)
         network="rinkeby"
@@ -57,10 +46,10 @@ case ${augur_env} in
         ;;
 esac
 
-docker build . --build-arg ethereum_network=${network} --build-arg build_environment=${build_environment} --cache-from augurproject/augur:${augur_env} --tag augurproject/augur:${augur_env} --tag augurproject/augur:$version
+docker build . --build-arg ethereum_network=${network} --build-arg build_environment=${build_environment} --cache-from augurproject/augur-ui:${augur_env} --tag augurproject/augur-ui:${augur_env} --tag augurproject/augur-ui:$version
 
-docker push augurproject/augur:$version
-docker push augurproject/augur:${augur_env}
+docker push augurproject/augur-ui:$version
+docker push augurproject/augur-ui:${augur_env}
 
 # install packages needed to deploy to aws, then deploy
 if [[ -n "$cluster" ]]; then

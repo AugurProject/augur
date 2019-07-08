@@ -106,7 +106,7 @@ const MarketBasics = ({
 
       {(marketType === YES_NO || marketType === SCALAR) && (
         <MarketOutcomesBinaryScalar
-          outcomes={p.marketOutcomes}
+          outcomes={p.outcomesFormatted}
           min={p.minPriceBigNumber}
           max={p.maxPriceBigNumber}
           type={marketType}
@@ -116,7 +116,7 @@ const MarketBasics = ({
 
       {marketType === CATEGORICAL && (
         <MarketOutcomesCategorical
-          marketOutcomes={p.marketOutcomes}
+          outcomesFormatted={p.outcomesFormatted}
           isMobileSmall={p.isMobileSmall}
         />
       )}

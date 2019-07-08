@@ -16,8 +16,8 @@ export default function(
   const TopOutcomeCount = 8;
   const invalidMarketId = "0.5";
   if (isEmpty(disputeStakes)) return market.outcomes;
-  const { marketType, outcomes: marketOutcomes } = market;
-  const outcomes = marketOutcomes.slice();
+  const { marketType, outcomes: outcomesFormatted } = market;
+  const outcomes = outcomesFormatted.slice();
   const defaultStake = {
     stakeCurrent: "0",
     accountStakeCurrent: "0",

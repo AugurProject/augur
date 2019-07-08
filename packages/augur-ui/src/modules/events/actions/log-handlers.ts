@@ -1,44 +1,45 @@
-import BigNumber from "bignumber.js";
-import { addAlert, updateAlert } from "modules/alerts/actions/alerts";
+import BigNumber from 'bignumber.js';
+import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import {
   loadMarketAccountPositions,
-  loadAccountPositionsTotals
-} from "modules/positions/actions/load-account-positions";
-import { loadMarketOrderBook } from "modules/orders/actions/load-market-order-book";
-import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
-import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
-import { removeMarket } from "modules/markets/actions/update-markets-data";
-import { updateOutcomePrice } from "modules/markets/actions/update-outcome-price";
-import { removeCanceledOrder } from "modules/orders/actions/update-order-status";
-import { defaultLogHandler } from "modules/events/actions/default-log-handler";
-import { isCurrentMarket } from "modules/trades/helpers/is-current-market";
-import logError from "utils/log-error";
-import makePath from "modules/routes/helpers/make-path";
-import { MY_MARKETS, TRANSACTIONS } from "modules/routes/constants/views";
-import { loadReporting } from "modules/reports/actions/load-reporting";
-import { loadDisputing } from "modules/reports/actions/load-disputing";
-import loadCategories from "modules/categories/actions/load-categories";
-import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
+  loadAccountPositionsTotals,
+} from 'modules/positions/actions/load-account-positions';
+import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-book';
+import { loadReportingWindowBounds } from 'modules/reports/actions/load-reporting-window-bounds';
+import { updateLoggedTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
+import { removeMarket } from 'modules/markets/actions/update-markets-data';
+import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price';
+import { removeCanceledOrder } from 'modules/orders/actions/update-order-status';
+import { defaultLogHandler } from 'modules/events/actions/default-log-handler';
+import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
+import logError from 'utils/log-error';
+import makePath from 'modules/routes/helpers/make-path';
+import { MY_MARKETS, TRANSACTIONS } from 'modules/routes/constants/views';
+import { loadReporting } from 'modules/reports/actions/load-reporting';
+import { loadDisputing } from 'modules/reports/actions/load-disputing';
+import loadCategories from 'modules/categories/actions/load-categories';
+import { getReportingFees } from 'modules/reports/actions/get-reporting-fees';
 import {
   loadMarketsInfo,
   loadMarketsInfoIfNotLoaded,
-  loadMarketsDisputeInfo
-} from "modules/markets/actions/load-markets-info";
-import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
-import { startOrderSending } from "modules/orders/actions/liquidity-management";
+  loadMarketsDisputeInfo,
+} from 'modules/markets/actions/load-markets-info';
+import { getWinningBalance } from 'modules/reports/actions/get-winning-balance';
+import { startOrderSending } from 'modules/orders/actions/liquidity-management';
 import {
   loadMarketTradingHistory,
-  loadUserFilledOrders
-} from "modules/markets/actions/market-trading-history-management";
-import { updateAssets } from "modules/auth/actions/update-assets";
-import { selectCurrentTimestampInSeconds } from "store/select-state";
-import { appendCategoryIfNew } from "modules/categories/actions/append-category";
-import { removePendingOrder } from "modules/orders/actions/pending-orders-management";
-import { loadAccountOpenOrders } from "modules/orders/actions/load-account-open-orders";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { AppState } from "store";
-import { updateBlockchain } from "modules/app/actions/update-blockchain";
+  loadUserFilledOrders,
+} from 'modules/markets/actions/market-trading-history-management';
+import { updateAssets } from 'modules/auth/actions/update-assets';
+import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { appendCategoryIfNew } from 'modules/categories/actions/append-category';
+import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
+import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { AppState } from 'store';
+import { updateBlockchain } from 'modules/app/actions/update-blockchain';
+import { isSameAddress } from 'utils/isSameAddress';
 
 const handleAlertUpdate = (
   log: any,
@@ -51,9 +52,9 @@ const handleAlertUpdate = (
       timestamp: selectCurrentTimestampInSeconds(getState()),
       blockNumber: log.blockNumber,
       log,
-      status: "Confirmed",
+      status: 'Confirmed',
       linkPath: makePath(TRANSACTIONS),
-      seen: false // Manually set to false to ensure alert
+      seen: false, // Manually set to false to ensure alert
     })
   );
 };
@@ -73,7 +74,9 @@ const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch(getWinningBalance([marketId]));
 };
 
-export const handleNewBlockLog = (log: any) => (dispatch: ThunkDispatch<void, any, Action>) => {
+export const handleNewBlockLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
@@ -81,15 +84,18 @@ export const handleNewBlockLog = (log: any) => (dispatch: ThunkDispatch<void, an
       lastSyncedBlockNumber: log.lastSyncedBlockNumber,
       percentBehindCurrent: log.percentBehindCurrent,
       currentAugurTimestamp: log.timestamp,
-    }));
+    })
+  );
 };
 
 export const handleMarketCreatedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+  getState: () => AppState
 ) => {
-  const isStoredTransaction =
-    log.marketCreator === getState().loginAccount.address;
+  const isStoredTransaction = isSameAddress(
+    log.marketCreator,
+    getState().loginAccount.address
+  );
   if (log.removed) {
     dispatch(removeMarket(log.market));
   } else {
@@ -140,10 +146,12 @@ export const handleTokensTransferredLog = (log: any) => (
   getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
-  const isStoredTransaction = log.from === address || log.to === address;
+  const isStoredTransaction =
+    isSameAddress(log.from, address) || isSameAddress(log.to, address);
   if (isStoredTransaction) {
     dispatch(updateAssets());
-    dispatch(loadReportingWindowBounds());
+    // TODO: will need to update user's contribution to dispute/reporting
+    // dispatch(loadReportingWindowBounds());
     handleAlertUpdate(log, dispatch, getState);
   }
 };
@@ -153,7 +161,7 @@ export const handleTokensMintedLog = (log: any) => (
   getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
-  const isStoredTransaction = log.target === address;
+  const isStoredTransaction = isSameAddress(log.target, address);
   if (isStoredTransaction) {
     dispatch(updateAssets());
     dispatch(loadReportingWindowBounds());
@@ -166,7 +174,7 @@ export const handleTokensBurnedLog = (log: any) => (
   getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
-  const isStoredTransaction = log.target === address;
+  const isStoredTransaction = isSameAddress(log.target, address);
   if (isStoredTransaction) {
     handleAlertUpdate(log, dispatch, getState);
   }
@@ -177,8 +185,10 @@ export const handleOrderCreatedLog = (log: any) => (
   getState: () => AppState
 ) => {
   dispatch(loadMarketsInfoIfNotLoaded([log.marketId]));
-  const isStoredTransaction =
-    log.orderCreator === getState().loginAccount.address;
+  const isStoredTransaction = isSameAddress(
+    log.orderCreator,
+    getState().loginAccount.address
+  );
   if (isStoredTransaction) {
     dispatch(updateAssets());
     handlePendingOrder(log, dispatch, getState);
@@ -195,7 +205,10 @@ export const handleOrderCanceledLog = (log: any) => (
   getState: () => AppState
 ) => {
   dispatch(loadMarketsInfoIfNotLoaded([log.marketId]));
-  const isStoredTransaction = log.sender === getState().loginAccount.address;
+  const isStoredTransaction = isSameAddress(
+    log.sender,
+    getState().loginAccount.address
+  );
   if (isStoredTransaction) {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
     handleAlertUpdate(log, dispatch, getState);
@@ -213,7 +226,8 @@ export const handleOrderFilledLog = (log: any) => (
 ) => {
   dispatch(loadMarketsInfo([log.marketId]));
   const { address } = getState().loginAccount;
-  const isStoredTransaction = log.filler === address || log.creator === address;
+  const isStoredTransaction =
+    isSameAddress(log.filler, address) || isSameAddress(log.creator, address);
   if (isStoredTransaction) {
     dispatch(updateAssets());
     handlePendingOrder(log, dispatch, getState);
@@ -239,7 +253,10 @@ export const handleTradingProceedsClaimedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const isStoredTransaction = log.sender === getState().loginAccount.address;
+  const isStoredTransaction = isSameAddress(
+    log.sender,
+    getState().loginAccount.address
+  );
   if (isStoredTransaction) {
     dispatch(updateAssets());
     dispatch(updateLoggedTransactions(log));
@@ -255,7 +272,10 @@ export const handleInitialReportSubmittedLog = (log: any) => (
   dispatch(loadMarketsInfo([log.market]));
   dispatch(loadMarketsDisputeInfo([log.market]));
   dispatch(loadReporting([log.market]));
-  const isStoredTransaction = log.reporter === getState().loginAccount.address;
+  const isStoredTransaction = isSameAddress(
+    log.reporter,
+    getState().loginAccount.address
+  );
   if (isStoredTransaction) {
     handleAlertUpdate(log, dispatch, getState);
     dispatch(updateAssets());
@@ -269,7 +289,10 @@ export const handleInitialReporterRedeemedLog = (log: any) => (
   getState: () => AppState
 ) => {
   dispatch(loadMarketsInfo([log.market]));
-  const isStoredTransaction = log.reporter === getState().loginAccount.address;
+  const isStoredTransaction = isSameAddress(
+    log.reporter,
+    getState().loginAccount.address
+  );
   if (isStoredTransaction) {
     dispatch(updateAssets());
     dispatch(loadReporting([log.market]));
@@ -298,7 +321,7 @@ export const handleMarketFinalizedLog = (log: any) => (
         const { alerts } = getState();
         const doesntExist = !alerts.filter(
           (alert: { id: any; params: { type: string } }) =>
-            alert.id === log.transactionHash && alert.params.type === "finalize"
+            alert.id === log.transactionHash && alert.params.type === 'finalize'
         ).length;
 
         if (doesntExist && isOwnMarket) {
@@ -312,10 +335,10 @@ export const handleMarketFinalizedLog = (log: any) => (
               blockNumber: log.blockNumber,
               log,
               params: {
-                type: "finalize"
+                type: 'finalize',
               },
-              status: "Confirmed",
-              linkPath: makePath(MY_MARKETS)
+              status: 'Confirmed',
+              linkPath: makePath(MY_MARKETS),
             })
           );
         } else if (!doesntExist) {
@@ -363,12 +386,16 @@ export const handleDisputeCrowdsourcerRedeemedLog = (log: any) => (
   dispatch(getReportingFees());
 };
 
-export const handleFeeWindowCreatedLog = (log: any) => (dispatch: ThunkDispatch<void, any, Action>) => {
+export const handleFeeWindowCreatedLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
   dispatch(loadReportingWindowBounds());
   dispatch(getReportingFees());
 };
 
-export const handleFeeWindowOpenedLog = (log: any) => (dispatch: ThunkDispatch<void, any, Action>) => {
+export const handleFeeWindowOpenedLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
   dispatch(loadReportingWindowBounds());
   dispatch(getReportingFees());
 };
@@ -384,7 +411,10 @@ export const handleCompleteSetsSoldLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const isStoredTransaction = log.account === getState().loginAccount.address;
+  const isStoredTransaction = isSameAddress(
+    log.account,
+    getState().loginAccount.address
+  );
   if (isStoredTransaction) {
     dispatch(updateAssets());
     dispatch(updateLoggedTransactions(log));
@@ -397,13 +427,13 @@ export const handleApprovalLog = (log: any) => (
   getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
-  const isStoredTransaction = log.owner === address;
+  const isStoredTransaction = isSameAddress(log.owner, address);
   if (isStoredTransaction) {
     dispatch(
       updateAlert(log.transactionHash, {
         id: log.transactionHash,
-        status: "Confirmed",
-        timestamp: selectCurrentTimestampInSeconds(getState())
+        status: 'Confirmed',
+        timestamp: selectCurrentTimestampInSeconds(getState()),
       })
     );
   }

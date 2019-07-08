@@ -153,7 +153,7 @@ library Trade {
 
         // transfer tokens from creator (escrowed in market) to filler
         uint256 _tokensToCover = getTokensToCover(_data, _data.creator.direction, _numberOfSharesToTrade);
-        _data.contracts.denominationToken.transferFrom(address(_data.contracts.market), _data.filler.participantAddress, _tokensToCover);
+        _data.contracts.market.getUniverse().withdraw(_data.filler.participantAddress, _tokensToCover, address(_data.contracts.market));
 
         // update available assets for creator and filler
         _data.creator.sharesToBuy -= _numberOfSharesToTrade;
@@ -173,14 +173,14 @@ library Trade {
 
         // If someone is filling their own order with CASH both ways we just return the CASH
         if (_data.creator.participantAddress == _data.filler.participantAddress) {
-            require(_data.contracts.denominationToken.transferFrom(address(_data.contracts.market), _data.creator.participantAddress, _creatorTokensToCover));
+            _data.contracts.market.getUniverse().withdraw(_data.creator.participantAddress, _creatorTokensToCover, address(_data.contracts.market));
 
             _data.creator.sharesToBuy -= _numberOfCompleteSets;
             _data.filler.sharesToBuy -= _numberOfCompleteSets;
             return _creatorTokensToCover.add(_fillerTokensToCover);
         }
 
-        require(_data.contracts.denominationToken.transferFrom(address(_data.contracts.market), address(this), _creatorTokensToCover));
+        _data.contracts.market.getUniverse().withdraw(address(this), _creatorTokensToCover, address(_data.contracts.market));
         _data.contracts.augur.trustedTransfer(_data.contracts.denominationToken, _data.filler.participantAddress, address(this), _fillerTokensToCover);
 
         // buy complete sets
@@ -357,6 +357,7 @@ library Trade {
         return _sharesAvailable.min(_fillerSize);
     }
 }
+
 
 /**
  * @title Fill Order
