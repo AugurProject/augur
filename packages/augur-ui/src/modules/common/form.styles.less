@@ -1,5 +1,21 @@
 @import (reference) '~assets/styles/shared';
 
+.CategoryMultiSelect {
+  display: flex;
+  flex-flow: column;
+
+  > div,
+  > div[class*="Normal"] {
+    margin-top: 1rem;
+    min-width: 252px;
+    width: 252px;
+  }
+
+  > div:first-of-type {
+    margin-top: 0;
+  }
+}
+
 .RadioStyleSelection {
   background: @color-theme-primary;
   border: 1px solid @color-primary-alternate;
@@ -544,6 +560,10 @@ div.FormDropdown {
     &:hover {
       background-color: transparent;
     }
+  }
+
+  > button[class*="SelectedLabel"] {
+    color: @color-secondary-text;
   }
 
   &:hover {
