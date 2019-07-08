@@ -34,7 +34,9 @@ const sortByOptions = [
 ];
 
 function filterComp(input, market) {
-  return market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  if (!market) return false;
+  return market.description ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0 : true;
+
 }
 
 interface FavoritesProps {

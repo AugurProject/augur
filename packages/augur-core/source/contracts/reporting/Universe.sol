@@ -12,7 +12,13 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IRepPriceOracle.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/trading/ICash.sol';
+import 'ROOT/external/IDaiVat.sol';
+import 'ROOT/external/IDaiPot.sol';
+import 'ROOT/external/IDaiJoin.sol';
+import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
+
 
 /**
  * @title Universe
@@ -23,7 +29,7 @@ contract Universe is ITyped, IUniverse {
 
     IAugur public augur;
     IUniverse private parentUniverse;
-    IRepPriceOracle public repPriceOracle;
+    IFormulas public formulas;
     bytes32 private parentPayoutDistributionHash;
     uint256[] public payoutNumerators;
     IV2ReputationToken private reputationToken;
@@ -54,10 +60,18 @@ contract Universe is ITyped, IUniverse {
     address public completeSets;
 
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
-    int256 constant public DEFAULT_MIN_PRICE = 0;
-    int256 constant public DEFAULT_MAX_PRICE = 1 ether;
     uint256 constant public DEFAULT_NUM_OUTCOMES = 2;
     uint256 constant public DEFAULT_NUM_TICKS = 100;
+
+    // DAI / DSR specific
+    uint256 public totalBalance;
+    bool public useDSR = false;
+    ICash public cash;
+    IDaiVat public daiVat;
+    IDaiPot public daiPot;
+    IDaiJoin public daiJoin;
+
+    uint256 constant public DAI_ONE = 10 ** 27;
 
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
         augur = _augur;
@@ -68,11 +82,15 @@ contract Universe is ITyped, IUniverse {
         marketFactory = IMarketFactory(augur.lookup("MarketFactory"));
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         completeSets = augur.lookup("CompleteSets");
-        repPriceOracle = IRepPriceOracle(augur.lookup("RepPriceOracle"));
         updateForkValues();
-        previousValidityBondInAttoCash = Reporting.getDefaultValidityBond();
-        previousDesignatedReportStakeInAttoRep = initialReportMinValue;
-        previousDesignatedReportNoShowBondInAttoRep = initialReportMinValue;
+        formulas = IFormulas(augur.lookup("Formulas"));
+        cash = ICash(augur.lookup("Cash"));
+        daiVat = IDaiVat(augur.lookup("DaiVat"));
+        daiPot = IDaiPot(augur.lookup("DaiPot"));
+        daiJoin = IDaiJoin(augur.lookup("DaiJoin"));
+        daiVat.hope(address(daiPot));
+        daiVat.hope(address(daiJoin));
+        cash.approve(address(daiJoin), 2 ** 256 - 1);
     }
 
     function fork() public returns (bool) {
@@ -86,7 +104,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     function updateForkValues() public returns (bool) {
-        require(!isForking(), "Universe.updateForkValues: Cannot update values during fork");
+        require(!isForking());
         uint256 _totalRepSupply = reputationToken.getTotalTheoreticalSupply();
         forkReputationGoal = _totalRepSupply.div(2); // 50% of REP migrating results in a victory in a fork
         disputeThresholdForFork = _totalRepSupply.div(Reporting.getForkThresholdDivisor()); // 2.5% of the total rep supply
@@ -97,6 +115,14 @@ contract Universe is ITyped, IUniverse {
 
     function getTypeName() public view returns (bytes32) {
         return "Universe";
+    }
+
+    function getPayoutNumerator(uint256 _outcome) public view returns (uint256) {
+        return payoutNumerators[_outcome];
+    }
+
+    function getWinningChildPayoutNumerator(uint256 _outcome) public view returns (uint256) {
+        return getWinningChildUniverse().getPayoutNumerator(_outcome);
     }
 
     /**
@@ -184,6 +210,10 @@ contract Universe is ITyped, IUniverse {
         return forkingMarket != IMarket(0);
     }
 
+    function isForkingMarket() public view returns (bool) {
+        return forkingMarket == IMarket(msg.sender);
+    }
+
     /**
      * @param _parentPayoutDistributionHash The payout distribution hash associated with a child Universe to get
      * @return a Universe contract
@@ -193,7 +223,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     /**
-     * @param _timestamp The timestamp of the desired dispute window 
+     * @param _timestamp The timestamp of the desired dispute window
      * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
      * @return The id of the specified dispute window
      */
@@ -214,7 +244,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     /**
-     * @param _timestamp The timestamp of the desired dispute window 
+     * @param _timestamp The timestamp of the desired dispute window
      * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
      * @return The dispute window for the specified params
      */
@@ -231,7 +261,7 @@ contract Universe is ITyped, IUniverse {
     }
 
     /**
-     * @param _timestamp The timestamp of the desired dispute window 
+     * @param _timestamp The timestamp of the desired dispute window
      * @param _initial Bool indicating if the window is an initial dispute window or a standard dispute window
      * @return The dispute window for the specified params if it exists
      */
@@ -331,11 +361,11 @@ contract Universe is ITyped, IUniverse {
      * @return The child Universe which won in a fork if one exists
      */
     function getWinningChildUniverse() public view returns (IUniverse) {
-        require(isForking(), "Universe.getWinningChildUniverse: Must be forking to have winning child");
-        require(tentativeWinningChildUniversePayoutDistributionHash != bytes32(0), "Universe.getWinningChildUniverse: No winning universe");
+        require(isForking());
+        require(tentativeWinningChildUniversePayoutDistributionHash != bytes32(0));
         IUniverse _tentativeWinningUniverse = getChildUniverse(tentativeWinningChildUniversePayoutDistributionHash);
         uint256 _winningAmount = _tentativeWinningUniverse.getReputationToken().getTotalMigrated();
-        require(_winningAmount >= forkReputationGoal || augur.getTimestamp() > forkEndTime, "Universe.getWinningChildUniverse: No winning universe");
+        require(_winningAmount >= forkReputationGoal || augur.getTimestamp() > forkEndTime);
         return _tentativeWinningUniverse;
     }
 
@@ -349,16 +379,25 @@ contract Universe is ITyped, IUniverse {
         return markets[address(_shadyMarket)];
     }
 
-    function addMarketTo() public returns (bool) {
-        require(parentUniverse.isContainerForMarket(IMarket(msg.sender)));
-        markets[msg.sender] = true;
-        augur.logMarketMigrated(IMarket(msg.sender), parentUniverse);
+    function migrateMarketOut(IUniverse _destinationUniverse) public returns (bool) {
+        IMarket _market = IMarket(msg.sender);
+        require(isContainerForMarket(_market));
+        markets[msg.sender] = false;
+        uint256 _cashBalance = marketBalance[address(msg.sender)];
+        uint256 _marketOI = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
+        withdraw(address(this), _cashBalance, msg.sender);
+        openInterestInAttoCash = openInterestInAttoCash.sub(_marketOI);
+        cash.approve(address(augur), _cashBalance);
+        _destinationUniverse.migrateMarketIn(_market, _cashBalance, _marketOI);
         return true;
     }
 
-    function removeMarketFrom() public returns (bool) {
-        require(isContainerForMarket(IMarket(msg.sender)));
-        markets[msg.sender] = false;
+    function migrateMarketIn(IMarket _market, uint256 _cashBalance, uint256 _marketOI) public returns (bool) {
+        require(address(parentUniverse) == msg.sender);
+        markets[address(_market)] = true;
+        deposit(address(msg.sender), _cashBalance, address(_market));
+        openInterestInAttoCash = openInterestInAttoCash.add(_marketOI);
+        augur.logMarketMigrated(_market, parentUniverse);
         return true;
     }
 
@@ -410,13 +449,6 @@ contract Universe is ITyped, IUniverse {
         return true;
     }
 
-    function incrementOpenInterestFromMarket(IMarket _market) public returns (bool) {
-        require(isContainerForMarket(IMarket(msg.sender)));
-        uint256 _amount = _market.getShareToken(0).totalSupply().mul(_market.getNumTicks());
-        openInterestInAttoCash = openInterestInAttoCash.add(_amount);
-        return true;
-    }
-
     /**
      * @return The total amount of Cash in the system which is at risk (Held in escrow for Shares)
      */
@@ -429,7 +461,7 @@ contract Universe is ITyped, IUniverse {
      */
     function getRepMarketCapInAttoCash() public view returns (uint256) {
         // TODO: Must pass this Universe's REP token to the oracle. Not just one REP!
-        uint256 _attoCashPerRep = repPriceOracle.getRepPriceInAttoCash();
+        uint256 _attoCashPerRep = IRepPriceOracle(augur.lookup("RepPriceOracle")).getRepPriceInAttoCash();
         uint256 _repMarketCapInAttoCash = getReputationToken().totalSupply().mul(_attoCashPerRep).div(10 ** 18);
         return _repMarketCapInAttoCash;
     }
@@ -439,7 +471,7 @@ contract Universe is ITyped, IUniverse {
      */
     function getTargetRepMarketCapInAttoCash() public view returns (uint256) {
         // Target MCAP = OI * TARGET_MULTIPLIER
-        return getOpenInterestInAttoCash().mul(Reporting.getTargetRepMarketCapMultiplier()).div(Reporting.getTargetRepMarketCapDivisor());
+        return getOpenInterestInAttoCash().mul(Reporting.getTargetRepMarketCapMultiplier());
     }
 
     /**
@@ -452,9 +484,10 @@ contract Universe is ITyped, IUniverse {
         if (_currentValidityBondInAttoCash != 0) {
             return _currentValidityBondInAttoCash;
         }
-        uint256 _totalValidityBondsInPreviousWindow = _previousDisputeWindow.validityBondTotal();
-        uint256 _invalidBondsInPreviousWindow = _previousDisputeWindow.invalidMarketsTotal();
-        _currentValidityBondInAttoCash = calculateFloatingValue(_invalidBondsInPreviousWindow, _totalValidityBondsInPreviousWindow, Reporting.getTargetInvalidMarketsDivisor(), previousValidityBondInAttoCash, Reporting.getValidityBondFloor());
+        if (previousValidityBondInAttoCash == 0) {
+            previousValidityBondInAttoCash = Reporting.getDefaultValidityBond();
+        }
+        _currentValidityBondInAttoCash = formulas.calculateValidityBond(_previousDisputeWindow, previousValidityBondInAttoCash);
         validityBondInAttoCash[address(_disputeWindow)] = _currentValidityBondInAttoCash;
         previousValidityBondInAttoCash = _currentValidityBondInAttoCash;
         return _currentValidityBondInAttoCash;
@@ -471,10 +504,10 @@ contract Universe is ITyped, IUniverse {
         if (_currentDesignatedReportStakeInAttoRep != 0) {
             return _currentDesignatedReportStakeInAttoRep;
         }
-        uint256 _totalInitialReportBondsInPreviousWindow = _previousDisputeWindow.initialReportBondTotal();
-        uint256 _incorrectDesignatedReportBondsInPreviousWindow = _previousDisputeWindow.incorrectDesignatedReportTotal();
-
-        _currentDesignatedReportStakeInAttoRep = calculateFloatingValue(_incorrectDesignatedReportBondsInPreviousWindow, _totalInitialReportBondsInPreviousWindow, Reporting.getTargetIncorrectDesignatedReportMarketsDivisor(), previousDesignatedReportStakeInAttoRep, initialReportMinValue);
+        if (previousDesignatedReportStakeInAttoRep == 0) {
+            previousDesignatedReportStakeInAttoRep = initialReportMinValue;
+        }
+        _currentDesignatedReportStakeInAttoRep = formulas.calculateDesignatedReportStake(_previousDisputeWindow, previousDesignatedReportStakeInAttoRep, initialReportMinValue);
         designatedReportStakeInAttoRep[address(_disputeWindow)] = _currentDesignatedReportStakeInAttoRep;
         previousDesignatedReportStakeInAttoRep = _currentDesignatedReportStakeInAttoRep;
         return _currentDesignatedReportStakeInAttoRep;
@@ -490,10 +523,10 @@ contract Universe is ITyped, IUniverse {
         if (_currentDesignatedReportNoShowBondInAttoRep != 0) {
             return _currentDesignatedReportNoShowBondInAttoRep;
         }
-        uint256 _totalNoShowBondsInPreviousWindow = _previousDisputeWindow.designatedReporterNoShowBondTotal();
-        uint256 _designatedReportNoShowBondsInPreviousWindow = _previousDisputeWindow.designatedReportNoShowsTotal();
-
-        _currentDesignatedReportNoShowBondInAttoRep = calculateFloatingValue(_designatedReportNoShowBondsInPreviousWindow, _totalNoShowBondsInPreviousWindow, Reporting.getTargetDesignatedReportNoShowsDivisor(), previousDesignatedReportNoShowBondInAttoRep, initialReportMinValue);
+        if (previousDesignatedReportNoShowBondInAttoRep == 0) {
+            previousDesignatedReportNoShowBondInAttoRep = initialReportMinValue;
+        }
+        _currentDesignatedReportNoShowBondInAttoRep = formulas.calculateDesignatedReportNoShowBond(_previousDisputeWindow, previousDesignatedReportNoShowBondInAttoRep, initialReportMinValue);
         designatedReportNoShowBondInAttoRep[address(_disputeWindow)] = _currentDesignatedReportNoShowBondInAttoRep;
         previousDesignatedReportNoShowBondInAttoRep = _currentDesignatedReportNoShowBondInAttoRep;
         return _currentDesignatedReportNoShowBondInAttoRep;
@@ -504,36 +537,6 @@ contract Universe is ITyped, IUniverse {
      */
     function getOrCacheMarketRepBond() public returns (uint256) {
         return getOrCacheDesignatedReportNoShowBond().max(getOrCacheDesignatedReportStake());
-    }
-
-    function calculateFloatingValue(uint256 _totalBad, uint256 _total, uint256 _targetDivisor, uint256 _previousValue, uint256 _floor) public pure returns (uint256 _newValue) {
-        if (_total == 0) {
-            return _previousValue;
-        }
-
-        // Modify the amount based on the previous amount and the number of markets fitting the failure criteria. We want the amount to be somewhere in the range of 0.9 to 2 times its previous value where ALL markets with the condition results in 2x and 0 results in 0.9x.
-        // Safe math div is redundant so we avoid here as we're at the stack limit.
-        if (_totalBad <= _total / _targetDivisor) {
-            // FXP formula: previous_amount * (actual_percent / (10 * target_percent) + 0.9);
-            _newValue = _totalBad
-                .mul(_previousValue)
-                .mul(_targetDivisor);
-            _newValue = _newValue / _total;
-            _newValue = _newValue / 10;
-            _newValue = _newValue.add(_previousValue * 9 / 10);
-        } else {
-            // FXP formula: previous_amount * ((1/(1 - target_percent)) * (actual_percent - target_percent) + 1);
-            _newValue = _targetDivisor
-                .mul(_previousValue
-                    .mul(_totalBad)
-                    .div(_total)
-                .sub(_previousValue / _targetDivisor));
-            _newValue = _newValue / (_targetDivisor - 1);
-            _newValue = _newValue.add(_previousValue);
-        }
-        _newValue = _newValue.max(_floor);
-
-        return _newValue;
     }
 
     /**
@@ -606,10 +609,7 @@ contract Universe is ITyped, IUniverse {
      */
     function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, DEFAULT_NUM_TICKS);
-        int256[] memory _prices = new int256[](2);
-        _prices[0] = DEFAULT_MIN_PRICE;
-        _prices[1] = DEFAULT_MAX_PRICE;
-        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, DEFAULT_NUM_TICKS);
+        augur.logYesNoMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash);
         return _newMarket;
     }
 
@@ -626,10 +626,7 @@ contract Universe is ITyped, IUniverse {
      */
     function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), DEFAULT_NUM_TICKS);
-        int256[] memory _prices = new int256[](2);
-        _prices[0] = DEFAULT_MIN_PRICE;
-        _prices[1] = DEFAULT_MAX_PRICE;
-        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, _outcomes);
+        augur.logCategoricalMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _outcomes);
         return _newMarket;
     }
 
@@ -646,11 +643,8 @@ contract Universe is ITyped, IUniverse {
      * @return The created Market
      */
     function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
-        require(_prices.length == 2, "Universe.createScalarMarket: Prices length is incorrect");
-        require(_prices[0] < _prices[1], "Universe.createScalarMarket: Min price must be less than max price");
-        require(_numTicks.isMultipleOf(2), "Universe.createScalarMarket: numTicks must be multiple of 2");
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, _numTicks);
-        augur.logMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks);
+        augur.logScalarMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, _numTicks);
         return _newMarket;
     }
 
@@ -661,19 +655,85 @@ contract Universe is ITyped, IUniverse {
         return _newMarket;
     }
 
-    /**
-     * @notice Redeems stake for multiple dispute bonds or Participation Tokens
-     * @param _reportingParticipants Winning Initial Reporter or Dispute Crowdsourcer bonds the msg sender has stake in
-     * @param _disputeWindows Dispute Windows (Participation Tokens) the msg sender has tokens for
-     * @return Bool True
-     */
-    function redeemStake(IReportingParticipant[] memory _reportingParticipants, IDisputeWindow[] memory _disputeWindows) public returns (bool) {
-        for (uint256 i=0; i < _reportingParticipants.length; i++) {
-            _reportingParticipants[i].redeem(msg.sender);
+    function saveDaiInDSR(uint256 _amount) private returns (bool) {
+        daiJoin.join(address(this), _amount);
+        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / daiPot.chi(); // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
+        daiPot.join(_sDaiAmount);
+        return true;
+    }
+
+    function withdrawDaiFromDSR(uint256 _amount) private returns (bool) {
+        uint256 _chi = daiPot.chi();
+        uint256 _sDaiAmount = _amount.mul(DAI_ONE) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
+        if (_sDaiAmount.mul(_chi) < _amount.mul(DAI_ONE)) {
+            _sDaiAmount += 1;
         }
-        for (uint256 i=0; i < _disputeWindows.length; i++) {
-            _disputeWindows[i].redeem(msg.sender);
+        _sDaiAmount = _sDaiAmount.min(daiPot.pie(address(this))); // Never try to draw more than the balance in the pot. If we have less than needed we _must_ have enough already in the VAT provided no negative interest was ever applied
+        withdrawSDaiFromDSR(_sDaiAmount);
+        return true;
+    }
+
+    function withdrawSDaiFromDSR(uint256 _sDaiAmount) private returns (bool) {
+        daiPot.exit(_sDaiAmount);
+        daiJoin.exit(address(this), daiVat.dai(address(this)).div(DAI_ONE));
+        return true;
+    }
+
+    function deposit(address _sender, uint256 _amount, address _market) public returns (bool) {
+        require(augur.isTrustedSender(msg.sender) || msg.sender == _sender);
+        augur.trustedTransfer(cash, _sender, address(this), _amount);
+        totalBalance = totalBalance.add(_amount);
+        marketBalance[_market] = marketBalance[_market].add(_amount);
+        if (useDSR) {
+            saveDaiInDSR(_amount);
         }
+        return true;
+    }
+
+    function withdraw(address _recipient, uint256 _amount, address _market) public returns (bool) {
+        require(augur.isTrustedSender(msg.sender) || augur.isKnownMarket(IMarket(msg.sender)));
+        totalBalance = totalBalance.sub(_amount);
+        marketBalance[_market] = marketBalance[_market].sub(_amount);
+        if (useDSR) {
+            withdrawDaiFromDSR(_amount);
+        }
+        cash.transfer(_recipient, _amount);
+        return true;
+    }
+
+    function canToggleDSR() public view returns (bool) {
+        uint256 _dsr = daiPot.dsr();
+        uint256 _maxDSRMovement = 10**20; // TODO: Get from MKR contract when this is available
+        uint256 _dsrThreshold = DAI_ONE.add(_maxDSRMovement);
+        return useDSR ? _dsr < _dsrThreshold : _dsr >= _dsrThreshold;
+    }
+
+    function toggleDSR() public returns (bool) {
+        require(canToggleDSR());
+        if (useDSR) {
+            useDSR = false;
+            withdrawDaiFromDSR(totalBalance);
+        } else {
+            useDSR = true;
+            saveDaiInDSR(totalBalance);
+        }
+        reputationToken.mintForUniverse(Reporting.getDSRToggleRewardInAttoREP(), msg.sender);
+        return true;
+    }
+
+    function sweepInterest() public returns (bool) {
+        uint256 _extraCash = 0;
+        if (useDSR) {
+            daiPot.drip();
+            withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
+            saveDaiInDSR(totalBalance); // Put the required funds back in savings
+            _extraCash = cash.balanceOf(address(this));
+            // The amount in the DSR pot and VAT must cover our totalBalance of Dai
+            assert(daiPot.pie(address(this)).mul(daiPot.chi()).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
+        } else {
+            _extraCash = cash.balanceOf(address(this)).sub(totalBalance);
+        }
+        cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
         return true;
     }
 
@@ -683,15 +743,14 @@ contract Universe is ITyped, IUniverse {
         uint256 _expectedBalance = IOrders(augur.lookup("Orders")).getTotalEscrowed(_market);
         // Market Open Interest. If we're finalized we need actually calculate the value
         if (_market.isFinalized()) {
-            IReportingParticipant _winningReportingPartcipant = _market.getWinningReportingParticipant();
             for (uint256 i = 0; i < _market.getNumberOfOutcomes(); i++) {
-                _expectedBalance = _expectedBalance.add(_market.getShareToken(i).totalSupply().mul(_winningReportingPartcipant.getPayoutNumerator(i)));
+                _expectedBalance = _expectedBalance.add(_market.getShareToken(i).totalSupply().mul(_market.getWinningPayoutNumerator(i)));
             }
         } else {
             _expectedBalance = _expectedBalance.add(_market.getShareToken(0).totalSupply().mul(_market.getNumTicks()));
         }
 
-        assert(ICash(augur.lookup("Cash")).balanceOf(address(_market)) >= _expectedBalance);
+        assert(marketBalance[msg.sender] >= _expectedBalance);
         return true;
     }
 }

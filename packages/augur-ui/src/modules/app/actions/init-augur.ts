@@ -1,27 +1,21 @@
-import * as AugurJS from "services/augurjs";
+import { connect } from 'services/initialize';
 import {
   checkIsKnownUniverse,
   getNetworkId,
-  getAccounts
-} from "modules/contracts/actions/contractCalls";
-import { updateEnv } from "modules/app/actions/update-env";
-import {
-  updateConnectionStatus,
-  updateAugurNodeConnectionStatus
-} from "modules/app/actions/update-connection";
-import { getAugurNodeNetworkId } from "modules/app/actions/get-augur-node-network-id";
-import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
-import { logout } from "modules/auth/actions/logout";
-import { verifyMatchingNetworkIds } from "modules/app/actions/verify-matching-network-ids";
-import { checkIfMainnet } from "modules/app/actions/check-if-mainnet";
-import { updateUniverse } from "modules/universe/actions/update-universe";
-import { updateModal } from "modules/modal/actions/update-modal";
-import { closeModal } from "modules/modal/actions/close-modal";
-import logError from "utils/log-error";
-import networkConfig from "config/network.json";
-import { version } from "version";
-import { updateVersions } from "modules/app/actions/update-versions";
-import { isEmpty } from "utils/is-populated";
+  getAccounts,
+} from 'modules/contracts/actions/contractCalls';
+import { updateEnv } from 'modules/app/actions/update-env';
+import { updateConnectionStatus } from 'modules/app/actions/update-connection';
+import { useUnlockedAccount } from 'modules/auth/actions/use-unlocked-account';
+import { logout } from 'modules/auth/actions/logout';
+import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
+import { updateUniverse } from 'modules/universe/actions/update-universe';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import { closeModal } from 'modules/modal/actions/close-modal';
+import logError from 'utils/log-error';
+import networkConfig from 'config/network.json';
+import { isEmpty } from 'utils/is-populated';
+// TODO: do we need network mismatch? maybe for when users connect using MM and have wrong network id selected
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
@@ -29,16 +23,16 @@ import {
   MODAL_NETWORK_DISABLED,
   NETWORK_NAMES,
   ACCOUNT_TYPES,
-  DISCLAIMER_SEEN
-} from "modules/common/constants";
-import { windowRef } from "utils/window-ref";
-import { setSelectedUniverse } from "modules/auth/actions/selected-universe-management";
-import { AppState } from "store";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { NodeStyleCallback, WindowApp } from "modules/types";
-import { augurSdk } from "services/augursdk";
-import { listenToUpdates } from "modules/events/actions/listen-to-updates";
+  DISCLAIMER_SEEN,
+} from 'modules/common/constants';
+import { windowRef } from 'utils/window-ref';
+import { setSelectedUniverse } from 'modules/auth/actions/selected-universe-management';
+import { AppState } from 'store';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { NodeStyleCallback, WindowApp } from 'modules/types';
+import { augurSdk } from 'services/augursdk';
+import { listenToUpdates } from 'modules/events/actions/listen-to-updates';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -82,7 +76,7 @@ function pollForAccount(
       if (!disclaimerSeen) {
         dispatch(
           updateModal({
-            type: MODAL_DISCLAIMER
+            type: MODAL_DISCLAIMER,
           })
         );
       }
@@ -100,7 +94,7 @@ function loadAccount(
   const windowApp = windowRef as WindowApp;
   const usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
   if (windowApp.localStorage && windowApp.localStorage.getItem) {
-    loggedInAccount = windowApp.localStorage.getItem("loggedInAccount");
+    loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
   }
   getAccounts()
     .then((accounts: Array<string>) => {
@@ -149,40 +143,17 @@ function pollForNetwork(
 ) {
   setInterval(() => {
     const { modal } = getState();
-    dispatch(
-      verifyMatchingNetworkIds((err: any, expectedNetworkId: string) => {
-        if (err) return console.error("pollForNetwork failed", err);
-        if (expectedNetworkId != null && isEmpty(modal)) {
-          dispatch(
-            updateModal({
-              type: MODAL_NETWORK_MISMATCH,
-              expectedNetwork:
-                NETWORK_NAMES[expectedNetworkId] || expectedNetworkId
-            })
-          );
-        } else if (
-          expectedNetworkId == null &&
-          modal.type === MODAL_NETWORK_MISMATCH
-        ) {
-          dispatch(closeModal());
-        }
-      })
-    );
     if (!process.env.ENABLE_MAINNET) {
-      dispatch(
-        checkIfMainnet((err: any, isMainnet: Boolean) => {
-          if (err) return console.error("pollForNetwork failed", err);
-          if (isMainnet && isEmpty(modal)) {
-            dispatch(
-              updateModal({
-                type: MODAL_NETWORK_DISABLED
-              })
-            );
-          } else if (!isMainnet && modal.type === MODAL_NETWORK_DISABLED) {
-            dispatch(closeModal());
-          }
-        })
-      );
+      const isMainnet = checkIfMainnet();
+      if (isMainnet && isEmpty(modal)) {
+        dispatch(
+          updateModal({
+            type: MODAL_NETWORK_DISABLED,
+          })
+        );
+      } else if (!isMainnet && modal.type === MODAL_NETWORK_DISABLED) {
+        dispatch(closeModal());
+      }
     }
   }, NETWORK_ID_POLL_INTERVAL_DURATION);
 }
@@ -198,17 +169,18 @@ export function connectAugur(
     getState: () => AppState
   ) => {
     const { modal, loginAccount } = getState();
-    AugurJS.connect(
+    connect(
       env,
-      async (err: any, ConnectionInfo: any) => {
-        if (err || !ConnectionInfo.ethereumNode) {
-          return callback(err, ConnectionInfo);
+      async (err: any) => {
+        if (err) {
+          return callback(err, null);
         }
+        const Augur = augurSdk.get();
         dispatch(updateConnectionStatus(true));
         const windowApp = windowRef as WindowApp;
         let universeId =
           env.universe ||
-          AugurJS.augur.contracts.addresses[getNetworkId()].Universe;
+          Augur.contracts.universe.address;
         if (
           windowApp.localStorage &&
           windowApp.localStorage.getItem &&
@@ -217,9 +189,8 @@ export function connectAugur(
           const localUniverse =
             (windowApp.localStorage.getItem &&
               windowApp.localStorage.getItem(loginAccount.address)) ||
-            "";
+            '';
           const storedUniverseId = JSON.parse(localUniverse).selectedUniverse[
-            getState().connection.augurNodeNetworkId ||
               getNetworkId().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
@@ -236,7 +207,7 @@ export function connectAugur(
           callback(null);
         };
 
-        if (process.env.NODE_ENV === "development") {
+        if (process.env.NODE_ENV === 'development') {
           if ((await checkIsKnownUniverse(universeId)) === false) {
             dispatch(setSelectedUniverse());
             location.reload();
@@ -247,9 +218,7 @@ export function connectAugur(
         }
 
         // wire up events for sdk
-        const Augur = augurSdk.get();
         dispatch(listenToUpdates(Augur));
-
       }
     );
   };
@@ -263,11 +232,7 @@ interface initAugurParams {
 
 export function initAugur(
   history: any,
-  {
-    ethereumNodeHttp,
-    ethereumNodeWs,
-    useWeb3Transport
-  }: initAugurParams,
+  { ethereumNodeHttp, ethereumNodeWs, useWeb3Transport }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) {
   return (
@@ -277,12 +242,12 @@ export function initAugur(
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
     console.log(env);
     env.useWeb3Transport = useWeb3Transport;
-    env["ethereum-node"].http = ethereumNodeHttp
+    env['ethereum-node'].http = ethereumNodeHttp
       ? ethereumNodeHttp
-      : env["ethereum-node"].http;
-    const defaultWS = isEmpty(ethereumNodeHttp) ? env["ethereum-node"].ws : "";
+      : env['ethereum-node'].http;
+    const defaultWS = isEmpty(ethereumNodeHttp) ? env['ethereum-node'].ws : '';
     // If only the http param is provided we need to prevent this "default from taking precedence.
-    env["ethereum-node"].ws = ethereumNodeWs ? ethereumNodeWs : defaultWS;
+    env['ethereum-node'].ws = ethereumNodeWs ? ethereumNodeWs : defaultWS;
 
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);

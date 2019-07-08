@@ -83,6 +83,15 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     market = contractsFixture.createReasonableYesNoMarket(universe, validityBond=minimumValidityBond)
     assert market.getValidityBondAttoCash() == minimumValidityBond
 
+    # We'll also throw in some additional Cash to the validity bond
+    additionalAmount = 100
+    cash.faucet(additionalAmount)
+    cash.approve(market.address, additionalAmount)
+    assert market.increaseValidityBond(additionalAmount)
+    
+    validityBond = minimumValidityBond + additionalAmount
+    assert market.getValidityBondAttoCash() == validityBond
+
     # If we resolve the market the bond in it's entirety will go to the fee pool or to the market creator if the resolution was not invalid
     proceedToDesignatedReporting(contractsFixture, market)
 
@@ -96,11 +105,24 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     assert contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     if invalid:
-        with TokenDelta(cash, minimumValidityBond, universe.getOrCreateNextDisputeWindow(False), "Validity bond did not go to the dispute window"):
+        with TokenDelta(cash, validityBond, universe.getOrCreateNextDisputeWindow(False), "Validity bond did not go to the dispute window"):
             market.finalize()
     else:
-        with TokenDelta(cash, minimumValidityBond, market.getOwner(), "Validity bond did not go to the market creator"):
+        with TokenDelta(cash, validityBond, market.getOwner(), "Validity bond did not go to the market creator"):
             market.finalize()
+
+def test_non_dr_initial_reporter(contractsFixture, universe, reputationToken):
+    account0 = contractsFixture.accounts[0]
+    account1 = contractsFixture.accounts[1]
+    market = contractsFixture.createReasonableYesNoMarket(universe, extraInfo="so extra", designatedReporterAddress=account1)
+
+    proceedToDesignatedReporting(contractsFixture, market)
+
+    stake = market.repBond()
+    reputationToken.transfer(account1, stake)
+    with TokenDelta(reputationToken, stake, account0, "Market creator didn't get bond back"):
+        with TokenDelta(reputationToken, -stake, account1, "Designated Reporter did not pay bond"):
+            market.doInitialReport([0, 0, market.getNumTicks()], "", sender=account1)
 
 def test_max_duration_with_upgrade_cadence(contractsFixture, universe):
     account0 = contractsFixture.accounts[0]

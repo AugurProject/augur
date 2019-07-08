@@ -3,7 +3,6 @@ import { YES_NO } from "modules/common-elements/constants";
 // @ts-ignore
 import { getForkMigrationTotals } from "modules/forking/actions/get-fork-migration-totals";
 // @ts-ignore
-import { augur } from "services/augurjs";
 
 describe("modules/forking/actions/get-fork-migration-totals.js", () => {
   test("Returned the expected object", () => {
@@ -34,23 +33,6 @@ describe("modules/forking/actions/get-fork-migration-totals.js", () => {
         },
       },
     });
-    jest
-      .spyOn(augur.api.Universe, "getForkingMarket")
-      .mockImplementation((args, callback: any) => {
-        expect(args).toEqual({
-          tx: { to: "0xUNIVERSE" },
-        });
-        return callback(null, "0xMARKET");
-      });
-    jest
-      .spyOn(augur.augurNode, "submitRequest")
-      .mockImplementation((methodName, args, callback: any) => {
-        expect(methodName).toEqual("getForkMigrationTotals");
-        expect(args).toEqual({
-          parentUniverse: "0xUNIVERSE",
-        });
-        return callback(null, forkMigrationTotalsData);
-      });
 
     const expected = {
       0: {

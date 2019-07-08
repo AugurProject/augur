@@ -11,6 +11,8 @@ import 'ROOT/trading/IShareToken.sol';
 
 
 contract IUniverse is ITyped {
+    mapping(address => uint256) public marketBalance;
+
     function fork() public returns (bool);
     function updateForkValues() public returns (bool);
     function getParentUniverse() public view returns (IUniverse);
@@ -39,7 +41,9 @@ contract IUniverse is ITyped {
     function getInitialReportMinValue() public view returns (uint256);
     function getPayoutNumerators() public view returns (uint256[] memory);
     function getReportingFeeDivisor() public view returns (uint256);
-    function calculateFloatingValue(uint256 _badMarkets, uint256 _totalMarkets, uint256 _targetDivisor, uint256 _previousValue, uint256 _floor) public pure returns (uint256 _newValue);
+    function getPayoutNumerator(uint256 _outcome) public view returns (uint256);
+    function getWinningChildPayoutNumerator(uint256 _outcome) public view returns (uint256);
+    function isForkingMarket() public view returns (bool);
     function getOrCacheMarketCreationCost() public returns (uint256);
     function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow);
     function isParentOf(IUniverse _shadyChild) public view returns (bool);
@@ -48,13 +52,14 @@ contract IUniverse is ITyped {
     function isContainerForMarket(IMarket _shadyTarget) public view returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);
     function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
-    function addMarketTo() public returns (bool);
-    function removeMarketFrom() public returns (bool);
+    function migrateMarketOut(IUniverse _destinationUniverse) public returns (bool);
+    function migrateMarketIn(IMarket _market, uint256 _cashBalance, uint256 _marketOI) public returns (bool);
     function decrementOpenInterest(uint256 _amount) public returns (bool);
     function decrementOpenInterestFromMarket(IMarket _market) public returns (bool);
     function incrementOpenInterest(uint256 _amount) public returns (bool);
-    function incrementOpenInterestFromMarket(IMarket _market) public returns (bool);
     function getWinningChildUniverse() public view returns (IUniverse);
     function isForking() public view returns (bool);
     function assertMarketBalance() public view returns (bool);
+    function deposit(address _sender, uint256 _amount, address _market) public returns (bool);
+    function withdraw(address _recipient, uint256 _amount, address _market) public returns (bool);
 }

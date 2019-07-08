@@ -3,11 +3,13 @@ from decimal import Decimal
 
 class Contract():
 
-    def __init__(self, w3, w3Contract):
+    def __init__(self, w3, w3Contract, logListener=None, coverageMode=False):
         self.w3 = w3
         self.w3Contract = w3Contract
         self.address = self.w3Contract.address
         self.abi = self.w3Contract.abi
+        self.logListener = logListener
+        self.coverageMode = coverageMode
         if len(self.w3Contract.abi) < 1:
             return
         for abiFunc in self.w3Contract.functions._functions:
@@ -16,19 +18,23 @@ class Contract():
             setattr(self, functionName, self.get_contract_function(originalFunction, abiFunc))
 
     def get_contract_function(self, originalFunction, abiFunc):
-        def contract_function(*args, sender=self.w3.eth.accounts[0], value=0, getReturnData=True, commitTx=True):
+        def contract_function(*args, sender=self.w3.eth.accounts[0], value=0, getReturnData=True, commitTx=True, debug=False):
             contractFunction = originalFunction(*self.processArgs(*args, abiFunc=abiFunc))
             retVal = True
             outputs = abiFunc['outputs']
-            if len(outputs) == 1 and outputs[0]['type'] == 'bool':
+            # In coverage mode all functions change state through logs so we can't do this optimization
+            if not self.coverageMode and len(outputs) == 1 and outputs[0]['type'] == 'bool':
                 getReturnData = False
             if getReturnData or abiFunc['constant'] or not commitTx:
                 retVal = contractFunction.call({'from': sender, 'value': value}, block_identifier='pending')
             if not abiFunc['constant'] and commitTx:
-                tx_hash = contractFunction.transact({'from': sender, 'value': value, 'gasPrice': 1, 'gas': 7500000})
+                tx_hash = contractFunction.transact({'from': sender, 'value': value, 'gasPrice': 1, 'gas': 750000000})
                 receipt = self.w3.eth.waitForTransactionReceipt(tx_hash, 1)
                 if receipt.status == 0:
                     raise TransactionFailed
+                if self.logListener:
+                    for log in receipt.logs:
+                        self.logListener(log)
             return retVal
 
         return contract_function

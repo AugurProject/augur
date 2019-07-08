@@ -1,4 +1,4 @@
-import { Callback } from "./events";
+import { Callback, SubscriptionType } from "./events";
 import { Connector } from "./connector/connector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { ContractInterfaces } from "@augurproject/core";
@@ -7,14 +7,16 @@ import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { BigNumber } from 'bignumber.js';
 import { Provider } from "./ethereum/Provider";
-import { isSubscriptionEventName, SubscriptionEventNames } from "./constants";
+import { isSubscriptionEventName, SubscriptionEventName } from "./constants";
 import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
 import { ContractDependenciesEthers, TransactionStatusCallback } from "contract-dependencies-ethers";
 import { Markets } from "./state/getter/Markets";
 import { Status } from "./state/getter/status";
 import { Trading } from "./state/getter/Trading";
-import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market} from "./api/Market";
+import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
 import { Users } from "./state/getter/Users";
+import { Accounts } from "./state/getter/Accounts";
+import { getAddress } from "ethers/utils/address";
 
 export interface CustomEvent {
   name: string;
@@ -146,8 +148,10 @@ export class Augur<TProvider extends Provider = Provider> {
     return new BigNumber(balance.toString());
   }
 
-  public async getAccount(): Promise<string> {
-    return await this.dependencies.getDefaultAddress();
+  public async getAccount(): Promise<string | null> {
+    const account = await this.dependencies.address;
+    if (!account) return account;
+    return getAddress(account);
   }
 
   public getUniverse(address: string): ContractInterfaces.Universe {
@@ -186,13 +190,13 @@ export class Augur<TProvider extends Provider = Provider> {
     return Augur.connector.bindTo(f);
   }
 
-  public async on(eventName: SubscriptionEventNames | string, callback: Callback): Promise<void> {
+  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
       return Augur.connector.on(eventName, callback);
     }
   }
 
-  public async off(eventName: SubscriptionEventNames | string): Promise<void> {
+  public async off(eventName: SubscriptionEventName | string): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
       return Augur.connector.off(eventName);
     }
@@ -215,6 +219,9 @@ export class Augur<TProvider extends Provider = Provider> {
   public getMarketOrderBook = this.bindTo(Markets.getMarketOrderBook);
 
   public getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
+  public getProfitLoss = this.bindTo(Users.getProfitLoss);
+  public getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
+
   public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
   }

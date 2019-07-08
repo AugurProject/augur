@@ -15,16 +15,13 @@ export const reInitAugur = (history: any) => (
 ) => {
   const debounceCall = debounce((callback = cb) => {
     const { connection, env } = getState();
-    if (!connection.isConnected || !connection.isConnectedToAugurNode) {
+    if (!connection.isConnected) {
       dispatch(
         updateModal({ type: MODAL_NETWORK_DISCONNECTED, connection, env })
       );
       if (connection.isReconnectionPaused) {
         // reconnection has been set to paused, recursive call instead
         callback(connection.isReconnectionPaused);
-      } else {
-        // reconnection isn't paused, retry connectAugur
-        dispatch(connectAugur(history, env, false, callback));
       }
     } else {
       dispatch(closeModal());
@@ -33,7 +30,7 @@ export const reInitAugur = (history: any) => (
   const cb = (err: any, connection: any) => {
     // both args should be undefined if we are connected.
     if (!err && !connection) return;
-    if (err || !connection.augurNode || !connection.ethereumNode) {
+    if (err || !connection.ethereumNode) {
       debounceCall(cb);
     }
   };

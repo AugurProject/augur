@@ -10,7 +10,7 @@ from json import dump as json_dump, load as json_load, dumps as json_dumps
 from os import path, walk, makedirs, remove as remove_file
 from re import findall
 from contract import Contract
-from utils import stringToBytes, BuyWithCash
+from utils import stringToBytes, BuyWithCash, PrintGasUsed
 
 from web3 import (
     EthereumTesterProvider,
@@ -54,12 +54,30 @@ from eth.rlp.headers import (
     HeaderParams,
 )
 
+from eth_hash.auto import keccak
+from eth_utils import (
+    encode_hex,
+)
+
+from eth import constants
+from eth.exceptions import (
+    OutOfGas,
+)
+from eth.vm.computation import BaseComputation
+from eth.vm.forks.homestead.computation import (
+    HomesteadComputation,
+)
+
+from eth.vm.forks.spurious_dragon.opcodes import SPURIOUS_DRAGON_OPCODES
+
+from hexbytes.main import HexBytes
+
 import rlp
 
 import web3
 
 genesis_overrides = {
-    'gas_limit': 8000000
+    'gas_limit': 800000000
 }
 custom_genesis_params = PyEVMBackend._generate_genesis_params(overrides=genesis_overrides)
 custom_genesis_state = PyEVMBackend._generate_genesis_state(num_accounts=9)
@@ -95,13 +113,13 @@ def new_get_storage(self, address: Address, slot: int, from_journal: bool=True) 
         return rlp.decode(encoded_value, sedes=rlp.sedes.big_endian_int)
 
 def dumb_gas_search(*args) -> int:
-    return 7900000
+    return 790000000
 
 def dumb_get_buffered_gas_estimate(web3, transaction, gas_buffer=100000):
-    return 7900000
+    return 790000000
 
 def dumb_estimateGas(self, transaction, block_identifier=None):
-    return 7900000
+    return 790000000
 
 def new_create_header_from_parent(self,
                                 parent_header: BlockHeader,
@@ -109,10 +127,52 @@ def new_create_header_from_parent(self,
     header = self.get_vm_class_for_block_number(
         block_number=parent_header.block_number + 1,
     ).create_header_from_parent(parent_header, **header_params)
-    header._gas_limit = 8000000
+    header._gas_limit = 800000000
     return header
 
+def new_apply_create_message(self) -> BaseComputation:
+        snapshot = self.state.snapshot()
+
+        # EIP161 nonce incrementation
+        self.state.account_db.increment_nonce(self.msg.storage_address)
+
+        computation = self.apply_message()
+
+        if computation.is_error:
+            self.state.revert(snapshot)
+            return computation
+        else:
+            contract_code = computation.output
+
+            if contract_code:
+                contract_code_gas_cost = len(contract_code) * constants.GAS_CODEDEPOSIT
+                try:
+                    computation.consume_gas(
+                        contract_code_gas_cost,
+                        reason="Write contract code for CREATE",
+                    )
+                except OutOfGas as err:
+                    # Different from Frontier: reverts state on gas failure while
+                    # writing contract code.
+                    computation._error = err
+                    self.state.revert(snapshot)
+                else:
+                    if self.logger:
+                        self.logger.debug2(
+                            "SETTING CODE: %s -> length: %s | hash: %s",
+                            encode_hex(self.msg.storage_address),
+                            len(contract_code),
+                            encode_hex(keccak(contract_code))
+                        )
+
+                    self.state.account_db.set_code(self.msg.storage_address, contract_code)
+                    self.state.commit(snapshot)
+            else:
+                self.state.commit(snapshot)
+            return computation
+
 eth.vm.code_stream.CodeStream.is_valid_opcode = new_is_valid_opcode
+eth.vm.forks.spurious_dragon.computation.SpuriousDragonComputation.apply_create_message = new_apply_create_message
 eth.tools.logging.ExtendedDebugLogger.debug2 = new_debug2
 eth.db.account.AccountDB.get_storage = new_get_storage
 web3.manager.RequestManager.default_middlewares = new_default_middlewares
@@ -166,14 +226,23 @@ class ContractsFixture:
         self.relativeContractsPath = '../source/contracts'
         self.relativeTestContractsPath = 'solidity_test_helpers'
         # self.relativeTestContractsPath = 'mock_templates/contracts'
-        self.externalContractsPath = '../source/contracts/external'
         self.coverageMode = request.config.option.cover
         self.subFork = request.config.option.subFork
+        self.logListener = None
         if self.coverageMode:
-            self.chain.head_state.log_listeners.append(self.writeLogToFile)
+            self.logListener = self.writeLogToFile
             self.relativeContractsPath = '../coverageEnv/contracts'
             self.relativeTestContractsPath = '../coverageEnv/solidity_test_helpers'
-            self.externalContractsPath = '../coverageEnv/contracts/external'
+
+    def writeLogToFile(self, message):
+        with open('./allFiredEvents', 'a') as logsFile:
+            logData = message.__dict__
+            for key, value in logData.items():
+                if type(value) == HexBytes:
+                    logData[key] = value.hex()[2:]
+            logData['topics'] = [val.hex()[2:] for val in logData['topics']]
+            logData['data'] = logData['data'][2:]
+            logsFile.write(json_dumps(logData) + '\n')
 
     def generateSignature(self, relativeFilePath):
         ContractsFixture.ensureCacheDirectoryExists()
@@ -291,6 +360,7 @@ class ContractsFixture:
 
     def uploadAndAddToAugur(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=[]):
         lookupKey = lookupKey if lookupKey else path.splitext(path.basename(relativeFilePath))[0]
+        #with PrintGasUsed(self, "UPLOAD CONTRACT %s" % lookupKey, 0):
         contract = self.upload(relativeFilePath, lookupKey, signatureKey, constructorArgs)
         if not contract: return None
         self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
@@ -325,10 +395,12 @@ class ContractsFixture:
         signature = ContractsFixture.signatures[signatureKey]
         W3Contract = self.w3.eth.contract(abi=signature, bytecode=compiledCode)
         deploy_address = self.accounts[0]
-        tx_hash = W3Contract.constructor(*constructorArgs).transact({'from': deploy_address, 'gasPrice': 1, 'gas': 7500000})
+        tx_hash = W3Contract.constructor(*constructorArgs).transact({'from': deploy_address, 'gasPrice': 1, 'gas': 750000000})
         tx_receipt = self.w3.eth.waitForTransactionReceipt(tx_hash, 180)
+        if tx_receipt.status == 0:
+            raise Exception("Contract upload %s failed" % lookupKey)
         w3Contract = W3Contract(tx_receipt.contractAddress)
-        contract = Contract(self.w3, w3Contract)
+        contract = Contract(self.w3, w3Contract, self.logListener, self.coverageMode)
         self.contracts[lookupKey] = contract
         return contract
 
@@ -338,7 +410,7 @@ class ContractsFixture:
             signature = ContractsFixture.signatures[signatureName]
         W3Contract = self.w3.eth.contract(abi=signature)
         w3Contract = W3Contract(address)
-        contract = Contract(self.w3, w3Contract)
+        contract = Contract(self.w3, w3Contract, self.logListener, self.coverageMode)
         return contract
 
     def createSnapshot(self):
@@ -357,8 +429,6 @@ class ContractsFixture:
         if not 'snapshot_id' in snapshot: raise "snapshot is missing 'snapshot_id'"
         if not 'contracts' in snapshot: raise "snapshot is missing 'contracts'"
         self.eth_tester.revert_to_snapshot(snapshot['snapshot_id'])
-        #if self.coverageMode:
-        #    self.chain.head_state.log_listeners.append(self.writeLogToFile)
         self.contracts = {}
         for contractName in snapshot['contracts']:
             contract = snapshot['contracts'][contractName]
@@ -378,6 +448,7 @@ class ContractsFixture:
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
+                if name in ['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin']: continue # We upload the Test Dai contracts manually after this process
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
@@ -397,14 +468,12 @@ class ContractsFixture:
                 else:
                     self.uploadAndAddToAugur(path.join(directory, filename))
 
-    def uploadExternalContracts(self):
-        for directory, _, filenames in walk(resolveRelativePath(self.externalContractsPath)):
-            for filename in filenames:
-                name = path.splitext(filename)[0]
-                extension = path.splitext(filename)[1]
-                if extension != '.sol': continue
-                constructorArgs = []
-                self.upload(path.join(directory, filename), constructorArgs=constructorArgs)
+    def uploadTestDaiContracts(self):
+        self.uploadAndAddToAugur("../source/contracts/Cash.sol")
+        self.uploadAndAddToAugur("../source/contracts/TestNetDaiVat.sol", lookupKey = "DaiVat", signatureKey = "DaiVat")
+        self.uploadAndAddToAugur("../source/contracts/TestNetDaiPot.sol", lookupKey = "DaiPot", signatureKey = "DaiPot", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Time'].address])
+        self.uploadAndAddToAugur("../source/contracts/TestNetDaiJoin.sol", lookupKey = "DaiJoin", signatureKey = "DaiJoin", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Cash'].address])
+        self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
     def initializeAllContracts(self):
         contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade']
@@ -430,11 +499,13 @@ class ContractsFixture:
 
     def uploadAugur(self):
         # We have to upload Augur first
-        return self.upload("../source/contracts/Augur.sol")
+        with PrintGasUsed(self, "AUGUR CREATION", 0):
+            return self.upload("../source/contracts/Augur.sol")
 
     def createUniverse(self):
         augur = self.contracts['Augur']
-        assert augur.createGenesisUniverse(getReturnData=False)
+        with PrintGasUsed(self, "GENESIS CREATION", 0):
+            assert augur.createGenesisUniverse(getReturnData=False)
         universeCreatedLogs = augur.getLogs("UniverseCreated")
         universeAddress = universeCreatedLogs[0].args.childUniverse
         universe = self.applySignature('Universe', universeAddress)
@@ -483,14 +554,15 @@ class ContractsFixture:
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
+    def createReasonableYesNoMarket(self, universe, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0, designatedReporterAddress=None):
         sender = sender or self.accounts[0]
+        designatedReporter = designatedReporterAddress or sender
         return self.createYesNoMarket(
             universe = universe,
             endTime = self.contracts["Time"].getTimestamp() + timedelta(days=1).total_seconds(),
             feePerCashInAttoCash = 10**16,
             affiliateFeeDivisor = 4,
-            designatedReporterAddress = sender,
+            designatedReporterAddress = designatedReporter,
             sender = sender,
             topic= topic,
             extraInfo= extraInfo,
@@ -537,9 +609,9 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.resetToSnapshot(baseSnapshot)
     fixture.uploadAugur()
     fixture.uploadAllContracts()
+    fixture.uploadTestDaiContracts()
     fixture.initializeAllContracts()
     fixture.approveCentralAuthority()
-    fixture.uploadExternalContracts()
     return fixture.createSnapshot()
 
 @pytest.fixture(scope="session")
@@ -565,6 +637,8 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     categoricalMarket = fixture.createReasonableCategoricalMarket(universe, 3)
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
+    fixture.contracts['DaiPot'].setDSR(1000000564701133626865910626) # 5% a day
+    assert universe.toggleDSR()
 
     tokensFail = fixture.upload("solidity_test_helpers/ERC777Fail.sol")
     erc1820Registry = fixture.contracts['ERC1820Registry']

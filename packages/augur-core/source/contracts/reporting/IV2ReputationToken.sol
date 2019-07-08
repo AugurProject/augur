@@ -6,4 +6,5 @@ import 'ROOT/reporting/IReputationToken.sol';
 
 contract IV2ReputationToken is IReputationToken, IStandardToken {
     function burnForMarket(uint256 _amountToBurn) public returns (bool);
+    function mintForUniverse(uint256 _amountToMint, address _target) public returns (bool);
 }

@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-info";
 import { addMarketsReport } from "modules/reports/actions/update-reports";
 import logError from "utils/log-error";
@@ -34,7 +33,9 @@ const loadReportingHistoryInternal = (
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null, {});
-  augur.reporting.getReportingHistory(
+  // TODO: get reporting history of user as part of the reporting redsign
+  /*
+  .reporting.getReportingHistory(
     { ...options, reporter: loginAccount.address, universe: universe.id },
     (err: any, reportingHistory: any) => {
       if (err) return callback(err, {});
@@ -50,4 +51,5 @@ const loadReportingHistoryInternal = (
       });
     }
   );
+  */
 };

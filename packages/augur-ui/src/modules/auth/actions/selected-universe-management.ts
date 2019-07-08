@@ -1,10 +1,10 @@
 import { windowRef } from "utils/window-ref";
-import { augur } from "services/augurjs";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
 import { WindowApp } from "modules/types";
+import { augurSdk } from "services/augursdk";
 
 export const setSelectedUniverse = (selectedUniverseId: string | null = null) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -12,10 +12,11 @@ export const setSelectedUniverse = (selectedUniverseId: string | null = null) =>
 ) => {
   const { loginAccount, env, connection } = getState();
   const { address } = loginAccount;
-  const { augurNodeNetworkId } = connection;
+  const networkId = getNetworkId();
+  const Augur = augurSdk.get();
   const defaultUniverseId =
     env.universe ||
-    augur.contracts.addresses[getNetworkId()].Universe;
+    Augur.contracts.universe.address;
     const windowApp = windowRef as WindowApp;
   if (windowApp && windowApp.localStorage) {
     const { localStorage } = windowApp;
@@ -28,7 +29,7 @@ export const setSelectedUniverse = (selectedUniverseId: string | null = null) =>
           ...accountStorage,
           selectedUniverse: {
             ...accountStorage.selectedUniverse,
-            [augurNodeNetworkId]: selectedUniverseId || defaultUniverseId
+            [networkId]: selectedUniverseId || defaultUniverseId
           }
         })
       );

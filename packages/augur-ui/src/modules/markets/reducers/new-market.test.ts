@@ -1,5 +1,4 @@
 import newMarket from "modules/markets/reducers/new-market";
-import { DEFAULT_SCALAR_TICK_SIZE } from "@augurproject/augur.js/src/constants";
 
 import {
   ADD_ORDER_TO_NEW_MARKET,
@@ -35,7 +34,7 @@ describe("modules/markets/reducers/new-market.js", () => {
       tag1: "",
       tag2: "",
       outcomes: Array(8).fill(""),
-      tickSize: DEFAULT_SCALAR_TICK_SIZE,
+      tickSize: 100,
       settlementFee: 0,
       orderBook: {},
       orderBookSorted: {},
@@ -406,7 +405,7 @@ describe("modules/markets/reducers/new-market.js", () => {
       meridiem: "",
       detailsText: "",
       outcomes: Array(8).fill(""),
-      tickSize: DEFAULT_SCALAR_TICK_SIZE,
+      tickSize: 100,
       category: "",
       tag1: "",
       tag2: "",

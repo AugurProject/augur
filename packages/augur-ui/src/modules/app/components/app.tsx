@@ -92,7 +92,6 @@ interface AppProps {
   updateIsMobileSmall: any;
   updateModal: any;
   finalizeMarket: any;
-  augurNode: any;
   ethereumNodeHttp: any;
   ethereumNodeWs: any;
   useWeb3Transport: any;
@@ -134,7 +133,6 @@ export default class AppView extends Component<AppProps, AppState> {
     updateIsMobileSmall: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
-    augurNode: PropTypes.string,
     ethereumNodeHttp: PropTypes.string,
     ethereumNodeWs: PropTypes.string,
     useWeb3Transport: PropTypes.bool,
@@ -149,7 +147,6 @@ export default class AppView extends Component<AppProps, AppState> {
   };
 
   static defaultProps = {
-    augurNode: null,
     ethereumNodeHttp: null,
     ethereumNodeWs: null,
     useWeb3Transport: false
@@ -208,7 +205,6 @@ export default class AppView extends Component<AppProps, AppState> {
 
   componentWillMount() {
     const {
-      augurNode,
       env,
       ethereumNodeHttp,
       ethereumNodeWs,
@@ -223,13 +219,12 @@ export default class AppView extends Component<AppProps, AppState> {
       history,
       {
         ...env,
-        augurNode,
         ethereumNodeHttp,
         ethereumNodeWs,
         useWeb3Transport
       },
       (err: any, res: any) => {
-        if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
+        if (err || (res && !res.ethereumNode) || (res)) {
           updateModal({
             type: MODAL_NETWORK_CONNECT,
             isInitialConnection: true

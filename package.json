@@ -33,7 +33,6 @@
     "tools": "yarn workspace @augurproject/tools",
     "an": "yarn workspace @augurproject/node",
     "flash": "yarn workspace @augurproject/tools flash",
-    "dp": "yarn workspace @augurproject/tools dp",
     "check": "gts check",
     "fix": "gts fix"
   },

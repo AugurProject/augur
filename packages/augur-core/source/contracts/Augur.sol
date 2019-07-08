@@ -101,8 +101,12 @@ contract Augur is IAugur {
     mapping(bytes32 => address) private registry;
 
     ITime public time;
+    IUniverse public genesisUniverse;
 
     uint256 public upgradeTimestamp;
+
+    int256 private constant DEFAULT_MIN_PRICE = 0;
+    int256 private constant DEFAULT_MAX_PRICE = 1 ether;
 
     modifier onlyUploader() {
         require(msg.sender == uploader, "Augur: Uploader only function called by non-uploader");
@@ -150,7 +154,9 @@ contract Augur is IAugur {
     //
 
     function createGenesisUniverse() public onlyUploader returns (IUniverse) {
-        return createUniverse(IUniverse(0), bytes32(0), new uint256[](0));
+        require(genesisUniverse == IUniverse(0));
+        genesisUniverse = createUniverse(IUniverse(0), bytes32(0), new uint256[](0));
+        return genesisUniverse;
     }
 
     function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse) {
@@ -163,6 +169,7 @@ contract Augur is IAugur {
         IUniverseFactory _universeFactory = IUniverseFactory(registry["UniverseFactory"]);
         IUniverse _newUniverse = _universeFactory.createUniverse(_parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
         universes[address(_newUniverse)] = true;
+        trustedSender[address(_newUniverse)] = true;
         emit UniverseCreated(address(_parentUniverse), address(_newUniverse), _parentPayoutNumerators);
         return _newUniverse;
     }
@@ -215,6 +222,10 @@ contract Augur is IAugur {
         return true;
     }
 
+    function isTrustedSender(address _address) public returns (bool) {
+        return trustedSender[_address];
+    }
+
     //
     // Time
     //
@@ -260,23 +271,38 @@ contract Augur is IAugur {
     // Logging
     //
 
-    // This signature is intended for the categorical market creation. We use two signatures for the same event because of stack depth issues which can be circumvented by maintaining order of paramaters
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, IMarket.MarketType _marketType, bytes32[] memory _outcomes) public returns (bool) {
+    function logCategoricalMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, bytes32[] memory _outcomes) public returns (bool) {
         IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
-        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market,_marketCreator, _designatedReporter, _feeDivisor, _prices, _marketType, 100, _outcomes, getTimestamp());
+        int256[] memory _prices = new int256[](2);
+        _prices[0] = DEFAULT_MIN_PRICE;
+        _prices[1] = DEFAULT_MAX_PRICE;
+        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market,_marketCreator, _designatedReporter, _feeDivisor, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, getTimestamp());
         return true;
     }
 
-    // This signature is intended for yesNo and scalar market creation. See function comment above for explanation.
-    function logMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, IMarket.MarketType _marketType, uint256 _numTicks) public returns (bool) {
+    function logYesNoMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor) public returns (bool) {
         IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
-        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market, _marketCreator, _designatedReporter, _feeDivisor, _prices, _marketType, _numTicks, new bytes32[](0), getTimestamp());
+        int256[] memory _prices = new int256[](2);
+        _prices[0] = DEFAULT_MIN_PRICE;
+        _prices[1] = DEFAULT_MAX_PRICE;
+        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market, _marketCreator, _designatedReporter, _feeDivisor, _prices, IMarket.MarketType.YES_NO, 100, new bytes32[](0), getTimestamp());
+        return true;
+    }
+
+    function logScalarMarketCreated(uint256 _endTime, bytes32 _topic, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, uint256 _numTicks)  public returns (bool) {
+        IUniverse _universe = IUniverse(msg.sender);
+        require(isKnownUniverse(_universe));
+        require(_prices.length == 2);
+        require(_prices[0] < _prices[1], "Universe.createScalarMarket: Min price must be less than max price");
+        recordMarketShareTokens(_market);
+        markets[address(_market)] = true;
+        emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market, _marketCreator, _designatedReporter, _feeDivisor, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), getTimestamp());
         return true;
     }
 
@@ -346,7 +372,7 @@ contract Augur is IAugur {
     }
 
     function logOrderCanceled(IUniverse _universe, IMarket _market, address _creator, uint256 _tokenRefund, uint256 _sharesRefund, bytes32 _orderId) public returns (bool) {
-        require(msg.sender == registry["CancelOrder"], "Augur: CancelOrder only function called by non-CancelOrder");
+        require(msg.sender == registry["CancelOrder"]);
         IOrders _orders = IOrders(registry["Orders"]);
         (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
         _addressData[1] = _creator;

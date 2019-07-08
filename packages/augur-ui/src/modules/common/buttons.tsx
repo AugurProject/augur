@@ -12,7 +12,6 @@ import {
   StarIcon,
   XIcon,
   SortIcon,
-  EthIcon,
   PercentIcon,
   QRCodeIcon,
   PaperAirplaneIcon,
@@ -25,7 +24,7 @@ import {
   Filter
 } from "modules/common/icons";
 import classNames from "classnames";
-
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import Styles from "modules/common/buttons.styles.less";
 import { AppState } from "store";
 
@@ -156,14 +155,14 @@ export const CompactButton = (props: DefaultButtonProps) => (
   </button>
 );
 
-export const EthPercentButton = (props: EthPercentProps) => (
+export const DaiPercentButton = (props: EthPercentProps) => (
   <button
     onClick={e => props.action(e)}
-    className={classNames(Styles.CompactButton, Styles.EthPercentButton)}
+    className={classNames(Styles.CompactButton, Styles.DaiPercentButton)}
     disabled={props.disabled}
     title={props.title}
   >
-    {!props.showEth ? EthIcon : PercentIcon}
+    {!props.showEth ? DaiLogoIcon : PercentIcon}
   </button>
 );
 
@@ -371,7 +370,7 @@ EtherscanLinkTSX.defaultProps = {
 };
 
 const mapStateToPropsEtherScanLink = (state: AppState) => {
-  const networkId = state.connection.augurNodeNetworkId;
+  const networkId = getNetworkId();
 
   if (!networkId) {
     return null;

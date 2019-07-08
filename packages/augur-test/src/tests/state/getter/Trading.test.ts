@@ -1,10 +1,5 @@
-import {
-  ACCOUNTS,
-  makeDbMock,
-  deployContracts,
-  ContractAPI,
-} from '../../../libs';
-import { Contracts as compilerOutput } from '@augurproject/artifacts';
+import { makeDbMock, makeProvider, seedPath } from "../../../libs";
+import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import {
@@ -28,13 +23,11 @@ describe('State API :: Trading :: ', () => {
   let mary: ContractAPI;
 
   beforeAll(async () => {
-    const { provider, addresses } = await deployContracts(
-      ACCOUNTS,
-      compilerOutput
-    );
+    const { addresses } = loadSeed(seedPath);
+    const provider = await makeProvider(ACCOUNTS);
 
-    john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
   }, 120000);
@@ -94,7 +87,7 @@ describe('State API :: Trading :: ', () => {
 
     // Get trades by user
     let trades: MarketTradingHistory[] = await api.route('getTradingHistory', {
-      account: mary.account,
+      account: mary.account.publicKey,
     });
 
     await expect(trades[market1.address]).toHaveLength(1);
@@ -211,7 +204,7 @@ describe('State API :: Trading :: ', () => {
     // Get orders for the market
     orders = await api.route('getOrders', {
       marketId: market.address,
-      account: john.account,
+      account: john.account.publicKey,
       makerTaker: 'either',
     });
     await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
@@ -222,7 +215,7 @@ describe('State API :: Trading :: ', () => {
 
     orders = await api.route('getOrders', {
       marketId: market.address,
-      account: john.account,
+      account: john.account.publicKey,
       makerTaker: 'maker',
     });
     await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
@@ -230,7 +223,7 @@ describe('State API :: Trading :: ', () => {
 
     orders = await api.route('getOrders', {
       marketId: market.address,
-      account: john.account,
+      account: john.account.publicKey,
       makerTaker: 'taker',
     });
     await expect(orders).toEqual({});

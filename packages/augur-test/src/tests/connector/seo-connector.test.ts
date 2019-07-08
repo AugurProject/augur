@@ -1,5 +1,5 @@
-import { ACCOUNTS, makeDbMock, deployContracts, ContractAPI } from '../../libs';
-
+import { makeDbMock, makeProvider, seedPath } from "../../libs";
+import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BigNumber } from 'bignumber.js';
 import { ContractAddresses } from '@augurproject/artifacts';
@@ -13,7 +13,8 @@ import {
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { SEOConnector } from '@augurproject/sdk/build/connector/seo-connector';
-import { SubscriptionEventNames } from '@augurproject/sdk/build/constants';
+import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
+import { NewBlock } from '@augurproject/sdk/build/events';
 import { MarketCreated } from "@augurproject/sdk/build/events";
 
 let connector: SEOConnector;
@@ -55,11 +56,10 @@ jest.mock('@augurproject/sdk/build/state/index', () => {
 beforeAll(async () => {
   connector = new SEOConnector();
 
-  const contractData = await deployContracts(ACCOUNTS, null);
-  provider = contractData.provider;
-  addresses = contractData.addresses;
+  addresses = loadSeed(seedPath).addresses;
+  provider = await makeProvider(ACCOUNTS);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   db = mock.makeDB(john.augur, ACCOUNTS);
 
   await john.approveCentralAuthority();
@@ -70,7 +70,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
-    designatedReporter: john.account,
+    designatedReporter: john.account.publicKey,
     topic: 'yesNo topic 1',
     extraInfo:
       '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
@@ -79,9 +79,9 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
   await connector.connect('');
 
   await connector.on(
-    SubscriptionEventNames.MarketCreated,
-    async (...args: Array<MarketCreated>): Promise<void> => {
-      expect(args[0]).toHaveProperty(
+    SubscriptionEventName.MarketCreated,
+    async (arg: MarketCreated): Promise<void> => {
+      expect(arg).toHaveProperty(
         'extraInfo',
         '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}'
       );
@@ -92,7 +92,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       });
       expect(markets).toEqual([yesNoMarket1.address]);
 
-      await connector.off(SubscriptionEventNames.MarketCreated);
+      await connector.off(SubscriptionEventName.MarketCreated);
       expect(connector.subscriptions).toEqual({});
       done();
     }
@@ -106,7 +106,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
-    designatedReporter: john.account,
+    designatedReporter: john.account.publicKey,
     topic: 'yesNo topic 1',
     extraInfo:
       '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
@@ -115,17 +115,17 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
   await connector.connect('');
 
   await connector.on(
-    SubscriptionEventNames.NewBlock,
-    async (...args: any[]): Promise<void> => {
-      expect(args).toEqual([
+    SubscriptionEventName.NewBlock,
+    async (arg: NewBlock): Promise<void> => {
+      expect(arg).toEqual(
         {
-          eventName: SubscriptionEventNames.NewBlock,
+          eventName: SubscriptionEventName.NewBlock,
           blocksBehindCurrent: 0,
           highestAvailableBlockNumber: expect.any(Number),
           lastSyncedBlockNumber: expect.any(Number),
           percentBehindCurrent: '0.0000',
         },
-      ]);
+      );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
       const markets = await getMarkets({
@@ -133,7 +133,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       });
       expect(markets[markets.length - 1]).toEqual(yesNoMarket1.address);
 
-      await connector.off(SubscriptionEventNames.NewBlock);
+      await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});
       done();
     }

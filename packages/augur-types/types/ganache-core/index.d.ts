@@ -7,12 +7,16 @@ declare module "ganache-core" {
 
   import { AsyncSendable } from "ethers.providers.Web3Provider";
   import * as http from "http";
-  import * as https from "https";
-  export type Account = {
+
+  export interface GanacheServer extends http.Server {
+    ganacheProvider: AsyncSendable;
+  }
+
+  export interface Account {
         balance: number;
         secretKey?: string;
         publicKey?: string;
-    };
+    }
     export interface GanacheOpts {
         verbose?: boolean;
         logger?: {
@@ -24,20 +28,20 @@ declare module "ganache-core" {
         mnemonic?: string;
         gasLimit?: number;
         db_path?: string;
-        db?: Object;
+        db?: {};
 
         fork?: boolean;
         blockTime?: number;
 
         total_accounts?: number;
-        accounts?: Array<Account>;
+        accounts?: Account[];
 
         vmErrorsOnRPCResponse?: boolean;
         allowUnlimitedContractSize?: boolean;
         defaultTransactionGasLimit?: string;
         debug?: boolean;
     }
-    export function provider(opts?: GanacheOpts): AsyncSendable;
 
-  export function server(opts?: GanacheOpts): http.Server | https.Server;
+    export function provider(opts?: GanacheOpts): AsyncSendable;
+    export function server(opts?: GanacheOpts): GanacheServer;
 }

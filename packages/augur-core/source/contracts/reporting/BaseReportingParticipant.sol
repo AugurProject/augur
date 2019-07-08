@@ -21,12 +21,12 @@ contract BaseReportingParticipant is IReportingParticipant {
         require(_reputationToken.transfer(address(market), _reputationToken.balanceOf(address(this))));
     }
 
-    function fork() internal {
+    function fork() public {
         require(market == market.getUniverse().getForkingMarket());
         IUniverse _newUniverse = market.getUniverse().createChildUniverse(payoutNumerators);
         IReputationToken _newReputationToken = _newUniverse.getReputationToken();
         uint256 _balance = reputationToken.balanceOf(address(this));
-        reputationToken.migrateOut(_newReputationToken, _balance);
+        reputationToken.migrateOutByPayout(_newUniverse.getPayoutNumerators(), _balance);
         _newReputationToken.mintForReportingParticipant(size);
         reputationToken = _newReputationToken;
         augur.logReportingParticipantDisavowed(market.getUniverse(), market);

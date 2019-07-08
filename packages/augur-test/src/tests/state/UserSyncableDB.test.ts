@@ -1,17 +1,19 @@
-import { ACCOUNTS, ContractAPI, deployContracts, makeDbMock } from '../../libs';
+import { makeDbMock, makeProvider, seedPath } from "../../libs";
 import { UserSyncableDB } from '@augurproject/sdk/build/state/db/UserSyncableDB';
 import { stringTo32ByteHex } from '@augurproject/core/build/libraries/HelperFunctions';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
+import { ContractAPI, ACCOUNTS, loadSeed } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
 let john: ContractAPI;
 
 beforeAll(async () => {
-  const { provider, addresses } = await deployContracts(ACCOUNTS, undefined);
+  const { addresses } = loadSeed(seedPath);
+  const provider = await makeProvider(ACCOUNTS);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   await john.approveCentralAuthority();
 });
 

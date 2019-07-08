@@ -1,5 +1,5 @@
-import {utils as ethersUtils} from "ethers";
-import {BigNumber} from "bignumber.js";
+import { utils as ethersUtils } from "ethers";
+import { BigNumber } from "bignumber.js";
 
 export enum ACCOUNT_TYPES {
   U_PORT = "uPort",
@@ -11,7 +11,7 @@ export enum ACCOUNT_TYPES {
   EDGE = "edge",
 }
 
-export enum SubscriptionEventNames {
+export enum SubscriptionEventName {
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
@@ -46,7 +46,7 @@ export enum SubscriptionEventNames {
 export function isSubscriptionEventName(eventName: string): string | null {
   let retVal: number = -1;
 
-  Object.values(SubscriptionEventNames).every((value: any, index: number): boolean => {
+  Object.values(SubscriptionEventName).every((value: any, index: number): boolean => {
     if (value === eventName) {
       retVal = index;
       return false;

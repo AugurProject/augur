@@ -2,11 +2,10 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 
 import { loadAccountData } from "modules/auth/actions/load-account-data";
-import { augur } from "services/augurjs";
 
 import { updateIsLoggedAndLoadAccountData } from "modules/auth/actions/update-is-logged-and-load-account-data";
 
-jest.mock("services/augurjs");
+jest.mock("services/initialize");
 jest.mock("modules/auth/actions/load-account-data");
 
 describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () => {
@@ -24,9 +23,6 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
 
   test("unlocked ethereum node", () => {
     const store = mockStore();
-    augur.rpc.clear.mockImplementation(() =>
-      store.dispatch({ type: "AUGURJS_RPC_CLEAR" })
-    );
 
     store.dispatch(
       updateIsLoggedAndLoadAccountData("0xb0b", "unlockedEthereumNode")
@@ -58,9 +54,6 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
   });
   test("metamask-connect", () => {
     const store = mockStore();
-    augur.rpc.clear.mockImplementation(() =>
-      store.dispatch({ type: "AUGURJS_RPC_CLEAR" })
-    );
 
     store.dispatch(updateIsLoggedAndLoadAccountData("0xb0b", "metaMask"));
     const actions = store.getActions();

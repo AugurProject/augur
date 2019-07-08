@@ -5,7 +5,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
-import { augur } from "services/augurjs";
 
 import { InputDropdown } from "modules/common/form";
 import { InputErrorIcon } from "modules/common/icons";

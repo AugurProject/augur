@@ -11,13 +11,13 @@ import noop from "utils/noop";
 import { createBigNumber } from "utils/create-big-number";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MY_POSITIONS } from "modules/routes/constants/views";
-import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
 import { sortOrders } from "modules/orders/helpers/liquidity";
 import { addMarketLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { createMarket } from "modules/contracts/actions/contractCalls";
 
 export function submitNewMarket(
   newMarket: any,
@@ -25,14 +25,10 @@ export function submitNewMarket(
   callback: NodeStyleCallback = noop
 ) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-    const { universe, loginAccount, contractAddresses } = getState();
-    const { createMarket, formattedNewMarket } = buildCreateMarket(
-      newMarket,
-      false,
-      universe,
-      loginAccount,
-      contractAddresses
-    );
+    const { loginAccount } = getState();
+    // TODO: need to handle if it fails
+    // Don't auto sign orders, liquidity will be handled with unsigned orders modal from account summary
+    const result = createMarket(newMarket);
     const hasOrders = Object.keys(newMarket.orderBook).length;
     newMarket.orderBook = sortOrders(newMarket.orderBook);
 

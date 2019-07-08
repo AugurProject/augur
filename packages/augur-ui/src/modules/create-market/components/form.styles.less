@@ -9,9 +9,18 @@
 
     > div:last-of-type {
     	> div:last-of-type {
-	    	display: flex;
 			margin-top: 54px;    
-	    	justify-content: space-between
+	    	display: flex;
+
+	    	> div {
+	    		display: flex;
+			    flex: 1;
+			    justify-content: flex-end;
+
+			    > button:first-of-type {
+			    	margin-right: @size-24
+			    }
+	    	}
 	   	}
     }
 }

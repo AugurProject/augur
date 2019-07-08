@@ -1,5 +1,6 @@
 import { Augur } from '@augurproject/sdk';
-import { makeTestAugur, ACCOUNTS, makeDbMock } from '../../libs';
+import { makeTestAugur, makeDbMock } from '../../libs';
+import { ACCOUNTS } from "@augurproject/tools";
 
 const mock = makeDbMock();
 

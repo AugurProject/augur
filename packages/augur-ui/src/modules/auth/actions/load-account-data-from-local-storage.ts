@@ -1,4 +1,5 @@
 import { loadFavoritesMarkets } from "modules/markets/actions/update-favorites";
+import { loadDrafts } from "modules/create-market/actions/update-drafts";
 import { addAlert } from "modules/alerts/actions/alerts";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
@@ -12,6 +13,7 @@ import { setSelectedUniverse } from "./selected-universe-management";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -19,7 +21,6 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
 ) => {
   const localStorageRef = typeof window !== "undefined" && window.localStorage;
   const { universe, connection } = getState();
-  const { augurNodeNetworkId } = connection;
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {
@@ -30,8 +31,9 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
       if (readNotifications) {
         dispatch(updateReadNotifications(readNotifications));
       }
-      if (selectedUniverse && selectedUniverse[augurNodeNetworkId]) {
-        const selectedUniverseId = selectedUniverse[augurNodeNetworkId];
+      const networkId = getNetworkId();
+      const selectedUniverseId = selectedUniverse[networkId];
+      if (selectedUniverseId) {
         if (universe.id !== selectedUniverseId) {
           dispatch(updateUniverse({ id: selectedUniverseId }));
         }
@@ -39,22 +41,28 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         // we have a no selectedUniveres for this account, default to default universe for this network.
         dispatch(setSelectedUniverse());
       }
-      if (
+       if (
         favorites &&
         isNewFavoritesStyle(favorites) &&
-        favorites[augurNodeNetworkId] &&
-        favorites[augurNodeNetworkId][universe.id]
+        favorites[networkId] &&
+        favorites[networkId][universe.id]
       ) {
         dispatch(
-          loadFavoritesMarkets(favorites[augurNodeNetworkId][universe.id])
+          loadFavoritesMarkets(favorites[networkId][universe.id])
         );
       }
       const {
         alerts,
         pendingLiquidityOrders,
         pendingOrders,
-        gasPriceInfo
+        gasPriceInfo,
+        drafts
       } = storedAccountData;
+      if (drafts) {
+        dispatch(
+          loadDrafts(drafts)
+        );
+      }
       if (alerts) {
         alerts.map(n => dispatch(addAlert(n)));
       }

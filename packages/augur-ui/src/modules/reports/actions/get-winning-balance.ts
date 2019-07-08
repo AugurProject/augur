@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import * as speedomatic from "speedomatic";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
@@ -8,7 +7,8 @@ export const getWinningBalance = (marketIds = [], callback: NodeStyleCallback = 
   getState: () => AppState
 ) => {
   const { loginAccount } = getState();
-  augur.augurNode.submitRequest(
+  // TODO: get winning balance for user and market
+/*
     "getWinningBalance",
     { marketIds, account: loginAccount.address },
     (err: any, winningBalance: Array<any>) => {
@@ -41,4 +41,5 @@ export const getWinningBalance = (marketIds = [], callback: NodeStyleCallback = 
       callback(null, updatedMarketsData);
     }
   );
+  */
 };

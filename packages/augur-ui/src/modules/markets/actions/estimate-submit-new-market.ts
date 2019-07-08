@@ -1,6 +1,5 @@
 import logError from "utils/log-error";
 import noop from "utils/noop";
-import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
@@ -11,14 +10,10 @@ export const estimateSubmitNewMarket = (
   callback: NodeStyleCallback = logError,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe, loginAccount, contractAddresses } = getState();
-  const { createMarket, formattedNewMarket } = buildCreateMarket(
-    newMarket,
-    true,
-    universe,
-    loginAccount,
-    contractAddresses,
-  );
 
+  // TODO: add call to estimate gas for create market, using crazy number so we know it's mock data
+  callback(null, "999999999999999");
+  /*
   createMarket({
     ...formattedNewMarket,
     meta: loginAccount.meta,
@@ -30,4 +25,5 @@ export const estimateSubmitNewMarket = (
       callback(err);
     },
   });
+  */
 };

@@ -17,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
   const minPrice = market.minPriceBigNumber || createBigNumber(0);
   const maxPrice = market.maxPriceBigNumber || createBigNumber(0);
   const outcome =
-    (market.marketOutcomes || []).find(
+    (market.outcomesFormatted || []).find(
       (outcome) => outcome.id === ownProps.selectedOutcomeId,
     );
   const cumulativeOrderBook = orderAndAssignCumulativeShares(

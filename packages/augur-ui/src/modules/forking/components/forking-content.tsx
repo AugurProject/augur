@@ -1,10 +1,9 @@
 import React from "react";
-import { augur } from "services/augurjs";
 import classNames from "classnames";
 import { formatAttoRep } from "utils/format-number";
 import { convertUnixToFormattedDate, dateHasPassed } from "utils/format-date";
 import TimeProgressBar from "modules/reporting/components/time-progress-bar/time-progress-bar";
-import { TYPE_MIGRATE_REP } from "modules/common/constants";
+import { TYPE_MIGRATE_REP, CONTRACT_INTERVAL } from "modules/common/constants";
 import MarketLink from "modules/market/components/market-link/market-link";
 import { createBigNumber } from "utils/create-big-number";
 import Styles from "modules/forking/components/forking-content.styles.less";
@@ -39,7 +38,7 @@ const ForkingContent = ({
   );
   const startTime = createBigNumber(forkEndTime)
     .minus(
-      createBigNumber(augur.constants.CONTRACT_INTERVAL.FORK_DURATION_SECONDS),
+      createBigNumber(CONTRACT_INTERVAL.FORK_DURATION_SECONDS),
     )
     .toNumber();
   const threshold = formatAttoRep(forkReputationGoal);

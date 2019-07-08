@@ -48,7 +48,7 @@ contract Market is Initializable, Ownable, IMarket {
     bytes32 private winningPayoutDistributionHash;
     uint256 public validityBondAttoCash;
     uint256 private finalizationTime;
-    uint256 private repBond;
+    uint256 public repBond;
     bool private disputePacingOn;
     address public repBondOwner;
     uint256 public marketCreatorFeesAttoCash;
@@ -64,12 +64,13 @@ contract Market is Initializable, Ownable, IMarket {
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
         endInitialization();
         augur = _augur;
-        require(msg.sender == augur.lookup("MarketFactory"), "Market: MarketFactory only function called by non-MarketFactory");
+        require(msg.sender == augur.lookup("MarketFactory"));
         _numOutcomes += 1; // The INVALID outcome is always first
         universe = _universe;
         cash = ICash(augur.lookup("Cash"));
         owner = _creator;
         repBondOwner = owner;
+        cash.approve(address(augur), MAX_APPROVAL_AMOUNT);
         assessFees();
         endTime = _endTime;
         numOutcomes = _numOutcomes;
@@ -91,6 +92,7 @@ contract Market is Initializable, Ownable, IMarket {
         require(getReputationToken().balanceOf(address(this)) >= repBond);
         validityBondAttoCash = cash.balanceOf(address(this));
         require(validityBondAttoCash >= universe.getOrCacheValidityBond());
+        universe.deposit(address(this), validityBondAttoCash, address(this));
     }
 
     /**
@@ -101,6 +103,7 @@ contract Market is Initializable, Ownable, IMarket {
     function increaseValidityBond(uint256 _attoCash) public returns (bool) {
         require(!isFinalized());
         cash.transferFrom(msg.sender, address(this), _attoCash);
+        universe.deposit(address(this), _attoCash, address(this));
         validityBondAttoCash = validityBondAttoCash.add(_attoCash);
         return true;
     }
@@ -109,7 +112,6 @@ contract Market is Initializable, Ownable, IMarket {
         return ShareTokenFactory(augur.lookup("ShareTokenFactory")).createShareToken(augur, _outcome);
     }
 
-    // This will need to be called manually for each open market if a spender contract is updated
     function approveSpenders() public returns (bool) {
         bytes32[5] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("ClaimTradingProceeds"), bytes32("Orders")];
         for (uint256 i = 0; i < _names.length; i++) {
@@ -255,7 +257,7 @@ contract Market is Initializable, Ownable, IMarket {
     function finalize() public returns (bool) {
         require(!isFinalized());
         uint256[] memory _winningPayoutNumerators;
-        if (universe.getForkingMarket() == this) {
+        if (isForkingMarket()) {
             IUniverse _winningUniverse = universe.getWinningChildUniverse();
             winningPayoutDistributionHash = _winningUniverse.getParentPayoutDistributionHash();
             _winningPayoutNumerators = _winningUniverse.getPayoutNumerators();
@@ -271,8 +273,8 @@ contract Market is Initializable, Ownable, IMarket {
             universe.decrementOpenInterestFromMarket(this);
             redistributeLosingReputation();
         }
-        distributeValidityBondAndMarketCreatorFees();
         finalizationTime = augur.getTimestamp();
+        distributeValidityBondAndMarketCreatorFees();
         augur.logMarketFinalized(universe, _winningPayoutNumerators);
         return true;
     }
@@ -347,12 +349,12 @@ contract Market is Initializable, Ownable, IMarket {
         uint256 _marketCreatorFeesAttoCash = marketCreatorFeesAttoCash;
         marketCreatorFeesAttoCash = 0;
         if (!isInvalid()) {
-            cash.transfer(owner, _marketCreatorFeesAttoCash);
+            universe.withdraw(owner, _marketCreatorFeesAttoCash, address(this));
             if (_affiliateAddress != NULL_ADDRESS) {
                 withdrawAffiliateFees(_affiliateAddress);
             }
         } else {
-            cash.transfer(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash));
+            universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash.add(totalAffiliateFeesAttoCash), address(this));
             totalAffiliateFeesAttoCash = 0;
         }
     }
@@ -370,7 +372,7 @@ contract Market is Initializable, Ownable, IMarket {
             return true;
         }
         affiliateFeesAttoCash[_affiliate] = 0;
-        cash.transfer(_affiliate, _affiliateBalance);
+        universe.withdraw(_affiliate, _affiliateBalance, address(this));
         return true;
     }
 
@@ -410,22 +412,16 @@ contract Market is Initializable, Ownable, IMarket {
 
         disavowCrowdsourcers();
 
-        IUniverse _currentUniverse = universe;
         bytes32 _winningForkPayoutDistributionHash = _forkingMarket.getWinningPayoutDistributionHash();
-        IUniverse _destinationUniverse = _currentUniverse.getChildUniverse(_winningForkPayoutDistributionHash);
-
-        universe.decrementOpenInterestFromMarket(this);
+        IUniverse _destinationUniverse = universe.getChildUniverse(_winningForkPayoutDistributionHash);
 
         // follow the forking market to its universe
         if (disputeWindow != IDisputeWindow(0)) {
             // Markets go into the standard resolution period during fork migration even if they were in the initial dispute window. We want to give some time for REP to migrate.
             disputeWindow = _destinationUniverse.getOrCreateNextDisputeWindow(false);
         }
-        _destinationUniverse.addMarketTo();
-        _currentUniverse.removeMarketFrom();
+        universe.migrateMarketOut(_destinationUniverse);
         universe = _destinationUniverse;
-
-        universe.incrementOpenInterestFromMarket(this);
 
         // Pay the REP bond.
         repBond = universe.getOrCacheMarketRepBond();
@@ -451,10 +447,6 @@ contract Market is Initializable, Ownable, IMarket {
         require(_forkingMarket != IMarket(NULL_ADDRESS));
         require(!isFinalized());
         IInitialReporter _initialParticipant = getInitialReporter();
-        // Early out if already disavowed or nothing to disavow
-        if (_initialParticipant.getReportTimestamp() == 0) {
-            return true;
-        }
         delete participants;
         participants.push(_initialParticipant);
         clearCrowdsourcers();
@@ -567,6 +559,9 @@ contract Market is Initializable, Ownable, IMarket {
      */
     function isInvalid() public view returns (bool) {
         require(isFinalized());
+        if (isForkingMarket()) {
+            return getWinningChildPayout(0) > 0;
+        }
         return getWinningReportingParticipant().getPayoutNumerator(0) > 0;
     }
 
@@ -605,6 +600,9 @@ contract Market is Initializable, Ownable, IMarket {
      * @return The payout for a particular outcome for the tentative winning payout
      */
     function getWinningPayoutNumerator(uint256 _outcome) public view returns (uint256) {
+        if (isForkingMarket()) {
+            return getWinningChildPayout(_outcome);
+        }
         return getWinningReportingParticipant().getPayoutNumerator(_outcome);
     }
 
@@ -733,5 +731,13 @@ contract Market is Initializable, Ownable, IMarket {
     function assertBalances() public view returns (bool) {
         universe.assertMarketBalance();
         return true;
+    }
+
+    function isForkingMarket() public view returns (bool) {
+        return universe.isForkingMarket();
+    }
+
+    function getWinningChildPayout(uint256 _outcome) public view returns (uint256) {
+        return universe.getWinningChildPayoutNumerator(_outcome);
     }
 }

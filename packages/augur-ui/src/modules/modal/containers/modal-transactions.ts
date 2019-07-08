@@ -1,12 +1,12 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Transactions } from "modules/modal/transactions";
-import { augur } from "services/augurjs";
 import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
+import { augurSdk } from "services/augursdk";
+import { Coin, Action } from "@augurproject/sdk/build/state/getter/Accounts";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -23,26 +23,24 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: "Transactions History",
   closeAction: () => dP.closeModal(),
   currentTimestamp: sP.now,
-  getTransactionsHistory: (
+  getTransactionsHistory: async (
     startTime: number,
     endTime: number,
     coin: string,
     action: string,
     cb: NodeStyleCallback,
   ) => {
-    augur.augurNode.submitRequest(
-      "getAccountTransactionHistory",
-      {
+    const Augur = augurSdk.get();
+    const result = await Augur.getAccountTransactionHistory({
         universe: sP.universe,
         account: sP.account,
-        coin,
-        action,
+        coin: coin as Coin,
+        action: action as Action,
         earliestTransactionTime: startTime,
         latestTransactionTime: endTime,
-      },
-      // @ts-ignore
-      cb,
-    );
+      });
+      // TODO: verify this when working on account summary
+      cb(result);
   },
 });
 

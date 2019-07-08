@@ -56,6 +56,21 @@
   }
 }
 
+.LargeSubheaders {
+	> h2 {
+		margin-bottom: 0;
+	}
+
+	> p {
+		margin-top: @size-4;
+		margin-bottom: 0;
+
+		> span {
+	    	margin-right: 3px;
+	    }
+	}
+}
+
 .XLargeSubheaders {
 	flex-direction: column;
     align-items: center;
@@ -207,19 +222,20 @@
 		margin-bottom: @size-8;
 	}
 
-	> p:not(:last-of-type) {
-		margin-bottom: @size-8;
-	}
-
 	> p {
 		.text-14;
 
 		color: @color-tertiary-info-text;
 		line-height: 140%;
+		margin: 0;
 
 		> span {
 			color: @color-alternate-info-text;
 		}
+	}
+
+	> p:not(:last-of-type) {
+		margin-bottom: @size-8;
 	}
 }
 
@@ -232,8 +248,12 @@
     min-width: 750px;
 
     > button {
-    	margin-top: @size-24;
     	max-width: 200px;
+    }
+
+    > section,
+    > button {
+    	margin-top: @size-24;
     }
 }
 

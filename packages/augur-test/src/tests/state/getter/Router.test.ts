@@ -2,7 +2,8 @@ import { API } from "@augurproject/sdk/build/state/getter/API";
 import { Augur } from "@augurproject/sdk";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
 import { Router } from "@augurproject/sdk/build/state/getter/Router";
-import { makeTestAugur, ACCOUNTS, makeDbMock } from "../../../libs";
+import { makeTestAugur, makeDbMock } from "../../../libs";
+import { ACCOUNTS } from "@augurproject/tools";
 
 const mock = makeDbMock();
 

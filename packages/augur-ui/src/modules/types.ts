@@ -68,7 +68,7 @@ export interface Consensus {
   outcomeName: string | null;
 }
 
-export interface MarketOutcome extends MarketInfoOutcome {
+export interface OutcomeFormatted extends MarketInfoOutcome {
   marketId: string;
   lastPricePercent: FormattedNumber | null;
   lastPrice: FormattedNumber | null;
@@ -93,7 +93,7 @@ export interface MarketData extends MarketInfo {
   // TODO: add this to getter MarketInfo
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: Consensus | null;
-  marketOutcomes: Array<MarketOutcome>;
+  outcomesFormatted: OutcomeFormatted[];
 };
 
 export interface TransacitonStatus {
@@ -116,13 +116,10 @@ export interface Universe {
   openInterest?: BigNumber | string;
   forkThreshold?: BigNumber;
 }
-export interface AccountShareBalances {
-  [marketId: string]: Array<string>;
-}
+
 export interface Versions {
   augurui: string | null;
   augurjs: string | null;
-  augurNode: string | null;
 }
 export interface TransacitonData {
   [transactionId: string]: {
@@ -207,10 +204,11 @@ export interface DisputeInfo {
 }
 
 export interface MyPositionsSummary {
-  currentValue: any;
-  numCompleteSets: any;
-  totalPercent: any;
-  totalReturns: any;
+  currentValue: FormattedNumber;
+  numCompleteSets?: FormattedNumber;
+  totalPercent: FormattedNumber;
+  totalReturns: FormattedNumber;
+  valueChange: FormattedNumber;
 }
 
 export interface Notification {
@@ -312,6 +310,43 @@ export interface NewMarket {
   marketType: string;
   detailsText: string;
   category: string;
+  settlementFee: number;
+  affiliateFee: number;
+  orderBook: {[outcome: number]: Array<LiquidityOrder> };
+  orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
+  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityGas: any; // TODO: big number type
+  creationError: string;
+}
+export interface Draft {
+  uniqueId: number;
+  created: number;
+  updated: number;
+  isValid: boolean;
+  validations: Array<
+    NewMarketPropertiesValidations | NewMarketPropertyValidations
+  >;
+  currentStep: number;
+  type: string;
+  outcomes: Array<string>;
+  scalarSmallNum: string;
+  scalarBigNum: string;
+  scalarDenomination: string;
+  description: string;
+  expirySourceType: string;
+  expirySource: string;
+  designatedReporterType: string;
+  designatedReporterAddress: string;
+  minPrice: string;
+  maxPrice: string;
+  endTime: number;
+  tickSize: string;
+  hour: string;
+  minute: string;
+  meridiem: string;
+  marketType: string;
+  detailsText: string;
+  category: string;
   tag1: string;
   tag2: string;
   settlementFee: number;
@@ -322,6 +357,49 @@ export interface NewMarket {
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
 }
+
+export interface Draft {
+  uniqueId: number;
+  created: number;
+  updated: number;
+  isValid: boolean;
+  validations: Array<
+    NewMarketPropertiesValidations | NewMarketPropertyValidations
+  >;
+  currentStep: number;
+  type: string;
+  outcomes: Array<string>;
+  scalarSmallNum: string;
+  scalarBigNum: string;
+  scalarDenomination: string;
+  description: string;
+  expirySourceType: string;
+  expirySource: string;
+  designatedReporterType: string;
+  designatedReporterAddress: string;
+  minPrice: string;
+  maxPrice: string;
+  endTime: number;
+  tickSize: string;
+  hour: string;
+  minute: string;
+  meridiem: string;
+  marketType: string;
+  detailsText: string;
+  category: string;
+  settlementFee: number;
+  affiliateFee: number;
+  orderBook: {[outcome: number]: Array<LiquidityOrder> };
+  orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
+  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityGas: any; // TODO: big number type
+  creationError: string;
+}
+
+export interface Drafts {
+  [uniqueId: string]: Draft;
+}
+
 
 export interface FilledOrders {
   [account: string]: Orders;
@@ -369,7 +447,6 @@ export interface EthereumNodeOptions {
 }
 
 export interface EnvObject {
-  "augur-node"?: string;
   "ethereum-node": EthereumNodeOptions;
   universe?: string;
   useWeb3Transport: boolean;
@@ -377,7 +454,6 @@ export interface EnvObject {
 
 export interface QueryEndpoints {
   ethereum_node_http?: string;
-  augur_node?: string;
   ethereum_node_ws?: string;
   [MARKET_ID_PARAM_NAME]?: string;
   [RETURN_PARAM_NAME]?: string;
@@ -386,14 +462,11 @@ export interface QueryEndpoints {
 }
 export interface Endpoints {
   ethereumNodeHTTP: string;
-  augurNode: string;
   ethereumNodeWS: string;
 }
 
 export interface Connection {
   isConnected: boolean;
-  isConnectedToAugurNode: boolean;
-  augurNodeNetworkId?: string;
   isReconnectionPaused: boolean;
 }
 
@@ -556,6 +629,7 @@ export interface Trade {
   potentialEthProfit: FormattedNumber;
   potentialEthLoss: FormattedNumber;
   totalCost: FormattedNumber;
+  sharesFilled: FormattedNumber;
   shareCost: FormattedNumber;
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;

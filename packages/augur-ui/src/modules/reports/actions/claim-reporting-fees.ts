@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { sumAndformatGasCostToEther } from "utils/format-number";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
@@ -37,13 +36,16 @@ export function claimReportingFeesForkedMarket(
       redeemer: loginAccount.address
     };
 
-    augur.reporting.claimReportingFeesForkedMarket(
+    // TODO: address this call durring the forking redesign
+    /*
+    reporting.claimReportingFeesForkedMarket(
       payload,
       (err: any, result: any) => {
         if (err) return callback(err);
         callback(null, result);
       }
     );
+    */
   };
 }
 
@@ -171,7 +173,10 @@ export function redeemStake(
       loginAccount,
       estimateGas
     } = options;
-    augur.api.Universe.redeemStake({
+    // TODO: allow users to redeem their stake as part of claiming reporting fees
+    // handle this as part of the reporting redesign
+    /*
+    api.Universe.redeemStake({
       meta: loginAccount.meta,
       tx: {
         to: universeId,
@@ -196,5 +201,6 @@ export function redeemStake(
         onFailed && onFailed();
       }
     });
+    */
   }
 }

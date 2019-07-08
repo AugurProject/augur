@@ -1,4 +1,3 @@
-import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { createBigNumber } from "utils/create-big-number";
 import {
@@ -26,7 +25,10 @@ export const getReportingFees = (
 ) => {
   const { universe, loginAccount } = getState();
   if (loginAccount.address === undefined) return callback(null);
-  augur.augurNode.submitRequest(
+  // TODO: getting users reporting fees, keeping code for reference
+  return;
+  /*
+
     "getReportingFees",
     {
       universe: universe.id,
@@ -152,4 +154,5 @@ export const getReportingFees = (
       });
     }
   );
+  */
 };

@@ -4,6 +4,7 @@ from pytest import fixture, mark, raises
 from utils import longTo32Bytes, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash
 from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalize
 from decimal import Decimal
+from constants import YES, NO
 
 def test_designatedReportHappyPath(localFixture, universe, market):
     # proceed to the designated reporting period
@@ -191,11 +192,13 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
     (True, True),
-    (False, True),
-    (True, False),
-    (False, False),
+    #(False, True),
+    #(True, False),
+    #(False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
+    claimTradingProceeds = localFixture.contracts["ClaimTradingProceeds"]
+
     # Let's go into the one dispute round for the categorical market
     proceedToNextRound(localFixture, categoricalMarket)
     proceedToNextRound(localFixture, categoricalMarket)
@@ -254,13 +257,36 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
         categoricalMarket.contribute([0,2,2,categoricalMarket.getNumTicks()-4], 1, "")
 
     newUniverseAddress = universe.getWinningChildUniverse()
+    newUniverse = localFixture.applySignature("Universe", newUniverseAddress)
 
-    # buy some complete sets to change OI
+    # Let's make sure fork payouts work correctly for the forking market
     completeSets = localFixture.contracts['CompleteSets']
     numSets = 10
+    cost = market.getNumTicks() * numSets
+    with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(market.address, numSets)
+
+    yesShare = localFixture.applySignature("ShareToken", market.getShareToken(YES))
+    noShare = localFixture.applySignature("ShareToken", market.getShareToken(NO))
+
+    noShare.transfer(localFixture.accounts[1], noShare.balanceOf(localFixture.accounts[0]))
+
+    expectedYesOutcomePayout = newUniverse.payoutNumerators(YES)
+    expectedNoOutcomePayout = newUniverse.payoutNumerators(NO)
+
+    expectedYesPayout = expectedYesOutcomePayout * yesShare.balanceOf(localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
+    with TokenDelta(cash, expectedYesPayout, localFixture.accounts[0], "Payout for Yes Shares was wrong in forking market"):
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[0])
+
+    expectedNoPayout = expectedNoOutcomePayout * noShare.balanceOf(localFixture.accounts[1]) * .98 # to account for fees
+    with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1])
+
+    # buy some complete sets to change OI of the cat market
+    numSets = 10
     cost = categoricalMarket.getNumTicks() * numSets
-    with BuyWithCash(cash, cost, localFixture.accounts[1], "buy complete set"):
-        assert completeSets.publicBuyCompleteSets(categoricalMarket.address, 10, sender=localFixture.accounts[1])
+    with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
+        assert completeSets.publicBuyCompleteSets(categoricalMarket.address, numSets)
     assert universe.getOpenInterestInAttoCash() == cost
 
     marketMigratedLog = {
@@ -304,7 +330,10 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     reputationToken = localFixture.applySignature("ReputationToken", universe.getReputationToken())
     previousREPBalance = reputationToken.balanceOf(scalarMarket.address)
     assert previousREPBalance > 0
-    assert scalarMarket.migrateThroughOneFork([0,0,scalarMarket.getNumTicks()], "")
+    newReputationToken = localFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
+    with TokenDelta(reputationToken, previousREPBalance, scalarMarket.repBondOwner(), "Market did not transfer rep balance to rep bond owner"):
+        with TokenDelta(newReputationToken, -newUniverse.getOrCacheMarketRepBond(), localFixture.accounts[0], "Migrator did not pay new REP bond"):
+            assert scalarMarket.migrateThroughOneFork([0,0,scalarMarket.getNumTicks()], "")
     newUniverseREP = localFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
     initialReporter = localFixture.applySignature('InitialReporter', scalarMarket.getInitialReporter())
     assert newUniverseREP.balanceOf(initialReporter.address) == newUniverse.getOrCacheDesignatedReportNoShowBond()
@@ -371,9 +400,10 @@ def test_fork_migration_no_report(localFixture, universe, market):
     oldReputationToken = localFixture.applySignature("ReputationToken", universe.getReputationToken())
     oldBalance = oldReputationToken.balanceOf(longMarket.address)
     newUniverse = localFixture.applySignature("Universe", universe.getChildUniverse(market.getWinningPayoutDistributionHash()))
+    newNoShowBond = newUniverse.getOrCacheMarketRepBond()
     newReputationToken = localFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
-    with TokenDelta(oldReputationToken, 0, longMarket.address, "Migrating didn't disavow old no show bond"):
-        with TokenDelta(newReputationToken, oldBalance, longMarket.address, "Migrating didn't place new no show bond"):
+    with TokenDelta(oldReputationToken, -oldBalance, longMarket.address, "Migrating didn't disavow old no show bond"):
+        with TokenDelta(newReputationToken, newNoShowBond, longMarket.address, "Migrating didn't place new no show bond"):
             assert longMarket.migrateThroughOneFork([], "")
 
 def test_forking_values(localFixture, universe, market):
@@ -399,7 +429,7 @@ def test_forking_values(localFixture, universe, market):
     losingPayoutNumerators = [0, 0, market.getNumTicks()]
     losingUniverse =  localFixture.applySignature('Universe', universe.createChildUniverse(losingPayoutNumerators))
     losingUniverseReputationToken = localFixture.applySignature('ReputationToken', losingUniverse.getReputationToken())
-    assert reputationToken.migrateOut(losingUniverseReputationToken.address, 100, sender=localFixture.accounts[1])
+    assert reputationToken.migrateOutByPayout(losingPayoutNumerators, 100, sender=localFixture.accounts[1])
     lowerChildUniverseTheoreticalSupply = childUniverseReputationToken.getTotalTheoreticalSupply()
     assert lowerChildUniverseTheoreticalSupply == childUniverseTheoreticalSupply - 100
 
@@ -534,12 +564,12 @@ def test_dispute_pacing_threshold(localFixture, universe, market):
 
     # Now if we try to immediately dispute without the newly assigned dispute window being active the tx will fail
     with raises(TransactionFailed):
-        market.contribute([0, market.getNumTicks(), 0], 1, "")
+        market.contribute([0, 0, market.getNumTicks()], 1, "")
 
     # If we move time forward to the dispute window start we succeed
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     assert localFixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
-    assert market.contribute([0, market.getNumTicks(), 0], 1, "")
+    assert market.contribute([0, 0, market.getNumTicks()], 1, "")
 
 def test_crowdsourcer_minimum_remaining(localFixture, universe, market):
     proceedToNextRound(localFixture, market, moveTimeForward = False)

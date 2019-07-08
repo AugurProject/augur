@@ -5,7 +5,6 @@ import { loadReportingHistory } from 'modules/reports/actions/load-reporting-his
 import { loadUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
 import { loadAlerts } from 'modules/alerts/actions/alerts';
-import { loadUsershareBalances } from 'modules/positions/actions/load-user-share-balances';
 import { getWinningBalance } from 'modules/reports/actions/get-winning-balance';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
@@ -46,7 +45,7 @@ function loadTransactions(
   );
   promises.push(
     new Promise(resolve =>
-      dispatch(loadCreateMarketHistory(options, null, resolve))
+      dispatch(loadCreateMarketHistory(options, resolve))
     )
   );
   promises.push(
@@ -65,7 +64,6 @@ function loadTransactions(
       )
     );
 
-    dispatch(loadUsershareBalances(uniqMarketIds));
     dispatch(getWinningBalance(uniqMarketIds));
     dispatch(loadMarketsInfoIfNotLoaded(uniqMarketIds), () => {
       callback();

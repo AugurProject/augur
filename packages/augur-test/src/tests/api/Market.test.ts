@@ -1,18 +1,16 @@
-import {
-  ACCOUNTS,
-  deployContracts,
-  ContractAPI,
-} from "../../libs";
+import { makeProvider, seedPath } from "../../libs";
+import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
 import { formatBytes32String } from "ethers/utils";
 
 let john: ContractAPI;
 let mary: ContractAPI;
 
 beforeAll(async () => {
-  const {provider, addresses} = await deployContracts(ACCOUNTS, null);
+  const { addresses } = loadSeed(seedPath);
+  const provider = await makeProvider(ACCOUNTS);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
-  mary = await ContractAPI.userWrapper(ACCOUNTS, 1, provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+  mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
 }, 120000);
@@ -32,3 +30,4 @@ test("market :: createScalarMarket", async () => {
   const market = await john.createReasonableScalarMarket();
   await expect(market).toBeDefined();
 }, 15000);
+
