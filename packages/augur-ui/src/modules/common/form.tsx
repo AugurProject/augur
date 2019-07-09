@@ -6,6 +6,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { PulseLoader } from 'react-spinners';
 import {
+  RightAngle,
   SearchIcon,
   XIcon,
   CheckMark,
@@ -311,7 +312,9 @@ export class CategoryMultiSelect extends Component<
 
     return (
       <ul className={Styles.CategoryMultiSelect}>
+        <li>
         <FormDropdown
+          defaultValue={selected[0]}
           staticLabel="Primary Category"
           onChange={choice => this.onChangeDropdown(choice, 0)}
           options={primaryOptions}
@@ -323,34 +326,43 @@ export class CategoryMultiSelect extends Component<
             onChange={v => this.handleUpdate(selected, this.getNewValues(v, 0))}
           />
         )}
-        {showSecondaryDropdown && (
-          <FormDropdown
-            staticLabel="Secondary Category"
-            onChange={choice => this.onChangeDropdown(choice, 1)}
-            options={secondaryOptions}
-          />
-        )}
-        {customSecondary && (
-          <TextInput
-            value={values[1]}
-            placeholder="Custom Secondary Category"
-            onChange={v => this.handleUpdate(selected, this.getNewValues(v, 1))}
-          />
-        )}
-        {showTertiaryDropdown && (
-          <FormDropdown
-            staticLabel="Tertiary Category"
-            onChange={choice => this.onChangeDropdown(choice, 2)}
-            options={tertiaryOptions}
-          />
-        )}
-        {customTertiary && (
-          <TextInput
-            value={values[2]}
-            placeholder="Custom Tertiary Category"
-            onChange={v => this.handleUpdate(selected, this.getNewValues(v, 2))}
-          />
-        )}
+        </li>
+        <li>
+          {(showSecondaryDropdown || customSecondary) && RightAngle}
+          {showSecondaryDropdown && (
+            <FormDropdown
+              defaultValue={selected[1]}
+              staticLabel="Secondary Category"
+              onChange={choice => this.onChangeDropdown(choice, 1)}
+              options={secondaryOptions}
+            />
+          )}
+          {customSecondary && (
+            <TextInput
+              value={values[1]}
+              placeholder="Custom Secondary Category"
+              onChange={v => this.handleUpdate(selected, this.getNewValues(v, 1))}
+            />
+          )}
+        </li>
+        <li>
+          {(showTertiaryDropdown || customTertiary) && RightAngle}
+          {showTertiaryDropdown && (
+            <FormDropdown
+              defaultValue={selected[2]}
+              staticLabel="Tertiary Category"
+              onChange={choice => this.onChangeDropdown(choice, 2)}
+              options={tertiaryOptions}
+            />
+          )}
+          {customTertiary && (
+            <TextInput
+              value={values[2]}
+              placeholder="Custom Tertiary Category"
+              onChange={v => this.handleUpdate(selected, this.getNewValues(v, 2))}
+            />
+          )}
+        </li>
       </ul>
     );
   }
