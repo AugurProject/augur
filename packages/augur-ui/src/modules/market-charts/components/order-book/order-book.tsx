@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
@@ -79,6 +78,9 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
 
     return (
       <div className={Styles.Side}>
+        {orderBookOrders.length === 0 &&
+          <div className={Styles.NoOrders}>{type === ASKS ? `Add Offer` : `Add Bid`} </div>
+        }
         <div
           className={classNames({ [Styles.Asks]: type === ASKS })}
           ref={side => {
@@ -172,8 +174,8 @@ export default class OrderBook extends Component<
     toggle: () => {},
     extend: false,
     hide: false,
-    fixedPrecision: 4,
-    pricePrecision: 4,
+    fixedPrecision: 2,
+    pricePrecision: 2,
   };
 
   state: OrderBookState = {
@@ -192,10 +194,10 @@ export default class OrderBook extends Component<
     const {
       pricePrecision,
       hasOrders,
-      orderBookKeys,
       toggle,
       extend,
       hide,
+      orderBook
     } = this.props;
     const s = this.state;
 
@@ -221,12 +223,12 @@ export default class OrderBook extends Component<
             {hasOrders && (
               <div>
                 <span>Spread:</span>
-                {orderBookKeys.spread
-                  ? createBigNumber(orderBookKeys.spread).toFixed(
+                {orderBook.spread
+                  ? createBigNumber(orderBook.spread).toFixed(
                       pricePrecision
                     )
                   : '—'}
-                {orderBookKeys.spread && <span>DAI</span>}
+                {orderBook.spread && <span>DAI</span>}
               </div>
             )}
           </div>
