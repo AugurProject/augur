@@ -125,7 +125,7 @@ contract Augur is IAugur {
 
     function registerContract(bytes32 _key, address _address) public onlyUploader returns (bool) {
         require(registry[_key] == address(0), "Augur.registerContract: key has already been used in registry");
-        require(_address.exists(), "Augur.registerContract: Contract address is not actually a contract");
+        require(_address.exists());
         registry[_key] = _address;
         if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds" || _key == "MarketFactory") {
             trustedSender[_address] = true;
@@ -300,7 +300,7 @@ contract Augur is IAugur {
         IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
         require(_prices.length == 2);
-        require(_prices[0] < _prices[1], "Universe.createScalarMarket: Min price must be less than max price");
+        require(_prices[0] < _prices[1]);
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
         emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market, _marketCreator, _designatedReporter, _feeDivisor, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), getTimestamp());

@@ -43,14 +43,14 @@ export class DerivedDB extends AbstractDB {
         }
       };
       const result = await this.stateDB.findInSyncableDB(this.stateDB.getDatabaseName(eventName), request);
-      await this.handleMergeEvent(highestAvailableBlockNumber, result.docs as Array<unknown> as Array<ParsedLog>, false);
+      await this.handleMergeEvent(highestAvailableBlockNumber, result.docs as Array<unknown> as Array<ParsedLog>, true);
     }
 
-    await this.syncStatus.setHighestSyncBlock(this.dbName, highestAvailableBlockNumber);
+    await this.syncStatus.setHighestSyncBlock(this.dbName, highestAvailableBlockNumber, true);
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
-  public handleMergeEvent = async (blocknumber: number, logs: Array<ParsedLog>, setHighestSyncBlock: Boolean = true): Promise<number> => {
+  public handleMergeEvent = async (blocknumber: number, logs: Array<ParsedLog>, syncing: boolean = false): Promise<number> => {
     let success = true;
     let documents;
     if (logs.length > 0) {
@@ -70,12 +70,13 @@ export class DerivedDB extends AbstractDB {
       success = await this.bulkUpsertDocuments(documents[0]._id, documents);
     }
 
-    if (setHighestSyncBlock) {
-      if (success) {
-        await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber);
-      } else {
-        throw new Error(`Unable to add new block`);
+
+    if (success) {
+      if (!syncing) {
+        await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, syncing);
       }
+    } else {
+      throw new Error(`Unable to add new block`);
     }
 
     return blocknumber;
