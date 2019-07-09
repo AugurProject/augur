@@ -582,6 +582,9 @@ export class Markets {
         const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({
           selector: { market: marketCreatedLog.market },
         })).reverse();
+        const marketOIChangedLogs = (await db.findMarketOIChangedLogs({
+          selector: { market: marketCreatedLog.market },
+        })).reverse();
 
         const minPrice = new BigNumber(marketCreatedLog.prices[0]);
         const maxPrice = new BigNumber(marketCreatedLog.prices[1]);
@@ -681,7 +684,11 @@ export class Markets {
                   .dividedBy(QUINTILLION)
                   .toString()
               : '0',
-          openInterest: await getMarketOpenInterest(db, marketCreatedLog),
+          openInterest: marketOIChangedLogs.length > 0
+          ? new BigNumber(marketOIChangedLogs[0].marketOI)
+              .dividedBy(QUINTILLION)
+              .toString()
+          : '0',
           reportingState,
           needsMigration,
           endTime: new BigNumber(marketCreatedLog.endTime).toNumber(),
@@ -759,55 +766,6 @@ function filterOrderFilledLogs(
     );
   }
   return filteredOrderFilledLogs;
-}
-
-async function getMarketOpenInterest(
-  db: DB,
-  marketCreatedLog: MarketCreatedLog
-): Promise<string> {
-  const completeSetsPurchasedLogs = (await db.findCompleteSetsPurchasedLogs({
-    selector: { market: marketCreatedLog.market },
-  })).reverse();
-  const completeSetsSoldLogs = (await db.findCompleteSetsSoldLogs({
-    selector: { market: marketCreatedLog.market },
-  })).reverse();
-  if (completeSetsPurchasedLogs.length > 0 && completeSetsSoldLogs.length > 0) {
-    if (
-      completeSetsPurchasedLogs[0].blockNumber >
-      completeSetsSoldLogs[0].blockNumber
-    ) {
-      return new BigNumber(completeSetsPurchasedLogs[0].marketOI)
-        .dividedBy(QUINTILLION)
-        .toString();
-    } else if (
-      completeSetsSoldLogs[0].blockNumber >
-      completeSetsPurchasedLogs[0].blockNumber
-    ) {
-      return new BigNumber(completeSetsSoldLogs[0].marketOI)
-        .dividedBy(QUINTILLION)
-        .toString();
-    } else if (
-      completeSetsPurchasedLogs[0].transactionIndex >
-      completeSetsSoldLogs[0].transactionIndex
-    ) {
-      return new BigNumber(completeSetsPurchasedLogs[0].marketOI)
-        .dividedBy(QUINTILLION)
-        .toString();
-    } else {
-      return new BigNumber(completeSetsSoldLogs[0].marketOI)
-        .dividedBy(QUINTILLION)
-        .toString();
-    }
-  } else if (completeSetsPurchasedLogs.length > 0) {
-    return new BigNumber(completeSetsPurchasedLogs[0].marketOI)
-      .dividedBy(QUINTILLION)
-      .toString();
-  } else if (completeSetsSoldLogs.length > 0) {
-    return new BigNumber(completeSetsSoldLogs[0].marketOI)
-      .dividedBy(QUINTILLION)
-      .toString();
-  }
-  return '0';
 }
 
 async function getMarketOutcomes(

@@ -145,6 +145,12 @@ export interface MarketVolumeChangedLog extends Log, Doc {
   outcomeVolumes: string[];
 }
 
+export interface MarketOIChangedLog extends Log, Doc {
+  universe: Address;
+  market: Address;
+  marketOI: string;
+}
+
 //  addressData
 //  0:  kycToken
 //  1:  orderCreator

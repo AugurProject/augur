@@ -9,6 +9,7 @@ import { augurEmitter } from "../../events";
 import { toAscii } from "../utils/utils";
 
 // because flexsearch is a UMD type lib
+// TODO Place this on the MarketDerivedDB
 import FlexSearch = require("flexsearch");
 
 // Need this interface to access these items on the documents in a SyncableDB
@@ -28,7 +29,6 @@ export interface Document extends BaseDocument {
 export class SyncableDB extends AbstractDB {
   protected augur: Augur;
   protected eventName: string;
-  protected contractName: string; // TODO Remove if unused
   private syncStatus: SyncStatus;
   private idFields: Array<string>;
   private flexSearch?: FlexSearch;
@@ -48,26 +48,24 @@ export class SyncableDB extends AbstractDB {
     this.eventName = eventName;
     this.syncStatus = db.syncStatus;
     this.idFields = idFields;
-    // TODO Set other indexes as need be
     this.db.createIndex({
       index: {
         fields: ['blockNumber']
       }
     });
+    if (this.idFields.length > 0) {
+      this.db.createIndex({
+        index: {
+          fields: this.idFields
+        }
+      });
+    }
     db.notifySyncableDBAdded(this);
     db.registerEventListener(this.eventName, this.addNewBlock);
 
     if (fullTextSearchOptions) {
       this.flexSearch = new FlexSearch(fullTextSearchOptions);
     }
-  }
-
-  public async createIndex(indexOptions: PouchDB.Find.CreateIndexOptions): Promise<PouchDB.Find.CreateIndexResponse<{}>> {
-    return this.db.createIndex(indexOptions);
-  }
-
-  public async getIndexes(): Promise<PouchDB.Find.GetIndexesResponse<{}>> {
-    return this.db.getIndexes();
   }
 
   public async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
@@ -168,8 +166,6 @@ export class SyncableDB extends AbstractDB {
   }
 
   public addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
-    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
-
     if (this.eventName === "OrderEvent") {
       this.parseLogArrays(logs);
     }

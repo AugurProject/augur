@@ -218,6 +218,12 @@ title: Contracts
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="Augur.logMarketOIChanged(contract IUniverse,contract IMarket)"></a><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
 <h4><a class="anchor" aria-hidden="true" id="Augur.getMarketOpenInterest(contract IMarket)"></a><code class="function-signature">getMarketOpenInterest(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
@@ -442,13 +448,13 @@ title: Contracts
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.CompleteSetsPurchased(address,address,address,uint256,uint256,uint256)"></a><code class="function-signature">CompleteSetsPurchased(address universe, address market, address account, uint256 numCompleteSets, uint256 marketOI, uint256 timestamp)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.CompleteSetsPurchased(address,address,address,uint256,uint256)"></a><code class="function-signature">CompleteSetsPurchased(address universe, address market, address account, uint256 numCompleteSets, uint256 timestamp)</code><span class="function-visibility"></span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Augur.CompleteSetsSold(address,address,address,uint256,uint256,uint256,uint256)"></a><code class="function-signature">CompleteSetsSold(address universe, address market, address account, uint256 numCompleteSets, uint256 marketOI, uint256 fees, uint256 timestamp)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="Augur.CompleteSetsSold(address,address,address,uint256,uint256,uint256)"></a><code class="function-signature">CompleteSetsSold(address universe, address market, address account, uint256 numCompleteSets, uint256 fees, uint256 timestamp)</code><span class="function-visibility"></span></h4>
 
 
 
@@ -503,6 +509,12 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="Augur.MarketVolumeChanged(address,address,uint256,uint256[])"></a><code class="function-signature">MarketVolumeChanged(address universe, address market, uint256 volume, uint256[] outcomeVolumes)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Augur.MarketOIChanged(address,address,uint256)"></a><code class="function-signature">MarketOIChanged(address universe, address market, uint256 marketOI)</code><span class="function-visibility"></span></h4>
 
 
 
@@ -677,6 +689,12 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="IAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"></a><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"></a><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 

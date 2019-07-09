@@ -859,6 +859,29 @@
 							{
 								"name": "_market",
 								"type": "address"
+							}
+						],
+						"name": "logMarketOIChanged",
+						"outputs": [
+							{
+								"name": "",
+								"type": "bool"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
+					},
+					{
+						"constant": false,
+						"inputs": [
+							{
+								"name": "_universe",
+								"type": "address"
+							},
+							{
+								"name": "_market",
+								"type": "address"
 							},
 							{
 								"name": "_volume",
@@ -2282,11 +2305,6 @@
 							},
 							{
 								"indexed": false,
-								"name": "marketOI",
-								"type": "uint256"
-							},
-							{
-								"indexed": false,
 								"name": "timestamp",
 								"type": "uint256"
 							}
@@ -2315,11 +2333,6 @@
 							{
 								"indexed": false,
 								"name": "numCompleteSets",
-								"type": "uint256"
-							},
-							{
-								"indexed": false,
-								"name": "marketOI",
 								"type": "uint256"
 							},
 							{
@@ -2677,6 +2690,28 @@
 							}
 						],
 						"name": "MarketVolumeChanged",
+						"type": "event"
+					},
+					{
+						"anonymous": false,
+						"inputs": [
+							{
+								"indexed": true,
+								"name": "universe",
+								"type": "address"
+							},
+							{
+								"indexed": true,
+								"name": "market",
+								"type": "address"
+							},
+							{
+								"indexed": false,
+								"name": "marketOI",
+								"type": "uint256"
+							}
+						],
+						"name": "MarketOIChanged",
 						"type": "event"
 					},
 					{
