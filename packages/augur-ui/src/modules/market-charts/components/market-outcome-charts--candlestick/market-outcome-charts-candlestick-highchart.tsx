@@ -110,7 +110,16 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
       volume.push([Math.round(now), 0]);
     }
 
-    const { range, format, crosshair, group } = PERIOD_RANGES[selectedPeriod];
+    const groupingUnits = [
+      ['minute', [1]],
+      ['hour', [1]],
+      ['day', [1]],
+      ['week', [1]],
+      ['month', [1]],
+      ['year', [1]],
+    ];
+
+    const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
 
     const options = {
       height: containerHeight,
@@ -162,7 +171,6 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
             x: -5,
           },
         },
-        plotBands: [],
       },
       yAxis: [
         // OHCL
@@ -213,9 +221,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           yAxis: 0,
           zIndex: 1,
           dataGrouping: {
-            forced: false,
-            groupPixelWidth: 20,
-            units: [group],
+            units: groupingUnits,
           },
           maxPointWidth: 20,
           minPointWidth: 10,
@@ -230,9 +236,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           maxPointWidth: 20,
           minPointWidth: 10,
           dataGrouping: {
-            forced: false,
-            groupPixelWidth: 20,
-            units: [group],
+            units: groupingUnits,
           },
         },
       ],

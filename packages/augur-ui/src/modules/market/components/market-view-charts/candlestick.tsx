@@ -58,7 +58,7 @@ export class Candlestick extends React.Component<
     if (
       checkPropsChange(prevProps, this.props, [
         'currentTimeInSeconds',
-        'selectedOutcome',
+        'selectedOutcomeId',
         'marketId',
       ]) ||
       checkPropsChange(prevState, this.state, ['selectedPeriod'])
