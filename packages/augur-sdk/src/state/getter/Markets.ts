@@ -261,17 +261,29 @@ export class Markets {
             ).toString(10),
             volume: _.reduce(
               trades,
-              (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
-                totalVolume.plus(
-                  convertOnChainAmountToDisplayAmount(
-                    new BigNumber(tradeRow.amountFilled),
-                    tickSize
-                  ).times(convertOnChainPriceToDisplayPrice(
-                    tradeRow.orderType === 0
-                      ? maxPrice.minus(new BigNumber(tradeRow.price))
-                      : new BigNumber(tradeRow.price), minPrice, tickSize)
-                  )
-                ),
+              (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) => {
+                const amount = convertOnChainAmountToDisplayAmount(
+                  new BigNumber(tradeRow.amountFilled),
+                  tickSize
+                );
+                const price =
+                  tradeRow.orderType === OrderType.Bid
+                    ? maxPrice
+                        .dividedBy(QUINTILLION)
+                        .minus(
+                          convertOnChainPriceToDisplayPrice(
+                            new BigNumber(tradeRow.price),
+                            minPrice,
+                            tickSize
+                          )
+                        )
+                    : convertOnChainPriceToDisplayPrice(
+                        new BigNumber(tradeRow.price),
+                        minPrice,
+                        tickSize
+                      );
+                return totalVolume.plus(amount.times(price));
+              },
               new BigNumber(0)
             ).toString(10),
             shareVolume: convertOnChainAmountToDisplayAmount(
