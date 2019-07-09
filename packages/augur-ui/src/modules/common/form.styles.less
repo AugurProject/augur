@@ -1,5 +1,54 @@
 @import (reference) '~assets/styles/shared';
 
+.CategoryMultiSelect {
+  display: flex;
+  flex-flow: column;
+  
+  > li {
+    height: 44px;
+    margin-top: @size-12;
+    display: grid;
+    grid-row: 44px;
+
+    > div:nth-of-type(2) {
+      margin-left: @size-12;
+    }
+
+    &:first-of-type {
+      margin-top: 0;
+      grid-template-columns: 252px 264px;
+    }
+
+    &:nth-of-type(2) {
+      grid-template-columns: @size-24 252px 252px;
+    }
+    
+    &:nth-of-type(3) {
+      grid-template-columns: @size-24 @size-24 252px 252px;
+
+      > svg {
+        grid-column: 2 / span 1;
+      }
+    }
+
+    > svg {
+      height: @size-10;
+      margin: auto;
+      width: @size-10;
+  
+      > line {
+        stroke: @color-tertiary-info-text;
+      }
+    }
+  
+    > div,
+    > div[class*="Normal"] {
+      min-width: 252px;
+      width: 252px;
+    }
+  }
+}
+
 .RadioStyleSelection {
   background: @color-theme-primary;
   border: 1px solid @color-primary-alternate;
@@ -544,6 +593,10 @@ div.FormDropdown {
     &:hover {
       background-color: transparent;
     }
+  }
+
+  > button[class*="SelectedLabel"] {
+    color: @color-secondary-text;
   }
 
   &:hover {
