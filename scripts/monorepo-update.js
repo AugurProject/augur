@@ -22,10 +22,6 @@ if (process.argv.length == 2) {
     {
       title: 'Augur UI',
       task: async (ctx, task) => await refreshPackage(task, 'augur-ui')
-    },
-    {
-      title: 'Augur Node',
-      task: async (ctx, task) => await refreshPackage(task, 'augur-node')
     }
   ]);
 

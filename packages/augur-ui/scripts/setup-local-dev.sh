@@ -29,22 +29,13 @@ yarn link;
 
 if $USE_POPULATED_CONTRACTS; then
   echo "Using deployed contracts"
-  
+
   npm run docker:pull
   npm run docker:geth:pop
 else
   npm run docker:geth
   yarn run deploy:environment
 fi
-
-popd;
-
-echo "Start augur-node";
-pushd augur-node;
-rm -rf node_modules;
-yarn install;
-yarn link augur.js;
-yarn run clean-start &
 
 popd;
 
