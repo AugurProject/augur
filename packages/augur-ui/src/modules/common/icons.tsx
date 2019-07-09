@@ -85,6 +85,13 @@ export const Clock = (
   </svg>
 );
 
+export const RightAngle = (
+  <svg viewBox="0 0 10 10">
+    <line x1="0.5" y1="2.18556e-08" x2="0.5" y2="10" />
+    <line x1="10" y1="9.5" y2="9.5" />
+  </svg>
+);
+
 export const Arrow = (
   <svg>
     <path d="M0,10 20,10 10,0z"></path>
