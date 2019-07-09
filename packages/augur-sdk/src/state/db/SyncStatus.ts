@@ -42,7 +42,7 @@ export class SyncStatus extends AbstractDB {
   public async getLowestSyncingBlockForAllDBs(): Promise<number> {
     const lowestBlock = await this.find({
       selector: {
-        syncing: false,
+        syncing: true,
         blockNumber: { $gt: 0 },
       },
       sort: [{ blockNumber: 'asc' }],
