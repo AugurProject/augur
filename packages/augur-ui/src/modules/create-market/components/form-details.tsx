@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { RadioCardGroup, FormDropdown, TextInput, DatePicker, TimeSelector, RadioBarGroup, TimezoneDropdown } from "modules/common/form";
+import { RadioCardGroup, FormDropdown, TextInput, DatePicker, TimeSelector, RadioBarGroup, TimezoneDropdown, CategoryMultiSelect } from "modules/common/form";
+import { categories } from "modules/categories/set-categories";
 import { Header, Subheaders, LineBreak, NumberedList } from "modules/create-market/components/common";
 import { 
   YES_NO, 
@@ -210,12 +211,15 @@ export default class FormDetails extends React.Component<
           }
 
           <Subheaders header="Market category" subheader="Categories help users to find your market on Augur." />
-          <FormDropdown
-            options={[{
-              label: "Test",
-              value: 0
-            }]}
-            staticLabel="Select category"
+          <CategoryMultiSelect
+            sortedGroup={categories}
+            updateSelection={categoryArray => {
+              // TODO: in the future, lets make `categories` as an array of 
+              // strings for the newmarket object instead of 3 key/values
+              this.onChange("category", categoryArray[0]);
+              this.onChange("tag1", categoryArray[1]);
+              this.onChange("tag2", categoryArray[2]);
+            }}
           />
         </div>
         <LineBreak />
