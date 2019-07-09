@@ -180,9 +180,6 @@ export class Markets {
       );
     }
 
-    const isScalar: boolean =
-      marketCreatedLogs[0].marketType === MarketType.Scalar;
-
     const orderFilledLogs = await db.findOrderFilledLogs({
       selector: { market: params.marketId, eventType: OrderEventType.Fill },
     });
@@ -262,20 +259,30 @@ export class Markets {
               minPrice,
               tickSize
             ).toString(10),
-            volume: convertOnChainAmountToDisplayAmount(_.reduce(
+            volume: _.reduce(
               trades,
               (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
                 totalVolume.plus(
-                  new BigNumber(tradeRow.amountFilled).times(tradeRow.price)
+                  convertOnChainAmountToDisplayAmount(
+                    new BigNumber(tradeRow.amountFilled),
+                    tickSize
+                  ).times(convertOnChainPriceToDisplayPrice(
+                    tradeRow.orderType === 0
+                      ? maxPrice.minus(new BigNumber(tradeRow.price))
+                      : new BigNumber(tradeRow.price), minPrice, tickSize)
+                  )
                 ),
               new BigNumber(0)
-            ), tickSize).toString(10),
-            shareVolume: convertOnChainAmountToDisplayAmount(_.reduce(
-              trades,
-              (totalShareVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
-                totalShareVolume.plus(tradeRow.amountFilled),
-              new BigNumber(0)
-            ), tickSize).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
+            ).toString(10),
+            shareVolume: convertOnChainAmountToDisplayAmount(
+              _.reduce(
+                trades,
+                (totalShareVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
+                  totalShareVolume.plus(tradeRow.amountFilled),
+                new BigNumber(0)
+              ),
+              tickSize
+            ).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
           };
           return {
             tokenVolume: partialCandlestick.shareVolume, // tokenVolume is temporary, see note on Candlestick.tokenVolume
