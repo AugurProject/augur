@@ -69,7 +69,7 @@ export class DB {
     dbController.userSpecificEvents = augur.userSpecificEvents;
     dbController.customEvents = augur.customEvents;
 
-    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers,  blockAndLogStreamerListener);
+    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, blockAndLogStreamerListener);
   }
 
   /**
@@ -84,7 +84,7 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>,  blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
@@ -167,6 +167,22 @@ export class DB {
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+        try {
+          dbSyncPromises.push(
+            this.syncableDatabases[dbName].sync(
+              augur,
+              chunkSize,
+              blockstreamDelay,
+              highestAvailableBlockNumber
+            ));
+        } catch (e) {
+        }
+      }
+    }
+
+    for (let genericEventName of this.genericEventNames) {
+      let dbName = this.getDatabaseName(genericEventName);
+      try {
         dbSyncPromises.push(
           this.syncableDatabases[dbName].sync(
             augur,
@@ -174,29 +190,22 @@ export class DB {
             blockstreamDelay,
             highestAvailableBlockNumber
           ));
+      } catch (e) {
       }
-    }
-
-    for (let genericEventName of this.genericEventNames) {
-      let dbName = this.getDatabaseName(genericEventName);
-      dbSyncPromises.push(
-        this.syncableDatabases[dbName].sync(
-          augur,
-          chunkSize,
-          blockstreamDelay,
-          highestAvailableBlockNumber
-        ));
     }
 
     for (let customEvent of this.customEvents) {
       let dbName = this.getDatabaseName(customEvent.name);
-      dbSyncPromises.push(
-        this.syncableDatabases[dbName].sync(
-          augur,
-          chunkSize,
-          blockstreamDelay,
-          highestAvailableBlockNumber
-        ));
+      try {
+        dbSyncPromises.push(
+          this.syncableDatabases[dbName].sync(
+            augur,
+            chunkSize,
+            blockstreamDelay,
+            highestAvailableBlockNumber
+          ));
+      } catch (e) {
+      }
     }
 
     return Promise.all(dbSyncPromises).then(() => undefined)
@@ -287,7 +296,10 @@ export class DB {
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (let eventName of this.genericEventNames) {
       let dbName = this.getDatabaseName(eventName);
-      dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+      try {
+        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+      } catch (e) {
+      }
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbRollbackPromises)
@@ -299,7 +311,11 @@ export class DB {
     for (let trackedUser of await this.trackedUsers.getUsers()) {
       for (let userSpecificEvent of this.userSpecificEvents) {
         let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+        try {
+          dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+        } catch (e) {
+        }
+
       }
     }
     // TODO Figure out a way to handle concurrent request limit of 40
