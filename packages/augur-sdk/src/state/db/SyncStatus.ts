@@ -14,6 +14,12 @@ export class SyncStatus extends AbstractDB {
 
     this.db.createIndex({
       index: {
+        fields: ["syncing"],
+      },
+    });
+
+    this.db.createIndex({
+      index: {
         fields: ["blockNumber"],
       },
     });
@@ -26,24 +32,27 @@ export class SyncStatus extends AbstractDB {
 
   public async getHighestSyncBlock(dbName?: string): Promise<number> {
     const document = await this.getDocument<SyncDocument>(dbName);
-    if (document) return document.blockNumber;
+    if (document) {
+      return document.blockNumber;
+    }
+
     return this.defaultStartSyncBlockNumber;
   }
 
   public async getLowestSyncingBlockForAllDBs(): Promise<number> {
     const lowestBlock = await this.find({
       selector: {
-        blockNumber: { $gt: 0 },
         syncing: true,
+        blockNumber: { $gt: 0 },
       },
-      fields: ["blockNumber", "syncing"],
       sort: [{ blockNumber: 'asc' }],
+      fields: ["blockNumber", "syncing"],
     });
 
     if (lowestBlock.docs && lowestBlock.docs.length > 0) {
       return (lowestBlock.docs[0] as any).blockNumber;
     } else {
-      return 0;
+      return -1;
     }
   }
 
