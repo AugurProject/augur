@@ -45,9 +45,6 @@ export class Controller {
 
   private notifyNewBlockEvent = async (): Promise<void> => {
     let lowestBlock = await (await this.db).syncStatus.getLowestSyncingBlockForAllDBs();
-    if (lowestBlock == -1) {
-
-    }
     const block = await this.getLatestBlock();
 
     if (lowestBlock === -1) {
