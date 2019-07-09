@@ -645,6 +645,17 @@ export const ASK = "ask";
 export const MATCH_BID = "match_bid";
 export const MATCH_ASK = "match_ask";
 
+export const VOLUME_DAI_SHARES = [
+  {
+    value: DAI,
+    label: DAI
+  },
+  {
+    value: SHARES,
+    label: SHARES
+  }
+];
+
 export const VOLUME_ETH_SHARES = [
   {
     value: ETH,
