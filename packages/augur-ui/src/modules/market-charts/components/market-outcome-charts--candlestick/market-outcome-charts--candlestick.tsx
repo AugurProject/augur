@@ -1,5 +1,5 @@
 import React from 'react';
-import { PERIODS, VOLUME_ETH_SHARES, DAI } from 'modules/common/constants';
+import { PERIODS, VOLUME_DAI_SHARES, DAI } from 'modules/common/constants';
 import { SquareDropdown, StaticLabelDropdown } from 'modules/common/selection';
 import Styles from 'modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles.less';
 import MarketOutcomeChartsCandlestickHighchart from 'modules/market-charts/containers/market-candlestick';
@@ -110,7 +110,7 @@ class MarketOutcomeCandlestick extends React.PureComponent<
               sortByStyles={{ minWidth: '4.875rem' }}
             />
             <StaticLabelDropdown
-              options={VOLUME_ETH_SHARES}
+              options={VOLUME_DAI_SHARES}
               sortByStyles={{ minWidth: '9.375rem' }}
               staticLabel={
                 hoveredPeriod.volume
