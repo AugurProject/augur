@@ -64,8 +64,8 @@ export class Controller {
     if (Controller.latestBlock) {
       return Controller.latestBlock;
     } else {
-      const blockNumber: number = await Controller.augur.provider.getBlockNumber();
-      Controller.latestBlock = await Controller.augur.provider.getBlock(blockNumber);
+      const blockNumber: number = await this.augur.provider.getBlockNumber();
+      Controller.latestBlock = await this.augur.provider.getBlock(blockNumber);
 
       return Controller.latestBlock;
     }
