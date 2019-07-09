@@ -20,13 +20,14 @@ aws_deploy () {
 case ${augur_env} in
     dev)
         network="rinkeby"
-        cluster="dev-augur-net"
-        augur_service="dev-augur-ui"
+        cluster="rinkeby-v2"
+        augur_service="augur-ui-v2-rinkeby"
         ;;
     kovan)
         network="kovan"
-        cluster="kovan-augur-net"
-        augur_service="kovan-augur-ui"
+        cluster="kovan-v2-ecs"
+        augur_service="augur-ui-kovan"
+        version=kovan-$(date -u +%Y-%m-%d-%H%M)
         ;;
     dev-optimized)
         network="rinkeby"
