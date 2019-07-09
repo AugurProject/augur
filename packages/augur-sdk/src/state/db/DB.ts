@@ -30,6 +30,7 @@ import {
   TokenBalanceChangedLog,
   TradingProceedsClaimedLog,
   UniverseForkedLog,
+  MarketData,
 } from "../logs/types";
 
 export interface DerivedDBConfiguration {
@@ -698,5 +699,16 @@ export class DB {
     const logs = results.docs as unknown as Array<ParsedOrderEventLog>;
     for (const log of logs) log.timestamp = log.timestamp;
     return logs;
+  }
+
+  /**
+   * Queries the Markets DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<MarketData>>}
+   */
+  public async findMarkets(request: PouchDB.Find.FindRequest<{}>): Promise<Array<MarketData>> {
+    const results = await this.findInDerivedDB(this.getDatabaseName("Markets"), request);
+    return results.docs as unknown as Array<MarketData>;
   }
 }

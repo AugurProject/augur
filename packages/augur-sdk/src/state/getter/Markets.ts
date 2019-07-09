@@ -9,6 +9,7 @@ import {
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
+  MarketData
 } from '../logs/types';
 import { SortLimit } from './types';
 import {
@@ -314,7 +315,7 @@ export class Markets {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
       });
     }
-    const marketCreatedLogs = await db.findMarketCreatedLogs(request);
+    const marketLogs = await db.findMarketCreatedLogs(request);
 
     let marketCreatorFeeDivisor: BigNumber | undefined = undefined;
     if (params.maxFee) {
@@ -329,8 +330,8 @@ export class Markets {
       );
     }
 
-    const keyedMarketCreatedLogs = marketCreatedLogs.reduce(
-      (previousValue: any, currentValue: MarketCreatedLog) => {
+    const keyedMarketCreatedLogs = marketLogs.reduce(
+      (previousValue: any, currentValue: MarketData) => {
         // Filter markets with fees > maxFee
         if (
           params.maxFee &&
