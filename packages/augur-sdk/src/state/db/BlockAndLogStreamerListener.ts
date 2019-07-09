@@ -32,6 +32,7 @@ export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>
 export interface IBlockAndLogStreamerListener {
   listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogRemoved?: LogCallbackType): void;
   listenForBlockRemoved(callback: (blockNumber: number) => void): void;
+  listenForBlockAdded(callback: (block: Block) => void): void;
   startBlockStreamListener(): void;
 }
 
@@ -68,6 +69,13 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
     });
 
     this.deps.eventLogDBRouter.addLogCallback(topics[0], onLogsAdded);
+  }
+
+  public listenForBlockAdded(callback: (Block: Block) => void): void {
+    const wrapper = (callback: (Block: Block) => void) => (block: Block) => {
+      callback(block);
+    };
+    this.deps.blockAndLogStreamer.subscribeToOnBlockAdded(wrapper(callback));
   }
 
   public listenForBlockRemoved(callback: (blockNumber: number) => void): void {

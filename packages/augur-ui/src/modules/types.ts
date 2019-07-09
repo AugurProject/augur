@@ -190,6 +190,7 @@ export interface OrderBooks {
 }
 
 export interface OutcomeOrderBook {
+  spread: string | null;
   bids: OrderBook[];
   asks: OrderBook[];
 }

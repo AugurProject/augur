@@ -14,7 +14,6 @@ export class SEOConnector extends Connector {
   }
 
   public async disconnect(): Promise<any> {
-    // this.ethersProvider.polling = false;
   }
 
   public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {

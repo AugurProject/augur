@@ -1,3 +1,4 @@
+import { Block, BlockTag } from "ethers/providers";
 import { Events } from "./Events";
 import { NetworkId } from "@augurproject/artifacts";
 import { Filter, Log, LogValues, Provider } from "..";
@@ -10,12 +11,14 @@ function makeProviderMock(opts?: any): Provider {
   const eventTopic = opts.eventTopic || "xyz";
   const logValues = opts.logValues || [];
   const balance = opts.balance || "1";
+  const block = opts.block || null;
 
   return {
     getNetworkId: (): Promise<NetworkId> => Promise.resolve(networkId),
     getLogs: (filter: Filter): Promise<Array<Log>> => Promise.resolve(logs),
     getBlockNumber: (): Promise<number> => Promise.resolve(blockNumber),
-    storeAbiData: (abi: Abi, contractName: string): void => {},
+    getBlock: (blockHashOrBlockNumber: BlockTag | string): Promise<Block> => Promise.resolve(block),
+    storeAbiData: (abi: Abi, contractName: string): void => { },
     getEventTopic: (contractName: string, eventName: string): string => eventTopic,
     parseLogValues: (contractName: string, log: Log): LogValues => logValues,
     getBalance: (address: string) => balance,

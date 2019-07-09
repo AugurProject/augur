@@ -17,6 +17,10 @@ function calculateMaxValues(mostShares) {
   );
 }
 const orderAndAssignCumulativeShares = memoize(orderBook => {
+  if (!orderBook) {
+    return { spread: null, bids: [], asks: [] };
+  }
+
   const rawBids = ((orderBook || {})[BIDS] || []).slice();
   const rawAsks = ((orderBook || {})[ASKS] || []).slice();
 
@@ -55,6 +59,7 @@ const orderAndAssignCumulativeShares = memoize(orderBook => {
     .sort((a, b) => createBigNumber(b.price).minus(createBigNumber(a.price)));
 
   return {
+    spread: orderBook.spread,
     bids,
     asks,
   };
