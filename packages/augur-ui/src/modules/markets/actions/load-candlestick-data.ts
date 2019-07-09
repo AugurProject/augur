@@ -1,6 +1,8 @@
 import logError from 'utils/log-error';
 // TODO: remove these lodash functions.
 import { map, mapValues } from 'lodash/fp';
+import { augurSdk } from 'services/augursdk';
+import { NodeStyleCallback } from 'modules/types';
 
 const mutatePeriod = map(
   ({
@@ -40,23 +42,13 @@ const mutateOutcome = mapValues(mutatePeriod);
  * @param {LoadCandleStickDataOptions} options
  * @param {function} callback
  */
-export const loadCandleStickData = (
+export const loadCandleStickData = async (
   options = {},
   callback: NodeStyleCallback = logError
 ) => {
-  // TODO: get market candlestick, call Markets.ts
-  // replace below with real data
-  const mutatedData = mutateOutcome([
-    {
-      max: 0,
-      min: 0,
-      start: 0,
-      end: 0,
-      startTimestamp: 0,
-      volume: 0,
-      tokenVolumn: 0,
-      shareVolume: 0,
-    },
-  ]);
+  const Augur = augurSdk.get();
+  const candleStickData = await Augur.getMarketPriceCandlesticks(options);
+  const mutatedData = mutateOutcome(candleStickData);
+
   callback(null, mutatedData);
 };

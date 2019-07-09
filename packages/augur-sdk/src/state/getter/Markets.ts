@@ -179,6 +179,8 @@ export class Markets {
       );
     }
 
+    const isScalar: boolean = marketCreatedLogs[0].marketType === MarketType.Scalar;
+
     const orderFilledLogs = await db.findOrderFilledLogs({
       selector: { market: params.marketId, eventType: OrderEventType.Fill },
     });
@@ -210,28 +212,30 @@ export class Markets {
           // TODO remove this partialCandlestick stuff and just return
           // a Candlestick after the temporary Candlestick.tokenVolume
           // is removed (see note on Candlestick.tokenVolume).
+
+          const divideBy = isScalar ? new BigNumber(1) : marketCreatedLogs[0].numTicks;
           const partialCandlestick = {
             startTimestamp: parseInt(startTimestamp, 10),
             start: new BigNumber(
               _.minBy(trades, tradeLog => {
                 return new BigNumber(tradeLog.timestamp).toNumber();
               })!.price
-            ).toString(10),
+            ).dividedBy(divideBy).toString(10),
             end: new BigNumber(
               _.maxBy(trades, tradeLog => {
                 return new BigNumber(tradeLog.timestamp).toNumber();
               })!.price
-            ).toString(10),
+            ).dividedBy(divideBy).toString(10),
             min: new BigNumber(
               _.minBy(trades, tradeLog => {
                 return new BigNumber(tradeLog.price).toNumber();
               })!.price
-            ).toString(10),
+            ).dividedBy(divideBy).toString(10),
             max: new BigNumber(
               _.maxBy(trades, tradeLog => {
                 return new BigNumber(tradeLog.price).toNumber();
               })!.price
-            ).toString(10),
+            ).dividedBy(divideBy).toString(10),
             volume: _.reduce(
               trades,
               (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>

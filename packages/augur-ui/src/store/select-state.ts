@@ -34,14 +34,23 @@ export const selectAccountShareBalance = (state: AppState) =>
 export const selectFilledOrders = (state: AppState) => state.filledOrders;
 export const selectUserMarketOpenOrders = (state: AppState) => state.userOpenOrders;
 
+
+// TODO use Date.NOW until this is wired up
 export const selectCurrentTimestamp = createSelector(
   selectBlockchainState,
-  blockchain => blockchain.currentAugurTimestamp * 1000
+  blockchain => {
+    const now = Number(new Date());
+    return Math.round(now);
+  }
 );
 
+// TODO use Date.NOW until this is wired up
 export const selectCurrentTimestampInSeconds = createSelector(
   selectBlockchainState,
-  blockchain => blockchain.currentAugurTimestamp
+  blockchain => {
+    const now = Number(new Date()) / 1000;
+    return Math.round(now);
+  }
 );
 
 export const selectLoginAccountAddress = createSelector(

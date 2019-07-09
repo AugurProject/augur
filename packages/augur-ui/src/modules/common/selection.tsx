@@ -56,7 +56,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   state: DropdownState = {
     selected: this.props.defaultValue
       ? this.props.options.find(o => o.value === this.props.defaultValue)
-      : (this.props.staticLabel ? null : this.props.options[0]),
+      : this.props.options[0],
     showList: false
   };
 
@@ -148,7 +148,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             </button>
           ))}
         </div>
-        {selected && 
+        {selected &&
           <select
             onChange={e => {
               this.dropdownSelect(e.target.options[e.target.selectedIndex]);
@@ -170,9 +170,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
 export const SquareDropdown = (props: DropdownProps) => <Dropdown {...props} />;
 
 export class StaticLabelDropdown extends Dropdown {
+
   render() {
     const { sortByStyles, options, large, staticLabel, highlight } = this.props;
     const { selected, showList } = this.state;
+
     return (
       <div
         style={sortByStyles}

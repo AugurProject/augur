@@ -636,3 +636,14 @@ export interface Trade {
   orderShareProfit: FormattedNumber;
   orderShareTradingFee: FormattedNumber;
 }
+
+export interface PriceTimeSeriesData {
+  tokenVolume: number;
+  period: number;
+  open: number;
+  close: number;
+  low: number;
+  high: number;
+  volume: number;
+  shareVolume: number;
+}
