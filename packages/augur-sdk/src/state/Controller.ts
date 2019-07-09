@@ -10,8 +10,6 @@ const settings = require("./settings.json");
 
 export class Controller {
   private static latestBlock: Block;
-  private static db: Promise<DB>;
-  private static augur: Augur;
 
   private events = new Subscriptions(augurEmitter);
 
@@ -20,8 +18,6 @@ export class Controller {
     private db: Promise<DB>,
     private blockAndLogStreamerListener: IBlockAndLogStreamerListener,
   ) {
-    Controller.db = db;
-    Controller.augur = augur;
   }
 
   public async fullTextSearch(eventName: string, query: string) {
@@ -47,9 +43,9 @@ export class Controller {
     }
   }
 
-  private async notifyNewBlockEvent(): Promise<void> {
-    const lowestBlock = await (await Controller.db).syncStatus.getLowestSyncingBlockForAllDBs();
-    const block = await Controller.getLatestBlock();
+  private notifyNewBlockEvent = async (): Promise<void> => {
+    const lowestBlock = await (await this.db).syncStatus.getLowestSyncingBlockForAllDBs();
+    const block = await this.getLatestBlock();
 
     const blocksBehindCurrent = (block.number - lowestBlock);
     const percentBehindCurrent = (blocksBehindCurrent / block.number * 100).toFixed(4);
@@ -64,7 +60,7 @@ export class Controller {
     });
   }
 
-  private static async getLatestBlock(): Promise<Block> {
+  private async getLatestBlock(): Promise<Block> {
     if (Controller.latestBlock) {
       return Controller.latestBlock;
     } else {
