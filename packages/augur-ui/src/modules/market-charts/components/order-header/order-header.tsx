@@ -25,7 +25,7 @@ const OrderHeader = ({
       onClick={toggle}
     >
       {title}
-      <span>{extended ? ExpandIcon : CollapseIcon}</span>
+      {toggle && <span>{extended ? ExpandIcon : CollapseIcon}</span>}
     </button>
     {!hide && (
       <div>

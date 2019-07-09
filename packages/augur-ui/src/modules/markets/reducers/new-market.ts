@@ -97,11 +97,11 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
       let orderAdded = false;
       const updatedOrders = existingOrders.reduce((Orders: Array<LiquidityOrder>, order) => {
         const orderInfo = Object.assign({}, order);
-        if (order.price.eq(price) && order.type === type) {
-          orderInfo.quantity = order.quantity.plus(quantity);
-          orderInfo.orderEstimate = order.orderEstimate.plus(
-            orderEstimate.replace(" DAI", "")
-          );
+        if (createBigNumber(order.price).eq(createBigNumber(price)) && order.type === type) {
+          orderInfo.quantity = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toNumber();
+          orderInfo.orderEstimate = createBigNumber(order.orderEstimate).plus(
+            createBigNumber(orderEstimate.replace(" DAI", ""))
+          ).toNumber();
           orderAdded = true;
         }
         Orders.push(orderInfo);
@@ -114,7 +114,10 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           type,
           price,
           quantity,
-          orderEstimate: createBigNumber(orderEstimate.replace(" DAI", ""))
+          shares: quantity,
+          mySize: quantity,
+          cummulativeShares: quantity,
+          orderEstimate: createBigNumber(orderEstimate.replace(" DAI", "")),
         });
       }
 
