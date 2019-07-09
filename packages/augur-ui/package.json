@@ -96,6 +96,7 @@
     "shifty": "2.6.1",
     "speedomatic": "2.1.5",
     "trezor-connect": "7.0.3",
+    "uuid-parse": "^1.1.0",
     "web3": "1.0.0-beta.55",
     "webpack": "4.19.1",
     "webpack-cli": "^3.3.1",
