@@ -1,4 +1,3 @@
-import { seedPath } from "../../libs";
 import { ACCOUNTS, FlashSession, addScripts } from "@augurproject/tools";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { BigNumber } from "bignumber.js";
@@ -8,7 +7,7 @@ type Market = GenericAugurInterfaces.Market<BigNumber>;
 let flash: FlashSession;
 
 beforeAll(async () => {
-  flash = new FlashSession(ACCOUNTS, seedPath);
+  flash = new FlashSession(ACCOUNTS);
   addScripts(flash);
 });
 

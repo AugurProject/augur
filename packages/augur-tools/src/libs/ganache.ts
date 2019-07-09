@@ -1,6 +1,9 @@
 import * as path from "path";
 import * as ganache from "ganache-core";
 import { ethers } from "ethers";
+import memdown from "memdown";
+import { MemDown } from "memdown";
+import { CompilerOutput } from "solc";
 
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { DeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
@@ -8,15 +11,7 @@ import { ContractAddresses } from "@augurproject/artifacts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { ContractDeployer } from "@augurproject/core";
 
-import memdown from "memdown";
-import { MemDown } from "memdown";
-import { CompilerOutput } from "solc";
-
-export interface Account {
-  secretKey: string;
-  publicKey: string;
-  balance: number;
-}
+import { Account } from "../constants";
 
 const augurCorePath = path.join(__dirname, "../../../augur-core/");
 

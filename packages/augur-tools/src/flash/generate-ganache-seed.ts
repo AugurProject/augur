@@ -1,7 +1,8 @@
 import * as fs from "async-file";
 import { ethers } from "ethers";
 import * as ganache from "ganache-core";
-import { Account, deployContracts } from "..";
+import { deployContracts } from "..";
+import { Account } from "../constants";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import * as path from "path";
 import crypto from "crypto";

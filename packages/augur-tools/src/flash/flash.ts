@@ -1,5 +1,3 @@
-
-import { Account } from "../libs/ganache";
 import { ContractAPI } from "../libs/contract-api";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractAddresses } from "@augurproject/artifacts";
@@ -8,6 +6,13 @@ import { ContractAddresses } from "@augurproject/artifacts";
 //   ganacheProvider: ethers.providers.Web3Provider;
 //   listen(port: number, cb: () => void): void;
 // }
+
+
+export interface Account {
+  secretKey: string;
+  publicKey: string;
+  balance: number;
+}
 
 export interface FlashOption {
   name: string;
