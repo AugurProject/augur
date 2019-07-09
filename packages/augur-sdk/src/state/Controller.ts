@@ -44,8 +44,12 @@ export class Controller {
   }
 
   private notifyNewBlockEvent = async (): Promise<void> => {
-    const lowestBlock = await (await this.db).syncStatus.getLowestSyncingBlockForAllDBs();
+    let lowestBlock = await (await this.db).syncStatus.getLowestSyncingBlockForAllDBs();
     const block = await this.getLatestBlock();
+
+    if (lowestBlock === -1) {
+      lowestBlock = block.number;
+    }
 
     const blocksBehindCurrent = (block.number - lowestBlock);
     const percentBehindCurrent = (blocksBehindCurrent / block.number * 100).toFixed(4);
