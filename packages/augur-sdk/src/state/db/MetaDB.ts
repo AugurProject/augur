@@ -33,7 +33,7 @@ export class MetaDB extends AbstractDB {
         sequenceIds: JSON.stringify(sequenceIds),
       }
     );
-    await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber);
+    await this.syncStatus.setHighestSyncBlock(this.dbName, blockNumber, false);
   }
 
   public async rollback(blockNumber: number): Promise<void> {
@@ -53,7 +53,7 @@ export class MetaDB extends AbstractDB {
           // Remove block number from MetaDB
           await this.db.remove(doc._id, doc._rev);
           // Update highest sync block with decremented block number
-          await this.syncStatus.setHighestSyncBlock(this.dbName, --highestSyncBlock);
+          await this.syncStatus.setHighestSyncBlock(this.dbName, --highestSyncBlock, false);
         }
       }
     } catch (err) {
