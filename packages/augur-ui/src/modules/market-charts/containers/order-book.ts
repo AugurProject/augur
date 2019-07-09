@@ -10,7 +10,7 @@ import { ASKS, BIDS } from "modules/common/constants";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 
 const mapStateToProps = (state, ownProps) => {
-  const market = ownProps.market;
+  const market = ownProps.market || selectMarket(ownProps.marketId);
   const outcomeOrderBook =
     ownProps.initialLiquidity ? market.orderBook[ownProps.selectedOutcomeId] : state.orderBooks[market.marketId] &&
     state.orderBooks[market.marketId][ownProps.selectedOutcomeId];
