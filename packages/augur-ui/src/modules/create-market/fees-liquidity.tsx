@@ -82,7 +82,7 @@ export default class FeesLiquidity extends React.Component<
       newMarket
     } = this.props;
 
-    if (!newMarket.orderBook[this.state.selectedOutcome][data.id]) return;
+    if (!(newMarket.orderBook[this.state.selectedOutcome] && newMarket.orderBook[this.state.selectedOutcome][data.id])) return;
 
     return (
       <InitialLiquidity

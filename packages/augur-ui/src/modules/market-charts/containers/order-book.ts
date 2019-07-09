@@ -28,7 +28,6 @@ const mapStateToProps = (state, ownProps) => {
     (market.outcomesFormatted || []).find(
       (outcome) => outcome.id === ownProps.selectedOutcomeId,
     );
-  console.log(outcomeOrderBook);
 
   const cumulativeOrderBook = orderAndAssignCumulativeShares(
     outcomeOrderBook

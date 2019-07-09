@@ -34,7 +34,7 @@ interface FormProps {
 }
 
 interface FormState {
-  selected: number;
+  blockShown: Boolean;
 }
 
 export default class Form extends React.Component<
@@ -42,7 +42,7 @@ export default class Form extends React.Component<
   FormState
 > {
   state: FormState = {
-    empty: ""
+    blockShown: false,
   };
 
   componentDidMount() {
@@ -50,7 +50,7 @@ export default class Form extends React.Component<
   }
 
   componentWillUnmount() {
-    this.unblock();
+    if (!this.state.blockShown) this.unblock();
   }
 
   unblock = (cb?: Function) => {
@@ -87,8 +87,10 @@ export default class Form extends React.Component<
     if (newMarket.currentStep <= 0) {
       this.unblock((goBack: Boolean) => {
         if (goBack) {
-          updatePage(LANDING);
-          clearNewMarket();
+          this.setState({blockShown: true}, () => {
+            updatePage(LANDING);
+            clearNewMarket();
+          });
         }
       });
     }
