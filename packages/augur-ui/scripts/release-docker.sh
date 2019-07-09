@@ -26,7 +26,7 @@ case ${augur_env} in
     kovan)
         network="kovan"
         cluster="kovan-v2-ecs"
-        augur_service="augur-ui-v2-kovan"
+        augur_service="augur-ui-kovan"
         version=kovan-$(date -u +%Y-%m-%d-%H%M)
         ;;
     dev-optimized)
