@@ -43,7 +43,7 @@ const mutateOutcome = mapValues(mutatePeriod);
  * @param {function} callback
  */
 export const loadCandleStickData = async (
-  options = {},
+  options,
   callback: NodeStyleCallback = logError
 ) => {
   const Augur = augurSdk.get();
