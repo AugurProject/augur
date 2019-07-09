@@ -95,6 +95,7 @@ export default class Form extends React.Component<
 
     const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
     updateNewMarket({ currentStep: newStep });
+    this.node.scrollIntoView();
   }
 
   nextPage = () => {
@@ -105,6 +106,7 @@ export default class Form extends React.Component<
           ? CUSTOM_CONTENT_PAGES.length - 1
           : newMarket.currentStep + 1;
       updateNewMarket({ currentStep: newStep });
+      this.node.scrollIntoView();
     //}
   }
 

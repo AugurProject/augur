@@ -15,4 +15,21 @@
 			max-width: 210px;
 		}
 	}
+
+	> div:last-of-type {
+	    flex-direction: row;
+	    flex: 1;
+	    display: flex;
+	    height: 450px;
+
+	    > section {
+	    	min-height: unset;
+	    	max-width: 50%;
+	    	min-width: 50%;
+	    }
+
+	    > section:first-of-type {
+	    	margin-right: @size-28;
+	    }
+	}
 }

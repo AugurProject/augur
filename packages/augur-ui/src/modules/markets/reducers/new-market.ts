@@ -73,6 +73,8 @@ export const DEFAULT_STATE: NewMarket = {
   orderBookSorted: {}, // for order book table
   minPrice: 0,
   maxPrice: 1,
+  minPriceBigNumber: createBigNumber(0),
+  maxPriceBigNumber: createBigNumber(1),
   initialLiquidityEth: createBigNumber(0),
   initialLiquidityGas: createBigNumber(0),
   creationError:

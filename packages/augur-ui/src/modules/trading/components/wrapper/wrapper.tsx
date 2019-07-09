@@ -504,6 +504,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         >
           <OrderButton
             type={selectedNav}
+            initialLiquidity={initialLiquidity}
             action={e => {
               e.preventDefault();
               if (initialLiquidity) {

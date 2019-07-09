@@ -346,7 +346,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                               updateSelectedOrderProperties={
                                 this.updateSelectedOrderProperties
                               }
-                              marketId={marketId}
+                              market={market}
                               selectedOutcomeId={s.selectedOutcomeId}
                               toggle={this.toggleOrderBook}
                               extend={s.extendOrderBook}
@@ -476,7 +476,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }
-                        marketId={marketId}
+                        market={market}
                         selectedOutcomeId={s.selectedOutcomeId}
                         toggle={this.toggleOrderBook}
                         extend={s.extendOrderBook}

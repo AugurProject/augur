@@ -10,10 +10,10 @@ import { ASKS, BIDS } from "modules/common/constants";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 
 const mapStateToProps = (state, ownProps) => {
-  const market = selectMarket(ownProps.marketId);
+  const market = ownProps.market;
   const outcomeOrderBook =
-    state.orderBooks[ownProps.marketId] &&
-    state.orderBooks[ownProps.marketId][ownProps.selectedOutcomeId];
+    ownProps.initialLiquidity ? market.orderBook[ownProps.selectedOutcomeId] : state.orderBooks[market.marketId] &&
+    state.orderBooks[market.marketId][ownProps.selectedOutcomeId];
   const minPrice = market.minPriceBigNumber || createBigNumber(0);
   const maxPrice = market.maxPriceBigNumber || createBigNumber(0);
   const outcome =
@@ -26,6 +26,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const marketDepth = orderForMarketDepth(cumulativeOrderBook);
   const orderBookKeys = getOrderBookKeys(marketDepth, minPrice, maxPrice);
+  console.log(outcomeOrderBook);
+  console.log(cumulativeOrderBook);
   return {
     outcomeName: outcome.description,
     selectedOutcome: outcome,

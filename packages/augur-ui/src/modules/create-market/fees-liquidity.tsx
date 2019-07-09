@@ -7,7 +7,7 @@ import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from
 import { SecondaryButton } from "modules/common/buttons";
 import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
-// import OrderBook from "modules/market-charts/containers/order-book";
+import OrderBook from "modules/market-charts/containers/order-book";
 import TradingForm from "modules/market/containers/trading-form";
 import {
   BUY,
@@ -38,10 +38,6 @@ export default class FeesLiquidity extends React.Component<
   state: FeesLiquidityState = {
     selectedOutcome: 2
   };
-
-  componentDidMount() {
-    this.node.scrollIntoView();
-  }
 
   onChange = (name, value) => {
     const { updateNewMarket } = this.props;
@@ -92,9 +88,6 @@ export default class FeesLiquidity extends React.Component<
 
     return (
       <div 
-        ref={node => {
-          this.node = node;
-        }}
         className={Styles.FeesLiquidity}
       >
         <div>
@@ -146,6 +139,14 @@ export default class FeesLiquidity extends React.Component<
             updateLiquidity={this.updateLiquidity}
             initialLiquidity
             updateSelectedOutcome={this.updateSelectedOutcome}
+          />
+          <OrderBook
+            updateSelectedOrderProperties={
+              this.updateSelectedOrderProperties
+            }
+            market={newMarket}
+            selectedOutcomeId={this.state.selectedOutcome}
+            initialLiquidity
           />
         </div>
       </div>
