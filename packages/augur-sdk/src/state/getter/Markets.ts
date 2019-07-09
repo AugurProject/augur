@@ -347,10 +347,7 @@ export class Markets {
 
     let filteredKeyedMarketCreatedLogs = keyedMarketCreatedLogs;
     if (params.search) {
-      const fullTextSearchResults = await db.fullTextSearch(
-        'MarketCreated',
-        params.search
-      );
+      const fullTextSearchResults = await db.fullTextMarketSearch(params.search);
 
       const keyedFullTextMarketIds: any = fullTextSearchResults.reduce(
         (previousValue: any, fullTextSearchResult: any) => {

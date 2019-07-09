@@ -137,27 +137,7 @@ export class DB {
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (let eventName of this.genericEventNames) {
-      let fullTextSearchOptions = undefined;
-      if (eventName === "MarketCreated") {
-        fullTextSearchOptions = {
-          doc: {
-            id: "id",
-            start: "start",
-            end: "end",
-            field: [
-              "market",
-              "topic",
-              "description",
-              "longDescription",
-              "resolutionSource",
-              "_scalarDenomination",
-              "tags"
-            ],
-          },
-        };
-      }
-
-      new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
+      new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), []);
     }
 
     for (let derivedDBConfiguration of this.basicDerivedDBs) {
@@ -252,12 +232,15 @@ export class DB {
       dbSyncPromises.push(this.derivedDatabases[dbName].sync(highestAvailableBlockNumber));
     }
 
+    dbSyncPromises.push(this.marketDatabase.sync(highestAvailableBlockNumber));
+
     return await Promise.all(dbSyncPromises).then(() => undefined);
     // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
   }
 
-  public fullTextSearch(eventName: string, query: string): Array<object> {
-    return this.getSyncableDatabase(this.getDatabaseName(eventName)).fullTextSearch(query);
+  public fullTextMarketSearch(query: string): Array<object> {
+    const marketDerivedDB: MarketDerivedDB = <MarketDerivedDB><unknown>this.getDerivedDatabase(this.getDatabaseName("Markets"));
+    return marketDerivedDB.fullTextSearch(query);
   }
 
   /**
@@ -303,6 +286,15 @@ export class DB {
    */
   public getSyncableDatabase(dbName: string): SyncableDB {
     return this.syncableDatabases[dbName];
+  }
+
+  /**
+   * Gets a derived database based upon the name
+   *
+   * @param {string} dbName The name of the database
+   */
+  public getDerivedDatabase(dbName: string): DerivedDB {
+    return this.derivedDatabases[dbName];
   }
 
   /**
