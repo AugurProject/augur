@@ -112,17 +112,15 @@ if (require.main === module) {
     accounts = ACCOUNTS;
   }
 
-  const flash = new FlashSession(
-    accounts,
-    `${__dirname}/seed.json`)
-  ;
+  const flash = new FlashSession(accounts);
+
   addScripts(flash);
 
   const args = parse(flash);
 
   if (args.mode === "interactive") {
     const vorpal = makeVorpalCLI(flash);
-    flash.log = vorpal.log.bind(vorpal);
+    flash.setLogger(vorpal.log.bind(vorpal));
     vorpal.show();
   } else {
     if (args.network === "none") {

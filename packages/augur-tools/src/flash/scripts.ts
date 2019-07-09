@@ -1,4 +1,5 @@
-import { makeGanacheProvider, makeGanacheServer, deployContracts } from "../libs/ganache";
+import { makeGanacheProvider, makeGanacheServer, deployContracts, loadSeed } from "../libs/ganache";
+import { seedFileIsOutOfDate, createSeedFile } from "./generate-ganache-seed";
 import { FlashSession, FlashArguments } from "./flash";
 import { createCannedMarketsAndOrders } from "./create-canned-markets-and-orders";
 import { _1_ETH } from "../constants";
@@ -10,6 +11,25 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { BigNumber } from "bignumber.js";
 
 export function addScripts(flash: FlashSession) {
+
+  flash.seedFilePath = `${__dirname}/seed.json`;
+
+  flash.loadSeed = function(this: FlashSession) {
+    const seed = loadSeed(this.seedFilePath);
+    this.contractAddresses = seed.addresses;
+    return seed;
+  };
+
+  flash.ensureSeed = async function(this: FlashSession) {
+    if (await seedFileIsOutOfDate(this.seedFilePath)) {
+      this.log("Seed file out of date. Creating/updating...");
+      await createSeedFile(this.seedFilePath, this.accounts);
+    }
+
+    this.log("Seed file is up-to-date!");
+
+    return this.loadSeed();
+  };
 
   flash.addScript({
     name: "create-seed-file",

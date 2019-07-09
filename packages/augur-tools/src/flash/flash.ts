@@ -1,12 +1,13 @@
-import { seedFileIsOutOfDate, createSeedFile } from "./generate-ganache-seed";
-import { ContractAPI, Account } from "..";
 
-import { GanacheServer } from "ganache-core";
-import { ethers } from "ethers";
+import { Account } from "../libs/ganache";
+import { ContractAPI } from "../libs/contract-api";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { ContractInterfaces } from "@augurproject/core";
 import { ContractAddresses } from "@augurproject/artifacts";
-import { loadSeed } from "../libs/ganache";
+
+// interface GanacheServer {
+//   ganacheProvider: ethers.providers.Web3Provider;
+//   listen(port: number, cb: () => void): void;
+// }
 
 export interface FlashOption {
   name: string;
@@ -26,31 +27,32 @@ export interface FlashScript {
   call(this: FlashSession, args: FlashArguments): Promise<any>;
 }
 
+type Logger = (s: string) => void;
+
 export class FlashSession {
   // Configuration
   accounts: Account[];
   user?: ContractAPI;
   readonly scripts: {[name: string]: FlashScript} = {};
-  log: (s: string) => void = console.log;
-
-  // Useful defaults
-  market?: ContractInterfaces.Market;
+  log: Logger = console.log;
 
   // Node miscellanea
   provider?: EthersProvider;
-  seedFilePath = `${__dirname}/seed.json`;
   contractAddresses?: ContractAddresses;
-  ganacheProvider?: ethers.providers.Web3Provider;
-  ganacheServer?: GanacheServer;
 
-  constructor(accounts: Account[], seedFilePath?: string, logger?: (s: string) => void) {
+  // Other values to store. This exists because e.g. Ganache can't exist in all environments.
+  [key: string]: any;
+
+  constructor(accounts: Account[]) {
     this.accounts = accounts;
-    this.seedFilePath = seedFilePath || this.seedFilePath;
-    this.log = logger || this.log;
   }
 
   addScript(script: FlashScript) {
     this.scripts[script.name] = script;
+  }
+
+  setLogger(logger: Logger) {
+    this.log = logger;
   }
 
   async call(name: string, args: FlashArguments): Promise<any> {
@@ -68,12 +70,6 @@ export class FlashSession {
     }
 
     return script.call.bind(this)(args);
-  }
-
-  loadSeed() {
-    const seed = loadSeed(this.seedFilePath);
-    this.contractAddresses = seed.addresses;
-    return seed;
   }
 
   noProvider() {
@@ -94,16 +90,5 @@ export class FlashSession {
     await this.user.approveCentralAuthority();
 
     return this.user;
-  }
-
-  async ensureSeed() {
-    if (await seedFileIsOutOfDate(this.seedFilePath)) {
-      this.log("Seed file out of date. Creating/updating...");
-      await createSeedFile(this.seedFilePath, this.accounts);
-    }
-
-    this.log("Seed file is up-to-date!");
-
-    return this.loadSeed();
   }
 }
