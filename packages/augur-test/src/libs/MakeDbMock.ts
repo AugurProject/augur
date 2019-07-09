@@ -77,6 +77,7 @@ export function makeDbMock() {
   function makeBlockAndLogStreamerListener(): IBlockAndLogStreamerListener {
     return {
       listenForBlockRemoved: jest.fn(),
+      listenForBlockAdded: jest.fn(),
       listenForEvent: jest.fn(),
       startBlockStreamListener: jest.fn(),
     };
