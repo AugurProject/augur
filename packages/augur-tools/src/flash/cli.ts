@@ -1,6 +1,7 @@
 import { FlashSession } from "./flash";
 import Vorpal from "vorpal";
 import { addScripts } from "./scripts";
+import { addGanacheScripts } from "./ganache-scripts";
 import { Account, ACCOUNTS } from "../constants";
 import { ArgumentParser } from "argparse";
 import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
@@ -114,6 +115,7 @@ if (require.main === module) {
   const flash = new FlashSession(accounts);
 
   addScripts(flash);
+  addGanacheScripts(flash);
 
   const args = parse(flash);
 

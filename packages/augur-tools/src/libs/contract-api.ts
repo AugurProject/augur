@@ -8,7 +8,7 @@ import {
 } from "@augurproject/sdk";
 import { ContractInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { makeDependencies, makeSigner } from "./ganache";
+import { makeDependencies, makeSigner } from "./blockchain";
 import { Account } from "../constants";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";

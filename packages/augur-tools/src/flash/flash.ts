@@ -1,18 +1,14 @@
-import { ContractAPI } from "../libs/contract-api";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractAddresses } from "@augurproject/artifacts";
+
+import { ContractAPI } from "../libs/contract-api";
+import { Account } from "../constants";
 
 // interface GanacheServer {
 //   ganacheProvider: ethers.providers.Web3Provider;
 //   listen(port: number, cb: () => void): void;
 // }
 
-
-export interface Account {
-  secretKey: string;
-  publicKey: string;
-  balance: number;
-}
 
 export interface FlashOption {
   name: string;
@@ -62,6 +58,10 @@ export class FlashSession {
 
   async call(name: string, args: FlashArguments): Promise<any> {
     const script = this.scripts[name];
+
+    if (typeof script === "undefined") {
+      throw Error(`No such script "${name}"`);
+    }
 
     // Make sure required parameters are present.
     for (const option of script.options || []) {
