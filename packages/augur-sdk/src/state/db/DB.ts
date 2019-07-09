@@ -5,7 +5,7 @@ import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 import { DerivedDB } from "./DerivedDB";
-import { MarketDerivedDB } from "./MarketDerivedDB";
+import { MarketDB } from "./MarketDB";
 import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
 import {
   CompleteSetsPurchasedLog,
@@ -53,7 +53,7 @@ export class DB {
   private genericEventNames: Array<string>;
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
-  private marketDatabase: MarketDerivedDB;
+  private marketDatabase: MarketDB;
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   public readonly pouchDBFactory: PouchDBFactoryType;
@@ -143,7 +143,7 @@ export class DB {
     }
 
     // Custom Derived DBs here
-    this.marketDatabase = new MarketDerivedDB(this, networkId);
+    this.marketDatabase = new MarketDB(this, networkId);
 
     for (let trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
@@ -235,8 +235,7 @@ export class DB {
   }
 
   public fullTextMarketSearch(query: string): Array<object> {
-    const marketDerivedDB: MarketDerivedDB = <MarketDerivedDB><unknown>this.getDerivedDatabase(this.getDatabaseName("Markets"));
-    return marketDerivedDB.fullTextSearch(query);
+    return this.marketDatabase.fullTextSearch(query);
   }
 
   /**
