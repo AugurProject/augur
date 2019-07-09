@@ -1,12 +1,29 @@
 import { deployContracts } from "../libs/blockchain";
 import { FlashSession, FlashArguments } from "./flash";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { createCannedMarketsAndOrders } from "./create-canned-markets-and-orders";
 import { _1_ETH } from "../constants";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 
 import { BigNumber } from "bignumber.js";
+import { JsonRpcProvider } from "ethers/providers";
 
 export function addScripts(flash: FlashSession) {
+
+  flash.addScript({
+    name: "connect",
+    description: "Connect to an Ethereum node.",
+    options: [
+      {
+        name: "url",
+        description: "Default: http://localhost:8545",
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const url = args.arg as string || "http://localhost:8545";
+      this.provider = new EthersProvider(new JsonRpcProvider(url), 5, 0, 40);
+    },
+  });
 
   flash.addScript({
     name: "deploy",

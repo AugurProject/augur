@@ -1,4 +1,4 @@
-import { ACCOUNTS, FlashSession, addScripts } from "@augurproject/tools";
+import { ACCOUNTS, FlashSession, addScripts, addGanacheScripts } from "@augurproject/tools";
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { BigNumber } from "bignumber.js";
 
@@ -9,6 +9,7 @@ let flash: FlashSession;
 beforeAll(async () => {
   flash = new FlashSession(ACCOUNTS);
   addScripts(flash);
+  addGanacheScripts(flash);
 });
 
 test("flash :: create canned markets", async () => {

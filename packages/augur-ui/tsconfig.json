@@ -79,6 +79,9 @@
   "references": [
     {
       "path": "../augur-sdk"
+    },
+    {
+      "path": "../augur-tools"
     }
   ]
 }
