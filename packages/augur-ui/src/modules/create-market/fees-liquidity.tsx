@@ -14,6 +14,7 @@ import {
   YES_NO, 
   SCALAR,
 } from "modules/common/constants";
+import QuadBox from "modules/portfolio/components/common/quad-box";
 
 import Styles from "modules/create-market/fees-liquidity.styles";
 
@@ -147,6 +148,15 @@ export default class FeesLiquidity extends React.Component<
             market={newMarket}
             selectedOutcomeId={this.state.selectedOutcome}
             initialLiquidity
+          />
+        </div>
+        <div>
+          <QuadBox
+            title={"Initial liquidity"}
+            content={
+              <div>
+              </div>
+            }
           />
         </div>
       </div>
