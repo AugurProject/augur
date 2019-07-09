@@ -26,6 +26,7 @@ import {
 } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
+import { constructBasicTransaction } from 'modules/transactions/actions/construct-transaction';
 
 export function clearUserTx(): void {
   const Augur = augurSdk.get();
@@ -261,6 +262,16 @@ export async function getAllowance(account: string): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
   return contracts.cash.allowance_(account, augurContract);
+}
+
+export async function cancelOpenOrders(orderIds: string[]) {
+  const { contracts } = augurSdk.get();
+  return contracts.cancelOrder.cancelOrders(orderIds);
+}
+
+export async function cancelOpenOrder(orderId: string) {
+  const { contracts } = augurSdk.get();
+  return contracts.cancelOrder.cancelOrder(orderId);
 }
 
 export async function placeTrade(
