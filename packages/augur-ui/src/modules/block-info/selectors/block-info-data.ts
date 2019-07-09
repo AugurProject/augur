@@ -13,29 +13,16 @@ export interface BlockchainState {
 export const selectBlockInfoData = createSelector(
   selectBlockchainState,
   (blockchainState: any) => {
-    if (blockchainState && blockchainState.lastProcessedBlock) {
-      const { currentBlockNumber, lastProcessedBlock } = blockchainState;
+    if (blockchainState) {
+      const { currentBlockNumber, lastProcessedBlock, percentBehindCurrent, blocksBehindCurrent } = blockchainState;
       const highestBlockBn = createBigNumber(currentBlockNumber || 0);
       const lastProcessedBlockBn = createBigNumber(lastProcessedBlock);
+      const blocksBehind = formatNumber(blocksBehindCurrent).roundedFormatted;
 
-      const diff = highestBlockBn.minus(lastProcessedBlockBn);
-      const diffBlocks = diff.lt(ZERO) ? ZERO : diff;
-      let blocksBehind = formatNumber(diffBlocks.toString()).roundedFormatted;
-
-      blocksBehind = blocksBehind === "-" ? 0 : blocksBehind;
-
-      const fullPercent = formatPercent(
-        lastProcessedBlockBn
-          .dividedBy(highestBlockBn)
-          .times(createBigNumber(100))
-          .toString(),
+      const fullPercent = formatPercent(percentBehindCurrent,
         { decimals: 2, decimalsRounded: 2 }
       );
-      let percent = fullPercent.formattedValue;
-
-      if (percent === 100 && diff.gt(ZERO)) {
-        percent = 99.99;
-      }
+      const percent = fullPercent.formattedValue;
 
       return {
         percent,
