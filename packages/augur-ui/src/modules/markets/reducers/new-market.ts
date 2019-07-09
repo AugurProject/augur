@@ -5,8 +5,13 @@ import {
   CLEAR_NEW_MARKET
 } from "modules/markets/actions/update-new-market";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { SETTLEMENT_FEE_DEFAULT, AFFILIATE_FEE_DEFAULT, YES_NO } from "modules/common/constants";
-
+import { 
+  SETTLEMENT_FEE_DEFAULT, 
+  EXPIRY_SOURCE_GENERIC, 
+  DESIGNATED_REPORTER_SELF, 
+  AFFILIATE_FEE_DEFAULT, 
+  YES_NO 
+} from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
 
@@ -54,9 +59,9 @@ export const DEFAULT_STATE: NewMarket = {
   scalarBigNum: "",
   scalarDenomination: "",
   description: "",
-  expirySourceType: "",
+  expirySourceType: EXPIRY_SOURCE_GENERIC,
   expirySource: "",
-  designatedReporterType: "",
+  designatedReporterType: DESIGNATED_REPORTER_SELF,
   designatedReporterAddress: "",
   endTime: null,
   tickSize: 0.01,

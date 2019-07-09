@@ -173,14 +173,10 @@ export default class FormDetails extends React.Component<
           {marketType === SCALAR &&
             <>
               <Subheaders header="Unit of measurement" subheader="Choose a denomination for the range." link />
-              <FormDropdown
-                options={[{
-                  label: "Dollars",
-                  value: "Dollars"
-                }]}
-                staticLabel="Denomination"
+              <TextInput
+                placeholder="Denomination"
                 onChange={(value: string) => this.onChange("scalarDenomination", value)}
-                defaultValue={scalarDenomination === "" ? null : scalarDenomination}
+                value={scalarDenomination}
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
               <section>
