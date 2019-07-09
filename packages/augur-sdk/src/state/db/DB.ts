@@ -1,5 +1,4 @@
 import { Augur } from "../../Augur";
-import { MetaDB, SequenceIds } from "./MetaDB";
 import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";
 import { SyncStatus } from "./SyncStatus";
@@ -55,7 +54,6 @@ export class DB {
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
   private marketDatabase: MarketDerivedDB;
-  private metaDatabase: MetaDB; // TODO Remove this if derived DBs are not used.
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   public readonly pouchDBFactory: PouchDBFactoryType;
@@ -133,7 +131,6 @@ export class DB {
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
     this.trackedUsers = new TrackedUsers(networkId, this.pouchDBFactory);
-    this.metaDatabase = new MetaDB(this, networkId, this.pouchDBFactory);
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
@@ -163,7 +160,6 @@ export class DB {
       await this.rollback(startSyncBlockNumber);
     }
 
-    // TODO If derived DBs are used, `this.metaDatabase.rollback` should also be called here
     return this;
   }
 
@@ -236,7 +232,6 @@ export class DB {
     dbSyncPromises.push(this.marketDatabase.sync(highestAvailableBlockNumber));
 
     return await Promise.all(dbSyncPromises).then(() => undefined);
-    // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
   }
 
   public fullTextMarketSearch(query: string): Array<object> {
@@ -248,8 +243,6 @@ export class DB {
    * Gets the block number at which to begin syncing. (That is, the lowest last-synced
    * block across all event log databases or the upload block number for this network.)
    *
-   * TODO If derived DBs are used, the last-synced block in `this.metaDatabase`
-   * should also be taken into account here.
    *
    * @returns {Promise<number>} Promise to the block number at which to begin syncing.
    */
@@ -299,30 +292,6 @@ export class DB {
   }
 
   /**
-   * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs.
-   *
-   * TODO Remove this function if derived DBs are not used.
-   *
-   * @returns {Promise<SequenceIds>} Promise to a SequenceIds object
-   */
-  public async getAllSequenceIds(): Promise<SequenceIds> {
-    let sequenceIds: SequenceIds = {};
-    for (let eventName of this.genericEventNames) {
-      let dbName = this.getDatabaseName(eventName);
-      let dbInfo = await this.syncableDatabases[dbName].getInfo();
-      sequenceIds[dbName] = dbInfo.update_seq.toString();
-    }
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of this.userSpecificDBs) {
-        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        let dbInfo = await this.syncableDatabases[dbName].getInfo();
-        sequenceIds[dbName] = dbInfo.update_seq.toString();
-      }
-    }
-    return sequenceIds;
-  }
-
-  /**
    * Rolls back all blocks from blockNumber onward.
    *
    * @param {number} blockNumber Oldest block number to delete
@@ -352,10 +321,6 @@ export class DB {
       .catch(error => {
         throw error;
       });
-
-    // TODO If derived DBs end up getting used, call `this.metaDatabase.find`
-    // here to get sequenceIds for blocks >= blockNumber. Then call
-    // `this.metaDatabase.rollback` to remove those documents from derived DBs.
   }
 
   /**
@@ -378,9 +343,6 @@ export class DB {
       if (highestSyncBlock !== blockLogs[0].blockNumber) {
         throw new Error("Highest sync block is " + highestSyncBlock + "; newest block number is " + blockLogs[0].blockNumber);
       }
-
-      // TODO If derived DBs end up getting used, call `this.getAllSequenceIds` here
-      // and pass the returned sequenceIds into `this.metaDatabase.addNewBlock`.
     } catch (err) {
       throw err;
     }
@@ -408,16 +370,6 @@ export class DB {
    */
   public async findInDerivedDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return this.derivedDatabases[dbName].find(request);
-  }
-
-  /**
-   * Queries the MetaDB.
-   *
-   * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
-   */
-  public async findInMetaDB(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
-    return this.metaDatabase.find(request);
   }
 
   /**
