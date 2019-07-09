@@ -7,6 +7,7 @@ import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from
 import { SecondaryButton } from "modules/common/buttons";
 import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
+import InitialLiquidity from "modules/create-market/containers/initial-liquidity";
 import OrderBook from "modules/market-charts/containers/order-book";
 import TradingForm from "modules/market/containers/trading-form";
 import {
@@ -14,7 +15,8 @@ import {
   YES_NO, 
   SCALAR,
 } from "modules/common/constants";
-import QuadBox from "modules/portfolio/components/common/quad-box";
+import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
+import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
 
 import Styles from "modules/create-market/fees-liquidity.styles";
 
@@ -58,11 +60,11 @@ export default class FeesLiquidity extends React.Component<
       newMarket
     } = this.props;
 
-     const { type, scalarDenomination } = newMarket;
+     const { marketType, scalarDenomination } = newMarket;
       let outcomeName = this.state.selectedOutcome;
-      if (type === YES_NO) {
+      if (marketType === YES_NO) {
         outcomeName = "Yes";
-      } else if (type === SCALAR) {
+      } else if (marketType === SCALAR) {
         outcomeName = scalarDenomination;
       }
       addOrderToNewMarket({
@@ -75,6 +77,23 @@ export default class FeesLiquidity extends React.Component<
       });
   }
 
+  renderRows = (data) => {
+    const {
+      newMarket
+    } = this.props;
+
+    if (!newMarket.orderBook[this.state.selectedOutcome][data.id]) return;
+
+    return (
+      <InitialLiquidity
+        key={"order-"+data.id}
+        order={newMarket.orderBook[this.state.selectedOutcome][data.id]}
+        selectedOutcome={this.state.selectedOutcome}
+      />
+    );
+  }
+
+
   render() {
     const {
       updatePage,
@@ -84,7 +103,8 @@ export default class FeesLiquidity extends React.Component<
 
     const {
       settlementFee,
-      affiliateFee
+      affiliateFee,
+      orderBook
     } = newMarket;
 
     return (
@@ -135,7 +155,7 @@ export default class FeesLiquidity extends React.Component<
           <TradingForm
             market={newMarket}
             selectedOrderProperties={{ orderPrice: "", orderQuantity: "", selectedNav: BUY}}
-            selectedOutcomeId={this.state.selectedOutcome}
+            selectedOutcomeId={s.selectedOutcome}
             updateSelectedOrderProperties={this.updateSelectedOrderProperties}
             updateLiquidity={this.updateLiquidity}
             initialLiquidity
@@ -146,17 +166,17 @@ export default class FeesLiquidity extends React.Component<
               this.updateSelectedOrderProperties
             }
             market={newMarket}
-            selectedOutcomeId={this.state.selectedOutcome}
+            selectedOutcomeId={s.selectedOutcome}
             initialLiquidity
           />
         </div>
         <div>
-          <QuadBox
-            title={"Initial liquidity"}
-            content={
-              <div>
-              </div>
-            }
+          <FilterSwitchBox
+            title="Initial liquidity"
+            filterLabel="orders"
+            data={orderBook[s.selectedOutcome] || []}
+            bottomBarContent={<OpenOrdersHeader showTotalCost />}
+            renderRows={this.renderRows}
           />
         </div>
       </div>

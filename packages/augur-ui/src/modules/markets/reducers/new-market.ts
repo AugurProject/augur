@@ -118,6 +118,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           mySize: quantity,
           cummulativeShares: quantity,
           orderEstimate: createBigNumber(orderEstimate.replace(" DAI", "")),
+          id: updatedOrders.length,
         });
       }
 

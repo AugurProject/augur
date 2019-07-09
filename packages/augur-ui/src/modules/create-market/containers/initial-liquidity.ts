@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import getValue from "utils/get-value";
 import { AppState } from "store";
 import * as constants from "modules/common/constants";
-
+import { formatShares, formatEther } from "utils/format-number";
 import Row from "modules/common/row";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -26,19 +26,31 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: "orderName",
       columnType: COLUMN_TYPES.TEXT,
-      text: order.outcomeName,
-      keyId: initialLiquidity.id,
+      text: order.outcomeName.toString(),
+      keyId: order.id,
     },
     {
-      key: "unmatchedShares",
-      columnType: COLUMN_TYPES.VALUE,
-      value: openOrder.unmatchedShares && unmatchedShares,
-      keyId: "openOrder-unmatchedShares-" + openOrder.id,
+      key: "orderType",
+      columnType: COLUMN_TYPES.POSITION_TYPE,
+      type: order.type,
     },
     {
       key: "quantity",
-      columnType: COLUMN_TYPES.POSITION_TYPE,
-      type: order.quantity,
+      columnType: COLUMN_TYPES.VALUE,
+      value: formatShares(order.quantity),
+      keyId: "order-quantity-" + order.id,
+    },
+    {
+      key: "price",
+      columnType: COLUMN_TYPES.VALUE,
+      value: formatEther(order.price),
+      keyId: "order-price-" + order.id,
+    },
+    {
+      key: "orderEstimate",
+      columnType: COLUMN_TYPES.VALUE,
+      value: formatEther(order.orderEstimate),
+      keyId: "order-orderEstimate-" + order.id,
     },
     {
       key: "cancel",
@@ -47,8 +59,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: (e: Event) => {
         dP.removeOrderFromNewMarket({
           outcome: oP.selectedOutcome,
-          index,
-          orderId: order.index
+          index: order.id,
+          orderId: order.id
         });
       },
     },
@@ -61,7 +73,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     columnProperties,
     styleOptions: {
       noToggle: true,
-      opennOrder: true,
+      initialLiquidity: true,
     },
   };
 };

@@ -328,42 +328,44 @@ export class CategoryMultiSelect extends Component<
           />
         )}
         </li>
-        <li>
-          {(showSecondaryDropdown || customSecondary) && RightAngle}
-          {showSecondaryDropdown && (
-            <FormDropdown
-              defaultValue={selected[1]}
-              staticLabel="Secondary Category"
-              onChange={choice => this.onChangeDropdown(choice, 1)}
-              options={secondaryOptions}
-            />
-          )}
-          {customSecondary && (
-            <TextInput
-              value={values[1]}
-              placeholder="Custom Secondary Category"
-              onChange={v => this.handleUpdate(selected, this.getNewValues(v, 1))}
-            />
-          )}
-        </li>
-        <li>
-          {(showTertiaryDropdown || customTertiary) && RightAngle}
-          {showTertiaryDropdown && (
-            <FormDropdown
-              defaultValue={selected[2]}
-              staticLabel="Tertiary Category"
-              onChange={choice => this.onChangeDropdown(choice, 2)}
-              options={tertiaryOptions}
-            />
-          )}
-          {customTertiary && (
-            <TextInput
-              value={values[2]}
-              placeholder="Custom Tertiary Category"
-              onChange={v => this.handleUpdate(selected, this.getNewValues(v, 2))}
-            />
-          )}
-        </li>
+        {(showSecondaryDropdown || customSecondary) && <li>
+            {(showSecondaryDropdown || customSecondary) && RightAngle}
+            {showSecondaryDropdown && (
+              <FormDropdown
+                defaultValue={selected[1]}
+                staticLabel="Secondary Category"
+                onChange={choice => this.onChangeDropdown(choice, 1)}
+                options={secondaryOptions}
+              />
+            )}
+            {customSecondary && (
+              <TextInput
+                value={values[1]}
+                placeholder="Custom Secondary Category"
+                onChange={v => this.handleUpdate(selected, this.getNewValues(v, 1))}
+              />
+            )}
+          </li>
+        }
+        {(showTertiaryDropdown || customTertiary) && <li>
+            {(showTertiaryDropdown || customTertiary) && RightAngle}
+            {showTertiaryDropdown && (
+              <FormDropdown
+                defaultValue={selected[2]}
+                staticLabel="Tertiary Category"
+                onChange={choice => this.onChangeDropdown(choice, 2)}
+                options={tertiaryOptions}
+              />
+            )}
+            {customTertiary && (
+              <TextInput
+                value={values[2]}
+                placeholder="Custom Tertiary Category"
+                onChange={v => this.handleUpdate(selected, this.getNewValues(v, 2))}
+              />
+            )}
+          </li>
+        }
       </ul>
     );
   }
