@@ -1,34 +1,36 @@
-import { createSelector } from "reselect";
-import { selectBlockchainState } from "store/select-state";
-import { formatNumber, formatPercent } from "utils/format-number";
-import { createBigNumber } from "utils/create-big-number";
-
-import { ZERO } from "modules/common/constants";
-
-export interface BlockchainState {
-  highestBlockBn: number;
-  lastProcessedBlockBn: number;
-}
+import { createSelector } from 'reselect';
+import { selectBlockchainState } from 'store/select-state';
+import { formatNumber, formatPercent } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
+import { Blockchain } from 'modules/types';
 
 export const selectBlockInfoData = createSelector(
   selectBlockchainState,
-  (blockchainState: any) => {
+  (blockchainState: Blockchain) => {
     if (blockchainState) {
-      const { currentBlockNumber, lastProcessedBlock, percentBehindCurrent, blocksBehindCurrent } = blockchainState;
+      const {
+        currentBlockNumber,
+        lastSyncedBlockNumber,
+        percentBehindCurrent,
+        blocksBehindCurrent,
+      } = blockchainState;
       const highestBlockBn = createBigNumber(currentBlockNumber || 0);
-      const lastProcessedBlockBn = createBigNumber(lastProcessedBlock);
-      const blocksBehind = formatNumber(blocksBehindCurrent).roundedFormatted;
+      const lastProcessedBlockBn = createBigNumber(lastSyncedBlockNumber || 0);
+      const blocksBehind = blocksBehindCurrent !== 0 ? formatNumber(blocksBehindCurrent, {
+        blankZero: true,
+      }).roundedFormatted : "0"
 
-      const fullPercent = formatPercent(percentBehindCurrent,
-        { decimals: 2, decimalsRounded: 2 }
-      );
+      const fullPercent = formatPercent(percentBehindCurrent, {
+        decimals: 2,
+        decimalsRounded: 2,
+      });
       const percent = fullPercent.formattedValue;
 
       return {
         percent,
         blocksBehind,
         highestBlockBn,
-        lastProcessedBlockBn
+        lastProcessedBlockBn,
       };
     }
     return null;
