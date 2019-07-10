@@ -171,7 +171,6 @@ export default class OrderBook extends Component<
   OrderBookState
 > {
   static defaultProps = {
-    toggle: () => {},
     extend: false,
     hide: false,
     fixedPrecision: 2,

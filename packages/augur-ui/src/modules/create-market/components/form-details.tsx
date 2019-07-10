@@ -55,7 +55,7 @@ export default class FormDetails extends React.Component<
 
     const {
       outcomes,
-      type,
+      marketType,
       endTime,
       hour,
       minute,
@@ -79,8 +79,8 @@ export default class FormDetails extends React.Component<
 
           <Subheaders header="Market type" link subheader="Market types vary based on the amount of possible outcomes." />
           <RadioCardGroup
-            onChange={(value: string) => this.onChange("type", value)}
-            defaultSelected={type}
+            onChange={(value: string) => this.onChange("marketType", value)}
+            defaultSelected={marketType}
             radioButtons={[
               {
                 value: YES_NO,
@@ -157,7 +157,7 @@ export default class FormDetails extends React.Component<
             value={description}
           />
 
-          {type === CATEGORICAL && 
+          {marketType === CATEGORICAL && 
             <>
               <Subheaders header="Outcomes" subheader="List the outcomes people can choose from." link />
               <NumberedList
@@ -170,17 +170,13 @@ export default class FormDetails extends React.Component<
             </>
           }
 
-          {type === SCALAR &&
+          {marketType === SCALAR &&
             <>
               <Subheaders header="Unit of measurement" subheader="Choose a denomination for the range." link />
-              <FormDropdown
-                options={[{
-                  label: "Dollars",
-                  value: "Dollars"
-                }]}
-                staticLabel="Denomination"
+              <TextInput
+                placeholder="Denomination"
                 onChange={(value: string) => this.onChange("scalarDenomination", value)}
-                defaultValue={scalarDenomination === "" ? null : scalarDenomination}
+                value={scalarDenomination}
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
               <section>

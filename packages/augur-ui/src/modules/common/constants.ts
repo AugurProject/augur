@@ -327,6 +327,8 @@ export const INITIAL_LIQUIDITY_MIN = 250;
 export const SETTLEMENT_FEE_DEFAULT = 0;
 export const SETTLEMENT_FEE_MIN = 0;
 export const SETTLEMENT_FEE_MAX = 12.5;
+export const AFFILIATE_FEE_DEFAULT = 0;
+
 // Advanced Market Creation Defaults
 export const STARTING_QUANTITY_DEFAULT = 100;
 export const STARTING_QUANTITY_MIN = 0.1;
