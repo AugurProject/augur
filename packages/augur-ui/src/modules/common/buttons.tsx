@@ -66,6 +66,7 @@ export interface EthPercentProps {
 
 export interface OrderButtonProps extends DefaultButtonProps {
   type: BUY | SELL;
+  initialLiquidity: Boolean;
 }
 
 export interface FavoritesButtonProps {
@@ -123,7 +124,8 @@ export const OrderButton = (props: OrderButtonProps) => (
     disabled={props.disabled}
     title={props.title}
   >
-    {props.type === BUY ? "Place Buy Order" : "Place Sell Order"}
+    {props.initialLiquidity && "Add Order"}
+    {!props.initialLiquidity && (props.type === BUY ? "Place Buy Order" : "Place Sell Order")}
   </button>
 );
 

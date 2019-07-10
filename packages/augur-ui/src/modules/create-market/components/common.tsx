@@ -37,6 +37,7 @@ export interface SubheadersProps {
   href?: string;
   underline?: Boolean;
   ownLine?: Boolean;
+  smallSubheader?: Boolean;
 }
 
 export const Subheaders = (props: SubheadersProps) => (
@@ -72,10 +73,11 @@ export interface HeaderLinkProps {
   link?: Boolean;
   ownLine?: Boolean;
   underline?: Boolean;
+  smallSubheader?: Boolean;
 }
 
 export const SmallHeaderLink = (props: HeaderLinkProps) => (
-  <p className={Styles.SmallHeaderLink}>
+  <p className={classNames(Styles.SmallHeaderLink, {[Styles.XSmall]: props.smallSubheader})}>
     <span>{props.text}</span>
     {props.link && (
       <Link href={props.href} underline={props.underline} ownLine={props.ownLine} />
@@ -84,7 +86,7 @@ export const SmallHeaderLink = (props: HeaderLinkProps) => (
 );
 
 export const LargeSubheaders = (props: SubheadersProps) => (
-  <div className={Styles.LargeSubheaders}>
+  <div className={classNames(Styles.LargeSubheaders, {[Styles.Small]: props.smallSubheader})}>
     <Header text={props.header} />
     <SmallHeaderLink 
       text={props.subheader} 
@@ -92,6 +94,7 @@ export const LargeSubheaders = (props: SubheadersProps) => (
       underline={props.underline} 
       ownLine={props.ownLine} 
       link={props.link} 
+      smallSubheader={props.smallSubheader}
     />
   </div>        
 );
@@ -158,10 +161,11 @@ export const ExplainerBlock = (props: ExplainerBlockProps) => (
 
 export interface ContentBlockProps {
   children: Array<any>;
+  noDarkBackground: Boolean;
 }
 
 export const ContentBlock = (props: ContentBlockProps) => (
-  <div className={Styles.ContentBlock}>
+  <div className={classNames(Styles.ContentBlock, {[Styles.NoDark]: props.noDarkBackground})}>
     {props.children}
   </div>      
 );

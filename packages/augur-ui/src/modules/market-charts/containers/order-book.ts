@@ -6,26 +6,33 @@ import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-as
 import orderForMarketDepth from "modules/markets/helpers/order-for-market-depth";
 import getOrderBookKeys from "modules/markets/helpers/get-orderbook-keys";
 import { selectMarket } from "modules/markets/selectors/market";
-import { ASKS, BIDS } from "modules/common/constants";
+import { ASKS, BIDS, BUY, SELL } from "modules/common/constants";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 
 const mapStateToProps = (state, ownProps) => {
-  const market = selectMarket(ownProps.marketId);
-  const outcomeOrderBook =
-    state.orderBooks[ownProps.marketId] &&
-    state.orderBooks[ownProps.marketId][ownProps.selectedOutcomeId];
+  const market = ownProps.market || selectMarket(ownProps.marketId);
+  let outcomeOrderBook =
+    ownProps.initialLiquidity ? market.orderBook[ownProps.selectedOutcomeId] : state.orderBooks[market.marketId] &&
+    state.orderBooks[market.marketId][ownProps.selectedOutcomeId];
+
+  if (ownProps.initialLiquidity) {
+    const bids = (outcomeOrderBook || []).filter(order => order.type === SELL)
+    const asks = (outcomeOrderBook || []).filter(order => order.type === BUY)
+    outcomeOrderBook = {};
+    outcomeOrderBook[ASKS] = asks;
+    outcomeOrderBook[BIDS] = bids;
+  }
   const minPrice = market.minPriceBigNumber || createBigNumber(0);
   const maxPrice = market.maxPriceBigNumber || createBigNumber(0);
   const outcome =
     (market.outcomesFormatted || []).find(
       (outcome) => outcome.id === ownProps.selectedOutcomeId,
     );
+
   const cumulativeOrderBook = orderAndAssignCumulativeShares(
     outcomeOrderBook
   );
 
-  const marketDepth = orderForMarketDepth(cumulativeOrderBook);
-  const orderBookKeys = getOrderBookKeys(marketDepth, minPrice, maxPrice);
   return {
     outcomeName: outcome.description,
     selectedOutcome: outcome,
@@ -34,9 +41,6 @@ const mapStateToProps = (state, ownProps) => {
     hasOrders:
       !isEmpty(cumulativeOrderBook[BIDS]) ||
       !isEmpty(cumulativeOrderBook[ASKS]),
-    marketMidpoint: orderBookKeys.mid,
-    marketDepth,
-    orderBookKeys,
     minPrice,
     maxPrice,
   };
