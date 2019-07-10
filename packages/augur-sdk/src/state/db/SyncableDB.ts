@@ -60,6 +60,8 @@ export class SyncableDB extends AbstractDB {
     if (fullTextSearchOptions) {
       this.flexSearch = new FlexSearch(fullTextSearchOptions);
     }
+
+    this.syncing = false;
   }
 
   public async createIndex(indexOptions: PouchDB.Find.CreateIndexOptions): Promise<PouchDB.Find.CreateIndexResponse<{}>> {
@@ -74,6 +76,7 @@ export class SyncableDB extends AbstractDB {
     this.syncing = true;
 
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
+
     const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
     while (highestSyncedBlockNumber < goalBlock) {
       const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);

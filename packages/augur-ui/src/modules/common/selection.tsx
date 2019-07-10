@@ -130,7 +130,9 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         tabIndex={0}
         onClick={this.toggleList}
       >
-        <button className={Styles.Dropdown_label}>
+        <button className={classNames(Styles.Dropdown_label, {
+          [Styles.SelectedLabel]: selected
+        })}>
           {selected ? selected.label : staticLabel} {large ? TwoArrows : Chevron}
         </button>
         <div

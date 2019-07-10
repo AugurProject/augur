@@ -119,7 +119,6 @@ export interface Universe {
 
 export interface Versions {
   augurui: string | null;
-  augurjs: string | null;
 }
 export interface TransacitonData {
   [transactionId: string]: {

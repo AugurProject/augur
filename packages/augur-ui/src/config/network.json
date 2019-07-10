@@ -58,7 +58,7 @@
   "rinkeby": {
     "ethereum-node": {
       "http": "https://eth-rinkeby.alchemyapi.io/jsonrpc/xWkVwAbM7Qr-p8j-Zu_PPwldZJKmaKjx",
-      "ws": "",
+      "ws": "https://eth-rinkeby.alchemyapi.io/jsonrpc/xWkVwAbM7Qr-p8j-Zu_PPwldZJKmaKjx",
       "pollingIntervalMilliseconds": 10000,
       "blockRetention": 100,
       "connectionTimeout": 60000
@@ -71,8 +71,8 @@
   },
   "kovan": {
     "ethereum-node": {
-      "http": "https://kovan.augur.net/ethereum-http",
-      "ws": null,
+      "http": "https://eth-kovan.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
+      "ws": "https://eth-kovan.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
       "pollingIntervalMilliseconds": 500,
       "blockRetention": 100,
       "connectionTimeout": 60000
