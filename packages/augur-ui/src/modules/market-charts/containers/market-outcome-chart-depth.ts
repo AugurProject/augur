@@ -16,7 +16,7 @@ import { ASKS, BIDS } from 'modules/common/constants';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 
 const mapStateToProps = (state, ownProps) => {
-  const market = selectMarket(ownProps.marketId);
+  const market = ownProps.marketId ? selectMarket(ownProps.marketId) : ownProps.market;
   if ( market === null) {
     return {
       isLoading: true
@@ -26,8 +26,8 @@ const mapStateToProps = (state, ownProps) => {
   const outcomeOrderBook =
     state.orderBooks[ownProps.marketId] &&
     state.orderBooks[ownProps.marketId][ownProps.selectedOutcomeId];
-  const minPrice = market.minPriceBigNumber || createBigNumber(0);
-  const maxPrice = market.maxPriceBigNumber || createBigNumber(0);
+  const minPrice = createBigNumber(market.minPriceBigNumber) || createBigNumber(0);
+  const maxPrice = createBigNumber(market.maxPriceBigNumber) || createBigNumber(0);
   const marketOutcome =
     market.outcomesFormatted.find(
       outcome => outcome.id === ownProps.selectedOutcomeId

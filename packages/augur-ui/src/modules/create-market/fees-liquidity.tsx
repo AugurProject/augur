@@ -14,9 +14,12 @@ import {
   BUY,
   YES_NO, 
   SCALAR,
+  CATEGORICAL
 } from "modules/common/constants";
 import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
 import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
+import MarketDepth from "modules/market-charts/containers/market-outcome-chart-depth";
+import QuadBox from "modules/portfolio/components/common/quad-box";
 
 import Styles from "modules/create-market/fees-liquidity.styles";
 
@@ -39,11 +42,11 @@ export default class FeesLiquidity extends React.Component<
   FeesLiquidityState
 > {
   state: FeesLiquidityState = {
-    selectedOutcome: 2
+    selectedOutcome: this.props.newMarket.marketType === CATEGORICAL ? 1 : 2
   };
 
   onChange = (name, value) => {
-    const { updateNewMarket } = this.props;
+    const { updateNewMarket, newMarket } = this.props;
     updateNewMarket({ [name]: value });
   }
 
@@ -61,12 +64,10 @@ export default class FeesLiquidity extends React.Component<
     } = this.props;
 
      const { marketType, scalarDenomination } = newMarket;
-      let outcomeName = this.state.selectedOutcome;
-      if (marketType === YES_NO) {
-        outcomeName = "Yes";
-      } else if (marketType === SCALAR) {
+      let outcomeName = selectedOutcome.description;
+      if (marketType === SCALAR) {
         outcomeName = scalarDenomination;
-      }
+      } 
       addOrderToNewMarket({
         outcomeName,
         outcome: this.state.selectedOutcome,
@@ -91,6 +92,12 @@ export default class FeesLiquidity extends React.Component<
         selectedOutcome={this.state.selectedOutcome}
       />
     );
+  }
+
+  updateHoveredDepth(hoveredDepth) { 
+  }
+
+  updateHoveredPrice(hoveredPrice) {
   }
 
 
@@ -177,6 +184,23 @@ export default class FeesLiquidity extends React.Component<
             data={orderBook[s.selectedOutcome] || []}
             bottomBarContent={<OpenOrdersHeader showTotalCost />}
             renderRows={this.renderRows}
+          />
+        </div>
+        <div>
+          <QuadBox
+            title="Depth chart"
+            noBorders
+            content={
+              <MarketDepth
+                market={newMarket}
+                selectedOutcomeId={s.selectedOutcome}
+                updateSelectedOrderProperties={this.updateSelectedOrderProperties}
+                hoveredPrice={null}
+                hoveredDepth={[]}
+                updateHoveredDepth={this.updateHoveredDepth}
+                updateHoveredPrice={this.updateHoveredPrice}
+              />
+            }
           />
         </div>
       </div>

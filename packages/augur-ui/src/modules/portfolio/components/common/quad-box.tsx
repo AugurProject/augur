@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import classNames from "classnames";
 
 import BoxHeader from "modules/portfolio/components/common/box-header";
 import { NameValuePair } from "modules/portfolio/types";
@@ -22,6 +23,7 @@ export interface QuadBoxProps {
   noBackgroundBottom?: boolean;
   search?: string;
   extraTitlePadding?: boolean;
+  noBorders?: boolean;
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
@@ -29,6 +31,7 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
     extraTitlePadding={props.extraTitlePadding}
     title={props.title}
     switchHeaders={props.switchHeaders}
+    noBorders={props.noBorders}
     rightContent={
       (props.showFilterSearch && (
         <SearchSort
@@ -57,7 +60,7 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
 );
 
 const QuadBox = (props: QuadBoxProps) => (
-  <div className={Styles.Quad}>
+  <div className={classNames(Styles.Quad, {[Styles.NoBorders]: props.noBorders})}>
     <div className={Styles.HideOnMobile}>
       <BoxHeaderElement {...props} switchHeaders={false} />
     </div>
