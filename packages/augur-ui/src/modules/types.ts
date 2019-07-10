@@ -309,7 +309,7 @@ export interface NewMarket {
   meridiem: string;
   marketType: string;
   detailsText: string;
-  category: string;
+  categories: Array<string>;
   settlementFee: number;
   affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };

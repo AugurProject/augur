@@ -24,14 +24,13 @@ import {
 } from 'modules/common/icons';
 import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
+import { CUSTOM } from 'modules/common/constants';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
-
-const CUSTOM = "Custom";
 
 interface CheckboxProps {
   id: string;
@@ -223,8 +222,7 @@ export class CategoryMultiSelect extends Component<
   };
 
   createOptions(sortedGroup) {
-    let options = sortedGroup.map(item => ({ label: item.value, value: item.value }));
-    options.push({ label: CUSTOM, value: CUSTOM });
+    let options = sortedGroup.map(({ label, value }) => ({ label, value }));
     return options;
   }
 
@@ -254,8 +252,8 @@ export class CategoryMultiSelect extends Component<
   }
 
   determineVisible(values, secondaryOptions, tertiaryOptions, selected) {
-    const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 1;
-    const showTertiaryDropdown = tertiaryOptions.length > 1 && values[1] !== '';
+    const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 0;
+    const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
     const customPrimary = selected[0] === CUSTOM;
     const customSecondary = selected[1] === CUSTOM || !showSecondaryDropdown && customPrimary && values[0] !== '';
     const customTertiary =
