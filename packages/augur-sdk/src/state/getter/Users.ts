@@ -19,6 +19,7 @@ import { SortLimit } from './types';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
+import { QUINTILLION } from '../../utils';
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;
 
@@ -135,7 +136,7 @@ export class Users {
     };
 
     const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-      await getProfitLossRecordsByMarketAndOutcome(db, params.account, true, request)
+      await getProfitLossRecordsByMarketAndOutcome(db, params.account, request)
     );
 
     const orderFilledRequest = {
@@ -197,6 +198,14 @@ export class Users {
           profitLossResultsByOutcome,
           (profitLossResult: ProfitLossChangedLog) => {
             const marketDoc = markets[profitLossResult.market];
+            if (
+              !ordersFilledResultsByMarketAndOutcome[profitLossResult.market] ||
+              !ordersFilledResultsByMarketAndOutcome[profitLossResult.market][
+                profitLossResult.outcome
+              ]
+            ) {
+              return null;
+            }
             let outcomeValue = new BigNumber(
               ordersFilledResultsByMarketAndOutcome[profitLossResult.market][
                 profitLossResult.outcome
@@ -229,7 +238,7 @@ export class Users {
 
     const tradingPositions = _.flatten(
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
-    );
+    ).filter(t => t !== null);
 
     const marketTradingPositions = _.mapValues(
       tradingPositionsByMarketAndOutcome,
@@ -241,8 +250,12 @@ export class Users {
       }
     );
 
+    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total fronzen funds
+    const allProfitLossResults = _.flatten(
+      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
+    );
     const frozenFundsTotal = _.reduce(
-      tradingPositions,
+      allProfitLossResults,
       (value, tradingPosition) => {
         return value.plus(tradingPosition.frozenFunds);
       },
@@ -261,7 +274,7 @@ export class Users {
     return {
       tradingPositions,
       tradingPositionsPerMarket: marketTradingPositions,
-      frozenFundsTotal: frozenFundsTotal.toFixed(),
+      frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
       unrealizedRevenue24hChangePercent: profitLossSummary[1].unrealizedPercent,
     };
   }
@@ -298,7 +311,6 @@ export class Users {
     const profitLossByMarketAndOutcome = await getProfitLossRecordsByMarketAndOutcome(
       db,
       params.account!,
-      false,
       profitLossRequest
     );
 
@@ -583,13 +595,9 @@ function bucketRangeByInterval(
 async function getProfitLossRecordsByMarketAndOutcome(
   db: DB,
   account: string,
-  filterNonPositions: boolean,
   request: PouchDB.Find.FindRequest<{}>
 ): Promise<_.Dictionary<_.Dictionary<ProfitLossChangedLog[]>>> {
   let profitLossResult = await db.findProfitLossChangedLogs(account, request);
-  if (filterNonPositions) {
-    profitLossResult = profitLossResult.filter(p => p.netPosition !== "0x00");
-  }
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(
     profitLossResult
   );
