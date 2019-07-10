@@ -216,6 +216,29 @@
 	}
 }
 
+.SmallSubheadersTooltip {
+	.SmallSubheaders;
+
+	> span {
+		align-items: center;
+		display: flex;
+
+	 	> label {
+	      margin-bottom: 0;
+	      margin-left: @size-5;
+
+	      > svg {
+	        width: @size-16;
+	        height: @size-16;
+
+	        > path {
+	          fill: @color-primary-action;
+	        }
+	      }
+	    }
+	}	
+}
+
 .OutcomesList {
 	.SmallSubheaders;
 
