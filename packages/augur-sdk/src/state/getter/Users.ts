@@ -135,7 +135,7 @@ export class Users {
     };
 
     const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-      await getProfitLossRecordsByMarketAndOutcome(db, params.account, request)
+      await getProfitLossRecordsByMarketAndOutcome(db, params.account, true, request)
     );
 
     const orderFilledRequest = {
@@ -298,6 +298,7 @@ export class Users {
     const profitLossByMarketAndOutcome = await getProfitLossRecordsByMarketAndOutcome(
       db,
       params.account!,
+      false,
       profitLossRequest
     );
 
@@ -582,9 +583,13 @@ function bucketRangeByInterval(
 async function getProfitLossRecordsByMarketAndOutcome(
   db: DB,
   account: string,
+  filterNonPositions: boolean,
   request: PouchDB.Find.FindRequest<{}>
 ): Promise<_.Dictionary<_.Dictionary<ProfitLossChangedLog[]>>> {
-  const profitLossResult = await db.findProfitLossChangedLogs(account, request);
+  let profitLossResult = await db.findProfitLossChangedLogs(account, request);
+  if (filterNonPositions) {
+    profitLossResult = profitLossResult.filter(p => p.netPosition !== "0x00");
+  }
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(
     profitLossResult
   );
