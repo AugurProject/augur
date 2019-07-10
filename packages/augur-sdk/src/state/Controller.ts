@@ -19,11 +19,6 @@ export class Controller {
     private blockAndLogStreamerListener: IBlockAndLogStreamerListener
   ) {}
 
-  public async fullTextSearch(eventName: string, query: string) {
-    const db = await this.db;
-    return db.fullTextSearch(eventName, query);
-  }
-
   public async run(): Promise<void> {
     try {
       this.events.subscribe('controller:new:block', this.notifyNewBlockEvent);

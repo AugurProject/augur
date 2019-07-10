@@ -56,7 +56,7 @@ test('UserSynableDB.sync', async () => {
     }),
   });
 
-  const tokensTransferredEventDefinition = john.augur.userSpecificEvents.find(
+  const tokensTransferredEventDefinition = dbController.userSpecificDBs.find(
     x => x.name === 'TokensTransferred'
   );
   if (!tokensTransferredEventDefinition) {

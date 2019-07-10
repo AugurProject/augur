@@ -3,7 +3,9 @@ import classNames from 'classnames';
 
 import { SecondaryButton } from 'modules/common/buttons';
 import { TextInput } from 'modules/common/form';
-import { XIcon, AddIcon } from 'modules/common/icons';
+import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
+import ReactTooltip from "react-tooltip";
+import TooltipStyles from "modules/common/tooltip.styles.less";
 
 import Styles from 'modules/create-market/components/common.styles';
 
@@ -123,6 +125,45 @@ export const SmallSubheaders = (props: SubheadersProps) => (
     </span>
   </div>        
 );
+
+export interface SubheadersTooltipProps {
+  header: string;
+  subheader: string;
+  link?: Boolean;
+  href?: string;
+  underline?: Boolean;
+  ownLine?: Boolean;
+  smallSubheader?: Boolean;
+  text: string;
+}
+
+export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
+  <div className={Styles.SmallSubheadersTooltip}>
+    <h1>{props.header}</h1>
+    <span>
+      {props.subheader}
+      <label
+        className={TooltipStyles.TooltipHint}
+        data-tip
+        data-for={`tooltip-${props.header}`}
+      >
+        {HintAlternate}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${props.header}`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        data-event="mouseover"
+        data-event-off="blur scroll"
+      >
+        {props.text}
+      </ReactTooltip>
+    </span>
+  </div>        
+);
+
 
 export interface OutcomesListProps {
   outcomes: Array<string>;
