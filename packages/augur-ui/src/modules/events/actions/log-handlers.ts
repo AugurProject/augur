@@ -40,6 +40,7 @@ import { Action } from 'redux';
 import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
+import { OrderEventType } from '@augurproject/sdk/build/state/logs/types';
 
 const handleAlertUpdate = (
   log: any,
@@ -179,6 +180,24 @@ export const handleTokensBurnedLog = (log: any) => (
     handleAlertUpdate(log, dispatch, getState);
   }
 };
+
+export const handleOrderLog = (log: any) => {
+  const type = log.OrderEventType;
+  switch(type) {
+    case OrderEventType.Cancel: {
+      return handleOrderCanceledLog(log);
+    }
+    case OrderEventType.Create: {
+      return handleOrderCreatedLog(log);
+    }
+    case OrderEventType.PriceChanged: {
+      // TODO: figure out what needs to change for price change
+      return console.log("order price changed need to add UI functionality");
+    }
+    default:
+      return handleOrderFilledLog(log);
+  }
+}
 
 export const handleOrderCreatedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
