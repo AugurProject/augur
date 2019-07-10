@@ -266,22 +266,20 @@ export class Markets {
                   new BigNumber(tradeRow.amountFilled),
                   tickSize
                 );
+
+                const displayPrice = convertOnChainPriceToDisplayPrice(
+                  new BigNumber(tradeRow.price),
+                  minPrice,
+                  tickSize
+                );
+
                 const price =
                   tradeRow.orderType === OrderType.Bid
                     ? maxPrice
                         .dividedBy(QUINTILLION)
-                        .minus(
-                          convertOnChainPriceToDisplayPrice(
-                            new BigNumber(tradeRow.price),
-                            minPrice,
-                            tickSize
-                          )
-                        )
-                    : convertOnChainPriceToDisplayPrice(
-                        new BigNumber(tradeRow.price),
-                        minPrice,
-                        tickSize
-                      );
+                        .minus(displayPrice)
+                    : displayPrice;
+
                 return totalVolume.plus(amount.times(price));
               },
               new BigNumber(0)
