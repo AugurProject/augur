@@ -1,5 +1,4 @@
 #!/bin/bash
-# augur.js test suite
 # @author Jack Peterson (jack@tinybike.net)
 
 trap "exit" INT
