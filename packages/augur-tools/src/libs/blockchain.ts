@@ -37,7 +37,6 @@ export interface UsefulContractObjects {
   addresses: ContractAddresses;
 }
 
-
 export async function deployContracts(provider: EthersProvider,  accounts: Account[], compiledContracts: CompilerOutput, writeArtifacts = false): Promise<UsefulContractObjects> {
   const signer = await makeSigner(accounts[0], provider);
   const dependencies = makeDependencies(accounts[0], provider, signer);

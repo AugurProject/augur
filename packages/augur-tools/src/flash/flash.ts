@@ -4,12 +4,6 @@ import { ContractAddresses } from "@augurproject/artifacts";
 import { ContractAPI } from "../libs/contract-api";
 import { Account } from "../constants";
 
-// interface GanacheServer {
-//   ganacheProvider: ethers.providers.Web3Provider;
-//   listen(port: number, cb: () => void): void;
-// }
-
-
 export interface FlashOption {
   name: string;
   description?: string;
