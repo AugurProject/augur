@@ -119,7 +119,6 @@ export interface Universe {
 
 export interface Versions {
   augurui: string | null;
-  augurjs: string | null;
 }
 export interface TransacitonData {
   [transactionId: string]: {
@@ -479,10 +478,11 @@ export interface Category {
 }
 
 export interface Blockchain {
-  currentBlockNumber: number;
-  currentAugurTimestamp: number;
-  highestBlock: number;
-  lastProcessedBlock: number;
+  currentBlockNumber: number,
+  lastSyncedBlockNumber: number,
+  blocksBehindCurrent: number,
+  percentBehindCurrent: string,
+  currentAugurTimestamp: number,
 }
 
 export interface AppStatus {

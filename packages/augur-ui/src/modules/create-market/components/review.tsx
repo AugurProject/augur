@@ -48,7 +48,7 @@ export default class Review extends React.Component<
     const {
       category,
       tag1,
-      type,
+      marketType,
       description,
       endTime,
       detailsText,
@@ -67,18 +67,18 @@ export default class Review extends React.Component<
       <div className={Styles.Review}>
         <Header text="Market details" />
         <div>
-          <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[type]} />
+          <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[marketType]} />
           <SmallSubheaders header="Category" subheader={category} />
           <SmallSubheaders header="Sub-category" subheader={tag1} />
           <SmallSubheaders header="Market Question" subheader={description} />
-          {type === SCALAR &&
+          {marketType === SCALAR &&
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
               <SmallSubheaders header="Numeric range" subheader={minPrice + "-" + maxPrice} />
               <SmallSubheaders header="precision" subheader={tickSize} />
             </>
           }
-          {type === CATEGORICAL &&
+          {marketType === CATEGORICAL &&
             <OutcomesList 
               outcomes={outcomes}
             />

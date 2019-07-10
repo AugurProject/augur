@@ -111,7 +111,7 @@ export class DB {
     dbController.augur = augur;
     dbController.genericEventNames = augur.genericEventNames;
 
-    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers,  blockAndLogStreamerListener);
+    return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, blockAndLogStreamerListener);
   }
 
   /**
@@ -126,7 +126,7 @@ export class DB {
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
-  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>,  blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  public async initializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     this.networkId = networkId;
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
@@ -196,20 +196,21 @@ export class DB {
     let dbSyncPromises = [];
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
 
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of this.userSpecificDBs) {
-        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+    for (const trackedUser of await this.trackedUsers.getUsers()) {
+      for (const userSpecificEvent of this.userSpecificDBs) {
+        const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
         dbSyncPromises.push(
           this.syncableDatabases[dbName].sync(
             augur,
             chunkSize,
             blockstreamDelay,
             highestAvailableBlockNumber
-          ));
+          )
+        );
       }
     }
 
-    for (let genericEventName of this.genericEventNames) {
+    for (const genericEventName of this.genericEventNames) {
       let dbName = this.getDatabaseName(genericEventName);
       dbSyncPromises.push(
         this.syncableDatabases[dbName].sync(
@@ -217,15 +218,16 @@ export class DB {
           chunkSize,
           blockstreamDelay,
           highestAvailableBlockNumber
-        ));
+        )
+      );
     }
 
     await Promise.all(dbSyncPromises);
 
     // Derived DBs are synced after generic log DBs complete
     dbSyncPromises = [];
-    for (let derivedDBConfiguration of this.basicDerivedDBs) {
-      let dbName = this.getDatabaseName(derivedDBConfiguration.name);
+    for (const derivedDBConfiguration of this.basicDerivedDBs) {
+      const dbName = this.getDatabaseName(derivedDBConfiguration.name);
       dbSyncPromises.push(this.derivedDatabases[dbName].sync(highestAvailableBlockNumber));
     }
 
@@ -247,11 +249,11 @@ export class DB {
    */
   public async getSyncStartingBlock(): Promise<number> {
     let highestSyncBlocks = [];
-    for (let eventName of this.genericEventNames) {
+    for (const eventName of this.genericEventNames) {
       highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(eventName)));
     }
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of this.userSpecificDBs) {
+    for (const trackedUser of await this.trackedUsers.getUsers()) {
+      for (const userSpecificEvent of this.userSpecificDBs) {
         highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(userSpecificEvent.name, trackedUser)));
       }
     }
@@ -298,9 +300,13 @@ export class DB {
   public rollback = async (blockNumber: number): Promise<void> => {
     let dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
-    for (let eventName of this.genericEventNames) {
-      let dbName = this.getDatabaseName(eventName);
-      dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+    for (const eventName of this.genericEventNames) {
+      const dbName = this.getDatabaseName(eventName);
+      try {
+        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+      } catch (e) {
+        console.log("Issue rolling back", dbName);
+      }
     }
     // TODO Figure out a way to handle concurrent request limit of 40
     await Promise.all(dbRollbackPromises)
@@ -309,9 +315,9 @@ export class DB {
       });
 
     // Perform rollback on UserSyncableDBs
-    for (let trackedUser of await this.trackedUsers.getUsers()) {
-      for (let userSpecificEvent of this.userSpecificDBs) {
-        let dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+    for (const trackedUser of await this.trackedUsers.getUsers()) {
+      for (const userSpecificEvent of this.userSpecificDBs) {
+        const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
         dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
       }
     }
@@ -331,7 +337,7 @@ export class DB {
    * @param {any} blockLogs Logs from a new block
    */
   public async addNewBlock(dbName: string, blockLogs: any): Promise<void> {
-    let db = this.syncableDatabases[dbName];
+    const db = this.syncableDatabases[dbName];
     if (!db) {
       throw new Error("Unknown DB name: " + dbName);
     }

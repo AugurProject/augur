@@ -49,12 +49,15 @@ export class SyncableDB extends AbstractDB {
     }
     db.notifySyncableDBAdded(this);
     db.registerEventListener(this.eventName, this.addNewBlock);
+
+    this.syncing = false;
   }
 
   public async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
 
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
+
     const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
     while (highestSyncedBlockNumber < goalBlock) {
       const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);
