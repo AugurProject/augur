@@ -3,10 +3,6 @@ import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 
-import { FlashSession } from "@augurproject/tools/build/flash/flash";
-import { addScripts } from "@augurproject/tools/build/flash/scripts";
-import { ACCOUNTS } from "@augurproject/tools/build/constants";
-
 import MainErrorBoundary from 'modules/app/components/main-error-boundary';
 
 import store from 'store';
@@ -49,10 +45,6 @@ function handleRender() {
   // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === 'development') {
     (window as WindowApp).app = UpdatedRoot;
-
-    window.flash = new FlashSession(ACCOUNTS);
-    addScripts(window.flash);
-
   }
 
   render(UpdatedRoot);
