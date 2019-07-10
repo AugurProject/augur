@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { formatAttoEth } from "utils/format-number";
+import { formatDai } from "utils/format-number";
 import Activity from "modules/account/components/activity";
 import { updatePlatformTimeframeData } from "modules/account/actions/update-platform-timeframe-data";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState) => {
       state.universe.timeframeData &&
       state.universe.timeframeData.openInterest) ||
     0;
-  const openInterest = formatAttoEth(value, { decimals: 4 });
+  const openInterest = formatDai(value, { decimals: 2 });
   return {
     openInterest,
     currentAugurTimestamp: selectCurrentTimestampInSeconds(state),

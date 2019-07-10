@@ -20,16 +20,9 @@ fi
 
 cd ../;
 
-echo "Building augur.js";
-pushd augur.js;
-rm -rf node_modules;
-yarn;
-yarn run build;
-yarn link;
-
 if $USE_POPULATED_CONTRACTS; then
   echo "Using deployed contracts"
-  
+
   npm run docker:pull
   npm run docker:geth:pop
 else
@@ -39,20 +32,10 @@ fi
 
 popd;
 
-echo "Start augur-node";
-pushd augur-node;
-rm -rf node_modules;
-yarn install;
-yarn link augur.js;
-yarn run clean-start &
-
-popd;
-
 echo "Start augur (UI)";
 pushd augur;
 rm -rf node_modules;
 yarn;
-yarn link augur.js;
 yarn run dev &
 
 wait

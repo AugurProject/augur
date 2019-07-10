@@ -81,26 +81,6 @@ function deployAugurJsAndUploadContracts()
 	)
 }
 
-function deployAugurNode()
-{
-	(
-	AUGUR_JS_VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
-	rm -rf augur-node
-	git clone git@github.com:AugurProject/augur-node
-	cd augur-node
-	git checkout -b augur.js@$AUGUR_JS_VERSION
-	npm install
-	npm install --save-exact augur.js@$AUGUR_JS_VERSION
-	yarn
-	git commit package.json package-lock.json -m augur.js@$AUGUR_JS_VERSION
-	npm version $NPM_VERSION
-	VERSION=$($GET_VERSION $TMP_DIR/augur-node/package.json)
-	git push -u origin augur.js@$AUGUR_JS_VERSION
-	git push origin v$VERSION --no-verify
-	npm publish --tag $NPM_TAG
-	)
-}
-
 function deployAugurUi()
 {
 	(
@@ -151,5 +131,4 @@ if [ "$BUMP_AUGUR_CORE" == true ]; then
 fi
 deployAugurJsAndUploadContracts
 deployAugurUi
-deployAugurNode
 deployAugurApp

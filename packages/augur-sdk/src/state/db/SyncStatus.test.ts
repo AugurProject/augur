@@ -34,5 +34,5 @@ test("lowest block and syncing options", async () => {
 
   await syncStatus.updateSyncingToFalse("foobar");
 
-  expect(await syncStatus.getLowestSyncingBlockForAllDBs()).toEqual(0);
+  expect(await syncStatus.getLowestSyncingBlockForAllDBs()).toEqual(-1);
 });

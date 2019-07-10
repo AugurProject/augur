@@ -23,7 +23,6 @@ export class WebWorkerConnector extends Connector {
       try {
         if (event.data.subscribed) {
           this.subscriptions[event.data.subscribed].id = event.data.subscription;
-          console.log(this.subscriptions[event.data.subscribed]);
         } else {
           this.messageReceived(event.data);
         }
