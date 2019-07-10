@@ -525,6 +525,7 @@ export class Markets {
     },
     sortDescending: boolean = true
     ) => {
+      if (!unsortedOrders) return [];
       const bucketsByPrice = _.groupBy<Order>(
         Object.values(unsortedOrders),
         order => order.price
