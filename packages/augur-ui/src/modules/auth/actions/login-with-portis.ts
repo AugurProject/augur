@@ -13,18 +13,15 @@ import { getNetworkId } from "modules/contracts/actions/contractCalls";
 const getPortisNetwork = (networkId): false | string | INetwork  => {
   const myPrivateEthereumNode = {
     nodeUrl: "http://localhost:8545",
-    chainId: "104",
+    chainId: networkId,
   };
   if (networkId === "1") {
     return "mainnet";
   } else if (networkId === "42") {
     return "kovan";
-  } else if (networkId === "104") {
-    return myPrivateEthereumNode;
   } else {
-    return false;
-  }
-};
+    return myPrivateEthereumNode;
+  }};
 
 export const loginWithPortis = (callback: NodeStyleCallback) => async (
   dispatch: ThunkDispatch<void, any, Action>

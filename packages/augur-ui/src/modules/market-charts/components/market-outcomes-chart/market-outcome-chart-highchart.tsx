@@ -1,9 +1,8 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { createBigNumber } from "utils/create-big-number";
-import Highcharts from "highcharts/highstock";
-import NoDataToDisplay from "highcharts/modules/no-data-to-display";
-import Styles from "modules/market-charts/components/market-outcomes-chart/market-outcomes-chart.styles.less";
+import React, { Component } from 'react';
+import { createBigNumber } from 'utils/create-big-number';
+import Highcharts from 'highcharts/highstock';
+import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
+import Styles from 'modules/market-charts/components/market-outcomes-chart/market-outcomes-chart.styles.less';
 
 NoDataToDisplay(Highcharts);
 
@@ -27,16 +26,19 @@ interface MarketOutcomeChartsHighchartsState {
   containerWidth: number;
   options: any;
 }
-export default class MarketOutcomesChartHighchart extends Component<MarketOutcomeChartsHighchartsProps, MarketOutcomeChartsHighchartsState> {
+export default class MarketOutcomesChartHighchart extends Component<
+  MarketOutcomeChartsHighchartsProps,
+  MarketOutcomeChartsHighchartsState
+> {
   static defaultProps = {
     isScalar: false,
     daysPassed: 0,
-    scalarDenomination: ""
+    scalarDenomination: '',
   };
 
   ethLabel: null;
   container: any;
-  chart: any;
+  chart: Highcharts.Chart;
 
   constructor(props) {
     super(props);
@@ -46,14 +48,14 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
       containerWidth: 0,
       options: {
         title: {
-          text: "",
-          y: 5
+          text: '',
+          y: 5,
         },
         lang: {
-          noData: "No Completed Trades"
+          noData: 'No Completed Trades',
         },
         chart: {
-          type: "line",
+          type: 'line',
           styledMode: false,
           animation: false,
           marginTop: 40,
@@ -62,7 +64,7 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
               // @ts-ignore
               const { width } = this.renderer;
               // @ts-ignore
-              this.ethLabel = this.renderer.label("DAI", width - 35, 0).add();
+              this.ethLabel = this.renderer.label('DAI', width - 35, 0).add();
             },
             redraw() {
               // @ts-ignore
@@ -70,28 +72,28 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
               // @ts-ignore
               this.ethLabel.destroy();
               // @ts-ignore
-              this.ethLabel = this.renderer.label("DAI", width - 35, 0).add();
-            }
-          }
+              this.ethLabel = this.renderer.label('DAI', width - 35, 0).add();
+            },
+          },
         },
         credits: {
-          enabled: false
+          enabled: false,
         },
         plotOptions: {
           area: {
-            threshold: null
+            threshold: null,
           },
           line: {
             dataGrouping: {
               forced: true,
-              units: [["day", [1]]]
-            }
+              units: [['day', [1]]],
+            },
           },
           series: {
             marker: {
-              enabled: true
-            }
-          }
+              enabled: true,
+            },
+          },
         },
         scrollbar: { enabled: false },
         navigator: { enabled: false },
@@ -100,15 +102,15 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
           showFirstLabel: true,
           showLastLabel: true,
           labels: {
-            format: "{value:%b %d}"
+            format: '{value:%b %d}',
           },
           crosshair: {
             snap: true,
             label: {
               enabled: true,
-              format: "{value:%b %d}"
-            }
-          }
+              format: '{value:%b %d}',
+            },
+          },
         },
         yAxis: {
           showEmpty: true,
@@ -118,47 +120,51 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
           showFirstLabel: true,
           showLastLabel: true,
           labels: {
-            format: "{value:.4f}",
+            format: '{value:.4f}',
             style: Styles.MarketOutcomeChartsHighcharts__yLabels,
             x: 0,
-            y: -2
+            y: -2,
           },
           title: {
-            text: ""
+            text: '',
           },
-          height: "100%",
+          height: '100%',
           resize: {
-            enabled: true
+            enabled: true,
           },
           crosshair: {
             snap: true,
             label: {
               enabled: true,
-              format: "{value:.4f} <span class='eth-label'>DAI</span>"
-            }
-          }
+              format: "{value:.4f} <span class='eth-label'>DAI</span>",
+            },
+          },
         },
         tooltip: { enabled: false },
         rangeSelector: {
-          enabled: false
-        }
-      }
+          enabled: false,
+        },
+      },
     };
     this.buidOptions = this.buidOptions.bind(this);
   }
 
   componentDidMount() {
-    const { bucketedPriceTimeSeries, selectedOutcomeId, daysPassed } = this.props;
-    const { containerHeight } = this.state;
-    this.buidOptions(
-      daysPassed,
+    const {
       bucketedPriceTimeSeries,
-      selectedOutcomeId
-    );
+      selectedOutcomeId,
+      daysPassed,
+    } = this.props;
+    const { containerHeight } = this.state;
+    this.buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcomeId);
   }
 
   componentWillUpdate(nextProps) {
-    const { bucketedPriceTimeSeries, daysPassed, selectedOutcomeId } = this.props;
+    const {
+      bucketedPriceTimeSeries,
+      daysPassed,
+      selectedOutcomeId,
+    } = this.props;
     const { containerHeight, containerWidth } = this.state;
     if (
       JSON.stringify(bucketedPriceTimeSeries) !==
@@ -191,21 +197,21 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
     ) {
       this.setState({
         containerHeight: this.container.clientHeight,
-        containerWidth: this.container.clientWidth
+        containerWidth: this.container.clientWidth,
       });
 
       const {
         bucketedPriceTimeSeries,
         selectedOutcomeId,
-        daysPassed
+        daysPassed,
       } = this.props;
       this.buidOptions(daysPassed, bucketedPriceTimeSeries, selectedOutcomeId);
     }
   };
 
   getxAxisProperties = (daysPassed, useTickInterval) => {
-    const hours = "{value:%H:%M}";
-    const days = "{value:%b %d}";
+    const hours = '{value:%H:%M}';
+    const days = '{value:%b %d}';
     const mmSecondsInHour = createBigNumber(3600 * 1000);
     const mmSecondsInDay = createBigNumber(24).times(mmSecondsInHour);
     const mmSecondsInWeek = createBigNumber(7).times(mmSecondsInDay);
@@ -217,15 +223,15 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
       labels: {
         format: interval.isEqualTo(mmSecondsInHour) ? hours : days,
         style: {
-          color: "#ffffff" // remove this when adding custom css and turning on styleMode
-        }
+          color: '#ffffff', // remove this when adding custom css and turning on styleMode
+        },
       },
       crosshair: {
         snap: true,
         label: {
-          enabled: true
-        }
-      }
+          enabled: true,
+        },
+      },
     };
   };
 
@@ -240,7 +246,7 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
       0
     );
     const timeIncrement =
-      daysPassed > NUM_DAYS_TO_USE_DAY_TIMEFRAME ? "day" : "hour";
+      daysPassed > NUM_DAYS_TO_USE_DAY_TIMEFRAME ? 'day' : 'hour';
 
     const xAxisProperties = this.getxAxisProperties(
       daysPassed,
@@ -255,7 +261,7 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
     options.chart = {
       ...options.chart,
       height: this.container.clientHeight - 10, // need margin as to not perma grow container
-      width: this.container.clientWidth - 10
+      width: this.container.clientWidth - 10,
     };
 
     const useArea =
@@ -270,18 +276,16 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
     const series = [];
     Object.keys(priceTimeSeries).forEach(id => {
       series.push({
-        // @ts-ignore
-        type: useArea ? "area" : "line",
-        // @ts-ignore
+        type: 'line',
         lineWidth:
           selectedOutcomeId && selectedOutcomeId === id
             ? HIGHLIGHTED_LINE_WIDTH
             : NORMAL_LINE_WIDTH,
         // @ts-ignore
-          data: priceTimeSeries[id].map(pts => [
+        data: priceTimeSeries[id].map(pts => [
           pts.timestamp,
-          createBigNumber(pts.price).toNumber()
-        ])
+          createBigNumber(pts.price).toNumber(),
+        ]),
       });
     });
 
@@ -291,7 +295,7 @@ export default class MarketOutcomesChartHighchart extends Component<MarketOutcom
     options.plotOptions.line.dataGrouping = {
       ...options.plotOptions.line.dataGrouping,
       forced: true,
-      units: [[timeIncrement, [1]]]
+      units: [[timeIncrement, [1]]],
     };
 
     const newOptions = Object.assign(options, { series });
