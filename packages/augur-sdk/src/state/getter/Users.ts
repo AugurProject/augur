@@ -597,7 +597,7 @@ async function getProfitLossRecordsByMarketAndOutcome(
   account: string,
   request: PouchDB.Find.FindRequest<{}>
 ): Promise<_.Dictionary<_.Dictionary<ProfitLossChangedLog[]>>> {
-  let profitLossResult = await db.findProfitLossChangedLogs(account, request);
+  const profitLossResult = await db.findProfitLossChangedLogs(account, request);
   return groupDocumentsByMarketAndOutcome<ProfitLossChangedLog>(
     profitLossResult
   );
