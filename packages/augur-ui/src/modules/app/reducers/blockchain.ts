@@ -5,8 +5,9 @@ import { Blockchain, BaseAction } from "modules/types";
 const DEFAULT_STATE: Blockchain = {
   currentBlockNumber: 0,
   currentAugurTimestamp: 0,
-  highestBlock: 0,
-  lastProcessedBlock: 0,
+  lastSyncedBlockNumber: 0,
+  blocksBehindCurrent: 0,
+  percentBehindCurrent: "0"
 };
 
 export default function(blockchain = DEFAULT_STATE, { type, data }: BaseAction): Blockchain {

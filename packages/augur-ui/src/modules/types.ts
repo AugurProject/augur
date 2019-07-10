@@ -478,10 +478,11 @@ export interface Category {
 }
 
 export interface Blockchain {
-  currentBlockNumber: number;
-  currentAugurTimestamp: number;
-  highestBlock: number;
-  lastProcessedBlock: number;
+  currentBlockNumber: number,
+  lastSyncedBlockNumber: number,
+  blocksBehindCurrent: number,
+  percentBehindCurrent: string,
+  currentAugurTimestamp: number,
 }
 
 export interface AppStatus {

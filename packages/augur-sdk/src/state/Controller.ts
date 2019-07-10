@@ -1,12 +1,12 @@
-import { Augur } from "../Augur";
-import { DB } from "./db/DB";
-import { IBlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
-import { Block } from "ethers/providers";
-import { augurEmitter } from "../events";
-import { SubscriptionEventName } from "../constants";
-import { Subscriptions } from "../subscriptions";
+import { Augur } from '../Augur';
+import { DB } from './db/DB';
+import { IBlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
+import { Block } from 'ethers/providers';
+import { augurEmitter } from '../events';
+import { SubscriptionEventName } from '../constants';
+import { Subscriptions } from '../subscriptions';
 
-const settings = require("./settings.json");
+const settings = require('./settings.json');
 
 export class Controller {
   private static latestBlock: Block;
@@ -16,9 +16,8 @@ export class Controller {
   public constructor(
     private augur: Augur,
     private db: Promise<DB>,
-    private blockAndLogStreamerListener: IBlockAndLogStreamerListener,
-  ) {
-  }
+    private blockAndLogStreamerListener: IBlockAndLogStreamerListener
+  ) {}
 
   public async fullTextSearch(eventName: string, query: string) {
     const db = await this.db;
@@ -27,16 +26,14 @@ export class Controller {
 
   public async run(): Promise<void> {
     try {
-      this.events.subscribe("controller:new:block", this.notifyNewBlockEvent);
+      this.events.subscribe('controller:new:block', this.notifyNewBlockEvent);
 
       const db = await this.db;
-      db.sync(
-        this.augur,
-        settings.chunkSize,
-        settings.blockstreamDelay,
-      );
+      db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
 
-      this.blockAndLogStreamerListener.listenForBlockRemoved(db.rollback.bind(db));
+      this.blockAndLogStreamerListener.listenForBlockRemoved(
+        db.rollback.bind(db)
+      );
       this.blockAndLogStreamerListener.startBlockStreamListener();
     } catch (err) {
       console.log(err);
@@ -44,15 +41,19 @@ export class Controller {
   }
 
   private notifyNewBlockEvent = async (): Promise<void> => {
-    let lowestBlock = await (await this.db).syncStatus.getLowestSyncingBlockForAllDBs();
+    let lowestBlock = await (await this
+      .db).syncStatus.getLowestSyncingBlockForAllDBs();
     const block = await this.getLatestBlock();
 
     if (lowestBlock === -1) {
       lowestBlock = block.number;
     }
 
-    const blocksBehindCurrent = (block.number - lowestBlock);
-    const percentBehindCurrent = (blocksBehindCurrent / block.number * 100).toFixed(4);
+    const blocksBehindCurrent = block.number - lowestBlock;
+    const percentBehindCurrent = (
+      (lowestBlock / block.number) *
+      100
+    ).toFixed(4);
 
     augurEmitter.emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
@@ -62,7 +63,7 @@ export class Controller {
       percentBehindCurrent,
       timestamp: block.timestamp,
     });
-  }
+  };
 
   private async getLatestBlock(): Promise<Block> {
     if (Controller.latestBlock) {
