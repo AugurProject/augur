@@ -25,13 +25,5 @@ ctx.addEventListener("message", async (message: any) => {
   }
 });
 
-// send everything to the browser so it can deal with it
-// console.log = (msg: string) => {
-//   ctx.postMessage(msg);
-// };
-
-// the main reason for the worker, to sync in another thread
-
-
 // to stop typescript from complaining
 export default null as any;

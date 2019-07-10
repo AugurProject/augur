@@ -25,7 +25,7 @@ const singleOutcomeBids: AskBid[] = [
   { shares: "30.03", price: "0.19" },
 ];
 const yesNoOrderBook: OrderBook = {
-  1: {
+  2: {
     buy: singleOutcomeBids,
     sell: singleOutcomeAsks,
   },
@@ -295,7 +295,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       _scalarDenomination: "degrees Fahrenheit",
     },
     orderBook: {
-      1: {
+      2: {
         buy: [
           { shares: "10.01", price: "20" },
           { shares: "20.01", price: "0" },
@@ -348,7 +348,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
     },
     orderBook: {
-      1: {
+      2: {
         buy: [
           { shares: "10.01", price: "2" },
           { shares: "20.01", price: "18" },
@@ -383,7 +383,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       _scalarDenomination: "million Tethers",
     },
     orderBook: {
-      1: {
+      2: {
         buy: [
             { shares: "10.01", price: "100" },
             { shares: "20.01", price: "150" },
@@ -414,11 +414,11 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         "The Florida–Georgia football rivalry is an American college football rivalry game played annually by the University of Florida Gators and the University of Georgia Bulldogs. https://en.wikipedia.org/wiki/Florida%E2%80%93Georgia_football_rivalry",
     },
     orderBook: {
-      0: {
+      1: {
         buy: singleOutcomeBids,
         sell: singleOutcomeAsks,
       },
-      1: {
+      2: {
         buy: singleOutcomeBids,
         sell: singleOutcomeAsks,
       },
@@ -468,10 +468,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       tags: ["mortality", "United States"],
     },
     orderBook: {
-      0: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
       1: {
         buy: singleOutcomeBids,
         sell: singleOutcomeAsks,
@@ -489,6 +485,10 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         sell: singleOutcomeAsks,
       },
       5: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      6: {
         buy: singleOutcomeBids,
         sell: singleOutcomeAsks,
       },
@@ -517,10 +517,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       tags: ["economy", "bubble"],
     },
     orderBook: {
-      0: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
       1: {
         buy: singleOutcomeBids,
         sell: singleOutcomeAsks,
@@ -541,6 +537,14 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
         buy: singleOutcomeBids,
         sell: singleOutcomeAsks,
       },
+      6: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      7: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      }
     },
   },
   {
@@ -566,10 +570,6 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       tags: ["economy", "bubble"],
     },
     orderBook: {
-      0: {
-        buy: singleOutcomeBids,
-        sell: singleOutcomeAsks,
-      },
       1: {
         buy: singleOutcomeBids,
         sell: singleOutcomeAsks,
