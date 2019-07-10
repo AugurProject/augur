@@ -8,7 +8,8 @@ import {
   LineBreak, 
   SmallSubheaders, 
   Subheaders, 
-  OutcomesList
+  OutcomesList,
+  SmallSubheadersTooltip
 } from "modules/create-market/components/common";
 import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
@@ -48,6 +49,7 @@ export default class Review extends React.Component<
     const {
       category,
       tag1,
+      tag2,
       marketType,
       description,
       endTime,
@@ -60,7 +62,9 @@ export default class Review extends React.Component<
       minPrice,
       maxPrice,
       tickSize,
-      outcomes
+      outcomes,
+      settlementFee,
+      affiliateFee
     } = newMarket;
 
     return (
@@ -68,9 +72,12 @@ export default class Review extends React.Component<
         <Header text="Market details" />
         <div>
           <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[marketType]} />
-          <SmallSubheaders header="Category" subheader={category} />
-          <SmallSubheaders header="Sub-category" subheader={tag1} />
+          <SmallSubheaders header="Primary Category" subheader={category} />
+          <SmallSubheaders header="Secondary category" subheader={tag1} />
+          <SmallSubheaders header="Tertiary category" subheader={tag2 === "" ? "–" : tag2} />
           <SmallSubheaders header="Market Question" subheader={description} />
+          <SmallSubheaders header="Market creator fee" subheader={settlementFee + "%"} />
+          <SmallSubheadersTooltip header="Affiliate fee" subheader={affiliateFee + "%"} text="The affiliate fee % is a percentage of the market creator fee" />
           {marketType === SCALAR &&
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />

@@ -8,7 +8,11 @@
 	    grid-template-columns: repeat(3, 1fr);
     	display: grid;
 
-        > div:nth-of-type(4) {
+        > div:first-of-type {
+            grid-column: 1 / span 10;
+        }
+
+        > div:nth-of-type(5) {
             grid-column: 1 / span 10;
         }
     }
