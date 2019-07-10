@@ -206,10 +206,6 @@ export const categories: Array<SortedGroup> = [
           { value: 'AFC Asian Cup', label: 'AFC Asian Cup' },
           { value: 'International Friendly', label: 'International Friendly' },
           {
-            value: 'FIFA Under-20 World Cup',
-            label: 'FIFA Under-20 World Cup',
-          },
-          {
             value: 'FIFA World Cup Qualifying - OFC',
             label: 'FIFA World Cup Qualifying - OFC',
           },
@@ -1241,4 +1237,5 @@ export const categories: Array<SortedGroup> = [
       { value: CUSTOM, label: CUSTOM }
     ],
   },
+  { value: CUSTOM, label: CUSTOM }
 ];
