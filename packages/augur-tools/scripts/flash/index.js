@@ -458,11 +458,6 @@ function help() {
           env: "GAS_PRICE_IN_NANOETH",
           Description:
             "The transaction gas price to use, specified in nanoeth (default: varies)"
-        },
-        {
-          env: "AUGUR_WS",
-          Description:
-            "The http endpoint for augur-node, (default: http://localhost:9001) "
         }
       ],
       {
