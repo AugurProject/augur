@@ -16,6 +16,7 @@ junit.xml
 .#*
 
 .indium.json
+.projectile
 *.tsbuildinfo
 tsconfig.tsbuildinfo
 tsconfig-local.json

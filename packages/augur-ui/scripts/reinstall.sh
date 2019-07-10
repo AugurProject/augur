@@ -11,9 +11,6 @@ cd "$(dirname $(readlink -f "$0"))/.."
 rm -rf node_modules/
 
 npm install
-if [ "$1" == "-l" ]; then
-  yarn link augur.js
-fi
 
 npm run lint
 npm test

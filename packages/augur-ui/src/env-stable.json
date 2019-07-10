@@ -1,5 +1,4 @@
 {
-  "augur-node": "wss://test.augur.net/augur-node",
   "ethereum-node": {
     "http": "https://test.augur.net/ethereum-http",
     "ws": "wss://test.augur.net/ethereum-ws",

@@ -6,14 +6,4 @@ services:
       - "8545:8545"
       - "8546:8546"
 
-  node:
-    image: augurproject/augur-node:core-${AUGUR_CORE_VERSION}
-    ports:
-      - "9001:9001"
-    environment:
-      - ETHEREUM_HTTP=http://geth:8545
-      - ETHEREUM_WS=ws://geth:8546
-    depends_on:
-      - geth
-
     entrypoint: ["/app/wait-for-url.sh", "geth:8545", "--", "/app/docker-entrypoint.sh"]

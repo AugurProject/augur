@@ -81,7 +81,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       outcome: true,
       isSingle: true,
       noToggle: true,
-      colorId: outcome.id +1,
+      colorId: outcome.id + 1,
       active: oP.selectedOutcomeId === outcome.id,
     }
   };

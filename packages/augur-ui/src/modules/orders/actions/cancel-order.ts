@@ -1,44 +1,42 @@
-import { eachOf } from "async";
-import {
-  CLOSE_DIALOG_CLOSING,
-  CLOSE_DIALOG_FAILED,
-  CLOSE_DIALOG_PENDING,
-} from "modules/common/constants";
-import { updateOrderStatus } from "modules/orders/actions/update-order-status";
-import selectOrder from "modules/orders/selectors/select-order";
-import logError from "utils/log-error";
-import { AppState } from "store";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { NodeStyleCallback } from "modules/types";
-
-const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
-// orderDetails: {
-//   orderId,
-//   marketId,
-//   outcome,
-//   orderTypeLabel,
-// }
+import logError from 'utils/log-error';
+import { AppState } from 'store';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { NodeStyleCallback } from 'modules/types';
+import getUserOpenOrder from 'modules/orders/selectors/select-user-open-order';
+import { cancelOpenOrders, cancelOpenOrder } from 'modules/contracts/actions/contractCalls';
 
 export const cancelAllOpenOrders = (orders: any, cb: NodeStyleCallback) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+  getState: () => AppState
 ) => {
-  eachOf(orders, (order: any) => order.cancelOrder(order));
+  // TODO: need to figure out max number of orders that can be cancelled at one time
+  cancelOpenOrders(orders.map(o => o.orderId));
+  if (cb) cb(null);
 };
 
 export const cancelOrder = (
   { orderId, marketId, outcome, orderTypeLabel }: any,
-  callback: NodeStyleCallback = logError,
+  callback: NodeStyleCallback = logError
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount, orderBooks, marketInfos } = getState();
-  const order = selectOrder(
+  const { userOpenOrders } = getState();
+  const order = getUserOpenOrder(
     orderId,
     marketId,
     outcome,
     orderTypeLabel,
-    orderBooks,
+    userOpenOrders
   );
+  if (order) {
+    // TODO: we'll update state using pending tx events.
+    cancelOpenOrder(orderId);
+  }
+
+  if (!order) {
+    console.log('order not found need to do something in UI');
+  }
+  if (callback) callback(null);
+  /*
   const market = marketInfos[marketId];
   if (
     order &&
@@ -56,25 +54,5 @@ export const cancelOrder = (
       );
     };
     updateStatus(CLOSE_DIALOG_PENDING);
-    // TODO add ability to cancel order
-    /*
-    api.CancelOrder.cancelOrder({
-      meta: loginAccount.meta,
-      _orderId: orderId,
-      onSent: () => updateStatus(CLOSE_DIALOG_PENDING),
-      onSuccess: () => {
-        updateStatus(CLOSE_DIALOG_CLOSING);
-        callback(null);
-      },
-      onFailed: (err: any) => {
-        updateStatus(CLOSE_DIALOG_FAILED);
-        setTimeout(
-          () => updateStatus(null),
-          TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS,
-        );
-        callback(err);
-      },
-    });
     */
-  }
 };

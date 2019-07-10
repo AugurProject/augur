@@ -376,6 +376,9 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.x'
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -388,10 +391,13 @@ jobs:
           docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
           # when we get deploy going we will swap these commands out for
           # docker:release
-          yarn workspace @augurproject/ui docker:build
-          docker push augurproject/augur-ui:latest
+          yarn workspace @augurproject/ui docker:release kovan
+          docker push augurproject/augur-ui:kovan
           #yarn workspace @augurproject/ui docker:release $(RELEASE_ENV)
         displayName: 'publish docker images on merge to master'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
       - task: Docker@1
         displayName: docker logout
         inputs:

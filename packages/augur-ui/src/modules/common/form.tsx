@@ -6,6 +6,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { PulseLoader } from 'react-spinners';
 import {
+  RightAngle,
   SearchIcon,
   XIcon,
   CheckMark,
@@ -19,8 +20,9 @@ import {
   DirectionArrow,
   Calendar,
   Clock,
-  Arrow
+  Arrow,
 } from 'modules/common/icons';
+import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 
 import Styles from 'modules/common/form.styles.less';
@@ -28,6 +30,8 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
+
+const CUSTOM = "Custom";
 
 interface CheckboxProps {
   id: string;
@@ -62,6 +66,7 @@ interface TextInputProps {
   onChange: Function;
   value?: string;
   trailingLabel?: string;
+  innerLabel?: string;
 }
 
 interface TextInputState {
@@ -186,6 +191,186 @@ interface CheckboxBarProps {
   error?: boolean;
 }
 
+interface CategoryMultiSelectProps {
+  sortedGroup: Array<SortedGroup>;
+  initialSelected?: Array<string>;
+  updateSelection: Function;
+}
+
+interface CategoryMultiSelectState {
+  groups: Array<SortedGroup>;
+  selected: Array<string>;
+  values: Array<string>;
+}
+
+const defaultMultiSelect = (amount: number, justStrings: boolean = false) => {
+  let result = [];
+  let item = justStrings ? '' : { value: '' };
+  for (let i = 1; i <= amount; i++) {
+    result.push(item);
+  }
+  return result;
+};
+
+export class CategoryMultiSelect extends Component<
+  CategoryMultiSelectProps,
+  CategoryMultiSelectState
+> {
+  state: CategoryMultiSelectState = {
+    groups: this.props.sortedGroup || defaultMultiSelect(3),
+    selected: this.props.initialSelected || ['', '', ''],
+    values: this.props.initialSelected || ['', '', ''],
+  };
+
+  createOptions(sortedGroup) {
+    let options = sortedGroup.map(item => ({ label: item.value, value: item.value }));
+    options.push({ label: CUSTOM, value: CUSTOM });
+    return options;
+  }
+
+  findSubgroup(sortedGroup, selection) {
+    if (selection === '') return [];
+    const selected = sortedGroup.find(item => item.value === selection);
+    if (selected && selected.subGroup) {
+      return selected.subGroup;
+    } else {
+      return [];
+    }
+  }
+
+  createGroups(groups, values) {
+    const primaryOptions = this.createOptions(groups);
+    const primarySubgroup = this.findSubgroup(groups, values[0]);
+    const secondaryOptions = this.createOptions(primarySubgroup);
+    const tertiaryOptions = this.createOptions(
+      this.findSubgroup(primarySubgroup, values[1])
+    );
+
+    return {
+      primaryOptions,
+      secondaryOptions,
+      tertiaryOptions,
+    };
+  }
+
+  determineVisible(values, secondaryOptions, tertiaryOptions, selected) {
+    const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 1;
+    const showTertiaryDropdown = tertiaryOptions.length > 1 && values[1] !== '';
+    const customPrimary = selected[0] === CUSTOM;
+    const customSecondary = selected[1] === CUSTOM || !showSecondaryDropdown && customPrimary && values[0] !== '';
+    const customTertiary =
+      selected[2] === CUSTOM || (!showTertiaryDropdown && values[1] !== '');
+    return {
+      showSecondaryDropdown,
+      showTertiaryDropdown,
+      customPrimary,
+      customSecondary,
+      customTertiary,
+    };
+  }
+
+  getNewValues(value, position) {
+    const { values } = this.state;
+    const updatedValues = values;
+    updatedValues[position] = value;
+    return updatedValues;
+  }
+
+  getNewSelected(selection, position) {
+    const { selected } = this.state;
+    const updatedSelected = selected;
+    updatedSelected[position] = selection;
+    return updatedSelected;
+  }
+
+  onChangeDropdown(choice, position) {
+    let value = choice;
+    if (choice === CUSTOM) value = '';
+    const selected = this.getNewSelected(choice, position);
+    const values = this.getNewValues(value, position);
+    this.handleUpdate(selected, values);
+  }
+
+  handleUpdate(selected, values) {
+    const { updateSelection } = this.props;
+    this.setState({ selected, values }, () => updateSelection(values));
+  }
+
+  render() {
+    const { groups, selected, values } = this.state;
+    const {
+      primaryOptions,
+      secondaryOptions,
+      tertiaryOptions,
+    } = this.createGroups(groups, values);
+    const {
+      showSecondaryDropdown,
+      showTertiaryDropdown,
+      customPrimary,
+      customSecondary,
+      customTertiary,
+    } = this.determineVisible(values, secondaryOptions, tertiaryOptions, selected);
+
+    return (
+      <ul className={Styles.CategoryMultiSelect}>
+        <li>
+        <FormDropdown
+          defaultValue={selected[0]}
+          staticLabel="Primary Category"
+          onChange={choice => this.onChangeDropdown(choice, 0)}
+          options={primaryOptions}
+        />
+        {customPrimary && (
+          <TextInput
+            value={values[0]}
+            placeholder="Custom Primary Category"
+            onChange={v => this.handleUpdate(selected, this.getNewValues(v, 0))}
+          />
+        )}
+        </li>
+        {(showSecondaryDropdown || customSecondary) && <li>
+            {(showSecondaryDropdown || customSecondary) && RightAngle}
+            {showSecondaryDropdown && (
+              <FormDropdown
+                defaultValue={selected[1]}
+                staticLabel="Secondary Category"
+                onChange={choice => this.onChangeDropdown(choice, 1)}
+                options={secondaryOptions}
+              />
+            )}
+            {customSecondary && (
+              <TextInput
+                value={values[1]}
+                placeholder="Custom Secondary Category"
+                onChange={v => this.handleUpdate(selected, this.getNewValues(v, 1))}
+              />
+            )}
+          </li>
+        }
+        {(showTertiaryDropdown || customTertiary) && <li>
+            {(showTertiaryDropdown || customTertiary) && RightAngle}
+            {showTertiaryDropdown && (
+              <FormDropdown
+                defaultValue={selected[2]}
+                staticLabel="Tertiary Category"
+                onChange={choice => this.onChangeDropdown(choice, 2)}
+                options={tertiaryOptions}
+              />
+            )}
+            {customTertiary && (
+              <TextInput
+                value={values[2]}
+                placeholder="Custom Tertiary Category"
+                onChange={v => this.handleUpdate(selected, this.getNewValues(v, 2))}
+              />
+            )}
+          </li>
+        }
+      </ul>
+    );
+  }
+}
+
 export const CheckboxBar = ({
   header,
   onChange,
@@ -230,7 +415,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       </div>
     );
   }
-};
+}
 
 export const RadioBar = ({
   header,
@@ -241,7 +426,7 @@ export const RadioBar = ({
   expandable,
   onTextChange,
   placeholder,
-  textValue
+  textValue,
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
@@ -253,11 +438,20 @@ export const RadioBar = ({
   >
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
-    {expandable && checked ? <TextInput placeholder={placeholder} value={textValue} onChange={onTextChange} /> : null}
+    {expandable && checked ? (
+      <TextInput
+        placeholder={placeholder}
+        value={textValue}
+        onChange={onTextChange}
+      />
+    ) : null}
   </div>
 );
 
-export class RadioTwoLineBarGroup extends Component<RadioGroupProps, RadioGroupState> {
+export class RadioTwoLineBarGroup extends Component<
+  RadioGroupProps,
+  RadioGroupState
+> {
   state: RadioGroupState = {
     selected: this.props.defaultSelected || null,
   };
@@ -345,7 +539,7 @@ const RadioCard = ({
   <div
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
-      [Styles.CustomIcon]: icon
+      [Styles.CustomIcon]: icon,
     })}
     role="button"
     onClick={e => onChange(value)}
@@ -382,7 +576,7 @@ export const LocationDisplay = ({
 
 export class TextInput extends React.Component<TextInputProps, TextInputState> {
   state: TextInputState = {
-    value: this.props.value || "",
+    value: this.props.value === null ? '' : this.props.value,
   };
 
   componentWillReceiveProps(nextProps: TextInputProps) {
@@ -405,20 +599,24 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       errorMessage,
       type,
       trailingLabel,
+      innerLabel
     } = this.props;
 
     return (
       <>
         <div className={Styles.TextInput}>
           {type !== 'textarea' ? (
-            <input
-              {...this.props}
-              className={classNames({ [Styles.error]: error })}
-              value={this.state.value}
-              onChange={this.onChange}
-              placeholder={placeholder}
-              disabled={disabled}
-            />
+            <>
+              <input
+                {...this.props}
+                className={classNames({ [Styles.error]: error })}
+                value={this.state.value}
+                onChange={this.onChange}
+                placeholder={placeholder}
+                disabled={disabled}
+              />
+              {innerLabel && <span className={Styles.Inner}>{innerLabel}</span>}
+            </>
           ) : (
             <textarea
               {...this.props}
@@ -429,7 +627,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
               disabled={disabled}
             />
           )}
-          {trailingLabel && <span>{trailingLabel}</span>}
+          {trailingLabel && <span className={Styles.Trailing}>{trailingLabel}</span>}
         </div>
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
       </>
@@ -446,11 +644,7 @@ interface TimeSelectorProps {
   focused?: Boolean;
 }
 
-export class TimeSelector extends React.Component<
-  TimeSelectorProps,
-  {}
-> {
-
+export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
   componentDidMount() {
     window.addEventListener('click', this.handleWindowOnClick);
   }
@@ -460,7 +654,11 @@ export class TimeSelector extends React.Component<
   }
 
   handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (this.timeSelector && !this.timeSelector.contains(event.target) && this.props.focused) {
+    if (
+      this.timeSelector &&
+      !this.timeSelector.contains(event.target) &&
+      this.props.focused
+    ) {
       this.props.onFocusChange(false);
     }
   };
@@ -470,15 +668,15 @@ export class TimeSelector extends React.Component<
   };
 
   onChangeMinutes = value => {
-    this.props.onChange("minute", value);
+    this.props.onChange('minute', value);
   };
 
   onChangeHours = value => {
-    this.props.onChange("hour", value);
+    this.props.onChange('hour', value);
   };
 
   onChangeAM = value => {
-    this.props.onChange("meridiem", value);
+    this.props.onChange('meridiem', value);
   };
 
   render() {
@@ -493,10 +691,9 @@ export class TimeSelector extends React.Component<
       >
         <button onClick={this.toggleSelector}>
           <span>
-            {(!hour || !minute || !meridiem) ?
-              "Time"
-              : hour + ":" + minute + " " + meridiem
-            }
+            {!hour || !minute || !meridiem
+              ? 'Time'
+              : hour + ':' + minute + ' ' + meridiem}
           </span>
           {Clock}
         </button>
@@ -509,7 +706,7 @@ export class TimeSelector extends React.Component<
                 min={1}
                 max={12}
                 onChange={this.onChangeHours}
-                value={hour !== null ? hour : "12"}
+                value={hour !== null ? hour : '12'}
               />
               <span>:</span>
               <IndividualTimeSelector
@@ -518,13 +715,13 @@ export class TimeSelector extends React.Component<
                 min={0}
                 max={59}
                 onChange={this.onChangeMinutes}
-                value={minute !== null ? minute : "12"}
+                value={minute !== null ? minute : '12'}
               />
               <IndividualTimeSelector
                 label="AM/PM"
                 hasOptions
                 onChange={this.onChangeAM}
-                value={meridiem || "AM"}
+                value={meridiem || 'AM'}
               />
             </div>
           </>
@@ -592,7 +789,7 @@ class IndividualTimeSelector extends React.Component<
       const newValue = parseFloat(value) + 1;
       this.onChange(newValue);
     } else {
-      this.onChange(value === "AM" ? "PM" : "AM");
+      this.onChange(value === 'AM' ? 'PM' : 'AM');
     }
   };
 
@@ -602,7 +799,7 @@ class IndividualTimeSelector extends React.Component<
       const newValue = parseFloat(value) - 1;
       this.onChange(newValue);
     } else {
-      this.onChange(value === "AM" ? "PM" : "AM");
+      this.onChange(value === 'AM' ? 'PM' : 'AM');
     }
   };
 

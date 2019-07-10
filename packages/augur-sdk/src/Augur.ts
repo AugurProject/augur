@@ -218,6 +218,8 @@ export class Augur<TProvider extends Provider = Provider> {
   public getTradingOrders = this.bindTo(Trading.getOrders);
   public getMarketOrderBook = this.bindTo(Markets.getMarketOrderBook);
 
+  public getMarketPriceCandlesticks = this.bindTo(Markets.getMarketPriceCandlesticks);
+
   public getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
   public getProfitLoss = this.bindTo(Users.getProfitLoss);
   public getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);

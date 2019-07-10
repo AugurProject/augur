@@ -29,6 +29,8 @@ interface TradingFormProps {
   updateTradeShares: Function;
   toggleConnectionTray: Function;
   onSubmitPlaceTrade: Function;
+  updateLiquidity?: Function;
+  initialLiquidity?: Boolean;
 }
 
 interface TradingFormState {
@@ -93,6 +95,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       marketReviewTradeSeen,
       marketReviewTradeModal,
       sortedOutcomes,
+      updateLiquidity,
+      initialLiquidity
     } = this.props;
     const s = this.state;
 
@@ -136,6 +140,8 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           onSubmitPlaceTrade={onSubmitPlaceTrade}
           marketReviewTradeModal={marketReviewTradeModal}
           marketReviewTradeSeen={marketReviewTradeSeen}
+          updateLiquidity={updateLiquidity}
+          initialLiquidity={initialLiquidity}
         />
         {initialMessage && (
           <div>

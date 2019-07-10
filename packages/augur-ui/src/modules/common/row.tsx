@@ -18,6 +18,7 @@ export interface StyleOptions {
   position?: Boolean;
   openOrder?: Boolean;
   filledOrder?: Boolean;
+  initialLiquidity?: Boolean;
   noToggle?: Boolean;
   showExpandedToggleOnMobile?: Boolean;
   isFirst?: Boolean;
@@ -42,7 +43,15 @@ const RowContent = (props: RowProps) => {
     columnProperties,
     styleOptions,
   } = props;
-  const { position, openOrder, filledOrder, active, outcome, colorId } = styleOptions;
+  const { 
+    position, 
+    openOrder, 
+    filledOrder, 
+    active, 
+    outcome, 
+    colorId, 
+    initialLiquidity 
+  } = styleOptions;
 
   return (<ul
       className={classNames(Styles.Row, {
@@ -55,7 +64,7 @@ const RowContent = (props: RowProps) => {
           openOrder && extendedView,
         [Styles.Row3]: position,
         [Styles.Row3_a]:
-          position && extendedView,
+          position && extendedView || initialLiquidity,
         [Styles.Row4]:
           outcome,
         [`${Styles[`Row4-${colorId}`]}`]: outcome && colorId,
@@ -90,7 +99,17 @@ const Row = (props: RowProps) => {
     return null;
   }
 
-  const { position, openOrder, filledOrder, showExpandedToggleOnMobile, noToggle, isFirst, outcome, active } = styleOptions;
+  const { 
+    position, 
+    openOrder, 
+    filledOrder, 
+    showExpandedToggleOnMobile, 
+    noToggle, 
+    isFirst, 
+    outcome, 
+    active, 
+    initialLiquidity 
+  } = styleOptions;
 
   const rowContent = (
     <Media query={SMALL_MOBILE}>
@@ -103,7 +122,16 @@ const Row = (props: RowProps) => {
 
   if (noToggle && !extendedViewNotOnMobile) {
     return (
-      <div onClick={rowOnClick} className={classNames(Styles.SingleRow, Styles.BottomBorder, {[Styles.Row4Parent]: outcome})}>
+      <div 
+        onClick={rowOnClick} 
+        className={classNames(Styles.SingleRow, 
+          {
+            [Styles.Row4Parent]: outcome, 
+            [Styles.DarkRow]: initialLiquidity, 
+            [Styles.BottomBorder]: !initialLiquidity
+          }
+        )}
+       >
         {rowContent}
       </div>
     );
