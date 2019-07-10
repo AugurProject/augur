@@ -193,6 +193,7 @@ export default class FeesLiquidity extends React.Component<
             content={
               <MarketDepth
                 market={newMarket}
+                initialLiquidity
                 selectedOutcomeId={s.selectedOutcome}
                 updateSelectedOrderProperties={this.updateSelectedOrderProperties}
                 hoveredPrice={null}
