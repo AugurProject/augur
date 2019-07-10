@@ -16,6 +16,7 @@ import {
   numTicksToTickSize,
   QUINTILLION,
   convertOnChainPriceToDisplayPrice,
+  convertOnChainAmountToDisplayAmount,
 } from '../../index';
 import { toAscii } from '../utils/utils';
 
@@ -210,41 +211,87 @@ export class Markets {
           // TODO remove this partialCandlestick stuff and just return
           // a Candlestick after the temporary Candlestick.tokenVolume
           // is removed (see note on Candlestick.tokenVolume).
+
+          const marketDoc = marketCreatedLogs[0];
+          const minPrice = new BigNumber(marketDoc.prices[0]);
+          const maxPrice = new BigNumber(marketDoc.prices[1]);
+          const numTicks = new BigNumber(marketDoc.numTicks);
+          const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
           const partialCandlestick = {
             startTimestamp: parseInt(startTimestamp, 10),
-            start: new BigNumber(
-              _.minBy(trades, tradeLog => {
-                return new BigNumber(tradeLog.timestamp).toNumber();
-              })!.price
+            start: convertOnChainPriceToDisplayPrice(
+              new BigNumber(
+                _.minBy(trades, tradeLog => {
+                  return new BigNumber(tradeLog.timestamp).toNumber();
+                })!.price,
+                16
+              ),
+              minPrice,
+              tickSize
             ).toString(10),
-            end: new BigNumber(
-              _.maxBy(trades, tradeLog => {
-                return new BigNumber(tradeLog.timestamp).toNumber();
-              })!.price
+            end: convertOnChainPriceToDisplayPrice(
+              new BigNumber(
+                _.maxBy(trades, tradeLog => {
+                  return new BigNumber(tradeLog.timestamp).toNumber();
+                })!.price,
+                16
+              ),
+              minPrice,
+              tickSize
             ).toString(10),
-            min: new BigNumber(
-              _.minBy(trades, tradeLog => {
-                return new BigNumber(tradeLog.price).toNumber();
-              })!.price
+            min: convertOnChainPriceToDisplayPrice(
+              new BigNumber(
+                _.minBy(trades, tradeLog => {
+                  return new BigNumber(tradeLog.price).toNumber();
+                })!.price,
+                16
+              ),
+              minPrice,
+              tickSize
             ).toString(10),
-            max: new BigNumber(
-              _.maxBy(trades, tradeLog => {
-                return new BigNumber(tradeLog.price).toNumber();
-              })!.price
+            max: convertOnChainPriceToDisplayPrice(
+              new BigNumber(
+                _.maxBy(trades, tradeLog => {
+                  return new BigNumber(tradeLog.price).toNumber();
+                })!.price,
+                16
+              ),
+              minPrice,
+              tickSize
             ).toString(10),
             volume: _.reduce(
               trades,
-              (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
-                totalVolume.plus(
-                  new BigNumber(tradeRow.amount).times(tradeRow.price)
-                ),
+              (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) => {
+                const amount = convertOnChainAmountToDisplayAmount(
+                  new BigNumber(tradeRow.amountFilled),
+                  tickSize
+                );
+
+                const displayPrice = convertOnChainPriceToDisplayPrice(
+                  new BigNumber(tradeRow.price),
+                  minPrice,
+                  tickSize
+                );
+
+                const price =
+                  tradeRow.orderType === OrderType.Bid
+                    ? maxPrice
+                        .dividedBy(QUINTILLION)
+                        .minus(displayPrice)
+                    : displayPrice;
+
+                return totalVolume.plus(amount.times(price));
+              },
               new BigNumber(0)
             ).toString(10),
-            shareVolume: _.reduce(
-              trades,
-              (totalShareVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
-                totalShareVolume.plus(tradeRow.amount),
-              new BigNumber(0)
+            shareVolume: convertOnChainAmountToDisplayAmount(
+              _.reduce(
+                trades,
+                (totalShareVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
+                  totalShareVolume.plus(tradeRow.amountFilled),
+                new BigNumber(0)
+              ),
+              tickSize
             ).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
           };
           return {
@@ -520,10 +567,11 @@ export class Markets {
       };
     };
 
-    const bucketAndSortOrdersByPrice = (unsortedOrders: {
-      [orderId: string]: Order;
-    },
-    sortDescending: boolean = true
+    const bucketAndSortOrdersByPrice = (
+      unsortedOrders: {
+        [orderId: string]: Order;
+      },
+      sortDescending: boolean = true
     ) => {
       const bucketsByPrice = _.groupBy<Order>(
         Object.values(unsortedOrders),
@@ -538,7 +586,7 @@ export class Markets {
           );
 
       return prickKeysSorted.map(k => bucketsByPrice[k]);
-    }
+    };
 
     const processMarket = (orders: Orders) => {
       const outcomes = Object.values(orders)[0];
@@ -819,7 +867,7 @@ async function getMarketOutcomes(
   minPrice: BigNumber
 ): Promise<MarketInfoOutcome[]> {
   const outcomes: MarketInfoOutcome[] = [];
-  const denomination = scalarDenomination ? scalarDenomination : "N/A";
+  const denomination = scalarDenomination ? scalarDenomination : 'N/A';
   if (marketCreatedLog.outcomes.length === 0) {
     const ordersFilled0 = (await db.findOrderFilledLogs({
       selector: { market: marketCreatedLog.market, outcome: '0x00' },
@@ -859,8 +907,7 @@ async function getMarketOutcomes(
               tickSize
             ).toString(10)
           : null,
-      description:
-        marketCreatedLog.marketType === 0 ? 'No' : denomination,
+      description: marketCreatedLog.marketType === 0 ? 'No' : denomination,
       volume:
         marketVolumeChangedLogs.length === 0 ||
         marketVolumeChangedLogs[0].outcomeVolumes[1] === '0x00'
@@ -879,8 +926,7 @@ async function getMarketOutcomes(
               tickSize
             ).toString(10)
           : null,
-      description:
-        marketCreatedLog.marketType === 0 ? 'Yes' : denomination,
+      description: marketCreatedLog.marketType === 0 ? 'Yes' : denomination,
       volume:
         marketVolumeChangedLogs.length === 0 ||
         marketVolumeChangedLogs[0].outcomeVolumes[2] === '0x00'

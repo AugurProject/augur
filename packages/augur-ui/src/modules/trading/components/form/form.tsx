@@ -38,6 +38,7 @@ interface FromProps {
   updateTradeTotalCost: Function;
   updateTradeNumShares: Function;
   clearOrderConfirmation: Function;
+  initialLiquidity?: Boolean;
 }
 
 interface TestResults {
@@ -534,6 +535,7 @@ class Form extends Component<FromProps, FormState> {
       gasCostEst,
       updateSelectedOutcome,
       sortedOutcomes,
+      initialLiquidity
     } = this.props;
     const s = this.state;
 
@@ -707,29 +709,33 @@ class Form extends Component<FromProps, FormState> {
             )}
           </li>
           <li>
-            <Checkbox
-              id="tr__input--do-no-create-orders"
-              type="checkbox"
-              isChecked={!!s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
-              value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
-              smallOnDesktop
-              onClick={e =>
-                updateState({
-                  [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: !s[
-                    this.INPUT_TYPES.DO_NOT_CREATE_ORDERS
-                  ],
-                })
-              }
-            />
-            <label htmlFor="tr__input--do-no-create-orders">
-              Fill Orders Only
-            </label>
-            <button
-              className={Styles.TradingForm__button__clear}
-              onClick={() => this.clearOrderFormProperties()}
-            >
-              Clear
-            </button>
+            {!initialLiquidity &&
+              <>
+                <Checkbox
+                  id="tr__input--do-no-create-orders"
+                  type="checkbox"
+                  isChecked={!!s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
+                  value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
+                  smallOnDesktop
+                  onClick={e =>
+                    updateState({
+                      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: !s[
+                        this.INPUT_TYPES.DO_NOT_CREATE_ORDERS
+                      ],
+                    })
+                  }
+                />
+                <label htmlFor="tr__input--do-no-create-orders">
+                  Fill Orders Only
+                </label>
+                <button
+                  className={Styles.TradingForm__button__clear}
+                  onClick={() => this.clearOrderFormProperties()}
+                >
+                  Clear
+                </button>
+              </>
+            }
           </li>
         </ul>
         {errors.length > 0 && (

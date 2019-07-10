@@ -172,6 +172,14 @@
   padding: 0;
 }
 
+.DarkRow {
+  background-color: @color-tertiary-background;
+
+  &:not(:last-of-type) {
+    border-bottom: 0.0625rem solid @color-primary-background;
+  }
+}
+
 .Row4 {
   grid-template-columns: 2fr repeat(5, 1fr);
   padding: 0.5rem 1.75rem 0.5rem 1.5rem;

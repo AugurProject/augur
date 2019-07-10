@@ -119,7 +119,6 @@ export interface Universe {
 
 export interface Versions {
   augurui: string | null;
-  augurjs: string | null;
 }
 export interface TransacitonData {
   [transactionId: string]: {
@@ -479,10 +478,11 @@ export interface Category {
 }
 
 export interface Blockchain {
-  currentBlockNumber: number;
-  currentAugurTimestamp: number;
-  highestBlock: number;
-  lastProcessedBlock: number;
+  currentBlockNumber: number,
+  lastSyncedBlockNumber: number,
+  blocksBehindCurrent: number,
+  percentBehindCurrent: string,
+  currentAugurTimestamp: number,
 }
 
 export interface AppStatus {
@@ -635,4 +635,15 @@ export interface Trade {
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;
   orderShareTradingFee: FormattedNumber;
+}
+
+export interface PriceTimeSeriesData {
+  tokenVolume: number;
+  period: number;
+  open: number;
+  close: number;
+  low: number;
+  high: number;
+  volume: number;
+  shareVolume: number;
 }

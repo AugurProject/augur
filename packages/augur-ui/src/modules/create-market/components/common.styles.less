@@ -69,6 +69,12 @@
 	    	margin-right: 3px;
 	    }
 	}
+
+	&.Small {
+		> p {
+			margin-top: @size-2;
+		}
+	}
 }
 
 .XLargeSubheaders {
@@ -97,9 +103,25 @@
 }
 
 .SmallHeaderLink {	
-	.text-14;
+	> span,
+	> a {
+		.text-14;
+	}
 
-	color: @color-alternate-info-text;
+	> span {
+		color: @color-alternate-info-text;
+	}
+
+	&.XSmall {
+		> span,
+		> a {
+			.text-12;
+		}
+
+		> span {
+			color: @color-tertiary-text;
+		}
+	}
 }
 
 .NumberedList {
@@ -240,12 +262,12 @@
 }
 
 .ContentBlock {
-	background: @color-tertiary-background;
-	border-radius: @border-radius-extra-rounded;
 	flex-direction: column;
-	padding: @size-40;
     display: flex;
     min-width: 750px;
+    background: @color-tertiary-background;
+	border-radius: @border-radius-extra-rounded;
+	padding: @size-40;
 
     > button {
     	max-width: 200px;
@@ -254,6 +276,11 @@
     > section,
     > button {
     	margin-top: @size-24;
+    }
+
+    &.NoDark {
+    	padding: 0;
+    	background: transparent;
     }
 }
 

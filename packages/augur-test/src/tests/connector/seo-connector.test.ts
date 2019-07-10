@@ -25,7 +25,7 @@ let db: Promise<DB>;
 
 const mock = makeDbMock();
 
-jest.mock('@augurproject/sdk/build/state/index', () => {
+jest.mock('@augurproject/sdk/build/state/create-api', () => {
   return {
     __esModule: true,
     buildAPI: () => {
@@ -54,8 +54,6 @@ jest.mock('@augurproject/sdk/build/state/index', () => {
 });
 
 beforeAll(async () => {
-  connector = new SEOConnector();
-
   addresses = loadSeed(seedPath).addresses;
   provider = await makeProvider(ACCOUNTS);
 
@@ -63,6 +61,10 @@ beforeAll(async () => {
   db = mock.makeDB(john.augur, ACCOUNTS);
 
   await john.approveCentralAuthority();
+
+  connector = new SEOConnector();
+  console.log("Connector connecting")
+  await connector.connect('');
 }, 120000);
 
 test('SEOConnector :: Should route correctly and handle events', async done => {
@@ -75,8 +77,6 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     extraInfo:
       '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
   });
-
-  await connector.connect('');
 
   await connector.on(
     SubscriptionEventName.MarketCreated,
@@ -120,11 +120,12 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       expect(arg).toEqual(
         {
           eventName: SubscriptionEventName.NewBlock,
-          blocksBehindCurrent: 0,
+          blocksBehindCurrent: expect.any(Number),
           highestAvailableBlockNumber: expect.any(Number),
           lastSyncedBlockNumber: expect.any(Number),
-          percentBehindCurrent: '0.0000',
-        },
+          percentBehindCurrent: expect.any(String),
+          timestamp: expect.any(Number),
+        }
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);

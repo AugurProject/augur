@@ -327,6 +327,8 @@ export const INITIAL_LIQUIDITY_MIN = 250;
 export const SETTLEMENT_FEE_DEFAULT = 0;
 export const SETTLEMENT_FEE_MIN = 0;
 export const SETTLEMENT_FEE_MAX = 12.5;
+export const AFFILIATE_FEE_DEFAULT = 0;
+
 // Advanced Market Creation Defaults
 export const STARTING_QUANTITY_DEFAULT = 100;
 export const STARTING_QUANTITY_MIN = 0.1;
@@ -378,28 +380,28 @@ export const RANGES = [
 export const PERIOD_RANGES = {
   3600: {
     period: 3600,
-    format: "{value:%H:%M}",
+    format: "{value:%b %d}",
     crosshair: "{value:%H:%M}",
-    range: 24 * 3600 * 1000 // 1 day
+    range: 24 * 3600 * 1000, // 1 day
   },
   43200: {
     period: 43200,
-    format: "{value:%H:%M}",
+    format: "{value:%b %d}",
     crosshair: "{value:%H:%M}",
-    range: 7 * 24 * 3600 * 1000 // 1 week
+    range: 7 * 24 * 3600 * 1000, // 1 week
   },
   86400: {
     period: 86400,
     format: "{value:%b %d}",
-    crosshair: "{value:%b %d}",
-    range: 30 * 24 * 3600 * 1000 // month
+    crosshair: "{value:%b %d }",
+    range: 30 * 24 * 3600 * 1000, // month
   },
   604800: {
     period: 604800,
     format: "{value:%b %d}",
-    crosshair: "{value:%b %d}",
-    range: 6 * 30 * 24 * 3600 * 1000 // 6 months
-  }
+    crosshair: "{value:%b %d }",
+    range: 6 * 30 * 24 * 3600 * 1000, // 6 months
+  },
 };
 
 export const DEFAULT_PERIODS_VALUE = 86400;
@@ -644,6 +646,17 @@ export const BID = "bid";
 export const ASK = "ask";
 export const MATCH_BID = "match_bid";
 export const MATCH_ASK = "match_ask";
+
+export const VOLUME_DAI_SHARES = [
+  {
+    value: DAI,
+    label: DAI
+  },
+  {
+    value: SHARES,
+    label: SHARES
+  }
+];
 
 export const VOLUME_ETH_SHARES = [
   {
