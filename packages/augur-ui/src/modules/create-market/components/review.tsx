@@ -47,9 +47,7 @@ export default class Review extends React.Component<
     const s = this.state;
 
     const {
-      category,
-      tag1,
-      tag2,
+      categories,
       marketType,
       description,
       endTime,
@@ -72,9 +70,9 @@ export default class Review extends React.Component<
         <Header text="Market details" />
         <div>
           <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[marketType]} />
-          <SmallSubheaders header="Primary Category" subheader={category} />
-          <SmallSubheaders header="Secondary category" subheader={tag1} />
-          <SmallSubheaders header="Tertiary category" subheader={tag2 === "" ? "–" : tag2} />
+          <SmallSubheaders header="Primary Category" subheader={categories[0]} />
+          <SmallSubheaders header="Secondary category" subheader={categories[1]} />
+          <SmallSubheaders header="Tertiary category" subheader={categories[2] === "" ? "–" : categories[2]} />
           <SmallSubheaders header="Market Question" subheader={description} />
           <SmallSubheaders header="Market creator fee" subheader={settlementFee + "%"} />
           <SmallSubheadersTooltip header="Affiliate fee" subheader={affiliateFee + "%"} text="The affiliate fee % is a percentage of the market creator fee" />

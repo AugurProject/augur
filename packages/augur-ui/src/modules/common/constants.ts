@@ -550,6 +550,7 @@ export const WITHDRAWETHERTO = "WITHDRAWETHERTO";
 export const WITHDRAWINEMERGENCY = "WITHDRAWINEMERGENCY";
 export const SENDETHER = "SENDETHER";
 export const SENDREPUTATION = "SENDREPUTATION";
+export const CUSTOM = "Custom";
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = "ORDER_BOOK_TABLE";
