@@ -21,6 +21,7 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
   const allFee = parseInt(marketInfo.settlementFee || '0', 10);
   const marketData: MarketData = {
     ...marketInfo,
+    marketId : marketInfo.id,
     minPriceBigNumber: createBigNumber(marketInfo.minPrice),
     maxPriceBigNumber: createBigNumber(marketInfo.maxPrice),
     outcomesFormatted: processOutcomes(marketInfo),
@@ -29,6 +30,7 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
     creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
     finalizationTimeFormatted: marketInfo.finalizationTime ? convertUnixToFormattedDate(marketInfo.finalizationTime) : null,
     consensusFormatted: processConsensus(marketInfo),
+    defaultSelectedOutcomeId: getDefaultOutcomeSelected(marketInfo.marketType),
     reportingFeeRatePercent: formatPercent(reportingFee * 100, {
       positiveSign: false,
       decimals: 4,
@@ -57,6 +59,10 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
   return marketData;
 }
 
+function getDefaultOutcomeSelected(marketType: string) {
+  if (marketType === CATEGORICAL) return 1;
+  return 2;
+}
 function getMarketStatus(reportingState: string) {
   let marketStatus = MARKET_OPEN;
   switch (reportingState) {

@@ -40,7 +40,7 @@ import { Action } from 'redux';
 import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
-import { OrderEventType } from '@augurproject/sdk/build/state/logs/types';
+import { OrderEventType, ParsedOrderEventLog } from '@augurproject/sdk/build/state/logs/types';
 
 const handleAlertUpdate = (
   log: any,
@@ -182,7 +182,7 @@ export const handleTokensBurnedLog = (log: any) => (
 };
 
 export const handleOrderLog = (log: any) => {
-  const type = log.OrderEventType;
+  const type = log.eventType;
   switch(type) {
     case OrderEventType.Cancel: {
       return handleOrderCanceledLog(log);
@@ -199,73 +199,75 @@ export const handleOrderLog = (log: any) => {
   }
 }
 
-export const handleOrderCreatedLog = (log: any) => (
+export const handleOrderCreatedLog = (log: ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(loadMarketsInfoIfNotLoaded([log.marketId]));
+  const marketId = log.market;
   const isStoredTransaction = isSameAddress(
     log.orderCreator,
     getState().loginAccount.address
   );
   if (isStoredTransaction) {
+    dispatch(loadMarketsInfoIfNotLoaded([marketId]));
     dispatch(updateAssets());
-    handlePendingOrder(log, dispatch, getState);
-    handleAlertUpdate(log, dispatch, getState);
-    dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
+    // handlePendingOrder(log, dispatch, getState);
+    // handleAlertUpdate(log, dispatch, getState);
+    dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
-  if (isCurrentMarket(log.marketId))
-    dispatch(loadMarketOrderBook(log.marketId));
+  if (isCurrentMarket(marketId))
+    dispatch(loadMarketOrderBook(marketId));
 };
 
-export const handleOrderCanceledLog = (log: any) => (
+export const handleOrderCanceledLog = (log: ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(loadMarketsInfoIfNotLoaded([log.marketId]));
+  const marketId = log.market;
   const isStoredTransaction = isSameAddress(
-    log.sender,
+    log.orderCreator,
     getState().loginAccount.address
   );
   if (isStoredTransaction) {
-    if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
-    handleAlertUpdate(log, dispatch, getState);
+    // TODO: do we need to remove stuff based on events?
+    // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
     dispatch(updateAssets());
-    dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
+    dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
-  if (isCurrentMarket(log.marketId))
-    dispatch(loadMarketOrderBook(log.marketId));
+  if (isCurrentMarket(marketId))
+    dispatch(loadMarketOrderBook(marketId));
 };
 
-export const handleOrderFilledLog = (log: any) => (
+export const handleOrderFilledLog = (log: ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(loadMarketsInfo([log.marketId]));
+  const marketId = log.market;
   const { address } = getState().loginAccount;
   const isStoredTransaction =
-    isSameAddress(log.filler, address) || isSameAddress(log.creator, address);
+    isSameAddress(log.orderCreator, address) || isSameAddress(log.orderFiller, address);
   if (isStoredTransaction) {
+    dispatch(loadMarketsInfo([marketId]));
     dispatch(updateAssets());
     handlePendingOrder(log, dispatch, getState);
     handleAlertUpdate(log, dispatch, getState);
     dispatch(
       updateOutcomePrice(
-        log.marketId,
+        marketId,
         log.outcome,
-        new BigNumber(log.price, 10)
+        log.price
       )
     );
-    dispatch(loadUserFilledOrders({ marketId: log.marketId }));
-    dispatch(loadAccountOpenOrders({ marketId: log.marketId }));
+    dispatch(loadUserFilledOrders({ marketId }));
+    dispatch(loadAccountOpenOrders({ marketId }));
   }
   // always reload account positions on trade so we get up to date PL data.
-  dispatch(loadUserPositionsAndBalances(log.marketId));
-  dispatch(loadMarketTradingHistory(log.marketId));
-  if (isCurrentMarket(log.marketId))
-    dispatch(loadMarketOrderBook(log.marketId));
+  dispatch(loadUserPositionsAndBalances(marketId));
+  dispatch(loadMarketTradingHistory(marketId));
+  if (isCurrentMarket(marketId))
+    dispatch(loadMarketOrderBook(marketId));
 };
 
 export const handleTradingProceedsClaimedLog = (log: any) => (
