@@ -6,25 +6,18 @@ import { windowRef } from "utils/window-ref";
 import getInjectedWeb3Accounts from "utils/get-injected-web3-accounts";
 
 export const connect = async (env: EnvObject, callback: NodeStyleCallback = logError) => {
-
-  let provider = new JsonRpcProvider(env["ethereum-node"].http);
-  let isWeb3 = false;
-  let account = "";
-
-  const bootstrap = async (provider, account, isWeb3) => {
-    await augurSdk.makeApi(provider, account, provider.getSigner(), env, isWeb3);
-  };
-
   const injectedAccount = await getInjectedWeb3Accounts();
   const loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
 
   // Use injected provider if returning User has a unlocked injected account that matches the current logged in account
   if (injectedAccount && (loggedInAccount === injectedAccount[0])) {
-    provider = new Web3Provider(windowRef.web3.currentProvider);
-    account = windowRef.web3.currentProvider.selectedAddress,
-    isWeb3 = true;
+    const provider = new Web3Provider(windowRef.web3.currentProvider);
+    const account = windowRef.web3.currentProvider.selectedAddress;
+
+    await augurSdk.makeApi(provider, account, provider.getSigner(), env, false);
+  } else {
+    await augurSdk.makeApi(new JsonRpcProvider(env["ethereum-node"].http), undefined, undefined, env, true);
   }
 
-  await bootstrap(provider, account, isWeb3);
   callback(null);
 };

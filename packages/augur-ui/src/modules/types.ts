@@ -77,7 +77,9 @@ export interface OutcomeFormatted extends MarketInfoOutcome {
 }
 
 export interface MarketData extends MarketInfo {
+  marketId: string;
   marketStatus: string;
+  defaultSelectedOutcomeId: number;
   minPriceBigNumber: BigNumber;
   maxPriceBigNumber: BigNumber;
   creationTimeFormatted: DateFormattedObject;

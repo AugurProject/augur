@@ -24,10 +24,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const columnProperties = [
     {
-      key: "orderName",
+      key: "orderName-" + order.outcomeName,
       columnType: COLUMN_TYPES.TEXT,
-      text: order.outcomeName.toString(),
-      keyId: order.id,
+      text: order.outcomeName,
+      keyId: order.id + order.outcomeName,
     },
     {
       key: "orderType",
