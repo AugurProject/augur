@@ -10,7 +10,8 @@ import {
   EXPIRY_SOURCE_GENERIC, 
   DESIGNATED_REPORTER_SELF, 
   AFFILIATE_FEE_DEFAULT, 
-  YES_NO 
+  YES_NO,
+  YES_NO_OUTCOMES
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
@@ -39,22 +40,7 @@ export const DEFAULT_STATE: NewMarket = {
   currentStep: 0,
   marketType: YES_NO,
   outcomes: Array(2).fill(""),
-  outcomesFormatted: [
-    {
-      id: 0,
-      description: "Invalid",
-      isTradable: true,
-    },
-    {
-      id: 1,
-      description: "No"
-    },
-    {
-      id: 2,
-      description: "Yes",
-      isTradable: true,
-    },
-  ],
+  outcomesFormatted: YES_NO_OUTCOMES,
   scalarSmallNum: "",
   scalarBigNum: "",
   scalarDenomination: "",
