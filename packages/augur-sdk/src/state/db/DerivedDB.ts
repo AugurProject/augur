@@ -4,6 +4,7 @@ import { SyncStatus } from "./SyncStatus";
 import { Log, ParsedLog } from "@augurproject/types";
 import { Augur } from '../../Augur';
 import { DB } from "./DB";
+import { sleep } from "../utils/utils";
 
 /**
  * Stores derived data from multiple logs and post-log processing
@@ -13,6 +14,7 @@ export class DerivedDB extends AbstractDB {
   private idFields: Array<string>;
   private mergeEventNames: Array<string>;
   private stateDB: DB;
+  private updatingHighestSyncBlock: boolean = false;
 
   constructor(db: DB, networkId: number, name: string, mergeEventNames: Array<string>, idFields: Array<string>) {
     super(networkId, db.getDatabaseName(name), db.pouchDBFactory);
@@ -65,15 +67,19 @@ export class DerivedDB extends AbstractDB {
         return val;
         }, idDocuments[0]);
       }));
-      documents = _.sortBy(documents, "_id");
 
-      success = await this.bulkUpsertDocuments(documents[0]._id, documents);
+      success = await this.bulkUpsertUnorderedDocuments(documents);
     }
-
 
     if (success) {
       if (!syncing) {
+        // The mutex behavior here is needed since a derived DB may be responding to multiple updates in parallel
+        while (this.updatingHighestSyncBlock) {
+          await sleep(10);
+        }
+        this.updatingHighestSyncBlock = true;
         await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, syncing);
+        this.updatingHighestSyncBlock = false;
       }
     } else {
       throw new Error(`Unable to add new block`);

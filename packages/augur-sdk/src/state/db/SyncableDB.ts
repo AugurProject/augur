@@ -117,7 +117,7 @@ export class SyncableDB extends AbstractDB {
       }
       documents = _.sortBy(documents, "_id");
 
-      success = await this.bulkUpsertDocuments(documents[0]._id, documents);
+      success = await this.bulkUpsertOrderedDocuments(documents[0]._id, documents);
     }
     if (success) {
       if (documents && (documents as Array<any>).length) {

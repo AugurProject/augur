@@ -18,6 +18,50 @@ beforeAll(async () => {
   augur = await makeTestAugur(ACCOUNTS);
 }, 120000);
 
+test("Doc merge update", async () => {
+  const db = await mock.makeDB(augur, ACCOUNTS);
+  let DBName = mock.constants.networkId + "-MarketCreated";
+
+  let blockLogs = [
+    {
+      _id: "0x1111111111111111111111111111111111111111",
+      blockNumber: 1,
+      market: "0x1111111111111111111111111111111111111111",
+      topic: stringTo32ByteHex("Market share"),
+      extraInfo: JSON.stringify({
+        description: "Foobar has 12% market share by 2041",
+        longDescription: "lol",
+        resolutionSource: "http://www.blah.com",
+        _scalarDenomination: "fake scalar denomination",
+        tags: ["humanity", "30"],
+      }),
+    },
+  ];
+  await db.addNewBlock(DBName, blockLogs);
+
+  DBName = mock.constants.networkId + "-MarketOIChanged";
+  const OIBlockLogs = [
+    {
+      _id: "0x1111111111111111111111111111111111111111",
+      blockNumber: 2,
+      market: "0x1111111111111111111111111111111111111111",
+      marketOI: "0x2",
+    },
+  ];
+  await db.addNewBlock(DBName, OIBlockLogs);
+
+  await db.sync(augur, mock.constants.chunkSize, 0);
+
+  const marketsDB = await db.getDerivedDatabase(mock.constants.networkId + "-Markets");
+  const docs = await marketsDB.allDocs();
+  expect(docs.total_rows).toEqual(2);
+  const doc = docs.rows[0];
+  expect(doc.id).toEqual("0x1111111111111111111111111111111111111111");
+  const values = doc.doc;
+  expect(values["marketOI"]).toEqual("0x2");
+  expect(values["topic"]).toEqual(stringTo32ByteHex("Market share"));
+});
+
 test("Flexible Search", async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
   const DBName = mock.constants.networkId + "-MarketCreated";

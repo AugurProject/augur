@@ -222,6 +222,7 @@ export class DB {
       );
     }
 
+    console.log(`Syncing generic log DBs`);
     await Promise.all(dbSyncPromises);
 
     // Derived DBs are synced after generic log DBs complete
@@ -233,6 +234,7 @@ export class DB {
 
     dbSyncPromises.push(this.marketDatabase.sync(highestAvailableBlockNumber));
 
+    console.log(`Syncing derived DBs`);
     return await Promise.all(dbSyncPromises).then(() => undefined);
   }
 

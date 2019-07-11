@@ -52,12 +52,25 @@ export abstract class AbstractDB {
     ));
   }
 
-  protected async bulkUpsertDocuments(startkey: string, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
+  protected async bulkUpsertUnorderedDocuments(documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
+    const previousDocumentEntries = await this.db.find({selector: { _id: { $in: documents.map(doc => doc._id) } }});
+    const previousDocs = _.reduce(previousDocumentEntries.docs, (result, prevDoc) => {
+      result[prevDoc._id] = prevDoc;
+      return result;
+    }, {} as DocumentIDToDoc);
+    return await this.bulkUpsertDocuments(previousDocs, documents);
+  }
+
+  protected async bulkUpsertOrderedDocuments(startkey: string, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
     const previousDocumentEntries = await this.db.allDocs({ startkey, include_docs: true });
     const previousDocs = _.reduce(previousDocumentEntries.rows, (result, prevDoc) => {
       result[prevDoc.id] = prevDoc.doc;
       return result;
     }, {} as DocumentIDToDoc);
+    return await this.bulkUpsertDocuments(previousDocs, documents);
+  }
+
+  private async bulkUpsertDocuments(previousDocs: DocumentIDToDoc, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
     const mergedRevisionDocuments = _.map(documents, (doc) => {
       // The c'tor needs to be deleted since indexeddb bulkUpsert cannot accept objects with methods on them
       delete doc.constructor;
@@ -72,7 +85,7 @@ export abstract class AbstractDB {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
       return _.every(results, (response) => (<PouchDB.Core.Response>response).ok);
     } catch (err) {
-      console.error(`ERROR in bulk sync: ${JSON.stringify(err)}`);
+      console.error(`ERROR in bulk upsert: ${JSON.stringify(err)}`);
       return false;
     }
   }
