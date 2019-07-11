@@ -109,7 +109,7 @@
 	}
 
 	> span {
-		color: @color-alternate-info-text;
+		color: @color-tertiary-info-text;
 	}
 
 	&.XSmall {
@@ -210,33 +210,40 @@
 
 		color: @color-alternate-info-text;
 	}
-
-	&:not(:last-of-type) {
-		margin-bottom: @size-32;
-	}
 }
 
 .SmallSubheadersTooltip {
 	.SmallSubheaders;
 
+	> h1 > label {
+      margin-bottom: @size-2;
+      margin-left: @size-4;
+
+      > svg {
+        width: @size-12;
+        height: @size-12;
+      }
+	}
+
+	> span > label {
+      margin-bottom: 0;
+      margin-left: @size-5;
+
+      > svg {
+        width: @size-16;
+        height: @size-16;
+      }
+	}	
+
+	> h1, 
 	> span {
 		align-items: center;
 		display: flex;
-
-	 	> label {
-	      margin-bottom: 0;
-	      margin-left: @size-5;
-
-	      > svg {
-	        width: @size-16;
-	        height: @size-16;
-
-	        > path {
-	          fill: @color-primary-action;
-	        }
-	      }
-	    }
-	}	
+		
+		> label > svg > path {
+			fill: @color-primary-action;
+		}
+	}
 }
 
 .OutcomesList {
@@ -302,8 +309,13 @@
     }
 
     &.NoDark {
-    	padding: 0;
     	background: transparent;
+    	padding: 0;
+    }
+
+    &.Dark {
+    	background: @color-theme-primary;
+    	padding: @size-24;
     }
 }
 

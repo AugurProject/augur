@@ -77,7 +77,7 @@ export default class Review extends React.Component<
           <SmallSubheaders header="Tertiary category" subheader={tag2 === "" ? "–" : tag2} />
           <SmallSubheaders header="Market Question" subheader={description} />
           <SmallSubheaders header="Market creator fee" subheader={settlementFee + "%"} />
-          <SmallSubheadersTooltip header="Affiliate fee" subheader={affiliateFee + "%"} text="The affiliate fee % is a percentage of the market creator fee" />
+          <SmallSubheadersTooltip tooltipSubheader header="Affiliate fee" subheader={affiliateFee + "%"} text="The affiliate fee % is a percentage of the market creator fee" />
           {marketType === SCALAR &&
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
