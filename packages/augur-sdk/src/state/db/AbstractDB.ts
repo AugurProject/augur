@@ -8,8 +8,8 @@ import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
 
-interface DocumentIDToRev {
-  [docId: string]: string;
+interface DocumentIDToDoc {
+  [docId: string]: PouchDB.Core.ExistingDocument<{}>;
 }
 
 export interface BaseDocument {
@@ -55,16 +55,16 @@ export abstract class AbstractDB {
   protected async bulkUpsertDocuments(startkey: string, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
     const previousDocumentEntries = await this.db.allDocs({ startkey, include_docs: true });
     const previousDocs = _.reduce(previousDocumentEntries.rows, (result, prevDoc) => {
-      result[prevDoc.id] = prevDoc.doc!._rev;
+      result[prevDoc.id] = prevDoc.doc;
       return result;
-    }, {} as DocumentIDToRev);
+    }, {} as DocumentIDToDoc);
     const mergedRevisionDocuments = _.map(documents, (doc) => {
       // The c'tor needs to be deleted since indexeddb bulkUpsert cannot accept objects with methods on them
       delete doc.constructor;
 
-      const previousRev = previousDocs[doc._id!];
+      const previousDoc = previousDocs[doc._id!];
       return Object.assign(
-        previousRev ? { _rev: previousRev } : {},
+        previousDoc ? previousDoc : {},
         doc,
       );
     });

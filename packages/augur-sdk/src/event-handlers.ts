@@ -155,6 +155,12 @@ export interface MarketVolumeChanged extends FormattedEventLog {
   outcomeVolumes: string[];
 }
 
+export interface MarketOIChanged extends FormattedEventLog {
+  universe: Address;
+  market: Address;
+  marketOI: number;
+}
+
 export interface NewBlock extends FormattedEventLog {
   blocksBehindCurrent: number;
   highestAvailableBlockNumber: number;
@@ -271,4 +277,4 @@ export interface UniverseForked extends FormattedEventLog {
   forkingMarket: Address;
 }
 
-export type SubscriptionType = MarketCreated | InitialReportSubmitted | DisputeCrowdsourcerCreated | DisputeCrowdsourcerContribution | DisputeCrowdsourcerCompleted | InitialReporterRedeemed | DisputeCrowdsourcerRedeemed | ReportingParticipantDisavowed | MarketParticipantsDisavowed | MarketFinalized | MarketMigrated | UniverseForked | UniverseCreated | OrderEvent | CompleteSetsPurchased | CompleteSetsSold | TradingProceedsClaimed | TokensTransferred | TokensMinted | TokensBurned | TokenBalanceChanged | DisputeWindowCreated | InitialReporterTransferred | MarketTransferred | MarketVolumeChanged | ProfitLossChanged | ParticipationTokensRedeemed | TimestampSet | NewBlock;
+export type SubscriptionType = MarketCreated | InitialReportSubmitted | DisputeCrowdsourcerCreated | DisputeCrowdsourcerContribution | DisputeCrowdsourcerCompleted | InitialReporterRedeemed | DisputeCrowdsourcerRedeemed | ReportingParticipantDisavowed | MarketParticipantsDisavowed | MarketFinalized | MarketMigrated | UniverseForked | UniverseCreated | OrderEvent | CompleteSetsPurchased | CompleteSetsSold | TradingProceedsClaimed | TokensTransferred | TokensMinted | TokensBurned | TokenBalanceChanged | DisputeWindowCreated | InitialReporterTransferred | MarketTransferred | MarketVolumeChanged | MarketOIChanged | ProfitLossChanged | ParticipationTokensRedeemed | TimestampSet | NewBlock;
