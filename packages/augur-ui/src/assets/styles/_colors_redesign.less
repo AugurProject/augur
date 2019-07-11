@@ -66,18 +66,18 @@
 //  Chart
 @color-outcome-one: #fadca2;
 @color-outcome-two: #f3a2fa;
-@color-outcome-three: @color-secondary-text;
+@color-outcome-three: #ffffff;
 @color-outcome-four: #00EAFF;
 @color-outcome-five: #a5a5a5;
 @color-outcome-six: #665cdf;
 @color-outcome-seven: #09cfe1;
 @color-outcome-eight: #5cdf88;
-@color-outcome-nine: #ffffff;
+@color-outcome-nine: #F12B00;
 @color-outcome-list: @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven @color-outcome-eight @color-outcome-nine;
 
 .generate-indexed-color-outcome-classes(@rules) {
   each(@color-outcome-list, {
-    @newIndex: @index - 1;
+    @newIndex: @index;
     @rules();
   });
 }

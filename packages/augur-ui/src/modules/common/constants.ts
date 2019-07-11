@@ -380,28 +380,28 @@ export const RANGES = [
 export const PERIOD_RANGES = {
   3600: {
     period: 3600,
-    format: "{value:%H:%M}",
+    format: "{value:%b %d}",
     crosshair: "{value:%H:%M}",
-    range: 24 * 3600 * 1000 // 1 day
+    range: 24 * 3600 * 1000, // 1 day
   },
   43200: {
     period: 43200,
-    format: "{value:%H:%M}",
+    format: "{value:%b %d}",
     crosshair: "{value:%H:%M}",
-    range: 7 * 24 * 3600 * 1000 // 1 week
+    range: 7 * 24 * 3600 * 1000, // 1 week
   },
   86400: {
     period: 86400,
     format: "{value:%b %d}",
-    crosshair: "{value:%b %d}",
-    range: 30 * 24 * 3600 * 1000 // month
+    crosshair: "{value:%b %d }",
+    range: 30 * 24 * 3600 * 1000, // month
   },
   604800: {
     period: 604800,
     format: "{value:%b %d}",
-    crosshair: "{value:%b %d}",
-    range: 6 * 30 * 24 * 3600 * 1000 // 6 months
-  }
+    crosshair: "{value:%b %d }",
+    range: 6 * 30 * 24 * 3600 * 1000, // 6 months
+  },
 };
 
 export const DEFAULT_PERIODS_VALUE = 86400;
@@ -648,6 +648,17 @@ export const ASK = "ask";
 export const MATCH_BID = "match_bid";
 export const MATCH_ASK = "match_ask";
 
+export const VOLUME_DAI_SHARES = [
+  {
+    value: DAI,
+    label: DAI
+  },
+  {
+    value: SHARES,
+    label: SHARES
+  }
+];
+
 export const VOLUME_ETH_SHARES = [
   {
     value: ETH,
@@ -772,3 +783,20 @@ export const TREZOR_MANIFEST_APPURL = "https://dev.augur.net";
 export const PORTIS_API_KEY = "b67817cf-8dd0-4116-a0cf-657820ddc019";
 export const FORTMATIC_API_KEY = "pk_live_8001A50CCA35D8CB";
 export const FORTMATIC_API_TEST_KEY = "pk_test_5185BE42CA372148";
+
+export const YES_NO_OUTCOMES = [
+  {
+    id: 0,
+    description: "Invalid",
+    isTradable: true,
+  },
+  {
+    id: 1,
+    description: "No"
+  },
+  {
+    id: 2,
+    description: "Yes",
+    isTradable: true,
+  },
+];

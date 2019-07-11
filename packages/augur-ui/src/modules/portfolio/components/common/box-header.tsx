@@ -13,6 +13,7 @@ export interface BoxHeaderProps {
   noBackgroundBottom?: boolean;
   mostRightContent?: ReactNode;
   extraTitlePadding?: boolean;
+  noBorders?: boolean;
 }
 
 const BoxHeader = (props: BoxHeaderProps) => (
@@ -47,7 +48,16 @@ const BoxHeader = (props: BoxHeaderProps) => (
         </div>
       )}
     </div>
-    <div className={classNames(Styles.BoxHeader, Styles.HideOnMobile, {[Styles.ExtraTitlePadding]: props.extraTitlePadding})}>
+    <div 
+      className={
+        classNames(Styles.BoxHeader, Styles.HideOnMobile, 
+          {
+            [Styles.ExtraTitlePadding]: props.extraTitlePadding, 
+            [Styles.NoBorders]: props.noBorders
+          }
+        )
+      }
+    >
       <div>
         <div>{props.title}</div>
         <div>

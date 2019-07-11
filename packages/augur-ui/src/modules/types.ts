@@ -77,7 +77,9 @@ export interface OutcomeFormatted extends MarketInfoOutcome {
 }
 
 export interface MarketData extends MarketInfo {
+  marketId: string;
   marketStatus: string;
+  defaultSelectedOutcomeId: number;
   minPriceBigNumber: BigNumber;
   maxPriceBigNumber: BigNumber;
   creationTimeFormatted: DateFormattedObject;
@@ -635,4 +637,15 @@ export interface Trade {
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;
   orderShareTradingFee: FormattedNumber;
+}
+
+export interface PriceTimeSeriesData {
+  tokenVolume: number;
+  period: number;
+  open: number;
+  close: number;
+  low: number;
+  high: number;
+  volume: number;
+  shareVolume: number;
 }

@@ -2,6 +2,7 @@ import {
   handleMarketCreatedLog,
   handleMarketMigratedLog,
   handleTokensTransferredLog,
+  handleOrderLog,
   handleOrderCreatedLog,
   handleOrderCanceledLog,
   handleOrderFilledLog,
@@ -38,7 +39,7 @@ const EVENTS = {
   [SubscriptionEventName.TokensTransferred]: wrapLogHandler(
     handleTokensTransferredLog
   ),
-  // [SubscriptionEventName.OrderCreated]: wrapLogHandler(handleOrderCreatedLog),
+  [SubscriptionEventName.OrderEvent]: wrapLogHandler(handleOrderLog),
   // [SubscriptionEventName.OrderCanceled]: wrapLogHandler(handleOrderCanceledLog),
   // [SubscriptionEventName.OrderFilled]: wrapLogHandler(handleOrderFilledLog),
   [SubscriptionEventName.TradingProceedsClaimed]: wrapLogHandler(
