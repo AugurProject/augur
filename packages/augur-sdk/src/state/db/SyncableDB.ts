@@ -7,7 +7,6 @@ import { SubscriptionEventName } from "../../constants";
 import { SyncStatus } from "./SyncStatus";
 import { augurEmitter } from "../../events";
 
-
 export interface Document extends BaseDocument {
   blockNumber: number;
 }
@@ -141,14 +140,6 @@ export class SyncableDB extends AbstractDB {
   }
 
   public async rollback(blockNumber: number): Promise<void> {
-    if (this.idFields.length > 0) {
-      await this.revisionRollback(blockNumber);
-    } else {
-      await this.documentRollback(blockNumber);
-    }
-  }
-
-  private async documentRollback(blockNumber: number): Promise<void> {
     // Remove each change from blockNumber onward
     try {
       let blocksToRemove = await this.db.find({
@@ -157,31 +148,6 @@ export class SyncableDB extends AbstractDB {
       });
       for (let doc of blocksToRemove.docs) {
         await this.db.remove(doc._id, doc._rev);
-      }
-      await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  private async revisionRollback(blockNumber: number): Promise<void> {
-    try {
-      let blocksToRemove = await this.db.find({
-        selector: { blockNumber: { $gte: blockNumber } },
-        fields: ['_id'],
-      });
-      for (let doc of blocksToRemove.docs) {
-        const revDocs = await this.db.get<Document>(doc._id, {
-          open_revs: 'all',
-          revs: true
-        });
-        // If a revision exists before this blockNumber make that the new record, otherwise simply delete the doc.
-        const replacementDoc = _.maxBy(_.remove(revDocs, (doc) => { return doc.ok.blockNumber > blockNumber; }), "ok.blockNumber");
-        if (replacementDoc) {
-          await this.db.put(replacementDoc.ok);
-        } else {
-          await this.db.remove(doc._id, doc._rev);
-        }
       }
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing);
     } catch (err) {

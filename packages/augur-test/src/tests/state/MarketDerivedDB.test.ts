@@ -50,7 +50,7 @@ test("Doc merge update", async () => {
   ];
   await db.addNewBlock(DBName, OIBlockLogs);
 
-  await db.sync(augur, mock.constants.chunkSize, 0);
+  await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
 
   const marketsDB = await db.getDerivedDatabase(mock.constants.networkId + "-Markets");
   const docs = await marketsDB.allDocs();
