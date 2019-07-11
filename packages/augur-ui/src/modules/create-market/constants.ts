@@ -113,3 +113,9 @@ export const MARKET_TEMPLATES = [
 	  icon: Crypto
 	},
 ]
+
+export const DESCRIPTION_PLACEHOLDERS = {
+	[YES_NO]: "Example: Will [person] win the [year] [event]?",
+	[SCALAR]: "Example: Which Team will win: [Team A] vs [Team B] on [date]?",
+  	[CATEGORICAL]: "Example: How many [goals/points] will [person] score in the [year] [event]?"
+}

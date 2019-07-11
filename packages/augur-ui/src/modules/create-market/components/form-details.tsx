@@ -18,6 +18,7 @@ import {
 } from 'modules/common/constants';
 import { NewMarket } from "modules/types";
 import { RepLogoIcon } from "modules/common/icons";
+import { DESCRIPTION_PLACEHOLDERS } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/components/form-details.styles";
 
@@ -182,7 +183,7 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
           <TextInput
             type="textarea"
-            placeholder="Example: Will [person] win the [year] [event]?"
+            placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
             onChange={(value: string) => this.onChange("description", value)}
             rows="3"
             value={description}
