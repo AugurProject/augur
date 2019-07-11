@@ -7,8 +7,8 @@ import noop from "utils/noop";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { MarketData } from "modules/types";
 import { placeTrade } from "modules/contracts/actions/contractCalls";
+import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
 
 export const placeMarketTrade = ({
   marketId,
@@ -20,14 +20,14 @@ export const placeMarketTrade = ({
 }: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
   const { marketInfos } = getState();
-  const market: MarketData = marketInfos[marketId];
+  const market: MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
       `required parameters not found for market ${marketId} outcome ${outcomeId}`,
     );
   }
 
-  const userShares = createBigNumber(tradeInProgress.sharesDepleted, 10);
+  const userShares = createBigNumber(tradeInProgress.sharesDepleted || 0, 10);
 
   const displayPrice = tradeInProgress.limitPrice;
   const displayAmount = tradeInProgress.numShares;
