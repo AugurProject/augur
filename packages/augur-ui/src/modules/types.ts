@@ -270,9 +270,7 @@ export interface LiquidityOrder {
 }
 export interface NewMarketPropertiesValidations {
   description: string | null;
-  category: string | null;
-  tag1: string | null;
-  tag2: string | null;
+  categories: Array<string>;
   type: string | null;
   designatedReporterType: string | null;
   designatedReporterAddress: string | null;
@@ -348,9 +346,7 @@ export interface Draft {
   meridiem: string;
   marketType: string;
   detailsText: string;
-  category: string;
-  tag1: string;
-  tag2: string;
+  categories: Array<string>;
   settlementFee: number;
   affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
