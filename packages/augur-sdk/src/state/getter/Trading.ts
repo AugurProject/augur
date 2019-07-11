@@ -367,9 +367,13 @@ export class Trading {
       request.selector = Object.assign(request.selector, {
         orderFiller: params.account,
       });
-
     if (params.orderState === OrderState.OPEN)
-      request.selector = Object.assign(request.selector, { eventType: { $ne: 1 } });
+      request.selector = Object.assign(request.selector, {
+        $and: [
+          { amount: { $gt: '0x00' } },
+          { eventType: { $ne: 1 } }
+        ]
+      });
     if (params.orderState === OrderState.CANCELED)
       request.selector = Object.assign(request.selector, { eventType: 1 });
     if (params.orderState === OrderState.FILLED)
@@ -398,6 +402,7 @@ export class Trading {
       });
     }
 
+    console.log(JSON.stringify(request));
     const currentOrdersResponse = await db.findCurrentOrderLogs(request);
 
     const orderIds = _.map(currentOrdersResponse, 'orderId');
