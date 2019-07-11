@@ -251,8 +251,8 @@ export const handleOrderFilledLog = (log: ParsedOrderEventLog) => (
   if (isStoredTransaction) {
     dispatch(loadMarketsInfo([marketId]));
     dispatch(updateAssets());
-    handlePendingOrder(log, dispatch, getState);
-    handleAlertUpdate(log, dispatch, getState);
+    // handlePendingOrder(log, dispatch, getState);
+    // handleAlertUpdate(log, dispatch, getState);
     dispatch(
       updateOutcomePrice(
         marketId,

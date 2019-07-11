@@ -369,9 +369,7 @@ export class Trading {
       });
 
     if (params.orderState === OrderState.OPEN)
-      request.selector = Object.assign(request.selector, {
-        amount: { $gt: '0x00' },
-      });
+      request.selector = Object.assign(request.selector, { eventType: { $ne: 1 } });
     if (params.orderState === OrderState.CANCELED)
       request.selector = Object.assign(request.selector, { eventType: 1 });
     if (params.orderState === OrderState.FILLED)
