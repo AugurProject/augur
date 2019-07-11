@@ -240,13 +240,9 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Market category" subheader="Categories help users to find your market on Augur." />
           <CategoryMultiSelect
             sortedGroup={categories}
-            updateSelection={categoryArray => {
-              // TODO: in the future, lets make `categories` as an array of 
-              // strings for the newmarket object instead of 3 key/values
-              this.onChange("category", categoryArray[0]);
-              this.onChange("tag1", categoryArray[1]);
-              this.onChange("tag2", categoryArray[2]);
-            }}
+            updateSelection={categoryArray => 
+              this.onChange("categories", categoryArray)
+            }
           />
         </div>
         <LineBreak />
