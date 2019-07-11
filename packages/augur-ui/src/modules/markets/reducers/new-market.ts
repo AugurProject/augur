@@ -10,7 +10,8 @@ import {
   EXPIRY_SOURCE_GENERIC, 
   DESIGNATED_REPORTER_SELF, 
   AFFILIATE_FEE_DEFAULT, 
-  YES_NO 
+  YES_NO,
+  YES_NO_OUTCOMES
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
@@ -20,9 +21,7 @@ export const DEFAULT_STATE: NewMarket = {
   validations: [
     {
       description: null,
-      category: null,
-      tag1: "",
-      tag2: "",
+      categories: ["", "", ""],
       type: null,
       designatedReporterType: null,
       designatedReporterAddress: null,
@@ -39,22 +38,7 @@ export const DEFAULT_STATE: NewMarket = {
   currentStep: 0,
   marketType: YES_NO,
   outcomes: Array(2).fill(""),
-  outcomesFormatted: [
-    {
-      id: 0,
-      description: "Invalid",
-      isTradable: true,
-    },
-    {
-      id: 1,
-      description: "No"
-    },
-    {
-      id: 2,
-      description: "Yes",
-      isTradable: true,
-    },
-  ],
+  outcomesFormatted: YES_NO_OUTCOMES,
   scalarSmallNum: "",
   scalarBigNum: "",
   scalarDenomination: "",
@@ -69,9 +53,7 @@ export const DEFAULT_STATE: NewMarket = {
   minute: null,
   meridiem: null,
   detailsText: "",
-  category: "",
-  tag1: "",
-  tag2: "",
+  categories: ["", "", ""],
   settlementFee: SETTLEMENT_FEE_DEFAULT,
   affiliateFee: AFFILIATE_FEE_DEFAULT,
   orderBook: {}, // for submit orders
