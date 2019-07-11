@@ -402,7 +402,6 @@ export class Trading {
       });
     }
 
-    console.log(JSON.stringify(request));
     const currentOrdersResponse = await db.findCurrentOrderLogs(request);
 
     const orderIds = _.map(currentOrdersResponse, 'orderId');
