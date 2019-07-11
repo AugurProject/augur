@@ -110,7 +110,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         return await this.provider.call(this.transactionToEthersTransaction(transaction));
     }
 
-    public async getDefaultAddress(): Promise<string> {
+    public async getDefaultAddress(): Promise<string | undefined> {
         if (this.signer) {
             return getAddress(await this.signer.getAddress());
         }
@@ -120,7 +120,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         const addresses = await this.provider.listAccounts();
         if (addresses.length > 0) return getAddress(addresses[0]);
 
-        return <string>getAddress(this.address);
+        return undefined;
     }
 
     public registerTransactionStatusCallback(key: string, callback: TransactionStatusCallback): void {

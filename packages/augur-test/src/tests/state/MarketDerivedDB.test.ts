@@ -20,11 +20,11 @@ beforeAll(async () => {
 
 test("Flexible Search", async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
-  const syncableDBName = mock.constants.networkId + "-MarketCreated";
+  const DBName = mock.constants.networkId + "-MarketCreated";
 
   const blockLogs = [
     {
-      _id: "robert",
+      _id: "0x1111111111111111111111111111111111111111",
       blockNumber: 1,
       market: "0x1111111111111111111111111111111111111111",
       topic: stringTo32ByteHex("Market share"),
@@ -37,36 +37,34 @@ test("Flexible Search", async () => {
       }),
     },
   ];
-  await db.addNewBlock(syncableDBName, blockLogs);
+  await db.addNewBlock(DBName, blockLogs);
   await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
 
-  const syncableDB = await db.getSyncableDatabase(syncableDBName);
-
-  let docs = syncableDB.fullTextSearch("0x1111111111111111111111111111111111111111");  // market
+  let docs = db.fullTextMarketSearch("0x1111111111111111111111111111111111111111");  // market
   expect(docs.length).toEqual(1);
 
-  docs = syncableDB.fullTextSearch("share");  // topic
+  docs = db.fullTextMarketSearch("share");  // topic
   expect(docs.length).toEqual(1);
 
-  docs = syncableDB.fullTextSearch("Foobar");  // description/title
+  docs = db.fullTextMarketSearch("Foobar");  // description/title
   expect(docs.length).toEqual(1);
 
-  docs = syncableDB.fullTextSearch("lol");  // longDescription/description
+  docs = db.fullTextMarketSearch("lol");  // longDescription/description
   expect(docs.length).toEqual(1);
 
-  docs = syncableDB.fullTextSearch("blah");  // resolutionSource
+  docs = db.fullTextMarketSearch("blah");  // resolutionSource
   expect(docs.length).toEqual(1);
 
-  docs = syncableDB.fullTextSearch("fake");  // _scalarDenomination
+  docs = db.fullTextMarketSearch("fake");  // _scalarDenomination
   expect(docs.length).toEqual(1);
 
-  docs = syncableDB.fullTextSearch("humanity");  // tags
+  docs = db.fullTextMarketSearch("humanity");  // tags
   expect(docs.length).toEqual(1);
 
   const doc = docs[0];
 
   expect(doc).toMatchObject({
-    id: "robert",
+    id: "0x1111111111111111111111111111111111111111",
     market: "0x1111111111111111111111111111111111111111",
     topic: toAscii(stringTo32ByteHex("Market share")),
     description: "Foobar has 12% market share by 2041",

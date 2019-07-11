@@ -59,9 +59,13 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
             _market.getShareToken(_outcome).createShares(_sender, _amount);
         }
 
+        IUniverse _universe = _market.getUniverse();
+
         if (!_market.isFinalized()) {
-            _market.getUniverse().incrementOpenInterest(_cost);
+            _universe.incrementOpenInterest(_cost);
         }
+
+        augur.logMarketOIChanged(_universe, _market);
 
         return true;
     }
@@ -86,11 +90,12 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
 
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
         uint256 _payout = _amount.mul(_market.getNumTicks());
+        IUniverse _universe = _market.getUniverse();
         if (!_market.isFinalized()) {
-            _market.getUniverse().decrementOpenInterest(_payout);
+            _universe.decrementOpenInterest(_payout);
         }
         _creatorFee = _market.deriveMarketCreatorFeeAmount(_payout);
-        uint256 _reportingFeeDivisor = _market.getUniverse().getOrCacheReportingFeeDivisor();
+        uint256 _reportingFeeDivisor = _universe.getOrCacheReportingFeeDivisor();
         _reportingFee = _payout.div(_reportingFeeDivisor);
         _payout = _payout.sub(_creatorFee).sub(_reportingFee);
 
@@ -107,9 +112,11 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
 
 
         if (_reportingFee != 0) {
-            require(cash.transfer(address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reportingFee));
+            require(cash.transfer(address(_universe.getOrCreateNextDisputeWindow(false)), _reportingFee));
         }
         require(cash.transfer(_sender, _payout));
+
+        augur.logMarketOIChanged(_universe, _market);
 
         return (_creatorFee, _reportingFee);
     }
