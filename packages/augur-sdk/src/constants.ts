@@ -28,6 +28,7 @@ export enum SubscriptionEventName {
   MarketParticipantsDisavowed = "MarketParticipantsDisavowed",
   MarketTransferred = "MarketTransferred",
   MarketVolumeChanged = "MarketVolumeChanged",
+  MarketOIChanged = "MarketOIChanged",
   NewBlock = "NewBlock",
   OrderEvent = "OrderEvent",
   ParticipationTokensRedeemed = "ParticipationTokensRedeemed",

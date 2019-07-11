@@ -8,7 +8,8 @@ import {
   LineBreak, 
   SmallSubheaders, 
   Subheaders, 
-  OutcomesList
+  OutcomesList,
+  SmallSubheadersTooltip
 } from "modules/create-market/components/common";
 import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
@@ -48,7 +49,8 @@ export default class Review extends React.Component<
     const {
       category,
       tag1,
-      type,
+      tag2,
+      marketType,
       description,
       endTime,
       detailsText,
@@ -60,25 +62,30 @@ export default class Review extends React.Component<
       minPrice,
       maxPrice,
       tickSize,
-      outcomes
+      outcomes,
+      settlementFee,
+      affiliateFee
     } = newMarket;
 
     return (
       <div className={Styles.Review}>
         <Header text="Market details" />
         <div>
-          <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[type]} />
-          <SmallSubheaders header="Category" subheader={category} />
-          <SmallSubheaders header="Sub-category" subheader={tag1} />
+          <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[marketType]} />
+          <SmallSubheaders header="Primary Category" subheader={category} />
+          <SmallSubheaders header="Secondary category" subheader={tag1} />
+          <SmallSubheaders header="Tertiary category" subheader={tag2 === "" ? "–" : tag2} />
           <SmallSubheaders header="Market Question" subheader={description} />
-          {type === SCALAR &&
+          <SmallSubheaders header="Market creator fee" subheader={settlementFee + "%"} />
+          <SmallSubheadersTooltip header="Affiliate fee" subheader={affiliateFee + "%"} text="The affiliate fee % is a percentage of the market creator fee" />
+          {marketType === SCALAR &&
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
               <SmallSubheaders header="Numeric range" subheader={minPrice + "-" + maxPrice} />
               <SmallSubheaders header="precision" subheader={tickSize} />
             </>
           }
-          {type === CATEGORICAL &&
+          {marketType === CATEGORICAL &&
             <OutcomesList 
               outcomes={outcomes}
             />

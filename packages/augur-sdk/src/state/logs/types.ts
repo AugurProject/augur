@@ -145,6 +145,12 @@ export interface MarketVolumeChangedLog extends Log, Doc {
   outcomeVolumes: string[];
 }
 
+export interface MarketOIChangedLog extends Log, Doc {
+  universe: Address;
+  market: Address;
+  marketOI: string;
+}
+
 //  addressData
 //  0:  kycToken
 //  1:  orderCreator
@@ -292,4 +298,23 @@ export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
 export interface UniverseForkedLog extends Log, Doc {
   universe: Address;
   forkingMarket: Address;
+}
+
+export interface MarketData extends Log, Doc {
+  universe: Address;
+  endTime: Timestamp;
+  topic: string;
+  extraInfo: string;
+  market: Address;
+  marketCreator: Address;
+  designatedReporter: Address;
+  feeDivisor: string;
+  prices: string[];
+  marketType: MarketType;
+  numTicks: string;
+  outcomes: string[];
+  timestamp: string;
+  volume: string;
+  outcomeVolumes: string[];
+  marketOI: string;
 }

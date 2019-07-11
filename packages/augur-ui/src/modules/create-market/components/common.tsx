@@ -3,7 +3,9 @@ import classNames from 'classnames';
 
 import { SecondaryButton } from 'modules/common/buttons';
 import { TextInput } from 'modules/common/form';
-import { XIcon, AddIcon } from 'modules/common/icons';
+import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
+import ReactTooltip from "react-tooltip";
+import TooltipStyles from "modules/common/tooltip.styles.less";
 
 import Styles from 'modules/create-market/components/common.styles';
 
@@ -37,6 +39,7 @@ export interface SubheadersProps {
   href?: string;
   underline?: Boolean;
   ownLine?: Boolean;
+  smallSubheader?: Boolean;
 }
 
 export const Subheaders = (props: SubheadersProps) => (
@@ -72,10 +75,11 @@ export interface HeaderLinkProps {
   link?: Boolean;
   ownLine?: Boolean;
   underline?: Boolean;
+  smallSubheader?: Boolean;
 }
 
 export const SmallHeaderLink = (props: HeaderLinkProps) => (
-  <p className={Styles.SmallHeaderLink}>
+  <p className={classNames(Styles.SmallHeaderLink, {[Styles.XSmall]: props.smallSubheader})}>
     <span>{props.text}</span>
     {props.link && (
       <Link href={props.href} underline={props.underline} ownLine={props.ownLine} />
@@ -84,7 +88,7 @@ export const SmallHeaderLink = (props: HeaderLinkProps) => (
 );
 
 export const LargeSubheaders = (props: SubheadersProps) => (
-  <div className={Styles.LargeSubheaders}>
+  <div className={classNames(Styles.LargeSubheaders, {[Styles.Small]: props.smallSubheader})}>
     <Header text={props.header} />
     <SmallHeaderLink 
       text={props.subheader} 
@@ -92,6 +96,7 @@ export const LargeSubheaders = (props: SubheadersProps) => (
       underline={props.underline} 
       ownLine={props.ownLine} 
       link={props.link} 
+      smallSubheader={props.smallSubheader}
     />
   </div>        
 );
@@ -120,6 +125,45 @@ export const SmallSubheaders = (props: SubheadersProps) => (
     </span>
   </div>        
 );
+
+export interface SubheadersTooltipProps {
+  header: string;
+  subheader: string;
+  link?: Boolean;
+  href?: string;
+  underline?: Boolean;
+  ownLine?: Boolean;
+  smallSubheader?: Boolean;
+  text: string;
+}
+
+export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
+  <div className={Styles.SmallSubheadersTooltip}>
+    <h1>{props.header}</h1>
+    <span>
+      {props.subheader}
+      <label
+        className={TooltipStyles.TooltipHint}
+        data-tip
+        data-for={`tooltip-${props.header}`}
+      >
+        {HintAlternate}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${props.header}`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        data-event="mouseover"
+        data-event-off="blur scroll"
+      >
+        {props.text}
+      </ReactTooltip>
+    </span>
+  </div>        
+);
+
 
 export interface OutcomesListProps {
   outcomes: Array<string>;
@@ -158,10 +202,11 @@ export const ExplainerBlock = (props: ExplainerBlockProps) => (
 
 export interface ContentBlockProps {
   children: Array<any>;
+  noDarkBackground: Boolean;
 }
 
 export const ContentBlock = (props: ContentBlockProps) => (
-  <div className={Styles.ContentBlock}>
+  <div className={classNames(Styles.ContentBlock, {[Styles.NoDark]: props.noDarkBackground})}>
     {props.children}
   </div>      
 );

@@ -16,6 +16,8 @@ import { OrderButton } from 'modules/common/buttons';
 import { formatShares, formatGasCostToEther } from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted, FormattedNumber } from 'modules/types';
+import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
+import { formatDai } from "utils/format-number";
 
 // TODO: refactor the need to use this function.
 function pick(object, keys) {
@@ -44,6 +46,8 @@ interface WrapperProps {
   updateTradeCost: Function;
   updateTradeShares: Function;
   onSubmitPlaceTrade: Function;
+  updateLiquidity?: Function;
+  initialLiquidity?: Boolean;
 }
 
 interface WrapperState {
@@ -199,7 +203,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   updateTradeTotalCost(order, fromOrderBook = false) {
-    const { updateTradeCost, selectedOutcome, market, gasPrice } = this.props;
+    const { updateTradeCost, selectedOutcome, market, gasPrice, initialLiquidity } = this.props;
     let useValues = {
       ...order,
       orderEthEstimate: '',
@@ -216,55 +220,73 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         ...useValues,
       },
       () => {
-        updateTradeCost(
-          market.id,
-          selectedOutcome.id,
-          {
-            limitPrice: order.orderPrice,
-            side: order.selectedNav,
-            numShares: order.orderQuantity,
-            selfTrade: order.selfTrade,
-          },
-          (err, newOrder) => {
-            if (err) {
-              // just update properties for form
-              return this.updateState(
+        if (initialLiquidity) {
+          let trade = order;
+          const totalCost = calculateTotalOrderValue(order.orderQuantity, order.orderPrice, order.selectedNav, createBigNumber(market.minPrice), createBigNumber(market.maxPrice), market.marketType);
+          const formattedValue = formatDai(totalCost)
+          trade.limitPrice = order.orderPrice;
+          trade.selectedOutcome = 
+          this.updateState(
+            {
+              ...this.state,
+              ...order,
+              orderEthEstimate: formattedValue.formatted,
+              orderEscrowdEth: '',
+              gasCostEst: '',
+              trade: trade,
+            }, () => {}
+          );
+        } else {
+          updateTradeCost(
+            market.id,
+            selectedOutcome.id,
+            {
+              limitPrice: order.orderPrice,
+              side: order.selectedNav,
+              numShares: order.orderQuantity,
+              selfTrade: order.selfTrade,
+            },
+            (err, newOrder) => {
+              if (err) {
+                // just update properties for form
+                return this.updateState(
+                  {
+                    ...this.state,
+                    ...order,
+                    orderEthEstimate: '',
+                    orderEscrowdEth: '',
+                    gasCostEst: '',
+                  },
+                  () => {}
+                );
+              }
+
+              const newOrderEthEstimate = formatShares(
+                createBigNumber(newOrder.totalOrderValue.fullPrecision),
+                {
+                  decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
+                }
+              ).rounded;
+
+              const formattedGasCost = formatGasCostToEther(
+                newOrder.gasLimit,
+                { decimalsRounded: 4 },
+                String(gasPrice)
+              );
+              this.updateState(
                 {
                   ...this.state,
                   ...order,
-                  orderEthEstimate: '',
-                  orderEscrowdEth: '',
-                  gasCostEst: '',
+                  orderEthEstimate: newOrderEthEstimate,
+                  orderEscrowdEth: newOrder.potentialEthLoss.formatted,
+                  trade: newOrder,
+                  gasCostEst: formattedGasCost,
                 },
                 () => {}
               );
             }
-
-            const newOrderEthEstimate = formatShares(
-              createBigNumber(newOrder.totalOrderValue.fullPrecision),
-              {
-                decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
-              }
-            ).rounded;
-
-            const formattedGasCost = formatGasCostToEther(
-              newOrder.gasLimit,
-              { decimalsRounded: 4 },
-              String(gasPrice)
-            );
-            this.updateState(
-              {
-                ...this.state,
-                ...order,
-                orderEthEstimate: newOrderEthEstimate,
-                orderEscrowdEth: newOrder.potentialEthLoss.formatted,
-                trade: newOrder,
-                gasCostEst: formattedGasCost,
-              },
-              () => {}
-            );
-          }
-        );
+          );
+        }
       }
     );
   }
@@ -354,8 +376,16 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       marketReviewTradeSeen,
       marketReviewTradeModal,
       sortedOutcomes,
+      updateLiquidity,
+      initialLiquidity
     } = this.props;
-    const { marketType, minPriceBigNumber, maxPriceBigNumber } = market;
+    let { marketType, minPriceBigNumber, maxPriceBigNumber, minPrice, maxPrice } = market;
+    if (!minPriceBigNumber) {
+      minPriceBigNumber = createBigNumber(minPrice);
+    }
+    if (!maxPriceBigNumber) {
+      maxPriceBigNumber = createBigNumber(maxPrice);
+    }
     const s = this.state;
     const {
       selectedNav,
@@ -442,10 +472,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               updateTradeTotalCost={this.updateTradeTotalCost}
               updateTradeNumShares={this.updateTradeNumShares}
               clearOrderConfirmation={this.clearOrderConfirmation}
+              initialLiquidity={initialLiquidity}
             />
           )}
         </div>
-        {s.trade &&
+        {!initialLiquidity && s.trade &&
           (s.trade.shareCost.value !== 0 ||
             s.trade.totalCost.value !== 0 ||
             (s.trade.sharesFilled && s.trade.sharesFilled.value !== 0)) && (
@@ -468,20 +499,26 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           className={classNames({
             [Styles.Full]:
               s.trade &&
-              (s.trade.shareCost.value !== 0 || s.trade.totalCost.value !== 0),
+              ((s.trade.shareCost && s.trade.shareCost.value !== 0) || (s.trade.totalCost && s.trade.totalCost.value !== 0)),
           })}
         >
           <OrderButton
             type={selectedNav}
+            initialLiquidity={initialLiquidity}
             action={e => {
               e.preventDefault();
-              if (!marketReviewTradeSeen) {
-                marketReviewTradeModal({
-                  marketId: market.id,
-                  cb: () => this.placeMarketTrade(market, selectedOutcome, s),
-                });
+              if (initialLiquidity) {
+                updateLiquidity(selectedOutcome, s);
+                this.clearOrderForm();
               } else {
-                this.placeMarketTrade(market, selectedOutcome, s);
+                if (!marketReviewTradeSeen) {
+                  marketReviewTradeModal({
+                    marketId: market.id,
+                    cb: () => this.placeMarketTrade(market, selectedOutcome, s),
+                  });
+                } else {
+                  this.placeMarketTrade(market, selectedOutcome, s);
+                }
               }
             }}
             disabled={!s.trade || !s.trade.limitPrice}

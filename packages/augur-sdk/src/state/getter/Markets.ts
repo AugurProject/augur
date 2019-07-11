@@ -9,6 +9,7 @@ import {
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
+  MarketData
 } from '../logs/types';
 import { SortLimit } from './types';
 import {
@@ -16,6 +17,7 @@ import {
   numTicksToTickSize,
   QUINTILLION,
   convertOnChainPriceToDisplayPrice,
+  convertOnChainAmountToDisplayAmount,
 } from '../../index';
 import { toAscii } from '../utils/utils';
 
@@ -210,41 +212,87 @@ export class Markets {
           // TODO remove this partialCandlestick stuff and just return
           // a Candlestick after the temporary Candlestick.tokenVolume
           // is removed (see note on Candlestick.tokenVolume).
+
+          const marketDoc = marketCreatedLogs[0];
+          const minPrice = new BigNumber(marketDoc.prices[0]);
+          const maxPrice = new BigNumber(marketDoc.prices[1]);
+          const numTicks = new BigNumber(marketDoc.numTicks);
+          const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
           const partialCandlestick = {
             startTimestamp: parseInt(startTimestamp, 10),
-            start: new BigNumber(
-              _.minBy(trades, tradeLog => {
-                return new BigNumber(tradeLog.timestamp).toNumber();
-              })!.price
+            start: convertOnChainPriceToDisplayPrice(
+              new BigNumber(
+                _.minBy(trades, tradeLog => {
+                  return new BigNumber(tradeLog.timestamp).toNumber();
+                })!.price,
+                16
+              ),
+              minPrice,
+              tickSize
             ).toString(10),
-            end: new BigNumber(
-              _.maxBy(trades, tradeLog => {
-                return new BigNumber(tradeLog.timestamp).toNumber();
-              })!.price
+            end: convertOnChainPriceToDisplayPrice(
+              new BigNumber(
+                _.maxBy(trades, tradeLog => {
+                  return new BigNumber(tradeLog.timestamp).toNumber();
+                })!.price,
+                16
+              ),
+              minPrice,
+              tickSize
             ).toString(10),
-            min: new BigNumber(
-              _.minBy(trades, tradeLog => {
-                return new BigNumber(tradeLog.price).toNumber();
-              })!.price
+            min: convertOnChainPriceToDisplayPrice(
+              new BigNumber(
+                _.minBy(trades, tradeLog => {
+                  return new BigNumber(tradeLog.price).toNumber();
+                })!.price,
+                16
+              ),
+              minPrice,
+              tickSize
             ).toString(10),
-            max: new BigNumber(
-              _.maxBy(trades, tradeLog => {
-                return new BigNumber(tradeLog.price).toNumber();
-              })!.price
+            max: convertOnChainPriceToDisplayPrice(
+              new BigNumber(
+                _.maxBy(trades, tradeLog => {
+                  return new BigNumber(tradeLog.price).toNumber();
+                })!.price,
+                16
+              ),
+              minPrice,
+              tickSize
             ).toString(10),
             volume: _.reduce(
               trades,
-              (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
-                totalVolume.plus(
-                  new BigNumber(tradeRow.amount).times(tradeRow.price)
-                ),
+              (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) => {
+                const amount = convertOnChainAmountToDisplayAmount(
+                  new BigNumber(tradeRow.amountFilled),
+                  tickSize
+                );
+
+                const displayPrice = convertOnChainPriceToDisplayPrice(
+                  new BigNumber(tradeRow.price),
+                  minPrice,
+                  tickSize
+                );
+
+                const price =
+                  tradeRow.orderType === OrderType.Bid
+                    ? maxPrice
+                        .dividedBy(QUINTILLION)
+                        .minus(displayPrice)
+                    : displayPrice;
+
+                return totalVolume.plus(amount.times(price));
+              },
               new BigNumber(0)
             ).toString(10),
-            shareVolume: _.reduce(
-              trades,
-              (totalShareVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
-                totalShareVolume.plus(tradeRow.amount),
-              new BigNumber(0)
+            shareVolume: convertOnChainAmountToDisplayAmount(
+              _.reduce(
+                trades,
+                (totalShareVolume: BigNumber, tradeRow: ParsedOrderEventLog) =>
+                  totalShareVolume.plus(tradeRow.amountFilled),
+                new BigNumber(0)
+              ),
+              tickSize
             ).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
           };
           return {
@@ -314,7 +362,7 @@ export class Markets {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
       });
     }
-    const marketCreatedLogs = await db.findMarketCreatedLogs(request);
+    const marketLogs = await db.findMarketCreatedLogs(request);
 
     let marketCreatorFeeDivisor: BigNumber | undefined = undefined;
     if (params.maxFee) {
@@ -329,8 +377,8 @@ export class Markets {
       );
     }
 
-    const keyedMarketCreatedLogs = marketCreatedLogs.reduce(
-      (previousValue: any, currentValue: MarketCreatedLog) => {
+    const keyedMarketCreatedLogs = marketLogs.reduce(
+      (previousValue: any, currentValue: MarketData) => {
         // Filter markets with fees > maxFee
         if (
           params.maxFee &&
@@ -347,10 +395,7 @@ export class Markets {
 
     let filteredKeyedMarketCreatedLogs = keyedMarketCreatedLogs;
     if (params.search) {
-      const fullTextSearchResults = await db.fullTextSearch(
-        'MarketCreated',
-        params.search
-      );
+      const fullTextSearchResults = await db.fullTextMarketSearch(params.search);
 
       const keyedFullTextMarketIds: any = fullTextSearchResults.reduce(
         (previousValue: any, fullTextSearchResult: any) => {
@@ -520,11 +565,13 @@ export class Markets {
       };
     };
 
-    const bucketAndSortOrdersByPrice = (unsortedOrders: {
-      [orderId: string]: Order;
-    },
-    sortDescending: boolean = true
+    const bucketAndSortOrdersByPrice = (
+      unsortedOrders: {
+        [orderId: string]: Order;
+      },
+      sortDescending: boolean = true
     ) => {
+      if (!unsortedOrders) return [];
       const bucketsByPrice = _.groupBy<Order>(
         Object.values(unsortedOrders),
         order => order.price
@@ -538,7 +585,7 @@ export class Markets {
           );
 
       return prickKeysSorted.map(k => bucketsByPrice[k]);
-    }
+    };
 
     const processMarket = (orders: Orders) => {
       const outcomes = Object.values(orders)[0];
@@ -580,6 +627,9 @@ export class Markets {
           selector: { market: marketCreatedLog.market },
         })).reverse();
         const marketVolumeChangedLogs = (await db.findMarketVolumeChangedLogs({
+          selector: { market: marketCreatedLog.market },
+        })).reverse();
+        const marketOIChangedLogs = (await db.findMarketOIChangedLogs({
           selector: { market: marketCreatedLog.market },
         })).reverse();
 
@@ -681,7 +731,11 @@ export class Markets {
                   .dividedBy(QUINTILLION)
                   .toString()
               : '0',
-          openInterest: await getMarketOpenInterest(db, marketCreatedLog),
+          openInterest: marketOIChangedLogs.length > 0
+          ? new BigNumber(marketOIChangedLogs[0].marketOI)
+              .dividedBy(QUINTILLION)
+              .toString()
+          : '0',
           reportingState,
           needsMigration,
           endTime: new BigNumber(marketCreatedLog.endTime).toNumber(),
@@ -761,55 +815,6 @@ function filterOrderFilledLogs(
   return filteredOrderFilledLogs;
 }
 
-async function getMarketOpenInterest(
-  db: DB,
-  marketCreatedLog: MarketCreatedLog
-): Promise<string> {
-  const completeSetsPurchasedLogs = (await db.findCompleteSetsPurchasedLogs({
-    selector: { market: marketCreatedLog.market },
-  })).reverse();
-  const completeSetsSoldLogs = (await db.findCompleteSetsSoldLogs({
-    selector: { market: marketCreatedLog.market },
-  })).reverse();
-  if (completeSetsPurchasedLogs.length > 0 && completeSetsSoldLogs.length > 0) {
-    if (
-      completeSetsPurchasedLogs[0].blockNumber >
-      completeSetsSoldLogs[0].blockNumber
-    ) {
-      return new BigNumber(completeSetsPurchasedLogs[0].marketOI)
-        .dividedBy(QUINTILLION)
-        .toString();
-    } else if (
-      completeSetsSoldLogs[0].blockNumber >
-      completeSetsPurchasedLogs[0].blockNumber
-    ) {
-      return new BigNumber(completeSetsSoldLogs[0].marketOI)
-        .dividedBy(QUINTILLION)
-        .toString();
-    } else if (
-      completeSetsPurchasedLogs[0].transactionIndex >
-      completeSetsSoldLogs[0].transactionIndex
-    ) {
-      return new BigNumber(completeSetsPurchasedLogs[0].marketOI)
-        .dividedBy(QUINTILLION)
-        .toString();
-    } else {
-      return new BigNumber(completeSetsSoldLogs[0].marketOI)
-        .dividedBy(QUINTILLION)
-        .toString();
-    }
-  } else if (completeSetsPurchasedLogs.length > 0) {
-    return new BigNumber(completeSetsPurchasedLogs[0].marketOI)
-      .dividedBy(QUINTILLION)
-      .toString();
-  } else if (completeSetsSoldLogs.length > 0) {
-    return new BigNumber(completeSetsSoldLogs[0].marketOI)
-      .dividedBy(QUINTILLION)
-      .toString();
-  }
-  return '0';
-}
-
 async function getMarketOutcomes(
   db: DB,
   marketCreatedLog: MarketCreatedLog,
@@ -819,7 +824,7 @@ async function getMarketOutcomes(
   minPrice: BigNumber
 ): Promise<MarketInfoOutcome[]> {
   const outcomes: MarketInfoOutcome[] = [];
-  const denomination = scalarDenomination ? scalarDenomination : "N/A";
+  const denomination = scalarDenomination ? scalarDenomination : 'N/A';
   if (marketCreatedLog.outcomes.length === 0) {
     const ordersFilled0 = (await db.findOrderFilledLogs({
       selector: { market: marketCreatedLog.market, outcome: '0x00' },
@@ -859,8 +864,7 @@ async function getMarketOutcomes(
               tickSize
             ).toString(10)
           : null,
-      description:
-        marketCreatedLog.marketType === 0 ? 'No' : denomination,
+      description: marketCreatedLog.marketType === 0 ? 'No' : denomination,
       volume:
         marketVolumeChangedLogs.length === 0 ||
         marketVolumeChangedLogs[0].outcomeVolumes[1] === '0x00'
@@ -879,8 +883,7 @@ async function getMarketOutcomes(
               tickSize
             ).toString(10)
           : null,
-      description:
-        marketCreatedLog.marketType === 0 ? 'Yes' : denomination,
+      description: marketCreatedLog.marketType === 0 ? 'Yes' : denomination,
       volume:
         marketVolumeChangedLogs.length === 0 ||
         marketVolumeChangedLogs[0].outcomeVolumes[2] === '0x00'

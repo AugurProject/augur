@@ -89,7 +89,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
         >
           {orderBookOrders.map((order, i) => (
             <button
-              key={order.cumulativeShares}
+              key={order.cumulativeShares + i}
               className={classNames({
                 [Styles.Positive]: type === ASKS,
                 [Styles.BidHead]:
@@ -171,7 +171,6 @@ export default class OrderBook extends Component<
   OrderBookState
 > {
   static defaultProps = {
-    toggle: () => {},
     extend: false,
     hide: false,
     fixedPrecision: 2,

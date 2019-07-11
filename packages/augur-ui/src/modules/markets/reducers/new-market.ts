@@ -5,8 +5,13 @@ import {
   CLEAR_NEW_MARKET
 } from "modules/markets/actions/update-new-market";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { SETTLEMENT_FEE_DEFAULT } from "modules/common/constants";
-
+import { 
+  SETTLEMENT_FEE_DEFAULT, 
+  EXPIRY_SOURCE_GENERIC, 
+  DESIGNATED_REPORTER_SELF, 
+  AFFILIATE_FEE_DEFAULT, 
+  YES_NO 
+} from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
 
@@ -32,18 +37,34 @@ export const DEFAULT_STATE: NewMarket = {
     }
   ],
   currentStep: 0,
-  type: "",
+  marketType: YES_NO,
   outcomes: Array(2).fill(""),
+  outcomesFormatted: [
+    {
+      id: 0,
+      description: "Invalid",
+      isTradable: true,
+    },
+    {
+      id: 1,
+      description: "No"
+    },
+    {
+      id: 2,
+      description: "Yes",
+      isTradable: true,
+    },
+  ],
   scalarSmallNum: "",
   scalarBigNum: "",
   scalarDenomination: "",
   description: "",
-  expirySourceType: "",
+  expirySourceType: EXPIRY_SOURCE_GENERIC,
   expirySource: "",
-  designatedReporterType: "",
+  designatedReporterType: DESIGNATED_REPORTER_SELF,
   designatedReporterAddress: "",
   endTime: null,
-  tickSize: 100,
+  tickSize: 0.01,
   hour: null,
   minute: null,
   meridiem: null,
@@ -52,8 +73,13 @@ export const DEFAULT_STATE: NewMarket = {
   tag1: "",
   tag2: "",
   settlementFee: SETTLEMENT_FEE_DEFAULT,
+  affiliateFee: AFFILIATE_FEE_DEFAULT,
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
+  minPrice: 0,
+  maxPrice: 1,
+  minPriceBigNumber: createBigNumber(0),
+  maxPriceBigNumber: createBigNumber(1),
   initialLiquidityEth: createBigNumber(0),
   initialLiquidityGas: createBigNumber(0),
   creationError:
@@ -76,11 +102,11 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
       let orderAdded = false;
       const updatedOrders = existingOrders.reduce((Orders: Array<LiquidityOrder>, order) => {
         const orderInfo = Object.assign({}, order);
-        if (order.price.eq(price) && order.type === type) {
-          orderInfo.quantity = order.quantity.plus(quantity);
-          orderInfo.orderEstimate = order.orderEstimate.plus(
-            orderEstimate.replace(" DAI", "")
-          );
+        if (createBigNumber(order.price).eq(createBigNumber(price)) && order.type === type) {
+          orderInfo.quantity = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toNumber();
+          orderInfo.orderEstimate = createBigNumber(order.orderEstimate).plus(
+            createBigNumber(orderEstimate.replace(" DAI", ""))
+          ).toNumber();
           orderAdded = true;
         }
         Orders.push(orderInfo);
@@ -93,7 +119,11 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           type,
           price,
           quantity,
-          orderEstimate: createBigNumber(orderEstimate.replace(" DAI", ""))
+          shares: quantity,
+          mySize: quantity,
+          cummulativeShares: quantity,
+          orderEstimate: createBigNumber(orderEstimate.replace(" DAI", "")),
+          id: updatedOrders.length,
         });
       }
 
