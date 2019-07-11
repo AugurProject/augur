@@ -76,14 +76,14 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
   DEFAULT_ORDER_PROPERTIES = { orderPrice: "", orderQuantity: "", selectedNav: BUY};
   node: any;
 
-  constructor(props) {
+  constructor(props: MarketViewProps) {
     super(props);
 
     this.state = {
       extendOrderBook: false,
       extendTradeHistory: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
-      selectedOutcomeId: 1,
+      selectedOutcomeId: props.market.defaultSelectedOutcomeId,
       fixedPrecision: 4,
       selectedOutcomeProperties: {
         1: {

@@ -206,7 +206,7 @@ export function createMarket(newMarket: NewMarket) {
     description: newMarket.description,
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
-    tags: [newMarket.tag1, newMarket.tag2],
+    tags: [newMarket.categories[1], newMarket.categories[2]],
     scalarDenomination: newMarket.scalarDenomination,
   });
 
@@ -215,7 +215,7 @@ export function createMarket(newMarket: NewMarket) {
     feePerCashInAttoCash,
     affiliateFeeDivisor,
     designatedReporter: newMarket.designatedReporterAddress,
-    topic: newMarket.category,
+    topic: newMarket.categories[0],
     extraInfo,
   };
   const Augur = augurSdk.get();
