@@ -1,4 +1,4 @@
-import { Callback, SubscriptionType } from "./events";
+import { Callback, SubscriptionType, augurEmitter } from "./events";
 import { Connector } from "./connector/connector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { ContractInterfaces } from "@augurproject/core";
@@ -7,9 +7,9 @@ import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { BigNumber } from 'bignumber.js';
 import { Provider } from "./ethereum/Provider";
-import { isSubscriptionEventName, SubscriptionEventName } from "./constants";
+import { isSubscriptionEventName, SubscriptionEventName, TransactionStatusEventName } from "./constants";
 import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
-import { ContractDependenciesEthers, TransactionStatusCallback } from "contract-dependencies-ethers";
+import { ContractDependenciesEthers, TransactionStatusCallback, TransactionMetadata, TransactionStatus } from "contract-dependencies-ethers";
 import { Markets } from "./state/getter/Markets";
 import { Status } from "./state/getter/status";
 import { Trading } from "./state/getter/Trading";
@@ -71,6 +71,8 @@ export class Augur<TProvider extends Provider = Provider> {
     this.trade = new Trade(this);
     this.market = new Market(this);
     this.events = new Events(this.provider, this.addresses.Augur);
+
+    this.registerTrandactionStatusEvents();
   }
 
   public static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: Connector = new EmptyConnector()): Promise<Augur> {
@@ -151,9 +153,9 @@ export class Augur<TProvider extends Provider = Provider> {
     return Augur.connector.bindTo(f);
   }
 
-  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+  public async on(eventName: SubscriptionEventName | string, callback: Callback | TransactionStatusCallback): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
-      return Augur.connector.on(eventName, callback);
+      return Augur.connector.on(eventName, callback as Callback);
     }
   }
 
@@ -207,5 +209,31 @@ export class Augur<TProvider extends Provider = Provider> {
 
   public async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
     return this.trade.simulateTradeGasLimit(params);
+  }
+
+  private registerTrandactionStatusEvents() {
+    this.registerTransactionStatusCallback("Transaction Status Handler", (transaction, status, hash) => {
+      if (status === TransactionStatus.SUCCESS) {
+        augurEmitter.emit(TransactionStatusEventName.Success, {
+          eventName: TransactionStatusEventName.Success, transaction, status, hash,
+        });
+
+      } else if (status === TransactionStatus.AWAITING_SIGNING) {
+        augurEmitter.emit(TransactionStatusEventName.AwaitingSigning, {
+          eventName: TransactionStatusEventName.AwaitingSigning, transaction, status, hash,
+        });
+
+      } else if (status === TransactionStatus.PENDING) {
+        augurEmitter.emit(TransactionStatusEventName.Pending, {
+          eventName: TransactionStatusEventName.Pending, transaction, status, hash,
+        });
+
+      } else if (status === TransactionStatus.FAILURE) {
+        console.log("Emitting failure");
+        augurEmitter.emit(TransactionStatusEventName.Failure, {
+          eventName: TransactionStatusEventName.Failure, transaction, status, hash,
+        });
+      }
+    });
   }
 }
