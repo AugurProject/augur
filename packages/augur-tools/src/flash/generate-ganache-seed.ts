@@ -51,10 +51,10 @@ interface LevelDBRow {
   type: "put";
 }
 
-export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE, accounts: Account[]): Promise<void> {
+export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE, accounts: Account[], writeArtifacts = false): Promise<void> {
   const ganacheProvider = makeGanacheProvider(accounts);
   const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
-  const { addresses } = await deployContracts(provider, accounts, compilerOutput);
+  const { addresses } = await deployContracts(provider, accounts, compilerOutput, writeArtifacts);
   const contractsHash = hashContracts();
 
   const leveledDB = levelup(db);

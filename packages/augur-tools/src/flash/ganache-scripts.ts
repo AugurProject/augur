@@ -16,10 +16,10 @@ export function addGanacheScripts(flash: FlashSession) {
     return seed;
   };
 
-  flash.ensureSeed = async function(this: FlashSession) {
+  flash.ensureSeed = async function(this: FlashSession, writeArtifacts = false) {
     if (await seedFileIsOutOfDate(this.seedFilePath)) {
       this.log("Seed file out of date. Creating/updating...");
-      await createSeedFile(this.seedFilePath, this.accounts);
+      await createSeedFile(this.seedFilePath, this.accounts, writeArtifacts);
     }
 
     this.log("Seed file is up-to-date!");
@@ -58,7 +58,8 @@ export function addGanacheScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      await this.ensureSeed();
+      const writeArtifacts = !(args.internal as boolean);
+      await this.ensureSeed(writeArtifacts);
 
       if (args.internal) {
         this.ganacheProvider = await makeGanacheProvider(this.seedFilePath, this.accounts);

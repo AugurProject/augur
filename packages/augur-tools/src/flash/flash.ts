@@ -1,8 +1,10 @@
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { ContractAddresses } from "@augurproject/artifacts";
+import { NetworkConfiguration } from "@augurproject/core";
 
 import { ContractAPI } from "../libs/contract-api";
 import { Account } from "../constants";
+import { providers } from "ethers";
 
 export interface FlashOption {
   name: string;
@@ -90,4 +92,16 @@ export class FlashSession {
 
     return this.user;
   }
+
+
+  makeProvider(config: NetworkConfiguration): EthersProvider {
+    const provider = new providers.JsonRpcProvider(config.http);
+    return new EthersProvider(provider, 5, 0, 40);
+  }
+
+  async getNetworkId(provider: EthersProvider): Promise<string> {
+    return (await provider.getNetwork()).chainId.toString();
+  }
+
 }
+

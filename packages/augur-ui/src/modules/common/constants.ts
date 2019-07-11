@@ -34,7 +34,7 @@ export const NETWORK_NAMES = {
   3: "Ropsten",
   4: "Rinkeby",
   42: "Kovan",
-  12346: "Private"
+  123456: "Private"
 };
 // network name to id map
 export const NETWORK_IDS = {
