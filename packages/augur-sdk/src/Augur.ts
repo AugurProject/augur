@@ -153,7 +153,7 @@ export class Augur<TProvider extends Provider = Provider> {
     return Augur.connector.bindTo(f);
   }
 
-  public async on(eventName: SubscriptionEventName | string, callback: Callback | TransactionStatusCallback): Promise<void> {
+  public async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
       return Augur.connector.on(eventName, callback as Callback);
     }
@@ -229,7 +229,6 @@ export class Augur<TProvider extends Provider = Provider> {
         });
 
       } else if (status === TransactionStatus.FAILURE) {
-        console.log("Emitting failure");
         augurEmitter.emit(TransactionStatusEventName.Failure, {
           eventName: TransactionStatusEventName.Failure, transaction, status, hash,
         });
