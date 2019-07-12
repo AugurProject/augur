@@ -21,8 +21,6 @@ import {
   CLAIMTRADINGPROCEEDS,
   PUBLICBUYCOMPLETESETS,
   PUBLICBUYCOMPLETESETSWITHCASH,
-  PUBLICSELLCOMPLETESETS,
-  PUBLICSELLCOMPLETESETSWITHCASH,
   PUBLICCREATEORDER,
   BUYPARTICIPATIONTOKENS,
   PUBLICFILLBESTORDER,
@@ -153,11 +151,6 @@ export default function setAlertText(alert: any, callback: any) {
       case PUBLICBUYCOMPLETESETSWITHCASH:
         alert.title = "Buy complete set(s)";
         break;
-      case PUBLICSELLCOMPLETESETS:
-      case PUBLICSELLCOMPLETESETSWITHCASH:
-        alert.title = "Sell complete set(s)";
-        break;
-
       // CreateOrder
       case PUBLICCREATEORDER: {
         alert.title = "Create order";

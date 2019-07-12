@@ -41,7 +41,6 @@ export interface NotificationsProps extends RouteComponentProps {
   getReportingFees: Function;
   currentAugurTimestamp: DateFormattedObject;
   reportingWindowStatsEndTime: DateFormattedObject;
-  sellCompleteSetsModal: Function;
   finalizeMarketModal: Function;
   claimTradingProceeds: Function;
   claimReportingFees: Function;
