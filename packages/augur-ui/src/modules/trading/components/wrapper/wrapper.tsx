@@ -225,7 +225,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           const totalCost = calculateTotalOrderValue(order.orderQuantity, order.orderPrice, order.selectedNav, createBigNumber(market.minPrice), createBigNumber(market.maxPrice), market.marketType);
           const formattedValue = formatDai(totalCost)
           trade.limitPrice = order.orderPrice;
-          trade.selectedOutcome = 
+          trade.selectedOutcome =
           this.updateState(
             {
               ...this.state,
@@ -478,8 +478,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         </div>
         {!initialLiquidity && s.trade &&
           (s.trade.shareCost.value !== 0 ||
-            s.trade.totalCost.value !== 0 ||
-            (s.trade.sharesFilled && s.trade.sharesFilled.value !== 0)) && (
+            s.trade.totalCost.value !== 0) && (
             <Confirm
               allowanceAmount={allowanceAmount}
               numOutcomes={market.numOutcomes}

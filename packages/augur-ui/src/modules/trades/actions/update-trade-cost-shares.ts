@@ -210,8 +210,11 @@ async function runSimulateTrade(
 
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
+  // note: tokensDepleted, dai needed for trade
   newTradeDetails.totalCost = simulateTradeValue.tokensDepleted;
+  // note: shareCost, shares you spent on the trade
   newTradeDetails.shareCost = simulateTradeValue.sharesDepleted;
+  // note: sharesFilled, the amount of the order that was filled
   newTradeDetails.sharesFilled = simulateTradeValue.sharesFilled;
   newTradeDetails.feePercent = totalFee
     .dividedBy(createBigNumber(simulateTradeValue.tokensDepleted, 10))
@@ -227,5 +230,5 @@ async function runSimulateTrade(
 
   const order = generateTrade(market, tradeInfo);
 
-  if (callback) callback(null, { ...order, ...simulateTradeValue, gasLimit });
+  if (callback) callback(null, { ...order, gasLimit });
 }

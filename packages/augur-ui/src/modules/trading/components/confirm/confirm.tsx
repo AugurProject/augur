@@ -165,7 +165,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       potentialEthLoss,
       totalCost,
       shareCost,
-      sharesFilled,
       side,
       orderShareProfit,
       orderShareTradingFee,
@@ -244,8 +243,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
           </div>
         )}
-        {(totalCost && totalCost.value !== 0) ||
-          (sharesFilled && sharesFilled.value !== 0 && (
+        {(totalCost && totalCost.value !== 0) && (
             <div className={Styles.TradingConfirm__details}>
               <div
                 className={classNames(
@@ -297,7 +295,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 value={`${potentialEthLoss.rounded} DAI`}
               />
             </div>
-          ))}
+          )}
         {messages && (
           <div
             className={classNames(
