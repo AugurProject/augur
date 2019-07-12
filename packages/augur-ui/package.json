@@ -171,7 +171,7 @@
     "onchange": "4.1.0",
     "postcss-loader": "3.0.0",
     "postcss-sass": "0.3.5",
-    "prettier": "1.15.3",
+    "prettier": "1.18.2",
     "proxyquire": "1.8.0",
     "puppeteer": "1.11.0",
     "readline-sync": "1.4.9",
