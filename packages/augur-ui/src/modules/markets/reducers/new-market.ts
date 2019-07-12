@@ -21,9 +21,7 @@ export const DEFAULT_STATE: NewMarket = {
   validations: [
     {
       description: null,
-      category: null,
-      tag1: "",
-      tag2: "",
+      categories: ["", "", ""],
       type: null,
       designatedReporterType: null,
       designatedReporterAddress: null,
@@ -55,9 +53,7 @@ export const DEFAULT_STATE: NewMarket = {
   minute: null,
   meridiem: null,
   detailsText: "",
-  category: "",
-  tag1: "",
-  tag2: "",
+  categories: ["", "", ""],
   settlementFee: SETTLEMENT_FEE_DEFAULT,
   affiliateFee: AFFILIATE_FEE_DEFAULT,
   orderBook: {}, // for submit orders
