@@ -55,7 +55,7 @@
     "@types/chai-as-promised": "7.1.0",
     "@types/express": "4.16.1",
     "@types/helmet": "0.0.42",
-    "@types/knex": "0.15.1",
+    "@types/knex": "0.15.2",
     "@types/lodash": "4.14.121",
     "@types/md5-file": "4.0.0",
     "@types/pouchdb": "6.3.3",
