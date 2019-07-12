@@ -135,31 +135,60 @@ export interface SubheadersTooltipProps {
   ownLine?: Boolean;
   smallSubheader?: Boolean;
   text: string;
+  tooltipSubheader?: Boolean;
 }
 
 export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
   <div className={Styles.SmallSubheadersTooltip}>
-    <h1>{props.header}</h1>
+    <h1>
+      {props.header}
+      {!props.tooltipSubheader && 
+        <>
+          <label
+            className={TooltipStyles.TooltipHint}
+            data-tip
+            data-for={`tooltip-${props.header}`}
+          >
+            {HintAlternate}
+          </label>
+          <ReactTooltip
+            id={`tooltip-${props.header}`}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="top"
+            type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
+          >
+            {props.text}
+          </ReactTooltip>
+        </>
+      }
+    </h1>
     <span>
       {props.subheader}
-      <label
-        className={TooltipStyles.TooltipHint}
-        data-tip
-        data-for={`tooltip-${props.header}`}
-      >
-        {HintAlternate}
-      </label>
-      <ReactTooltip
-        id={`tooltip-${props.header}`}
-        className={TooltipStyles.Tooltip}
-        effect="solid"
-        place="top"
-        type="light"
-        data-event="mouseover"
-        data-event-off="blur scroll"
-      >
-        {props.text}
-      </ReactTooltip>
+      {props.tooltipSubheader &&
+        <> 
+          <label
+            className={TooltipStyles.TooltipHint}
+            data-tip
+            data-for={`tooltip-${props.header}`}
+          >
+            {HintAlternate}
+          </label>
+          <ReactTooltip
+            id={`tooltip-${props.header}`}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="top"
+            type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
+          >
+            {props.text}
+          </ReactTooltip>
+        </>
+      }
     </span>
   </div>        
 );
@@ -202,11 +231,12 @@ export const ExplainerBlock = (props: ExplainerBlockProps) => (
 
 export interface ContentBlockProps {
   children: Array<any>;
-  noDarkBackground: Boolean;
+  noDarkBackground?: Boolean;
+  dark?: Boolean;
 }
 
 export const ContentBlock = (props: ContentBlockProps) => (
-  <div className={classNames(Styles.ContentBlock, {[Styles.NoDark]: props.noDarkBackground})}>
+  <div className={classNames(Styles.ContentBlock, {[Styles.NoDark]: props.noDarkBackground, [Styles.Dark]: props.dark})}>
     {props.children}
   </div>      
 );
