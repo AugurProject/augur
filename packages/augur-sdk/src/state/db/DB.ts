@@ -210,6 +210,7 @@ export class DB {
       }
     }
 
+    console.log(`Syncing generic log DBs`);
     for (const genericEventName of this.genericEventNames) {
       let dbName = this.getDatabaseName(genericEventName);
       dbSyncPromises.push(
@@ -225,6 +226,7 @@ export class DB {
     await Promise.all(dbSyncPromises);
 
     // Derived DBs are synced after generic log DBs complete
+    console.log(`Syncing derived DBs`);
     dbSyncPromises = [];
     for (const derivedDBConfiguration of this.basicDerivedDBs) {
       const dbName = this.getDatabaseName(derivedDBConfiguration.name);
@@ -302,17 +304,8 @@ export class DB {
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (const eventName of this.genericEventNames) {
       const dbName = this.getDatabaseName(eventName);
-      try {
-        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
-      } catch (e) {
-        console.log("Issue rolling back", dbName);
-      }
+      dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
     }
-    // TODO Figure out a way to handle concurrent request limit of 40
-    await Promise.all(dbRollbackPromises)
-      .catch(error => {
-        throw error;
-      });
 
     // Perform rollback on UserSyncableDBs
     for (const trackedUser of await this.trackedUsers.getUsers()) {
@@ -321,11 +314,17 @@ export class DB {
         dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
       }
     }
+
+    // Perform rollback on derived DBs
+    for (const derivedDBConfiguration of this.basicDerivedDBs) {
+      const dbName = this.getDatabaseName(derivedDBConfiguration.name);
+      dbRollbackPromises.push(this.derivedDatabases[dbName].rollback(blockNumber));
+    }
+
+    dbRollbackPromises.push(this.marketDatabase.rollback(blockNumber));
+
     // TODO Figure out a way to handle concurrent request limit of 40
-    await Promise.all(dbRollbackPromises)
-      .catch(error => {
-        throw error;
-      });
+    await Promise.all(dbRollbackPromises).catch(error => { throw error; });
   }
 
   /**
