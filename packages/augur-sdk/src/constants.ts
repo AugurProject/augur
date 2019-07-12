@@ -44,13 +44,6 @@ export enum SubscriptionEventName {
   UniverseForked = "UniverseForked",
 }
 
-export enum TXEventName {
-  AwaitingSigning = "AwaitingSigning",
-  Pending = "Pending",
-  Success = "Success",
-  Failure = "Failure",
-}
-
 export function isSubscriptionEventName(eventName: string): string | null {
   let retVal: number = -1;
 

@@ -1,135 +1,44 @@
-import { BigNumber } from "bignumber.js";
 import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/state/getter/Markets';
+import { BigNumber } from "bignumber.js";
 import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers";
-import { TXEventName } from "@augurproject/sdk/build/constants";
-import { augurEmitter } from '@augurproject/sdk/build/events';
 import { makeProvider, seedPath } from "../../libs";
-import * as ganache from "@augurproject/tools/build/libs/ganache";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { EthersFastSubmitWallet } from "@augurproject/core/build";
+  
+  let john: ContractAPI;
+  
+  beforeAll(async () => {
+    const { addresses } = loadSeed(seedPath);
+    const provider = await makeProvider(ACCOUNTS);
 
-let john: ContractAPI;
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+    await john.approveCentralAuthority();
+  }, 120000);
+  
+  test("TransactionStatus :: transaction status updates", async () => {
+    const transactions: Array<TransactionMetadata> = [];
+    const statuses: Array<TransactionStatus> = [];
+    const hashes: Array<string | undefined> = [];
+    john.augur.registerTransactionStatusCallback("Test", (transaction, status, hash) => {
+        if (transaction.name != "createYesNoMarket") return;
+        transactions.push(transaction);
+        statuses.push(status);
+        hashes.push(hash);
+    });  
 
-beforeAll(async () => {
-  const { addresses } = loadSeed(seedPath);
-  const provider = await makeProvider(ACCOUNTS);
+    await john.createReasonableYesNoMarket();
 
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-  await john.approveCentralAuthority();
-}, 120000);
+    await expect(statuses[0]).toEqual(TransactionStatus.AWAITING_SIGNING);
+    await expect(statuses[1]).toEqual(TransactionStatus.PENDING);
+    await expect(statuses[2]).toEqual(TransactionStatus.SUCCESS);
 
-test("TransactionStatus :: transaction status updates", async () => {
-  const transactions: Array<TransactionMetadata> = [];
-  const statuses: Array<TransactionStatus> = [];
-  const hashes: Array<string | undefined> = [];
-  john.augur.registerTransactionStatusCallback("Test", (transaction, status, hash) => {
-    if (transaction.name != "createYesNoMarket") return;
-    transactions.push(transaction);
-    statuses.push(status);
-    hashes.push(hash);
-  });
+    await expect(hashes[0]).toEqual(undefined);
+    await expect(hashes[1]).not.toBe(undefined);
+    await expect(hashes[1]).toEqual(hashes[2]);
 
-  await john.createReasonableYesNoMarket();
+    await expect(transactions[0]).toEqual(transactions[1]);
+    await expect(transactions[1]).toEqual(transactions[2]);
 
-  await expect(statuses[0]).toEqual(TransactionStatus.AWAITING_SIGNING);
-  await expect(statuses[1]).toEqual(TransactionStatus.PENDING);
-  await expect(statuses[2]).toEqual(TransactionStatus.SUCCESS);
+    const tx = transactions[0];
+    await expect(tx.name).toEqual("createYesNoMarket");
+    await expect(tx.params._affiliateFeeDivisor).toEqual(new BigNumber(25));
 
-  await expect(hashes[0]).toEqual(undefined);
-  await expect(hashes[1]).not.toBe(undefined);
-  await expect(hashes[1]).toEqual(hashes[2]);
-
-  await expect(transactions[0]).toEqual(transactions[1]);
-  await expect(transactions[1]).toEqual(transactions[2]);
-
-  const tx = transactions[0];
-  await expect(tx.name).toEqual("createYesNoMarket");
-  await expect(tx.params._affiliateFeeDivisor).toEqual(new BigNumber(25));
-
-}, 15000);
-
-test("TransactionStatus :: transaction status events", async () => {
-  const success = jest.fn();
-  const awaitingSigning = jest.fn();
-  const pending = jest.fn();
-
-  john.augur.on(TXEventName.Success, success);
-  john.augur.on(TXEventName.Pending, pending);
-  john.augur.on(TXEventName.AwaitingSigning, awaitingSigning);
-
-  await john.createReasonableYesNoMarket();
-
-  expect(success).toHaveBeenCalled();
-  expect(pending).toHaveBeenCalled();
-  expect(awaitingSigning).toHaveBeenCalled();
-
-}, 15000);
-
-test("TransactionStatus :: transaction status events failure", async (done) => {
-  const { addresses } = loadSeed(seedPath);
-  const provider = await makeProvider(ACCOUNTS);
-
-  const awaitingSigning = jest.fn();
-  const pending = jest.fn();
-  const failure = jest.fn().mockImplementation(() => {
-    done();
-  });
-
-  const myMock = jest.fn();
-  myMock
-    .mockReturnValueOnce({
-      status: 1, logs: [{
-        transactionIndex: 0,
-        blockNumber: 90,
-        transactionHash: "0x8f54c46f32718f605fe8954e2fcee9ca1ac65e32f5b37cae7e3ab2925eaf9c96",
-        address: "0x4e61185d7f125B84ac4A1837a0688d2BB58e8491",
-        topics:
-          ["0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925",
-            "0x000000000000000000000000913da4198e6be1d5f5e4a40d0667f70c0b5430eb",
-            "0x000000000000000000000000fcaf25bf38e7c86612a25ff18cb8e09ab07c9885"],
-        data: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-        logIndex: 0,
-        blockHash: "0x691568428d9171d2d3d415fc816944b3324d47635c1f3f5ea7e0a7e78f045c75",
-        transactionLogIndex: 0,
-      }],
-    })
-    .mockReturnValueOnce({ status: 2, logs: [] });
-
-  const spy = jest.spyOn(ganache, 'makeSigner').mockImplementation(async (account: ganache.Account, provider: EthersProvider): Promise<EthersFastSubmitWallet> => {
-    const wallet = await EthersFastSubmitWallet.create("c6cbd7d76bc5baca530c875663711b947efa6a86a900a9e8645ce32e5821484e", provider);
-    wallet.sendTransaction = (): Promise<any> => {
-      return {
-        hash: "0x0000",
-        wait: (): Promise<any> => {
-          return myMock() as any;
-        },
-      } as any;
-    };
-
-    return wallet;
-  });
-
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-  await john.approveCentralAuthority();
-
-  john.augur.on(TXEventName.Failure, failure);
-  john.augur.on(TXEventName.Pending, pending);
-  john.augur.on(TXEventName.AwaitingSigning, awaitingSigning);
-
-  await john.createYesNoMarket({
-    endTime: (await john.getTimestamp()).minus(SECONDS_IN_A_DAY),
-    feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
-    affiliateFeeDivisor: new BigNumber(0),
-    designatedReporter: john.account.publicKey,
-    topic: 'yesNo topic 1',
-    extraInfo:
-      '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
-  }).catch((e) => { });
-
-  // expect(failure).toHaveBeenCalled();
-  expect(pending).toHaveBeenCalled();
-  expect(awaitingSigning).toHaveBeenCalled();
-
-  spy.mockRestore();
-}, 15000);
+  }, 15000);
