@@ -2058,10 +2058,10 @@
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
   integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
 
-"@types/expect-puppeteer@3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@types/expect-puppeteer/-/expect-puppeteer-3.3.0.tgz#ef9ceb39d0c05a1265af7fd57638691ecf77c74b"
-  integrity sha512-0a3Z/BhTGD9h0gVrdHLEGSFweFNYr1l5skwyGNS6tg00yjY3wZTDOdfvs2frW5mhEWL8n2vjGewIc/ifsospJg==
+"@types/expect-puppeteer@3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@types/expect-puppeteer/-/expect-puppeteer-3.3.1.tgz#46e5944bf425b86ea13a563c7c8b86901414988d"
+  integrity sha512-3raSnf28NelDtv0ksvQPZs410taJZ4d70vA8sVzmbRPV04fpmQm9/BOxUCloETD/ZI1EXRpv0pzOQKhPTbm4jg==
   dependencies:
     "@types/jest" "*"
     "@types/puppeteer" "*"
