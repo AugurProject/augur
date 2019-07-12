@@ -468,7 +468,9 @@ export const MODAL_MARKET_REVIEW = "MODAL_MARKET_REVIEW";
 export const MODAL_MARKET_REVIEW_TRADE = "MODAL_MARKET_REVIEW_TRADE";
 export const MODAL_OPEN_ORDERS = "MODAL_OPEN_ORDERS";
 export const MODAL_MARKET_LOADING = "MODAL_MARKET_LOADING";
-
+// transactions parameter names
+export const ORDER_ID = "_orderId";
+export const TRADE_GROUP_ID = "_tradeGroupId";
 // # Alerts
 export const CRITICAL = "CRITICAL";
 export const INFO = "INFO";
@@ -743,6 +745,7 @@ export const TIMEFRAME_OPTIONS = [
 // Pending Queue Types
 export const CLAIM_STAKE_FEES = "CLAIM_STAKE_FEES";
 export const CLAIM_PROCEEDS = "CLAIM_PROCEEDS";
+
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = "CLAIM_FEE_WINDOWS";
 

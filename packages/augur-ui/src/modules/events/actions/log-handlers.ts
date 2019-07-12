@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import {
   loadMarketAccountPositions,
@@ -9,7 +8,6 @@ import { loadReportingWindowBounds } from 'modules/reports/actions/load-reportin
 import { updateLoggedTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { removeMarket } from 'modules/markets/actions/update-markets-data';
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price';
-import { removeCanceledOrder } from 'modules/orders/actions/update-order-status';
 import { defaultLogHandler } from 'modules/events/actions/default-log-handler';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import logError from 'utils/log-error';
@@ -45,7 +43,7 @@ import {
   ParsedOrderEventLog,
 } from '@augurproject/sdk/build/state/logs/types';
 import { TXStatus } from '@augurproject/sdk/build/events';
-import { listenToUpdates } from 'modules/events/actions/listen-to-updates';
+import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 
 const handleAlertUpdate = (
@@ -81,20 +79,36 @@ const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch(getWinningBalance([marketId]));
 };
 
-export const handleTxAwaitingSigning = (txStatus: TXStatus[]) => {
-  console.log('handleAwaitingSigning Transaction');
+export const handleTxAwaitingSigning = (txStatus: TXStatus) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log('AwaitingSigning Transaction', txStatus.transaction.name);
+  dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleTxSuccess = (txStatus: TXStatus[]) => {
-  console.log('handleTxSuccess Transaction');
+export const handleTxSuccess = (txStatus: TXStatus) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log('TxSuccess Transaction', txStatus.transaction.name);
+  dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleTxPending = (txStatus: TXStatus[]) => {
-  console.log('handleTxPending Transaction');
+export const handleTxPending = (txStatus: TXStatus) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log('TxPending Transaction', txStatus.transaction.name);
+  dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleTxFailure = (txStatus: TXStatus[]) => {
-  console.log('handleTxFailure Transaction');
+export const handleTxFailure = (txStatus: TXStatus) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log('TxFailure Transaction', txStatus.transaction.name);
+  dispatch(addUpdateTransaction(txStatus));
 };
 
 export const handleNewBlockLog = (log: any) => (
