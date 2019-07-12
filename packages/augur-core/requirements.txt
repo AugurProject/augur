@@ -36,7 +36,7 @@ more-itertools==7.0.0     # via pytest
 multiaddr==0.0.8          # via ipfshttpclient
 mypy-extensions==0.4.1    # via py-ecc, py-evm
 netaddr==0.7.19           # via multiaddr
-numpy==1.13.0
+numpy==1.16.4
 parsimonious==0.8.1       # via eth-abi
 pluggy==0.12.0            # via pytest
 protobuf==3.8.0           # via ethpm
