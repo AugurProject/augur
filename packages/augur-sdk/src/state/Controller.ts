@@ -11,13 +11,13 @@ const settings = require('./settings.json');
 export class Controller {
   private static latestBlock: Block;
 
-  private events = new Subscriptions(augurEmitter);
+  private readonly events = new Subscriptions(augurEmitter);
 
   public constructor(
     private augur: Augur,
     private db: Promise<DB>,
     private blockAndLogStreamerListener: IBlockAndLogStreamerListener
-  ) {}
+  ) { }
 
   public async run(): Promise<void> {
     try {
