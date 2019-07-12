@@ -26,6 +26,7 @@ interface FormDetailsProps {
   updateNewMarket: Function;
   newMarket: NewMarket;
   currentTimestamp: string;
+  onChange: Function;
 }
 
 interface FormDetailsState {
@@ -42,46 +43,12 @@ export default class FormDetails extends React.Component<
     timeFocused: false,
   };
 
-  onChange = (name, value) => {
-    const { updateNewMarket, newMarket } = this.props;
-    updateNewMarket({ [name]: value });
-    if (name === 'outcomes') {
-      let outcomesFormatted = [];
-      if (newMarket.marketType === CATEGORICAL) {
-        outcomesFormatted = value.map((outcome, index) => ({
-          description: outcome,
-          id: index + 1,
-          isTradable: true
-        }));
-        outcomesFormatted.unshift({
-          id: 0,
-          description: "Invalid",
-          isTradable: true,
-        })
-      } else {
-        outcomesFormatted = YES_NO_OUTCOMES;
-      }
-      updateNewMarket({ outcomesFormatted });
-    } else if (name === 'marketType') {
-      let outcomesFormatted = [];
-      if (value === CATEGORICAL) {
-        outcomesFormatted = newMarket.outcomes.map((outcome, index) => ({
-          description: outcome,
-          id: index,
-          isTradable: true
-        }));
-      } else {
-        outcomesFormatted = YES_NO_OUTCOMES;
-      }
-      updateNewMarket({ outcomesFormatted, orderBook: {}});
-    }
-  }
-
   render() {
     const {
       addOrderToNewMarket,
       newMarket,
-      currentTimestamp
+      currentTimestamp,
+      onChange
     } = this.props;
     const s = this.state;
 
@@ -111,7 +78,7 @@ export default class FormDetails extends React.Component<
 
           <Subheaders header="Market type" link subheader="Market types vary based on the amount of possible outcomes." />
           <RadioCardGroup
-            onChange={(value: string) => this.onChange("marketType", value)}
+            onChange={(value: string) => onChange("marketType", value)}
             defaultSelected={marketType}
             radioButtons={[
               {
@@ -140,7 +107,7 @@ export default class FormDetails extends React.Component<
               displayFormat="MMM D, YYYY"
               id="input-date"
               onDateChange={(date: Number) => {
-                this.onChange("endTime", date)
+                onChange("endTime", date)
               }}
               // isOutsideRange={day =>
               //   day.isAfter(moment(currentTimestamp).add(6, "M")) ||
@@ -150,7 +117,7 @@ export default class FormDetails extends React.Component<
               onFocusChange= {({ focused }) => {
                 if (endTime === null) {
                   const date = moment(currentTimestamp * 1000);
-                  this.onChange("endTime", date)
+                  onChange("endTime", date)
                 }
                 this.setState({ dateFocused: focused });
               }}
@@ -161,17 +128,17 @@ export default class FormDetails extends React.Component<
               minute={minute}
               meridiem={meridiem}
               onChange={(label: string, value: string) => {
-                this.onChange(label, value)
+                onChange(label, value)
               }}
               onFocusChange= {(focused: Boolean) => {
                 if (!hour) {
-                  this.onChange("hour", "12");
+                  onChange("hour", "12");
                 } 
                 if (!minute) {
-                  this.onChange("minute", "00");
+                  onChange("minute", "00");
                 } 
                 if (!meridiem) {
-                  this.onChange("meridiem", "AM");
+                  onChange("meridiem", "AM");
                 }
                 this.setState({ timeFocused: focused });
               }}
@@ -184,7 +151,7 @@ export default class FormDetails extends React.Component<
           <TextInput
             type="textarea"
             placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
-            onChange={(value: string) => this.onChange("description", value)}
+            onChange={(value: string) => onChange("description", value)}
             rows="3"
             value={description}
           />
@@ -197,7 +164,7 @@ export default class FormDetails extends React.Component<
                 minShown={2}
                 maxList={7}
                 placeholder={"Enter outcome"}
-                updateList={(value: Array<string>) => this.onChange("outcomes", value)}
+                updateList={(value: Array<string>) => onChange("outcomes", value)}
               />
             </>
           }
@@ -207,7 +174,7 @@ export default class FormDetails extends React.Component<
               <Subheaders header="Unit of measurement" subheader="Choose a denomination for the range." link />
               <TextInput
                 placeholder="Denomination"
-                onChange={(value: string) => this.onChange("scalarDenomination", value)}
+                onChange={(value: string) => onChange("scalarDenomination", value)}
                 value={scalarDenomination}
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
@@ -215,14 +182,14 @@ export default class FormDetails extends React.Component<
                 <TextInput
                   type="number"
                   placeholder="0"
-                  onChange={(value: string) => this.onChange("minPrice", value)}
+                  onChange={(value: string) => onChange("minPrice", value)}
                   value={minPrice}
                 />
                 <span>to</span>
                 <TextInput
                   type="number"
                   placeholder="100"
-                  onChange={(value: string) => this.onChange("maxPrice", value)}
+                  onChange={(value: string) => onChange("maxPrice", value)}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                   value={maxPrice}
                 />
@@ -231,7 +198,7 @@ export default class FormDetails extends React.Component<
               <TextInput
                 type="number"
                 placeholder="0"
-                onChange={(value: string) => this.onChange("tickSize", value)}
+                onChange={(value: string) => onChange("tickSize", value)}
                 trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                 value={tickSize}
               />
@@ -242,7 +209,7 @@ export default class FormDetails extends React.Component<
           <CategoryMultiSelect
             sortedGroup={categories}
             updateSelection={categoryArray => 
-              this.onChange("categories", categoryArray)
+              onChange("categories", categoryArray)
             }
           />
         </div>
@@ -263,11 +230,11 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter website",
                 textValue: expirySource,
-                onTextChange: (value: string) => this.onChange("expirySource", value)
+                onTextChange: (value: string) => onChange("expirySource", value)
               }
             ]}
             defaultSelected={expirySourceType}
-            onChange={(value: string) => this.onChange("expirySourceType", value)}
+            onChange={(value: string) => onChange("expirySourceType", value)}
           />
 
           <Subheaders header="Resolution details" subheader="Describe what users need to know to determine the outcome of the event." link/>
@@ -276,7 +243,7 @@ export default class FormDetails extends React.Component<
             placeholder="Describe how the event should be resolved under different scenarios."
             rows="3"
             value={detailsText}
-            onChange={(value: string) => this.onChange("detailsText", value)}
+            onChange={(value: string) => onChange("detailsText", value)}
           />
 
           <Subheaders header="Designated reporter" subheader="The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time)." link/>
@@ -292,11 +259,11 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter wallet address",
                 textValue: designatedReporterAddress,
-                onTextChange: (value: string) => this.onChange("designatedReporterAddress", value)
+                onTextChange: (value: string) => onChange("designatedReporterAddress", value)
               }
             ]}
             defaultSelected={designatedReporterType}
-            onChange={(value: string) => this.onChange("designatedReporterType", value)}
+            onChange={(value: string) => onChange("designatedReporterType", value)}
           />
         </div>
       </div>

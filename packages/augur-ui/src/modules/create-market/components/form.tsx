@@ -18,6 +18,7 @@ import {
 } from "modules/routes/constants/views";
 import { SCRATCH } from "modules/create-market/constants";
 import { DEFAULT_STATE } from "modules/markets/reducers/new-market";
+import { isBetween, isFilledNumber } from "modules/common/validations";
 
 import Styles from "modules/create-market/components/form.styles";
 
@@ -201,6 +202,63 @@ export default class Form extends React.Component<
     });
   }
 
+  evaluate = (value, label, readableName, checkBetween, checkFilledNumber, min, max) => {
+
+    const between = checkBetween ? isBetween(value, readableName, min, max) : "";
+    const filledNumber = checkFilledNumber ? isFilledNumber(value, readableName) : "";
+
+    if (between !== "" || filledNumber !== "") {
+      this.onError(label, filledNumber !== "" ? filledNumber : between);
+    } else {
+      this.onChange(label, value);
+    }
+  }
+
+  onChange = (name, value) => {
+    const { updateNewMarket, newMarket } = this.props;
+    updateNewMarket({ [name]: value });
+    if (name === 'outcomes') {
+      let outcomesFormatted = [];
+      if (newMarket.marketType === CATEGORICAL) {
+        outcomesFormatted = value.map((outcome, index) => ({
+          description: outcome,
+          id: index + 1,
+          isTradable: true
+        }));
+        outcomesFormatted.unshift({
+          id: 0,
+          description: "Invalid",
+          isTradable: true,
+        })
+      } else {
+        outcomesFormatted = YES_NO_OUTCOMES;
+      }
+      updateNewMarket({ outcomesFormatted });
+    } else if (name === 'marketType') {
+      let outcomesFormatted = [];
+      if (value === CATEGORICAL) {
+        outcomesFormatted = newMarket.outcomes.map((outcome, index) => ({
+          description: outcome,
+          id: index,
+          isTradable: true
+        }));
+      } else {
+        outcomesFormatted = YES_NO_OUTCOMES;
+      }
+      updateNewMarket({ outcomesFormatted, orderBook: {}});
+    }
+    this.onError(name, "");
+  }
+
+  onError = (name, error) => {
+    const { updateNewMarket, newMarket } = this.props;
+    const updatedMarket = { ...newMarket };
+    const { currentStep } = newMarket;
+
+    updatedMarket.validations[currentStep][name] = error;
+    updateNewMarket(updatedMarket);
+  }
+
   render() {
     const {
       newMarket,
@@ -236,8 +294,8 @@ export default class Form extends React.Component<
           />
         }
         <ContentBlock noDarkBackground={noDarkBackground}>
-          {mainContent === FORM_DETAILS && <FormDetails />}
-          {mainContent === FEES_LIQUIDITY && <FeesLiquidity />}
+          {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} />}
+          {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
           {mainContent === REVIEW && <Review />}
           <div>
             {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}

@@ -5,7 +5,6 @@ import classNames from "classnames";
 import { RadioCardGroup, TextInput } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
-import { isBetween, isFilledNumber } from "modules/common/validations";
 import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
 import InitialLiquidity from "modules/create-market/containers/initial-liquidity";
@@ -32,6 +31,9 @@ interface FeesLiquidityProps {
   clearNewMarket: Function;
   addOrderToNewMarket: Function;
   removeOrderFromNewMarket: Function;
+  onChange: Function;
+  onError: Function;
+  evaluate: Function;
 }
 
 interface FeesLiquidityState {
@@ -45,21 +47,6 @@ export default class FeesLiquidity extends React.Component<
   state: FeesLiquidityState = {
     selectedOutcome: this.props.newMarket.marketType === CATEGORICAL ? 1 : 2
   };
-
-  onChange = (name, value) => {
-    const { updateNewMarket, newMarket } = this.props;
-    updateNewMarket({ [name]: value });
-    this.onError(name, "");
-  }
-
-  onError = (name, error) => {
-    const { updateNewMarket, newMarket } = this.props;
-    const updatedMarket = { ...newMarket };
-    const { currentStep } = newMarket;
-
-    updatedMarket.validations[currentStep][name] = error;
-    updateNewMarket(updatedMarket);
-  }
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {
   }
@@ -115,7 +102,8 @@ export default class FeesLiquidity extends React.Component<
   render() {
     const {
       updatePage,
-      newMarket
+      newMarket,
+      evaluate
     } = this.props;
     const s = this.state;
 
@@ -140,21 +128,12 @@ export default class FeesLiquidity extends React.Component<
           />
           <TextInput
             type="number"
-            onChange={(value: string) => this.onChange("settlementFee", value)}
+            onChange={(value: string) => onChange("settlementFee", value)}
             value={settlementFee}
             innerLabel="%"
             error={(validations[currentStep].settlementFee !== "")}
             errorMessage={validations[currentStep].settlementFee}
-            onChange={(value: string) => {
-                const between = isBetween(value, "Market creator fee", 0, 50, 2);
-                const filledNumber = isFilledNumber(value, "Market creator fee");
-
-                if (between !== "" || filledNumber !== "") {
-                  this.onError("settlementFee", filledNumber !== "" ? filledNumber : between);
-                } else {
-                  this.onChange("settlementFee", value);
-                }
-            }}
+            onChange={(value: string) => evaluate(value, "settlementFee", "Market creator fee", true, true, 0, 50, 2)}
           />
         </div>
 
@@ -167,7 +146,7 @@ export default class FeesLiquidity extends React.Component<
           />
           <TextInput
             type="number"
-            onChange={(value: string) => this.onChange("affiliateFee", value)}
+            onChange={(value: string) => onChange("affiliateFee", value)}
             value={affiliateFee}
             innerLabel="%"
             trailingLabel="of market creator fees"
