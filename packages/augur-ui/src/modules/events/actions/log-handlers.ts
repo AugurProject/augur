@@ -41,6 +41,7 @@ import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
 import { OrderEventType, ParsedOrderEventLog } from '@augurproject/sdk/build/state/logs/types';
+import { TXStatus } from '@augurproject/sdk/build/events';
 
 const handleAlertUpdate = (
   log: any,
@@ -74,6 +75,22 @@ const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch(loadMarketAccountPositions(marketId));
   dispatch(getWinningBalance([marketId]));
 };
+
+export const handleTxAwaitingSigning = (txStatus: TXStatus[]) => {
+  console.log("handleAwaitingSigning Transaction");
+}
+
+export const handleTxSuccess = (txStatus: TXStatus[]) => {
+  console.log("handleTxSuccess Transaction");
+}
+
+export const handleTxPending = (txStatus: TXStatus[]) => {
+  console.log("handleTxPending Transaction");
+}
+
+export const handleTxFailure = (txStatus: TXStatus[]) => {
+  console.log("handleTxFailure Transaction");
+}
 
 export const handleNewBlockLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>
