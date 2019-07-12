@@ -40,8 +40,13 @@ import { Action } from 'redux';
 import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
-import { OrderEventType, ParsedOrderEventLog } from '@augurproject/sdk/build/state/logs/types';
+import {
+  OrderEventType,
+  ParsedOrderEventLog,
+} from '@augurproject/sdk/build/state/logs/types';
 import { TXStatus } from '@augurproject/sdk/build/events';
+import { listenToUpdates } from 'modules/events/actions/listen-to-updates';
+import { augurSdk } from 'services/augursdk';
 
 const handleAlertUpdate = (
   log: any,
@@ -77,23 +82,24 @@ const loadUserPositionsAndBalances = (marketId: string) => (
 };
 
 export const handleTxAwaitingSigning = (txStatus: TXStatus[]) => {
-  console.log("handleAwaitingSigning Transaction");
-}
+  console.log('handleAwaitingSigning Transaction');
+};
 
 export const handleTxSuccess = (txStatus: TXStatus[]) => {
-  console.log("handleTxSuccess Transaction");
-}
+  console.log('handleTxSuccess Transaction');
+};
 
 export const handleTxPending = (txStatus: TXStatus[]) => {
-  console.log("handleTxPending Transaction");
-}
+  console.log('handleTxPending Transaction');
+};
 
 export const handleTxFailure = (txStatus: TXStatus[]) => {
-  console.log("handleTxFailure Transaction");
-}
+  console.log('handleTxFailure Transaction');
+};
 
 export const handleNewBlockLog = (log: any) => (
-  dispatch: ThunkDispatch<void, any, Action>
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
   dispatch(
     updateBlockchain({
@@ -104,6 +110,11 @@ export const handleNewBlockLog = (log: any) => (
       currentAugurTimestamp: log.timestamp,
     })
   );
+  // TODO: figure out a good way to know if SDK is ready to subscribe to events
+  if (log.blocksBehindCurrent === 0 && !augurSdk.isSubscribed) {
+    // wire up events for sdk
+    augurSdk.subscribe(dispatch);
+  }
 };
 
 export const handleMarketCreatedLog = (log: any) => (
@@ -200,7 +211,7 @@ export const handleTokensBurnedLog = (log: any) => (
 
 export const handleOrderLog = (log: any) => {
   const type = log.eventType;
-  switch(type) {
+  switch (type) {
     case OrderEventType.Cancel: {
       return handleOrderCanceledLog(log);
     }
@@ -209,12 +220,12 @@ export const handleOrderLog = (log: any) => {
     }
     case OrderEventType.PriceChanged: {
       // TODO: figure out what needs to change for price change
-      return console.log("order price changed need to add UI functionality");
+      return console.log('order price changed need to add UI functionality');
     }
     default:
       return handleOrderFilledLog(log);
   }
-}
+};
 
 export const handleOrderCreatedLog = (log: ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -233,8 +244,7 @@ export const handleOrderCreatedLog = (log: ParsedOrderEventLog) => (
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
-  if (isCurrentMarket(marketId))
-    dispatch(loadMarketOrderBook(marketId));
+  if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
 export const handleOrderCanceledLog = (log: ParsedOrderEventLog) => (
@@ -253,8 +263,7 @@ export const handleOrderCanceledLog = (log: ParsedOrderEventLog) => (
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
-  if (isCurrentMarket(marketId))
-    dispatch(loadMarketOrderBook(marketId));
+  if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
 export const handleOrderFilledLog = (log: ParsedOrderEventLog) => (
@@ -264,27 +273,21 @@ export const handleOrderFilledLog = (log: ParsedOrderEventLog) => (
   const marketId = log.market;
   const { address } = getState().loginAccount;
   const isStoredTransaction =
-    isSameAddress(log.orderCreator, address) || isSameAddress(log.orderFiller, address);
+    isSameAddress(log.orderCreator, address) ||
+    isSameAddress(log.orderFiller, address);
   if (isStoredTransaction) {
     dispatch(loadMarketsInfo([marketId]));
     dispatch(updateAssets());
     // handlePendingOrder(log, dispatch, getState);
     // handleAlertUpdate(log, dispatch, getState);
-    dispatch(
-      updateOutcomePrice(
-        marketId,
-        log.outcome,
-        log.price
-      )
-    );
+    dispatch(updateOutcomePrice(marketId, log.outcome, log.price));
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders({ marketId }));
   }
   // always reload account positions on trade so we get up to date PL data.
   dispatch(loadUserPositionsAndBalances(marketId));
   dispatch(loadMarketTradingHistory(marketId));
-  if (isCurrentMarket(marketId))
-    dispatch(loadMarketOrderBook(marketId));
+  if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
 export const handleTradingProceedsClaimedLog = (log: any) => (

@@ -32,7 +32,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
-import { listenToUpdates } from 'modules/events/actions/listen-to-updates';
+import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -217,8 +217,8 @@ export function connectAugur(
           doIt();
         }
 
-        // wire up events for sdk
-        dispatch(listenToUpdates(Augur));
+        // wire up start up events for sdk
+        dispatch(listenForStartUpEvents(Augur));
       }
     );
   };
