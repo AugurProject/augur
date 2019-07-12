@@ -21,12 +21,12 @@ import { getAddress } from "ethers/utils/address";
 export interface CustomEvent {
   name: string;
   eventName?: string;
-  idFields?: Array<string>;
+  idFields?: string[];
 }
 
 export interface UserSpecificEvent extends CustomEvent {
   numAdditionalTopics: number;
-  userTopicIndicies: Array<number>;
+  userTopicIndicies: number[];
 }
 
 export class Augur<TProvider extends Provider = Provider> {

@@ -26,6 +26,14 @@ export function convertDisplayPriceToOnChainPrice(displayPrice: BigNumber, minPr
   return displayPrice.minus(minPrice).dividedBy(tickSize);
 }
 
+export function convertPayoutNumeratorsToStrings(payoutNumeratorsBN: BigNumber[]): string[] {
+  const payoutNumerators: string[] = [];
+  for (let i = 0; i < payoutNumeratorsBN.length; i++) {
+    payoutNumerators[i] = payoutNumeratorsBN[i].toString(10);
+  }
+  return payoutNumerators;
+}
+
 export function compareObjects(key: string, order: string) {
   return function(a: any, b: any) {
     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {

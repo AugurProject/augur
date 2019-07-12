@@ -1656,7 +1656,7 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(markets).toMatchObject([
-    {
+      {
         author: john.account.publicKey,
         category:
           ' \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
@@ -1672,36 +1672,62 @@ describe('State API :: Markets :: ', () => {
         numTicks: '100',
         openInterest: '0.0015',
         outcomes: [
-        {
-          description: 'Invalid',
-          id: 0,
-          price: '0.22',
-          volume: '500000000000000',
+          {
+            description: 'Invalid',
+            id: 0,
+            price: '0.22',
+            volume: '500000000000000',
+          },
+          {
+            description: 'No',
+            id: 1,
+            price: '0.22',
+            volume: '500000000000000',
+          },
+          {
+            description: 'Yes',
+            id: 2,
+            price: null,
+            volume: '0',
+          },
+        ],
+        reportingState: 'FORKING',
+        resolutionSource: null,
+        scalarDenomination: null,
+        marketCreatorFeeRate: '0.01',
+        settlementFee: '0.0100000000000001',
+        reportingFeeRate: '0.0000000000000001',
+        tickSize: '0.01',
+        universe: john.augur.contracts.universe.address,
+        volume: '0.001',
+        disputeInfo: {
+          disputePacingOn: true,
+          stakeCompletedTotal: '550000000000000000524288',
+          bondSizeOfNewStake: '1100000000000000001048576',
+          stakes: [
+            {
+              payout: [ '0', '100', '0' ],
+              isInvalid: false,
+              bondSizeCurrent: '349680582682291667',
+              bondSizeTotal: '366666666666666667016192',
+              stakeCurrent: '349680582682291667',
+              stakeRemaining: '0',
+              stakeCompleted: '366666666666666667016192',
+              tentativeWinning: true },
+            {
+              payout: [ '0', '0', '100' ],
+              isInvalid: false,
+              bondSizeCurrent: '699361165364583334',
+              bondSizeTotal: '183333333333333333508096',
+              stakeCurrent: '699361165364583334',
+              stakeRemaining: '0',
+              stakeCompleted: '183333333333333333508096',
+              tentativeWinning: false,
+            },
+          ],
         },
-        {
-          description: 'No',
-          id: 1,
-          price: '0.22',
-          volume: '500000000000000',
-        },
-        {
-          description: 'Yes',
-          id: 2,
-          price: null,
-          volume: '0',
-        },
-      ],
-      reportingState: 'FORKING',
-      resolutionSource: null,
-      scalarDenomination: null,
-      marketCreatorFeeRate: '0.01',
-      settlementFee: '0.0100000000000001',
-      reportingFeeRate: '0.0000000000000001',
-      tickSize: '0.01',
-      universe: john.augur.contracts.universe.address,
-      volume: '0.001',
-    },
-    {
+      },
+      {
         author: john.account.publicKey,
         category:
           ' \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
@@ -1716,108 +1742,131 @@ describe('State API :: Markets :: ', () => {
         numTicks: '100',
         openInterest: '0.0015',
         outcomes: [
-        {
-          description: 'Invalid',
-          id: 0,
-          price: '0.22',
-          volume: '500000000000000',
+          {
+            description: 'Invalid',
+            id: 0,
+            price: '0.22',
+            volume: '500000000000000',
+          },
+          {
+            description:
+              'A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+            id: 1,
+            price: '0.22',
+            volume: '110000000000000',
+          },
+          {
+            description:
+              'B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+            id: 2,
+            price: null,
+            volume: '0',
+          },
+          {
+            description:
+              'C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+            id: 3,
+            price: null,
+            volume: '0',
+          },
+        ],
+        reportingState: 'FINALIZED',
+        resolutionSource: null,
+        scalarDenomination: null,
+        marketCreatorFeeRate: '0.01',
+        settlementFee: '0.0100000000000001',
+        reportingFeeRate: '0.0000000000000001',
+        tickSize: '0.01',
+        universe: john.augur.contracts.universe.address,
+        volume: '0.00061',
+        disputeInfo: {
+          disputePacingOn: false,
+          stakeCompletedTotal: '349680582682291667',
+          bondSizeOfNewStake: '699361165364583334',
+          stakes: [
+            {
+              payout: [ '100', '0', '0', '0' ],
+              isInvalid: true,
+              bondSizeCurrent: '349680582682291667',
+              bondSizeTotal: '349680582682291667',
+              stakeCurrent: '349680582682291667',
+              stakeRemaining: '0',
+              stakeCompleted: '349680582682291667',
+              tentativeWinning: true,
+            },
+          ],
         },
-        {
-          description:
-            'A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
-          id: 1,
-          price: '0.22',
-          volume: '110000000000000',
-        },
-        {
-          description:
-            'B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
-          id: 2,
-          price: null,
-          volume: '0',
-        },
-        {
-          description:
-            'C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
-          id: 3,
-          price: null,
-          volume: '0',
-        },
-      ],
-      reportingState: 'FINALIZED',
-      resolutionSource: null,
-      scalarDenomination: null,
-      marketCreatorFeeRate: '0.01',
-      settlementFee: '0.0100000000000001',
-      reportingFeeRate: '0.0000000000000001',
-      tickSize: '0.01',
-      universe: john.augur.contracts.universe.address,
-      volume: '0.00061',
-    },
-    {
-      author: john.account.publicKey,
-      category:
-        ' \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
-      consensus: null,
-      cumulativeScale: '200',
-      details: null,
-      finalizationTime: null,
-      marketType: 'scalar',
-      maxPrice: '250',
-      minPrice: '50',
-      needsMigration: true,
-      numOutcomes: 3,
-      numTicks: '20000',
-      openInterest: '0.3',
-      scalarDenomination: 'scalar denom 1',
-      marketCreatorFeeRate: '0.01',
-      settlementFee: '0.0100000000000001',
-      reportingFeeRate: '0.0000000000000001',
-      outcomes: [
-        {
-          description: 'Invalid',
-          id: 0,
-          price: '50.22',
-          volume: '100000000000000000',
-        },
-        {
-          description: 'scalar denom 1',
-          id: 1,
-          price: '50.22',
-          volume: '110000000000000',
-        },
-        {
-          description: 'scalar denom 1',
-          id: 2,
-          price: null,
-          volume: '0',
-        },
-      ],
+      },
+      {
+        author: john.account.publicKey,
+        category:
+          ' \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+        consensus: null,
+        cumulativeScale: '200',
+        details: null,
+        finalizationTime: null,
+        marketType: 'scalar',
+        maxPrice: '250',
+        minPrice: '50',
+        needsMigration: true,
+        numOutcomes: 3,
+        numTicks: '20000',
+        openInterest: '0.3',
+        scalarDenomination: 'scalar denom 1',
+        marketCreatorFeeRate: '0.01',
+        settlementFee: '0.0100000000000001',
+        reportingFeeRate: '0.0000000000000001',
+        outcomes: [
+          {
+            description: 'Invalid',
+            id: 0,
+            price: '50.22',
+            volume: '100000000000000000',
+          },
+          {
+            description: 'scalar denom 1',
+            id: 1,
+            price: '50.22',
+            volume: '110000000000000',
+          },
+          {
+            description: 'scalar denom 1',
+            id: 2,
+            price: null,
+            volume: '0',
+          },
+        ],
         reportingState: 'AWAITING_FORK_MIGRATION',
         resolutionSource: null,
         tickSize: '0.01',
         universe: john.augur.contracts.universe.address,
         volume: '0.10011',
-    },
+        disputeInfo: {
+          disputePacingOn: false,
+          stakeCompletedTotal: '0',
+          bondSizeOfNewStake: '0',
+          stakes: [],
+        },
+      },
     ]);
 
     expect(markets[0]).toHaveProperty('creationBlock');
     expect(markets[1]).toHaveProperty('creationBlock');
     expect(markets[2]).toHaveProperty('creationBlock');
 
-  expect(markets[0]).toHaveProperty('creationTime');
-  expect(markets[1]).toHaveProperty('creationTime');
-  expect(markets[2]).toHaveProperty('creationTime');
+    expect(markets[0]).toHaveProperty('creationTime');
+    expect(markets[1]).toHaveProperty('creationTime');
+    expect(markets[2]).toHaveProperty('creationTime');
 
-  expect(markets[0]).toHaveProperty('endTime');
-  expect(markets[1]).toHaveProperty('endTime');
-  expect(markets[2]).toHaveProperty('endTime');
+    expect(markets[0]).toHaveProperty('endTime');
+    expect(markets[1]).toHaveProperty('endTime');
+    expect(markets[2]).toHaveProperty('endTime');
 
     expect(markets[0]).toHaveProperty('finalizationTime');
-  expect(markets[1]).toHaveProperty('finalizationTime');
-  expect(markets[2]).toHaveProperty('finalizationTime');
+    expect(markets[1]).toHaveProperty('finalizationTime');
+    expect(markets[2]).toHaveProperty('finalizationTime');
 
-  expect(markets[0]).toHaveProperty('id');
+    expect(markets[0]).toHaveProperty('id');
     expect(markets[1]).toHaveProperty('id');
     expect(markets[2]).toHaveProperty('id');
   }, 180000);

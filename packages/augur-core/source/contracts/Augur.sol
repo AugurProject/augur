@@ -9,6 +9,7 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
+import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/IOrders.sol';
@@ -45,10 +46,10 @@ contract Augur is IAugur {
     }
 
     event MarketCreated(IUniverse indexed universe, uint256 endTime, bytes32 indexed topic, string extraInfo, IMarket market, address indexed marketCreator, address designatedReporter, uint256 feeDivisor, int256[] prices, IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes, uint256 timestamp);
-    event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 timestamp);
+    event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, IInitialReporter initialReporter, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 timestamp);
     event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size);
     event DisputeCrowdsourcerContribution(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountStaked, string description, uint256 timestamp);
-    event DisputeCrowdsourcerCompleted(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256 nextWindowStartTime, bool pacingOn);
+    event DisputeCrowdsourcerCompleted(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256 size, uint256 nextWindowStartTime, bool pacingOn);
     event InitialReporterRedeemed(address indexed universe, address indexed reporter, address indexed market, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp);
     event DisputeCrowdsourcerRedeemed(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256[] payoutNumerators, uint256 timestamp);
     event ReportingParticipantDisavowed(address indexed universe, address indexed market, address reportingParticipant);
@@ -306,10 +307,10 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] memory _payoutNumerators, string memory _description) public returns (bool) {
+    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, IInitialReporter _initialReporter, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] memory _payoutNumerators, string memory _description) public returns (bool) {
         require(isKnownUniverse(_universe));
         require(_universe.isContainerForMarket(IMarket(msg.sender)));
-        emit InitialReportSubmitted(address(_universe), _reporter, _market, _amountStaked, _isDesignatedReporter, _payoutNumerators, _description, getTimestamp());
+        emit InitialReportSubmitted(address(_universe), _reporter, _market, _initialReporter, _amountStaked, _isDesignatedReporter, _payoutNumerators, _description, getTimestamp());
         return true;
     }
 
@@ -320,10 +321,10 @@ contract Augur is IAugur {
         return true;
     }
 
-    function logDisputeCrowdsourcerCompleted(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256 _nextWindowStartTime, bool _pacingOn) public returns (bool) {
+    function logDisputeCrowdsourcerCompleted(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256 _size, uint256 _nextWindowStartTime, bool _pacingOn) public returns (bool) {
         require(isKnownUniverse(_universe));
         require(_universe.isContainerForMarket(IMarket(msg.sender)));
-        emit DisputeCrowdsourcerCompleted(address(_universe), _market, _disputeCrowdsourcer, _nextWindowStartTime, _pacingOn);
+        emit DisputeCrowdsourcerCompleted(address(_universe), _market, _disputeCrowdsourcer, _size, _nextWindowStartTime, _pacingOn);
         return true;
     }
 

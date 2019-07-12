@@ -144,7 +144,7 @@ contract Market is Initializable, Ownable, IMarket {
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
         disputeWindow = universe.getOrCreateNextDisputeWindow(true);
         _initialReporter.report(_reporter, _payoutDistributionHash, _payoutNumerators, _initialReportStake);
-        augur.logInitialReportSubmitted(universe, _reporter, address(this), _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description);
+        augur.logInitialReportSubmitted(universe, _reporter, address(this), _initialReporter, _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _description);
     }
 
     function distributeInitialReportingRep(address _reporter, IInitialReporter _initialReporter) private returns (uint256) {
@@ -227,7 +227,7 @@ contract Market is Initializable, Ownable, IMarket {
             }
             disputeWindow = universe.getOrCreateNextDisputeWindow(false);
         }
-        augur.logDisputeCrowdsourcerCompleted(universe, address(this), address(_crowdsourcer), disputeWindow.getStartTime(), disputePacingOn);
+        augur.logDisputeCrowdsourcerCompleted(universe, address(this), address(_crowdsourcer), _crowdsourcerSize, disputeWindow.getStartTime(), disputePacingOn);
         if (preemptiveDisputeCrowdsourcer != IDisputeCrowdsourcer(0)) {
             IDisputeCrowdsourcer _newCrowdsourcer = preemptiveDisputeCrowdsourcer;
             preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
