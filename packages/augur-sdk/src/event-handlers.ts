@@ -1,3 +1,7 @@
+import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers/build";
+import { Transaction } from "ethereumjs-blockstream";
+import { TXEventName } from "./constants";
+
 type Address = string;
 type Bytes32 = string;
 
@@ -277,4 +281,10 @@ export interface UniverseForked extends FormattedEventLog {
   forkingMarket: Address;
 }
 
-export type SubscriptionType = MarketCreated | InitialReportSubmitted | DisputeCrowdsourcerCreated | DisputeCrowdsourcerContribution | DisputeCrowdsourcerCompleted | InitialReporterRedeemed | DisputeCrowdsourcerRedeemed | ReportingParticipantDisavowed | MarketParticipantsDisavowed | MarketFinalized | MarketMigrated | UniverseForked | UniverseCreated | OrderEvent | CompleteSetsPurchased | CompleteSetsSold | TradingProceedsClaimed | TokensTransferred | TokensMinted | TokensBurned | TokenBalanceChanged | DisputeWindowCreated | InitialReporterTransferred | MarketTransferred | MarketVolumeChanged | MarketOIChanged | ProfitLossChanged | ParticipationTokensRedeemed | TimestampSet | NewBlock;
+export interface TXStatus {
+  transaction: TransactionMetadata;
+  status: TXEventName,
+  hash?: string;
+}
+
+export type SubscriptionType = MarketCreated | InitialReportSubmitted | DisputeCrowdsourcerCreated | DisputeCrowdsourcerContribution | DisputeCrowdsourcerCompleted | InitialReporterRedeemed | DisputeCrowdsourcerRedeemed | ReportingParticipantDisavowed | MarketParticipantsDisavowed | MarketFinalized | MarketMigrated | UniverseForked | UniverseCreated | OrderEvent | CompleteSetsPurchased | CompleteSetsSold | TradingProceedsClaimed | TokensTransferred | TokensMinted | TokensBurned | TokenBalanceChanged | DisputeWindowCreated | InitialReporterTransferred | MarketTransferred | MarketVolumeChanged | MarketOIChanged | ProfitLossChanged | ParticipationTokensRedeemed | TimestampSet | NewBlock | TXStatus;

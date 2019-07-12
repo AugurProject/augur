@@ -44,7 +44,7 @@ export enum SubscriptionEventName {
   UniverseForked = "UniverseForked",
 }
 
-export enum TransactionStatusEventName {
+export enum TXEventName {
   AwaitingSigning = "AwaitingSigning",
   Pending = "Pending",
   Success = "Success",

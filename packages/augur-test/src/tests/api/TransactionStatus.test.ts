@@ -1,9 +1,8 @@
 import { BigNumber } from "bignumber.js";
 import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/state/getter/Markets';
-import { Subscriptions } from '@augurproject/sdk/build/subscriptions';
 import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers";
-import { TransactionStatusEventName } from "@augurproject/sdk/build/constants";
+import { TXEventName } from "@augurproject/sdk/build/constants";
 import { augurEmitter } from '@augurproject/sdk/build/events';
 import { makeProvider, seedPath } from "../../libs";
 import * as ganache from "@augurproject/tools/build/libs/ganache";
@@ -51,15 +50,13 @@ test("TransactionStatus :: transaction status updates", async () => {
 }, 15000);
 
 test("TransactionStatus :: transaction status events", async () => {
-  const subscription = new Subscriptions(augurEmitter);
-
   const success = jest.fn();
   const awaitingSigning = jest.fn();
   const pending = jest.fn();
 
-  subscription.subscribe(TransactionStatusEventName.Success, success);
-  subscription.subscribe(TransactionStatusEventName.Pending, pending);
-  subscription.subscribe(TransactionStatusEventName.AwaitingSigning, awaitingSigning);
+  john.augur.on(TXEventName.Success, success);
+  john.augur.on(TXEventName.Pending, pending);
+  john.augur.on(TXEventName.AwaitingSigning, awaitingSigning);
 
   await john.createReasonableYesNoMarket();
 
@@ -116,11 +113,9 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   await john.approveCentralAuthority();
 
-  const subscription = new Subscriptions(augurEmitter);
-
-  subscription.subscribe(TransactionStatusEventName.Failure, failure);
-  subscription.subscribe(TransactionStatusEventName.Pending, pending);
-  subscription.subscribe(TransactionStatusEventName.AwaitingSigning, awaitingSigning);
+  john.augur.on(TXEventName.Failure, failure);
+  john.augur.on(TXEventName.Pending, pending);
+  john.augur.on(TXEventName.AwaitingSigning, awaitingSigning);
 
   await john.createYesNoMarket({
     endTime: (await john.getTimestamp()).minus(SECONDS_IN_A_DAY),

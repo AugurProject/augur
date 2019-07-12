@@ -1,22 +1,23 @@
-import { Callback, SubscriptionType, augurEmitter } from "./events";
+import { Accounts } from "./state/getter/Accounts";
+import { BigNumber } from 'bignumber.js';
+import { Callback, SubscriptionType, TXStatusCallback, augurEmitter } from "./events";
 import { Connector } from "./connector/connector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
+import { ContractDependenciesEthers, TransactionStatusCallback, TransactionMetadata, TransactionStatus } from "contract-dependencies-ethers";
 import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
+import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
 import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
-import { BigNumber } from 'bignumber.js';
-import { Provider } from "./ethereum/Provider";
-import { isSubscriptionEventName, SubscriptionEventName, TransactionStatusEventName } from "./constants";
-import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
-import { ContractDependenciesEthers, TransactionStatusCallback, TransactionMetadata, TransactionStatus } from "contract-dependencies-ethers";
 import { Markets } from "./state/getter/Markets";
+import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
+import { TXStatus } from "./event-handlers";
+import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
 import { Trading } from "./state/getter/Trading";
-import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
 import { Users } from "./state/getter/Users";
-import { Accounts } from "./state/getter/Accounts";
 import { getAddress } from "ethers/utils/address";
+import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
 
 export class Augur<TProvider extends Provider = Provider> {
   public readonly provider: TProvider;
@@ -29,6 +30,11 @@ export class Augur<TProvider extends Provider = Provider> {
   public readonly trade: Trade;
   public readonly market: Market;
   public static connector: Connector;
+
+  private txSuccessCallback: TXStatusCallback;
+  private txAwaitingSigningCallback: TXStatusCallback;
+  private txPendingCallback: TXStatusCallback;
+  private txFailureCallback: TXStatusCallback;
 
   // TODO Set genericEventNames using GenericContractInterfaces instead of hardcoding them
   public readonly genericEventNames: Array<string> = [
@@ -72,7 +78,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.market = new Market(this);
     this.events = new Events(this.provider, this.addresses.Augur);
 
-    this.registerTrandactionStatusEvents();
+    this.registerTransactionStatusEvents();
   }
 
   public static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: Connector = new EmptyConnector()): Promise<Augur> {
@@ -153,15 +159,39 @@ export class Augur<TProvider extends Provider = Provider> {
     return Augur.connector.bindTo(f);
   }
 
-  public async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+  public async on(eventName: SubscriptionEventName | TXEventName | string, callback: Callback | TXStatusCallback): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
       return Augur.connector.on(eventName, callback as Callback);
     }
+    else if (eventName === TXEventName.AwaitingSigning) {
+      this.txAwaitingSigningCallback = callback;
+    }
+    else if (eventName === TXEventName.Pending) {
+      this.txPendingCallback = callback;
+    }
+    else if (eventName === TXEventName.Success) {
+      this.txSuccessCallback = callback;
+    }
+    else if (eventName === TXEventName.Failure) {
+      this.txFailureCallback = callback;
+    }
   }
 
-  public async off(eventName: SubscriptionEventName | string): Promise<void> {
+  public async off(eventName: SubscriptionEventName | TXEventName | string): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
       return Augur.connector.off(eventName);
+    }
+    else if (eventName === TXEventName.AwaitingSigning) {
+      this.txAwaitingSigningCallback = null;
+    }
+    else if (eventName === TXEventName.Pending) {
+      this.txPendingCallback = null;
+    }
+    else if (eventName === TXEventName.Success) {
+      this.txSuccessCallback = null;
+    }
+    else if (eventName === TXEventName.Failure) {
+      this.txFailureCallback = null;
     }
   }
 
@@ -211,27 +241,37 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.trade.simulateTradeGasLimit(params);
   }
 
-  private registerTrandactionStatusEvents() {
+  private registerTransactionStatusEvents() {
     this.registerTransactionStatusCallback("Transaction Status Handler", (transaction, status, hash) => {
-      if (status === TransactionStatus.SUCCESS) {
-        augurEmitter.emit(TransactionStatusEventName.Success, {
-          eventName: TransactionStatusEventName.Success, transaction, status, hash,
-        });
 
-      } else if (status === TransactionStatus.AWAITING_SIGNING) {
-        augurEmitter.emit(TransactionStatusEventName.AwaitingSigning, {
-          eventName: TransactionStatusEventName.AwaitingSigning, transaction, status, hash,
-        });
-
-      } else if (status === TransactionStatus.PENDING) {
-        augurEmitter.emit(TransactionStatusEventName.Pending, {
-          eventName: TransactionStatusEventName.Pending, transaction, status, hash,
-        });
-
-      } else if (status === TransactionStatus.FAILURE) {
-        augurEmitter.emit(TransactionStatusEventName.Failure, {
-          eventName: TransactionStatusEventName.Failure, transaction, status, hash,
-        });
+      if (status === TransactionStatus.SUCCESS && this.txSuccessCallback) {
+        const txn: TXStatus = {
+          transaction,
+          status: TXEventName.Success,
+          hash,
+        } as TXStatus;
+        this.txSuccessCallback(txn);
+      } else if (status === TransactionStatus.AWAITING_SIGNING && this.txAwaitingSigningCallback) {
+        const txn: TXStatus = {
+          transaction,
+          status: TXEventName.AwaitingSigning,
+          hash,
+        } as TXStatus;
+        this.txAwaitingSigningCallback(txn);
+      } else if (status === TransactionStatus.PENDING && this.txPendingCallback) {
+        const txn: TXStatus = {
+          transaction,
+          status: TXEventName.Pending,
+          hash,
+        } as TXStatus;
+        this.txPendingCallback(txn);
+      } else if (status === TransactionStatus.FAILURE && this.txFailureCallback) {
+        const txn: TXStatus = {
+          transaction,
+          status: TXEventName.Failure,
+          hash,
+        } as TXStatus;
+        this.txFailureCallback(txn);
       }
     });
   }
