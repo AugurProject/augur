@@ -65,7 +65,7 @@ export class SDK {
     if (this.isSubscribed) return;
     try {
       this.isSubscribed = true;
-      console.log("Augur subscribing to events");
+      console.log("Subscribing to Augur events");
       dispatch(listenToUpdates(this.get()));
     } catch (e) {
       this.isSubscribed = false;
