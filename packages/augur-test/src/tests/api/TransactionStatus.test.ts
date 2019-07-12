@@ -5,9 +5,10 @@ import { TransactionStatus, TransactionMetadata } from "contract-dependencies-et
 import { TXEventName } from "@augurproject/sdk/build/constants";
 import { augurEmitter } from '@augurproject/sdk/build/events';
 import { makeProvider, seedPath } from "../../libs";
-import * as ganache from "@augurproject/tools/build/libs/ganache";
+import * as blockchain from "@augurproject/tools/build/libs/blockchain";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { EthersFastSubmitWallet } from "@augurproject/core/build";
+import * as constants from "@augurproject/tools/build/constants";
 
 let john: ContractAPI;
 
@@ -96,7 +97,7 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
     })
     .mockReturnValueOnce({ status: 2, logs: [] });
 
-  const spy = jest.spyOn(ganache, 'makeSigner').mockImplementation(async (account: ganache.Account, provider: EthersProvider): Promise<EthersFastSubmitWallet> => {
+  const spy = jest.spyOn(blockchain, 'makeSigner').mockImplementation(async (account: constants.Account, provider: EthersProvider): Promise<EthersFastSubmitWallet> => {
     const wallet = await EthersFastSubmitWallet.create("c6cbd7d76bc5baca530c875663711b947efa6a86a900a9e8645ce32e5821484e", provider);
     wallet.sendTransaction = (): Promise<any> => {
       return {

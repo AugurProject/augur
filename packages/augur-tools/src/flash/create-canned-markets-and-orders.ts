@@ -1,12 +1,10 @@
-#!/usr/bin/env ts-node
-
 import { BigNumber } from "bignumber.js";
 import { formatBytes32String } from "ethers/utils";
 
 import { GenericAugurInterfaces } from "@augurproject/core";
 import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from "@augurproject/sdk";
 
-import { ContractAPI } from "..";
+import { ContractAPI } from "../libs/contract-api";
 import { cannedMarkets, CannedMarket } from "./data/canned-markets";
 
 type Market = GenericAugurInterfaces.Market<BigNumber>;

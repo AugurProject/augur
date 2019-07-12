@@ -1,7 +1,8 @@
 import * as fs from "async-file";
 import { ethers } from "ethers";
 import * as ganache from "ganache-core";
-import { Account, deployContracts } from "../libs/ganache";
+import { deployContracts } from "../libs/blockchain";
+import { Account } from "../constants";
 import { Contracts as compilerOutput } from "@augurproject/artifacts";
 import * as path from "path";
 import crypto from "crypto";
@@ -50,10 +51,10 @@ interface LevelDBRow {
   type: "put";
 }
 
-export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE, accounts: Account[]): Promise<void> {
+export async function createSeedFile(filePath: string = DEFAULT_SEED_FILE, accounts: Account[], writeArtifacts = false): Promise<void> {
   const ganacheProvider = makeGanacheProvider(accounts);
   const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
-  const { addresses } = await deployContracts(provider, accounts, compilerOutput);
+  const { addresses } = await deployContracts(provider, accounts, compilerOutput, writeArtifacts);
   const contractsHash = hashContracts();
 
   const leveledDB = levelup(db);
