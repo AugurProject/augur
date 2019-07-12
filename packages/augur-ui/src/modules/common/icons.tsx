@@ -21,58 +21,6 @@ export const AugurLoadingLogo = (
   </svg>
 );
 
-export const Sports = (
-  <svg viewBox="0 0 48 48" fill="none">
-    <path d="M15.9299 3.54797L23.9999 9.59997L32.0699 3.54797" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M2.05591 25.354L10.3039 19.554L7.04191 10" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M18.506 45.288L15.536 35.65L5.44995 35.8" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M42.5499 35.8L32.4639 35.648L29.4939 45.286" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M40.958 10L37.696 19.55L45.944 25.35" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M27.9999 30L30.9659 22.33L23.9999 16.656L17.0339 22.33L19.9999 30H27.9999Z" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M24 46C36.1503 46 46 36.1503 46 24C46 11.8497 36.1503 2 24 2C11.8497 2 2 11.8497 2 24C2 36.1503 11.8497 46 24 46Z" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-  </svg>
-);
-
-export const Politics = (
-  <svg viewBox="0 0 48 48" fill="none">
-    <path d="M4 24V46" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M44 24V46" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M34 24V46" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M24 24V46" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M14 24V46" strokeWidth="2" strokeMiterlimit="10"/>
-    <path d="M2 46H46" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M2 24H46" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M40 24C40 15.2 32.8 8 24 8C15.2 8 8 15.2 8 24" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M24 2V8" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
-  </svg>
-);
-
-export const Finance = (
-  <svg viewBox="0 0 48 48" fill="none">
-    <path d="M46.5 1.5H1.5V46.5H46.5V1.5Z" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M9 30L19.5 18L30 25.5L39 18" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="square"/>
-  </svg>
-);
-
-export const Entertainment = (
-  <svg viewBox="0 0 48 48" fill="none">
-    <path d="M42 15H6L10.5 45H37.5L42 15Z" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M39 9.00003C39.0062 7.85473 38.6828 6.73183 38.0683 5.76533C37.4538 4.79883 36.5741 4.02955 35.5344 3.54929C34.4946 3.06902 33.3386 2.89806 32.2044 3.0568C31.0701 3.21554 30.0055 3.69728 29.1375 4.44453C28.6126 3.54806 27.8622 2.80455 26.9609 2.28789C26.0597 1.77123 25.0389 1.49939 24 1.49939C22.9612 1.49939 21.9404 1.77123 21.0391 2.28789C20.1379 2.80455 19.3875 3.54806 18.8625 4.44453C17.9946 3.69728 16.9299 3.21554 15.7957 3.0568C14.6614 2.89806 13.5054 3.06902 12.4657 3.54929C11.4259 4.02955 10.5463 4.79883 9.93179 5.76533C9.31728 6.73183 8.99382 7.85473 9.00003 9.00003" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M18 45L16.5 15" strokeWidth="1.5" strokeMiterlimit="10"/>
-    <path d="M30 45L31.5 15" strokeWidth="1.5" strokeMiterlimit="10"/>
-  </svg>
-);
-
-export const Crypto = (
-  <svg viewBox="0 0 48 48" fill="none">
-    <path d="M7.5 24H9C12.402 24 16.239 25.8705 18 28.5H24C27.0105 28.5 30 31.4895 30 34.5H16.5" strokeWidth="1.5" strokeMiterlimit="10"/>
-    <path d="M29.0415 31.5H39C44.4375 31.5 45 34.5 45 34.5L23.52 43.224C21.8115 43.908 19.8915 43.8285 18.2445 43.005L7.5 37.548" strokeWidth="1.5" strokeMiterlimit="10"/>
-    <path d="M36 24C39.3137 24 42 21.3137 42 18C42 14.6863 39.3137 12 36 12C32.6863 12 30 14.6863 30 18C30 21.3137 32.6863 24 36 24Z" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M7.5 21H1.5V40.5H7.5V21Z" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="square"/>
-    <path d="M18 15C21.3137 15 24 12.3137 24 9C24 5.68629 21.3137 3 18 3C14.6863 3 12 5.68629 12 9C12 12.3137 14.6863 15 18 15Z" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="square"/>
-  </svg>
-);
-
 export const Calendar = (
   <svg viewBox="0 0 20 20" fill="none">
     <path d="M16.4 3.45455H15.6V2H14V3.45455H6V2H4.4V3.45455H3.6C2.72 3.45455 2 4.10909 2 4.90909V16.5455C2 17.3455 2.72 18 3.6 18H16.4C17.28 18 18 17.3455 18 16.5455V4.90909C18 4.10909 17.28 3.45455 16.4 3.45455ZM16.4 16.5455H3.6V7.09091H16.4V16.5455Z" />

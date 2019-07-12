@@ -3,7 +3,7 @@ import {
   SCALAR,
   CATEGORICAL
 } from "modules/common/constants";
-import { Sports, Politics, Finance, Crypto, Entertainment } from "modules/common/icons";
+import * as icons from "modules/categories/icons";
 
 // Button Types
 export const BACK = "back";
@@ -80,42 +80,211 @@ export const FINANCE = "Finance";
 export const ENTERTAINMENT = "Entertainment";
 export const CRYPTO = "Crypto";
 
+// Market Subtemplates
+export const SOCCER = "Soccer";
+export const AMERICAN_FOOTBALL = "American Football";
+export const BASEBALL = "Baseball";
+export const GOLF = "Golf";
+export const BASKETBALL = "Basketball";
+export const TENNIS = "Tennis";
+export const HOCKEY = "Hockey";
+export const HORSE_RACING = "Horse Racing";
+export const US_ELECTIONS = "US Elections";
+export const US_POLITICS = "US Politics";
+export const WORLD = "World";
+export const STOCKS = "Stocks";
+export const COMMONDITIES = "Commondities";
+export const INDEXES = "Indexes";
+export const AWARDS = "Awards";
+export const MOVIES = "Movies";
+export const MUSIC = "Music";
+export const TV = "TV";
+export const BITCOIN = "Bitcoin";
+export const ETHEREUM = "Ethereum";
+export const LITECOIN = "Litecoin";
+export const AUGUR = "Augur"
+
 
 export const MARKET_TEMPLATES = [
 	{
 	  value: SPORTS,
 	  header: SPORTS,
 	  description: "80 Markets  |  76.1k",
-	  icon: Sports
+		icon: icons.Sports
 	},
 	{
 	  value: POLITICS,
 	  header: POLITICS,
 	  description: "110 Markets  |  134.5k",
-	  icon: Politics
+	  icon: icons.Politics
 	},
 	{
 	  value: FINANCE,
 	  header: FINANCE,
 	  description: "100 Markets  |  127.4k",
-	  icon: Finance
+	  icon: icons.Finance
 	},
 	{
 	  value: ENTERTAINMENT,
 	  header: ENTERTAINMENT,
 	  description: "125 Markets  |  717.2k",
-	  icon: Entertainment
+	  icon: icons.Entertainment
 	},
 	{
 	  value: CRYPTO,
 	  header: CRYPTO,
 	  description: "148 Markets  |  827.4k",
-	  icon: Crypto
+	  icon: icons.Crypto
 	},
-]
+];
+
+export const MARKET_SUB_TEMPLATES = {
+	SPORTS: [
+		{
+			value: SOCCER,
+			header: SOCCER,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Soccer
+		},
+		{
+			value: AMERICAN_FOOTBALL,
+			header: AMERICAN_FOOTBALL,
+			description: "128 Markets  |  727.4k",
+			icon: icons.AmericanFootball
+		},
+		{
+			value: BASEBALL,
+			header: BASEBALL,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Baseball
+		},
+		{
+			value: GOLF,
+			header: GOLF,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Golf
+		},
+		{
+			value: BASKETBALL,
+			header: BASKETBALL,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Basketball
+		},
+		{
+			value: TENNIS,
+			header: TENNIS,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Tennis
+		},
+		{
+			value: HOCKEY,
+			header: HOCKEY,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Hockey
+		},
+		{
+			value: HORSE_RACING,
+			header: HORSE_RACING,
+			description: "128 Markets  |  727.4k",
+			icon: icons.HorseRacing
+		},
+	],
+	POLITICS: [
+		{
+			value: US_ELECTIONS,
+			header: US_ELECTIONS,
+			description: "128 Markets  |  727.4k",
+			icon: icons.USElections
+		},
+		{
+			value: US_POLITICS,
+			header: US_POLITICS,
+			description: "128 Markets  |  727.4k",
+			icon: icons.USPolitics
+		},
+		{
+			value: WORLD,
+			header: WORLD,
+			description: "128 Markets  |  727.4k",
+			icon: icons.World
+		},
+	],
+	FINANCE: [
+		{
+			value: STOCKS,
+			header: STOCKS,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Stocks
+		},
+		{
+			value: COMMONDITIES,
+			header: COMMONDITIES,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Commodities
+		},
+		{
+			value: INDEXES,
+			header: INDEXES,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Indexes
+		},
+	],
+	ENTERTAINMENT: [
+		{
+			value: AWARDS,
+			header: AWARDS,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Awards
+		},
+		{
+			value: MOVIES,
+			header: MOVIES,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Movies
+		},
+		{
+			value: MUSIC,
+			header: MUSIC,
+			description: "128 Markets  |  727.4k",
+			icon: icons.Music
+		},
+		{
+			value: TV,
+			header: TV,
+			description: "128 Markets  |  727.4k",
+			icon: icons.TV
+		},
+	],
+	CRYPTO: [
+		{
+			value: BITCOIN,
+			header: BITCOIN,
+			description: "128 Markets  |  727.4k",
+			icon: icons.BTC
+		},
+		{
+			value: ETHEREUM,
+			header: ETHEREUM,
+			description: "128 Markets  |  727.4k",
+			icon: icons.ETH
+		},
+		{
+			value: LITECOIN,
+			header: LITECOIN,
+			description: "128 Markets  |  727.4k",
+			icon: icons.LTC
+		},
+		{
+			value: AUGUR,
+			header: AUGUR,
+			description: "128 Markets  |  727.4k",
+			icon: icons.REP
+		},
+	],
+};
 
 export const DESCRIPTION_PLACEHOLDERS = {
 	[YES_NO]: "Example: Will [person] win the [year] [event]?",
 	[SCALAR]: "Example: Which Team will win: [Team A] vs [Team B] on [date]?",
-  	[CATEGORICAL]: "Example: How many [goals/points] will [person] score in the [year] [event]?"
+  [CATEGORICAL]: "Example: How many [goals/points] will [person] score in the [year] [event]?"
 }
