@@ -1,7 +1,11 @@
-import { Account } from "./libs/ganache";
-
 export const _1_ETH = 1000000000000000000;
 export const _10000_ETH = _1_ETH * 10000;
+
+export interface Account {
+  secretKey: string;
+  publicKey: string;
+  balance: number;
+}
 
 export const ACCOUNTS: Account[] = [
   {

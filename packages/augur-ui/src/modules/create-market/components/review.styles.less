@@ -5,11 +5,23 @@
     flex-direction: column;
 
     > div:first-of-type {
-	    grid-template-columns: repeat(3, 1fr);
-    	display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        display: grid;
+        grid-row-gap: @size-32;
 
-        > div:nth-of-type(4) {
+        > div:first-of-type {
             grid-column: 1 / span 10;
+        }
+
+        > div:nth-of-type(5) {
+            grid-column: 1 / span 10;
+        }
+    }
+
+    > div:nth-of-type(3) {
+
+        > div:not(:last-of-type) {
+            margin-bottom: @size-32;
         }
     }
 

@@ -1,10 +1,11 @@
-import { Augur, UserSpecificEvent, CustomEvent } from "../../Augur";
-import { MetaDB, SequenceIds } from "./MetaDB";
+import { Augur } from "../../Augur";
 import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";
 import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
+import { DerivedDB } from "./DerivedDB";
+import { MarketDB } from "./MarketDB";
 import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
 import {
   CompleteSetsPurchasedLog,
@@ -20,6 +21,7 @@ import {
   MarketFinalizedLog,
   MarketMigratedLog,
   MarketVolumeChangedLog,
+  MarketOIChangedLog,
   OrderEventType,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
@@ -28,21 +30,63 @@ import {
   TokenBalanceChangedLog,
   TradingProceedsClaimedLog,
   UniverseForkedLog,
+  MarketData,
 } from "../logs/types";
+
+export interface DerivedDBConfiguration {
+  name: string;
+  eventNames?: Array<string>;
+  idFields?: Array<string>;
+}
+
+export interface UserSpecificDBConfiguration {
+  name: string;
+  eventName?: string;
+  idFields?: Array<string>;
+  numAdditionalTopics: number;
+  userTopicIndicies: Array<number>;
+}
 
 export class DB {
   private networkId: number;
   private blockstreamDelay: number;
   private trackedUsers: TrackedUsers;
   private genericEventNames: Array<string>;
-  private customEvents: Array<CustomEvent>;
-  private userSpecificEvents: Array<UserSpecificEvent>;
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
-  private metaDatabase: MetaDB; // TODO Remove this if derived DBs are not used.
+  private derivedDatabases: { [dbName: string]: DerivedDB } = {};
+  private marketDatabase: MarketDB;
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   public readonly pouchDBFactory: PouchDBFactoryType;
   public syncStatus: SyncStatus;
+
+  public readonly basicDerivedDBs: Array<DerivedDBConfiguration> = [
+    {
+      "name": "CurrentOrders",
+      "eventNames": ["OrderEvent"],
+      "idFields": ["orderId"]
+    },
+  ]
+
+  // TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
+  public readonly userSpecificDBs: Array<UserSpecificDBConfiguration> = [
+    {
+      "name": "TokensTransferred",
+      "numAdditionalTopics": 3,
+      "userTopicIndicies": [1, 2],
+    },
+    {
+      "name": "ProfitLossChanged",
+      "numAdditionalTopics": 3,
+      "userTopicIndicies": [2],
+    },
+    {
+      "name": "TokenBalanceChanged",
+      "numAdditionalTopics": 2,
+      "userTopicIndicies": [1],
+      "idFields": ["token"]
+    },
+  ];
 
   public constructor(pouchDBFactory: PouchDBFactoryType) {
     this.pouchDBFactory = pouchDBFactory;
@@ -56,19 +100,17 @@ export class DB {
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
-   * @param {Array<CustomEvent>} customEvents Array of custom event objects
-   * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
+   * @param {Array<DerivedDBConfiguration>} derivedDBConfigurations Array of custom event objects
+   * @param {Array<UserSpecificDBConfiguration>} userSpecificDBConfiguration Array of user-specific event objects
    * @param {PouchDBFactoryType} pouchDBFactory Factory function generatin PouchDB instance
    * @param {IBlockAndLogStreamerListener} blockAndLogStreamerListener Stream listener for blocks and logs
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  public static createAndInitializeDB<TBigNumber>(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, augur: Augur, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
+  public static createAndInitializeDB(networkId: number, blockstreamDelay: number, defaultStartSyncBlockNumber: number, trackedUsers: Array<string>, augur: Augur, pouchDBFactory: PouchDBFactoryType, blockAndLogStreamerListener: IBlockAndLogStreamerListener): Promise<DB> {
     const dbController = new DB(pouchDBFactory);
 
     dbController.augur = augur;
     dbController.genericEventNames = augur.genericEventNames;
-    dbController.userSpecificEvents = augur.userSpecificEvents;
-    dbController.customEvents = augur.customEvents;
 
     return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, blockAndLogStreamerListener);
   }
@@ -81,7 +123,7 @@ export class DB {
    * @param {number} defaultStartSyncBlockNumber Block number at which to start sycing (if no higher block number has been synced)
    * @param {Array<string>} trackedUsers Array of user addresses for which to sync user-specific events
    * @param {Array<string>} genericEventNames Array of names for generic event types
-   * @param {Array<UserSpecificEvent>} userSpecificEvents Array of user-specific event objects
+   * @param {Array<UserSpecificDBConfiguration>} userSpecificDBConfiguration Array of user-specific event objects
    * @param blockAndLogStreamerListener
    * @return {Promise<void>}
    */
@@ -90,41 +132,23 @@ export class DB {
     this.blockstreamDelay = blockstreamDelay;
     this.syncStatus = new SyncStatus(networkId, defaultStartSyncBlockNumber, this.pouchDBFactory);
     this.trackedUsers = new TrackedUsers(networkId, this.pouchDBFactory);
-    this.metaDatabase = new MetaDB(this, networkId, this.pouchDBFactory);
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (let eventName of this.genericEventNames) {
-      let fullTextSearchOptions = undefined;
-      if (eventName === "MarketCreated") {
-        fullTextSearchOptions = {
-          doc: {
-            id: "id",
-            start: "start",
-            end: "end",
-            field: [
-              "market",
-              "topic",
-              "description",
-              "longDescription",
-              "resolutionSource",
-              "_scalarDenomination",
-              "tags"
-            ],
-          },
-        };
-      }
-
-      new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), [], fullTextSearchOptions);
+      new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), []);
     }
 
-    for (let customEvent of this.customEvents) {
-      new SyncableDB(this.augur, this, networkId, customEvent.eventName ? customEvent.eventName : customEvent.name, this.getDatabaseName(customEvent.name), customEvent.idFields);
+    for (let derivedDBConfiguration of this.basicDerivedDBs) {
+      new DerivedDB(this, networkId, derivedDBConfiguration.name, derivedDBConfiguration.eventNames, derivedDBConfiguration.idFields);
     }
+
+    // Custom Derived DBs here
+    this.marketDatabase = new MarketDB(this, networkId);
 
     for (let trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
-      for (let userSpecificEvent of this.userSpecificEvents) {
+      for (let userSpecificEvent of this.userSpecificDBs) {
         new UserSyncableDB(this.augur, this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
       }
     }
@@ -137,7 +161,6 @@ export class DB {
       await this.rollback(startSyncBlockNumber);
     }
 
-    // TODO If derived DBs are used, `this.metaDatabase.rollback` should also be called here
     return this;
   }
 
@@ -148,6 +171,15 @@ export class DB {
    */
   public notifySyncableDBAdded(db: SyncableDB): void {
     this.syncableDatabases[db.dbName] = db;
+  }
+
+  /**
+   * Called from DerivedDB constructor once DerivedDB is successfully created.
+   *
+   * @param {DerivedDB} db dbController that utilizes the DerivedDB
+   */
+  public notifyDerivedDBAdded(db: DerivedDB): void {
+    this.derivedDatabases[db.dbName] = db;
   }
 
   public registerEventListener(eventName: string, callback: LogCallbackType): void {
@@ -166,67 +198,55 @@ export class DB {
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
 
     for (const trackedUser of await this.trackedUsers.getUsers()) {
-      for (const userSpecificEvent of this.userSpecificEvents) {
+      for (const userSpecificEvent of this.userSpecificDBs) {
         const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        try {
-          dbSyncPromises.push(
-            this.syncableDatabases[dbName].sync(
-              augur,
-              chunkSize,
-              blockstreamDelay,
-              highestAvailableBlockNumber
-            ));
-        } catch (e) {
-          console.log("Issue syncing", dbName);
-        }
+        dbSyncPromises.push(
+          this.syncableDatabases[dbName].sync(
+            augur,
+            chunkSize,
+            blockstreamDelay,
+            highestAvailableBlockNumber
+          )
+        );
       }
     }
 
+    console.log(`Syncing generic log DBs`);
     for (const genericEventName of this.genericEventNames) {
-      const dbName = this.getDatabaseName(genericEventName);
-      try {
-        dbSyncPromises.push(
-          this.syncableDatabases[dbName].sync(
-            augur,
-            chunkSize,
-            blockstreamDelay,
-            highestAvailableBlockNumber
-          ));
-      } catch (e) {
-        console.log("Issue syncing", dbName);
-      }
+      let dbName = this.getDatabaseName(genericEventName);
+      dbSyncPromises.push(
+        this.syncableDatabases[dbName].sync(
+          augur,
+          chunkSize,
+          blockstreamDelay,
+          highestAvailableBlockNumber
+        )
+      );
     }
 
-    for (const customEvent of this.customEvents) {
-      const dbName = this.getDatabaseName(customEvent.name);
-      try {
-        dbSyncPromises.push(
-          this.syncableDatabases[dbName].sync(
-            augur,
-            chunkSize,
-            blockstreamDelay,
-            highestAvailableBlockNumber
-          ));
-      } catch (e) {
-        console.log("Issue syncing", dbName);
-      }
+    await Promise.all(dbSyncPromises);
+
+    // Derived DBs are synced after generic log DBs complete
+    console.log(`Syncing derived DBs`);
+    dbSyncPromises = [];
+    for (const derivedDBConfiguration of this.basicDerivedDBs) {
+      const dbName = this.getDatabaseName(derivedDBConfiguration.name);
+      dbSyncPromises.push(this.derivedDatabases[dbName].sync(highestAvailableBlockNumber));
     }
 
-    return Promise.all(dbSyncPromises).then(() => undefined);
+    dbSyncPromises.push(this.marketDatabase.sync(highestAvailableBlockNumber));
 
-    // TODO Call `this.metaDatabase.addNewBlock` here if derived DBs end up getting used
+    return await Promise.all(dbSyncPromises).then(() => undefined);
   }
 
-  public fullTextSearch(eventName: string, query: string): Array<object> {
-    return this.getSyncableDatabase(this.getDatabaseName(eventName)).fullTextSearch(query);
+  public fullTextMarketSearch(query: string): Array<object> {
+    return this.marketDatabase.fullTextSearch(query);
   }
 
   /**
    * Gets the block number at which to begin syncing. (That is, the lowest last-synced
    * block across all event log databases or the upload block number for this network.)
    *
-   * TODO If derived DBs are used, the last-synced block in `this.metaDatabase`
-   * should also be taken into account here.
    *
    * @returns {Promise<number>} Promise to the block number at which to begin syncing.
    */
@@ -236,7 +256,7 @@ export class DB {
       highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(eventName)));
     }
     for (const trackedUser of await this.trackedUsers.getUsers()) {
-      for (const userSpecificEvent of this.userSpecificEvents) {
+      for (const userSpecificEvent of this.userSpecificDBs) {
         highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(userSpecificEvent.name, trackedUser)));
       }
     }
@@ -267,27 +287,12 @@ export class DB {
   }
 
   /**
-   * Returns the current update_seqs from all SyncableDBs/UserSyncableDBs.
+   * Gets a derived database based upon the name
    *
-   * TODO Remove this function if derived DBs are not used.
-   *
-   * @returns {Promise<SequenceIds>} Promise to a SequenceIds object
+   * @param {string} dbName The name of the database
    */
-  public async getAllSequenceIds(): Promise<SequenceIds> {
-    let sequenceIds: SequenceIds = {};
-    for (const eventName of this.genericEventNames) {
-      let dbName = this.getDatabaseName(eventName);
-      let dbInfo = await this.syncableDatabases[dbName].getInfo();
-      sequenceIds[dbName] = dbInfo.update_seq.toString();
-    }
-    for (const trackedUser of await this.trackedUsers.getUsers()) {
-      for (const userSpecificEvent of this.userSpecificEvents) {
-        const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        const dbInfo = await this.syncableDatabases[dbName].getInfo();
-        sequenceIds[dbName] = dbInfo.update_seq.toString();
-      }
-    }
-    return sequenceIds;
+  public getDerivedDatabase(dbName: string): DerivedDB {
+    return this.derivedDatabases[dbName];
   }
 
   /**
@@ -300,39 +305,27 @@ export class DB {
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (const eventName of this.genericEventNames) {
       const dbName = this.getDatabaseName(eventName);
-      try {
-        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
-      } catch (e) {
-        console.log("Issue rolling back", dbName);
-      }
+      dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
     }
-    // TODO Figure out a way to handle concurrent request limit of 40
-    await Promise.all(dbRollbackPromises)
-      .catch(error => {
-        throw error;
-      });
 
     // Perform rollback on UserSyncableDBs
     for (const trackedUser of await this.trackedUsers.getUsers()) {
-      for (const userSpecificEvent of this.userSpecificEvents) {
+      for (const userSpecificEvent of this.userSpecificDBs) {
         const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        try {
-          dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
-        } catch (e) {
-          console.log("Issue rolling back", dbName);
-        }
-
+        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
       }
     }
-    // TODO Figure out a way to handle concurrent request limit of 40
-    await Promise.all(dbRollbackPromises)
-      .catch(error => {
-        throw error;
-      });
 
-    // TODO If derived DBs end up getting used, call `this.metaDatabase.find`
-    // here to get sequenceIds for blocks >= blockNumber. Then call
-    // `this.metaDatabase.rollback` to remove those documents from derived DBs.
+    // Perform rollback on derived DBs
+    for (const derivedDBConfiguration of this.basicDerivedDBs) {
+      const dbName = this.getDatabaseName(derivedDBConfiguration.name);
+      dbRollbackPromises.push(this.derivedDatabases[dbName].rollback(blockNumber));
+    }
+
+    dbRollbackPromises.push(this.marketDatabase.rollback(blockNumber));
+
+    // TODO Figure out a way to handle concurrent request limit of 40
+    await Promise.all(dbRollbackPromises).catch(error => { throw error; });
   }
 
   /**
@@ -355,9 +348,6 @@ export class DB {
       if (highestSyncBlock !== blockLogs[0].blockNumber) {
         throw new Error("Highest sync block is " + highestSyncBlock + "; newest block number is " + blockLogs[0].blockNumber);
       }
-
-      // TODO If derived DBs end up getting used, call `this.getAllSequenceIds` here
-      // and pass the returned sequenceIds into `this.metaDatabase.addNewBlock`.
     } catch (err) {
       throw err;
     }
@@ -377,13 +367,14 @@ export class DB {
   }
 
   /**
-   * Queries the MetaDB.
+   * Queries a DerivedDB.
    *
+   * @param {string} dbName Name of the SyncableDB to query
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
    */
-  public async findInMetaDB(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
-    return this.metaDatabase.find(request);
+  public async findInDerivedDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
+    return this.derivedDatabases[dbName].find(request);
   }
 
   /**
@@ -530,6 +521,17 @@ export class DB {
   }
 
   /**
+   * Queries the MarketOIChanged DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<MarketOIChangedLog>>}
+   */
+  public async findMarketOIChangedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<MarketOIChangedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("MarketOIChanged"), request);
+    return results.docs as unknown as Array<MarketOIChangedLog>;
+  }
+
+  /**
    * Queries the OrderEvent DB for Cancel events
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
@@ -661,9 +663,20 @@ export class DB {
    * @returns {Promise<Array<ParsedOrderEventLog>>}
    */
   public async findCurrentOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<ParsedOrderEventLog>> {
-    const results = await this.findInSyncableDB(this.getDatabaseName("CurrentOrders"), request);
+    const results = await this.findInDerivedDB(this.getDatabaseName("CurrentOrders"), request);
     const logs = results.docs as unknown as Array<ParsedOrderEventLog>;
     for (const log of logs) log.timestamp = log.timestamp;
     return logs;
+  }
+
+  /**
+   * Queries the Markets DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<MarketData>>}
+   */
+  public async findMarkets(request: PouchDB.Find.FindRequest<{}>): Promise<Array<MarketData>> {
+    const results = await this.findInDerivedDB(this.getDatabaseName("Markets"), request);
+    return results.docs as unknown as Array<MarketData>;
   }
 }

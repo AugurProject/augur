@@ -34,7 +34,7 @@ export const NETWORK_NAMES = {
   3: "Ropsten",
   4: "Rinkeby",
   42: "Kovan",
-  12346: "Private"
+  123456: "Private"
 };
 // network name to id map
 export const NETWORK_IDS = {
@@ -550,6 +550,7 @@ export const WITHDRAWETHERTO = "WITHDRAWETHERTO";
 export const WITHDRAWINEMERGENCY = "WITHDRAWINEMERGENCY";
 export const SENDETHER = "SENDETHER";
 export const SENDREPUTATION = "SENDREPUTATION";
+export const CUSTOM = "Custom";
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = "ORDER_BOOK_TABLE";
@@ -782,3 +783,20 @@ export const TREZOR_MANIFEST_APPURL = "https://dev.augur.net";
 export const PORTIS_API_KEY = "b67817cf-8dd0-4116-a0cf-657820ddc019";
 export const FORTMATIC_API_KEY = "pk_live_8001A50CCA35D8CB";
 export const FORTMATIC_API_TEST_KEY = "pk_test_5185BE42CA372148";
+
+export const YES_NO_OUTCOMES = [
+  {
+    id: 0,
+    description: "Invalid",
+    isTradable: true,
+  },
+  {
+    id: 1,
+    description: "No"
+  },
+  {
+    id: 2,
+    description: "Yes",
+    isTradable: true,
+  },
+];

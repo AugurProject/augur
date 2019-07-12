@@ -77,8 +77,8 @@ contract Augur is IAugur {
     //  9:	tokensEscrowed
     event OrderEvent(address indexed universe, address indexed market, OrderEventType indexed eventType, Order.Types orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data);
 
-    event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 timestamp);
-    event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 marketOI, uint256 fees, uint256 timestamp);
+    event CompleteSetsPurchased(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 timestamp);
+    event CompleteSetsSold(address indexed universe, address indexed market, address indexed account, uint256 numCompleteSets, uint256 fees, uint256 timestamp);
     event TradingProceedsClaimed(address indexed universe, address indexed shareToken, address indexed sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 finalTokenBalance, uint256 fees, uint256 timestamp);
     event TokensTransferred(address indexed universe, address token, address indexed from, address indexed to, uint256 value, TokenType tokenType, address market);
     event TokensMinted(address indexed universe, address indexed token, address indexed target, uint256 amount, TokenType tokenType, address market, uint256 totalSupply);
@@ -88,6 +88,7 @@ contract Augur is IAugur {
     event InitialReporterTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketTransferred(address indexed universe, address indexed market, address from, address to);
     event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes);
+    event MarketOIChanged(address indexed universe, address indexed market, uint256 marketOI);
     event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
     event ParticipationTokensRedeemed(address indexed universe, address indexed disputeWindow, address indexed account, uint256 attoParticipationTokens, uint256 feePayoutShare, uint256 timestamp);
     event TimestampSet(uint256 newTimestamp);
@@ -125,7 +126,7 @@ contract Augur is IAugur {
 
     function registerContract(bytes32 _key, address _address) public onlyUploader returns (bool) {
         require(registry[_key] == address(0), "Augur.registerContract: key has already been used in registry");
-        require(_address.exists(), "Augur.registerContract: Contract address is not actually a contract");
+        require(_address.exists());
         registry[_key] = _address;
         if (_key == "CompleteSets" || _key == "Orders" || _key == "CreateOrder" || _key == "CancelOrder" || _key == "FillOrder" || _key == "Trade" || _key == "ClaimTradingProceeds" || _key == "MarketFactory") {
             trustedSender[_address] = true;
@@ -300,7 +301,7 @@ contract Augur is IAugur {
         IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
         require(_prices.length == 2);
-        require(_prices[0] < _prices[1], "Universe.createScalarMarket: Min price must be less than max price");
+        require(_prices[0] < _prices[1]);
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
         emit MarketCreated(_universe, _endTime, _topic, _extraInfo, _market, _marketCreator, _designatedReporter, _feeDivisor, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), getTimestamp());
@@ -409,13 +410,19 @@ contract Augur is IAugur {
 
     function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool) {
         require(msg.sender == registry["CompleteSets"]);
-        emit CompleteSetsPurchased(address(_universe), address(_market), _account, _numCompleteSets, getMarketOpenInterest(_market), getTimestamp());
+        emit CompleteSetsPurchased(address(_universe), address(_market), _account, _numCompleteSets, getTimestamp());
         return true;
     }
 
     function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) public returns (bool) {
         require(msg.sender == registry["CompleteSets"]);
-        emit CompleteSetsSold(address(_universe), address(_market), _account, _numCompleteSets, getMarketOpenInterest(_market), _fees, getTimestamp());
+        emit CompleteSetsSold(address(_universe), address(_market), _account, _numCompleteSets, _fees, getTimestamp());
+        return true;
+    }
+
+    function logMarketOIChanged(IUniverse _universe, IMarket _market) public returns (bool) {
+        require(msg.sender == registry["CompleteSets"]);
+        emit MarketOIChanged(address(_universe), address(_market), getMarketOpenInterest(_market));
         return true;
     }
 

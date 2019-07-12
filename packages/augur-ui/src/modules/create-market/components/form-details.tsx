@@ -13,10 +13,12 @@ import {
   EXPIRY_SOURCE_GENERIC,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
-  DESIGNATED_REPORTER_SPECIFIC
+  DESIGNATED_REPORTER_SPECIFIC,
+  YES_NO_OUTCOMES
 } from 'modules/common/constants';
 import { NewMarket } from "modules/types";
 import { RepLogoIcon } from "modules/common/icons";
+import { DESCRIPTION_PLACEHOLDERS } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/components/form-details.styles";
 
@@ -41,8 +43,38 @@ export default class FormDetails extends React.Component<
   };
 
   onChange = (name, value) => {
-    const { updateNewMarket } = this.props;
+    const { updateNewMarket, newMarket } = this.props;
     updateNewMarket({ [name]: value });
+    if (name === 'outcomes') {
+      let outcomesFormatted = [];
+      if (newMarket.marketType === CATEGORICAL) {
+        outcomesFormatted = value.map((outcome, index) => ({
+          description: outcome,
+          id: index + 1,
+          isTradable: true
+        }));
+        outcomesFormatted.unshift({
+          id: 0,
+          description: "Invalid",
+          isTradable: true,
+        })
+      } else {
+        outcomesFormatted = YES_NO_OUTCOMES;
+      }
+      updateNewMarket({ outcomesFormatted });
+    } else if (name === 'marketType') {
+      let outcomesFormatted = [];
+      if (value === CATEGORICAL) {
+        outcomesFormatted = newMarket.outcomes.map((outcome, index) => ({
+          description: outcome,
+          id: index,
+          isTradable: true
+        }));
+      } else {
+        outcomesFormatted = YES_NO_OUTCOMES;
+      }
+      updateNewMarket({ outcomesFormatted, orderBook: {}});
+    }
   }
 
   render() {
@@ -151,7 +183,7 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
           <TextInput
             type="textarea"
-            placeholder="Example: Will [person] win the [year] [event]?"
+            placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
             onChange={(value: string) => this.onChange("description", value)}
             rows="3"
             value={description}
@@ -209,13 +241,9 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Market category" subheader="Categories help users to find your market on Augur." />
           <CategoryMultiSelect
             sortedGroup={categories}
-            updateSelection={categoryArray => {
-              // TODO: in the future, lets make `categories` as an array of 
-              // strings for the newmarket object instead of 3 key/values
-              this.onChange("category", categoryArray[0]);
-              this.onChange("tag1", categoryArray[1]);
-              this.onChange("tag2", categoryArray[2]);
-            }}
+            updateSelection={categoryArray => 
+              this.onChange("categories", categoryArray)
+            }
           />
         </div>
         <LineBreak />

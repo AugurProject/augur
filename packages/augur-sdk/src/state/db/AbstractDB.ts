@@ -8,8 +8,8 @@ import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
 
-interface DocumentIDToRev {
-  [docId: string]: string;
+interface DocumentIDToDoc {
+  [docId: string]: PouchDB.Core.ExistingDocument<{}>;
 }
 
 export interface BaseDocument {
@@ -52,19 +52,32 @@ export abstract class AbstractDB {
     ));
   }
 
-  protected async bulkUpsertDocuments(startkey: string, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
+  protected async bulkUpsertUnorderedDocuments(documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
+    const previousDocumentEntries = await this.db.find({selector: { _id: { $in: documents.map(doc => doc._id) } }});
+    const previousDocs = _.reduce(previousDocumentEntries.docs, (result, prevDoc) => {
+      result[prevDoc._id] = prevDoc;
+      return result;
+    }, {} as DocumentIDToDoc);
+    return await this.bulkUpsertDocuments(previousDocs, documents);
+  }
+
+  protected async bulkUpsertOrderedDocuments(startkey: string, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
     const previousDocumentEntries = await this.db.allDocs({ startkey, include_docs: true });
     const previousDocs = _.reduce(previousDocumentEntries.rows, (result, prevDoc) => {
-      result[prevDoc.id] = prevDoc.doc!._rev;
+      result[prevDoc.id] = prevDoc.doc;
       return result;
-    }, {} as DocumentIDToRev);
+    }, {} as DocumentIDToDoc);
+    return await this.bulkUpsertDocuments(previousDocs, documents);
+  }
+
+  private async bulkUpsertDocuments(previousDocs: DocumentIDToDoc, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
     const mergedRevisionDocuments = _.map(documents, (doc) => {
       // The c'tor needs to be deleted since indexeddb bulkUpsert cannot accept objects with methods on them
       delete doc.constructor;
 
-      const previousRev = previousDocs[doc._id!];
+      const previousDoc = previousDocs[doc._id!];
       return Object.assign(
-        previousRev ? { _rev: previousRev } : {},
+        previousDoc ? previousDoc : {},
         doc,
       );
     });
@@ -72,7 +85,7 @@ export abstract class AbstractDB {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
       return _.every(results, (response) => (<PouchDB.Core.Response>response).ok);
     } catch (err) {
-      console.error(`ERROR in bulk sync: ${JSON.stringify(err)}`);
+      console.error(`ERROR in bulk upsert: ${JSON.stringify(err)}`);
       return false;
     }
   }

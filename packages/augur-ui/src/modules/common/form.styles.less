@@ -46,6 +46,10 @@
       min-width: 252px;
       width: 252px;
     }
+
+    > div[class*="TextInput"] {
+      position: relative;
+    }
   }
 }
 
@@ -530,6 +534,52 @@
 
     &.error {
       border: 1px solid fade(@color-error-text, 50%);
+    }
+  }
+
+  > div.AutoCompleteList {
+    background-color: @color-secondary-text;
+    border-radius: @border-radius-default;
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 106%;
+    width: 100%;
+    z-index: @mask;
+
+    &.active {
+      display: block;
+      max-height: 400px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    > button {
+      .text-10;
+
+      color: @color-primary-background;
+      height: 2rem;
+      line-height: @size-12;
+      padding: @size-10 @size-12;
+      position: relative;
+      text-align: left;
+      transition: background-color 0.15s ease;
+      white-space: nowrap;
+      width: 100%;
+
+      &:hover {
+        background-color: fade(@color-highlight, 20%);
+      }
+
+      &::before {
+        background-color: fade(@color-highlight, 10%);
+        bottom: 0;
+        content: "";
+        height: 1px;
+        left: @size-12;
+        position: absolute;
+        right: @size-12;
+      }
     }
   }
 

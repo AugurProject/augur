@@ -26,10 +26,17 @@ def test_publicBuyCompleteSets(contractsFixture, universe, cash, market):
         "market": market.address,
         "account": contractsFixture.accounts[1],
         "numCompleteSets": 10,
-        "marketOI": cost
     }
+
+    marketOIChanged = {
+        "universe": universe.address,
+        "market": market.address,
+        "marketOI": cost,
+    }
+
     with AssertLog(contractsFixture, "CompleteSetsPurchased", completeSetsPurchasedLog):
-        assert completeSets.publicBuyCompleteSets(market.address, 10, sender=contractsFixture.accounts[1])
+        with AssertLog(contractsFixture, "MarketOIChanged", marketOIChanged):
+            assert completeSets.publicBuyCompleteSets(market.address, 10, sender=contractsFixture.accounts[1])
 
     assert yesShareToken.balanceOf(contractsFixture.accounts[1]) == 10, "Should have 10 shares of outcome 1"
     assert noShareToken.balanceOf(contractsFixture.accounts[1]) == 10, "Should have 10 shares of outcome 2"
@@ -77,11 +84,18 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market, tokens
         "market": market.address,
         "account": contractsFixture.accounts[0],
         "numCompleteSets": 9,
-        "marketOI": market.getNumTicks(),
         "fees": 9 + 9,
     }
+
+    marketOIChanged = {
+        "universe": universe.address,
+        "market": market.address,
+        "marketOI": market.getNumTicks(),
+    }
+
     with AssertLog(contractsFixture, "CompleteSetsSold", completeSetsSoldLog):
-        result = completeSets.publicSellCompleteSets(market.address, 9,)
+        with AssertLog(contractsFixture, "MarketOIChanged", marketOIChanged):
+            result = completeSets.publicSellCompleteSets(market.address, 9,)
 
     tokensFail.setFail(False)
     assert universe.getOpenInterestInAttoCash() == 1 * market.getNumTicks()

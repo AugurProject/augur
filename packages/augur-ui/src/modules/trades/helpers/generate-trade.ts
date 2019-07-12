@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 import memoize from "memoizee";
-import { formatDai } from "utils/format-number";
+import { formatDai, formatShares } from "utils/format-number";
 import {
   calcOrderProfitLossPercents,
   calcOrderShareProfitLoss,
@@ -81,7 +81,7 @@ export const generateTrade = memoize(
       side,
       numShares,
       limitPrice,
-      sharesFilled,
+      sharesFilled: formatShares(sharesFilled),
       selfTrade: !!outcomeTradeInProgress.selfTrade,
       totalOrderValue: totalOrderValue
         ? formatDaiValue(totalOrderValue)
