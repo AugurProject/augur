@@ -40,7 +40,7 @@
     "memdown": "4.0.0"
   },
   "devDependencies": {
-    "@types/argparse": "^1.0.36",
+    "@types/argparse": "1.0.36",
     "@types/jest": "24.0.4",
     "@types/node": "10.12.29",
     "@types/supertest": "2.0.7",
