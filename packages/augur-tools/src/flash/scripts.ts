@@ -1,61 +1,30 @@
-import { makeGanacheProvider, makeGanacheServer, deployContracts } from "../libs/ganache";
+import { deployContracts } from "../libs/blockchain";
 import { FlashSession, FlashArguments } from "./flash";
 import { createCannedMarketsAndOrders } from "./create-canned-markets-and-orders";
 import { _1_ETH } from "../constants";
-import { Contracts as compilerOutput } from "@augurproject/artifacts";
+import { Contracts as compilerOutput, Addresses } from "@augurproject/artifacts";
+import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
 
-import { ethers } from "ethers";
-import * as ganache from "ganache-core";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { BigNumber } from "bignumber.js";
 
 export function addScripts(flash: FlashSession) {
 
   flash.addScript({
-    name: "create-seed-file",
-    description: "Creates Ganache seed file from compiled Augur contracts.",
+    name: "connect",
+    description: "Connect to an Ethereum node.",
     options: [
       {
-        name: "filepath",
-        description: `Sets seed filepath. Initially set to "./seed.json"`,
+        name: "network",
+        description: `Which network to connect to. Defaults to "environment" aka local node.`,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      this.seedFilePath = args.filepath as string || this.seedFilePath;
+      const network = args.network as NETWORKS || "environment";
 
-      await this.ensureSeed();
-    },
-  });
-
-  flash.addScript({
-    name: "ganache",
-    description: "Start a Ganache node.",
-    options: [
-      {
-        name: "internal",
-        description: "Prevent node from being available to browsers.",
-        flag: true,
-      },
-      {
-        name: "port",
-        description: "Local node's port. Defaults to 8545.",
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      await this.ensureSeed();
-
-      if (args.internal) {
-        this.ganacheProvider = await makeGanacheProvider(this.seedFilePath, this.accounts);
-      } else {
-        const port = args.port || 8545;
-
-        this.ganacheServer = await makeGanacheServer(this.seedFilePath, this.accounts);
-        this.ganacheProvider = new ethers.providers.Web3Provider(this.ganacheServer.ganacheProvider);
-        this.ganacheServer.listen(8545, () => null);
-        this.log(`Server started on port ${port}`);
-      }
-
-      this.provider = new EthersProvider(this.ganacheProvider, 5, 0, 40);
+      const networkConfiguration = NetworkConfiguration.create(network);
+      flash.provider = this.makeProvider(networkConfiguration);
+      const networkId = await this.getNetworkId(flash.provider);
+      flash.contractAddresses = Addresses[networkId];
     },
   });
 

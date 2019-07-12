@@ -1,14 +1,12 @@
 import { FlashSession } from "./flash";
 import Vorpal from "vorpal";
 import { addScripts } from "./scripts";
-import { Account } from "..";
-import { ACCOUNTS } from "../constants";
+import { addGanacheScripts } from "./ganache-scripts";
+import { Account, ACCOUNTS } from "../constants";
 import { ArgumentParser } from "argparse";
 import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
 import { Addresses } from "@augurproject/artifacts";
-import { providers } from "ethers";
 import { computeAddress } from "ethers/utils";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
 
 interface Args {
   mode: "interactive"|"run";
@@ -84,15 +82,6 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
   return vorpal;
 }
 
-function makeProvider(config: NetworkConfiguration): EthersProvider {
-  const provider = new providers.JsonRpcProvider(config.http);
-  return new EthersProvider(provider, 5, 0, 40);
-}
-
-async function getNetworkId(provider: EthersProvider): Promise<string> {
-  return (await provider.getNetwork()).chainId.toString();
-}
-
 if (require.main === module) {
   let accounts: Account[];
   if (process.env.ETHEREUM_PRIVATE_KEY) {
@@ -112,25 +101,24 @@ if (require.main === module) {
     accounts = ACCOUNTS;
   }
 
-  const flash = new FlashSession(
-    accounts,
-    `${__dirname}/seed.json`)
-  ;
+  const flash = new FlashSession(accounts);
+
   addScripts(flash);
+  addGanacheScripts(flash);
 
   const args = parse(flash);
 
   if (args.mode === "interactive") {
     const vorpal = makeVorpalCLI(flash);
-    flash.log = vorpal.log.bind(vorpal);
+    flash.setLogger(vorpal.log.bind(vorpal));
     vorpal.show();
   } else {
     if (args.network === "none") {
       flash.call(args.command, args).catch(console.error);
     } else {
       const networkConfiguration = NetworkConfiguration.create(args.network);
-      flash.provider = makeProvider(networkConfiguration);
-      getNetworkId(flash.provider).then((networkId) => {
+      flash.provider = flash.makeProvider(networkConfiguration);
+      flash.getNetworkId(flash.provider).then((networkId) => {
         flash.contractAddresses = Addresses[networkId];
         return flash.call(args.command, args);
       }).catch(console.error);

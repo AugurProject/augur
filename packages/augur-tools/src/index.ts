@@ -1,12 +1,14 @@
 export * from "./flash";
 export { ContractAPI} from "./libs/contract-api";
 export {
-  Account,
   deployContracts,
   UsefulContractObjects,
-  makeGanacheProvider,
-  loadSeed,
   makeSigner,
   makeDependencies,
+} from "./libs/blockchain";
+export {
+  makeGanacheProvider,
+  loadSeed,
 } from "./libs/ganache";
-export { ACCOUNTS } from "./constants";
+
+export { Account, ACCOUNTS } from "./constants";
