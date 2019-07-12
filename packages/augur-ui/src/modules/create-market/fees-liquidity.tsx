@@ -5,6 +5,7 @@ import classNames from "classnames";
 import { RadioCardGroup, TextInput } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
+import { isBetween, isFilledNumber } from "modules/common/validations";
 import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
 import InitialLiquidity from "modules/create-market/containers/initial-liquidity";
@@ -48,6 +49,16 @@ export default class FeesLiquidity extends React.Component<
   onChange = (name, value) => {
     const { updateNewMarket, newMarket } = this.props;
     updateNewMarket({ [name]: value });
+    this.onError(name, "");
+  }
+
+  onError = (name, error) => {
+    const { updateNewMarket, newMarket } = this.props;
+    const updatedMarket = { ...newMarket };
+    const { currentStep } = newMarket;
+
+    updatedMarket.validations[currentStep][name] = error;
+    updateNewMarket(updatedMarket);
   }
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {
@@ -111,7 +122,9 @@ export default class FeesLiquidity extends React.Component<
     const {
       settlementFee,
       affiliateFee,
-      orderBook
+      orderBook,
+      validations,
+      currentStep
     } = newMarket;
 
     return (
@@ -130,6 +143,18 @@ export default class FeesLiquidity extends React.Component<
             onChange={(value: string) => this.onChange("settlementFee", value)}
             value={settlementFee}
             innerLabel="%"
+            error={(validations[currentStep].settlementFee !== "")}
+            errorMessage={validations[currentStep].settlementFee}
+            onChange={(value: string) => {
+                const between = isBetween(value, "Market creator fee", 0, 50, 2);
+                const filledNumber = isFilledNumber(value, "Market creator fee");
+
+                if (between !== "" || filledNumber !== "") {
+                  this.onError("settlementFee", filledNumber !== "" ? filledNumber : between);
+                } else {
+                  this.onChange("settlementFee", value);
+                }
+            }}
           />
         </div>
 

@@ -112,6 +112,13 @@ export default class Form extends React.Component<
     //}
   }
 
+  isValid = (currentStep) => {
+    const { newMarket } = this.props;
+    const validations = newMarket.validations[currentStep];
+    const validationsArray = Object.keys(validations);
+    return validationsArray.every(key => validations[key] === "");
+  }
+
   saveDraft = () => {
     const {
       addDraft, 
