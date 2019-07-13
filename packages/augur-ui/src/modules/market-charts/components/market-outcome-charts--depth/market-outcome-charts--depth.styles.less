@@ -40,7 +40,7 @@
     .hovered_tooltip_div {
       background-color: @color-tertiary-background;
       border: 1px solid @color-secondary-text;
-      border-radius: 0.125rem 0 0 0.125rem;
+      border-radius: @border-radius-default 0 0 @border-radius-default;
       border-right-width: 2px;
       color: @color-secondary-text;
       display: flex;
@@ -53,7 +53,7 @@
 
     .hovered_tooltip_div.flip {
       border-left-width: 2px;
-      border-radius: 0 0.125rem 0.125rem 0;
+      border-radius: 0 @border-radius-default @border-radius-default 0;
       border-right-width: 1px;
     }
 
@@ -89,6 +89,7 @@
         line-height: @size-12;
         margin-bottom: 0.125rem;
         text-align: left;
+        text-transform: uppercase;
       }
 
       > div#price_label {
@@ -117,14 +118,11 @@
       }
 
       > div#price_value {
-        .mono-14-bold;
-
         line-height: @size-18;
         margin-top: 0.25rem;
       }
 
       > div#cost_value {
-        font-weight: bold;
         margin-bottom: 0.25rem;
       }
     }
@@ -156,6 +154,12 @@
       stroke: none;
     }
 
+    .vertical-lines {
+      fill: none;
+      stroke: @color-primary-light;
+      opacity: 0.25;
+    }
+
     .tick-line--midpoint {
       .dashline-normal
     }
@@ -172,22 +176,19 @@
       font-size: @font-size-small;
     }
 
-    .tick-value-midpoint {
-      .mono-14;
+    .tick-value-midpoint,
+    .tick-value-denomination {
+      .mono-12;
 
       fill: @color-secondary-text;
+      text-align: center;
     }
 
     .tick-value-midpoint-text {
-      .text-12;
+      .mono-10;
 
       fill: @color-medium-gray2;
-    }
-
-    .tick-value-denomination {
-      fill: @color-secondary-text;
-      font-family: @roboto;
-      font-size: @font-size-small;
+      text-align: center;
     }
 
     .tick > text {
@@ -197,11 +198,13 @@
     .depth-line-bids {
       fill: none;
       stroke: @color-positive;
+      stroke-width: @size-2;
     }
 
     .depth-line-asks {
       fill: none;
       stroke: @color-negative;
+      stroke-width: @size-2;
     }
 
     .stop-top-bid {
@@ -264,11 +267,7 @@
     #depth_y_ticks,
     #depth-x-axis {
       path {
-        stroke: @color-dark-gray2;
-      }
-
-      line {
-        stroke: @color-dark-gray2;
+        display: none;
       }
 
       text {
@@ -277,14 +276,23 @@
     }
 
     #depth-x-axis {
+      line {
+        stroke: @color-dark-gray2;
+        transform: translateX(-0.03125rem);
+      }
+
       text {
-        .mono-10;
+        .mono-9;
       }
     }
 
     #depth_y_ticks {
+      line {
+        display: none;
+      }
+
       text {
-        .mono-12;
+        .mono-10-bold;
       }
     }
   }
