@@ -10,8 +10,8 @@ NoDataToDisplay(Highcharts);
 
 const HIGH_CHART_CONFIG = {
   ShowNavigator: 350,
-  YLableXposition: -35,
-  YLableYposition: -2,
+  YLableXposition: -15,
+  YLableYposition: -8,
   MobileMargin: [30, 0, 0, 0],
 };
 
@@ -187,7 +187,7 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           labels: {
             format: '{value:.2f}',
             style: Styles.Candlestick_display_yLables,
-            align: 'left',
+            align: 'center',
             x: HIGH_CHART_CONFIG.YLableXposition,
             y: HIGH_CHART_CONFIG.YLableYposition,
           },
