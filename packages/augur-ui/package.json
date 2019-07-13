@@ -118,7 +118,7 @@
     "@types/expect-puppeteer": "3.3.1",
     "@types/jest": "23.3.14",
     "@types/jest-environment-puppeteer": "2.2.1",
-    "@types/lodash": "4.14.123",
+    "@types/lodash": "4.14.136",
     "@types/puppeteer": "1.12.4",
     "@types/react": "16.8.2",
     "@types/react-dom": "16.8.0",
