@@ -23,36 +23,6 @@ export const addPendingData = (
   },
 });
 
-export const addPendingCreateOrder = (
-  pendingId: string,
-  status: string,
-  order: UIOrder,
-  blockNumber: number
-) => ({
-  type: ADD_PENDING_DATA,
-  data: {
-    pendingId,
-    PUBLICTRADE,
-    status,
-    parameters: order,
-    blockNumber,
-  },
-})
-
-export const addPendingOrderCancellation = (
-  orderId: string,
-  status: string,
-  blockNumber: number
-) => ({
-  type: ADD_PENDING_DATA,
-  data: {
-    orderId,
-    CANCELORDER,
-    status,
-    blockNumber,
-  },
-})
-
 export const removePendingData = (
   pendingId: string,
   queueName: string,

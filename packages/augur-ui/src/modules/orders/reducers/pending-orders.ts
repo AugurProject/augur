@@ -2,8 +2,9 @@ import {
   ADD_PENDING_ORDER,
   REMOVE_PENDING_ORDER,
   LOAD_PENDING_ORDERS,
+  UPDATE_PENDING_ORDER,
 } from "modules/orders/actions/pending-orders-management";
-import { PendingOrders, BaseAction, Order } from "modules/types";
+import { PendingOrders, BaseAction, UIOrder } from "modules/types";
 
 const DEFAULT_STATE: PendingOrders = {};
 
@@ -22,10 +23,19 @@ export default function(
         [marketId]: orders,
       };
     }
+    case UPDATE_PENDING_ORDER: {
+      const { id, marketId, status } = data;
+      const orders = pendingOrders[marketId];
+      if (!orders) return pendingOrders;
+      const order = orders.find(o => o.id === id)
+      if (!order) return pendingOrders;
+      order.status = status;
+      return pendingOrders;
+    }
     case REMOVE_PENDING_ORDER: {
       const { id, marketId } = data;
       let orders = pendingOrders[marketId] || [];
-      orders = orders.filter((obj: Order) => obj.id !== id);
+      orders = orders.filter((obj: UIOrder) => obj.id !== id);
       if (orders.length > 0) {
         return {
           ...pendingOrders,

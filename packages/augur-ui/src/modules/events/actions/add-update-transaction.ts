@@ -1,30 +1,43 @@
-import { addCanceledOrder } from 'modules/orders/actions/update-order-status';
+import { addCanceledOrder, removeCanceledOrder } from 'modules/orders/actions/update-order-status';
 import { TXStatus } from '@augurproject/sdk/build/events';
-import { PUBLICTRADE, CANCELORDER, ORDER_ID, TRADE_GROUP_ID } from 'modules/common/constants';
-import { addPendingOrderCancellation, addPendingCreateOrder } from 'modules/pending-queue/actions/pending-queue-management';
+import { PUBLICTRADE, CANCELORDER, TX_ORDER_ID, TX_MARKET_ID, TX_TRADE_GROUP_ID } from 'modules/common/constants';
 import { UIOrder } from 'modules/types';
-import { convertOnChainOrderToPlaceTradeParams } from './transaction-conversions';
+import { convertTransactionOrderToUIOrder } from './transaction-conversions';
+import { addPendingOrder, updatePendingOrderStatus, removePendingOrder } from 'modules/orders/actions/pending-orders-management';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { AppState } from 'store';
+import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
+import { TXEventName } from '@augurproject/sdk/build';
 
 export const addUpdateTransaction = (txStatus: TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { currentBlockNumber } = getState().blockchain;
   const { status, transaction, hash } = txStatus;
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
     switch (methodCall) {
       case PUBLICTRADE: {
-        // create open order
-        const tradeGroupId = transaction.params[TRADE_GROUP_ID];
-        const order: UIOrder = convertOnChainOrderToPlaceTradeParams(transaction.params);
-        dispatch(addPendingCreateOrder(tradeGroupId, status, order, currentBlockNumber));
+        const tradeGroupId = transaction.params[TX_TRADE_GROUP_ID];
+        const marketId = transaction.params[TX_MARKET_ID];
+        if (!hash && status === TXEventName.AwaitingSigning) {
+          const { marketInfos } = getState();
+          const market = marketInfos[marketId];
+          return addOrder(txStatus, market, dispatch);
+        }
+        dispatch(updatePendingOrderStatus(tradeGroupId, marketId, status));
+        if (status === TXEventName.Success) {
+          dispatch(removePendingOrder(tradeGroupId, marketId));
+        }
         break;
       }
       case CANCELORDER: {
-        const orderId = transaction.params[ORDER_ID];
+        const orderId = transaction.params[TX_ORDER_ID];
         dispatch(addCanceledOrder(orderId, status));
-        dispatch(addPendingOrderCancellation(orderId, status, currentBlockNumber));
+        if (status === TXEventName.Success) {
+          dispatch(removeCanceledOrder(orderId));
+        }
         break;
       }
       default:
@@ -32,3 +45,10 @@ export const addUpdateTransaction = (txStatus: TXStatus) => (
     }
   }
 };
+
+function addOrder(tx: TXStatus, market: MarketInfo, dispatch) {
+  if (!market) return console.log(`Could not find ${market.id} to process transaction`)
+  const order: UIOrder = convertTransactionOrderToUIOrder(tx.transaction.params, tx.status, market);
+  if (!order) return console.log(`Could not process order to add pending order for market ${market.id}`);
+  dispatch(addPendingOrder(order, market.id));
+}

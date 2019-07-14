@@ -59,6 +59,7 @@ import {
   Versions,
   OpenOrders,
   MarketTradingHistoryState,
+  Drafts,
 } from "modules/types";
 
 export function createReducer() {
@@ -131,7 +132,6 @@ export interface AppStateInterface {
   transactionsData: TransacitonData;
   universe: Universe;
   versions: Versions;
-  accountShareBalances: AccountShareBalances;
   userOpenOrders: OpenOrders;
   drafts: Drafts;
 }

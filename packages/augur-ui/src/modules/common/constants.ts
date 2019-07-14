@@ -469,8 +469,13 @@ export const MODAL_MARKET_REVIEW_TRADE = "MODAL_MARKET_REVIEW_TRADE";
 export const MODAL_OPEN_ORDERS = "MODAL_OPEN_ORDERS";
 export const MODAL_MARKET_LOADING = "MODAL_MARKET_LOADING";
 // transactions parameter names
-export const ORDER_ID = "_orderId";
-export const TRADE_GROUP_ID = "_tradeGroupId";
+export const TX_ORDER_ID = "_orderId";
+export const TX_TRADE_GROUP_ID = "_tradeGroupId";
+export const TX_MARKET_ID = "_market";
+export const TX_AMOUNT = "_amount";
+export const TX_DIRECTION = "_direction";
+export const TX_PRICE = "_price";
+export const TX_OUTCOME_ID = "_outcome";
 // # Alerts
 export const CRITICAL = "CRITICAL";
 export const INFO = "INFO";

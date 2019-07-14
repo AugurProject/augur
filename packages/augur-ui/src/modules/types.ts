@@ -239,14 +239,18 @@ export interface OrderCancellations {
 
 export interface UIOrder {
   id: string;
-  outcome: string | number; // TODO: need to be consistent with outcome naming and type
-  index: number;
-  quantity: number;
-  price: string;
-  type: string;
-  orderEstimate: string;
   outcomeName: string;
-  cumulativeShares: number;
+  outcomeId: number;
+  marketId: string;
+  amount: string;
+  price: string;
+  fullPrecisionAmount: string;
+  fullPrecisionPrice: string;
+  type: string;
+  orderEstimate?: string;
+  cumulativeShares?: number;
+  ignoreShares?: boolean;
+  status?: string;
 }
 
 export interface LiquidityOrders {
