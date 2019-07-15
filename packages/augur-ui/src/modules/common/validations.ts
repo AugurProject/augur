@@ -1,5 +1,6 @@
-export function isFilledString(value) {
-  return value === "string" && !value.trim().length;
+export function isFilledString(value, readable, message) {
+  if (!value.trim().length > 0 && value !== "") return "";
+  return message ? message : readable + " is required";
 }
 
 export function isMaxLength(value, maxLength) {
@@ -7,7 +8,7 @@ export function isMaxLength(value, maxLength) {
 }
 
 export function isFilledNumber(value, readable, message) {
-  if (value !== "") return "";
+  if (value && value !== "") return "";
   return message ? message : readable + " is required";
 }
 

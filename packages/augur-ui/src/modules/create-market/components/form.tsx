@@ -36,7 +36,7 @@ import {
 } from "modules/routes/constants/views";
 import { SCRATCH, CATEGORICAL } from "modules/create-market/constants";
 import { DEFAULT_STATE } from "modules/markets/reducers/new-market";
-import { isBetween, isFilledNumber } from "modules/common/validations";
+import { isBetween, isFilledNumber, isFilledString } from "modules/common/validations";
 
 import Styles from "modules/create-market/components/form.styles";
 
@@ -63,9 +63,11 @@ interface Validations {
   readableName: string;
   checkBetween?: Boolean; 
   checkFilledNumber?: Boolean;
+  checkFilledString?: Boolean;
   min?: Number, 
   max?: Number;
   checkFilledNumberMessage?: string;
+  checkFilledStringMessage?: string;
 }
 
 export default class Form extends React.Component<
@@ -158,12 +160,9 @@ export default class Form extends React.Component<
       } 
       fields.map(field => {
           const error = this.evaluate({
+            ...VALIDATION_ATTRIBUTES[field],
+            updateValue: false,
             value: newMarket[field], 
-            label: VALIDATION_ATTRIBUTES[field].label, 
-            readableName: VALIDATION_ATTRIBUTES[field].readableName, 
-            updateValue: false, 
-            checkFilledNumber: VALIDATION_ATTRIBUTES[field].checkFilledNumber,
-            checkFilledNumberMessage: VALIDATION_ATTRIBUTES[field].checkFilledNumberMessage
           });
           if (error) hasErrors = true;
         }
@@ -273,14 +272,20 @@ export default class Form extends React.Component<
       max,
       checkFilledNumber,
       checkFilledNumberMessage,
+      checkFilledString,
+      checkFilledStringMessage,
       updateValue
     } = validationsObj;
 
-    const between = checkBetween ? isBetween(value, readableName, min, max) : "";
-    const filledNumber = checkFilledNumber ? isFilledNumber(value, readableName, checkFilledNumberMessage) : "";
+    const checkValidations = [
+      checkFilledNumber ? isFilledNumber(value, readableName, checkFilledNumberMessage) : "",
+      checkFilledString ? isFilledString(value, readableName, checkFilledStringMessage) : "",
+      checkBetween ? isBetween(value, readableName, min, max) : ""
+    ];
+    const errorMsg = checkValidations.find(validation => validation !== "");
 
-    if (between !== "" || filledNumber !== "") {
-      this.onError(label, filledNumber !== "" ? filledNumber : between);
+    if (errorMsg) {
+      this.onError(label, errorMsg);
       return true;
     } 
 

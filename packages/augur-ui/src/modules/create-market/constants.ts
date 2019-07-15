@@ -132,8 +132,8 @@ export const VALIDATION_ATTRIBUTES = {
 	[DESCRIPTION]: {
 		label: DESCRIPTION,
 		readableName: "Description",
-		checkFilledNumber: true,
-		checkFilledNumberMessage: "Enter a market question"
+		checkFilledString: true,
+		checkFilledStringMessage: "Enter a market question"
 	},
 	[END_TIME]: {
 		label: END_TIME,
@@ -144,14 +144,14 @@ export const VALIDATION_ATTRIBUTES = {
 	[DESIGNATED_REPORTER_ADDRESS]: {
 		label: DESIGNATED_REPORTER_ADDRESS,
 		readableName: "wallet address",
-		checkFilledNumber: true,
-		checkFilledNumberMessage: "Enter a valid wallet address"
+		checkFilledString: true,
+		checkFilledStringMessage: "Enter a valid wallet address"
 	},
 	[EXPIRY_SOURCE]: {
 		label: EXPIRY_SOURCE,
 		readableName: "website",
-		checkFilledNumber: true,
-		checkFilledNumberMessage: "Enter a website"
+		checkFilledString: true,
+		checkFilledStringMessage: "Enter a website"
 	},
 	[SETTLEMENT_FEE]: {
         label: SETTLEMENT_FEE, 

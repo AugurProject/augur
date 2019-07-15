@@ -146,7 +146,7 @@ export default class FormDetails extends React.Component<
                 this.setState({ dateFocused: focused });
               }}
               focused={s.dateFocused}
-              errorMessage={validations[currentStep].hour}
+              errorMessage={validations[currentStep].endTime}
             />
             <TimeSelector
               hour={hour}
@@ -278,6 +278,7 @@ export default class FormDetails extends React.Component<
             defaultSelected={expirySourceType}
             onChange={(value: string) => {
               if (value === EXPIRY_SOURCE_GENERIC) {
+                onChange(EXPIRY_SOURCE, "");
                 onError(EXPIRY_SOURCE, "");
               }
               onChange("expirySourceType", value)}
@@ -317,6 +318,7 @@ export default class FormDetails extends React.Component<
             defaultSelected={designatedReporterType}
             onChange={(value: string) => {
               if (value === DESIGNATED_REPORTER_SELF) {
+                onChange(DESIGNATED_REPORTER_ADDRESS, "");
                 onError(DESIGNATED_REPORTER_ADDRESS, "");
               }
               onChange("designatedReporterType", value)}
