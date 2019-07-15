@@ -340,7 +340,7 @@ jobs:
           elif [[ "$(TESTS)" == "security:oyente" ]]; then
             yarn workspace @augurproject/core docker:run:test:security:oyente;
           else
-            (cd packages/augur-core &&  yarn docker:run:test:unit -- $(TESTS))
+            yarn workspace @augurproject/core docker:run:test:unit $(TESTS))
           fi
         displayName: integration tests
 
