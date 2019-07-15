@@ -3,8 +3,11 @@ import memoize from "memoizee";
 import { BIDS, ASKS } from "modules/common/constants";
 
 import { createBigNumber } from "utils/create-big-number";
+import { MarketDepth } from "./order-for-market-depth";
 
-const getOrderBookKeys = memoize((marketDepth, minPrice, maxPrice) => {
+
+
+const getOrderBookKeys = memoize((marketDepth: MarketDepth, minPrice: BigNumber, maxPrice: BigNumber) => {
   let min = marketDepth[BIDS].reduce((p, order, i) => {
     if (i === 0) return order[1];
     return order[1] < p ? order[1] : p;
@@ -37,7 +40,7 @@ const getOrderBookKeys = memoize((marketDepth, minPrice, maxPrice) => {
   return {
     min,
     mid: createBigNumber(mid()),
-    max
+    max,
   };
 });
 

@@ -48,6 +48,9 @@ export const updateOrderStatus = ({
   });
 };
 
+export const addCanceledOrder = (orderId: string, status: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
+dispatch({ type: UPDATE_ORDER_STATUS, data: { orderId, status } });
+
 export const removeCanceledOrder = (orderId: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
   dispatch({ type: UPDATE_ORDER_REMOVE, data: { orderId } });
 

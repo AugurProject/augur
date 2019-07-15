@@ -4,7 +4,6 @@ import { isEmpty } from 'utils/is-populated';
 import { createBigNumber } from 'utils/create-big-number';
 
 import MarketOutcomeChartsDepth from 'modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth';
-import { formatEther, formatShares } from "utils/format-number";
 
 import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import orderForMarketDepth from 'modules/markets/helpers/order-for-market-depth';
@@ -20,11 +19,11 @@ const mapStateToProps = (state, ownProps) => {
   const market = ownProps.marketId ? selectMarket(ownProps.marketId) : ownProps.market;
   if ( market === null) {
     return {
-      isLoading: true
-    }
+      isLoading: true,
+    };
   }
   const userOpenOrders = state.userOpenOrders[ownProps.marketId] || [];
-  let outcomeOrderBook =
+  const outcomeOrderBook =
     ownProps.initialLiquidity ? formatOrderbook(market.orderBook[ownProps.selectedOutcomeId] || []) : state.orderBooks[market.marketId] &&
     state.orderBooks[market.marketId][ownProps.selectedOutcomeId];
 
@@ -40,6 +39,7 @@ const mapStateToProps = (state, ownProps) => {
     state.loginAccount.address
   );
   const marketDepth = orderForMarketDepth(cumulativeOrderBook);
+
   const orderBookKeys = getOrderBookKeys(marketDepth, minPrice, maxPrice);
   const pricePrecision = market && getPrecision(market.tickSize, 4);
 
@@ -72,13 +72,13 @@ function formatOrderbook(rawOrderbook = []) {
         ...p[order.type === BUY ? BIDS : ASKS],
         {
           price: order.price,
-          shares: order.quantity
-        }
-      ]
+          shares: order.quantity,
+        },
+      ],
     }),
     {
       [BIDS]: [],
-      [ASKS]: []
+      [ASKS]: [],
     }
   );
 }

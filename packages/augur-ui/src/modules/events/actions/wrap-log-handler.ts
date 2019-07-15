@@ -3,7 +3,7 @@ import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
 
-export const wrapLogHandler = (logHandler: any = defaultLogHandler) => (
+export const wrapLogHandler = (logHandler: Function = defaultLogHandler) => (
   log: any
 ): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -12,7 +12,7 @@ export const wrapLogHandler = (logHandler: any = defaultLogHandler) => (
   if (log) {
     // console.info(`${new Date().toISOString()} LOG ${log.removed ? 'REMOVED' : 'ADDED'} ${log.eventName} ${JSON.stringify(log)}`)
     const universeId: string = getState().universe.id;
-    console.log("event name", log.eventName);
+    console.log("event name", Array.isArray(log) ? log.length : log.eventName);
     const isInCurrentUniverse = true;
     // TODO: process universe when Events have universe propety, for now assume all events are good
     // const isInCurrentUniverse = Object.values(log).find(

@@ -22,7 +22,6 @@ import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
 import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
 import reports from "modules/reports/reducers/reports";
 import transactionsData from "modules/transactions/reducers/transactions-data";
-import transactionsStatus from "modules/transactions/reducers/transactions-status";
 import universe from "modules/universe/reducers/universe";
 import versions from "modules/app/reducers/versions";
 import pendingOrders from "modules/orders/reducers/pending-orders";
@@ -56,11 +55,11 @@ import {
   ReportingWindowStats,
   UserReports,
   TransacitonData,
-  TransacitonStatus,
   Universe,
   Versions,
   OpenOrders,
   MarketTradingHistoryState,
+  Drafts,
 } from "modules/types";
 
 export function createReducer() {
@@ -93,7 +92,6 @@ export function createReducer() {
     reports,
     sidebarStatus,
     transactionsData,
-    transactionsStatus,
     universe,
     versions,
     userOpenOrders,
@@ -132,10 +130,8 @@ export interface AppStateInterface {
   reports: UserReports;
   sidebarStatus: any;
   transactionsData: TransacitonData;
-  transactionsStatus: TransacitonStatus;
   universe: Universe;
   versions: Versions;
-  accountShareBalances: AccountShareBalances;
   userOpenOrders: OpenOrders;
   drafts: Drafts;
 }

@@ -66,9 +66,15 @@ export const selectUserOpenOrders = createCachedSelector(
         .filter(collection => collection.length !== 0)
         .flat() || [];
 
-    // add pending orders
+    // formatting and add pending orders
     if (pendingOrders && pendingOrders.length > 0) {
-      userOpenOrders = pendingOrders.concat(userOpenOrders);
+      const formatted = pendingOrders.map(o => ({
+        ...o,
+        unmatchedShares: formatShares(o.amount),
+        avgPrice: formatDai(o.fullPrecisionPrice),
+        pending: !!o.status, // TODO: can show status of transaction in the future
+      }))
+      userOpenOrders = formatted.concat(userOpenOrders);
     }
 
     return userOpenOrders || [];

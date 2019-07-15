@@ -5,19 +5,20 @@ import { Block } from 'ethers/providers';
 import { augurEmitter } from '../events';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
+import { debounce } from "lodash";
 
 const settings = require('./settings.json');
 
 export class Controller {
   private static latestBlock: Block;
 
-  private events = new Subscriptions(augurEmitter);
+  private readonly events = new Subscriptions(augurEmitter);
 
   public constructor(
     private augur: Augur,
     private db: Promise<DB>,
     private blockAndLogStreamerListener: IBlockAndLogStreamerListener
-  ) {}
+  ) { }
 
   public async run(): Promise<void> {
     try {
@@ -50,14 +51,16 @@ export class Controller {
       100
     ).toFixed(4);
 
-    augurEmitter.emit(SubscriptionEventName.NewBlock, {
-      eventName: SubscriptionEventName.NewBlock,
-      highestAvailableBlockNumber: block.number,
-      lastSyncedBlockNumber: lowestBlock,
-      blocksBehindCurrent,
-      percentBehindCurrent,
-      timestamp: block.timestamp,
-    });
+    debounce(() => {
+      augurEmitter.emit(SubscriptionEventName.NewBlock, {
+        eventName: SubscriptionEventName.NewBlock,
+        highestAvailableBlockNumber: block.number,
+        lastSyncedBlockNumber: lowestBlock,
+        blocksBehindCurrent,
+        percentBehindCurrent,
+        timestamp: block.timestamp,
+      });
+    }, 1000)();
   };
 
   private async getLatestBlock(): Promise<Block> {

@@ -86,12 +86,13 @@ const loadAccountPositionsInternal = (
   const { universe, loginAccount } = getState();
   if (loginAccount.address == null || universe.id == null)
     return callback(null, {});
-  const Augur = augurSdk.get();
-  const positions = await Augur.getUserTradingPositions({
+  const params = {
     ...options,
     account: loginAccount.address,
     universe: universe.id,
-  });
+  };
+  const Augur = augurSdk.get();
+  const positions = await Augur.getUserTradingPositions(params);
   if (positions == null || positions.tradingPositions == null) {
     return callback(null, {});
   }

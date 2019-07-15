@@ -18,7 +18,6 @@ import ModalFinalize from "modules/modal/containers/modal-finalize";
 import ModalDiscard from "modules/modal/containers/modal-discard";
 import ModalMarketReview from "modules/modal/containers/modal-market-review";
 import ModalMarketReviewTrade from "modules/modal/containers/modal-market-review-trade";
-import ModalSellCompleteSets from "modules/modal/containers/modal-sell-complete-sets";
 import ModalClaimReportingFeesForkedMarket from "modules/modal/containers/modal-claim-reporting-fees-forked-market";
 import ModalClaimFees from "modules/modal/containers/modal-claim-fees";
 import ModalParticipate from "modules/modal/containers/modal-participate";
@@ -49,8 +48,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalCategories {...props} />;
     case TYPES.MODAL_CONTENT:
       return <ModalContent {...props} />;
-    case TYPES.MODAL_SELL_COMPLETE_SETS:
-      return <ModalSellCompleteSets {...props} />;
     case TYPES.MODAL_CLAIM_PROCEEDS:
       return <ModalClaimProceeds {...props} />;
     case TYPES.MODAL_CLAIM_TRADING_PROCEEDS:

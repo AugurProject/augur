@@ -20,6 +20,7 @@ import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
 import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
 import MarketDepth from "modules/market-charts/containers/market-outcome-chart-depth";
 import QuadBox from "modules/portfolio/components/common/quad-box";
+import { Visibility } from "modules/create-market/components/visibility";
 
 import Styles from "modules/create-market/fees-liquidity.styles";
 
@@ -158,14 +159,12 @@ export default class FeesLiquidity extends React.Component<
           />
         </div>
 
-        <div>
-          <LargeSubheaders
-            link
-            smallSubheader
-            header="Add initial market liquidity"
-            subheader="Initial liquidity is the first batch of orders added to a new maket. It is essential to add initial liquidity to your market so users see it. It’s required that at least one outcome have orders such that the difference between the ask and bid is less than 15% of the range (max minus min), inclusive of fees, of the market. So in a binary or categorical market an ask of .65 and bid of .57 would be 8% and show up, an ask of .76 and bid of .55 would be 21% and not show up to users, and so on. If you do this for more outcomes and add more liquidity, your market will rank higher."
-          />
-        </div>
+        <LargeSubheaders
+          link
+          smallSubheader
+          header="Add initial market liquidity"
+          subheader="Initial liquidity is the first batch of orders added to a new maket. It is essential to add initial liquidity to your market so users see it. It’s required that at least one outcome have orders such that the difference between the ask and bid is less than 15% of the range (max minus min), inclusive of fees, of the market. So in a binary or categorical market an ask of .65 and bid of .57 would be 8% and show up, an ask of .76 and bid of .55 would be 21% and not show up to users, and so on. If you do this for more outcomes and add more liquidity, your market will rank higher."
+        />
 
         <div>
           <TradingForm
@@ -186,33 +185,31 @@ export default class FeesLiquidity extends React.Component<
             initialLiquidity
           />
         </div>
-        <div>
-          <FilterSwitchBox
-            title="Initial liquidity"
-            filterLabel="orders"
-            data={orderBook[s.selectedOutcome] || []}
-            bottomBarContent={<OpenOrdersHeader showTotalCost />}
-            renderRows={this.renderRows}
-          />
-        </div>
-        <div>
-          <QuadBox
-            title="Depth chart"
-            noBorders
-            content={
-              <MarketDepth
-                market={newMarket}
-                initialLiquidity
-                selectedOutcomeId={s.selectedOutcome}
-                updateSelectedOrderProperties={this.updateSelectedOrderProperties}
-                hoveredPrice={null}
-                hoveredDepth={[]}
-                updateHoveredDepth={this.updateHoveredDepth}
-                updateHoveredPrice={this.updateHoveredPrice}
-              />
-            }
-          />
-        </div>
+        
+        <Visibility />
+        <FilterSwitchBox
+          title="Initial liquidity"
+          filterLabel="orders"
+          data={orderBook[s.selectedOutcome] || []}
+          bottomBarContent={<OpenOrdersHeader showTotalCost />}
+          renderRows={this.renderRows}
+        />
+        <QuadBox
+          title="Depth chart"
+          noBorders
+          content={
+            <MarketDepth
+              market={newMarket}
+              initialLiquidity
+              selectedOutcomeId={s.selectedOutcome}
+              updateSelectedOrderProperties={this.updateSelectedOrderProperties}
+              hoveredPrice={null}
+              hoveredDepth={[]}
+              updateHoveredDepth={this.updateHoveredDepth}
+              updateHoveredPrice={this.updateHoveredPrice}
+            />
+          }
+        />
       </div>
     );
   }

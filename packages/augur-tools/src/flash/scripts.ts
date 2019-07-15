@@ -4,6 +4,7 @@ import { createCannedMarketsAndOrders } from "./create-canned-markets-and-orders
 import { _1_ETH } from "../constants";
 import { Contracts as compilerOutput, Addresses } from "@augurproject/artifacts";
 import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
+import moment from "moment";
 
 import { BigNumber } from "bignumber.js";
 
@@ -178,4 +179,79 @@ export function addScripts(flash: FlashSession) {
       parsedLogs.forEach((log) => this.log(JSON.stringify(log, null, 2)));
     },
   });
+
+  flash.addScript({
+    name: "get-timestamp",
+    async call(this: FlashSession) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+
+      const timestamp = (await user.getTimestamp()).times(1000); // seconds -> milliseconds
+      const epoch = Number(timestamp.toString());
+
+      this.log(`Timestamp is ${moment(epoch).toString()}`);
+    },
+  });
+
+  flash.addScript({
+    name: "set-timestamp",
+    options: [
+      {
+        name: "timestamp",
+        description: `Uses Moment's parser but also accepts millisecond unix epoch time. See https://momentjs.com/docs/#/parsing/string/`,
+        required: true,
+      },
+      {
+        name: "format",
+        description: `Lets you specify the format of --timestamp. See https://momentjs.com/docs/#/parsing/string-format/`,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+
+      const timestamp = args.timestamp as string;
+      const format = args.format as string || undefined;
+
+      let epoch = Number(timestamp);
+      if (isNaN(epoch)) {
+        epoch = moment(timestamp, format).valueOf();
+      }
+
+      await user.setTimestamp(new BigNumber(epoch));
+
+      this.log(`Set timestamp to ${moment(epoch).toString()}`);
+    },
+  });
+
+  flash.addScript({
+    name: "push-timestamp",
+    options: [
+      {
+        name: "count",
+        description: `Defaults to seconds. Use "y", "M", "w", "d", "h", or "m" for longer times. ex: "2w" is 2 weeks.`,
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+
+      const countString = args.count as string;
+      let unit = countString[countString.length - 1];
+      let count: string;
+      if (["y", "M", "w", "d", "h", "m", "s"].includes(unit)) {
+        count = countString.slice(0, countString.length - 1);
+      } else {
+        count = countString;
+        unit = "s"; // no unit provided so default to seconds
+      }
+
+      const newTime = moment().add(count, unit as "y"|"M"|"w"|"d"|"h"|"m"|"s");
+      await user.setTimestamp(new BigNumber(newTime.unix()));
+
+      this.log(`Set timestamp to ${newTime.toString()}`);
+    },
+  });
+
 }
