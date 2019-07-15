@@ -5,10 +5,11 @@ import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback, MarketData, LoginAccount } from 'modules/types';
+import { NodeStyleCallback } from 'modules/types';
 import { simulateTrade, simulateTradeGasLimit } from 'modules/contracts/actions/contractCalls';
 import { SimulateTradeData } from '@augurproject/sdk/build';
 import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
+import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
 export function updateTradeCost({
@@ -30,13 +31,11 @@ export function updateTradeCost({
 
     const {
       marketInfos,
-      loginAccount,
-      orderBooks,
       accountPositions,
     } = getState();
-    const market = marketInfos[marketId];
-    const outcome = market.outcomes.find(o => o.id === outcomeId);
 
+    dispatch(checkAccountAllowance());
+    const market = marketInfos[marketId];
     const newTradeDetails = {
       side,
       numShares,
@@ -75,13 +74,11 @@ export function updateTradeShares({
 
     const {
       marketInfos,
-      loginAccount,
       accountPositions,
-      orderBooks,
     } = getState();
-    const market = marketInfos[marketId];
-    const outcome = market.outcomes.find(o => o.id === outcomeId);
 
+    dispatch(checkAccountAllowance());
+    const market = marketInfos[marketId];
     const newTradeDetails: any = {
       side,
       maxCost,

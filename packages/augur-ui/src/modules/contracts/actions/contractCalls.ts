@@ -10,7 +10,6 @@ import { formatAttoRep, formatAttoEth } from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
   SimulateTradeData,
-  stringTo32ByteHex,
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
@@ -22,11 +21,9 @@ import {
   SCALAR,
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
-  SENDREPUTATION,
 } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { constructBasicTransaction } from 'modules/transactions/actions/construct-transaction';
 
 export function clearUserTx(): void {
   const Augur = augurSdk.get();
@@ -261,7 +258,9 @@ export async function approveToTrade(amount: BigNumber) {
 export async function getAllowance(account: string): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
-  return contracts.cash.allowance_(account, augurContract);
+  const allowanceRaw = await contracts.cash.allowance_(account, augurContract);
+  const allowance = allowanceRaw.dividedBy(TEN_TO_THE_EIGHTEENTH_POWER);
+  return allowance;
 }
 
 export async function cancelOpenOrders(orderIds: string[]) {
