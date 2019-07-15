@@ -1,4 +1,4 @@
-import { Order } from "modules/types";
+import { UIOrder } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
@@ -8,13 +8,14 @@ const blockComparison = 3;
 export const ADD_PENDING_ORDER = "ADD_PENDING_ORDER";
 export const REMOVE_PENDING_ORDER = "REMOVE_PENDING_ORDER";
 export const LOAD_PENDING_ORDERS = "LOAD_PENDING_ORDERS";
+export const UPDATE_PENDING_ORDER = "UPDATE_PENDING_ORDER";
 
-export const loadPendingOrders = (pendingOrders: Array<Order>) => ({
+export const loadPendingOrders = (pendingOrders: Array<UIOrder>) => ({
   type: LOAD_PENDING_ORDERS,
   data: { pendingOrders },
 });
 
-export const addPendingOrder = (pendingOrder: Order, marketId: string) => ({
+export const addPendingOrder = (pendingOrder: UIOrder, marketId: string) => ({
   type: ADD_PENDING_ORDER,
   data: {
     pendingOrder,
@@ -25,6 +26,11 @@ export const addPendingOrder = (pendingOrder: Order, marketId: string) => ({
 export const removePendingOrder = (id: string, marketId: string) => ({
   type: REMOVE_PENDING_ORDER,
   data: { id, marketId }
+});
+
+export const updatePendingOrderStatus = (id: string, marketId: string, status: string) => ({
+  type: UPDATE_PENDING_ORDER,
+  data: { id, marketId, status }
 });
 
 export const clearPendingOrders = () => (

@@ -12,8 +12,6 @@ import Styles from "modules/portfolio/components/common/market-positions-table.s
 export interface MarketPositionsTableProps {
   positions: Array<PositionData>;
   numCompleteSets: any;
-  transactionsStatus: any;
-  sellCompleteSets: Function;
   extendedView: boolean;
   marketId: string;
 }
@@ -37,9 +35,6 @@ export class MarketPositionsTable extends React.Component<
   render() {
     const {
       positions,
-      numCompleteSets,
-      transactionsStatus,
-      sellCompleteSets,
       marketId,
       extendedView,
     } = this.props;
@@ -73,14 +68,6 @@ export class MarketPositionsTable extends React.Component<
         </div>
         {extendedView && positions.length === 0 && (
           <div className={SharedStyles.Empty} />
-        )}
-        {extendedView && (
-          <CompleteSets
-            marketId={marketId}
-            numCompleteSets={numCompleteSets}
-            transactionsStatus={transactionsStatus}
-            sellCompleteSets={sellCompleteSets}
-          />
         )}
         {extendedView && <div className={SharedStyles.Footer} />}
       </div>
