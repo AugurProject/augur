@@ -14,28 +14,28 @@ export const addUpdateTransaction = (txStatus: TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { status, transaction, hash } = txStatus;
+  const { eventName, transaction, hash } = txStatus;
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
     switch (methodCall) {
       case PUBLICTRADE: {
         const tradeGroupId = transaction.params[TX_TRADE_GROUP_ID];
         const marketId = transaction.params[TX_MARKET_ID];
-        if (!hash && status === TXEventName.AwaitingSigning) {
+        if (!hash && eventName === TXEventName.AwaitingSigning) {
           const { marketInfos } = getState();
           const market = marketInfos[marketId];
           return addOrder(txStatus, market, dispatch);
         }
-        dispatch(updatePendingOrderStatus(tradeGroupId, marketId, status));
-        if (status === TXEventName.Success) {
+        dispatch(updatePendingOrderStatus(tradeGroupId, marketId, eventName));
+        if (eventName === TXEventName.Success) {
           dispatch(removePendingOrder(tradeGroupId, marketId));
         }
         break;
       }
       case CANCELORDER: {
         const orderId = transaction.params[TX_ORDER_ID];
-        dispatch(addCanceledOrder(orderId, status));
-        if (status === TXEventName.Success) {
+        dispatch(addCanceledOrder(orderId, eventName));
+        if (eventName === TXEventName.Success) {
           dispatch(removeCanceledOrder(orderId));
         }
         break;
@@ -48,7 +48,7 @@ export const addUpdateTransaction = (txStatus: TXStatus) => (
 
 function addOrder(tx: TXStatus, market: MarketInfo, dispatch) {
   if (!market) return console.log(`Could not find ${market.id} to process transaction`)
-  const order: UIOrder = convertTransactionOrderToUIOrder(tx.transaction.params, tx.status, market);
+  const order: UIOrder = convertTransactionOrderToUIOrder(tx.transaction.params, tx.eventName, market);
   if (!order) return console.log(`Could not process order to add pending order for market ${market.id}`);
   dispatch(addPendingOrder(order, market.id));
 }
