@@ -5,6 +5,7 @@ import { Block } from 'ethers/providers';
 import { augurEmitter } from '../events';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
+import { debounce } from "lodash";
 
 const settings = require('./settings.json');
 
@@ -50,14 +51,16 @@ export class Controller {
       100
     ).toFixed(4);
 
-    augurEmitter.emit(SubscriptionEventName.NewBlock, {
-      eventName: SubscriptionEventName.NewBlock,
-      highestAvailableBlockNumber: block.number,
-      lastSyncedBlockNumber: lowestBlock,
-      blocksBehindCurrent,
-      percentBehindCurrent,
-      timestamp: block.timestamp,
-    });
+    debounce(() => {
+      augurEmitter.emit(SubscriptionEventName.NewBlock, {
+        eventName: SubscriptionEventName.NewBlock,
+        highestAvailableBlockNumber: block.number,
+        lastSyncedBlockNumber: lowestBlock,
+        blocksBehindCurrent,
+        percentBehindCurrent,
+        timestamp: block.timestamp,
+      });
+    }, 1000)();
   };
 
   private async getLatestBlock(): Promise<Block> {
