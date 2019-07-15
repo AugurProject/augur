@@ -1,5 +1,5 @@
 export function isFilledString(value, readable, message) {
-  if (!value.trim().length > 0 && value !== "") return "";
+  if (value.trim().length > 0 && value !== "") return "";
   return message ? message : readable + " is required";
 }
 
