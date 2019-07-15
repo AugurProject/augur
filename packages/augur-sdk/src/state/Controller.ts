@@ -5,12 +5,13 @@ import { Block } from 'ethers/providers';
 import { augurEmitter } from '../events';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
-import { debounce } from "lodash";
+import { throttle } from "lodash";
 
 const settings = require('./settings.json');
 
 export class Controller {
   private static latestBlock: Block;
+  private static throttled: any;
 
   private readonly events = new Subscriptions(augurEmitter);
 
@@ -18,11 +19,13 @@ export class Controller {
     private augur: Augur,
     private db: Promise<DB>,
     private blockAndLogStreamerListener: IBlockAndLogStreamerListener
-  ) { }
+  ) {
+    Controller.throttled = throttle(this.notifyNewBlockEvent, 1000);
+  }
 
   public async run(): Promise<void> {
     try {
-      this.events.subscribe('controller:new:block', this.notifyNewBlockEvent);
+      this.events.subscribe('controller:new:block', Controller.throttled);
 
       const db = await this.db;
       db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
@@ -51,26 +54,20 @@ export class Controller {
       100
     ).toFixed(4);
 
-    debounce(() => {
-      augurEmitter.emit(SubscriptionEventName.NewBlock, {
-        eventName: SubscriptionEventName.NewBlock,
-        highestAvailableBlockNumber: block.number,
-        lastSyncedBlockNumber: lowestBlock,
-        blocksBehindCurrent,
-        percentBehindCurrent,
-        timestamp: block.timestamp,
-      });
-    }, 1000)();
-  };
+    augurEmitter.emit(SubscriptionEventName.NewBlock, {
+      eventName: SubscriptionEventName.NewBlock,
+      highestAvailableBlockNumber: block.number,
+      lastSyncedBlockNumber: lowestBlock,
+      blocksBehindCurrent,
+      percentBehindCurrent,
+      timestamp: block.timestamp,
+    });
+  }
 
   private async getLatestBlock(): Promise<Block> {
-    if (Controller.latestBlock) {
-      return Controller.latestBlock;
-    } else {
-      const blockNumber: number = await this.augur.provider.getBlockNumber();
-      Controller.latestBlock = await this.augur.provider.getBlock(blockNumber);
+    const blockNumber: number = await this.augur.provider.getBlockNumber();
+    Controller.latestBlock = await this.augur.provider.getBlock(blockNumber);
 
-      return Controller.latestBlock;
-    }
+    return Controller.latestBlock;
   }
 }
