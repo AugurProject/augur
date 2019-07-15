@@ -117,9 +117,6 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
     if (this.address) return getAddress(this.address);
 
-    const addresses = await this.provider.listAccounts();
-    if (addresses.length > 0) return getAddress(addresses[0]);
-
     return undefined;
   }
 
