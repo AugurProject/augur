@@ -47,7 +47,7 @@
     "@babel/polyfill": "7.2.5",
     "@ledgerhq/hw-app-eth": "4.48.0",
     "@ledgerhq/hw-transport-u2f": "4.48.0",
-    "@portis/web3": "2.0.0-beta.30",
+    "@portis/web3": "2.0.0-beta.32",
     "async": "2.6.1",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
