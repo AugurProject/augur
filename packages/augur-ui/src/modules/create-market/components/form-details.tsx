@@ -3,7 +3,17 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { RadioCardGroup, FormDropdown, TextInput, DatePicker, TimeSelector, RadioBarGroup, TimezoneDropdown, CategoryMultiSelect } from "modules/common/form";
+import { 
+  RadioCardGroup, 
+  FormDropdown, 
+  Error, 
+  TextInput, 
+  DatePicker, 
+  TimeSelector, 
+  RadioBarGroup, 
+  TimezoneDropdown, 
+  CategoryMultiSelect 
+} from "modules/common/form";
 import { categories } from "modules/categories/set-categories";
 import { Header, Subheaders, LineBreak, NumberedList } from "modules/create-market/components/common";
 import { 
@@ -18,7 +28,13 @@ import {
 } from 'modules/common/constants';
 import { NewMarket } from "modules/types";
 import { RepLogoIcon } from "modules/common/icons";
-import { DESCRIPTION_PLACEHOLDERS } from "modules/create-market/constants";
+import { 
+  DESCRIPTION_PLACEHOLDERS, 
+  DESCRIPTION, 
+  VALIDATION_ATTRIBUTES,
+  DESIGNATED_REPORTER_ADDRESS,
+  EXPIRY_SOURCE
+} from "modules/create-market/constants";
 
 import Styles from "modules/create-market/components/form-details.styles";
 
@@ -27,6 +43,8 @@ interface FormDetailsProps {
   newMarket: NewMarket;
   currentTimestamp: string;
   onChange: Function;
+  evaluate: Function;
+  onError: Function;
 }
 
 interface FormDetailsState {
@@ -48,7 +66,9 @@ export default class FormDetails extends React.Component<
       addOrderToNewMarket,
       newMarket,
       currentTimestamp,
-      onChange
+      onChange,
+      evaluate,
+      onError
     } = this.props;
     const s = this.state;
 
@@ -68,8 +88,12 @@ export default class FormDetails extends React.Component<
       expirySource,
       expirySourceType,
       designatedReporterAddress,
-      designatedReporterType
+      designatedReporterType,
+      validations,
+      currentStep
     } = newMarket;
+
+    const noErrors = Object.values(validations[currentStep]).every(field => (field === null || field === ''));
 
     return (
       <div className={Styles.FormDetails}>
@@ -122,6 +146,7 @@ export default class FormDetails extends React.Component<
                 this.setState({ dateFocused: focused });
               }}
               focused={s.dateFocused}
+              errorMessage={validations[currentStep].hour}
             />
             <TimeSelector
               hour={hour}
@@ -143,6 +168,7 @@ export default class FormDetails extends React.Component<
                 this.setState({ timeFocused: focused });
               }}
               focused={s.timeFocused}
+              errorMessage={validations[currentStep].hour}
             />
             <TimezoneDropdown />
           </span>
@@ -151,9 +177,14 @@ export default class FormDetails extends React.Component<
           <TextInput
             type="textarea"
             placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
-            onChange={(value: string) => onChange("description", value)}
+            onChange={(value: string) => evaluate({
+              ...VALIDATION_ATTRIBUTES[DESCRIPTION],
+              value: value,
+              updateValue: true,
+            })}
             rows="3"
             value={description}
+            errorMessage={validations[currentStep].description}
           />
 
           {marketType === CATEGORICAL && 
@@ -165,6 +196,7 @@ export default class FormDetails extends React.Component<
                 maxList={7}
                 placeholder={"Enter outcome"}
                 updateList={(value: Array<string>) => onChange("outcomes", value)}
+                errorMessage={validations[currentStep].outcomes}
               />
             </>
           }
@@ -176,6 +208,7 @@ export default class FormDetails extends React.Component<
                 placeholder="Denomination"
                 onChange={(value: string) => onChange("scalarDenomination", value)}
                 value={scalarDenomination}
+                errorMessage={validations[currentStep].scalarDenomination}
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
               <section>
@@ -184,6 +217,7 @@ export default class FormDetails extends React.Component<
                   placeholder="0"
                   onChange={(value: string) => onChange("minPrice", value)}
                   value={minPrice}
+                  errorMessage={validations[currentStep].minPrice}
                 />
                 <span>to</span>
                 <TextInput
@@ -192,6 +226,7 @@ export default class FormDetails extends React.Component<
                   onChange={(value: string) => onChange("maxPrice", value)}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                   value={maxPrice}
+                  errorMessage={validations[currentStep].maxPrice}
                 />
               </section>
               <Subheaders header="Precision" subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”." link />
@@ -201,6 +236,7 @@ export default class FormDetails extends React.Component<
                 onChange={(value: string) => onChange("tickSize", value)}
                 trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                 value={tickSize}
+                errorMessage={validations[currentStep].tickSize}
               />
             </>
           }
@@ -211,6 +247,7 @@ export default class FormDetails extends React.Component<
             updateSelection={categoryArray => 
               onChange("categories", categoryArray)
             }
+            errorMessage={validations[currentStep].category}
           />
         </div>
         <LineBreak />
@@ -230,11 +267,21 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter website",
                 textValue: expirySource,
-                onTextChange: (value: string) => onChange("expirySource", value)
+                onTextChange: (value: string) => evaluate({
+                  ...VALIDATION_ATTRIBUTES[EXPIRY_SOURCE],
+                  value: value,
+                  updateValue: true,
+                }),
+                errorMessage: validations[currentStep].expirySource
               }
             ]}
             defaultSelected={expirySourceType}
-            onChange={(value: string) => onChange("expirySourceType", value)}
+            onChange={(value: string) => {
+              if (value === EXPIRY_SOURCE_GENERIC) {
+                onError(EXPIRY_SOURCE, "");
+              }
+              onChange("expirySourceType", value)}
+            }
           />
 
           <Subheaders header="Resolution details" subheader="Describe what users need to know to determine the outcome of the event." link/>
@@ -259,13 +306,24 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter wallet address",
                 textValue: designatedReporterAddress,
-                onTextChange: (value: string) => onChange("designatedReporterAddress", value)
+                onTextChange: (value: string) => evaluate({
+                  ...VALIDATION_ATTRIBUTES[DESIGNATED_REPORTER_ADDRESS],
+                  value: value,
+                  updateValue: true,
+                }),
+                errorMessage: validations[currentStep].designatedReporterAddress
               }
             ]}
             defaultSelected={designatedReporterType}
-            onChange={(value: string) => onChange("designatedReporterType", value)}
+            onChange={(value: string) => {
+              if (value === DESIGNATED_REPORTER_SELF) {
+                onError(DESIGNATED_REPORTER_ADDRESS, "");
+              }
+              onChange("designatedReporterType", value)}
+            }
           />
         </div>
+        {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
       </div>
     );
   }

@@ -21,15 +21,16 @@ export const DEFAULT_STATE: NewMarket = {
   validations: [
     {
       description: null,
-      categories: ["", "", ""],
-      type: null,
-      designatedReporterType: null,
+      category: null,
+      subcategory: null,
       designatedReporterAddress: null,
       expirySourceType: null,
       endTime: null,
       hour: null,
       minute: null,
-      meridiem: null
+      meridiem: null,
+      outcomes: null,
+      scalarDenomination: null,
     },
     {
       settlementFee: ""

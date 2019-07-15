@@ -6,9 +6,9 @@ export function isMaxLength(value, maxLength) {
   return maxLength && value.length > maxLength;
 }
 
-export function isFilledNumber(value, readable) {
+export function isFilledNumber(value, readable, message) {
   if (value !== "") return "";
-  return readable + " is required";
+  return message ? message : readable + " is required";
 }
 
 export function isBetween(value, readable, min, max) {

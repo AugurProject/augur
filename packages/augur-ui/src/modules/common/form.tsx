@@ -25,6 +25,7 @@ import {
 import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM } from 'modules/common/constants';
+import { ExclamationCircle } from 'modules/common/icons';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -55,10 +56,10 @@ interface DatePickerProps {
   numberOfMonths: number;
   navPrev?: any;
   navNext?: any;
+  errorMessage?: string;
 }
 
 interface TextInputProps {
-  error?: boolean;
   errorMessage?: string;
   disabled?: boolean;
   placeholder?: string;
@@ -140,6 +141,27 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => (
   />
 );
 
+interface ErrorProps {
+  header?: string;
+  subheader?: string;
+}
+
+export const Error = (props: ErrorProps) => (
+  <section className={Styles.Error}>
+    <div>
+      {ExclamationCircle}
+    </div>
+    <div>
+      <span>
+        {props.header}
+      </span>
+      <span>
+        {props.subheader}
+      </span>
+    </div>
+  </section>
+);
+
 interface RadioCardProps {
   value: string;
   header: string;
@@ -173,6 +195,7 @@ interface RadioBarProps {
   onTextChange?: Function;
   placeholder?: string;
   textValue?: string;
+  errorMessage?: string;
 }
 
 interface RadioTwoLineBarProps {
@@ -196,6 +219,7 @@ interface CategoryMultiSelectProps {
   sortedGroup: Array<SortedGroup>;
   initialSelected?: Array<string>;
   updateSelection: Function;
+  errorMessage?: string;
 }
 
 interface CategoryMultiSelectState {
@@ -441,8 +465,9 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   };
 
   render() {
-    const { radioButtons, onChange } = this.props;
+    const { radioButtons, onChange, errorMessage } = this.props;
     const { selected } = this.state;
+ 
     return (
       <div>
         {radioButtons.map(radio => (
@@ -471,6 +496,7 @@ export const RadioBar = ({
   onTextChange,
   placeholder,
   textValue,
+  errorMessage
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
@@ -487,6 +513,7 @@ export const RadioBar = ({
         placeholder={placeholder}
         value={textValue}
         onChange={onTextChange}
+        errorMessage={errorMessage}
       />
     ) : null}
   </div>
@@ -652,7 +679,6 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     const {
       placeholder,
       disabled,
-      error,
       errorMessage,
       type,
       trailingLabel,
@@ -664,6 +690,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     const filteredList = autoCompleteList.filter(item =>
       item.label.includes(this.state.value) ? item : null
     );
+    const error = errorMessage && errorMessage !== "" && errorMessage.length > 0;
 
     return (
       <>
@@ -723,6 +750,7 @@ interface TimeSelectorProps {
   onFocusChange: Function;
   onDateChange: Function;
   focused?: Boolean;
+  errorMessage?: string;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -761,7 +789,8 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
   };
 
   render() {
-    const { placeholder, hour, minute, meridiem, focused } = this.props;
+    const { placeholder, hour, minute, meridiem, focused, errorMessage } = this.props;
+    const error = errorMessage && errorMessage !== "" && errorMessage.length > 0;
 
     return (
       <div
@@ -807,6 +836,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
             </div>
           </>
         )}
+        {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
       </div>
     );
   }
@@ -980,6 +1010,7 @@ export const DatePicker = (props: DatePickerProps) => (
       weekDayFormat="ddd"
       customInputIcon={Calendar}
     />
+    {props.errorMessage && props.errorMessage !== "" && props.errorMessage.length > 0 && <span className={Styles.ErrorText}>{props.errorMessage}</span>}
   </div>
 );
 

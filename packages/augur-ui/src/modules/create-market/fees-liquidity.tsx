@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { RadioCardGroup, TextInput } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
-import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
+import { SCRATCH, TEMPLATE, MARKET_TEMPLATES, SETTLEMENT_FEE, VALIDATION_ATTRIBUTES } from "modules/create-market/constants";
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
 import InitialLiquidity from "modules/create-market/containers/initial-liquidity";
 import OrderBook from "modules/market-charts/containers/order-book";
@@ -131,9 +131,14 @@ export default class FeesLiquidity extends React.Component<
             onChange={(value: string) => onChange("settlementFee", value)}
             value={settlementFee}
             innerLabel="%"
-            error={(validations[currentStep].settlementFee !== "")}
             errorMessage={validations[currentStep].settlementFee}
-            onChange={(value: string) => evaluate(value, "settlementFee", "Market creator fee", true, true, 0, 50, 2)}
+            onChange={(value: string) => 
+              evaluate({
+                ...VALIDATION_ATTRIBUTES[SETTLEMENT_FEE],
+                value: value,
+                updateValue: true,
+              })
+            }
           />
         </div>
 
