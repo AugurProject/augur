@@ -63,7 +63,7 @@ beforeAll(async () => {
   await john.approveCentralAuthority();
 
   connector = new SEOConnector();
-  console.log("Connector connecting")
+  console.log("Connector connecting");
   await connector.connect('');
 }, 120000);
 
