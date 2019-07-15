@@ -16,6 +16,7 @@
     "docker:build-and-push": "yarn docker:build && yarn docker:push",
     "docker:geth": "docker run -e GETH_VERBOSITY=4 -it -p 8545:8545 -p 8546:8546 augurproject/dev-node-geth:latest",
     "docker:pull": "./docker-builder/pull.sh",
+    "docker:geth:dev": "cd ./ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth .",
     "docker:geth:pop": "docker-builder/run.sh augurproject/dev-pop-geth-v2",
     "docker:geth:pop-15": "./docker-builder/run.sh augurproject/dev-pop-geth-15-v2",
     "docker:geth:pop-normal-time": "docker-builder/run.sh augurproject/dev-pop-normtime-geth-v2",
