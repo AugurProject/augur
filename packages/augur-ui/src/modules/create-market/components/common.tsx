@@ -252,6 +252,7 @@ export interface NumberedInputProps {
   placeholder: string;
   onChange: Function;
   onRemove?: Function;
+  errorMessage?: strinng;
 }
 
 export interface NumberedListProps {
@@ -276,6 +277,7 @@ export const NumberedInput = ({
   onChange,
   removable,
   onRemove,
+  errorMessage
 }: NumberedInputProps) => (
   <li key={number} className={Styles.NumberedInput}>
     <span>{`${number + 1}.`}</span>
@@ -283,6 +285,7 @@ export const NumberedInput = ({
       onChange={value => onChange(value, number)}
       value={value}
       placeholder={placeholder}
+      errorMessage={errorMessage}
     />
     {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
   </li>
@@ -302,7 +305,7 @@ export class NumberedList extends Component<
     const { updateList } = this.props;
     const { list } = this.state;
     list[index] = value;
-    this.setState({ list }, updateList(list));
+    this.setState({ list }, () => updateList(list));
   };
 
   addItem = () => {
@@ -316,7 +319,7 @@ export class NumberedList extends Component<
           isFull: list.length === maxList,
           isMin: list.length === minShown,
         },
-        updateList(list)
+        () => updateList(list)
       );
     }
   };
@@ -332,7 +335,7 @@ export class NumberedList extends Component<
           isMin: list.length === minShown,
           isFull: list.length === maxList,
         },
-        updateList(list)
+        () => updateList(list)
       );
     }
   };
@@ -351,6 +354,7 @@ export class NumberedList extends Component<
             number={index}
             removable={index >= minShown}
             onRemove={this.removeItem}
+            errorMessage={errorMessage[index]}
           />
         ))}
         <li>

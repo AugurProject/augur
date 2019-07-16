@@ -5,6 +5,8 @@ import {
 } from "modules/common/constants";
 import * as icons from "modules/categories/icons";
 
+export const INVALID_OUTCOME = "Market is Invalid";
+
 // Button Types
 export const BACK = "back";
 export const NEXT = "next";
@@ -297,6 +299,8 @@ export const HOUR = "hour";
 export const DESIGNATED_REPORTER_ADDRESS = "designatedReporterAddress";
 export const EXPIRY_SOURCE = "expirySource";
 
+export const OUTCOMES = "outcomes";
+
 export const SETTLEMENT_FEE = "settlementFee";
 
 export const VALIDATION_ATTRIBUTES = {
@@ -334,6 +338,11 @@ export const VALIDATION_ATTRIBUTES = {
 		readableName: "website",
 		checkFilledString: true,
 		checkFilledStringMessage: "Enter a website"
+	},
+	[OUTCOMES]: {
+		label: OUTCOMES,
+		readableName: "outcomes",
+		checkOutcomes: true,
 	},
 	[SETTLEMENT_FEE]: {
         label: SETTLEMENT_FEE, 

@@ -19,8 +19,14 @@ import {
   HOUR,
   DESIGNATED_REPORTER_ADDRESS,
   VALIDATION_ATTRIBUTES,
-  CATEGORIES
+  CATEGORIES,
+  OUTCOMES,
+  SCRATCH, 
 } from "modules/create-market/constants";
+import { 
+  CATEGORICAL,
+  SCALAR
+} from 'modules/common/constants';
 import {
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
@@ -37,13 +43,13 @@ import makePath from "modules/routes/helpers/make-path";
 import {
   CREATE_MARKET
 } from "modules/routes/constants/views";
-import { SCRATCH, CATEGORICAL } from "modules/create-market/constants";
 import { DEFAULT_STATE } from "modules/markets/reducers/new-market";
 import { 
   isBetween, 
   isFilledNumber, 
   isFilledString, 
-  checkCategoriesArray 
+  checkCategoriesArray,
+  checkOutcomesArray
 } from "modules/common/validations";
 
 import Styles from "modules/create-market/components/form.styles";
@@ -155,17 +161,25 @@ export default class Form extends React.Component<
 
   findErrors = () => {
     const { newMarket } = this.props;
+    const { 
+      currentStep,
+      expirySourceType,
+      designatedReporterType,
+      marketType
+    } = newMarket;
     let hasErrors = false; 
 
-    if (newMarket.currentStep === 0) {
-      // check for is valid and set validations
+    if (currentStep === 0) {
       const fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
-      if (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
+      if (expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
         fields.push(EXPIRY_SOURCE);
       } 
-      if (newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC) {
+      if (designatedReporterType === DESIGNATED_REPORTER_SPECIFIC) {
         fields.push(DESIGNATED_REPORTER_ADDRESS);
       } 
+      if (marketType === CATEGORICAL) {
+        fields.push(OUTCOMES);
+      }
       fields.map(field => {
           const error = this.evaluate({
             ...VALIDATION_ATTRIBUTES[field],
@@ -283,13 +297,15 @@ export default class Form extends React.Component<
       checkFilledString,
       checkFilledStringMessage,
       updateValue,
-      checkCategories
+      checkCategories,
+      checkOutcomes
     } = validationsObj;
 
     const checkValidations = [
       checkFilledNumber ? isFilledNumber(value, readableName, checkFilledNumberMessage) : "",
       checkFilledString ? isFilledString(value, readableName, checkFilledStringMessage) : "",
       checkCategories ? checkCategoriesArray(value) : "",
+      checkOutcomes ? checkOutcomesArray(value) : "",
       checkBetween ? isBetween(value, readableName, min, max) : ""
     ];
     const errorMsg = checkValidations.find(validation => validation !== "");
@@ -302,8 +318,7 @@ export default class Form extends React.Component<
     // no errors
     if (updateValue) {
       this.onChange(label, value);
-    }
-    else {
+    } else {
       this.onError(name, "");
     }
   }

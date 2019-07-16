@@ -33,7 +33,9 @@ import {
   DESCRIPTION, 
   VALIDATION_ATTRIBUTES,
   DESIGNATED_REPORTER_ADDRESS,
-  EXPIRY_SOURCE
+  EXPIRY_SOURCE,
+  CATEGORIES,
+  OUTCOMES
 } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/components/form-details.styles";
@@ -196,7 +198,7 @@ export default class FormDetails extends React.Component<
                 minShown={2}
                 maxList={7}
                 placeholder={"Enter outcome"}
-                updateList={(value: Array<string>) => onChange("outcomes", value)}
+                updateList={(value: Array<string>) => onChange(OUTCOMES, value)}
                 errorMessage={validations[currentStep].outcomes}
               />
             </>
@@ -246,9 +248,7 @@ export default class FormDetails extends React.Component<
           <CategoryMultiSelect
             initialSelected={categories}
             sortedGroup={setCategories}
-            updateSelection={categoryArray => 
-              onChange("categories", categoryArray)
-            }
+            updateSelection={categoryArray => onChange(CATEGORIES, categoryArray)}
             errorMessage={validations[currentStep].categories}
           />
         </div>
