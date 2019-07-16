@@ -121,14 +121,14 @@ export class DerivedDB extends AbstractDB {
     let _id = "";
     delete log["_id"];
     delete log["_rev"];
-    for (let fieldName of this.idFields) {
+    for (const fieldName of this.idFields) {
       _id += _.get(log, fieldName);
     }
     if (log["addressData"]) {
       log["kycToken"] = log["addressData"][0];
       log["orderCreator"] = log["addressData"][1];
       log["orderFiller"] = log["addressData"][2];
-      delete log["addressData;
+      delete log["addressData"];
     }
     if (log["uint256Data"]) {
       log["price"] = log["uint256Data"][0];
@@ -141,7 +141,7 @@ export class DerivedDB extends AbstractDB {
       log["timestamp"] = log["uint256Data"][7];
       log["sharesEscrowed"] = log["uint256Data"][8];
       log["tokensEscrowed"] = log["uint256Data"][9];
-      delete log["uint256Data;
+      delete log["uint256Data"];
     }
     return Object.assign(
       { _id },
