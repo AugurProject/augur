@@ -83,7 +83,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       extendOrderBook: false,
       extendTradeHistory: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
-      selectedOutcomeId: props.market.defaultSelectedOutcomeId,
+      selectedOutcomeId: props.market ? props.market.defaultSelectedOutcomeId : 0,
       fixedPrecision: 4,
       selectedOutcomeProperties: {
         1: {
