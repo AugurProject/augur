@@ -56,7 +56,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   state: DropdownState = {
     selected: this.props.defaultValue
       ? this.props.options.find(o => o.value === this.props.defaultValue)
-      : this.props.options[0],
+      : null,
     showList: false
   };
 

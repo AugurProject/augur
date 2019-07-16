@@ -14,7 +14,7 @@ import {
   TimezoneDropdown, 
   CategoryMultiSelect 
 } from "modules/common/form";
-import { categories } from "modules/categories/set-categories";
+import { setCategories } from "modules/categories/set-categories";
 import { Header, Subheaders, LineBreak, NumberedList } from "modules/create-market/components/common";
 import { 
   YES_NO, 
@@ -85,6 +85,7 @@ export default class FormDetails extends React.Component<
       maxPrice,
       tickSize,
       detailsText,
+      categories,
       expirySource,
       expirySourceType,
       designatedReporterAddress,
@@ -243,7 +244,8 @@ export default class FormDetails extends React.Component<
 
           <Subheaders header="Market category" subheader="Categories help users to find your market on Augur." />
           <CategoryMultiSelect
-            sortedGroup={categories}
+            initialSelected={categories}
+            sortedGroup={setCategories}
             updateSelection={categoryArray => 
               onChange("categories", categoryArray)
             }
