@@ -51,7 +51,7 @@ export const loginWithPortis = (callback: NodeStyleCallback) => async (
         },
       };
 
-      await dispatch(updateSdk(accountObject, provider));
+      await dispatch(updateSdk(accountObject, networkId, provider));
 
       dispatch(updateIsLoggedAndLoadAccountData(
         account,

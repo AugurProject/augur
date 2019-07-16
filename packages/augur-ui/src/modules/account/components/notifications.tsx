@@ -19,7 +19,6 @@ import {
   OpenOrdersResolvedMarketsTemplate,
   ReportEndingSoonTemplate,
   DisputeTemplate,
-  SellCompleteSetTemplate,
   ClaimReportingFeesTemplate,
   UnsignedOrdersTemplate,
   ProceedsToClaimTemplate,
@@ -41,7 +40,6 @@ export interface NotificationsProps extends RouteComponentProps {
   getReportingFees: Function;
   currentAugurTimestamp: DateFormattedObject;
   reportingWindowStatsEndTime: DateFormattedObject;
-  sellCompleteSetsModal: Function;
   finalizeMarketModal: Function;
   claimTradingProceeds: Function;
   claimReportingFees: Function;
@@ -115,14 +113,6 @@ class Notifications extends React.Component<
             pathname: makePath(DISPUTE, null),
             search: makeQuery(queryLink),
           });
-        };
-        break;
-
-      // TODO: remove all complete sets stuff in UI
-      case NOTIFICATION_TYPES.completeSetPositions:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          this.disableNotification(notification.id, true);
         };
         break;
 
@@ -280,12 +270,6 @@ class Notifications extends React.Component<
           ) as any : null}
           {type === NOTIFICATION_TYPES.marketsInDispute ? (
             <DisputeTemplate isDisabled={isDisabled} {...templateProps} />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.completeSetPositions ? (
-            <SellCompleteSetTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
           ) as any : null}
           {type === NOTIFICATION_TYPES.unsignedOrders ? (
             <UnsignedOrdersTemplate

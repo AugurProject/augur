@@ -15,7 +15,6 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
 import networkConfig from 'config/network.json';
 import { isEmpty } from 'utils/is-populated';
-// TODO: do we need network mismatch? maybe for when users connect using MM and have wrong network id selected
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
@@ -32,7 +31,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
-import { listenToUpdates } from 'modules/events/actions/listen-to-updates';
+import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -195,8 +194,15 @@ export function connectAugur(
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
         }
-
-        const doIt = () => {
+        const known = await checkIsKnownUniverse(universeId);
+        const sameNetwork = augurSdk.sameNetwork();
+        if ((!sameNetwork && sameNetwork !== undefined) || !known) {
+          dispatch(
+            updateModal({
+              type: MODAL_NETWORK_MISMATCH,
+            })
+          );
+        } else {
           dispatch(updateUniverse({ id: universeId }));
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
             dispatch(closeModal());
@@ -205,20 +211,10 @@ export function connectAugur(
             pollForNetwork(dispatch, getState);
           }
           callback(null);
-        };
-
-        if (process.env.NODE_ENV === 'development') {
-          if ((await checkIsKnownUniverse(universeId)) === false) {
-            dispatch(setSelectedUniverse());
-            location.reload();
-          }
-          doIt();
-        } else {
-          doIt();
         }
 
-        // wire up events for sdk
-        dispatch(listenToUpdates(Augur));
+        // wire up start up events for sdk
+        dispatch(listenForStartUpEvents(Augur));
       }
     );
   };

@@ -247,28 +247,28 @@ export class Augur<TProvider extends Provider = Provider> {
       if (status === TransactionStatus.SUCCESS && this.txSuccessCallback) {
         const txn: TXStatus = {
           transaction,
-          status: TXEventName.Success,
+          eventName: TXEventName.Success,
           hash,
         } as TXStatus;
         this.txSuccessCallback(txn);
       } else if (status === TransactionStatus.AWAITING_SIGNING && this.txAwaitingSigningCallback) {
         const txn: TXStatus = {
           transaction,
-          status: TXEventName.AwaitingSigning,
+          eventName: TXEventName.AwaitingSigning,
           hash,
         } as TXStatus;
         this.txAwaitingSigningCallback(txn);
       } else if (status === TransactionStatus.PENDING && this.txPendingCallback) {
         const txn: TXStatus = {
           transaction,
-          status: TXEventName.Pending,
+          eventName: TXEventName.Pending,
           hash,
         } as TXStatus;
         this.txPendingCallback(txn);
       } else if (status === TransactionStatus.FAILURE && this.txFailureCallback) {
         const txn: TXStatus = {
           transaction,
-          status: TXEventName.Failure,
+          eventName: TXEventName.Failure,
           hash,
         } as TXStatus;
         this.txFailureCallback(txn);

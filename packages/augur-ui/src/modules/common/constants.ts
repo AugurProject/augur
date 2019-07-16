@@ -458,7 +458,6 @@ export const MODAL_UNSIGNED_ORDERS = "MODAL_UNSIGNED_ORDERS";
 export const MODAL_CLAIM_TRADING_PROCEEDS = "MODAL_CLAIM_TRADING_PROCEEDS";
 export const MODAL_CLAIM_PROCEEDS = "MODAL_CLAIM_PROCEEDS";
 export const MODAL_TRADING_OVERLAY = "MODAL_TRADING_OVERLAY";
-export const MODAL_SELL_COMPLETE_SETS = "MODAL_SELL_COMPLETE_SETS";
 export const MODAL_FINALIZE_MARKET = "MODAL_FINALIZE_MARKET";
 export const MODAL_DISCARD = "MODAL_DISCARD";
 export const DISCLAIMER_SEEN = "disclaimerSeen";
@@ -469,7 +468,14 @@ export const MODAL_MARKET_REVIEW = "MODAL_MARKET_REVIEW";
 export const MODAL_MARKET_REVIEW_TRADE = "MODAL_MARKET_REVIEW_TRADE";
 export const MODAL_OPEN_ORDERS = "MODAL_OPEN_ORDERS";
 export const MODAL_MARKET_LOADING = "MODAL_MARKET_LOADING";
-
+// transactions parameter names
+export const TX_ORDER_ID = "_orderId";
+export const TX_TRADE_GROUP_ID = "_tradeGroupId";
+export const TX_MARKET_ID = "_market";
+export const TX_AMOUNT = "_amount";
+export const TX_DIRECTION = "_direction";
+export const TX_PRICE = "_price";
+export const TX_OUTCOME_ID = "_outcome";
 // # Alerts
 export const CRITICAL = "CRITICAL";
 export const INFO = "INFO";
@@ -478,10 +484,6 @@ export const CANCELORDER = "CANCELORDER";
 export const WITHDRAWETHERTOIFPOSSIBLE = "WITHDRAWETHERTOIFPOSSIBLE";
 export const CALCULATEREPORTINGFEE = "CALCULATEREPORTINGFEE";
 export const CLAIMTRADINGPROCEEDS = "CLAIMTRADINGPROCEEDS";
-export const PUBLICBUYCOMPLETESETS = "PUBLICBUYCOMPLETESETS";
-export const PUBLICBUYCOMPLETESETSWITHCASH = "PUBLICBUYCOMPLETESETSWITHCASH";
-export const PUBLICSELLCOMPLETESETS = "PUBLICSELLCOMPLETESETS";
-export const PUBLICSELLCOMPLETESETSWITHCASH = "PUBLICSELLCOMPLETESETSWITHCASH";
 export const PUBLICCREATEORDER = "PUBLICCREATEORDER";
 export const BUYPARTICIPATIONTOKENS = "BUYPARTICIPATIONTOKENS";
 export const PUBLICFILLBESTORDER = "PUBLICFILLBESTORDER";
@@ -632,7 +634,6 @@ export const MARKET_CREATION = "MarketCreation";
 export const TRADE = "Trade";
 export const POSITION = "Position";
 export const REPORTING = "Reporting";
-export const COMPLETE_SETS_SOLD = "CompleteSetsSold";
 
 // Other
 export const TRANSFER_FUNDS = "transfer_funds";
@@ -701,7 +702,6 @@ export const RESOLVED_MARKETS_OPEN_ORDERS_TITLE =
   "Open Orders in Resolved Market";
 export const REPORTING_ENDS_SOON_TITLE = "Reporting Ends Soon";
 export const FINALIZE_MARKET_TITLE = "Finalize Market";
-export const SELL_COMPLETE_SETS_TITLE = "Sell Complete Sets";
 export const UNSIGNED_ORDERS_TITLE = "Unsigned Orders";
 export const CLAIM_REPORTING_FEES_TITLE = "Claim Stake and Fees";
 export const PROCEEDS_TO_CLAIM_TITLE = "Claim Proceeds";
@@ -709,7 +709,6 @@ export const OPEN_ORDERS_RESOLVED_MARKET = "resolvedMarketsOpenOrders";
 export const REPORT_ON_MARKET = "reportOnMarkets";
 export const FINALIZE_MARKET = "finalizeMarkets";
 export const MARKET_IN_DISPUTE = "marketsInDispute";
-export const SELL_COMPLETE_SET = "completeSetPositions";
 export const CLAIM_REPORTING_FEES = "claimReportingFees";
 export const UNSIGNED_ORDERS = "unsignedOrders";
 export const PROCEEDS_TO_CLAIM = "proceedsToClaim";
@@ -720,7 +719,6 @@ export const NOTIFICATION_TYPES = {
   [REPORT_ON_MARKET]: REPORT_ON_MARKET,
   [FINALIZE_MARKET]: FINALIZE_MARKET,
   [MARKET_IN_DISPUTE]: MARKET_IN_DISPUTE,
-  [SELL_COMPLETE_SET]: SELL_COMPLETE_SET,
   [CLAIM_REPORTING_FEES]: CLAIM_REPORTING_FEES,
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
   [PROCEEDS_TO_CLAIM]: PROCEEDS_TO_CLAIM,
@@ -746,6 +744,7 @@ export const TIMEFRAME_OPTIONS = [
 // Pending Queue Types
 export const CLAIM_STAKE_FEES = "CLAIM_STAKE_FEES";
 export const CLAIM_PROCEEDS = "CLAIM_PROCEEDS";
+
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = "CLAIM_FEE_WINDOWS";
 

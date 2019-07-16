@@ -238,11 +238,11 @@
 
 .RadioBarExpanded {
   grid-template-columns: 52px auto @size-16;
-  grid-template-rows: @size-20 @size-16 @size-12 44px @size-20;
-  height: 113px;
+  grid-template-rows: @size-20 @size-16 @size-12 44px @size-28;
+  height: auto;
 
   > svg {
-    grid-row: 1 / span 5;
+    grid-row: 1 / span 20;
   }
 
   > h5 {
@@ -253,6 +253,11 @@
     grid-column: 2;
     grid-row: 4;
     width: 210px;
+  }
+
+  > span {
+    grid-row: 5;
+    margin-bottom: @size-8;
   }
 }
 
@@ -531,10 +536,6 @@
         color: @color-shadow-text;
       }
     }
-
-    &.error {
-      border: 1px solid fade(@color-error-text, 50%);
-    }
   }
 
   > div.AutoCompleteList {
@@ -621,7 +622,7 @@
   .text-12;
 
   color: @color-error-text;
-  margin-bottom: @size-4;
+  margin-top: @size-4;
 }
 
 div.FormDropdown {
@@ -1359,3 +1360,62 @@ div.FormDropdownActive {
   }
 }
 
+.ErrorLabel {
+  background: @color-error-fade;
+  border-radius: @border-radius-default;
+  border: 1px solid @color-error-text;
+  border-left-width: @size-4;
+  display: flex;
+  padding: @size-12;
+  padding-left: @size-8;
+
+  > svg {
+    margin-right: @size-6;
+    width: @size-12;
+    height: @size-12;
+    background: @color-error-fade;
+
+    > circle {
+      fill: @color-error-fade;
+      opacity: 1;
+      stroke: @color-error-text;
+    }
+
+    > rect {
+      fill: @color-error-text;
+    }
+
+    > path {
+      fill: @color-error-text;
+    }
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+
+    > span:first-of-type {
+      .mono-10-bold;
+
+      color: @color-secondary-text;
+      text-transform: uppercase;
+      margin-bottom: @size-9;
+    }
+
+    > span:last-of-type {
+      .text-11;
+
+      color: @color-secondary-text;
+    }
+  }
+}
+
+textarea.error,
+input.error,
+button.error {
+  border: 1px solid fade(@color-error-text, 50%);
+}
+
+div.error > div > div > div > div > input {
+  border: 1px solid fade(@color-error-text, 50%) !important;
+}

@@ -15,8 +15,7 @@ import { ACCOUNT_TYPES } from 'modules/common/constants';
 import { LoginAccount, NodeStyleCallback, WindowApp } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { getAllowance } from 'modules/contracts/actions/contractCalls';
-import { formatAttoDai } from 'utils/format-number';
+import { updateAccountApproval } from 'modules/auth/actions/update-account-approval';
 
 export const loadAccountData = (
   account: LoginAccount,
@@ -44,7 +43,4 @@ export const loadAccountData = (
   dispatch(loadDisputing());
   dispatch(loadGasPriceInfo());
   dispatch(getReportingFees());
-
-  const allowance = await getAllowance(address);
-  dispatch(updateLoginAccount({ allowanceFormatted: formatAttoDai(allowance) }));
 };

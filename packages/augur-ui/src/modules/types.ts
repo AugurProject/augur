@@ -5,6 +5,7 @@ import { AnyAction } from "redux";
 import { MarketInfo, MarketInfoOutcome, MarketOrderBook, OrderBook } from "@augurproject/sdk/build/state/getter/Markets";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
 import { MarketTradingHistory, Orders, Order } from "@augurproject/sdk/build/state/getter/Trading";
+import { PlaceTradeParams } from "@augurproject/sdk/build";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -98,12 +99,6 @@ export interface MarketData extends MarketInfo {
   outcomesFormatted: OutcomeFormatted[];
 };
 
-export interface TransacitonStatus {
-  [pendingId: string]: {
-    status: string;
-    transactionHash: string;
-  };
-}
 export interface Universe {
   id: string;
   market?: MarketInfo;
@@ -179,6 +174,8 @@ export interface PendingQueue {
   [queueName: string]: {
     [pendingId: string]: {
       status: string;
+      blockNumber: number;
+      parameters?: UIOrder | NewMarket;
     };
   };
 }
@@ -207,7 +204,6 @@ export interface DisputeInfo {
 
 export interface MyPositionsSummary {
   currentValue: FormattedNumber;
-  numCompleteSets?: FormattedNumber;
   totalPercent: FormattedNumber;
   totalReturns: FormattedNumber;
   valueChange: FormattedNumber;
@@ -242,14 +238,18 @@ export interface OrderCancellations {
 
 export interface UIOrder {
   id: string;
-  outcome: string | number; // TODO: need to be consistent with outcome naming and type
-  index: number;
-  quantity: number;
-  price: string;
-  type: string;
-  orderEstimate: string;
   outcomeName: string;
-  cumulativeShares: number;
+  outcomeId: number;
+  marketId: string;
+  amount: string;
+  price: string;
+  fullPrecisionAmount: string;
+  fullPrecisionPrice: string;
+  type: string;
+  orderEstimate?: string;
+  cumulativeShares?: number;
+  ignoreShares?: boolean;
+  status?: string;
 }
 
 export interface LiquidityOrders {

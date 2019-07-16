@@ -19,20 +19,28 @@ import {
   handleTokensMintedLog,
   handleTokensBurnedLog,
   handleFeeWindowRedeemedLog,
-  handleCompleteSetsSoldLog,
-  handleApprovalLog,
   handleNewBlockLog,
+  handleTxAwaitingSigning,
+  handleTxSuccess,
+  handleTxPending,
+  handleTxFailure,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Augur, SubscriptionEventName, Provider } from '@augurproject/sdk';
+import {
+  Augur,
+  SubscriptionEventName,
+  Provider,
+  TXEventName,
+} from '@augurproject/sdk';
+
+const StartUpEvents = {
+  [SubscriptionEventName.NewBlock]: wrapLogHandler(handleNewBlockLog),
+};
 
 const EVENTS = {
-  [SubscriptionEventName.NewBlock]: wrapLogHandler(handleNewBlockLog),
-  [SubscriptionEventName.MarketCreated]: wrapLogHandler(
-    handleMarketCreatedLog
-  ),
+  [SubscriptionEventName.MarketCreated]: wrapLogHandler(handleMarketCreatedLog),
   [SubscriptionEventName.MarketMigrated]: wrapLogHandler(
     handleMarketMigratedLog
   ),
@@ -67,10 +75,6 @@ const EVENTS = {
   //   wrapLogHandler(handleDisputeCrowdsourcerRedeemedLog)
   // ),
   // [SubscriptionEventName.UniverseForked]: wrapLogHandler()),
-  [SubscriptionEventName.CompleteSetsPurchased]: wrapLogHandler(),
-  [SubscriptionEventName.CompleteSetsSold]: wrapLogHandler(
-    handleCompleteSetsSoldLog
-  ),
   // [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog)),
   [SubscriptionEventName.TokensBurned]: wrapLogHandler(handleTokensBurnedLog),
   // [SubscriptionEventName.FeeWindowCreated]: wrapLogHandler(handleFeeWindowCreatedLog)),
@@ -79,12 +83,22 @@ const EVENTS = {
   // [SubscriptionEventName.TimestampSet]: wrapLogHandler()),
   // [SubscriptionEventName.FeeWindowRedeemed]: wrapLogHandler(handleFeeWindowRedeemedLog)),
   [SubscriptionEventName.UniverseCreated]: wrapLogHandler(),
-  // [SubscriptionEventName.Approval]: wrapLogHandler(handleApprovalLog))
+  [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
+  [TXEventName.Success]: wrapLogHandler(handleTxSuccess),
+  [TXEventName.Pending]: wrapLogHandler(handleTxPending),
+  [TXEventName.Failure]: wrapLogHandler(handleTxFailure),
 };
 
 export const listenToUpdates = (Augur: Augur<Provider>) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) =>
   Object.keys(EVENTS).map(e => {
-    Augur.on(e, (log) => dispatch(EVENTS[e](log)));
+    Augur.on(e, log => dispatch(EVENTS[e](log)));
+  });
+
+export const listenForStartUpEvents = (Augur: Augur<Provider>) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) =>
+  Object.keys(StartUpEvents).map(e => {
+    Augur.on(e, log => dispatch(StartUpEvents[e](log)));
   });
