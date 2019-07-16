@@ -86,27 +86,6 @@ export class DerivedDB extends AbstractDB {
     let documents;
     if (logs.length > 0) {
       documents = _.map(logs, this.processLog.bind(this));
-      for (let i = 0; i < documents.length; i++) {
-        if (documents[i].addressData) {
-          documents[i].kycToken = documents[i].addressData[0];
-          documents[i].orderCreator = documents[i].addressData[1];
-          documents[i].orderFiller = documents[i].addressData[2];
-          delete documents[i].addressData;
-        }
-        if (documents[i].uint256Data) {
-          documents[i].price = documents[i].uint256Data[0];
-          documents[i].amount = documents[i].uint256Data[1];
-          documents[i].outcome = documents[i].uint256Data[2];
-          documents[i].tokenRefund = documents[i].uint256Data[3];
-          documents[i].sharesRefund = documents[i].uint256Data[4];
-          documents[i].fees = documents[i].uint256Data[5];
-          documents[i].amountFilled = documents[i].uint256Data[6];
-          documents[i].timestamp = documents[i].uint256Data[7];
-          documents[i].sharesEscrowed = documents[i].uint256Data[8];
-          documents[i].tokensEscrowed = documents[i].uint256Data[9];
-          delete documents[i].uint256Data;
-        }
-      }
       documents = _.values(_.mapValues(_.groupBy(documents, "_id"), (idDocuments) => {
         return _.reduce(idDocuments, (val, doc) => {
         if (val.blockNumber < doc.blockNumber) {
@@ -144,6 +123,25 @@ export class DerivedDB extends AbstractDB {
     delete log["_rev"];
     for (let fieldName of this.idFields) {
       _id += _.get(log, fieldName);
+    }
+    if (log["addressData"]) {
+      log["kycToken"] = log["addressData"][0];
+      log["orderCreator"] = log["addressData"][1];
+      log["orderFiller"] = log["addressData"][2];
+      delete log["addressData;
+    }
+    if (log["uint256Data"]) {
+      log["price"] = log["uint256Data"][0];
+      log["amount"] = log["uint256Data"][1];
+      log["outcome"] = log["uint256Data"][2];
+      log["tokenRefund"] = log["uint256Data"][3];
+      log["sharesRefund"] = log["uint256Data"][4];
+      log["fees"] = log["uint256Data"][5];
+      log["amountFilled"] = log["uint256Data"][6];
+      log["timestamp"] = log["uint256Data"][7];
+      log["sharesEscrowed"] = log["uint256Data"][8];
+      log["tokensEscrowed"] = log["uint256Data"][9];
+      delete log["uint256Data;
     }
     return Object.assign(
       { _id },
