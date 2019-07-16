@@ -7,7 +7,7 @@ export interface SortedGroup {
   autoCompleteList?: Array<SortedGroup>;
 }
 
-export const categories: Array<SortedGroup> = [
+export const setCategories: Array<SortedGroup> = [
   {
     value: 'Sports',
     label: 'Sports',
