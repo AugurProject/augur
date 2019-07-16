@@ -2,7 +2,7 @@
   "extends": [
     "config:base",
     "group:allNonMajor",
-    "maintainLockFilesWeekly"
+    ":maintainLockFilesWeekly"
   ],
   "prHourlyLimit": 1,
   "updateNotScheduled": false,
