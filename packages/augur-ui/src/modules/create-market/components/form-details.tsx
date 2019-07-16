@@ -93,7 +93,7 @@ export default class FormDetails extends React.Component<
       currentStep
     } = newMarket;
 
-    const noErrors = Object.values(validations[currentStep]).every(field => (field === null || field === ''));
+    const noErrors = Object.values(validations[currentStep]).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
 
     return (
       <div className={Styles.FormDetails}>
@@ -247,7 +247,7 @@ export default class FormDetails extends React.Component<
             updateSelection={categoryArray => 
               onChange("categories", categoryArray)
             }
-            errorMessage={validations[currentStep].category}
+            errorMessage={validations[currentStep].categories}
           />
         </div>
         <LineBreak />

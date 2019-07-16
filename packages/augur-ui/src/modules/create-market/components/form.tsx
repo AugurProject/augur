@@ -16,12 +16,15 @@ import {
   DESCRIPTION,
   END_TIME,
   EXPIRY_SOURCE,
+  HOUR,
   DESIGNATED_REPORTER_ADDRESS,
-  VALIDATION_ATTRIBUTES
+  VALIDATION_ATTRIBUTES,
+  CATEGORIES
 } from "modules/create-market/constants";
 import {
   EXPIRY_SOURCE_SPECIFIC,
-  DESIGNATED_REPORTER_SPECIFIC
+  DESIGNATED_REPORTER_SPECIFIC,
+  YES_NO_OUTCOMES
 } from "modules/common/constants";
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
 import { createMarket } from "modules/contracts/actions/contractCalls";
@@ -36,7 +39,12 @@ import {
 } from "modules/routes/constants/views";
 import { SCRATCH, CATEGORICAL } from "modules/create-market/constants";
 import { DEFAULT_STATE } from "modules/markets/reducers/new-market";
-import { isBetween, isFilledNumber, isFilledString } from "modules/common/validations";
+import { 
+  isBetween, 
+  isFilledNumber, 
+  isFilledString, 
+  checkCategoriesArray 
+} from "modules/common/validations";
 
 import Styles from "modules/create-market/components/form.styles";
 
@@ -151,7 +159,7 @@ export default class Form extends React.Component<
 
     if (newMarket.currentStep === 0) {
       // check for is valid and set validations
-      const fields = [DESCRIPTION, END_TIME];
+      const fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
       if (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
         fields.push(EXPIRY_SOURCE);
       } 
@@ -274,12 +282,14 @@ export default class Form extends React.Component<
       checkFilledNumberMessage,
       checkFilledString,
       checkFilledStringMessage,
-      updateValue
+      updateValue,
+      checkCategories
     } = validationsObj;
 
     const checkValidations = [
       checkFilledNumber ? isFilledNumber(value, readableName, checkFilledNumberMessage) : "",
       checkFilledString ? isFilledString(value, readableName, checkFilledStringMessage) : "",
+      checkCategories ? checkCategoriesArray(value) : "",
       checkBetween ? isBetween(value, readableName, min, max) : ""
     ];
     const errorMsg = checkValidations.find(validation => validation !== "");

@@ -21,8 +21,7 @@ export const DEFAULT_STATE: NewMarket = {
   validations: [
     {
       description: null,
-      category: null,
-      subcategory: null,
+      categories: [null, null, null],
       designatedReporterAddress: null,
       expirySourceType: null,
       endTime: null,
@@ -38,7 +37,7 @@ export const DEFAULT_STATE: NewMarket = {
   ],
   currentStep: 0,
   marketType: YES_NO,
-  outcomes: Array(2).fill(""),
+  outcomes: ["", ""],
   outcomesFormatted: YES_NO_OUTCOMES,
   scalarSmallNum: "",
   scalarBigNum: "",

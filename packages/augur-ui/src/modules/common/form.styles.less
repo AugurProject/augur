@@ -536,10 +536,6 @@
         color: @color-shadow-text;
       }
     }
-
-    &.error {
-      border: 1px solid fade(@color-error-text, 50%);
-    }
   }
 
   > div.AutoCompleteList {
@@ -1364,7 +1360,7 @@ div.FormDropdownActive {
   }
 }
 
-.Error {
+.ErrorLabel {
   background: @color-error-fade;
   border-radius: @border-radius-default;
   border: 1px solid @color-error-text;
@@ -1415,4 +1411,14 @@ div.FormDropdownActive {
       color: @color-secondary-text;
     }
   }
+}
+
+textarea.error,
+input.error,
+button.error {
+  border: 1px solid fade(@color-error-text, 50%);
+}
+
+div.error > div > div > div > div > input {
+  border: 1px solid fade(@color-error-text, 50%) !important;
 }

@@ -18,6 +18,21 @@ export function isBetween(value, readable, min, max) {
   } else if (value < min) {
     return readable + " must be more than " + min;
   }
-  
   return "";
+}
+
+export function checkCategoriesArray(value) {
+  let errors = ["", "", ""];
+  if (value[0] === "") {
+    errors[0] = "Please choose a category";
+  }
+  if (value[1] === "") {
+    errors[1] = "Please choose a sub-category";
+  }
+
+  if (errors[0] !== "" || errors[1] !== "") {
+    return errors;
+  } else {
+    return "";
+  }
 }

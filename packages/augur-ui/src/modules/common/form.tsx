@@ -147,7 +147,7 @@ interface ErrorProps {
 }
 
 export const Error = (props: ErrorProps) => (
-  <section className={Styles.Error}>
+  <section className={Styles.ErrorLabel}>
     <div>
       {ExclamationCircle}
     </div>
@@ -799,7 +799,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
           this.timeSelector = timeSelector;
         }}
       >
-        <button onClick={this.toggleSelector}>
+        <button onClick={this.toggleSelector} className={classNames({[Styles.error]: error})}>
           <span>
             {!hour || !minute || !meridiem
               ? 'Time'
@@ -994,7 +994,7 @@ Checkbox.defaultProps = {
 };
 
 export const DatePicker = (props: DatePickerProps) => (
-  <div className={Styles.DatePicker}>
+  <div className={classNames(Styles.DatePicker, {[Styles.error]: props.errorMessage && props.errorMessage !== "" && props.errorMessage.length > 0})}>
     <SingleDatePicker
       id={props.id}
       date={props.date}

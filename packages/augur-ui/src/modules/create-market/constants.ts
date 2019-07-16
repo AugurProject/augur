@@ -292,6 +292,8 @@ export const DESCRIPTION_PLACEHOLDERS = {
 // Create market fields for validations
 export const DESCRIPTION = "description";
 export const END_TIME = "endTime";
+export const CATEGORIES = "categories";
+export const HOUR = "hour";
 export const DESIGNATED_REPORTER_ADDRESS = "designatedReporterAddress";
 export const EXPIRY_SOURCE = "expirySource";
 
@@ -303,6 +305,17 @@ export const VALIDATION_ATTRIBUTES = {
 		readableName: "Description",
 		checkFilledString: true,
 		checkFilledStringMessage: "Enter a market question"
+	},
+	[HOUR]: {
+		label: HOUR,
+		readableName: "time",
+		checkFilledNumber: true,
+		checkFilledNumberMessage: "Choose a time"
+	},
+	[CATEGORIES]: {
+		label: CATEGORIES,
+		readableName: "category",
+		checkCategories: true,
 	},
 	[END_TIME]: {
 		label: END_TIME,
