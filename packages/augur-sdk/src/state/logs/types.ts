@@ -148,6 +148,12 @@ export enum MarketType {
   Scalar = 2,
 }
 
+export enum MarketTypeName {
+  YesNo = 'yesNo',
+  Categorical = 'categorical',
+  Scalar = 'scalar',
+}
+
 export interface MarketVolumeChangedLog extends Log, Doc {
   universe: Address;
   market: Address;

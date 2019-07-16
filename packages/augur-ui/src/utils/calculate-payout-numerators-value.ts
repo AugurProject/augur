@@ -1,3 +1,4 @@
+//
 import { SCALAR, MALFORMED_OUTCOME } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';

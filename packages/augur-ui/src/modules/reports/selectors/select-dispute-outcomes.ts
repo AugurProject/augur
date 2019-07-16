@@ -3,6 +3,7 @@ import {
   MALFORMED_OUTCOME,
   ZERO
 } from "modules/common/constants";
+// import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 import { isEmpty } from "utils/is-populated";
 import { createBigNumber } from "utils/create-big-number";
@@ -144,6 +145,11 @@ const populateFromOutcome = (
   }
 
   stake.id = calculatePayoutNumeratorsValue(
+    // market.maxPrice,
+    // market.minPrice,
+    // market.numTicks,
+    // market.marketType,
+    // stake.payout
     market,
     stake.payout,
     stake.isInvalid
