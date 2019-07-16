@@ -164,7 +164,7 @@ function getUserOpenOrders(
 
   return Object.keys(typeOrders)
     .map(orderId => typeOrders[orderId])
-    .filter(order => isOrderOfUser(order, userId) && order.orderState === OPEN)
+    .filter(order => isOrderOfUser(order, userId))
     .sort((order1, order2) =>
       createBigNumber(order2.price, 10).comparedTo(
         createBigNumber(order1.price, 10)
