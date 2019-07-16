@@ -22,14 +22,14 @@ export const DEFAULT_STATE: NewMarket = {
     {
       description: null,
       categories: ["", "", ""],
-      type: null,
-      designatedReporterType: null,
       designatedReporterAddress: null,
       expirySourceType: null,
       endTime: null,
       hour: null,
       minute: null,
-      meridiem: null
+      meridiem: null,
+      outcomes: null,
+      scalarDenomination: null,
     },
     {
       settlementFee: ""
@@ -37,7 +37,7 @@ export const DEFAULT_STATE: NewMarket = {
   ],
   currentStep: 0,
   marketType: YES_NO,
-  outcomes: Array(2).fill(""),
+  outcomes: ["", ""],
   outcomesFormatted: YES_NO_OUTCOMES,
   scalarSmallNum: "",
   scalarBigNum: "",

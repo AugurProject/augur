@@ -4,7 +4,28 @@ import classNames from "classnames";
 import moment from "moment";
 
 import { LocationDisplay } from "modules/common/form";
-import { BACK, NEXT, CREATE, CUSTOM_CONTENT_PAGES, REVIEW, FORM_DETAILS, LANDING, FEES_LIQUIDITY } from "modules/create-market/constants";
+import { 
+  BACK, 
+  NEXT, 
+  CREATE, 
+  CUSTOM_CONTENT_PAGES, 
+  REVIEW, 
+  FORM_DETAILS, 
+  LANDING, 
+  FEES_LIQUIDITY,
+  DESCRIPTION,
+  END_TIME,
+  EXPIRY_SOURCE,
+  HOUR,
+  DESIGNATED_REPORTER_ADDRESS,
+  VALIDATION_ATTRIBUTES,
+  CATEGORIES
+} from "modules/create-market/constants";
+import {
+  EXPIRY_SOURCE_SPECIFIC,
+  DESIGNATED_REPORTER_SPECIFIC,
+  YES_NO_OUTCOMES
+} from "modules/common/constants";
 import { PrimaryButton, SecondaryButton } from "modules/common/buttons";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { LargeHeader, ExplainerBlock, ContentBlock } from "modules/create-market/components/common";
@@ -16,8 +37,14 @@ import makePath from "modules/routes/helpers/make-path";
 import {
   CREATE_MARKET
 } from "modules/routes/constants/views";
-import { SCRATCH } from "modules/create-market/constants";
+import { SCRATCH, CATEGORICAL } from "modules/create-market/constants";
 import { DEFAULT_STATE } from "modules/markets/reducers/new-market";
+import { 
+  isBetween, 
+  isFilledNumber, 
+  isFilledString, 
+  checkCategoriesArray 
+} from "modules/common/validations";
 
 import Styles from "modules/create-market/components/form.styles";
 
@@ -35,6 +62,20 @@ interface FormProps {
 
 interface FormState {
   blockShown: Boolean;
+}
+
+interface Validations {
+  value: any;
+  label: string;
+  updateValue?: Boolean;
+  readableName: string;
+  checkBetween?: Boolean; 
+  checkFilledNumber?: Boolean;
+  checkFilledString?: Boolean;
+  min?: Number, 
+  max?: Number;
+  checkFilledNumberMessage?: string;
+  checkFilledStringMessage?: string;
 }
 
 export default class Form extends React.Component<
@@ -102,14 +143,48 @@ export default class Form extends React.Component<
 
   nextPage = () => {
     const { newMarket, updateNewMarket } = this.props;
-   // if (newMarket.isValid) {
-      const newStep =
-        newMarket.currentStep >= CUSTOM_CONTENT_PAGES.length - 1
-          ? CUSTOM_CONTENT_PAGES.length - 1
-          : newMarket.currentStep + 1;
-      updateNewMarket({ currentStep: newStep });
-      this.node.scrollIntoView();
-    //}
+    if (this.findErrors()) return;
+
+    const newStep =
+      newMarket.currentStep >= CUSTOM_CONTENT_PAGES.length - 1
+        ? CUSTOM_CONTENT_PAGES.length - 1
+        : newMarket.currentStep + 1;
+    updateNewMarket({ currentStep: newStep });
+    this.node.scrollIntoView();
+  }
+
+  findErrors = () => {
+    const { newMarket } = this.props;
+    let hasErrors = false; 
+
+    if (newMarket.currentStep === 0) {
+      // check for is valid and set validations
+      const fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
+      if (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
+        fields.push(EXPIRY_SOURCE);
+      } 
+      if (newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC) {
+        fields.push(DESIGNATED_REPORTER_ADDRESS);
+      } 
+      fields.map(field => {
+          const error = this.evaluate({
+            ...VALIDATION_ATTRIBUTES[field],
+            updateValue: false,
+            value: newMarket[field], 
+          });
+          if (error) hasErrors = true;
+        }
+      );
+    }
+
+    return hasErrors;
+  }
+
+  isValid = (currentStep) => {
+    const { newMarket } = this.props;
+    const validations = newMarket.validations[currentStep];
+    const validationsArray = Object.keys(validations);
+    return validationsArray.every(key => validations[key] === "");
   }
 
   saveDraft = () => {
@@ -194,6 +269,91 @@ export default class Form extends React.Component<
     });
   }
 
+  evaluate = (validationsObj: Validations) => {
+
+    const {
+      checkBetween,
+      label,
+      value,
+      readableName,
+      min,
+      max,
+      checkFilledNumber,
+      checkFilledNumberMessage,
+      checkFilledString,
+      checkFilledStringMessage,
+      updateValue,
+      checkCategories
+    } = validationsObj;
+
+    const checkValidations = [
+      checkFilledNumber ? isFilledNumber(value, readableName, checkFilledNumberMessage) : "",
+      checkFilledString ? isFilledString(value, readableName, checkFilledStringMessage) : "",
+      checkCategories ? checkCategoriesArray(value) : "",
+      checkBetween ? isBetween(value, readableName, min, max) : ""
+    ];
+    const errorMsg = checkValidations.find(validation => validation !== "");
+
+    if (errorMsg) {
+      this.onError(label, errorMsg);
+      return true;
+    } 
+
+    // no errors
+    if (updateValue) {
+      this.onChange(label, value);
+    }
+    else {
+      this.onError(name, "");
+    }
+  }
+
+  onChange = (name, value) => {
+    const { updateNewMarket, newMarket } = this.props;
+    updateNewMarket({ [name]: value });
+    
+    if (name === 'outcomes') {
+      let outcomesFormatted = [];
+      if (newMarket.marketType === CATEGORICAL) {
+        outcomesFormatted = value.map((outcome, index) => ({
+          description: outcome,
+          id: index + 1,
+          isTradable: true
+        }));
+        outcomesFormatted.unshift({
+          id: 0,
+          description: "Invalid",
+          isTradable: true,
+        })
+      } else {
+        outcomesFormatted = YES_NO_OUTCOMES;
+      }
+      updateNewMarket({ outcomesFormatted });
+    } else if (name === 'marketType') {
+      let outcomesFormatted = [];
+      if (value === CATEGORICAL) {
+        outcomesFormatted = newMarket.outcomes.map((outcome, index) => ({
+          description: outcome,
+          id: index,
+          isTradable: true
+        }));
+      } else {
+        outcomesFormatted = YES_NO_OUTCOMES;
+      }
+      updateNewMarket({ outcomesFormatted, orderBook: {}});
+    }
+    this.onError(name, "");
+  }
+
+  onError = (name, error) => {
+    const { updateNewMarket, newMarket } = this.props;
+    const { currentStep, validations } = newMarket;
+    const updatedValidations = validations;
+    
+    updatedValidations[currentStep][name] = error;
+    updateNewMarket({validations: updatedValidations});
+  }
+
   render() {
     const {
       newMarket,
@@ -229,8 +389,8 @@ export default class Form extends React.Component<
           />
         }
         <ContentBlock noDarkBackground={noDarkBackground}>
-          {mainContent === FORM_DETAILS && <FormDetails />}
-          {mainContent === FEES_LIQUIDITY && <FeesLiquidity />}
+          {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
+          {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
           {mainContent === REVIEW && <Review />}
           <div>
             {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
