@@ -5,7 +5,7 @@ import PouchDB from "pouchdb";
 import * as _ from "lodash";
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 import BigNumber from "bignumber.js";
-import { ORDER_EVENT_AMOUNT_FILLED } from "../logs/types";
+import { OrderEventUint256Value } from "../logs/types";
 
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
@@ -60,10 +60,6 @@ export abstract class AbstractDB {
       result[prevDoc._id] = prevDoc;
       return result;
     }, {} as DocumentIDToDoc);
-    // console.log("previousDocs");
-    // console.log(previousDocs.amountFilled);
-    // console.log("documents");
-    // console.log(documents);
     return await this.bulkUpsertDocuments(previousDocs, documents);
   }
 
@@ -87,7 +83,7 @@ export abstract class AbstractDB {
         doc
       );
       if (newDoc.hasOwnProperty("amountFilled") && doc.hasOwnProperty("uint256Data")) {
-        newDoc["amountFilled"] = "0x" + new BigNumber(newDoc["amountFilled"]).plus(doc["uint256Data"][6]).toString(16);
+        newDoc["amountFilled"] = "0x" + new BigNumber(newDoc["amountFilled"]).plus(doc["uint256Data"][OrderEventUint256Value.amountFilled]).toString(16);
       }
       return newDoc;
     });
