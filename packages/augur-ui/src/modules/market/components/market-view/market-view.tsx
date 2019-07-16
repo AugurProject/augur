@@ -83,11 +83,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       extendOrderBook: false,
       extendTradeHistory: false,
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
-<<<<<<< Updated upstream
-      selectedOutcomeId: props.market.defaultSelectedOutcomeId,
-=======
       selectedOutcomeId: props.market ? props.market.defaultSelectedOutcomeId : undefined,
->>>>>>> Stashed changes
       fixedPrecision: 4,
       selectedOutcomeProperties: {
         1: {
