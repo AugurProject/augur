@@ -52,7 +52,6 @@ export const constructTransaction = (
     case "OrderFilled":
     case "TokensTransferred":
     case "MarketCreated":
-    case "CompleteSetsSold":
     case "MarketFinalized":
     case "InitialReportSubmitted":
     case "DesignatedReportSubmitted":
