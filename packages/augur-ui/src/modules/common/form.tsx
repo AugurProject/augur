@@ -298,14 +298,14 @@ export class CategoryMultiSelect extends Component<
 
   getNewValues(value, position) {
     const { values } = this.state;
-    const updatedValues = values;
+    const updatedValues = [...values];
     updatedValues[position] = value;
     return updatedValues;
   }
 
   getNewSelected(selection, position) {
     const { selected } = this.state;
-    const updatedSelected = selected;
+    const updatedSelected = [...selected];
     updatedSelected[position] = selection;
     return updatedSelected;
   }
