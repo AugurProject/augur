@@ -212,7 +212,6 @@ export class WithdrawForm extends Component<
                 autoComplete="off"
                 placeholder="0x..."
                 onChange={this.addressChange}
-                error={errors.address.length > 0}
                 errorMessage={errors.address.length > 0 ? errors.address : ""}
               />
             </div>
@@ -234,7 +233,6 @@ export class WithdrawForm extends Component<
                 id="amount"
                 placeholder="0.00"
                 onChange={this.amountChange}
-                error={errors.amount && errors.amount.length > 0}
                 errorMessage={errors.amount && errors.amount.length > 0 ? errors.amount : ""}
                 value={amount}
               />

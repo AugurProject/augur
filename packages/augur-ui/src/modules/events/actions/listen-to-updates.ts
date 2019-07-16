@@ -19,7 +19,6 @@ import {
   handleTokensMintedLog,
   handleTokensBurnedLog,
   handleFeeWindowRedeemedLog,
-  handleCompleteSetsSoldLog,
   handleNewBlockLog,
   handleTxAwaitingSigning,
   handleTxSuccess,
@@ -76,10 +75,6 @@ const EVENTS = {
   //   wrapLogHandler(handleDisputeCrowdsourcerRedeemedLog)
   // ),
   // [SubscriptionEventName.UniverseForked]: wrapLogHandler()),
-  [SubscriptionEventName.CompleteSetsPurchased]: wrapLogHandler(),
-  [SubscriptionEventName.CompleteSetsSold]: wrapLogHandler(
-    handleCompleteSetsSoldLog
-  ),
   // [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog)),
   [SubscriptionEventName.TokensBurned]: wrapLogHandler(handleTokensBurnedLog),
   // [SubscriptionEventName.FeeWindowCreated]: wrapLogHandler(handleFeeWindowCreatedLog)),

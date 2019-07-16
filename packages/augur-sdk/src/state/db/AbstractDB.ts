@@ -78,7 +78,7 @@ export abstract class AbstractDB {
       const previousDoc = previousDocs[doc._id!];
       return Object.assign(
         previousDoc ? previousDoc : {},
-        doc,
+        doc
       );
     });
     try {

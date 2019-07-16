@@ -288,3 +288,60 @@ export const DESCRIPTION_PLACEHOLDERS = {
 	[SCALAR]: "Example: Which Team will win: [Team A] vs [Team B] on [date]?",
   [CATEGORICAL]: "Example: How many [goals/points] will [person] score in the [year] [event]?"
 }
+
+// Create market fields for validations
+export const DESCRIPTION = "description";
+export const END_TIME = "endTime";
+export const CATEGORIES = "categories";
+export const HOUR = "hour";
+export const DESIGNATED_REPORTER_ADDRESS = "designatedReporterAddress";
+export const EXPIRY_SOURCE = "expirySource";
+
+export const SETTLEMENT_FEE = "settlementFee";
+
+export const VALIDATION_ATTRIBUTES = {
+	[DESCRIPTION]: {
+		label: DESCRIPTION,
+		readableName: "Description",
+		checkFilledString: true,
+		checkFilledStringMessage: "Enter a market question"
+	},
+	[HOUR]: {
+		label: HOUR,
+		readableName: "time",
+		checkFilledNumber: true,
+		checkFilledNumberMessage: "Choose a time"
+	},
+	[CATEGORIES]: {
+		label: CATEGORIES,
+		readableName: "category",
+		checkCategories: true,
+	},
+	[END_TIME]: {
+		label: END_TIME,
+		readableName: "date",
+		checkFilledNumber: true,
+		checkFilledNumberMessage: "Choose a date"
+	},
+	[DESIGNATED_REPORTER_ADDRESS]: {
+		label: DESIGNATED_REPORTER_ADDRESS,
+		readableName: "wallet address",
+		checkFilledString: true,
+		checkFilledStringMessage: "Enter a valid wallet address"
+	},
+	[EXPIRY_SOURCE]: {
+		label: EXPIRY_SOURCE,
+		readableName: "website",
+		checkFilledString: true,
+		checkFilledStringMessage: "Enter a website"
+	},
+	[SETTLEMENT_FEE]: {
+        label: SETTLEMENT_FEE, 
+        readableName: "Market creator fee", 
+        checkBetween: true, 
+        checkFilledNumber: true, 
+        min: 0, 
+        max: 50
+	}
+}
+

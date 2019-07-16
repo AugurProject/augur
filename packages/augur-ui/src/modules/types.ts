@@ -204,7 +204,6 @@ export interface DisputeInfo {
 
 export interface MyPositionsSummary {
   currentValue: FormattedNumber;
-  numCompleteSets?: FormattedNumber;
   totalPercent: FormattedNumber;
   totalReturns: FormattedNumber;
   valueChange: FormattedNumber;

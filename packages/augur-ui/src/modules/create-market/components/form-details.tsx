@@ -3,7 +3,17 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { RadioCardGroup, FormDropdown, TextInput, DatePicker, TimeSelector, RadioBarGroup, TimezoneDropdown, CategoryMultiSelect } from "modules/common/form";
+import { 
+  RadioCardGroup, 
+  FormDropdown, 
+  Error, 
+  TextInput, 
+  DatePicker, 
+  TimeSelector, 
+  RadioBarGroup, 
+  TimezoneDropdown, 
+  CategoryMultiSelect 
+} from "modules/common/form";
 import { setCategories } from "modules/categories/set-categories";
 import { Header, Subheaders, LineBreak, NumberedList } from "modules/create-market/components/common";
 import { 
@@ -18,7 +28,13 @@ import {
 } from 'modules/common/constants';
 import { NewMarket } from "modules/types";
 import { RepLogoIcon } from "modules/common/icons";
-import { DESCRIPTION_PLACEHOLDERS } from "modules/create-market/constants";
+import { 
+  DESCRIPTION_PLACEHOLDERS, 
+  DESCRIPTION, 
+  VALIDATION_ATTRIBUTES,
+  DESIGNATED_REPORTER_ADDRESS,
+  EXPIRY_SOURCE
+} from "modules/create-market/constants";
 
 import Styles from "modules/create-market/components/form-details.styles";
 
@@ -26,6 +42,9 @@ interface FormDetailsProps {
   updateNewMarket: Function;
   newMarket: NewMarket;
   currentTimestamp: string;
+  onChange: Function;
+  evaluate: Function;
+  onError: Function;
 }
 
 interface FormDetailsState {
@@ -42,46 +61,14 @@ export default class FormDetails extends React.Component<
     timeFocused: false,
   };
 
-  onChange = (name, value) => {
-    const { updateNewMarket, newMarket } = this.props;
-    updateNewMarket({ [name]: value });
-    if (name === 'outcomes') {
-      let outcomesFormatted = [];
-      if (newMarket.marketType === CATEGORICAL) {
-        outcomesFormatted = value.map((outcome, index) => ({
-          description: outcome,
-          id: index + 1,
-          isTradable: true
-        }));
-        outcomesFormatted.unshift({
-          id: 0,
-          description: "Invalid",
-          isTradable: true,
-        })
-      } else {
-        outcomesFormatted = YES_NO_OUTCOMES;
-      }
-      updateNewMarket({ outcomesFormatted });
-    } else if (name === 'marketType') {
-      let outcomesFormatted = [];
-      if (value === CATEGORICAL) {
-        outcomesFormatted = newMarket.outcomes.map((outcome, index) => ({
-          description: outcome,
-          id: index,
-          isTradable: true
-        }));
-      } else {
-        outcomesFormatted = YES_NO_OUTCOMES;
-      }
-      updateNewMarket({ outcomesFormatted, orderBook: {}});
-    }
-  }
-
   render() {
     const {
       addOrderToNewMarket,
       newMarket,
-      currentTimestamp
+      currentTimestamp,
+      onChange,
+      evaluate,
+      onError
     } = this.props;
     const s = this.state;
 
@@ -102,8 +89,12 @@ export default class FormDetails extends React.Component<
       expirySource,
       expirySourceType,
       designatedReporterAddress,
-      designatedReporterType
+      designatedReporterType,
+      validations,
+      currentStep
     } = newMarket;
+
+    const noErrors = Object.values(validations[currentStep]).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
 
     return (
       <div className={Styles.FormDetails}>
@@ -112,7 +103,7 @@ export default class FormDetails extends React.Component<
 
           <Subheaders header="Market type" link subheader="Market types vary based on the amount of possible outcomes." />
           <RadioCardGroup
-            onChange={(value: string) => this.onChange("marketType", value)}
+            onChange={(value: string) => onChange("marketType", value)}
             defaultSelected={marketType}
             radioButtons={[
               {
@@ -141,7 +132,7 @@ export default class FormDetails extends React.Component<
               displayFormat="MMM D, YYYY"
               id="input-date"
               onDateChange={(date: Number) => {
-                this.onChange("endTime", date)
+                onChange("endTime", date)
               }}
               // isOutsideRange={day =>
               //   day.isAfter(moment(currentTimestamp).add(6, "M")) ||
@@ -151,32 +142,34 @@ export default class FormDetails extends React.Component<
               onFocusChange= {({ focused }) => {
                 if (endTime === null) {
                   const date = moment(currentTimestamp * 1000);
-                  this.onChange("endTime", date)
+                  onChange("endTime", date)
                 }
                 this.setState({ dateFocused: focused });
               }}
               focused={s.dateFocused}
+              errorMessage={validations[currentStep].endTime}
             />
             <TimeSelector
               hour={hour}
               minute={minute}
               meridiem={meridiem}
               onChange={(label: string, value: string) => {
-                this.onChange(label, value)
+                onChange(label, value)
               }}
               onFocusChange= {(focused: Boolean) => {
                 if (!hour) {
-                  this.onChange("hour", "12");
+                  onChange("hour", "12");
                 } 
                 if (!minute) {
-                  this.onChange("minute", "00");
+                  onChange("minute", "00");
                 } 
                 if (!meridiem) {
-                  this.onChange("meridiem", "AM");
+                  onChange("meridiem", "AM");
                 }
                 this.setState({ timeFocused: focused });
               }}
               focused={s.timeFocused}
+              errorMessage={validations[currentStep].hour}
             />
             <TimezoneDropdown />
           </span>
@@ -185,9 +178,14 @@ export default class FormDetails extends React.Component<
           <TextInput
             type="textarea"
             placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
-            onChange={(value: string) => this.onChange("description", value)}
+            onChange={(value: string) => evaluate({
+              ...VALIDATION_ATTRIBUTES[DESCRIPTION],
+              value: value,
+              updateValue: true,
+            })}
             rows="3"
             value={description}
+            errorMessage={validations[currentStep].description}
           />
 
           {marketType === CATEGORICAL && 
@@ -198,7 +196,8 @@ export default class FormDetails extends React.Component<
                 minShown={2}
                 maxList={7}
                 placeholder={"Enter outcome"}
-                updateList={(value: Array<string>) => this.onChange("outcomes", value)}
+                updateList={(value: Array<string>) => onChange("outcomes", value)}
+                errorMessage={validations[currentStep].outcomes}
               />
             </>
           }
@@ -208,33 +207,37 @@ export default class FormDetails extends React.Component<
               <Subheaders header="Unit of measurement" subheader="Choose a denomination for the range." link />
               <TextInput
                 placeholder="Denomination"
-                onChange={(value: string) => this.onChange("scalarDenomination", value)}
+                onChange={(value: string) => onChange("scalarDenomination", value)}
                 value={scalarDenomination}
+                errorMessage={validations[currentStep].scalarDenomination}
               />
               <Subheaders header="Numeric range" subheader="Choose the min and max values of the range." link />
               <section>
                 <TextInput
                   type="number"
                   placeholder="0"
-                  onChange={(value: string) => this.onChange("minPrice", value)}
+                  onChange={(value: string) => onChange("minPrice", value)}
                   value={minPrice}
+                  errorMessage={validations[currentStep].minPrice}
                 />
                 <span>to</span>
                 <TextInput
                   type="number"
                   placeholder="100"
-                  onChange={(value: string) => this.onChange("maxPrice", value)}
+                  onChange={(value: string) => onChange("maxPrice", value)}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                   value={maxPrice}
+                  errorMessage={validations[currentStep].maxPrice}
                 />
               </section>
               <Subheaders header="Precision" subheader="What is the smallest quantity of the denomination users can choose, e.g: “0.1”, “1”, “10”." link />
               <TextInput
                 type="number"
                 placeholder="0"
-                onChange={(value: string) => this.onChange("tickSize", value)}
+                onChange={(value: string) => onChange("tickSize", value)}
                 trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                 value={tickSize}
+                errorMessage={validations[currentStep].tickSize}
               />
             </>
           }
@@ -244,8 +247,9 @@ export default class FormDetails extends React.Component<
             initialSelected={categories}
             sortedGroup={setCategories}
             updateSelection={categoryArray => 
-              this.onChange("categories", categoryArray)
+              onChange("categories", categoryArray)
             }
+            errorMessage={validations[currentStep].categories}
           />
         </div>
         <LineBreak />
@@ -265,11 +269,22 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter website",
                 textValue: expirySource,
-                onTextChange: (value: string) => this.onChange("expirySource", value)
+                onTextChange: (value: string) => evaluate({
+                  ...VALIDATION_ATTRIBUTES[EXPIRY_SOURCE],
+                  value: value,
+                  updateValue: true,
+                }),
+                errorMessage: validations[currentStep].expirySource
               }
             ]}
             defaultSelected={expirySourceType}
-            onChange={(value: string) => this.onChange("expirySourceType", value)}
+            onChange={(value: string) => {
+              if (value === EXPIRY_SOURCE_GENERIC) {
+                onChange(EXPIRY_SOURCE, "");
+                onError(EXPIRY_SOURCE, "");
+              }
+              onChange("expirySourceType", value)}
+            }
           />
 
           <Subheaders header="Resolution details" subheader="Describe what users need to know to determine the outcome of the event." link/>
@@ -278,7 +293,7 @@ export default class FormDetails extends React.Component<
             placeholder="Describe how the event should be resolved under different scenarios."
             rows="3"
             value={detailsText}
-            onChange={(value: string) => this.onChange("detailsText", value)}
+            onChange={(value: string) => onChange("detailsText", value)}
           />
 
           <Subheaders header="Designated reporter" subheader="The person assigned to report the winning outcome of the event (within 24 hours after Reporting Start Time)." link/>
@@ -294,13 +309,25 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter wallet address",
                 textValue: designatedReporterAddress,
-                onTextChange: (value: string) => this.onChange("designatedReporterAddress", value)
+                onTextChange: (value: string) => evaluate({
+                  ...VALIDATION_ATTRIBUTES[DESIGNATED_REPORTER_ADDRESS],
+                  value: value,
+                  updateValue: true,
+                }),
+                errorMessage: validations[currentStep].designatedReporterAddress
               }
             ]}
             defaultSelected={designatedReporterType}
-            onChange={(value: string) => this.onChange("designatedReporterType", value)}
+            onChange={(value: string) => {
+              if (value === DESIGNATED_REPORTER_SELF) {
+                onChange(DESIGNATED_REPORTER_ADDRESS, "");
+                onError(DESIGNATED_REPORTER_ADDRESS, "");
+              }
+              onChange("designatedReporterType", value)}
+            }
           />
         </div>
+        {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
       </div>
     );
   }

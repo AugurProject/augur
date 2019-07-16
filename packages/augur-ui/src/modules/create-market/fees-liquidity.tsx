@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { RadioCardGroup, TextInput } from "modules/common/form";
 import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
-import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
+import { SCRATCH, TEMPLATE, MARKET_TEMPLATES, SETTLEMENT_FEE, VALIDATION_ATTRIBUTES } from "modules/create-market/constants";
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
 import InitialLiquidity from "modules/create-market/containers/initial-liquidity";
 import OrderBook from "modules/market-charts/containers/order-book";
@@ -32,6 +32,9 @@ interface FeesLiquidityProps {
   clearNewMarket: Function;
   addOrderToNewMarket: Function;
   removeOrderFromNewMarket: Function;
+  onChange: Function;
+  onError: Function;
+  evaluate: Function;
 }
 
 interface FeesLiquidityState {
@@ -45,11 +48,6 @@ export default class FeesLiquidity extends React.Component<
   state: FeesLiquidityState = {
     selectedOutcome: this.props.newMarket.marketType === CATEGORICAL ? 1 : 2
   };
-
-  onChange = (name, value) => {
-    const { updateNewMarket, newMarket } = this.props;
-    updateNewMarket({ [name]: value });
-  }
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {
   }
@@ -105,14 +103,17 @@ export default class FeesLiquidity extends React.Component<
   render() {
     const {
       updatePage,
-      newMarket
+      newMarket,
+      evaluate
     } = this.props;
     const s = this.state;
 
     const {
       settlementFee,
       affiliateFee,
-      orderBook
+      orderBook,
+      validations,
+      currentStep
     } = newMarket;
 
     return (
@@ -128,9 +129,17 @@ export default class FeesLiquidity extends React.Component<
           />
           <TextInput
             type="number"
-            onChange={(value: string) => this.onChange("settlementFee", value)}
+            onChange={(value: string) => onChange("settlementFee", value)}
             value={settlementFee}
             innerLabel="%"
+            errorMessage={validations[currentStep].settlementFee}
+            onChange={(value: string) => 
+              evaluate({
+                ...VALIDATION_ATTRIBUTES[SETTLEMENT_FEE],
+                value: value,
+                updateValue: true,
+              })
+            }
           />
         </div>
 
@@ -143,7 +152,7 @@ export default class FeesLiquidity extends React.Component<
           />
           <TextInput
             type="number"
-            onChange={(value: string) => this.onChange("affiliateFee", value)}
+            onChange={(value: string) => onChange("affiliateFee", value)}
             value={affiliateFee}
             innerLabel="%"
             trailingLabel="of market creator fees"

@@ -461,18 +461,3 @@ export const handleFeeWindowRedeemedLog = (log: any) => (
   dispatch(defaultLogHandler(log));
   dispatch(getReportingFees());
 };
-
-export const handleCompleteSetsSoldLog = (log: any) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const isStoredTransaction = isSameAddress(
-    log.account,
-    getState().loginAccount.address
-  );
-  if (isStoredTransaction) {
-    dispatch(updateAssets());
-    dispatch(updateLoggedTransactions(log));
-    dispatch(loadUserPositionsAndBalances(log.marketId));
-  }
-};

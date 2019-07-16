@@ -260,6 +260,7 @@ export interface NumberedListProps {
   maxList: number;
   placeholder: string;
   updateList: Function;
+  errorMessage?: string;
 }
 
 export interface NumberedListState {
@@ -338,7 +339,7 @@ export class NumberedList extends Component<
 
   render() {
     const { list, isFull } = this.state;
-    const { placeholder, minShown } = this.props;
+    const { placeholder, minShown, errorMessage } = this.props;
 
     return (
       <ul className={Styles.NumberedList}>
