@@ -4,6 +4,8 @@ import Memory from "pouchdb-adapter-memory";
 import PouchDB from "pouchdb";
 import * as _ from "lodash";
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
+import BigNumber from "bignumber.js";
+import { ORDER_EVENT_AMOUNT_FILLED } from "../logs/types";
 
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
@@ -58,6 +60,10 @@ export abstract class AbstractDB {
       result[prevDoc._id] = prevDoc;
       return result;
     }, {} as DocumentIDToDoc);
+    // console.log("previousDocs");
+    // console.log(previousDocs.amountFilled);
+    // console.log("documents");
+    // console.log(documents);
     return await this.bulkUpsertDocuments(previousDocs, documents);
   }
 
@@ -76,10 +82,14 @@ export abstract class AbstractDB {
       delete doc.constructor;
 
       const previousDoc = previousDocs[doc._id!];
-      return Object.assign(
+      const newDoc = Object.assign(
         previousDoc ? previousDoc : {},
-        doc,
+        doc
       );
+      if (newDoc.hasOwnProperty("amountFilled") && doc.hasOwnProperty("uint256Data")) {
+        newDoc["amountFilled"] = "0x" + new BigNumber(newDoc["amountFilled"]).plus(doc["uint256Data"][6]).toString(16);
+      }
+      return newDoc;
     });
     try {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
