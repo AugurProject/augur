@@ -248,7 +248,9 @@ export default class FormDetails extends React.Component<
           <CategoryMultiSelect
             initialSelected={categories}
             sortedGroup={setCategories}
-            updateSelection={categoryArray => onChange(CATEGORIES, categoryArray)}
+            updateSelection={categoryArray => 
+              onChange(CATEGORIES, categoryArray)
+            }
             errorMessage={validations[currentStep].categories}
           />
         </div>
