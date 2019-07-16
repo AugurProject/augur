@@ -4,8 +4,6 @@ import Memory from "pouchdb-adapter-memory";
 import PouchDB from "pouchdb";
 import * as _ from "lodash";
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
-import BigNumber from "bignumber.js";
-import { OrderEventUint256Value } from "../logs/types";
 
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
@@ -78,11 +76,10 @@ export abstract class AbstractDB {
       delete doc.constructor;
 
       const previousDoc = previousDocs[doc._id!];
-      const newDoc = Object.assign(
+      return Object.assign(
         previousDoc ? previousDoc : {},
         doc
       );
-      return newDoc;
     });
     try {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
