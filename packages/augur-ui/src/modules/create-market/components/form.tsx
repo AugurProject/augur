@@ -22,6 +22,7 @@ import {
   CATEGORIES,
   OUTCOMES,
   SCRATCH, 
+  DENOMINATION
 } from "modules/create-market/constants";
 import { 
   CATEGORICAL,
@@ -179,6 +180,9 @@ export default class Form extends React.Component<
       } 
       if (marketType === CATEGORICAL) {
         fields.push(OUTCOMES);
+      }
+      if (marketType === SCALAR) {
+        fields.push(DENOMINATION);
       }
       fields.map(field => {
           const error = this.evaluate({

@@ -301,6 +301,8 @@ export const EXPIRY_SOURCE = "expirySource";
 
 export const OUTCOMES = "outcomes";
 
+export const DENOMINATION = "scalarDenomination";
+
 export const SETTLEMENT_FEE = "settlementFee";
 
 export const VALIDATION_ATTRIBUTES = {
@@ -343,6 +345,12 @@ export const VALIDATION_ATTRIBUTES = {
 		label: OUTCOMES,
 		readableName: "outcomes",
 		checkOutcomes: true,
+	},
+	[DENOMINATION]: {
+		label: DENOMINATION,
+		readableName: "Unit of measurement",
+		checkFilledString: true,
+		checkFilledStringMessage: "Enter a unit of measurement"
 	},
 	[SETTLEMENT_FEE]: {
         label: SETTLEMENT_FEE, 
