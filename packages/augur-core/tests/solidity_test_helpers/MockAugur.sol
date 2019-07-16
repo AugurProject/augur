@@ -5,7 +5,6 @@ import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
-import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/reporting/IReputationToken.sol';
 import 'ROOT/trading/IShareToken.sol';
 import 'ROOT/trading/Order.sol';
@@ -188,7 +187,7 @@ contract MockAugur {
         return true;
     }
 
-    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, IInitialReporter _initialReporter, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string description) public returns (bool) {
+    function logInitialReportSubmitted(IUniverse _universe, address _reporter, address _market, uint256 _amountStaked, bool _isDesignatedReporter, uint256[] _payoutNumerators, string description) public returns (bool) {
         return true;
     }
 
@@ -200,7 +199,7 @@ contract MockAugur {
         return true;
     }
 
-    function logDisputeCrowdsourcerCompleted(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256 _size, uint256 _nextWindowStartTime, bool _pacingOn) public returns (bool) {
+    function logDisputeCrowdsourcerCompleted(IUniverse _universe, address _market, address _disputeCrowdsourcer, uint256 _nextWindowStartTime, bool _pacingOn) public returns (bool) {
         return true;
     }
 

@@ -1072,10 +1072,10 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
 
     for (let i = 0; i < stakeLogs.length; i++) {
       let reportingParticipantId: Address;
-      if (stakeLogs[i].hasOwnProperty("initialReporter")) {
-        reportingParticipantId = stakeLogs[i].initialReporter;
-      } else {
+      if (stakeLogs[i].hasOwnProperty("disputeCrowdsourcer")) {
         reportingParticipantId = stakeLogs[i].disputeCrowdsourcer;
+      } else {
+        reportingParticipantId = await market.getInitialReporter_();
       }
       const reportingParticipant = augur.contracts.getReportingParticipant(reportingParticipantId);
       const payoutDistributionHash = await reportingParticipant.getPayoutDistributionHash_();
@@ -1098,7 +1098,7 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
           stakeCompleted = bondSizeCurrent;
         } else {
           bondSizeCurrent = new BigNumber(stakeLogs[i].size);
-          stakeCompleted = disputeCrowdsourcerCompletedLogs[0] ? new BigNumber(disputeCrowdsourcerCompletedLogs[0].size) : new BigNumber(0);
+          stakeCompleted = disputeCrowdsourcerCompletedLogs[0] ? new BigNumber(stakeLogs[i].size) : new BigNumber(0);
         }
         stakeDetails[payoutDistributionHash] =
           {
@@ -1114,7 +1114,7 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
       } else {
         // Update existing StakeDetails for Payout Set
         if (disputeCrowdsourcerCompletedLogs[0]) {
-          stakeDetails[payoutDistributionHash].stakeCompleted = new BigNumber(stakeDetails[payoutDistributionHash].stakeCompleted).plus(disputeCrowdsourcerCompletedLogs[0].size);
+          stakeDetails[payoutDistributionHash].stakeCompleted = new BigNumber(stakeDetails[payoutDistributionHash].stakeCompleted).plus(stakeLogs[i].size);
         } else {
           stakeDetails[payoutDistributionHash].bondSizeCurrent = new BigNumber(stakeLogs[i].size);
           stakeDetails[payoutDistributionHash].stakeCurrent = stakeCurrent;
