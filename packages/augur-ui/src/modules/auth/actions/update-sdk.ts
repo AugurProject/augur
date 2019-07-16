@@ -3,7 +3,7 @@ import { LoginAccount } from "modules/types";
 import { augurSdk } from "services/augursdk";
 import { JsonRpcProvider } from "ethers/providers";
 
-export function updateSdk(loginAccount: LoginAccount, injectedProvider: JsonRpcProvider | null) {
+export function updateSdk(loginAccount: LoginAccount, networkId: string, injectedProvider: JsonRpcProvider | null) {
   return async () => {
     const { address, meta }  = loginAccount;
     if (!meta || !address) return;
@@ -24,6 +24,7 @@ export function updateSdk(loginAccount: LoginAccount, injectedProvider: JsonRpcP
         address,
         meta.signer,
         env,
+        networkId,
         meta.isWeb3
       );
     } catch (error) {

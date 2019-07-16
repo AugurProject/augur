@@ -18,6 +18,7 @@ export const loginWithInjectedWeb3 = (callback: NodeStyleCallback = logError) =>
     if (!account) return failure();
 
     const provider = new Web3Provider(window.web3.currentProvider);
+    const networkId = window.web3.currentProvider.networkVersion;
     const isWeb3 = true;
 
     const accountObject = {
@@ -32,7 +33,7 @@ export const loginWithInjectedWeb3 = (callback: NodeStyleCallback = logError) =>
       },
     };
 
-    await dispatch(updateSdk(accountObject, provider));
+    await dispatch(updateSdk(accountObject, networkId, provider));
     dispatch(useUnlockedAccount(account));
     callback(null, account);
   };

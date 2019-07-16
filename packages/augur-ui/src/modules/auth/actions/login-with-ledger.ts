@@ -29,7 +29,7 @@ export default function loginWithLedger(
       },
     };
 
-    await dispatch(updateSdk(loginAccount, null));
+    await dispatch(updateSdk(loginAccount, undefined, null));
     dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(loadAccountData(loginAccount));
   };

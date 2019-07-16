@@ -15,7 +15,6 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
 import networkConfig from 'config/network.json';
 import { isEmpty } from 'utils/is-populated';
-// TODO: do we need network mismatch? maybe for when users connect using MM and have wrong network id selected
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,
@@ -195,8 +194,15 @@ export function connectAugur(
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
         }
-
-        const doIt = () => {
+        const known = await checkIsKnownUniverse(universeId);
+        const sameNetwork = augurSdk.sameNetwork();
+        if ((!sameNetwork && sameNetwork !== undefined) || !known) {
+          dispatch(
+            updateModal({
+              type: MODAL_NETWORK_MISMATCH,
+            })
+          );
+        } else {
           dispatch(updateUniverse({ id: universeId }));
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
             dispatch(closeModal());
@@ -205,16 +211,6 @@ export function connectAugur(
             pollForNetwork(dispatch, getState);
           }
           callback(null);
-        };
-
-        if (process.env.NODE_ENV === 'development') {
-          if ((await checkIsKnownUniverse(universeId)) === false) {
-            dispatch(setSelectedUniverse());
-            location.reload();
-          }
-          doIt();
-        } else {
-          doIt();
         }
 
         // wire up start up events for sdk
