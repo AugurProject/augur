@@ -20,7 +20,6 @@ import {
   handleTokensBurnedLog,
   handleFeeWindowRedeemedLog,
   handleCompleteSetsSoldLog,
-  handleApprovalLog,
   handleNewBlockLog,
   handleTxAwaitingSigning,
   handleTxSuccess,
@@ -89,7 +88,6 @@ const EVENTS = {
   // [SubscriptionEventName.TimestampSet]: wrapLogHandler()),
   // [SubscriptionEventName.FeeWindowRedeemed]: wrapLogHandler(handleFeeWindowRedeemedLog)),
   [SubscriptionEventName.UniverseCreated]: wrapLogHandler(),
-  // [SubscriptionEventName.Approval]: wrapLogHandler(handleApprovalLog))
   [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
   [TXEventName.Success]: wrapLogHandler(handleTxSuccess),
   [TXEventName.Pending]: wrapLogHandler(handleTxPending),

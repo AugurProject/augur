@@ -476,20 +476,3 @@ export const handleCompleteSetsSoldLog = (log: any) => (
     dispatch(loadUserPositionsAndBalances(log.marketId));
   }
 };
-
-export const handleApprovalLog = (log: any) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { address } = getState().loginAccount;
-  const isStoredTransaction = isSameAddress(log.owner, address);
-  if (isStoredTransaction) {
-    dispatch(
-      updateAlert(log.transactionHash, {
-        id: log.transactionHash,
-        status: 'Confirmed',
-        timestamp: selectCurrentTimestampInSeconds(getState()),
-      })
-    );
-  }
-};

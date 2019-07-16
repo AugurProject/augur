@@ -18,6 +18,7 @@ import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { createMarket } from "modules/contracts/actions/contractCalls";
+import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 
 export function submitNewMarket(
   newMarket: any,
@@ -70,6 +71,7 @@ function getHasApproval(hasOrders: Boolean, callback: NodeStyleCallback) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
     if (hasOrders && createBigNumber(loginAccount.allowance).lte(ZERO)) {
+      dispatch(checkAccountAllowance());
       dispatch(
         updateModal({
           type: MODAL_ACCOUNT_APPROVAL,
