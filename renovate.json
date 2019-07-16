@@ -1,11 +1,8 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    "group:allNonMajor"
   ],
-  "automerge": true,
-  "major": {
-    "automerge": false
-  },
   "prHourlyLimit": 1,
   "updateNotScheduled": false,
   "schedule": [
