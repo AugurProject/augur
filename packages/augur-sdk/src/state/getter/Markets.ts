@@ -2,14 +2,16 @@ import { BigNumber } from 'bignumber.js';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import {
-  MarketType,
+  Address,
   MarketCreatedLog,
+  MarketData,
   MarketFinalizedLog,
+  MarketType,
   MarketVolumeChangedLog,
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
-  MarketData
+  PayoutNumerators,
 } from '../logs/types';
 import { SortLimit } from './types';
 import {
@@ -20,6 +22,7 @@ import {
   convertOnChainAmountToDisplayAmount,
 } from '../../index';
 import { toAscii } from '../utils/utils';
+import { convertPayoutNumeratorsToStrings } from '../../utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -64,8 +67,8 @@ export enum MarketInfoReportingState {
 }
 
 export interface MarketInfo {
-  id: string;
-  universe: string;
+  id: Address;
+  universe: Address;
   marketType: string;
   numOutcomes: number;
   minPrice: string;
@@ -95,7 +98,25 @@ export interface MarketInfo {
   marketCreatorFeeRate: string;
   settlementFee: string;
   reportingFeeRate: string;
-  disputeInfo: any;
+  disputeInfo: DisputeInfo;
+}
+
+export interface DisputeInfo {
+  disputePacingOn: boolean;
+  stakeCompletedTotal: string;
+  bondSizeOfNewStake: string;
+  stakes: StakeDetails[];
+}
+
+export interface StakeDetails {
+  payout: PayoutNumerators;
+  isInvalid: boolean;
+  bondSizeCurrent: string;
+  bondSizeTotal: string;
+  stakeCurrent: string;
+  stakeRemaining: string;
+  stakeCompleted: string;
+  tentativeWinning: boolean;
 }
 
 export interface MarketPriceCandlestick {
@@ -512,7 +533,7 @@ export class Markets {
       unsortedOrders: {
         [orderId: string]: Order;
       },
-      isbids: boolean = false
+      isbids = false
     ): OrderBook[] => {
       const sortedBuckets = bucketAndSortOrdersByPrice(unsortedOrders, isbids);
       const result: OrderBook[] = [];
@@ -565,11 +586,10 @@ export class Markets {
       };
     };
 
-    const bucketAndSortOrdersByPrice = (
-      unsortedOrders: {
-        [orderId: string]: Order;
-      },
-      sortDescending: boolean = true
+    const bucketAndSortOrdersByPrice = (unsortedOrders: {
+      [orderId: string]: Order;
+    },
+    sortDescending = true
     ) => {
       if (!unsortedOrders) return [];
       const bucketsByPrice = _.groupBy<Order>(
@@ -760,6 +780,7 @@ export class Markets {
             tickSize,
             minPrice
           ),
+          disputeInfo: await getMarketDisputeInfo(augur, db, marketCreatedLog.market),
         });
       })
     );
@@ -1033,4 +1054,102 @@ function getPeriodStartTime(
     (secondsSinceGlobalStart % period) +
     globalStarttime
   );
+}
+
+async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Promise<DisputeInfo> {
+  const stakeDetails = {};
+
+  const market = augur.getMarket(marketId);
+  const initialReportSubmittedLogs = await db.findInitialReportSubmittedLogs({
+    selector: { market: marketId },
+  });
+  if (initialReportSubmittedLogs.length > 0) {
+    const disputeCrowdsourcerCreatedLogs = await db.findDisputeCrowdsourcerCreatedLogs({
+      selector: { market: marketId },
+    });
+    const stakeLogs: any[] = disputeCrowdsourcerCreatedLogs;
+    if (initialReportSubmittedLogs[0]) stakeLogs.unshift(initialReportSubmittedLogs[0]);
+
+    for (let i = 0; i < stakeLogs.length; i++) {
+      let reportingParticipantId: Address;
+      if (stakeLogs[i].hasOwnProperty("disputeCrowdsourcer")) {
+        reportingParticipantId = stakeLogs[i].disputeCrowdsourcer;
+      } else {
+        reportingParticipantId = await market.getInitialReporter_();
+      }
+      const reportingParticipant = augur.contracts.getReportingParticipant(reportingParticipantId);
+      const payoutDistributionHash = await reportingParticipant.getPayoutDistributionHash_();
+
+      const disputeCrowdsourcerCompletedLogs = await db.findDisputeCrowdsourcerCompletedLogs({
+        selector: { disputeCrowdsourcer: reportingParticipantId },
+      });
+
+      const stakeCurrent = await reportingParticipant.getStake_();
+      const stakeRemaining = stakeLogs[i].hasOwnProperty("size") ? await reportingParticipant.getRemainingToFill_() : new BigNumber(0);
+      const winningReportingParticipantId = await market.getWinningReportingParticipant_();
+      const winningReportingParticipant = augur.contracts.getReportingParticipant(winningReportingParticipantId);
+      if (!stakeDetails[payoutDistributionHash]) {
+        // Create new StakeDetails for Payout Set
+        const payout = await reportingParticipant.getPayoutNumerators_();
+        let bondSizeCurrent: BigNumber;
+        let stakeCompleted: BigNumber;
+        if (stakeLogs[i].hasOwnProperty("amountStaked")) {
+          bondSizeCurrent = new BigNumber(stakeLogs[i].amountStaked);
+          stakeCompleted = bondSizeCurrent;
+        } else {
+          bondSizeCurrent = new BigNumber(stakeLogs[i].size);
+          stakeCompleted = disputeCrowdsourcerCompletedLogs[0] ? new BigNumber(stakeLogs[i].size) : new BigNumber(0);
+        }
+        stakeDetails[payoutDistributionHash] =
+          {
+            payout,
+            isInvalid: payout.length > 0 && payout[0].gt(0) ? true : false,
+            bondSizeCurrent,
+            bondSizeTotal: bondSizeCurrent,
+            stakeCurrent,
+            stakeRemaining,
+            stakeCompleted,
+            tentativeWinning: await winningReportingParticipant.getPayoutDistributionHash_() === payoutDistributionHash ? true : false,
+          };
+      } else {
+        // Update existing StakeDetails for Payout Set
+        if (disputeCrowdsourcerCompletedLogs[0]) {
+          stakeDetails[payoutDistributionHash].stakeCompleted = new BigNumber(stakeDetails[payoutDistributionHash].stakeCompleted).plus(stakeLogs[i].size);
+        } else {
+          stakeDetails[payoutDistributionHash].bondSizeCurrent = new BigNumber(stakeLogs[i].size);
+          stakeDetails[payoutDistributionHash].stakeCurrent = stakeCurrent;
+        }
+        if (new BigNumber(stakeLogs[i].size).gt(stakeDetails[payoutDistributionHash].bondSizeTotal)) {
+          stakeDetails[payoutDistributionHash].bondSizeTotal = stakeDetails[payoutDistributionHash].bondSizeTotal.plus(stakeLogs[i].size);
+        }
+        if (stakeRemaining.gt(0)) {
+          stakeDetails[payoutDistributionHash].stakeRemaining = new BigNumber(stakeRemaining);
+        }
+      }
+    }
+  }
+
+  return {
+    disputePacingOn: await market.getDisputePacingOn_(),
+    stakeCompletedTotal: (await market.getParticipantStake_()).toString(10),
+    bondSizeOfNewStake: (await market.getParticipantStake_()).times(2).toString(10),
+    stakes: formatStakeDetails(Object.values(stakeDetails)),
+  };
+}
+
+function formatStakeDetails(stakeDetails: any[]): StakeDetails[] {
+  const formattedStakeDetails: StakeDetails[] = [];
+  for (let i = 0; i < stakeDetails.length; i++) {
+    formattedStakeDetails[i] = {
+      payout: convertPayoutNumeratorsToStrings(stakeDetails[i].payout),
+      isInvalid: stakeDetails[i].isInvalid,
+      bondSizeCurrent: stakeDetails[i].bondSizeCurrent.toString(10),
+      bondSizeTotal: stakeDetails[i].bondSizeTotal.toString(10),
+      stakeCurrent: stakeDetails[i].stakeCurrent.toString(10),
+      stakeRemaining: stakeDetails[i].stakeRemaining.toString(10),
+      stakeCompleted: stakeDetails[i].stakeCompleted.toString(10),
+      tentativeWinning: stakeDetails[i].tentativeWinning,
+    };
+  }
+  return formattedStakeDetails;
 }

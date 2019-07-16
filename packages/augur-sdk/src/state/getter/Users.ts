@@ -265,7 +265,7 @@ export class Users {
 
     const universe = params.universe
       ? params.universe
-      : await (await augur.getMarket(params.marketId)).getUniverse_();
+      : await (augur.getMarket(params.marketId)).getUniverse_();
     const profitLossSummary = await Users.getProfitLossSummary(augur, db, {
       universe,
       account: params.account,

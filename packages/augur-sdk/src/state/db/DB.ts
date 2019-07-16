@@ -12,6 +12,7 @@ import {
   CompleteSetsSoldLog,
   DisputeCrowdsourcerCompletedLog,
   DisputeCrowdsourcerContributionLog,
+  DisputeCrowdsourcerCreatedLog,
   DisputeCrowdsourcerRedeemedLog,
   DisputeWindowCreatedLog,
   InitialReporterRedeemedLog,
@@ -402,7 +403,7 @@ export class DB {
    * Queries the DisputeCrowdsourcerCompleted DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
-   * @returns {Promise<Array<InitialReportSubmittedLog>>}
+   * @returns {Promise<Array<DisputeCrowdsourcerCompletedLog>>}
    */
   public async findDisputeCrowdsourcerCompletedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerCompletedLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerCompleted"), request);
@@ -418,6 +419,17 @@ export class DB {
   public async findDisputeCrowdsourcerContributionLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerContributionLog>> {
     const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerContribution"), request);
     return results.docs as unknown as Array<DisputeCrowdsourcerContributionLog>;
+  }
+
+  /**
+   * Queries the DisputeCrowdsourcerCreated DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<DisputeCrowdsourcerCreatedLog>>}
+   */
+  public async findDisputeCrowdsourcerCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<Array<DisputeCrowdsourcerCreatedLog>> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("DisputeCrowdsourcerCreated"), request);
+    return results.docs as unknown as Array<DisputeCrowdsourcerCreatedLog>;
   }
 
   /**
