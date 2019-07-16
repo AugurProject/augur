@@ -452,7 +452,7 @@ class Form extends Component<FromProps, FormState> {
                 order[this.INPUT_TYPES.QUANTITY] &&
                 order[this.INPUT_TYPES.PRICE] &&
                 order[this.INPUT_TYPES.QUANTITY] !== '0' &&
-                ((this.state.lastInputModified === this.INPUT_TYPES.QUANTITY &&
+                (((!this.state.lastInputModified || this.state.lastInputModified === this.INPUT_TYPES.QUANTITY) &&
                   property === this.INPUT_TYPES.PRICE) ||
                   property === this.INPUT_TYPES.QUANTITY)
               ) {
