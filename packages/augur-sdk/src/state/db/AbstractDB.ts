@@ -82,9 +82,6 @@ export abstract class AbstractDB {
         previousDoc ? previousDoc : {},
         doc
       );
-      if (newDoc.hasOwnProperty("amountFilled") && doc.hasOwnProperty("uint256Data")) {
-        newDoc["amountFilled"] = "0x" + new BigNumber(newDoc["amountFilled"]).plus(doc["uint256Data"][OrderEventUint256Value.amountFilled]).toString(16);
-      }
       return newDoc;
     });
     try {

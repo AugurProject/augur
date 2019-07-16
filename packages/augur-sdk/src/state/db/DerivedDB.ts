@@ -86,6 +86,27 @@ export class DerivedDB extends AbstractDB {
     let documents;
     if (logs.length > 0) {
       documents = _.map(logs, this.processLog.bind(this));
+      for (let i = 0; i < documents.length; i++) {
+        if (documents[i].addressData) {
+          documents[i].kycToken = documents[i].addressData[0];
+          documents[i].orderCreator = documents[i].addressData[1];
+          documents[i].orderFiller = documents[i].addressData[2];
+          delete documents[i].addressData;
+        }
+        if (documents[i].uint256Data) {
+          documents[i].price = documents[i].uint256Data[0];
+          documents[i].amount = documents[i].uint256Data[1];
+          documents[i].outcome = documents[i].uint256Data[2];
+          documents[i].tokenRefund = documents[i].uint256Data[3];
+          documents[i].sharesRefund = documents[i].uint256Data[4];
+          documents[i].fees = documents[i].uint256Data[5];
+          documents[i].amountFilled = documents[i].uint256Data[6];
+          documents[i].timestamp = documents[i].uint256Data[7];
+          documents[i].sharesEscrowed = documents[i].uint256Data[8];
+          documents[i].tokensEscrowed = documents[i].uint256Data[9];
+          delete documents[i].uint256Data;
+        }
+      }
       documents = _.values(_.mapValues(_.groupBy(documents, "_id"), (idDocuments) => {
         return _.reduce(idDocuments, (val, doc) => {
         if (val.blockNumber < doc.blockNumber) {
