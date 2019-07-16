@@ -148,9 +148,7 @@ interface ErrorProps {
 
 export const Error = (props: ErrorProps) => (
   <section className={Styles.ErrorLabel}>
-    <div>
-      {ExclamationCircle}
-    </div>
+    {ExclamationCircle}
     <div>
       <span>
         {props.header}

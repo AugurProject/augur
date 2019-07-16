@@ -1369,31 +1369,28 @@ div.FormDropdownActive {
   padding: @size-12;
   padding-left: @size-8;
 
-  > div:first-of-type {
+  > svg {
     margin-right: @size-6;
+    width: @size-12;
+    height: @size-12;
+    background: @color-error-fade;
 
-    > svg {
-      width: @size-12;
-      height: @size-12;
-      background: @color-error-fade;
+    > circle {
+      fill: @color-error-fade;
+      opacity: 1;
+      stroke: @color-error-text;
+    }
 
-      > circle {
-        fill: @color-error-fade;
-        opacity: 1;
-        stroke: @color-error-text;
-      }
+    > rect {
+      fill: @color-error-text;
+    }
 
-      > rect {
-        fill: @color-error-text;
-      }
-
-      > path {
-        fill: @color-error-text;
-      }
+    > path {
+      fill: @color-error-text;
     }
   }
 
-  > div:last-of-type {
+  > div {
     display: flex;
     flex-direction: column;
 

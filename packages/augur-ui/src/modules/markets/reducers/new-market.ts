@@ -21,7 +21,7 @@ export const DEFAULT_STATE: NewMarket = {
   validations: [
     {
       description: null,
-      categories: [null, null, null],
+      categories: ["", "", ""],
       designatedReporterAddress: null,
       expirySourceType: null,
       endTime: null,
