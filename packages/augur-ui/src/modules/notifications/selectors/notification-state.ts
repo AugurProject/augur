@@ -20,7 +20,6 @@ import {
   RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
   REPORTING_ENDS_SOON_TITLE,
   FINALIZE_MARKET_TITLE,
-  SELL_COMPLETE_SETS_TITLE,
   CLAIM_REPORTING_FEES_TITLE,
   UNSIGNED_ORDERS_TITLE,
   PROCEEDS_TO_CLAIM_TITLE,
@@ -80,22 +79,6 @@ export const selectFinalizeMarkets = createSelector(
         .filter(
           market => positionsMarkets.indexOf(market.id) > -1 || address === market.author
         )
-        .map(getRequiredMarketData);
-    }
-    return [];
-  }
-);
-
-// Get all the users markets where the user has COMPLETE SETS of SHARES
-// TODO: remove all complete sets logic in UI, github tix already created
-export const selectCompleteSetPositions = createSelector(
-  selectMarkets,
-  markets => {
-    if (markets.length > 0) {
-      return markets
-        .filter(market => {
-          return false
-        })
         .map(getRequiredMarketData);
     }
     return [];
@@ -224,7 +207,6 @@ export const selectNotifications = createSelector(
   selectReportOnMarkets,
   selectResolvedMarketsOpenOrders,
   selectFinalizeMarkets,
-  selectCompleteSetPositions,
   selectMarketsInDispute,
   selectUsersReportingFees,
   selectUnsignedOrders,
@@ -235,7 +217,6 @@ export const selectNotifications = createSelector(
     reportOnMarkets,
     resolvedMarketsOpenOrder,
     finalizeMarkets,
-    completeSetPositions,
     marketsInDispute,
     claimReportingFees,
     unsignedOrders,
@@ -256,10 +237,6 @@ export const selectNotifications = createSelector(
       finalizeMarkets,
       NOTIFICATION_TYPES.finalizeMarkets
     );
-    const completeSetPositionsNotifications = generateCards(
-      completeSetPositions,
-      NOTIFICATION_TYPES.completeSetPositions
-    );
     const marketsInDisputeNotifications = generateCards(
       marketsInDispute,
       NOTIFICATION_TYPES.marketsInDispute
@@ -278,7 +255,6 @@ export const selectNotifications = createSelector(
       ...reportOnMarketsNotifications,
       ...resolvedMarketsOpenOrderNotifications,
       ...finalizeMarketsNotifications,
-      ...completeSetPositionsNotifications,
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
       ...proceedsToClaimOnHoldNotifications,
@@ -391,14 +367,6 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: TYPE_DISPUTE,
       buttonLabel: TYPE_DISPUTE
-    };
-  } else if (type === NOTIFICATION_TYPES.completeSetPositions) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: SELL_COMPLETE_SETS_TITLE,
-      buttonLabel: TYPE_VIEW_SETS
     };
   } else if (type === NOTIFICATION_TYPES.unsignedOrders) {
     defaults = {

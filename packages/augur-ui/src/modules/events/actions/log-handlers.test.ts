@@ -4,7 +4,6 @@ import configureMockStore from "redux-mock-store";
 import {
   handleTradingProceedsClaimedLog,
   handleTokensMintedLog,
-  handleCompleteSetsSoldLog
 } from "modules/events/actions/log-handlers";
 
 import * as isCurrentMarketModule from "modules/trades/helpers/is-current-market";
@@ -86,62 +85,6 @@ describe("modules/events/actions/log-handlers.js", () => {
       loadMarketOpenOrdersSpy.mockReset();
       loadMarketAccountPositions.mockReset();
       updateAssetsSpy.mockReset();
-    });
-
-    test("Fired off update and load account trades if the sell complete set log includes the account address.", () => {
-      isCurrentMarketSpy = jest
-        .spyOn(isCurrentMarketModule, "isCurrentMarket")
-        .mockImplementation(() => false);
-      const state = {
-        loginAccount: {
-          address: "0xb0b"
-        }
-      };
-      store = configureMockStore([thunk])({
-        ...state
-      });
-      const log = {
-        marketId: "0xdeadbeef",
-        account: "0xb0b"
-      };
-      store.dispatch(handleCompleteSetsSoldLog(log));
-      expect(store.getActions()).toEqual([
-        {
-          type: ACTIONS.UPDATE_ASSETS
-        },
-        {
-          type: ACTIONS.UPDATE_LOGGED_TRANSACTIONS,
-          data: {
-            log
-          }
-        },
-        {
-          type: ACTIONS.LOAD_ACCOUNT_POSITIONS
-        },
-        {
-          type: ACTIONS.GET_WINNING_BALANCE,
-          data: { marketIds: ["0xdeadbeef"] }
-        }
-      ]);
-    });
-
-    test("Didn't fire off update and load account trades if the sell complete set log doesn't include the account address.", () => {
-      isCurrentMarketSpy = jest
-        .spyOn(isCurrentMarketModule, "isCurrentMarket")
-        .mockImplementation(() => false);
-      store = configureMockStore([thunk])({
-        ...{
-          loginAccount: {
-            address: "0xb0b"
-          }
-        }
-      });
-      const log = {
-        marketId: "0xdeadbeef",
-        account: "0xa11ce"
-      };
-      store.dispatch(handleCompleteSetsSoldLog(log));
-      expect(store.getActions()).toHaveLength(0);
     });
 
     test("Processed token mint log", () => {

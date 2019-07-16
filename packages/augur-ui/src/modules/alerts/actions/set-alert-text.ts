@@ -19,8 +19,6 @@ import {
   WITHDRAWETHERTOIFPOSSIBLE,
   CALCULATEREPORTINGFEE,
   CLAIMTRADINGPROCEEDS,
-  PUBLICBUYCOMPLETESETS,
-  PUBLICBUYCOMPLETESETSWITHCASH,
   PUBLICCREATEORDER,
   BUYPARTICIPATIONTOKENS,
   PUBLICFILLBESTORDER,
@@ -146,11 +144,6 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = "Claim trading proceeds";
         break;
 
-      // CompleteSets
-      case PUBLICBUYCOMPLETESETS:
-      case PUBLICBUYCOMPLETESETSWITHCASH:
-        alert.title = "Buy complete set(s)";
-        break;
       // CreateOrder
       case PUBLICCREATEORDER: {
         alert.title = "Create order";

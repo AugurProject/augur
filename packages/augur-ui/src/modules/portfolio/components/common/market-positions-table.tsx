@@ -4,14 +4,12 @@ import PositionsHeader from "modules/portfolio/components/common/positions-heade
 import PositionRow from "modules/portfolio/containers/position-row";
 import { PositionData } from "modules/types";
 import classNames from "classnames";
-import CompleteSets from "modules/market/components/complete-sets/complete-sets";
 
 import SharedStyles from "modules/market/components/market-orders-positions-table/open-orders-table.style.less";
 import Styles from "modules/portfolio/components/common/market-positions-table.styles.less";
 
 export interface MarketPositionsTableProps {
   positions: Array<PositionData>;
-  numCompleteSets: any;
   extendedView: boolean;
   marketId: string;
 }

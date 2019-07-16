@@ -48,10 +48,6 @@ interface DisputeTemplateProps extends BaseProps {
   market: MarketData;
 }
 
-interface SellCompleteSetTemplateProps extends BaseProps {
-  market: MarketData;
-}
-
 interface ClaimReportingFeesTemplateTemplateProps extends BaseProps {
   market: MarketData;
   claimReportingFees: any;
@@ -222,13 +218,6 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
       {...props}
     />
   );
-};
-
-// TODO: remvoe all complete sets stuff
-export const SellCompleteSetTemplate = (props: SellCompleteSetTemplateProps) => {
-
-  return null;
-
 };
 
 export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {
