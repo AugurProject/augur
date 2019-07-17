@@ -6,7 +6,6 @@ import moment from "moment";
 import { 
   RadioCardGroup, 
   FormDropdown, 
-  Error, 
   TextInput, 
   DatePicker, 
   TimeSelector, 
@@ -95,8 +94,6 @@ export default class FormDetails extends React.Component<
       validations,
       currentStep
     } = newMarket;
-
-    const noErrors = Object.values(validations[currentStep]).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
 
     return (
       <div className={Styles.FormDetails}>
@@ -329,7 +326,6 @@ export default class FormDetails extends React.Component<
             }
           />
         </div>
-        {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
       </div>
     );
   }

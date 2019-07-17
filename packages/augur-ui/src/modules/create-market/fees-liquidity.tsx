@@ -104,7 +104,8 @@ export default class FeesLiquidity extends React.Component<
     const {
       updatePage,
       newMarket,
-      evaluate
+      evaluate,
+      onChange
     } = this.props;
     const s = this.state;
 
@@ -129,8 +130,8 @@ export default class FeesLiquidity extends React.Component<
           />
           <TextInput
             type="number"
-            onChange={(value: string) => onChange("settlementFee", value)}
             value={settlementFee}
+            placeholder="0"
             innerLabel="%"
             errorMessage={validations[currentStep].settlementFee}
             onChange={(value: string) => 
@@ -152,10 +153,12 @@ export default class FeesLiquidity extends React.Component<
           />
           <TextInput
             type="number"
+            placeholder="0"
             onChange={(value: string) => onChange("affiliateFee", value)}
             value={affiliateFee}
             innerLabel="%"
             trailingLabel="of market creator fees"
+            errorMessage={validations[currentStep].affiliateFee}
           />
         </div>
 

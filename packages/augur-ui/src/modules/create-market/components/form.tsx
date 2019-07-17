@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { LocationDisplay } from "modules/common/form";
+import { LocationDisplay, Error } from "modules/common/form";
 import { 
   BACK, 
   NEXT, 
@@ -26,7 +26,8 @@ import {
   MIN_PRICE, 
   MAX_PRICE,
   TICK_SIZE,
-  AFFILIATE_FEE
+  AFFILIATE_FEE,
+  SETTLEMENT_FEE
 } from "modules/create-market/constants";
 import { 
   CATEGORICAL,
@@ -406,6 +407,12 @@ export default class Form extends React.Component<
     } = this.props;
     const s = this.state;
 
+    const {
+      currentStep,
+      validations,
+      uniqueId
+    } = newMarket;
+
     const { 
       mainContent, 
       explainerBlockTitle, 
@@ -414,10 +421,13 @@ export default class Form extends React.Component<
       explainerBlockSubtexts, 
       largeHeader,
       noDarkBackground
-    } = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
+    } = CUSTOM_CONTENT_PAGES[currentStep];
 
-    const savedDraft = drafts[newMarket.uniqueId];
+    const savedDraft = drafts[uniqueId];
     const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+
+    const noErrors = Object.values(validations[currentStep]).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
+
     return (
       <div 
         ref={node => {
@@ -425,7 +435,7 @@ export default class Form extends React.Component<
         }}
         className={Styles.Form}
       >
-        <LocationDisplay currentStep={newMarket.currentStep} pages={CUSTOM_CONTENT_PAGES} />
+        <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
         <LargeHeader text={largeHeader} />
         {explainerBlockTitle && explainerBlockSubtexts && 
           <ExplainerBlock
@@ -437,6 +447,7 @@ export default class Form extends React.Component<
           {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
           {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
           {mainContent === REVIEW && <Review />}
+          {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
           <div>
             {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
             <div>
