@@ -20,7 +20,7 @@ import { formatGasCostToEther, formatShares } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { FormattedNumber, Trade } from 'modules/types';
-import { MarketInfoOutcome } from '@augurproject/sdk/src/state/getter/Markets';
+import { Getters } from "@augurproject/sdk";
 
 interface Message {
   header: string;
@@ -35,7 +35,7 @@ interface ConfirmProps {
   gasLimit: number;
   availableFunds: BigNumber;
   availableDai: BigNumber;
-  selectedOutcome: MarketInfoOutcome;
+  selectedOutcome: Getters.Markets.MarketInfoOutcome;
   marketType: string;
   maxPrice: BigNumber;
   minPrice: BigNumber;

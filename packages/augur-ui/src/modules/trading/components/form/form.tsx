@@ -15,7 +15,7 @@ import { Checkbox } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
-import { MarketInfoOutcome } from '@augurproject/sdk/src/state/getter/Markets';
+import { Getters } from "@augurproject/sdk";
 
 interface FromProps {
   market: MarketData;
@@ -28,7 +28,7 @@ interface FromProps {
   orderEscrowdEth: string;
   gasCostEst: string;
   selectedNav: string;
-  selectedOutcome: MarketInfoOutcome;
+  selectedOutcome: Getters.Markets.MarketInfoOutcome;
   updateState: Function;
   sortedOutcomes: OutcomeFormatted[];
   updateOrderProperty: Function;

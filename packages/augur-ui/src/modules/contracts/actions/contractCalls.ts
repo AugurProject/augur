@@ -10,12 +10,11 @@ import { formatAttoRep, formatAttoEth } from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
   SimulateTradeData,
-} from '@augurproject/sdk/src/api/Trade';
-import {
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
-} from '@augurproject/sdk/src/api/Market';
+} from '@augurproject/sdk';
+
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
 import { createBigNumber } from 'utils/create-big-number';
 import {

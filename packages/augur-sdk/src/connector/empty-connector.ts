@@ -1,8 +1,8 @@
 import { Callback, SubscriptionType } from "../events";
-import { Connector } from "./connector";
+import { BaseConnector } from "./baseConnector";
 import { SubscriptionEventName } from "../constants";
 
-export class EmptyConnector extends Connector {
+export class EmptyConnector extends BaseConnector {
   public async connect(ethNodeUrl: string, account?: string): Promise<any> {
     return;
   }

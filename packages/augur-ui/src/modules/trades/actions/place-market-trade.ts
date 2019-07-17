@@ -8,7 +8,7 @@ import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { placeTrade } from "modules/contracts/actions/contractCalls";
-import { MarketInfo } from "@augurproject/sdk/src/state/getter/Markets";
+import { Getters } from "@augurproject/sdk";
 
 export const placeMarketTrade = ({
   marketId,
@@ -20,7 +20,7 @@ export const placeMarketTrade = ({
 }: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
   const { marketInfos } = getState();
-  const market: MarketInfo = marketInfos[marketId];
+  const market: Getters.Markets.MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
       `required parameters not found for market ${marketId} outcome ${outcomeId}`,

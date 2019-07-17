@@ -7,8 +7,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';
 import { simulateTrade, simulateTradeGasLimit } from 'modules/contracts/actions/contractCalls';
-import { SimulateTradeData } from '@augurproject/sdk/src/api/Trade';
-import { MarketInfo } from '@augurproject/sdk/src/state/getter/Markets';
+import { SimulateTradeData } from '@augurproject/sdk';
+import { Getters } from '@augurproject/sdk';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
@@ -133,7 +133,7 @@ export function updateTradeShares({
 
 async function runSimulateTrade(
   newTradeDetails: any,
-  market: MarketInfo,
+  market: Getters.Markets.MarketInfo,
   marketId: string,
   outcomeId: number,
   accountPositions: any,

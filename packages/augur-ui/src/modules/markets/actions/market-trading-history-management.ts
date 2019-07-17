@@ -6,18 +6,15 @@ import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
-import {
-  MarketTradingHistory,
-  Orders,
-} from '@augurproject/sdk/src/state/getter/Trading';
 import { FILLED, REPORTING_STATE } from 'modules/common/constants';
+import { Getters } from "@augurproject/sdk";
 
 export const UPDATE_USER_FILLED_ORDERS = 'UPDATE_USER_FILLED_ORDERS';
 export const UPDATE_USER_OPEN_ORDERS = 'UPDATE_USER_OPEN_ORDERS';
 export const BULK_MARKET_TRADING_HISTORY = 'BULK_MARKET_TRADING_HISTORY';
 
 export function bulkMarketTradingHistory(
-  keyedMarketTradingHistory: MarketTradingHistory
+  keyedMarketTradingHistory: Getters.Markets.MarketTradingHistory
 ) {
   return {
     type: BULK_MARKET_TRADING_HISTORY,
@@ -29,7 +26,7 @@ export function bulkMarketTradingHistory(
 
 export function updateUserFilledOrders(
   account: string,
-  userFilledOrders: Orders
+  userFilledOrders: Getters.Markets.Orders
 ) {
   return {
     type: UPDATE_USER_FILLED_ORDERS,
@@ -41,7 +38,7 @@ export function updateUserFilledOrders(
 }
 
 export function updateUserOpenOrders(
-  openOrders: Orders
+  openOrders: Getters.Markets.Orders
 ) {
   return {
     type: UPDATE_USER_OPEN_ORDERS,

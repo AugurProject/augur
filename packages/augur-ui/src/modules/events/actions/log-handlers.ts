@@ -39,10 +39,9 @@ import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
 import {
-  OrderEventType,
-  ParsedOrderEventLog,
-} from '@augurproject/sdk/src/state/logs/types';
-import { TXStatus } from '@augurproject/sdk/src/events';
+  Logs
+} from '@augurproject/sdk';
+import { Events } from '@augurproject/sdk';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
@@ -80,7 +79,7 @@ const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch(getWinningBalance([marketId]));
 };
 
-export const handleTxAwaitingSigning = (txStatus: TXStatus) => (
+export const handleTxAwaitingSigning = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -88,7 +87,7 @@ export const handleTxAwaitingSigning = (txStatus: TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleTxSuccess = (txStatus: TXStatus) => (
+export const handleTxSuccess = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -96,7 +95,7 @@ export const handleTxSuccess = (txStatus: TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleTxPending = (txStatus: TXStatus) => (
+export const handleTxPending = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -104,7 +103,7 @@ export const handleTxPending = (txStatus: TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleTxFailure = (txStatus: TXStatus) => (
+export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -229,13 +228,13 @@ export const handleTokensBurnedLog = (log: any) => (
 export const handleOrderLog = (log: any) => {
   const type = log.eventType;
   switch (type) {
-    case OrderEventType.Cancel: {
+    case Logs.OrderEventType.Cancel: {
       return handleOrderCanceledLog(log);
     }
-    case OrderEventType.Create: {
+    case Logs.OrderEventType.Create: {
       return handleOrderCreatedLog(log);
     }
-    case OrderEventType.PriceChanged: {
+    case Logs.OrderEventType.PriceChanged: {
       // TODO: figure out what needs to change for price change
       return console.log('order price changed need to add UI functionality');
     }
@@ -244,7 +243,7 @@ export const handleOrderLog = (log: any) => {
   }
 };
 
-export const handleOrderCreatedLog = (log: ParsedOrderEventLog) => (
+export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -264,7 +263,7 @@ export const handleOrderCreatedLog = (log: ParsedOrderEventLog) => (
   if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
-export const handleOrderCanceledLog = (log: ParsedOrderEventLog) => (
+export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -283,7 +282,7 @@ export const handleOrderCanceledLog = (log: ParsedOrderEventLog) => (
   if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
-export const handleOrderFilledLog = (log: ParsedOrderEventLog) => (
+export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {

@@ -1,5 +1,5 @@
 import { addCanceledOrder, removeCanceledOrder } from 'modules/orders/actions/update-order-status';
-import { TXStatus } from '@augurproject/sdk/src/event-handlers';
+import { Events } from '@augurproject/sdk';
 import { PUBLICTRADE, CANCELORDER, TX_ORDER_ID, TX_MARKET_ID, TX_TRADE_GROUP_ID } from 'modules/common/constants';
 import { UIOrder } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -7,10 +7,9 @@ import { addPendingOrder, updatePendingOrderStatus, removePendingOrder } from 'm
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
-import { MarketInfo } from '@augurproject/sdk/src/state/getter/Markets';
-import { TXEventName } from '@augurproject/sdk/src/constants';
+import { Getters, TXEventName } from '@augurproject/sdk';
 
-export const addUpdateTransaction = (txStatus: TXStatus) => (
+export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -46,7 +45,7 @@ export const addUpdateTransaction = (txStatus: TXStatus) => (
   }
 };
 
-function addOrder(tx: TXStatus, market: MarketInfo, dispatch) {
+function addOrder(tx: Events.TXStatus, market: Getters.MarketInfo, dispatch) {
   if (!market) return console.log(`Could not find ${market.id} to process transaction`)
   const order: UIOrder = convertTransactionOrderToUIOrder(tx.transaction.params, tx.eventName, market);
   if (!order) return console.log(`Could not process order to add pending order for market ${market.id}`);
