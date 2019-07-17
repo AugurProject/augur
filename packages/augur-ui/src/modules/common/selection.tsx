@@ -12,7 +12,7 @@ export interface DropdownProps {
   id?: string;
   onChange: any;
   className?: string;
-  defaultValue?: string | number;
+  defaultValue?: string | number | object;
   options: Array<NameValuePair>;
   large?: boolean;
   staticLabel?: string;
@@ -172,11 +172,21 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
 export const SquareDropdown = (props: DropdownProps) => <Dropdown {...props} />;
 
 export class StaticLabelDropdown extends Dropdown {
+  componentDidMount() {
+    if (this.props.defaultValue) {
+      this.setState({
+        selected: this.props.options.find(o => o.value === this.props.defaultValue)
+      });
+    }
+  }
 
   render() {
-    const { sortByStyles, options, large, staticLabel, highlight } = this.props;
+    const { sortByStyles, options, large, staticLabel, highlight, defaultValue } = this.props;
     const { selected, showList } = this.state;
 
+    if (!selected) {
+      return null;
+    }
     return (
       <div
         style={sortByStyles}
@@ -184,7 +194,7 @@ export class StaticLabelDropdown extends Dropdown {
           [Styles.Dropdown_Large]: large,
           [Styles.Dropdown_Normal]: !large,
           [Styles.Dropdown_isOpen]: showList,
-          [Styles.Dropdown_highlight]: highlight
+          [Styles.Dropdown_highlight]: highlight,
         })}
         ref={dropdown => {
           this.refDropdown = dropdown;
