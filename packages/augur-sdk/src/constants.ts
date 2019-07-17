@@ -118,9 +118,23 @@ export const WORST_CASE_FILL = {
   8: new BigNumber("2365994", 10),
 };
 
+export const CLAIM_GAS_COST = new BigNumber(667419);
+
 export const ORDER_TYPES = {
   BID: new BigNumber(0),
   ASK: new BigNumber(1)
 };
 
 export const MALFORMED_OUTCOME = "malformed outcome";
+
+export const INVALID_OUTCOME = 0;
+
+export const MAX_TRADE_GAS_PERCENTAGE_DIVISOR = 100; // gas cost must be less than 1% of trade's value
+
+export const DEFAULT_GAS_PRICE_IN_GWEI = 4;
+
+export const EULERS_NUMBER = 2.71828182845905;
+
+export const MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI = new BigNumber(10).multipliedBy(10**18); // $10 minimum profit on selling Invalid for the filter to trigger
+
+export const SECONDS_IN_YEAR = new BigNumber(60).multipliedBy(60).multipliedBy(24).multipliedBy(365);
