@@ -1,4 +1,6 @@
 import { BigNumber } from 'bignumber.js';
+import { MALFORMED_OUTCOME } from '@augurproject/sdk/src/constants';
+import { MarketTypeName } from '@augurproject/sdk/src/state/logs/types';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
@@ -82,9 +84,12 @@ export function compareObjects(key: string, order: string) {
   };
 }
 
-import { MALFORMED_OUTCOME } from '@augurproject/sdk/src/constants';
-import { MarketTypeName } from '@augurproject/sdk/src/state/logs/types';
-// import logError from "utils/log-error";
+export function logError(err: Error | string | object | null, result?: any): void {
+  if (err != null) {
+    console.error(err);
+    if (result != null) console.log(result);
+  }
+}
 
 export const createBigNumber = (value, ...args): BigNumber => {
   let newBigNumber;
@@ -95,14 +100,11 @@ export const createBigNumber = (value, ...args): BigNumber => {
     }
     newBigNumber = new BigNumber(`${useValue}`, ...args);
   } catch (e) {
-    // logError("Error instantiating WrappedBigNumber", e);
+    logError("Error instantiating WrappedBigNumber", e);
   }
 
   return newBigNumber;
 };
-
-// Note this is exported from here.
-// export { default as BigNumber } from 'bignumber.js';
 
 export function calculatePayoutNumeratorsValue(
   maxPrice: string,
@@ -111,7 +113,6 @@ export function calculatePayoutNumeratorsValue(
   marketType: string,
   payout: string[]
 ): string | null {
-  // const { maxPrice, minPrice, numTicks, marketType } = market;
   const isScalar = marketType === MarketTypeName.Scalar;
 
   if (!payout) return null;
