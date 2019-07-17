@@ -149,6 +149,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                 className={classNames({
                   [Styles.Ask]: type === ASKS,
                   [Styles.Bid]: type === BIDS,
+                  [Styles.NoSize]: order.mySize === '0',
                 })}
               >
                 {order.mySize !== '0'
