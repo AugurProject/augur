@@ -1706,7 +1706,7 @@ describe('State API :: Markets :: ', () => {
           bondSizeOfNewStake: '1100000000000000001048576',
           stakes: [
             {
-              payout: [ '0', '100', '0' ],
+              outcome: '1',
               isInvalid: false,
               bondSizeCurrent: '349680582682291667',
               bondSizeTotal: '366666666666666667016192',
@@ -1715,7 +1715,7 @@ describe('State API :: Markets :: ', () => {
               stakeCompleted: '366666666666666667016192',
               tentativeWinning: true },
             {
-              payout: [ '0', '0', '100' ],
+              outcome: '2',
               isInvalid: false,
               bondSizeCurrent: '699361165364583334',
               bondSizeTotal: '183333333333333333508096',
@@ -1785,7 +1785,7 @@ describe('State API :: Markets :: ', () => {
           bondSizeOfNewStake: '699361165364583334',
           stakes: [
             {
-              payout: [ '100', '0', '0', '0' ],
+              outcome: '0',
               isInvalid: true,
               bondSizeCurrent: '349680582682291667',
               bondSizeTotal: '349680582682291667',

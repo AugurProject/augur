@@ -11,8 +11,7 @@ import {
   MarketVolumeChangedLog,
   OrderEventType,
   OrderType,
-  ParsedOrderEventLog,
-  // PayoutNumerators,
+  ParsedOrderEventLog
 } from '../logs/types';
 import { SortLimit } from './types';
 import {
@@ -23,7 +22,7 @@ import {
   convertOnChainAmountToDisplayAmount,
 } from '../../index';
 import { toAscii } from '../utils/utils';
-import { /*convertPayoutNumeratorsToStrings,*/ calculatePayoutNumeratorsValue } from '../../utils';
+import { calculatePayoutNumeratorsValue } from '../../utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -110,7 +109,6 @@ export interface DisputeInfo {
 }
 
 export interface StakeDetails {
-  // payout: PayoutNumerators;
   outcome: string;
   isInvalid: boolean;
   bondSizeCurrent: string;
@@ -1142,7 +1140,7 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
 async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]): Promise<StakeDetails[]> {
   const formattedStakeDetails: StakeDetails[] = [];
   const marketCreatedLogs = await db.findMarketCreatedLogs({
-    selector: { market: { marketId } },
+    selector: { market: { $eq: marketId } },
   });
 
   const maxPrice = new BigNumber(marketCreatedLogs[0].prices[1]).toString();
@@ -1159,7 +1157,6 @@ async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]
 
   for (let i = 0; i < stakeDetails.length; i++) {
     formattedStakeDetails[i] = {
-      // payout: convertPayoutNumeratorsToStrings(stakeDetails[i].payout),
       outcome: calculatePayoutNumeratorsValue(
         maxPrice,
         minPrice,
