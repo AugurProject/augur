@@ -3,7 +3,7 @@ import {
 } from "modules/create-market/constants";
 
 export function isFilledString(value, readable, message) {
-  if (value.trim().length > 0 && value !== "") return "";
+  if (value && value.trim().length > 0 && value !== "") return "";
   return message ? message : readable + " is required";
 }
 
@@ -12,7 +12,7 @@ export function isMaxLength(value, maxLength) {
 }
 
 export function isFilledNumber(value, readable, message) {
-  if (value && value !== "") return "";
+  if (value !== null && value !== "") return "";
   return message ? message : readable + " is required";
 }
 
@@ -21,6 +21,20 @@ export function isBetween(value, readable, min, max) {
     return readable + " must be less than " + max;
   } else if (value < min) {
     return readable + " must be more than " + min;
+  }
+  return "";
+}
+
+export function isLessThan(value, readable, target) {
+  if (target !== null && value >= target) {
+    return 'Min can\'t be higher than max';
+  }
+  return "";
+}
+
+export function isMoreThan(value, readable, target) {
+  if (target !== null && value <= target) {
+    return 'Max can\'t be lower than min';
   }
   return "";
 }
@@ -69,4 +83,9 @@ export function checkOutcomesArray(value) {
     if (errors.filter(error => error !== "").length > 1) return errors;
     return "";
   }
+}
+
+export function isPositive(value) {
+  if (value && value < 0) return "Can't enter negative number";
+  return "";
 }

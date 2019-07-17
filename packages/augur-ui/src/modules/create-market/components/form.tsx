@@ -22,7 +22,11 @@ import {
   CATEGORIES,
   OUTCOMES,
   SCRATCH, 
-  DENOMINATION
+  DENOMINATION,
+  MIN_PRICE, 
+  MAX_PRICE,
+  TICK_SIZE,
+  AFFILIATE_FEE
 } from "modules/create-market/constants";
 import { 
   CATEGORICAL,
@@ -50,7 +54,10 @@ import {
   isFilledNumber, 
   isFilledString, 
   checkCategoriesArray,
-  checkOutcomesArray
+  checkOutcomesArray,
+  isLessThan,
+  isMoreThan,
+  isPositive
 } from "modules/common/validations";
 
 import Styles from "modules/create-market/components/form.styles";
@@ -83,6 +90,11 @@ interface Validations {
   max?: Number;
   checkFilledNumberMessage?: string;
   checkFilledStringMessage?: string;
+  checkCategories?: Boolean;
+  checkOutcomes?: Boolean;
+  checkLessThan?: Boolean;
+  checkMoreThan?: Boolean;
+  checkPositive?: Boolean;
 }
 
 export default class Form extends React.Component<
@@ -170,8 +182,10 @@ export default class Form extends React.Component<
     } = newMarket;
     let hasErrors = false; 
 
+    let fields = [];
+
     if (currentStep === 0) {
-      const fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
+      fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
       if (expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
         fields.push(EXPIRY_SOURCE);
       } 
@@ -182,18 +196,22 @@ export default class Form extends React.Component<
         fields.push(OUTCOMES);
       }
       if (marketType === SCALAR) {
-        fields.push(DENOMINATION);
+        fields.push(DENOMINATION, MIN_PRICE, MAX_PRICE, TICK_SIZE);
       }
-      fields.map(field => {
-          const error = this.evaluate({
-            ...VALIDATION_ATTRIBUTES[field],
-            updateValue: false,
-            value: newMarket[field], 
-          });
-          if (error) hasErrors = true;
-        }
-      );
+    } else if (currentStep === 1) {
+      fields = [SETTLEMENT_FEE, AFFILIATE_FEE]
     }
+
+
+    fields.map(field => {
+        const error = this.evaluate({
+          ...VALIDATION_ATTRIBUTES[field],
+          updateValue: false,
+          value: newMarket[field], 
+        });
+        if (error) hasErrors = true;
+      }
+    );
 
     return hasErrors;
   }
@@ -289,6 +307,8 @@ export default class Form extends React.Component<
 
   evaluate = (validationsObj: Validations) => {
 
+    const { newMarket } = this.props;
+
     const {
       checkBetween,
       label,
@@ -302,7 +322,10 @@ export default class Form extends React.Component<
       checkFilledStringMessage,
       updateValue,
       checkCategories,
-      checkOutcomes
+      checkOutcomes,
+      checkMoreThan,
+      checkLessThan,
+      checkPositive
     } = validationsObj;
 
     const checkValidations = [
@@ -310,7 +333,10 @@ export default class Form extends React.Component<
       checkFilledString ? isFilledString(value, readableName, checkFilledStringMessage) : "",
       checkCategories ? checkCategoriesArray(value) : "",
       checkOutcomes ? checkOutcomesArray(value) : "",
-      checkBetween ? isBetween(value, readableName, min, max) : ""
+      checkBetween ? isBetween(value, readableName, min, max) : "",
+      checkMoreThan ? isMoreThan(value, readableName, newMarket.minPrice) : "",
+      checkLessThan ? isLessThan(value, readableName, newMarket.maxPrice) : "",
+      checkPositive ? isPositive(value) : "",
     ];
     const errorMsg = checkValidations.find(validation => validation !== "");
 
