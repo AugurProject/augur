@@ -1,11 +1,9 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    "group:allNonMajor",
+    ":maintainLockFilesWeekly"
   ],
-  "automerge": true,
-  "major": {
-    "automerge": false
-  },
   "prHourlyLimit": 1,
   "updateNotScheduled": false,
   "schedule": [
