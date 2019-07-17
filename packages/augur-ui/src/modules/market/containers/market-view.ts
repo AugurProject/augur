@@ -18,13 +18,15 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 
 const mapStateToProps = (state, ownProps) => {
-  const { authStatus, appStatus, connection, universe } = state;
+  const { connection, universe } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const market = selectMarket(marketId);
 
   if (market === null) {
     return {
       isMarketLoading: true,
+      isConnected: connection.isConnected && universe.id != null,
+      marketId,
     }
   }
   let marketReviewSeen =
