@@ -111,13 +111,18 @@ export const FormDropdown = (props: FormDropdownProps) => (
       {...props}
       className={classNames({
         [Styles.disabled]: props.disabled,
-        [Styles.error]: props.errorMessage && props.errorMessage !== "" && props.errorMessage.length > 0,
+        [Styles.error]:
+          props.errorMessage &&
+          props.errorMessage !== '' &&
+          props.errorMessage.length > 0,
       })}
       activeClassName={Styles.FormDropdownActive}
     />
-    {props.errorMessage && props.errorMessage !== "" && props.errorMessage.length > 0 && (
-      <span className={Styles.ErrorText}>{props.errorMessage}</span>
-    )}
+    {props.errorMessage &&
+      props.errorMessage !== '' &&
+      props.errorMessage.length > 0 && (
+        <span className={Styles.ErrorText}>{props.errorMessage}</span>
+      )}
   </div>
 );
 
@@ -150,12 +155,8 @@ export const Error = (props: ErrorProps) => (
   <section className={Styles.ErrorLabel}>
     {ExclamationCircle}
     <div>
-      <span>
-        {props.header}
-      </span>
-      <span>
-        {props.subheader}
-      </span>
+      <span>{props.header}</span>
+      <span>{props.subheader}</span>
     </div>
   </section>
 );
@@ -216,6 +217,7 @@ interface CheckboxBarProps {
 interface CategoryMultiSelectProps {
   sortedGroup: Array<SortedGroup>;
   initialSelected?: Array<string>;
+  initialValues?: Array<string>;
   updateSelection: Function;
   errorMessage?: Array<string>;
 }
@@ -224,6 +226,20 @@ interface CategoryMultiSelectState {
   groups: Array<SortedGroup>;
   selected: Array<string>;
   values: Array<string>;
+}
+
+interface DropdownInputGroupProps {
+  defaultValue?: string;
+  staticLabel?: string;
+  onChangeDropdown: Function;
+  options: Array<NameValuePair>;
+  errorMessage?: string;
+  value: string;
+  placeholder?: string;
+  onChangeInput: Function;
+  showText: boolean;
+  showIcon: boolean;
+  showDropdown: boolean;
 }
 
 const defaultMultiSelect = (amount: number, justStrings: boolean = false) => {
@@ -235,6 +251,184 @@ const defaultMultiSelect = (amount: number, justStrings: boolean = false) => {
   return result;
 };
 
+export const createGroups = (groups: Array<SortedGroup>, values: Array<String>, selected: Array<String>) => {
+  const primaryOptions = createOptions(groups);
+  const primarySubgroup = findSubgroup(groups, values[0]);
+  const secondaryCustom = selected[1] === CUSTOM;
+  const secondaryAutoComplete = secondaryCustom
+    ? findAutoComplete(primarySubgroup, CUSTOM)
+    : findAutoComplete(primarySubgroup, values[0]);
+  const secondaryOptions = createOptions(primarySubgroup);
+  const tertiaryAutoComplete = secondaryCustom
+    ? findAutoComplete(secondaryAutoComplete, values[1])
+    : findAutoComplete(primarySubgroup, values[1]);
+  const tertiaryOptions = createOptions(
+    findSubgroup(primarySubgroup, values[1])
+  );
+
+  return {
+    primaryOptions,
+    secondaryOptions,
+    secondaryAutoComplete,
+    tertiaryOptions,
+    tertiaryAutoComplete,
+  };
+};
+
+export const determineVisible = (values: Array<string>, secondaryOptions: Array<NameValuePair>, tertiaryOptions: Array<NameValuePair>, selected: Array<string>) => {
+  const showSecondaryDropdown =
+    values[0] !== '' && secondaryOptions.length > 0;
+  const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
+  const customPrimary = selected[0] === CUSTOM;
+  const customSecondary =
+    selected[1] === CUSTOM ||
+    (!showSecondaryDropdown && customPrimary && values[0] !== '');
+  const customTertiary =
+    selected[2] === CUSTOM || (!showTertiaryDropdown && values[1] !== '');
+  return {
+    showSecondaryDropdown,
+    showTertiaryDropdown,
+    customPrimary,
+    customSecondary,
+    customTertiary,
+  };
+}
+
+export const getNewValues = (value: string, position: number, values: Array<string>) => {
+  const updatedValues = [...values];
+  updatedValues[position] = value;
+  return updatedValues;
+}
+
+export const getNewSelected = (selection: string, position: number, selected: Array<string>) => {
+  const updatedSelected = [...selected];
+  updatedSelected[position] = selection;
+  return updatedSelected;
+}
+
+export const createOptions = (sortedGroup: SortedGroup) => {
+  let options = sortedGroup.map(({ label, value }) => ({ label, value }));
+  return options;
+}
+
+export const findSubgroup = (sortedGroup: SortedGroup, selection: string) => {
+  if (selection === '') return [];
+  const selected = sortedGroup.find(item => item.value === selection);
+  if (selected && selected.subGroup) {
+    return selected.subGroup;
+  } else {
+    return [];
+  }
+}
+
+export const findAutoComplete = (sortedGroup: SortedGroup, selection: string) => {
+  if (selection === '') return [];
+  const selected = sortedGroup.find(item => item.value === selection);
+  if (selected && selected.autoCompleteList) {
+    return selected.autoCompleteList;
+  } else {
+    return [];
+  }
+}
+
+export const DropdownInputGroup = ({
+  defaultValue,
+  staticLabel,
+  onChangeDropdown,
+  options,
+  autoCompleteList,
+  errorMessage,
+  value,
+  placeholder,
+  onChangeInput,
+  showText,
+  showIcon,
+  showDropdown
+}: DropdownInputGroupProps) => (
+  <li>
+    {showIcon && RightAngle}
+    {showDropdown && (
+      <FormDropdown
+        defaultValue={defaultValue}
+        staticLabel={staticLabel}
+        onChange={onChangeDropdown}
+        options={options}
+        errorMessage={errorMessage}
+      />
+    )}
+    {showText && (
+      <TextInput
+        value={value}
+        placeholder={placeholder}
+        autoCompleteList={autoCompleteList}
+        onChange={onChangeInput}
+      />
+    )}
+  </li>
+);
+
+interface CategorySingleSelectProps {
+  options: Array<NameValuePair>;
+  autoCompleteList?: Array<NameValuePair>;
+  initialSelected?: string;
+  initialValue?: string;
+  updateSelection: Function;
+  errorMessage?: Array<string>;
+  staticLabel?: string;
+  errorMessage?: string;
+  placeholder?: string;
+}
+
+interface CategorySingleSelectState {
+  selected: string;
+  value: string;
+  showText: boolean;
+}
+
+export class CategorySingleSelect extends Component<
+  CategorySingleSelectProps,
+  CategorySingleSelectState
+> {
+  state: CategorySingleSelectState = {
+    selected: this.props.initialSelected || "",
+    value: this.props.initialValue || this.props.initialSelected || "",
+    showText: this.props.initialSelected === CUSTOM
+  }
+
+  onChangeDropdown(choice) {
+    let value = choice;
+    if (choice === CUSTOM) value = '';
+    this.handleUpdate(choice, value);
+  }
+
+  handleUpdate(selected, value) {
+    const { updateSelection } = this.props;
+    this.setState({ selected, value, showText: selected === CUSTOM }, () => updateSelection(value));
+  }
+
+  render() {
+    const { options, errorMessage, staticLabel, placeholder, defaultValue, autoCompleteList } = this.props;
+    const { selected, value, showText } = this.state;
+    return (
+      <ul className={Styles.CategoryMultiSelect}>
+        <DropdownInputGroup
+          defaultValue={selected}
+          staticLabel={staticLabel}
+          onChangeDropdown={choice => this.onChangeDropdown(choice)}
+          options={options}
+          errorMessage={errorMessage}
+          value={value}
+          placeholder={placeholder}
+          onChangeInput={v => this.handleUpdate(selected, v)}
+          showText={showText}
+          showDropdown={options.length > 0}
+          autoCompleteList={autoCompleteList}
+        />
+      </ul>
+    );
+  }
+}
+
 export class CategoryMultiSelect extends Component<
   CategoryMultiSelectProps,
   CategoryMultiSelectState
@@ -242,101 +436,14 @@ export class CategoryMultiSelect extends Component<
   state: CategoryMultiSelectState = {
     groups: this.props.sortedGroup || defaultMultiSelect(3),
     selected: this.props.initialSelected || ['', '', ''],
-    values: this.props.initialSelected || ['', '', ''],
+    values: this.props.initialValues || this.props.initialSelected || ['', '', ''],
   };
-
-  createOptions(sortedGroup) {
-    let options = sortedGroup.map(({ label, value }) => ({ label, value }));
-    return options;
-  }
-
-  findSubgroup(sortedGroup, selection) {
-    if (selection === '') return [];
-    const selected = sortedGroup.find(item => item.value === selection);
-    if (selected && selected.subGroup) {
-      return selected.subGroup;
-    } else {
-      return [];
-    }
-  }
-
-  findAutoComplete(sortedGroup, selection) {
-    if (selection === '') return [];
-    const selected = sortedGroup.find(item => item.value === selection);
-    if (selected && selected.autoCompleteList) {
-      return selected.autoCompleteList;
-    } else {
-      return [];
-    }
-  }
-
-  createGroups(groups, values, selected) {
-    const primaryOptions = this.createOptions(groups);
-    const primarySubgroup = this.findSubgroup(groups, values[0]);
-    const secondaryCustom = selected[1] === CUSTOM;
-    const secondaryAutoComplete = secondaryCustom ? this.findAutoComplete(
-      primarySubgroup,
-      CUSTOM
-    ) : this.findAutoComplete(
-      primarySubgroup,
-      values[0]
-    );
-    const secondaryOptions = this.createOptions(primarySubgroup);
-    const tertiaryAutoComplete =
-      secondaryCustom
-        ? this.findAutoComplete(secondaryAutoComplete, values[1])
-        : this.findAutoComplete(primarySubgroup, values[1]);
-    const tertiaryOptions = this.createOptions(
-      this.findSubgroup(primarySubgroup, values[1])
-    );
-
-    return {
-      primaryOptions,
-      secondaryOptions,
-      secondaryAutoComplete,
-      tertiaryOptions,
-      tertiaryAutoComplete,
-    };
-  }
-
-  determineVisible(values, secondaryOptions, tertiaryOptions, selected) {
-    const showSecondaryDropdown =
-      values[0] !== '' && secondaryOptions.length > 0;
-    const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
-    const customPrimary = selected[0] === CUSTOM;
-    const customSecondary =
-      selected[1] === CUSTOM ||
-      (!showSecondaryDropdown && customPrimary && values[0] !== '');
-    const customTertiary =
-      selected[2] === CUSTOM || (!showTertiaryDropdown && values[1] !== '');
-    return {
-      showSecondaryDropdown,
-      showTertiaryDropdown,
-      customPrimary,
-      customSecondary,
-      customTertiary,
-    };
-  }
-
-  getNewValues(value, position) {
-    const { values } = this.state;
-    const updatedValues = [...values];
-    updatedValues[position] = value;
-    return updatedValues;
-  }
-
-  getNewSelected(selection, position) {
-    const { selected } = this.state;
-    const updatedSelected = [...selected];
-    updatedSelected[position] = selection;
-    return updatedSelected;
-  }
 
   onChangeDropdown(choice, position) {
     let value = choice;
     if (choice === CUSTOM) value = '';
-    const selected = this.getNewSelected(choice, position);
-    const values = this.getNewValues(value, position);
+    const selected = getNewSelected(choice, position, this.state.selected);
+    const values = getNewValues(value, position, this.state.values);
     this.handleUpdate(selected, values);
   }
 
@@ -346,6 +453,7 @@ export class CategoryMultiSelect extends Component<
   }
 
   render() {
+    const { errorMessage } = this.props;
     const { groups, selected, values } = this.state;
     const {
       primaryOptions,
@@ -353,87 +461,66 @@ export class CategoryMultiSelect extends Component<
       secondaryAutoComplete,
       tertiaryOptions,
       tertiaryAutoComplete,
-    } = this.createGroups(groups, values, selected);
+    } = createGroups(groups, values, selected);
     const {
       showSecondaryDropdown,
       showTertiaryDropdown,
       customPrimary,
       customSecondary,
       customTertiary,
-    } = this.determineVisible(
+    } = determineVisible(
       values,
       secondaryOptions,
       tertiaryOptions,
       selected
     );
-    const { errorMessage } = this.props;
 
     return (
       <ul className={Styles.CategoryMultiSelect}>
-        <li>
-          <FormDropdown
-            defaultValue={selected[0]}
-            staticLabel="Primary Category"
-            onChange={choice => this.onChangeDropdown(choice, 0)}
-            options={primaryOptions}
-            errorMessage={errorMessage[0]}
-          />
-          {customPrimary && (
-            <TextInput
-              value={values[0]}
-              placeholder="Custom Primary Category"
-              onChange={v =>
-                this.handleUpdate(selected, this.getNewValues(v, 0))
-              }
-            />
-          )}
-        </li>
+        <DropdownInputGroup
+          defaultValue={selected[0]}
+          staticLabel="Primary Category"
+          onChangeDropdown={choice => this.onChangeDropdown(choice, 0)}
+          options={primaryOptions}
+          errorMessage={errorMessage[0]}
+          value={values[0]}
+          placeholder="Custom Primary Category"
+          onChangeInput={v => this.handleUpdate(selected, getNewValues(v, 0, values))}
+          showText={customPrimary}
+          showIcon={false}
+          showDropdown={true}
+        />
         {(showSecondaryDropdown || customSecondary) && (
-          <li>
-            {(showSecondaryDropdown || customSecondary) && RightAngle}
-            {showSecondaryDropdown && (
-              <FormDropdown
-                defaultValue={selected[1]}
-                staticLabel="Secondary Category"
-                onChange={choice => this.onChangeDropdown(choice, 1)}
-                options={secondaryOptions}
-                errorMessage={errorMessage[1]}
-              />
-            )}
-            {customSecondary && (
-              <TextInput
-                value={values[1]}
-                placeholder="Custom Secondary Category"
-                autoCompleteList={secondaryAutoComplete}
-                onChange={v =>
-                  this.handleUpdate(selected, this.getNewValues(v, 1))
-                }
-              />
-            )}
-          </li>
+          <DropdownInputGroup
+            defaultValue={selected[1]}
+            staticLabel="Secondary Category"
+            onChangeDropdown={choice => this.onChangeDropdown(choice, 1)}
+            options={secondaryOptions}
+            errorMessage={errorMessage[1]}
+            value={values[1]}
+            placeholder="Custom Secondary Category"
+            onChangeInput={v => this.handleUpdate(selected, getNewValues(v, 1, values))}
+            showText={customSecondary}
+            showIcon={(showSecondaryDropdown || customSecondary)}
+            showDropdown={showSecondaryDropdown}
+            autoCompleteList={secondaryAutoComplete}
+          />
         )}
         {(showTertiaryDropdown || customTertiary) && (
-          <li>
-            {(showTertiaryDropdown || customTertiary) && RightAngle}
-            {showTertiaryDropdown && (
-              <FormDropdown
-                defaultValue={selected[2]}
-                staticLabel="Tertiary Category"
-                onChange={choice => this.onChangeDropdown(choice, 2)}
-                options={tertiaryOptions}
-              />
-            )}
-            {customTertiary && (
-              <TextInput
-                value={values[2]}
-                placeholder="Custom Tertiary Category"
-                autoCompleteList={tertiaryAutoComplete}
-                onChange={v =>
-                  this.handleUpdate(selected, this.getNewValues(v, 2))
-                }
-              />
-            )}
-          </li>
+          <DropdownInputGroup
+            defaultValue={selected[2]}
+            staticLabel="Tertiary Category"
+            onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
+            options={tertiaryOptions}
+            errorMessage={errorMessage[2]}
+            value={values[2]}
+            placeholder="Custom Tertiary Category"
+            onChangeInput={v => this.handleUpdate(selected, getNewValues(v, 2, values))}
+            showText={customTertiary}
+            showIcon={(showTertiaryDropdown || customTertiary)}
+            showDropdown={showTertiaryDropdown}
+            autoCompleteList={tertiaryAutoComplete}
+          />
         )}
       </ul>
     );
@@ -468,7 +555,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   render() {
     const { radioButtons, onChange, errorMessage } = this.props;
     const { selected } = this.state;
- 
+
     return (
       <div>
         {radioButtons.map(radio => (
@@ -497,7 +584,7 @@ export const RadioBar = ({
   onTextChange,
   placeholder,
   textValue,
-  errorMessage
+  errorMessage,
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
@@ -691,7 +778,8 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     const filteredList = autoCompleteList.filter(item =>
       item.label.includes(this.state.value) ? item : null
     );
-    const error = errorMessage && errorMessage !== "" && errorMessage.length > 0;
+    const error =
+      errorMessage && errorMessage !== '' && errorMessage.length > 0;
 
     return (
       <div className={Styles.TextInput}>
@@ -790,8 +878,16 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
   };
 
   render() {
-    const { placeholder, hour, minute, meridiem, focused, errorMessage } = this.props;
-    const error = errorMessage && errorMessage !== "" && errorMessage.length > 0;
+    const {
+      placeholder,
+      hour,
+      minute,
+      meridiem,
+      focused,
+      errorMessage,
+    } = this.props;
+    const error =
+      errorMessage && errorMessage !== '' && errorMessage.length > 0;
 
     return (
       <div
@@ -800,7 +896,10 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
           this.timeSelector = timeSelector;
         }}
       >
-        <button onClick={this.toggleSelector} className={classNames({[Styles.error]: error})}>
+        <button
+          onClick={this.toggleSelector}
+          className={classNames({ [Styles.error]: error })}
+        >
           <span>
             {!hour || !minute || !meridiem
               ? 'Time'
@@ -995,7 +1094,14 @@ Checkbox.defaultProps = {
 };
 
 export const DatePicker = (props: DatePickerProps) => (
-  <div className={classNames(Styles.DatePicker, {[Styles.error]: props.errorMessage && props.errorMessage !== "" && props.errorMessage.length > 0})}>
+  <div
+    className={classNames(Styles.DatePicker, {
+      [Styles.error]:
+        props.errorMessage &&
+        props.errorMessage !== '' &&
+        props.errorMessage.length > 0,
+    })}
+  >
     <SingleDatePicker
       id={props.id}
       date={props.date}
@@ -1011,7 +1117,11 @@ export const DatePicker = (props: DatePickerProps) => (
       weekDayFormat="ddd"
       customInputIcon={Calendar}
     />
-    {props.errorMessage && props.errorMessage !== "" && props.errorMessage.length > 0 && <span className={Styles.ErrorText}>{props.errorMessage}</span>}
+    {props.errorMessage &&
+      props.errorMessage !== '' &&
+      props.errorMessage.length > 0 && (
+        <span className={Styles.ErrorText}>{props.errorMessage}</span>
+      )}
   </div>
 );
 

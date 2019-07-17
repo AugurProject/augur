@@ -68,6 +68,16 @@ export const CUSTOM_CONTENT_PAGES = [
 	ReviewContent
 ];
 
+export const TEMPLATE_CONTENT_PAGES = [
+	{ title: "Category" },
+	{ title: "Sub-Category", firstButton: BACK, secondButton: NEXT },
+	{ title: "Market Type", firstButton: BACK, secondButton: NEXT },
+	{ title: "Template", firstButton: BACK, secondButton: NEXT },
+	{ title: "Event Details", firstButton: BACK, secondButton: NEXT },
+	LiquidityContent,
+	ReviewContent
+];
+
 // Market Type Names
 export const MARKET_TYPE_NAME = {
   [YES_NO]: "Yes/No",
@@ -141,7 +151,7 @@ export const MARKET_TEMPLATES = [
 ];
 
 export const MARKET_SUB_TEMPLATES = {
-	SPORTS: [
+	[SPORTS]: [
 		{
 			value: SOCCER,
 			header: SOCCER,
@@ -191,7 +201,7 @@ export const MARKET_SUB_TEMPLATES = {
 			icon: icons.HorseRacing
 		},
 	],
-	POLITICS: [
+	[POLITICS]: [
 		{
 			value: US_ELECTIONS,
 			header: US_ELECTIONS,
@@ -211,7 +221,7 @@ export const MARKET_SUB_TEMPLATES = {
 			icon: icons.World
 		},
 	],
-	FINANCE: [
+	[FINANCE]: [
 		{
 			value: STOCKS,
 			header: STOCKS,
@@ -231,7 +241,7 @@ export const MARKET_SUB_TEMPLATES = {
 			icon: icons.Indexes
 		},
 	],
-	ENTERTAINMENT: [
+	[ENTERTAINMENT]: [
 		{
 			value: AWARDS,
 			header: AWARDS,
@@ -257,7 +267,7 @@ export const MARKET_SUB_TEMPLATES = {
 			icon: icons.TV
 		},
 	],
-	CRYPTO: [
+	[CRYPTO]: [
 		{
 			value: BITCOIN,
 			header: BITCOIN,
