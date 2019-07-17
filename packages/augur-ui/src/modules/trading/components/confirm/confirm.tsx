@@ -20,7 +20,7 @@ import { formatGasCostToEther, formatShares } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { FormattedNumber, Trade } from 'modules/types';
-import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketInfoOutcome } from '@augurproject/sdk/src/state/getter/Markets';
 
 interface Message {
   header: string;

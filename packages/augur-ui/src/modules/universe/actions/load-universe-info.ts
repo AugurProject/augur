@@ -1,6 +1,6 @@
 import logError from 'utils/log-error';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
-import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/build";
+import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/src/utils";
 
 import {
   getDisputeThresholdForFork,

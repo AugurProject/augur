@@ -2,10 +2,9 @@ import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
-import { MarketInfo, MarketInfoOutcome, MarketOrderBook, OrderBook } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketInfo, MarketInfoOutcome, OrderBook } from "@augurproject/sdk/src/state/getter/Markets";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
-import { MarketTradingHistory, Orders, Order } from "@augurproject/sdk/build/state/getter/Trading";
-import { PlaceTradeParams } from "@augurproject/sdk/build";
+import { MarketTradingHistory, Orders, Order } from "@augurproject/sdk/src/state/getter/Trading";
 
 export enum SizeTypes {
   SMALL = "small",

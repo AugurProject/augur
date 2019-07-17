@@ -8,7 +8,7 @@ import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { placeTrade } from "modules/contracts/actions/contractCalls";
-import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketInfo } from "@augurproject/sdk/src/state/getter/Markets";
 
 export const placeMarketTrade = ({
   marketId,

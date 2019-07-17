@@ -6,7 +6,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { getOutcomeName } from "utils/get-outcome";
 import { formatEther, formatRep, formatShares } from "utils/format-number";
-import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/build";
+import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/src/utils";
 import {
   BUY,
   SELL,

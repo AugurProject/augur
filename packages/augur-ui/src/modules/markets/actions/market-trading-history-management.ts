@@ -9,7 +9,7 @@ import { augurSdk } from 'services/augursdk';
 import {
   MarketTradingHistory,
   Orders,
-} from '@augurproject/sdk/build/state/getter/Trading';
+} from '@augurproject/sdk/src/state/getter/Trading';
 import { FILLED, REPORTING_STATE } from 'modules/common/constants';
 
 export const UPDATE_USER_FILLED_ORDERS = 'UPDATE_USER_FILLED_ORDERS';

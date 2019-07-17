@@ -5,7 +5,7 @@ import {
 } from "store/select-state";
 import { PositionData } from "modules/types";
 import { positionSummary } from "modules/positions/selectors/positions-summary";
-import { TradingPosition } from "@augurproject/sdk/build/state/getter/Users";
+import { TradingPosition } from "@augurproject/sdk/src/state/getter/Users";
 
 
 function selectMarketsDataStateMarket(state, marketId) {

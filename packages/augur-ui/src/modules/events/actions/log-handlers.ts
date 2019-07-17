@@ -41,8 +41,8 @@ import { isSameAddress } from 'utils/isSameAddress';
 import {
   OrderEventType,
   ParsedOrderEventLog,
-} from '@augurproject/sdk/build/state/logs/types';
-import { TXStatus } from '@augurproject/sdk/build/events';
+} from '@augurproject/sdk/src/state/logs/types';
+import { TXStatus } from '@augurproject/sdk/src/events';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';

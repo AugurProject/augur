@@ -1,7 +1,7 @@
 import { UIOrder } from 'modules/types';
-import { convertOnChainPriceToDisplayPrice, convertOnChainAmountToDisplayAmount, numTicksToTickSize, QUINTILLION } from '@augurproject/sdk/build';
+import { convertOnChainPriceToDisplayPrice, convertOnChainAmountToDisplayAmount, numTicksToTickSize, QUINTILLION } from '@augurproject/sdk/src/utils';
 import { SELL, BUY, TX_TRADE_GROUP_ID, TX_MARKET_ID, TX_OUTCOME_ID, TX_PRICE, TX_AMOUNT, TX_DIRECTION } from 'modules/common/constants';
-import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketInfo } from '@augurproject/sdk/src/state/getter/Markets';
 import { createBigNumber } from 'utils/create-big-number';
 
 export function convertTransactionOrderToUIOrder(onChainOrder, status: string, market: MarketInfo): UIOrder {

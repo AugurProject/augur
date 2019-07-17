@@ -1,8 +1,8 @@
 import RunWorker from "./Sync.worker";
-import { API } from "@augurproject/sdk/build/state/getter/API";
-import { Callback } from "@augurproject/sdk/build/events";
-import { Connector } from "@augurproject/sdk/build/connector/connector";
-import { SubscriptionEventName } from "@augurproject/sdk/build/constants";
+import { API } from "@augurproject/sdk/src/state/getter/API";
+import { Callback } from "@augurproject/sdk/src/events";
+import { Connector } from "@augurproject/sdk/src/connector/connector";
+import { SubscriptionEventName } from "@augurproject/sdk/src/constants";
 import { buildAPI } from "@augurproject/sdk";
 
 export class WebWorkerConnector extends Connector {

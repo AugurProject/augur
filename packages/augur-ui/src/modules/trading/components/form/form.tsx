@@ -15,7 +15,7 @@ import { Checkbox } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
-import { MarketInfoOutcome } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketInfoOutcome } from '@augurproject/sdk/src/state/getter/Markets';
 
 interface FromProps {
   market: MarketData;

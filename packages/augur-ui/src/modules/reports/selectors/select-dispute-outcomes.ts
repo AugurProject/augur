@@ -3,7 +3,7 @@ import {
   MALFORMED_OUTCOME,
   ZERO
 } from "modules/common/constants";
-import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/build";
+import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/src/utils";
 import { isEmpty } from "utils/is-populated";
 import { createBigNumber } from "utils/create-big-number";
 

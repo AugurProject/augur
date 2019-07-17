@@ -6,7 +6,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { NodeStyleCallback } from "modules/types";
 import { augurSdk } from "services/augursdk";
-import { Coin, Action } from "@augurproject/sdk/build/state/getter/Accounts";
+import { Coin, Action } from "@augurproject/sdk/src/state/getter/Accounts";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
