@@ -30,6 +30,7 @@ export const DEFAULT_STATE: NewMarket = {
       meridiem: null,
       outcomes: null,
       scalarDenomination: null,
+      outcomes: ["", ""]
     },
     {
       settlementFee: ""

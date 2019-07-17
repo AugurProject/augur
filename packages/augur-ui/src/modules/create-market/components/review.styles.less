@@ -34,4 +34,20 @@
             }
     	}
     }
+
+    &.Scalar {
+        > div:first-of-type {
+            > div:nth-of-type(8) {
+                grid-column: 3 / span 8;
+            }
+        }
+    }
+
+    &.Categorical {
+        > div:first-of-type {
+            > div:nth-of-type(6) {
+                grid-column: 1 / span 10;
+            }
+        }
+    }
 }

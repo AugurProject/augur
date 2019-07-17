@@ -5,7 +5,6 @@
   flex-flow: column;
   
   > li {
-    height: 44px;
     margin-top: @size-12;
     display: grid;
     grid-row: 44px;
@@ -49,6 +48,7 @@
 
     > div[class*="TextInput"] {
       position: relative;
+      align-items: flex-start;
     }
   }
 }
@@ -238,7 +238,7 @@
 
 .RadioBarExpanded {
   grid-template-columns: 52px auto @size-16;
-  grid-template-rows: @size-20 @size-16 @size-12 44px @size-28;
+  grid-template-rows: @size-20 @size-16 @size-12 54px @size-28;
   height: auto;
 
   > svg {
@@ -499,122 +499,127 @@
 }
 
 .TextInput {
-  align-items: center;
   display: flex;
+  flex-direction: column;
 
-  > input,
-  > textarea {
-    .text-14;
+  > div {
+    align-items: center;
+    display: flex;
 
-    background-color: @color-secondary-action;
-    border-radius: @border-radius-default;
-    border: 1px solid @color-primary-light;
-    color: @color-secondary-text;
-    height: 44px;
-    min-width: 150px;
-    
-    &::placeholder {
-      color: @color-primary-alternate-two;
-    }
+    > input,
+    > textarea {
+      .text-14;
 
-    &:hover {
-      border: 1px solid @color-highlight;
-      cursor: pointer;
-    }
-
-    &:focus {
-      border: 1px solid @color-active;
-    }
-
-    &:disabled {
-      background-color: @color-extra-darkpurple;
-      border: 1px solid @color-shadow-text;
-      color: @color-shadow-text;
-      opacity: 0.5;
-
+      background-color: @color-secondary-action;
+      border-radius: @border-radius-default;
+      border: 1px solid @color-primary-light;
+      color: @color-secondary-text;
+      height: 44px;
+      min-width: 150px;
+      
       &::placeholder {
-        color: @color-shadow-text;
+        color: @color-primary-alternate-two;
       }
-    }
-  }
-
-  > div.AutoCompleteList {
-    background-color: @color-secondary-text;
-    border-radius: @border-radius-default;
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 106%;
-    width: 100%;
-    z-index: @mask;
-
-    &.active {
-      display: block;
-      max-height: 400px;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-
-    > button {
-      .text-10;
-
-      color: @color-primary-background;
-      height: 2rem;
-      line-height: @size-12;
-      padding: @size-10 @size-12;
-      position: relative;
-      text-align: left;
-      transition: background-color 0.15s ease;
-      white-space: nowrap;
-      width: 100%;
 
       &:hover {
-        background-color: fade(@color-highlight, 20%);
+        border: 1px solid @color-highlight;
+        cursor: pointer;
       }
 
-      &::before {
-        background-color: fade(@color-highlight, 10%);
-        bottom: 0;
-        content: "";
-        height: 1px;
-        left: @size-12;
-        position: absolute;
-        right: @size-12;
+      &:focus {
+        border: 1px solid @color-active;
+      }
+
+      &:disabled {
+        background-color: @color-extra-darkpurple;
+        border: 1px solid @color-shadow-text;
+        color: @color-shadow-text;
+        opacity: 0.5;
+
+        &::placeholder {
+          color: @color-shadow-text;
+        }
       }
     }
-  }
 
-  > .Trailing,
-  > .Inner {
-    .text-14;
-    
-    color: @color-tertiary-info-text;
-  }
+    > div.AutoCompleteList {
+      background-color: @color-secondary-text;
+      border-radius: @border-radius-default;
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 106%;
+      width: 100%;
+      z-index: @mask;
 
-  > .Trailing {
-    margin-left: @size-12;
-  }
+      &.active {
+        display: block;
+        max-height: 400px;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
 
-  > .Inner {
-    margin-left: -@size-24;
-  }
+      > button {
+        .text-10;
 
-  > span:nth-of-type(2) {
-    margin-left: @size-24;
-  }
+        color: @color-primary-background;
+        height: 2rem;
+        line-height: @size-12;
+        padding: @size-10 @size-12;
+        position: relative;
+        text-align: left;
+        transition: background-color 0.15s ease;
+        white-space: nowrap;
+        width: 100%;
 
-  input[type="number"]::-webkit-inner-spin-button, 
-  input[type="number"]::-webkit-outer-spin-button { 
-    -webkit-appearance: none; 
-    margin: 0; 
-  }
+        &:hover {
+          background-color: fade(@color-highlight, 20%);
+        }
 
-  > textarea {
-    min-height: 88px;
-  }
+        &::before {
+          background-color: fade(@color-highlight, 10%);
+          bottom: 0;
+          content: "";
+          height: 1px;
+          left: @size-12;
+          position: absolute;
+          right: @size-12;
+        }
+      }
+    }
 
-  > input {
-    min-width: 210px;
+    > .Trailing,
+    > .Inner {
+      .text-14;
+      
+      color: @color-tertiary-info-text;
+    }
+
+    > .Trailing {
+      margin-left: @size-12;
+    }
+
+    > .Inner {
+      margin-left: -@size-24;
+    }
+
+    > span:nth-of-type(2) {
+      margin-left: @size-24;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button, 
+    input[type="number"]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+
+    > textarea {
+      min-height: 88px;
+    }
+
+    > input {
+      min-width: 210px;
+    }
   }
 }
 
@@ -625,58 +630,64 @@
   margin-top: @size-4;
 }
 
-div.FormDropdown {
-  .text-14;
+.FormDropdown {
+  display: flex;
+  flex-direction: column;
 
-  background-color: @color-secondary-action;
-  border-radius: @border-radius-default;
-  border: 1px solid @color-primary-light;
-  min-width: 210px;
-  min-height: 44px;
-  
   > div {
-    left: 0;
-  }
-
-  > button {
     .text-14;
 
-    background-color: transparent;
-    color: @color-primary-alternate-two;
+    background-color: @color-secondary-action;
+    border-radius: @border-radius-default;
+    border: 1px solid @color-primary-light;
+    min-width: 210px;
+    min-height: 44px;
+    max-width: unset;
+    
+    > div {
+      left: 0;
+    }
 
-    > svg {
-      height: @size-12;
-      width: @size-12;
+    > button {
+      .text-14;
 
-      > path {
-        stroke: @color-secondary-text;
+      background-color: transparent;
+      color: @color-primary-alternate-two;
+
+      > svg {
+        height: @size-12;
+        width: @size-12;
+
+        > path {
+          stroke: @color-secondary-text;
+        }
+      }
+
+      &:hover {
+        background-color: transparent;
       }
     }
 
-    &:hover {
-      background-color: transparent;
+    > button[class*="SelectedLabel"] {
+      color: @color-secondary-text;
     }
-  }
 
-  > button[class*="SelectedLabel"] {
-    color: @color-secondary-text;
-  }
+    &:hover {
+      background-color: @color-secondary-action;
+      border: 1px solid @color-highlight;
+      cursor: pointer;
+    }
 
-  &:hover {
-    background-color: @color-secondary-action;
-    border: 1px solid @color-highlight;
-    cursor: pointer;
-  }
+    &.disabled {
+      background-color: @color-extra-darkpurple;
+      border: 1px solid @color-shadow-text;
+      color: @color-shadow-text;
+      opacity: 0.5;
+    }
 
-  &.disabled {
-    background-color: @color-extra-darkpurple;
-    border: 1px solid @color-shadow-text;
-    color: @color-shadow-text;
-    opacity: 0.5;
-  }
-
-  &.error {
-    border: 1px solid fade(@color-error-text, 50%);
+    &.error {
+      border: 1px solid fade(@color-error-text, 50%);
+    }
   }
 }
 
@@ -1413,7 +1424,7 @@ div.FormDropdownActive {
 textarea.error,
 input.error,
 button.error {
-  border: 1px solid fade(@color-error-text, 50%);
+  border: 1px solid fade(@color-error-text, 50%) !important;
 }
 
 div.error > div > div > div > div > input {

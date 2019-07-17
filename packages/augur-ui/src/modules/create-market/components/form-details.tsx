@@ -6,7 +6,6 @@ import moment from "moment";
 import { 
   RadioCardGroup, 
   FormDropdown, 
-  Error, 
   TextInput, 
   DatePicker, 
   TimeSelector, 
@@ -33,7 +32,9 @@ import {
   DESCRIPTION, 
   VALIDATION_ATTRIBUTES,
   DESIGNATED_REPORTER_ADDRESS,
-  EXPIRY_SOURCE
+  EXPIRY_SOURCE,
+  CATEGORIES,
+  OUTCOMES
 } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/components/form-details.styles";
@@ -93,8 +94,6 @@ export default class FormDetails extends React.Component<
       validations,
       currentStep
     } = newMarket;
-
-    const noErrors = Object.values(validations[currentStep]).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
 
     return (
       <div className={Styles.FormDetails}>
@@ -196,7 +195,7 @@ export default class FormDetails extends React.Component<
                 minShown={2}
                 maxList={7}
                 placeholder={"Enter outcome"}
-                updateList={(value: Array<string>) => onChange("outcomes", value)}
+                updateList={(value: Array<string>) => onChange(OUTCOMES, value)}
                 errorMessage={validations[currentStep].outcomes}
               />
             </>
@@ -247,7 +246,7 @@ export default class FormDetails extends React.Component<
             initialSelected={categories}
             sortedGroup={setCategories}
             updateSelection={categoryArray => 
-              onChange("categories", categoryArray)
+              onChange(CATEGORIES, categoryArray)
             }
             errorMessage={validations[currentStep].categories}
           />
@@ -327,7 +326,6 @@ export default class FormDetails extends React.Component<
             }
           />
         </div>
-        {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
       </div>
     );
   }

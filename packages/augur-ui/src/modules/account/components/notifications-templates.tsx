@@ -244,19 +244,5 @@ export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => 
   );
 };
 
-export const ProceedsToClaimOnHoldTemplate = (props: ProceedsToClaimOnHoldTemplateProps) => {
-  const { market } = props;
-  const { outstandingReturns, description } = market;
-
-  return (
-    <React.Fragment>
-      <Template
-        message={`You have ${outstandingReturns} ETH available to claim when the waiting period ends for: "${description}"`}
-        {...props}
-      />
-    </React.Fragment>
-  );
-};
-
 // Helper
 const wrapMarketName = (marketName: string) => <span>{`"${marketName}"`}</span>;

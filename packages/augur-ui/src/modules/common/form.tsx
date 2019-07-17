@@ -106,19 +106,19 @@ interface FormDropdownProps {
 }
 
 export const FormDropdown = (props: FormDropdownProps) => (
-  <>
+  <div className={Styles.FormDropdown}>
     <SquareDropdown
       {...props}
-      className={classNames(Styles.FormDropdown, {
+      className={classNames({
         [Styles.disabled]: props.disabled,
-        [Styles.error]: props.error,
+        [Styles.error]: props.errorMessage && props.errorMessage !== "" && props.errorMessage.length > 0,
       })}
       activeClassName={Styles.FormDropdownActive}
     />
-    {props.error && props.errorMessage && (
+    {props.errorMessage && props.errorMessage !== "" && props.errorMessage.length > 0 && (
       <span className={Styles.ErrorText}>{props.errorMessage}</span>
     )}
-  </>
+  </div>
 );
 
 interface TimezoneDropdownProps {
@@ -217,7 +217,7 @@ interface CategoryMultiSelectProps {
   sortedGroup: Array<SortedGroup>;
   initialSelected?: Array<string>;
   updateSelection: Function;
-  errorMessage?: string;
+  errorMessage?: Array<string>;
 }
 
 interface CategoryMultiSelectState {
@@ -366,6 +366,7 @@ export class CategoryMultiSelect extends Component<
       tertiaryOptions,
       selected
     );
+    const { errorMessage } = this.props;
 
     return (
       <ul className={Styles.CategoryMultiSelect}>
@@ -375,6 +376,7 @@ export class CategoryMultiSelect extends Component<
             staticLabel="Primary Category"
             onChange={choice => this.onChangeDropdown(choice, 0)}
             options={primaryOptions}
+            errorMessage={errorMessage[0]}
           />
           {customPrimary && (
             <TextInput
@@ -395,6 +397,7 @@ export class CategoryMultiSelect extends Component<
                 staticLabel="Secondary Category"
                 onChange={choice => this.onChangeDropdown(choice, 1)}
                 options={secondaryOptions}
+                errorMessage={errorMessage[1]}
               />
             )}
             {customSecondary && (
@@ -691,8 +694,8 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     const error = errorMessage && errorMessage !== "" && errorMessage.length > 0;
 
     return (
-      <>
-        <div className={Styles.TextInput}>
+      <div className={Styles.TextInput}>
+        <div>
           {type !== 'textarea' ? (
             <>
               <input
@@ -736,7 +739,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
           )}
         </div>
         {error && <span className={Styles.ErrorText}>{errorMessage}</span>}
-      </>
+      </div>
     );
   }
 }
