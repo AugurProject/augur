@@ -1,6 +1,6 @@
 import { Accounts } from "./state/getter/Accounts";
 import { BigNumber } from 'bignumber.js';
-import { Callback, SubscriptionType, TXStatusCallback, augurEmitter } from "./events";
+import { Callback, TXStatusCallback } from "./events";
 import { Connector } from "./connector/connector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { ContractDependenciesEthers, TransactionStatusCallback, TransactionMetadata, TransactionStatus } from "contract-dependencies-ethers";

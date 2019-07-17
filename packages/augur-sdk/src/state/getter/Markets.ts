@@ -7,11 +7,11 @@ import {
   MarketData,
   MarketFinalizedLog,
   MarketType,
+  MarketTypeName,
   MarketVolumeChangedLog,
   OrderEventType,
   OrderType,
-  ParsedOrderEventLog,
-  PayoutNumerators,
+  ParsedOrderEventLog
 } from '../logs/types';
 import { SortLimit } from './types';
 import {
@@ -22,7 +22,7 @@ import {
   convertOnChainAmountToDisplayAmount,
 } from '../../index';
 import { toAscii } from '../utils/utils';
-import { convertPayoutNumeratorsToStrings } from '../../utils';
+import { calculatePayoutNumeratorsValue } from '../../utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -109,7 +109,7 @@ export interface DisputeInfo {
 }
 
 export interface StakeDetails {
-  payout: PayoutNumerators;
+  outcome: string;
   isInvalid: boolean;
   bondSizeCurrent: string;
   bondSizeTotal: string;
@@ -693,11 +693,11 @@ export class Markets {
 
         let marketType: string;
         if (marketCreatedLog.marketType === MarketType.YesNo) {
-          marketType = 'yesNo';
+          marketType = MarketTypeName.YesNo;
         } else if (marketCreatedLog.marketType === MarketType.Categorical) {
-          marketType = 'categorical';
+          marketType = MarketTypeName.Categorical;
         } else {
-          marketType = 'scalar';
+          marketType = MarketTypeName.Scalar;
         }
 
         let description = null;
@@ -1133,15 +1133,38 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
     disputePacingOn: await market.getDisputePacingOn_(),
     stakeCompletedTotal: (await market.getParticipantStake_()).toString(10),
     bondSizeOfNewStake: (await market.getParticipantStake_()).times(2).toString(10),
-    stakes: formatStakeDetails(Object.values(stakeDetails)),
+    stakes: await formatStakeDetails(db, marketId, Object.values(stakeDetails)),
   };
 }
 
-function formatStakeDetails(stakeDetails: any[]): StakeDetails[] {
+async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]): Promise<StakeDetails[]> {
   const formattedStakeDetails: StakeDetails[] = [];
+  const marketCreatedLogs = await db.findMarketCreatedLogs({
+    selector: { market: { $eq: marketId } },
+  });
+
+  const maxPrice = new BigNumber(marketCreatedLogs[0].prices[1]);
+  const minPrice = new BigNumber(marketCreatedLogs[0].prices[0]);
+  const numTicks = new BigNumber(marketCreatedLogs[0].numTicks);
+  const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+  let marketType: string;
+  if (marketCreatedLogs[0].marketType === MarketType.YesNo) {
+    marketType = MarketTypeName.YesNo;
+  } else if (marketCreatedLogs[0].marketType === MarketType.Categorical) {
+    marketType = MarketTypeName.Categorical;
+  } else {
+    marketType = MarketTypeName.Scalar;
+  }
+
   for (let i = 0; i < stakeDetails.length; i++) {
     formattedStakeDetails[i] = {
-      payout: convertPayoutNumeratorsToStrings(stakeDetails[i].payout),
+      outcome: calculatePayoutNumeratorsValue(
+        convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
+        convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
+        numTicks.toString(),
+        marketType,
+        stakeDetails[i].payout
+      ),
       isInvalid: stakeDetails[i].isInvalid,
       bondSizeCurrent: stakeDetails[i].bondSizeCurrent.toString(10),
       bondSizeTotal: stakeDetails[i].bondSizeTotal.toString(10),

@@ -122,3 +122,5 @@ export const ORDER_TYPES = {
   BID: new BigNumber(0),
   ASK: new BigNumber(1)
 };
+
+export const MALFORMED_OUTCOME = "malformed outcome";

@@ -2,8 +2,8 @@ import {
   SCALAR,
   MALFORMED_OUTCOME,
   ZERO
-} from "modules/common/constants";
-import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
+} from "modules/common/constants";import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
+import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
 import { isEmpty } from "utils/is-populated";
 import { createBigNumber } from "utils/create-big-number";
 
@@ -144,9 +144,11 @@ const populateFromOutcome = (
   }
 
   stake.id = calculatePayoutNumeratorsValue(
-    market,
-    stake.payout,
-    stake.isInvalid
+    market.maxPrice,
+    market.minPrice,
+    market.numTicks,
+    market.marketType,
+    stake.payout
   ).toString();
   outcome = outcomes.find(outcome => outcome.id === stake.id);
 
