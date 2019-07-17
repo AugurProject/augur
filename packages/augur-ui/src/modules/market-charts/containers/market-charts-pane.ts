@@ -10,7 +10,7 @@ const mapStateToProps = (state: AppState, ownProps: any) => {
   const {
     currentTimestamp,
   } = state;
-  const market = selectMarket(ownProps.marketId);
+  const market = ownProps.market || selectMarket(ownProps.marketId);
   const daysPassed =
     market &&
     market.creationTime &&

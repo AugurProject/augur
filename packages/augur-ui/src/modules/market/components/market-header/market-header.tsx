@@ -185,7 +185,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
             <MarketTypeLabel marketType={marketType} />
           </WordTrail>
           <div className={Styles.Properties}>
-            {market.id && (
+            {(market.id || preview) && (
               <MarketHeaderBar
                 marketId={market.id}
                 author={market.author}
@@ -248,7 +248,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
               )}
             </div>
             <div className={Styles.Properties}>
-              {market.id && (
+              {(market.id || preview) && (
                 <MarketHeaderBar
                   marketId={market.id}
                   author={market.author}
@@ -263,7 +263,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
               )}
               <MarketHeaderReporting marketId={market.id} preview={preview} market={preview && market} />
               <div className={Styles.Core}>
-                {market.id && <CoreProperties market={market} />}
+                {(market.id || preview) && <CoreProperties market={market} />}
                 <div className={Styles.Time}>
                   <MarketTimeline
                     startTime={market.creationTime || 0}

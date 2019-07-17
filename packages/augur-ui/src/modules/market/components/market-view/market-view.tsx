@@ -398,11 +398,13 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
 
                       <MarketChartsPane
                         marketId={marketId}
+                        market={preview && market}
                         selectedOutcomeId={outcomeId}
                         currentTimestamp={currentTimestamp}
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }
+                        preview={preview}
                       />
                     </div>
                   </ModulePane>
@@ -414,7 +416,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                       )}
                     >
                       <h1>{description}</h1>
-                      <MarketOrdersPositionsTable marketId={marketId} />
+                      <MarketOrdersPositionsTable marketId={marketId} market={preview && market} preview={preview} />
                     </div>
                   </ModulePane>
                 </ModuleTabs>
@@ -459,13 +461,15 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                               />
                             </div>
                             <div className={Styles.MarketView__component}>
-                              {!preview && <MarketChartsPane
+                              <MarketChartsPane
                                 marketId={marketId}
                                 selectedOutcomeId={outcomeId}
                                 updateSelectedOrderProperties={
                                   this.updateSelectedOrderProperties
                                 }
-                              />}
+                                market={preview && market}
+                                preview={preview}
+                              />
                             </div>
                           </div>
                         </div>
@@ -475,7 +479,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                               Styles.MarketView__component
                             )}
                           >
-                            <MarketOrdersPositionsTable marketId={marketId} market={preview && market} />
+                            <MarketOrdersPositionsTable marketId={marketId} market={preview && market} preview={preview} />
                           </div>
                         </div>
                     </div>
