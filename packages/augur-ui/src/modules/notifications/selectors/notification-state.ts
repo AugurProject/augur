@@ -379,7 +379,7 @@ const generateCards = (markets, type) => {
   } else if (type === NOTIFICATION_TYPES.finalizeMarkets) {
     defaults = {
       type,
-      isImportant: true,
+      isImportant: false,
       isNew: true,
       title: FINALIZE_MARKET_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS
