@@ -12,7 +12,7 @@ export interface DropdownProps {
   id?: string;
   onChange: any;
   className?: string;
-  defaultValue?: string | number | object;
+  defaultValue?: string | number;
   options: Array<NameValuePair>;
   large?: boolean;
   staticLabel?: string;
