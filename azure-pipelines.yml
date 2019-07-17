@@ -376,9 +376,9 @@ jobs:
           set -exuo pipefail
           sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
           sudo systemctl status docker
-
-          yarn workspace @augurproject/tools docker:geth:dev
-          docker push augurproject/dev-node-geth:latest
+          cd packages/augur-tools/ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth:$(GETH_VERSION) .
+          #yarn workspace @augurproject/tools docker:geth:dev
+          docker push augurproject/dev-node-geth:$(GETH_VERSION)
         displayName: 'build and push dev-node-geth image'
       - task: Docker@1
         displayName: docker logout
@@ -439,7 +439,8 @@ jobs:
           yarn
 
           # replaces @augurproject/tools docker:build
-          docker pull augurproject/dev-node-geth:latest
+          docker pull augurproject/dev-node-geth:$(GETH_VERSION)
+          docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
           MONO_ROOT=../../
           CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
           # Build and copy to merge with current address.json/upload-block-numbers.json
