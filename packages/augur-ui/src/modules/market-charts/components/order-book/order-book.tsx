@@ -132,7 +132,7 @@ class OrderBookSide extends Component<OrderBookSideProps, {}> {
                 })}
               >
                 <HoverValueLabel
-                  value={formatShares(order.shares)}
+                  value={formatShares(order.cumulativeShares)}
                   showEmptyDash={true}
                   showDenomination={false}
                 />
