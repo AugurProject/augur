@@ -1,5 +1,4 @@
 import { addCanceledOrder, removeCanceledOrder } from 'modules/orders/actions/update-order-status';
-import { Events } from '@augurproject/sdk';
 import { PUBLICTRADE, CANCELORDER, TX_ORDER_ID, TX_MARKET_ID, TX_TRADE_GROUP_ID } from 'modules/common/constants';
 import { UIOrder } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -7,7 +6,7 @@ import { addPendingOrder, updatePendingOrderStatus, removePendingOrder } from 'm
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
-import { Getters, TXEventName } from '@augurproject/sdk';
+import { Events, Getters, TXEventName } from '@augurproject/sdk';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,

@@ -7,8 +7,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';
 import { simulateTrade, simulateTradeGasLimit } from 'modules/contracts/actions/contractCalls';
-import { SimulateTradeData } from '@augurproject/sdk';
-import { Getters } from '@augurproject/sdk';
+import { Getters, SimulateTradeData } from '@augurproject/sdk';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
