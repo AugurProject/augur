@@ -91,21 +91,6 @@ export function logError(err: Error | string | object | null, result?: any): voi
   }
 }
 
-export const createBigNumber = (value, ...args): BigNumber => {
-  let newBigNumber;
-  try {
-    let useValue = value;
-    if (typeof value === 'object' && Object.keys(value).indexOf('_hex') > -1) {
-      useValue = value._hex;
-    }
-    newBigNumber = new BigNumber(`${useValue}`, ...args);
-  } catch (e) {
-    logError("Error instantiating WrappedBigNumber", e);
-  }
-
-  return newBigNumber;
-};
-
 export function calculatePayoutNumeratorsValue(
   displayMaxPrice: string,
   displayMinPrice: string,
@@ -119,15 +104,15 @@ export function calculatePayoutNumeratorsValue(
   if (payout.length === 0) return null;
 
   if (isScalar) {
-    const longPayout = createBigNumber(payout[1], 10);
-    const priceRange = createBigNumber(displayMaxPrice, 10).minus(
-      createBigNumber(displayMinPrice, 10)
+    const longPayout = new BigNumber(payout[1], 10);
+    const priceRange = new BigNumber(displayMaxPrice, 10).minus(
+      new BigNumber(displayMinPrice, 10)
     );
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
     return longPayout
       .times(priceRange)
-      .dividedBy(createBigNumber(numTicks, 10))
-      .plus(createBigNumber(displayMinPrice, 10))
+      .dividedBy(new BigNumber(numTicks, 10))
+      .plus(new BigNumber(displayMinPrice, 10))
       .toString();
   }
   // test if stake payout is malformed

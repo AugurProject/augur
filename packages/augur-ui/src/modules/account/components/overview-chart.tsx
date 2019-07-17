@@ -1,7 +1,6 @@
 import React from "react";
 
 import * as constants from "modules/common/constants";
-import { createBigNumber } from "utils/create-big-number";
 import { DaiLogoIcon } from "modules/common/icons";
 import ProfitLossChart from "modules/account/components/profit-loss-chart";
 import { MovementLabel } from "modules/common/labels";
