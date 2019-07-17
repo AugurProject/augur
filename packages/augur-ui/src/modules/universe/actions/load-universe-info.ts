@@ -1,9 +1,7 @@
 import logError from 'utils/log-error';
-import async from 'async';
-import { createBigNumber } from 'utils/create-big-number';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
-import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes';
-import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value';
+import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
+
 import {
   getDisputeThresholdForFork,
   getOpenInterestInAttoCash,
@@ -242,7 +240,10 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
 
   // @ts-ignore
   const outcomeId = calculatePayoutNumeratorsValue(
-    parentUniverseData.market,
+    parentUniverseData.market.maxPrice,
+    parentUniverseData.market.minPrice,
+    parentUniverseData.market.numTicks,
+    parentUniverseData.market.marketType,
     universeData.payout
   ).toString();
   if (parentUniverseData.market.marketType === SCALAR) {

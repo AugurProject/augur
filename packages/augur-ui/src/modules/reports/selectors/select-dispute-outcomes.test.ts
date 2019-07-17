@@ -1,7 +1,7 @@
 import sinon from "sinon";
 import { CATEGORICAL, SCALAR, YES_NO } from "modules/common-elements/constants";
 import selectDisputeOutcomes from "modules/reports/selectors/select-dispute-outcomes";
-import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
+import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/src/utils";
 
 jest.mock("utils/calculate-payout-numerators-value");
 

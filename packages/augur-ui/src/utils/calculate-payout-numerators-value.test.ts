@@ -1,5 +1,5 @@
 import { YES_NO, CATEGORICAL, SCALAR } from "modules/common-elements/constants";
-import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
+import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/src/utils";
 
 describe(`utils/calculate-payout-numerators-value.js`, () => {
   const marketScalarMin = {
@@ -37,9 +37,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("scalar 75", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketScalar,
-        [2500, 7500],
-        false
+        marketScalar.maxPrice.toString(),
+        marketScalar.minPrice.toString(),
+        marketScalar.numTicks.toString(),
+        marketScalar.marketType.toString(),
+        ["0", "2500", "7500"]
       );
       const expected = "75";
       expect(actual).toEqual(expected);
@@ -49,9 +51,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("scalar sub 0 Min 75", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketScalarMin,
-        [450, 850],
-        false
+        marketScalarMin.maxPrice.toString(),
+        marketScalarMin.minPrice.toString(),
+        marketScalarMin.numTicks.toString(),
+        marketScalarMin.marketType.toString(),
+        ["0", "450", "850"]
       );
       const expected = "75";
       expect(actual).toEqual(expected);
@@ -61,9 +65,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("scalar sub 0 Min 73", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketScalarMin,
-        [470, 830],
-        false
+        marketScalarMin.maxPrice.toString(),
+        marketScalarMin.minPrice.toString(),
+        marketScalarMin.numTicks.toString(),
+        marketScalarMin.marketType.toString(),
+        ["0", "470", "830"]
       );
       const expected = "73";
       expect(actual).toEqual(expected);
@@ -73,9 +79,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("scalar sub 0 Min 25", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketScalarMin,
-        [950, 350],
-        false
+        marketScalarMin.maxPrice.toString(),
+        marketScalarMin.minPrice.toString(),
+        marketScalarMin.numTicks.toString(),
+        marketScalarMin.marketType.toString(),
+        ["0", "950", "350"]
       );
       const expected = "25";
       expect(actual).toEqual(expected);
@@ -85,9 +93,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("scalar 50", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketScalar,
-        [5000, 5000],
-        false
+        marketScalar.maxPrice.toString(),
+        marketScalar.minPrice.toString(),
+        marketScalar.numTicks.toString(),
+        marketScalar.marketType.toString(),
+        ["0",  "5000", "5000"]
       );
       const expected = "50";
       expect(actual).toEqual(expected);
@@ -97,9 +107,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("scalar 25", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketScalar,
-        [7500, 2500],
-        false
+        marketScalar.maxPrice.toString(),
+        marketScalar.minPrice.toString(),
+        marketScalar.numTicks.toString(),
+        marketScalar.marketType.toString(),
+        ["0", "7500", "2500"]
       );
       const expected = "25";
       expect(actual).toEqual(expected);
@@ -109,9 +121,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("scalar 45.01", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketScalar,
-        [5499, 4501],
-        false
+        marketScalar.maxPrice.toString(),
+        marketScalar.minPrice.toString(),
+        marketScalar.numTicks.toString(),
+        marketScalar.marketType.toString(),
+        ["0", "5499", "4501"]
       );
       const expected = "45.01";
       expect(actual).toEqual(expected);
@@ -121,9 +135,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("scalar invalid", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketScalar,
-        [5000, 5000],
-        true
+        marketScalar.maxPrice.toString(),
+        marketScalar.minPrice.toString(),
+        marketScalar.numTicks.toString(),
+        marketScalar.marketType.toString(),
+        ["10000", "0", "0"]
       );
       const expected = null;
       expect(actual).toEqual(expected);
@@ -133,9 +149,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("yes/no NO", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketBinary,
-        [10000, 0],
-        false
+        marketBinary.maxPrice.toString(),
+        marketBinary.minPrice.toString(),
+        marketBinary.numTicks.toString(),
+        marketBinary.marketType.toString(),
+        ["0", "10000", "0"]
       );
       const expected = "0";
       expect(actual).toEqual(expected);
@@ -145,9 +163,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("yes/no YES", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketBinary,
-        [0, 10000],
-        false
+        marketBinary.maxPrice.toString(),
+        marketBinary.minPrice.toString(),
+        marketBinary.numTicks.toString(),
+        marketBinary.marketType.toString(),
+        ["0", "0", "10000"]
       );
       const expected = "1";
       expect(actual).toEqual(expected);
@@ -157,9 +177,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("yes/no invalid", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketBinary,
-        [5000, 5000],
-        true
+        marketBinary.maxPrice.toString(),
+        marketBinary.minPrice.toString(),
+        marketBinary.numTicks.toString(),
+        marketBinary.marketType.toString(),
+        ["10000", "0", "0"]
       );
       const expected = null;
       expect(actual).toEqual(expected);
@@ -169,9 +191,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("categorical 0", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketCategorical,
-        [10003, 0, 0, 0, 0, 0, 0],
-        false
+        marketCategorical.maxPrice.toString(),
+        marketCategorical.minPrice.toString(),
+        marketCategorical.numTicks.toString(),
+        marketCategorical.marketType.toString(),
+        ["0", "10003", "0", "0", "0", "0", "0", "0"]
       );
       const expected = "0";
       expect(actual).toEqual(expected);
@@ -181,9 +205,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("categorical 3", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketCategorical,
-        [0, 0, 0, 10003, 0, 0, 0],
-        false
+        marketCategorical.maxPrice.toString(),
+        marketCategorical.minPrice.toString(),
+        marketCategorical.numTicks.toString(),
+        marketCategorical.marketType.toString(),
+        ["0", "0", "0", "0", "10003", "0", "0", "0"]
       );
       const expected = "3";
       expect(actual).toEqual(expected);
@@ -193,9 +219,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("categorical 6", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketCategorical,
-        [0, 0, 0, 0, 0, 0, 10003],
-        false
+        marketCategorical.maxPrice.toString(),
+        marketCategorical.minPrice.toString(),
+        marketCategorical.numTicks.toString(),
+        marketCategorical.marketType.toString(),
+        ["0", "0", "0", "0", "0", "0", "0", "10003"]
       );
       const expected = "6";
       expect(actual).toEqual(expected);
@@ -205,9 +233,11 @@ describe(`utils/calculate-payout-numerators-value.js`, () => {
   describe("categorical invalid", () => {
     test(`should call the expected method`, () => {
       const actual = calculatePayoutNumeratorsValue(
-        marketCategorical,
-        [1429, 1429, 1429, 1429, 1429, 1429, 1429],
-        true
+        marketCategorical.maxPrice.toString(),
+        marketCategorical.minPrice.toString(),
+        marketCategorical.numTicks.toString(),
+        marketCategorical.marketType.toString(),
+        ["10003", "0", "0", "0", "0", "0", "0", "0"]
       );
       const expected = null;
       expect(actual).toEqual(expected);

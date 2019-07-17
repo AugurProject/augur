@@ -42,6 +42,7 @@ export interface DisputeCrowdsourcerCompletedLog extends Log, Doc {
   universe: Address;
   market: Address;
   disputeCrowdsourcer: Address;
+  size: string;
   nextWindowStartTime: Timestamp;
   pacingOn: boolean;
 }
@@ -57,6 +58,14 @@ export interface DisputeCrowdsourcerContributionLog
   payoutNumerators: PayoutNumerators;
   amountStaked: string;
   description: string;
+}
+
+export interface DisputeCrowdsourcerCreatedLog extends Log, Doc {
+  universe: Address;
+  market: Address;
+  disputeCrowdsourcer: Address;
+  payoutNumerators: PayoutNumerators;
+  size: string;
 }
 
 export interface DisputeCrowdsourcerRedeemedLog extends Log, Doc, Timestamped {
@@ -91,6 +100,7 @@ export interface InitialReportSubmittedLog extends Log, Doc, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
+  initialReporter: Address;
   amountStaked: string;
   isDesignatedReporter: boolean;
   payoutNumerators: PayoutNumerators;
@@ -136,6 +146,12 @@ export enum MarketType {
   YesNo = 0,
   Categorical = 1,
   Scalar = 2,
+}
+
+export enum MarketTypeName {
+  YesNo = 'yesNo',
+  Categorical = 'categorical',
+  Scalar = 'scalar',
 }
 
 export interface MarketVolumeChangedLog extends Log, Doc {
