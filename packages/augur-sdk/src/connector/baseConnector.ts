@@ -1,7 +1,7 @@
 import { SubscriptionEventName } from "../constants";
 import { Callback, SubscriptionType } from "../events";
 
-export abstract class Connector {
+export abstract class BaseConnector {
   public subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
 
   // Lifecyle of the connector

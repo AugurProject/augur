@@ -1,7 +1,8 @@
 import {
+  calculatePayoutNumeratorsValue,
   MarketInfo,
   MarketInfoOutcome,
-} from '@augurproject/sdk/build/state/getter/Markets';
+} from '@augurproject/sdk';
 import { MarketData, Consensus, OutcomeFormatted } from 'modules/types';
 import {
   REPORTING_STATE,
@@ -11,7 +12,6 @@ import {
   CATEGORICAL,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate } from './format-date';
-import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/build";
 import { formatPercent, formatDai, formatNone, formatNumber } from './format-number';
 import { createBigNumber } from './create-big-number';
 

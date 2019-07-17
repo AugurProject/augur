@@ -1,9 +1,9 @@
 import { Callback, SubscriptionType } from "../events";
-import { Connector } from "./connector";
+import { BaseConnector } from "./baseConnector";
 import { SubscriptionEventName } from "../constants";
 import fetch from "cross-fetch";
 
-export class HTTPConnector extends Connector {
+export class HTTPConnector extends BaseConnector {
 
   constructor(public readonly endpoint: string) {
     super();

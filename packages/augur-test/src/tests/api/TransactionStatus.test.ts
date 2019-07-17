@@ -1,9 +1,8 @@
 import { BigNumber } from "bignumber.js";
 import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/state/getter/Markets';
+
 import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers";
-import { TXEventName } from "@augurproject/sdk/build/constants";
-import { augurEmitter } from '@augurproject/sdk/build/events';
+import { Getters, TXEventName } from "@augurproject/sdk";
 import { makeProvider, seedPath } from "../../libs";
 import * as blockchain from "@augurproject/tools/build/libs/blockchain";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
@@ -119,7 +118,7 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
   john.augur.on(TXEventName.AwaitingSigning, awaitingSigning);
 
   await john.createYesNoMarket({
-    endTime: (await john.getTimestamp()).minus(SECONDS_IN_A_DAY),
+    endTime: (await john.getTimestamp()).minus(Getters.Markets.SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
     designatedReporter: john.account.publicKey,
