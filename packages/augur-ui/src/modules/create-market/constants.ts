@@ -5,6 +5,8 @@ import {
 } from "modules/common/constants";
 import * as icons from "modules/categories/icons";
 
+export const INVALID_OUTCOME = "Market is Invalid";
+
 // Button Types
 export const BACK = "back";
 export const NEXT = "next";
@@ -297,7 +299,15 @@ export const HOUR = "hour";
 export const DESIGNATED_REPORTER_ADDRESS = "designatedReporterAddress";
 export const EXPIRY_SOURCE = "expirySource";
 
+export const OUTCOMES = "outcomes";
+
+export const DENOMINATION = "scalarDenomination";
+export const MIN_PRICE = "minPrice";
+export const MAX_PRICE = "maxPrice";
+export const TICK_SIZE = "tickSize";
+
 export const SETTLEMENT_FEE = "settlementFee";
+export const AFFILIATE_FEE = "affiliateFee";
 
 export const VALIDATION_ATTRIBUTES = {
 	[DESCRIPTION]: {
@@ -335,13 +345,51 @@ export const VALIDATION_ATTRIBUTES = {
 		checkFilledString: true,
 		checkFilledStringMessage: "Enter a website"
 	},
+	[OUTCOMES]: {
+		label: OUTCOMES,
+		readableName: "outcomes",
+		checkOutcomes: true,
+	},
+	[DENOMINATION]: {
+		label: DENOMINATION,
+		readableName: "Unit of measurement",
+		checkFilledString: true,
+		checkFilledStringMessage: "Enter a unit of measurement"
+	},
+	[MIN_PRICE]: {
+		label: MIN_PRICE,
+		readableName: "Min",
+		checkFilledNumber: true,
+		checkLessThan: true,
+	},
+	[MAX_PRICE]: {
+		label: MAX_PRICE,
+		readableName: "Max",
+		checkFilledNumber: true,
+		checkMoreThan: true,
+	},
+	[TICK_SIZE]: {
+		label: TICK_SIZE,
+		readableName: "Precision",
+		checkFilledNumber: true,
+		checkFilledNumberMessage: "Enter precision",
+		checkPositive: true,
+	},
 	[SETTLEMENT_FEE]: {
         label: SETTLEMENT_FEE, 
         readableName: "Market creator fee", 
         checkBetween: true, 
         checkFilledNumber: true, 
         min: 0, 
-        max: 50
+        max: 50,
+	},
+	[AFFILIATE_FEE]: {
+        label: AFFILIATE_FEE, 
+        readableName: "Affiliate fee", 
+        checkBetween: true, 
+        checkFilledNumber: true, 
+        min: 0, 
+        max: 100,
 	}
 }
 

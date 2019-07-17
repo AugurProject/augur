@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { LocationDisplay } from "modules/common/form";
+import { LocationDisplay, Error } from "modules/common/form";
 import { 
   BACK, 
   NEXT, 
@@ -19,8 +19,20 @@ import {
   HOUR,
   DESIGNATED_REPORTER_ADDRESS,
   VALIDATION_ATTRIBUTES,
-  CATEGORIES
+  CATEGORIES,
+  OUTCOMES,
+  SCRATCH, 
+  DENOMINATION,
+  MIN_PRICE, 
+  MAX_PRICE,
+  TICK_SIZE,
+  AFFILIATE_FEE,
+  SETTLEMENT_FEE
 } from "modules/create-market/constants";
+import { 
+  CATEGORICAL,
+  SCALAR
+} from 'modules/common/constants';
 import {
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
@@ -37,13 +49,16 @@ import makePath from "modules/routes/helpers/make-path";
 import {
   CREATE_MARKET
 } from "modules/routes/constants/views";
-import { SCRATCH, CATEGORICAL } from "modules/create-market/constants";
 import { DEFAULT_STATE } from "modules/markets/reducers/new-market";
 import { 
   isBetween, 
   isFilledNumber, 
   isFilledString, 
-  checkCategoriesArray 
+  checkCategoriesArray,
+  checkOutcomesArray,
+  isLessThan,
+  isMoreThan,
+  isPositive
 } from "modules/common/validations";
 
 import Styles from "modules/create-market/components/form.styles";
@@ -76,6 +91,11 @@ interface Validations {
   max?: Number;
   checkFilledNumberMessage?: string;
   checkFilledStringMessage?: string;
+  checkCategories?: Boolean;
+  checkOutcomes?: Boolean;
+  checkLessThan?: Boolean;
+  checkMoreThan?: Boolean;
+  checkPositive?: Boolean;
 }
 
 export default class Form extends React.Component<
@@ -155,27 +175,44 @@ export default class Form extends React.Component<
 
   findErrors = () => {
     const { newMarket } = this.props;
+    const { 
+      currentStep,
+      expirySourceType,
+      designatedReporterType,
+      marketType
+    } = newMarket;
     let hasErrors = false; 
 
-    if (newMarket.currentStep === 0) {
-      // check for is valid and set validations
-      const fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
-      if (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
+    let fields = [];
+
+    if (currentStep === 0) {
+      fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
+      if (expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
         fields.push(EXPIRY_SOURCE);
       } 
-      if (newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC) {
+      if (designatedReporterType === DESIGNATED_REPORTER_SPECIFIC) {
         fields.push(DESIGNATED_REPORTER_ADDRESS);
       } 
-      fields.map(field => {
-          const error = this.evaluate({
-            ...VALIDATION_ATTRIBUTES[field],
-            updateValue: false,
-            value: newMarket[field], 
-          });
-          if (error) hasErrors = true;
-        }
-      );
+      if (marketType === CATEGORICAL) {
+        fields.push(OUTCOMES);
+      }
+      if (marketType === SCALAR) {
+        fields.push(DENOMINATION, MIN_PRICE, MAX_PRICE, TICK_SIZE);
+      }
+    } else if (currentStep === 1) {
+      fields = [SETTLEMENT_FEE, AFFILIATE_FEE]
     }
+
+
+    fields.map(field => {
+        const error = this.evaluate({
+          ...VALIDATION_ATTRIBUTES[field],
+          updateValue: false,
+          value: newMarket[field], 
+        });
+        if (error) hasErrors = true;
+      }
+    );
 
     return hasErrors;
   }
@@ -271,6 +308,8 @@ export default class Form extends React.Component<
 
   evaluate = (validationsObj: Validations) => {
 
+    const { newMarket } = this.props;
+
     const {
       checkBetween,
       label,
@@ -283,14 +322,22 @@ export default class Form extends React.Component<
       checkFilledString,
       checkFilledStringMessage,
       updateValue,
-      checkCategories
+      checkCategories,
+      checkOutcomes,
+      checkMoreThan,
+      checkLessThan,
+      checkPositive
     } = validationsObj;
 
     const checkValidations = [
       checkFilledNumber ? isFilledNumber(value, readableName, checkFilledNumberMessage) : "",
       checkFilledString ? isFilledString(value, readableName, checkFilledStringMessage) : "",
       checkCategories ? checkCategoriesArray(value) : "",
-      checkBetween ? isBetween(value, readableName, min, max) : ""
+      checkOutcomes ? checkOutcomesArray(value) : "",
+      checkBetween ? isBetween(value, readableName, min, max) : "",
+      checkMoreThan ? isMoreThan(value, readableName, newMarket.minPrice) : "",
+      checkLessThan ? isLessThan(value, readableName, newMarket.maxPrice) : "",
+      checkPositive ? isPositive(value) : "",
     ];
     const errorMsg = checkValidations.find(validation => validation !== "");
 
@@ -302,8 +349,7 @@ export default class Form extends React.Component<
     // no errors
     if (updateValue) {
       this.onChange(label, value);
-    }
-    else {
+    } else {
       this.onError(name, "");
     }
   }
@@ -361,6 +407,12 @@ export default class Form extends React.Component<
     } = this.props;
     const s = this.state;
 
+    const {
+      currentStep,
+      validations,
+      uniqueId
+    } = newMarket;
+
     const { 
       mainContent, 
       explainerBlockTitle, 
@@ -369,10 +421,13 @@ export default class Form extends React.Component<
       explainerBlockSubtexts, 
       largeHeader,
       noDarkBackground
-    } = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
+    } = CUSTOM_CONTENT_PAGES[currentStep];
 
-    const savedDraft = drafts[newMarket.uniqueId];
+    const savedDraft = drafts[uniqueId];
     const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+
+    const noErrors = Object.values(validations[currentStep]).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
+
     return (
       <div 
         ref={node => {
@@ -380,7 +435,7 @@ export default class Form extends React.Component<
         }}
         className={Styles.Form}
       >
-        <LocationDisplay currentStep={newMarket.currentStep} pages={CUSTOM_CONTENT_PAGES} />
+        <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
         <LargeHeader text={largeHeader} />
         {explainerBlockTitle && explainerBlockSubtexts && 
           <ExplainerBlock
@@ -392,6 +447,7 @@ export default class Form extends React.Component<
           {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
           {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
           {mainContent === REVIEW && <Review />}
+          {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
           <div>
             {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
             <div>
