@@ -11,8 +11,9 @@ import {
   CATEGORICAL,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate } from './format-date';
-import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
+// import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/src/utils";
 import { formatPercent, formatDai, formatNone, formatNumber } from './format-number';
+import { createBigNumber } from './create-big-number';
 
 export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
@@ -117,6 +118,7 @@ function processConsensus(market: MarketInfo): Consensus | null {
   const winningOutcome = null;
   let outcomeName = null;
   if (market.outcomes.length) {
+    /*
     const winningOutcome = calculatePayoutNumeratorsValue(
       market.maxPrice,
       market.minPrice,
@@ -124,6 +126,7 @@ function processConsensus(market: MarketInfo): Consensus | null {
       market.marketType,
       market.consensus
     );
+    */
     // for scalars, we will just use the winningOutcome for display
     const marketOutcome = market.outcomes.find(
       outcome => outcome.id === parseInt(winningOutcome, 10)

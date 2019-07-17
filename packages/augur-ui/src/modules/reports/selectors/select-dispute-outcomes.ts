@@ -2,8 +2,8 @@ import {
   SCALAR,
   MALFORMED_OUTCOME,
   ZERO
-} from "modules/common/constants";import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
-import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
+} from "modules/common/constants";
+// import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/src/utils";
 import { isEmpty } from "utils/is-populated";
 import { createBigNumber } from "utils/create-big-number";
 
@@ -143,6 +143,9 @@ const populateFromOutcome = (
     return { ...outcome, ...stake, potentialFork };
   }
 
+  // TODO: fix this during refactor
+  stake.id = 0;
+  /*
   stake.id = calculatePayoutNumeratorsValue(
     market.maxPrice,
     market.minPrice,
@@ -150,6 +153,7 @@ const populateFromOutcome = (
     market.marketType,
     stake.payout
   ).toString();
+  */
   outcome = outcomes.find(outcome => outcome.id === stake.id);
 
   if (marketType === SCALAR) stake.name = stake.id;
