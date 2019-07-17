@@ -6,7 +6,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { getOutcomeName } from "utils/get-outcome";
 import { formatEther, formatRep, formatShares } from "utils/format-number";
-import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
+import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/build";
 import {
   BUY,
   SELL,
@@ -87,6 +87,7 @@ import { Outcomes } from "modules/types";
 import { AppState } from "store";
 import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
+import { createBigNumber } from "utils/create-big-number";
 
 export default function setAlertText(alert: any, callback: any) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState): void => {
