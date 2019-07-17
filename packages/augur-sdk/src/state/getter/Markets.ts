@@ -1143,9 +1143,10 @@ async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]
     selector: { market: { $eq: marketId } },
   });
 
-  const maxPrice = new BigNumber(marketCreatedLogs[0].prices[1]).toString();
-  const minPrice = new BigNumber(marketCreatedLogs[0].prices[0]).toString();
-  const numTicks = new BigNumber(marketCreatedLogs[0].numTicks).toString();
+  const maxPrice = new BigNumber(marketCreatedLogs[0].prices[1]);
+  const minPrice = new BigNumber(marketCreatedLogs[0].prices[0]);
+  const numTicks = new BigNumber(marketCreatedLogs[0].numTicks);
+  const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
   let marketType: string;
   if (marketCreatedLogs[0].marketType === MarketType.YesNo) {
     marketType = MarketTypeName.YesNo;
@@ -1158,9 +1159,9 @@ async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]
   for (let i = 0; i < stakeDetails.length; i++) {
     formattedStakeDetails[i] = {
       outcome: calculatePayoutNumeratorsValue(
-        maxPrice,
-        minPrice,
-        numTicks,
+        convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
+        convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
+        numTicks.toString(),
         marketType,
         stakeDetails[i].payout
       ),

@@ -107,8 +107,8 @@ export const createBigNumber = (value, ...args): BigNumber => {
 };
 
 export function calculatePayoutNumeratorsValue(
-  maxPrice: string,
-  minPrice: string,
+  displayMaxPrice: string,
+  displayMinPrice: string,
   numTicks: string,
   marketType: string,
   payout: string[]
@@ -120,14 +120,14 @@ export function calculatePayoutNumeratorsValue(
 
   if (isScalar) {
     const longPayout = createBigNumber(payout[1], 10);
-    const priceRange = createBigNumber(maxPrice, 10).minus(
-      createBigNumber(minPrice, 10)
+    const priceRange = createBigNumber(displayMaxPrice, 10).minus(
+      createBigNumber(displayMinPrice, 10)
     );
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
     return longPayout
       .times(priceRange)
       .dividedBy(createBigNumber(numTicks, 10))
-      .plus(createBigNumber(minPrice, 10))
+      .plus(createBigNumber(displayMinPrice, 10))
       .toString();
   }
   // test if stake payout is malformed
