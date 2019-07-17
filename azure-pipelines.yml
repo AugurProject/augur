@@ -356,6 +356,8 @@ jobs:
   - job: Docker_geth_dev
     dependsOn:
     - PreFlightCheck
+    pool:
+      vmImage: 'Ubuntu 16.04'
     condition: |
       and
       (
