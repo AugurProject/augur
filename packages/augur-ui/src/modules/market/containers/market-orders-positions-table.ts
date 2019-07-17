@@ -15,7 +15,7 @@ import { selectUserFilledOrders } from "modules/orders/selectors/filled-orders";
 import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
 
 const mapStateToProps = (state, ownProps) => {
-  const market = selectMarket(ownProps.marketId);
+  const market = ownProps.market || selectMarket(ownProps.marketId);
   const openOrders = getUserOpenOrders(market.id) || [];
 
   let canClaim = false;

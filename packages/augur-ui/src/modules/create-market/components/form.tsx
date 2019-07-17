@@ -63,6 +63,8 @@ import {
 
 import Styles from "modules/create-market/components/form.styles";
 
+import MarketView from 'modules/market/components/market-view/market-view';
+
 interface FormProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
@@ -104,6 +106,7 @@ export default class Form extends React.Component<
 > {
   state: FormState = {
     blockShown: false,
+    showPreview: false,
   };
 
   componentDidMount() {
@@ -400,6 +403,10 @@ export default class Form extends React.Component<
     updateNewMarket({validations: updatedValidations});
   }
 
+  preview = () => {
+    this.setState({showPreview: true});
+  }
+
   render() {
     const {
       newMarket,
@@ -420,43 +427,55 @@ export default class Form extends React.Component<
       secondButton, 
       explainerBlockSubtexts, 
       largeHeader,
-      noDarkBackground
+      noDarkBackground,
+      previewButton
     } = CUSTOM_CONTENT_PAGES[currentStep];
 
     const savedDraft = drafts[uniqueId];
     const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
 
-    const noErrors = Object.values(validations[currentStep]).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
+    const noErrors = Object.values((validations[currentStep] || {})).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
 
     return (
       <div 
         ref={node => {
           this.node = node;
         }}
-        className={Styles.Form}
+        className={classNames(Styles.Form, {[Styles.Preview]: this.state.showPreview})}
       >
-        <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
-        <LargeHeader text={largeHeader} />
-        {explainerBlockTitle && explainerBlockSubtexts && 
-          <ExplainerBlock
-            title={explainerBlockTitle}
-            subtexts={explainerBlockSubtexts}
+        {this.state.showPreview &&
+          <MarketView
+            market={newMarket}
+            preview
           />
         }
-        <ContentBlock noDarkBackground={noDarkBackground}>
-          {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
-          {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
-          {mainContent === REVIEW && <Review />}
-          {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
-          <div>
-            {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
-            <div>
-              <SecondaryButton text={disabledSave ? "Saved": "Save draft"} disabled={disabledSave} action={this.saveDraft} />
-              {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
-              {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
-            </div>
-          </div>
-        </ContentBlock>
+        {!this.state.showPreview && 
+          <>
+            <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
+            <LargeHeader text={largeHeader} />
+            {previewButton && <PrimaryButton text="Preview your market" action={this.preview} />}
+            {explainerBlockTitle && explainerBlockSubtexts && 
+              <ExplainerBlock
+                title={explainerBlockTitle}
+                subtexts={explainerBlockSubtexts}
+              />
+            }
+            <ContentBlock noDarkBackground={noDarkBackground}>
+              {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
+              {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
+              {mainContent === REVIEW && <Review />}
+              {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
+              <div>
+                {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
+                <div>
+                  <SecondaryButton text={disabledSave ? "Saved": "Save draft"} disabled={disabledSave} action={this.saveDraft} />
+                  {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
+                  {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
+                </div>
+              </div>
+            </ContentBlock>
+          </>
+        }
       </div>
     );
   }
