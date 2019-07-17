@@ -118,6 +118,7 @@ function processConsensus(market: MarketInfo): Consensus | null {
   const winningOutcome = null;
   let outcomeName = null;
   if (market.outcomes.length) {
+    const winningOutcome = '0';
     /*
     const winningOutcome = calculatePayoutNumeratorsValue(
       market.maxPrice,

@@ -1,6 +1,6 @@
 import logError from 'utils/log-error';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
-import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
+//import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/src/utils";
 
 import {
   getDisputeThresholdForFork,
@@ -22,6 +22,7 @@ import { NodeStyleCallback, Universe } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
+import { createBigNumber } from 'utils/create-big-number';
 
 const REQUIRED_GENESIS_SUPPLY = createBigNumber(
   '1100000000000000000000000',
@@ -239,13 +240,16 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
   if (universeData.isInvalid) return 'Invalid';
 
   // @ts-ignore
-  const outcomeId = calculatePayoutNumeratorsValue(
+  const outcomeId = 0;
+  // TODO: update this when sdk reference is figured out.
+  /* calculatePayoutNumeratorsValue(
     parentUniverseData.market.maxPrice,
     parentUniverseData.market.minPrice,
     parentUniverseData.market.numTicks,
     parentUniverseData.market.marketType,
     universeData.payout
   ).toString();
+  */
   if (parentUniverseData.market.marketType === SCALAR) {
     return outcomeId;
   }
