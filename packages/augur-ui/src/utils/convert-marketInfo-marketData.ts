@@ -11,10 +11,8 @@ import {
   CATEGORICAL,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate } from './format-date';
-// import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
-import calculatePayoutNumeratorsValue from './calculate-payout-numerators-value';
+import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
 import { formatPercent, formatDai, formatNone, formatNumber } from './format-number';
-import { createBigNumber } from './create-big-number';
 
 export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
@@ -120,7 +118,10 @@ function processConsensus(market: MarketInfo): Consensus | null {
   let outcomeName = null;
   if (market.outcomes.length) {
     const winningOutcome = calculatePayoutNumeratorsValue(
-      market,
+      market.maxPrice,
+      market.minPrice,
+      market.numTicks,
+      market.marketType,
       market.consensus
     );
     // for scalars, we will just use the winningOutcome for display

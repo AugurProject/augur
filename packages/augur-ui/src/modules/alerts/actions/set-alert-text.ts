@@ -6,9 +6,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { getOutcomeName } from "utils/get-outcome";
 import { formatEther, formatRep, formatShares } from "utils/format-number";
-// import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
-import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
-import { createBigNumber } from "utils/create-big-number";
+import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
 import {
   BUY,
   SELL,
@@ -256,14 +254,11 @@ export default function setAlertText(alert: any, callback: any) {
             loadMarketsInfoIfNotLoaded([alert.to], () => {
               const marketInfo = selectMarket(alert.to);
               const outcome = calculatePayoutNumeratorsValue(
-                // marketInfo.maxPrice,
-                // marketInfo.minPrice,
-                // marketInfo.numTicks,
-                // marketInfo.marketType,
-                // alert.params._payoutNumerators
-                marketInfo,
-                alert.params._payoutNumerators,
-                alert.params._invalid
+                marketInfo.maxPrice,
+                marketInfo.minPrice,
+                marketInfo.numTicks,
+                marketInfo.marketType,
+                alert.params._payoutNumerators
               );
               const outcomeDescription =
                 outcome === null
@@ -291,14 +286,11 @@ export default function setAlertText(alert: any, callback: any) {
             loadMarketsInfoIfNotLoaded([alert.to], () => {
               const marketInfo = selectMarket(alert.to);
               const outcome = calculatePayoutNumeratorsValue(
-                // marketInfo.maxPrice,
-                // marketInfo.minPrice,
-                // marketInfo.numTicks,
-                // marketInfo.marketType,
-                // alert.params._payoutNumerators
-                marketInfo,
-                alert.params._payoutNumerators,
-                alert.params._invalid
+                marketInfo.maxPrice,
+                marketInfo.minPrice,
+                marketInfo.numTicks,
+                marketInfo.marketType,
+                alert.params._payoutNumerators
               );
               const outcomeDescription =
                 outcome === null
@@ -355,14 +347,11 @@ export default function setAlertText(alert: any, callback: any) {
             loadMarketsInfoIfNotLoaded([forkingMarketId], () => {
               const marketInfo = selectMarket(forkingMarketId);
               const outcome = calculatePayoutNumeratorsValue(
-                // marketInfo.maxPrice,
-                // marketInfo.minPrice,
-                // marketInfo.numTicks,
-                // marketInfo.marketType,
-                // alert.params._payoutNumerators
-                marketInfo,
-                alert.params._payoutNumerators,
-                alert.params._invalid,
+                marketInfo.maxPrice,
+                marketInfo.minPrice,
+                marketInfo.numTicks,
+                marketInfo.marketType,
+                alert.params._payoutNumerators
               );
               const outcomeDescription = getOutcomeName(
                 marketInfo,

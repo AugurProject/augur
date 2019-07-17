@@ -1,8 +1,6 @@
 import logError from 'utils/log-error';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
-// import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
-import { createBigNumber } from 'utils/create-big-number';
-import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value';
+import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
 
 import {
   getDisputeThresholdForFork,
@@ -242,11 +240,10 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
 
   // @ts-ignore
   const outcomeId = calculatePayoutNumeratorsValue(
-    // parentUniverseData.market.maxPrice,
-    // parentUniverseData.market.minPrice,
-    // parentUniverseData.market.numTicks,
-    // parentUniverseData.market.marketType,
-    parentUniverseData.market,
+    parentUniverseData.market.maxPrice,
+    parentUniverseData.market.minPrice,
+    parentUniverseData.market.numTicks,
+    parentUniverseData.market.marketType,
     universeData.payout
   ).toString();
   if (parentUniverseData.market.marketType === SCALAR) {
