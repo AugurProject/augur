@@ -11,7 +11,6 @@ interface MarketsViewProps {
   markets: Array<MarketData>;
   location: object;
   history: object;
-  isConnected: boolean,
   toggleFavorite: (...args: any[]) => any;
   loadMarketsInfoIfNotLoaded: (...args: any[]) => any;
   isMobile: boolean;
@@ -65,16 +64,16 @@ export default class MarketsView extends Component<
   }
 
   componentDidMount() {
-    const { isConnected } = this.props;
-    if (isConnected) {
+    const { universe } = this.props;
+    if (universe) {
       this.updateFilteredMarkets();
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { search, category, isConnected } = this.props;
+    const { search, category, universe } = this.props;
     if (
-      isConnected !== prevProps.isConnected ||
+      universe !== prevProps.universe ||
       (search !== prevProps.search || category !== prevProps.category)
     ) {
       this.updateFilteredMarkets();

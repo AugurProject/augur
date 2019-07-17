@@ -25,7 +25,6 @@ const mapStateToProps = (state: AppState, { location }) => {
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
 
   return {
-    isConnected: state.connection.isConnected && state.universe.id != null,
     isLogged: state.authStatus.isLogged,
     universe: (state.universe || {}).id,
     search: searchPhrase,
