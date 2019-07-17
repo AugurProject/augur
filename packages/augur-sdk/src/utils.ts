@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
-import { MALFORMED_OUTCOME } from '@augurproject/sdk/src/constants';
-import { MarketTypeName } from '@augurproject/sdk/src/state/logs/types';
+import { MALFORMED_OUTCOME } from './constants';
+import { MarketTypeName } from './state/logs/types';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
