@@ -1,6 +1,6 @@
 import logError from 'utils/log-error';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
-import { calculatePayoutNumeratorsValue, createBigNumber } from "@augurproject/sdk/src/utils";
+import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/build";
 
 import {
   getDisputeThresholdForFork,
@@ -22,6 +22,7 @@ import { NodeStyleCallback, Universe } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
+import { createBigNumber } from 'utils/create-big-number';
 
 const REQUIRED_GENESIS_SUPPLY = createBigNumber(
   '1100000000000000000000000',

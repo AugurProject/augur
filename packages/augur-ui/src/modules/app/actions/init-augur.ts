@@ -175,7 +175,6 @@ export function connectAugur(
           return callback(err, null);
         }
         const Augur = augurSdk.get();
-        dispatch(updateConnectionStatus(true));
         const windowApp = windowRef as WindowApp;
         let universeId =
           env.universe ||

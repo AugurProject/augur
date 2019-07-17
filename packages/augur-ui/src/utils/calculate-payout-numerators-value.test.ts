@@ -1,5 +1,5 @@
 import { YES_NO, CATEGORICAL, SCALAR } from "modules/common-elements/constants";
-import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/src/utils";
+import { calculatePayoutNumeratorsValue } from "@augurproject/sdk/build";
 
 describe(`utils/calculate-payout-numerators-value.js`, () => {
   const marketScalarMin = {

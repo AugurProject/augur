@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
 import Highcharts from "highcharts/highstock";
-import { createBigNumber } from "utils/create-big-number";
 import Styles from "modules/account/components/overview-chart.styles.less";
 import { UserTimeRangeData } from "modules/account/components/overview-chart";
 import { formatEther } from "utils/format-number";
+import { createBigNumber } from "utils/create-big-number";
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 

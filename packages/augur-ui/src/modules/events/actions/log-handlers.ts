@@ -45,6 +45,7 @@ import {
 import { TXStatus } from '@augurproject/sdk/build/events';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
+import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 
 const handleAlertUpdate = (
   log: any,
@@ -128,6 +129,8 @@ export const handleNewBlockLog = (log: any) => (
   if (log.blocksBehindCurrent === 0 && !augurSdk.isSubscribed) {
     // wire up events for sdk
     augurSdk.subscribe(dispatch);
+    // app is connected when subscribed to sdk
+    dispatch(updateConnectionStatus(true));
   }
 };
 
