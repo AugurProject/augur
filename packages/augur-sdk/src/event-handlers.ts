@@ -33,7 +33,7 @@ export interface CompleteSetsSold extends FormattedEventLog {
   numCompleteSets: string;
   marketOI: string;
   fees: string;
-  timestamp: number;
+  timestamp: Address;
 }
 
 export interface DisputeCrowdsourcerCompleted extends FormattedEventLog {
@@ -51,7 +51,7 @@ export interface DisputeCrowdsourcerContribution extends FormattedEventLog {
   disputeCrowdsourcer: Address;
   amountStaked: string;
   description: string;
-  timestamp: number;
+  timestamp: Address;
 }
 
 export interface DisputeCrowdsourcerCreated extends FormattedEventLog {
@@ -70,7 +70,7 @@ export interface DisputeCrowdsourcerRedeemed extends FormattedEventLog {
   amountRedeemed: string;
   repReceived: string;
   payoutNumerators: string[];
-  timestamp: number;
+  timestamp: Address;
 }
 
 export interface DisputeWindowCreated extends FormattedEventLog {
@@ -90,7 +90,7 @@ export interface InitialReportSubmitted extends FormattedEventLog {
   isDesignatedReporter: boolean;
   payoutNumerators: string[];
   description: string;
-  timestamp: number;
+  timestamp: Address;
 
 }
 
@@ -101,7 +101,7 @@ export interface InitialReporterRedeemed extends FormattedEventLog {
   amountRedeemed: string;
   repReceived: string;
   payoutNumerators: string[];
-  timestamp: number;
+  timestamp: Address;
 }
 
 export interface InitialReporterTransferred extends FormattedEventLog {
@@ -124,13 +124,13 @@ export interface MarketCreated extends FormattedEventLog {
   marketType: number;
   numTicks: string;
   outcomes: string[];
-  timestamp: number;
+  timestamp: Address;
 }
 
 export interface MarketFinalized extends FormattedEventLog {
   universe: Address;
   market: Address;
-  timestamp: number;
+  timestamp: Address;
   winningPayoutNumerators: string[];
 }
 
@@ -170,7 +170,7 @@ export interface NewBlock extends FormattedEventLog {
   highestAvailableBlockNumber: number;
   lastSyncedBlockNumber: number;
   percentBehindCurrent: string;
-  timestamp: number;
+  timestamp: Address;
 }
 
 // XXX: TODO - verify eventType and orderType somehow
@@ -191,7 +191,7 @@ export interface ParticipationTokensRedeemed extends FormattedEventLog {
   account: Address;
   attoParticipationTokens: string;
   feePayoutShare: string;
-  timestamp: number;
+  timestamp: Address;
 }
 
 export interface ProfitLossChanged extends FormattedEventLog {
@@ -203,7 +203,7 @@ export interface ProfitLossChanged extends FormattedEventLog {
   avgPrice: string;
   frozenFunds: string;
   realizedCost: string;
-  timestamp: number;
+  timestamp: Address;
 }
 
 export interface ReportingParticipantDisavowed extends FormattedEventLog {
@@ -213,7 +213,7 @@ export interface ReportingParticipantDisavowed extends FormattedEventLog {
 }
 
 export interface TimestampSet extends FormattedEventLog {
-  newTimestamp: number;
+  newtimestamp: Address;
 }
 
 export interface TokenBalanceChanged extends FormattedEventLog {
@@ -266,7 +266,7 @@ export interface TradingProceedsClaimed extends FormattedEventLog {
   numPayoutTokens: string;
   finalTokenBalance: string;
   fees: string;
-  timestamp: number;
+  timestamp: Address;
 }
 
 export interface UniverseCreated extends FormattedEventLog {

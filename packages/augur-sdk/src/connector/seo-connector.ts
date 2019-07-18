@@ -6,7 +6,7 @@ import { Subscriptions } from "../subscriptions";
 import { Callback, augurEmitter, SubscriptionType } from "../events";
 
 export class SEOConnector extends Connector {
-  private api: API;
+  public api: API;
   private events = new Subscriptions(augurEmitter);
 
   public async connect(ethNodeUrl: string, account?: string): Promise<any> {

@@ -1,8 +1,9 @@
 import * as HTTPEndpoint from "./HTTPEndpoint";
 import * as Sync from "./Sync";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
-import {EndpointSettings} from "./getter/types";
-import {EventEmitter} from "events";
+import { EndpointSettings } from "./getter/types";
+import { EventEmitter } from "events";
+import { DB } from "./db/DB";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
@@ -66,6 +67,34 @@ export async function run() {
   } catch {
     endpointSettings.certificateKeyFile = "./certs/ssl-cert-snakeoil.pem";
   }
+
+  // testing code
+  const db: DB = (await api.db);
+  const allDocs = await db.syncableDatabases[db.getDatabaseName("MarketCreated")].db.allDocs({
+    include_docs: true,
+    attachments: true,
+  });
+
+  allDocs.rows.forEach((doc) => {
+    console.log("doc", doc);
+    console.log("value", doc.value);
+    console.log("doc", doc.doc);
+  });
+
+  console.log("querying", db.getDatabaseName("MarketCreated"));
+  db.syncableDatabases[db.getDatabaseName("MarketCreated")].db.query((doc, emit) => {
+    emit((doc as any).universe, 1);
+  }, {
+      key: "0x8062dA104239cf70C76B77c61eA988bf6382736a",
+      include_docs: true,
+    })
+    .then((result) => {
+      console.log("RESULT", result);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  console.log("done querying")
 
   console.log("Starting websocket and http endpoints");
   HTTPEndpoint.run(api, endpointSettings);

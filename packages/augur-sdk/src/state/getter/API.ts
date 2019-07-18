@@ -12,8 +12,10 @@ import "./status";
 
 export class API {
   private readonly router: Router;
+  public db: Promise<DB>;
 
   constructor(augur: Augur, db: Promise<DB>) {
+    this.db = db;
     this.router = new Router(augur, db);
   }
 
