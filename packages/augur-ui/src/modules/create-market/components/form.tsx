@@ -8,7 +8,8 @@ import {
   BACK, 
   NEXT, 
   CREATE, 
-  CUSTOM_CONTENT_PAGES, 
+  CUSTOM_CONTENT_PAGES,
+  TEMPLATE_CONTENT_PAGES, 
   REVIEW, 
   FORM_DETAILS, 
   LANDING, 
@@ -27,7 +28,8 @@ import {
   MAX_PRICE,
   TICK_SIZE,
   AFFILIATE_FEE,
-  SETTLEMENT_FEE
+  SETTLEMENT_FEE,
+  SUB_CAETGORIES
 } from "modules/create-market/constants";
 import { 
   CATEGORICAL,
@@ -45,6 +47,7 @@ import { NewMarket, Drafts } from "modules/types";
 import FormDetails from "modules/create-market/containers/form-details";
 import Review from "modules/create-market/containers/review";
 import FeesLiquidity from "modules/create-market/containers/fees-liquidity";
+import SubCategories from "modules/create-market/containers/sub-categories";
 import makePath from "modules/routes/helpers/make-path";
 import {
   CREATE_MARKET
@@ -73,10 +76,12 @@ interface FormProps {
   updateDraft: Function;
   clearNewMarket: Function;
   discardModal: Function;
+  template: boolean;
 }
 
 interface FormState {
   blockShown: Boolean;
+  contentPages: Array<any>;
 }
 
 interface Validations {
@@ -104,6 +109,7 @@ export default class Form extends React.Component<
 > {
   state: FormState = {
     blockShown: false,
+    contentPages: this.props.template ? TEMPLATE_CONTENT_PAGES : CUSTOM_CONTENT_PAGES
   };
 
   componentDidMount() {
@@ -162,12 +168,14 @@ export default class Form extends React.Component<
   }
 
   nextPage = () => {
-    const { newMarket, updateNewMarket } = this.props;
+    const { newMarket, updateNewMarket, template } = this.props;
+    const { contentPages } = this.state;
+
     if (this.findErrors()) return;
 
     const newStep =
-      newMarket.currentStep >= CUSTOM_CONTENT_PAGES.length - 1
-        ? CUSTOM_CONTENT_PAGES.length - 1
+      newMarket.currentStep >= contentPages.length - 1
+        ? contentPages.length - 1
         : newMarket.currentStep + 1;
     updateNewMarket({ currentStep: newStep });
     this.node.scrollIntoView();
@@ -403,15 +411,17 @@ export default class Form extends React.Component<
   render() {
     const {
       newMarket,
-      drafts
+      drafts,
+      template
     } = this.props;
-    const s = this.state;
+    const { contentPages } = this.state;
 
     const {
       currentStep,
       validations,
       uniqueId
     } = newMarket;
+
 
     const { 
       mainContent, 
@@ -421,7 +431,7 @@ export default class Form extends React.Component<
       explainerBlockSubtexts, 
       largeHeader,
       noDarkBackground
-    } = CUSTOM_CONTENT_PAGES[currentStep];
+    } = contentPages[currentStep];
 
     const savedDraft = drafts[uniqueId];
     const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
@@ -435,7 +445,7 @@ export default class Form extends React.Component<
         }}
         className={Styles.Form}
       >
-        <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
+        <LocationDisplay currentStep={currentStep} pages={contentPages} />
         <LargeHeader text={largeHeader} />
         {explainerBlockTitle && explainerBlockSubtexts && 
           <ExplainerBlock
@@ -447,6 +457,7 @@ export default class Form extends React.Component<
           {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
           {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
           {mainContent === REVIEW && <Review />}
+          {mainContent === SUB_CATEGORIES && <SubCategories />}
           {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
           <div>
             {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}

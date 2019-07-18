@@ -5,7 +5,7 @@ import {
   updateNewMarket,
   clearNewMarket
 } from "modules/markets/actions/update-new-market";
-import Templates from "modules/create-market/components/templates";
+import SubCategories from "modules/create-market/components/sub-categories";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
@@ -18,11 +18,11 @@ const mapDispatchToProps = dispatch => ({
   clearNewMarket: () => dispatch(clearNewMarket()),
 });
 
-const TemplatesContainer = withRouter(
+const SubCategoriesContainer = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(Templates)
+  )(SubCategories)
 );
 
-export default TemplatesContainer;
+export default SubCategoriesContainer;

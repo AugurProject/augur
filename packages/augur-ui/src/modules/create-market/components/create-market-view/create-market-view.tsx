@@ -6,7 +6,6 @@ import { LANDING, SCRATCH, TEMPLATE } from "modules/create-market/constants";
 
 import Form from "modules/create-market/containers/form";
 import Landing from "modules/create-market/containers/landing";
-import Template from "modules/create-market/containers/template";
 import Styles from "modules/create-market/components/create-market-view/create-market-view.styles";
 
 interface CreateMarketViewProps {
@@ -39,7 +38,7 @@ export default class CreateMarketView extends React.Component<
         {page === LANDING &&
           <Landing updatePage={this.updatePage} />
         }
-        {page === TEMPLATE && <Template updatePage={this.updatePage} />}
+        {page === TEMPLATE && <Form {...this.props} template updatePage={this.updatePage} />}
         {page === SCRATCH && <Form {...this.props} updatePage={this.updatePage} />}
       </section>
     );
