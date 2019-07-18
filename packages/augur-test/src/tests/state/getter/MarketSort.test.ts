@@ -89,6 +89,9 @@ describe('State API :: Market Sorts', () => {
 
     await expect(marketData[0].liquidity[10]).toEqual(102000000000000000000);
 
+    // TODO Add liquidity along a vertical (BIDS for B and C)
+    // TODO confirm liquidity is altered as appropriate
+
   }, 60000);
 
 });
