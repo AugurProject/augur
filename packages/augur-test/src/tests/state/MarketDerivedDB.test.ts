@@ -1,5 +1,5 @@
 import { Augur } from "@augurproject/sdk";
-import { ACCOUNTS } from "@augurproject/tools";
+import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 import { makeDbMock, makeTestAugur } from "../../libs";
 import { stringTo32ByteHex } from "../../libs/Utils";
 import { toAscii } from "@augurproject/sdk/build/state/utils/utils";
@@ -15,7 +15,8 @@ beforeEach(async () => {
 
 let augur: Augur;
 beforeAll(async () => {
-  augur = await makeTestAugur(ACCOUNTS);
+  const seed = await loadSeedFile(defaultSeedPath);
+  augur = await makeTestAugur(seed, ACCOUNTS);
 }, 120000);
 
 test("Doc merge update", async () => {

@@ -1,16 +1,16 @@
-import { ContractAPI, ACCOUNTS, loadSeed } from "@augurproject/tools";
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 import { BigNumber } from 'bignumber.js';
-import { makeProvider, seedPath } from "../../libs";
+import { makeProvider } from "../../libs";
 
 let john: ContractAPI;
 let mary: ContractAPI;
 
 beforeAll(async () => {
-  const { addresses } = loadSeed(seedPath);
-  const provider = await makeProvider(ACCOUNTS);
+  const seed = await loadSeedFile(defaultSeedPath);
+  const provider = await makeProvider(seed, ACCOUNTS);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-  mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
+  mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
 }, 120000);

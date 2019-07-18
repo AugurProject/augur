@@ -8,7 +8,9 @@ export {
 } from "./libs/blockchain";
 export {
   makeGanacheProvider,
-  loadSeed,
+  loadSeedFile,
+  createDbFromSeed,
+  Seed,
 } from "./libs/ganache";
 
 export { Account, ACCOUNTS } from "./constants";

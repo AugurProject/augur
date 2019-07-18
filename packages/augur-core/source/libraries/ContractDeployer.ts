@@ -24,7 +24,7 @@ import {
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
-import { ContractAddresses } from "@augurproject/artifacts";
+import { ContractAddresses, NetworkId, setAddresses } from "@augurproject/artifacts";
 
 
 export class ContractDeployer {
@@ -365,9 +365,8 @@ Deploying to: ${networkConfiguration.networkName}
         }
     }
 
-    private async generateAddressMapping(): Promise<string> {
+    private async generateAddressMappingFile(): Promise<void> {
         type ContractAddressMapping = { [name: string]: string };
-        type NetworkAddressMapping = { [networkId: string]: ContractAddressMapping };
 
         const mapping: ContractAddressMapping = {};
         mapping['Augur'] = this.augur!.address;
@@ -385,18 +384,8 @@ Deploying to: ${networkConfiguration.networkName}
         }
 
         const networkId = (await this.provider.getNetwork()).chainId;
-        let addressMapping: NetworkAddressMapping  = {};
-        if (await exists(this.configuration.contractAddressesOutputPath)) {
-            let existingAddressFileData: string = await readFile(this.configuration.contractAddressesOutputPath, 'utf8');
-            addressMapping = JSON.parse(existingAddressFileData);
-        }
-        addressMapping[networkId] = mapping;
-        return JSON.stringify(addressMapping, null, ' ');
-    }
 
-    private async generateAddressMappingFile(): Promise<void> {
-        const addressMappingJson = await this.generateAddressMapping();
-        await writeFile(this.configuration.contractAddressesOutputPath, addressMappingJson, 'utf8')
+        await setAddresses(String(networkId) as NetworkId, mapping as unknown as ContractAddresses);
     }
 
     private async generateUploadBlockNumberMapping(blockNumber: number): Promise<string> {

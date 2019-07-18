@@ -1,6 +1,6 @@
 import { Augur } from '@augurproject/sdk';
 import { makeTestAugur, makeDbMock } from '../../libs';
-import { ACCOUNTS } from "@augurproject/tools";
+import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
@@ -11,7 +11,8 @@ beforeEach(async () => {
 
 let augur: Augur;
 beforeAll(async () => {
-  augur = await makeTestAugur(ACCOUNTS);
+  const seed = await loadSeedFile(defaultSeedPath);
+  augur = await makeTestAugur(seed, ACCOUNTS);
 }, 120000);
 
 /**
