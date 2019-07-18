@@ -6,7 +6,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { NodeStyleCallback } from "modules/types";
 import { augurSdk } from "services/augursdk";
-import { Coin, Action } from "@augurproject/sdk/build/state/getter/Accounts";
+import { Getters } from "@augurproject/sdk";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState) => ({
   universe: state.universe.id,
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Getters.Accounts.Action>) => ({
   closeModal: () => dispatch(closeModal()),
 });
 
@@ -34,8 +34,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     const result = await Augur.getAccountTransactionHistory({
         universe: sP.universe,
         account: sP.account,
-        coin: coin as Coin,
-        action: action as Action,
+        coin: coin as Getters.Accounts.Coin,
+        action: action as Getters.Accounts.Action,
         earliestTransactionTime: startTime,
         latestTransactionTime: endTime,
       });

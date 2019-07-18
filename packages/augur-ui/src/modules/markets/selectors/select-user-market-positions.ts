@@ -5,8 +5,7 @@ import {
 } from "store/select-state";
 import { PositionData } from "modules/types";
 import { positionSummary } from "modules/positions/selectors/positions-summary";
-import { TradingPosition } from "@augurproject/sdk/build/state/getter/Users";
-
+import { Getters } from "@augurproject/sdk";
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -19,7 +18,7 @@ function selectMarketUserPositions(state, marketId) {
 export const selectUserMarketPositions = createSelector(
   selectMarketsDataStateMarket,
   selectMarketUserPositions,
-  (marketInfo, marketAccountPositions): TradingPosition[] => {
+  (marketInfo, marketAccountPositions): Getters.Users.TradingPosition[] => {
     if (!marketInfo || !marketAccountPositions || !marketAccountPositions.tradingPositions) return [];
 
       const userPositions = Object.values(

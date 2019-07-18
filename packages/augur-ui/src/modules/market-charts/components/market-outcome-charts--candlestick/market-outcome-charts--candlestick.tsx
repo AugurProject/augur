@@ -110,6 +110,7 @@ class MarketOutcomeCandlestick extends React.PureComponent<
               sortByStyles={{ minWidth: '4.875rem' }}
             />
             <StaticLabelDropdown
+              defaultValue={DAI}
               options={VOLUME_DAI_SHARES}
               sortByStyles={{ minWidth: '9.375rem' }}
               staticLabel={

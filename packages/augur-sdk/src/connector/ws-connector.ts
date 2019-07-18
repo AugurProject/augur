@@ -1,10 +1,10 @@
 import { Callback, SubscriptionType } from "../events";
-import { Connector } from "./connector";
+import { BaseConnector } from "./baseConnector";
 import { SubscriptionEventName } from "../constants";
 import WebSocket from "isomorphic-ws";
 import WebSocketAsPromised from "websocket-as-promised";
 
-export class WebsocketConnector extends Connector {
+export class WebsocketConnector extends BaseConnector {
   private socket: WebSocketAsPromised;
 
   constructor(public readonly endpoint: string) {

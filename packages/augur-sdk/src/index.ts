@@ -5,11 +5,14 @@ export * from "@augurproject/types";
 export { Provider } from "./ethereum/Provider";
 export * from "./utils";
 export * from "./constants";
+export * from "./subscriptions";
 
-export * from "./connector/empty-connector";
-export * from "./connector/http-connector";
-export * from "./connector/seo-connector";
-export * from "./connector/connector";
-//export * from "./connector/ws-connector";
+import * as Connectors from "./connector";
+import * as Events from "./events";
 
-export { buildAPI } from "./state";
+export {
+  Connectors,
+  Events
+};
+
+export { buildAPI, Getters, Logs, Sync } from "./state";
