@@ -404,7 +404,9 @@ export default class Form extends React.Component<
   }
 
   preview = () => {
-    this.setState({showPreview: true});
+    this.setState({showPreview: !this.state.showPreview}, () => {
+      this.node.scrollIntoView();
+    });
   }
 
   render() {
@@ -444,10 +446,15 @@ export default class Form extends React.Component<
         className={classNames(Styles.Form, {[Styles.Preview]: this.state.showPreview})}
       >
         {this.state.showPreview &&
-          <MarketView
-            market={newMarket}
-            preview
-          />
+          <div>
+            <span>Your market preview</span>
+            <PrimaryButton text="Close preview" action={this.preview} />
+            <MarketView
+              market={newMarket}
+              preview
+            />
+            <PrimaryButton text="Close preview" action={this.preview} />
+          </div>
         }
         {!this.state.showPreview && 
           <>
