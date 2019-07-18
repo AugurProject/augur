@@ -243,7 +243,7 @@ export default class Form extends React.Component<
 
     if (newMarket.uniqueId && drafts[newMarket.uniqueId]) {
       // update draft
-      const updatedDate = Date.now(); // should be currentTimestamp
+      const updatedDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
         updated: updatedDate
@@ -254,7 +254,7 @@ export default class Form extends React.Component<
       });
     } else {
       // create new draft
-      const createdDate = Date.now(); // should be currentTimestamp
+      const createdDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
         uniqueId: createdDate,

@@ -128,7 +128,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
       isLogged,
       isFavorite,
       history,
-      preview
+      preview,
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -266,9 +266,9 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                 {(market.id || preview) && <CoreProperties market={market} />}
                 <div className={Styles.Time}>
                   <MarketTimeline
-                    startTime={market.creationTime || 0}
+                    startTime={market.creationTime || currentTime}
                     currentTime={currentTime || 0}
-                    endTime={market.endTimeFormatted || convertUnixToFormattedDate(market.endTime)}
+                    endTime={market.endTimeFormatted || convertUnixToFormattedDate(market.endTime.unix())}
                   />
                 </div>
               </div>
