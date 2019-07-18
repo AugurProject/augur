@@ -226,13 +226,15 @@ export class MarketDB extends DerivedDB {
 
   public async recalcLiquidity(orderbook: Orderbook, marketData: MarketData, feeMultiplier: BigNumber, numOutcomes: number, spread: number): Promise<BigNumber> {
     const horizontalLiquidity = this.getHorizontalLiquidity(orderbook, marketData, feeMultiplier, numOutcomes, spread);
-    const verticalLiquidity = this.getVerticalLiquidity(orderbook, marketData, numOutcomes, spread);
+    const verticalLiquidity = this.getVerticalLiquidity(orderbook, marketData, feeMultiplier, numOutcomes, spread);
 
     let left_overlap = new BigNumber(0);
     let right_overlap = new BigNumber(0);
     for (let outcome = 1; outcome < numOutcomes; outcome++) {
-      left_overlap = left_overlap.plus(BigNumber.min(verticalLiquidity[outcome].left, horizontalLiquidity[outcome].bids));
-      right_overlap = right_overlap.plus(BigNumber.min(verticalLiquidity[outcome].right, horizontalLiquidity[outcome].asks));
+      const left = verticalLiquidity[outcome] === undefined ? new BigNumber(0) : verticalLiquidity[outcome].left;
+      const right = verticalLiquidity[outcome] === undefined ? new BigNumber(0) : verticalLiquidity[outcome].right;
+      left_overlap = left_overlap.plus(BigNumber.min(left, horizontalLiquidity[outcome].bids));
+      right_overlap = right_overlap.plus(BigNumber.min(right, horizontalLiquidity[outcome].asks));
     }
 
     return verticalLiquidity.left.plus(horizontalLiquidity.total).plus(verticalLiquidity.right).minus(left_overlap).minus(right_overlap);
@@ -298,107 +300,100 @@ export class MarketDB extends DerivedDB {
     return horizontalLiquidity;
   }
 
-  public getVerticalLiquidity(orderbook: Orderbook, marketData: MarketData, numOutcomes: number, spread: number): VerticalLiquidity {
-/*
-    bid_quantities = []
-    bid_price = []
-    bid_sum = 0
-    ask_quantities = []
-    ask_price = []
-    ask_sum = 0
-    if(binary or scalar):
-      vertical_liquidity.left = 0
-      vertical_liquidity.right = 0
-    else:
-      // for bids
-      For outcome in market:
-            best_bid = get_best_bid(market, outcome)
-            if(no_best_bid):
-              vertical_liquidity.left = 0
-              break
-            else:
-              bid_price[outcome] = best_bid / (1 - reporter_fee-creator_fee)
-              bid_sum += bid_price[outcome] - min
-      excess_spread = bid_sum - range * (1 - spread %)
-      // if liquidity > the spread % even at best bids or there is no best bid
-      if(excess_spread <= 0 or bid_sum == 0):
-        vertical_liquidity.left = 0
-      else:
-        bid_quantities = []
-        for outcome in market:
-              bid_price[outcome] = bid_price[outcome] - excess_spread/num_outcomes_excluding_skipped
-              for order in get_orders_down_to_price(bids, outcome, bid_price[outcome]): bid_quantities[outcome] += order.quantity
-        num_shares = min(bid_quantities)
-        for outcome in market:
-              raw_bid_value = 0
-              bid_quantity_gotten = 0
-              for order in get_orders_down_to_price(bids, outcome, bid_price[outcome]):
-                if(order.quantity + bid_quantity_gotten > num_shares):
-                  order.quantity = num_shares - bid_quantity_gotten
-                if(bid_quantity_gotten >= num_shares):
-                  break
-                raw_bid_value += order.quantity * (order.price - min)
-                bid_quantity_gotten += order.quantity
-              vertical_liquidity[outcome].left = raw_bid_value
-      // for asks
-      For outcome in market:
-              best_ask = get_best_ask(market, outcome)
-              if(no_best_ask):
-                vertical_liquidity.right = 0
-                break
-              else:
-                ask_price[outcome] = best_ask / (1 + reporter_fee-creator_fee)
-                // uses min b/c we want prices that add up to range to calculate a spread, so selling at 33 should be 33*3 ~= 100, not 66*3
-                ask_sum += ask_price[outcome] - min
-        excess_spread = range * (spread % + 1) - ask_sum
-        // if liquidity > the spread % even at best asks or there is no best ask
-        if(excess_spread <= 0 or ask_sum == 0):
-          vertical_liquidity.right = 0
-        else:
-          ask_quantities = []
-          for outcome in market:
-                ask_price[outcome] = ask_price[outcome] + excess_spread/num_outcomes_excluding_invalid
-                for order in get_orders_up_to_price(asks, outcome, ask_price[outcome]): ask_quantities[outcome] += order.quantity
-          num_shares = min(ask_quantities)
-          for outcome in market:
-                raw_ask_value = 0
-                ask_quantity_gotten = 0
-                for order in get_orders_up_to_price(asks, outcome, ask_price[outcome]):
-                  if(order.quantity + ask_quantity_gotten > num_shares):
-                    order.quantity = num_shares - ask_quantity_gotten
-                  if(ask_quantity_gotten >= num_shares):
-                    break
-                  raw_ask_value += order.quantity * (max - order.price)
-                  ask_quantity_gotten += order.quantity
-                vertical_liquidity[outcome].right = raw_ask_value
-
-    // sum midpoint liquidity across all outcomes
-    vertical_liquidity.left = sum(vertical_liquidity.left for all outcomes)
-    vertical_liquidity.right = sum(vertical_liquidity.right for all outcomes)
-
-
-    left_overlap = 0
-    right_overlap = 0
-    for outcome in market:
-      left_overlap += min(vertical_liquidity[outcome].left, midpoint_liquidity[outcome].bids)
-      right_overlap += min(vertical_liquidity[outcome].right, midpoint_liquidity[outcome].asks)
-*/
-    return {
+  public getVerticalLiquidity(orderbook: Orderbook, marketData: MarketData, feeMultiplier: BigNumber, numOutcomes: number, spread: number): VerticalLiquidity {
+    const vertical_liquidity = {
       left: new BigNumber(0),
       right: new BigNumber(0),
-      0: {
-        left: new BigNumber(0),
-        right: new BigNumber(0),
-      },
-      1: {
-        left: new BigNumber(0),
-        right: new BigNumber(0),
-      },
-      2: {
-        left: new BigNumber(0),
-        right: new BigNumber(0),
-      },
     }
+
+    const numTicks = new BigNumber(marketData.numTicks);
+
+    const bid_quantities = {};
+    const ask_quantities = {};
+    const bid_prices = {};
+    const ask_prices = {};
+    let bid_sum = new BigNumber(0);
+    let ask_sum = new BigNumber(0);
+
+    if (marketData.marketType == MarketType.Categorical) {
+
+      // BIDS
+      for (let outcome = 1; outcome < numOutcomes; outcome++) {
+        if (orderbook[outcome].bids.length < 1) {
+          bid_sum = new BigNumber(0);
+          break;
+        }
+        const best_bid = orderbook[outcome].bids[0];
+        bid_prices[outcome] = feeMultiplier.multipliedBy(best_bid.price);
+        bid_sum = bid_sum.plus(bid_prices[outcome]);
+      }
+
+      let excess_spread = bid_sum.minus(numTicks.multipliedBy(100 - spread).div(100));
+      // if liquidity > the spread % even at best bids or there is no best bid we dont calulate anything
+      if (excess_spread.gt(0) && !bid_sum.isZero()) {
+        for (let outcome = 1; outcome < numOutcomes; outcome++) {
+          bid_prices[outcome] = bid_prices[outcome].minus(excess_spread.div(numOutcomes - 1));
+          const bidOrders = _.takeWhile(orderbook[outcome].bids, (order) => { return bid_prices[outcome].lte(order.price); });
+          if (bid_quantities[outcome] === undefined) bid_quantities[outcome] = new BigNumber(0);
+          for (const order of bidOrders) bid_quantities[outcome] = bid_quantities[outcome].plus(order.amount);
+        }
+        const num_shares = BigNumber.min.apply(null, _.values(bid_quantities));
+        for (let outcome = 1; outcome < numOutcomes; outcome++) {
+          let raw_bid_value = new BigNumber(0);
+          let bid_quantity_gotten = new BigNumber(0);
+          const bidOrders = _.takeWhile(orderbook[outcome].bids, (order) => { return bid_prices[outcome].lte(order.price); });
+          for (const order of bidOrders) {
+            let quantityToTake = new BigNumber(order.amount);
+            if (bid_quantity_gotten.plus(quantityToTake).gt(num_shares)) quantityToTake = num_shares.minus(bid_quantity_gotten);
+            if (bid_quantity_gotten.gte(num_shares)) break;
+            raw_bid_value = raw_bid_value.plus(quantityToTake.multipliedBy(order.price));
+            bid_quantity_gotten = bid_quantity_gotten.plus(quantityToTake);
+          }
+          vertical_liquidity[outcome].left = raw_bid_value
+          vertical_liquidity.left = vertical_liquidity.left.plus(raw_bid_value);
+        }
+      }
+
+      // ASKS
+      for (let outcome = 1; outcome < numOutcomes; outcome++) {
+        if (orderbook[outcome].asks.length < 1) {
+          ask_sum = new BigNumber(0);
+          break;
+        }
+        const best_ask = orderbook[outcome].asks[0];
+        ask_prices[outcome] = new BigNumber(best_ask.price).div(feeMultiplier);
+        ask_sum = ask_sum.plus(ask_prices[outcome]);
+      }
+
+      excess_spread = numTicks.multipliedBy(100 + spread).div(100).minus(ask_sum);
+      // if liquidity > the spread % even at best asks or there is no best ask we dont calulate anything
+      if (excess_spread.gt(0) && !ask_sum.isZero()) {
+        for (let outcome = 1; outcome < numOutcomes; outcome++) {
+          ask_prices[outcome] = ask_prices[outcome].minus(excess_spread.div(numOutcomes - 1));
+          const askOrders = _.takeWhile(orderbook[outcome].asks, (order) => { return ask_prices[outcome].gte(order.price); });
+          if (ask_quantities[outcome] === undefined) ask_quantities[outcome] = new BigNumber(0);
+          for (const order of askOrders) ask_quantities[outcome] = ask_quantities[outcome].plus(order.amount);
+        }
+        const num_shares = BigNumber.min.apply(null, _.values(ask_quantities));
+        for (let outcome = 1; outcome < numOutcomes; outcome++) {
+          let raw_ask_value = new BigNumber(0);
+          let ask_quantity_gotten = new BigNumber(0);
+          const askOrders = _.takeWhile(orderbook[outcome].asks, (order) => { return ask_prices[outcome].gte(order.price); });
+          for (const order of askOrders) {
+            let quantityToTake = new BigNumber(order.amount);
+            if (ask_quantity_gotten.plus(quantityToTake).gt(num_shares)) quantityToTake = num_shares.minus(ask_quantity_gotten);
+            if (ask_quantity_gotten.gte(num_shares)) break;
+            raw_ask_value = raw_ask_value.plus(quantityToTake.multipliedBy(numTicks.minus(order.price)));
+            ask_quantity_gotten = ask_quantity_gotten.plus(quantityToTake);
+          }
+          vertical_liquidity[outcome].right = raw_ask_value
+          vertical_liquidity.right = vertical_liquidity.right.plus(raw_ask_value);
+        }
+      }
+      
+    }
+
+    return vertical_liquidity;
   }
 
   public fullTextSearch(query: string): Array<object> {
