@@ -62,6 +62,7 @@ export default class Landing extends React.Component<
                 onChange={(value: string) => {
                   const updatedNewMarket = {...newMarket};
                   updatedNewMarket.categories[0] = value;
+                  updatedNewMarket.currentStep = 1;
                   updateNewMarket(updatedNewMarket);
                   updatePage(TEMPLATE)
                 }}
