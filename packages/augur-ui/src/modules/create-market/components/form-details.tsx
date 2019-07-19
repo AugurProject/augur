@@ -184,7 +184,7 @@ export default class FormDetails extends React.Component<
             })}
             rows="3"
             value={description}
-            errorMessage={validations[currentStep].description}
+            errorMessage={validations[currentStep].description && (validations[currentStep].description.charAt(0).toUpperCase() + validations[currentStep].description.slice(1).toLowerCase())}
           />
 
           {marketType === CATEGORICAL && 
