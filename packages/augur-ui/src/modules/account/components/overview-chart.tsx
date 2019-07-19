@@ -117,16 +117,19 @@ export default class OverviewChart extends React.Component<
         createBigNumber(data[data.length - 1].realized).toNumber(),
       ]);
 
-      this.setState({
-        profitLossData,
-        profitLossChange: formatDai(lastData.realized || 0)
-          .formatted,
-        profitLossChangeHasValue: !createBigNumber(
-          lastData.realized || 0
-        ).eq(constants.ZERO),
-        profitLossValue: formatDai(lastData.realized).formatted,
-        noTrades,
-      });
+
+      if (this.container) {
+        this.setState({
+          profitLossData,
+          profitLossChange: formatDai(lastData.realized || 0)
+            .formatted,
+          profitLossChangeHasValue: !createBigNumber(
+            lastData.realized || 0
+          ).eq(constants.ZERO),
+          profitLossValue: formatDai(lastData.realized).formatted,
+          noTrades,
+        });
+      }
     }
     catch (error) {
       logError(error);
