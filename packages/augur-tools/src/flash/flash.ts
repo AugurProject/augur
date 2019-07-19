@@ -84,7 +84,7 @@ export class FlashSession {
 
   async ensureUser(): Promise<ContractAPI> {
     if (typeof this.contractAddresses === "undefined") {
-      throw Error("ERROR: Must load contract addresses first. Maybe run `ganache`?");
+      throw Error("ERROR: Must load contract addresses first.");
     }
 
     this.user = await ContractAPI.userWrapper(this.accounts[0], this.provider, this.contractAddresses);
