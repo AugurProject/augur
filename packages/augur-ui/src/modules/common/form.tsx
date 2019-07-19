@@ -32,6 +32,7 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
+import { getTimezones } from 'utils/get-timezones';
 
 interface CheckboxProps {
   id: string;
@@ -132,12 +133,7 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => (
   <FormDropdown
     {...props}
     staticLabel="Timezone"
-    options={[
-      {
-        label: 'UTC - 0',
-        value: 0,
-      },
-    ]}
+    options={getTimezones()}
   />
 );
 
@@ -468,7 +464,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   render() {
     const { radioButtons, onChange, errorMessage } = this.props;
     const { selected } = this.state;
- 
+
     return (
       <div>
         {radioButtons.map(radio => (
