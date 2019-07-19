@@ -146,7 +146,7 @@ export class DB {
     // Custom Derived DBs here
     this.marketDatabase = new MarketDB(this, networkId);
 
-    for (let trackedUser of trackedUsers) {
+    for (let trackedUser of await this.trackedUsers.getUsers()) {
       await this.trackedUsers.setUserTracked(trackedUser);
       for (let userSpecificEvent of this.userSpecificDBs) {
         new UserSyncableDB(this.augur, this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
