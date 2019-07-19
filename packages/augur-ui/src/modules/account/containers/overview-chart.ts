@@ -1,10 +1,9 @@
-import { connect } from "react-redux";
-import { AppState } from "store";
-import OverviewChart from "modules/account/components/overview-chart";
-import getProfitLoss from "modules/positions/actions/get-profit-loss";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { NodeStyleCallback } from "modules/types";
+import { connect } from 'react-redux';
+import { AppState } from 'store';
+import OverviewChart from 'modules/account/components/overview-chart';
+import getProfitLoss from 'modules/positions/actions/get-profit-loss';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState) => {
   const { blockchain } = state;
@@ -17,29 +16,13 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  getProfitLoss: (
-    universe: string,
-    startTime: number,
-    endTime: number,
-    periodInterval: number,
-    marketId: string,
-    callback: NodeStyleCallback,
-  ) =>
-    dispatch(
-      getProfitLoss({
-        universe,
-        startTime,
-        endTime,
-        periodInterval,
-        marketId,
-        callback,
-      }),
-    ),
+  getProfitLoss: (universe: string, startTime: number, endTime: number) =>
+    dispatch(getProfitLoss({ universe, startTime, endTime })),
 });
 
 const OverviewChartContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(OverviewChart);
 
 export default OverviewChartContainer;

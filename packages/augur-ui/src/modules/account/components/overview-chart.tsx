@@ -1,12 +1,13 @@
 import React from "react";
-
 import * as constants from "modules/common/constants";
+import logError from "utils/log-error";
 import { DaiLogoIcon } from "modules/common/icons";
 import ProfitLossChart from "modules/account/components/profit-loss-chart";
 import { MovementLabel } from "modules/common/labels";
 import Styles from "modules/account/components/overview-chart.styles.less";
-import { formatEther } from "utils/format-number";
+import { formatDai } from "utils/format-number";
 import { SizeTypes } from "modules/types";
+import { createBigNumber } from "utils/create-big-number";
 
 const ALL_TIME = 3;
 export interface OverviewChartProps {
@@ -31,7 +32,7 @@ export interface UserTimeRangeData {
 }
 
 interface OverviewChartState {
-  profitLossData: Array<Array<number>>;
+  profitLossData: number[][];
   profitLossChange: string | null;
   profitLossValue: string | null;
   profitLossChangeHasValue: boolean;
@@ -67,67 +68,69 @@ export default class OverviewChart extends React.Component<
     }
   };
 
-  getChartData = (timeRangeDataConfig: TimeFrameOption) => {
+   getChartData = async (timeRangeDataConfig: TimeFrameOption) => {
     const { universe, currentAugurTimestamp } = this.props;
-    const endTime = null;
-    let startTime: number | null =
-      currentAugurTimestamp - timeRangeDataConfig.periodInterval;
+
+    if (currentAugurTimestamp === 0) {
+      return;
+    }
+
+    let startTime: number | null = (currentAugurTimestamp) - timeRangeDataConfig.periodInterval;
+
     if (timeRangeDataConfig.id === ALL_TIME) {
       startTime = BEGINNING_START_TIME;
     }
-    this.props.getProfitLoss(
-      universe,
-      startTime,
-      endTime,
-      null,
-      null,
-      (err: string, data: Array<UserTimeRangeData>) => {
-        if (err) return console.log("Error:", err);
-        const noTrades = data
-          .reduce(
-            (p, d) => createBigNumber(d.totalCost || constants.ZERO).plus(p),
-            constants.ZERO,
-          )
-          .eq(constants.ZERO);
-        let profitLossData: Array<Array<number>> = [];
 
-        const lastData =
-          data.length > 0
-            ? data[data.length - 1]
-            : { realized: 0, realizedPercent: 0 };
+    try {
+      const data = await this.props.getProfitLoss(universe, startTime, currentAugurTimestamp);
 
-        const chartValues = data.reduce(
-          (p, d) => ({
-            ...p,
-            [d.timestamp * 1000]: createBigNumber(d.realized).toNumber()
-          }),
-          {}
-        );
+      const noTrades = data
+        .reduce(
+          (p, d) => createBigNumber(d.totalCost || constants.ZERO).plus(p),
+          constants.ZERO,
+        )
+        .eq(constants.ZERO);
 
-        profitLossData = profitLossData.concat(
-          Object.keys(chartValues).reduce(
-            (p, t): any => [...p, [parseInt(t, 10), chartValues[t]]],
-            [],
-          ),
-        );
+      const lastData =
+        data.length > 0
+          ? data[data.length - 1]
+          : { realized: 0, realizedPercent: 0 };
 
-        profitLossData.push([
-          currentAugurTimestamp * 1000,
-          createBigNumber(data[data.length - 1].realized).toNumber()
-        ]);
+      const chartValues = data.reduce(
+        (p, d) => ({
+          ...p,
+          [d.timestamp === 0 ? startTime * 1000: d.timestamp * 1000]: createBigNumber((d.realized)).toNumber(),
+        }),
+        {}
+      );
 
-        this.setState({
-          profitLossData,
-          profitLossChange: formatEther(lastData.realizedPercent || 0)
-            .formatted,
-          profitLossChangeHasValue: !createBigNumber(
-            lastData.realizedPercent || 0
-          ).eq(constants.ZERO),
-          profitLossValue: formatEther(lastData.realized).formatted,
-          noTrades,
-        });
-      },
-    );
+      let profitLossData = [];
+      profitLossData = profitLossData.concat(
+        Object.keys(chartValues).reduce(
+          (p, t) => [...p, [parseInt(t, 10), chartValues[t]]],
+          []
+        )
+      );
+
+      profitLossData.push([
+        currentAugurTimestamp * 1000,
+        createBigNumber(data[data.length - 1].realized).toNumber(),
+      ]);
+
+      this.setState({
+        profitLossData,
+        profitLossChange: formatDai(lastData.realized || 0)
+          .formatted,
+        profitLossChangeHasValue: !createBigNumber(
+          lastData.realized || 0
+        ).eq(constants.ZERO),
+        profitLossValue: formatDai(lastData.realized).formatted,
+        noTrades,
+      });
+    }
+    catch (error) {
+      logError(error);
+    }
   }
 
   render() {
@@ -144,7 +147,7 @@ export default class OverviewChart extends React.Component<
       content = (
         <>
           <div>{constants.PROFIT_LOSS_CHART_TITLE}</div>
-          <span>No Trading Activity to date</span>
+          <span>No Trading Activity</span>
         </>
       );
     } else {
@@ -166,7 +169,6 @@ export default class OverviewChart extends React.Component<
             {DaiLogoIcon}
           </div>
           <ProfitLossChart
-            // @ts-ignore
             data={profitLossData}
             // @ts-ignore
             width={this.container.clientWidth}

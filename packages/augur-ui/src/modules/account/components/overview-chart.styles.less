@@ -4,12 +4,12 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  padding-top: 0.625rem;
+  padding-top: @size-24;
 
   > div:first-of-type {
     .mono-11;
 
-    padding-bottom: 0.625rem;
+    padding-bottom: @size-8;
     text-transform: uppercase;
   }
 
@@ -63,6 +63,7 @@
 
 .ProfitLossChart {
   margin: 0;
+  margin-bottom: @size-8;
   pointer-events: none;
 
   svg {
