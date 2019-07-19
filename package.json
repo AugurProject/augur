@@ -48,7 +48,7 @@
     "@babel/preset-typescript": "7.3.3",
     "@babel/register": "7.4.4",
     "@babel/runtime": "7.5.4",
-    "@types/async": "2.4.1",
+    "@types/async": "3.0.0",
     "@types/bn.js": "4.11.4",
     "@types/chai": "4.1.7",
     "@types/chai-as-promised": "7.1.0",
