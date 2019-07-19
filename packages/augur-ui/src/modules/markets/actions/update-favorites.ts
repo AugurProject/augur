@@ -1,33 +1,50 @@
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-import { Favorite } from "modules/types";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { AppState } from "store";
 
-export const UPDATE_FAVORITES = "UPDATE_FAVORITES";
-export const TOGGLE_FAVORITE = "TOGGLE_FAVORITE";
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import { Favorite } from 'modules/types';
+import { ThunkAction } from 'redux-thunk';
+import { AppState } from 'store';
 
-export const updateFavorites = (favorites: Array<Favorite>) => ({
+export const UPDATE_FAVORITES = 'UPDATE_FAVORITES';
+export const TOGGLE_FAVORITE = 'TOGGLE_FAVORITE';
+
+interface UpdateFavoritesInterface {
+  type: typeof UPDATE_FAVORITES;
+  data: { favorites: Favorite[] };
+}
+
+export const updateFavorites = (
+  favorites: Favorite[]
+): UpdateFavoritesInterface => ({
   type: UPDATE_FAVORITES,
-  data: { favorites }
+  data: { favorites },
 });
 
-const toggleFavoriteAction = (marketId: string, timestamp: number) => ({
+interface ToggleFavoriteInterface {
+  type: typeof TOGGLE_FAVORITE;
+  data: { marketId: string; timestamp: number };
+}
+
+const toggleFavoriteAction = (
+  marketId: string,
+  timestamp: number
+): ToggleFavoriteInterface => ({
   type: TOGGLE_FAVORITE,
-  data: { marketId, timestamp }
+  data: { marketId, timestamp },
 });
 
-export const toggleFavorite = (marketId: string) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
+export const toggleFavorite = (
+  marketId: string
+): ThunkAction<void, AppState, void, ToggleFavoriteInterface> => (
+  dispatch,
+  getState
 ) => {
   const { blockchain } = getState();
   dispatch(toggleFavoriteAction(marketId, blockchain.currentAugurTimestamp));
 };
 
-export const loadFavoritesMarkets = (favorites: Array<Favorite>) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const loadFavoritesMarkets = (
+  favorites: Favorite[]
+): ThunkAction<void, AppState, void, UpdateFavoritesInterface> => dispatch => {
   if (favorites) {
     dispatch(
       loadMarketsInfoIfNotLoaded(Object.keys(favorites), () => {
