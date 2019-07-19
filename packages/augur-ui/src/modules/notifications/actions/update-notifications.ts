@@ -1,8 +1,15 @@
-import { Notification, BaseAction } from "modules/types";
+import { Notification } from "modules/types";
 
-export const UPDATE_READ_NOTIFICATIONS = "UPDATE_READ_NOTIFICATIONS";
+export const UPDATE_READ_NOTIFICATIONS = 'UPDATE_READ_NOTIFICATIONS';
 
-export const updateReadNotifications = (notifications: Notification): BaseAction => ({
+export interface UpdateReadNotificationsAction {
+  type: typeof UPDATE_READ_NOTIFICATIONS;
+  data: { notification: Notification };
+}
+
+export const updateReadNotifications = (
+  notification: Notification
+): UpdateReadNotificationsAction => ({
   type: UPDATE_READ_NOTIFICATIONS,
-  data: { notifications }
+  data: { notification },
 });

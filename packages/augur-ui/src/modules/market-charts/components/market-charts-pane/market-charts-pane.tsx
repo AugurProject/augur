@@ -9,6 +9,7 @@ import { TEMP_TABLET } from "modules/common/constants";
 import { Candlestick } from "modules/market/components/market-view-charts/candlestick";
 import MarketDepth from "modules/market-charts/containers/market-outcome-chart-depth";
 import { BigNumber } from "bignumber.js";
+import { MarketData } from "modules/types";
 
 interface MarketChartsPaneProps {
   currentTimestamp?: number | undefined;
@@ -18,6 +19,8 @@ interface MarketChartsPaneProps {
   selectedOutcomeId: number;
   updateSelectedOrderProperties: Function;
   daysPassed?: number;
+  preview?: Boolean;
+  market?: MarketData;
 }
 
 interface MarketChartsPaneState {
@@ -65,6 +68,8 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
       minPrice,
       updateSelectedOrderProperties,
       daysPassed,
+      preview,
+      market
     } = this.props;
     const s = this.state;
 
@@ -72,17 +77,19 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
       <Media query={TEMP_TABLET}>
       {(matches) =>
         matches ? (
-          <ModuleTabs selected={0} fillForMobile>
+          <ModuleTabs selected={preview ? 2 : 0} fillForMobile>
             <ModulePane label="Candlesticks">
-              <Candlestick
-                currentTimeInSeconds={currentTimestamp}
-                marketId={marketId}
-                selectedOutcomeId={selectedOutcomeId}
-                minPrice={minPrice}
-                maxPrice={maxPrice}
-                daysPassed={daysPassed}
-                isMobile
-              />
+              {!preview &&
+                <Candlestick
+                  currentTimeInSeconds={currentTimestamp}
+                  marketId={marketId}
+                  selectedOutcomeId={selectedOutcomeId}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
+                  daysPassed={daysPassed}
+                  isMobile
+                />
+              }
             </ModulePane>
             <ModulePane
               ref={(ordersContainer) => {
@@ -98,26 +105,32 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
                 hoveredDepth={s.hoveredDepth}
                 updateHoveredDepth={this.updateHoveredDepth}
                 updateHoveredPrice={this.updateHoveredPrice}
+                market={preview && market}
+                initialLiquidity={preview}
               />
             </ModulePane>
           </ModuleTabs>
         ) : (
-          <ModuleTabs selected={0} borderBetween>
+          <ModuleTabs selected={preview ? 2 : 0} borderBetween>
             <ModulePane label="Price History">
-              <MarketOutcomesChart
-                marketId={marketId}
-                selectedOutcomeId={selectedOutcomeId}
-              />
+              {!preview && 
+                <MarketOutcomesChart
+                  marketId={marketId}
+                  selectedOutcomeId={selectedOutcomeId}
+                />
+              }
             </ModulePane>
             <ModulePane label="Candlesticks">
-              <Candlestick
-                currentTimeInSeconds={currentTimestamp}
-                marketId={marketId}
-                selectedOutcomeId={selectedOutcomeId}
-                minPrice={minPrice}
-                maxPrice={maxPrice}
-                daysPassed={daysPassed}
-              />
+              {!preview &&
+                <Candlestick
+                  currentTimeInSeconds={currentTimestamp}
+                  marketId={marketId}
+                  selectedOutcomeId={selectedOutcomeId}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
+                  daysPassed={daysPassed}
+                />
+              }
             </ModulePane>
             <ModulePane
               ref={(ordersContainer) => {
@@ -133,6 +146,8 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
                 hoveredDepth={s.hoveredDepth}
                 updateHoveredDepth={this.updateHoveredDepth}
                 updateHoveredPrice={this.updateHoveredPrice}
+                market={preview && market}
+                initialLiquidity={preview}
               />
             </ModulePane>
           </ModuleTabs>

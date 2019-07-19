@@ -6,10 +6,10 @@ import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { MODAL_CLAIM_TRADING_PROCEEDS } from "modules/common/constants";
+import { MODAL_CLAIM_TRADING_PROCEEDS, DESIGNATED_REPORTER_SELF } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
-  const market = selectMarket(ownProps.marketId);
+  const market = ownProps.market || selectMarket(ownProps.marketId);
   const disputeOutcomes = marketDisputeOutcomes() || {};
   return {
     currentTimestamp:
@@ -17,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
     market,
     isLogged: state.authStatus.isLogged,
     isDesignatedReporter:
-      market.designatedReporter === state.loginAccount.address,
+      ownProps.preview ? market.designatedReporterType === DESIGNATED_REPORTER_SELF : market.designatedReporter === state.loginAccount.address,
     tentativeWinner:
       disputeOutcomes[ownProps.marketId] &&
       disputeOutcomes[ownProps.marketId].find(o => o.tentativeWinning)

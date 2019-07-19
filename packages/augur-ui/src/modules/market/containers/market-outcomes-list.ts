@@ -4,7 +4,7 @@ import MarketOutcomesList from "modules/market/components/market-outcomes-list/m
 import { selectMarket, selectSortedMarketOutcomes } from "modules/markets/selectors/market";
 
 const mapStateToProps = (state, ownProps) => {
-  const market = selectMarket(ownProps.marketId);
+  const market = ownProps.market || selectMarket(ownProps.marketId);
 
   return {
     scalarDenomination: market.scalarDenomination,

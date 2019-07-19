@@ -15,6 +15,7 @@ import {
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
+import { formatShares, formatDai } from 'utils/format-number';
 
 export const DEFAULT_STATE: NewMarket = {
   isValid: false,
@@ -106,6 +107,10 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           mySize: quantity,
           cummulativeShares: quantity,
           orderEstimate: createBigNumber(orderEstimate.replace(" DAI", "")),
+          avgPrice: formatDai(price),
+          unmatchedShares: formatShares(quantity),
+          sharesEscrowed: formatShares(quantity),
+          tokensEscrowed: formatDai(createBigNumber(orderEstimate.replace(" DAI", ""))),
           id: updatedOrders.length,
         });
       }

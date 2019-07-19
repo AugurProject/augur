@@ -1,11 +1,6 @@
 import React, { Component } from "react";
 import {
-  MARKET_VOLUME,
-  MARKET_CREATION_TIME,
-  MARKET_END_DATE,
-  MARKET_RECENTLY_TRADED,
-  MARKET_FEE,
-  MARKET_OPEN_INTEREST,
+  MARKET_SORT_PARAMS,
   MARKET_OPEN,
   MARKET_REPORTING,
   MARKET_CLOSED,
@@ -27,12 +22,12 @@ import { SquareDropdown } from "modules/common/selection";
 import { FilterButton } from "modules/common/buttons";
 
 const sortOptions = [
-  { value: MARKET_CREATION_TIME, label: "Creation Time" },
-  { value: MARKET_END_DATE, label: "End Time" },
-  { value: MARKET_RECENTLY_TRADED, label: "Recently Traded" },
-  { value: MARKET_VOLUME, label: "Volume" },
-  { value: MARKET_FEE, label: "Settlement Fee" },
-  { value: MARKET_OPEN_INTEREST, label: "Open Interest" },
+  { value: MARKET_SORT_PARAMS.CREATION_TIME, label: "Creation Time" },
+  { value: MARKET_SORT_PARAMS.END_DATE, label: "End Time" },
+  { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, label: "Recently Traded" },
+  { value: MARKET_SORT_PARAMS.VOLUME, label: "Volume" },
+  { value: MARKET_SORT_PARAMS.CREATOR_FEE_RATE, label: "Settlement Fee" },
+  { value: MARKET_SORT_PARAMS.OPEN_INTEREST, label: "Open Interest" },
 ];
 
 const filterOptions = [

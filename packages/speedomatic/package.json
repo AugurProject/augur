@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/bignumber.js": "4.0.3",
-    "browserify": "15.2.0",
+    "browserify": "16.3.0",
     "chai": "3.5.0",
     "coveralls": "3.0.1",
     "eslint": "3.17.1",

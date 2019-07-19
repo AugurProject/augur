@@ -20,7 +20,7 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 const mapStateToProps = (state, ownProps) => {
   const { connection, universe } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
-  const market = selectMarket(marketId);
+  const market = ownProps.market || selectMarket(marketId);
 
   if (market === null) {
     return {

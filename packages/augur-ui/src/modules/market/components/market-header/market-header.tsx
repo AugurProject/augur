@@ -19,6 +19,7 @@ import {
 } from "modules/common/constants";
 import MarketHeaderReporting from "modules/market/containers/market-header-reporting";
 import { MarketTimeline } from "modules/common/progress";
+import { convertUnixToFormattedDate } from "utils/format-date";
 
 import ToggleHeightStyles from "utils/toggle-height.styles.less";
 import { MarketData, QueryEndpoints } from "modules/types";
@@ -39,6 +40,7 @@ interface MarketHeaderProps {
   toggleFavorite: Function;
   isFavorite: boolean;
   history: History;
+  preview?: boolean;
 }
 
 interface MarketHeaderState {
@@ -125,7 +127,8 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
       currentTime,
       isLogged,
       isFavorite,
-      history
+      history,
+      preview,
     } = this.props;
     let { details } = this.props;
     const { headerCollapsed } = this.state;
@@ -182,7 +185,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
             <MarketTypeLabel marketType={marketType} />
           </WordTrail>
           <div className={Styles.Properties}>
-            {market.id && (
+            {(market.id || preview) && (
               <MarketHeaderBar
                 marketId={market.id}
                 author={market.author}
@@ -245,7 +248,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
               )}
             </div>
             <div className={Styles.Properties}>
-              {market.id && (
+              {(market.id || preview) && (
                 <MarketHeaderBar
                   marketId={market.id}
                   author={market.author}
@@ -254,18 +257,18 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                   isFavorite={isFavorite}
                   reportingState={market.reportingState}
                   disputeInfo={market.disputeInfo}
-                  endTimeFormatted={market.endTimeFormatted}
+                  endTimeFormatted={market.endTimeFormatted || convertUnixToFormattedDate(market.endTime)}
                   isLogged={isLogged}
                 />
               )}
-              <MarketHeaderReporting marketId={market.id} />
+              <MarketHeaderReporting marketId={market.id} preview={preview} market={preview && market} />
               <div className={Styles.Core}>
-                {market.id && <CoreProperties market={market} />}
+                {(market.id || preview) && <CoreProperties market={market} />}
                 <div className={Styles.Time}>
                   <MarketTimeline
-                    startTime={market.creationTime || 0}
+                    startTime={market.creationTime || currentTime}
                     currentTime={currentTime || 0}
-                    endTime={market.endTimeFormatted}
+                    endTime={market.endTimeFormatted || convertUnixToFormattedDate(market.endTime.unix())}
                   />
                 </div>
               </div>
