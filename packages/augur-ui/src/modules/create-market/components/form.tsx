@@ -100,6 +100,8 @@ interface Validations {
   checkPositive?: Boolean;
 }
 
+const draftError = "ENTER A MARKET QUESTION";
+
 export default class Form extends React.Component<
   FormProps,
   FormState
@@ -125,10 +127,17 @@ export default class Form extends React.Component<
     } = this.props;
 
     const savedDraft = drafts[newMarket.uniqueId];
-    const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
-    const unsaved = !newMarket.uniqueId && JSON.stringify(newMarket) !== JSON.stringify(DEFAULT_STATE);
 
-    if (unsaved || disabledSave === false) {
+    let defaultState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    defaultState.validations = [];
+
+    let market = JSON.parse(JSON.stringify(newMarket));
+    market.validations = [];
+
+    const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+    const unsaved = !newMarket.uniqueId && JSON.stringify(market) !== JSON.stringify(defaultState);
+
+    if (unsaved && !disabledSave) {
       discardModal((close: Boolean) => {
         if (!close) {
           this.props.history.push({
@@ -238,6 +247,7 @@ export default class Form extends React.Component<
     } = this.props;
 
     if (newMarket.description === DEFAULT_STATE.description) {
+      this.onError("description", draftError)
       return;
     }
 
@@ -436,7 +446,8 @@ export default class Form extends React.Component<
     const savedDraft = drafts[uniqueId];
     const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
 
-    const noErrors = Object.values((validations[currentStep] || {})).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
+    const noErrors = Object.values(((validations && validations[currentStep]) || {})).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
+    const saveDraftError = validations[currentStep].description === draftError;
 
     return (
       <div 
@@ -471,7 +482,8 @@ export default class Form extends React.Component<
               {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
               {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
               {mainContent === REVIEW && <Review />}
-              {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
+              {saveDraftError && <Error header="Unable to save draft" subheader="Enter a market question to save this market as a draft"/>}
+              {(!noErrors && !saveDraftError) && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
               <div>
                 {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
                 <div>
