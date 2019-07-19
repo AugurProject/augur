@@ -447,7 +447,7 @@ export default class Form extends React.Component<
     const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
 
     const noErrors = Object.values(((validations && validations[currentStep]) || {})).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
-    const saveDraftError = validations[currentStep].description === draftError;
+    const saveDraftError = validations && validations[currentStep] && validations[currentStep].description === draftError;
 
     return (
       <div 
