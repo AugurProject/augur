@@ -215,6 +215,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   public getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
   public getProfitLoss = this.bindTo(Users.getProfitLoss);
+  public getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
   public getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
 
   public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
