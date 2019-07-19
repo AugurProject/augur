@@ -11,7 +11,6 @@ import HeaderStyles from "modules/portfolio/components/common/data-table-header.
 import { OutcomeFormatted } from "modules/types";
 
 interface MarketOutcomesListProps {
-  marketId: string,
   outcomesFormatted: OutcomeFormatted[],
   updateSelectedOutcome: Function,
   selectedOutcomeId: number,
@@ -33,7 +32,6 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
 
   render() {
     const {
-      marketId,
       outcomesFormatted,
       selectedOutcomeId,
       updateSelectedOutcome,
@@ -62,7 +60,6 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
             <MarketOutcomesListOutcome
               key={outcome.id}
               outcome={outcome}
-              marketId={marketId}
               selectedOutcomeId={selectedOutcomeId}
               updateSelectedOutcome={updateSelectedOutcome}
               marketType={marketType}

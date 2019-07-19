@@ -63,6 +63,8 @@ import {
 
 import Styles from "modules/create-market/components/form.styles";
 
+import MarketView from 'modules/market/components/market-view/market-view';
+
 interface FormProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
@@ -104,6 +106,7 @@ export default class Form extends React.Component<
 > {
   state: FormState = {
     blockShown: false,
+    showPreview: false,
   };
 
   componentDidMount() {
@@ -240,7 +243,7 @@ export default class Form extends React.Component<
 
     if (newMarket.uniqueId && drafts[newMarket.uniqueId]) {
       // update draft
-      const updatedDate = Date.now(); // should be currentTimestamp
+      const updatedDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
         updated: updatedDate
@@ -251,7 +254,7 @@ export default class Form extends React.Component<
       });
     } else {
       // create new draft
-      const createdDate = Date.now(); // should be currentTimestamp
+      const createdDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
         uniqueId: createdDate,
@@ -400,6 +403,12 @@ export default class Form extends React.Component<
     updateNewMarket({validations: updatedValidations});
   }
 
+  preview = () => {
+    this.setState({showPreview: !this.state.showPreview}, () => {
+      this.node.scrollIntoView();
+    });
+  }
+
   render() {
     const {
       newMarket,
@@ -420,43 +429,60 @@ export default class Form extends React.Component<
       secondButton, 
       explainerBlockSubtexts, 
       largeHeader,
-      noDarkBackground
+      noDarkBackground,
+      previewButton
     } = CUSTOM_CONTENT_PAGES[currentStep];
 
     const savedDraft = drafts[uniqueId];
     const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
 
-    const noErrors = Object.values(validations[currentStep]).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
+    const noErrors = Object.values((validations[currentStep] || {})).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
 
     return (
       <div 
         ref={node => {
           this.node = node;
         }}
-        className={Styles.Form}
+        className={classNames(Styles.Form, {[Styles.Preview]: this.state.showPreview})}
       >
-        <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
-        <LargeHeader text={largeHeader} />
-        {explainerBlockTitle && explainerBlockSubtexts && 
-          <ExplainerBlock
-            title={explainerBlockTitle}
-            subtexts={explainerBlockSubtexts}
-          />
-        }
-        <ContentBlock noDarkBackground={noDarkBackground}>
-          {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
-          {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
-          {mainContent === REVIEW && <Review />}
-          {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
+        {this.state.showPreview &&
           <div>
-            {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
-            <div>
-              <SecondaryButton text={disabledSave ? "Saved": "Save draft"} disabled={disabledSave} action={this.saveDraft} />
-              {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
-              {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
-            </div>
+            <span>Your market preview</span>
+            <PrimaryButton text="Close preview" action={this.preview} />
+            <MarketView
+              market={newMarket}
+              preview
+            />
+            <PrimaryButton text="Close preview" action={this.preview} />
           </div>
-        </ContentBlock>
+        }
+        {!this.state.showPreview && 
+          <>
+            <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
+            <LargeHeader text={largeHeader} />
+            {previewButton && <PrimaryButton text="Preview your market" action={this.preview} />}
+            {explainerBlockTitle && explainerBlockSubtexts && 
+              <ExplainerBlock
+                title={explainerBlockTitle}
+                subtexts={explainerBlockSubtexts}
+              />
+            }
+            <ContentBlock noDarkBackground={noDarkBackground}>
+              {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
+              {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
+              {mainContent === REVIEW && <Review />}
+              {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
+              <div>
+                {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
+                <div>
+                  <SecondaryButton text={disabledSave ? "Saved": "Save draft"} disabled={disabledSave} action={this.saveDraft} />
+                  {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
+                  {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
+                </div>
+              </div>
+            </ContentBlock>
+          </>
+        }
       </div>
     );
   }

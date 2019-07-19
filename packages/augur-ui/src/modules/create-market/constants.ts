@@ -53,6 +53,7 @@ const LiquidityContent = {
 const ReviewContent = {
 	title: "Review",
 	largeHeader: "Review market details",
+	previewButton: true,
 	explainerBlockTitle: "Double check the details",
 	explainerBlockSubtexts: [
 		"Reporting Start Time must not conflict with the Market Question or Resolution Details. If they don’t match up there is a high probability that the market will resolve as invalid."

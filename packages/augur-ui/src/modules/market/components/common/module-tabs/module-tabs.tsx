@@ -109,7 +109,7 @@ export default class ModuleTabs extends Component {
 
   renderContent() {
     return (
-      <div className={Styles.Ccontent}>
+      <div className={Styles.Content}>
         {this.props.children[this.state.selected]}
       </div>
     );

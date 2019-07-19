@@ -59,7 +59,7 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
   return marketData;
 }
 
-function getDefaultOutcomeSelected(marketType: string) {
+export function getDefaultOutcomeSelected(marketType: string) {
   if (marketType === CATEGORICAL) return 1;
   return 2;
 }

@@ -15,8 +15,8 @@ import { selectUserFilledOrders } from "modules/orders/selectors/filled-orders";
 import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
 
 const mapStateToProps = (state, ownProps) => {
-  const market = selectMarket(ownProps.marketId);
-  const openOrders = getUserOpenOrders(market.id) || [];
+  const market = ownProps.market || selectMarket(ownProps.marketId);
+  let openOrders = getUserOpenOrders(market.id) || [];
 
   let canClaim = false;
   if (market.finalizationTime) {
@@ -32,6 +32,13 @@ const mapStateToProps = (state, ownProps) => {
     ? selectUserFilledOrders(state, market.id)
     : [];
   const hasPending = Boolean(openOrders.find(order => order.pending));
+
+  if (ownProps.preview) {
+    openOrders = [];
+    Object.values(market.orderBook).map(outcome => {
+      openOrders = openOrders.concat(outcome);
+    })
+  }
 
   return {
     hasClaimableReturns: market.outstandingReturns && canClaim,
