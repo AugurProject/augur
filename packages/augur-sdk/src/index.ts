@@ -1,6 +1,7 @@
 export { Augur } from "./Augur";
 export * from "./api/Trade";
 export * from "./api/Market";
+export * from "./api/Contracts";
 export * from "@augurproject/types";
 export { Provider } from "./ethereum/Provider";
 export * from "./utils";

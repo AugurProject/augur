@@ -2,14 +2,12 @@ import * as ganache from "ganache-core";
 import { ethers } from "ethers";
 import memdown from "memdown";
 import { MemDown } from "memdown";
-import { Contracts as compilerOutput } from "@augurproject/artifacts";
-
+import { Contracts as compilerOutput, ContractAddresses } from "@augurproject/artifacts";
 import { Account } from "../constants";
 import crypto from "crypto";
-import { EthersProvider } from "@augurproject/ethersjs-provider/build";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
 const levelup = require("levelup");
 import * as path from "path";
-import { ContractAddresses } from "@augurproject/artifacts/build";
 import * as fs from "async-file";
 
 export interface Seed {

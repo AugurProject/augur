@@ -1,5 +1,5 @@
 import { makeProvider } from "../../libs";
-import { Contracts } from '@augurproject/sdk/build/api/Contracts';
+import { Contracts } from '@augurproject/sdk';
 import { ACCOUNTS, loadSeedFile, makeSigner, makeDependencies, defaultSeedPath } from '@augurproject/tools';
 import { GenericAugurInterfaces } from '@augurproject/core';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
