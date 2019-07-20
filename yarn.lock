@@ -11898,13 +11898,12 @@ jest-jasmine2@^24.8.0:
     pretty-format "^24.8.0"
     throat "^4.0.0"
 
-jest-junit@5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/jest-junit/-/jest-junit-5.2.0.tgz#980401db7aa69999cf117c6d740a8135c22ae379"
-  integrity sha512-Mdg0Qpdh1Xm/FA1B/mcLlmEmlr3XzH5pZg7MvcAwZhjHijPRd1z/UwYwkwNHmCV7o4ZOWCf77nLu7ZkhHHrtJg==
+jest-junit@6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/jest-junit/-/jest-junit-6.4.0.tgz#23e15c979fa6338afde46f2d2ac2a6b7e8cf0d9e"
+  integrity sha512-GXEZA5WBeUich94BARoEUccJumhCgCerg7mXDFLxWwI2P7wL3Z7sGWk+53x343YdBLjiMR9aD/gYMVKO+0pE4Q==
   dependencies:
-    jest-config "^23.6.0"
-    jest-validate "^23.0.1"
+    jest-validate "^24.0.0"
     mkdirp "^0.5.1"
     strip-ansi "^4.0.0"
     xml "^1.0.1"
@@ -12351,7 +12350,7 @@ jest-validate@^22.4.4:
     leven "^2.1.0"
     pretty-format "^22.4.0"
 
-jest-validate@^23.0.1, jest-validate@^23.6.0:
+jest-validate@^23.6.0:
   version "23.6.0"
   resolved "https://registry.yarnpkg.com/jest-validate/-/jest-validate-23.6.0.tgz#36761f99d1ed33fcd425b4e4c5595d62b6597474"
   integrity sha512-OFKapYxe72yz7agrDAWi8v2WL8GIfVqcbKRCLbRG9PAxtzF9b1SEDdTpytNDN12z2fJynoBwpMpvj2R39plI2A==
@@ -12361,7 +12360,7 @@ jest-validate@^23.0.1, jest-validate@^23.6.0:
     leven "^2.1.0"
     pretty-format "^23.6.0"
 
-jest-validate@^24.8.0:
+jest-validate@^24.0.0, jest-validate@^24.8.0:
   version "24.8.0"
   resolved "https://registry.yarnpkg.com/jest-validate/-/jest-validate-24.8.0.tgz#624c41533e6dfe356ffadc6e2423a35c2d3b4849"
   integrity sha512-+/N7VOEMW1Vzsrk3UWBDYTExTPwf68tavEPKDnJzrC6UlHtUDU/fuEdXqFoHzv9XnQ+zW6X3qMZhJ3YexfeLDA==
