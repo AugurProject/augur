@@ -14,5 +14,5 @@ module.exports = {
     "json",
     "node",
   ],
-  "preset": "jest-puppeteer",
+  "testURL": "http://localhost:8080/",
 };
