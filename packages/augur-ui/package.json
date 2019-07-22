@@ -97,10 +97,7 @@
     "speedomatic": "2.1.5",
     "trezor-connect": "7.0.3",
     "uuid-parse": "^1.1.0",
-    "web3": "1.0.0-beta.55",
-    "webpack": "4.19.1",
-    "webpack-cli": "^3.3.1",
-    "webpack-dev-middleware": "3.3.0"
+    "web3": "1.0.0-beta.55"
   },
   "devDependencies": {
     "@augurproject/tools": "6.0.0",
