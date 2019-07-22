@@ -1,0 +1,141 @@
+@import (reference) '~assets/styles/shared';
+
+.Outcome {
+	background: @color-theme-primary;
+	border: 1px solid @color-primary-alternate;
+	border-radius: @border-radius-default;
+	display: flex;
+	flex-direction: column;
+	padding: @size-8 @size-12;
+
+	> div:first-of-type {
+		margin-bottom: @size-8;
+	    justify-content: space-between;
+	    display: flex;
+
+		> span:first-of-type {
+			.text-12-bold;
+
+			color: @color-alternate-info-text;
+		}
+
+		> span:last-of-type {
+			.mono-12;
+
+			color: @color-tertiary-info-text;
+		}
+	}
+
+	&.invalid {
+		> div:first-of-type > span:first-of-type {
+			color: @color-invalid;
+		}
+
+		> div:last-of-type > span {
+    		background: fade(@color-invalid, 50);
+    	}
+	}
+
+	.generate-indexed-color-outcome-alternate-classes({
+	    &.Outcome-@{newIndex} {
+	    	> div:last-of-type {
+	    		> span {
+	    			background: fade(@value, 50);
+	    		}
+	    	}
+	    }
+	});
+}
+
+.Percent {
+	background: fade(@color-secondary-action, 50);
+	height: @size-4;
+
+	> span {
+		height: @size-4;
+		display: block;
+	}
+
+	&.invalid {
+		background-color: fade(@color-invalid, 50);
+	}
+}
+
+.ScalarOutcome {
+	background: @color-theme-primary;
+	border: 1px solid @color-primary-alternate;
+	border-radius: @border-radius-default;
+	display: flex;
+	flex-direction: column;
+	padding: @size-20 @size-8 @size-6;
+
+	> div:first-of-type {
+		.mono-11-bold;
+
+		background: @color-secondary-action;
+		border-radius: @size-4;
+		height: @size-4;
+		margin-bottom: @size-3;
+		color: @color-invalid-primary;
+		position: relative;
+
+		> span {
+			position: absolute;
+			bottom: @size-5;
+
+			&::before {
+	            background-color: @color-invalid-primary;
+	            border-radius: 50%;
+	            content: "";
+	            height: @size-4;
+	            left: 0;
+	            margin: auto;
+	            position: absolute;
+	            right: 0;
+	            top: 110%;
+    			width: @size-6;
+	          }
+		}
+	}
+
+	> div:last-of-type {
+		.mono-10;
+
+		color: @color-tertiary-info-text;
+		display: flex;
+    	justify-content: space-between;
+		
+		> span {
+			.mono-9;
+		}
+	}
+}
+
+.OutcomeGroup {
+	display: grid;
+    grid-gap: @size-6;
+	
+	&.Categorical {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	&.YesNo {
+		grid-template-columns: repeat(3, 1fr);
+
+		> div:first-of-type {
+			grid-column: 1 / span 2;
+		}
+	}
+
+	&.Scalar {
+		grid-template-columns: repeat(3, 1fr);
+
+		> div:first-of-type {
+			grid-column: 1 / span 2;
+		}
+	}
+
+    @media @breakpoint-mobile-medium {
+		grid-template-columns: repeat(1, 1fr);
+    }
+}
