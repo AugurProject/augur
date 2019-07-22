@@ -37,6 +37,7 @@
 @color-error-text: #ff2727;
 @color-error-fade: #52121D;
 @color-neutral-secondary: #484552;
+@color-invalid-primary: #FD6266;
 
 @color-active: #8579A1;
 @color-active-hover: #211B2E;
@@ -81,3 +82,22 @@
     @rules();
   });
 }
+
+// Outcomes
+@color-one: #3DDE8D;
+@color-two: #FE367E;
+@color-three: #3E8BFF;
+@color-four: #09CFE1;
+@color-five: #FCBD43;
+@color-six: #FF6DE8;
+@color-seven: #FFFFFF;
+@color-invalid: #FF7E9D;
+@color-outcome-alternate-list: @color-one @color-two @color-three @color-four @color-five @color-six @color-seven @color-invalid;
+
+.generate-indexed-color-outcome-alternate-classes(@rules) {
+  each(@color-outcome-alternate-list, {
+    @newIndex: @index;
+    @rules();
+  });
+}
+
