@@ -45,15 +45,18 @@ export abstract class AbstractDB {
 
   protected async upsertDocument(id: string, document: object): Promise<PouchDB.Core.Response> {
     const previousBlockRev = await this.getPouchRevFromId(id);
-    return this.db.put(Object.assign(
+    const obj = Object.assign(
       previousBlockRev ? { _rev: previousBlockRev } : {},
       { _id: id },
-      document,
-    ));
+      document
+    );
+
+    console.log("upsertting", obj);
+    return this.db.put(obj);
   }
 
   protected async bulkUpsertUnorderedDocuments(documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
-    const previousDocumentEntries = await this.db.find({selector: { _id: { $in: documents.map(doc => doc._id) } }});
+    const previousDocumentEntries = await this.db.find({ selector: { _id: { $in: documents.map(doc => doc._id) } } });
     const previousDocs = _.reduce(previousDocumentEntries.docs, (result, prevDoc) => {
       result[prevDoc._id] = prevDoc;
       return result;
