@@ -48,7 +48,7 @@
     "@ledgerhq/hw-app-eth": "4.48.0",
     "@ledgerhq/hw-transport-u2f": "4.48.0",
     "@portis/web3": "2.0.0-beta.30",
-    "async": "3.1.0",
+    "async-es": "2.6.3",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.6",
@@ -97,10 +97,7 @@
     "speedomatic": "2.1.5",
     "trezor-connect": "7.0.3",
     "uuid-parse": "^1.1.0",
-    "web3": "1.0.0-beta.55",
-    "webpack": "4.19.1",
-    "webpack-cli": "^3.3.1",
-    "webpack-dev-middleware": "3.3.0"
+    "web3": "1.0.0-beta.55"
   },
   "devDependencies": {
     "@augurproject/tools": "6.0.0",

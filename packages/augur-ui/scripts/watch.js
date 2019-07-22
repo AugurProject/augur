@@ -5,7 +5,6 @@ const Listr = require("listr");
 const colors = require("./common/colors");
 
 const BUILD_DIRECTORY = path.resolve(__dirname, "../build");
-const NODE_MODULES = path.resolve(__dirname, "../node_modules");
 
 const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(
   arg => arg.indexOf("--") !== -1
