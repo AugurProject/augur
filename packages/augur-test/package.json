@@ -46,6 +46,7 @@
     "@types/supertest": "2.0.7",
     "ganache-core": "2.5.0",
     "jest": "24.1.0",
+    "jest-puppeteer": "^4.3.0",
     "pouchdb-adapter-memory": "7.1.1",
     "puppeteer": "^1.18.1",
     "supertest": "4.0.2",
