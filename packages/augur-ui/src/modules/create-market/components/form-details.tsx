@@ -30,7 +30,6 @@ import { RepLogoIcon } from "modules/common/icons";
 import { 
   DESCRIPTION_PLACEHOLDERS, 
   DESCRIPTION, 
-  VALIDATION_ATTRIBUTES,
   DESIGNATED_REPORTER_ADDRESS,
   EXPIRY_SOURCE,
   CATEGORIES,
@@ -44,7 +43,6 @@ interface FormDetailsProps {
   newMarket: NewMarket;
   currentTimestamp: string;
   onChange: Function;
-  evaluate: Function;
   onError: Function;
 }
 
@@ -68,7 +66,6 @@ export default class FormDetails extends React.Component<
       newMarket,
       currentTimestamp,
       onChange,
-      evaluate,
       onError
     } = this.props;
     const s = this.state;
@@ -177,11 +174,7 @@ export default class FormDetails extends React.Component<
           <TextInput
             type="textarea"
             placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
-            onChange={(value: string) => evaluate({
-              ...VALIDATION_ATTRIBUTES[DESCRIPTION],
-              value: value,
-              updateValue: true,
-            })}
+            onChange={(value: string) => onChange("description", value)}
             rows="3"
             value={description}
             errorMessage={validations[currentStep].description && (validations[currentStep].description.charAt(0).toUpperCase() + validations[currentStep].description.slice(1).toLowerCase())}
@@ -274,11 +267,7 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter website",
                 textValue: expirySource,
-                onTextChange: (value: string) => evaluate({
-                  ...VALIDATION_ATTRIBUTES[EXPIRY_SOURCE],
-                  value: value,
-                  updateValue: true,
-                }),
+                onTextChange: (value: string) => onChange("expirySource", value),
                 errorMessage: validations[currentStep].expirySource
               }
             ]}
@@ -314,11 +303,7 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter wallet address",
                 textValue: designatedReporterAddress,
-                onTextChange: (value: string) => evaluate({
-                  ...VALIDATION_ATTRIBUTES[DESIGNATED_REPORTER_ADDRESS],
-                  value: value,
-                  updateValue: true,
-                }),
+                onTextChange: (value: string) => onChange("designatedReporterAddress", value),
                 errorMessage: validations[currentStep].designatedReporterAddress
               }
             ]}
