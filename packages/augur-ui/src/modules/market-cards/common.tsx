@@ -22,7 +22,7 @@ export const Percent = (props: PercentProps) => (
 
 export interface OutcomeProps {
   name: string;
-  percent: number;
+  percent?: number;
   invalid?: Boolean;
   index: number;
 }
@@ -41,7 +41,7 @@ export interface ScalarOutcomeProps {
   scalarDenomination: string;
   min: number;
   max: number;
-  percent: number;
+  percent?: number;
 }
 
 function calculatePosition(min, max, percent) {
@@ -59,7 +59,7 @@ function calculatePosition(min, max, percent) {
 export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   <div className={Styles.ScalarOutcome}>
   	<div>
-  		<span style={{left: calculatePosition(props.min, props.max, props.percent) + '%'}}>{props.percent}</span>
+  		<span style={{left: calculatePosition(props.min, props.max, props.percent) + '%'}}>{props.percent ? props.percent : "-"}</span>
   	</div>
   	<div>
 	  	{props.min}
