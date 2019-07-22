@@ -2,7 +2,9 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const DeadCodePlugin = require("webpack-deadcode-plugin");
+
+const GitRevisionPlugin = require("git-revision-webpack-plugin");
+const gitRevisionPlugin = new GitRevisionPlugin();
 
 const PATHS = {
   BUILD: path.resolve(__dirname, "../build"),
@@ -136,22 +138,7 @@ module.exports = {
   module: {
     rules: rules
   },
-  optimization: {
-    // https://webpack.js.org/configuration/optimization/#optimization-usedexports
-    // `unusedExports: true` is required by DeadCodePlugin
-    usedExports: true
-  },
   plugins: [
-    new DeadCodePlugin({
-      // failOnHint: true, // (default: false), if true will stop the build if unused code/files are found.
-      patterns: ["src/**/*.(js|jsx|css|ts|tsx)"],
-      exclude: [
-        "**/*.(stories|spec).(js|jsx)",
-        "**/*.test.js", // certain test files (executed by `yarn test`) live in the src/ dir and so DeadCodePlugin interprets them as dead even though they're not
-        "**/__mocks__/**", // DeadCodePlugin interprets __mocks__/* files as dead because these files aren't used explicitly, they are part of mocking magic during `yarn test`
-        "**/splash.css" // splash.css is hardcoded into build process and appears dead to DeadCodePlugin
-      ]
-    }),
     new CopyWebpackPlugin([
       {
         from: path.resolve(PATHS.APP, "splash.css"),
@@ -197,6 +184,9 @@ module.exports = {
         return order.indexOf(b.names[0]) + order.indexOf(a.names[0]);
       }
     }),
+    new GitRevisionPlugin({
+      branch: true
+    }),
     new webpack.DefinePlugin({
       "process.env": {
         GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD),
@@ -206,7 +196,8 @@ module.exports = {
         // Set this var to remove code that is problematic for us to host.
         // Will need to be negated in the relevant conditionals.
         AUGUR_HOSTED: process.env.AUGUR_HOSTED || false,
-        ENABLE_MAINNET: process.env.ENABLE_MAINNET || false
+        ENABLE_MAINNET: process.env.ENABLE_MAINNET || false,
+        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
       }
     })
   ],
