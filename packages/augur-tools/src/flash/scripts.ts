@@ -7,6 +7,7 @@ import { NetworkConfiguration, NETWORKS } from "@augurproject/core";
 import moment from "moment";
 
 import { BigNumber } from "bignumber.js";
+import { formatBytes32String } from "ethers/utils";
 
 export function addScripts(flash: FlashSession) {
 
@@ -124,7 +125,7 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
-      const outcomes: string[] = (args.outcomes as string).split(",");
+      const outcomes: string[] = (args.outcomes as string).split(",").map(formatBytes32String);
 
       this.market = await user.createReasonableMarket(outcomes);
 

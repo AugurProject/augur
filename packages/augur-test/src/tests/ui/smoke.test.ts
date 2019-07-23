@@ -16,10 +16,11 @@ app.listen = function() {
 
 let page;
 let browser;
+let server;
 const port = 8080;
 const width = 1920;
 const height = 1080;
-const headless = false;
+const headless = true;
 
 beforeAll(async () => {
   /* Setup Steps:
@@ -36,11 +37,11 @@ beforeAll(async () => {
   const flash = new FlashSession(ACCOUNTS);
   addScripts(flash);
   addGanacheScripts(flash);
-  await flash.call("ganache", { "internal": "false", "port": "8545" });
-  await flash.call("deploy", {});
-  await flash.call("create-canned-markets-and-orders", {});
+  await flash.call("ganache", { "internal": false, "port": "8545" });
+  await flash.call("load-seed-file", { "use": true, "write_artifacts": true });
+  await flash.call("create-reasonable-categorical-market", { "outcomes": "music,dance,poetry,oration,drama"});
 
-  app.listen(port);
+  server = app.listen(port);
 
   browser = await puppeteer.launch({
     headless,
@@ -53,6 +54,7 @@ beforeAll(async () => {
 
 afterAll(() => {
   browser.close();
+  server.close();
 });
 
 test("Smoke Test", async () => {
@@ -61,5 +63,9 @@ test("Smoke Test", async () => {
   // TODO unnecessary? for awaiting node sync but does t hat even happen?
   await ((ms: number) => new Promise( resolve => setTimeout(resolve, ms)))(20 * 1000);
 
-  await expect(page.title()).resolves.toMatch('Decentralized Prediction Markets | Augur');
+  await expect(page.title()).resolves.toMatch('Markets | Augur');
+  await expect(page.$(".paginator_v1-styles_location")).toBeDefined();
+  await expect(page.waitForSelector(".market-common-styles_MarketCommon__container", { visible: true })).toBeDefined()
+
+
 }, 1 * 60000);
