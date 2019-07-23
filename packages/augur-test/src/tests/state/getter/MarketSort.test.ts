@@ -18,7 +18,6 @@ describe('State API :: Market Sorts', () => {
     db = mock.makeDB(john.augur, ACCOUNTS);
   }, 120000);
 
-  /*
   test(':invalidFilter', async () => {
     await john.approveCentralAuthority();
 
@@ -56,16 +55,13 @@ describe('State API :: Market Sorts', () => {
     await expect(marketData[0].invalidFilter).toEqual(true);
 
   }, 60000);
-  */
 
-  test(':liquidity', async () => {
+  test(': horizontal liquidity', async () => {
     await john.approveCentralAuthority();
 
     // Create a market
-    const market = await john.createReasonableMarket([stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')]);
+    const market = await john.createReasonableMarket([stringTo32ByteHex('A'), stringTo32ByteHex('B')]);
     const outcomeA = new BigNumber(1);
-    const outcomeB = new BigNumber(2);
-    const outcomeC = new BigNumber(3);
 
     // With no orders on the book the liquidity scores won't exist
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -89,8 +85,37 @@ describe('State API :: Market Sorts', () => {
 
     await expect(marketData[0].liquidity[10]).toEqual(102000000000000000000);
 
-    // TODO Add liquidity along a vertical (BIDS for B and C)
-    // TODO confirm liquidity is altered as appropriate
+  }, 60000);
+
+  test(':vertical liquidity', async () => {
+    await john.approveCentralAuthority();
+
+    // Create a market
+    const market = await john.createReasonableMarket([stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')]);
+    const outcomeA = new BigNumber(1);
+    const outcomeB = new BigNumber(2);
+    const outcomeC = new BigNumber(3);
+
+    // Place a an Ask on A. This won't rank for liquidity
+    const ask = new BigNumber(1);
+    let numShares = new BigNumber(10 * 10**18);
+    let askPrice = new BigNumber(51);
+
+    await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeA);
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    let marketData = await (await db).findMarkets({selector: { market: market.address }});
+
+    await expect(marketData[0].liquidity[10]).toEqual(0);
+
+    // Set up vertical liquidity and confirm it ranks
+    await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeB);
+    await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeC);
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    marketData = await (await db).findMarkets({selector: { market: market.address }});
+
+    await expect(marketData[0].liquidity[10]).toEqual(490000000000000000000 * 3);
 
   }, 60000);
 

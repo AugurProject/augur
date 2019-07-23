@@ -142,7 +142,7 @@ export class MarketDB extends DerivedDB {
   }
 
   public async getOrderbookData(marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderbookData> {
-    const numOutcomes = marketData.marketType == MarketType.Categorical ? marketData.outcomes.length : 3;
+    const numOutcomes = marketData.marketType == MarketType.Categorical ? marketData.outcomes.length + 1 : 3;
     const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
     const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(estimatedTradeGasCost);
@@ -316,6 +316,12 @@ export class MarketDB extends DerivedDB {
     let ask_sum = new BigNumber(0);
 
     if (marketData.marketType == MarketType.Categorical) {
+      for (let outcome = 1; outcome < numOutcomes; outcome++) {
+        vertical_liquidity[outcome] = {
+          left: new BigNumber(0),
+          right: new BigNumber(0),
+        }
+      }
 
       // BIDS
       for (let outcome = 1; outcome < numOutcomes; outcome++) {
@@ -349,7 +355,7 @@ export class MarketDB extends DerivedDB {
             raw_bid_value = raw_bid_value.plus(quantityToTake.multipliedBy(order.price));
             bid_quantity_gotten = bid_quantity_gotten.plus(quantityToTake);
           }
-          vertical_liquidity[outcome].left = raw_bid_value
+          vertical_liquidity[outcome].left = raw_bid_value;
           vertical_liquidity.left = vertical_liquidity.left.plus(raw_bid_value);
         }
       }
@@ -365,11 +371,11 @@ export class MarketDB extends DerivedDB {
         ask_sum = ask_sum.plus(ask_prices[outcome]);
       }
 
-      excess_spread = numTicks.multipliedBy(100 + spread).div(100).minus(ask_sum);
+      excess_spread = ask_sum.minus(numTicks.multipliedBy(100 - spread).div(100));
       // if liquidity > the spread % even at best asks or there is no best ask we dont calulate anything
       if (excess_spread.gt(0) && !ask_sum.isZero()) {
         for (let outcome = 1; outcome < numOutcomes; outcome++) {
-          ask_prices[outcome] = ask_prices[outcome].minus(excess_spread.div(numOutcomes - 1));
+          ask_prices[outcome] = ask_prices[outcome].plus(excess_spread.div(numOutcomes - 1));
           const askOrders = _.takeWhile(orderbook[outcome].asks, (order) => { return ask_prices[outcome].gte(order.price); });
           if (ask_quantities[outcome] === undefined) ask_quantities[outcome] = new BigNumber(0);
           for (const order of askOrders) ask_quantities[outcome] = ask_quantities[outcome].plus(order.amount);
@@ -386,11 +392,10 @@ export class MarketDB extends DerivedDB {
             raw_ask_value = raw_ask_value.plus(quantityToTake.multipliedBy(numTicks.minus(order.price)));
             ask_quantity_gotten = ask_quantity_gotten.plus(quantityToTake);
           }
-          vertical_liquidity[outcome].right = raw_ask_value
+          vertical_liquidity[outcome].right = raw_ask_value;
           vertical_liquidity.right = vertical_liquidity.right.plus(raw_ask_value);
         }
       }
-      
     }
 
     return vertical_liquidity;
