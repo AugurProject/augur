@@ -12,11 +12,11 @@ def test_designatedReportHappyPath(localFixture, universe, market):
 
     # an address that is not the designated reporter cannot report
     with raises(TransactionFailed):
-        market.doInitialReport([0, 0, market.getNumTicks()], "", sender=localFixture.accounts[1])
+        market.doInitialReport([0, 0, market.getNumTicks()], "", 0, sender=localFixture.accounts[1])
 
     # Reporting with an invalid number of outcomes should fail
     with raises(TransactionFailed):
-        market.doInitialReport([0, 0, 0, 0, market.getNumTicks()], "")
+        market.doInitialReport([0, 0, 0, 0, market.getNumTicks()], "", 0)
 
     # We cannot directly call clearCrowdsourcers setting back reporting
     with raises(AttributeError):
@@ -33,10 +33,10 @@ def test_designatedReportHappyPath(localFixture, universe, market):
         "description": "Obviously I'm right",
     }
     with AssertLog(localFixture, "InitialReportSubmitted", initialReportLog):
-        assert market.doInitialReport([0, 0, market.getNumTicks()], "Obviously I'm right")
+        assert market.doInitialReport([0, 0, market.getNumTicks()], "Obviously I'm right", 0)
 
     with raises(TransactionFailed):
-        assert market.doInitialReport([0, 0, market.getNumTicks()], "Obviously I'm right")
+        assert market.doInitialReport([0, 0, market.getNumTicks()], "Obviously I'm right", 0)
 
     # the market is now assigned a dispute window
     newDisputeWindowAddress = market.getDisputeWindow()
@@ -70,7 +70,7 @@ def test_initialReportHappyPath(reportByDesignatedReporter, localFixture, univer
 
     # do an initial report as someone other than the designated reporter
     sender = localFixture.accounts[0] if reportByDesignatedReporter else localFixture.accounts[1]
-    assert market.doInitialReport([0, 0, market.getNumTicks()], "", sender=sender)
+    assert market.doInitialReport([0, 0, market.getNumTicks()], "", 0, sender=sender)
 
     # the market is now assigned a dispute window
     newDisputeWindowAddress = market.getDisputeWindow()
@@ -91,7 +91,7 @@ def test_initialReport_methods(localFixture, universe, market, constants):
     proceedToInitialReporting(localFixture, market)
 
     # do an initial report as someone other than the designated reporter
-    assert market.doInitialReport([0, 0, market.getNumTicks()], "", sender=localFixture.accounts[1])
+    assert market.doInitialReport([0, 0, market.getNumTicks()], "", 0, sender=localFixture.accounts[1])
 
     # the market is now assigned a dispute window
     newDisputeWindowAddress = market.getDisputeWindow()
@@ -484,16 +484,16 @@ def test_fee_window_record_keeping(localFixture, universe, market, categoricalMa
     proceedToDesignatedReporting(localFixture, market)
 
     # Do a report that we'll make incorrect
-    assert market.doInitialReport([0, 0, market.getNumTicks()], "")
+    assert market.doInitialReport([0, 0, market.getNumTicks()], "", 0)
 
     # Do a report for a market we'll say is invalid
-    assert categoricalMarket.doInitialReport([0, 0, 0, categoricalMarket.getNumTicks()], "")
+    assert categoricalMarket.doInitialReport([0, 0, 0, categoricalMarket.getNumTicks()], "", 0)
 
     # Designated reporter doesn't show up for the third market. Go into initial reporting and do a report by someone else
     reputationToken = localFixture.applySignature('ReputationToken', universe.getReputationToken())
     reputationToken.transfer(localFixture.accounts[1], 10**6 * 10**18)
     proceedToInitialReporting(localFixture, scalarMarket)
-    assert scalarMarket.doInitialReport([0, 0, scalarMarket.getNumTicks()], "", sender=localFixture.accounts[1])
+    assert scalarMarket.doInitialReport([0, 0, scalarMarket.getNumTicks()], "", 0, sender=localFixture.accounts[1])
 
     # proceed to the window start time
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())

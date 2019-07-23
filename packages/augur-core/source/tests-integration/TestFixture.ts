@@ -236,7 +236,7 @@ export class TestFixture {
     }
 
     public async doInitialReport(market: Market, payoutNumerators: Array<BigNumber>): Promise<void> {
-        await market.doInitialReport(payoutNumerators, "");
+        await market.doInitialReport(payoutNumerators, "", new BigNumber(0));
         return;
     }
 
