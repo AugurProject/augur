@@ -33,7 +33,7 @@ export class DerivedDB extends AbstractDB {
     });
 
     for (const eventName of mergeEventNames) {
-        db.registerEventListener(eventName, this.handleMergeEvent);
+      db.registerEventListener(eventName, this.handleMergeEvent);
     }
 
     db.notifyDerivedDBAdded(this);
@@ -52,7 +52,7 @@ export class DerivedDB extends AbstractDB {
       await this.handleMergeEvent(highestAvailableBlockNumber, result.docs as Array<unknown> as Array<ParsedLog>, true);
     }
 
-    await this.syncStatus.setHighestSyncBlock(this.dbName, highestAvailableBlockNumber, true);
+    await this.syncStatus.updateSyncingToFalse(this.dbName);
   }
 
   public async rollback(blockNumber: number): Promise<void> {
@@ -88,12 +88,12 @@ export class DerivedDB extends AbstractDB {
       documents = _.map(logs, this.processLog.bind(this));
       documents = _.values(_.mapValues(_.groupBy(documents, "_id"), (idDocuments) => {
         return _.reduce(idDocuments, (val, doc) => {
-        if (val.blockNumber < doc.blockNumber) {
-          val = doc;
-        } else if (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex) {
-          val = doc;
-        }
-        return val;
+          if (val.blockNumber < doc.blockNumber) {
+            val = doc;
+          } else if (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex) {
+            val = doc;
+          }
+          return val;
         }, idDocuments[0]);
       }));
 

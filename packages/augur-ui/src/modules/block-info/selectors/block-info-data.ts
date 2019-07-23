@@ -11,7 +11,7 @@ export const selectBlockInfoData = createSelector(
       const {
         currentBlockNumber,
         lastSyncedBlockNumber,
-        percentBehindCurrent,
+        percentSynced,
         blocksBehindCurrent,
       } = blockchainState;
       const highestBlockBn = createBigNumber(currentBlockNumber || 0);
@@ -20,7 +20,7 @@ export const selectBlockInfoData = createSelector(
         blankZero: true,
       }).roundedFormatted : "0"
 
-      const fullPercent = formatPercent(percentBehindCurrent, {
+      const fullPercent = formatPercent(percentSynced, {
         decimals: 2,
         decimalsRounded: 2,
       });
