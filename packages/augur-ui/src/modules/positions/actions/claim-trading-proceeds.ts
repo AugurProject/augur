@@ -1,5 +1,5 @@
 import { getWinningBalance } from 'modules/reports/actions/get-winning-balance';
-import { eachOfLimit } from 'async';
+import { eachOfLimit } from 'async-es';
 import noop from 'utils/noop';
 import logError from 'utils/log-error';
 // Note: the returns: "null" is due to this geth bug: https://github.com/ethereum/go-ethereum/issues/16999. By including this and a hardcoded gas estimate we bypass any eth_call usage and avoid sprurious failures

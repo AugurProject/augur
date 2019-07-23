@@ -5,43 +5,45 @@ try {
   require("os").networkInterfaces = () => ({});
 }
 
-const baseConfig = require("./config/webpack.common.config");
+let baseConfig = require("./config/webpack.common.config");
 
-const webpack = require("webpack");
 const merge = require("webpack-merge");
-
-const GitRevisionPlugin = require("git-revision-webpack-plugin");
-
-const gitRevisionPlugin = new GitRevisionPlugin();
-
-let config = merge(baseConfig, {
-  plugins: [
-    new webpack.DefinePlugin({
-      "process.env": {
-        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
-      }
-    }),
-    new GitRevisionPlugin({
-      branch: true
-    })
-  ]
-});
+const DeadCodePlugin = require("webpack-deadcode-plugin");
 
 // DEVELOPMENT CONFIG
 if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === "development") {
-  config = merge(config, { devtool: "eval-source-map" });
+  baseConfig = merge(baseConfig, {
+    devtool: "eval-source-map",
+    optimization: {
+      // https://webpack.js.org/configuration/optimization/#optimization-usedexports
+      // `unusedExports: true` is required by DeadCodePlugin
+      usedExports: true
+    },
+    plugins: [
+      new DeadCodePlugin({
+        // failOnHint: true, // (default: false), if true will stop the build if unused code/files are found.
+        patterns: ["src/**/*.(js|jsx|css|ts|tsx)"],
+        exclude: [
+          "**/*.(stories|spec).(js|jsx)",
+          "**/*.test.js", // certain test files (executed by `yarn test`) live in the src/ dir and so DeadCodePlugin interprets them as dead even though they're not
+          "**/__mocks__/**", // DeadCodePlugin interprets __mocks__/* files as dead because these files aren't used explicitly, they are part of mocking magic during `yarn test`
+          "**/splash.css" // splash.css is hardcoded into build process and appears dead to DeadCodePlugin
+        ]
+      })
+    ]
+  });
   // PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)
 } else if (process.env.DEBUG_BUILD && process.env.NODE_ENV === "development") {
   // get network name like 'rinkeby' or 'clique' to set environment for UI
   console.log(`Using development config file ${process.env.ETHEREUM_NETWORK}`);
-  config = merge(config, {
+  baseConfig = merge(baseConfig, {
     devtool: "eval-source-map"
   });
-  // PRODUCTION CONFIG
 } else {
-  config = merge(config, {
+  // PRODUCTION CONFIG
+  baseConfig = merge(baseConfig, {
     mode: "production"
   });
 }
 
-module.exports = config;
+module.exports = baseConfig;
