@@ -83,7 +83,7 @@ describe('State API :: Market Sorts', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     marketData = await (await db).findMarkets({selector: { market: market.address }});
 
-    await expect(marketData[0].liquidity[10]).toEqual(102000000000000000000);
+    await expect(marketData[0].liquidity[10]).toEqual("102000000000000000000");
 
   }, 60000);
 
@@ -106,7 +106,7 @@ describe('State API :: Market Sorts', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     let marketData = await (await db).findMarkets({selector: { market: market.address }});
 
-    await expect(marketData[0].liquidity[10]).toEqual(0);
+    await expect(marketData[0].liquidity[10]).toEqual("0");
 
     // Set up vertical liquidity and confirm it ranks
     await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeB);
@@ -115,7 +115,7 @@ describe('State API :: Market Sorts', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
     marketData = await (await db).findMarkets({selector: { market: market.address }});
 
-    await expect(marketData[0].liquidity[10]).toEqual(490000000000000000000 * 3);
+    await expect(marketData[0].liquidity[10]).toEqual("1470000000000000000000");
 
   }, 60000);
 

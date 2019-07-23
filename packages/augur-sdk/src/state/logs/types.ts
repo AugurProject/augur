@@ -340,12 +340,3 @@ export interface MarketData extends Log, Doc {
   invalidFilter: boolean;
   liquidity: LiquidityData;
 }
-
-export interface OutcomeOrderbook {
-  bids: Array<ParsedOrderEventLog>;
-  asks: Array<ParsedOrderEventLog>;
-}
-
-export interface Orderbook {
-  [outcome: number]: OutcomeOrderbook;
-}
