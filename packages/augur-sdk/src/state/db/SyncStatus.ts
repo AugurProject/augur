@@ -46,7 +46,7 @@ export class SyncStatus extends AbstractDB {
         blockNumber: { $gt: 0 },
       },
       sort: [{ blockNumber: 'asc' }],
-      fields: ["blockNumber", "syncing"],
+      fields: ["blockNumber", "syncing", "_id"],
     });
 
     if (lowestBlock.docs && lowestBlock.docs.length > 0) {

@@ -477,7 +477,7 @@ export interface Blockchain {
   currentBlockNumber: number,
   lastSyncedBlockNumber: number,
   blocksBehindCurrent: number,
-  percentBehindCurrent: string,
+  percentSynced: string,
   currentAugurTimestamp: number,
 }
 

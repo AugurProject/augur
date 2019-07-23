@@ -51,7 +51,6 @@ export abstract class AbstractDB {
       document
     );
 
-    console.log("upsertting", obj);
     return this.db.put(obj);
   }
 

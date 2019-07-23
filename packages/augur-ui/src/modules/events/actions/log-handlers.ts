@@ -117,7 +117,7 @@ export const handleNewBlockLog = (log: any) => (
       currentBlockNumber: log.highestAvailableBlockNumber,
       blocksBehindCurrent: log.blocksBehindCurrent,
       lastSyncedBlockNumber: log.lastSyncedBlockNumber,
-      percentBehindCurrent: log.percentBehindCurrent,
+      percentSynced: log.percentSynced,
       currentAugurTimestamp: log.timestamp,
     })
   );
