@@ -17,7 +17,7 @@ sidebar_label: SyncData
 * [blocksBehindCurrent](api-classes-state-getter-sync-data-syncdata.md#blocksbehindcurrent)
 * [highestAvailableBlockNumber](api-classes-state-getter-sync-data-syncdata.md#highestavailableblocknumber)
 * [lastSyncedBlockNumber](api-classes-state-getter-sync-data-syncdata.md#lastsyncedblocknumber)
-* [percentSynced](api-classes-state-getter-sync-data-syncdata.md#percentbehindcurrent)
+* [percentSynced](api-classes-state-getter-sync-data-syncdata.md#percentsynced)
 * [SyncDataParams](api-classes-state-getter-sync-data-syncdata.md#syncdataparams)
 
 ### Methods
@@ -55,7 +55,7 @@ ___
 *Defined in [state/getter/sync-data.ts:9](https://github.com/AugurProject/augur/blob/06e47ad207/packages/augur-sdk/src/state/getter/sync-data.ts#L9)*
 
 ___
-<a id="percentbehindcurrent"></a>
+<a id="percentsynced"></a>
 
 ###  percentSynced
 
