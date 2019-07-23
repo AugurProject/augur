@@ -564,12 +564,12 @@ def test_dispute_pacing_threshold(localFixture, universe, market):
 
     # Now if we try to immediately dispute without the newly assigned dispute window being active the tx will fail
     with raises(TransactionFailed):
-        market.contribute([0, 0, market.getNumTicks()], 1, "")
+        market.contribute([0, market.getNumTicks(), 0], 1, "")
 
     # If we move time forward to the dispute window start we succeed
     disputeWindow = localFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     assert localFixture.contracts["Time"].setTimestamp(disputeWindow.getStartTime() + 1)
-    assert market.contribute([0, 0, market.getNumTicks()], 1, "")
+    assert market.contribute([0, market.getNumTicks(), 0], 1, "")
 
 def test_crowdsourcer_minimum_remaining(localFixture, universe, market):
     proceedToNextRound(localFixture, market, moveTimeForward = False)
