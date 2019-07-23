@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Styles from 'modules/create-market/components/visibility.styles';
-import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink, SmallSubheaders, SmallSubheadersTooltip } from "modules/create-market/components/common";
+import { LargeSubheaders, ContentBlock, SmallHeaderLink, SmallSubheaders, SmallSubheadersTooltip } from "modules/create-market/components/common";
 
 export interface VisibilityProps {
 }

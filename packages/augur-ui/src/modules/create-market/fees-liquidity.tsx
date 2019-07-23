@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { RadioCardGroup, TextInput } from "modules/common/form";
-import { LargeSubheaders, ContentBlock, XLargeSubheaders, SmallHeaderLink } from "modules/create-market/components/common";
+import { LargeSubheaders, ContentBlock, SmallHeaderLink } from "modules/create-market/components/common";
 import { SecondaryButton } from "modules/common/buttons";
 import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
 import SavedDrafts from "modules/create-market/containers/saved-drafts";
