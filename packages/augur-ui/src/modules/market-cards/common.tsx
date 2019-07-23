@@ -59,7 +59,9 @@ function calculatePosition(min, max, percent) {
 export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   <div className={Styles.ScalarOutcome}>
   	<div>
-  		<span style={{left: calculatePosition(props.min, props.max, props.percent) + '%'}}>{props.percent ? props.percent : "-"}</span>
+  		{ props.percent !== null &&
+  			<span style={{left: calculatePosition(props.min, props.max, props.percent) + '%'}}>{props.percent}</span>
+  		}
   	</div>
   	<div>
 	  	{props.min}
