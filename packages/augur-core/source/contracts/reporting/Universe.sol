@@ -65,7 +65,6 @@ contract Universe is ITyped, IUniverse {
 
     // DAI / DSR specific
     uint256 public totalBalance;
-    bool public useDSR = false;
     ICash public cash;
     IDaiVat public daiVat;
     IDaiPot public daiPot;
@@ -682,9 +681,7 @@ contract Universe is ITyped, IUniverse {
         augur.trustedTransfer(cash, _sender, address(this), _amount);
         totalBalance = totalBalance.add(_amount);
         marketBalance[_market] = marketBalance[_market].add(_amount);
-        if (useDSR) {
-            saveDaiInDSR(_amount);
-        }
+        saveDaiInDSR(_amount);
         return true;
     }
 
@@ -692,45 +689,19 @@ contract Universe is ITyped, IUniverse {
         require(augur.isTrustedSender(msg.sender) || augur.isKnownMarket(IMarket(msg.sender)));
         totalBalance = totalBalance.sub(_amount);
         marketBalance[_market] = marketBalance[_market].sub(_amount);
-        if (useDSR) {
-            withdrawDaiFromDSR(_amount);
-        }
+        withdrawDaiFromDSR(_amount);
         cash.transfer(_recipient, _amount);
-        return true;
-    }
-
-    function canToggleDSR() public view returns (bool) {
-        uint256 _dsr = daiPot.dsr();
-        uint256 _maxDSRMovement = 10**20; // TODO: Get from MKR contract when this is available
-        uint256 _dsrThreshold = DAI_ONE.add(_maxDSRMovement);
-        return useDSR ? _dsr < _dsrThreshold : _dsr >= _dsrThreshold;
-    }
-
-    function toggleDSR() public returns (bool) {
-        require(canToggleDSR());
-        if (useDSR) {
-            useDSR = false;
-            withdrawDaiFromDSR(totalBalance);
-        } else {
-            useDSR = true;
-            saveDaiInDSR(totalBalance);
-        }
-        reputationToken.mintForUniverse(Reporting.getDSRToggleRewardInAttoREP(), msg.sender);
         return true;
     }
 
     function sweepInterest() public returns (bool) {
         uint256 _extraCash = 0;
-        if (useDSR) {
-            daiPot.drip();
-            withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
-            saveDaiInDSR(totalBalance); // Put the required funds back in savings
-            _extraCash = cash.balanceOf(address(this));
-            // The amount in the DSR pot and VAT must cover our totalBalance of Dai
-            assert(daiPot.pie(address(this)).mul(daiPot.chi()).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
-        } else {
-            _extraCash = cash.balanceOf(address(this)).sub(totalBalance);
-        }
+        daiPot.drip();
+        withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
+        saveDaiInDSR(totalBalance); // Put the required funds back in savings
+        _extraCash = cash.balanceOf(address(this));
+        // The amount in the DSR pot and VAT must cover our totalBalance of Dai
+        assert(daiPot.pie(address(this)).mul(daiPot.chi()).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
         cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
         return true;
     }

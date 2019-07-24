@@ -76,7 +76,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
   //     highestAvailableBlockNumber: 88,
   //     lastSyncedBlockNumber: 88,
   //     blocksBehindCurrent: 0,
-  //     percentBehindCurrent: "0.0000",
+  //     percentSynced: "0.0000",
   //   }]);
 
   //   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -106,7 +106,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
   //     highestAvailableBlockNumber: 88,
   //     lastSyncedBlockNumber: 88,
   //     blocksBehindCurrent: 0,
-  //     percentBehindCurrent: "0.0000",
+  //     percentSynced: "0.0000",
   //   }],
   // });
   done();

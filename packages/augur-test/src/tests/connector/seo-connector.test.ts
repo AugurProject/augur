@@ -122,7 +122,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
           blocksBehindCurrent: expect.any(Number),
           highestAvailableBlockNumber: expect.any(Number),
           lastSyncedBlockNumber: expect.any(Number),
-          percentBehindCurrent: expect.any(String),
+          percentSynced: expect.any(String),
           timestamp: expect.any(Number),
         }
       );

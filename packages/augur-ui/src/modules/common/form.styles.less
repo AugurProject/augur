@@ -197,7 +197,7 @@
   height: 82px;
   grid-template-rows: @size-20 @size-19 @size-4 @size-19 @size-20;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-mid {
     height: 128px;
     grid-template-rows: @size-16 @size-38 @size-8 50px @size-16;
     width: 312px;
@@ -211,7 +211,7 @@
     width: 236px;
     grid-row: 2;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-mid {
       .text-14;
 
       width: 244px;
@@ -226,7 +226,7 @@
     grid-row: 4;
     width: 236px;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-mid {
       .text-12;
 
       max-height: 50px;
@@ -274,6 +274,10 @@
   > div:not(:last-of-type) {
     margin-right: @size-20;
   }
+
+  @media @breakpoint-mobile-mid {
+    grid-template-columns: repeat(1,1fr);
+  }
 }
 
 .Additional {
@@ -281,6 +285,10 @@
   justify-content: center;
   align-items: center;
   text-align: center;
+
+  @media @breakpoint-mobile-mid {
+    justify-content: flex-start;
+  }
 }
 
 .RadioCard {
@@ -295,12 +303,11 @@
   min-height: 216px;
   min-width: 210px;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-mid {
     min-height: 75px;
     max-height: 75px;
-    min-width: 312px;
-    max-width: 312px;
-    grid-template-columns: 45px auto;
+    min-width: 100%;
+    grid-template-columns: 65px auto;
     grid-template-rows: @size-20 @size-20 auto;
   }
 
@@ -318,7 +325,7 @@
     visibility: hidden;
     opacity: 0;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-mid {
       grid-column: 2;
       grid-row: 1;
       left: 93%;
@@ -339,7 +346,7 @@
     width: @size-40;
     margin: @size-24 auto 0;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-mid {
       align-self: center;
       justify-self: center;
       grid-column: 1;
@@ -361,7 +368,7 @@
     text-align: center;
     text-transform: capitalize;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-mid {
       grid-column: 2;
       grid-row: 2;
       margin: 0;
@@ -377,7 +384,7 @@
     margin: @size-12 @size-12 0;
     text-align: center;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-mid {
       grid-column: 2;
       grid-row: 3;
       margin: 0 @size-4 0 0;
@@ -397,6 +404,10 @@
         stroke: @color-alternate-info-text;
       }
     }
+
+    @media @breakpoint-mobile-mid {
+      margin: @size-13;
+    }
   }
 }
 
@@ -409,7 +420,7 @@
   }
 
   > svg {
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-mid {
       align-self: center;
       justify-self: center;
       grid-column: 1;
@@ -483,7 +494,7 @@
 .CheckboxSmall {
   margin-bottom: 0;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-mid {
     margin-bottom: @size-8;
   }
 }
@@ -492,7 +503,7 @@
   height: @size-16;
   width: @size-16;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-mid {
     height: @size-24;
     width: @size-24;
   }
@@ -759,7 +770,7 @@ div.FormDropdownActive {
       stroke: @color-primary-text;
     }
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-mid {
       max-height: @size-24;
       min-height: @size-24;
       min-width: @size-24;

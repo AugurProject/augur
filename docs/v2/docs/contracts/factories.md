@@ -3222,18 +3222,6 @@ this should be used for estimation purposes as it is a view and does not actuall
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="Universe.canToggleDSR()"></a><code class="function-signature">canToggleDSR() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Universe.toggleDSR()"></a><code class="function-signature">toggleDSR() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
 <h4><a class="anchor" aria-hidden="true" id="Universe.sweepInterest()"></a><code class="function-signature">sweepInterest() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 

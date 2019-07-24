@@ -127,10 +127,14 @@ contract Market is Initializable, Ownable, IMarket {
      * @notice Do the initial report for the market.
      * @param _payoutNumerators An array indicating the payout for each market outcome
      * @param _description Any additional information or justification for this report
+     * @param _additionalStake Additional optional REP to stake in anticipation of a dispute. This REP will be held in a bond that only activates if the report is disputed
      * @return Bool True
      */
-    function doInitialReport(uint256[] memory _payoutNumerators, string memory _description) public returns (bool) {
+    function doInitialReport(uint256[] memory _payoutNumerators, string memory _description, uint256 _additionalStake) public returns (bool) {
         doInitialReportInternal(msg.sender, _payoutNumerators, _description);
+        if (_additionalStake > 0) {
+            contributeToTentativeInternal(msg.sender, _payoutNumerators, _additionalStake, _description);
+        }
         return true;
     }
 
@@ -170,12 +174,16 @@ contract Market is Initializable, Ownable, IMarket {
      * @return Bool True
      */
     function contributeToTentative(uint256[] memory _payoutNumerators, uint256 _amount, string memory _description) public returns (bool) {
+        contributeToTentativeInternal(msg.sender, _payoutNumerators, _amount, _description);
+        return true;
+    }
+
+    function contributeToTentativeInternal(address _sender, uint256[] memory _payoutNumerators, uint256 _amount, string memory _description) private {
         require(!disputePacingOn);
         // The derive call will validate that an Invalid report is entirely paid out on the Invalid outcome
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators);
         require(_payoutDistributionHash == getWinningReportingParticipant().getPayoutDistributionHash());
-        internalContribute(msg.sender, _payoutDistributionHash, _payoutNumerators, _amount, true, _description);
-        return true;
+        internalContribute(_sender, _payoutDistributionHash, _payoutNumerators, _amount, true, _description);
     }
 
     /**

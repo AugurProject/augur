@@ -60,6 +60,29 @@ def test_universe_fork_goal_freeze(contractsFixture, universe, market):
     with raises(TransactionFailed):
         universe.updateForkValues()
 
+def test_additional_initial_report_stake(contractsFixture, universe, reputationToken, market):
+    # Skip to Designated Reporting
+    contractsFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
+
+    # Designated Report with additional stake specified
+    designatedReportCost = universe.getOrCacheDesignatedReportStake()
+    additionalStake = 500 * 10**18
+    with TokenDelta(reputationToken, -additionalStake, contractsFixture.accounts[0], "Doing the designated report with additional stake didn't take the additional stake"):
+        market.doInitialReport([0, market.getNumTicks(), 0], "", additionalStake)
+
+    # Now let the market resolve with the initial report
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+
+    # Time marches on and the market can be finalized
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    assert market.finalize()
+
+    # The premptive bond can be redeemed for the REP staked
+    preemptiveDisputeCrowdsourcer = contractsFixture.applySignature('DisputeCrowdsourcer', market.preemptiveDisputeCrowdsourcer())
+
+    with TokenDelta(reputationToken, additionalStake, contractsFixture.accounts[0], "Redeeming didn't refund REP"):
+        assert preemptiveDisputeCrowdsourcer.redeem(contractsFixture.accounts[0])
+
 def test_malicious_universe_in_market_creation(contractsFixture, cash, augur, reputationToken):
     marketFactory = contractsFixture.contracts['MarketFactory']
     userA = contractsFixture.accounts[1]
@@ -95,7 +118,7 @@ def test_malicious_universe_in_market_creation(contractsFixture, cash, augur, re
     # The Market goes into reporting
     # assert contractsFixture.contracts["Time"].setTimestamp(endTime + 1)
     # The DR (User B) reports invalid
-    # assert market.doInitialReport([100, 0, 0], "")
+    # assert market.doInitialReport([100, 0, 0], "", 0)
     # The Market is finalized, which is allowed because the Malicious Universe reports that the market is the forking market and is done forking
     # assert market.finalize()
     # The Validity Bond is distributed to the "Dispute Window" since the market is Invalid, however the Malicious Universe just points to a contract controlled by User B for this "Dispute Window", namely the malicious universe itself in our example

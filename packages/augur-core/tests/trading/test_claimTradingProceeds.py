@@ -43,7 +43,7 @@ def finalizeMarket(fixture, market, payoutNumerators):
     # set timestamp to after market end
     fixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
     # have kitchenSinkFixture.accounts[0] submit designated report
-    market.doInitialReport(payoutNumerators, "")
+    market.doInitialReport(payoutNumerators, "", 0)
     # set timestamp to after designated dispute end
     disputeWindow = fixture.applySignature('DisputeWindow', market.getDisputeWindow())
     fixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
@@ -193,7 +193,7 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
     # set timestamp to after market end
     kitchenSinkFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
     # have kitchenSinkFixture.accounts[0] subimt designated report (75% high, 25% low, range -10*10^18 to 30*10^18)
-    market.doInitialReport([0, 0, 100], "")
+    market.doInitialReport([0, 0, 100], "", 0)
     # set timestamp to after designated dispute end
     disputeWindow = kitchenSinkFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     kitchenSinkFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)

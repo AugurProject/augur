@@ -30,12 +30,12 @@ test("State API :: Status :: getSyncData", async () => {
 
   const highestAvailableBlockNumber = syncData.highestAvailableBlockNumber;
   const blocksBehindCurrent = highestAvailableBlockNumber - 10;
-  const percentBehindCurrent = (blocksBehindCurrent * 100 / highestAvailableBlockNumber).toFixed(4);
+  const percentSynced = (blocksBehindCurrent * 100 / highestAvailableBlockNumber).toFixed(4);
 
   expect(syncData).toEqual({
     highestAvailableBlockNumber: highestAvailableBlockNumber,
     lastSyncedBlockNumber: 10,
     blocksBehindCurrent: blocksBehindCurrent,
-    percentBehindCurrent: percentBehindCurrent,
+    percentSynced: percentSynced,
   });
 });

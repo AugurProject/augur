@@ -169,7 +169,7 @@ export interface NewBlock extends FormattedEventLog {
   blocksBehindCurrent: number;
   highestAvailableBlockNumber: number;
   lastSyncedBlockNumber: number;
-  percentBehindCurrent: string;
+  percentSynced: string;
   timestamp: number;
 }
 

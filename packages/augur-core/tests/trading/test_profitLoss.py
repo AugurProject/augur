@@ -67,7 +67,7 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
     process_trades(contractsFixture, test_data, cash, market, createOrder, fillOrder, profitLoss)
 
     contractsFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
-    market.doInitialReport([0, 0, market.getNumTicks()], "")
+    market.doInitialReport([0, 0, market.getNumTicks()], "", 0)
     disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert market.finalize()

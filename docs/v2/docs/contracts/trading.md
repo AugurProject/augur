@@ -3149,7 +3149,7 @@ This function may revert to prevent the operation from being executed.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.simulateTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bool,contract IERC20,bool)"></a><code class="function-signature">simulateTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, contract IERC20 _kycToken, bool _fillOnly) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.simulateTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bool,contract IERC20,bool)"></a><code class="function-signature">simulateTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bool _ignoreShares, contract IERC20 _kycToken, bool _fillOnly) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256,uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
