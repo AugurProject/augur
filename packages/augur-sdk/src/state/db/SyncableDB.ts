@@ -3,7 +3,6 @@ import { AbstractDB, BaseDocument } from "./AbstractDB";
 import { Augur } from "../../Augur";
 import { DB } from "./DB";
 import { Log, ParsedLog } from "@augurproject/types";
-import { SubscriptionEventName } from "../../constants";
 import { SyncStatus } from "./SyncStatus";
 import { augurEmitter } from "../../events";
 
@@ -129,13 +128,7 @@ export class SyncableDB extends AbstractDB {
       }
 
       // try this twice for now
-      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing).catch(async (err) => {
-        await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing).catch(async (err) => {
-          await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing).catch((err) => {
-            throw err;
-          });
-        });
-      });
+      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
 
       // let the controller know a new block was added so it can update the UI
       augurEmitter.emit("controller:new:block", {});

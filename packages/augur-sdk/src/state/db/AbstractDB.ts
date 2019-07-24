@@ -2,11 +2,14 @@ import fs from "fs";
 import Find from "pouchdb-find";
 import Memory from "pouchdb-adapter-memory";
 import PouchDB from "pouchdb";
+import Upsert from "pouchdb-upsert";
+
 import * as _ from "lodash";
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
+PouchDB.plugin(Upsert);
 
 interface DocumentIDToDoc {
   [docId: string]: PouchDB.Core.ExistingDocument<{}>;
@@ -43,7 +46,7 @@ export abstract class AbstractDB {
     }
   }
 
-  protected async upsertDocument(id: string, document: object): Promise<PouchDB.Core.Response> {
+  protected async upsertDocument(id: string, document: object): Promise<PouchDB.UpsertResponse> {
     const previousBlockRev = await this.getPouchRevFromId(id);
     const obj = Object.assign(
       previousBlockRev ? { _rev: previousBlockRev } : {},
@@ -51,7 +54,9 @@ export abstract class AbstractDB {
       document
     );
 
-    return this.db.put(obj);
+    return this.db.upsert(id, () => {
+      return document;
+    });
   }
 
   protected async bulkUpsertUnorderedDocuments(documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
