@@ -336,7 +336,7 @@ export class ContractAPI {
   }
 
   async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<void> {
-    await market.doInitialReport(payoutNumerators, "");
+    await market.doInitialReport(payoutNumerators, "", new BigNumber(0));
   }
 
   async getInitialReporterStake(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<BigNumber> {

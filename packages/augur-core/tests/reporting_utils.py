@@ -22,7 +22,7 @@ def proceedToNextRound(fixture, market, contributor = None, doGenerateFees = Fal
     payoutNumerators[1] = market.getNumTicks()
 
     if (disputeWindow == longToHexString(0)):
-        market.doInitialReport(payoutNumerators, "")
+        market.doInitialReport(payoutNumerators, "", 0)
         assert market.getDisputeWindow()
     else:
         disputeWindow = fixture.applySignature('DisputeWindow', market.getDisputeWindow())

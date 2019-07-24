@@ -10308,6 +10308,33 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
+				},
+				{
+					"name": "_description",
+					"type": "string"
+				},
+				{
+					"name": "_additionalStake",
+					"type": "uint256"
+				}
+			],
+			"name": "doInitialReport",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getOwner",
@@ -10781,29 +10808,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_payoutNumerators",
-					"type": "uint256[]"
-				},
-				{
-					"name": "_description",
-					"type": "string"
-				}
-			],
-			"name": "doInitialReport",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],
@@ -11848,20 +11852,6 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [],
-			"name": "toggleDSR",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -12191,20 +12181,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "canToggleDSR",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "previousReportingFeeDivisor",
 			"outputs": [
 				{
@@ -12383,20 +12359,6 @@
 				{
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "useDSR",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -16534,6 +16496,10 @@
 				},
 				{
 					"name": "_settlementFees",
+					"type": "uint256"
+				},
+				{
+					"name": "_numFills",
 					"type": "uint256"
 				}
 			],
