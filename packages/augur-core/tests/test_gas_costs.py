@@ -57,7 +57,7 @@ def test_marketCreation(localFixture, augur, universe):
 
     with PrintGasUsed(localFixture, "DisputeWindow:createMarket", MARKET_CREATION):
         localFixture.contracts["Cash"].faucet(marketCreationFee)
-        marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, "", "")
+        marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, "")
 
 def test_marketFinalization(localFixture, universe, market):
     proceedToNextRound(localFixture, market)

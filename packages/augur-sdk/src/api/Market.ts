@@ -8,7 +8,6 @@ export interface CreateYesNoMarketParams {
   feePerCashInAttoCash: BigNumber;
   affiliateFeeDivisor: BigNumber;
   designatedReporter: string;
-  topic: string;
   extraInfo: string;
 }
 
@@ -17,7 +16,6 @@ export interface CreateCategoricalMarketParams {
   feePerCashInAttoCash: BigNumber;
   affiliateFeeDivisor: BigNumber;
   designatedReporter: string;
-  topic: string;
   outcomes: string[];
   extraInfo: string;
 }
@@ -27,7 +25,6 @@ export interface CreateScalarMarketParams {
   feePerCashInAttoCash: BigNumber;
   affiliateFeeDivisor: BigNumber;
   designatedReporter: string;
-  topic: string;
   extraInfo: string;
   prices: BigNumber[];
   numTicks: BigNumber;
@@ -39,7 +36,7 @@ export class Market {
   constructor(augur: Augur) {
     this.augur = augur;
   }
-  
+
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
     const universe = this.augur.contracts.universe;
 
@@ -48,7 +45,6 @@ export class Market {
       params.feePerCashInAttoCash,
       params.affiliateFeeDivisor,
       params.designatedReporter,
-      formatBytes32String(params.topic),
       params.extraInfo)
     ;
     const marketId = this.extractMarketIdFromEvents(events);
@@ -64,7 +60,6 @@ export class Market {
       params.affiliateFeeDivisor,
       params.designatedReporter,
       params.outcomes,
-      formatBytes32String(params.topic),
       params.extraInfo
     );
     const marketId = this.extractMarketIdFromEvents(events);
@@ -81,7 +76,6 @@ export class Market {
       params.designatedReporter,
       params.prices,
       params.numTicks,
-      formatBytes32String(params.topic),
       params.extraInfo
     );
     const marketId = this.extractMarketIdFromEvents(events);

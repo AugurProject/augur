@@ -117,7 +117,6 @@ export interface MarketCreatedLogExtraInfo {
 export interface MarketCreatedLog extends Log, Doc, Timestamped {
   universe: Address;
   endTime: Timestamp;
-  topic: string;
   extraInfo: string;
   market: Address;
   marketCreator: Address;
@@ -319,7 +318,6 @@ export interface UniverseForkedLog extends Log, Doc {
 export interface MarketData extends Log, Doc {
   universe: Address;
   endTime: Timestamp;
-  topic: string;
   extraInfo: string;
   market: Address;
   marketCreator: Address;
