@@ -21,7 +21,6 @@ import {
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
 } from '../../index';
-import { toAscii } from '../utils/utils';
 import { calculatePayoutNumeratorsValue } from '../../utils';
 
 import * as _ from 'lodash';
