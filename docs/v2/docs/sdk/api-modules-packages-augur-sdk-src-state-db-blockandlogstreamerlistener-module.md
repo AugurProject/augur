@@ -34,7 +34,7 @@ sidebar_label: packages/augur-sdk/src/state/db/BlockAndLogStreamerListener
 
 **Ƭ BlockstreamLogCallbackType**: *[GenericLogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#genericlogcallbacktype)<`string`, [Log](api-interfaces-node-modules--augurproject-types-types-logs-log.md)>*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:29](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L29)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:29](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L29)*
 
 ___
 <a id="genericlogcallbacktype"></a>
@@ -43,7 +43,7 @@ ___
 
 **Ƭ GenericLogCallbackType**: *`function`*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:27](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L27)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:27](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L27)*
 
 #### Type declaration
 ▸(blockIdentifier: *`T`*, logs: *`P`[]*): `void`
@@ -64,7 +64,7 @@ ___
 
 **Ƭ LogCallbackType**: *[GenericLogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#genericlogcallbacktype)<`number`, [ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)>*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:30](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L30)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:30](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L30)*
 
 ___
 

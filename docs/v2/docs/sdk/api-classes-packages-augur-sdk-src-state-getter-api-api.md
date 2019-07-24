@@ -34,7 +34,7 @@ sidebar_label: API
 
 ⊕ **new API**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *`Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>*): [API](api-classes-packages-augur-sdk-src-state-getter-api-api.md)
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:14](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/API.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/API.ts#L14)*
 
 **Parameters:**
 
@@ -55,7 +55,7 @@ ___
 
 **● router**: *[Router](api-classes-packages-augur-sdk-src-state-getter-router-router.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:14](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/API.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/API.ts#L14)*
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 ▸ **route**(name: *`string`*, params: *`any`*): `Promise`<`any`>
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/API.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/API.ts#L20)*
 
 **Parameters:**
 

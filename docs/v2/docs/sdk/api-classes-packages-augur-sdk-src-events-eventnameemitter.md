@@ -85,7 +85,7 @@ ___
 
 *Overrides EventEmitter.emit*
 
-*Defined in [packages/augur-sdk/src/events.ts:11](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/events.ts#L11)*
+*Defined in [packages/augur-sdk/src/events.ts:11](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/events.ts#L11)*
 
 **Parameters:**
 

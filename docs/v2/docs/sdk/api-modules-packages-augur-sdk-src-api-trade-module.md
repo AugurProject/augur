@@ -37,7 +37,7 @@ sidebar_label: packages/augur-sdk/src/api/Trade
 
 ▸ **stringTo32ByteHex**(stringToEncode: *`string`*): `string`
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:10](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/api/Trade.ts#L10)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:10](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L10)*
 
 **Parameters:**
 

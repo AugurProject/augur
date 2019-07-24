@@ -27,7 +27,7 @@ sidebar_label: MarketOrderBook
 
 **● marketId**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:155](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L155)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:155](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L155)*
 
 ___
 <a id="orderbook"></a>
@@ -36,7 +36,7 @@ ___
 
 **● orderBook**: *`object`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:156](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L156)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:156](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L156)*
 
 #### Type declaration
 

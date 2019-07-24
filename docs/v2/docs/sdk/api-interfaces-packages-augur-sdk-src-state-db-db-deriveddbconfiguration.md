@@ -28,7 +28,7 @@ sidebar_label: DerivedDBConfiguration
 
 **● eventNames**: *`Array`<`string`>*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:38](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/DB.ts#L38)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:38](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L38)*
 
 ___
 <a id="idfields"></a>
@@ -37,7 +37,7 @@ ___
 
 **● idFields**: *`Array`<`string`>*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:39](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/DB.ts#L39)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:39](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L39)*
 
 ___
 <a id="name"></a>
@@ -46,7 +46,7 @@ ___
 
 **● name**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:37](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/DB.ts#L37)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:37](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L37)*
 
 ___
 

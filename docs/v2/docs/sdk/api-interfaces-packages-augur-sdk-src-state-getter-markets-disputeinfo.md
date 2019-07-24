@@ -29,7 +29,7 @@ sidebar_label: DisputeInfo
 
 **● bondSizeOfNewStake**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:107](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L107)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:107](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L107)*
 
 ___
 <a id="disputepacingon"></a>
@@ -38,7 +38,7 @@ ___
 
 **● disputePacingOn**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:105](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L105)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:105](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L105)*
 
 ___
 <a id="stakecompletedtotal"></a>
@@ -47,7 +47,7 @@ ___
 
 **● stakeCompletedTotal**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:106](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L106)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:106](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L106)*
 
 ___
 <a id="stakes"></a>
@@ -56,7 +56,7 @@ ___
 
 **● stakes**: *[StakeDetails](api-interfaces-packages-augur-sdk-src-state-getter-markets-stakedetails.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:108](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L108)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:108](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L108)*
 
 ___
 

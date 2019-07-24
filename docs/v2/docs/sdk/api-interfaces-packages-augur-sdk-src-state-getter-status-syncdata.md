@@ -29,7 +29,7 @@ sidebar_label: SyncData
 
 **● blocksBehindCurrent**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/status.ts:9](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/status.ts#L9)*
+*Defined in [packages/augur-sdk/src/state/getter/status.ts:9](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/status.ts#L9)*
 
 ___
 <a id="highestavailableblocknumber"></a>
@@ -38,7 +38,7 @@ ___
 
 **● highestAvailableBlockNumber**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/status.ts:7](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/status.ts#L7)*
+*Defined in [packages/augur-sdk/src/state/getter/status.ts:7](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/status.ts#L7)*
 
 ___
 <a id="lastsyncedblocknumber"></a>
@@ -47,7 +47,7 @@ ___
 
 **● lastSyncedBlockNumber**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/status.ts:8](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/status.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/getter/status.ts:8](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/status.ts#L8)*
 
 ___
 <a id="percentsynced"></a>
@@ -56,7 +56,7 @@ ___
 
 **● percentSynced**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/status.ts:10](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/status.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/getter/status.ts:10](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/status.ts#L10)*
 
 ___
 

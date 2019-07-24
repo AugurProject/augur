@@ -39,7 +39,7 @@ sidebar_label: EmptyConnector
 
 *Inherited from [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[subscriptions](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#subscriptions)*
 
-*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
+*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
 
 #### Type declaration
 
@@ -61,7 +61,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[bindTo](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#bindto)*
 
-*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:14](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/connector/empty-connector.ts#L14)*
+*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/connector/empty-connector.ts#L14)*
 
 **Type parameters:**
 
@@ -84,7 +84,7 @@ ___
 
 *Inherited from [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[callbackWrapper](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#callbackwrapper)*
 
-*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
+*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
 
 **Type parameters:**
 
@@ -106,7 +106,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[connect](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#connect)*
 
-*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:6](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/connector/empty-connector.ts#L6)*
+*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:6](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/connector/empty-connector.ts#L6)*
 
 **Parameters:**
 
@@ -126,7 +126,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[disconnect](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#disconnect)*
 
-*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:10](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/connector/empty-connector.ts#L10)*
+*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:10](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/connector/empty-connector.ts#L10)*
 
 **Returns:** `Promise`<`any`>
 
@@ -139,7 +139,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[off](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#off)*
 
-*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:23](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/connector/empty-connector.ts#L23)*
+*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:23](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/connector/empty-connector.ts#L23)*
 
 **Parameters:**
 
@@ -158,7 +158,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[on](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#on)*
 
-*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:20](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/connector/empty-connector.ts#L20)*
+*Defined in [packages/augur-sdk/src/connector/empty-connector.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/connector/empty-connector.ts#L20)*
 
 **Parameters:**
 

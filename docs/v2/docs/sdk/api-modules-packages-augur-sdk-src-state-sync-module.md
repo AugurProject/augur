@@ -22,7 +22,7 @@ sidebar_label: packages/augur-sdk/src/state/Sync
 
 ▸ **start**(ethNodeUrl: *`string`*, account?: *`string`*, dbArgs?: *`DatabaseConfiguration`*): `Promise`<[API](api-classes-packages-augur-sdk-src-state-getter-api-api.md)>
 
-*Defined in [packages/augur-sdk/src/state/Sync.ts:5](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/Sync.ts#L5)*
+*Defined in [packages/augur-sdk/src/state/Sync.ts:5](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/Sync.ts#L5)*
 
 **Parameters:**
 

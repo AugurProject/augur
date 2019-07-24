@@ -33,7 +33,7 @@ sidebar_label: Provider
 
 ▸ **getBalance**(address: *`string`*): `Promise`<`BigNumber`>
 
-*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:15](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/ethereum/Provider.ts#L15)*
+*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:15](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/ethereum/Provider.ts#L15)*
 
 **Parameters:**
 
@@ -50,7 +50,7 @@ ___
 
 ▸ **getBlock**(blockHashOrBlockNumber: *`BlockTag` \| `string`*): `Promise`<`Block`>
 
-*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:11](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/ethereum/Provider.ts#L11)*
+*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:11](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/ethereum/Provider.ts#L11)*
 
 **Parameters:**
 
@@ -67,7 +67,7 @@ ___
 
 ▸ **getBlockNumber**(): `Promise`<`number`>
 
-*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:10](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/ethereum/Provider.ts#L10)*
+*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:10](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/ethereum/Provider.ts#L10)*
 
 **Returns:** `Promise`<`number`>
 
@@ -78,7 +78,7 @@ ___
 
 ▸ **getEventTopic**(contractName: *`string`*, eventName: *`string`*): `string`
 
-*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:13](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/ethereum/Provider.ts#L13)*
+*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:13](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/ethereum/Provider.ts#L13)*
 
 **Parameters:**
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **getLogs**(filter: *[Filter](api-interfaces-node-modules--augurproject-types-types-logs-filter.md)*): `Promise`<[Log](api-interfaces-node-modules--augurproject-types-types-logs-log.md)[]>
 
-*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:9](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/ethereum/Provider.ts#L9)*
+*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:9](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/ethereum/Provider.ts#L9)*
 
 **Parameters:**
 
@@ -113,7 +113,7 @@ ___
 
 ▸ **getNetworkId**(): `Promise`<`NetworkId`>
 
-*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:8](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/ethereum/Provider.ts#L8)*
+*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:8](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/ethereum/Provider.ts#L8)*
 
 **Returns:** `Promise`<`NetworkId`>
 
@@ -124,7 +124,7 @@ ___
 
 ▸ **parseLogValues**(contractName: *`string`*, log: *[Log](api-interfaces-node-modules--augurproject-types-types-logs-log.md)*): [LogValues](api-interfaces-node-modules--augurproject-types-types-logs-logvalues.md)
 
-*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:14](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/ethereum/Provider.ts#L14)*
+*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/ethereum/Provider.ts#L14)*
 
 **Parameters:**
 
@@ -142,7 +142,7 @@ ___
 
 ▸ **storeAbiData**(abi: *`Abi`*, contractName: *`string`*): `void`
 
-*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:12](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/ethereum/Provider.ts#L12)*
+*Defined in [packages/augur-sdk/src/ethereum/Provider.ts:12](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/ethereum/Provider.ts#L12)*
 
 **Parameters:**
 

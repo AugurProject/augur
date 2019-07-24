@@ -35,6 +35,7 @@ sidebar_label: Augur
 * [getTradingHistory](api-classes-packages-augur-sdk-src-augur-augur.md#gettradinghistory)
 * [getTradingOrders](api-classes-packages-augur-sdk-src-augur-augur.md#gettradingorders)
 * [getUserTradingPositions](api-classes-packages-augur-sdk-src-augur-augur.md#getusertradingpositions)
+* [liquidity](api-classes-packages-augur-sdk-src-augur-augur.md#liquidity)
 * [market](api-classes-packages-augur-sdk-src-augur-augur.md#market)
 * [networkId](api-classes-packages-augur-sdk-src-augur-augur.md#networkid)
 * [provider](api-classes-packages-augur-sdk-src-augur-augur.md#provider)
@@ -85,7 +86,7 @@ sidebar_label: Augur
 
 ⊕ **new Augur**(provider: *`TProvider`*, dependencies: *`ContractDependenciesEthers`*, networkId: *`NetworkId`*, addresses: *`ContractAddresses`*, connector?: *[BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md)*): [Augur](api-classes-packages-augur-sdk-src-augur-augur.md)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:65](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L65)*
+*Defined in [packages/augur-sdk/src/Augur.ts:67](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L67)*
 
 **Parameters:**
 
@@ -109,7 +110,7 @@ ___
 
 **● addresses**: *`ContractAddresses`*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:28](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L28)*
+*Defined in [packages/augur-sdk/src/Augur.ts:29](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L29)*
 
 ___
 <a id="contracts"></a>
@@ -118,7 +119,7 @@ ___
 
 **● contracts**: *[Contracts](api-classes-packages-augur-sdk-src-api-contracts-contracts.md)*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:29](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L29)*
+*Defined in [packages/augur-sdk/src/Augur.ts:30](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L30)*
 
 ___
 <a id="dependencies"></a>
@@ -127,7 +128,7 @@ ___
 
 **● dependencies**: *`ContractDependenciesEthers`*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:24](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L24)*
+*Defined in [packages/augur-sdk/src/Augur.ts:25](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L25)*
 
 ___
 <a id="events"></a>
@@ -136,7 +137,7 @@ ___
 
 **● events**: *[Events](api-classes-packages-augur-sdk-src-api-events-events.md)*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:27](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L27)*
+*Defined in [packages/augur-sdk/src/Augur.ts:28](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L28)*
 
 ___
 <a id="genericeventnames"></a>
@@ -170,7 +171,7 @@ ___
     "UniverseForked",
   ]
 
-*Defined in [packages/augur-sdk/src/Augur.ts:40](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L40)*
+*Defined in [packages/augur-sdk/src/Augur.ts:42](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L42)*
 
 ___
 <a id="getaccounttransactionhistory"></a>
@@ -179,7 +180,7 @@ ___
 
 **● getAccountTransactionHistory**: *`function`* =  this.bindTo(Accounts.getAccountTransactionHistory)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:219](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L219)*
+*Defined in [packages/augur-sdk/src/Augur.ts:222](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L222)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -199,7 +200,7 @@ ___
 
 **● getAllOrders**: *`function`* =  this.bindTo(Trading.getAllOrders)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:210](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L210)*
+*Defined in [packages/augur-sdk/src/Augur.ts:213](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L213)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -219,7 +220,7 @@ ___
 
 **● getMarketOrderBook**: *`function`* =  this.bindTo(Markets.getMarketOrderBook)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:212](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L212)*
+*Defined in [packages/augur-sdk/src/Augur.ts:215](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L215)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -239,7 +240,7 @@ ___
 
 **● getMarketPriceCandlesticks**: *`function`* =  this.bindTo(Markets.getMarketPriceCandlesticks)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:214](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L214)*
+*Defined in [packages/augur-sdk/src/Augur.ts:217](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L217)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -259,7 +260,7 @@ ___
 
 **● getMarketsInfo**: *`function`* =  this.bindTo(Markets.getMarketsInfo)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:204](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L204)*
+*Defined in [packages/augur-sdk/src/Augur.ts:207](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L207)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -279,7 +280,7 @@ ___
 
 **● getProfitLoss**: *`function`* =  this.bindTo(Users.getProfitLoss)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:217](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L217)*
+*Defined in [packages/augur-sdk/src/Augur.ts:220](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L220)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -299,7 +300,7 @@ ___
 
 **● getProfitLossSummary**: *`function`* =  this.bindTo(Users.getProfitLossSummary)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:218](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L218)*
+*Defined in [packages/augur-sdk/src/Augur.ts:221](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L221)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -319,7 +320,7 @@ ___
 
 **● getTradingHistory**: *`function`* =  this.bindTo(Trading.getTradingHistory)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:209](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L209)*
+*Defined in [packages/augur-sdk/src/Augur.ts:212](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L212)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -339,7 +340,7 @@ ___
 
 **● getTradingOrders**: *`function`* =  this.bindTo(Trading.getOrders)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:211](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L211)*
+*Defined in [packages/augur-sdk/src/Augur.ts:214](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L214)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -359,7 +360,7 @@ ___
 
 **● getUserTradingPositions**: *`function`* =  this.bindTo(Users.getUserTradingPositions)
 
-*Defined in [packages/augur-sdk/src/Augur.ts:216](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L216)*
+*Defined in [packages/augur-sdk/src/Augur.ts:219](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L219)*
 
 #### Type declaration
 ▸(params: *`P`*): `Promise`<`R`>
@@ -373,13 +374,22 @@ ___
 **Returns:** `Promise`<`R`>
 
 ___
+<a id="liquidity"></a>
+
+###  liquidity
+
+**● liquidity**: *[Liquidity](api-classes-packages-augur-sdk-src-api-liquidity-liquidity.md)*
+
+*Defined in [packages/augur-sdk/src/Augur.ts:34](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L34)*
+
+___
 <a id="market"></a>
 
 ###  market
 
 **● market**: *[Market](api-classes-packages-augur-sdk-src-api-market-market.md)*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:31](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L31)*
+*Defined in [packages/augur-sdk/src/Augur.ts:32](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L32)*
 
 ___
 <a id="networkid"></a>
@@ -388,7 +398,7 @@ ___
 
 **● networkId**: *`NetworkId`*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:26](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L26)*
+*Defined in [packages/augur-sdk/src/Augur.ts:27](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L27)*
 
 ___
 <a id="provider"></a>
@@ -397,7 +407,7 @@ ___
 
 **● provider**: *`TProvider`*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:23](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L23)*
+*Defined in [packages/augur-sdk/src/Augur.ts:24](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L24)*
 
 ___
 <a id="trade"></a>
@@ -406,7 +416,7 @@ ___
 
 **● trade**: *[Trade](api-classes-packages-augur-sdk-src-api-trade-trade.md)*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:30](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L30)*
+*Defined in [packages/augur-sdk/src/Augur.ts:31](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L31)*
 
 ___
 <a id="txawaitingsigningcallback"></a>
@@ -415,7 +425,7 @@ ___
 
 **● txAwaitingSigningCallback**: *[TXStatusCallback](api-modules-packages-augur-sdk-src-events-module.md#txstatuscallback)*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:35](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L35)*
+*Defined in [packages/augur-sdk/src/Augur.ts:37](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L37)*
 
 ___
 <a id="txfailurecallback"></a>
@@ -424,7 +434,7 @@ ___
 
 **● txFailureCallback**: *[TXStatusCallback](api-modules-packages-augur-sdk-src-events-module.md#txstatuscallback)*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:37](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L37)*
+*Defined in [packages/augur-sdk/src/Augur.ts:39](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L39)*
 
 ___
 <a id="txpendingcallback"></a>
@@ -433,7 +443,7 @@ ___
 
 **● txPendingCallback**: *[TXStatusCallback](api-modules-packages-augur-sdk-src-events-module.md#txstatuscallback)*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:36](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L36)*
+*Defined in [packages/augur-sdk/src/Augur.ts:38](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L38)*
 
 ___
 <a id="txsuccesscallback"></a>
@@ -442,7 +452,7 @@ ___
 
 **● txSuccessCallback**: *[TXStatusCallback](api-modules-packages-augur-sdk-src-events-module.md#txstatuscallback)*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:34](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L34)*
+*Defined in [packages/augur-sdk/src/Augur.ts:36](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L36)*
 
 ___
 <a id="connector"></a>
@@ -451,7 +461,7 @@ ___
 
 **● connector**: *[BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md)*
 
-*Defined in [packages/augur-sdk/src/Augur.ts:32](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L32)*
+*Defined in [packages/augur-sdk/src/Augur.ts:33](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L33)*
 
 ___
 
@@ -463,7 +473,7 @@ ___
 
 ▸ **bindTo**<`R`,`P`>(f: *`function`*): `function`
 
-*Defined in [packages/augur-sdk/src/Augur.ts:158](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L158)*
+*Defined in [packages/augur-sdk/src/Augur.ts:161](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L161)*
 
 **Type parameters:**
 
@@ -484,7 +494,7 @@ ___
 
 ▸ **connect**(ethNodeUrl: *`string`*, account?: *`string`*): `Promise`<`any`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:150](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L150)*
+*Defined in [packages/augur-sdk/src/Augur.ts:153](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L153)*
 
 **Parameters:**
 
@@ -502,7 +512,7 @@ ___
 
 ▸ **createCategoricalMarket**(params: *[CreateCategoricalMarketParams](api-interfaces-packages-augur-sdk-src-api-market-createcategoricalmarketparams.md)*): `Promise`<`ContractInterfaces.Market`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:233](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L233)*
+*Defined in [packages/augur-sdk/src/Augur.ts:236](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L236)*
 
 **Parameters:**
 
@@ -519,7 +529,7 @@ ___
 
 ▸ **createScalarMarket**(params: *[CreateScalarMarketParams](api-interfaces-packages-augur-sdk-src-api-market-createscalarmarketparams.md)*): `Promise`<`ContractInterfaces.Market`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:237](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L237)*
+*Defined in [packages/augur-sdk/src/Augur.ts:240](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L240)*
 
 **Parameters:**
 
@@ -536,7 +546,7 @@ ___
 
 ▸ **createYesNoMarket**(params: *[CreateYesNoMarketParams](api-interfaces-packages-augur-sdk-src-api-market-createyesnomarketparams.md)*): `Promise`<`ContractInterfaces.Market`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:229](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L229)*
+*Defined in [packages/augur-sdk/src/Augur.ts:232](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L232)*
 
 **Parameters:**
 
@@ -553,7 +563,7 @@ ___
 
 ▸ **deRegisterAllTransactionStatusCallbacks**(): `void`
 
-*Defined in [packages/augur-sdk/src/Augur.ts:146](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L146)*
+*Defined in [packages/augur-sdk/src/Augur.ts:149](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L149)*
 
 **Returns:** `void`
 
@@ -564,7 +574,7 @@ ___
 
 ▸ **deRegisterTransactionStatusCallback**(key: *`string`*): `void`
 
-*Defined in [packages/augur-sdk/src/Augur.ts:142](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L142)*
+*Defined in [packages/augur-sdk/src/Augur.ts:145](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L145)*
 
 **Parameters:**
 
@@ -581,7 +591,7 @@ ___
 
 ▸ **disconnect**(): `Promise`<`any`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:154](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L154)*
+*Defined in [packages/augur-sdk/src/Augur.ts:157](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L157)*
 
 **Returns:** `Promise`<`any`>
 
@@ -592,7 +602,7 @@ ___
 
 ▸ **getAccount**(): `Promise`<`string` \| `null`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:120](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L120)*
+*Defined in [packages/augur-sdk/src/Augur.ts:123](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L123)*
 
 **Returns:** `Promise`<`string` \| `null`>
 
@@ -603,7 +613,7 @@ ___
 
 ▸ **getEthBalance**(address: *`string`*): `Promise`<`string`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:110](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L110)*
+*Defined in [packages/augur-sdk/src/Augur.ts:113](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L113)*
 
 **Parameters:**
 
@@ -620,7 +630,7 @@ ___
 
 ▸ **getGasPrice**(): `Promise`<`BigNumber`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:115](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L115)*
+*Defined in [packages/augur-sdk/src/Augur.ts:118](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L118)*
 
 **Returns:** `Promise`<`BigNumber`>
 
@@ -631,7 +641,7 @@ ___
 
 ▸ **getMarket**(address: *`string`*): `ContractInterfaces.Market`
 
-*Defined in [packages/augur-sdk/src/Augur.ts:130](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L130)*
+*Defined in [packages/augur-sdk/src/Augur.ts:133](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L133)*
 
 **Parameters:**
 
@@ -648,7 +658,7 @@ ___
 
 ▸ **getMarkets**(params: *`object`*): `Promise`<`string`[]>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:198](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L198)*
+*Defined in [packages/augur-sdk/src/Augur.ts:201](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L201)*
 
 **Parameters:**
 
@@ -665,7 +675,7 @@ ___
 
 ▸ **getOrders**(): `ContractInterfaces.Orders`
 
-*Defined in [packages/augur-sdk/src/Augur.ts:134](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L134)*
+*Defined in [packages/augur-sdk/src/Augur.ts:137](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L137)*
 
 **Returns:** `ContractInterfaces.Orders`
 
@@ -676,7 +686,7 @@ ___
 
 ▸ **getSyncData**(): `Promise`<[SyncData](api-interfaces-packages-augur-sdk-src-state-getter-status-syncdata.md)>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:205](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L205)*
+*Defined in [packages/augur-sdk/src/Augur.ts:208](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L208)*
 
 **Returns:** `Promise`<[SyncData](api-interfaces-packages-augur-sdk-src-state-getter-status-syncdata.md)>
 
@@ -687,7 +697,7 @@ ___
 
 ▸ **getTimestamp**(): `Promise`<`any`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:106](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L106)*
+*Defined in [packages/augur-sdk/src/Augur.ts:109](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L109)*
 
 **Returns:** `Promise`<`any`>
 
@@ -698,7 +708,7 @@ ___
 
 ▸ **getTransaction**(hash: *`string`*): `Promise`<`string`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:97](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L97)*
+*Defined in [packages/augur-sdk/src/Augur.ts:100](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L100)*
 
 **Parameters:**
 
@@ -715,7 +725,7 @@ ___
 
 ▸ **getUniverse**(address: *`string`*): `ContractInterfaces.Universe`
 
-*Defined in [packages/augur-sdk/src/Augur.ts:126](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L126)*
+*Defined in [packages/augur-sdk/src/Augur.ts:129](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L129)*
 
 **Parameters:**
 
@@ -732,7 +742,7 @@ ___
 
 ▸ **listAccounts**(): `Promise`<`string`[]>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:102](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L102)*
+*Defined in [packages/augur-sdk/src/Augur.ts:105](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L105)*
 
 **Returns:** `Promise`<`string`[]>
 
@@ -743,7 +753,7 @@ ___
 
 ▸ **off**(eventName: *[SubscriptionEventName](api-enums-packages-augur-sdk-src-constants-subscriptioneventname.md) \| [TXEventName](api-enums-packages-augur-sdk-src-constants-txeventname.md) \| `string`*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:180](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L180)*
+*Defined in [packages/augur-sdk/src/Augur.ts:183](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L183)*
 
 **Parameters:**
 
@@ -760,7 +770,7 @@ ___
 
 ▸ **on**(eventName: *[SubscriptionEventName](api-enums-packages-augur-sdk-src-constants-subscriptioneventname.md) \| [TXEventName](api-enums-packages-augur-sdk-src-constants-txeventname.md) \| `string`*, callback: *[Callback](api-modules-packages-augur-sdk-src-events-module.md#callback) \| [TXStatusCallback](api-modules-packages-augur-sdk-src-events-module.md#txstatuscallback)*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:162](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L162)*
+*Defined in [packages/augur-sdk/src/Augur.ts:165](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L165)*
 
 **Parameters:**
 
@@ -778,7 +788,7 @@ ___
 
 ▸ **placeTrade**(params: *[PlaceTradeDisplayParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradedisplayparams.md)*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:225](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L225)*
+*Defined in [packages/augur-sdk/src/Augur.ts:228](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L228)*
 
 **Parameters:**
 
@@ -795,7 +805,7 @@ ___
 
 ▸ **registerTransactionStatusCallback**(key: *`string`*, callback: *`TransactionStatusCallback`*): `void`
 
-*Defined in [packages/augur-sdk/src/Augur.ts:138](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L138)*
+*Defined in [packages/augur-sdk/src/Augur.ts:141](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L141)*
 
 **Parameters:**
 
@@ -813,7 +823,7 @@ ___
 
 ▸ **registerTransactionStatusEvents**(): `void`
 
-*Defined in [packages/augur-sdk/src/Augur.ts:245](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L245)*
+*Defined in [packages/augur-sdk/src/Augur.ts:248](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L248)*
 
 **Returns:** `void`
 
@@ -824,7 +834,7 @@ ___
 
 ▸ **simulateTrade**(params: *[PlaceTradeDisplayParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradedisplayparams.md)*): `Promise`<[SimulateTradeData](api-interfaces-packages-augur-sdk-src-api-trade-simulatetradedata.md)>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:221](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L221)*
+*Defined in [packages/augur-sdk/src/Augur.ts:224](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L224)*
 
 **Parameters:**
 
@@ -841,7 +851,7 @@ ___
 
 ▸ **simulateTradeGasLimit**(params: *[PlaceTradeDisplayParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradedisplayparams.md)*): `Promise`<`BigNumber`>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:241](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L241)*
+*Defined in [packages/augur-sdk/src/Augur.ts:244](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L244)*
 
 **Parameters:**
 
@@ -858,7 +868,7 @@ ___
 
 ▸ **create**<`TProvider`>(provider: *`TProvider`*, dependencies: *`ContractDependenciesEthers`*, addresses: *`ContractAddresses`*, connector?: *[BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md)*): `Promise`<[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)>
 
-*Defined in [packages/augur-sdk/src/Augur.ts:84](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/Augur.ts#L84)*
+*Defined in [packages/augur-sdk/src/Augur.ts:87](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/Augur.ts#L87)*
 
 **Type parameters:**
 

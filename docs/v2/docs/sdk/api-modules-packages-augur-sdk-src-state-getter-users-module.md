@@ -47,7 +47,7 @@ sidebar_label: packages/augur-sdk/src/state/getter/Users
 
 **● DEFAULT_NUMBER_OF_BUCKETS**: *`30`* = 30
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:24](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:24](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L24)*
 
 ___
 <a id="getprofitlossparams"></a>
@@ -63,7 +63,7 @@ ___
   }),
 ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:43](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L43)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:43](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L43)*
 
 ___
 <a id="getprofitlosssummaryparams"></a>
@@ -76,7 +76,7 @@ ___
   endTime: t.number,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:37](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L37)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:37](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L37)*
 
 ___
 <a id="usertradingpositionsparams"></a>
@@ -94,7 +94,7 @@ ___
   }),
 ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:26](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L26)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:26](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L26)*
 
 ___
 
@@ -106,7 +106,7 @@ ___
 
 ▸ **bucketRangeByInterval**(startTime: *`number`*, endTime: *`number`*, periodInterval: *`number` \| `null`*): `BigNumber`[]
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:559](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L559)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:559](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L559)*
 
 **Parameters:**
 
@@ -125,7 +125,7 @@ ___
 
 ▸ **getLastDocBeforeTimestamp**<`TDoc`>(docs: *`TDoc`[]*, timestamp: *`BigNumber`*): `TDoc` \| `undefined`
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:652](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L652)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:652](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L652)*
 
 **Type parameters:**
 
@@ -146,7 +146,7 @@ ___
 
 ▸ **getOrderFilledRecordsByMarketAndOutcome**(db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, request: *`FindRequest`<`__type`>*): `Promise`<`_.Dictionary`<`_.Dictionary`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>>>
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:606](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L606)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:606](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L606)*
 
 **Parameters:**
 
@@ -164,7 +164,7 @@ ___
 
 ▸ **getProfitLossRecordsByMarketAndOutcome**(db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, account: *`string`*, request: *`FindRequest`<`__type`>*): `Promise`<`_.Dictionary`<`_.Dictionary`<[ProfitLossChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-profitlosschangedlog.md)[]>>>
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:595](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L595)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:595](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L595)*
 
 **Parameters:**
 
@@ -183,7 +183,7 @@ ___
 
 ▸ **getTradingPositionFromProfitLossFrame**(profitLossFrame: *[ProfitLossChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-profitlosschangedlog.md)*, marketDoc: *[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)*, onChainOutcomeValue: *`BigNumber`*, timestamp: *`number`*, shareTokenBalancesByMarketandOutcome: *`any`*): [TradingPosition](api-interfaces-packages-augur-sdk-src-state-getter-users-tradingposition.md)
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:665](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L665)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:665](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L665)*
 
 **Parameters:**
 
@@ -204,7 +204,7 @@ ___
 
 ▸ **groupDocumentsByMarketAndOutcome**<`TDoc`>(docs: *`TDoc`[]*, outcomeField?: *`string`*): `_.Dictionary`<`_.Dictionary`<`TDoc`[]>>
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:617](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L617)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:617](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L617)*
 
 **Type parameters:**
 
@@ -225,7 +225,7 @@ ___
 
 ▸ **reduceMarketAndOutcomeDocsToOnlyLatest**<`TDoc`>(docs: *`_.Dictionary`<`_.Dictionary`<`TDoc`[]>>*): `_.Dictionary`<`_.Dictionary`<`TDoc`>>
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:630](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L630)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:630](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L630)*
 
 **Type parameters:**
 
@@ -245,7 +245,7 @@ ___
 
 ▸ **sumTradingPositions**(tradingPositions: *[MarketTradingPosition](api-interfaces-packages-augur-sdk-src-state-getter-users-markettradingposition.md)[]*): [MarketTradingPosition](api-interfaces-packages-augur-sdk-src-state-getter-users-markettradingposition.md)
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:479](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Users.ts#L479)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:479](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Users.ts#L479)*
 
 **Parameters:**
 

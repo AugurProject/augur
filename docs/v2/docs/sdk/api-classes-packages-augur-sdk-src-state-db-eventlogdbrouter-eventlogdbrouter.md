@@ -37,7 +37,7 @@ sidebar_label: EventLogDBRouter
 
 ⊕ **new EventLogDBRouter**(parseLogs: *`function`*): [EventLogDBRouter](api-classes-packages-augur-sdk-src-state-db-eventlogdbrouter-eventlogdbrouter.md)
 
-*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:6](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L6)*
+*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:6](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L6)*
 
 **Parameters:**
 
@@ -57,7 +57,7 @@ ___
 
 **● logCallbacks**: *`Array`<[LogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#logcallbacktype)>* =  []
 
-*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:6](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L6)*
+*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:6](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L6)*
 
 ___
 <a id="parselogs"></a>
@@ -66,7 +66,7 @@ ___
 
 **● parseLogs**: *`function`*
 
-*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:8](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:8](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L8)*
 
 #### Type declaration
 ▸(logs: *`Array`<[Log](api-interfaces-node-modules--augurproject-types-types-logs-log.md)>*): `Array`<[ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)>
@@ -89,7 +89,7 @@ ___
 
 ▸ **addLogCallback**(topic: *`string`*, callback: *[LogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#logcallbacktype)*): `void`
 
-*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:20](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L20)*
 
 **Parameters:**
 
@@ -107,7 +107,7 @@ ___
 
 ▸ **filterCallbackByTopic**(topic: *`string`*, callback: *[LogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#logcallbacktype)*): [LogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#logcallbacktype)
 
-*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:11](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L11)*
+*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:11](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L11)*
 
 **Parameters:**
 
@@ -125,7 +125,7 @@ ___
 
 ▸ **onLogsAdded**(blockNumber: *`number`*, extendedLogs: *`Array`<`ExtendedLog`>*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:24](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:24](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L24)*
 
 **Parameters:**
 

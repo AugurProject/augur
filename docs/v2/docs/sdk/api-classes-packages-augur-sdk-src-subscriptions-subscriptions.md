@@ -55,7 +55,7 @@ sidebar_label: Subscriptions
 
 ⊕ **new Subscriptions**(parentEmitter: *`EventEmitter`*): [Subscriptions](api-classes-packages-augur-sdk-src-subscriptions-subscriptions.md)
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:5](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/subscriptions.ts#L5)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:5](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/subscriptions.ts#L5)*
 
 **Parameters:**
 
@@ -75,7 +75,7 @@ ___
 
 **● parentEmitter**: *`EventEmitter`*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:5](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/subscriptions.ts#L5)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:5](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/subscriptions.ts#L5)*
 
 ___
 <a id="defaultmaxlisteners"></a>
@@ -347,7 +347,7 @@ ___
 
 *Overrides EventEmitter.removeAllListeners*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:21](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/subscriptions.ts#L21)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:21](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/subscriptions.ts#L21)*
 
 **Parameters:**
 
@@ -407,7 +407,7 @@ ___
 
 ▸ **subscribe**(eventName: *`string`*, publish: *`function`*): `string`
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:13](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/subscriptions.ts#L13)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:13](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/subscriptions.ts#L13)*
 
 **Parameters:**
 
@@ -425,7 +425,7 @@ ___
 
 ▸ **subscribeToEvent**(eventName: *`string`*, publish: *`function`*): `string`
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:26](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/subscriptions.ts#L26)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:26](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/subscriptions.ts#L26)*
 
 **Parameters:**
 
@@ -443,7 +443,7 @@ ___
 
 ▸ **unsubscribe**(subscription: *`string`*): `void`
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:17](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/subscriptions.ts#L17)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/subscriptions.ts#L17)*
 
 **Parameters:**
 

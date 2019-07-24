@@ -35,7 +35,7 @@ sidebar_label: StandardLogger
 
 *Implementation of [LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md).[debug](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md#debug)*
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:16](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L16)*
 
 **Parameters:**
 
@@ -54,7 +54,7 @@ ___
 
 *Implementation of [LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md).[error](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md#error)*
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:4](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:4](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L4)*
 
 **Parameters:**
 
@@ -73,7 +73,7 @@ ___
 
 *Implementation of [LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md).[info](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md#info)*
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:12](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L12)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:12](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L12)*
 
 **Parameters:**
 
@@ -92,7 +92,7 @@ ___
 
 *Implementation of [LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md).[warn](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md#warn)*
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:8](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:8](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L8)*
 
 **Parameters:**
 

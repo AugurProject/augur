@@ -30,7 +30,7 @@ sidebar_label: MarketInfoReportingState
 
 **AWAITING_FORK_MIGRATION**:  = "AWAITING_FORK_MIGRATION"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:66](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L66)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:66](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L66)*
 
 ___
 <a id="awaiting_next_window"></a>
@@ -39,7 +39,7 @@ ___
 
 **AWAITING_NEXT_WINDOW**:  = "AWAITING_NEXT_WINDOW"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:62](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L62)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:62](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L62)*
 
 ___
 <a id="awaiting_no_report_migration"></a>
@@ -48,7 +48,7 @@ ___
 
 **AWAITING_NO_REPORT_MIGRATION**:  = "AWAITING_NO_REPORT_MIGRATION"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:65](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L65)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:65](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L65)*
 
 ___
 <a id="crowdsourcing_dispute"></a>
@@ -57,7 +57,7 @@ ___
 
 **CROWDSOURCING_DISPUTE**:  = "CROWDSOURCING_DISPUTE"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:61](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L61)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:61](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L61)*
 
 ___
 <a id="designated_reporting"></a>
@@ -66,7 +66,7 @@ ___
 
 **DESIGNATED_REPORTING**:  = "DESIGNATED_REPORTING"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:59](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L59)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:59](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L59)*
 
 ___
 <a id="finalized"></a>
@@ -75,7 +75,7 @@ ___
 
 **FINALIZED**:  = "FINALIZED"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:63](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L63)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:63](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L63)*
 
 ___
 <a id="forking"></a>
@@ -84,7 +84,7 @@ ___
 
 **FORKING**:  = "FORKING"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:64](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L64)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:64](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L64)*
 
 ___
 <a id="open_reporting"></a>
@@ -93,7 +93,7 @@ ___
 
 **OPEN_REPORTING**:  = "OPEN_REPORTING"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:60](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L60)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:60](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L60)*
 
 ___
 <a id="pre_reporting"></a>
@@ -102,7 +102,7 @@ ___
 
 **PRE_REPORTING**:  = "PRE_REPORTING"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:58](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Markets.ts#L58)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:58](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L58)*
 
 ___
 

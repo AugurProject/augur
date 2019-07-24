@@ -31,7 +31,7 @@ sidebar_label: BaseDocument
 
 **● _id**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:16](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/AbstractDB.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L16)*
 
 ___
 <a id="_rev"></a>
@@ -40,7 +40,7 @@ ___
 
 **● _rev**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:17](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/AbstractDB.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L17)*
 
 ___
 

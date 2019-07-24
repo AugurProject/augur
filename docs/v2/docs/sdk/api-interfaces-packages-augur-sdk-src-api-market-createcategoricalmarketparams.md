@@ -31,7 +31,7 @@ sidebar_label: CreateCategoricalMarketParams
 
 **● affiliateFeeDivisor**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:17](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/api/Market.ts#L17)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Market.ts#L17)*
 
 ___
 <a id="designatedreporter"></a>
@@ -40,7 +40,7 @@ ___
 
 **● designatedReporter**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:18](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/api/Market.ts#L18)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Market.ts#L18)*
 
 ___
 <a id="endtime"></a>
@@ -49,7 +49,7 @@ ___
 
 **● endTime**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:15](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/api/Market.ts#L15)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:15](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Market.ts#L15)*
 
 ___
 <a id="extrainfo"></a>
@@ -58,7 +58,7 @@ ___
 
 **● extraInfo**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:20](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/api/Market.ts#L20)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Market.ts#L20)*
 
 ___
 <a id="feepercashinattocash"></a>
@@ -67,7 +67,7 @@ ___
 
 **● feePerCashInAttoCash**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:16](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/api/Market.ts#L16)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Market.ts#L16)*
 
 ___
 <a id="outcomes"></a>
@@ -76,7 +76,7 @@ ___
 
 **● outcomes**: *`string`[]*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:19](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/api/Market.ts#L19)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:19](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Market.ts#L19)*
 
 ___
 

@@ -26,7 +26,7 @@ sidebar_label: Pong
 
 **● response**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Ping.ts:6](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Ping.ts#L6)*
+*Defined in [packages/augur-sdk/src/state/getter/Ping.ts:6](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Ping.ts#L6)*
 
 ___
 

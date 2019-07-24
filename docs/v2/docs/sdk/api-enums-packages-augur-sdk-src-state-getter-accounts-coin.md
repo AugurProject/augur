@@ -24,7 +24,7 @@ sidebar_label: Coin
 
 **ALL**:  = "ALL"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:40](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Accounts.ts#L40)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:40](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L40)*
 
 ___
 <a id="eth"></a>
@@ -33,7 +33,7 @@ ___
 
 **ETH**:  = "ETH"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:41](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Accounts.ts#L41)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:41](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L41)*
 
 ___
 <a id="rep"></a>
@@ -42,7 +42,7 @@ ___
 
 **REP**:  = "REP"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:42](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/getter/Accounts.ts#L42)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:42](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L42)*
 
 ___
 

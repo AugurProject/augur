@@ -28,7 +28,7 @@ sidebar_label: packages/augur-sdk/src/state/create-api
 
 **● settings**: *`any`* =  require("./settings.json")
 
-*Defined in [packages/augur-sdk/src/state/create-api.ts:14](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/create-api.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/create-api.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/create-api.ts#L14)*
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 ▸ **buildAPI**(ethNodeUrl: *`string`*, account?: *`string`*, dbArgs?: *`DatabaseConfiguration`*): `Promise`<[API](api-classes-packages-augur-sdk-src-state-getter-api-api.md)>
 
-*Defined in [packages/augur-sdk/src/state/create-api.ts:47](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/create-api.ts#L47)*
+*Defined in [packages/augur-sdk/src/state/create-api.ts:47](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/create-api.ts#L47)*
 
 **Parameters:**
 
@@ -59,7 +59,7 @@ ___
 
 ▸ **buildDeps**(ethNodeUrl: *`string`*, account?: *`string`*, dbArgs?: *`PouchDB.Configuration.DatabaseConfiguration`*): `Promise`<`object`>
 
-*Defined in [packages/augur-sdk/src/state/create-api.ts:16](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/create-api.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/create-api.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/create-api.ts#L16)*
 
 **Parameters:**
 
@@ -78,7 +78,7 @@ ___
 
 ▸ **create**(ethNodeUrl: *`string`*, account?: *`string`*, dbArgs?: *`DatabaseConfiguration`*): `Promise`<`object`>
 
-*Defined in [packages/augur-sdk/src/state/create-api.ts:38](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/create-api.ts#L38)*
+*Defined in [packages/augur-sdk/src/state/create-api.ts:38](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/create-api.ts#L38)*
 
 **Parameters:**
 

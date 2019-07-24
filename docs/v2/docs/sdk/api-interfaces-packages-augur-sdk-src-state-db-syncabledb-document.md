@@ -32,7 +32,7 @@ sidebar_label: Document
 
 *Inherited from [BaseDocument](api-interfaces-packages-augur-sdk-src-state-db-abstractdb-basedocument.md).[_id](api-interfaces-packages-augur-sdk-src-state-db-abstractdb-basedocument.md#_id)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:16](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/AbstractDB.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L16)*
 
 ___
 <a id="_rev"></a>
@@ -43,7 +43,7 @@ ___
 
 *Inherited from [BaseDocument](api-interfaces-packages-augur-sdk-src-state-db-abstractdb-basedocument.md).[_rev](api-interfaces-packages-augur-sdk-src-state-db-abstractdb-basedocument.md#_rev)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:17](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/AbstractDB.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L17)*
 
 ___
 <a id="blocknumber"></a>
@@ -52,7 +52,7 @@ ___
 
 **● blockNumber**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncableDB.ts:11](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/SyncableDB.ts#L11)*
+*Defined in [packages/augur-sdk/src/state/db/SyncableDB.ts:11](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/SyncableDB.ts#L11)*
 
 ___
 

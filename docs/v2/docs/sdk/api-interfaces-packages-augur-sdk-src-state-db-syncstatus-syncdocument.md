@@ -27,7 +27,7 @@ sidebar_label: SyncDocument
 
 **● blockNumber**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:4](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/SyncStatus.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:4](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/SyncStatus.ts#L4)*
 
 ___
 <a id="syncing"></a>
@@ -36,7 +36,7 @@ ___
 
 **● syncing**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:5](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/db/SyncStatus.ts#L5)*
+*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:5](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/SyncStatus.ts#L5)*
 
 ___
 

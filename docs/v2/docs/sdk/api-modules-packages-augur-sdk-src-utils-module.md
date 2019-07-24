@@ -35,7 +35,7 @@ sidebar_label: packages/augur-sdk/src/utils
 
 **● QUINTILLION**: *`BigNumber`* =  new BigNumber(10).pow(18)
 
-*Defined in [packages/augur-sdk/src/utils.ts:5](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L5)*
+*Defined in [packages/augur-sdk/src/utils.ts:5](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L5)*
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 ▸ **calculatePayoutNumeratorsValue**(displayMaxPrice: *`string`*, displayMinPrice: *`string`*, numTicks: *`string`*, marketType: *`string`*, payout: *`string`[]*): `string` \| `null`
 
-*Defined in [packages/augur-sdk/src/utils.ts:94](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L94)*
+*Defined in [packages/augur-sdk/src/utils.ts:94](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L94)*
 
 **Parameters:**
 
@@ -68,7 +68,7 @@ ___
 
 ▸ **compareObjects**(key: *`string`*, order: *`string`*): `(Anonymous function)`
 
-*Defined in [packages/augur-sdk/src/utils.ts:68](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L68)*
+*Defined in [packages/augur-sdk/src/utils.ts:68](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L68)*
 
 **Parameters:**
 
@@ -86,7 +86,7 @@ ___
 
 ▸ **convertDisplayAmountToOnChainAmount**(displayAmount: *`BigNumber`*, tickSize: *`BigNumber`*): `BigNumber`
 
-*Defined in [packages/augur-sdk/src/utils.ts:33](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L33)*
+*Defined in [packages/augur-sdk/src/utils.ts:33](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L33)*
 
 **Parameters:**
 
@@ -104,7 +104,7 @@ ___
 
 ▸ **convertDisplayPriceToOnChainPrice**(displayPrice: *`BigNumber`*, minPrice: *`BigNumber`*, tickSize: *`BigNumber`*): `BigNumber`
 
-*Defined in [packages/augur-sdk/src/utils.ts:50](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L50)*
+*Defined in [packages/augur-sdk/src/utils.ts:50](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L50)*
 
 **Parameters:**
 
@@ -123,7 +123,7 @@ ___
 
 ▸ **convertOnChainAmountToDisplayAmount**(onChainAmount: *`BigNumber`*, tickSize: *`BigNumber`*): `BigNumber`
 
-*Defined in [packages/augur-sdk/src/utils.ts:26](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L26)*
+*Defined in [packages/augur-sdk/src/utils.ts:26](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L26)*
 
 **Parameters:**
 
@@ -141,7 +141,7 @@ ___
 
 ▸ **convertOnChainPriceToDisplayPrice**(onChainPrice: *`BigNumber`*, minPrice: *`BigNumber`*, tickSize: *`BigNumber`*): `BigNumber`
 
-*Defined in [packages/augur-sdk/src/utils.ts:40](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L40)*
+*Defined in [packages/augur-sdk/src/utils.ts:40](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L40)*
 
 **Parameters:**
 
@@ -160,7 +160,7 @@ ___
 
 ▸ **convertPayoutNumeratorsToStrings**(payoutNumeratorsBN: *`BigNumber`[]*): `string`[]
 
-*Defined in [packages/augur-sdk/src/utils.ts:58](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L58)*
+*Defined in [packages/augur-sdk/src/utils.ts:58](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L58)*
 
 **Parameters:**
 
@@ -177,7 +177,7 @@ ___
 
 ▸ **logError**(err: *`Error` \| `string` \| `object` \| `null`*, result?: *`any`*): `void`
 
-*Defined in [packages/augur-sdk/src/utils.ts:87](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L87)*
+*Defined in [packages/augur-sdk/src/utils.ts:87](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L87)*
 
 **Parameters:**
 
@@ -195,7 +195,7 @@ ___
 
 ▸ **numTicksToTickSize**(numTicks: *`BigNumber`*, minPrice: *`BigNumber`*, maxPrice: *`BigNumber`*): `BigNumber`
 
-*Defined in [packages/augur-sdk/src/utils.ts:7](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L7)*
+*Defined in [packages/augur-sdk/src/utils.ts:7](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L7)*
 
 **Parameters:**
 
@@ -214,7 +214,7 @@ ___
 
 ▸ **numTicksToTickSizeWithDisplayPrices**(numTicks: *`BigNumber`*, minPrice: *`BigNumber`*, maxPrice: *`BigNumber`*): `BigNumber`
 
-*Defined in [packages/augur-sdk/src/utils.ts:18](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/utils.ts#L18)*
+*Defined in [packages/augur-sdk/src/utils.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/utils.ts#L18)*
 
 **Parameters:**
 

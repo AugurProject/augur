@@ -25,7 +25,7 @@ sidebar_label: packages/augur-sdk/src/state/WebsocketEndpoint
 
 ▸ **isSafe**(websocket: *`WebSocket`*): `boolean`
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:18](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L18)*
 
 **Parameters:**
 
@@ -42,7 +42,7 @@ ___
 
 ▸ **run**<`TBigNumber`>(api: *[API](api-classes-packages-augur-sdk-src-state-getter-api-api.md)*, endpointSettings: *[EndpointSettings](api-interfaces-packages-augur-sdk-src-state-getter-types-endpointsettings.md)*, controlEmitter: *`EventEmitter`*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:37](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L37)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:37](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L37)*
 
 **Type parameters:**
 
@@ -64,7 +64,7 @@ ___
 
 ▸ **safePing**(websocket: *`WebSocket`*): `void`
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:32](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L32)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:32](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L32)*
 
 **Parameters:**
 
@@ -81,7 +81,7 @@ ___
 
 ▸ **safeSend**(websocket: *`WebSocket`*, payload: *`string`*): `void`
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:27](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L27)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:27](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L27)*
 
 **Parameters:**
 

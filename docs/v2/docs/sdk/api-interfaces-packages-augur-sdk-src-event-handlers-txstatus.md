@@ -28,7 +28,7 @@ sidebar_label: TXStatus
 
 **● eventName**: *[TXEventName](api-enums-packages-augur-sdk-src-constants-txeventname.md)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:286](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/event-handlers.ts#L286)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:286](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L286)*
 
 ___
 <a id="hash"></a>
@@ -37,7 +37,7 @@ ___
 
 **● hash**: *`string`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:287](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/event-handlers.ts#L287)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:287](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L287)*
 
 ___
 <a id="transaction"></a>
@@ -46,7 +46,7 @@ ___
 
 **● transaction**: *`TransactionMetadata`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:285](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/event-handlers.ts#L285)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:285](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L285)*
 
 ___
 

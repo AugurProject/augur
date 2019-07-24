@@ -22,7 +22,7 @@ sidebar_label: packages/augur-sdk/src/state/IsJsonRpcRequest
 
 ▸ **IsJsonRpcRequest**(message: *`any`*): `boolean`
 
-*Defined in [packages/augur-sdk/src/state/IsJsonRpcRequest.ts:1](https://github.com/AugurProject/augur/blob/b4365d6894/packages/augur-sdk/src/state/IsJsonRpcRequest.ts#L1)*
+*Defined in [packages/augur-sdk/src/state/IsJsonRpcRequest.ts:1](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/IsJsonRpcRequest.ts#L1)*
 
 **Parameters:**
 

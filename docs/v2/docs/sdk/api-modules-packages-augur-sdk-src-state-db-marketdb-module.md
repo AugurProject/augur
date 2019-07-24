@@ -14,7 +14,9 @@ sidebar_label: packages/augur-sdk/src/state/db/MarketDB
 
 ### Interfaces
 
+* [LiquidityResults](api-interfaces-packages-augur-sdk-src-state-db-marketdb-liquidityresults.md)
 * [MarketDataDoc](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketdatadoc.md)
+* [MarketOrderbookData](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketorderbookdata.md)
 
 ---
 
