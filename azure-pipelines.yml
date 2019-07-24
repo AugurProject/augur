@@ -120,10 +120,6 @@ jobs:
         succeeded(),
         ne(variables['Build.SourceBranch'], 'refs/heads/master')
       )
-    variables:
-      JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
-      JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
-      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
@@ -150,7 +146,7 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/ui build
+        yarn workspace @augurproject/ui build:kovan
         displayName: ui build
       - bash: |
           set -euo pipefail
