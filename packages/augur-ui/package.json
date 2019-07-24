@@ -143,7 +143,7 @@
     "eslint-plugin-prettier": "3.0.1",
     "eslint-plugin-react": "7.12.4",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
-    "file-loader": "2.0.0",
+    "file-loader": "4.1.0",
     "genversion": "2.1.1",
     "git-revision-webpack-plugin": "3.0.3",
     "html-loader": "0.5.5",
