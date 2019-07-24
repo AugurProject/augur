@@ -93,11 +93,13 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: "gas-limit",
-    async call(this: FlashSession) {
-      if (this.noProvider()) return;
+    async call(this: FlashSession): Promise<number|undefined> {
+      if (this.noProvider()) return undefined;
 
       const block = await this.provider.getBlock("latest");
-      this.log(`Gas limit: ${block.gasLimit.toNumber()}`);
+      const gasLimit = block.gasLimit.toNumber();
+      this.log(`Gas limit: ${gasLimit}`);
+      return gasLimit;
     },
   });
 
@@ -108,8 +110,8 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
 
       this.market = await user.createReasonableYesNoMarket();
-
       this.log(`Created market "${this.market.address}".`);
+      return this.market;
     },
   });
 
@@ -128,8 +130,8 @@ export function addScripts(flash: FlashSession) {
       const outcomes: string[] = (args.outcomes as string).split(",").map(formatBytes32String);
 
       this.market = await user.createReasonableMarket(outcomes);
-
       this.log(`Created market "${this.market.address}".`);
+      return this.market;
     },
   });
 
@@ -140,8 +142,8 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser();
 
       this.market = await user.createReasonableScalarMarket();
-
       this.log(`Created market "${this.market.address}".`);
+      return this.market;
     },
   });
 
