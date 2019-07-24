@@ -554,7 +554,7 @@ class ContractsFixture:
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=None, categories=["", "", ""], extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None):
+    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None):
         sender = sender or self.accounts[0]
         designatedReporter = designatedReporterAddress or sender
         return self.createYesNoMarket(
