@@ -100,7 +100,7 @@ jobs:
         displayName: ui build
       - bash: |
           set -euo pipefail
-          yarn test --ci --reporters=default --reporters=jest-junit
+          yarn test --ci --reporters=default --reporters=jest-junit --detectOpenHandles
         displayName: yarn test
       - bash: |
           set -euo pipefail
