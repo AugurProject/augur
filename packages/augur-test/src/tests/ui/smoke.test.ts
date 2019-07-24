@@ -34,13 +34,6 @@ beforeAll(async () => {
    * 3. Verify the app state.
    */
 
-  const flash = new FlashSession(ACCOUNTS);
-  addScripts(flash);
-  addGanacheScripts(flash);
-  await flash.call("ganache", { "internal": false, "port": "8545" });
-  await flash.call("load-seed-file", { "use": true, "write_artifacts": true });
-  await flash.call("create-reasonable-categorical-market", { "outcomes": "music,dance,poetry,oration,drama"});
-
   server = app.listen(port);
 
   browser = await puppeteer.launch({
@@ -50,7 +43,14 @@ beforeAll(async () => {
   });
   page = await browser.newPage();
   await page.setViewport({ width, height });
-}, 7 * 60000);
+
+  const flash = new FlashSession(ACCOUNTS);
+  addScripts(flash);
+  addGanacheScripts(flash);
+  await flash.call("ganache", { "internal": false, "port": "8545" });
+  await flash.call("load-seed-file", { "use": true, "write_artifacts": true });
+  await flash.call("create-reasonable-categorical-market", { "outcomes": "music,dance,poetry,oration,drama"});
+}, 3 * 180 * 1000);
 
 afterAll(() => {
   browser.close();
@@ -68,4 +68,4 @@ test("Smoke Test", async () => {
   await expect(page.waitForSelector(".market-common-styles_MarketCommon__container", { visible: true })).toBeDefined()
 
 
-}, 1 * 60000);
+}, 60 * 1000);
