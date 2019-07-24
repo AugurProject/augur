@@ -146,7 +146,7 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-        yarn workspace @augurproject/ui build:kovan
+          yarn workspace @augurproject/ui build:kovan
         displayName: ui build
       - bash: |
           set -euo pipefail
