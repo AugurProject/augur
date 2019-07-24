@@ -1,0 +1,2 @@
+staticBuildPath: ./packages/augur-ui/build
+branchPattern: ^peek/
