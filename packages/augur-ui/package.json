@@ -17,6 +17,7 @@
     "nuke": "yarn clean; rm yarn.lock; rm package-lock.json",
     "dev": "genversion --es6 --semi src/version.js && node scripts/dev.js",
     "build": "genversion --es6 --semi src/version.js && node scripts/build.js",
+    "build:kovan": "genversion --es6 --semi src/version.js && ETHEREUM_NETWORK=kovan node scripts/build.js",
     "build:mainnet": "genversion --es6 --semi src/version.js && ETHEREUM_NETWORK=mainnet node scripts/build.js",
     "start": "node server.js",
     "__": "",
