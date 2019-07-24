@@ -68,7 +68,9 @@ jobs:
       vmImage: 'Ubuntu 16.04'
     strategy:
       matrix:
-        node_10_x:
+        node_10_16_x:
+          node_version: 10.16.x
+        node_10_15_x:
           node_version: 10.15.x
     steps:
       - checkout: self
