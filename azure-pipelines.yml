@@ -94,6 +94,10 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
+          yarn workspace @augurproject/ui build
+        displayName: ui build
+      - bash: |
+          set -euo pipefail
           yarn test --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
       - bash: |
@@ -104,6 +108,7 @@ jobs:
         inputs:
           testRunner: JUnit
           testResultsFiles: '**/junit.xml'
+
 
   - job: Augur_build_docker_image
     dependsOn:
