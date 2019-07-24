@@ -66,6 +66,7 @@ export default class SavedDrafts extends React.Component<
       <QuadBox
         title={"Saved drafts"}
         extraTitlePadding
+        normalOnMobile
         content={
           <div className={Styles.SavedDrafts}>
             {draftsSorted.map(key => 

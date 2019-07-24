@@ -24,12 +24,14 @@ export interface QuadBoxProps {
   search?: string;
   extraTitlePadding?: boolean;
   noBorders?: boolean;
+  normalOnMobile?: boolean;
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
   <BoxHeader
     extraTitlePadding={props.extraTitlePadding}
     title={props.title}
+    normalOnMobile={props.normalOnMobile}
     switchHeaders={props.switchHeaders}
     noBorders={props.noBorders}
     rightContent={
@@ -60,12 +62,12 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
 );
 
 const QuadBox = (props: QuadBoxProps) => (
-  <div className={classNames(Styles.Quad, {[Styles.NoBorders]: props.noBorders})}>
-    <div className={Styles.HideOnMobile}>
+  <div className={classNames(Styles.Quad, {[Styles.NoBorders]: props.noBorders, [Styles.NormalOnMobile]: props.normalOnMobile})}>
+    <div className={classNames({[Styles.HideOnMobile]: !props.normalOnMobile})}>
       <BoxHeaderElement {...props} switchHeaders={false} />
     </div>
     <div>
-      <div className={Styles.ShowOnMobile}>
+      <div className={classNames(Styles.ShowOnMobile, {[Styles.Hide]: props.normalOnMobile})}>
         <BoxHeaderElement
           {...props}
           switchHeaders={props.switchHeaders}

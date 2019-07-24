@@ -19,6 +19,16 @@
 		> span {
 			display: flex;
 			justify-content: space-between;
+
+			@media @breakpoint-mobile-mid {
+				display: grid;
+			    grid-template-columns: repeat(1, 1fr);
+			    grid-gap: @size-12;
+
+			    > div > div > div > div {
+			    	min-width: 100%;
+			    }
+			}
 		}
 
 		> div > div > input {
