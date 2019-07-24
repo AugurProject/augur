@@ -144,7 +144,7 @@ export class DB {
     }
 
     // Custom Derived DBs here
-    this.marketDatabase = new MarketDB(this, networkId);
+    this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
     // add passed in tracked users to the tracked uses db
     for (const trackedUser of trackedUsers) {
@@ -239,9 +239,11 @@ export class DB {
       dbSyncPromises.push(this.derivedDatabases[dbName].sync(highestAvailableBlockNumber));
     }
 
-    dbSyncPromises.push(this.marketDatabase.sync(highestAvailableBlockNumber));
+    await Promise.all(dbSyncPromises).then(() => undefined);
 
-    return await Promise.all(dbSyncPromises).then(() => undefined);
+
+    // The Market DB syncs last as it depends on a derived DB
+    return await this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
   public fullTextMarketSearch(query: string): Array<object> {

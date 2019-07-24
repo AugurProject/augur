@@ -145,6 +145,15 @@ export class ContractAPI {
     return orderId;
   }
 
+  async simplePlaceOrder(
+    market: string,
+    type: BigNumber,
+    numShares: BigNumber,
+    price: BigNumber,
+    outcome: BigNumber): Promise<string> {
+    return await this.placeOrder(market, type, numShares, price, outcome, formatBytes32String(''), formatBytes32String(''), formatBytes32String('42'));
+  }
+
   async fillOrder(orderId: string, cost: BigNumber, numShares: BigNumber, tradeGroupId: string) {
     await this.faucet(cost.multipliedBy(10000));
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), false, NULL_ADDRESS);

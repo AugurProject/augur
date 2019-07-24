@@ -316,6 +316,10 @@ export interface UniverseForkedLog extends Log, Doc {
   forkingMarket: Address;
 }
 
+export interface LiquidityData {
+  [spread: number]: number;
+}
+
 export interface MarketData extends Log, Doc {
   universe: Address;
   endTime: Timestamp;
@@ -333,4 +337,6 @@ export interface MarketData extends Log, Doc {
   volume: string;
   outcomeVolumes: string[];
   marketOI: string;
+  invalidFilter: boolean;
+  liquidity: LiquidityData;
 }
