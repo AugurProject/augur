@@ -265,8 +265,8 @@
   .Button;
 
   align-content: center;
-  background: @color-theme-primary;
-  border: 1px solid @color-primary-alternate-two;
+  background: @color-theme-secondary;
+  border: 1px solid @color-primary-light;
   color: @color-secondary-text;
   display: flex;
   flex-flow: row nowrap;
@@ -278,7 +278,7 @@
   > svg {
     fill: none;
     height: @size-16;
-    margin-right: 0.5rem;
+    margin: auto @size-8 auto 0;
     width: @size-16;
 
     > path {
@@ -303,16 +303,25 @@
   }
 
   &:hover:enabled {
-    background: @color-primary-alternate-two;
+    background: rgba(9, 207, 225, 0.05);
   }
+
+  &:focus:enabled {
+    background: rgba(9, 207, 225, 0.1);
+  }
+
+  &:active:enabled {
+    background: rgba(9, 207, 225, 0.15);
+  }
+
 }
 
 .ViewTransactionsButton {
   .CurrenyActionButton;
 
   > svg {
-    height: @size-16;
-    width: @size-16;
+    height: @size-12;
+    width: @size-12;
 
     > path {
       &:nth-child(even) {
@@ -355,7 +364,6 @@
 
   > svg {
     height: @size-22;
-    margin: auto @size-8 auto;
     width: @size-20;
 
     > path {
