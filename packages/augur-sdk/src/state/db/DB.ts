@@ -135,20 +135,25 @@ export class DB {
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
-    for (let eventName of this.genericEventNames) {
+    for (const eventName of this.genericEventNames) {
       new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), []);
     }
 
-    for (let derivedDBConfiguration of this.basicDerivedDBs) {
+    for (const derivedDBConfiguration of this.basicDerivedDBs) {
       new DerivedDB(this, networkId, derivedDBConfiguration.name, derivedDBConfiguration.eventNames, derivedDBConfiguration.idFields);
     }
 
     // Custom Derived DBs here
     this.marketDatabase = new MarketDB(this, networkId);
 
-    for (let trackedUser of trackedUsers) {
+    // add passed in tracked users to the tracked uses db
+    for (const trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
-      for (let userSpecificEvent of this.userSpecificDBs) {
+    }
+
+    // iterate over all known tracked users
+    for (const trackedUser of await this.trackedUsers.getUsers()) {
+      for (const userSpecificEvent of this.userSpecificDBs) {
         new UserSyncableDB(this.augur, this, networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
       }
     }

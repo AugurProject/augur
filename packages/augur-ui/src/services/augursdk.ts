@@ -46,6 +46,8 @@ export class SDK {
       new WebWorkerConnector()
     );
 
+    window.AugurSDK = this.sdk;
+
     this.sdk.connect(
       env['ethereum-node'].http
         ? env['ethereum-node'].http

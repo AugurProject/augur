@@ -1,7 +1,7 @@
 import logError from "utils/log-error";
 import { BigNumber } from "bignumber.js";
 
-export const createBigNumber = (value, ...args): BigNumber => {
+  export const createBigNumber = (value, ...args): BigNumber => {
   let newBigNumber;
   try {
     let useValue = value;
@@ -13,8 +13,8 @@ export const createBigNumber = (value, ...args): BigNumber => {
     logError("Error instantiating WrappedBigNumber", e);
   }
 
-  return newBigNumber;
+    return newBigNumber;
 };
 
-// Note this is exported from here.
+  // Note this is exported from here.
 export { default as BigNumber } from "bignumber.js";

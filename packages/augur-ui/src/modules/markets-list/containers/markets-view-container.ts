@@ -6,7 +6,7 @@ import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { getSelectedTagsAndCategoriesFromLocation } from "modules/markets/helpers/get-selected-tags-and-categories-from-location";
-import { loadMarketsByFilter } from "modules/markets/actions/load-markets";
+import { loadMarketsByFilter, LoadMarketsFilterOptions } from "modules/markets/actions/load-markets";
 import { buildSearchString } from "modules/markets/selectors/build-search-string";
 import debounce from "utils/debounce";
 import { AppState } from "store";
@@ -25,6 +25,7 @@ const mapStateToProps = (state: AppState, { location }) => {
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
 
   return {
+    isConnected: state.connection.isConnected && state.universe.id != null,
     isLogged: state.authStatus.isLogged,
     universe: (state.universe || {}).id,
     search: searchPhrase,
@@ -38,11 +39,13 @@ const mapStateToProps = (state: AppState, { location }) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => ({
   toggleFavorite: (marketId) => dispatch(toggleFavorite(marketId)),
   loadMarketsInfoIfNotLoaded: (marketIds) =>
     dispatch(loadMarketsInfoIfNotLoaded((marketIds))),
-  loadMarketsByFilter: (filter, cb: NodeStyleCallback) =>
+  loadMarketsByFilter: (filter: LoadMarketsFilterOptions, cb: NodeStyleCallback) =>
     debounce(dispatch(loadMarketsByFilter(filter, cb))),
 });
 

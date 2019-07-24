@@ -4,10 +4,9 @@ import {
   getNetworkId,
   getAccounts,
 } from 'modules/contracts/actions/contractCalls';
+import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import { updateEnv } from 'modules/app/actions/update-env';
-import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { useUnlockedAccount } from 'modules/auth/actions/use-unlocked-account';
-import { logout } from 'modules/auth/actions/logout';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -20,16 +19,14 @@ import {
   MODAL_NETWORK_DISCONNECTED,
   MODAL_DISCLAIMER,
   MODAL_NETWORK_DISABLED,
-  NETWORK_NAMES,
   ACCOUNT_TYPES,
   DISCLAIMER_SEEN,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
-import { setSelectedUniverse } from 'modules/auth/actions/selected-universe-management';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback, WindowApp } from 'modules/types';
+import { NodeStyleCallback, WindowApp, LoginAccount } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 
@@ -38,36 +35,30 @@ const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
 function pollForAccount(
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
-  callback: any
+  getState: () => AppState
 ) {
+  const windowApp = windowRef as WindowApp;
   const { loginAccount } = getState();
+  let loggedInAccount: string = undefined;
+  if (!loginAccount.address) {
+    if (windowApp.localStorage && windowApp.localStorage.getItem) {
+      loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
+    }
+  } else {
+    loggedInAccount = loginAccount.address;
+  }
   let accountType =
     loginAccount && loginAccount.meta && loginAccount.meta.accountType;
-
-  loadAccount(dispatch, null, accountType, (err: any, loadedAccount: any) => {
-    if (err) {
-      console.error(err);
-      return callback(err);
-    }
-    let account = loadedAccount;
-    setInterval(() => {
-      const { authStatus, loginAccount } = getState();
-      accountType =
-        loginAccount && loginAccount.meta && loginAccount.meta.accountType;
-
-      if (authStatus.isLogged) {
-        loadAccount(
-          dispatch,
-          account,
-          accountType,
-          (err: any, loadedAccount: any) => {
-            if (err) console.error(err);
-            account = loadedAccount;
-          }
-        );
+  let usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
+  if (!accountType && isGlobalWeb3()) {
+    usingMetaMask = true;
+  }
+  setInterval(() => {
+    const { authStatus, connection } = getState();
+    if (connection.isConnected) {
+      if (!authStatus.isLogged && usingMetaMask && loggedInAccount) {
+        autoLoginAccount(dispatch, loggedInAccount);
       }
-      const windowApp = windowRef as WindowApp;
       const disclaimerSeen =
         windowApp &&
         windowApp.localStorage &&
@@ -79,60 +70,26 @@ function pollForAccount(
           })
         );
       }
-    }, ACCOUNTS_POLL_INTERVAL_DURATION);
-  });
+    }
+  }, ACCOUNTS_POLL_INTERVAL_DURATION);
 }
 
-function loadAccount(
+function autoLoginAccount(
   dispatch: ThunkDispatch<void, any, Action>,
-  existing: any,
-  accountType: string,
-  callback: NodeStyleCallback
+  loggedInAccount: string
 ) {
-  let loggedInAccount: any = null;
-  const windowApp = windowRef as WindowApp;
-  const usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
-  if (windowApp.localStorage && windowApp.localStorage.getItem) {
-    loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-  }
   getAccounts()
     .then((accounts: Array<string>) => {
-      let account = existing;
-      if (existing !== accounts[0]) {
-        account = accounts[0];
-        if (account && process.env.AUTO_LOGIN) {
+      let index;
+      for (index in accounts) {
+        const account = accounts[index];
+        if (account === loggedInAccount) {
           dispatch(useUnlockedAccount(account));
-        } else if (
-          loggedInAccount &&
-          usingMetaMask &&
-          loggedInAccount !== account &&
-          account
-        ) {
-          // local storage does not match mm account and mm is signed in
-          dispatch(useUnlockedAccount(account));
-          loggedInAccount = account;
-        } else if (loggedInAccount && loggedInAccount === account) {
-          // local storage matchs mm account
-          dispatch(useUnlockedAccount(loggedInAccount));
-          account = loggedInAccount;
-        } else if (
-          !loggedInAccount &&
-          usingMetaMask &&
-          existing !== account &&
-          account
-        ) {
-          // no local storage set and logged in account does not match mm account, they want to switch accounts
-          dispatch(useUnlockedAccount(account));
-        } else if (!account && usingMetaMask) {
-          // no mm account signed in
-          dispatch(logout());
-          account = null;
         }
       }
-      callback(null, account);
     })
     .catch((err: Error) => {
-      callback(null);
+      console.log('could not auto login account', err);
     });
 }
 
@@ -175,11 +132,8 @@ export function connectAugur(
           return callback(err, null);
         }
         const Augur = augurSdk.get();
-        dispatch(updateConnectionStatus(true));
         const windowApp = windowRef as WindowApp;
-        let universeId =
-          env.universe ||
-          Augur.contracts.universe.address;
+        let universeId = env.universe || Augur.contracts.universe.address;
         if (
           windowApp.localStorage &&
           windowApp.localStorage.getItem &&
@@ -190,7 +144,7 @@ export function connectAugur(
               windowApp.localStorage.getItem(loginAccount.address)) ||
             '';
           const storedUniverseId = JSON.parse(localUniverse).selectedUniverse[
-              getNetworkId().toString()
+            getNetworkId().toString()
           ];
           universeId = !storedUniverseId ? universeId : storedUniverseId;
         }
@@ -207,7 +161,7 @@ export function connectAugur(
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
             dispatch(closeModal());
           if (isInitialConnection) {
-            pollForAccount(dispatch, getState, null);
+            pollForAccount(dispatch, getState);
             pollForNetwork(dispatch, getState);
           }
           callback(null);

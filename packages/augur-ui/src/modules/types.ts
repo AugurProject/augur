@@ -2,10 +2,8 @@ import { ReactNode, MouseEvent } from "react";
 import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
-import { MarketInfo, MarketInfoOutcome, MarketOrderBook, OrderBook } from "@augurproject/sdk/build/state/getter/Markets";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
-import { MarketTradingHistory, Orders, Order } from "@augurproject/sdk/build/state/getter/Trading";
-import { PlaceTradeParams } from "@augurproject/sdk/build";
+import { Getters } from "@augurproject/sdk";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -58,9 +56,9 @@ export interface CoreStats {
   realizedPL: ValueLabelPair;
 }
 export interface MarketInfos {
-  [marketId: string]: MarketInfo;
+  [marketId: string]: Getters.Markets.MarketInfo;
 }
-export interface Outcomes extends MarketInfoOutcome {
+export interface Outcomes extends Getters.Markets.MarketInfoOutcome {
   name?: string;
 }
 export interface Consensus {
@@ -69,7 +67,7 @@ export interface Consensus {
   outcomeName: string | null;
 }
 
-export interface OutcomeFormatted extends MarketInfoOutcome {
+export interface OutcomeFormatted extends Getters.Markets.MarketInfoOutcome {
   marketId: string;
   lastPricePercent: FormattedNumber | null;
   lastPrice: FormattedNumber | null;
@@ -77,7 +75,7 @@ export interface OutcomeFormatted extends MarketInfoOutcome {
   volumeFormatted: FormattedNumber;
 }
 
-export interface MarketData extends MarketInfo {
+export interface MarketData extends Getters.Markets.MarketInfo {
   marketId: string;
   marketStatus: string;
   defaultSelectedOutcomeId: number;
@@ -93,7 +91,7 @@ export interface MarketData extends MarketInfo {
   unclaimedCreatorFeesFormatted: FormattedNumber;
   marketCreatorFeesCollectedFormatted: FormattedNumber;
   finalizationTimeFormatted: DateFormattedObject | null;
-  // TODO: add this to getter MarketInfo
+  // TODO: add this to getter Getters.Markets.MarketInfo
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: Consensus | null;
   outcomesFormatted: OutcomeFormatted[];
@@ -101,7 +99,7 @@ export interface MarketData extends MarketInfo {
 
 export interface Universe {
   id: string;
-  market?: MarketInfo;
+  market?: Getters.Markets.MarketInfo;
   forkEndTime?: number;
   forkReputationGoal?: BigNumber;
   forkingMarket?: string;
@@ -189,13 +187,13 @@ export interface OrderBooks {
 
 export interface OutcomeOrderBook {
   spread: string | null;
-  bids: OrderBook[];
-  asks: OrderBook[];
+  bids: Getters.Markets.OrderBook[];
+  asks: Getters.Markets.OrderBook[];
 }
 export interface IndividualOrderBook {
     [outcome: number]: {
-      bids: OrderBook[];
-      asks: OrderBook[];
+      bids: Getters.Markets.OrderBook[];
+      asks: Getters.Markets.OrderBook[];
     };
 }
 export interface DisputeInfo {
@@ -400,14 +398,14 @@ export interface Drafts {
 
 
 export interface FilledOrders {
-  [account: string]: Orders;
+  [account: string]: Getters.Trading.Orders;
 }
 
 export interface OpenOrders {
-  [account: string]: Orders;
+  [account: string]: Getters.Trading.Orders;
 }
 
-export interface MarketTradingHistoryState extends MarketTradingHistory {
+export interface MarketTradingHistoryState extends Getters.Trading.MarketTradingHistory {
 
 }
 export interface MarketsInReporting {
@@ -479,7 +477,7 @@ export interface Blockchain {
   currentBlockNumber: number,
   lastSyncedBlockNumber: number,
   blocksBehindCurrent: number,
-  percentBehindCurrent: string,
+  percentSynced: string,
   currentAugurTimestamp: number,
 }
 

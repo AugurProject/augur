@@ -5,6 +5,8 @@ export const UploadBlockNumbers = require("./upload-block-numbers.json");
 export const Networks = require("./networks.json");
 export { ContractEvents } from "./events";
 
+import { exists, readFile, writeFile } from "async-file";
+
 export type NetworkId =
     '1'
     | '3'
@@ -14,7 +16,7 @@ export type NetworkId =
     | '101'
     | '102'
     | '103'
-    | '104'
+    | '104';
 
 export interface ContractAddresses {
     Universe: string;
@@ -52,3 +54,15 @@ export interface NetworkContractAddresses {
     104: ContractAddresses;
 }
 
+export async function setAddresses(networkId: NetworkId, addresses: ContractAddresses): Promise<void> {
+  const filepath = `${__dirname}/addresses.json`;
+
+  let contents = {};
+  if (await exists(filepath)) {
+    contents = JSON.parse(await readFile(filepath, "utf8"));
+  }
+
+  contents[networkId] = addresses;
+
+  await writeFile(filepath, JSON.stringify(contents, null, 2), "utf8");
+}

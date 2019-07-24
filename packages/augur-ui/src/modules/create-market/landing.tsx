@@ -29,7 +29,8 @@ export default class Landing extends React.Component<
 
   render() {
     const {
-      updatePage
+      updatePage,
+      clearNewMarket
     } = this.props;
     const s = this.state;
 
@@ -74,8 +75,8 @@ export default class Landing extends React.Component<
             <SecondaryButton 
               text="Create a custom market" 
               action={() => {
+                clearNewMarket();
                 updatePage(SCRATCH);
-                this.props.clearNewMarket();
               }}
             />
           </ContentBlock>

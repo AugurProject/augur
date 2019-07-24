@@ -20,3 +20,5 @@ junit.xml
 *.tsbuildinfo
 tsconfig.tsbuildinfo
 tsconfig-local.json
+
+package-lock.json

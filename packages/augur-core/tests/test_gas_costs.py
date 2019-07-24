@@ -126,7 +126,7 @@ def test_initial_report(localFixture, universe, cash, market):
     proceedToDesignatedReporting(localFixture, market)
 
     with PrintGasUsed(localFixture, "Market:doInitialReport", INITIAL_REPORT):
-        market.doInitialReport([0, 0, market.getNumTicks()], "")
+        market.doInitialReport([0, 0, market.getNumTicks()], "", 0)
 
 def test_contribute(localFixture, universe, cash, market):
     proceedToNextRound(localFixture, market)

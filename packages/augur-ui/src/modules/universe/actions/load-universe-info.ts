@@ -1,9 +1,7 @@
 import logError from 'utils/log-error';
-import async from 'async';
-import { createBigNumber } from 'utils/create-big-number';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
-import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes';
-import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value';
+import { calculatePayoutNumeratorsValue } from "@augurproject/sdk";
+
 import {
   getDisputeThresholdForFork,
   getOpenInterestInAttoCash,
@@ -24,6 +22,7 @@ import { NodeStyleCallback, Universe } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
+import { createBigNumber } from 'utils/create-big-number';
 
 const REQUIRED_GENESIS_SUPPLY = createBigNumber(
   '1100000000000000000000000',
@@ -242,7 +241,10 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
 
   // @ts-ignore
   const outcomeId = calculatePayoutNumeratorsValue(
-    parentUniverseData.market,
+    parentUniverseData.market.maxPrice,
+    parentUniverseData.market.minPrice,
+    parentUniverseData.market.numTicks,
+    parentUniverseData.market.marketType,
     universeData.payout
   ).toString();
   if (parentUniverseData.market.marketType === SCALAR) {

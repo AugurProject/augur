@@ -6,6 +6,7 @@ import { isUnlocked } from "modules/contracts/actions/contractCalls";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { updateAuthStatus, IS_LOGGED } from "modules/auth/actions/auth-status";
 
 // Use unlocked local account or MetaMask account
 export const useUnlockedAccount = (
@@ -19,6 +20,7 @@ export const useUnlockedAccount = (
     );
     return callback(null);
   }
+  dispatch(updateAuthStatus(IS_LOGGED, true));
   isUnlocked(unlockedAddress)
     .then((isUnlocked: boolean) => {
       if (isUnlocked === false) {

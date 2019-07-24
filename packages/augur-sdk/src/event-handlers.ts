@@ -169,8 +169,8 @@ export interface NewBlock extends FormattedEventLog {
   blocksBehindCurrent: number;
   highestAvailableBlockNumber: number;
   lastSyncedBlockNumber: number;
-  percentBehindCurrent: string;
-  timestamp: Address;
+  percentSynced: string;
+  timestamp: number;
 }
 
 // XXX: TODO - verify eventType and orderType somehow

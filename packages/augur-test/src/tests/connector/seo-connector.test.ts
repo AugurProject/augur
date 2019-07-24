@@ -1,5 +1,5 @@
-import { makeDbMock, makeProvider, seedPath } from "../../libs";
-import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
+import { makeDbMock, makeProvider } from "../../libs";
+import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BigNumber } from 'bignumber.js';
 import { ContractAddresses } from '@augurproject/artifacts';
@@ -54,8 +54,9 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
 });
 
 beforeAll(async () => {
-  addresses = loadSeed(seedPath).addresses;
-  provider = await makeProvider(ACCOUNTS);
+  const seed = await loadSeedFile(defaultSeedPath);
+  provider = await makeProvider(seed, ACCOUNTS);
+  addresses = seed.addresses;
 
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
   db = mock.makeDB(john.augur, ACCOUNTS);
@@ -123,7 +124,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
           blocksBehindCurrent: expect.any(Number),
           highestAvailableBlockNumber: expect.any(Number),
           lastSyncedBlockNumber: expect.any(Number),
-          percentBehindCurrent: expect.any(String),
+          percentSynced: expect.any(String),
           timestamp: expect.any(Number),
         }
       );

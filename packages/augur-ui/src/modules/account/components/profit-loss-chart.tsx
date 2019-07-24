@@ -1,124 +1,72 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import Highcharts from 'highcharts/highstock';
+import Styles from 'modules/account/components/overview-chart.styles.less';
+import { formatEther } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
 
-import Highcharts from "highcharts/highstock";
-import { createBigNumber } from "utils/create-big-number";
-import Styles from "modules/account/components/overview-chart.styles.less";
-import { UserTimeRangeData } from "modules/account/components/overview-chart";
-import { formatEther } from "utils/format-number";
-
-const HIGHLIGHTED_LINE_WIDTH = 2;
-
-interface PlotData {
-  timestamp: number;
-  total: number;
-}
+const HIGHLIGHTED_LINE_WIDTH = 1;
 
 interface ChartProps {
-  data: Array<PlotData>;
+  data: number[][];
   width: number;
 }
 
 interface ChartState {
-  options: any;
+  options: Highcharts.Options | {};
 }
 
-export default class ProfitLossChart extends Component<
-  ChartProps,
-  ChartState
-> {
+const getPointRangeInfo = data => {
+  return {
+    hasPositivePoints: data.filter(point => point[1] > 0).length,
+    hasNegativePoints: data.filter(point => point[1] < 0).length,
+  };
+};
+
+const negativeColor = '#FF7D5E';
+const positiveColor = '#09CFE1';
+
+const getGradientColor = data => {
+  const { hasPositivePoints, hasNegativePoints } = getPointRangeInfo(data);
+
+  if (hasNegativePoints && !hasPositivePoints) {
+    return [[0, negativeColor], [1, '#211A32']];
+  }
+
+  return [[0, positiveColor], [1, '#211A32']];
+};
+
+const getLineColor = data => {
+  const { hasPositivePoints, hasNegativePoints } = getPointRangeInfo(data);
+
+  if (hasNegativePoints && !hasPositivePoints) {
+    return negativeColor;
+  }
+  return positiveColor;
+};
+
+const getNegativeColor = data => {
+  const { hasPositivePoints, hasNegativePoints } = getPointRangeInfo(data);
+
+  if (hasPositivePoints && !hasNegativePoints) {
+    return positiveColor;
+  }
+  return negativeColor;
+};
+
+export default class ProfitLossChart extends Component<ChartProps, ChartState> {
   state: ChartState = {
-    options: {
-      title: {
-        text: "",
-      },
-      chart: {
-        type: "areaspline",
-        height: 100,
-      },
-      credits: {
-        enabled: false,
-      },
-      plotOptions: {
-        areaspline: {
-          threshold: null,
-          color: "#09CFE1",
-          dataGrouping: {
-            units: [["hour", [1]], ["day", [1]]],
-          },
-          marker: false,
-          // remove these values when migrating to styleMode
-          fillColor: {
-            linearGradient: {
-              x1: 0,
-              y1: 0,
-              x2: 0,
-              y2: 1,
-            },
-            stops: [[0, "#09CFE1"], [1, "#211A32"]],
-          },
-        },
-      },
-      scrollbar: { enabled: false },
-      navigator: { enabled: false },
-      xAxis: {
-        showFirstLabel: true,
-        showLastLabel: true,
-        endOnTick: false,
-        startOnTick: false,
-        labels: {
-          style: Styles.Labels,
-          format: "{value:%b %d}",
-          formatter() {
-            // @ts-ignore
-            if (this.isLast) return "Today";
-            // @ts-ignore
-            if (this.isFirst) {
-              // @ts-ignore
-              return Highcharts.dateFormat("%d %b %Y", this.value);
-            }
-          },
-        },
-        crosshair: false,
-      },
-      yAxis: {
-        opposite: false,
-        showFirstLabel: true,
-        showLastLabel: true,
-        startOnTick: false,
-        endOnTick: false,
-        labels: {
-          format: "{value:.4f} <span class='eth-label'>ETH</span>",
-          formatter() {
-            // @ts-ignore
-            if (this.value === 0) return "0 <span class='eth-label'>ETH</span>";
-            // @ts-ignore
-            return this.axis.defaultLabelFormatter.call(this);
-          },
-          align: "left",
-          x: 0,
-          y: -2,
-        },
-        resize: {
-          enabled: false,
-        },
-        crosshair: false,
-      },
-      tooltip: { enabled: false },
-      rangeSelector: {
-        enabled: false,
-      },
-    },
+    options: {},
   };
 
-  public container: any = null;
-  public chart: any = null;
+  public container = null;
+  public chart: Highcharts.Chart = null;
 
   componentDidMount() {
-    const { data }: any = this.props;
+    const { data } = this.props;
     this.buidOptions(data);
   }
 
-  componentWillUpdate(nextProps: ChartProps | any) {
+  componentWillUpdate(nextProps: ChartProps) {
     if (JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data)) {
       this.buidOptions(nextProps.data);
     }
@@ -131,20 +79,98 @@ export default class ProfitLossChart extends Component<
     }
   }
 
-  calculateTickInterval = (data: Array<UserTimeRangeData>) => {
-    const values = data.map((d) => d[1]);
+  getDefaultOptions(data) {
+    const defaultOptions = {
+      title: {
+        text: '',
+      },
+      chart: {
+        type: 'areaspline',
+        height: 100,
+      },
+      credits: {
+        enabled: false,
+      },
+      plotOptions: {
+        areaspline: {
+          threshold: null,
+          dataGrouping: {
+            units: [['hour', [1]], ['day', [1]]],
+          },
+          marker: false,
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 1,
+            },
+            stops: getGradientColor(data),
+          },
+        },
+      },
+      scrollbar: { enabled: false },
+      navigator: { enabled: false },
+      xAxis: {
+        showFirstLabel: true,
+        showLastLabel: true,
+        endOnTick: false,
+        startOnTick: false,
+        labels: {
+          style: Styles.Labels,
+          format: '{value:%b %d}',
+          formatter() {
+            if (this.isLast) return 'Today';
+            if (this.isFirst) {
+              return Highcharts.dateFormat('%d %b %Y', this.value);
+            }
+          },
+        },
+        crosshair: false,
+      },
+      yAxis: {
+        opposite: false,
+        showFirstLabel: true,
+        showLastLabel: true,
+        startOnTick: false,
+        endOnTick: false,
+        labels: {
+          format: "{value:.4f} <span class='dai-label'>DAI</span>",
+          formatter() {
+            if (this.value === 0) return "0 <span class='dai-label'>DAI</span>";
+            return this.axis.defaultLabelFormatter.call(this);
+          },
+          align: 'left',
+          x: 0,
+          y: -2,
+        },
+        resize: {
+          enabled: false,
+        },
+        crosshair: false,
+      },
+      rangeSelector: {
+        enabled: false,
+      },
+    };
+
+    return defaultOptions;
+  }
+
+  calculateTickInterval = (data: number[][]) => {
+    const values = data.map(d => d[1]);
 
     const bnMin = createBigNumber(
       values.reduce(
         (a, b) => (createBigNumber(a).lte(createBigNumber(b)) ? a : b),
-        0,
-      ),
+        0
+      )
     );
     const bnMax = createBigNumber(
       values.reduce(
         (a, b) => (createBigNumber(a).gte(createBigNumber(b)) ? a : b),
-        0,
-      ),
+        0
+      )
     );
 
     const max = formatEther(bnMax, { decimalsRounded: 4 }).formattedValue;
@@ -158,12 +184,12 @@ export default class ProfitLossChart extends Component<
       max,
       min,
     };
-  }
+  };
 
-  buidOptions(data: Array<UserTimeRangeData>) {
-    const { options } = this.state;
+  buidOptions(data: number[][]) {
     const { width } = this.props;
 
+    const options = this.getDefaultOptions(data);
     const intervalInfo = this.calculateTickInterval(data);
     const tickPositions = [data[0][0], data[data.length - 1][0]];
 
@@ -198,13 +224,17 @@ export default class ProfitLossChart extends Component<
 
     const series = [
       {
-        type: "areaspline",
+        type: 'areaspline',
         lineWidth: HIGHLIGHTED_LINE_WIDTH,
         data,
+        color: getLineColor(data),
+        negativeColor: getNegativeColor(data),
       },
     ];
 
-    const newOptions = Object.assign(options, { series });
+    const newOptions: Highcharts.Options = Object.assign(options, {
+      series,
+    }) as Highcharts.Options;
 
     this.setState({ options: newOptions });
 
@@ -216,7 +246,7 @@ export default class ProfitLossChart extends Component<
     return (
       <div
         className={Styles.ProfitLossChart}
-        ref={(container) => {
+        ref={container => {
           this.container = container;
         }}
       />

@@ -7,7 +7,7 @@ const DEFAULT_STATE: Blockchain = {
   currentAugurTimestamp: 0,
   lastSyncedBlockNumber: 0,
   blocksBehindCurrent: 0,
-  percentBehindCurrent: "0"
+  percentSynced: "0"
 };
 
 export default function(blockchain = DEFAULT_STATE, { type, data }: BaseAction): Blockchain {

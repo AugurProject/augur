@@ -128,7 +128,14 @@ export class SyncableDB extends AbstractDB {
         });
       }
 
-      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
+      // try this twice for now
+      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing).catch(async (err) => {
+        await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing).catch(async (err) => {
+          await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing).catch((err) => {
+            throw err;
+          });
+        });
+      });
 
       // let the controller know a new block was added so it can update the UI
       augurEmitter.emit("controller:new:block", {});

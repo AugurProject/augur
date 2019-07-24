@@ -1,26 +1,33 @@
-import { MarketInfos } from "modules/types";
+import { MarketInfos } from 'modules/types';
 
-export const UPDATE_MARKETS_DATA = "UPDATE_MARKETS_DATA";
-export const CLEAR_MARKETS_DATA = "CLEAR_MARKETS_DATA";
-export const UPDATE_MARKET_CATEGORY = "UPDATE_MARKET_CATEGORY";
-export const UPDATE_MARKET_REP_BALANCE = "UPDATE_MARKET_REP_BALANCE";
+export const UPDATE_MARKETS_DATA = 'UPDATE_MARKETS_DATA';
+export const CLEAR_MARKETS_DATA = 'CLEAR_MARKETS_DATA';
+export const UPDATE_MARKET_CATEGORY = 'UPDATE_MARKET_CATEGORY';
+export const UPDATE_MARKET_REP_BALANCE = 'UPDATE_MARKET_REP_BALANCE';
 export const UPDATE_MARKET_FROZEN_SHARES_VALUE =
-  "UPDATE_MARKET_FROZEN_SHARES_VALUE";
-export const UPDATE_MARKETS_DISPUTE_INFO = "UPDATE_MARKETS_DISPUTE_INFO";
-export const UPDATE_MARKET_ETH_BALANCE = "UPDATE_MARKET_ETH_BALANCE";
-export const REMOVE_MARKET = "REMOVE_MARKET";
+  'UPDATE_MARKET_FROZEN_SHARES_VALUE';
+export const UPDATE_MARKETS_DISPUTE_INFO = 'UPDATE_MARKETS_DISPUTE_INFO';
+export const UPDATE_MARKET_ETH_BALANCE = 'UPDATE_MARKET_ETH_BALANCE';
+export const REMOVE_MARKET = 'REMOVE_MARKET';
 
-export const updateMarketsData = (marketInfos: MarketInfos) => ({
+export interface UpdateMarketsAction {
+  type: typeof UPDATE_MARKETS_DATA;
+  data: { marketInfos: MarketInfos };
+}
+
+export const updateMarketsData = (
+  marketInfos: MarketInfos
+): UpdateMarketsAction => ({
   type: UPDATE_MARKETS_DATA,
-  data: { marketInfos }
+  data: { marketInfos },
 });
 export const clearMarketsData = () => ({ type: CLEAR_MARKETS_DATA });
 export const updateMarketCategory = (marketId: string, category: string) => ({
   type: UPDATE_MARKET_CATEGORY,
   data: {
     marketId,
-    category
-  }
+    category,
+  },
 });
 export const updateMarketRepBalance = (
   marketId: string,
@@ -29,8 +36,8 @@ export const updateMarketRepBalance = (
   type: UPDATE_MARKET_REP_BALANCE,
   data: {
     marketId,
-    repBalance
-  }
+    repBalance,
+  },
 });
 export const updateMarketFrozenSharesValue = (
   marketId: string,
@@ -39,12 +46,12 @@ export const updateMarketFrozenSharesValue = (
   type: UPDATE_MARKET_FROZEN_SHARES_VALUE,
   data: {
     marketId,
-    frozenSharesValue
-  }
+    frozenSharesValue,
+  },
 });
 export const updateMarketsDisputeInfo = (marketsDisputeInfo: any) => ({
   type: UPDATE_MARKETS_DISPUTE_INFO,
-  data: { marketsDisputeInfo }
+  data: { marketsDisputeInfo },
 });
 export const updateMarketEthBalance = (
   marketId: string,
@@ -53,10 +60,10 @@ export const updateMarketEthBalance = (
   type: UPDATE_MARKET_ETH_BALANCE,
   data: {
     marketId,
-    ethBalance
-  }
+    ethBalance,
+  },
 });
 export const removeMarket = (marketId: string) => ({
   type: REMOVE_MARKET,
-  data: { marketId }
+  data: { marketId },
 });

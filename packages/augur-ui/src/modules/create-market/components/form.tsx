@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { LocationDisplay } from "modules/common/form";
+import { LocationDisplay, Error } from "modules/common/form";
 import { 
   BACK, 
   NEXT, 
@@ -19,8 +19,20 @@ import {
   HOUR,
   DESIGNATED_REPORTER_ADDRESS,
   VALIDATION_ATTRIBUTES,
-  CATEGORIES
+  CATEGORIES,
+  OUTCOMES,
+  SCRATCH, 
+  DENOMINATION,
+  MIN_PRICE, 
+  MAX_PRICE,
+  TICK_SIZE,
+  AFFILIATE_FEE,
+  SETTLEMENT_FEE
 } from "modules/create-market/constants";
+import { 
+  CATEGORICAL,
+  SCALAR
+} from 'modules/common/constants';
 import {
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
@@ -37,16 +49,21 @@ import makePath from "modules/routes/helpers/make-path";
 import {
   CREATE_MARKET
 } from "modules/routes/constants/views";
-import { SCRATCH, CATEGORICAL } from "modules/create-market/constants";
 import { DEFAULT_STATE } from "modules/markets/reducers/new-market";
 import { 
   isBetween, 
   isFilledNumber, 
   isFilledString, 
-  checkCategoriesArray 
+  checkCategoriesArray,
+  checkOutcomesArray,
+  isLessThan,
+  isMoreThan,
+  isPositive
 } from "modules/common/validations";
 
 import Styles from "modules/create-market/components/form.styles";
+
+import MarketView from 'modules/market/components/market-view/market-view';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -76,7 +93,14 @@ interface Validations {
   max?: Number;
   checkFilledNumberMessage?: string;
   checkFilledStringMessage?: string;
+  checkCategories?: Boolean;
+  checkOutcomes?: Boolean;
+  checkLessThan?: Boolean;
+  checkMoreThan?: Boolean;
+  checkPositive?: Boolean;
 }
+
+const draftError = "ENTER A MARKET QUESTION";
 
 export default class Form extends React.Component<
   FormProps,
@@ -84,6 +108,7 @@ export default class Form extends React.Component<
 > {
   state: FormState = {
     blockShown: false,
+    showPreview: false,
   };
 
   componentDidMount() {
@@ -102,10 +127,17 @@ export default class Form extends React.Component<
     } = this.props;
 
     const savedDraft = drafts[newMarket.uniqueId];
-    const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
-    const unsaved = !newMarket.uniqueId && JSON.stringify(newMarket) !== JSON.stringify(DEFAULT_STATE);
 
-    if (unsaved || disabledSave === false) {
+    let defaultState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    defaultState.validations = [];
+
+    let market = JSON.parse(JSON.stringify(newMarket));
+    market.validations = [];
+
+    const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+    const unsaved = !newMarket.uniqueId && JSON.stringify(market) !== JSON.stringify(defaultState);
+
+    if (unsaved && !disabledSave) {
       discardModal((close: Boolean) => {
         if (!close) {
           this.props.history.push({
@@ -155,27 +187,44 @@ export default class Form extends React.Component<
 
   findErrors = () => {
     const { newMarket } = this.props;
+    const { 
+      currentStep,
+      expirySourceType,
+      designatedReporterType,
+      marketType
+    } = newMarket;
     let hasErrors = false; 
 
-    if (newMarket.currentStep === 0) {
-      // check for is valid and set validations
-      const fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
-      if (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
+    let fields = [];
+
+    if (currentStep === 0) {
+      fields = [DESCRIPTION, END_TIME, HOUR, CATEGORIES];
+      if (expirySourceType === EXPIRY_SOURCE_SPECIFIC) {
         fields.push(EXPIRY_SOURCE);
       } 
-      if (newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC) {
+      if (designatedReporterType === DESIGNATED_REPORTER_SPECIFIC) {
         fields.push(DESIGNATED_REPORTER_ADDRESS);
       } 
-      fields.map(field => {
-          const error = this.evaluate({
-            ...VALIDATION_ATTRIBUTES[field],
-            updateValue: false,
-            value: newMarket[field], 
-          });
-          if (error) hasErrors = true;
-        }
-      );
+      if (marketType === CATEGORICAL) {
+        fields.push(OUTCOMES);
+      }
+      if (marketType === SCALAR) {
+        fields.push(DENOMINATION, MIN_PRICE, MAX_PRICE, TICK_SIZE);
+      }
+    } else if (currentStep === 1) {
+      fields = [SETTLEMENT_FEE, AFFILIATE_FEE]
     }
+
+
+    fields.map(field => {
+        const error = this.evaluate({
+          ...VALIDATION_ATTRIBUTES[field],
+          updateValue: false,
+          value: newMarket[field], 
+        });
+        if (error) hasErrors = true;
+      }
+    );
 
     return hasErrors;
   }
@@ -198,12 +247,13 @@ export default class Form extends React.Component<
     } = this.props;
 
     if (newMarket.description === DEFAULT_STATE.description) {
+      this.onError("description", draftError)
       return;
     }
 
     if (newMarket.uniqueId && drafts[newMarket.uniqueId]) {
       // update draft
-      const updatedDate = Date.now(); // should be currentTimestamp
+      const updatedDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
         updated: updatedDate
@@ -214,7 +264,7 @@ export default class Form extends React.Component<
       });
     } else {
       // create new draft
-      const createdDate = Date.now(); // should be currentTimestamp
+      const createdDate = currentTimestamp;
       const draftMarket = {
         ...newMarket,
         uniqueId: createdDate,
@@ -271,6 +321,8 @@ export default class Form extends React.Component<
 
   evaluate = (validationsObj: Validations) => {
 
+    const { newMarket } = this.props;
+
     const {
       checkBetween,
       label,
@@ -283,14 +335,22 @@ export default class Form extends React.Component<
       checkFilledString,
       checkFilledStringMessage,
       updateValue,
-      checkCategories
+      checkCategories,
+      checkOutcomes,
+      checkMoreThan,
+      checkLessThan,
+      checkPositive
     } = validationsObj;
 
     const checkValidations = [
       checkFilledNumber ? isFilledNumber(value, readableName, checkFilledNumberMessage) : "",
       checkFilledString ? isFilledString(value, readableName, checkFilledStringMessage) : "",
       checkCategories ? checkCategoriesArray(value) : "",
-      checkBetween ? isBetween(value, readableName, min, max) : ""
+      checkOutcomes ? checkOutcomesArray(value) : "",
+      checkBetween ? isBetween(value, readableName, min, max) : "",
+      checkMoreThan ? isMoreThan(value, readableName, newMarket.minPrice) : "",
+      checkLessThan ? isLessThan(value, readableName, newMarket.maxPrice) : "",
+      checkPositive ? isPositive(value) : "",
     ];
     const errorMsg = checkValidations.find(validation => validation !== "");
 
@@ -302,8 +362,7 @@ export default class Form extends React.Component<
     // no errors
     if (updateValue) {
       this.onChange(label, value);
-    }
-    else {
+    } else {
       this.onError(name, "");
     }
   }
@@ -354,12 +413,24 @@ export default class Form extends React.Component<
     updateNewMarket({validations: updatedValidations});
   }
 
+  preview = () => {
+    this.setState({showPreview: !this.state.showPreview}, () => {
+      this.node.scrollIntoView();
+    });
+  }
+
   render() {
     const {
       newMarket,
       drafts
     } = this.props;
     const s = this.state;
+
+    const {
+      currentStep,
+      validations,
+      uniqueId
+    } = newMarket;
 
     const { 
       mainContent, 
@@ -368,39 +439,62 @@ export default class Form extends React.Component<
       secondButton, 
       explainerBlockSubtexts, 
       largeHeader,
-      noDarkBackground
-    } = CUSTOM_CONTENT_PAGES[newMarket.currentStep];
+      noDarkBackground,
+      previewButton
+    } = CUSTOM_CONTENT_PAGES[currentStep];
 
-    const savedDraft = drafts[newMarket.uniqueId];
+    const savedDraft = drafts[uniqueId];
     const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+
+    const noErrors = Object.values(((validations && validations[currentStep]) || {})).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
+    const saveDraftError = validations && validations[currentStep] && validations[currentStep].description === draftError;
+
     return (
       <div 
         ref={node => {
           this.node = node;
         }}
-        className={Styles.Form}
+        className={classNames(Styles.Form, {[Styles.Preview]: this.state.showPreview})}
       >
-        <LocationDisplay currentStep={newMarket.currentStep} pages={CUSTOM_CONTENT_PAGES} />
-        <LargeHeader text={largeHeader} />
-        {explainerBlockTitle && explainerBlockSubtexts && 
-          <ExplainerBlock
-            title={explainerBlockTitle}
-            subtexts={explainerBlockSubtexts}
-          />
-        }
-        <ContentBlock noDarkBackground={noDarkBackground}>
-          {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
-          {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
-          {mainContent === REVIEW && <Review />}
+        {this.state.showPreview &&
           <div>
-            {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
-            <div>
-              <SecondaryButton text={disabledSave ? "Saved": "Save draft"} disabled={disabledSave} action={this.saveDraft} />
-              {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
-              {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
-            </div>
+            <span>Your market preview</span>
+            <PrimaryButton text="Close preview" action={this.preview} />
+            <MarketView
+              market={newMarket}
+              preview
+            />
+            <PrimaryButton text="Close preview" action={this.preview} />
           </div>
-        </ContentBlock>
+        }
+        {!this.state.showPreview && 
+          <>
+            <LocationDisplay currentStep={currentStep} pages={CUSTOM_CONTENT_PAGES} />
+            <LargeHeader text={largeHeader} />
+            {previewButton && <PrimaryButton text="Preview your market" action={this.preview} />}
+            {explainerBlockTitle && explainerBlockSubtexts && 
+              <ExplainerBlock
+                title={explainerBlockTitle}
+                subtexts={explainerBlockSubtexts}
+              />
+            }
+            <ContentBlock noDarkBackground={noDarkBackground}>
+              {mainContent === FORM_DETAILS && <FormDetails onChange={this.onChange} evaluate={this.evaluate} onError={this.onError} />}
+              {mainContent === FEES_LIQUIDITY && <FeesLiquidity evaluate={this.evaluate} onChange={this.onChange} onError={this.onError} />}
+              {mainContent === REVIEW && <Review />}
+              {saveDraftError && <Error header="Unable to save draft" subheader="Enter a market question to save this market as a draft"/>}
+              {(!noErrors && !saveDraftError) && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
+              <div>
+                {firstButton === BACK && <SecondaryButton text="Back" action={this.prevPage} />}
+                <div>
+                  <SecondaryButton text={disabledSave ? "Saved": "Save draft"} disabled={disabledSave} action={this.saveDraft} />
+                  {secondButton === NEXT &&  <PrimaryButton text="Next" action={this.nextPage} />}
+                  {secondButton === CREATE && <PrimaryButton text="Create" action={this.submitMarket} />}
+                </div>
+              </div>
+            </ContentBlock>
+          </>
+        }
       </div>
     );
   }

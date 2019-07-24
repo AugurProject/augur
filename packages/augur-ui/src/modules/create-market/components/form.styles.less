@@ -8,8 +8,12 @@
     padding-bottom: 87px;
 
     > div:last-of-type {
+	    > section {
+	    	margin-top: @size-32;
+	    }
+
     	> div:last-of-type {
-			margin-top: 54px;    
+			margin-top: @size-40;    
 	    	display: flex;
 
 	    	> div {
@@ -22,5 +26,53 @@
 			    }
 	    	}
 	   	}
+    }
+
+    > button {
+    	margin-bottom: @size-24;
+    }
+
+    &.Preview {
+        flex: 1;
+        max-width: unset;
+        padding-top: 0;
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: @mask-modal;
+
+    	> div {
+            border-left: @size-10 solid @color-theme-primary;
+            border-right: @size-10 solid @color-theme-primary;
+            background: @color-theme-primary;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            width: 100%;
+            align-items: center;
+
+            > span {
+                .text-22-medium;
+
+                color: @color-secondary-text;
+                margin: @size-24 0 @size-6;
+            }
+
+            > section {
+                background: @color-primary-background;
+                width: 100%;
+                margin-top: 0;
+            } 
+            
+            > button {
+                margin: @size-14 0;
+            }
+
+            > button:first-of-type {
+                margin-bottom: @size-24;
+            }
+        }
     }
 }

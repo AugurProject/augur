@@ -1,7 +1,7 @@
 import { Accounts } from "./state/getter/Accounts";
 import { BigNumber } from 'bignumber.js';
-import { Callback, SubscriptionType, TXStatusCallback, augurEmitter } from "./events";
-import { Connector } from "./connector/connector";
+import { Callback, TXStatusCallback } from "./events";
+import { BaseConnector } from "./connector/baseConnector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { ContractDependenciesEthers, TransactionStatusCallback, TransactionMetadata, TransactionStatus } from "contract-dependencies-ethers";
 import { ContractInterfaces } from "@augurproject/core";
@@ -29,7 +29,7 @@ export class Augur<TProvider extends Provider = Provider> {
   public readonly contracts: Contracts;
   public readonly trade: Trade;
   public readonly market: Market;
-  public static connector: Connector;
+  public static connector: BaseConnector;
 
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
@@ -64,7 +64,7 @@ export class Augur<TProvider extends Provider = Provider> {
     "UniverseForked",
   ];
 
-  public constructor(provider: TProvider, dependencies: ContractDependenciesEthers, networkId: NetworkId, addresses: ContractAddresses, connector: Connector = new EmptyConnector()) {
+  public constructor(provider: TProvider, dependencies: ContractDependenciesEthers, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()) {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
@@ -81,7 +81,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.registerTransactionStatusEvents();
   }
 
-  public static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: Connector = new EmptyConnector()): Promise<Augur> {
+  public static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()): Promise<Augur> {
     // has to be static because of the way we instantiate boundTo methods
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector")
       Augur.connector = connector;
@@ -215,6 +215,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   public getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
   public getProfitLoss = this.bindTo(Users.getProfitLoss);
+  public getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
   public getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
 
   public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {

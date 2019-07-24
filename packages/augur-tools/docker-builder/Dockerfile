@@ -32,7 +32,6 @@ COPY --from=core-builder /augur/packages/augur-core/output/contracts augur/packa
 RUN echo {} > /augur/packages/augur-artifacts/src/addresses.json \
   && echo {} > /augur/packages/augur-artifacts/src/upload-block-numbers.json
 
-# TODO: a better way to do this using lerna natively?
 RUN yarn link --cwd /augur/packages/augur-core && cd /augur/packages/augur-tools && yarn link @augurproject/core
 
 RUN bash /augur/packages/augur-tools/docker-builder/run-geth-and-deploy.sh

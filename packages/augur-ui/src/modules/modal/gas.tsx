@@ -35,6 +35,7 @@ export class Gas extends React.Component<GasProps, GasState> {
   updateAmount(amount: number) {
     let amt = this.state.amount;
     if (amount) amt = amount;
+    if (isNaN(amount)) amt = 0;
     this.setState({ amount: amt, showLowAlert: amt < this.props.safeLow });
   }
 

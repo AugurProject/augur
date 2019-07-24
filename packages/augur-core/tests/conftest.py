@@ -638,7 +638,6 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     scalarMarket = fixture.createReasonableScalarMarket(universe, 30, -10, 400000)
     fixture.uploadAndAddToAugur("solidity_test_helpers/Constants.sol")
     fixture.contracts['DaiPot'].setDSR(1000000564701133626865910626) # 5% a day
-    assert universe.toggleDSR()
 
     tokensFail = fixture.upload("solidity_test_helpers/ERC777Fail.sol")
     erc1820Registry = fixture.contracts['ERC1820Registry']

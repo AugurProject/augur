@@ -6,12 +6,8 @@ import {
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { AllOrders } from '@augurproject/sdk/build/state/getter/Trading';
-import {
-  makeDbMock,
-  seedPath,
-  makeProvider
-} from '../../../libs';
-import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
+import { makeDbMock, makeProvider } from '../../../libs';
+import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 
@@ -24,11 +20,11 @@ describe('State API :: Accounts :: ', () => {
   let mary: ContractAPI;
 
   beforeAll(async () => {
-    const { addresses } = loadSeed(seedPath);
-    const provider = await makeProvider(ACCOUNTS);
+    const seed = await loadSeedFile(defaultSeedPath);
+    const provider = await makeProvider(seed, ACCOUNTS);
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();

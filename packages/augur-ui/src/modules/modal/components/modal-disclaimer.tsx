@@ -4,6 +4,7 @@ import ModalActions from "modules/modal/components/common/modal-actions";
 import { Checkbox } from "modules/common/form";
 
 import Styles from "modules/modal/components/common/common.styles.less";
+import classNames from "classnames";
 
 const EST_HEIGHT_PERCENT = 0.98;
 
@@ -151,7 +152,14 @@ export default class ModalDisclaimer extends Component<ModalDisclaimerProps, Mod
             agree.
           </label>
         </div>
-        <div className={Styles.ModalDisclaimer__checkbox}>
+        <div className={classNames(Styles.ModalDisclaimer__checkbox, {
+          [Styles.ModalDisclaimer_disabled]: !didScroll,
+        })}
+          onClick={(e) => {
+            e.preventDefault();
+            this.checkCheckbox(!didCheck);
+          }}
+        >
           <label htmlFor="i_have_read_disclaimer">
             <Checkbox
               id="i_have_read_disclaimer"
@@ -168,7 +176,6 @@ export default class ModalDisclaimer extends Component<ModalDisclaimerProps, Mod
         </div>
         <ModalActions
           buttons={[
-            // @ts-ignore
             {
               label: "I Agree and Accept the above",
               type: "purple",

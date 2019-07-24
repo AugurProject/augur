@@ -66,7 +66,7 @@ export default class Review extends React.Component<
     } = newMarket;
 
     return (
-      <div className={Styles.Review}>
+      <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
         <Header text="Market details" />
         <div>
           <SmallSubheaders header="Market Type" subheader={MARKET_TYPE_NAME[marketType]} />
@@ -74,8 +74,6 @@ export default class Review extends React.Component<
           <SmallSubheaders header="Secondary category" subheader={categories[1]} />
           <SmallSubheaders header="Tertiary category" subheader={categories[2] === "" ? "–" : categories[2]} />
           <SmallSubheaders header="Market Question" subheader={description} />
-          <SmallSubheaders header="Market creator fee" subheader={settlementFee + "%"} />
-          <SmallSubheadersTooltip tooltipSubheader header="Affiliate fee" subheader={affiliateFee + "%"} text="The affiliate fee % is a percentage of the market creator fee" />
           {marketType === SCALAR &&
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
@@ -88,6 +86,8 @@ export default class Review extends React.Component<
               outcomes={outcomes}
             />
           }
+          <SmallSubheaders header="Market creator fee" subheader={settlementFee + "%"} />
+          <SmallSubheadersTooltip tooltipSubheader header="Affiliate fee" subheader={affiliateFee + "%"} text="The affiliate fee % is a percentage of the market creator fee" />
         </div>
 
         <LineBreak />

@@ -121,6 +121,8 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
 
     const { range, format, crosshair } = PERIOD_RANGES[selectedPeriod];
 
+    const max = this.props.marketMax.toNumber();
+
     const options = {
       height: containerHeight,
       credits: { enabled: false },
@@ -186,9 +188,9 @@ export default class MarketOutcomeChartsCandlestickHighchart extends Component<
           showLastLabel: true,
           labels: {
             format: '{value:.2f}',
-            style: Styles.Candlestick_display_yLables,
             align: 'center',
-            x: HIGH_CHART_CONFIG.YLableXposition,
+            style: Styles.Candlestick_display_yLables,
+            x: max > 1 ? HIGH_CHART_CONFIG.YLableXposition - 15 : HIGH_CHART_CONFIG.YLableXposition,
             y: HIGH_CHART_CONFIG.YLableYposition,
           },
           crosshair: {

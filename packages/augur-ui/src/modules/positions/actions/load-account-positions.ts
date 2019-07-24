@@ -63,15 +63,14 @@ export const loadAccountPositionsTotals = (
 ) => {
   const { universe, loginAccount } = getState();
   const Augur = augurSdk.get();
-  const positions = await Augur.getUserTradingPositions({
+  const positions = await Augur.getProfitLossSummary({
     account: loginAccount.address,
     universe: universe.id,
   });
   dispatch(
     updateLoginAccount({
-      totalFrozenFunds: positions.frozenFundsTotal,
-      // TODO: put in github tix to get `unrealizedRevenue24hChangePercent` added
-      //      tradingPositionsTotal: positions.tradingPositionsTotal,
+      totalFrozenFunds: positions[1].frozenFunds,
+      tradingPositionsTotal: { unrealizedRevenue24hChangePercent : positions[1].unrealizedPercent },
     })
   );
 };
@@ -98,13 +97,7 @@ const loadAccountPositionsInternal = (
   }
 
   if (!options.marketId) {
-    dispatch(
-      updateLoginAccount({
-        totalFrozenFunds: positions.frozenFundsTotal,
-        // TODO: put in github tix to get `unrealizedRevenue24hChangePercent` added
-        //      tradingPositionsTotal: positions.tradingPositionsTotal,
-      })
-    );
+    dispatch(loadAccountPositionsTotals());
   }
 
   const marketIds = Array.from(

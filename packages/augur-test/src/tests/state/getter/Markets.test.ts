@@ -6,10 +6,8 @@ import {
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import {
-  makeDbMock, makeProvider, seedPath
-} from "../../../libs";
-import { ContractAPI, ACCOUNTS, loadSeed } from "@augurproject/tools";
+import { makeDbMock, makeProvider } from "../../../libs";
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
@@ -26,11 +24,11 @@ describe('State API :: Markets :: ', () => {
   let mary: ContractAPI;
 
   beforeAll(async () => {
-    const { addresses } = loadSeed(seedPath);
-    const provider = await makeProvider(ACCOUNTS);
+    const seed = await loadSeedFile(defaultSeedPath);
+    const provider = await makeProvider(seed, ACCOUNTS);
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
@@ -1706,7 +1704,7 @@ describe('State API :: Markets :: ', () => {
           bondSizeOfNewStake: '1100000000000000001048576',
           stakes: [
             {
-              payout: [ '0', '100', '0' ],
+              outcome: '1',
               isInvalid: false,
               bondSizeCurrent: '349680582682291667',
               bondSizeTotal: '366666666666666667016192',
@@ -1715,7 +1713,7 @@ describe('State API :: Markets :: ', () => {
               stakeCompleted: '366666666666666667016192',
               tentativeWinning: true },
             {
-              payout: [ '0', '0', '100' ],
+              outcome: '2',
               isInvalid: false,
               bondSizeCurrent: '699361165364583334',
               bondSizeTotal: '183333333333333333508096',
@@ -1785,7 +1783,7 @@ describe('State API :: Markets :: ', () => {
           bondSizeOfNewStake: '699361165364583334',
           stakes: [
             {
-              payout: [ '100', '0', '0', '0' ],
+              outcome: '0',
               isInvalid: true,
               bondSizeCurrent: '349680582682291667',
               bondSizeTotal: '349680582682291667',

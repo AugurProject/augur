@@ -6,4 +6,4 @@ build/
 definitions/
 upload-block*
 tags
-db/*
+db/

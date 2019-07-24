@@ -1,7 +1,8 @@
 import {
+  calculatePayoutNumeratorsValue,
   MarketInfo,
   MarketInfoOutcome,
-} from '@augurproject/sdk/build/state/getter/Markets';
+} from '@augurproject/sdk';
 import { MarketData, Consensus, OutcomeFormatted } from 'modules/types';
 import {
   REPORTING_STATE,
@@ -11,7 +12,6 @@ import {
   CATEGORICAL,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate } from './format-date';
-import calculatePayoutNumeratorsValue from './calculate-payout-numerators-value';
 import { formatPercent, formatDai, formatNone, formatNumber } from './format-number';
 import { createBigNumber } from './create-big-number';
 
@@ -59,7 +59,7 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
   return marketData;
 }
 
-function getDefaultOutcomeSelected(marketType: string) {
+export function getDefaultOutcomeSelected(marketType: string) {
   if (marketType === CATEGORICAL) return 1;
   return 2;
 }
@@ -119,7 +119,10 @@ function processConsensus(market: MarketInfo): Consensus | null {
   let outcomeName = null;
   if (market.outcomes.length) {
     const winningOutcome = calculatePayoutNumeratorsValue(
-      market,
+      market.maxPrice,
+      market.minPrice,
+      market.numTicks,
+      market.marketType,
       market.consensus
     );
     // for scalars, we will just use the winningOutcome for display

@@ -1,11 +1,10 @@
-import { Callback } from "@augurproject/sdk/build/events";
-import { Connector } from "@augurproject/sdk/build/connector/connector";
-import { SubscriptionEventName } from "@augurproject/sdk/build/constants";
-import { FormattedEventLog } from "@augurproject/sdk/build/events";
+import { Connectors } from "@augurproject/sdk";
+import { SubscriptionEventName } from "@augurproject/sdk";
+import { Events } from "@augurproject/sdk";
 
-export function makeConnectorMock(json: object): Connector {
-  class MockConnector extends Connector {
-    private callback: Callback;
+export function makeConnectorMock(json: object): Connectors.BaseConnector {
+  class MockConnector extends Connectors.BaseConnector {
+    private callback: Events.Callback;
 
     public async connect(params?: any): Promise<any> {
       return true;
@@ -23,7 +22,7 @@ export function makeConnectorMock(json: object): Connector {
       };
     }
 
-    public async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+    public async on(eventName: SubscriptionEventName | string, callback: Events.Callback): Promise<void> {
     }
 
     public async off(eventName: SubscriptionEventName | string): Promise<any> {

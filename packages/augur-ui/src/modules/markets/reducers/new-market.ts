@@ -15,6 +15,7 @@ import {
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
+import { formatShares, formatDai } from 'utils/format-number';
 
 export const DEFAULT_STATE: NewMarket = {
   isValid: false,
@@ -30,6 +31,7 @@ export const DEFAULT_STATE: NewMarket = {
       meridiem: null,
       outcomes: null,
       scalarDenomination: null,
+      outcomes: ["", ""]
     },
     {
       settlementFee: ""
@@ -64,8 +66,6 @@ export const DEFAULT_STATE: NewMarket = {
   maxPriceBigNumber: createBigNumber(1),
   initialLiquidityEth: createBigNumber(0),
   initialLiquidityGas: createBigNumber(0),
-  creationError:
-    "Unable to create market.  Ensure your market is unique and all values are valid."
 };
 
 export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: BaseAction): NewMarket {
@@ -105,6 +105,10 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           mySize: quantity,
           cummulativeShares: quantity,
           orderEstimate: createBigNumber(orderEstimate.replace(" DAI", "")),
+          avgPrice: formatDai(price),
+          unmatchedShares: formatShares(quantity),
+          sharesEscrowed: formatShares(quantity),
+          tokensEscrowed: formatDai(createBigNumber(orderEstimate.replace(" DAI", ""))),
           id: updatedOrders.length,
         });
       }
@@ -141,7 +145,25 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
     }
     case RESET_STATE:
     case CLEAR_NEW_MARKET:
-      return DEFAULT_STATE;
+      return {
+        ...DEFAULT_STATE,
+        validations: [{
+          description: null,
+          categories: ["", "", ""],
+          designatedReporterAddress: null,
+          expirySourceType: null,
+          endTime: null,
+          hour: null,
+          minute: null,
+          meridiem: null,
+          outcomes: null,
+          scalarDenomination: null,
+          outcomes: ["", ""]
+        },
+        {
+          settlementFee: ""
+        }],
+      };
     default:
       return newMarket;
   }

@@ -6,7 +6,6 @@ import moment from "moment";
 import { 
   RadioCardGroup, 
   FormDropdown, 
-  Error, 
   TextInput, 
   DatePicker, 
   TimeSelector, 
@@ -31,9 +30,10 @@ import { RepLogoIcon } from "modules/common/icons";
 import { 
   DESCRIPTION_PLACEHOLDERS, 
   DESCRIPTION, 
-  VALIDATION_ATTRIBUTES,
   DESIGNATED_REPORTER_ADDRESS,
-  EXPIRY_SOURCE
+  EXPIRY_SOURCE,
+  CATEGORIES,
+  OUTCOMES
 } from "modules/create-market/constants";
 
 import Styles from "modules/create-market/components/form-details.styles";
@@ -43,7 +43,6 @@ interface FormDetailsProps {
   newMarket: NewMarket;
   currentTimestamp: string;
   onChange: Function;
-  evaluate: Function;
   onError: Function;
 }
 
@@ -67,7 +66,6 @@ export default class FormDetails extends React.Component<
       newMarket,
       currentTimestamp,
       onChange,
-      evaluate,
       onError
     } = this.props;
     const s = this.state;
@@ -93,8 +91,6 @@ export default class FormDetails extends React.Component<
       validations,
       currentStep
     } = newMarket;
-
-    const noErrors = Object.values(validations[currentStep]).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
 
     return (
       <div className={Styles.FormDetails}>
@@ -134,10 +130,10 @@ export default class FormDetails extends React.Component<
               onDateChange={(date: Number) => {
                 onChange("endTime", date)
               }}
-              // isOutsideRange={day =>
-              //   day.isAfter(moment(currentTimestamp).add(6, "M")) ||
-              //   day.isBefore(moment(currentTimestamp))
-              // }
+              isOutsideRange={day =>
+                day.isAfter(moment(currentTimestamp).add(6, "M")) ||
+                day.isBefore(moment(currentTimestamp))
+              }
               numberOfMonths={1}
               onFocusChange= {({ focused }) => {
                 if (endTime === null) {
@@ -178,14 +174,10 @@ export default class FormDetails extends React.Component<
           <TextInput
             type="textarea"
             placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
-            onChange={(value: string) => evaluate({
-              ...VALIDATION_ATTRIBUTES[DESCRIPTION],
-              value: value,
-              updateValue: true,
-            })}
+            onChange={(value: string) => onChange("description", value)}
             rows="3"
             value={description}
-            errorMessage={validations[currentStep].description}
+            errorMessage={validations[currentStep].description && (validations[currentStep].description.charAt(0).toUpperCase() + validations[currentStep].description.slice(1).toLowerCase())}
           />
 
           {marketType === CATEGORICAL && 
@@ -196,7 +188,7 @@ export default class FormDetails extends React.Component<
                 minShown={2}
                 maxList={7}
                 placeholder={"Enter outcome"}
-                updateList={(value: Array<string>) => onChange("outcomes", value)}
+                updateList={(value: Array<string>) => onChange(OUTCOMES, value)}
                 errorMessage={validations[currentStep].outcomes}
               />
             </>
@@ -216,7 +208,10 @@ export default class FormDetails extends React.Component<
                 <TextInput
                   type="number"
                   placeholder="0"
-                  onChange={(value: string) => onChange("minPrice", value)}
+                  onChange={(value: string) => {
+                    onChange("minPrice", value)
+                    onError("maxPrice", "");
+                  }}
                   value={minPrice}
                   errorMessage={validations[currentStep].minPrice}
                 />
@@ -224,7 +219,10 @@ export default class FormDetails extends React.Component<
                 <TextInput
                   type="number"
                   placeholder="100"
-                  onChange={(value: string) => onChange("maxPrice", value)}
+                  onChange={(value: string) => {
+                    onChange("maxPrice", value)
+                    onError("minPrice", "");
+                  }}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                   value={maxPrice}
                   errorMessage={validations[currentStep].maxPrice}
@@ -247,7 +245,7 @@ export default class FormDetails extends React.Component<
             initialSelected={categories}
             sortedGroup={setCategories}
             updateSelection={categoryArray => 
-              onChange("categories", categoryArray)
+              onChange(CATEGORIES, categoryArray)
             }
             errorMessage={validations[currentStep].categories}
           />
@@ -269,11 +267,7 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter website",
                 textValue: expirySource,
-                onTextChange: (value: string) => evaluate({
-                  ...VALIDATION_ATTRIBUTES[EXPIRY_SOURCE],
-                  value: value,
-                  updateValue: true,
-                }),
+                onTextChange: (value: string) => onChange("expirySource", value),
                 errorMessage: validations[currentStep].expirySource
               }
             ]}
@@ -309,11 +303,7 @@ export default class FormDetails extends React.Component<
                 expandable: true,
                 placeholder: "Enter wallet address",
                 textValue: designatedReporterAddress,
-                onTextChange: (value: string) => evaluate({
-                  ...VALIDATION_ATTRIBUTES[DESIGNATED_REPORTER_ADDRESS],
-                  value: value,
-                  updateValue: true,
-                }),
+                onTextChange: (value: string) => onChange("designatedReporterAddress", value),
                 errorMessage: validations[currentStep].designatedReporterAddress
               }
             ]}
@@ -327,7 +317,6 @@ export default class FormDetails extends React.Component<
             }
           />
         </div>
-        {!noErrors && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
       </div>
     );
   }

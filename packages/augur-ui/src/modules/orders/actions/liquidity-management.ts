@@ -1,4 +1,4 @@
-import { eachOfSeries, eachOfLimit } from 'async';
+import { eachOfSeries, eachOfLimit } from 'async-es';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';

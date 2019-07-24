@@ -1,10 +1,9 @@
 import { UIOrder } from 'modules/types';
-import { convertOnChainPriceToDisplayPrice, convertOnChainAmountToDisplayAmount, numTicksToTickSize, QUINTILLION } from '@augurproject/sdk/build';
+import { Getters, convertOnChainPriceToDisplayPrice, convertOnChainAmountToDisplayAmount, numTicksToTickSize, QUINTILLION } from '@augurproject/sdk';
 import { SELL, BUY, TX_TRADE_GROUP_ID, TX_MARKET_ID, TX_OUTCOME_ID, TX_PRICE, TX_AMOUNT, TX_DIRECTION } from 'modules/common/constants';
-import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 import { createBigNumber } from 'utils/create-big-number';
 
-export function convertTransactionOrderToUIOrder(onChainOrder, status: string, market: MarketInfo): UIOrder {
+export function convertTransactionOrderToUIOrder(onChainOrder, status: string, market: Getters.Markets.MarketInfo): UIOrder {
   console.log(JSON.stringify(onChainOrder));
   const outcomeId = onChainOrder[TX_OUTCOME_ID].toNumber();
   const outcome = market.outcomes.find(o => o.id === outcomeId);

@@ -7,16 +7,16 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 
 const mapStateToProps = (state, ownProps) => {
-  const market = selectMarket(ownProps.marketId);
+  const market = ownProps.market || selectMarket(ownProps.marketId);
 
   return {
     description: market.description || "",
-    details: market.details || "",
+    details: market.details || market.detailsText || "",
     marketType: market.marketType,
     maxPrice: market.maxPriceBigNumber || ZERO,
     minPrice: market.minPriceBigNumber || ZERO,
     scalarDenomination: market.scalarDenomination,
-    resolutionSource: market.resolutionSource,
+    resolutionSource: market.resolutionSource || market.expirySource,
     currentTime: (state.blockchain || {}).currentAugurTimestamp,
     isLogged: state.authStatus.isLogged,
     isForking: state.universe.isForking,
