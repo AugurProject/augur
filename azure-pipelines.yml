@@ -111,6 +111,7 @@ jobs:
           testRunner: JUnit
           testResultsFiles: '**/junit.xml'
 
+
   - job: Augur_build_docker_image
     dependsOn:
     - TestAndLint
