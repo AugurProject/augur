@@ -5,6 +5,10 @@
 
 	color: @color-alternate-info-text;
 	margin-bottom: @size-24;
+
+	@media @breakpoint-mobile-mid {
+		.text-18-bold;
+	}
 }
 
 .LargeHeader {
@@ -111,6 +115,13 @@
 
 		> span {
 			color: @color-tertiary-text;
+		}
+	}
+
+	@media @breakpoint-mobile-mid {
+		> span,
+		> button {
+			.text-12;
 		}
 	}
 }
@@ -309,7 +320,7 @@
     }
 
     @media @breakpoint-mobile-mid {
-    	padding: @size-28 @size-16;
+    	padding: @size-24 @size-16;
     }
 }
 
