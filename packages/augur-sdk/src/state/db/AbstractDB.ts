@@ -105,7 +105,7 @@ export abstract class AbstractDB {
     return this.db.find(request);
   }
 
-  private async getPouchRevFromId(id: string): Promise<string | undefined> {
+  protected async getPouchRevFromId(id: string): Promise<string | undefined> {
     const document = await this.getDocument<BaseDocument>(id);
     if (document) return document._rev;
     return undefined;
