@@ -28,12 +28,17 @@ export class SyncStatus extends AbstractDB {
     });
   }
 
-  public async setHighestSyncBlock(dbName: string, blockNumber: number, syncing: boolean): Promise<PouchDB.UpsertResponse> {
+  public async setHighestSyncBlock(dbName: string, blockNumber: number, syncing: boolean, rollback: boolean = false): Promise<PouchDB.UpsertResponse> {
 
     const highestKnownBlock = await this.getHighestSyncBlock(dbName);
 
     // NOTE: dbName, in this case, is actually the id of the record in the SyncStatus db.
     return this.db.upsert(dbName, (document: SyncDocument) => {
+      // make sure the truly highest block is always being used
+      if (!rollback) {
+        blockNumber = blockNumber > highestKnownBlock ? blockNumber : highestKnownBlock;
+      }
+
       document.blockNumber = blockNumber;
       document.syncing = syncing;
 
