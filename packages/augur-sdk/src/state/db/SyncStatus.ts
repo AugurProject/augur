@@ -34,9 +34,6 @@ export class SyncStatus extends AbstractDB {
 
     // NOTE: dbName, in this case, is actually the id of the record in the SyncStatus db.
     return this.db.upsert(dbName, (document: SyncDocument) => {
-      // make sure the truly highest block is always being used
-      blockNumber = blockNumber > highestKnownBlock ? blockNumber : highestKnownBlock;
-
       document.blockNumber = blockNumber;
       document.syncing = syncing;
 
