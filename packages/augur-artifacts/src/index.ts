@@ -6,6 +6,7 @@ export const Networks = require("./networks.json");
 export { ContractEvents } from "./events";
 
 import { exists, readFile, writeFile } from "async-file";
+import path from "path";
 
 export type NetworkId =
     '1'
@@ -55,7 +56,7 @@ export interface NetworkContractAddresses {
 }
 
 export async function setAddresses(networkId: NetworkId, addresses: ContractAddresses): Promise<void> {
-  const filepath = `${__dirname}/addresses.json`;
+  const filepath = path.join(__dirname, "../src/addresses.json"); // be sure to be in src dir, not build
 
   let contents = {};
   if (await exists(filepath)) {
@@ -64,5 +65,5 @@ export async function setAddresses(networkId: NetworkId, addresses: ContractAddr
 
   contents[networkId] = addresses;
 
-  await writeFile(filepath, JSON.stringify(contents, null, 2), "utf8");
+  await writeFile(filepath, JSON.stringify(contents, null, 1), "utf8");
 }
