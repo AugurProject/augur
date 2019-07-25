@@ -100,7 +100,7 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleNewBlockLog = (log: any) => (
+export const handleNewBlockLog = (log: Events.NewBlock) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -311,6 +311,7 @@ export const handleTradingProceedsClaimedLog = (log: any) => (
   if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
 };
 
+
 export const handleInitialReportSubmittedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -432,16 +433,10 @@ export const handleDisputeCrowdsourcerRedeemedLog = (log: any) => (
   dispatch(getReportingFees());
 };
 
-export const handleDisputeWindowCreatedLog = (log: any) => (
+export const handleDisputeWindowCreatedLog = (log: Logs.DisputeWindowCreatedLog) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  dispatch(loadReportingWindowBounds());
-  dispatch(getReportingFees());
-};
-
-export const handleFeeWindowOpenedLog = (log: any) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+  const x = log.
   dispatch(loadReportingWindowBounds());
   dispatch(getReportingFees());
 };
