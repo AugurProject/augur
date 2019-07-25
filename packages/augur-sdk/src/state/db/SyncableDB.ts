@@ -18,7 +18,7 @@ export class SyncableDB extends AbstractDB {
   protected augur: Augur;
   protected eventName: string;
   private syncStatus: SyncStatus;
-  private idFields: Array<string>;
+  private idFields: string[];
   private syncing: boolean;
 
   constructor(
@@ -27,7 +27,7 @@ export class SyncableDB extends AbstractDB {
     networkId: number,
     eventName: string,
     dbName: string = db.getDatabaseName(eventName),
-    idFields: Array<string> = [],
+    idFields: string[] = []
   ) {
     super(networkId, dbName, db.pouchDBFactory);
     this.augur = augur;
@@ -36,14 +36,14 @@ export class SyncableDB extends AbstractDB {
     this.idFields = idFields;
     this.db.createIndex({
       index: {
-        fields: ['blockNumber']
-      }
+        fields: ['blockNumber'],
+      },
     });
     if (this.idFields.length > 0) {
       this.db.createIndex({
         index: {
-          fields: this.idFields
-        }
+          fields: this.idFields,
+        },
       });
     }
     db.notifySyncableDBAdded(this);
@@ -52,7 +52,7 @@ export class SyncableDB extends AbstractDB {
     this.syncing = false;
   }
 
-  public async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
+  async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
 
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
@@ -70,7 +70,7 @@ export class SyncableDB extends AbstractDB {
     // TODO Make any external calls as needed (such as pushing user's balance to UI)
   }
 
-  private parseLogArrays(logs: Array<ParsedLog>): void {
+  private parseLogArrays(logs: ParsedLog[]): void {
     for (let i = 0; i < logs.length; i++) {
       logs[i].kycToken = logs[i].addressData[0];
       logs[i].orderCreator = logs[i].addressData[1];
@@ -92,7 +92,7 @@ export class SyncableDB extends AbstractDB {
     }
   }
 
-  public addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
+  addNewBlock = async (blocknumber: number, logs: ParsedLog[]): Promise<number> => {
     if (this.eventName === "OrderEvent") {
       this.parseLogArrays(logs);
     }
@@ -119,7 +119,7 @@ export class SyncableDB extends AbstractDB {
       success = await this.bulkUpsertOrderedDocuments(documents[0]._id, documents);
     }
     if (success) {
-      if (documents && (documents as Array<any>).length) {
+      if (documents && (documents as any[]).length) {
         _.each(documents, (document: any) => {
           augurEmitter.emit(this.eventName, {
             eventName: this.eventName,
@@ -146,14 +146,14 @@ export class SyncableDB extends AbstractDB {
     return blocknumber;
   }
 
-  public async rollback(blockNumber: number): Promise<void> {
+  async rollback(blockNumber: number): Promise<void> {
     // Remove each change from blockNumber onward
     try {
-      let blocksToRemove = await this.db.find({
+      const blocksToRemove = await this.db.find({
         selector: { blockNumber: { $gte: blockNumber } },
         fields: ['_id', 'blockNumber', '_rev'],
       });
-      for (let doc of blocksToRemove.docs) {
+      for (const doc of blocksToRemove.docs) {
         await this.db.remove(doc._id, doc._rev);
       }
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing);
@@ -162,7 +162,7 @@ export class SyncableDB extends AbstractDB {
     }
   }
 
-  protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
+  protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
     return augur.events.getLogs(this.eventName, startBlock, endBlock);
   }
 
@@ -172,7 +172,7 @@ export class SyncableDB extends AbstractDB {
     // TODO: This works in bulk sync currently because we process logs chronologically. When we switch to reverse chrono for bulk sync we'll need to add more logic
     if (this.idFields.length > 0) {
       // need to preserve order of fields in id
-      for (let fieldName of this.idFields) {
+      for (const fieldName of this.idFields) {
         _id += _.get(log, fieldName);
       }
     } else {
@@ -184,7 +184,7 @@ export class SyncableDB extends AbstractDB {
     );
   }
 
-  public getFullEventName(): string {
+  getFullEventName(): string {
     return this.eventName;
   }
 }

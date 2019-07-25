@@ -25,17 +25,19 @@ function isSafe(websocket: WebSocket) {
 }
 
 function safeSend(websocket: WebSocket, payload: string) {
-  if (isSafe(websocket))
+  if (isSafe(websocket)) {
     websocket.send(payload);
+  }
 }
 
 function safePing(websocket: WebSocket) {
-  if (isSafe(websocket))
+  if (isSafe(websocket)) {
     websocket.ping();
+  }
 }
 
 export async function run<TBigNumber>(api: API, endpointSettings: EndpointSettings, controlEmitter: EventEmitter): Promise<void> {
-  const servers: Array<WebSocket.Server> = [];
+  const servers: WebSocket.Server[] = [];
   const app = express();
 
   if (endpointSettings.startWSS) {
@@ -66,8 +68,9 @@ export async function run<TBigNumber>(api: API, endpointSettings: EndpointSettin
 
         try {
           message = JSON.parse(data as string, AddressFormatReviver);
-          if (!IsJsonRpcRequest(message))
+          if (!IsJsonRpcRequest(message)) {
             return console.error("bad json rpc message received:", message);
+          }
         } catch (exc) {
           return safeSend(websocket, MakeJsonRpcError("-1", JsonRpcErrorCode.ParseError, "Bad JSON RPC Message Received", { originalText: data as string }));
         }

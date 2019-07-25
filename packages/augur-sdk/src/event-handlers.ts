@@ -283,7 +283,7 @@ export interface UniverseForked extends FormattedEventLog {
 
 export interface TXStatus {
   transaction: TransactionMetadata;
-  eventName: TXEventName,
+  eventName: TXEventName;
   hash?: string;
 }
 

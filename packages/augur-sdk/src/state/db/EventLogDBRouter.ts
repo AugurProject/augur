@@ -3,13 +3,13 @@ import { Log, ParsedLog } from "@augurproject/types";
 import { LogCallbackType } from "./BlockAndLogStreamerListener";
 
 export class EventLogDBRouter {
-  private logCallbacks: Array<LogCallbackType> = [];
+  private logCallbacks: LogCallbackType[] = [];
 
-  constructor(private parseLogs: (logs: Array<Log>) => Array<ParsedLog>) {
+  constructor(private parseLogs: (logs: Log[]) => ParsedLog[]) {
   }
 
-  public filterCallbackByTopic(topic: string, callback: LogCallbackType): LogCallbackType {
-    return (blockNumber: number, logs: Array<Log>) => {
+  filterCallbackByTopic(topic: string, callback: LogCallbackType): LogCallbackType {
+    return (blockNumber: number, logs: Log[]) => {
       const filteredLogs = logs.filter((log) => log.topics.includes(topic));
       const parsedLogs = this.parseLogs(filteredLogs);
 
@@ -17,12 +17,12 @@ export class EventLogDBRouter {
     };
   }
 
-  public addLogCallback(topic: string, callback: LogCallbackType) {
+  addLogCallback(topic: string, callback: LogCallbackType) {
     this.logCallbacks.push(this.filterCallbackByTopic(topic, callback));
   }
 
-  public onLogsAdded = async (blockNumber: number, extendedLogs: Array<ExtendedLog>) => {
-    const logs: Array<Log> = extendedLogs.map((log) => ({
+  onLogsAdded = async (blockNumber: number, extendedLogs: ExtendedLog[]) => {
+    const logs: Log[] = extendedLogs.map((log) => ({
       ...log,
       logIndex: parseInt(log.logIndex, 10),
       blockNumber: parseInt(log.blockNumber, 10),
@@ -31,7 +31,7 @@ export class EventLogDBRouter {
       removed: log.removed ? log.removed : false,
       transactionIndex: log.transactionIndex ? log.transactionIndex : 0,
       transactionLogIndex: log.transactionLogIndex ? log.transactionLogIndex : 0,
-      transactionHash: log.transactionHash ? log.transactionHash : ""
+      transactionHash: log.transactionHash ? log.transactionHash : "",
     }));
 
     const logCallbackPromises = this.logCallbacks.map((cb) => cb(blockNumber, logs));
