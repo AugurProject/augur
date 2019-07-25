@@ -6,7 +6,7 @@
   position: fixed;
   width: 100vw;
   z-index: @mask-modal;
-  
+
   > div {
     align-items: center;
     display: flex;
@@ -432,7 +432,7 @@ div.ErrorField:focus {
   max-width: 35rem;
   -webkit-overflow-scrolling: touch;
   overflow-y: auto;
-  padding: 1.5rem 0;
+  padding: 1.5rem 0 2rem 0;
   position: relative;
   text-align: center;
   width: 100%;
@@ -488,6 +488,10 @@ div.ErrorField:focus {
   }
 }
 
+.ModalDisclaimer_disabled {
+    opacity: 0.45;
+}
+
 .ModalDisclaimer__checkbox {
   display: flex;
   flex-flow: row nowrap;
@@ -503,6 +507,7 @@ div.ErrorField:focus {
     margin: 0 4rem;
     text-transform: none;
     width: 100%;
+    user-select: none;
 
     > div {
       margin-right: 2rem;
@@ -671,7 +676,7 @@ div.ErrorField:focus {
   }
 
   .ModalDisclaimer {
-    padding: 1rem 0;
+    padding: 1rem 0 4rem 0;
 
     > h1 {
       margin: 0 0 1rem;
@@ -695,7 +700,7 @@ div.ErrorField:focus {
   .ModalDisclaimer {
     max-height: 75vh;
     max-width: 90vw;
-    padding: 0.5rem 0;
+    padding: 0.5rem 0 2rem 0;
 
     > h1 {
       margin: 0 0 0.5rem;

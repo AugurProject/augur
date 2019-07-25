@@ -31,4 +31,26 @@
 	    	margin-right: @size-28;
 	    }
 	}
+
+
+    @media @breakpoint-mobile-mid {
+    	> div:nth-of-type(4) {
+	    	flex-direction: column;
+
+	    	> section:first-of-type {
+	    		overflow-y: visible;
+	    	}
+	    }
+
+	    > div:nth-of-type(6), 
+	    > div:last-of-type {
+	    	max-height: unset;
+	    	min-height: unset;
+
+	    	> div {
+				max-height: unset;
+		    	min-height: unset;
+	    	}
+	    }
+    }
 }

@@ -80,7 +80,7 @@ export function checkOutcomesArray(value) {
         errors[dupes[key][dupes[key].length - 1]] = "Can't enter a duplicate outcome";
       }
     })
-    if (errors.filter(error => error !== "").length > 1) return errors;
+    if (errors.filter(error => error !== "").length > 0) return errors;
     return "";
   }
 }

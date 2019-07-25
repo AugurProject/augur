@@ -49,7 +49,7 @@ export class Controller {
     }
 
     const blocksBehindCurrent = block.number - lowestBlock;
-    const percentBehindCurrent = (
+    const percentSynced = (
       (lowestBlock / block.number) *
       100
     ).toFixed(4);
@@ -59,7 +59,7 @@ export class Controller {
       highestAvailableBlockNumber: block.number,
       lastSyncedBlockNumber: lowestBlock,
       blocksBehindCurrent,
-      percentBehindCurrent,
+      percentSynced,
       timestamp: block.timestamp,
     });
   }

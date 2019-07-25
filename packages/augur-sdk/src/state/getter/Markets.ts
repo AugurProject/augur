@@ -21,7 +21,6 @@ import {
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
 } from '../../index';
-import { toAscii } from '../utils/utils';
 import { calculatePayoutNumeratorsValue } from '../../utils';
 
 import * as _ from 'lodash';
@@ -185,7 +184,7 @@ export class Markets {
     }),
   ]);
 
-  static getTopicsParams = t.type({ universe: t.string });
+  static getCategoriesParams = t.type({ universe: t.string });
 
   @Getter('getMarketPriceCandlestickParams')
   static async getMarketPriceCandlesticks(
@@ -700,6 +699,7 @@ export class Markets {
           marketType = MarketTypeName.Scalar;
         }
 
+        let categories = [];
         let description = null;
         let details = null;
         let resolutionSource = null;
@@ -707,6 +707,7 @@ export class Markets {
         let tags = [];
         if (marketCreatedLog.extraInfo) {
           const extraInfo = JSON.parse(marketCreatedLog.extraInfo);
+          categories = extraInfo.categories ? extraInfo.categories : [];
           description = extraInfo.description ? extraInfo.description : null;
           details = extraInfo.longDescription
             ? extraInfo.longDescription
@@ -741,10 +742,7 @@ export class Markets {
           author: marketCreatedLog.marketCreator,
           creationBlock: marketCreatedLog.blockNumber,
           creationTime: marketCreatedLog.timestamp,
-          category: Buffer.from(
-            marketCreatedLog.topic.replace('0x', ''),
-            'hex'
-          ).toString(),
+          categories,
           volume:
             marketVolumeChangedLogs.length > 0
               ? new BigNumber(marketVolumeChangedLogs[0].volume)
@@ -786,22 +784,29 @@ export class Markets {
     );
   }
 
-  @Getter('getTopicsParams')
-  static async getTopics(
+  @Getter('getCategoriesParams')
+  static async getCategories(
     augur: Augur,
     db: DB,
-    params: t.TypeOf<typeof Markets.getTopicsParams>
+    params: t.TypeOf<typeof Markets.getCategoriesParams>
   ): Promise<string[]> {
     const marketCreatedLogs = await db.findMarketCreatedLogs({
       selector: { universe: params.universe },
     });
-    const topics: any = {};
+    const allCategories: any = {};
     for (let i = 0; i < marketCreatedLogs.length; i++) {
-      if (!topics[toAscii(marketCreatedLogs[i].topic)]) {
-        topics[toAscii(marketCreatedLogs[i].topic)] = null;
+      if (marketCreatedLogs[i].extraInfo) {
+        let categories: string[] = [];
+        const extraInfo = JSON.parse(marketCreatedLogs[i].extraInfo);
+        categories = extraInfo.categories ? extraInfo.categories : [];
+        for (let j = 0; j < categories.length; j++) {
+          if (!allCategories[categories[j]]) {
+            allCategories[categories[j]] = null;
+          }
+        }
       }
     }
-    return Object.keys(topics);
+    return Object.keys(allCategories);
   }
 }
 

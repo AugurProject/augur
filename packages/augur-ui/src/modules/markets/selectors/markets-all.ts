@@ -6,7 +6,6 @@ import {
   selectOrderBooksState,
   selectOrderCancellationState,
   selectPendingOrdersState,
-  selectAccountShareBalance,
   selectLoginAccountAddress,
   selectAccountPositionsState
 } from "store/select-state";
@@ -23,7 +22,6 @@ export const selectMarkets = createSelector(
   selectOrderBooksState,
   selectOrderCancellationState,
   selectLoginAccountAddress,
-  selectAccountShareBalance,
   selectPendingOrdersState,
   selectAccountPositionsState,
   (
@@ -32,7 +30,6 @@ export const selectMarkets = createSelector(
     orderBooks,
     orderCancellation,
     accountAddress,
-    accountShareBalances,
     pendingOrders,
     accountPositions
   ): Array<MarketData> => {

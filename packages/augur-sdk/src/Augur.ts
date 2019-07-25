@@ -18,6 +18,7 @@ import { Trading } from "./state/getter/Trading";
 import { Users } from "./state/getter/Users";
 import { getAddress } from "ethers/utils/address";
 import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
+import { Liquidity } from "./api/Liquidity";
 
 export class Augur<TProvider extends Provider = Provider> {
   public readonly provider: TProvider;
@@ -30,6 +31,7 @@ export class Augur<TProvider extends Provider = Provider> {
   public readonly trade: Trade;
   public readonly market: Market;
   public static connector: BaseConnector;
+  public readonly liquidity: Liquidity;
 
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
@@ -76,6 +78,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.contracts = new Contracts(this.addresses, this.dependencies);
     this.trade = new Trade(this);
     this.market = new Market(this);
+    this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
 
     this.registerTransactionStatusEvents();
@@ -215,6 +218,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   public getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
   public getProfitLoss = this.bindTo(Users.getProfitLoss);
+  public getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
   public getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
 
   public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {

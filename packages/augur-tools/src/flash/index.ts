@@ -1,3 +1,3 @@
 export { FlashSession, FlashScript, FlashArguments, FlashOption } from "./flash";
 export { addScripts } from "./scripts";
-export { addGanacheScripts } from "./ganache-scripts";
+export { addGanacheScripts, defaultSeedPath } from "./ganache-scripts";

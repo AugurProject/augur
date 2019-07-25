@@ -4,12 +4,12 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  padding-top: 0.625rem;
+  padding-top: @size-24;
 
   > div:first-of-type {
     .mono-11;
 
-    padding-bottom: 0.625rem;
+    padding-bottom: @size-8;
     text-transform: uppercase;
   }
 
@@ -19,6 +19,8 @@
 
   > div:nth-of-type(3) {
     .text-18-bold;
+
+    padding-top: @size-8;
 
     > svg {
       fill: none;
@@ -63,12 +65,13 @@
 
 .ProfitLossChart {
   margin: 0;
+  margin-bottom: @size-8;
   pointer-events: none;
 
   svg {
     :global {
       .highcharts-background {
-        fill: @color-secondary-action;
+        fill: @color-tertiary-background;
 
         @media @breakpoint-mobile-mid {
           fill: @color-primary-background;

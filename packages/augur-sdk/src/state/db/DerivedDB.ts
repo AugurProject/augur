@@ -5,6 +5,7 @@ import { Log, ParsedLog } from "@augurproject/types";
 import { Augur } from '../../Augur';
 import { DB } from "./DB";
 import { sleep } from "../utils/utils";
+import { augurEmitter } from "../../events";
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -14,10 +15,11 @@ export interface Document extends BaseDocument {
  * Stores derived data from multiple logs and post-log processing
  */
 export class DerivedDB extends AbstractDB {
-  private syncStatus: SyncStatus;
+  protected syncStatus: SyncStatus;
+  protected stateDB: DB;
   private idFields: Array<string>;
   private mergeEventNames: Array<string>;
-  private stateDB: DB;
+  private name: string;
   private updatingHighestSyncBlock: boolean = false;
 
   constructor(db: DB, networkId: number, name: string, mergeEventNames: Array<string>, idFields: Array<string>) {
@@ -26,6 +28,7 @@ export class DerivedDB extends AbstractDB {
     this.idFields = idFields;
     this.mergeEventNames = mergeEventNames;
     this.stateDB = db;
+    this.name = name;
     this.db.createIndex({
       index: {
         fields: idFields
@@ -33,14 +36,19 @@ export class DerivedDB extends AbstractDB {
     });
 
     for (const eventName of mergeEventNames) {
-        db.registerEventListener(eventName, this.handleMergeEvent);
+      db.registerEventListener(eventName, this.handleMergeEvent);
     }
 
     db.notifyDerivedDBAdded(this);
   }
 
-  // For all mergable event types get any new documents we haven't pulled in and pull them in
   public async sync(highestAvailableBlockNumber: number): Promise<void> {
+    await this.doSync(highestAvailableBlockNumber);
+    await this.syncStatus.setHighestSyncBlock(this.dbName, highestAvailableBlockNumber, true);
+  }
+
+  // For all mergable event types get any new documents we haven't pulled in and pull them in
+  public async doSync(highestAvailableBlockNumber: number): Promise<void> {
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     for (const eventName of this.mergeEventNames) {
       const request = {
@@ -52,7 +60,7 @@ export class DerivedDB extends AbstractDB {
       await this.handleMergeEvent(highestAvailableBlockNumber, result.docs as Array<unknown> as Array<ParsedLog>, true);
     }
 
-    await this.syncStatus.setHighestSyncBlock(this.dbName, highestAvailableBlockNumber, true);
+    await this.syncStatus.updateSyncingToFalse(this.dbName);
   }
 
   public async rollback(blockNumber: number): Promise<void> {
@@ -88,12 +96,12 @@ export class DerivedDB extends AbstractDB {
       documents = _.map(logs, this.processLog.bind(this));
       documents = _.values(_.mapValues(_.groupBy(documents, "_id"), (idDocuments) => {
         return _.reduce(idDocuments, (val, doc) => {
-        if (val.blockNumber < doc.blockNumber) {
-          val = doc;
-        } else if (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex) {
-          val = doc;
-        }
-        return val;
+          if (val.blockNumber < doc.blockNumber) {
+            val = doc;
+          } else if (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex) {
+            val = doc;
+          }
+          return val;
         }, idDocuments[0]);
       }));
 
@@ -109,6 +117,7 @@ export class DerivedDB extends AbstractDB {
         this.updatingHighestSyncBlock = true;
         await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, syncing);
         this.updatingHighestSyncBlock = false;
+        augurEmitter.emit(`DerivedDB:updated:${this.name}`);
       }
     } else {
       throw new Error(`Unable to add new block`);

@@ -6,9 +6,14 @@ export {
   makeSigner,
   makeDependencies,
 } from "./libs/blockchain";
+import * as blockchain from "./libs/blockchain";
+export { blockchain };
+
 export {
   makeGanacheProvider,
-  loadSeed,
+  loadSeedFile,
+  createDbFromSeed,
+  Seed,
 } from "./libs/ganache";
 
 export { Account, ACCOUNTS } from "./constants";

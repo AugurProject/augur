@@ -1,21 +1,18 @@
 import { BigNumber } from "bignumber.js";
-import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
-
+import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath, Account, blockchain } from "@augurproject/tools";
 import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers";
+import { makeProvider } from "../../libs";
 import { Getters, TXEventName } from "@augurproject/sdk";
-import { makeProvider, seedPath } from "../../libs";
-import * as blockchain from "@augurproject/tools/build/libs/blockchain";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { EthersFastSubmitWallet } from "@augurproject/core/build";
-import * as constants from "@augurproject/tools/build/constants";
+import { EthersFastSubmitWallet } from "@augurproject/core";
 
 let john: ContractAPI;
 
 beforeAll(async () => {
-  const { addresses } = loadSeed(seedPath);
-  const provider = await makeProvider(ACCOUNTS);
+  const seed = await loadSeedFile(defaultSeedPath);
+  const provider = await makeProvider(seed, ACCOUNTS);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
   await john.approveCentralAuthority();
 }, 120000);
 
@@ -67,8 +64,8 @@ test("TransactionStatus :: transaction status events", async () => {
 }, 15000);
 
 test("TransactionStatus :: transaction status events failure", async (done) => {
-  const { addresses } = loadSeed(seedPath);
-  const provider = await makeProvider(ACCOUNTS);
+  const seed = await loadSeedFile(defaultSeedPath);
+  const provider = await makeProvider(seed, ACCOUNTS);
 
   const awaitingSigning = jest.fn();
   const pending = jest.fn();
@@ -96,7 +93,7 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
     })
     .mockReturnValueOnce({ status: 2, logs: [] });
 
-  const spy = jest.spyOn(blockchain, 'makeSigner').mockImplementation(async (account: constants.Account, provider: EthersProvider): Promise<EthersFastSubmitWallet> => {
+  const spy = jest.spyOn(blockchain, 'makeSigner').mockImplementation(async (account: Account, provider: EthersProvider): Promise<EthersFastSubmitWallet> => {
     const wallet = await EthersFastSubmitWallet.create("c6cbd7d76bc5baca530c875663711b947efa6a86a900a9e8645ce32e5821484e", provider);
     wallet.sendTransaction = (): Promise<any> => {
       return {
@@ -110,7 +107,7 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
     return wallet;
   });
 
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
   await john.approveCentralAuthority();
 
   john.augur.on(TXEventName.Failure, failure);
@@ -122,9 +119,8 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
     designatedReporter: john.account.publicKey,
-    topic: 'yesNo topic 1',
     extraInfo:
-      '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
+      '{"categories": ["yesNo category 1"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
   }).catch((e) => { });
 
   // expect(failure).toHaveBeenCalled();
