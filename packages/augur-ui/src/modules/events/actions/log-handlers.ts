@@ -20,7 +20,6 @@ import { getReportingFees } from 'modules/reports/actions/get-reporting-fees';
 import {
   loadMarketsInfo,
   loadMarketsInfoIfNotLoaded,
-  loadMarketsDisputeInfo,
 } from 'modules/markets/actions/load-markets-info';
 import { getWinningBalance } from 'modules/reports/actions/get-winning-balance';
 import { startOrderSending } from 'modules/orders/actions/liquidity-management';
@@ -31,7 +30,6 @@ import {
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { appendCategoryIfNew } from 'modules/categories/actions/append-category';
-import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -120,6 +118,8 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
     // app is connected when subscribed to sdk
     dispatch(updateConnectionStatus(true));
   }
+  // update assets each block
+  dispatch(updateAssets());
 };
 
 export const handleMarketCreatedLog = (log: any) => (
@@ -153,9 +153,6 @@ export const handleMarketCreatedLog = (log: any) => (
     // dispatch(loadCategories()); don't reload categories because when market created log comes in, this event will cause the categories to load and re-sort which causes the category list to change. If markets are being traded (OI an change) then multiple markets are getting created there is potential for the user's category list to appear erratic as the list resorts over and over. In future, we might check if the new market's category is new, and append that category to end of categories without user seeing a jittery re-render.
   }
   if (isStoredTransaction) {
-    handleAlertUpdate(log, dispatch, getState);
-    dispatch(updateAssets());
-
     // My Market? start kicking off liquidity orders
     if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
     dispatch(updateLoggedTransactions(log));
@@ -183,34 +180,20 @@ export const handleTokensTransferredLog = (log: any) => (
   const isStoredTransaction =
     isSameAddress(log.from, address) || isSameAddress(log.to, address);
   if (isStoredTransaction) {
-    dispatch(updateAssets());
     // TODO: will need to update user's contribution to dispute/reporting
     // dispatch(loadReportingWindowBounds());
-    handleAlertUpdate(log, dispatch, getState);
   }
 };
 
-export const handleTokensMintedLog = (log: any) => (
+export const handleTokenBalanceChangedLog = (log: Logs.TokenBalanceChangedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { address } = getState().loginAccount;
-  const isStoredTransaction = isSameAddress(log.target, address);
+  const isStoredTransaction = isSameAddress(log.owner, address);
   if (isStoredTransaction) {
-    dispatch(updateAssets());
     dispatch(loadReportingWindowBounds());
     dispatch(defaultLogHandler(log));
-  }
-};
-
-export const handleTokensBurnedLog = (log: any) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { address } = getState().loginAccount;
-  const isStoredTransaction = isSameAddress(log.target, address);
-  if (isStoredTransaction) {
-    handleAlertUpdate(log, dispatch, getState);
   }
 };
 
@@ -243,9 +226,6 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   );
   if (isStoredTransaction) {
     dispatch(loadMarketsInfoIfNotLoaded([marketId]));
-    dispatch(updateAssets());
-    // handlePendingOrder(log, dispatch, getState);
-    // handleAlertUpdate(log, dispatch, getState);
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
@@ -264,7 +244,6 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   if (isStoredTransaction) {
     // TODO: do we need to remove stuff based on events?
     // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
-    dispatch(updateAssets());
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
@@ -282,20 +261,14 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     isSameAddress(log.orderFiller, address);
   if (isStoredTransaction) {
     dispatch(loadMarketsInfo([marketId]));
-    dispatch(updateAssets());
-    // handlePendingOrder(log, dispatch, getState);
-    // handleAlertUpdate(log, dispatch, getState);
-    dispatch(updateOutcomePrice(marketId, log.outcome, log.price));
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders({ marketId }));
   }
-  // always reload account positions on trade so we get up to date PL data.
-  dispatch(loadUserPositionsAndBalances(marketId));
   dispatch(loadMarketTradingHistory(marketId));
   if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
-export const handleTradingProceedsClaimedLog = (log: any) => (
+export const handleTradingProceedsClaimedLog = (log: Logs.TradingProceedsClaimedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -304,34 +277,29 @@ export const handleTradingProceedsClaimedLog = (log: any) => (
     getState().loginAccount.address
   );
   if (isStoredTransaction) {
-    dispatch(updateAssets());
     dispatch(updateLoggedTransactions(log));
-    dispatch(loadUserPositionsAndBalances(log.market));
   }
   if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
 };
 
 
-export const handleInitialReportSubmittedLog = (log: any) => (
+export const handleInitialReportSubmittedLog = (log: Logs.InitialReportSubmittedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   dispatch(loadMarketsInfo([log.market]));
-  dispatch(loadMarketsDisputeInfo([log.market]));
   dispatch(loadReporting([log.market]));
   const isStoredTransaction = isSameAddress(
     log.reporter,
     getState().loginAccount.address
   );
   if (isStoredTransaction) {
-    handleAlertUpdate(log, dispatch, getState);
-    dispatch(updateAssets());
     dispatch(loadDisputing());
     dispatch(updateLoggedTransactions(log));
   }
 };
 
-export const handleInitialReporterRedeemedLog = (log: any) => (
+export const handleInitialReporterRedeemedLog = (log: Logs.InitialReporterRedeemedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
@@ -341,7 +309,6 @@ export const handleInitialReporterRedeemedLog = (log: any) => (
     getState().loginAccount.address
   );
   if (isStoredTransaction) {
-    dispatch(updateAssets());
     dispatch(loadReporting([log.market]));
     dispatch(loadDisputing());
     dispatch(updateLoggedTransactions(log));
@@ -349,7 +316,78 @@ export const handleInitialReporterRedeemedLog = (log: any) => (
   dispatch(getReportingFees());
 };
 
-export const handleMarketFinalizedLog = (log: any) => (
+export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log("handleProfitLossChangedLog");
+  const isStoredTransaction = isSameAddress(
+    log.account,
+    getState().loginAccount.address
+  );
+  if (isStoredTransaction) {
+    dispatch(loadUserPositionsAndBalances(log.market));
+  }
+}
+
+export const handleInitialReporterTransferredLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log("handleInitialReporterTransferredLog");
+}
+
+export const handleParticipationTokensRedeemedLog = (log: Logs.ParticipationTokensRedeemedLog) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log("handleParticipationTokensRedeemedLog");
+}
+
+export const handleReportingParticipantDisavowedLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log("handleReportingParticipantDisavowedLog");
+}
+
+export const handleMarketParticipantsDisavowedLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log("handleMarketParticipantsDisavowedLog");
+}
+
+export const handleMarketTransferredLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log("handleMarketTransferredLog");
+}
+
+export const handleMarketVolumeChangedLog = (log: Logs.MarketVolumeChangedLog) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log("handleMarketVolumeChangedLog");
+}
+
+export const handleMarketOIChangedLog = (log: Logs.MarketOIChangedLog) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log("handleMarketOIChangedLog");
+}
+
+
+export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  console.log("handleUniverseForkedLog");
+}
+
+export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) =>
@@ -357,77 +395,46 @@ export const handleMarketFinalizedLog = (log: any) => (
     loadMarketsInfo([log.market], (err: any) => {
       if (err) return console.error(err);
       const { author } = getState().marketInfos[log.market];
-      dispatch(loadReporting([log.market]));
+      dispatch(loadMarketsInfo([log.market]));
       dispatch(getWinningBalance([log.market]));
       const isOwnMarket = getState().loginAccount.address === author;
       if (isOwnMarket) {
-        dispatch(updateAssets());
         dispatch(updateLoggedTransactions(log));
-      }
-      if (!log.removed) {
-        const { alerts } = getState();
-        const doesntExist = !alerts.filter(
-          (alert: { id: any; params: { type: string } }) =>
-            alert.id === log.transactionHash && alert.params.type === 'finalize'
-        ).length;
-
-        if (doesntExist && isOwnMarket) {
-          // Trigger the alert addition here because calling other
-          // API functions, such as `InitialReporter.redeem` can indirectly
-          // cause a MarketFinalized event to be logged.
-          dispatch(
-            addAlert({
-              id: `${log.transactionHash}_finalize`,
-              timestamp: log.timestamp,
-              blockNumber: log.blockNumber,
-              log,
-              params: {
-                type: 'finalize',
-              },
-              status: 'Confirmed',
-              linkPath: makePath(MY_MARKETS),
-            })
-          );
-        } else if (!doesntExist) {
-          handleAlertUpdate(log, dispatch, getState);
-        }
       }
     })
   );
 
-export const handleDisputeCrowdsourcerCreatedLog = (log: any) => (
+export const handleDisputeCrowdsourcerCreatedLog = (log: Logs.DisputeCrowdsourcerCreatedLog) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  dispatch(loadMarketsDisputeInfo([log.marketId]));
+  dispatch(loadMarketsInfo([log.market]));
   dispatch(loadReportingWindowBounds());
   dispatch(defaultLogHandler(log));
 };
 
-export const handleDisputeCrowdsourcerContributionLog = (log: any) => (
+export const handleDisputeCrowdsourcerContributionLog = (log: Logs.DisputeCrowdsourcerContributionLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(loadMarketsDisputeInfo([log.marketId]));
+  dispatch(loadMarketsInfo([log.market]));
   dispatch(defaultLogHandler(log));
   if (log.reporter === getState().loginAccount.address) {
-    dispatch(updateAssets());
     dispatch(loadReportingWindowBounds());
   }
 };
 
-export const handleDisputeCrowdsourcerCompletedLog = (log: any) => (
+export const handleDisputeCrowdsourcerCompletedLog = (log: Logs.DisputeCrowdsourcerCompletedLog) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  dispatch(loadMarketsInfo([log.marketId]));
-  dispatch(loadMarketsDisputeInfo([log.marketId]));
+  dispatch(loadMarketsInfo([log.market]));
   dispatch(loadReportingWindowBounds());
   dispatch(defaultLogHandler(log));
 };
 
-export const handleDisputeCrowdsourcerRedeemedLog = (log: any) => (
+export const handleDisputeCrowdsourcerRedeemedLog = (log: Logs.DisputeCrowdsourcerRedeemedLog) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  dispatch(loadMarketsDisputeInfo([log.marketId]));
+  dispatch(loadMarketsInfo([log.market]));
   dispatch(loadReportingWindowBounds());
   dispatch(defaultLogHandler(log));
   dispatch(getReportingFees());
@@ -436,14 +443,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (log: any) => (
 export const handleDisputeWindowCreatedLog = (log: Logs.DisputeWindowCreatedLog) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  const x = log.
   dispatch(loadReportingWindowBounds());
   dispatch(getReportingFees());
 };
 
-export const handleFeeWindowRedeemedLog = (log: any) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
-  dispatch(defaultLogHandler(log));
-  dispatch(getReportingFees());
-};

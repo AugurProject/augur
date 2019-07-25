@@ -1,6 +1,5 @@
 import {
-  loadMarketsInfo,
-  loadMarketsDisputeInfo
+  loadMarketsInfo
 } from "modules/markets/actions/load-markets-info";
 import { loadMarketOrderBook } from "modules/orders/actions/load-market-order-book";
 import logError from "utils/log-error";
@@ -19,7 +18,6 @@ export const loadFullMarket = (
       dispatch(
         loadMarketOrderBook(marketId, (err: string | Error) => {
           if (err) return callback(err);
-          dispatch(loadMarketsDisputeInfo([marketId]));
           callback(null);
         })
       );
