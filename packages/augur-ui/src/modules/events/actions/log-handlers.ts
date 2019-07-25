@@ -7,10 +7,7 @@ import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-bo
 import { loadReportingWindowBounds } from 'modules/reports/actions/load-reporting-window-bounds';
 import { updateLoggedTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { removeMarket } from 'modules/markets/actions/update-markets-data';
-import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price';
-import { defaultLogHandler } from 'modules/events/actions/default-log-handler';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import logError from 'utils/log-error';
 import makePath from 'modules/routes/helpers/make-path';
 import { MY_MARKETS, TRANSACTIONS } from 'modules/routes/constants/views';
 import { loadReporting } from 'modules/reports/actions/load-reporting';
@@ -133,24 +130,7 @@ export const handleMarketCreatedLog = (log: any) => (
   if (log.removed) {
     dispatch(removeMarket(log.market));
   } else {
-    dispatch(
-      loadMarketsInfo([log.market], (err: any) => {
-        if (err) {
-          logError(err);
-          return;
-        }
-
-        // When a new market is created, we might reload all categories with
-        // `dispatch(loadCategories())`, but this can cause UI jitter, so
-        // instead we'll append the new market's category if it doesn't exist.
-        appendCategoryIfNew(
-          dispatch,
-          getState().categories,
-          getState().marketInfos[log.market]
-        );
-      })
-    );
-    // dispatch(loadCategories()); don't reload categories because when market created log comes in, this event will cause the categories to load and re-sort which causes the category list to change. If markets are being traded (OI an change) then multiple markets are getting created there is potential for the user's category list to appear erratic as the list resorts over and over. In future, we might check if the new market's category is new, and append that category to end of categories without user seeing a jittery re-render.
+    dispatch(loadMarketsInfo([log.market]));
   }
   if (isStoredTransaction) {
     // My Market? start kicking off liquidity orders
@@ -185,15 +165,13 @@ export const handleTokensTransferredLog = (log: any) => (
   }
 };
 
-export const handleTokenBalanceChangedLog = (log: Logs.TokenBalanceChangedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleTokenBalanceChangedLog = (
+  log: Logs.TokenBalanceChangedLog
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { address } = getState().loginAccount;
   const isStoredTransaction = isSameAddress(log.owner, address);
   if (isStoredTransaction) {
     dispatch(loadReportingWindowBounds());
-    dispatch(defaultLogHandler(log));
   }
 };
 
@@ -268,10 +246,9 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
   if (isCurrentMarket(marketId)) dispatch(loadMarketOrderBook(marketId));
 };
 
-export const handleTradingProceedsClaimedLog = (log: Logs.TradingProceedsClaimedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleTradingProceedsClaimedLog = (
+  log: Logs.TradingProceedsClaimedLog
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const isStoredTransaction = isSameAddress(
     log.sender,
     getState().loginAccount.address
@@ -282,11 +259,9 @@ export const handleTradingProceedsClaimedLog = (log: Logs.TradingProceedsClaimed
   if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
 };
 
-
-export const handleInitialReportSubmittedLog = (log: Logs.InitialReportSubmittedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleInitialReportSubmittedLog = (
+  log: Logs.InitialReportSubmittedLog
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
   dispatch(loadReporting([log.market]));
   const isStoredTransaction = isSameAddress(
@@ -299,10 +274,9 @@ export const handleInitialReportSubmittedLog = (log: Logs.InitialReportSubmitted
   }
 };
 
-export const handleInitialReporterRedeemedLog = (log: Logs.InitialReporterRedeemedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleInitialReporterRedeemedLog = (
+  log: Logs.InitialReporterRedeemedLog
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
   const isStoredTransaction = isSameAddress(
     log.reporter,
@@ -320,7 +294,7 @@ export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log("handleProfitLossChangedLog");
+  console.log('handleProfitLossChangedLog');
   const isStoredTransaction = isSameAddress(
     log.account,
     getState().loginAccount.address
@@ -328,64 +302,61 @@ export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
   if (isStoredTransaction) {
     dispatch(loadUserPositionsAndBalances(log.market));
   }
-}
+};
 
 export const handleInitialReporterTransferredLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log("handleInitialReporterTransferredLog");
-}
+  console.log('handleInitialReporterTransferredLog');
+};
 
-export const handleParticipationTokensRedeemedLog = (log: Logs.ParticipationTokensRedeemedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  console.log("handleParticipationTokensRedeemedLog");
-}
+export const handleParticipationTokensRedeemedLog = (
+  log: Logs.ParticipationTokensRedeemedLog
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  console.log('handleParticipationTokensRedeemedLog');
+};
 
 export const handleReportingParticipantDisavowedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log("handleReportingParticipantDisavowedLog");
-}
+  console.log('handleReportingParticipantDisavowedLog');
+};
 
 export const handleMarketParticipantsDisavowedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log("handleMarketParticipantsDisavowedLog");
-}
+  console.log('handleMarketParticipantsDisavowedLog');
+};
 
 export const handleMarketTransferredLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log("handleMarketTransferredLog");
-}
+  console.log('handleMarketTransferredLog');
+};
 
-export const handleMarketVolumeChangedLog = (log: Logs.MarketVolumeChangedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  console.log("handleMarketVolumeChangedLog");
-}
+export const handleMarketVolumeChangedLog = (
+  log: Logs.MarketVolumeChangedLog
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  console.log('handleMarketVolumeChangedLog');
+};
 
 export const handleMarketOIChangedLog = (log: Logs.MarketOIChangedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log("handleMarketOIChangedLog");
-}
-
+  console.log('handleMarketOIChangedLog');
+};
 
 export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log("handleUniverseForkedLog");
-}
+  console.log('handleUniverseForkedLog');
+};
 
 export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -404,46 +375,40 @@ export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
     })
   );
 
-export const handleDisputeCrowdsourcerCreatedLog = (log: Logs.DisputeCrowdsourcerCreatedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const handleDisputeCrowdsourcerCreatedLog = (
+  log: Logs.DisputeCrowdsourcerCreatedLog
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadMarketsInfo([log.market]));
   dispatch(loadReportingWindowBounds());
-  dispatch(defaultLogHandler(log));
 };
 
-export const handleDisputeCrowdsourcerContributionLog = (log: Logs.DisputeCrowdsourcerContributionLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleDisputeCrowdsourcerContributionLog = (
+  log: Logs.DisputeCrowdsourcerContributionLog
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
-  dispatch(defaultLogHandler(log));
   if (log.reporter === getState().loginAccount.address) {
     dispatch(loadReportingWindowBounds());
   }
 };
 
-export const handleDisputeCrowdsourcerCompletedLog = (log: Logs.DisputeCrowdsourcerCompletedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const handleDisputeCrowdsourcerCompletedLog = (
+  log: Logs.DisputeCrowdsourcerCompletedLog
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadMarketsInfo([log.market]));
   dispatch(loadReportingWindowBounds());
-  dispatch(defaultLogHandler(log));
 };
 
-export const handleDisputeCrowdsourcerRedeemedLog = (log: Logs.DisputeCrowdsourcerRedeemedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const handleDisputeCrowdsourcerRedeemedLog = (
+  log: Logs.DisputeCrowdsourcerRedeemedLog
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadMarketsInfo([log.market]));
-  dispatch(loadReportingWindowBounds());
-  dispatch(defaultLogHandler(log));
-  dispatch(getReportingFees());
-};
-
-export const handleDisputeWindowCreatedLog = (log: Logs.DisputeWindowCreatedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
   dispatch(loadReportingWindowBounds());
   dispatch(getReportingFees());
 };
 
+export const handleDisputeWindowCreatedLog = (
+  log: Logs.DisputeWindowCreatedLog
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
+  dispatch(loadReportingWindowBounds());
+  dispatch(getReportingFees());
+};

@@ -394,42 +394,4 @@ export const tradeTestState = {
       }
     }
   },
-  transactionsData: {
-    trans1: {
-      data: {
-        marketId: "testYesNoMarketId",
-        outcomeId: 1,
-        marketType: "yes/no ",
-        marketDescription: "test yes/no  market",
-        outcomeName: "YES"
-      },
-      feePercent: {
-        value: "0.199203187250996016"
-      }
-    },
-    trans2: {
-      data: {
-        marketId: "testCategoricalMarketId",
-        outcomeId: 0,
-        marketType: "categorical",
-        marketDescription: "test categorical market",
-        outcomeName: "Democratic"
-      },
-      feePercent: {
-        value: "0.099800399201596707"
-      }
-    },
-    trans3: {
-      data: {
-        marketId: "testScalarMarketId",
-        outcomeId: 0,
-        marketType: "scalar",
-        marketDescription: "test scalar market",
-        outcomeName: ""
-      },
-      feePercent: {
-        value: "0.95763203714451532"
-      }
-    }
-  }
 };
