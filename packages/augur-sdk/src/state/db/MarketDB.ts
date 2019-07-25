@@ -23,7 +23,6 @@ import { Orderbook } from "../../api/Liquidity";
 // Need this interface to access these items on the documents
 interface MarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
   market: string;
-  topic: string;
   extraInfo: string;
 }
 
@@ -63,7 +62,9 @@ export class MarketDB extends DerivedDB {
         end: "end",
         field: [
           "market",
-          "topic",
+          "category1",
+          "category2",
+          "category3",
           "description",
           "longDescription",
           "resolutionSource",
@@ -238,8 +239,10 @@ export class MarketDB extends DerivedDB {
 
         if (doc) {
           const market = doc.market ? doc.market : "";
-          const topic = doc.topic ? toAscii(doc.topic) : ""; // convert hex to ascii so it is searchable
 
+          let category1 = "";
+          let category2 = "";
+          let category3 = "";
           let description = "";
           let longDescription = "";
           let resolutionSource = "";
@@ -256,6 +259,11 @@ export class MarketDB extends DerivedDB {
             }
 
             if (info) {
+              if (Array.isArray(info.categories)) {
+                category1 = info.categories[0] ? info.categories[0] : "";
+                category2 = info.categories[1] ? info.categories[1] : "";
+                category3 = info.categories[2] ? info.categories[2] : "";
+              }
               description = info.description ? info.description : "";
               longDescription = info.longDescription ? info.longDescription : "";
               resolutionSource = info.resolutionSource ? info.resolutionSource : "";
@@ -266,7 +274,9 @@ export class MarketDB extends DerivedDB {
             this.flexSearch.add({
               id: row.id,
               market,
-              topic,
+              category1,
+              category2,
+              category3,
               description,
               longDescription,
               resolutionSource,

@@ -201,6 +201,7 @@ export function createMarket(newMarket: NewMarket) {
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
   const marketEndTime = new BigNumber(newMarket.endTime);
   const extraInfo = JSON.stringify({
+    categories: [newMarket.categories[0]],
     description: newMarket.description,
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
@@ -213,7 +214,6 @@ export function createMarket(newMarket: NewMarket) {
     feePerCashInAttoCash,
     affiliateFeeDivisor,
     designatedReporter: newMarket.designatedReporterAddress,
-    topic: newMarket.categories[0],
     extraInfo,
   };
   const Augur = augurSdk.get();

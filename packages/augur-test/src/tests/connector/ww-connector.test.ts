@@ -66,8 +66,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
   //   lowFeePerCashInAttoCash,
   //   affiliateFeeDivisor,
   //   designatedReporter,
-  //   "yesNo topic 1",
-  //   "{\"description\": \"yesNo description 1\", \"longDescription\": \"yesNo longDescription 1\", \"tags\": [\"yesNo tag1-1\", \"yesNo tag1-2\", \"yesNo tag1-3\"]}",
+  //   "{\"categories\": [\"yesNo category 1\"], \"description\": \"yesNo description 1\", \"longDescription\": \"yesNo longDescription 1\", \"tags\": [\"yesNo tag1-1\", \"yesNo tag1-2\", \"yesNo tag1-3\"]}",
   // );
 
   // await connector.connect("");
