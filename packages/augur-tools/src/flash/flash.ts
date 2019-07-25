@@ -59,18 +59,24 @@ export class FlashSession {
       throw Error(`No such script "${name}"`);
     }
 
+    const readyArgs: FlashArguments = {};
+
     // Make sure required parameters are present.
     for (const option of script.options || []) {
+      const arg = args[option.name];
+
       if (option.required) {
-        const arg = args[option.name];
         if (typeof arg === "undefined") {
           this.log(`ERROR: Must specify "--${option.name}"`);
           return;
         }
       }
+
+      const formattedName = option.name.replace('-', '_');
+      readyArgs[formattedName] = arg;
     }
 
-    return script.call.bind(this)(args);
+    return script.call.bind(this)(readyArgs);
   }
 
   noProvider() {
