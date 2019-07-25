@@ -14,8 +14,7 @@ import {
   handleDisputeCrowdsourcerContributionLog,
   handleDisputeCrowdsourcerCompletedLog,
   handleDisputeCrowdsourcerRedeemedLog,
-  handleFeeWindowCreatedLog,
-  handleFeeWindowOpenedLog,
+  handleDisputeWindowCreatedLog,
   handleTokensMintedLog,
   handleTokensBurnedLog,
   handleFeeWindowRedeemedLog,
@@ -71,14 +70,13 @@ const EVENTS = {
   [SubscriptionEventName.DisputeCrowdsourcerCompleted]: wrapLogHandler(
     handleDisputeCrowdsourcerCompletedLog
   ),
-  // [SubscriptionEventName.DisputeCrowdsourcerRedeemed]:
-  //   wrapLogHandler(handleDisputeCrowdsourcerRedeemedLog)
-  // ),
+  [SubscriptionEventName.DisputeCrowdsourcerRedeemed]:
+     wrapLogHandler(handleDisputeCrowdsourcerRedeemedLog)
+  ,
   // [SubscriptionEventName.UniverseForked]: wrapLogHandler()),
   // [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog)),
   [SubscriptionEventName.TokensBurned]: wrapLogHandler(handleTokensBurnedLog),
-  // [SubscriptionEventName.FeeWindowCreated]: wrapLogHandler(handleFeeWindowCreatedLog)),
-  // [SubscriptionEventName.FeeWindowOpened]: wrapLogHandler(handleFeeWindowOpenedLog)),
+  [SubscriptionEventName.DisputeWindowCreated]: wrapLogHandler(handleDisputeWindowCreatedLog),
   [SubscriptionEventName.InitialReporterTransferred]: wrapLogHandler(),
   // [SubscriptionEventName.TimestampSet]: wrapLogHandler()),
   // [SubscriptionEventName.FeeWindowRedeemed]: wrapLogHandler(handleFeeWindowRedeemedLog)),

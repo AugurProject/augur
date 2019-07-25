@@ -61,14 +61,6 @@ const handleAlertUpdate = (
   );
 };
 
-const handlePendingOrder = (
-  log: any,
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(removePendingOrder(log.transactionHash, log.marketId));
-};
-
 const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
@@ -440,7 +432,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (log: any) => (
   dispatch(getReportingFees());
 };
 
-export const handleFeeWindowCreatedLog = (log: any) => (
+export const handleDisputeWindowCreatedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   dispatch(loadReportingWindowBounds());
