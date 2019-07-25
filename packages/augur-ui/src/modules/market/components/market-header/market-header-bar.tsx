@@ -38,8 +38,9 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
       disputeInfo,
       endTimeFormatted,
       currentAugurTimestamp,
-      reportingWindowStatsEndTime
+      reportingWindowStatsEndTime,
     } = this.props;
+
     return (
       <section className={Styles.HeaderBar}>
         <InReportingLabel

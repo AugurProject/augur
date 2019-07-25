@@ -56,3 +56,11 @@ body,
     transform: scale(4);
   }
 }
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0px !important;
+}

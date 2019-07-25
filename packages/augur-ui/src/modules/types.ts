@@ -34,6 +34,7 @@ export interface DateFormattedObject {
   formattedLocalShortDate: string;
   formattedLocalShort: string;
   formattedLocalShortTime: string;
+  formattedLocalShortDateSecondary: string;
   full: string;
   timestamp: number;
   utcLocalOffset: number;
