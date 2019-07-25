@@ -74,7 +74,7 @@ export abstract class AbstractDB {
       result[prevDoc.id] = prevDoc.doc;
       return result;
     }, {} as DocumentIDToDoc);
-    return await this.bulkUpsertDocuments(previousDocs, documents);
+    return this.bulkUpsertDocuments(previousDocs, documents);
   }
 
   private async bulkUpsertDocuments(previousDocs: DocumentIDToDoc, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
