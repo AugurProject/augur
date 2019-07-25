@@ -18,5 +18,14 @@
 
     @media @breakpoint-mobile-mid {
         align-items: flex-start;
+        padding: 0 @size-8;
+
+        > div:last-of-type {
+
+            > div > div {
+                min-height: unset !important;
+                padding: unset !important;
+            }
+        }
     }
 }
