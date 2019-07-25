@@ -8,6 +8,7 @@ import { END_TIME } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
 import { MarketData } from "modules/types";
+import { convertUnixToFormattedDate } from "utils/format-date";
 
 const sortByOptions = [
   {
@@ -65,13 +66,16 @@ export default class Favorites extends Component<FavoritesProps> {
       toggleFavorite,
     } = this.props;
 
+    const endTimeFix = market.endTimeFormatted || convertUnixToFormattedDate(market.endTime);
+
     return (
       <div className={Styles.MultiColumn}>
         <MarketProgress
           reportingState={market.reportingState}
           currentTime={currentAugurTimestamp}
-          endTime={market.endTime}
+          endTime={endTimeFix}
           reportingWindowEndtime={reportingWindowStatsEndTime}
+          alignRight
         />
         <FavoritesButton
           action={() => toggleFavorite(market.id)}

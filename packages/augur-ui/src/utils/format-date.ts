@@ -82,6 +82,9 @@ export function formatDate(d): DateFormattedObject {
     formattedLocalShortDate: `${
       shortMonths[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()}`,
+    formattedLocalShortDateSecondary: `${
+      date.getDate()
+    } ${shortMonths[date.getMonth()]} ${date.getFullYear()}`,
     formattedLocalShort: `${
       shortMonths[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffsetFormatted})`, // local time
