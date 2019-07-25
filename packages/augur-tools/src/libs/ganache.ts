@@ -54,7 +54,7 @@ function makeGanacheOpts(accounts: Account[], db: MemDown) {
   };
 }
 
-function hashContracts(): string {
+export function hashContracts(): string {
   const md5 = crypto.createHash("md5");
   md5.update(JSON.stringify(compilerOutput));
   return md5.digest("hex");

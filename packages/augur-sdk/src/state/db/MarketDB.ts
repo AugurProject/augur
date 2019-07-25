@@ -2,20 +2,20 @@ import * as _ from "lodash";
 import { Augur } from "../../Augur";
 import { DerivedDB } from "./DerivedDB";
 import { DB } from "./DB";
-import { Subscriptions } from '../../subscriptions';
-import { augurEmitter } from '../../events';
+import { Subscriptions } from "../../subscriptions";
+import { augurEmitter } from "../../events";
 import { toAscii } from "../utils/utils";
 import {
-  INVALID_OUTCOME,
-  DEFAULT_GAS_PRICE_IN_GWEI,
-  MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
-  WORST_CASE_FILL,
-  EULERS_NUMBER,
   CLAIM_GAS_COST,
-  SECONDS_IN_YEAR,
+  DEFAULT_GAS_PRICE_IN_GWEI,
+  EULERS_NUMBER,
+  INVALID_OUTCOME,
+  MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
   MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI,
+  SECONDS_IN_YEAR,
+  WORST_CASE_FILL,
 } from "../../constants";
-import { OrderType, MarketData, MarketType } from "../logs/types";
+import { MarketData, MarketType, OrderType } from "../logs/types";
 import { BigNumber } from "bignumber.js";
 import { Orderbook } from "../../api/Liquidity";
 
@@ -38,7 +38,6 @@ interface LiquidityResults {
 
 // because flexsearch is a UMD type lib
 import FlexSearch = require("flexsearch");
-import { bigNumberify } from "ethers/utils";
 
 /**
  * Market specific derived DB intended for filtering purposes
@@ -82,7 +81,7 @@ export class MarketDB extends DerivedDB {
     await this.syncFullTextSearch();
   }
 
-  public async syncOrderBooks(syncing: boolean): Promise<void> {
+  syncOrderBooks = async (syncing: boolean): Promise<void> => {
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     let success = true;
     let documents = [];

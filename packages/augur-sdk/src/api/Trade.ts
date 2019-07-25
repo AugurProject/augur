@@ -178,13 +178,13 @@ export class Trade {
 
   private getTradeAmountRemaining(events: Array<Event>): BigNumber {
     let tradeOnChainAmountRemaining = new BigNumber(0);
-    for (let event of events) {
-      if (event.name == "OrderEvent") {
+    for (const event of events) {
+      if (event.name === "OrderEvent") {
         const eventParams = <OrderEventLog>event.parameters;
         if (eventParams.eventType === 0) { // Create
           return new BigNumber(0);
         } else if (eventParams.eventType === 3) {// Fill
-          var onChainAmountFilled = eventParams.uint256Data[OrderEventUint256Value.amountFilled];
+          const onChainAmountFilled = eventParams.uint256Data[OrderEventUint256Value.amountFilled];
           tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(onChainAmountFilled);
         }
       }
