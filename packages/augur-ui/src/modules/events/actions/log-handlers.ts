@@ -5,7 +5,6 @@ import {
 } from 'modules/positions/actions/load-account-positions';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-book';
 import { loadReportingWindowBounds } from 'modules/reports/actions/load-reporting-window-bounds';
-import { updateLoggedTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { removeMarket } from 'modules/markets/actions/update-markets-data';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import makePath from 'modules/routes/helpers/make-path';
@@ -135,7 +134,6 @@ export const handleMarketCreatedLog = (log: any) => (
   if (isStoredTransaction) {
     // My Market? start kicking off liquidity orders
     if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
-    dispatch(updateLoggedTransactions(log));
   }
 };
 
@@ -253,9 +251,6 @@ export const handleTradingProceedsClaimedLog = (
     log.sender,
     getState().loginAccount.address
   );
-  if (isStoredTransaction) {
-    dispatch(updateLoggedTransactions(log));
-  }
   if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
 };
 
@@ -270,7 +265,6 @@ export const handleInitialReportSubmittedLog = (
   );
   if (isStoredTransaction) {
     dispatch(loadDisputing());
-    dispatch(updateLoggedTransactions(log));
   }
 };
 
@@ -285,7 +279,6 @@ export const handleInitialReporterRedeemedLog = (
   if (isStoredTransaction) {
     dispatch(loadReporting([log.market]));
     dispatch(loadDisputing());
-    dispatch(updateLoggedTransactions(log));
   }
   dispatch(getReportingFees());
 };
@@ -365,13 +358,7 @@ export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
   dispatch(
     loadMarketsInfo([log.market], (err: any) => {
       if (err) return console.error(err);
-      const { author } = getState().marketInfos[log.market];
-      dispatch(loadMarketsInfo([log.market]));
       dispatch(getWinningBalance([log.market]));
-      const isOwnMarket = getState().loginAccount.address === author;
-      if (isOwnMarket) {
-        dispatch(updateLoggedTransactions(log));
-      }
     })
   );
 
