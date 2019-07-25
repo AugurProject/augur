@@ -1,11 +1,10 @@
-import * as _ from "lodash";
-import { AbstractDB, BaseDocument } from "./AbstractDB";
-import { Augur } from "../../Augur";
-import { DB } from "./DB";
-import { Log, ParsedLog } from "@augurproject/types";
-import { SubscriptionEventName } from "../../constants";
-import { SyncStatus } from "./SyncStatus";
-import { augurEmitter } from "../../events";
+import * as _ from 'lodash';
+import { AbstractDB, BaseDocument } from './AbstractDB';
+import { Augur } from '../../Augur';
+import { DB } from './DB';
+import { Log, ParsedLog } from '@augurproject/types';
+import { SyncStatus } from './SyncStatus';
+import { augurEmitter } from '../../events';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -18,7 +17,7 @@ export class SyncableDB extends AbstractDB {
   protected augur: Augur;
   protected eventName: string;
   private syncStatus: SyncStatus;
-  private idFields: Array<string>;
+  private idFields: string[];
   private syncing: boolean;
 
   constructor(
@@ -27,7 +26,7 @@ export class SyncableDB extends AbstractDB {
     networkId: number,
     eventName: string,
     dbName: string = db.getDatabaseName(eventName),
-    idFields: Array<string> = [],
+    idFields: string[] = []
   ) {
     super(networkId, dbName, db.pouchDBFactory);
     this.augur = augur;
@@ -36,14 +35,14 @@ export class SyncableDB extends AbstractDB {
     this.idFields = idFields;
     this.db.createIndex({
       index: {
-        fields: ['blockNumber']
-      }
+        fields: ['blockNumber'],
+      },
     });
     if (this.idFields.length > 0) {
       this.db.createIndex({
         index: {
-          fields: this.idFields
-        }
+          fields: this.idFields,
+        },
       });
     }
     db.notifySyncableDBAdded(this);
@@ -52,15 +51,29 @@ export class SyncableDB extends AbstractDB {
     this.syncing = false;
   }
 
-  public async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
+  async sync(
+    augur: Augur,
+    chunkSize: number,
+    blockStreamDelay: number,
+    highestAvailableBlockNumber: number
+  ): Promise<void> {
     this.syncing = true;
 
-    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
+    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
+      this.dbName
+    );
 
     const goalBlock = highestAvailableBlockNumber - blockStreamDelay;
     while (highestSyncedBlockNumber < goalBlock) {
-      const endBlockNumber = Math.min(highestSyncedBlockNumber + chunkSize, highestAvailableBlockNumber);
-      const logs = await this.getLogs(augur, highestSyncedBlockNumber, endBlockNumber);
+      const endBlockNumber = Math.min(
+        highestSyncedBlockNumber + chunkSize,
+        highestAvailableBlockNumber
+      );
+      const logs = await this.getLogs(
+        augur,
+        highestSyncedBlockNumber,
+        endBlockNumber
+      );
       highestSyncedBlockNumber = await this.addNewBlock(endBlockNumber, logs);
     }
 
@@ -70,7 +83,7 @@ export class SyncableDB extends AbstractDB {
     // TODO Make any external calls as needed (such as pushing user's balance to UI)
   }
 
-  private parseLogArrays(logs: Array<ParsedLog>): void {
+  private parseLogArrays(logs: ParsedLog[]): void {
     for (let i = 0; i < logs.length; i++) {
       logs[i].kycToken = logs[i].addressData[0];
       logs[i].orderCreator = logs[i].addressData[1];
@@ -92,8 +105,11 @@ export class SyncableDB extends AbstractDB {
     }
   }
 
-  public addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
-    if (this.eventName === "OrderEvent") {
+  addNewBlock = async (
+    blocknumber: number,
+    logs: ParsedLog[]
+  ): Promise<number> => {
+    if (this.eventName === 'OrderEvent') {
       this.parseLogArrays(logs);
     }
 
@@ -103,23 +119,35 @@ export class SyncableDB extends AbstractDB {
       documents = _.map(logs, this.processLog.bind(this));
       // If this is a table which is keyed by fields (meaning we are doing updates to a value instead of pulling in a history of events) we only want the most recent document for any given id
       if (this.idFields.length > 0) {
-        documents = _.values(_.mapValues(_.groupBy(documents, "_id"), (idDocuments) => {
-          return _.reduce(idDocuments, (val, doc) => {
-            if (val.blockNumber < doc.blockNumber) {
-              val = doc;
-            } else if (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex) {
-              val = doc;
-            }
-            return val;
-          }, idDocuments[0]);
-        }));
+        documents = _.values(
+          _.mapValues(_.groupBy(documents, '_id'), idDocuments => {
+            return _.reduce(
+              idDocuments,
+              (val, doc) => {
+                if (val.blockNumber < doc.blockNumber) {
+                  val = doc;
+                } else if (
+                  val.blockNumber === doc.blockNumber &&
+                  val.logIndex < doc.logIndex
+                ) {
+                  val = doc;
+                }
+                return val;
+              },
+              idDocuments[0]
+            );
+          })
+        );
       }
-      documents = _.sortBy(documents, "_id");
+      documents = _.sortBy(documents, '_id');
 
-      success = await this.bulkUpsertOrderedDocuments(documents[0]._id, documents);
+      success = await this.bulkUpsertOrderedDocuments(
+        documents[0]._id,
+        documents
+      );
     }
     if (success) {
-      if (documents && (documents as Array<any>).length) {
+      if (documents && (documents as any[]).length) {
         _.each(documents, (document: any) => {
           augurEmitter.emit(this.eventName, {
             eventName: this.eventName,
@@ -129,62 +157,75 @@ export class SyncableDB extends AbstractDB {
       }
 
       // try this twice for now
-      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing).catch(async (err) => {
-        await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing).catch(async (err) => {
-          await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing).catch((err) => {
-            throw err;
-          });
+      await this.syncStatus
+        .setHighestSyncBlock(this.dbName, blocknumber, this.syncing)
+        .catch(async err => {
+          await this.syncStatus
+            .setHighestSyncBlock(this.dbName, blocknumber, this.syncing)
+            .catch(async err => {
+              await this.syncStatus
+                .setHighestSyncBlock(this.dbName, blocknumber, this.syncing)
+                .catch(err => {
+                  throw err;
+                });
+            });
         });
-      });
 
       // let the controller know a new block was added so it can update the UI
-      augurEmitter.emit("controller:new:block", {});
+      augurEmitter.emit('controller:new:block', {});
     } else {
       throw new Error(`Unable to add new block`);
     }
 
     return blocknumber;
-  }
+  };
 
-  public async rollback(blockNumber: number): Promise<void> {
+  async rollback(blockNumber: number): Promise<void> {
     // Remove each change from blockNumber onward
     try {
-      let blocksToRemove = await this.db.find({
+      const blocksToRemove = await this.db.find({
         selector: { blockNumber: { $gte: blockNumber } },
         fields: ['_id', 'blockNumber', '_rev'],
       });
-      for (let doc of blocksToRemove.docs) {
+      for (const doc of blocksToRemove.docs) {
         await this.db.remove(doc._id, doc._rev);
       }
-      await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing);
+      await this.syncStatus.setHighestSyncBlock(
+        this.dbName,
+        --blockNumber,
+        this.syncing
+      );
     } catch (err) {
       console.error(err);
     }
   }
 
-  protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
+  protected async getLogs(
+    augur: Augur,
+    startBlock: number,
+    endBlock: number
+  ): Promise<ParsedLog[]> {
     return augur.events.getLogs(this.eventName, startBlock, endBlock);
   }
 
   protected processLog(log: Log): BaseDocument {
-    if (!log.blockNumber) throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
-    let _id = "";
+    if (!log.blockNumber) {
+      throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
+    }
+    let _id = '';
     // TODO: This works in bulk sync currently because we process logs chronologically. When we switch to reverse chrono for bulk sync we'll need to add more logic
     if (this.idFields.length > 0) {
       // need to preserve order of fields in id
-      for (let fieldName of this.idFields) {
+      for (const fieldName of this.idFields) {
         _id += _.get(log, fieldName);
       }
     } else {
       _id = `${(log.blockNumber + 10000000000).toPrecision(21)}${log.logIndex}`;
     }
-    return Object.assign(
-      { _id },
-      log
-    );
+    return Object.assign({ _id }, log);
   }
 
-  public getFullEventName(): string {
+  getFullEventName(): string {
     return this.eventName;
   }
 }

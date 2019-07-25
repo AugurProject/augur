@@ -21,7 +21,6 @@ import {
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
 } from '../../index';
-import { toAscii } from '../utils/utils';
 import { calculatePayoutNumeratorsValue } from '../../utils';
 
 import * as _ from 'lodash';
@@ -36,7 +35,7 @@ const getMarketsParamsSpecific = t.intersection([
     creator: t.string,
     category: t.string,
     search: t.string,
-    reportingState: t.union([t.string, t.array(t.string)]),
+    reportingStates: t.array(t.string),
     disputeWindow: t.string,
     designatedReporter: t.string,
     maxFee: t.string,
@@ -470,10 +469,8 @@ export class Markets {
             }
           }
 
-          if (params.reportingState) {
-            const reportingStates = Array.isArray(params.reportingState)
-              ? params.reportingState
-              : [params.reportingState];
+          if (params.reportingStates) {
+            const reportingStates = params.reportingStates;
             const marketFinalizedLogs = await db.findMarketFinalizedLogs({
               selector: { market: marketCreatedLogInfo[0] },
             });
