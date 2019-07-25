@@ -1,4 +1,5 @@
 import { AbstractDB, PouchDBFactoryType } from "./AbstractDB";
+import Upsert from "pouchdb-upsert";
 
 interface SyncDocument {
   blockNumber: number;
@@ -25,7 +26,7 @@ export class SyncStatus extends AbstractDB {
     });
   }
 
-  public async setHighestSyncBlock(dbName: string, blockNumber: number, syncing: boolean): Promise<PouchDB.Core.Response> {
+  public async setHighestSyncBlock(dbName: string, blockNumber: number, syncing: boolean): Promise<PouchDB.UpsertResponse> {
     const document: SyncDocument = { blockNumber, syncing };
     return this.upsertDocument(dbName, document);
   }
@@ -56,7 +57,7 @@ export class SyncStatus extends AbstractDB {
     }
   }
 
-  public async updateSyncingToFalse(dbName: string): Promise<PouchDB.Core.Response> {
+  public async updateSyncingToFalse(dbName: string): Promise<PouchDB.UpsertResponse> {
     const highestBlock = await this.getHighestSyncBlock(dbName);
     return this.setHighestSyncBlock(dbName, highestBlock, false);
   }
