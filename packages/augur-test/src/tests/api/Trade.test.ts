@@ -47,7 +47,7 @@ test('Trade :: placeTrade', async () => {
 
   amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
   await expect(amountInOrder.toNumber()).toEqual(10 ** 16 / 2);
-}, 15000);
+}, 150000);
 
 test('Trade :: simulateTrade', async () => {
   const market1 = await john.createReasonableYesNoMarket();
@@ -109,4 +109,4 @@ test('Trade :: simulateTrade', async () => {
   await expect(simulationData.sharesDepleted).toEqual(orderAmount);
   await expect(simulationData.sharesFilled).toEqual(orderAmount);
   await expect(simulationData.settlementFees).toEqual(expectedFees);
-}, 15000);
+}, 150000);

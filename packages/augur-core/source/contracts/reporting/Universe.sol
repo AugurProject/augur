@@ -65,7 +65,6 @@ contract Universe is ITyped, IUniverse {
 
     // DAI / DSR specific
     uint256 public totalBalance;
-    bool public useDSR = false;
     ICash public cash;
     IDaiVat public daiVat;
     IDaiPot public daiPot;
@@ -603,13 +602,13 @@ contract Universe is ITyped, IUniverse {
      * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
-     * @param _topic bytes32 string to be used as the top level category for this market. Useful for applications built on top of Augur to categorize market displays
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, string memory _extraInfo) public returns (IMarket _newMarket) {
+
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, DEFAULT_NUM_TICKS);
-        augur.logYesNoMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash);
+        augur.logYesNoMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash);
         return _newMarket;
     }
 
@@ -620,13 +619,12 @@ contract Universe is ITyped, IUniverse {
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _outcomes Array of outcome labels / descriptions
-     * @param _topic bytes32 string to be used as the top level category for this market. Useful for applications built on top of Augur to categorize market displays
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), DEFAULT_NUM_TICKS);
-        augur.logCategoricalMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _outcomes);
+        augur.logCategoricalMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _outcomes);
         return _newMarket;
     }
 
@@ -638,13 +636,12 @@ contract Universe is ITyped, IUniverse {
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _prices 2 element Array comprising a min price and max price in atto units in order to support decimal values. For example if the display range should be between .1 and .5 the prices should be 10**17 and 5 * 10 ** 17 respectively
      * @param _numTicks The number of ticks for the market. This controls the valid price range. Assume a market with min/maxPrices of 0 and 10**18. A numTicks of 100 would mean that the available valid display prices would be .01 to .99 with step size .01. Similarly a numTicks of 10 would be .1 to .9 with a step size of .1.
-     * @param _topic bytes32 string to be used as the top level category for this market. Useful for applications built on top of Augur to categorize market displays
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, _numTicks);
-        augur.logScalarMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, _numTicks);
+        augur.logScalarMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, _numTicks);
         return _newMarket;
     }
 
@@ -684,9 +681,7 @@ contract Universe is ITyped, IUniverse {
         augur.trustedTransfer(cash, _sender, address(this), _amount);
         totalBalance = totalBalance.add(_amount);
         marketBalance[_market] = marketBalance[_market].add(_amount);
-        if (useDSR) {
-            saveDaiInDSR(_amount);
-        }
+        saveDaiInDSR(_amount);
         return true;
     }
 
@@ -694,45 +689,19 @@ contract Universe is ITyped, IUniverse {
         require(augur.isTrustedSender(msg.sender) || augur.isKnownMarket(IMarket(msg.sender)));
         totalBalance = totalBalance.sub(_amount);
         marketBalance[_market] = marketBalance[_market].sub(_amount);
-        if (useDSR) {
-            withdrawDaiFromDSR(_amount);
-        }
+        withdrawDaiFromDSR(_amount);
         cash.transfer(_recipient, _amount);
-        return true;
-    }
-
-    function canToggleDSR() public view returns (bool) {
-        uint256 _dsr = daiPot.dsr();
-        uint256 _maxDSRMovement = 10**20; // TODO: Get from MKR contract when this is available
-        uint256 _dsrThreshold = DAI_ONE.add(_maxDSRMovement);
-        return useDSR ? _dsr < _dsrThreshold : _dsr >= _dsrThreshold;
-    }
-
-    function toggleDSR() public returns (bool) {
-        require(canToggleDSR());
-        if (useDSR) {
-            useDSR = false;
-            withdrawDaiFromDSR(totalBalance);
-        } else {
-            useDSR = true;
-            saveDaiInDSR(totalBalance);
-        }
-        reputationToken.mintForUniverse(Reporting.getDSRToggleRewardInAttoREP(), msg.sender);
         return true;
     }
 
     function sweepInterest() public returns (bool) {
         uint256 _extraCash = 0;
-        if (useDSR) {
-            daiPot.drip();
-            withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
-            saveDaiInDSR(totalBalance); // Put the required funds back in savings
-            _extraCash = cash.balanceOf(address(this));
-            // The amount in the DSR pot and VAT must cover our totalBalance of Dai
-            assert(daiPot.pie(address(this)).mul(daiPot.chi()).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
-        } else {
-            _extraCash = cash.balanceOf(address(this)).sub(totalBalance);
-        }
+        daiPot.drip();
+        withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
+        saveDaiInDSR(totalBalance); // Put the required funds back in savings
+        _extraCash = cash.balanceOf(address(this));
+        // The amount in the DSR pot and VAT must cover our totalBalance of Dai
+        assert(daiPot.pie(address(this)).mul(daiPot.chi()).add(daiVat.dai(address(this))) >= totalBalance.mul(DAI_ONE));
         cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
         return true;
     }

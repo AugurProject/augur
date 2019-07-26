@@ -84,7 +84,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       this.setState({
         selected
       });
-      onChange(selected.value);
+
+      if (onChange) {
+        onChange(selected.value);
+      }
+
       this.toggleList();
     }
   };

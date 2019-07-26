@@ -9,7 +9,7 @@ interface SyncDocument {
 }
 
 export class SyncStatus extends AbstractDB {
-  public readonly defaultStartSyncBlockNumber: number;
+  readonly defaultStartSyncBlockNumber: number;
 
   constructor(networkId: number, defaultStartSyncBlockNumber: number, dbFactory: PouchDBFactoryType) {
     super(networkId, networkId + "-SyncStatus", dbFactory);
@@ -28,8 +28,7 @@ export class SyncStatus extends AbstractDB {
     });
   }
 
-  public async setHighestSyncBlock(dbName: string, blockNumber: number, syncing: boolean, rollback: boolean = false): Promise<PouchDB.UpsertResponse> {
-
+  async setHighestSyncBlock(dbName: string, blockNumber: number, syncing: boolean, rollback: boolean = false): Promise<PouchDB.UpsertResponse> {
     const highestKnownBlock = await this.getHighestSyncBlock(dbName);
 
     // NOTE: dbName, in this case, is actually the id of the record in the SyncStatus db.
@@ -47,7 +46,7 @@ export class SyncStatus extends AbstractDB {
     });
   }
 
-  public async getHighestSyncBlock(dbName: string): Promise<number> {
+  async getHighestSyncBlock(dbName: string): Promise<number> {
     const document = await this.getDocument<SyncDocument>(dbName);
     if (document) {
       return document.blockNumber;
@@ -56,7 +55,7 @@ export class SyncStatus extends AbstractDB {
     return this.defaultStartSyncBlockNumber;
   }
 
-  public async getLowestSyncingBlockForAllDBs(): Promise<number> {
+  async getLowestSyncingBlockForAllDBs(): Promise<number> {
     const lowestBlock = await this.find({
       selector: {
         syncing: true,
@@ -73,7 +72,13 @@ export class SyncStatus extends AbstractDB {
     }
   }
 
+<<<<<<< HEAD
   public async updateSyncingToFalse(dbName: string): Promise<PouchDB.UpsertResponse> {
+||||||| merged common ancestors
+  public async updateSyncingToFalse(dbName: string): Promise<PouchDB.Core.Response> {
+=======
+  async updateSyncingToFalse(dbName: string): Promise<PouchDB.Core.Response> {
+>>>>>>> 5f41df0890ee1087860d3a9e8539587ec47a8206
     const highestBlock = await this.getHighestSyncBlock(dbName);
     return this.setHighestSyncBlock(dbName, highestBlock, false);
   }

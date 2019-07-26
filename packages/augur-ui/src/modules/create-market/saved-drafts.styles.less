@@ -34,6 +34,7 @@
 
         color: @color-tertiary-info-text;
         margin-top: @size-4;
+        text-align: left;
       }
     }
 
@@ -53,5 +54,13 @@
 
   &:not(:last-of-type) {
     margin-bottom: 2px;
+  }
+
+  @media @breakpoint-mobile-mid {
+    > button:first-of-type {
+      > span:first-of-type {
+        display: none;
+      }
+    }
   }
 }

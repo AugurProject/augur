@@ -17,7 +17,7 @@ export class API {
     this.router = new Router(augur, db);
   }
 
-  public async route(name: string, params: any) {
+  async route(name: string, params: any) {
     return this.router.route(name, params);
   }
 }

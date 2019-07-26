@@ -7,7 +7,7 @@ import 'ROOT/reporting/Reporting.sol';
 
 /**
  * @title Formulas
- * @notice A Utility contract with no state meant to hosue the logic for large formulas which don't fit into alreayd large contracts
+ * @notice A Utility contract with no state meant to house the logic for large formulas which don't fit into already large contracts
  */
 contract Formulas {
     using SafeMathUint256 for uint256;
@@ -34,7 +34,7 @@ contract Formulas {
         if (_total == 0) {
             return _previousValue;
         }
-        
+
         // Modify the amount based on the previous amount and the number of markets fitting the failure criteria. We want the amount to be somewhere in the range of 0.9 to 2 times its previous value where ALL markets with the condition results in 2x and 0 results in 0.9x.
         // Safe math div is redundant so we avoid here as we're at the stack limit.
         if (_totalBad <= _total / _targetDivisor) {

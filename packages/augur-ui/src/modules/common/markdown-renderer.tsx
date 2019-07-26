@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ReactHtmlParser from "react-html-parser";
-import Styles from "modules/common/markdown-renderer.styles";
+import Styles from "modules/common/markdown-renderer.styles.less";
 
 const Remarkable = require("remarkable");
 
 const md = new Remarkable({
   linkify: false,
-  breaks: true
+  breaks: true,
 });
 md.core.ruler.enable([]);
 md.block.ruler.enable([]);
@@ -22,7 +22,7 @@ md.block.ruler.disable([
   "code",
   "fences",
   "htmlblock",
-  "lheading"
+  "lheading",
 ]);
 
 const MarkdownRenderer = ({ text, className, hideLabel }) => {
@@ -44,12 +44,12 @@ const MarkdownRenderer = ({ text, className, hideLabel }) => {
 MarkdownRenderer.propTypes = {
   text: PropTypes.string.isRequired,
   className: PropTypes.string,
-  hideLabel: PropTypes.bool
+  hideLabel: PropTypes.bool,
 };
 
 MarkdownRenderer.defaultProps = {
   className: null,
-  hideLabel: false
+  hideLabel: false,
 };
 
 export default MarkdownRenderer;

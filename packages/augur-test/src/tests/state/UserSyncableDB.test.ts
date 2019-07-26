@@ -50,8 +50,8 @@ test('UserSynableDB.sync', async () => {
     affiliateFeeDivisor: new BigNumber(25),
     designatedReporter: sender,
     outcomes: [stringTo32ByteHex('big'), stringTo32ByteHex('small')],
-    topic: 'boba',
     extraInfo: JSON.stringify({
+      categories: ['tea', 'boba'],
       description: 'Will big or small boba be the most popular in 2019?',
     }),
   });

@@ -272,21 +272,24 @@ export class Trading {
         amount: { $gt: '0x00' },
       },
     };
-    if (params.makerTaker === 'either')
+    if (params.makerTaker === 'either') {
       request.selector = Object.assign(request.selector, {
         $or: [
           { orderCreator: params.account },
           { orderFiller: params.account },
         ],
       });
-    if (params.makerTaker === 'maker')
+    }
+    if (params.makerTaker === 'maker') {
       request.selector = Object.assign(request.selector, {
         orderCreator: params.account,
       });
-    if (params.makerTaker === 'taker')
+    }
+    if (params.makerTaker === 'taker') {
       request.selector = Object.assign(request.selector, {
         orderFiller: params.account,
       });
+    }
 
     const currentOrdersResponse = await db.findCurrentOrderLogs(request);
 
@@ -352,30 +355,36 @@ export class Trading {
       limit: params.limit,
       skip: params.offset,
     };
-    if (params.makerTaker === 'either')
+    if (params.makerTaker === 'either') {
       request.selector = Object.assign(request.selector, {
         $or: [
           { orderCreator: params.account },
           { orderFiller: params.account },
         ],
       });
-    if (params.makerTaker === 'maker')
+    }
+    if (params.makerTaker === 'maker') {
       request.selector = Object.assign(request.selector, {
         orderCreator: params.account,
       });
-    if (params.makerTaker === 'taker')
+    }
+    if (params.makerTaker === 'taker') {
       request.selector = Object.assign(request.selector, {
         orderFiller: params.account,
       });
-    if (params.orderState === OrderState.OPEN)
+    }
+    if (params.orderState === OrderState.OPEN) {
       request.selector = Object.assign(request.selector, {
         amount: { $gt: '0x00' },
-        eventType: { $ne: 1 }
+        eventType: { $ne: 1 },
       });
-    if (params.orderState === OrderState.CANCELED)
+    }
+    if (params.orderState === OrderState.CANCELED) {
       request.selector = Object.assign(request.selector, { eventType: 1 });
-    if (params.orderState === OrderState.FILLED)
+    }
+    if (params.orderState === OrderState.FILLED) {
       request.selector = Object.assign(request.selector, { eventType: 3 });
+    }
 
     if (params.latestCreationTime && params.earliestCreationTime) {
       request.selector = Object.assign(request.selector, {
@@ -457,8 +466,9 @@ export class Trading {
         }
         if (!orders[market]) orders[market] = {};
         if (!orders[market][outcome]) orders[market][outcome] = {};
-        if (!orders[market][outcome][orderType])
+        if (!orders[market][outcome][orderType]) {
           orders[market][outcome][orderType] = {};
+        }
         orders[market][outcome][orderType][orderId] = Object.assign(
           _.pick(orderEventDoc, ['transactionHash', 'logIndex', 'orderId']),
           {
@@ -520,8 +530,9 @@ export class Trading {
     const marketReponse = await db.findMarketCreatedLogs({
       selector: { market: params.marketId },
     });
-    if (marketReponse.length < 1)
+    if (marketReponse.length < 1) {
       throw new Error(`Market ${params.marketId} not found.`);
+    }
     const marketDoc = marketReponse[0];
     const minPrice = new BigNumber(marketDoc.prices[0]);
     const maxPrice = new BigNumber(marketDoc.prices[1]);

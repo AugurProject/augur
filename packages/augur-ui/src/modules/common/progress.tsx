@@ -100,7 +100,7 @@ export const MarketProgress = (props: MarketProgressProps) => {
     endTime,
     reportingWindowEndtime,
     customLabel,
-    alignRight
+    alignRight,
   } = props;
   const currTime = formatTime(currentTime);
   const marketEndTime = endTime;
@@ -134,7 +134,7 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
     countdownBreakpoint,
     firstColorBreakpoint,
     finalColorBreakpoint,
-    alignRight
+    alignRight,
   } = props;
   let valueString: string = "";
   let timeLeft: number = 1;
@@ -154,15 +154,17 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
       time.timestamp,
       currentTime.timestamp
     );
+
+    const secondsRemaining = format.getSecondsMinusMinutesRemaining(
+      time.timestamp,
+      currentTime.timestamp
+    );
+
     timeLeft = time.timestamp - currentTime.timestamp;
     countdown = (countdownBreakpoint || OneWeek) >= timeLeft && timeLeft > 0;
     valueString = countdown
-      ? `${daysRemaining}d ${
-          hoursRemaining >= 10 ? hoursRemaining : "0" + hoursRemaining
-        }h ${
-          minutesRemaining >= 10 ? minutesRemaining : "0" + minutesRemaining
-        }m`
-      : time.formattedLocalShortDate;
+      ? `${daysRemaining}:${hoursRemaining >= 10 ? hoursRemaining : "0" + hoursRemaining}:${minutesRemaining >= 10 ? minutesRemaining : "0" + minutesRemaining}:${secondsRemaining >= 10 ? secondsRemaining : "0" + secondsRemaining}`
+      : time.formattedLocalShortDateSecondary;
   }
   const breakpointOne =
     timeLeft <= firstBreakpoint && timeLeft > secondBreakpoint && countdown;
@@ -174,7 +176,7 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
         [Styles.ProgressLabel__FirstBreakpoint]: breakpointOne,
         [Styles.ProgressLabel__SecondBreakpoint]: breakpointTwo,
         [Styles.ProgressLabel__Finished]: timeLeft < 0,
-        [Styles.ProgressLabel__AlignRight]: alignRight
+        [Styles.ProgressLabel__AlignRight]: alignRight,
       })}
     >
       <span>{label}</span>

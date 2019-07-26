@@ -60,7 +60,6 @@ test("Doc merge update", async () => {
   expect(doc.id).toEqual("0x1111111111111111111111111111111111111111");
   const values = doc.doc;
   expect(values["marketOI"]).toEqual("0x2");
-  expect(values["topic"]).toEqual(stringTo32ByteHex("Market share"));
 });
 
 test("Flexible Search", async () => {
@@ -72,8 +71,8 @@ test("Flexible Search", async () => {
       _id: "0x1111111111111111111111111111111111111111",
       blockNumber: 1,
       market: "0x1111111111111111111111111111111111111111",
-      topic: stringTo32ByteHex("Market share"),
       extraInfo: JSON.stringify({
+        categories: ["Market share"],
         description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
@@ -88,7 +87,7 @@ test("Flexible Search", async () => {
   let docs = db.fullTextMarketSearch("0x1111111111111111111111111111111111111111");  // market
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("share");  // topic
+  docs = db.fullTextMarketSearch("share");  // category
   expect(docs.length).toEqual(1);
 
   docs = db.fullTextMarketSearch("Foobar");  // description/title
@@ -107,11 +106,11 @@ test("Flexible Search", async () => {
   expect(docs.length).toEqual(1);
 
   const doc = docs[0];
-
+console.log(doc);
   expect(doc).toMatchObject({
     id: "0x1111111111111111111111111111111111111111",
     market: "0x1111111111111111111111111111111111111111",
-    topic: toAscii(stringTo32ByteHex("Market share")),
+    category1: "Market share",
     description: "Foobar has 12% market share by 2041",
     longDescription: "lol",
     resolutionSource: "http://www.blah.com",
