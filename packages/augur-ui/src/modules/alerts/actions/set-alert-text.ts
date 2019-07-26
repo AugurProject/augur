@@ -459,9 +459,6 @@ export default function setAlertText(alert: any, callback: any) {
       case GETORCACHEDESIGNATEDREPORTSTAKE:
         alert.title = "Get stake size required for desginated reports";
         break;
-      case getOrCacheValidityBond:
-        alert.title = "Get market creation cost";
-        break;
       case GETORCACHEREPORTINGFEEDIVISOR:
         alert.title = "Get reporting fee divisor";
         break;

@@ -3,13 +3,14 @@ pragma solidity 0.5.4;
 import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
+import 'ROOT/trading/IOICash.sol';
 
 
 /**
  * @title OI Cash
  * @dev A Wrapper contract for the deployed Cash contract which Augur considers OI. Cash can be deposited and will count toward OI for reporting fee calculations and will extract a reporting fee on withdrawl
  */
-contract OICash is VariableSupplyToken, Initializable {
+contract OICash is VariableSupplyToken, Initializable, IOICash {
     using SafeMathUint256 for uint256;
 
     IERC20 public cash;
@@ -64,6 +65,7 @@ contract OICash is VariableSupplyToken, Initializable {
         uint256 _openInterestAmount = _feeAmount.mul(_reportingFeeDivisor);
         universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), _feeAmount, address(0));
         totalAmountFeesPaid = totalAmountFeesPaid.add(_openInterestAmount);
+        return true;
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal {
