@@ -4,7 +4,7 @@ import {
   BlockAndLogStreamerListenerDependencies
 } from "./BlockAndLogStreamerListener";
 import { Block } from "ethereumjs-blockstream";
-import { BlockAndLogStreamerDependencies, ExtendedLog } from "blockstream-adapters";
+import { ExtendedLog } from "blockstream-adapters";
 import { EventLogDBRouter } from "./EventLogDBRouter";
 import { ParsedLog } from "@augurproject/types";
 
@@ -18,6 +18,29 @@ describe("BlockstreamListener", () => {
   let deps: Mockify<BlockAndLogStreamerListenerDependencies>;
   let blockAndLogStreamerListener: BlockAndLogStreamerListener;
   let eventLogDBRouter: EventLogDBRouter;
+
+  // Most of this data is invented to satisfy typescript.
+  const sampleLogs: ExtendedLog[] = [{
+    blockHash: "hashone",
+    blockNumber: "1234",
+    logIndex: "1",
+    address: "0xSOMEADDRESS",
+    data: "",
+    removed: false,
+    topics: ["0xSOMETOPIC"],
+    transactionHash: "HASHONE",
+    transactionIndex: 1,
+  }, {
+    blockHash: "hashone",
+    blockNumber: "1234",
+    logIndex: "1",
+    address: "0xSOMEADDRESS",
+    data: "",
+    removed: false,
+    topics: ["0xSOMEOTHERTOPIC"],
+    transactionHash: "HASHTWO",
+    transactionIndex: 2,
+  }];
 
   beforeEach(() => {
     // Gotta be a better way to do this...
@@ -52,97 +75,87 @@ describe("BlockstreamListener", () => {
     };
 
     blockAndLogStreamerListener = new BlockAndLogStreamerListener(deps);
+
+    deps.getEventTopics.mockImplementation((eventName) => {
+      return {
+        "SomeEvent": [
+          "0xSOMETOPIC",
+        ],
+        "SomeOtherEvent": [
+          "0xSOMEOTHERTOPIC",
+        ],
+        "SomeEventWithoutLogs": [
+          "0xSOMETOPICWITHOUTLOGS",
+        ]
+      }[eventName];
+    });
   });
 
   describe("on new block", () => {
     let onNewLogCallback: jest.Mock;
-
     beforeEach(() => {
       onNewLogCallback = jest.fn();
-
-      deps.getEventTopics.mockReturnValue([
-        "0xSOMETOPIC",
-      ]);
-
-      blockAndLogStreamerListener.listenForEvent("SomeEvent", onNewLogCallback);
-
-      onNewLogCallback.mockResolvedValue(undefined);
     });
 
-    test("should notify log listeners", () => {
-      const nextBlock: Block = {
-        number: "1234",
-        hash: "1234",
-        parentHash: "ParentHash",
-      };
-
-      blockAndLogStreamerListener.onNewBlock(nextBlock);
-      expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
-    });
-
-
-    describe("on block removed", () => {
-      let onRemoveLogCallback: jest.Mock;
-      let nextBlock: Block;
-
+    describe("single topic", () => {
       beforeEach(() => {
-        onRemoveLogCallback = jest.fn();
-        deps.getEventTopics.mockReturnValue([
-          "0xSOMETOPIC",
-        ]);
+        blockAndLogStreamerListener.listenForEvent("SomeEvent", onNewLogCallback);
+      });
 
-        nextBlock = {
+      test("should notify log listeners", () => {
+        const nextBlock: Block = {
           number: "1234",
           hash: "1234",
           parentHash: "ParentHash",
         };
 
-        blockAndLogStreamerListener.listenForEvent("SomeEvent", onNewLogCallback, onRemoveLogCallback);
-        onRemoveLogCallback.mockResolvedValue(undefined);
+        blockAndLogStreamerListener.onNewBlock(nextBlock);
+        expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
       });
 
-      test("should trigger onLogRemoved CB", () => {
+      test("should filter logs passed to listeners", () => {
+        eventLogDBRouter.onLogsAdded(1234, sampleLogs);
 
-      });
-
-      test("should trigger onBlockRemoved Listener", () => {
-
+        expect(onNewLogCallback).toBeCalledWith(1234,
+          [
+            expect.objectContaining({
+              transactionHash: "HASHONE",
+            }),
+          ]
+        );
       });
     });
 
-    test("should filter logs passed to listeners", () => {
-      // Most of this data is invented to satisfy typescript.
-      const sampleLogs: ExtendedLog[] = [{
-        blockHash: "hashone",
-        blockNumber: "1234",
-        logIndex: "1",
-        address: "0xSOMEADDRESS",
-        data: "",
-        removed: false,
-        topics: ["0xSOMETOPIC"],
-        transactionHash: "HASHONE",
-        transactionIndex: 1,
-      }, {
-        blockHash: "hashone",
-        blockNumber: "1234",
-        logIndex: "1",
-        address: "0xSOMEADDRESS",
-        data: "",
-        removed: false,
-        topics: ["0xSOMEOTHERTOPIC"],
-        transactionHash: "HASHTWO",
-        transactionIndex: 2,
-      }];
+    describe("multiple topics", () => {
+      beforeEach(() => {
+        blockAndLogStreamerListener.listenForEvent(["SomeEvent", "SomeOtherEvent", "SomeEventWithoutLogs"], onNewLogCallback);
+      });
 
-      eventLogDBRouter.onLogsAdded(1234, sampleLogs);
+      test("should notify log listeners", () => {
+        const nextBlock: Block = {
+          number: "1234",
+          hash: "1234",
+          parentHash: "ParentHash",
+        };
 
-      expect(onNewLogCallback).toBeCalledWith(1234,
-        expect.arrayContaining([
-          expect.objectContaining({
-            transactionHash: "HASHONE",
-          }),
-        ])
-      );
+        blockAndLogStreamerListener.onNewBlock(nextBlock);
+        expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
+      });
+
+      test("should filter logs passed to listeners", () => {
+        eventLogDBRouter.onLogsAdded(1234, sampleLogs);
+
+        expect(onNewLogCallback).toBeCalledWith(1234,
+          [
+            expect.objectContaining({
+              transactionHash: "HASHONE",
+            }),
+            expect.objectContaining({
+              transactionHash: "HASHTWO",
+            }),
+          ]
+        );
+      });
     });
   });
 });

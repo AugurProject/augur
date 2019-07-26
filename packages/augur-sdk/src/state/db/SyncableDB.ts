@@ -135,7 +135,6 @@ export class SyncableDB extends AbstractDB {
         });
       }
 
-      // try this twice for now
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
 
       // let the controller know a new block was added so it can update the UI
