@@ -132,13 +132,14 @@ interface TimezoneDropdownProps {
   onChange: any;
   className?: string;
   disabled?: Boolean;
+  timestamp?: number;
 }
 
 export const TimezoneDropdown = (props: TimezoneDropdownProps) => (
   <FormDropdown
     {...props}
     staticLabel="Timezone"
-    options={getTimezones()}
+    options={getTimezones(props.timestamp)}
   />
 );
 
@@ -228,6 +229,7 @@ interface DropdownInputGroupProps {
   defaultValue?: string;
   staticLabel?: string;
   onChangeDropdown: Function;
+  autoCompleteList?: Array<SortedGroup>;
   options: Array<NameValuePair>;
   errorMessage?: string;
   value: string;

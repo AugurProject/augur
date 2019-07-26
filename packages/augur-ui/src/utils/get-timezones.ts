@@ -7,14 +7,14 @@ interface TimezoneOption {
   value: number;
 }
 
-export const getTimezones = (): TimezoneOption[] => {
+export const getTimezones = (timestamp?: number): TimezoneOption[] => {
   if (timezones.length === 0) {
-    timezones = loadTimezones();
+    timezones = loadTimezones(timestamp);
   }
   return timezones;
 };
 
-const loadTimezones = (): TimezoneOption[] => {
+const loadTimezones = (timestamp?: number): TimezoneOption[] => {
   const zones = moment.tz._zones;
   console.log('zones', zones.length);
   if (!zones) return [];
@@ -26,7 +26,7 @@ const loadTimezones = (): TimezoneOption[] => {
     .filter(z => z.name.indexOf('/') >= 0 && !z.name.startsWith('Etc/'))
 
   return timeZones.reduce((p, zone) => {
-    const tz = moment.tz.zone(zone.name);
+    const tz = moment(timestamp).tz.zone(zone.name);
     const index = tz.abbrs.findIndex((a: string) => a === 'LMT');
     if (index === -1) return p;
 
