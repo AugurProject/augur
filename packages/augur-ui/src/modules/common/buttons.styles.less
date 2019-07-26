@@ -52,9 +52,17 @@
   }
 
   &:hover:enabled {
-    background: @color-primary-light;
-    color: @color-secondary-text;
+    background: fade(@color-primary-action, 5%);
   }
+
+  &:focus:enabled {
+    background: fade(@color-primary-action, 10%);
+  }
+
+  &:active:enabled {
+    background: fade(@color-primary-action, 15%);
+  }
+
 }
 
 .BuyOrderButton {
@@ -311,17 +319,16 @@
   }
 
   &:hover:enabled {
-    background: rgba(9, 207, 225, 0.05);
+    background: fade(@color-primary-action, 5%);
   }
 
   &:focus:enabled {
-    background: rgba(9, 207, 225, 0.1);
+    background: fade(@color-primary-action, 10%);
   }
 
   &:active:enabled {
-    background: rgba(9, 207, 225, 0.15);
+    background: fade(@color-primary-action, 15%);
   }
-
 }
 
 .ViewTransactionsButton {
