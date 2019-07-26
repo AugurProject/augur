@@ -6,9 +6,9 @@ jest.mock("cross-fetch", () => {
     __esModule: true,
     default: () => ({
       json: () => ({
-        someValue: "yo"
-      })
-    })
+        someValue: "yo",
+      }),
+    }),
   };
 });
 

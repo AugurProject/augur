@@ -17,12 +17,12 @@ export interface Document extends BaseDocument {
 export class DerivedDB extends AbstractDB {
   protected syncStatus: SyncStatus;
   protected stateDB: DB;
-  private idFields: Array<string>;
-  private mergeEventNames: Array<string>;
+  private idFields: string[];
+  private mergeEventNames: string[];
   private name: string;
-  private updatingHighestSyncBlock: boolean = false;
+  private updatingHighestSyncBlock = false;
 
-  constructor(db: DB, networkId: number, name: string, mergeEventNames: Array<string>, idFields: Array<string>) {
+  constructor(db: DB, networkId: number, name: string, mergeEventNames: string[], idFields: string[]) {
     super(networkId, db.getDatabaseName(name), db.pouchDBFactory);
     this.syncStatus = db.syncStatus;
     this.idFields = idFields;
@@ -31,8 +31,8 @@ export class DerivedDB extends AbstractDB {
     this.name = name;
     this.db.createIndex({
       index: {
-        fields: idFields
-      }
+        fields: idFields,
+      },
     });
 
     for (const eventName of mergeEventNames) {
@@ -42,40 +42,40 @@ export class DerivedDB extends AbstractDB {
     db.notifyDerivedDBAdded(this);
   }
 
-  public async sync(highestAvailableBlockNumber: number): Promise<void> {
+  async sync(highestAvailableBlockNumber: number): Promise<void> {
     await this.doSync(highestAvailableBlockNumber);
     await this.syncStatus.setHighestSyncBlock(this.dbName, highestAvailableBlockNumber, true);
   }
 
   // For all mergable event types get any new documents we haven't pulled in and pull them in
-  public async doSync(highestAvailableBlockNumber: number): Promise<void> {
-    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
+  async doSync(highestAvailableBlockNumber: number): Promise<void> {
+    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     for (const eventName of this.mergeEventNames) {
       const request = {
         selector: {
-          blockNumber: { $gte: highestSyncedBlockNumber }
-        }
+          blockNumber: { $gte: highestSyncedBlockNumber },
+        },
       };
       const result = await this.stateDB.findInSyncableDB(this.stateDB.getDatabaseName(eventName), request);
-      await this.handleMergeEvent(highestAvailableBlockNumber, result.docs as Array<unknown> as Array<ParsedLog>, true);
+      await this.handleMergeEvent(highestAvailableBlockNumber, result.docs as unknown[] as ParsedLog[], true);
     }
 
     await this.syncStatus.updateSyncingToFalse(this.dbName);
   }
 
-  public async rollback(blockNumber: number): Promise<void> {
+  async rollback(blockNumber: number): Promise<void> {
     try {
-      let blocksToRemove = await this.db.find({
+      const blocksToRemove = await this.db.find({
         selector: { blockNumber: { $gte: blockNumber } },
         fields: ['_id'],
       });
-      for (let doc of blocksToRemove.docs) {
+      for (const doc of blocksToRemove.docs) {
         const revDocs = await this.db.get<Document>(doc._id, {
           open_revs: 'all',
-          revs: true
+          revs: true,
         });
         // If a revision exists before this blockNumber make that the new record, otherwise simply delete the doc.
-        const replacementDoc = _.maxBy(_.remove(revDocs, (doc) => { return doc.ok.blockNumber > blockNumber; }), "ok.blockNumber");
+        const replacementDoc = _.maxBy(_.remove(revDocs, (doc) => doc.ok.blockNumber > blockNumber), "ok.blockNumber");
         if (replacementDoc) {
           await this.db.put(replacementDoc.ok);
         } else {
@@ -89,7 +89,7 @@ export class DerivedDB extends AbstractDB {
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
-  public handleMergeEvent = async (blocknumber: number, logs: Array<ParsedLog>, syncing: boolean = false): Promise<number> => {
+  handleMergeEvent = async (blocknumber: number, logs: ParsedLog[], syncing = false): Promise<number> => {
     let success = true;
     let documents;
     if (logs.length > 0) {

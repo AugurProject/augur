@@ -12,83 +12,83 @@ export function stringTo32ByteHex(stringToEncode: string): string {
 }
 
 export interface PlaceTradeParams {
-  direction: 0 | 1,
-  market: string,
-  numTicks: BigNumber,
-  numOutcomes: 3 | 4 | 5 | 6 | 7 | 8
-  outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
-  tradeGroupId: string,
-  ignoreShares: boolean,
-  affiliateAddress: string,
-  kycToken: string,
-  doNotCreateOrders: boolean
-};
+  direction: 0 | 1;
+  market: string;
+  numTicks: BigNumber;
+  numOutcomes: 3 | 4 | 5 | 6 | 7 | 8;
+  outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  tradeGroupId: string;
+  ignoreShares: boolean;
+  affiliateAddress: string;
+  kycToken: string;
+  doNotCreateOrders: boolean;
+}
 
 export interface PlaceTradeDisplayParams extends PlaceTradeParams {
-  displayMinPrice: BigNumber,
-  displayMaxPrice: BigNumber,
-  displayAmount: BigNumber,
-  displayPrice: BigNumber,
-  displayShares: BigNumber,
-};
+  displayMinPrice: BigNumber;
+  displayMaxPrice: BigNumber;
+  displayAmount: BigNumber;
+  displayPrice: BigNumber;
+  displayShares: BigNumber;
+}
 
 export interface PlaceTradeChainParams extends PlaceTradeParams {
-  amount: BigNumber,
-  price: BigNumber,
-  shares: BigNumber,
-};
+  amount: BigNumber;
+  price: BigNumber;
+  shares: BigNumber;
+}
 
 export interface TradeTransactionLimits {
-  loopLimit: BigNumber,
-  gasLimit: BigNumber,
+  loopLimit: BigNumber;
+  gasLimit: BigNumber;
 }
 
 export interface Order {
-  amount: BigNumber,
-  displayPrice: BigNumber,
-  displaySharesEscrowed: BigNumber,
-  owner: string,
+  amount: BigNumber;
+  displayPrice: BigNumber;
+  displaySharesEscrowed: BigNumber;
+  owner: string;
 }
 
 export interface SingleOutcomeOrderBook {
-  buyOrders: Array<Order>,
-  sellorders: Array<Order>,
+  buyOrders: Order[];
+  sellorders: Order[];
 }
 
 export interface ContractSimulateTradeData {
-  _sharesFilled: BigNumber,
-  _settlementFees: BigNumber,
-  _sharesDepleted: BigNumber,
-  _tokensDepleted: BigNumber,
+  _sharesFilled: BigNumber;
+  _settlementFees: BigNumber;
+  _sharesDepleted: BigNumber;
+  _tokensDepleted: BigNumber;
 }
 
 export interface SimulateTradeData {
-  sharesFilled: BigNumber,
-  settlementFees: BigNumber,
-  sharesDepleted: BigNumber,
-  tokensDepleted: BigNumber,
+  sharesFilled: BigNumber;
+  settlementFees: BigNumber;
+  sharesDepleted: BigNumber;
+  tokensDepleted: BigNumber;
 }
 
 export class Trade {
   private readonly augur: Augur;
 
-  public constructor(augur: Augur) {
+  constructor(augur: Augur) {
     this.augur = augur;
   }
 
-  public async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
+  async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
-    return await this.placeOnChainTrade(onChainTradeParams);
+    return this.placeOnChainTrade(onChainTradeParams);
   }
 
 
-  public async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
+  async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     const { gasLimit } = await this.getTradeTransactionLimits(onChainTradeParams);
     return gasLimit;
   }
 
-  public getOnChainTradeParams(params: PlaceTradeDisplayParams): PlaceTradeChainParams {
+  getOnChainTradeParams(params: PlaceTradeDisplayParams): PlaceTradeChainParams {
     const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
     const onChainAmount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
     const onChainPrice = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
@@ -97,16 +97,16 @@ export class Trade {
       amount: onChainAmount,
       price: onChainPrice,
       shares: onChainShares,
-    })
+    });
   }
 
-  public async placeOnChainTrade(params: PlaceTradeChainParams): Promise<void> {
+  async placeOnChainTrade(params: PlaceTradeChainParams): Promise<void> {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
     const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
 
-    let result: Array<Event> = [];
+    let result: Event[] = [];
 
     // TODO: Use the calculated gasLimit above instead of relying on an estimate once we can send an override gasLimit
     if (params.doNotCreateOrders) {
@@ -120,14 +120,14 @@ export class Trade {
     const amountRemaining = this.getTradeAmountRemaining(result);
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
-      return await this.placeOnChainTrade(params);
+      return this.placeOnChainTrade(params);
     }
   }
 
-  public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
+  async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
-    const simulationData: Array<BigNumber> = <Array<BigNumber>><unknown> await this.augur.contracts.simulateTrade.simulateTrade_(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), onChainTradeParams.amount, onChainTradeParams.price, params.ignoreShares, params.kycToken, params.doNotCreateOrders);
+    const simulationData: BigNumber[] = await this.augur.contracts.simulateTrade.simulateTrade_(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), onChainTradeParams.amount, onChainTradeParams.price, params.ignoreShares, params.kycToken, params.doNotCreateOrders) as unknown as BigNumber[];
     const displaySharesFilled = convertOnChainAmountToDisplayAmount(simulationData[0], tickSize);
     const displaySharesDepleted = convertOnChainAmountToDisplayAmount(simulationData[2], tickSize);
     const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
@@ -137,10 +137,10 @@ export class Trade {
       tokensDepleted: displayTokensDepleted,
       sharesDepleted: displaySharesDepleted,
       settlementFees: displaySettlementFees,
-    }
+    };
   }
 
-  public async checkIfTradeValid(params: PlaceTradeChainParams): Promise<string | null> {
+  async checkIfTradeValid(params: PlaceTradeChainParams): Promise<string | null> {
     if (params.outcome >= params.numOutcomes) return `Invalid outcome given for trade: ${params.outcome.toString()}. Must be between 0 and ${params.numOutcomes.toString()}`;
     if (params.price.lte(0) || params.price.gte(params.numTicks)) return `Invalid price given for trade: ${params.price.toString()}. Must be between 0 and ${params.numTicks.toString()}`;
 
@@ -160,7 +160,7 @@ export class Trade {
     return null;
   }
 
-  public getTradeTransactionLimits(params: PlaceTradeChainParams): TradeTransactionLimits {
+  getTradeTransactionLimits(params: PlaceTradeChainParams): TradeTransactionLimits {
     let loopLimit = new BigNumber(1);
     const placeOrderGas = params.shares.gt(0) ? constants.PLACE_ORDER_WITH_SHARES[params.numOutcomes] : constants.PLACE_ORDER_NO_SHARES[params.numOutcomes];
     const orderCreationCost = params.doNotCreateOrders ? new BigNumber(0) : placeOrderGas;
@@ -172,15 +172,15 @@ export class Trade {
     gasLimit = gasLimit.plus(constants.TRADE_GAS_BUFFER);
     return {
       loopLimit,
-      gasLimit
-    }
+      gasLimit,
+    };
   }
 
-  private getTradeAmountRemaining(events: Array<Event>): BigNumber {
+  private getTradeAmountRemaining(events: Event[]): BigNumber {
     let tradeOnChainAmountRemaining = new BigNumber(0);
     for (const event of events) {
       if (event.name === "OrderEvent") {
-        const eventParams = <OrderEventLog>event.parameters;
+        const eventParams = event.parameters as OrderEventLog;
         if (eventParams.eventType === 0) { // Create
           return new BigNumber(0);
         } else if (eventParams.eventType === 3) {// Fill

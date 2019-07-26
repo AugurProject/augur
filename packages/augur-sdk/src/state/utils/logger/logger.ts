@@ -1,39 +1,39 @@
 export interface LoggerInterface {
   error(...err: Array<string | Error>): void;
 
-  warn(...msg: Array<string>): void;
+  warn(...msg: string[]): void;
 
-  info(...msg: Array<string>): void;
+  info(...msg: string[]): void;
 
-  info(...msg: Array<string>): void;
+  info(...msg: string[]): void;
 
-  debug(...msg: Array<string>): void;
+  debug(...msg: string[]): void;
 }
 
 export class Logger {
-  private loggers: Array<LoggerInterface> = [];
+  private loggers: LoggerInterface[] = [];
 
-  public addLogger(logger: LoggerInterface): void {
+  addLogger(logger: LoggerInterface): void {
     this.loggers.push(logger);
   }
 
-  public error(...err: Array<string | Error>): void {
+  error(...err: Array<string | Error>): void {
     this.loggers.forEach((logger) => logger.error(...err));
   }
 
-  public warn(...msg: Array<string>): void {
+  warn(...msg: string[]): void {
     this.loggers.forEach((logger) => logger.warn(...msg));
   }
 
-  public info(...msg: Array<string>): void {
+  info(...msg: string[]): void {
     this.loggers.forEach((logger) => logger.info(...msg));
   }
 
-  public debug(...msg: Array<string>): void {
+  debug(...msg: string[]): void {
     this.loggers.forEach((logger) => logger.debug(...msg));
   }
 
-  public clear(): void {
+  clear(): void {
     this.loggers = [];
   }
 }

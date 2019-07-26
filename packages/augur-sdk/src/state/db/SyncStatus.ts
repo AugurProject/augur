@@ -6,7 +6,7 @@ interface SyncDocument {
 }
 
 export class SyncStatus extends AbstractDB {
-  public readonly defaultStartSyncBlockNumber: number;
+  readonly defaultStartSyncBlockNumber: number;
 
   constructor(networkId: number, defaultStartSyncBlockNumber: number, dbFactory: PouchDBFactoryType) {
     super(networkId, networkId + "-SyncStatus", dbFactory);
@@ -25,12 +25,12 @@ export class SyncStatus extends AbstractDB {
     });
   }
 
-  public async setHighestSyncBlock(dbName: string, blockNumber: number, syncing: boolean): Promise<PouchDB.Core.Response> {
+  async setHighestSyncBlock(dbName: string, blockNumber: number, syncing: boolean): Promise<PouchDB.Core.Response> {
     const document: SyncDocument = { blockNumber, syncing };
     return this.upsertDocument(dbName, document);
   }
 
-  public async getHighestSyncBlock(dbName?: string): Promise<number> {
+  async getHighestSyncBlock(dbName?: string): Promise<number> {
     const document = await this.getDocument<SyncDocument>(dbName);
     if (document) {
       return document.blockNumber;
@@ -39,7 +39,7 @@ export class SyncStatus extends AbstractDB {
     return this.defaultStartSyncBlockNumber;
   }
 
-  public async getLowestSyncingBlockForAllDBs(): Promise<number> {
+  async getLowestSyncingBlockForAllDBs(): Promise<number> {
     const lowestBlock = await this.find({
       selector: {
         syncing: true,
@@ -56,7 +56,7 @@ export class SyncStatus extends AbstractDB {
     }
   }
 
-  public async updateSyncingToFalse(dbName: string): Promise<PouchDB.Core.Response> {
+  async updateSyncingToFalse(dbName: string): Promise<PouchDB.Core.Response> {
     const highestBlock = await this.getHighestSyncBlock(dbName);
     return this.setHighestSyncBlock(dbName, highestBlock, false);
   }

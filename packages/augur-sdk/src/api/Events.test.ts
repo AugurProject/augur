@@ -15,7 +15,7 @@ function makeProviderMock(opts?: any): Provider {
 
   return {
     getNetworkId: (): Promise<NetworkId> => Promise.resolve(networkId),
-    getLogs: (filter: Filter): Promise<Array<Log>> => Promise.resolve(logs),
+    getLogs: (filter: Filter): Promise<Log[]> => Promise.resolve(logs),
     getBlockNumber: (): Promise<number> => Promise.resolve(blockNumber),
     getBlock: (blockHashOrBlockNumber: BlockTag | string): Promise<Block> => Promise.resolve(block),
     storeAbiData: (abi: Abi, contractName: string): void => { },
@@ -26,7 +26,7 @@ function makeProviderMock(opts?: any): Provider {
 }
 
 test("get logs", async () => {
-  const logs: Array<Log> = [{
+  const logs: Log[] = [{
     blockNumber: 19,
     address: "0xthere",
     data: "some data",
@@ -36,7 +36,7 @@ test("get logs", async () => {
     removed: false,
     transactionHash: "0x9876",
     transactionIndex: 3,  // not specified in logValues
-    transactionLogIndex: 0
+    transactionLogIndex: 0,
   }];
   const logValues: LogValues = {
     blockNumber: 12,
