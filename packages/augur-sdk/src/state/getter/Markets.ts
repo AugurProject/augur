@@ -41,6 +41,9 @@ const getMarketsParamsSpecific = t.intersection([
     maxFee: t.string,
     maxEndTime: t.number,
     hasOrders: t.boolean,
+    liquiditySpread: t.string,
+    includeInvalidMarkets: t.boolean,
+    categories: t.array(t.string),
   }),
 ]);
 
@@ -373,9 +376,6 @@ export class Markets {
         marketCreator: params.creator,
         designatedReporter: params.designatedReporter,
       },
-      sort: params.sortBy ? [params.sortBy] : undefined,
-      limit: params.limit,
-      skip: params.offset,
     };
     if (params.maxEndTime) {
       request.selector = Object.assign(request.selector, {
@@ -415,6 +415,13 @@ export class Markets {
 
     let filteredKeyedMarketCreatedLogs = keyedMarketCreatedLogs;
     if (params.search) {
+      let query: string | any[] = params.search;
+      if (params.categories) {
+        query = [{query: params.search}];
+        for (let i = 0; i < params.categories.length; i++) {
+          query.push({query: params.categories[i]});
+        }
+      }
       const fullTextSearchResults = await db.fullTextMarketSearch(params.search);
 
       const keyedFullTextMarketIds: any = fullTextSearchResults.reduce(
@@ -510,6 +517,8 @@ export class Markets {
         return previousValue;
       }, []);
     });
+
+      // TODO: Implement sortBy, isSortDescending, limit, offset
 
     return Object.keys(filteredKeyedMarketCreatedLogs);
   }
