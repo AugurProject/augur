@@ -64,7 +64,7 @@ export class TestFixture {
     }
 
     public async createMarket(universe: Universe, outcomes: string[], endTime: BigNumber, feePerEthInWei: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string): Promise<Market> {
-        const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+        const marketCreationFee = await universe.getOrCacheValidityBond_();
 
         console.log("Creating Market");
         await this.cash.faucet(marketCreationFee);

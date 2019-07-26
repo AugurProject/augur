@@ -58,7 +58,6 @@ import {
   GETINITIALREPORTSTAKESIZE,
   GETORCACHEDESIGNATEDREPORTNOSHOWBOND,
   GETORCACHEDESIGNATEDREPORTSTAKE,
-  GETORCACHEMARKETCREATIONCOST,
   GETORCACHEREPORTINGFEEDIVISOR,
   GETORCACHEVALIDITYBOND,
   GETORCREATECURRENTFEEWINDOW,
@@ -460,7 +459,7 @@ export default function setAlertText(alert: any, callback: any) {
       case GETORCACHEDESIGNATEDREPORTSTAKE:
         alert.title = "Get stake size required for desginated reports";
         break;
-      case GETORCACHEMARKETCREATIONCOST:
+      case getOrCacheValidityBond:
         alert.title = "Get market creation cost";
         break;
       case GETORCACHEREPORTINGFEEDIVISOR:

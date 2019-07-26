@@ -61,7 +61,7 @@ test('Contract :: ReputationToken', async () => {
 test('Contract :: Cash', async () => {
   const cash = contracts.cash;
   const universe = contracts.universe;
-  const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
+  const marketCreationCost = await universe.getOrCacheValidityBond_();
   await cash.faucet(marketCreationCost, { sender: ACCOUNTS[0].publicKey });
   await cash.approve(addresses.Augur, marketCreationCost, {
     sender: ACCOUNTS[0].publicKey,
@@ -74,7 +74,7 @@ test('Contract :: Cash', async () => {
 test('Contract :: Universe :: Create Market', async () => {
   const cash = contracts.cash;
   const universe = contracts.universe;
-  const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
+  const marketCreationCost = await universe.getOrCacheValidityBond_();
   await cash.faucet(marketCreationCost, { sender: ACCOUNTS[0].publicKey });
   await cash.approve(addresses.Augur, marketCreationCost, {
     sender: ACCOUNTS[0].publicKey,

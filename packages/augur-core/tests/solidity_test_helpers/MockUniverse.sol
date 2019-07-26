@@ -378,7 +378,7 @@ contract MockUniverse is Initializable, IUniverse {
         return setTargetReporterGasCostsValue;
     }
 
-    function getOrCacheMarketCreationCost() public returns (uint256) {
+    function getOrCacheValidityBond() public returns (uint256) {
         return setMarketCreationCostValue;
     }
 

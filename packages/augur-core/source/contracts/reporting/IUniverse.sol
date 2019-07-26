@@ -1,7 +1,5 @@
 pragma solidity 0.5.4;
 
-
-import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IMarket.sol';
@@ -10,7 +8,7 @@ import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/trading/IShareToken.sol';
 
 
-contract IUniverse is ITyped {
+contract IUniverse {
     mapping(address => uint256) public marketBalance;
 
     function fork() public returns (bool);
@@ -44,7 +42,6 @@ contract IUniverse is ITyped {
     function getPayoutNumerator(uint256 _outcome) public view returns (uint256);
     function getWinningChildPayoutNumerator(uint256 _outcome) public view returns (uint256);
     function isForkingMarket() public view returns (bool);
-    function getOrCacheMarketCreationCost() public returns (uint256);
     function getCurrentDisputeWindow(bool _initial) public view returns (IDisputeWindow);
     function isParentOf(IUniverse _shadyChild) public view returns (bool);
     function updateTentativeWinningChildUniverse(bytes32 _parentPayoutDistributionHash) public returns (bool);

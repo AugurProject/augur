@@ -46,7 +46,7 @@ def test_disputeWindowCreation(localFixture, augur, universe, cash):
         universe.getOrCreateDisputeWindowByTimestamp(endTime, False)
 
 def test_marketCreation(localFixture, augur, universe):
-    marketCreationFee = universe.getOrCacheMarketCreationCost()
+    marketCreationFee = universe.getOrCacheValidityBond()
 
     endTime = augur.getTimestamp() + timedelta(days=1).total_seconds()
     feePerEthInWei = 10**16
