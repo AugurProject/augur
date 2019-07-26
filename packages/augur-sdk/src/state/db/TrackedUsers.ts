@@ -7,7 +7,7 @@ export class TrackedUsers extends AbstractDB {
     super(networkId, networkId + "-TrackedUsers", dbFactory);
   }
 
-  async setUserTracked(user: string): Promise<PouchDB.Core.Response> {
+  async setUserTracked(user: string): Promise<PouchDB.UpsertResponse> {
     try {
       const formattedUser = getAddress(user);
       return this.upsertDocument(formattedUser, {});
