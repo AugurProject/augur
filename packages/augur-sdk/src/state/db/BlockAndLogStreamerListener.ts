@@ -26,6 +26,8 @@ export interface BlockAndLogStreamerListenerDependencies {
 
 type GenericLogCallbackType<T, P> = (blockIdentifier: T, logs: P[]) => void;
 
+type BlockCallback = (block: Block) => void;
+
 export type BlockstreamLogCallbackType = GenericLogCallbackType<string, Log>;
 export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>;
 
@@ -71,8 +73,8 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
     this.deps.eventLogDBRouter.addLogCallback(topics[0], onLogsAdded);
   }
 
-  listenForBlockAdded(callback: (Block: Block) => void): void {
-    const wrapper = (callback: (Block: Block) => void) => (block: Block) => {
+  listenForBlockAdded(callback: BlockCallback): void {
+    const wrapper = (callback: BlockCallback) => (block: Block) => {
       callback(block);
     };
     this.deps.blockAndLogStreamer.subscribeToOnBlockAdded(wrapper(callback));
