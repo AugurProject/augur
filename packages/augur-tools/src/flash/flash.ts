@@ -55,25 +55,27 @@ export class FlashSession {
   async call(name: string, args: FlashArguments): Promise<any> {
     const script = this.scripts[name];
 
+    const readyArgs: FlashArguments = {};
+    Object.keys(args).map((name) => {
+      readyArgs[name.replace("-", "_")] = args[name];
+    });
+
     if (typeof script === "undefined") {
       throw Error(`No such script "${name}"`);
     }
 
-    const readyArgs: FlashArguments = {};
-
     // Make sure required parameters are present.
     for (const option of script.options || []) {
-      const arg = args[option.name];
+      const optionName = option.name.replace("-", "_");
+
+      const arg = readyArgs[optionName];
 
       if (option.required) {
         if (typeof arg === "undefined") {
-          this.log(`ERROR: Must specify "--${option.name}"`);
+          this.log(`ERROR: Must specify "--${optionName}"`);
           return;
         }
       }
-
-      const formattedName = option.name.replace('-', '_');
-      readyArgs[formattedName] = arg;
     }
 
     return script.call.bind(this)(readyArgs);
