@@ -638,10 +638,11 @@ div.ButtonsRow:last-of-type {
     grid-template-rows: 1fr 2fr;
 
     @media @breakpoint-mobile {
-      grid-gap: 0 @size-12;
+      grid-gap: @size-8 @size-12;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: auto;
-      height: 280px;
+      height: auto;
+      margin-bottom: @size-8;
 
       > span:first-of-type {
         order: 2;
