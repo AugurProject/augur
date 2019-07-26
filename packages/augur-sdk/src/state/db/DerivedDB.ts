@@ -35,9 +35,7 @@ export class DerivedDB extends AbstractDB {
       },
     });
 
-    for (const eventName of mergeEventNames) {
-      db.registerEventListener(eventName, this.handleMergeEvent);
-    }
+    db.registerEventListener(mergeEventNames, this.handleMergeEvent);
 
     db.notifyDerivedDBAdded(this);
   }
