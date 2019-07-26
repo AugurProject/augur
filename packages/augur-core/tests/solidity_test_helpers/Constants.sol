@@ -9,6 +9,7 @@ contract Constants {
     function DESIGNATED_REPORTING_DURATION_SECONDS() public returns (uint256) { return Reporting.getDesignatedReportingDurationSeconds(); }
     function DISPUTE_ROUND_DURATION_SECONDS() public returns (uint256) { return Reporting.getDisputeRoundDurationSeconds(); }
     function INITIAL_DISPUTE_ROUND_DURATION_SECONDS() public returns (uint256) { return Reporting.getInitialDisputeRoundDurationSeconds(); }
+    function DISPUTE_WINDOW_BUFFER_SECONDS() public returns (uint256) { return Reporting.getDisputeWindowBufferSeconds(); }
     function FORK_DURATION_SECONDS() public returns (uint256) { return Reporting.getForkDurationSeconds(); }
 
     function BASE_MARKET_DURATION_MAXIMUM() public returns (uint256) { return Reporting.getBaseMarketDurationMaximum(); }

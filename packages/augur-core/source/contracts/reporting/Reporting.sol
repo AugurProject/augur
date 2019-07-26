@@ -5,6 +5,7 @@ library Reporting {
     uint256 private constant DESIGNATED_REPORTING_DURATION_SECONDS = 1 days;
     uint256 private constant DISPUTE_ROUND_DURATION_SECONDS = 7 days;
     uint256 private constant INITIAL_DISPUTE_ROUND_DURATION_SECONDS = 1 days;
+    uint256 private constant DISPUTE_WINDOW_BUFFER_SECONDS = 1 hours;
     uint256 private constant FORK_DURATION_SECONDS = 60 days;
 
     uint256 private constant BASE_MARKET_DURATION_MAXIMUM = 30 days; // A market of 30 day length can always be created
@@ -32,6 +33,7 @@ library Reporting {
 
     function getDesignatedReportingDurationSeconds() internal pure returns (uint256) { return DESIGNATED_REPORTING_DURATION_SECONDS; }
     function getInitialDisputeRoundDurationSeconds() internal pure returns (uint256) { return INITIAL_DISPUTE_ROUND_DURATION_SECONDS; }
+    function getDisputeWindowBufferSeconds() internal pure returns (uint256) { return DISPUTE_WINDOW_BUFFER_SECONDS; }
     function getDisputeRoundDurationSeconds() internal pure returns (uint256) { return DISPUTE_ROUND_DURATION_SECONDS; }
     function getForkDurationSeconds() internal pure returns (uint256) { return FORK_DURATION_SECONDS; }
     function getBaseMarketDurationMaximum() internal pure returns (uint256) { return BASE_MARKET_DURATION_MAXIMUM; }
