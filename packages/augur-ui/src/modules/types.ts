@@ -116,12 +116,7 @@ export interface Universe {
 export interface Versions {
   augurui: string | null;
 }
-export interface TransacitonData {
-  [transactionId: string]: {
-    hash: string;
-    status: string;
-  };
-}
+
 export interface UserReports {
   markets?: {
     [universeId: string]: string;
