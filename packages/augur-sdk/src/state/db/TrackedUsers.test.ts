@@ -9,7 +9,7 @@ test("track a user", async () => {
 
   let err: Error;
   try {
-    await trackedUsers.setUserTracked("mock")
+    await trackedUsers.setUserTracked("mock");
   } catch (e) {
     err = e;
   }

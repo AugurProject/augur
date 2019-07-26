@@ -51,12 +51,7 @@ export class SyncableDB extends AbstractDB {
     this.syncing = false;
   }
 
-  async sync(
-    augur: Augur,
-    chunkSize: number,
-    blockStreamDelay: number,
-    highestAvailableBlockNumber: number
-  ): Promise<void> {
+  async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
 
     let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
@@ -105,11 +100,8 @@ export class SyncableDB extends AbstractDB {
     }
   }
 
-  addNewBlock = async (
-    blocknumber: number,
-    logs: ParsedLog[]
-  ): Promise<number> => {
-    if (this.eventName === 'OrderEvent') {
+  addNewBlock = async (blocknumber: number, logs: ParsedLog[]): Promise<number> => {
+    if (this.eventName === "OrderEvent") {
       this.parseLogArrays(logs);
     }
 
@@ -200,11 +192,7 @@ export class SyncableDB extends AbstractDB {
     }
   }
 
-  protected async getLogs(
-    augur: Augur,
-    startBlock: number,
-    endBlock: number
-  ): Promise<ParsedLog[]> {
+  protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
     return augur.events.getLogs(this.eventName, startBlock, endBlock);
   }
 

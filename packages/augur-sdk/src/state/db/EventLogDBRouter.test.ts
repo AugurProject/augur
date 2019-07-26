@@ -18,16 +18,16 @@ test("topic filtering", async () => {
   const ignoredLog: ExtendedLog = Object.assign({}, log, {
     topics: ["arctic"],
   });
-  const logsToParse: Array<ExtendedLog> = [ log, ignoredLog ];
+  const logsToParse: ExtendedLog[] = [ log, ignoredLog ];
 
-  const parseLogs = (logs: Array<Log>): Array<ParsedLog> => {
+  const parseLogs = (logs: Log[]): ParsedLog[] => {
     return logs.map((log) => Object.assign({}, log, {
       foo: "bar",
     }));
   };
 
-  const callbackValues: Array<any> = [];
-  const logCallback = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
+  const callbackValues: any[] = [];
+  const logCallback = async (blocknumber: number, logs: ParsedLog[]): Promise<number> => {
     callbackValues.push({ blocknumber, logs });
     return blocknumber;
   };

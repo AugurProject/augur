@@ -21,17 +21,17 @@ import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./c
 import { Liquidity } from "./api/Liquidity";
 
 export class Augur<TProvider extends Provider = Provider> {
-  public readonly provider: TProvider;
+  readonly provider: TProvider;
   private readonly dependencies: ContractDependenciesEthers;
 
-  public readonly networkId: NetworkId;
-  public readonly events: Events;
-  public readonly addresses: ContractAddresses;
-  public readonly contracts: Contracts;
-  public readonly trade: Trade;
-  public readonly market: Market;
-  public static connector: BaseConnector;
-  public readonly liquidity: Liquidity;
+  readonly networkId: NetworkId;
+  readonly events: Events;
+  readonly addresses: ContractAddresses;
+  readonly contracts: Contracts;
+  readonly trade: Trade;
+  readonly market: Market;
+  static connector: BaseConnector;
+  readonly liquidity: Liquidity;
 
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
@@ -39,7 +39,7 @@ export class Augur<TProvider extends Provider = Provider> {
   private txFailureCallback: TXStatusCallback;
 
   // TODO Set genericEventNames using GenericContractInterfaces instead of hardcoding them
-  public readonly genericEventNames: Array<string> = [
+  readonly genericEventNames: string[] = [
     "CompleteSetsPurchased",
     "CompleteSetsSold",
     "DisputeCrowdsourcerCompleted",
@@ -66,12 +66,13 @@ export class Augur<TProvider extends Provider = Provider> {
     "UniverseForked",
   ];
 
-  public constructor(provider: TProvider, dependencies: ContractDependenciesEthers, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()) {
+  constructor(provider: TProvider, dependencies: ContractDependenciesEthers, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()) {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
-    if (!Augur.connector || connector.constructor.name !== "EmptyConnector")
+    if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
+    }
 
     // API
     this.addresses = addresses;
@@ -84,10 +85,11 @@ export class Augur<TProvider extends Provider = Provider> {
     this.registerTransactionStatusEvents();
   }
 
-  public static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()): Promise<Augur> {
+  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()): Promise<Augur> {
     // has to be static because of the way we instantiate boundTo methods
-    if (!Augur.connector || connector.constructor.name !== "EmptyConnector")
+    if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
+    }
 
     const networkId = await provider.getNetworkId();
     const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector);
@@ -97,72 +99,72 @@ export class Augur<TProvider extends Provider = Provider> {
     return augur;
   }
 
-  public async getTransaction(hash: string): Promise<string> {
+  async getTransaction(hash: string): Promise<string> {
     const tx = await this.dependencies.provider.getTransaction(hash);
     if (!tx) return "";
     return tx.from;
   }
-  public async listAccounts() {
+  async listAccounts() {
     return this.dependencies.provider.listAccounts();
   }
 
-  public async getTimestamp() {
+  async getTimestamp() {
     return this.contracts.augur.getTimestamp_();
   }
 
-  public async getEthBalance(address: string): Promise<string> {
+  async getEthBalance(address: string): Promise<string> {
     const balance = await this.dependencies.provider.getBalance(address);
     return balance.toString();
   }
 
-  public async getGasPrice(): Promise<BigNumber> {
+  async getGasPrice(): Promise<BigNumber> {
     const balance = await this.dependencies.provider.getGasPrice();
     return new BigNumber(balance.toString());
   }
 
-  public async getAccount(): Promise<string | null> {
+  async getAccount(): Promise<string | null> {
     const account = await this.dependencies.address;
     if (!account) return account;
     return getAddress(account);
   }
 
-  public getUniverse(address: string): ContractInterfaces.Universe {
+  getUniverse(address: string): ContractInterfaces.Universe {
     return this.contracts.universeFromAddress(address);
   }
 
-  public getMarket(address: string): ContractInterfaces.Market {
+  getMarket(address: string): ContractInterfaces.Market {
     return new ContractInterfaces.Market(this.dependencies, address);
   }
 
-  public getOrders(): ContractInterfaces.Orders {
+  getOrders(): ContractInterfaces.Orders {
     return new ContractInterfaces.Orders(this.dependencies, this.addresses.Orders);
   }
 
-  public registerTransactionStatusCallback(key: string, callback: TransactionStatusCallback): void {
+  registerTransactionStatusCallback(key: string, callback: TransactionStatusCallback): void {
     this.dependencies.registerTransactionStatusCallback(key, callback);
   }
 
-  public deRegisterTransactionStatusCallback(key: string): void {
+  deRegisterTransactionStatusCallback(key: string): void {
     this.dependencies.deRegisterTransactionStatusCallback(key);
   }
 
-  public deRegisterAllTransactionStatusCallbacks(): void {
+  deRegisterAllTransactionStatusCallbacks(): void {
     this.dependencies.deRegisterAllTransactionStatusCallbacks();
   }
 
-  public async connect(ethNodeUrl: string, account?: string): Promise<any> {
+  async connect(ethNodeUrl: string, account?: string): Promise<any> {
     return Augur.connector.connect(ethNodeUrl, account);
   }
 
-  public async disconnect(): Promise<any> {
+  async disconnect(): Promise<any> {
     return Augur.connector.disconnect();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
+  bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return Augur.connector.bindTo(f);
   }
 
-  public async on(eventName: SubscriptionEventName | TXEventName | string, callback: Callback | TXStatusCallback): Promise<void> {
+  async on(eventName: SubscriptionEventName | TXEventName | string, callback: Callback | TXStatusCallback): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
       return Augur.connector.on(eventName, callback as Callback);
     }
@@ -180,7 +182,7 @@ export class Augur<TProvider extends Provider = Provider> {
     }
   }
 
-  public async off(eventName: SubscriptionEventName | TXEventName | string): Promise<void> {
+  async off(eventName: SubscriptionEventName | TXEventName | string): Promise<void> {
     if (isSubscriptionEventName(eventName)) {
       return Augur.connector.off(eventName);
     }
@@ -198,50 +200,50 @@ export class Augur<TProvider extends Provider = Provider> {
     }
   }
 
-  public getMarkets = (params: Parameters<typeof Markets.getMarkets>[2]) => {
+  getMarkets = (params: Parameters<typeof Markets.getMarkets>[2]) => {
     // sortBy param broken. See #2437.
     delete params.sortBy;
     return this.bindTo(Markets.getMarkets)(params);
   }
 
-  public getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
-  public getSyncData = () => {
+  getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
+  getSyncData = () => {
     return this.bindTo(Status.getSyncData)({});
   }
 
-  public getTradingHistory = this.bindTo(Trading.getTradingHistory);
-  public getAllOrders = this.bindTo(Trading.getAllOrders);
-  public getTradingOrders = this.bindTo(Trading.getOrders);
-  public getMarketOrderBook = this.bindTo(Markets.getMarketOrderBook);
+  getTradingHistory = this.bindTo(Trading.getTradingHistory);
+  getAllOrders = this.bindTo(Trading.getAllOrders);
+  getTradingOrders = this.bindTo(Trading.getOrders);
+  getMarketOrderBook = this.bindTo(Markets.getMarketOrderBook);
 
-  public getMarketPriceCandlesticks = this.bindTo(Markets.getMarketPriceCandlesticks);
+  getMarketPriceCandlesticks = this.bindTo(Markets.getMarketPriceCandlesticks);
 
-  public getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
-  public getProfitLoss = this.bindTo(Users.getProfitLoss);
-  public getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
-  public getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
+  getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
+  getProfitLoss = this.bindTo(Users.getProfitLoss);
+  getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
+  getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
 
-  public async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
+  async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
   }
 
-  public async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
+  async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
     return this.trade.placeTrade(params);
   }
 
-  public async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
+  async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
     return this.market.createYesNoMarket(params);
   }
 
-  public async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
+  async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
     return this.market.createCategoricalMarket(params);
   }
 
-  public async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
+  async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
     return this.market.createScalarMarket(params);
   }
 
-  public async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
+  async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
     return this.trade.simulateTradeGasLimit(params);
   }
 

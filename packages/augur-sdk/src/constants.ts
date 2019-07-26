@@ -52,7 +52,7 @@ export enum TXEventName {
 }
 
 export function isSubscriptionEventName(eventName: string): string | null {
-  let retVal: number = -1;
+  let retVal = -1;
 
   Object.values(SubscriptionEventName).every((value: any, index: number): boolean => {
     if (value === eventName) {
@@ -122,7 +122,7 @@ export const CLAIM_GAS_COST = new BigNumber(667419);
 
 export const ORDER_TYPES = {
   BID: new BigNumber(0),
-  ASK: new BigNumber(1)
+  ASK: new BigNumber(1),
 };
 
 export const MALFORMED_OUTCOME = "malformed outcome";

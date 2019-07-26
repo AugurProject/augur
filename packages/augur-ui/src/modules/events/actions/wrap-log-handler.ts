@@ -1,9 +1,8 @@
-import { defaultLogHandler } from 'modules/events/actions/default-log-handler';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
 
-export const wrapLogHandler = (logHandler: Function = defaultLogHandler) => (
+export const wrapLogHandler = (logHandler: Function) => (
   log: any
 ): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -20,7 +19,7 @@ export const wrapLogHandler = (logHandler: Function = defaultLogHandler) => (
     // );
     if (Array.isArray(log) && isInCurrentUniverse) {
       log.forEach(log => {
-        return dispatch(logHandler(log));
+        if (logHandler) dispatch(logHandler(log));
       });
     }
     // TODO: will need to filter out some redundent events like token transfers in some instances

@@ -5,7 +5,6 @@ import {
   UPDATE_MARKET_CATEGORY,
   UPDATE_MARKET_REP_BALANCE,
   UPDATE_MARKET_FROZEN_SHARES_VALUE,
-  UPDATE_MARKETS_DISPUTE_INFO,
   REMOVE_MARKET,
   UPDATE_MARKET_ETH_BALANCE
 } from "modules/markets/actions/update-markets-data";
@@ -21,14 +20,6 @@ export default function(marketInfos: MarketInfos = DEFAULT_STATE, { type, data }
       return {
         ...marketInfos,
         ...processMarketsData(data.marketInfos, marketInfos)
-      };
-    case UPDATE_MARKETS_DISPUTE_INFO:
-      return {
-        ...marketInfos,
-        ...processMarketsDisputeInfo(
-          data.marketsDisputeInfo,
-          marketInfos
-        )
       };
     case UPDATE_MARKET_CATEGORY: {
       const { marketId, category } = data;
@@ -89,19 +80,6 @@ function processMarketsData(newMarketsData, existingMarketsData) {
     const marketData = {
       ...existingMarketsData[marketId],
       ...newMarketsData[marketId]
-    };
-
-    p[marketId] = marketData;
-
-    return p;
-  }, {});
-}
-
-function processMarketsDisputeInfo(newMarketsDisputeInfo, existingMarketsData) {
-  return Object.keys(newMarketsDisputeInfo).reduce((p, marketId) => {
-    const marketData = {
-      ...existingMarketsData[marketId],
-      disputeInfo: { ...newMarketsDisputeInfo[marketId] }
     };
 
     p[marketId] = marketData;

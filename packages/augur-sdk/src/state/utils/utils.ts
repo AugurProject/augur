@@ -3,8 +3,8 @@ export async function sleep(milliseconds: number): Promise<void> {
 }
 
 export function toAscii(hex: string) {
-  var str = ''; // eslint-disable-line
-  var i = 0,
+  let str = ''; // eslint-disable-line
+  let i = 0,
       l = hex.length; // eslint-disable-line
 
   if (hex.substring(0, 2) === '0x') {
@@ -12,7 +12,7 @@ export function toAscii(hex: string) {
   }
 
   for (; i < l; i += 2) {
-    var code = parseInt(hex.substr(i, 2), 16);
+    let code = parseInt(hex.substr(i, 2), 16);
     str += String.fromCharCode(code);
   }
 
