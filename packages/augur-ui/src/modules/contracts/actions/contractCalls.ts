@@ -27,7 +27,7 @@ import { NewMarket } from 'modules/types';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 
 export function clearUserTx(): void {
-  const Augur = augurSdk.get();
+  // const Augur = augurSdk.get();
   // TODO: impl this for ethers
   // old comment - clear ethrpc transaction history, registered callbacks, and alerts
 }

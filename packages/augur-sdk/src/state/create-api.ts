@@ -29,7 +29,7 @@ async function buildDeps(ethNodeUrl: string, account?: string, dbArgs: PouchDB.C
     account ? [account] : [],
     augur,
     pouchDBFactory,
-    blockAndLogStreamerListener,
+    blockAndLogStreamerListener
   );
 
   return { augur, blockAndLogStreamerListener, db };

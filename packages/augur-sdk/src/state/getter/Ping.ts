@@ -7,10 +7,10 @@ export interface Pong {
 }
 
 export class Ping {
-  public static PingParams = t.type({});
+  static PingParams = t.type({});
 
   @Getter()
-  public static async ping(db: DB, params: t.TypeOf<typeof Ping.PingParams>): Promise<Pong> {
+  static async ping(db: DB, params: t.TypeOf<typeof Ping.PingParams>): Promise<Pong> {
     return {
       response: "pong",
     };

@@ -15,7 +15,7 @@ export class Controller {
 
   private readonly events = new Subscriptions(augurEmitter);
 
-  public constructor(
+  constructor(
     private augur: Augur,
     private db: Promise<DB>,
     private blockAndLogStreamerListener: IBlockAndLogStreamerListener
@@ -23,7 +23,7 @@ export class Controller {
     Controller.throttled = throttle(this.notifyNewBlockEvent, 1000);
   }
 
-  public async run(): Promise<void> {
+  async run(): Promise<void> {
     try {
       this.events.subscribe('controller:new:block', Controller.throttled);
 

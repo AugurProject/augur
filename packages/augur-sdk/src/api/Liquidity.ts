@@ -10,8 +10,8 @@ export interface Order {
 }
 
 export interface OutcomeOrderbook {
-    bids: Array<Order>;
-    asks: Array<Order>;
+    bids: Order[];
+    asks: Order[];
 }
 
 export interface Orderbook {
@@ -38,14 +38,14 @@ interface VerticalLiquidity extends LeftRightLiquidity {
 }
 
 export interface GetLiquidityParams {
-    orderbook: Orderbook,
-    numTicks: BigNumber,
-    marketType: MarketType,
-    reportingFeeDivisor: BigNumber,
-    marketFeeDivisor: BigNumber,
-    numOutcomes: number,
-    spread: number,
-};
+    orderbook: Orderbook;
+    numTicks: BigNumber;
+    marketType: MarketType;
+    reportingFeeDivisor: BigNumber;
+    marketFeeDivisor: BigNumber;
+    numOutcomes: number;
+    spread: number;
+}
 
 export class Liquidity {
   private readonly augur: Augur;
@@ -71,15 +71,15 @@ export class Liquidity {
     return verticalLiquidity.left.plus(horizontalLiquidity.total).plus(verticalLiquidity.right).minus(left_overlap).minus(right_overlap);
   }
 
-  public getHorizontalLiquidity(orderbook: Orderbook, numTicks: BigNumber, feeMultiplier: BigNumber, numOutcomes: number, spread: number): HorizontalLiquidity {
+  getHorizontalLiquidity(orderbook: Orderbook, numTicks: BigNumber, feeMultiplier: BigNumber, numOutcomes: number, spread: number): HorizontalLiquidity {
     const horizontalLiquidity: HorizontalLiquidity  = {
-      total: new BigNumber(0)
+      total: new BigNumber(0),
     };
     for (let outcome = 1; outcome < numOutcomes; outcome++) {
       horizontalLiquidity[outcome] = {
         bids: new BigNumber(0),
         asks: new BigNumber(0),
-      }
+      };
 
       if (orderbook[outcome].bids.length < 1 || orderbook[outcome].asks.length < 1) continue;
 
@@ -121,8 +121,8 @@ export class Liquidity {
           ask_quantity_gotten = ask_quantity_gotten.plus(quantityToTake);
         }
 
-        horizontalLiquidity[outcome].bids = raw_bid_value
-        horizontalLiquidity[outcome].asks = raw_ask_value
+        horizontalLiquidity[outcome].bids = raw_bid_value;
+        horizontalLiquidity[outcome].asks = raw_ask_value;
         horizontalLiquidity.total = horizontalLiquidity.total.plus(raw_bid_value).plus(raw_ask_value);
       }
     }
@@ -130,11 +130,11 @@ export class Liquidity {
     return horizontalLiquidity;
   }
 
-  public getVerticalLiquidity(orderbook: Orderbook, numTicks: BigNumber, marketType: MarketType, feeMultiplier: BigNumber, numOutcomes: number, spread: number): VerticalLiquidity {
+  getVerticalLiquidity(orderbook: Orderbook, numTicks: BigNumber, marketType: MarketType, feeMultiplier: BigNumber, numOutcomes: number, spread: number): VerticalLiquidity {
     const vertical_liquidity = {
       left: new BigNumber(0),
       right: new BigNumber(0),
-    }
+    };
 
     const bid_quantities = {};
     const ask_quantities = {};
@@ -148,7 +148,7 @@ export class Liquidity {
         vertical_liquidity[outcome] = {
           left: new BigNumber(0),
           right: new BigNumber(0),
-        }
+        };
       }
 
       // BIDS
@@ -167,7 +167,7 @@ export class Liquidity {
       if (excess_spread.gt(0) && !bid_sum.isZero()) {
         for (let outcome = 1; outcome < numOutcomes; outcome++) {
           bid_prices[outcome] = bid_prices[outcome].minus(excess_spread.div(numOutcomes - 1));
-          const bidOrders = _.takeWhile(orderbook[outcome].bids, (order) => { return bid_prices[outcome].lte(order.price); });
+          const bidOrders = _.takeWhile(orderbook[outcome].bids, (order) => bid_prices[outcome].lte(order.price));
           if (bid_quantities[outcome] === undefined) bid_quantities[outcome] = new BigNumber(0);
           for (const order of bidOrders) bid_quantities[outcome] = bid_quantities[outcome].plus(order.amount);
         }
@@ -175,7 +175,7 @@ export class Liquidity {
         for (let outcome = 1; outcome < numOutcomes; outcome++) {
           let raw_bid_value = new BigNumber(0);
           let bid_quantity_gotten = new BigNumber(0);
-          const bidOrders = _.takeWhile(orderbook[outcome].bids, (order) => { return bid_prices[outcome].lte(order.price); });
+          const bidOrders = _.takeWhile(orderbook[outcome].bids, (order) => bid_prices[outcome].lte(order.price));
           for (const order of bidOrders) {
             let quantityToTake = new BigNumber(order.amount);
             if (bid_quantity_gotten.plus(quantityToTake).gt(num_shares)) quantityToTake = num_shares.minus(bid_quantity_gotten);
@@ -204,7 +204,7 @@ export class Liquidity {
       if (excess_spread.gt(0) && !ask_sum.isZero()) {
         for (let outcome = 1; outcome < numOutcomes; outcome++) {
           ask_prices[outcome] = ask_prices[outcome].plus(excess_spread.div(numOutcomes - 1));
-          const askOrders = _.takeWhile(orderbook[outcome].asks, (order) => { return ask_prices[outcome].gte(order.price); });
+          const askOrders = _.takeWhile(orderbook[outcome].asks, (order) => ask_prices[outcome].gte(order.price));
           if (ask_quantities[outcome] === undefined) ask_quantities[outcome] = new BigNumber(0);
           for (const order of askOrders) ask_quantities[outcome] = ask_quantities[outcome].plus(order.amount);
         }
@@ -212,7 +212,7 @@ export class Liquidity {
         for (let outcome = 1; outcome < numOutcomes; outcome++) {
           let raw_ask_value = new BigNumber(0);
           let ask_quantity_gotten = new BigNumber(0);
-          const askOrders = _.takeWhile(orderbook[outcome].asks, (order) => { return ask_prices[outcome].gte(order.price); });
+          const askOrders = _.takeWhile(orderbook[outcome].asks, (order) => ask_prices[outcome].gte(order.price));
           for (const order of askOrders) {
             let quantityToTake = new BigNumber(order.amount);
             if (ask_quantity_gotten.plus(quantityToTake).gt(num_shares)) quantityToTake = num_shares.minus(ask_quantity_gotten);
