@@ -47,13 +47,7 @@ export abstract class AbstractDB {
   }
 
   protected async upsertDocument(id: string, document: object): Promise<PouchDB.UpsertResponse> {
-    const previousBlockRev = await this.getPouchRevFromId(id);
-    const obj = Object.assign(
-      previousBlockRev ? { _rev: previousBlockRev } : {},
-      { _id: id },
-      document
-    );
-
+    // db.upsert sets _rev and _id so we don't have to
     return this.db.upsert(id, () => {
       return document;
     });
