@@ -19,6 +19,7 @@ export class SyncableDB extends AbstractDB {
   private syncStatus: SyncStatus;
   private idFields: Array<string>;
   private syncing: boolean;
+  private rollingBack: boolean;
 
   constructor(
     augur: Augur,
@@ -49,6 +50,7 @@ export class SyncableDB extends AbstractDB {
     db.registerEventListener(this.eventName, this.addNewBlock);
 
     this.syncing = false;
+    this.rollingBack = false;
   }
 
   public async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
@@ -92,6 +94,11 @@ export class SyncableDB extends AbstractDB {
   }
 
   public addNewBlock = async (blocknumber: number, logs: Array<ParsedLog>): Promise<number> => {
+    // don't do anything until rollback is complete. We'll sync back to this block later
+    if (this.rollingBack) {
+      return -1;
+    }
+
     if (this.eventName === "OrderEvent") {
       this.parseLogArrays(logs);
     }
@@ -141,18 +148,22 @@ export class SyncableDB extends AbstractDB {
 
   public async rollback(blockNumber: number): Promise<void> {
     // Remove each change from blockNumber onward
+    this.rollingBack = true;
+
     try {
-      let blocksToRemove = await this.db.find({
+      const blocksToRemove = await this.db.find({
         selector: { blockNumber: { $gte: blockNumber } },
         fields: ['_id', 'blockNumber', '_rev'],
       });
-      for (let doc of blocksToRemove.docs) {
+      for (const doc of blocksToRemove.docs) {
         await this.db.remove(doc._id, doc._rev);
       }
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing, true);
     } catch (err) {
       console.error(err);
     }
+
+    this.rollingBack = false;
   }
 
   protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<Array<ParsedLog>> {
