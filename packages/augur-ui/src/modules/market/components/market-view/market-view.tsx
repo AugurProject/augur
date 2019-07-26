@@ -312,7 +312,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
                       />
                       <div className={Styles.MarketView__priceHistoryChart}>
-                        <p>Price History</p>
+                        <h3>Price History</h3>
                         <MarketOutcomesChart
                           marketId={marketId}
                           selectedOutcomeId={outcomeId}
