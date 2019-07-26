@@ -14468,6 +14468,33 @@
 						"type": "function"
 					},
 					{
+						"constant": false,
+						"inputs": [
+							{
+								"name": "_markets",
+								"type": "address[]"
+							},
+							{
+								"name": "_shareHolder",
+								"type": "address"
+							},
+							{
+								"name": "_affiliateAddress",
+								"type": "address"
+							}
+						],
+						"name": "claimMarketsProceeds",
+						"outputs": [
+							{
+								"name": "",
+								"type": "bool"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
+					},
+					{
 						"constant": true,
 						"inputs": [],
 						"name": "augur",
@@ -14498,6 +14525,33 @@
 							{
 								"name": "",
 								"type": "uint256"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
+					},
+					{
+						"constant": false,
+						"inputs": [
+							{
+								"name": "_market",
+								"type": "address"
+							},
+							{
+								"name": "_shareHolder",
+								"type": "address"
+							},
+							{
+								"name": "_affiliateAddress",
+								"type": "address"
+							}
+						],
+						"name": "claimTradingProceeds",
+						"outputs": [
+							{
+								"name": "",
+								"type": "bool"
 							}
 						],
 						"payable": false,
@@ -14575,58 +14629,12 @@
 						"constant": false,
 						"inputs": [
 							{
-								"name": "_market",
-								"type": "address"
-							},
-							{
-								"name": "_shareHolder",
-								"type": "address"
-							}
-						],
-						"name": "claimTradingProceeds",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
 								"name": "_augur",
 								"type": "address"
 							}
 						],
 						"name": "initialize",
 						"outputs": [],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
-								"name": "_markets",
-								"type": "address[]"
-							},
-							{
-								"name": "_shareHolder",
-								"type": "address"
-							}
-						],
-						"name": "claimMarketsProceeds",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
 						"payable": false,
 						"stateMutability": "nonpayable",
 						"type": "function"

@@ -231,8 +231,8 @@ export class ContractAPI {
     });
   }
 
-  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string): Promise<void> {
-    await this.augur.contracts.claimTradingProceeds.claimTradingProceeds(market.address, shareholder);
+  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, affiliateAddress: string = "0x0000000000000000000000000000000000000000"): Promise<void> {
+    await this.augur.contracts.claimTradingProceeds.claimTradingProceeds(market.address, shareholder, affiliateAddress);
   }
 
   async getOrderPrice(orderID: string): Promise<BigNumber> {

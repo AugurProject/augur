@@ -115,8 +115,8 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     assert market.finalize()
 
     claimTradingProceeds = fixture.contracts['ClaimTradingProceeds']
-    assert claimTradingProceeds.claimTradingProceeds(market.address, account1)
-    assert claimTradingProceeds.claimTradingProceeds(market.address, account2)
+    assert claimTradingProceeds.claimTradingProceeds(market.address, account1, nullAddress)
+    assert claimTradingProceeds.claimTradingProceeds(market.address, account2, nullAddress)
 
 
 def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amount, fxpPrice, numTicks):
