@@ -61,7 +61,7 @@ test('Contract :: ReputationToken', async () => {
 test('Contract :: Cash', async () => {
   const cash = contracts.cash;
   const universe = contracts.universe;
-  const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
+  const marketCreationCost = await universe.getOrCacheValidityBond_();
   await cash.faucet(marketCreationCost, { sender: ACCOUNTS[0].publicKey });
   await cash.approve(addresses.Augur, marketCreationCost, {
     sender: ACCOUNTS[0].publicKey,
@@ -74,7 +74,7 @@ test('Contract :: Cash', async () => {
 test('Contract :: Universe :: Create Market', async () => {
   const cash = contracts.cash;
   const universe = contracts.universe;
-  const marketCreationCost = await universe.getOrCacheMarketCreationCost_();
+  const marketCreationCost = await universe.getOrCacheValidityBond_();
   await cash.faucet(marketCreationCost, { sender: ACCOUNTS[0].publicKey });
   await cash.approve(addresses.Augur, marketCreationCost, {
     sender: ACCOUNTS[0].publicKey,
@@ -89,16 +89,17 @@ test('Contract :: Universe :: Create Market', async () => {
     formatBytes32String('big'),
     formatBytes32String('small'),
   ];
-  const topic = formatBytes32String('boba');
+  const categories: string[] = [
+    'boba',
+  ];
   const description = 'Will big or small boba be the most popular in 2019?';
-  const extraInfo = JSON.stringify({ description });
+  const extraInfo = JSON.stringify({ description, categories });
   const maybeMarketCreatedEvent = (await universe.createCategoricalMarket(
     endTime,
     fee,
     affiliateFeeDivisor,
     ACCOUNTS[0].publicKey,
     outcomes,
-    topic,
     extraInfo,
     { sender: ACCOUNTS[0].publicKey }
   )).pop();

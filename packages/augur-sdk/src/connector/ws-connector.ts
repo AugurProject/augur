@@ -7,11 +7,11 @@ import WebSocketAsPromised from "websocket-as-promised";
 export class WebsocketConnector extends BaseConnector {
   private socket: WebSocketAsPromised;
 
-  constructor(public readonly endpoint: string) {
+  constructor(readonly endpoint: string) {
     super();
   }
 
-  public async connect(ethNodeUrl: string, account?: string): Promise<any> {
+  async connect(ethNodeUrl: string, account?: string): Promise<any> {
     this.socket = new WebSocketAsPromised(this.endpoint, {
       packMessage: (data: any) => JSON.stringify(data),
       unpackMessage: (message: string) => JSON.parse(message),
@@ -37,7 +37,7 @@ export class WebsocketConnector extends BaseConnector {
     return this.socket.open();
   }
 
-  public messageReceived(message: any) {
+  messageReceived(message: any) {
     if (message.result) {
       if (this.subscriptions[message.eventName]) {
         this.subscriptions[message.eventName].callback(message.result);
@@ -45,23 +45,23 @@ export class WebsocketConnector extends BaseConnector {
     }
   }
 
-  public async disconnect(): Promise<any> {
+  async disconnect(): Promise<any> {
     return this.socket.close();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
+  bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
       return this.socket.sendRequest({ method: f.name, params, jsonrpc: "2.0" });
     };
   }
 
-  public async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+  async on<T extends SubscriptionType>(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
 
     const response: any = await this.socket.sendRequest({ method: "subscribe", eventName, jsonrpc: "2.0", params: [eventName] });
     this.subscriptions[eventName] = { id: response.result.subscription, callback: super.callbackWrapper(callback) };
   }
 
-  public async off(eventName: SubscriptionEventName | string): Promise<void> {
+  async off(eventName: SubscriptionEventName | string): Promise<void> {
     const subscription = this.subscriptions[eventName];
     if (subscription) {
       await this.socket.sendRequest({ method: "unsubscribe", subscription: subscription.id, jsonrpc: "2.0", params: [subscription.id] });

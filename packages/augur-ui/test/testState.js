@@ -285,16 +285,6 @@ const testState = {
       name: "tag"
     }
   },
-  transactionsData: {
-    testtransaction12345: {
-      id: "testtransaction12345",
-      message:
-        "CORS request rejected: https://faucet.augur.net/faucet/0x0000000000000000000000000000000000000001",
-      status: "failed",
-      type: "register",
-      data: {}
-    }
-  },
   allMarkets: [
     {
       id: "0xMARKET1",

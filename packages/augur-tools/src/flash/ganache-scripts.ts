@@ -5,7 +5,8 @@ import {
   createSeed,
   writeSeedFile,
   Seed,
-  createDb, createDbFromSeed
+  createDb, createDbFromSeed,
+  hashContracts,
 } from "../libs/ganache";
 import { FlashArguments, FlashSession } from "./flash";
 
@@ -249,7 +250,10 @@ export function addGanacheScripts(flash: FlashSession) {
       const writeArtifacts = args.write_artifacts as boolean;
 
       if (fs.existsSync(filepath)) {
-        return; // already exists
+        const seed: Seed = await loadSeedFile(filepath);
+        if (seed.contractsHash === hashContracts()) {
+          return; // no need to update seed
+        }
       }
 
       await this.call("ganache", { internal: true });

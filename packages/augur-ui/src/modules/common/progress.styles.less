@@ -1,22 +1,36 @@
 @import (reference) '~assets/styles/shared';
 
 .ProgressLabel {
-  .text-10;
+  .mono-10;
 
   align-items: baseline;
-  color: @color-tertiary-text;
+  color: @color-shadow-text;
   display: flex;
   flex-flow: column nowrap;
   line-height: @size-14;
   white-space: nowrap;
 
+  @media @breakpoint-mobile {
+    .mono-9;
+
+    color: @color-tertiary-info-text;
+  }
+
+  > span:first-of-type {
+    text-transform: uppercase;
+  }
+
   > span:last-of-type {
-    .text-12-bold;
+    .mono-12;
 
     color: @color-secondary-text;
     line-height: @size-16;
     text-align: left;
     width: 100%;
+
+    @media @breakpoint-mobile {
+      .mono-10;
+    }
   }
 
   &.ProgressLabel__FirstBreakpoint {

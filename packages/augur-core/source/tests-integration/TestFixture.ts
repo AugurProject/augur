@@ -64,15 +64,15 @@ export class TestFixture {
     }
 
     public async createMarket(universe: Universe, outcomes: string[], endTime: BigNumber, feePerEthInWei: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string): Promise<Market> {
-        const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
+        const marketCreationFee = await universe.getOrCacheValidityBond_();
 
         console.log("Creating Market");
         await this.cash.faucet(marketCreationFee);
-        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), '{description: "description"}');
+        const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, '{categories: [" "], description: "description"}');
         if (!marketAddress || marketAddress == "0x") {
             throw new Error("Unable to get address for new categorical market.");
         }
-        await universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, stringTo32ByteHex(" "), '{description: "description"}');
+        await universe.createCategoricalMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporter, outcomes, '{categories: [" "], description: "description"}');
         const market = new Market(this.dependencies, marketAddress);
         return market;
     }
@@ -236,7 +236,7 @@ export class TestFixture {
     }
 
     public async doInitialReport(market: Market, payoutNumerators: Array<BigNumber>): Promise<void> {
-        await market.doInitialReport(payoutNumerators, "");
+        await market.doInitialReport(payoutNumerators, "", new BigNumber(0));
         return;
     }
 

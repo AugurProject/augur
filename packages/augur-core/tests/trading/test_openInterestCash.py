@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+
+from eth_tester.exceptions import TransactionFailed
+from pytest import raises
+from utils import fix, AssertLog, nullAddress, TokenDelta
+from constants import YES, NO
+
+def test_openInterestCash(contractsFixture, augur, universe, cash, market):
+    constants = contractsFixture.contracts["Constants"]
+    openInterestCashAddress = universe.openInterestCash()
+    openInterestCash = contractsFixture.applySignature("OICash", openInterestCashAddress)
+
+    account1 = contractsFixture.accounts[0]
+    account2 = contractsFixture.accounts[1]
+
+    assert openInterestCash.totalSupply() == 0
+    assert openInterestCash.balanceOf(account1) == 0
+
+    initialUniverseTotalBalance = universe.totalBalance()
+
+    with raises(TransactionFailed):
+        openInterestCash.deposit(1, sender=account2)
+
+    depositAmount = 10 * 10**18
+    assert cash.faucet(depositAmount)
+    assert cash.approve(augur.address, depositAmount)
+
+    with TokenDelta(cash, -depositAmount, account1):
+        assert openInterestCash.deposit(depositAmount)
+
+    assert universe.totalBalance() == depositAmount + initialUniverseTotalBalance
+    assert universe.marketBalance(nullAddress) == depositAmount
+    assert universe.getTargetRepMarketCapInAttoCash() == depositAmount * constants.TARGET_REP_MARKET_CAP_MULTIPLIER()
+    assert openInterestCash.totalSupply() == depositAmount
+
+    with raises(TransactionFailed):
+        openInterestCash.withdraw(1, sender=account2)
+
+    with raises(TransactionFailed):
+        openInterestCash.withdraw(depositAmount + 1)
+
+    reportingFeeDivisor = universe.getOrCacheReportingFeeDivisor()
+    disputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
+
+    expectedFees = depositAmount / reportingFeeDivisor
+    expectedPayout = depositAmount - expectedFees
+    with TokenDelta(cash, expectedPayout, account1):
+        with TokenDelta(cash, expectedFees, disputeWindowAddress):
+            assert openInterestCash.withdraw(depositAmount)
+
+    assert universe.totalBalance() == initialUniverseTotalBalance
+    assert universe.marketBalance(nullAddress) == 0
+    assert universe.getTargetRepMarketCapInAttoCash() == 0
+    assert openInterestCash.totalSupply() == 0
+
+def test_openInterestCash_payFees(contractsFixture, augur, universe, cash, market):
+    openInterestCashAddress = universe.openInterestCash()
+    openInterestCash = contractsFixture.applySignature("OICash", openInterestCashAddress)
+
+    account1 = contractsFixture.accounts[0]
+    account2 = contractsFixture.accounts[1]
+
+    depositAmount = 10 * 10**18
+    assert cash.faucet(depositAmount)
+    assert cash.approve(augur.address, depositAmount)
+    assert cash.faucet(depositAmount, sender=account2)
+    assert cash.approve(augur.address, depositAmount, sender=account2)
+
+    with TokenDelta(cash, -depositAmount, account1):
+        assert openInterestCash.deposit(depositAmount)
+
+    with TokenDelta(cash, -depositAmount, account2):
+        assert openInterestCash.deposit(depositAmount, sender=account2)
+
+    reportingFeeDivisor = universe.getOrCacheReportingFeeDivisor()
+    disputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
+
+    halfDepositFees = depositAmount / reportingFeeDivisor / 2
+
+    # We'll have account 2 pay half of the deposit amount fee balance
+    with TokenDelta(cash, halfDepositFees, disputeWindowAddress):
+        assert openInterestCash.payFees(halfDepositFees, sender=account2)
+
+    totalAmountFeesPaid = openInterestCash.totalAmountFeesPaid()
+    assert totalAmountFeesPaid == depositAmount / 2
+
+    # On withdraw account 1 will only have to pay half of the amount owed
+    expectedFees = depositAmount / reportingFeeDivisor / 2
+    expectedPayout = depositAmount - expectedFees
+    with TokenDelta(cash, expectedPayout, account1):
+        with TokenDelta(cash, expectedFees, disputeWindowAddress):
+            assert openInterestCash.withdraw(depositAmount)

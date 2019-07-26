@@ -19,7 +19,6 @@ import store from "src/store";
   outcomes: {},
   bidsAsks: {},
   accountTrades: {},
-  transactionsData: {}
 }
 */
 describe(`store.js`, () => {
@@ -73,17 +72,6 @@ describe(`store.js`, () => {
       state.accountTrades,
       {},
       "accountTrades is an empty object"
-    );
-
-    assert.isOk(state.transactionsData, "transactionsData is not defined");
-    assert.isObject(
-      state.transactionsData,
-      "transactionsData is not an object"
-    );
-    assert.deepEqual(
-      state.transactionsData,
-      {},
-      "transactionsData is not an empty object"
     );
   });
 });

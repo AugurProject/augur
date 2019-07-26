@@ -23,19 +23,18 @@ beforeAll(async () => {
 test("State API :: Status :: getSyncData", async () => {
   const dbName = (await db).getDatabaseName("MarketCreated");
 
-  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
   (await db).syncStatus.setHighestSyncBlock(dbName, 10, false);
 
   const syncData = await api.route("getSyncData", {});
 
   const highestAvailableBlockNumber = syncData.highestAvailableBlockNumber;
   const blocksBehindCurrent = highestAvailableBlockNumber - 10;
-  const percentBehindCurrent = (blocksBehindCurrent * 100 / highestAvailableBlockNumber).toFixed(4);
+  const percentSynced = (blocksBehindCurrent * 100 / highestAvailableBlockNumber).toFixed(4);
 
   expect(syncData).toEqual({
     highestAvailableBlockNumber: highestAvailableBlockNumber,
     lastSyncedBlockNumber: 10,
     blocksBehindCurrent: blocksBehindCurrent,
-    percentBehindCurrent: percentBehindCurrent,
+    percentSynced: percentSynced,
   });
 });

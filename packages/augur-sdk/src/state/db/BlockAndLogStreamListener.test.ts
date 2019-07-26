@@ -27,7 +27,7 @@ describe("BlockstreamListener", () => {
       subscribeToOnBlockAdded: jest.fn(),
       subscribeToOnBlockRemoved: jest.fn(),
       subscribeToOnLogsAdded: jest.fn(),
-      subscribeToOnLogsRemoved: jest.fn()
+      subscribeToOnLogsRemoved: jest.fn(),
     };
 
     eventLogDBRouter = new EventLogDBRouter((logs) => {
@@ -38,7 +38,7 @@ describe("BlockstreamListener", () => {
         transactionHash: log.transactionHash,
         transactionLogIndex: 1,
         logIndex: 1,
-        removed: false
+        removed: false,
       }));
     });
 
@@ -48,7 +48,7 @@ describe("BlockstreamListener", () => {
       eventLogDBRouter,
       listenForNewBlocks: jest.fn(),
       getEventTopics: jest.fn(),
-      getBlockByHash: jest.fn()
+      getBlockByHash: jest.fn(),
     };
 
     blockAndLogStreamerListener = new BlockAndLogStreamerListener(deps);
@@ -88,13 +88,13 @@ describe("BlockstreamListener", () => {
       beforeEach(() => {
         onRemoveLogCallback = jest.fn();
         deps.getEventTopics.mockReturnValue([
-          "0xSOMETOPIC"
+          "0xSOMETOPIC",
         ]);
 
         nextBlock = {
           number: "1234",
           hash: "1234",
-          parentHash: "ParentHash"
+          parentHash: "ParentHash",
         };
 
         blockAndLogStreamerListener.listenForEvent("SomeEvent", onNewLogCallback, onRemoveLogCallback);
@@ -141,7 +141,7 @@ describe("BlockstreamListener", () => {
           expect.objectContaining({
             transactionHash: "HASHONE",
           }),
-        ]),
+        ])
       );
     });
   });

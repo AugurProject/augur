@@ -18,6 +18,7 @@ export class SDK {
   public env: EnvObject = null;
   public isSubscribed: boolean = false;
   public networkId: string;
+  public account: string;
   private signerNetworkId: string;
 
   public async makeApi(
@@ -30,6 +31,7 @@ export class SDK {
   ) {
     this.isWeb3Transport = isWeb3;
     this.env = env;
+    this.account = account;
     this.signerNetworkId = signerNetworkId;
     const ethersProvider = new EthersProvider(provider, 10, 0, 40);
     this.networkId = await ethersProvider.getNetworkId();

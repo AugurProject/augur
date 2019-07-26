@@ -1,8 +1,4 @@
 # Build a base package for augur-core.
-#
-# The build process is structured this way to encourage fail fast behavior so
-# that this image's build will fail earlier for compiling contracts than
-# for other pieces
 FROM augurproject/augur-build:latest as augur-build
 
 ARG SOLC_VERSION=v0.5.4

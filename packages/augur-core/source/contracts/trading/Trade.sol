@@ -43,7 +43,6 @@ contract Trade is Initializable, ReentrancyGuard {
     ICash public cash;
 
     address private constant NULL_ADDRESS = address(0);
-    uint256 private constant DEFAULT_LOOP_LIMIT = 3;
 
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();

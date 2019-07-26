@@ -6,14 +6,14 @@ export class Events {
   private readonly provider: Provider;
   private readonly augurAddress: string;
 
-  public constructor(provider: Provider, augurAddress: string) {
+  constructor(provider: Provider, augurAddress: string) {
     this.provider = provider;
     this.augurAddress = augurAddress;
     this.provider.storeAbiData(abi.Augur as Abi, "Augur");
   }
 
-  public async getLogs(eventName: string, fromBlock: number, toBlock: number, additionalTopics?: Array<string | Array<string>>): Promise<Array<ParsedLog>> {
-    let topics: Array<string | Array<string>> = this.getEventTopics(eventName);
+  async getLogs(eventName: string, fromBlock: number, toBlock: number, additionalTopics?: Array<string | string[]>): Promise<ParsedLog[]> {
+    let topics: Array<string | string[]> = this.getEventTopics(eventName);
     if (additionalTopics) {
       topics = topics.concat(additionalTopics);
     }
@@ -21,11 +21,11 @@ export class Events {
     return this.parseLogs(logs);
   }
 
-  public getEventTopics = (eventName: string) => {
+  getEventTopics = (eventName: string) => {
     return [this.provider.getEventTopic("Augur", eventName)];
   };
 
-  public parseLogs = (logs: Array<Log>): Array<ParsedLog> => {
+  parseLogs = (logs: Log[]): ParsedLog[] => {
     return logs.map((log) => {
       const logValues = this.provider.parseLogValues("Augur", log);
       return Object.assign(
@@ -38,8 +38,8 @@ export class Events {
           transactionLogIndex: log.transactionLogIndex,
           transactionHash: log.transactionHash,
           logIndex: log.logIndex,
-          topics: log.topics
-        },
+          topics: log.topics,
+        }
       );
     });
   }

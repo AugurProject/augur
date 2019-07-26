@@ -13,8 +13,8 @@ export const selectInfoAlerts = selectAlertsByLevel(alertLevels.INFO);
 export const selectInfoAlertsAndSeenCount = createSelector(
   selectInfoAlerts,
   alerts => {
-    const { universe, connection } = store.getState();
-    if (!connection.isConnected) return { unseenCount: 0, alerts: [] };
+    const { universe, connection, authStatus } = store.getState();
+    if (!connection.isConnected || !authStatus.isLogged) return { unseenCount: 0, alerts: [] };
 
     let filteredAlerts = alerts;
     const networkId = getNetworkId();

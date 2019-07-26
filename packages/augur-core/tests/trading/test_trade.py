@@ -823,7 +823,7 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     if finalized:
         if invalid:
             contractsFixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
-            market.doInitialReport([market.getNumTicks(), 0, 0], "")
+            market.doInitialReport([market.getNumTicks(), 0, 0], "", 0)
         else:
             proceedToNextRound(contractsFixture, market)
 
@@ -877,7 +877,7 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
 
         if invalid:
             contractsFixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
-            market.doInitialReport([market.getNumTicks(), 0, 0], "")
+            market.doInitialReport([market.getNumTicks(), 0, 0], "", 0)
         else:
             proceedToNextRound(contractsFixture, market)
 

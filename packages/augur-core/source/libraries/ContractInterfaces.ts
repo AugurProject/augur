@@ -37,6 +37,8 @@ export class MapFactory extends c.MapFactory<BigNumber> {
 }
 export class MarketFactory extends c.MarketFactory<BigNumber> {
 }
+export class OICashFactory extends c.OICashFactory<BigNumber> {
+}
 export class ReputationTokenFactory extends c.ReputationTokenFactory<BigNumber> {
 }
 export class ShareTokenFactory extends c.ShareTokenFactory<BigNumber> {
@@ -70,6 +72,8 @@ export class CompleteSets extends c.CompleteSets<BigNumber> {
 export class CreateOrder extends c.CreateOrder<BigNumber> {
 }
 export class FillOrder extends c.FillOrder<BigNumber> {
+}
+export class OICash extends c.OICash<BigNumber> {
 }
 export class Orders extends c.Orders<BigNumber> {
 }

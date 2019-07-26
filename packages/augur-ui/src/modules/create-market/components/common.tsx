@@ -6,6 +6,7 @@ import { TextInput } from 'modules/common/form';
 import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
+import Link from "modules/create-market/containers/link";
 
 import Styles from 'modules/create-market/components/common.styles';
 
@@ -99,22 +100,6 @@ export const LargeSubheaders = (props: SubheadersProps) => (
       smallSubheader={props.smallSubheader}
     />
   </div>        
-);
-
-export interface LinkProps {
-  href?: string;
-  underline?: Boolean;
-  ownLine?: Boolean;
-}
-
-export const Link = (props: LinkProps) => (
-  <a 
-    className={classNames(Styles.Link, {[Styles.underline]: props.underline, [Styles.ownLine]: props.ownLine})} 
-    target="blank" 
-    href={props.href || "https://docs.augur.net"}
-  >
-    Learn more
-  </a>      
 );
 
 export const SmallSubheaders = (props: SubheadersProps) => (

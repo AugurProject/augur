@@ -1,9 +1,7 @@
 import { isMarketLoaded } from "modules/markets/helpers/is-market-loaded";
 import {
-  updateMarketsData,
-  updateMarketsDisputeInfo
+  updateMarketsData
 } from "modules/markets/actions/update-markets-data";
-import { getDisputeInfo } from "modules/reports/actions/get-dispute-info";
 import logError from "utils/log-error";
 import { AppState } from "store";
 import { Action } from "redux";
@@ -64,24 +62,5 @@ export const loadMarketsDisputeInfo = (
   marketIds: Array<string>,
   callback: NodeStyleCallback = logError
 ) => (dispatch: ThunkDispatch<void, any, Action>): void => {
-  getDisputeInfo(
-    marketIds,
-    (err: any, marketsDisputeInfoArray: Array<string>) => {
-      if (err) return callback(err);
-      if (!marketsDisputeInfoArray.length) return callback(null);
-      const marketsDisputeInfo = marketsDisputeInfoArray.reduce(
-        (p, marketDisputeInfo: any) => ({
-          ...p,
-          [marketDisputeInfo.marketId]: marketDisputeInfo
-        }),
-        {}
-      );
-      dispatch(
-        loadMarketsInfoIfNotLoaded(marketIds, () => {
-          dispatch(updateMarketsDisputeInfo(marketsDisputeInfo));
-          callback(null);
-        })
-      );
-    }
-  );
+  dispatch(loadMarketsInfo(marketIds, callback));
 };
