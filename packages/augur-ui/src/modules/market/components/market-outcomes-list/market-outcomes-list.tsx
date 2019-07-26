@@ -45,7 +45,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
     return (
       <section className={Styles.OutcomesList}>
         {!popUp && (
-          <div className={Styles.Heading}>Outcomes</div>
+          <h3 className={Styles.Heading}>Outcomes</h3>
         )}
         <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes)}>
           <ul className={classNames(HeaderStyles.DataTableHeader, HeaderStyles.OutcomesHeader)}>
