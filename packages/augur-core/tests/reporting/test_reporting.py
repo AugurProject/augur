@@ -188,7 +188,7 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         proceedToNextRound(localFixture, market)
         assert disputeWindow != market.getDisputeWindow()
         disputeWindow = market.getDisputeWindow()
-        assert disputeWindow == universe.getCurrentDisputeWindow(False)
+        assert disputeWindow == universe.getOrCreateCurrentDisputeWindow(False)
 
 @mark.parametrize('finalizeByMigration, manuallyDisavow', [
     (True, True),
@@ -246,7 +246,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
         categoricalMarket.contribute([0,2,2,categoricalMarket.getNumTicks()-4], 1, "")
 
     # We cannot purchase new Participation Tokens during a fork
-    disputeWindowAddress = universe.getCurrentDisputeWindow(False)
+    disputeWindowAddress = universe.getOrCreateCurrentDisputeWindow(False)
     disputeWindow = localFixture.applySignature("DisputeWindow", disputeWindowAddress)
 
     # finalize the fork

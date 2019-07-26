@@ -39,7 +39,7 @@ export class ContractAPI {
   }
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheMarketCreationCost_();
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     await this.faucet(marketCreationFee);
 
     return this.augur.createYesNoMarket(params);
@@ -59,7 +59,7 @@ export class ContractAPI {
   }
 
   async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheMarketCreationCost_();
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     await this.faucet(marketCreationFee);
 
     return this.augur.createCategoricalMarket(params);
@@ -80,7 +80,7 @@ export class ContractAPI {
   }
 
   async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheMarketCreationCost_();
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     await this.faucet(marketCreationFee);
 
     return this.augur.createScalarMarket(params);

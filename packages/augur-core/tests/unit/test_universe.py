@@ -174,7 +174,7 @@ def test_universe_calculate_bonds_stakes(localFixture, chain, populatedUniverse,
     assert populatedUniverse.getOrCacheValidityBond() == newValidityBondValue
     assert populatedUniverse.getOrCacheDesignatedReportNoShowBond() == newNoshowBondValue
 
-    assert populatedUniverse.getOrCacheMarketCreationCost() == newValidityBondValue
+    assert populatedUniverse.getOrCacheValidityBond() == newValidityBondValue
 
 @mark.skip
 def test_universe_calculate_floating_value_defaults(populatedUniverse):

@@ -214,7 +214,7 @@ connected to ethereum
 }
 
 augur.rpc.setDebugOptions({ tx: true });
-augur.api.Universe.getOrCacheMarketCreationCost({
+augur.api.Universe.getOrCacheValidityBond({
   onSent: function (result) {...},
   onSuccess: function (result) {...},
   onFailed: function (result) {...}
@@ -224,7 +224,7 @@ payload transact:
 {
   constant: false,  
   from: "0x40485264986740c8fb3d11e814bd94cf86012d29"
-  name: "getOrCacheMarketCreationCost"
+  name: "getOrCacheValidityBond"
   params: [],
   returns: "uint256",
   send: true,

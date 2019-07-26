@@ -222,7 +222,7 @@ contract ERC777 is IERC777, IERC20 {
     */
     function transferFrom(address holder, address recipient, uint256 amount) public returns (bool) {
         require(recipient != address(0), "ERC777: transfer to the zero address");
-        require(holder != address(0), "ERC777: transfer from the zero address");
+        require(holder != address(0));
 
         address spender = msg.sender;
 
@@ -297,7 +297,7 @@ contract ERC777 is IERC777, IERC20 {
     )
         private
     {
-        require(from != address(0), "ERC777: send from the zero address");
+        require(from != address(0));
         require(to != address(0), "ERC777: send to the zero address");
 
         _callTokensToSend(operator, from, to, amount, userData, operatorData);
