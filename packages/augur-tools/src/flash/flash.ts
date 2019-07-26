@@ -55,22 +55,30 @@ export class FlashSession {
   async call(name: string, args: FlashArguments): Promise<any> {
     const script = this.scripts[name];
 
+    const readyArgs: FlashArguments = {};
+    Object.keys(args).map((name) => {
+      readyArgs[name.replace("-", "_")] = args[name];
+    });
+
     if (typeof script === "undefined") {
       throw Error(`No such script "${name}"`);
     }
 
     // Make sure required parameters are present.
     for (const option of script.options || []) {
+      const optionName = option.name.replace("-", "_");
+
+      const arg = readyArgs[optionName];
+
       if (option.required) {
-        const arg = args[option.name];
         if (typeof arg === "undefined") {
-          this.log(`ERROR: Must specify "--${option.name}"`);
+          this.log(`ERROR: Must specify "--${optionName}"`);
           return;
         }
       }
     }
 
-    return script.call.bind(this)(args);
+    return script.call.bind(this)(readyArgs);
   }
 
   noProvider() {
@@ -84,7 +92,7 @@ export class FlashSession {
 
   async ensureUser(): Promise<ContractAPI> {
     if (typeof this.contractAddresses === "undefined") {
-      throw Error("ERROR: Must load contract addresses first. Maybe run `ganache`?");
+      throw Error("ERROR: Must load contract addresses first.");
     }
 
     this.user = await ContractAPI.userWrapper(this.accounts[0], this.provider, this.contractAddresses);

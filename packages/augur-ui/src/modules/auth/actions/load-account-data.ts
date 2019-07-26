@@ -15,7 +15,6 @@ import { ACCOUNT_TYPES } from 'modules/common/constants';
 import { LoginAccount, NodeStyleCallback, WindowApp } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { updateAccountApproval } from 'modules/auth/actions/update-account-approval';
 
 export const loadAccountData = (
   account: LoginAccount,

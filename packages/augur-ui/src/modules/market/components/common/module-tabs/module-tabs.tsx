@@ -77,10 +77,10 @@ export default class ModuleTabs extends Component {
                   this.state.selected === index && this.props.noBorder,
                 [Styles.ActiveBorderBetween]:
                   this.state.selected === index && this.props.borderBetween,
-                [Styles.IsNew]: child.props.isNew
+                [Styles.IsNew]: child.props && child.props.isNew,
               })}
             >
-              {child.props.label}
+              {child.props && child.props.label || ""}
             </span>
           </button>
         </li>
@@ -109,7 +109,7 @@ export default class ModuleTabs extends Component {
 
   renderContent() {
     return (
-      <div className={Styles.Ccontent}>
+      <div className={Styles.Content}>
         {this.props.children[this.state.selected]}
       </div>
     );

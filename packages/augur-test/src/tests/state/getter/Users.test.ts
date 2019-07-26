@@ -1,9 +1,5 @@
-import {
-  makeDbMock,
-  makeProvider,
-  seedPath,
-} from '../../../libs';
-import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
+import { makeDbMock, makeProvider } from '../../../libs';
+import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import {
@@ -68,11 +64,11 @@ describe('State API :: Users :: ', () => {
   let mary: ContractAPI;
 
   beforeAll(async () => {
-    const { addresses } = loadSeed(seedPath);
-    const provider = await makeProvider(ACCOUNTS);
+    const seed = await loadSeedFile(defaultSeedPath);
+    const provider = await makeProvider(seed, ACCOUNTS);
 
-    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
-    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, addresses);
+    john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
+    mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();

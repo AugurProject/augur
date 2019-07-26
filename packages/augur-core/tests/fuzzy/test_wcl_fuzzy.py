@@ -109,7 +109,7 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     # Finalize and claim proceeds
     fixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
     payoutNumerators = [0, 0, market.getNumTicks()] if market.getNumberOfOutcomes() == 3 else [0, 0, 0, market.getNumTicks()]
-    market.doInitialReport(payoutNumerators, "")
+    market.doInitialReport(payoutNumerators, "", 0)
     disputeWindow = fixture.applySignature('DisputeWindow', market.getDisputeWindow())
     fixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     assert market.finalize()

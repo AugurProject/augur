@@ -4,25 +4,26 @@ import { SCALAR } from "modules/common/constants";
 import Styles from "modules/market/components/core-properties/core-properties.styles.less";
 import getValue from "utils/get-value";
 import { PropertyLabel } from "modules/common/labels";
+import { formatPercent, formatDai, formatNone, formatNumber } from "utils/format-number";
 
 // TODO: Get market 24 hour volume, currently just using volume
 const CoreProperties = ({ market }) => (
   <div className={Styles.CoreProperties}>
     <PropertyLabel
       label="Total Volume"
-      value={`${market.volumeFormatted.formatted} DAI`}
+      value={(market.volumeFormatted ? market.volumeFormatted.formatted : formatDai(0).formatted) + ' DAI'}
     />
     <PropertyLabel
       label="Open Interest"
-      value={`${market.openInterestFormatted.formatted} DAI`}
+      value={(market.openInterestFormatted ? market.openInterestFormatted.formatted : formatDai(0).formatted) + ' DAI'}
     />
     <PropertyLabel
       label="24hr Volume"
-      value={`${market.volumeFormatted.formatted} DAI`}
+      value={(market.volumeFormatted ? market.volumeFormatted.formatted : formatDai(0).formatted) + ' DAI'}
     />
     <PropertyLabel
       label="Estimated Fee"
-      value={`${market.settlementFeePercent.full}`}
+      value={market.settlementFeePercent ? market.settlementFeePercent.full : formatPercent(market.settlementFee).full}
       hint={
         <>
           <h4>Trading Settlement Fee</h4>

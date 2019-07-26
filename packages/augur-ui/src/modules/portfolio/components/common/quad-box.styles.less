@@ -46,11 +46,21 @@
 }
 
 @media @breakpoint-mobile-mid {
+  .NormalOnMobile {
+    background: @color-theme-primary;
+    border: 1px solid @color-primary-alternate;
+    padding-bottom: @size-24;
+  }
+  
   .ShowOnMobile {
     display: flex;
   }
 
   .HideOnMobile {
+    display: none;
+  }
+
+  .Hide {
     display: none;
   }
 }

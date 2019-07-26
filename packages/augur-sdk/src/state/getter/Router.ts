@@ -32,7 +32,7 @@ export function Getter(alternateInterface?: string) {
 type GetterFunction<T, TBigNumber> = (db: DB, params: T) => Promise<unknown>;
 
 export class Router {
-  public static Add<T, R, TBigNumber>(name: string, getterFunction: GetterFunction<T, TBigNumber>, decodedParams: t.Validation<T>) {
+  static Add<T, R, TBigNumber>(name: string, getterFunction: GetterFunction<T, TBigNumber>, decodedParams: t.Validation<T>) {
     Router.routings.set(name, { func: getterFunction, params: decodedParams });
   }
 
@@ -46,7 +46,7 @@ export class Router {
     this.db = db;
   }
 
-  public async route(name: string, params: any): Promise<any> {
+  async route(name: string, params: any): Promise<any> {
     const getter = Router.routings.get(name);
 
     if (!getter) {

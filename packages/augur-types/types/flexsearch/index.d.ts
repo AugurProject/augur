@@ -20,7 +20,9 @@ declare module "flexsearch" {
 
   interface market {
     market: string;
-    topic: string;
+    category1: string;
+    category2: string;
+    category3: string;
     description: string;
     longDescription: string;
     resolutionSource: string;

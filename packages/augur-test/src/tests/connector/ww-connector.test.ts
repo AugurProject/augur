@@ -66,8 +66,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
   //   lowFeePerCashInAttoCash,
   //   affiliateFeeDivisor,
   //   designatedReporter,
-  //   "yesNo topic 1",
-  //   "{\"description\": \"yesNo description 1\", \"longDescription\": \"yesNo longDescription 1\", \"tags\": [\"yesNo tag1-1\", \"yesNo tag1-2\", \"yesNo tag1-3\"]}",
+  //   "{\"categories\": [\"yesNo category 1\"], \"description\": \"yesNo description 1\", \"longDescription\": \"yesNo longDescription 1\", \"tags\": [\"yesNo tag1-1\", \"yesNo tag1-2\", \"yesNo tag1-3\"]}",
   // );
 
   // await connector.connect("");
@@ -77,7 +76,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
   //     highestAvailableBlockNumber: 88,
   //     lastSyncedBlockNumber: 88,
   //     blocksBehindCurrent: 0,
-  //     percentBehindCurrent: "0.0000",
+  //     percentSynced: "0.0000",
   //   }]);
 
   //   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -107,7 +106,7 @@ test("WebWorkerConnector :: Should route correctly and handle events", async (do
   //     highestAvailableBlockNumber: 88,
   //     lastSyncedBlockNumber: 88,
   //     blocksBehindCurrent: 0,
-  //     percentBehindCurrent: "0.0000",
+  //     percentSynced: "0.0000",
   //   }],
   // });
   done();

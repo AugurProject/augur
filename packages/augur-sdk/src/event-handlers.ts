@@ -169,7 +169,7 @@ export interface NewBlock extends FormattedEventLog {
   blocksBehindCurrent: number;
   highestAvailableBlockNumber: number;
   lastSyncedBlockNumber: number;
-  percentBehindCurrent: string;
+  percentSynced: string;
   timestamp: number;
 }
 
@@ -283,7 +283,7 @@ export interface UniverseForked extends FormattedEventLog {
 
 export interface TXStatus {
   transaction: TransactionMetadata;
-  eventName: TXEventName,
+  eventName: TXEventName;
   hash?: string;
 }
 

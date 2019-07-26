@@ -18,8 +18,8 @@ const MarketScalarOutcomeDisplay = ({
   const calculatePosition = (): number => {
     const outcome = outcomes[1];
     const range = max.minus(min);
-    const percentage =outcomes[0].lastPricePercent.fullPrecision;
-    const pricePercentage = createBigNumber(percentage)
+    const percentage = outcomes[0].lastPricePercent && outcomes[0].lastPricePercent.fullPrecision;
+    const pricePercentage = createBigNumber(percentage || 0)
       .minus(min)
       .dividedBy(range)
       .times(createBigNumber(100)).toNumber();

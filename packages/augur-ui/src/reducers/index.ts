@@ -21,7 +21,6 @@ import orderCancellation from "modules/orders/reducers/order-cancellation";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
 import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
 import reports from "modules/reports/reducers/reports";
-import transactionsData from "modules/transactions/reducers/transactions-data";
 import universe from "modules/universe/reducers/universe";
 import versions from "modules/app/reducers/versions";
 import pendingOrders from "modules/orders/reducers/pending-orders";
@@ -46,6 +45,7 @@ import {
   MarketInfos,
   NewMarket,
   Alert,
+  Notification,
   OrderBooks,
   OrderCancellations,
   LiquidityOrders,
@@ -54,7 +54,6 @@ import {
   FilledOrders,
   ReportingWindowStats,
   UserReports,
-  TransacitonData,
   Universe,
   Versions,
   OpenOrders,
@@ -91,7 +90,6 @@ export function createReducer() {
     reportingWindowStats,
     reports,
     sidebarStatus,
-    transactionsData,
     universe,
     versions,
     userOpenOrders,
@@ -129,7 +127,6 @@ export interface AppStateInterface {
   reportingWindowStats: ReportingWindowStats;
   reports: UserReports;
   sidebarStatus: any;
-  transactionsData: TransacitonData;
   universe: Universe;
   versions: Versions;
   userOpenOrders: OpenOrders;

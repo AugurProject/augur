@@ -13,7 +13,8 @@ beforeAll(async () => {
 });
 
 test("flash :: create canned markets", async () => {
-  await flash.call("ganache", { "internal": "true"});
+  await flash.call("ganache", { "internal": "true" });
+  await flash.call("deploy", {});
   const markets = await flash.call("create-canned-markets-and-orders", {}) as unknown as Market[];
 
   await expect(markets.length).toEqual(20);

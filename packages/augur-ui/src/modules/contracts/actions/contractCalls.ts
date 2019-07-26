@@ -27,7 +27,7 @@ import { NewMarket } from 'modules/types';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 
 export function clearUserTx(): void {
-  const Augur = augurSdk.get();
+  // const Augur = augurSdk.get();
   // TODO: impl this for ethers
   // old comment - clear ethrpc transaction history, registered callbacks, and alerts
 }
@@ -201,6 +201,7 @@ export function createMarket(newMarket: NewMarket) {
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
   const marketEndTime = new BigNumber(newMarket.endTime);
   const extraInfo = JSON.stringify({
+    categories: [newMarket.categories[0]],
     description: newMarket.description,
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
@@ -213,7 +214,6 @@ export function createMarket(newMarket: NewMarket) {
     feePerCashInAttoCash,
     affiliateFeeDivisor,
     designatedReporter: newMarket.designatedReporterAddress,
-    topic: newMarket.categories[0],
     extraInfo,
   };
   const Augur = augurSdk.get();

@@ -40,10 +40,10 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const writeArtifacts = args.write_artifacts as boolean;
       if (this.noProvider()) return;
-
-      await deployContracts(this.provider, this.accounts, compilerOutput, writeArtifacts);
+      const writeArtifacts = args.write_artifacts as boolean;
+      const { addresses } = await deployContracts(this.provider, this.accounts, compilerOutput, writeArtifacts);
+      flash.contractAddresses = addresses;
     },
   });
 
@@ -253,5 +253,4 @@ export function addScripts(flash: FlashSession) {
       this.log(`Set timestamp to ${newTime.toString()}`);
     },
   });
-
 }

@@ -29,8 +29,6 @@ export const selectMarketTradingHistoryState = (state: AppState) =>
 export const selectUniverseState = (state: AppState) => state.universe;
 export const selectPendingLiquidityOrders = (state: AppState) =>
   state.pendingLiquidityOrders;
-export const selectAccountShareBalance = (state: AppState) =>
-  state.accountShareBalances;
 export const selectFilledOrders = (state: AppState) => state.filledOrders;
 export const selectUserMarketOpenOrders = (state: AppState) => state.userOpenOrders;
 

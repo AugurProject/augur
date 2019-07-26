@@ -1,7 +1,7 @@
 import { API } from "@augurproject/sdk/build/state/getter/API";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
-import { makeDbMock, makeProvider, seedPath } from "../../../libs";
-import { ContractAPI, loadSeed, ACCOUNTS } from "@augurproject/tools";
+import { makeDbMock, makeProvider } from "../../../libs";
+import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
@@ -10,10 +10,10 @@ let api: API;
 let john: ContractAPI;
 
 beforeAll(async () => {
-  const { addresses } = loadSeed(seedPath);
-  const provider = await makeProvider(ACCOUNTS);
+  const seed = await loadSeedFile(defaultSeedPath);
+  const provider = await makeProvider(seed, ACCOUNTS);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
   db = mock.makeDB(john.augur, ACCOUNTS);
   api = new API(john.augur, db);
   await john.approveCentralAuthority();
@@ -30,12 +30,12 @@ test("State API :: Status :: getSyncData", async () => {
 
   const highestAvailableBlockNumber = syncData.highestAvailableBlockNumber;
   const blocksBehindCurrent = highestAvailableBlockNumber - 10;
-  const percentBehindCurrent = (blocksBehindCurrent * 100 / highestAvailableBlockNumber).toFixed(4);
+  const percentSynced = (blocksBehindCurrent * 100 / highestAvailableBlockNumber).toFixed(4);
 
   expect(syncData).toEqual({
     highestAvailableBlockNumber: highestAvailableBlockNumber,
     lastSyncedBlockNumber: 10,
     blocksBehindCurrent: blocksBehindCurrent,
-    percentBehindCurrent: percentBehindCurrent,
+    percentSynced: percentSynced,
   });
 });

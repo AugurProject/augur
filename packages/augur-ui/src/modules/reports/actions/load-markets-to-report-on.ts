@@ -1,4 +1,4 @@
-import { parallel } from "async";
+import { parallel } from "async-es";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 import { updateMarketsWithAccountReportData } from "modules/reports/actions/update-markets-with-account-report-data";
 import logError from "utils/log-error";

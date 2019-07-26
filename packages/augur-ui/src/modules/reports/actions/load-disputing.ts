@@ -3,7 +3,6 @@ import {
   updateAwaitingDisputeMarkets,
   updateCrowdDisputeMarkets
 } from "modules/reports/actions/update-markets-in-reporting-state";
-import async from "async";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-info";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";

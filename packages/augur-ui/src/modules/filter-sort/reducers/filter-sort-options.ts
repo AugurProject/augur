@@ -10,14 +10,14 @@ import {
 import {
   MAX_FEE_05_PERCENT,
   MARKET_OPEN,
-  MARKET_OPEN_INTEREST,
+  MARKET_SORT_PARAMS,
   DAY
 } from "modules/common/constants";
 import { FilterSortOptions, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_FILTER]: MARKET_OPEN,
-  [MARKET_SORT]: MARKET_OPEN_INTEREST,
+  [MARKET_SORT]: MARKET_SORT_PARAMS.OPEN_INTEREST,
   [MARKET_MAX_FEES]: MAX_FEE_05_PERCENT,
   [TRANSACTION_PERIOD]: DAY,
   [HAS_OPEN_ORDERS]: false

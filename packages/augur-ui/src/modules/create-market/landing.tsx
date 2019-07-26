@@ -29,7 +29,10 @@ export default class Landing extends React.Component<
 
   render() {
     const {
-      updatePage
+      updatePage,
+      updateNewMarket,
+      newMarket,
+      clearNewMarket
     } = this.props;
     const s = this.state;
 
@@ -57,7 +60,13 @@ export default class Landing extends React.Component<
             />
             <section>
               <RadioCardGroup
-                onChange={(value: string) => updatePage(TEMPLATE)}
+                onChange={(value: string) => {
+                  const updatedNewMarket = {...newMarket};
+                  updatedNewMarket.categories[0] = value;
+                  updatedNewMarket.currentStep = 1;
+                  updateNewMarket(updatedNewMarket);
+                  updatePage(TEMPLATE)
+                }}
                 radioButtons={MARKET_TEMPLATES}
               >
                 <SmallHeaderLink text="Don't see your category?" link ownLine /> 
@@ -74,8 +83,8 @@ export default class Landing extends React.Component<
             <SecondaryButton 
               text="Create a custom market" 
               action={() => {
+                clearNewMarket();
                 updatePage(SCRATCH);
-                this.props.clearNewMarket();
               }}
             />
           </ContentBlock>

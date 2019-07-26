@@ -1,19 +1,19 @@
-import { makeDbMock, makeProvider, seedPath } from "../../libs";
+import { makeDbMock, makeProvider } from "../../libs";
 import { UserSyncableDB } from '@augurproject/sdk/build/state/db/UserSyncableDB';
 import { stringTo32ByteHex } from '@augurproject/core/build/libraries/HelperFunctions';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { ContractAPI, ACCOUNTS, loadSeed } from "@augurproject/tools";
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 
 const mock = makeDbMock();
 
 let john: ContractAPI;
 
 beforeAll(async () => {
-  const { addresses } = loadSeed(seedPath);
-  const provider = await makeProvider(ACCOUNTS);
+  const seed = await loadSeedFile(defaultSeedPath);
+  const provider = await makeProvider(seed, ACCOUNTS);
 
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, addresses);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
   await john.approveCentralAuthority();
 });
 
@@ -50,8 +50,8 @@ test('UserSynableDB.sync', async () => {
     affiliateFeeDivisor: new BigNumber(25),
     designatedReporter: sender,
     outcomes: [stringTo32ByteHex('big'), stringTo32ByteHex('small')],
-    topic: 'boba',
     extraInfo: JSON.stringify({
+      categories: ['tea', 'boba'],
       description: 'Will big or small boba be the most popular in 2019?',
     }),
   });
@@ -142,6 +142,5 @@ test('props', async () => {
     );
   }
 
-  // @ts-ignore - verify private property "additionalTopics"
   expect(createDB).toThrowError('invalid address (arg="address", value="artistotle", version=4.0.24)');
 });
