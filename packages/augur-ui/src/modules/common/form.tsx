@@ -32,7 +32,7 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
-import { getTimezones } from 'utils/get-timezones';
+import { getTimezones, getUserTimezone } from 'utils/get-timezones';
 
 interface CheckboxProps {
   id: string;
@@ -131,17 +131,54 @@ interface TimezoneDropdownProps {
   id?: string;
   onChange: any;
   className?: string;
+  autoCompleteList?: Array<SortedGroup>;
   disabled?: Boolean;
   timestamp?: number;
 }
 
-export const TimezoneDropdown = (props: TimezoneDropdownProps) => (
-  <FormDropdown
-    {...props}
-    staticLabel="Timezone"
-    options={getTimezones(props.timestamp)}
-  />
-);
+interface TimezoneDropdownState {
+  filterString: string;
+  showDropdown: boolean;
+  value: string;
+  showText: boolean;
+}
+
+export class TimezoneDropdown extends Component<TimezoneDropdownProps, TimezoneDropdownState> {
+  state: TimezoneDropdownState = {
+    filterString: getUserTimezone(),
+    showDropdown: false,
+    showText: true,
+    value: getUserTimezone()
+  }
+
+  onChangeDropdown = (choice) => {
+    console.log("choice", choice);
+    this.props.onChange(choice);
+    this.setState({
+      filterString: undefined,
+      value: choice
+    })
+  }
+
+  filterTimezones = (value: string) => {
+    this.setState({
+      filterString: value,
+      showText: true
+    })
+  }
+
+  render() {
+    const timezones = getTimezones(this.state.filterString, this.props.timestamp);
+
+    return (
+      <TextInput
+        value={this.state.value}
+        autoCompleteList={timezones}
+        onChange={value => this.filterTimezones(value)}
+      />
+    )
+  }
+};
 
 interface ErrorProps {
   header?: string;
@@ -801,7 +838,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
               >
                 {filteredList.map(item => (
                   <button
-                    key={item.value}
+                    key={`${item.value}${item.label}`}
                     value={item.value}
                     onClick={() => this.onAutoCompleteSelect(item.value)}
                   >
