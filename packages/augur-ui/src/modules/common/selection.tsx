@@ -146,7 +146,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         >
           {options.map(option => (
             <button
-              key={option.value}
+              key={`${option.value}${option.label}`}
               value={option.value}
               onClick={() => this.dropdownSelect(option)}
             >
@@ -162,7 +162,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             value={selected.value}
           >
             {options.map(option => (
-              <option key={option.value} value={option.value}>
+              <option key={`${option.value}${option.label}`} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -219,7 +219,7 @@ export class StaticLabelDropdown extends Dropdown {
         >
           {options.map(option => (
             <button
-              key={option.value}
+              key={`${option.value}${option.label}`}
               value={option.value}
               onClick={() => this.dropdownSelect(option)}
             >
@@ -236,7 +236,7 @@ export class StaticLabelDropdown extends Dropdown {
           value={selected.value}
         >
           {options.map(option => (
-            <option key={option.value} value={option.value}>
+            <option key={`${option.value}${option.label}`} value={option.value}>
               {option.label}
             </option>
           ))}
