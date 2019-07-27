@@ -55,7 +55,7 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
     function migrateIn(address _reporter, uint256 _attotokens) public returns (bool) {
         IUniverse _parentUniverse = universe.getParentUniverse();
         require(ReputationToken(msg.sender) == _parentUniverse.getReputationToken());
-        require(augur.getTimestamp() < _parentUniverse.getForkEndTime(), "ReputationToken.migrateIn: Cannot migrate after fork end");
+        require(augur.getTimestamp() < _parentUniverse.getForkEndTime());
         mint(_reporter, _attotokens);
         totalMigrated += _attotokens;
         // Update the fork tentative winner and finalize if we can

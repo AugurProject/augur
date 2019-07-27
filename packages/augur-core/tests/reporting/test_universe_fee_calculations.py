@@ -58,7 +58,7 @@ def test_reporter_fees(contractsFixture, universe, market, cash):
     assert universe.getOpenInterestInAttoCash() > 0
 
     # Move dispute window forward
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getCurrentDisputeWindow(False))
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
     contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     assert universe.getOrCacheReportingFeeDivisor() != defaultValue

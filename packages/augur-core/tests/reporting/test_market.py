@@ -74,7 +74,7 @@ def test_transfering_ownership(contractsFixture, universe, market):
 ])
 def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     # We can't make a market with less than the minimum required validity bond
-    minimumValidityBond = universe.getOrCacheMarketCreationCost()
+    minimumValidityBond = universe.getOrCacheValidityBond()
 
     with raises(TransactionFailed):
        contractsFixture.createReasonableYesNoMarket(universe, validityBond=minimumValidityBond-1)
