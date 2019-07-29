@@ -167,6 +167,7 @@ export default class MarketsList extends Component<
               return (
                 <MarketCard
                   market={market}
+                  condensed={false}
                   location={location}
                   history={history}
                   key={`${market.id} - ${market.outcomes}`}

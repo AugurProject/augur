@@ -7,6 +7,8 @@ import {
   YES_NO
 } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
+import ReactTooltip from "react-tooltip";
+import TooltipStyles from "modules/common/tooltip.styles.less";
 
 import Styles from 'modules/market-cards/common.styles';
 
@@ -92,8 +94,6 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   const removedInvalid = outcomesShow.splice(0, 1)[0];
   outcomesShow.splice(2, 0, removedInvalid);
 
-  console.log(outcomesShow);
-
   return (
     <div className={classNames(Styles.OutcomeGroup, {
 			[Styles.Categorical]: props.marketType === CATEGORICAL, 
@@ -127,3 +127,42 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   	</div>
   );
 }
+
+export interface LabelValueProps {
+  label: string;
+  value: number;
+}
+
+export const LabelValue = (props: LabelValueProps) => (
+  <div className={Styles.LabelValue}>
+    <span>{props.label}:</span>
+    <span>{props.value}</span>
+  </div>
+);
+
+export interface HoverIconProps {
+  icon: string;
+  hoverText: string;
+  label: string;
+}
+
+export const HoverIcon = (props: HoverIconProps) => (
+  <div 
+    className={Styles.HoverIcon}
+    data-tip
+    data-for={`tooltip-${props.label}`}
+   >
+    {props.icon}
+    <ReactTooltip
+      id={`tooltip-${props.label}`}
+      className={TooltipStyles.Tooltip}
+      effect="solid"
+      place="top"
+      type="light"
+      data-event="mouseover"
+      data-event-off="blur scroll"
+    >
+      {props.hoverText}
+    </ReactTooltip>
+  </div>
+);

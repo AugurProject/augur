@@ -7,7 +7,10 @@ import { toggleFavorite } from "modules/markets/actions/update-favorites";
 const mapStateToProps = state => ({
   isLogged: state.authStatus.isLogged,
   isMobile: state.appStatus.isMobile,
-  pendingLiquidityOrders: state.pendingLiquidityOrders
+  pendingLiquidityOrders: state.pendingLiquidityOrders,
+  currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
+  reportingWindowStatsEndTime: state.reportingWindowStats.endTime,
+  address: state.loginAccount.address,
 });
 
 const mapDispatchToProps = dispatch => ({
