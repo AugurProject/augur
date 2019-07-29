@@ -424,7 +424,7 @@ export class Markets {
         searchResults = await db.fullTextMarketSearch(params.search, null);
         keyedFullTextResults = _.keyBy(
           searchResults,
-          (searchResult: MarketFields) =>  { return searchResult.id; }
+          (searchResult: MarketFields) =>  { return searchResult.market; }
         );
       }
       let keyedCategoryResults: any = {};
@@ -440,13 +440,12 @@ export class Markets {
         const categoryResults = await db.fullTextMarketSearch(null, extendedSearchOptions);
         keyedCategoryResults = _.keyBy(
           categoryResults,
-          (searchResult: MarketFields) =>  { return searchResult.id; }
+          (searchResult: MarketFields) =>  { return searchResult.market; }
         );
         if (!_.isEmpty(keyedFullTextResults)) {
           // Reset keyedSearchResults to intersection of searchResults & categoryResults
           keyedFullTextResults = {};
           for (let i = 0; i < searchResults.length; i++) {
-            console.log(searchResults[i].market);
             if (categoryResults[searchResults[i].market]) {
               keyedFullTextResults[searchResults[i].market] = categoryResults[searchResults[i].market];
             }
