@@ -23,7 +23,7 @@ import { convertUnixToFormattedDate } from "utils/format-date";
 import ToggleHeightStyles from "utils/toggle-height.styles.less";
 import { MarketData, QueryEndpoints } from "modules/types";
 
-const OVERFLOW_DETAILS_LENGTH = 89; // in px, overflow limit to trigger MORE details
+const OVERFLOW_DETAILS_LENGTH = 110; // in px, overflow limit to trigger MORE details
 
 interface MarketHeaderProps {
   description: string;
@@ -208,7 +208,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
           <div className={Styles.MainValues}>
             <div
               className={classNames({
-                [Styles.Collapsed]: headerCollapsed
+                [Styles.Collapsed]: headerCollapsed,
               })}
             >
               <h1>{description}</h1>
@@ -224,7 +224,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                       this.detailsContainer = detailsContainer;
                     }}
                     className={classNames(Styles.AdditionalDetails, {
-                      [Styles.Tall]: detailsTooLong && this.state.showReadMore
+                      [Styles.Tall]: detailsTooLong && this.state.showReadMore,
                     })}
                   >
                     <MarkdownRenderer text={details} hideLabel />
@@ -233,7 +233,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                   {detailsTooLong && (
                     <button
                       className={classNames({
-                        [Styles.Less]: this.state.showReadMore
+                        [Styles.Less]: this.state.showReadMore,
                       })}
                       onClick={this.toggleReadMore}
                     >
