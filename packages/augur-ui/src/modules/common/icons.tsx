@@ -1157,3 +1157,10 @@ export const DisputeStake = (
   </svg>
 );
 
+export const DoubleArrows = (
+  <svg viewBox="0 0 10 6" fill="none">
+    <path d="M9.60156 3L5.66662 6L5.66662 -1.72002e-07L9.60156 3Z"/>
+    <path d="M3.93555 3L0.000603652 6L0.000603914 -1.72002e-07L3.93555 3Z"/>
+  </svg>
+);
+

@@ -8,7 +8,8 @@ import {
   MarketIcon,
   InfoIcon,
   CheckCircleIcon,
-  HintAlternate
+  HintAlternate,
+  DoubleArrows
 } from "modules/common/icons";
 import { MarketProgress } from "modules/common/progress";
 import ReactTooltip from "react-tooltip";
@@ -578,16 +579,13 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
       <span
         className={classNames(
           Styles.MarketStatus,
-          Styles.MarketStatus_reporting,
-          {
-            [Styles.MarketStatus_alternate]: alternate,
-            [Styles.MarketStatus_mini]: mini
-          }
+          Styles.MarketStatus_reporting
         )}
       >
         {text}
         {reportingExtraText && (
           <span className={Styles.InReporting_reportingDetails}>
+            {DoubleArrows}
             {reportingExtraText}
           </span>
         )}
