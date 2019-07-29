@@ -49,7 +49,7 @@ library Order {
         bool ignoreShares;
     }
 
-    // No validation is needed here as it is simply a librarty function for organizing data
+    // No validation is needed here as it is simply a library function for organizing data
     function create(IAugur _augur, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId, bool _ignoreShares, IERC20 _kycToken) internal view returns (Data memory) {
         require(_outcome < _market.getNumberOfOutcomes(), "Order.create: Outcome is not within market range");
         require(_price != 0, "Order.create: Price may not be 0");

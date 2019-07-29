@@ -5,6 +5,7 @@ import { Log, ParsedLog } from "@augurproject/types";
 import { Augur } from '../../Augur';
 import { DB } from "./DB";
 import { sleep } from "../utils/utils";
+import { augurEmitter } from "../../events";
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -14,60 +15,67 @@ export interface Document extends BaseDocument {
  * Stores derived data from multiple logs and post-log processing
  */
 export class DerivedDB extends AbstractDB {
-  private syncStatus: SyncStatus;
-  private idFields: Array<string>;
-  private mergeEventNames: Array<string>;
-  private stateDB: DB;
-  private updatingHighestSyncBlock: boolean = false;
+  protected syncStatus: SyncStatus;
+  protected stateDB: DB;
+  private idFields: string[];
+  private mergeEventNames: string[];
+  private name: string;
+  private updatingHighestSyncBlock = false;
 
-  constructor(db: DB, networkId: number, name: string, mergeEventNames: Array<string>, idFields: Array<string>) {
+  constructor(db: DB, networkId: number, name: string, mergeEventNames: string[], idFields: string[]) {
     super(networkId, db.getDatabaseName(name), db.pouchDBFactory);
     this.syncStatus = db.syncStatus;
     this.idFields = idFields;
     this.mergeEventNames = mergeEventNames;
     this.stateDB = db;
+    this.name = name;
     this.db.createIndex({
       index: {
-        fields: idFields
-      }
+        fields: idFields,
+      },
     });
 
     for (const eventName of mergeEventNames) {
-        db.registerEventListener(eventName, this.handleMergeEvent);
+      db.registerEventListener(eventName, this.handleMergeEvent);
     }
 
     db.notifyDerivedDBAdded(this);
   }
 
-  // For all mergable event types get any new documents we haven't pulled in and pull them in
-  public async sync(highestAvailableBlockNumber: number): Promise<void> {
-    let highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
-    for (const eventName of this.mergeEventNames) {
-      const request = {
-        selector: {
-          blockNumber: { $gte: highestSyncedBlockNumber }
-        }
-      };
-      const result = await this.stateDB.findInSyncableDB(this.stateDB.getDatabaseName(eventName), request);
-      await this.handleMergeEvent(highestAvailableBlockNumber, result.docs as Array<unknown> as Array<ParsedLog>, true);
-    }
-
+  async sync(highestAvailableBlockNumber: number): Promise<void> {
+    await this.doSync(highestAvailableBlockNumber);
     await this.syncStatus.setHighestSyncBlock(this.dbName, highestAvailableBlockNumber, true);
   }
 
-  public async rollback(blockNumber: number): Promise<void> {
+  // For all mergable event types get any new documents we haven't pulled in and pull them in
+  async doSync(highestAvailableBlockNumber: number): Promise<void> {
+    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
+    for (const eventName of this.mergeEventNames) {
+      const request = {
+        selector: {
+          blockNumber: { $gte: highestSyncedBlockNumber },
+        },
+      };
+      const result = await this.stateDB.findInSyncableDB(this.stateDB.getDatabaseName(eventName), request);
+      await this.handleMergeEvent(highestAvailableBlockNumber, result.docs as unknown[] as ParsedLog[], true);
+    }
+
+    await this.syncStatus.updateSyncingToFalse(this.dbName);
+  }
+
+  async rollback(blockNumber: number): Promise<void> {
     try {
-      let blocksToRemove = await this.db.find({
+      const blocksToRemove = await this.db.find({
         selector: { blockNumber: { $gte: blockNumber } },
         fields: ['_id'],
       });
-      for (let doc of blocksToRemove.docs) {
+      for (const doc of blocksToRemove.docs) {
         const revDocs = await this.db.get<Document>(doc._id, {
           open_revs: 'all',
-          revs: true
+          revs: true,
         });
         // If a revision exists before this blockNumber make that the new record, otherwise simply delete the doc.
-        const replacementDoc = _.maxBy(_.remove(revDocs, (doc) => { return doc.ok.blockNumber > blockNumber; }), "ok.blockNumber");
+        const replacementDoc = _.maxBy(_.remove(revDocs, (doc) => doc.ok.blockNumber > blockNumber), "ok.blockNumber");
         if (replacementDoc) {
           await this.db.put(replacementDoc.ok);
         } else {
@@ -81,19 +89,19 @@ export class DerivedDB extends AbstractDB {
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
-  public handleMergeEvent = async (blocknumber: number, logs: Array<ParsedLog>, syncing: boolean = false): Promise<number> => {
+  handleMergeEvent = async (blocknumber: number, logs: ParsedLog[], syncing = false): Promise<number> => {
     let success = true;
     let documents;
     if (logs.length > 0) {
       documents = _.map(logs, this.processLog.bind(this));
       documents = _.values(_.mapValues(_.groupBy(documents, "_id"), (idDocuments) => {
         return _.reduce(idDocuments, (val, doc) => {
-        if (val.blockNumber < doc.blockNumber) {
-          val = doc;
-        } else if (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex) {
-          val = doc;
-        }
-        return val;
+          if (val.blockNumber < doc.blockNumber) {
+            val = doc;
+          } else if (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex) {
+            val = doc;
+          }
+          return val;
         }, idDocuments[0]);
       }));
 
@@ -109,6 +117,7 @@ export class DerivedDB extends AbstractDB {
         this.updatingHighestSyncBlock = true;
         await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, syncing);
         this.updatingHighestSyncBlock = false;
+        augurEmitter.emit(`DerivedDB:updated:${this.name}`);
       }
     } else {
       throw new Error(`Unable to add new block`);

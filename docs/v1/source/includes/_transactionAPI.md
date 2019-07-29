@@ -127,7 +127,7 @@ Using Transact Directly
 var tx = {
   constant: false,  
   from: "0x40485264986740c8fb3d11e814bd94cf86012d29",
-  name: "getOrCacheMarketCreationCost",
+  name: "getOrCacheValidityBond",
   params: [],
   returns: "uint256",
   send: true,
@@ -3164,7 +3164,7 @@ augur.api.Universe.getOrCacheDesignatedReportStake({
 // example output:
 "349680582682291667"
 
-augur.api.Universe.getOrCacheMarketCreationCost({
+augur.api.Universe.getOrCacheValidityBond({
   tx: { 
     to: universeAddress,
     send: false
@@ -3477,7 +3477,7 @@ Gets the amount of Staked [REP](#rep) the [Designated Reporter](#designated-repo
 
 * (null|string) Return value cannot be obtained when executed as a transaction because Ethereum nodes [discard](#transaction-return-values) transaction return values. However, if `p.tx.send` is set to `false`, this function will return the cached amount of REP the Designated Reporter must Stake when submitting a Designated Report, in [attoREP](#atto-prefix), as a stringified unsigned integer.
 
-### augur.api.Universe.getOrCacheMarketCreationCost(p)
+### augur.api.Universe.getOrCacheValidityBond(p)
 
 Gets the estimated amount of [attoETH](#atto-prefix) required to create a [Market](#market) in the specified [Universe](#universe). The amount returned by this function is equivalent to the value returned by the transaction `augur.api.Universe.getOrCacheValidityBond`. If the value of the [Validity Bond](#validity-bond) for the current [Fee Window](#fee-window) has not already been cached in the Universe contract, this function will cache it.
 

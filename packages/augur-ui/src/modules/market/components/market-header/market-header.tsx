@@ -1,6 +1,5 @@
 import { WordTrail } from "modules/common/labels";
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { BackArrow, ChevronDown, ChevronUp } from "modules/common/icons";
 import MarkdownRenderer from "modules/common/markdown-renderer";
@@ -194,7 +193,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                 isFavorite={isFavorite}
                 reportingState={market.reportingState}
                 disputeInfo={market.disputeInfo}
-                endTime={market.endTime}
+                endTimeFormatted={market.endTimeFormatted || convertUnixToFormattedDate(market.endTime)}
                 isLogged={isLogged}
               />
             )}

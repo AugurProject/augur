@@ -19,15 +19,15 @@ export interface BlockAndLogStreamerListenerDependencies {
   blockAndLogStreamer: BlockAndLogStreamerInterface<Block, ExtendedLog>;
   getBlockByHash: (hashOrTag: string) => Promise<Block>;
   eventLogDBRouter: EventLogDBRouter;
-  getEventTopics: (eventName: string) => Array<string>;
+  getEventTopics: (eventName: string) => string[];
   // TODO Use an emitter?
   listenForNewBlocks: (callback: (block: Block) => Promise<void>) => void;
 }
 
 type GenericLogCallbackType<T, P> = (blockIdentifier: T, logs: P[]) => void;
 
-export type BlockstreamLogCallbackType = GenericLogCallbackType<string, Log>
-export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>
+export type BlockstreamLogCallbackType = GenericLogCallbackType<string, Log>;
+export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>;
 
 export interface IBlockAndLogStreamerListener {
   listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogRemoved?: LogCallbackType): void;
@@ -44,7 +44,7 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
     deps.blockAndLogStreamer.subscribeToOnLogsAdded(this.onLogsAdded);
   }
 
-  public static create(provider: EthersProvider, eventLogDBRouter: EventLogDBRouter, address: string, getEventTopics: ((eventName: string) => Array<string>)) {
+  static create(provider: EthersProvider, eventLogDBRouter: EventLogDBRouter, address: string, getEventTopics: ((eventName: string) => string[])) {
     const dependencies = new EthersProviderBlockStreamAdapter(provider);
     const blockAndLogStreamer = new BlockAndLogStreamer<Block, ExtendedLog>(dependencies.getBlockByHash, dependencies.getLogs, (error: Error) => {
       console.error(error);
@@ -56,29 +56,29 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
       eventLogDBRouter,
       getEventTopics,
       getBlockByHash: dependencies.getBlockByHash,
-      listenForNewBlocks: dependencies.startPollingForBlocks
+      listenForNewBlocks: dependencies.startPollingForBlocks,
     });
   }
 
-  public listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogsRemoved?: LogCallbackType): void {
+  listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogsRemoved?: LogCallbackType): void {
     const topics = this.deps.getEventTopics(eventName);
 
     this.deps.blockAndLogStreamer.addLogFilter({
       address: this.address,
-      topics
+      topics,
     });
 
     this.deps.eventLogDBRouter.addLogCallback(topics[0], onLogsAdded);
   }
 
-  public listenForBlockAdded(callback: (Block: Block) => void): void {
+  listenForBlockAdded(callback: (Block: Block) => void): void {
     const wrapper = (callback: (Block: Block) => void) => (block: Block) => {
       callback(block);
     };
     this.deps.blockAndLogStreamer.subscribeToOnBlockAdded(wrapper(callback));
   }
 
-  public listenForBlockRemoved(callback: (blockNumber: number) => void): void {
+  listenForBlockRemoved(callback: (blockNumber: number) => void): void {
     const wrapper = (callback: (blockNumber: number) => void) => (block: Block) => {
       const blockNumber: number = parseInt(block.number);
       callback(blockNumber);

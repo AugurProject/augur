@@ -6,6 +6,7 @@ import ModalConfirm from "modules/modal/components/modal-confirm";
 import ModalReview from "modules/modal/components/modal-review";
 import ModalRepFaucet from "modules/modal/containers/modal-rep-faucet";
 import ModalDaiFaucet from "modules/modal/containers/modal-dai-faucet";
+import ModalCreationHelp from "modules/modal/containers/modal-creation-help";
 import ModalDeposit from "modules/modal/containers/modal-deposit";
 import ModalWithdraw from "modules/modal/containers/modal-withdraw";
 import ModalNetworkDisabled from "modules/modal/containers/modal-network-disabled";
@@ -64,6 +65,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalRepFaucet />;
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
+    case TYPES.MODAL_CREATION_HELP:
+      return <ModalCreationHelp />;
     case TYPES.MODAL_DEPOSIT:
       return <ModalDeposit />;
     case TYPES.MODAL_WITHDRAW:

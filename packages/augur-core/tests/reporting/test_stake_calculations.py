@@ -14,7 +14,7 @@ def test_initial_report_bond_size(contractsFixture, market, universe):
     assert reputationToken.transfer(initialReporterAddress, 1)
 
     # Now we do the initial report
-    assert market.doInitialReport([0, market.getNumTicks(), 0], "")
+    assert market.doInitialReport([0, market.getNumTicks(), 0], "", 0)
 
     # The size of the initial report should only be the required reporting stake
     designatedReportCost = universe.getOrCacheDesignatedReportStake()

@@ -344,9 +344,6 @@ Deploying to: ${networkConfiguration.networkName}
         await augur.createGenesisUniverse();
         const universe = new Universe(this.dependencies, universeAddress);
         console.log(`Genesis universe address: ${universe.address}`);
-        if (await universe.getTypeName_() !== stringTo32ByteHex("Universe")) {
-            throw new Error("Unable to create genesis universe. Get type name failed");
-        }
 
         return universe;
     }

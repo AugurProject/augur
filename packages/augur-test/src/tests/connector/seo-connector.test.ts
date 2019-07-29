@@ -74,9 +74,8 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
     designatedReporter: john.account.publicKey,
-    topic: 'yesNo topic 1',
     extraInfo:
-      '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
+      '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
   });
 
   await connector.on(
@@ -84,7 +83,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     async (arg: MarketCreated): Promise<void> => {
       expect(arg).toHaveProperty(
         'extraInfo',
-        '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}'
+        '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}'
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
@@ -108,9 +107,8 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
     designatedReporter: john.account.publicKey,
-    topic: 'yesNo topic 1',
     extraInfo:
-      '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
+      '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
   });
 
   await connector.connect('');
@@ -124,7 +122,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
           blocksBehindCurrent: expect.any(Number),
           highestAvailableBlockNumber: expect.any(Number),
           lastSyncedBlockNumber: expect.any(Number),
-          percentBehindCurrent: expect.any(String),
+          percentSynced: expect.any(String),
           timestamp: expect.any(Number),
         }
       );

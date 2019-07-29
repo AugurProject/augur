@@ -36,7 +36,7 @@ def test_universe_fork_market(localFixture, populatedUniverse, mockUniverse, moc
     with raises(TransactionFailed):
         mockMarket.callForkOnUniverse(populatedUniverse.address)
 
-    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, fixture.accounts[0], "topic", "description", "info")
+    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, fixture.accounts[0], "info")
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
 
     assert populatedUniverse.isContainerForMarket(mockMarket.address)
@@ -97,7 +97,7 @@ def test_universe_contains(localFixture, populatedUniverse, mockMarket, chain, m
     mockMarketFactory.setMarket(mockMarket.address)
     endTime = localFixture.contracts["Time"].getTimestamp() + 30 * 24 * 60 * 60 # 30 days
 
-    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, fixture.accounts[0], "topic", "description", "info")
+    assert populatedUniverse.createYesNoMarket(endTime, 1000, 0, fixture.accounts[0], "info")
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
 
     assert populatedUniverse.isContainerForDisputeWindow(mockDisputeWindow.address) == True
@@ -174,7 +174,7 @@ def test_universe_calculate_bonds_stakes(localFixture, chain, populatedUniverse,
     assert populatedUniverse.getOrCacheValidityBond() == newValidityBondValue
     assert populatedUniverse.getOrCacheDesignatedReportNoShowBond() == newNoshowBondValue
 
-    assert populatedUniverse.getOrCacheMarketCreationCost() == newValidityBondValue
+    assert populatedUniverse.getOrCacheValidityBond() == newValidityBondValue
 
 @mark.skip
 def test_universe_calculate_floating_value_defaults(populatedUniverse):
@@ -202,7 +202,7 @@ def test_universe_create_market(localFixture, chain, populatedUniverse, mockMark
     assert mockAugur.logMarketCreatedCalled() == False
     mockMarketFactory.setMarket(mockMarket.address)
 
-    newMarket = populatedUniverse.createYesNoMarket(endTimeValue, feePerEthInWeiValue, affiliateFeeDivisor, designatedReporterAddressValue, "topic", "description", "info")
+    newMarket = populatedUniverse.createYesNoMarket(endTimeValue, feePerEthInWeiValue, affiliateFeeDivisor, designatedReporterAddressValue, "info")
 
     assert mockMarketFactory.getCreateMarketUniverseValue() == populatedUniverse.address
     assert populatedUniverse.isContainerForMarket(mockMarket.address)

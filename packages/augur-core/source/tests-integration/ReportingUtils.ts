@@ -35,7 +35,7 @@ export class ReportingUtils {
 
         let winningPayoutHash = "";
         if (disputeWindowAddress === ZERO_ADDRESS) {
-            await market.doInitialReport(payoutNumerators, "");
+            await market.doInitialReport(payoutNumerators, "", new BigNumber(0));
             expect(await market.getDisputeWindow_() === ZERO_ADDRESS).to.be.false;
             console.log("Submitted initial report");
 

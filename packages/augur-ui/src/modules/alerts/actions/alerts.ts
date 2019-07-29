@@ -34,7 +34,9 @@ function packageAlertInfo(id: string, timestamp: number, transaction: any) {
 
 export function handleFilledOnly(tradeInProgress: any = null) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-    const { alerts, transactionsData } = store.getState();
+    const { alerts } = store.getState();
+    // TODO: transaction data is getting replaced by transaction lifecycle hooks
+    const transactionsData = {};
     for (let i = 0; i < alerts.length; i++) {
       if (alerts[i].status.toLowerCase() === constants.PENDING) {
         const tradeGroupId = alerts[i].params._tradeGroupId;
@@ -109,7 +111,10 @@ export function handleFilledOnly(tradeInProgress: any = null) {
 
 export function loadAlerts() {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-    const { alerts, transactionsData } = store.getState();
+    const { alerts } = store.getState();
+    // TODO: transaction data is getting replaced by transaction lifecycle hooks
+    const transactionsData = {};
+
     for (let i = 0; i < alerts.length; i++) {
       if (alerts[i].status.toLowerCase() === constants.PENDING) {
         const regex = new RegExp(alerts[i].id, "g");

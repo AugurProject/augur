@@ -74,7 +74,7 @@ def test_transfering_ownership(contractsFixture, universe, market):
 ])
 def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     # We can't make a market with less than the minimum required validity bond
-    minimumValidityBond = universe.getOrCacheMarketCreationCost()
+    minimumValidityBond = universe.getOrCacheValidityBond()
 
     with raises(TransactionFailed):
        contractsFixture.createReasonableYesNoMarket(universe, validityBond=minimumValidityBond-1)
@@ -96,9 +96,9 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     proceedToDesignatedReporting(contractsFixture, market)
 
     if invalid:
-        market.doInitialReport([market.getNumTicks(), 0, 0], "")
+        market.doInitialReport([market.getNumTicks(), 0, 0], "", 0)
     else:
-        market.doInitialReport([0, 0, market.getNumTicks()], "")
+        market.doInitialReport([0, 0, market.getNumTicks()], "", 0)
 
     # Move time forward so we can finalize and see the bond move
     disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
@@ -122,7 +122,7 @@ def test_non_dr_initial_reporter(contractsFixture, universe, reputationToken):
     reputationToken.transfer(account1, stake)
     with TokenDelta(reputationToken, stake, account0, "Market creator didn't get bond back"):
         with TokenDelta(reputationToken, -stake, account1, "Designated Reporter did not pay bond"):
-            market.doInitialReport([0, 0, market.getNumTicks()], "", sender=account1)
+            market.doInitialReport([0, 0, market.getNumTicks()], "", 0, sender=account1)
 
 def test_max_duration_with_upgrade_cadence(contractsFixture, universe):
     account0 = contractsFixture.accounts[0]

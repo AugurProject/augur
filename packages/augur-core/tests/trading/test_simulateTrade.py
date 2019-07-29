@@ -18,12 +18,13 @@ def test_simple_simulate(contractsFixture, cash, market, universe):
     kycToken = nullAddress
     fillOnly = False
 
-    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees) = simulateTrade.simulateTrade(direction, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly)
+    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(direction, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly)
 
     assert sharesFilled == 0
     assert tokensDepleted == amount * price
     assert sharesDepleted == 0
     assert settlementFees == 0
+    assert numFills == 0
 
 def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     trade = contractsFixture.contracts["Trade"]
@@ -40,17 +41,18 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     numTicks = market.getNumTicks()
     cost = amount * price
 
-    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees) = simulateTrade.simulateTrade(direction, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly)
+    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(direction, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly)
 
     assert sharesFilled == 0
     assert tokensDepleted == cost
     assert sharesDepleted == 0
     assert settlementFees == 0
+    assert numFills == 0
 
     cash.faucet(cost)
     assert trade.publicTrade(direction, market.address, outcome, amount, price, "0", "0", "42", 6, ignoreShares, nullAddress, kycToken)
 
-    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees) = simulateTrade.simulateTrade(SHORT, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly, sender=account1)
+    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(SHORT, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly, sender=account1)
 
     fillPrice = numTicks - price
     cost = amount * fillPrice
@@ -58,20 +60,22 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert tokensDepleted == cost
     assert sharesDepleted == 0
     assert settlementFees == 0
+    assert numFills == 1
 
     cash.faucet(cost, sender=account1)
     assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, ignoreShares, nullAddress, kycToken, sender=account1)
 
-    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees) = simulateTrade.simulateTrade(SHORT, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly)
+    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(SHORT, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly)
 
     assert sharesFilled == 0
     assert tokensDepleted == 0
     assert sharesDepleted == fix(1)
     assert settlementFees == 0
+    assert numFills == 0
 
     assert trade.publicTrade(SHORT, market.address, outcome, amount, price, "0", "0", "42", 6, ignoreShares, nullAddress, kycToken)
 
-    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees) = simulateTrade.simulateTrade(LONG, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly, sender=account1)
+    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(LONG, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly, sender=account1)
     assert simulateTrade.getNumberOfAvaialableShares(LONG, market.address, outcome, account1) == fix(1)
 
     expectedValue = fix(1) * (numTicks - price)
@@ -83,6 +87,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     assert tokensDepleted == 0
     assert sharesDepleted == fix(1)
     assert settlementFees == expectedSettlementFees
+    assert numFills == 1
 
 def test_partial_fill(contractsFixture, cash, market, universe):
     outcome = YES
@@ -188,7 +193,7 @@ def simulate_then_trade(contractsFixture, direction, market, outcome, amount, pr
     shareTokenOutcome = outcome if direction == SHORT else ((outcome + 1) % 3)
     shareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(shareTokenOutcome))
 
-    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees) = simulateTrade.simulateTrade(direction, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly, sender=sender)
+    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateTrade(direction, market.address, outcome, amount, price, ignoreShares, kycToken, fillOnly, sender=sender)
 
     cash.faucet(tokensDepleted, sender=sender)
     initialCashBalance = cash.balanceOf(sender)
@@ -205,11 +210,14 @@ def simulate_then_trade(contractsFixture, direction, market, outcome, amount, pr
         assert sharesDepleted == initialShareBalance - shareToken.balanceOf(sender)
 
     expectedSharesFilled = 0
+    expectedNumFills = 0
     orderEventLogs = contractsFixture.contracts["Augur"].getLogs("OrderEvent")
     for log in orderEventLogs:
         if log.args.eventType == 3: # Fill Event
             expectedSharesFilled += log.args.uint256Data[6]
+            expectedNumFills += 1
 
     assert sharesFilled == expectedSharesFilled
     assert settlementFees == expectedFees
+    assert numFills == expectedNumFills
     return orderId
