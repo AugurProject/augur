@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import { CategoryTagTrail, MarketTypeLabel, MarketStatusLabel } from "modules/common/labels";
+import { CategoryTagTrail, MarketTypeLabel, InReportingLabel } from "modules/common/labels";
 import { OutcomeGroup, LabelValue, HoverIcon } from "modules/market-cards/common";
 import toggleTag from "modules/routes/helpers/toggle-tag";
 import toggleCategory from "modules/routes/helpers/toggle-category";
@@ -29,6 +29,7 @@ interface MarketCardProps {
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
   condensed?: Boolean;
+  expandedView?: Boolean;
   address: string;
 }
 
@@ -58,7 +59,8 @@ export default class MarketCard extends React.Component<
       currentAugurTimestamp,
       reportingWindowStatsEndTime,
       condensed,
-      address
+      address,
+      expandedView
     } = this.props;
 
     const s = this.state;
@@ -79,7 +81,9 @@ export default class MarketCard extends React.Component<
       endTime,
       openInterestFormatted,
       volumeFormatted,
-      tags
+      tags,
+      disputeInfo,
+      endTimeFormatted
     } = market;
 
     const path =
@@ -139,9 +143,13 @@ export default class MarketCard extends React.Component<
         </div>
         <div>
           <div>
-            <MarketStatusLabel
+            <InReportingLabel
               marketStatus={marketStatus}
-              mini
+              reportingState={reportingState}
+              disputeInfo={disputeInfo}
+              endTime={endTimeFormatted}
+              currentAugurTimestamp={currentAugurTimestamp}
+              reportingWindowStatsEndTime={reportingWindowStatsEndTime}
             />
             <MarketTypeLabel marketType={marketType} />
             <CategoryTagTrail
@@ -192,9 +200,9 @@ export default class MarketCard extends React.Component<
                 min={minPrice}
                 max={maxPrice}
                 lastPrice={0}
-                expanded={s.expanded}
+                expanded={expandedView ? true : s.expanded}
               />
-              {marketType === CATEGORICAL && outcomesFormatted.length > 3 && 
+              {marketType === CATEGORICAL && outcomesFormatted.length > 3 && !expandedView &&
                 <button onClick={this.expand}>
                   <ChevronFlip
                     stroke="#fff"

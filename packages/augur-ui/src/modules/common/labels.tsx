@@ -34,7 +34,6 @@ export interface MarketTypeProps {
 
 export interface MarketStatusProps {
   marketStatus: string;
-  mini?: boolean;
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
