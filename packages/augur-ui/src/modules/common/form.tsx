@@ -32,7 +32,7 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
-import { getTimezones, getUserTimezone, Timezones } from 'utils/get-timezones';
+import { getTimezones, getUserTimezone, Timezones, UTC_Default } from 'utils/get-timezones';
 import { Moment } from 'moment';
 
 interface CheckboxProps {
@@ -169,6 +169,7 @@ export class TimezoneDropdown extends Component<
       <section className={Styles.Timezones}>
         <TextInput
           value={this.state.value}
+          placeholder={UTC_Default}
           autoCompleteList={timezones.timezones}
           onChange={() => {}}
           onAutoCompleteListSelected={value => this.onChangeDropdown(value)}
