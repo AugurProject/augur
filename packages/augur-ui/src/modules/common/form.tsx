@@ -851,7 +851,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     const { showList } = this.state;
 
     const filteredList = autoCompleteList.filter(item =>
-      item.label.includes(this.state.value) ? item : null
+      item.label.toLowerCase().includes(this.state.value.toLowerCase()) ? item : null
     );
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
