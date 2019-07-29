@@ -11,15 +11,15 @@ import HeaderStyles from "modules/portfolio/components/common/data-table-header.
 import { OutcomeFormatted } from "modules/types";
 
 interface MarketOutcomesListProps {
-  outcomesFormatted: OutcomeFormatted[],
-  updateSelectedOutcome: Function,
-  selectedOutcomeId: number,
-  scalarDenomination: string | undefined,
-  marketType: string,
-  minPriceBigNumber: BigNumber,
-  maxPriceBigNumber: BigNumber,
-  popUp: boolean,
-};
+  outcomesFormatted: OutcomeFormatted[];
+  updateSelectedOutcome: Function;
+  selectedOutcomeId: number;
+  scalarDenomination: string | undefined;
+  marketType: string;
+  minPriceBigNumber: BigNumber;
+  maxPriceBigNumber: BigNumber;
+  popUp: boolean;
+}
 
 export default class MarketOutcomesList extends Component<MarketOutcomesListProps> {
   static defaultProps = {
@@ -27,7 +27,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
     scalarDenomination: null,
     marketType: null,
     outcomesFormatted: [],
-    popUp: false
+    popUp: false,
   };
 
   render() {
@@ -39,7 +39,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
       scalarDenomination,
       minPriceBigNumber,
       maxPriceBigNumber,
-      popUp
+      popUp,
     } = this.props;
 
     return (
