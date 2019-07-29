@@ -45,6 +45,14 @@
 	    	}
 	    }
 	});
+
+	&:hover {
+		border: 1px solid @color-primary-light;
+
+		> div:first-of-type > span:first-of-type {
+			text-decoration: underline
+		}
+	}
 }
 
 .Percent {
@@ -175,11 +183,6 @@
 	> svg {
 		width: @size-16;
 		height: @size-16;
-
-		> path {
-			stroke: @color-secondary-text;
-			fill: @color-secondary-text;
-		}
 
 		> mask {
 			fill: @color-secondary-text;
