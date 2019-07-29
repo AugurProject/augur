@@ -17,7 +17,8 @@
 
 	> div:nth-of-type(2),
 	> div:last-of-type, 
-	> span {
+	> span,
+	> button:last-of-type {
 		border-left: 1px solid @color-primary-background;
 		padding-left: @size-16;
 	}
@@ -37,6 +38,10 @@
 		color: @color-alternate-info-text;
 		padding-bottom: @size-16;
 		padding-top: @size-4;
+
+		&:hover {
+    		text-decoration: underline;
+    	}
 	}
 
 	> div:nth-of-type(2) {
@@ -59,7 +64,22 @@
     	> div:nth-of-type(2) {
     		> button {
     	    	margin-right: 0 !important;
+
+    	    	&:hover {
+    	    		text-decoration: underline;
+    	    	}
     	    }
+    	}
+
+    	> div:last-of-type {
+    		 > div > div > svg {
+		      	fill: @color-shadow-text;
+		      	stroke-width: 0.5;
+		      	stroke: @color-shadow-text;
+    		 	height: @size-16;
+    		 	margin-right: @size-16;
+    		 	width: @size-16;
+		    }
     	}
 	}
 
@@ -69,6 +89,25 @@
 		padding-bottom: @size-12;
 	}
 
+	> button:last-of-type {
+		.mono-10;
+
+		align-self: flex-start;
+		color: @color-secondary-text;
+		display: flex;
+		padding-bottom: @size-16;
+		text-transform: uppercase;
+		grid-column: 2;
+
+		> span {
+			margin-right: @size-6;
+		}
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
 	@media @breakpoint-mobile-mid {
 		grid-template-rows: repeat(4, auto);
     	grid-template-columns: auto auto;
@@ -76,7 +115,8 @@
 
 		> div:nth-of-type(2),
 		> div:last-of-type, 
-		> span {
+		> span,
+		> button:last-of-type {
 			border: 0;
 			padding: 0;
 			grid-column: 1 / span 2;
@@ -84,11 +124,11 @@
 		
 		> div:last-of-type {
 			grid-column: 1 / span 2;
+			margin-bottom: @size-10;
 		}
 
 		> div:nth-of-type(3) {
 			order: 4;
-			margin-top: @size-10;
 
 			> div:last-of-type {
 				display: none;

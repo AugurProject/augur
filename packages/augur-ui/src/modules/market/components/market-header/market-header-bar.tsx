@@ -73,7 +73,7 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
             id="copy_author"
             data-clipboard-text={author}
           >
-            {Person} {constants.COPY_AURTHOR}
+            {Person} {constants.COPY_AUTHOR}
           </div>
         </DotSelection>
       </section>
