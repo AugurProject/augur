@@ -135,7 +135,7 @@ export interface LabelValueProps {
 
 export const LabelValue = (props: LabelValueProps) => (
   <div className={Styles.LabelValue}>
-    <span>{props.label}:</span>
+    <span>{props.label}<span>:</span></span>
     <span>{props.value}</span>
   </div>
 );

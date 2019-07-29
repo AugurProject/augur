@@ -143,7 +143,7 @@
 .LabelValue {
 	display: flex;
 	flex: 1;
-	min-width: 80px;
+	max-width: 90px;
 	padding-right: @size-16;
 
 	> span:first-of-type {
@@ -158,6 +158,16 @@
 		.mono-10;
 
 		color: @color-secondary-text;
+	}
+
+	@media @breakpoint-mobile-mid {
+		flex-direction: column;
+		
+		> span:first-of-type {
+			> span {
+				display: none;
+			}
+		}
 	}
 }
 

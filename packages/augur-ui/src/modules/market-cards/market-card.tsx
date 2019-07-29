@@ -108,30 +108,76 @@ export default class MarketCard extends React.Component<
         className={Styles.MarketCard}
       >
         <div>
-          <div>
-            {address === author &&
-              <HoverIcon
-                label="marketCreator"
-                icon={MarketCreator}
-                hoverText="Market Creator"
+          {address === author &&
+            <HoverIcon
+              label="marketCreator"
+              icon={MarketCreator}
+              hoverText="Market Creator"
+            />
+          }
+          <HoverIcon
+            label="reporter"
+            icon={DesignatedReporter}
+            hoverText="Designated Reporter"
+          />
+          <HoverIcon
+            label="Position"
+            icon={PositionIcon}
+            hoverText="Position"
+          />
+          <HoverIcon
+            label="dispute"
+            icon={DisputeStake}
+            hoverText="Dispute Stake"
+          />
+        </div>
+        <div>
+          <InReportingLabel
+            marketStatus={marketStatus}
+            reportingState={reportingState}
+            disputeInfo={disputeInfo}
+            endTime={endTimeFormatted}
+            currentAugurTimestamp={currentAugurTimestamp}
+            reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+          />
+          <MarketTypeLabel marketType={marketType} />
+          <CategoryTagTrail
+            categories={categoriesWithClick}
+            tags={tagsWithClick}
+          />
+          <MarketProgress
+            reportingState={reportingState}
+            currentTime={currentAugurTimestamp}
+            endTime={endTime}
+            reportingWindowEndtime={reportingWindowStatsEndTime}
+            alignRight
+          />
+          {toggleFavorite && (
+            <div>
+              <FavoritesButton
+                action={() => toggleFavorite()}
+                isFavorite={isFavorite}
+                hideText
+                disabled={!isLogged}
               />
-            }
-            <HoverIcon
-              label="reporter"
-              icon={DesignatedReporter}
-              hoverText="Designated Reporter"
-            />
-            <HoverIcon
-              label="Position"
-              icon={PositionIcon}
-              hoverText="Position"
-            />
-            <HoverIcon
-              label="dispute"
-              icon={DisputeStake}
-              hoverText="Dispute Stake"
-            />
-          </div>
+            </div>
+          )}
+          <DotSelection>
+            <div
+              id="copy_marketId"
+              data-clipboard-text={id}
+            >
+              {PaperClip} {COPY_MARKET_ID}
+            </div>
+            <div
+              id="copy_author"
+              data-clipboard-text={author}
+            >
+              {Person} {COPY_AUTHOR}
+            </div>
+          </DotSelection>
+        </div>
+        <div>
           <LabelValue
             label="VOL"
             value={volumeFormatted.formatted}
@@ -143,82 +189,35 @@ export default class MarketCard extends React.Component<
             />
           }
         </div>
-        <div>
-          <div>
-            <InReportingLabel
-              marketStatus={marketStatus}
-              reportingState={reportingState}
-              disputeInfo={disputeInfo}
-              endTime={endTimeFormatted}
-              currentAugurTimestamp={currentAugurTimestamp}
-              reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+        
+        <MarketLink id={id}>
+          {description}
+        </MarketLink>
+        {!condensed && 
+          <>
+            <OutcomeGroup 
+              outcomes={outcomesFormatted} 
+              marketType={marketType}
+              scalarDenomination={scalarDenomination}
+              min={minPrice}
+              max={maxPrice}
+              lastPrice={0}
+              expanded={expandedView ? true : s.expanded}
             />
-            <MarketTypeLabel marketType={marketType} />
-            <CategoryTagTrail
-              categories={categoriesWithClick}
-              tags={tagsWithClick}
-            />
-            <MarketProgress
-              reportingState={reportingState}
-              currentTime={currentAugurTimestamp}
-              endTime={endTime}
-              reportingWindowEndtime={reportingWindowStatsEndTime}
-              alignRight
-            />
-            {toggleFavorite && (
-              <div>
-                <FavoritesButton
-                  action={() => toggleFavorite()}
-                  isFavorite={isFavorite}
-                  hideText
-                  disabled={!isLogged}
+            {marketType === CATEGORICAL && outcomesFormatted.length > 3 && !expandedView &&
+              <button onClick={this.expand}>
+                <ChevronFlip
+                  stroke="#fff"
+                  pointDown={s.expanded}
+                  quick
+                  filledInIcon
+                  hover
                 />
-              </div>
-            )}
-            <DotSelection>
-              <div
-                id="copy_marketId"
-                data-clipboard-text={id}
-              >
-                {PaperClip} {COPY_MARKET_ID}
-              </div>
-              <div
-                id="copy_author"
-                data-clipboard-text={author}
-              >
-                {Person} {COPY_AUTHOR}
-              </div>
-            </DotSelection>
-          </div>
-          <MarketLink id={id}>
-            {description}
-          </MarketLink>
-          {!condensed && 
-            <>
-              <OutcomeGroup 
-                outcomes={outcomesFormatted} 
-                marketType={marketType}
-                scalarDenomination={scalarDenomination}
-                min={minPrice}
-                max={maxPrice}
-                lastPrice={0}
-                expanded={expandedView ? true : s.expanded}
-              />
-              {marketType === CATEGORICAL && outcomesFormatted.length > 3 && !expandedView &&
-                <button onClick={this.expand}>
-                  <ChevronFlip
-                    stroke="#fff"
-                    pointDown={s.expanded}
-                    quick
-                    filledInIcon
-                    hover
-                  />
-                  {s.expanded ? "show less" : "view all outcomes"}
-                </button>
-              }
-            </>
-          }
-        </div>
+                {s.expanded ? "show less" : "view all outcomes"}
+              </button>
+            }
+          </>
+        }
       </div>
     );
   }
