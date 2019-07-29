@@ -1,10 +1,10 @@
-import * as _ from 'lodash';
-import { AbstractDB, BaseDocument } from './AbstractDB';
-import { Augur } from '../../Augur';
-import { DB } from './DB';
-import { Log, ParsedLog } from '@augurproject/types';
-import { SyncStatus } from './SyncStatus';
-import { augurEmitter } from '../../events';
+import * as _ from "lodash";
+import { AbstractDB, BaseDocument } from "./AbstractDB";
+import { Augur } from "../../Augur";
+import { DB } from "./DB";
+import { Log, ParsedLog } from "@augurproject/types";
+import { SyncStatus } from "./SyncStatus";
+import { augurEmitter } from "../../events";
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -19,6 +19,7 @@ export class SyncableDB extends AbstractDB {
   private syncStatus: SyncStatus;
   private idFields: string[];
   private syncing: boolean;
+  private rollingBack: boolean;
 
   constructor(
     augur: Augur,
@@ -49,6 +50,7 @@ export class SyncableDB extends AbstractDB {
     db.registerEventListener(this.eventName, this.addNewBlock);
 
     this.syncing = false;
+    this.rollingBack = false;
   }
 
   async sync(augur: Augur, chunkSize: number, blockStreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
@@ -100,7 +102,13 @@ export class SyncableDB extends AbstractDB {
     }
   }
 
+
   addNewBlock = async (blocknumber: number, logs: ParsedLog[]): Promise<number> => {
+    // don't do anything until rollback is complete. We'll sync back to this block later
+    if (this.rollingBack) {
+      return -1;
+    }
+
     if (this.eventName === "OrderEvent") {
       this.parseLogArrays(logs);
     }
@@ -149,19 +157,7 @@ export class SyncableDB extends AbstractDB {
       }
 
       // try this twice for now
-      await this.syncStatus
-        .setHighestSyncBlock(this.dbName, blocknumber, this.syncing)
-        .catch(async err => {
-          await this.syncStatus
-            .setHighestSyncBlock(this.dbName, blocknumber, this.syncing)
-            .catch(async err => {
-              await this.syncStatus
-                .setHighestSyncBlock(this.dbName, blocknumber, this.syncing)
-                .catch(err => {
-                  throw err;
-                });
-            });
-        });
+      await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
 
       // let the controller know a new block was added so it can update the UI
       augurEmitter.emit('controller:new:block', {});
@@ -174,6 +170,8 @@ export class SyncableDB extends AbstractDB {
 
   async rollback(blockNumber: number): Promise<void> {
     // Remove each change from blockNumber onward
+    this.rollingBack = true;
+
     try {
       const blocksToRemove = await this.db.find({
         selector: { blockNumber: { $gte: blockNumber } },
@@ -182,14 +180,12 @@ export class SyncableDB extends AbstractDB {
       for (const doc of blocksToRemove.docs) {
         await this.db.remove(doc._id, doc._rev);
       }
-      await this.syncStatus.setHighestSyncBlock(
-        this.dbName,
-        --blockNumber,
-        this.syncing
-      );
+      await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing, true);
     } catch (err) {
       console.error(err);
     }
+
+    this.rollingBack = false;
   }
 
   protected async getLogs(augur: Augur, startBlock: number, endBlock: number): Promise<ParsedLog[]> {
