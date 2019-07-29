@@ -19,7 +19,7 @@ import { BigNumber } from "bignumber.js";
 import { Orderbook } from "../../api/Liquidity";
 
 // because flexsearch is a UMD type lib
-import flexSearch = require('flexsearch');
+const flexSearch = require('flexsearch');
 import { Index, ExtendedSearchOptions, SearchResults } from 'flexsearch';
 
 export interface MarketFields {
@@ -235,7 +235,7 @@ export class MarketDB extends DerivedDB {
     return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI);
   }
 
-  async fullTextSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields> | []> {
+  async fullTextSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields>[]> {
     if (this.flexSearchIndex) {
       if (query !== null) {
         return this.flexSearchIndex.search(query);

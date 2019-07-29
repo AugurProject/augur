@@ -542,7 +542,7 @@ export class Markets {
       }, []);
     });
 
-      // TODO: Implement sortBy, isSortDescending, limit, offset
+    // TODO: Implement sortBy, isSortDescending, limit, offset
 
     return Object.keys(filteredKeyedMarketCreatedLogs);
   }

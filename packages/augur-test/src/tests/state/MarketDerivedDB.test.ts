@@ -84,29 +84,29 @@ test("Flexible Search", async () => {
   await db.addNewBlock(DBName, blockLogs);
   await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
 
-  let docs = db.fullTextMarketSearch("0x1111111111111111111111111111111111111111");  // market
+  let docs = await db.fullTextMarketSearch("0x1111111111111111111111111111111111111111", null);  // market
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("share");  // category
+  docs = await db.fullTextMarketSearch("share", null);  // category
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("Foobar");  // description/title
+  docs = await db.fullTextMarketSearch("Foobar", null);  // description/title
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("lol");  // longDescription/description
+  docs = await db.fullTextMarketSearch("lol", null);  // longDescription/description
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("blah");  // resolutionSource
+  docs = await db.fullTextMarketSearch("blah", null);  // resolutionSource
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("fake");  // _scalarDenomination
+  docs = await db.fullTextMarketSearch("fake", null);  // _scalarDenomination
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("humanity");  // tags
+  docs = await db.fullTextMarketSearch("humanity", null);  // tags
   expect(docs.length).toEqual(1);
 
   const doc = docs[0];
-console.log(doc);
+
   expect(doc).toMatchObject({
     id: "0x1111111111111111111111111111111111111111",
     market: "0x1111111111111111111111111111111111111111",

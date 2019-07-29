@@ -1,5 +1,6 @@
 // This is a modified version of FlexSearch's index.d.ts
-// It includes additional signatures for the `add` and `search` functions.
+// It includes additional signatures for the `add` and `search`
+// functions, and changes some return types to SearchResults<T>[].
 
 declare module "flexsearch" {
   interface Index<T> {
@@ -12,11 +13,11 @@ declare module "flexsearch" {
     init(options: CreateOptions);
     add(id: number, o: T);
     add(o: T): void;
-    search(query: string, options: number | SearchOptions, callback: (results: SearchResults<T>) => void): void;
-    search(query: string, options?: number | SearchOptions): Promise<SearchResults<T>>;
-    search(options: ExtendedSearchOptions, callback: (results: SearchResults<T>) => void): void;
-    search(options: ExtendedSearchOptions): Promise<SearchResults<T>>;
-    search(options: ExtendedSearchOptions[]): Promise<SearchResults<T>>;
+    search(query: string, options: number | SearchOptions, callback: (results: SearchResults<T>[]) => void): void;
+    search(query: string, options?: number | SearchOptions): Promise<SearchResults<T>[]>;
+    search(options: ExtendedSearchOptions, callback: (results: SearchResults<T>[]) => void): void;
+    search(options: ExtendedSearchOptions): Promise<SearchResults<T>[]>;
+    search(options: ExtendedSearchOptions[]): Promise<SearchResults<T>[]>;
     update(id: number, o: T);
     remove(id: number);
     clear();

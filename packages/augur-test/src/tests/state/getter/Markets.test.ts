@@ -1900,13 +1900,25 @@ describe('State API :: Markets :: ', () => {
       universe: john.augur.contracts.universe.address,
     });
     expect(categories).toMatchObject([
-    'yesNo category 1',
-    'yesNo category 2',
-    'categorical category 1',
-    'categorical category 2',
-    'scalar category 1',
-    'scalar category 2',
-    ' ',
+      'yesNo 1 primary',
+      'yesNo 1 secondary',
+      'yesNo 1 tertiary',
+      'yesNo 2 primary',
+      'yesNo 2 secondary',
+      'yesNo 2 tertiary',
+      'categorical 1 primary',
+      'categorical 1 secondary',
+      'categorical 1 tertiary',
+      'categorical 2 primary',
+      'categorical 2 secondary',
+      'categorical 2 tertiary',
+      'scalar 1 primary',
+      'scalar 1 secondary',
+      'scalar 1 tertiary',
+      'scalar 2 primary',
+      'scalar 2 secondary',
+      'scalar 2 tertiary',
+      ' ',
     ]);
   }, 120000);
 });

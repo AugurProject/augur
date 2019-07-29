@@ -247,7 +247,7 @@ export class DB {
     return this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
-  async fullTextMarketSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields> | []> {
+  async fullTextMarketSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields>[]> {
     return this.marketDatabase.fullTextSearch(query, extendedSearchOptions);
   }
 
