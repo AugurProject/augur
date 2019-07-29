@@ -337,30 +337,23 @@ div.LinearPropertyViewTransaction {
   color: @color-secondary-text;
   padding: @size-2;
   line-height: @size-11;
-  text-transform: capitalize;
+  text-transform: uppercase;
 }
 
 .MarketStatus {
-  .mono-12-bold;
+  .mono-9;
 
-  color: @color-secondary-text;
-  line-height: @size-14;
-  padding: @size-2;
   border: 1px solid transparent;
+  color: @color-secondary-text;
+  line-height: @size-11;
+  padding: @size-2;
   position: relative;
   border-radius: @border-radius-default;
-  text-transform: capitalize;
+  text-transform: uppercase;
 
   @media @breakpoint-mobile {
     .text-10-bold;
   }
-}
-
-.MarketStatus_mini {
-  .mono-9;
-
-  line-height: @size-11;
-  padding: @size-2;
 }
 
 .MarketStatus_open {
@@ -379,17 +372,14 @@ div.LinearPropertyViewTransaction {
 }
 
 .InReporting_reportingDetails {
-  color: @color-tertiary-text;
-  font-weight: normal;
+  > svg {
+    width: @size-10;
+    height: @size-6;
+    margin: 0 @size-4;
 
-  &::before {
-    background-color: @color-tertiary-text;
-    border-radius: 50%;
-    content: "";
-    display: inline-block;
-    height: 0.1875rem;
-    margin: 0 @size-4 0.0625rem;
-    width: 0.1875rem;
+    > path {
+      fill: @color-in-reporting;
+    }
   }
 }
 

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import { CategoryTagTrail, MarketTypeLabel, MarketStatusLabel } from "modules/common/labels";
+import { CategoryTagTrail, MarketTypeLabel, InReportingLabel } from "modules/common/labels";
 import { OutcomeGroup, LabelValue, HoverIcon } from "modules/market-cards/common";
 import toggleTag from "modules/routes/helpers/toggle-tag";
 import toggleCategory from "modules/routes/helpers/toggle-category";
@@ -29,6 +29,7 @@ interface MarketCardProps {
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
   condensed?: Boolean;
+  expandedView?: Boolean;
   address: string;
 }
 
@@ -58,7 +59,8 @@ export default class MarketCard extends React.Component<
       currentAugurTimestamp,
       reportingWindowStatsEndTime,
       condensed,
-      address
+      address,
+      expandedView
     } = this.props;
 
     const s = this.state;
@@ -79,7 +81,9 @@ export default class MarketCard extends React.Component<
       endTime,
       openInterestFormatted,
       volumeFormatted,
-      tags
+      tags,
+      disputeInfo,
+      endTimeFormatted
     } = market;
 
     const path =
@@ -104,111 +108,116 @@ export default class MarketCard extends React.Component<
         className={Styles.MarketCard}
       >
         <div>
-          <div>
-            {address === author &&
-              <HoverIcon
-                label="marketCreator"
-                icon={MarketCreator}
-                hoverText="Market Creator"
+          {address === author &&
+            <HoverIcon
+              label="marketCreator"
+              icon={MarketCreator}
+              hoverText="Market Creator"
+            />
+          }
+          <HoverIcon
+            label="reporter"
+            icon={DesignatedReporter}
+            hoverText="Designated Reporter"
+          />
+          <HoverIcon
+            label="Position"
+            icon={PositionIcon}
+            hoverText="Position"
+          />
+          <HoverIcon
+            label="dispute"
+            icon={DisputeStake}
+            hoverText="Dispute Stake"
+          />
+        </div>
+        <div>
+          <InReportingLabel
+            marketStatus={marketStatus}
+            reportingState={reportingState}
+            disputeInfo={disputeInfo}
+            endTime={endTimeFormatted}
+            currentAugurTimestamp={currentAugurTimestamp}
+            reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+          />
+          <MarketTypeLabel marketType={marketType} />
+          <CategoryTagTrail
+            categories={categoriesWithClick}
+            tags={tagsWithClick}
+          />
+          <MarketProgress
+            reportingState={reportingState}
+            currentTime={currentAugurTimestamp}
+            endTime={endTime}
+            reportingWindowEndtime={reportingWindowStatsEndTime}
+            alignRight
+          />
+          {toggleFavorite && (
+            <div>
+              <FavoritesButton
+                action={() => toggleFavorite()}
+                isFavorite={isFavorite}
+                hideText
+                disabled={!isLogged}
               />
-            }
-            <HoverIcon
-              label="reporter"
-              icon={DesignatedReporter}
-              hoverText="Designated Reporter"
-            />
-            <HoverIcon
-              label="Position"
-              icon={PositionIcon}
-              hoverText="Position"
-            />
-            <HoverIcon
-              label="dispute"
-              icon={DisputeStake}
-              hoverText="Dispute Stake"
-            />
-          </div>
+            </div>
+          )}
+          <DotSelection>
+            <div
+              id="copy_marketId"
+              data-clipboard-text={id}
+            >
+              {PaperClip} {COPY_MARKET_ID}
+            </div>
+            <div
+              id="copy_author"
+              data-clipboard-text={author}
+            >
+              {Person} {COPY_AUTHOR}
+            </div>
+          </DotSelection>
+        </div>
+        <div>
           <LabelValue
             label="VOL"
             value={volumeFormatted.formatted}
           />
-          <LabelValue
-            label="OI"
-            value={openInterestFormatted.formatted}
-          />
-        </div>
-        <div>
-          <div>
-            <MarketStatusLabel
-              marketStatus={marketStatus}
-              mini
-            />
-            <MarketTypeLabel marketType={marketType} />
-            <CategoryTagTrail
-              categories={categoriesWithClick}
-              tags={tagsWithClick}
-            />
-            <MarketProgress
-              reportingState={reportingState}
-              currentTime={currentAugurTimestamp}
-              endTime={endTime}
-              reportingWindowEndtime={reportingWindowStatsEndTime}
-              alignRight
-            />
-            {toggleFavorite && (
-              <div>
-                <FavoritesButton
-                  action={() => toggleFavorite()}
-                  isFavorite={isFavorite}
-                  hideText
-                  disabled={!isLogged}
-                />
-              </div>
-            )}
-            <DotSelection>
-              <div
-                id="copy_marketId"
-                data-clipboard-text={id}
-              >
-                {PaperClip} {COPY_MARKET_ID}
-              </div>
-              <div
-                id="copy_author"
-                data-clipboard-text={author}
-              >
-                {Person} {COPY_AUTHOR}
-              </div>
-            </DotSelection>
-          </div>
-          <MarketLink id={id}>
-            {description}
-          </MarketLink>
           {!condensed && 
-            <>
-              <OutcomeGroup 
-                outcomes={outcomesFormatted} 
-                marketType={marketType}
-                scalarDenomination={scalarDenomination}
-                min={minPrice}
-                max={maxPrice}
-                lastPrice={0}
-                expanded={s.expanded}
-              />
-              {marketType === CATEGORICAL && outcomesFormatted.length > 3 && 
-                <button onClick={this.expand}>
-                  <ChevronFlip
-                    stroke="#fff"
-                    pointDown={s.expanded}
-                    quick
-                    filledInIcon
-                    hover
-                  />
-                  {s.expanded ? "show less" : "view all outcomes"}
-                </button>
-              }
-            </>
+            <LabelValue
+              label="OI"
+              value={openInterestFormatted.formatted}
+            />
           }
         </div>
+        
+        <MarketLink id={id}>
+          {description}
+        </MarketLink>
+        {!condensed && 
+          <>
+            <OutcomeGroup 
+              outcomes={outcomesFormatted} 
+              marketType={marketType}
+              scalarDenomination={scalarDenomination}
+              min={minPrice}
+              max={maxPrice}
+              lastPrice={0}
+              expanded={expandedView ? true : s.expanded}
+            />
+            {marketType === CATEGORICAL && outcomesFormatted.length > 3 && !expandedView &&
+              <button onClick={this.expand}>
+                <ChevronFlip
+                  stroke="#fff"
+                  pointDown={s.expanded}
+                  quick
+                  filledInIcon
+                  hover
+                />
+                {s.expanded ? "show less" : "view all outcomes"}
+              </button>
+            }
+          </>
+        }
       </div>
     );
   }
