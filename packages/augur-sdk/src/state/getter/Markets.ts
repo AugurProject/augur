@@ -1,6 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 import { DB } from '../db/DB';
+import { MarketFields } from '../db/MarketDB';
 import { Getter } from './Router';
+import { Order, Orders, OutcomeParam, Trading, OrderState } from './Trading';
 import {
   Address,
   MarketCreatedLog,
@@ -25,7 +27,7 @@ import { calculatePayoutNumeratorsValue } from '../../utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
-import { Order, Orders, OutcomeParam, Trading, OrderState } from './Trading';
+import { ExtendedSearchOptions, SearchResults } from "flexsearch";
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -414,28 +416,50 @@ export class Markets {
     );
 
     let filteredKeyedMarketCreatedLogs = keyedMarketCreatedLogs;
-    if (params.search) {
-      let query: string | any[] = params.search;
+
+    if (params.search || params.categories) {
+      let keyedFullTextResults: any = {};
+      let searchResults: any = [];
+      if (params.search) {
+        searchResults = await db.fullTextMarketSearch(params.search, null);
+        keyedFullTextResults = _.keyBy(
+          searchResults,
+          (searchResult: MarketFields) =>  { return searchResult.id; }
+        );
+      }
+      let keyedCategoryResults: any = {};
       if (params.categories) {
-        query = [{query: params.search}];
+        const extendedSearchOptions: ExtendedSearchOptions[] = [];
         for (let i = 0; i < params.categories.length; i++) {
-          query.push({query: params.categories[i]});
+          extendedSearchOptions.push({
+            field: ["category" + (i + 1)],
+            query: params.categories[i],
+            bool: "and",
+          });
+        }
+        const categoryResults = await db.fullTextMarketSearch(null, extendedSearchOptions);
+        keyedCategoryResults = _.keyBy(
+          categoryResults,
+          (searchResult: MarketFields) =>  { return searchResult.id; }
+        );
+        if (!_.isEmpty(keyedFullTextResults)) {
+          // Reset keyedSearchResults to intersection of searchResults & categoryResults
+          keyedFullTextResults = {};
+          for (let i = 0; i < searchResults.length; i++) {
+            console.log(searchResults[i].market);
+            if (categoryResults[searchResults[i].market]) {
+              keyedFullTextResults[searchResults[i].market] = categoryResults[searchResults[i].market];
+            }
+          }
+        } else {
+          keyedFullTextResults = keyedCategoryResults;
         }
       }
-      const fullTextSearchResults = await db.fullTextMarketSearch(params.search);
-
-      const keyedFullTextMarketIds: any = fullTextSearchResults.reduce(
-        (previousValue: any, fullTextSearchResult: any) => {
-          previousValue[fullTextSearchResult.market] = fullTextSearchResult;
-          return previousValue;
-        },
-        []
-      );
 
       filteredKeyedMarketCreatedLogs = Object.entries(
         keyedMarketCreatedLogs
       ).reduce((previousValue: any, currentValue: any) => {
-        if (keyedFullTextMarketIds[currentValue[0]]) {
+        if (keyedFullTextResults[currentValue[0]]) {
           previousValue[currentValue[0]] = currentValue[1];
         }
         return previousValue;

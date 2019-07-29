@@ -1,54 +1,100 @@
-// Type definitions for flexsearch 0.6
-// Project: https://github.com/nextapps-de/flexsearch/
-// Definitions by: Brian Woods <https://github.com/brianosaurus>
-
-/*~ Note that ES6 modules cannot directly export class objects.
- *~ This file should be imported using the CommonJS-style:
- *~   import x = require('flexsearch');
- */
+// This is a modified version of FlexSearch's index.d.ts
+// It includes additional signatures for the `add` and `search` functions.
 
 declare module "flexsearch" {
-  interface options {
-    encode?: string;
-    tokenize?: string;
-    threshold?: number;
+  interface Index<T> {
+    //TODO: Chaining
+    readonly id: string;
+    readonly index: string;
+    readonly length: number;
+
+    init();
+    init(options: CreateOptions);
+    add(id: number, o: T);
+    add(o: T): void;
+    search(query: string, options: number | SearchOptions, callback: (results: SearchResults<T>) => void): void;
+    search(query: string, options?: number | SearchOptions): Promise<SearchResults<T>>;
+    search(options: ExtendedSearchOptions, callback: (results: SearchResults<T>) => void): void;
+    search(options: ExtendedSearchOptions): Promise<SearchResults<T>>;
+    search(options: ExtendedSearchOptions[]): Promise<SearchResults<T>>;
+    update(id: number, o: T);
+    remove(id: number);
+    clear();
+    destroy();
+    addMatcher(matcher: Matcher);
+    where(whereFn: (o: T) => boolean): SearchResult<T>[];
+    where(whereObj: {[key: string]: string});
+    encode(str: string): string;
+    export(): string;
+    import(exported: string);
+  }
+
+  interface ExtendedSearchOptions extends SearchOptions {
+    query: string;
+  }
+
+  interface SearchOptions {
+      limit?: number,
+      suggest?: boolean,
+      where?: {[key: string]: string},
+      field?: string[],
+      bool?: "and" | "or" | "not"
+      page?: boolean | Cursor;
+      //TODO: Sorting
+  }
+
+  interface SearchResults<T> {
+      page?: Cursor,
+      next?: Cursor,
+      result: SearchResult[]
+  }
+
+  type SearchResult = number;
+
+  export type CreateOptions = {
+    profile?: IndexProfile;
+    tokenize?: DefaultTokenizer | TokenizerFn;
+    split?: RegExp;
+    encode?: DefaultEncoder | EncoderFn | false;
+    cache?: boolean | number;
     async?: boolean;
-    worker?: boolean;
-    cache?: boolean;
-    doc?: object;
+    worker?: false | number;
+    depth?: false | number;
+    threshold?: false | number;
+    resolution?: number;
+    stemmer?: Stemmer | string | false;
+    filter?: FilterFn | string | false;
+    rtl?: boolean;
+  };
+
+//   limit	number	Sets the limit of results.
+// suggest	true, false	Enables suggestions in results.
+// where	object	Use a where-clause for non-indexed fields.
+// field	string, Array<string>	Sets the document fields which should be searched. When no field is set, all fields will be searched. Custom options per field are also supported.
+// bool	"and", "or"	Sets the used logical operator when searching through multiple fields.
+// page	true, false, cursor	Enables paginated results.
+
+  type IndexProfile = "memory" | "speed" | "match" | "score" | "balance" | "fast";
+  type DefaultTokenizer = "strict" | "forward" | "reverse" | "full";
+  type TokenizerFn = (str: string) => string[];
+  type DefaultEncoder = "icase" | "simple" | "advanced" | "extra" | "balance";
+  type EncoderFn = (str: string) => string;
+  type Stemmer = {[key: string]: string};
+  type Matcher = {[key: string]: string};
+  type FilterFn = (str: string) => boolean;
+  type Cursor = string;
+
+  export default class FlexSearch {
+    static create(options?: CreateOptions): Index;
+    static registerMatcher(matcher: Matcher);
+    static registerEncoder(name: string, encoder: EncoderFn);
+    static registerLanguage(lang: string, options: { stemmer?: Stemmer; filter?: string[] });
+    static encode(name: string, str: string);
   }
-
-  interface market {
-    market: string;
-    category1: string;
-    category2: string;
-    category3: string;
-    description: string;
-    longDescription: string;
-    resolutionSource: string;
-    _scalarDenomination: string;
-    tags: string;
-    start: Date;
-    end: Date;
-  }
-
-  class FlexSearch {
-    constructor(mode: string, options?: options);
-    constructor(options?: options);
-    constructor();
-
-    add(id: number, value: market): void;
-    add(data: object): void;
-    search(s: string, limit?: number, callback?: (result: Array<object>) => void): Array<object>;
-    update(id: number, value: string): void;
-    remove(id: number): void;
-    clear(): void;
-    destroy(): void;
-    init(options?: options): void;
-    find(id: number): object;
-
-    static create(options?: options): FlexSearch;
-  }
-
-  export = FlexSearch;
 }
+
+// FlexSearch.create(<options>)
+// FlexSearch.registerMatcher({KEY: VALUE})
+// FlexSearch.registerEncoder(name, encoder)
+// FlexSearch.registerLanguage(lang, {stemmer:{}, filter:[]})
+// FlexSearch.encode(name, string)

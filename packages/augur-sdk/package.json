@@ -53,7 +53,7 @@
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
     "express": "4.16.4",
-    "flexsearch": "0.6.2",
+    "flexsearch": "0.6.30",
     "ganache-core": "2.5.5",
     "io-ts": "1.4.2",
     "isomorphic-ws": "4.0.1",

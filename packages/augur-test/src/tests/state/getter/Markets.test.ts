@@ -35,7 +35,7 @@ describe('State API :: Markets :: ', () => {
     await mary.approveCentralAuthority();
   }, 120000);
 
-  // NOTE: Full-text searching is tested more in SyncableDB.test.ts
+  // NOTE: Full-text searching is also tested in MarketDerivedDB.test.ts
   test(':getMarkets', async () => {
     const universe = john.augur.contracts.universe;
     const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
@@ -48,14 +48,14 @@ describe('State API :: Markets :: ', () => {
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["yesNo category 1"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
+      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
     });
     const yesNoMarket2 = await john.createYesNoMarket({
       endTime,
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["yesNo category 2"], "description": "yesNo description 2", "longDescription": "yesNo longDescription 2", "tags": ["yesNo tag2-1", "yesNo tag2-2", "yesNo tag2-3"]}',
+      extraInfo: '{"categories": ["yesNo 2 primary", "yesNo 2 secondary", "yesNo 2 tertiary"], "description": "yesNo description 2", "longDescription": "yesNo longDescription 2", "tags": ["yesNo tag2-1", "yesNo tag2-2", "yesNo tag2-3"]}',
     });
     const categoricalMarket1 = await john.createCategoricalMarket({
       endTime,
@@ -63,7 +63,7 @@ describe('State API :: Markets :: ', () => {
       affiliateFeeDivisor,
       designatedReporter,
       outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
-      extraInfo: '{"categories": ["categorical category 1"], "description": "categorical description 1", "longDescription": "categorical longDescription 1", "tags": ["categorical tag1-1", "categorical tag1-2", "categorical tag1-3"]}',
+      extraInfo: '{"categories": ["categorical 1 primary", "categorical 1 secondary", "categorical 1 tertiary"], "description": "categorical description 1", "longDescription": "categorical longDescription 1", "tags": ["categorical tag1-1", "categorical tag1-2", "categorical tag1-3"]}',
     });
     const categoricalMarket2 = await john.createCategoricalMarket({
       endTime,
@@ -71,7 +71,7 @@ describe('State API :: Markets :: ', () => {
       affiliateFeeDivisor,
       designatedReporter,
       outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
-      extraInfo: '{"categories": ["categorical category 2"], "description": "categorical description 2", "longDescription": "categorical longDescription 2", "tags": ["categorical tag2-1", "categorical tag2-2", "categorical tag2-3"]}',
+      extraInfo: '{"categories": ["categorical 2 primary", "categorical 2 secondary", "categorical 2 tertiary"], "description": "categorical description 2", "longDescription": "categorical longDescription 2", "tags": ["categorical tag2-1", "categorical tag2-2", "categorical tag2-3"]}',
     });
     const scalarMarket1 = await john.createScalarMarket({
       endTime,
@@ -80,7 +80,7 @@ describe('State API :: Markets :: ', () => {
       designatedReporter,
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
-      extraInfo: '{"categories": ["scalar category 1"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1", "tags": ["scalar tag1-1", "scalar tag1-2", "scalar tag1-3"]}',
+      extraInfo: '{"categories": ["scalar 1 primary", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1", "tags": ["scalar tag1-1", "scalar tag1-2", "scalar tag1-3"]}',
     });
     const scalarMarket2 = await john.createScalarMarket({
       endTime,
@@ -89,7 +89,7 @@ describe('State API :: Markets :: ', () => {
       designatedReporter,
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
-      extraInfo: '{"categories": ["scalar category 2"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2", "tags": ["scalar tag2-1", "scalar tag2-2", "scalar tag2-3"]}',
+      extraInfo: '{"categories": ["scalar 2 primary", "scalar 2 secondary", "scalar 2 tertiary"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2", "tags": ["scalar tag2-1", "scalar tag2-2", "scalar tag2-3"]}',
     });
 
     const actualDB = await db;
@@ -117,11 +117,11 @@ describe('State API :: Markets :: ', () => {
       creator: ACCOUNTS[0].publicKey,
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    yesNoMarket2.address,
-    categoricalMarket1.address,
-    categoricalMarket2.address,
-    scalarMarket1.address,
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
       scalarMarket2.address,
     ]);
 
@@ -143,11 +143,11 @@ describe('State API :: Markets :: ', () => {
       maxEndTime: endTime.plus(1).toNumber(),
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    yesNoMarket2.address,
-    categoricalMarket1.address,
-    categoricalMarket2.address,
-    scalarMarket1.address,
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
       scalarMarket2.address,
     ]);
 
@@ -157,11 +157,11 @@ describe('State API :: Markets :: ', () => {
       designatedReporter: ACCOUNTS[0].publicKey,
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    yesNoMarket2.address,
-    categoricalMarket1.address,
-    categoricalMarket2.address,
-    scalarMarket1.address,
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
       scalarMarket2.address,
     ]);
 
@@ -183,8 +183,8 @@ describe('State API :: Markets :: ', () => {
       maxFee: '0.06',
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    yesNoMarket2.address,
+      yesNoMarket1.address,
+      yesNoMarket2.address,
       categoricalMarket1.address,
     ]);
 
@@ -193,16 +193,47 @@ describe('State API :: Markets :: ', () => {
       maxFee: '0.11',
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    yesNoMarket2.address,
-    categoricalMarket1.address,
-    categoricalMarket2.address,
-    scalarMarket1.address,
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
       scalarMarket2.address,
     ]);
 
-    // Place orders on some markets
+    // Test search & categories params
+    markets = await api.route('getMarkets', {
+      universe: universe.address,
+      search: "scalar description 1",
+    });
+    expect(markets).toEqual([
+      scalarMarket1.address,
+    ]);
 
+    markets = await api.route('getMarkets', {
+      universe: universe.address,
+      categories: [
+        "scalar 2 primary",
+        "scalar 2 secondary",
+        "scalar 2 tertiary",
+      ],
+    });
+    expect(markets).toEqual([
+      scalarMarket2.address
+    ]);
+
+    markets = await api.route('getMarkets', {
+      universe: universe.address,
+      search: "scalar description 1",
+      categories: [
+        "scalar 2 primary",
+        "scalar 2 secondary",
+        "scalar 2 tertiary",
+      ],
+    });
+    expect(markets).toEqual([]);
+
+    // Place orders on some markets
     const numShares = new BigNumber(10000000000000);
     const price = new BigNumber(22);
     const yesNoOrderId = await john.placeOrder(
@@ -255,11 +286,11 @@ describe('State API :: Markets :: ', () => {
       hasOrders: false,
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    yesNoMarket2.address,
-    categoricalMarket1.address,
-    categoricalMarket2.address,
-    scalarMarket1.address,
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
       scalarMarket2.address,
     ]);
 
@@ -268,8 +299,8 @@ describe('State API :: Markets :: ', () => {
       hasOrders: true,
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    categoricalMarket1.address,
+      yesNoMarket1.address,
+      categoricalMarket1.address,
       scalarMarket1.address,
     ]);
 
@@ -301,8 +332,8 @@ describe('State API :: Markets :: ', () => {
       hasOrders: true,
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    categoricalMarket1.address,
+      yesNoMarket1.address,
+      categoricalMarket1.address,
       scalarMarket1.address,
     ]);
 
@@ -330,11 +361,11 @@ describe('State API :: Markets :: ', () => {
       disputeWindow: NULL_ADDRESS,
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    yesNoMarket2.address,
-    categoricalMarket1.address,
-    categoricalMarket2.address,
-    scalarMarket1.address,
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
       scalarMarket2.address,
     ]);
 
@@ -344,11 +375,11 @@ describe('State API :: Markets :: ', () => {
       reportingStates: [MarketInfoReportingState.DESIGNATED_REPORTING],
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    yesNoMarket2.address,
-    categoricalMarket1.address,
-    categoricalMarket2.address,
-    scalarMarket1.address,
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
       scalarMarket2.address,
     ]);
 
@@ -382,10 +413,10 @@ describe('State API :: Markets :: ', () => {
       reportingStates: [MarketInfoReportingState.DESIGNATED_REPORTING],
     });
     expect(markets).toEqual([
-    yesNoMarket2.address,
-    categoricalMarket1.address,
-    categoricalMarket2.address,
-    scalarMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
       scalarMarket2.address,
     ]);
 
@@ -403,15 +434,16 @@ describe('State API :: Markets :: ', () => {
       ],
     });
     expect(markets).toEqual([
-    yesNoMarket1.address,
-    yesNoMarket2.address,
-    categoricalMarket1.address,
-    categoricalMarket2.address,
-    scalarMarket1.address,
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
       scalarMarket2.address,
     ]);
+
   }, 120000);
-/*
+
   test(':getMarketPriceHistory', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();
     const categoricalMarket = await john.createReasonableMarket(
@@ -1877,5 +1909,4 @@ describe('State API :: Markets :: ', () => {
     ' ',
     ]);
   }, 120000);
-*/
 });

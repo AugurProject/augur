@@ -4,7 +4,6 @@ import { DerivedDB } from "./DerivedDB";
 import { DB } from "./DB";
 import { Subscriptions } from "../../subscriptions";
 import { augurEmitter } from "../../events";
-import { toAscii } from "../utils/utils";
 import {
   CLAIM_GAS_COST,
   DEFAULT_GAS_PRICE_IN_GWEI,
@@ -19,6 +18,24 @@ import { MarketData, MarketType, OrderType } from "../logs/types";
 import { BigNumber } from "bignumber.js";
 import { Orderbook } from "../../api/Liquidity";
 
+// because flexsearch is a UMD type lib
+import flexSearch = require('flexsearch');
+import { Index, ExtendedSearchOptions, SearchResults } from 'flexsearch';
+
+export interface MarketFields {
+  id: string;
+  market: string;
+  category1: string;
+  category2: string;
+  category3: string;
+  description: string;
+  longDescription: string;
+  resolutionSource: string;
+  _scalarDenomination: string;
+  tags: string;
+  start: Date;
+  end: Date;
+}
 
 // Need this interface to access these items on the documents
 interface MarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
@@ -36,43 +53,42 @@ interface LiquidityResults {
   [liquidity: number]: number;
 }
 
-// because flexsearch is a UMD type lib
-import FlexSearch = require("flexsearch");
-
 /**
  * Market specific derived DB intended for filtering purposes
  */
 export class MarketDB extends DerivedDB {
   protected augur: Augur;
   private readonly events = new Subscriptions(augurEmitter);
-  private flexSearch?: FlexSearch;
+  private flexSearchIndex?: Index<MarketFields>;
   readonly liquiditySpreads = [10, 15, 20, 100];
 
   constructor(db: DB, networkId: number, augur: Augur) {
     super(db, networkId, "Markets", ["MarketCreated", "MarketVolumeChanged", "MarketOIChanged"], ["market"]);
-    
+
     this.augur = augur;
 
     this.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
 
-    this.flexSearch = new FlexSearch({
-      doc: {
-        id: "id",
-        start: "start",
-        end: "end",
-        field: [
-          "market",
-          "category1",
-          "category2",
-          "category3",
-          "description",
-          "longDescription",
-          "resolutionSource",
-          "_scalarDenomination",
-          "tags",
-        ],
-      },
-    });
+    this.flexSearchIndex = flexSearch.create(
+      {
+        doc: {
+          id: "id",
+          start: "start",
+          end: "end",
+          field: [
+            "market",
+            "category1",
+            "category2",
+            "category3",
+            "description",
+            "longDescription",
+            "resolutionSource",
+            "_scalarDenomination",
+            "tags",
+          ],
+        },
+      }
+    );
   }
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
@@ -92,7 +108,7 @@ export class MarketDB extends DerivedDB {
     };
 
     const result = await this.stateDB.findInDerivedDB(this.stateDB.getDatabaseName("CurrentOrders"), request);
-    
+
     if (result.docs.length < 1) return;
 
     const marketIds: string[] = _.uniq(_.map(result.docs, "market")) as string[];
@@ -125,7 +141,7 @@ export class MarketDB extends DerivedDB {
   }
 
   async getOrderbookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderbookData> {
-    const numOutcomes = marketData.marketType == MarketType.Categorical ? marketData.outcomes.length + 1 : 3;
+    const numOutcomes = marketData.marketType === MarketType.Categorical ? marketData.outcomes.length + 1 : 3;
     const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
     const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(estimatedTradeGasCost);
@@ -170,7 +186,7 @@ export class MarketDB extends DerivedDB {
 
     const currentOrdersByOutcome = _.groupBy(currentOrdersResponse, (order) => new BigNumber(order.outcome).toNumber());
     for (let outcome = 0; outcome < numOutcomes; outcome++) {
-      if (currentOrdersByOutcome[outcome] == undefined) currentOrdersByOutcome[outcome] = [];
+      if (currentOrdersByOutcome[outcome] === undefined) currentOrdersByOutcome[outcome] = [];
     }
 
     const outcomeBidAskOrders = _.map(currentOrdersByOutcome, (outcomeOrders) => {
@@ -215,19 +231,23 @@ export class MarketDB extends DerivedDB {
     const validCost = bestBidAmount.multipliedBy(numTicks.minus(bestBidPrice));
 
     const validProfit = validRevenue.minus(validCost);
-    
+
     return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI);
   }
 
-  fullTextSearch(query: string): object[] {
-    if (this.flexSearch) {
-      return this.flexSearch.search(query);
+  async fullTextSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields> | []> {
+    if (this.flexSearchIndex) {
+      if (query !== null) {
+        return this.flexSearchIndex.search(query);
+      } else if (extendedSearchOptions !== null)  {
+        return this.flexSearchIndex.search(extendedSearchOptions);
+      }
     }
     return [];
   }
 
   private async syncFullTextSearch(): Promise<void> {
-    if (this.flexSearch) {
+    if (this.flexSearchIndex) {
       const previousDocumentEntries = await this.db.allDocs({ include_docs: true });
 
       for (const row of previousDocumentEntries.rows) {
@@ -271,7 +291,7 @@ export class MarketDB extends DerivedDB {
               tags = info.tags ? info.tags.toString() : ""; // convert to comma separated so it is searchable
             }
 
-            this.flexSearch.add({
+            this.flexSearchIndex.add({
               id: row.id,
               market,
               category1,
