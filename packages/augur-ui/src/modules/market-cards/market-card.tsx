@@ -103,12 +103,13 @@ export default class MarketCard extends React.Component<
       onClick: toggleTag(tag, path, history)
     }));
 
+
     return (
       <div 
         className={Styles.MarketCard}
       >
         <div>
-          {address === author &&
+          {address.toUpperCase() === author.toUpperCase() &&
             <HoverIcon
               label="marketCreator"
               icon={MarketCreator}
