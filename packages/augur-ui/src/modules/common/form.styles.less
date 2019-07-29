@@ -3,7 +3,7 @@
 .CategoryMultiSelect {
   display: flex;
   flex-flow: column;
-  
+
   > li {
     margin-top: @size-12;
     display: grid;
@@ -21,7 +21,7 @@
     &:nth-of-type(2) {
       grid-template-columns: @size-24 252px 252px;
     }
-    
+
     &:nth-of-type(3) {
       grid-template-columns: @size-24 @size-24 252px 252px;
 
@@ -34,12 +34,12 @@
       height: @size-10;
       margin: auto;
       width: @size-10;
-  
+
       > line {
         stroke: @color-tertiary-info-text;
       }
     }
-  
+
     > div,
     > div[class*="Normal"] {
       min-width: 252px;
@@ -68,7 +68,7 @@
         grid-gap: @size-12;
 
       }
-      
+
       &:nth-of-type(3) {
         grid-template-columns: @size-24 @size-24 auto;
         grid-gap: @size-12;
@@ -209,7 +209,7 @@
   display: grid;
   grid-template-columns: 52px auto @size-16;
   grid-template-rows: auto;
-  height: 51px;  
+  height: 51px;
   margin-bottom: @size-8;
 
   > svg {
@@ -574,7 +574,7 @@
       color: @color-secondary-text;
       height: 44px;
       min-width: 150px;
-      
+
       &::placeholder {
         color: @color-primary-alternate-two;
       }
@@ -649,7 +649,7 @@
     > .Trailing,
     > .Inner {
       .text-14;
-      
+
       color: @color-tertiary-info-text;
     }
 
@@ -665,10 +665,10 @@
       margin-left: @size-24;
     }
 
-    input[type="number"]::-webkit-inner-spin-button, 
-    input[type="number"]::-webkit-outer-spin-button { 
-      -webkit-appearance: none; 
-      margin: 0; 
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     > textarea {
@@ -701,7 +701,7 @@
     min-width: 210px;
     min-height: 44px;
     max-width: unset;
-    
+
     > div {
       left: 0;
     }
@@ -1078,13 +1078,13 @@ div.FormDropdownActive {
         height: @size-32;
         width: @size-32;
 
-        > rect, 
+        > rect,
         > path {
           stroke: @color-neutral;
         }
 
         &:hover {
-          > rect, 
+          > rect,
           > path {
             stroke: @color-primary-light;
           }
@@ -1098,13 +1098,13 @@ div.FormDropdownActive {
         transform: rotate(-180deg);
         width: @size-32;
 
-        > rect, 
+        > rect,
         > path {
           stroke: @color-neutral;
         }
 
         &:hover {
-          > rect, 
+          > rect,
           > path {
             stroke: @color-primary-light;
           }
@@ -1195,12 +1195,12 @@ div.FormDropdownActive {
 
   > span:first-of-type {
     .text-18;
-  
+
     line-height: @size-24;
     padding: 0;
     text-align: left;
     width: 100%;
-  
+
     &.selected {
       color: @color-darkpurple;
     }
@@ -1208,7 +1208,7 @@ div.FormDropdownActive {
 
   > div {
     .text-18;
-  
+
     background-color: @color-secondary-text;
     box-shadow: 0 2px @size-4 rgba(0, 0, 0, 0.5);
     color: @color-darkpurple;
@@ -1221,11 +1221,11 @@ div.FormDropdownActive {
     right: 0;
     top: 100%;
     width: 100%;
-  
+
     &.active {
       display: block;
     }
-  
+
     > button {
       background-color: inherit;
       cursor: pointer;
@@ -1234,7 +1234,7 @@ div.FormDropdownActive {
       transition: background-color 0.15s ease;
       white-space: nowrap;
       width: 100%;
-  
+
       &:hover,
       &.active {
         background-color: @color-lightergray;
@@ -1245,7 +1245,7 @@ div.FormDropdownActive {
   > select {
     display: none;
     width: 100%;
-  
+
     &.selected {
       color: @color-darkpurple;
     }
@@ -1253,10 +1253,10 @@ div.FormDropdownActive {
 
   > span:last-of-type {
     align-self: flex-end;
-  
+
     svg {
       height: @size-16;
-  
+
       polyline {
         stroke: @color-lightgray;
       }
@@ -1269,7 +1269,7 @@ div.FormDropdownActive {
     > div.active {
       display: none;
     }
-  
+
     > select {
       display: block;
     }
@@ -1360,13 +1360,13 @@ div.FormDropdownActive {
       fill: transparent;
     }
   }
-} 
+}
 
 .IndividualTimeSelector {
   align-items: center;
   display: flex;
   flex-direction: column;
-  
+
   > span {
     .text-11;
 
@@ -1401,10 +1401,10 @@ div.FormDropdownActive {
     }
   }
 
-  > input[type=number]::-webkit-inner-spin-button, 
-  > input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none; 
-    margin: 0; 
+  > input[type=number]::-webkit-inner-spin-button,
+  > input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 
   > button {
@@ -1487,4 +1487,9 @@ button.error {
 
 div.error > div > div > div > div > input {
   border: 1px solid fade(@color-error-text, 50%) !important;
+}
+
+.Timezones {
+  display: flex;
+  flex-flow: column;
 }

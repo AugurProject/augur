@@ -32,7 +32,8 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
-import { getTimezones, getUserTimezone } from 'utils/get-timezones';
+import { getTimezones, getUserTimezone, Timezones } from 'utils/get-timezones';
+import { Moment } from 'moment';
 
 interface CheckboxProps {
   id: string;
@@ -69,6 +70,7 @@ interface TextInputProps {
   trailingLabel?: string;
   innerLabel?: string;
   autoCompleteList?: Array<SortedGroup>;
+  onAutoCompleteListSelect?: Function;
 }
 
 interface TextInputState {
@@ -133,52 +135,57 @@ interface TimezoneDropdownProps {
   className?: string;
   autoCompleteList?: Array<SortedGroup>;
   disabled?: Boolean;
-  timestamp?: number;
+  timestamp?: Moment;
 }
 
 interface TimezoneDropdownState {
   filterString: string;
-  showDropdown: boolean;
   value: string;
-  showText: boolean;
 }
 
-export class TimezoneDropdown extends Component<TimezoneDropdownProps, TimezoneDropdownState> {
+export class TimezoneDropdown extends Component<
+  TimezoneDropdownProps,
+  TimezoneDropdownState
+> {
   state: TimezoneDropdownState = {
-    filterString: getUserTimezone(),
-    showDropdown: false,
-    showText: true,
-    value: getUserTimezone()
-  }
+    filterString: '',
+    value: '',
+  };
 
-  onChangeDropdown = (choice) => {
-    console.log("choice", choice);
-    this.props.onChange(choice);
+  onChangeDropdown = choice => {
+    const parse = /\(UTC (.*)\)/i;
+    const offset = choice.match(parse)[1];
+    this.props.onChange(offset);
     this.setState({
       filterString: undefined,
-      value: choice
-    })
-  }
+      value: choice,
+    });
+  };
 
   filterTimezones = (value: string) => {
     this.setState({
       filterString: value,
-      showText: true
-    })
-  }
+    });
+  };
 
   render() {
-    const timezones = getTimezones(this.state.filterString, this.props.timestamp);
+    const timezones: Timezones = getTimezones(
+      this.state.filterString,
+      this.props.timestamp
+    );
 
     return (
-      <TextInput
-        value={this.state.value}
-        autoCompleteList={timezones}
-        onChange={value => this.filterTimezones(value)}
-      />
-    )
+      <section className={Styles.Timezones}>
+        <TextInput
+          value={this.state.value}
+          autoCompleteList={timezones.timezones}
+          onChange={value => this.filterTimezones(value)}
+          onAutoCompleteListSelect={value => this.onChangeDropdown(value)}
+        />
+      </section>
+    );
   }
-};
+}
 
 interface ErrorProps {
   header?: string;
@@ -286,7 +293,11 @@ const defaultMultiSelect = (amount: number, justStrings: boolean = false) => {
   return result;
 };
 
-export const createGroups = (groups: Array<SortedGroup>, values: Array<String>, selected: Array<String>) => {
+export const createGroups = (
+  groups: Array<SortedGroup>,
+  values: Array<String>,
+  selected: Array<String>
+) => {
   const primaryOptions = createOptions(groups);
   const primarySubgroup = findSubgroup(groups, values[0]);
   const secondaryCustom = selected[1] === CUSTOM;
@@ -310,9 +321,13 @@ export const createGroups = (groups: Array<SortedGroup>, values: Array<String>, 
   };
 };
 
-export const determineVisible = (values: Array<string>, secondaryOptions: Array<NameValuePair>, tertiaryOptions: Array<NameValuePair>, selected: Array<string>) => {
-  const showSecondaryDropdown =
-    values[0] !== '' && secondaryOptions.length > 0;
+export const determineVisible = (
+  values: Array<string>,
+  secondaryOptions: Array<NameValuePair>,
+  tertiaryOptions: Array<NameValuePair>,
+  selected: Array<string>
+) => {
+  const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 0;
   const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
   const customPrimary = selected[0] === CUSTOM;
   const customSecondary =
@@ -327,24 +342,32 @@ export const determineVisible = (values: Array<string>, secondaryOptions: Array<
     customSecondary,
     customTertiary,
   };
-}
+};
 
-export const getNewValues = (value: string, position: number, values: Array<string>) => {
+export const getNewValues = (
+  value: string,
+  position: number,
+  values: Array<string>
+) => {
   const updatedValues = [...values];
   updatedValues[position] = value;
   return updatedValues;
-}
+};
 
-export const getNewSelected = (selection: string, position: number, selected: Array<string>) => {
+export const getNewSelected = (
+  selection: string,
+  position: number,
+  selected: Array<string>
+) => {
   const updatedSelected = [...selected];
   updatedSelected[position] = selection;
   return updatedSelected;
-}
+};
 
 export const createOptions = (sortedGroup: SortedGroup) => {
   let options = sortedGroup.map(({ label, value }) => ({ label, value }));
   return options;
-}
+};
 
 export const findSubgroup = (sortedGroup: SortedGroup, selection: string) => {
   if (selection === '') return [];
@@ -354,9 +377,12 @@ export const findSubgroup = (sortedGroup: SortedGroup, selection: string) => {
   } else {
     return [];
   }
-}
+};
 
-export const findAutoComplete = (sortedGroup: SortedGroup, selection: string) => {
+export const findAutoComplete = (
+  sortedGroup: SortedGroup,
+  selection: string
+) => {
   if (selection === '') return [];
   const selected = sortedGroup.find(item => item.value === selection);
   if (selected && selected.autoCompleteList) {
@@ -364,7 +390,7 @@ export const findAutoComplete = (sortedGroup: SortedGroup, selection: string) =>
   } else {
     return [];
   }
-}
+};
 
 export const DropdownInputGroup = ({
   defaultValue,
@@ -378,7 +404,7 @@ export const DropdownInputGroup = ({
   onChangeInput,
   showText,
   showIcon,
-  showDropdown
+  showDropdown,
 }: DropdownInputGroupProps) => (
   <li>
     {showIcon && RightAngle}
@@ -425,10 +451,10 @@ export class CategorySingleSelect extends Component<
   CategorySingleSelectState
 > {
   state: CategorySingleSelectState = {
-    selected: this.props.initialSelected || "",
-    value: this.props.initialValue || this.props.initialSelected || "",
-    showText: this.props.initialSelected === CUSTOM
-  }
+    selected: this.props.initialSelected || '',
+    value: this.props.initialValue || this.props.initialSelected || '',
+    showText: this.props.initialSelected === CUSTOM,
+  };
 
   onChangeDropdown(choice) {
     let value = choice;
@@ -438,11 +464,20 @@ export class CategorySingleSelect extends Component<
 
   handleUpdate(selected, value) {
     const { updateSelection } = this.props;
-    this.setState({ selected, value, showText: selected === CUSTOM }, () => updateSelection(value));
+    this.setState({ selected, value, showText: selected === CUSTOM }, () =>
+      updateSelection(value)
+    );
   }
 
   render() {
-    const { options, errorMessage, staticLabel, placeholder, defaultValue, autoCompleteList } = this.props;
+    const {
+      options,
+      errorMessage,
+      staticLabel,
+      placeholder,
+      defaultValue,
+      autoCompleteList,
+    } = this.props;
     const { selected, value, showText } = this.state;
     return (
       <ul className={Styles.CategoryMultiSelect}>
@@ -471,7 +506,8 @@ export class CategoryMultiSelect extends Component<
   state: CategoryMultiSelectState = {
     groups: this.props.sortedGroup || defaultMultiSelect(3),
     selected: this.props.initialSelected || ['', '', ''],
-    values: this.props.initialValues || this.props.initialSelected || ['', '', ''],
+    values: this.props.initialValues ||
+      this.props.initialSelected || ['', '', ''],
   };
 
   onChangeDropdown(choice, position) {
@@ -503,12 +539,7 @@ export class CategoryMultiSelect extends Component<
       customPrimary,
       customSecondary,
       customTertiary,
-    } = determineVisible(
-      values,
-      secondaryOptions,
-      tertiaryOptions,
-      selected
-    );
+    } = determineVisible(values, secondaryOptions, tertiaryOptions, selected);
 
     return (
       <ul className={Styles.CategoryMultiSelect}>
@@ -520,7 +551,9 @@ export class CategoryMultiSelect extends Component<
           errorMessage={errorMessage[0]}
           value={values[0]}
           placeholder="Custom Primary Category"
-          onChangeInput={v => this.handleUpdate(selected, getNewValues(v, 0, values))}
+          onChangeInput={v =>
+            this.handleUpdate(selected, getNewValues(v, 0, values))
+          }
           showText={customPrimary}
           showIcon={false}
           showDropdown={true}
@@ -534,9 +567,11 @@ export class CategoryMultiSelect extends Component<
             errorMessage={errorMessage[1]}
             value={values[1]}
             placeholder="Custom Secondary Category"
-            onChangeInput={v => this.handleUpdate(selected, getNewValues(v, 1, values))}
+            onChangeInput={v =>
+              this.handleUpdate(selected, getNewValues(v, 1, values))
+            }
             showText={customSecondary}
-            showIcon={(showSecondaryDropdown || customSecondary)}
+            showIcon={showSecondaryDropdown || customSecondary}
             showDropdown={showSecondaryDropdown}
             autoCompleteList={secondaryAutoComplete}
           />
@@ -550,9 +585,11 @@ export class CategoryMultiSelect extends Component<
             errorMessage={errorMessage[2]}
             value={values[2]}
             placeholder="Custom Tertiary Category"
-            onChangeInput={v => this.handleUpdate(selected, getNewValues(v, 2, values))}
+            onChangeInput={v =>
+              this.handleUpdate(selected, getNewValues(v, 2, values))
+            }
             showText={customTertiary}
-            showIcon={(showTertiaryDropdown || customTertiary)}
+            showIcon={showTertiaryDropdown || customTertiary}
             showDropdown={showTertiaryDropdown}
             autoCompleteList={tertiaryAutoComplete}
           />
@@ -794,7 +831,10 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   onAutoCompleteSelect = value => {
-    this.props.onChange(value);
+    !!this.props.onAutoCompleteListSelect
+      ? this.props.onAutoCompleteListSelect(value)
+      : this.props.onChange(value);
+
     this.setState({ value, showList: false });
   };
 

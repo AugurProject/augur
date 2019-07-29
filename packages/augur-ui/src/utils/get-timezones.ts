@@ -4,6 +4,11 @@ import { Moment } from 'moment';
 
 const MINUTES_IN_HOUR = 60;
 
+export interface Timezones {
+  timezones: SortedGroup[];
+  userTimezone: string;
+}
+
 export const getUserTimezone = () => {
   return moment.tz.guess();
 };
@@ -11,18 +16,21 @@ export const getUserTimezone = () => {
 // moment.tz.zone('America/Los_Angeles').utcOffset(1403465838805); // 420
 export const getTimezones = (
   filter?: string,
-  timestamp?: Moment, // moment object
-): SortedGroup[] =>
-  timezones
+  timestamp?: Moment // moment object
+): Timezones => {
+  const userTimezone = getUserTimezone();
+  const sortedTimezones = timezones
     .reduce((p, zone) => {
-      const offsetLabel = moment.tz(zone).format('z');
+      const offsetLabel = moment.tz(zone).format('Z');
 
-      if (
-        filter &&
-        offsetLabel.indexOf(filter) === -1 &&
-        zone.indexOf(filter) === -1
-      )
-        return p;
+      if (filter) {
+        const filterLowercase = filter.toLowerCase();
+        if (
+          !offsetLabel.toLowerCase().includes(filterLowercase) &&
+          !zone.toLowerCase().includes(filterLowercase)
+        )
+          return p;
+      }
 
       let offsetValue = moment.tz(zone).utcOffset();
       if (timestamp) {
@@ -31,16 +39,20 @@ export const getTimezones = (
       }
 
       const value: number = offsetValue / MINUTES_IN_HOUR;
+      const label = `(UTC ${value}) ${zone}`;
 
       return [
         ...p,
         {
-          label: `(UTC ${value}) ${offsetLabel} ${zone}`,
-          value,
+          label,
+          value: label,
         },
       ];
     }, [])
     .sort((a, b) => a.value - b.value);
+
+  return { timezones: sortedTimezones, userTimezone };
+};
 
 const timezones = [
   'Africa/Abidjan',
