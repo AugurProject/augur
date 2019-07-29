@@ -109,7 +109,7 @@ export default class MarketCard extends React.Component<
         className={Styles.MarketCard}
       >
         <div>
-          {address.toUpperCase() === author.toUpperCase() &&
+          {address && address.toUpperCase() === author.toUpperCase() &&
             <HoverIcon
               label="marketCreator"
               icon={MarketCreator}
