@@ -70,7 +70,7 @@ interface TextInputProps {
   trailingLabel?: string;
   innerLabel?: string;
   autoCompleteList?: Array<SortedGroup>;
-  onAutoCompleteListSelect?: Function;
+  onAutoCompleteListSelected?: Function;
 }
 
 interface TextInputState {
@@ -139,7 +139,6 @@ interface TimezoneDropdownProps {
 }
 
 interface TimezoneDropdownState {
-  filterString: string;
   value: string;
 }
 
@@ -148,7 +147,6 @@ export class TimezoneDropdown extends Component<
   TimezoneDropdownState
 > {
   state: TimezoneDropdownState = {
-    filterString: '',
     value: '',
   };
 
@@ -157,20 +155,13 @@ export class TimezoneDropdown extends Component<
     const offset = choice.match(parse)[1];
     this.props.onChange(offset);
     this.setState({
-      filterString: undefined,
       value: choice,
     });
   };
 
-  filterTimezones = (value: string) => {
-    this.setState({
-      filterString: value,
-    });
-  };
 
   render() {
     const timezones: Timezones = getTimezones(
-      this.state.filterString,
       this.props.timestamp
     );
 
@@ -179,8 +170,8 @@ export class TimezoneDropdown extends Component<
         <TextInput
           value={this.state.value}
           autoCompleteList={timezones.timezones}
-          onChange={value => this.filterTimezones(value)}
-          onAutoCompleteListSelect={value => this.onChangeDropdown(value)}
+          onChange={() => {}}
+          onAutoCompleteListSelected={value => this.onChangeDropdown(value)}
         />
       </section>
     );
@@ -810,6 +801,11 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     value: this.props.value === null ? '' : this.props.value,
     showList: false,
   };
+  refDropdown: any = null;
+
+  componentDidMount() {
+    window.addEventListener("click", this.handleWindowOnClick);
+  }
 
   componentWillReceiveProps(nextProps: TextInputProps) {
     const { value } = this.props;
@@ -817,6 +813,16 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       this.setState({ value: nextProps.value });
     }
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("click", this.handleWindowOnClick);
+  }
+
+  handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (this.refDropdown && !this.refDropdown.contains(event.target)) {
+        this.setState({ showList: false });
+    }
+  };
 
   toggleList = () => {
     this.setState({
@@ -831,8 +837,8 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   onAutoCompleteSelect = value => {
-    !!this.props.onAutoCompleteListSelect
-      ? this.props.onAutoCompleteListSelect(value)
+    !!this.props.onAutoCompleteListSelected
+      ? this.props.onAutoCompleteListSelected(value)
       : this.props.onChange(value);
 
     this.setState({ value, showList: false });
@@ -847,7 +853,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       trailingLabel,
       innerLabel,
     } = this.props;
-    const { autoCompleteList = [], ...inputProps } = this.props;
+    const { autoCompleteList = [] } = this.props;
     const { showList } = this.state;
 
     const filteredList = autoCompleteList.filter(item =>
@@ -858,11 +864,13 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
 
     return (
       <div className={Styles.TextInput}>
-        <div>
+        <div
+          ref={dropdown => {
+            this.refDropdown = dropdown;
+          }}>
           {type !== 'textarea' ? (
             <>
               <input
-                {...inputProps}
                 className={classNames({ [Styles.error]: error })}
                 value={this.state.value}
                 onChange={this.onChange}
@@ -889,7 +897,6 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
             </>
           ) : (
             <textarea
-              {...inputProps}
               className={classNames({ [Styles.error]: error })}
               value={this.state.value}
               onChange={this.onChange}

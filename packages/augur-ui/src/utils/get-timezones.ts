@@ -12,44 +12,30 @@ export interface Timezones {
 export const getUserTimezone = () => {
   return moment.tz.guess();
 };
+// just a few notes about moment
 // isDST checks if the time is within daylight savings time
 // moment.tz.zone('America/Los_Angeles').utcOffset(1403465838805); // 420
 export const getTimezones = (
-  filter?: string,
   timestamp?: Moment // moment object
 ): Timezones => {
   const userTimezone = getUserTimezone();
+
   const sortedTimezones = timezones
-    .reduce((p, zone) => {
-      const offsetLabel = moment.tz(zone).format('Z');
-
-      if (filter) {
-        const filterLowercase = filter.toLowerCase();
-        if (
-          !offsetLabel.toLowerCase().includes(filterLowercase) &&
-          !zone.toLowerCase().includes(filterLowercase)
-        )
-          return p;
-      }
-
-      let offsetValue = moment.tz(zone).utcOffset();
-      if (timestamp) {
-        const offsetObj = moment.tz(zone).utcOffset(timestamp);
-        offsetValue = offsetObj._offset;
-      }
+    .map(zone => {
+      // multiplying by -1 because of `POSIX compatibility requires that the offsets are inverted. `
+      // more information <https://momentjs.com/timezone/docs/>
+      const offsetValue = timestamp
+        ? moment.tz.zone(zone).utcOffset(timestamp.valueOf()) * -1
+        : moment.tz(zone).utcOffset();
 
       const value: number = offsetValue / MINUTES_IN_HOUR;
-      const label = `(UTC ${value}) ${zone}`;
+      const label = `(UTC ${value}) ${zone.replace('_', ' ')}`;
 
-      return [
-        ...p,
-        {
+      return {
           label,
           value: label,
-        },
-      ];
-    }, [])
-    .sort((a, b) => a.value - b.value);
+        }
+    });
 
   return { timezones: sortedTimezones, userTimezone };
 };
