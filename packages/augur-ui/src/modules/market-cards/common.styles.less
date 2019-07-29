@@ -139,3 +139,44 @@
 		grid-template-columns: repeat(1, 1fr);
     }
 }
+
+.LabelValue {
+	display: flex;
+	flex: 1;
+	min-width: 80px;
+	padding-right: @size-16;
+
+	> span:first-of-type {
+		.mono-10;
+
+		color: @color-tertiary-info-text;
+		display: flex;
+		flex: 1;
+	}
+
+	> span:last-of-type {
+		.mono-10;
+
+		color: @color-secondary-text;
+	}
+}
+
+.HoverIcon {
+	> svg {
+		width: @size-16;
+		height: @size-16;
+
+		> path {
+			stroke: @color-secondary-text;
+			fill: @color-secondary-text;
+		}
+
+		> mask {
+			fill: @color-secondary-text;
+		}
+
+		> rect {
+			stroke: @color-secondary-text;
+		}
+	}
+}
