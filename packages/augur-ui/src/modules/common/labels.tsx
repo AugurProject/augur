@@ -857,7 +857,7 @@ export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
         className={Styles.WordTrailButton}
         onClick={e => onClick()}
       >
-        {label} 
+        <span>{label}</span>
         <span>{index + 1 !== items.length && "/" }</span>
       </button>
     ))}
