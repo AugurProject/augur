@@ -21,8 +21,8 @@ export const Percent = (props: PercentProps) => (
 );
 
 export interface OutcomeProps {
-  name: string;
-  percent?: number;
+  description: string;
+  lastPricePercent?: number;
   invalid?: Boolean;
   index: number;
 }
@@ -30,10 +30,10 @@ export interface OutcomeProps {
 export const Outcome = (props: OutcomeProps) => (
   <div className={classNames(Styles.Outcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
   	<div>
-    	<span>{props.name}</span>
-    	<span>{props.percent}%</span>
+    	<span>{props.description}</span>
+    	<span>{props.lastPricePercent.formatted}%</span>
     </div>
-    <Percent percent={props.percent} />
+    <Percent percent={props.lastPricePercent.value} />
   </div>
 );
 
@@ -41,17 +41,17 @@ export interface ScalarOutcomeProps {
   scalarDenomination: string;
   min: number;
   max: number;
-  percent?: number;
+  lastPrice?: number;
 }
 
-function calculatePosition(min, max, percent) {
+function calculatePosition(min, max, lastPrice) {
 	const range = createBigNumber(max).minus(createBigNumber(min));
-	const pricePercentage = createBigNumber(percent || 0)
+	const pricePercentage = createBigNumber(lastPrice || 0)
 	  .minus(min)
 	  .dividedBy(range)
 	  .times(createBigNumber(100)).toNumber();
 
-	return percent === null
+	return lastPrice === null
 	  ? 50
 	  : pricePercentage
 }
@@ -59,8 +59,8 @@ function calculatePosition(min, max, percent) {
 export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   <div className={Styles.ScalarOutcome}>
   	<div>
-  		{ props.percent !== null &&
-  			<span style={{left: calculatePosition(props.min, props.max, props.percent) + '%'}}>{props.percent}</span>
+  		{ props.lastPrice !== null &&
+  			<span style={{left: calculatePosition(props.min, props.max, props.lastPrice) + '%'}}>{props.lastPrice}</span>
   		}
   	</div>
   	<div>
@@ -72,8 +72,8 @@ export const ScalarOutcome = (props: ScalarOutcomeProps) => (
 );
 
 interface Outcome {
-  name: string;
-  percent: number;
+  description: string;
+  lastPricePercent: number;
   invalid?: Boolean;
 }
 
@@ -84,30 +84,46 @@ export interface OutcomeGroupProps {
 	scalarDenomination?: string;
 	min?: number;
 	max?: number;
-  	percent?: number;
+  lastPrice?: number;
 }
 
-export const OutcomeGroup = (props: OutcomeGroupProps) => (
-  	<div className={classNames(Styles.OutcomeGroup, {
+export const OutcomeGroup = (props: OutcomeGroupProps) => {
+  let outcomesShow = props.outcomes.filter(outcome => outcome.isTradable);
+  const removedInvalid = outcomesShow.splice(0, 1)[0];
+  outcomesShow.splice(2, 0, removedInvalid);
+
+  console.log(outcomesShow);
+
+  return (
+    <div className={classNames(Styles.OutcomeGroup, {
 			[Styles.Categorical]: props.marketType === CATEGORICAL, 
 			[Styles.Scalar]: props.marketType === SCALAR, 
 			[Styles.YesNo]: props.marketType === YES_NO
 		})}>
   		{props.marketType === SCALAR &&
-  			<ScalarOutcome
-  				min={props.min}
-  				max={props.max}
-  				percent={props.percent}
-  				scalarDenomination={props.scalarDenomination}
-  			/>
+        <>
+    			<ScalarOutcome
+    				min={props.min}
+    				max={props.max}
+    				lastPricePercent={props.lastPricePercent}
+    				scalarDenomination={props.scalarDenomination}
+    			/>
+          <Outcome
+            description={removedInvalid.description}
+            lastPricePercent={removedInvalid.lastPricePercent}
+            invalid={true}
+            index={0}
+          /> 
+        </>
   		}
-	  	{props.outcomes.map((outcome: Outcome, index: number) =>
-	  		(!props.expanded && index < 2 || props.expanded) && <Outcome
-	  			name={outcome.name}
-	  			percent={outcome.percent}
-	  			invalid={outcome.invalid}
+	  	{props.marketType !== SCALAR && outcomesShow.map((outcome: Outcome, index: number) =>
+	  		(!props.expanded && index < 3 || (props.expanded || props.marketType === YES_NO)) && <Outcome
+	  			description={outcome.description}
+	  			lastPricePercent={outcome.lastPricePercent}
+	  			invalid={outcome.description === "Invalid"}
 	  			index={index > 2 ? index : index + 1}
 	  		/> 
 	  	)}
   	</div>
-);
+  );
+}

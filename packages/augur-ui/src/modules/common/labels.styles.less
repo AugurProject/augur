@@ -609,12 +609,10 @@ div.LinearPropertyViewTransaction {
 }
 
 .WordTrailButton {
-  &:extend(.button--transparent--rounded all);
-  .text-10;
+  .mono-10;
 
-  border-width: 1px;
-  color: @color-alternate-text;
-  text-transform: capitalize;
+  color: @color-tertiary-info-text;
+  text-transform: uppercase;
   white-space: nowrap;
 
   &:focus {
@@ -622,7 +620,6 @@ div.LinearPropertyViewTransaction {
   }
 
   &:hover {
-    border-width: 1px;
     color: @color-secondary-text;
   }
 }
