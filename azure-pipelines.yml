@@ -64,6 +64,8 @@ jobs:
       JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
       JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
       JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
+      USE_NORMAL_TIME: false
+      PRODUCTION: false
     pool:
       vmImage: 'Ubuntu 16.04'
     strategy:
