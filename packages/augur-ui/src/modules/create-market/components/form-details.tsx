@@ -3,22 +3,22 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { 
-  RadioCardGroup, 
-  FormDropdown, 
-  TextInput, 
-  DatePicker, 
-  TimeSelector, 
-  RadioBarGroup, 
-  TimezoneDropdown, 
-  CategoryMultiSelect 
+import {
+  RadioCardGroup,
+  FormDropdown,
+  TextInput,
+  DatePicker,
+  TimeSelector,
+  RadioBarGroup,
+  TimezoneDropdown,
+  CategoryMultiSelect
 } from "modules/common/form";
 import { setCategories } from "modules/categories/set-categories";
 import { Header, Subheaders, LineBreak, NumberedList } from "modules/create-market/components/common";
-import { 
-  YES_NO, 
-  SCALAR, 
-  CATEGORICAL, 
+import {
+  YES_NO,
+  SCALAR,
+  CATEGORICAL,
   EXPIRY_SOURCE_GENERIC,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
@@ -27,9 +27,9 @@ import {
 } from 'modules/common/constants';
 import { NewMarket } from "modules/types";
 import { RepLogoIcon } from "modules/common/icons";
-import { 
-  DESCRIPTION_PLACEHOLDERS, 
-  DESCRIPTION, 
+import {
+  DESCRIPTION_PLACEHOLDERS,
+  DESCRIPTION,
   DESIGNATED_REPORTER_ADDRESS,
   EXPIRY_SOURCE,
   CATEGORIES,
@@ -155,10 +155,10 @@ export default class FormDetails extends React.Component<
               onFocusChange= {(focused: Boolean) => {
                 if (!hour) {
                   onChange("hour", "12");
-                } 
+                }
                 if (!minute) {
                   onChange("minute", "00");
-                } 
+                }
                 if (!meridiem) {
                   onChange("meridiem", "AM");
                 }
@@ -167,7 +167,7 @@ export default class FormDetails extends React.Component<
               focused={s.timeFocused}
               errorMessage={validations[currentStep].hour}
             />
-            <TimezoneDropdown />
+            <TimezoneDropdown onChange={(tz)=> console.log(tz)} timestamp={endTime} />
           </span>
 
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
@@ -180,7 +180,7 @@ export default class FormDetails extends React.Component<
             errorMessage={validations[currentStep].description && (validations[currentStep].description.charAt(0).toUpperCase() + validations[currentStep].description.slice(1).toLowerCase())}
           />
 
-          {marketType === CATEGORICAL && 
+          {marketType === CATEGORICAL &&
             <>
               <Subheaders header="Outcomes" subheader="List the outcomes people can choose from." link />
               <NumberedList
@@ -244,7 +244,7 @@ export default class FormDetails extends React.Component<
           <CategoryMultiSelect
             initialSelected={categories}
             sortedGroup={setCategories}
-            updateSelection={categoryArray => 
+            updateSelection={categoryArray =>
               onChange(CATEGORIES, categoryArray)
             }
             errorMessage={validations[currentStep].categories}
