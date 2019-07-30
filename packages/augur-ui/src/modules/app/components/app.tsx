@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 import classNames from "classnames";
 
-import shouldComponentUpdatePure from "utils/should-component-update-pure";
 import isWindows from "utils/is-windows";
 
 import { tween } from "shifty";
@@ -16,7 +15,7 @@ import TopBar from "modules/app/containers/top-bar";
 import ForkingAlert from "modules/forking/components/forking-alert";
 import AccountInnerNav from "modules/app/components/inner-nav/account-inner-nav";
 import SideNav from "modules/app/components/side-nav/side-nav";
-import Logo from "modules/app/components/logo";
+import TopNav from "modules/app/components/top-nav/top-nav";
 import Routes from "modules/routes/components/routes/routes";
 import AlertsContainer from "modules/alerts/containers/alerts-view";
 
@@ -31,8 +30,6 @@ import {
   NavPortfolioIcon,
   NavReportingIcon
 } from "modules/common/icons";
-import { Link } from "react-router-dom";
-import makePath from "modules/routes/helpers/make-path";
 import parsePath from "modules/routes/helpers/parse-path";
 import parseQuery from "modules/routes/helpers/parse-query";
 
@@ -50,7 +47,6 @@ import {
   REPORTING_DISPUTE_MARKETS,
   REPORTING_REPORT_MARKETS,
   REPORTING_RESOLVED_MARKETS,
-  DEFAULT_VIEW
 } from "modules/routes/constants/views";
 import {
   MODAL_NETWORK_CONNECT,
@@ -58,7 +54,7 @@ import {
   MOBILE_MENU_STATES
 } from "modules/common/constants";
 
-import Styles from "modules/app/components/app.styles";
+import Styles from "modules/app/components/app.styles.less";
 import MarketsInnerNavContainer from "modules/app/containers/markets-inner-nav";
 import ReportingInnerNav from "modules/app/containers/reporting-inner-nav";
 
@@ -74,7 +70,7 @@ const navTypes = {
   [ACCOUNT_UNIVERSES]: AccountInnerNav,
   [REPORTING_DISPUTE_MARKETS]: ReportingInnerNav,
   [REPORTING_REPORT_MARKETS]: ReportingInnerNav,
-  [REPORTING_RESOLVED_MARKETS]: ReportingInnerNav
+  [REPORTING_RESOLVED_MARKETS]: ReportingInnerNav,
 };
 
 interface AppProps {
@@ -143,39 +139,47 @@ export default class AppView extends Component<AppProps, AppState> {
     updateMobileMenuState: PropTypes.func.isRequired,
     updateIsAlertVisible: PropTypes.func.isRequired,
     updateSidebarStatus: PropTypes.func.isRequired,
-    alerts: PropTypes.object.isRequired
+    alerts: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
     ethereumNodeHttp: null,
     ethereumNodeWs: null,
-    useWeb3Transport: false
+    useWeb3Transport: false,
   };
 
   state = {
     mainMenu: { scalar: 0, open: false, currentTween: null },
-    subMenu: { scalar: 0, open: false, currentTween: null }
+    subMenu: { scalar: 0, open: false, currentTween: null },
   };
+
   sideNavMenuData = [
     {
       title: "Markets",
       icon: NavMarketsIcon,
-      route: MARKETS
+      route: MARKETS,
     },
     {
-      title: "Create",
-      iconName: "nav-create-icon",
-      icon: NavCreateIcon,
-      route: CREATE_MARKET,
-      requireLogin: true,
-      disabled: this.props.universe.isForking
+      title: "Account Summary",
+      iconName: "nav-account-icon",
+      icon: NavAccountIcon,
+      route: ACCOUNT_DEPOSIT,
+      requireLogin: true
     },
     {
       title: "Portfolio",
       iconName: "nav-portfolio-icon",
       icon: NavPortfolioIcon,
       route: MY_POSITIONS,
-      requireLogin: true
+      requireLogin: true,
+    },
+    {
+      title: "Disputing",
+      iconName: "nav-reporting-icon",
+      icon: NavReportingIcon,
+      mobileClick: () =>
+        this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
+      route: REPORTING_DISPUTE_MARKETS,
     },
     {
       title: "Reporting",
@@ -183,14 +187,15 @@ export default class AppView extends Component<AppProps, AppState> {
       icon: NavReportingIcon,
       mobileClick: () =>
         this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
-      route: REPORTING_DISPUTE_MARKETS
+      route: REPORTING_REPORT_MARKETS,
     },
     {
-      title: "Account",
-      iconName: "nav-account-icon",
-      icon: NavAccountIcon,
-      route: ACCOUNT_DEPOSIT,
-      requireLogin: true
+      title: "Create",
+      iconName: "nav-create-icon",
+      icon: NavCreateIcon,
+      route: CREATE_MARKET,
+      requireLogin: true,
+      disabled: this.props.universe.isForking,
     },
     {
       title: "Logout",
@@ -199,8 +204,8 @@ export default class AppView extends Component<AppProps, AppState> {
       mobileClick: () => this.props.logout(),
       route: ACCOUNT_DEPOSIT,
       requireLogin: true,
-      onlyForMobile: true
-    }
+      onlyForMobile: true,
+    },
   ];
 
   componentWillMount() {
@@ -213,7 +218,7 @@ export default class AppView extends Component<AppProps, AppState> {
       location,
       updateModal,
       useWeb3Transport,
-      updateCurrentBasePath
+      updateCurrentBasePath,
     } = this.props;
     initAugur(
       history,
@@ -221,7 +226,7 @@ export default class AppView extends Component<AppProps, AppState> {
         ...env,
         ethereumNodeHttp,
         ethereumNodeWs,
-        useWeb3Transport
+        useWeb3Transport,
       },
       (err: any, res: any) => {
         if (err || (res && !res.ethereumNode) || (res)) {
@@ -259,7 +264,7 @@ export default class AppView extends Component<AppProps, AppState> {
       location,
       universe,
       updateCurrentBasePath,
-      updateMobileMenuState
+      updateMobileMenuState,
     } = this.props;
     if (isMobile !== nextProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -495,7 +500,7 @@ export default class AppView extends Component<AppProps, AppState> {
       finalizeMarket,
       sidebarStatus,
       updateMobileMenuState,
-      alerts
+      alerts,
     } = this.props;
 
     const { mainMenu, subMenu } = this.state;
@@ -534,18 +539,23 @@ export default class AppView extends Component<AppProps, AppState> {
           })}
         >
           <section className={Styles.App__loadingIndicator} />
-          <section
+
+          <section className={Styles.Main}>
+            <section
+              className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}
+              onClick={this.mainSectionClickHandler}
+              role="presentation"
+            >
+              <TopBar />
+            </section>
+
+            <section
             className={Styles.SideBar}
             onClick={e => this.mainSectionClickHandler(e, false)}
             role="presentation"
           >
-            <div className={Styles.Logo}>
-              <Link to={makePath(DEFAULT_VIEW)}>
-                <Logo />
-              </Link>
-            </div>
             {this.renderMobileMenuButton(unseenCount)}
-            <SideNav
+            {isMobile && <SideNav
               defaultMobileClick={() =>
                 updateMobileMenuState(MOBILE_MENU_STATES.CLOSED)
               }
@@ -555,19 +565,16 @@ export default class AppView extends Component<AppProps, AppState> {
                 sidebarStatus.mobileMenuState ===
                 MOBILE_MENU_STATES.SIDEBAR_OPEN
               }
-              menuScalar={subMenu.scalar}
               menuData={this.sideNavMenuData}
               currentBasePath={sidebarStatus.currentBasePath}
-            />
+            />}
+
+            {!isMobile && <TopNav
+              isLogged={isLogged}
+              menuData={this.sideNavMenuData}
+              currentBasePath={sidebarStatus.currentBasePath}
+            />}
           </section>
-          <section className={Styles.Main}>
-            <section
-              className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}
-              onClick={this.mainSectionClickHandler}
-              role="presentation"
-            >
-              <TopBar />
-            </section>
             <AlertsContainer
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
@@ -607,7 +614,7 @@ export default class AppView extends Component<AppProps, AppState> {
               <section
                 className={Styles.Main__content}
                 style={{
-                  marginLeft: tagsMargin
+                  marginLeft: tagsMargin,
                 }}
                 onClick={this.mainSectionClickHandler}
                 role="presentation"
