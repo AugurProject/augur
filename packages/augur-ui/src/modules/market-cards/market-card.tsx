@@ -102,7 +102,7 @@ export default class MarketCard extends React.Component<
       label: tag,
       onClick: toggleTag(tag, path, history)
     }));
-
+console.log(market)
 
     return (
       <div 
