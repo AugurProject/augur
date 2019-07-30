@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 import { TwoArrows } from "modules/common/icons";
 
-import Styles from "modules/market/components/market-view/market-outcome-selector.styles";
+import Styles from "modules/market/components/market-view/market-outcome-selector.styles.less";
 
 interface MarketOutcomeSelectorProps {
   outcome?: any | null;
@@ -16,7 +16,7 @@ interface MarketOutcomeSelectorProps {
 const MarketOutcomeSelector = ({
   outcomeName,
   outcome,
-  selectOutcome
+  selectOutcome,
 }: MarketOutcomeSelectorProps) => (
   <button
     tabIndex={-1}
@@ -31,12 +31,12 @@ const MarketOutcomeSelector = ({
 MarketOutcomeSelector.propTypes = {
   outcome: PropTypes.any,
   outcomeName: PropTypes.string,
-  selectOutcome: PropTypes.func.isRequired
+  selectOutcome: PropTypes.func.isRequired,
 };
 
 MarketOutcomeSelector.defaultProps = {
   outcome: null,
-  outcomeName: ""
+  outcomeName: "",
 };
 
 export default MarketOutcomeSelector;

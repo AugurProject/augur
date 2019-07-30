@@ -286,9 +286,14 @@
 
       > div:first-of-type {
         padding-top: 0;
+        margin-top: -@size-8;
 
         > span {
-          margin: 0 @size-8 0 0;
+          margin: @size-8 @size-8 0 0;
+        }
+
+        > button {
+          margin-top: @size-8;
         }
       }
     }

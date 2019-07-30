@@ -45,13 +45,14 @@
 
 @color-underline: #7EC9FF;
 
-@color-primary-button-background-hover: #00EAFF;
-@color-primary-button-background-disabled: fade(#09CFE1, 30%);
+@color-primary-button-background-hover: fade(@color-primary-action, 90%);
+@color-primary-button-background-focus: fade(@color-primary-action, 80%);
+@color-primary-button-background-active: fade(@color-primary-action, 70%);
+@color-primary-button-background-disabled: fade(@color-primary-action, 40%);
 
 @color-buy-order-button-background: fade(@color-positive, 40%);
 @color-buy-order-button-background-hover: fade(@color-positive, 60%);
 @color-buy-order-button-background-disabled: fade(@color-positive, 20%);
-
 @color-buy-order-button-border-disabled: fade(@color-positive, 10%);
 
 @color-sell-order-button-background: fade(@color-negative, 40%);
