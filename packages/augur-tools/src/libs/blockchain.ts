@@ -14,20 +14,9 @@ const augurCorePath = path.join(__dirname, "../../../augur-core/");
 export function makeDeployerConfiguration(writeArtifacts = true) {
   const contractInputRoot = path.join(augurCorePath, "../augur-artifacts/src");
   const artifactOutputRoot = writeArtifacts ? path.join(augurCorePath, "../augur-artifacts/src") : null;
-  const createGenesisUniverse = true;
-  const useNormalTime = false;
-  const isProduction = false;
-  const augurAddress = "0xabc";
-  const legacyRepAddress = "0xdef";
-  return new DeployerConfiguration(
-    contractInputRoot,
-    artifactOutputRoot,
-    augurAddress,
-    createGenesisUniverse,
-    isProduction,
-    useNormalTime,
-    legacyRepAddress
-  );
+  // const useNormalTime = (typeof process.env.USE_NORMAL_TIME === 'string') ? process.env.USE_NORMAL_TIME === 'true' : false;
+  // const isProduction = (typeof process.env.IS_PRODUCTION === 'string') ? process.env.IS_PRODUCTION === 'true' : false;
+  return DeployerConfiguration.create(contractInputRoot, artifactOutputRoot);
 }
 
 export interface UsefulContractObjects {
