@@ -15,32 +15,42 @@
   }
 }
 
-.ToggleRow__arrowContainer {
+.ArrowContainer {
   align-items: center;
   display: flex;
   margin-left: 0.625rem;
   padding-right: 0;
 }
 
-div.ToggleRow__rowActive {
+div.RowActive {
   background-color: @color-active-hover;
   border-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-.ToggleRow__rowContent {
+.RowContent {
   display: flex;
   flex-grow: 1;
 }
 
-.ToggleRow__arrow {
+.Arrow {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+
+  > svg > path {
+    stroke: @color-neutral;
+  }
+
+  &:hover {
+    > svg > path {
+      stroke: @color-secondary-text;
+    }
+  }
 }
 
-.ToggleRow__row {
+.Row {
   cursor: pointer;
 
   &:focus {
@@ -52,15 +62,25 @@ div.ToggleRow__rowActive {
   }
 }
 
-.ToggleRow__row:hover .ToggleRow__arrow {
-  > svg {
-    > path {
-      stroke: @color-secondary-text;
+@media @breakpoint-mobile {
+  .Row .Arrow {
+    > svg {
+      > path {
+        stroke: @color-neutral;
+      }
+    }
+  }
+
+  .RowActive .Arrow {
+    > svg {
+      > path {
+        stroke: @color-secondary-text;
+      }
     }
   }
 }
 
-.ToggleRow__rowContainer {
+.RowContainer {
   display: flex;
   flex: 1;
 }
