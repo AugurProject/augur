@@ -4,7 +4,8 @@ import {
   SimulateTradeData,
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
-  CreateCategoricalMarketParams
+  CreateCategoricalMarketParams,
+  SubscriptionEventName
 } from "@augurproject/sdk";
 import { ContractInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
@@ -18,7 +19,6 @@ import { Getters } from "@augurproject/sdk";
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
-
 export class ContractAPI {
   static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses) {
     const signer = await makeSigner(account, provider);
@@ -352,6 +352,11 @@ export class ContractAPI {
 
   async getMarketInfo(address: string): Promise<Getters.Markets.MarketInfo[]> {
     return this.augur.getMarketsInfo({marketIds: [address]});
+  }
+
+  async getMarkets(): Promise<string[]> {
+    const universe = this.augur.contracts.universe.address
+    return this.augur.getMarkets({universe});
   }
 
   async getInitialReporterStake(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<BigNumber> {

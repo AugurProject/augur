@@ -8,6 +8,7 @@ import { providers } from "ethers";
 
 export interface FlashOption {
   name: string;
+  abbr?: string;
   description?: string;
   flag?: boolean;
   required?: boolean;
@@ -95,17 +96,28 @@ export class FlashSession {
     if (typeof this.contractAddresses === "undefined") {
       throw Error("ERROR: Must load contract addresses first.");
     }
-    let useAccount = this.accounts[0];
-    if (this.account) {
-      const findAccount = this.accounts.find(a => a.publicKey.toLowerCase() === this.account.toLowerCase());
-      if (findAccount) useAccount = findAccount;
-    }
-    this.user = await ContractAPI.userWrapper(useAccount, this.provider, this.contractAddresses);
+    this.user = await ContractAPI.userWrapper(this.getAccount(), this.provider, this.contractAddresses);
     await this.user.approveCentralAuthority();
 
     return this.user;
   }
 
+  getAccount(): Account {
+    let useAccount = this.accounts[0];
+    if (this.account) {
+      const findAccount = this.accounts.find(a => a.publicKey.toLowerCase() === this.account.toLowerCase());
+      if (findAccount) useAccount = findAccount;
+    }
+    return useAccount;
+  }
+
+  async contractOwner(): Promise<ContractAPI> {
+    if (typeof this.contractAddresses === "undefined") {
+      throw Error("ERROR: Must load contract addresses first.");
+    }
+
+    return await ContractAPI.userWrapper(this.accounts[0], this.provider, this.contractAddresses);
+  }
 
   makeProvider(config: NetworkConfiguration): EthersProvider {
     const provider = new providers.JsonRpcProvider(config.http);

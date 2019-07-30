@@ -24,10 +24,12 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'account',
-        description: `account address to connect with`,
+        abbr: 'a',
+        description: `account address to connect with, if no address provided contract owner is used`,
       },
       {
         name: 'network',
+        abbr: 'n',
         description: `Which network to connect to. Defaults to "environment" aka local node.`,
       },
     ],
@@ -136,6 +138,7 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'outcomes',
+        abbr: 'o',
         description: 'Comma-separated.',
         required: true,
       },
@@ -209,7 +212,7 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
 
-      this.log(`You are ${user.account.publicKey}`);
+      this.log(`You are ${user.account.publicKey}\n`);
     },
   });
 
@@ -217,14 +220,14 @@ export function addScripts(flash: FlashSession) {
     name: 'get-timestamp',
     async call(this: FlashSession) {
       if (this.noProvider()) return;
-      const user = await this.ensureUser();
+      const user = await this.contractOwner();
 
       const blocktime = await user.getTimestamp();
-      const epoch = new BigNumber(blocktime.toString()).multipliedBy(1000);
+      const epoch = Number(blocktime.toString()) * 1000;
 
       this.log(`block: ${blocktime}`);
       this.log(`local: ${moment(epoch).toString()}`);
-      this.log(`utc: ${moment(epoch).utc().toString()}`);
+      this.log(`utc: ${moment(epoch).utc().toString()}\n`);
     },
   });
 
@@ -233,17 +236,19 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'timestamp',
+        abbr: 't',
         description: `Uses Moment's parser but also accepts millisecond unix epoch time. See https://momentjs.com/docs/#/parsing/string/`,
         required: true,
       },
       {
         name: 'format',
+        abbr: 'f',
         description: `Lets you specify the format of --timestamp. See https://momentjs.com/docs/#/parsing/string-format/`,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const user = await this.ensureUser();
+      const user = await this.contractOwner();
 
       const timestamp = args.timestamp as string;
       const format = (args.format as string) || undefined;
@@ -263,25 +268,27 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'count',
+        abbr: 'c',
         description: `Defaults to seconds. Use "y", "M", "w", "d", "h", or "m" for longer times. ex: "2w" is 2 weeks.`,
         required: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const user = await this.ensureUser();
+      const user = await this.contractOwner();
 
       const countString = args.count as string;
       let unit = countString[countString.length - 1];
+      this.log(`unit ${unit}`);
       let count: string;
-      if (['y', 'M', 'w', 'd', 'h', 'm', 's'].includes(unit)) {
+      if (['y', 'M', 'w', 'd', 'h', 'm', 's'].includes(unit.toString())) {
         count = countString.slice(0, countString.length - 1);
       } else {
         count = countString;
         unit = 's'; // no unit provided so default to seconds
       }
-
-      const newTime = moment().add(count, unit as
+      const blocktime = Number(await user.getTimestamp()) * 1000;
+      const newTime = moment(blocktime).add(count, unit as
         | 'y'
         | 'M'
         | 'w'
@@ -302,22 +309,26 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'marketId',
+        abbr: 'm',
         description: 'market to initially report on',
         required: true,
       },
       {
         name: 'outcome',
+        abbr: 'o',
         description:
           'outcome of the market, non scalar markets 0,1,3,... for scalar markets use price',
         required: true,
       },
       {
         name: 'extraStake',
+        abbr: 's',
         description: 'added pre-emptive REP stake on the outcome in 10**18 format not atto REP(optional)',
         required: false,
       },
       {
         name: 'description',
+        abbr: 'd',
         description:
           'description to be added to contracts for initial report (optional)',
         required: false,
@@ -334,6 +345,9 @@ export function addScripts(flash: FlashSession) {
       if (extraStake) {
         preEmptiveStake = new BigNumber(extraStake).dividedBy(QUINTILLION).toFixed();
       }
+
+      const markets = await user.getMarkets();
+      this.log(`all markets ${markets}`);
       const market: ContractInterfaces.Market = await user.getMarketContract(marketId);
       const marketInfos = await user.getMarketInfo(marketId);
       if (!marketInfos || marketInfos.length === 0) {
