@@ -33,7 +33,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   return {
-    outcomeName: outcome.description,
+    outcomeName: outcome && outcome.description,
     selectedOutcome: outcome,
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
     orderBook: cumulativeOrderBook,

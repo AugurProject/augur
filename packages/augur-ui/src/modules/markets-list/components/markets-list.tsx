@@ -159,11 +159,14 @@ export default class MarketsList extends Component<
         {marketsLength && s.boundedLength ? (
           [...Array(s.boundedLength)].map((unused, i) => {
             const id = filteredMarkets[s.lowerBound - 1 + i];
+            const market = markets.find(
+              (market: MarketData) => market.id === id
+            );
 
             if (market && market.id) {
               return (
                 <MarketCard
-                  marketId={id}
+                  market={market}
                   condensed={false}
                   location={location}
                   history={history}

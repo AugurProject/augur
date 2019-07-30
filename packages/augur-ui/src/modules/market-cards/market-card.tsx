@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { CategoryTagTrail, MarketTypeLabel, InReportingLabel } from "modules/common/labels";
-import { OutcomeGroup, LabelValue, HoverIcon } from "modules/market-cards/common";
+import { OutcomeGroup, LabelValue, HoverIcon, ResolvedOutcomes } from "modules/market-cards/common";
 import toggleTag from "modules/routes/helpers/toggle-tag";
 import toggleCategory from "modules/routes/helpers/toggle-category";
 import { MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 import MarketLink from "modules/market/components/market-link/market-link";
-import { CATEGORICAL, COPY_MARKET_ID, COPY_AUTHOR } from 'modules/common/constants';
+import { CATEGORICAL, COPY_MARKET_ID, COPY_AUTHOR, REPORTING_STATE } from 'modules/common/constants';
 import { FavoritesButton } from "modules/common/buttons";
 import Clipboard from "clipboard";
 import { DotSelection } from "modules/common/selection";
@@ -102,8 +102,9 @@ export default class MarketCard extends React.Component<
       label: tag,
       onClick: toggleTag(tag, path, history)
     }));
-console.log(market)
 
+    const marketResolved = reportingState === REPORTING_STATE.AWAITING_FINALIZATION || reportingState === REPORTING_STATE.FINALIZED;
+ 
     return (
       <div 
         className={Styles.MarketCard}
@@ -179,14 +180,25 @@ console.log(market)
           </DotSelection>
         </div>
         <div>
-          <LabelValue
-            label="VOL"
-            value={volumeFormatted.formatted}
-          />
-          {!condensed && 
+          {reportingState === REPORTING_STATE.PRE_REPORTING &&
+            <>
+              <LabelValue
+                label="VOL"
+                value={volumeFormatted.formatted}
+              />
+              {!condensed && 
+                <LabelValue
+                  label="OI"
+                  value={openInterestFormatted.formatted}
+                />
+              }
+            </>
+          }
+          {reportingState !== REPORTING_STATE.PRE_REPORTING &&
             <LabelValue
-              label="OI"
-              value={openInterestFormatted.formatted}
+              condensed
+              label="Total Dispute Stake"
+              value={disputeInfo.stakeCompletedTotal}
             />
           }
         </div>
@@ -194,7 +206,7 @@ console.log(market)
         <MarketLink id={id}>
           {description}
         </MarketLink>
-        {!condensed && 
+        {!condensed && !marketResolved &&
           <>
             <OutcomeGroup 
               outcomes={outcomesFormatted} 
@@ -218,6 +230,12 @@ console.log(market)
               </button>
             }
           </>
+        }
+        {marketResolved &&
+          <ResolvedOutcomes
+            outcomes={o}
+            expanded={expandedView}
+          />
         }
       </div>
     );

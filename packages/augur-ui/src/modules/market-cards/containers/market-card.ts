@@ -6,7 +6,6 @@ import MarketCard from "modules/market-cards/market-card";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 
 const mapStateToProps = state => ({
-  market: selectMarket(ownProps.marketId),
   isLogged: state.authStatus.isLogged,
   isMobile: state.appStatus.isMobile,
   pendingLiquidityOrders: state.pendingLiquidityOrders,

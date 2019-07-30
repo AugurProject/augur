@@ -9,6 +9,7 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
+import { CheckCircleIcon } from "modules/common/icons";
 
 import Styles from 'modules/market-cards/common.styles';
 
@@ -77,6 +78,7 @@ interface Outcome {
   description: string;
   lastPricePercent: number;
   invalid?: Boolean;
+  winner?: Boolean;
 }
 
 export interface OutcomeGroupProps {
@@ -131,10 +133,11 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
 export interface LabelValueProps {
   label: string;
   value: number;
+  condensed?: Boolean;
 }
 
 export const LabelValue = (props: LabelValueProps) => (
-  <div className={Styles.LabelValue}>
+  <div className={classNames(Styles.LabelValue, {[Styles.Condensed]: props.condensed})}>
     <span>{props.label}<span>:</span></span>
     <span>{props.value}</span>
   </div>
@@ -166,3 +169,40 @@ export const HoverIcon = (props: HoverIconProps) => (
     </ReactTooltip>
   </div>
 );
+
+export interface ResolvedOutcomesProps {
+  outcomes: Array<Outcome>;
+  expanded?: Boolean;
+}
+
+export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
+  const winnerIndex = props.outcomes.findIndex(outcome => outcome.winner);
+  const outcomes = props.outcomes;
+  const winner = outcomes.splice(winnerIndex, 1)[0];
+
+  return (
+    <div className={Styles.ResolvedOutcomes}>
+       <span>Winning Outcome {CheckCircleIcon} </span>
+       <span>{winner && winner.description}</span>
+       {props.expanded &&
+         <div>
+           <span>other outcomes</span>
+           <div>
+             {outcomes.map((outcome, index) => 
+               outcome.isTradable && (
+                 <span>
+                   {outcome.description}
+                   {index + 1 !== outcomes.length &&
+                    <span>
+                      |
+                    </span>
+                   }
+                 </span>
+               )
+              )}
+           </div>
+         </div>
+       }
+    </div>
+  );
+}

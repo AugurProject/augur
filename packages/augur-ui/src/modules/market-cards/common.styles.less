@@ -151,7 +151,7 @@
 .LabelValue {
 	display: flex;
 	flex: 1;
-	max-width: 90px;
+	max-width: 95px;
 	padding-right: @size-16;
 
 	> span:first-of-type {
@@ -168,7 +168,17 @@
 		color: @color-secondary-text;
 	}
 
-	@media @breakpoint-mobile-mid {
+	@media @breakpoint-mobile-mid{
+		flex-direction: column;
+		
+		> span:first-of-type {
+			> span {
+				display: none;
+			}
+		}
+	}
+
+	&.Condensed {
 		flex-direction: column;
 		
 		> span:first-of-type {
@@ -190,6 +200,66 @@
 
 		> rect {
 			stroke: @color-secondary-text;
+		}
+	}
+}
+
+.ResolvedOutcomes {
+	color: white;
+
+	> span:first-of-type {
+		.mono-10;
+
+		color: @color-open;
+		display: flex;
+		margin-bottom: @size-2;
+		text-transform: uppercase;
+
+		> svg {
+			height: @size-12;
+			margin-left: @size-4;
+			width: @size-12;
+
+			> path {
+				fill: @color-open;
+			}
+		}
+	}
+
+	> span:last-of-type {
+		.text-18-bold;
+
+		color: @color-alternate-info-text;
+	}
+
+	> div {
+		display: flex;
+		margin-top: @size-12;
+    	flex-direction: column;
+
+		> span:first-of-type {
+			.mono-10;
+
+			margin-bottom: @size-4;
+			color: @color-tertiary-info-text;
+			text-transform: uppercase;
+		}
+
+		> div {
+			display: flex;
+
+			> span {
+				.text-12-bold;
+
+				color: @color-alternate-info-text;
+
+				> span {
+					.text-12;
+
+					color: @color-tertiary-info-text;
+					margin: 0 @size-3;
+				}
+			}
 		}
 	}
 }
