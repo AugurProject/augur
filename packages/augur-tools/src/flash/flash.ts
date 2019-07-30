@@ -36,6 +36,7 @@ export class FlashSession {
   // Node miscellanea
   provider?: EthersProvider;
   contractAddresses?: ContractAddresses;
+  account?: string;
 
   // Other values to store. This exists because e.g. Ganache can't exist in all environments.
   [key: string]: any;
@@ -94,8 +95,12 @@ export class FlashSession {
     if (typeof this.contractAddresses === "undefined") {
       throw Error("ERROR: Must load contract addresses first.");
     }
-
-    this.user = await ContractAPI.userWrapper(this.accounts[0], this.provider, this.contractAddresses);
+    let useAccount = this.accounts[0];
+    if (this.account) {
+      const findAccount = this.accounts.find(a => a.publicKey.toLowerCase() === this.account.toLowerCase());
+      if (findAccount) useAccount = findAccount;
+    }
+    this.user = await ContractAPI.userWrapper(useAccount, this.provider, this.contractAddresses);
     await this.user.approveCentralAuthority();
 
     return this.user;

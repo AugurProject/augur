@@ -13,6 +13,7 @@ import { Account } from "../constants";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";
 import { formatBytes32String } from "ethers/utils";
+import { Getters } from "@augurproject/sdk";
 
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -341,8 +342,16 @@ export class ContractAPI {
     return this.augur.contracts.augur.getTimestamp_();
   }
 
-  async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<void> {
-    await market.doInitialReport(payoutNumerators, "", new BigNumber(0));
+  async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], description: string = "", extraStake: string = "0"): Promise<void> {
+    await market.doInitialReport(payoutNumerators, description, new BigNumber(extraStake));
+  }
+
+  async getMarketContract(address: string): Promise<ContractInterfaces.Market> {
+    return this.augur.getMarket(address);
+  }
+
+  async getMarketInfo(address: string): Promise<Getters.Markets.MarketInfo[]> {
+    return this.augur.getMarketsInfo({marketIds: [address]});
   }
 
   async getInitialReporterStake(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<BigNumber> {

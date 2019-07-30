@@ -84,7 +84,10 @@ export function compareObjects(key: string, order: string) {
   };
 }
 
-export function logError(err: Error | string | object | null, result?: any): void {
+export function logError(
+  err: Error | string | object | null,
+  result?: any
+): void {
   if (err != null) {
     console.error(err);
     if (result != null) console.log(result);
@@ -123,4 +126,38 @@ export function calculatePayoutNumeratorsValue(
   }
 
   return payout.findIndex((item: string) => parseInt(item, 10) > 0).toString();
+}
+
+export function calculatePayoutNumeratorsArray(
+  displayMaxPrice,
+  displayMinPrice,
+  numTicks,
+  numOutcomes,
+  marketType,
+  outcome
+): BigNumber [] {
+  const payoutNumerators = Array(numOutcomes).fill(new BigNumber(0));
+  const isScalar = marketType === MarketTypeName.Scalar;
+
+  if (isScalar) {
+    // selectedOutcome must be a BN as string
+    const priceRange = new BigNumber(displayMaxPrice).minus(
+      new BigNumber(displayMinPrice)
+    );
+    const reportNormalizedToZero = new BigNumber(outcome).minus(
+      new BigNumber(displayMinPrice)
+    );
+    const longPayout = reportNormalizedToZero
+      .times(numTicks)
+      .dividedBy(priceRange);
+    const shortPayout = numTicks.minus(longPayout);
+    payoutNumerators[0] = shortPayout;
+    payoutNumerators[1] = longPayout;
+  } else {
+    // for binary and categorical the selected outcome is outcome.id
+    // and must be a number
+    payoutNumerators[outcome] = numTicks;
+  }
+
+  return payoutNumerators;
 }
