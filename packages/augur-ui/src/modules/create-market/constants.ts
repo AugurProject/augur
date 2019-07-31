@@ -348,7 +348,8 @@ export const VALIDATION_ATTRIBUTES = {
     label: DESIGNATED_REPORTER_ADDRESS,
     readableName: 'wallet address',
     checkFilledString: true,
-    checkFilledStringMessage: 'Enter a valid wallet address',
+    checkFilledStringMessage: 'Enter a wallet address',
+    checkForAddress: true,
   },
   [EXPIRY_SOURCE]: {
     label: EXPIRY_SOURCE,
@@ -372,6 +373,7 @@ export const VALIDATION_ATTRIBUTES = {
     readableName: 'Min',
     checkFilledNumber: true,
     checkLessThan: true,
+    lessThanMessage: 'Min can\'t be higher than max'
   },
   [MAX_PRICE]: {
     label: MAX_PRICE,
@@ -385,6 +387,9 @@ export const VALIDATION_ATTRIBUTES = {
     checkFilledNumber: true,
     checkFilledNumberMessage: 'Enter precision',
     checkPositive: true,
+    checkLessThan: true,
+    checkDecimals: true,
+    decimals: 9,
   },
   [SETTLEMENT_FEE]: {
     label: SETTLEMENT_FEE,

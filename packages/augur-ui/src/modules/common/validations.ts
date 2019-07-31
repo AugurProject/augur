@@ -1,6 +1,7 @@
 import { 
   INVALID_OUTCOME
 } from "modules/create-market/constants";
+import isAddress from "modules/auth/helpers/is-address";
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== "") return "";
@@ -25,9 +26,9 @@ export function isBetween(value, readable, min, max) {
   return "";
 }
 
-export function isLessThan(value, readable, target) {
+export function isLessThan(value, readable, target, message) {
   if (target !== null && value >= target) {
-    return 'Min can\'t be higher than max';
+    return message ? message : 'Must be less than ' + target;
   }
   return "";
 }
@@ -53,6 +54,19 @@ export function checkCategoriesArray(value) {
   } else {
     return "";
   }
+}
+
+export function moreThanDecimals(value, decimals) {
+  if (Math.floor(value) === value) return "";
+
+  const decimalsValue = value.toString().split(".")[1].length;
+  if (decimalsValue > decimals) return "Can't enter more than " + decimals + " decimal points";
+  return "";
+}
+
+export function checkAddress(value) {
+  if (!isAddress(value)) return "Enter a valid address";
+  return "";
 }
 
 export function checkOutcomesArray(value) {

@@ -61,6 +61,8 @@ import {
   isLessThan,
   isMoreThan,
   isPositive,
+  moreThanDecimals,
+  checkAddress
 } from 'modules/common/validations';
 
 import Styles from 'modules/create-market/components/form.styles';
@@ -102,6 +104,10 @@ interface Validations {
   checkLessThan?: Boolean;
   checkMoreThan?: Boolean;
   checkPositive?: Boolean;
+  lessThanMessage?: string;
+  decimals?: number;
+  checkDecimals?: Boolean;
+  checkForAdresss?: Boolean;
 }
 
 const draftError = "ENTER A MARKET QUESTION";
@@ -352,6 +358,10 @@ export default class Form extends React.Component<
       checkMoreThan,
       checkLessThan,
       checkPositive,
+      lessThanMessage,
+      checkDecimals,
+      decimals,
+      checkForAddress
     } = validationsObj;
 
     const checkValidations = [
@@ -365,8 +375,10 @@ export default class Form extends React.Component<
       checkOutcomes ? checkOutcomesArray(value) : '',
       checkBetween ? isBetween(value, readableName, min, max) : '',
       checkMoreThan ? isMoreThan(value, readableName, newMarket.minPrice) : '',
-      checkLessThan ? isLessThan(value, readableName, newMarket.maxPrice) : '',
+      checkLessThan ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage) : '',
       checkPositive ? isPositive(value) : '',
+      checkDecimals ? moreThanDecimals(value, decimals) : '',
+      checkForAddress ? checkAddress(value) : '',
     ];
     const errorMsg = checkValidations.find(validation => validation !== '');
 
