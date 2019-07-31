@@ -27,7 +27,7 @@ import { calculatePayoutNumeratorsValue } from '../../utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
-import { ExtendedSearchOptions, SearchResults } from "flexsearch";
+import { ExtendedSearchOptions } from "flexsearch";
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -42,8 +42,8 @@ const getMarketsParamsSpecific = t.intersection([
     designatedReporter: t.string,
     maxFee: t.string,
     maxEndTime: t.number,
-    hasOrders: t.boolean,
-    liquiditySpread: t.string,
+    includeMarketsWithoutOrders: t.boolean,
+    maxLiquiditySpread: t.string,
     includeInvalidMarkets: t.boolean,
     categories: t.array(t.string),
   }),
@@ -68,6 +68,16 @@ export enum MarketInfoReportingState {
   FORKING = 'FORKING',
   AWAITING_NO_REPORT_MIGRATION = 'AWAITING_NO_REPORT_MIGRATION',
   AWAITING_FORK_MIGRATION = 'AWAITING_FORK_MIGRATION',
+}
+
+export enum GetMarketsSortBy {
+  OPEN_INTEREST = 'marketOI',
+  LIQUIDITY = 'liquidity',
+  VOLUME = 'volume',
+  MARKET_CREATED_TIMESTAMP = 'timestamp',
+  MARKET_END_TIMESTAMP = 'endTime',
+  LAST_TRADED_TIMESTAMP = '', // TODO
+  LAST_LIQUIDITY_DEPLETED = '', // TODO
 }
 
 export interface MarketInfo {
@@ -371,6 +381,23 @@ export class Markets {
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
+    const validLiquiditySpreads = ['10', '15', '20', '100'];
+    if (params.maxLiquiditySpread && !validLiquiditySpreads.includes(params.maxLiquiditySpread)) {
+      throw new Error('Invalid maxLiquiditySpread');
+    }
+    // Set sort defaults
+    if (typeof params.sortBy === 'undefined') {
+      params.sortBy = GetMarketsSortBy.OPEN_INTEREST;
+    }
+    if (typeof params.isSortDescending === 'undefined') {
+      params.isSortDescending = true;
+    }
+    if (typeof params.limit === 'undefined') {
+      params.limit = 10;
+    }
+    if (typeof params.offset === 'undefined') {
+      params.offset = 0;
+    }
 
     const request = {
       selector: {
@@ -384,7 +411,7 @@ export class Markets {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
       });
     }
-    const marketLogs = await db.findMarketCreatedLogs(request);
+    const marketCreatedLogs = await db.findMarketCreatedLogs(request);
 
     let marketCreatorFeeDivisor: BigNumber | undefined = undefined;
     if (params.maxFee) {
@@ -399,7 +426,7 @@ export class Markets {
       );
     }
 
-    const keyedMarketCreatedLogs = marketLogs.reduce(
+    const keyedMarketCreatedLogs: MarketCreatedLog[] = marketCreatedLogs.reduce(
       (previousValue: any, currentValue: MarketData) => {
         // Filter markets with fees > maxFee
         if (
@@ -455,95 +482,114 @@ export class Markets {
         }
       }
 
-      filteredKeyedMarketCreatedLogs = Object.entries(
+      filteredKeyedMarketCreatedLogs = Object.values(
         keyedMarketCreatedLogs
       ).reduce((previousValue: any, currentValue: any) => {
-        if (keyedFullTextResults[currentValue[0]]) {
-          previousValue[currentValue[0]] = currentValue[1];
+        if (keyedFullTextResults[currentValue.market]) {
+          previousValue[currentValue.market] = currentValue;
         }
         return previousValue;
       }, []);
     }
 
-    await Promise.all(
-      Object.entries(filteredKeyedMarketCreatedLogs).map(
-        async (marketCreatedLogInfo: any) => {
-          let includeMarket = true;
+    let filteredMarketsInfo: any[] = [];
+    for (const marketCreatedLogInfo of Object.values(filteredKeyedMarketCreatedLogs)) {
+      let includeMarket = true;
 
-          if (params.disputeWindow) {
-            const market = await augur.contracts.marketFromAddress(
-              marketCreatedLogInfo[0]
-            );
-            const disputeWindowAddress = await market.getDisputeWindow_();
-            if (params.disputeWindow !== disputeWindowAddress) {
-              includeMarket = false;
-            }
-          }
-
-          if (params.hasOrders) {
-            let hasOrders = false;
-            const request = {
-              selector: {
-                market: marketCreatedLogInfo[0],
-              },
-            };
-            const currentOrdersResponse = await db.findCurrentOrderLogs(request);
-            for (let i = 0; i < currentOrdersResponse.length; i++) {
-              if (currentOrdersResponse[i].amount !== '0x00') {
-                hasOrders = true;
-                break;
-              }
-            }
-            if (!hasOrders) {
-              includeMarket = false;
-            }
-          }
-
-          if (params.reportingStates) {
-            const reportingStates = params.reportingStates;
-            const marketFinalizedLogs = await db.findMarketFinalizedLogs({
-              selector: { market: marketCreatedLogInfo[0] },
-            });
-            const reportingState = await getMarketReportingState(
-              db,
-              marketCreatedLogInfo[1],
-              marketFinalizedLogs
-            );
-            if (!reportingStates.includes(reportingState)) {
-              includeMarket = false;
-            }
-          }
-
-          if (includeMarket) {
-            return marketCreatedLogInfo[0];
-          }
-          return null;
+      if (params.disputeWindow) {
+        const market = await augur.contracts.marketFromAddress(
+          marketCreatedLogInfo['market']
+        );
+        const disputeWindowAddress = await market.getDisputeWindow_();
+        if (params.disputeWindow !== disputeWindowAddress) {
+          includeMarket = false;
         }
-      )
-    ).then((marketIds: any) => {
-      marketIds = marketIds.reduce(
-        (previousValue: any, currentValue: string | null) => {
-          if (currentValue) {
-            previousValue[currentValue] = currentValue;
+      }
+
+      if (params.includeMarketsWithoutOrders === false) {
+        let marketHasOrders = false;
+        const request = {
+          selector: {
+            market: marketCreatedLogInfo['market'],
+          },
+        };
+        const currentOrders = await db.findCurrentOrderLogs(request);
+        for (let i = 0; i < currentOrders.length; i++) {
+          if (currentOrders[i].amount !== '0x00') {
+            marketHasOrders = true;
+            break;
           }
-          return previousValue;
-        },
-        []
-      );
-
-      filteredKeyedMarketCreatedLogs = Object.entries(
-        filteredKeyedMarketCreatedLogs
-      ).reduce((previousValue: any, currentValue: any) => {
-        if (marketIds[currentValue[1].market]) {
-          previousValue[currentValue[0]] = currentValue[1];
         }
-        return previousValue;
-      }, []);
-    });
+        if (!marketHasOrders) {
+          includeMarket = false;
+        }
+      }
 
-    // TODO: Implement sortBy, isSortDescending, limit, offset
+      if (params.reportingStates) {
+        const reportingStates = params.reportingStates;
+        const marketFinalizedLogs = await db.findMarketFinalizedLogs({
+          selector: { market: marketCreatedLogInfo['market'] },
+        });
+        const reportingState = await getMarketReportingState(
+          db,
+          marketCreatedLogInfo,
+          marketFinalizedLogs
+        );
+        if (!reportingStates.includes(reportingState)) {
+          includeMarket = false;
+        }
+      }
 
-    return Object.keys(filteredKeyedMarketCreatedLogs);
+      marketCreatedLogInfo['timestamp'] = new BigNumber(marketCreatedLogInfo['timestamp']).toString();
+      marketCreatedLogInfo['endTime'] = new BigNumber(marketCreatedLogInfo['endTime']).toString();
+
+      let marketInfo: MarketData[];
+      if (
+        params.maxLiquiditySpread ||
+        params.includeInvalidMarkets ||
+        params.sortBy === GetMarketsSortBy.LIQUIDITY ||
+        params.sortBy === GetMarketsSortBy.OPEN_INTEREST ||
+        params.sortBy === GetMarketsSortBy.VOLUME
+      ) {
+        const request = {
+          selector: {
+            market: marketCreatedLogInfo['market'],
+          },
+        };
+        marketInfo = await db.findMarkets(request);
+        if (
+          params.sortBy === GetMarketsSortBy.LIQUIDITY ||
+          params.sortBy === GetMarketsSortBy.OPEN_INTEREST ||
+          params.sortBy === GetMarketsSortBy.VOLUME
+        ) {
+          marketCreatedLogInfo[params.sortBy] = marketInfo[params.sortBy] ? new BigNumber(marketInfo[params.sortBy]).toString() : '0';
+        }
+        if (params.maxLiquiditySpread && marketInfo[0].liquidity[params.maxLiquiditySpread] === '0x00') {
+          includeMarket = false;
+        }
+        if (
+          typeof params.includeInvalidMarkets !== "undefined" &&
+          params.includeInvalidMarkets === false &&
+          marketInfo[0].invalidFilter === true
+        ) {
+          includeMarket = false;
+        }
+      }
+
+      // Add any relevant sort information to marketCreatedLogInfo
+      if (includeMarket) {
+        filteredMarketsInfo.push(marketCreatedLogInfo);
+      }
+    }
+
+    // TODO Add `meta`, `filteredOutCount`, & `marketCount`
+    _.sortBy(filteredMarketsInfo, [(market: any) => market[params.sortBy]]);
+    if (params.isSortDescending) {
+      filteredMarketsInfo = filteredMarketsInfo.reverse();
+    }
+    // TODO: Implement limit, offset
+
+    return filteredMarketsInfo.map(marketInfo => marketInfo.market);
   }
 
   @Getter('getMarketOrderBookParams')

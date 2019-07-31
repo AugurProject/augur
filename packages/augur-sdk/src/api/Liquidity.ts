@@ -2,7 +2,6 @@ import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Augur } from "../Augur";
 import { MarketType } from "../state/logs/types";
-import { OrderBook } from "../state/getter/Markets";
 
 export interface Order {
     price: string;
@@ -53,7 +52,7 @@ export class Liquidity {
   constructor(augur: Augur) {
     this.augur = augur;
   }
-  
+
   async getLiquidityForSpread(params: GetLiquidityParams): Promise<BigNumber> {
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(params.reportingFeeDivisor)).minus(new BigNumber(1).div(params.marketFeeDivisor));
     const horizontalLiquidity = this.getHorizontalLiquidity(params.orderbook, params.numTicks, feeMultiplier, params.numOutcomes, params.spread);
@@ -95,7 +94,7 @@ export class Liquidity {
       let ask_quantities = new BigNumber(0);
       const bidOrders = _.takeWhile(orderbook[outcome].bids, function(order) { return bid_price.lte(order.price); });
       const askOrders = _.takeWhile(orderbook[outcome].asks, function(order) { return ask_price.gte(order.price); });
-      // for bids we get orders from the midpoint down to and inclusive of the bid price. For asks we get the orders from the midpoint *up to* inclusive of the ask price. 
+      // for bids we get orders from the midpoint down to and inclusive of the bid price. For asks we get the orders from the midpoint *up to* inclusive of the ask price.
       for (const order of bidOrders) bid_quantities = bid_quantities.plus(order.amount);
       for (const order of askOrders) ask_quantities = ask_quantities.plus(order.amount);
       const num_shares = BigNumber.max(bid_quantities, ask_quantities);
@@ -126,7 +125,7 @@ export class Liquidity {
         horizontalLiquidity.total = horizontalLiquidity.total.plus(raw_bid_value).plus(raw_ask_value);
       }
     }
-    
+
     return horizontalLiquidity;
   }
 
