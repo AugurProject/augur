@@ -113,16 +113,14 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
         </>
   		}
 	  	{props.marketType !== SCALAR && outcomesShow.map((outcome: Outcome, index: number) =>
-	  		(!props.expanded && index < 3 || (props.expanded || props.marketType === YES_NO)) && 
-          <Outcome
-            key={outcome.id}
-  	  			description={outcome.description}
-  	  			lastPricePercent={outcome.lastPricePercent}
-  	  			invalid={index === 2}
-  	  			index={index > 2 ? index : index + 1}
-  	  		/> 
-	  	  )
-      }
+	  		(!props.expanded && index < 3 || (props.expanded || props.marketType === YES_NO)) && <Outcome
+          key={outcome.id}
+	  			description={outcome.description}
+	  			lastPricePercent={outcome.lastPricePercent}
+	  			invalid={outcome.id === 0}
+	  			index={index > 2 ? index : index + 1}
+	  		/> 
+	  	)}
   	</div>
   );
 }
