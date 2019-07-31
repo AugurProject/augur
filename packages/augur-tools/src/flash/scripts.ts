@@ -279,7 +279,6 @@ export function addScripts(flash: FlashSession) {
 
       const countString = args.count as string;
       let unit = countString[countString.length - 1];
-      this.log(`unit ${unit}`);
       let count: string;
       if (['y', 'M', 'w', 'd', 'h', 'm', 's'].includes(unit.toString())) {
         count = countString.slice(0, countString.length - 1);
