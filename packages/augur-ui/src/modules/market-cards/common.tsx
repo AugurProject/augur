@@ -101,7 +101,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
     			<ScalarOutcome
     				min={props.min}
     				max={props.max}
-    				lastPricePercent={props.lastPricePercent}
+    				lastPrice={props.lastPricePercent}
     				scalarDenomination={props.scalarDenomination}
     			/>
           <Outcome
