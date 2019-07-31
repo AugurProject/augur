@@ -561,7 +561,6 @@ export default class AppView extends Component<AppProps, AppState> {
               defaultMobileClick={() =>
                 updateMobileMenuState(MOBILE_MENU_STATES.CLOSED)
               }
-              isMobile={true}
               isLogged={isLogged}
               mobileShow={
                 sidebarStatus.mobileMenuState ===
