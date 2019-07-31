@@ -412,7 +412,7 @@ export function addScripts(flash: FlashSession) {
       const amount = args.amount as string;
       const desc = args.description as string;
       if (amount === "0") return this.log("amount of REP is required");
-      const stake = new BigNumber(amount).dividedBy(QUINTILLION);
+      const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
       if (!this.usingSdk) return this.log("This script needs sdk, make sure to connect with -u flag");
       if (!this.sdkReady) return this.log("SDK hasn't fully syncd, need to wait");

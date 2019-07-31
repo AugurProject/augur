@@ -262,7 +262,7 @@ export class ContractAPI {
     await this.augur.contracts.completeSets.publicSellCompleteSets(market.address, amount);
   }
 
-  async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description?: string): Promise<void> {
+  async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description: string = ""): Promise<void> {
     await market.contribute(payoutNumerators, amount, description);
   }
 
