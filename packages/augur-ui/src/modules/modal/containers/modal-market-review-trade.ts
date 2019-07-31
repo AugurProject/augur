@@ -49,7 +49,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     endTime: sP.market.endTime,
     resolutionSource: sP.market.resolutionSource,
   },
-  checkboxCTA: {
+  checkbox: {
     markModalAsSeen: dP.markModalAsSeen,
     unmarkModalAsSeen: dP.unmarkModalAsSeen,
   },
@@ -79,6 +79,6 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps,
-  )(Message),
+    mergeProps
+  )(Message)
 );
