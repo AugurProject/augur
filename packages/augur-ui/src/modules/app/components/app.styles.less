@@ -31,19 +31,6 @@ h6 {
   height: 100%;
 }
 
-.App {
-  display: grid;
-
-  /* sidebar width */
-  grid-template-columns: @top-bar-height auto;
-  height: 100%;
-
-  @media @breakpoint-mobile {
-    /* disable sidebar mobile grid width */
-    grid-template-columns: 0 auto;
-  }
-}
-
 .App--blur {
   filter: blur(2px);
 }
@@ -92,28 +79,16 @@ h6 {
 .SideBar {
   background: @color-theme-primary;
   border-right: 0.0625rem solid @color-primary-background;
-  height: 100vh;
-  padding-top: 71px;
-  z-index: @mask-above;
 
   @media @breakpoint-mobile {
     padding-top: 0;
   }
 }
 
-.Logo {
-  background: @color-theme-primary;
-  border-bottom: 1px solid @color-primary-background;
-  left: 1rem;
-  position: absolute;
-  top: -1px;
-
-  @media @breakpoint-mobile {
-    border-bottom: 1px solid @color-primary-light;
-  }
-}
-
 .SideBar__mobile-bars {
+  position: absolute;
+  top: 0;
+  left: 0;
   background: @color-theme-primary;
   border-bottom: 1px solid @color-primary-background;
   display: none;
@@ -164,8 +139,6 @@ svg.SideBar__mobile-bars-unseen {
 }
 
 .TopBar__floatAbove {
-  border-bottom: 1px solid @color-primary-background;
-  margin-left: 3.15rem;
   z-index: @mask-above;
 
   @media @breakpoint-mobile {

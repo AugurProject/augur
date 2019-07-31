@@ -176,7 +176,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
           <WordTrail items={[...categoriesWithClick, ...tagsWithClick]}>
             <button
               className={Styles.BackButton}
-              onClick={() => history.back()}
+              onClick={() => history.goBack()}
             >
               {BackArrow}
             </button>

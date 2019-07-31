@@ -8,7 +8,8 @@ import {
   MarketIcon,
   InfoIcon,
   CheckCircleIcon,
-  HintAlternate
+  HintAlternate,
+  DoubleArrows
 } from "modules/common/icons";
 import { MarketProgress } from "modules/common/progress";
 import ReactTooltip from "react-tooltip";
@@ -34,8 +35,6 @@ export interface MarketTypeProps {
 
 export interface MarketStatusProps {
   marketStatus: string;
-  mini?: boolean;
-  alternate?: boolean;
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
@@ -492,7 +491,7 @@ export const MarketTypeLabel = (props: MarketTypeProps) => {
 };
 
 export const MarketStatusLabel = (props: MarketStatusProps) => {
-  const { marketStatus, mini, alternate } = props;
+  const { marketStatus, mini } = props;
   let open: boolean = false;
   let resolved: boolean = false;
   let reporting: boolean = false;
@@ -514,7 +513,6 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
   return (
     <span
       className={classNames(Styles.MarketStatus, {
-        [Styles.MarketStatus_alternate]: alternate,
         [Styles.MarketStatus_mini]: mini,
         [Styles.MarketStatus_open]: open,
         [Styles.MarketStatus_resolved]: resolved,
@@ -581,16 +579,13 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
       <span
         className={classNames(
           Styles.MarketStatus,
-          Styles.MarketStatus_reporting,
-          {
-            [Styles.MarketStatus_alternate]: alternate,
-            [Styles.MarketStatus_mini]: mini
-          }
+          Styles.MarketStatus_reporting
         )}
       >
         {text}
         {reportingExtraText && (
           <span className={Styles.InReporting_reportingDetails}>
+            {DoubleArrows}
             {reportingExtraText}
           </span>
         )}
@@ -862,7 +857,8 @@ export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
         className={Styles.WordTrailButton}
         onClick={e => onClick()}
       >
-        {label}
+        <span>{label}</span>
+        <span>{index + 1 !== items.length && "/" }</span>
       </button>
     ))}
   </div>

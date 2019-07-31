@@ -13,7 +13,11 @@ import {
 } from "modules/common/labels";
 import { CoreStats } from "modules/types";
 import { RepLogoIcon } from "modules/common/icons";
-import Styles from "modules/app/components/top-bar.styles";
+import Styles from "modules/app/components/top-bar.styles.less";
+import { Link } from "react-router-dom";
+import makePath from "modules/routes/helpers/make-path";
+import Logo from "modules/app/components/logo";
+import { DEFAULT_VIEW } from "modules/routes/constants/views";
 
 
 interface TopBarProps {
@@ -29,9 +33,9 @@ const TopBar = ({
   isLogged,
   stats,
   unseenCount,
-  updateIsAlertVisible
+  updateIsAlertVisible,
 }: TopBarProps) => {
-  const { 
+  const {
     availableFunds,
     frozenFunds,
     totalFunds,
@@ -39,7 +43,12 @@ const TopBar = ({
   } = stats;
   return (
     <header className={Styles.TopBar}>
-      <div>{RepLogoIcon}</div>
+      <div className={Styles.Logo}>
+        <Link to={makePath(DEFAULT_VIEW)}>
+          <Logo />
+        </Link>
+      </div>
+
       {isLogged && (
         <div className={Styles.statsContainer}>
           <div>
@@ -71,7 +80,7 @@ const TopBar = ({
           </div>
         </div>
       )}
-      <div>
+      <div className={isLogged ? Styles.TopBar_blockGasAcccount_HideMobile : null}>
         <BlockInfoData />
         {isLogged && <GasPriceEdit />}
         <ConnectAccount />

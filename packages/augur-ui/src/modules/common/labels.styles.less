@@ -329,92 +329,57 @@ div.LinearPropertyViewTransaction {
 }
 
 .MarketTypeLabel {
-  .mono-10;
+  .mono-9;
 
-  background: @color-primary-light;
-  border-radius: @border-radius-rounded;
+  background: fade(@color-tertiary-info-text, 30%);
+  border: 1px solid transparent;
+  border-radius: @border-radius-default;
   color: @color-secondary-text;
-  height: @size-24;
-  padding: 0.3125rem @size-8;
-  text-transform: capitalize;
+  padding: @size-2;
+  line-height: @size-11;
+  text-transform: uppercase;
 }
 
 .MarketStatus {
-  .text-12-bold;
+  .mono-9;
 
+  border: 1px solid transparent;
   color: @color-secondary-text;
-  line-height: @size-14;
-  padding-bottom: 0.375rem;
+  line-height: @size-11;
+  padding: @size-2;
   position: relative;
-
-  &::after {
-    border-radius: 0.125rem;
-    bottom: 0;
-    content: "";
-    height: 0.125rem;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
+  border-radius: @border-radius-default;
+  text-transform: uppercase;
 
   @media @breakpoint-mobile {
     .text-10-bold;
   }
 }
 
-.MarketStatus_mini {
-  .mono-9;
-
-  line-height: @size-12;
-  padding-bottom: 0.125rem; // 2px
-  position: relative;
-
-  &::after {
-    border-radius: 0.125rem;
-    bottom: 0;
-    content: "";
-    height: 1px;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
-}
-
-.MarketStatus_alternate {
-  font-family: @roboto-mono;
-  max-width: fit-content;
-}
-
 .MarketStatus_open {
-  &::after {
-    background: @color-open;
-  }
+  background: fade(@color-open, 15%);
+  color: @color-open;
 }
 
 .MarketStatus_reporting {
-  &::after {
-    background: @color-in-reporting;
-  }
+  background: fade(@color-in-reporting, 15%);
+  color: @color-in-reporting;
 }
 
 .MarketStatus_resolved {
-  &::after {
-    background: @color-resolved;
-  }
+  background: fade(@color-resolved, 15%);
+  color: @color-resolved;
 }
 
 .InReporting_reportingDetails {
-  color: @color-tertiary-text;
-  font-weight: normal;
+  > svg {
+    width: @size-10;
+    height: @size-6;
+    margin: 0 @size-4;
 
-  &::before {
-    background-color: @color-tertiary-text;
-    border-radius: 50%;
-    content: "";
-    display: inline-block;
-    height: 0.1875rem;
-    margin: 0 @size-4 0.0625rem;
-    width: 0.1875rem;
+    > path {
+      fill: @color-in-reporting;
+    }
   }
 }
 
@@ -605,16 +570,18 @@ div.LinearPropertyViewTransaction {
     &:not(:first-of-type)::before {
       margin: 0 @size-4;
     }
+
+    > span:nth-of-type(2) {
+      margin: 0 @size-4;
+    }
   }
 }
 
 .WordTrailButton {
-  &:extend(.button--transparent--rounded all);
-  .text-10;
+  .mono-10;
 
-  border-width: 1px;
-  color: @color-alternate-text;
-  text-transform: capitalize;
+  color: @color-tertiary-info-text;
+  text-transform: uppercase;
   white-space: nowrap;
 
   &:focus {
@@ -622,8 +589,9 @@ div.LinearPropertyViewTransaction {
   }
 
   &:hover {
-    border-width: 1px;
-    color: @color-secondary-text;
+    > span:first-of-type {
+      text-decoration: underline;
+    }
   }
 }
 

@@ -8,36 +8,31 @@ import ConnectAccount from "modules/auth/containers/connect-account";
 import GasPriceEdit from "modules/app/containers/gas-price-edit";
 
 import { MARKETS } from "modules/routes/constants/views";
-import Styles from "modules/app/components/side-nav/side-nav.styles";
+import Styles from "modules/app/components/side-nav/side-nav.styles.less";
 
 export default class SideNav extends Component {
   static propTypes = {
     defaultMobileClick: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired,
     isLogged: PropTypes.bool.isRequired,
     menuData: PropTypes.array.isRequired,
     mobileShow: PropTypes.bool.isRequired,
-    currentBasePath: PropTypes.string
+    currentBasePath: PropTypes.string,
   };
 
   static defaultProps = {
-    currentBasePath: null
+    currentBasePath: null,
   };
 
   constructor(props) {
     super(props);
     this.state = {
       selectedItem: null,
-      selectedKey: null
+      selectedKey: null,
     };
   }
 
   componentWillReceiveProps(newProps) {
-    const { isMobile } = this.props;
-    if (
-      isMobile !== newProps.isMobile ||
-      newProps.currentBasePath === MARKETS
-    ) {
+    if (newProps.currentBasePath === MARKETS) {
       this.setState({ selectedItem: null, selectedKey: null });
     }
   }
@@ -51,9 +46,7 @@ export default class SideNav extends Component {
   }
 
   itemClick(item) {
-    const { isMobile } = this.props;
-    const mobile = isMobile;
-    if (!mobile && this.isCurrentItem(item)) return;
+    if (this.isCurrentItem(item)) return;
     const clickCallback = item.onClick;
     if (clickCallback && typeof clickCallback === "function") {
       clickCallback();
@@ -68,17 +61,11 @@ export default class SideNav extends Component {
 
     // don't modify selected item if mobile
     // mobile menu state works differently
-    if (mobile) return;
-
-    // set title as key for equality check
-    // because the state item de-syncs with
-    // this.props.menuData's instance
-    this.setState({ selectedItem: item, selectedKey: item.title });
+    return;
   }
 
   render() {
     const {
-      isMobile,
       isLogged,
       defaultMobileClick,
       menuData,
@@ -87,39 +74,30 @@ export default class SideNav extends Component {
 
     const accessFilteredMenu = menuData.filter(
       item =>
-        !(item.requireLogin && !isLogged) && !(item.onlyForMobile && !isMobile)
-    );
+        !(item.requireLogin && !isLogged));
 
     return (
       <aside
         className={classNames(Styles.SideNav, {
-          [`${Styles.mobileShow}`]: mobileShow
+          [`${Styles.mobileShow}`]: mobileShow,
         })}
       >
         <div className={Styles.SideNav__container}>
           <ul className={Styles.SideNav__nav}>
             {accessFilteredMenu.map((item, index) => {
               const Icon = item.icon;
-              const selected = !isMobile && this.isCurrentItem(item);
 
               const linkClickHandler = () => {
-                if (isMobile) {
-                  if (item.mobileClick) {
-                    item.mobileClick();
-                  } else {
-                    defaultMobileClick();
-                  }
+                if (item.mobileClick) {
+                  item.mobileClick();
                 } else {
-                  this.itemClick(item);
+                  defaultMobileClick();
                 }
               };
 
               return (
                 <li
-                  className={classNames(
-                    { [Styles["SideNav__item--selected"]]: selected },
-                    item.disabled ? Styles.disabled : ""
-                  )}
+                  className={item.disabled ? Styles.disabled : ""}
                   key={item.title}
                   id="side-nav-items"
                 >
