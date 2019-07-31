@@ -188,7 +188,7 @@ export const OutcomesList = (props: OutcomesListProps) => (
     <h1>Outcomes</h1>
     <div>
       {props.outcomes.map((outcome:string, index: Number) => 
-        <span>
+        <span key={index}>
           {index + 1}. {outcome}
         </span>
       )}
@@ -206,8 +206,8 @@ export const ExplainerBlock = (props: ExplainerBlockProps) => (
     <h2>
       {props.title}
     </h2>
-    {props.subtexts.map(subtext => 
-      <p>
+    {props.subtexts.map((subtext, index) => 
+      <p key={index}>
         {subtext}
       </p>
     )}
@@ -333,6 +333,7 @@ export class NumberedList extends Component<
       <ul className={Styles.NumberedList}>
         {list.map((item, index) => (
           <NumberedInput
+            key={index}
             value={item}
             placeholder={placeholder}
             onChange={this.onChange}
