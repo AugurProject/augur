@@ -1,12 +1,11 @@
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { ContractAddresses } from '@augurproject/artifacts';
-import { NetworkConfiguration } from '@augurproject/core';
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { ContractAddresses } from "@augurproject/artifacts";
+import { NetworkConfiguration } from "@augurproject/core";
 
-import { ContractAPI } from '../libs/contract-api';
-import { Account } from '../constants';
-import { providers } from 'ethers';
-import { Augur, SubscriptionEventName, Events } from '@augurproject/sdk';
-import { SEOConnector } from '@augurproject/sdk/build/connector';
+import { ContractAPI } from "../libs/contract-api";
+import { Account } from "../constants";
+import { providers } from "ethers";
+import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
 
 export interface FlashOption {
   name: string;
@@ -110,7 +109,7 @@ export class FlashSession {
     if (wireUpSdk) this.usingSdk = true;
 
     let connector = null;
-    if (wireUpSdk) connector = new SEOConnector();
+    if (wireUpSdk) connector = new Connectors.SEOConnector();
 
     this.user = await ContractAPI.userWrapper(
       this.getAccount(),
@@ -134,7 +133,7 @@ export class FlashSession {
     } else {
       this.log(`sdk ${log.blocksBehindCurrent} block behind`);
     }
-  }
+  };
 
   getAccount(): Account {
     let useAccount = this.accounts[0];
@@ -152,7 +151,7 @@ export class FlashSession {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
-    return await ContractAPI.userWrapper(
+    return ContractAPI.userWrapper(
       this.accounts[0],
       this.provider,
       this.contractAddresses
