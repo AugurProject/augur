@@ -35,6 +35,7 @@ import {
   CATEGORIES,
   OUTCOMES
 } from "modules/create-market/constants";
+import { formatDate } from "utils/format-date";
 
 import Styles from "modules/create-market/components/form-details.styles";
 
@@ -92,6 +93,8 @@ export default class FormDetails extends React.Component<
       currentStep
     } = newMarket;
 
+    console.log(endTime);
+
     return (
       <div className={Styles.FormDetails}>
         <div>
@@ -123,12 +126,13 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Reporting start date and time" subheader="Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. " link />
           <span>
             <DatePicker
-              date={endTime}
+              date={endTime ? moment(endTime.timestamp * 1000) : null}
               placeholder="Date"
               displayFormat="MMM D, YYYY"
               id="input-date"
               onDateChange={(date: Number) => {
-                onChange("endTime", date)
+                if (!date) return onChange("setEndTime", "");
+                onChange("setEndTime", formatDate(date.toDate()));
               }}
               isOutsideRange={day =>
                 day.isAfter(moment(currentTimestamp).add(6, "M")) ||
@@ -137,8 +141,8 @@ export default class FormDetails extends React.Component<
               numberOfMonths={1}
               onFocusChange= {({ focused }) => {
                 if (endTime === null) {
-                  const date = moment(currentTimestamp * 1000);
-                  onChange("endTime", date)
+                  const date = moment(currentTimestamp);
+                  onChange("setEndTime", formatDate(date.toDate()));
                 }
                 this.setState({ dateFocused: focused });
               }}
