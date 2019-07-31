@@ -140,7 +140,6 @@ export function calculatePayoutNumeratorsArray(
   const isScalar = marketType === MarketTypeName.Scalar;
 
   if (isScalar) {
-    // selectedOutcome must be a BN as string
     const priceRange = new BigNumber(displayMaxPrice).minus(
       new BigNumber(displayMinPrice)
     );
@@ -154,8 +153,6 @@ export function calculatePayoutNumeratorsArray(
     payoutNumerators[0] = shortPayout;
     payoutNumerators[1] = longPayout;
   } else {
-    // for binary and categorical the selected outcome is outcome.id
-    // and must be a number
     payoutNumerators[outcome] = numTicks;
   }
 
