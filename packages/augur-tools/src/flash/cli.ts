@@ -63,15 +63,25 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
     let v: Vorpal|Vorpal.Command = vorpal;
     v = v.command(script.name, script.description || "");
 
+    const types = { string: [], boolean: [] };
     for (const option of script.options || []) {
       // Vorpal interprets options as boolean (flag) or string,
       // depending on the structure of its first argument.
       //   boolean: --foo
       //   string: --foo <bar>
       const flag = option.flag || false;
-      v = v.option(`--${option.name}${flag ? "" : ` <arg>`}`, option.description);
+      const abbr = option.abbr ? `-${option.abbr},` : "";
+      const optionValue = `${abbr}--${option.name}${flag ? "" : ` <arg>`}`
+      v = v.option(optionValue, option.description);
+      if (flag) {
+        types.boolean.push(option.name);
+        if (option.abbr) types.boolean.push(option.abbr);
+      } else {
+        types.string.push(option.name);
+        if (option.abbr) types.string.push(option.abbr);
+      }
     }
-
+    v.types(types);
     v = v.action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args): Promise<void> {
       await flash.call(script.name, args.options).catch(console.error);
     });
