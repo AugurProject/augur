@@ -54,15 +54,6 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
     }),
     unclaimedCreatorFeesFormatted: formatDai('0'), // TODO: figure out where this comes from
     marketCreatorFeesCollectedFormatted: formatDai('0'), // TODO: figure out where this comes from
-    lastPricePercent: outcome.price
-      ? formatNumber(outcome.price, {
-          decimals: 2,
-          decimalsRounded: 1,
-          denomination: '',
-          positiveSign: false,
-          zeroStyled: true,
-        })
-      : formatNone(),
   };
 
   return marketData;
