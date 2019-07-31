@@ -23,14 +23,14 @@ const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(marketId);
 
   let marketReviewSeen =
-  windowRef &&
-  windowRef.localStorage &&
-  Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN));
+    windowRef &&
+    windowRef.localStorage &&
+    Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN));
 
   const marketReview =
-  windowRef &&
-  windowRef.localStorage &&
-  JSON.parse(windowRef.localStorage.getItem(MARKET_REVIEWS));
+    windowRef &&
+    windowRef.localStorage &&
+    JSON.parse(windowRef.localStorage.getItem(MARKET_REVIEWS));
 
   // If market review modal has been seen for this market, do not show again
   if (marketReview && marketReview.includes(marketId)) {
