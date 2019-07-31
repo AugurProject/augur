@@ -22,27 +22,30 @@ const mapStateToProps = (state, ownProps) => {
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const market = ownProps.market || selectMarket(marketId);
 
-  if (market === null) {
-    return {
-      isMarketLoading: true,
-      isConnected: connection.isConnected && universe.id != null,
-      marketId,
-    }
-  }
   let marketReviewSeen =
-    windowRef &&
-    windowRef.localStorage &&
-    windowRef.localStorage.getItem(MARKET_REVIEW_SEEN);
+  windowRef &&
+  windowRef.localStorage &&
+  Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN));
 
   const marketReview =
-    windowRef &&
-    windowRef.localStorage &&
-    JSON.parse(windowRef.localStorage.getItem(MARKET_REVIEWS));
+  windowRef &&
+  windowRef.localStorage &&
+  JSON.parse(windowRef.localStorage.getItem(MARKET_REVIEWS));
 
   // If market review modal has been seen for this market, do not show again
   if (marketReview && marketReview.includes(marketId)) {
     marketReviewSeen = true;
   }
+
+  if (market === null) {
+    return {
+      isMarketLoading: true,
+      isConnected: connection.isConnected && universe.id != null,
+      marketId,
+      marketReviewSeen,
+    };
+  }
+
 
   return {
     currentTimestamp: selectCurrentTimestampInSeconds(state),
@@ -53,7 +56,7 @@ const mapStateToProps = (state, ownProps) => {
     market,
     marketId,
     universe,
-    marketReviewSeen: !!marketReviewSeen,
+    marketReviewSeen,
   };
 };
 
