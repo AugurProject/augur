@@ -153,8 +153,7 @@ export function calculatePayoutNumeratorsArray(
     payoutNumerators[0] = shortPayout;
     payoutNumerators[1] = longPayout;
   } else {
-    payoutNumerators[outcome] = numTicks;
+    payoutNumerators[outcome] = new BigNumber(numTicks);
   }
-
   return payoutNumerators;
 }

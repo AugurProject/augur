@@ -32,6 +32,12 @@ export function addScripts(flash: FlashSession) {
         abbr: 'n',
         description: `Which network to connect to. Defaults to "environment" aka local node.`,
       },
+      {
+        name: 'useSdk',
+        abbr: 'u',
+        description: `a few scripts need sdk, -u to wire up sdk`,
+        flag: true,
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
@@ -41,6 +47,7 @@ export function addScripts(flash: FlashSession) {
       flash.provider = this.makeProvider(networkConfiguration);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = Addresses[networkId];
+      flash.ensureUser(networkConfiguration, !!args.useSdk);
     },
   });
 
@@ -344,9 +351,12 @@ export function addScripts(flash: FlashSession) {
       if (extraStake) {
         preEmptiveStake = new BigNumber(extraStake).dividedBy(QUINTILLION).toFixed();
       }
+      if (!this.usingSdk) this.log("This script needs sdk, make sure to connect with -u flag");
+      if (! this.sdkReady) this.log("SDK hasn't fully syncd, need to wait");
 
       const markets = await user.getMarkets();
-      this.log(`all markets ${markets}`);
+      this.log(`total market count ${markets.length}`);
+
       const market: ContractInterfaces.Market = await user.getMarketContract(marketId);
       const marketInfos = await user.getMarketInfo(marketId);
       if (!marketInfos || marketInfos.length === 0) {
@@ -361,6 +371,7 @@ export function addScripts(flash: FlashSession) {
         marketInfo.marketType,
         outcome
       );
+
       await user.doInitialReport(market, payoutNumerators, desc, preEmptiveStake);
     },
   });
