@@ -2,10 +2,6 @@ import { Augur } from "@augurproject/sdk";
 import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 import { makeDbMock, makeTestAugur } from "../../libs";
 import { stringTo32ByteHex } from "../../libs/Utils";
-import { toAscii } from "@augurproject/sdk/build/state/utils/utils";
-
-// because flexsearch is a UMD type lib
-import FlexSearch = require("flexsearch");
 
 const mock = makeDbMock();
 
@@ -77,7 +73,6 @@ test("Flexible Search", async () => {
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
         _scalarDenomination: "fake scalar denomination",
-        tags: ["humanity", "30"],
       }),
     },
   ];
@@ -101,10 +96,6 @@ test("Flexible Search", async () => {
 
   docs = await db.fullTextMarketSearch("fake", null);  // _scalarDenomination
   expect(docs.length).toEqual(1);
-
-  docs = await db.fullTextMarketSearch("humanity", null);  // tags
-  expect(docs.length).toEqual(1);
-
   const doc = docs[0];
 
   expect(doc).toMatchObject({
@@ -115,7 +106,6 @@ test("Flexible Search", async () => {
     longDescription: "lol",
     resolutionSource: "http://www.blah.com",
     _scalarDenomination: "fake scalar denomination",
-    tags: "humanity,30",
   });
 
   expect(doc).toHaveProperty("start");
