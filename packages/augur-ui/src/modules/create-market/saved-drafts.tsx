@@ -70,7 +70,7 @@ export default class SavedDrafts extends React.Component<
         content={
           <div className={Styles.SavedDrafts}>
             {draftsSorted.map(key => 
-              <DraftRow draft={drafts[key]} removeDraft={removeDraft} updateNewMarket={updateNewMarket} updatePage={updatePage} />
+              <DraftRow key={key} draft={drafts[key]} removeDraft={removeDraft} updateNewMarket={updateNewMarket} updatePage={updatePage} />
             )}
           </div>
         }
