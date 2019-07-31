@@ -10,6 +10,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
 import { CheckCircleIcon } from "modules/common/icons";
+import { OutcomeFormatted } from "modules/types";
 
 import Styles from 'modules/market-cards/common.styles';
 
@@ -74,15 +75,8 @@ export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   </div>
 );
 
-interface Outcome {
-  description: string;
-  lastPricePercent: number;
-  invalid?: Boolean;
-  winner?: Boolean;
-}
-
 export interface OutcomeGroupProps {
-	outcomes: Array<Outcome>;
+	outcomes: Array<OutcomeFormatted>;
 	expanded?: Boolean;
 	marketType: string;
 	scalarDenomination?: string;
@@ -171,7 +165,7 @@ export const HoverIcon = (props: HoverIconProps) => (
 );
 
 export interface ResolvedOutcomesProps {
-  outcomes: Array<Outcome>;
+  outcomes: Array<OutcomeFormatted>;
   expanded?: Boolean;
 }
 

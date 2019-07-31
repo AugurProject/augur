@@ -17,11 +17,12 @@ import { DateFormattedObject } from "modules/types";
 import { PaperClip, Person, MarketCreator, PositionIcon, DesignatedReporter, DisputeStake } from "modules/common/icons";
 import { MarketProgress } from "modules/common/progress";
 import ChevronFlip from "modules/common/chevron-flip";
+import { MarketData } from "modules/types";
 
 import Styles from "modules/market-cards/market-card.styles";
 
 interface MarketCardProps {
-  market: Object;
+  market: MarketData;
   isLogged?: Boolean;
   history: object;
   location: object;
@@ -105,7 +106,7 @@ export default class MarketCard extends React.Component<
       onClick: toggleTag(tag, path, history)
     }));
 
-    const marketResolved = reportingState === REPORTING_STATE.AWAITING_FINALIZATION || reportingState === REPORTING_STATE.FINALIZED;
+    const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
  
     return (
       <div 
