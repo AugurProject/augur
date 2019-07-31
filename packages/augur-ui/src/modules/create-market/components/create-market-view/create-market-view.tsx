@@ -59,8 +59,8 @@ CreateMarketView.propTypes = {
   submitNewMarket: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired,
   meta: PropTypes.object.isRequired,
-  availableEth: PropTypes.string,
-  availableRep: PropTypes.string
+  availableEth: PropTypes.number,
+  availableRep: PropTypes.number
 };
 
 CreateMarketView.defaultProps = {

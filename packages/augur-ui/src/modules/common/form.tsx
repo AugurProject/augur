@@ -785,14 +785,14 @@ export const LocationDisplay = ({
 }: LocationDisplayProps) => (
   <div className={Styles.LocationDisplay}>
     {pages.map((page: Object, index: Number) => (
-      <>
+      <React.Fragment key={index}>
         <span
           className={classNames({ [Styles.Selected]: index === currentStep })}
         >
           {page.title}
         </span>
         {index !== pages.length - 1 && DirectionArrow}
-      </>
+      </React.Fragment>
     ))}
   </div>
 );

@@ -55,7 +55,8 @@ const BoxHeader = (props: BoxHeaderProps) => (
           {
             [Styles.HideOnMobile]: !props.normalOnMobile,
             [Styles.ExtraTitlePadding]: props.extraTitlePadding, 
-            [Styles.NoBorders]: props.noBorders
+            [Styles.NoBorders]: props.noBorders,
+            [Styles.Normal]: props.normalOnMobile
           }
         )
       }

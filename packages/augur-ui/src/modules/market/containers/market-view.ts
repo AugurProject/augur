@@ -22,17 +22,10 @@ const mapStateToProps = (state, ownProps) => {
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const market = ownProps.market || selectMarket(marketId);
 
-  if (market === null) {
-    return {
-      isMarketLoading: true,
-      isConnected: connection.isConnected && universe.id != null,
-      marketId,
-    }
-  }
   let marketReviewSeen =
     windowRef &&
     windowRef.localStorage &&
-    windowRef.localStorage.getItem(MARKET_REVIEW_SEEN);
+    Boolean(windowRef.localStorage.getItem(MARKET_REVIEW_SEEN));
 
   const marketReview =
     windowRef &&
@@ -44,6 +37,16 @@ const mapStateToProps = (state, ownProps) => {
     marketReviewSeen = true;
   }
 
+  if (market === null) {
+    return {
+      isMarketLoading: true,
+      isConnected: connection.isConnected && universe.id != null,
+      marketId,
+      marketReviewSeen,
+    };
+  }
+
+
   return {
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     outcomes: market.outcomes || [],
@@ -53,7 +56,7 @@ const mapStateToProps = (state, ownProps) => {
     market,
     marketId,
     universe,
-    marketReviewSeen: !!marketReviewSeen,
+    marketReviewSeen,
   };
 };
 
