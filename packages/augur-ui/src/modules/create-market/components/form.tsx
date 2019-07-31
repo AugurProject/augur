@@ -64,6 +64,7 @@ import {
   moreThanDecimals,
   checkAddress
 } from 'modules/common/validations';
+import { formatDate } from "utils/format-date";
 
 import Styles from 'modules/create-market/components/form.styles';
 
@@ -428,6 +429,36 @@ export default class Form extends React.Component<
         outcomesFormatted = YES_NO_OUTCOMES;
       }
       updateNewMarket({ outcomesFormatted, orderBook: {} });
+    } else if (name === 'setEndTime') {
+      const endTime = moment(value.timestamp * 1000).utc();
+
+      if (newMarket.hour !=="" && newMarket.minute !== "") {
+        endTime.set({
+          hour: newMarket.hour,
+          minute: newMarket.minute
+        });
+      }
+
+      if (newMarket.delayDays !== "" && newMarket.delayDays !== undefined) {
+        endTime.add(newMarket.delayDays, "day");
+      }
+      if (newMarket.delayHours !== "" && newMarket.delayHours !== undefined) {
+        endTime.add(newMarket.delayHours, "hour");
+      }
+
+      if (
+        (newMarket.meridiem === "" || newMarket.meridiem === "AM") &&
+        endTime.hours() >= 12
+      ) {
+        endTime.hours(endTime.hours() - 12);
+      } else if (
+        newMarket.meridiem &&
+        newMarket.meridiem === "PM" &&
+        endTime.hours() < 12
+      ) {
+        endTime.hours(endTime.hours() + 12);
+      }
+      updateNewMarket({ endTime: formatDate(endTime.toDate())});
     }
     this.onError(name, '');
   };
