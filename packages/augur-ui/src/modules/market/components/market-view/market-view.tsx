@@ -265,7 +265,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       );
     }
 
-    let outcomeId = selectedOutcomeId !== null ? selectedOutcomeId : market.defaultSelectedOutcomeId;
+    let outcomeId = selectedOutcomeId ? selectedOutcomeId : market.defaultSelectedOutcomeId;
     if (preview) {
       outcomeId = getDefaultOutcomeSelected(market.marketType);
     }
