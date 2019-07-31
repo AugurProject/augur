@@ -45,7 +45,7 @@ const networks: NetworksToOptions = {
     },
     kovan: {
         isProduction: false,
-        http: "http://kovan.ethereum.nodes.augur.net",
+        http: "https://eth-kovan.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
         privateKey: process.env.KOVAN_PRIVATE_KEY,
         gasPrice: new ethers.utils.BigNumber(1)
     },
