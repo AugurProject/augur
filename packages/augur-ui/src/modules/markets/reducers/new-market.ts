@@ -5,11 +5,11 @@ import {
   CLEAR_NEW_MARKET
 } from "modules/markets/actions/update-new-market";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { 
-  SETTLEMENT_FEE_DEFAULT, 
-  EXPIRY_SOURCE_GENERIC, 
-  DESIGNATED_REPORTER_SELF, 
-  AFFILIATE_FEE_DEFAULT, 
+import {
+  SETTLEMENT_FEE_DEFAULT,
+  EXPIRY_SOURCE_GENERIC,
+  DESIGNATED_REPORTER_SELF,
+  AFFILIATE_FEE_DEFAULT,
   YES_NO,
   YES_NO_OUTCOMES
 } from "modules/common/constants";
@@ -31,11 +31,11 @@ export const DEFAULT_STATE: NewMarket = {
       meridiem: null,
       outcomes: null,
       scalarDenomination: null,
-      outcomes: ["", ""]
+      outcomes: ["", ""],
     },
     {
-      settlementFee: ""
-    }
+      settlementFee: "",
+    },
   ],
   currentStep: 0,
   marketType: YES_NO,
@@ -78,22 +78,25 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
         type,
         orderEstimate,
         outcome,
-        outcomeName
+        outcomeName,
       } = orderToAdd;
       const existingOrders = newMarket.orderBook[outcome] || [];
+
       let orderAdded = false;
-      const updatedOrders = existingOrders.reduce((Orders: Array<LiquidityOrder>, order) => {
-        const orderInfo = Object.assign({}, order);
+
+      const updatedOrders = existingOrders.map((order: LiquidityOrder) => {
+          const orderInfo = Object.assign({}, order);
         if (createBigNumber(order.price).eq(createBigNumber(price)) && order.type === type) {
-          orderInfo.quantity = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toNumber();
+          orderInfo.quantity = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toString();
+          orderInfo.shares = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toString();
           orderInfo.orderEstimate = createBigNumber(order.orderEstimate).plus(
             createBigNumber(orderEstimate.replace(" DAI", ""))
-          ).toNumber();
+          ),
           orderAdded = true;
+          return orderInfo;
         }
-        Orders.push(orderInfo);
-        return Orders;
-      }, []);
+        return order;
+      });
 
       if (!orderAdded) {
         updatedOrders.push({
@@ -103,44 +106,45 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           quantity,
           shares: quantity,
           mySize: quantity,
-          cummulativeShares: quantity,
+          cumulativeShares: quantity,
           orderEstimate: createBigNumber(orderEstimate.replace(" DAI", "")),
           avgPrice: formatDai(price),
           unmatchedShares: formatShares(quantity),
           sharesEscrowed: formatShares(quantity),
           tokensEscrowed: formatDai(createBigNumber(orderEstimate.replace(" DAI", ""))),
           id: updatedOrders.length,
-        });
+        } as any);
       }
+
+      const newUpdatedOrders = recalculateCumulativeShares(updatedOrders);
 
       return {
         ...newMarket,
         orderBook: {
           ...newMarket.orderBook,
-          [outcome]: updatedOrders
-        }
+          [outcome]: newUpdatedOrders,
+        },
       };
     }
     case REMOVE_ORDER_FROM_NEW_MARKET: {
-      const { outcome, index } = data && data.order;
-      const updatedOutcome = [
-        ...newMarket.orderBook[outcome].slice(0, index),
-        ...newMarket.orderBook[outcome].slice(index + 1)
-      ];
+      const { outcome, orderId } = data && data.order;
+      const updatedOrders = newMarket.orderBook[outcome].filter(order => order.id !== orderId);
+      const updatedOutcomeUpdatedShares = recalculateCumulativeShares(updatedOrders);
 
       return {
         ...newMarket,
         orderBook: {
           ...newMarket.orderBook,
-          [outcome]: updatedOutcome
-        }
+          [outcome]: updatedOutcomeUpdatedShares,
+        },
       };
     }
+
     case UPDATE_NEW_MARKET: {
       const { newMarketData } = data;
       return {
         ...newMarket,
-        ...newMarketData
+        ...newMarketData,
       };
     }
     case RESET_STATE:
@@ -158,13 +162,38 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           meridiem: null,
           outcomes: null,
           scalarDenomination: null,
-          outcomes: ["", ""]
+          outcomes: ["", ""],
         },
         {
-          settlementFee: ""
+          settlementFee: "",
         }],
       };
     default:
       return newMarket;
   }
 }
+
+const recalculateCumulativeShares = (orders) => {
+  let counterBids = 0;
+  let counterAsks = 0;
+  const bids = orders
+    .filter(a => a.type === 'sell')
+    .sort((a,b) => Number(a.price) - Number(b.price))
+    .reverse()
+    .map(orders => {
+      counterBids = counterBids + Number(orders.shares);
+      orders.cumulativeShares = String(counterBids);
+      return orders;
+  });
+
+  const asks = orders
+    .filter(a => a.type === 'buy')
+    .sort((a,b) => Number(a.price) - Number(b.price))
+    .map(order => {
+      counterAsks = counterAsks + Number(order.shares);
+      order.cumulativeShares = String(counterAsks);
+      return order;
+  });
+
+  return [...bids, ...asks];
+};
