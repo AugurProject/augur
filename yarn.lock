@@ -119,7 +119,7 @@
     lodash "^4.17.11"
     react "^16.8.3"
     react-dom "^16.8.3"
-    solc "0.5.4"
+    solc "0.5.10"
 
 "@augurproject/solidity-typescript-generator@1.1.5":
   version "1.1.5"
@@ -8143,7 +8143,7 @@ ethereumjs-util@5.2.0, ethereumjs-util@^5.0.0, ethereumjs-util@^5.0.1, ethereumj
     safe-buffer "^5.1.1"
     secp256k1 "^3.0.1"
 
-ethereumjs-util@^6.0.0:
+ethereumjs-util@6.1.0, ethereumjs-util@^6.0.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-6.1.0.tgz#e9c51e5549e8ebd757a339cc00f5380507e799c8"
   integrity sha512-URESKMFbDeJxnAxPppnk2fN6Y3BIatn9fwn76Lm8bQlt+s52TpG8dN9M66MLPuRAiAOIqL3dfwqWJf0sd0fL0Q==
@@ -18546,9 +18546,9 @@ sol-explore@^1.6.2:
   resolved "https://registry.yarnpkg.com/sol-explore/-/sol-explore-1.6.2.tgz#43ae8c419fd3ac056a05f8a9d1fb1022cd41ecc2"
   integrity sha1-Q66MQZ/TrAVqBfip0fsQIs1B7MI=
 
-solc@0.5.4:
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/solc/-/solc-0.5.4.tgz#e91bbea93d607eb0f934b8bc9b3c9a0d999ef768"
+solc@0.5.10:
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/solc/-/solc-0.5.10.tgz#e91bbea93d607eb0f934b8bc9b3c9a0d999ef768"
   integrity sha512-Jz3yz2mct0AYzR83/jBgxDqrLXTHhYUg2G2PVJbMMt5Vu+8e3Of1Mn3nvjPw5mh46jrzt8l4fBN7vHqG5ZF0cw==
   dependencies:
     command-exists "^1.2.8"

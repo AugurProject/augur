@@ -58,6 +58,6 @@
     "security/no-var": "off",
     "security/no-user-defined-modifiers": "off",
     "security/no-void-returns": "off",
-    "security/no-func-overriding": "error"
+    "security/no-func-overriding": "off"
   }
 }

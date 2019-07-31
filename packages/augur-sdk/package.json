@@ -52,6 +52,7 @@
     "cors": "2.8.5",
     "cross-fetch": "3.0.2",
     "ethereumjs-blockstream": "7.0.0",
+    "ethereumjs-util": "6.1.0",
     "ethers": "4.0.24",
     "express": "4.16.4",
     "flexsearch": "0.6.30",

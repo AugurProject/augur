@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 import 'ROOT/libraries/IERC1820Registry.sol';
 import 'ROOT/trading/IShareToken.sol';
