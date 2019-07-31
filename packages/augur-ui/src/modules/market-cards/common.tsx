@@ -116,7 +116,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
 	  		(!props.expanded && index < 3 || (props.expanded || props.marketType === YES_NO)) && <Outcome
 	  			description={outcome.description}
 	  			lastPricePercent={outcome.lastPricePercent}
-	  			invalid={outcome.description === "Invalid"}
+	  			invalid={index === 2}
 	  			index={index > 2 ? index : index + 1}
 	  		/> 
 	  	)}
