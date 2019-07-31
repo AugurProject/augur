@@ -27,7 +27,8 @@ export default class ToggleRow extends React.Component<
   };
 
   toggleRow = () => {
-    this.setState({ open: !this.state.open });
+    const { open } = this.state;
+    this.setState({ open: !open });
   };
 
   render() {
@@ -43,8 +44,8 @@ export default class ToggleRow extends React.Component<
     return (
       <div className={Styles.ToggleRow}>
         <div
-          className={classNames(className, Styles.ToggleRow__row, {
-            [Styles.ToggleRow__rowActive]: open
+          className={classNames(className, Styles.Row, {
+            [Styles.RowActive]: open
           })}
           onClick={this.toggleRow}
           role="button"
@@ -52,22 +53,21 @@ export default class ToggleRow extends React.Component<
         >
           <div
             className={classNames(
-              Styles.ToggleRow__rowContainer,
+              Styles.RowContainer,
               innerClassName
             )}
           >
-            <div className={Styles.ToggleRow__rowContent}>
+            <div className={Styles.RowContent}>
               {rowContent}
               <span
                 className={classNames(
-                  Styles.ToggleRow__arrowContainer,
+                  Styles.ArrowContainer,
                   arrowClassName
                 )}
               >
                 <ChevronFlip
-                  containerClassName={Styles.ToggleRow__arrow}
+                  containerClassName={Styles.Arrow}
                   pointDown={open}
-                  stroke="#999999"
                   quick
                   filledInIcon
                   hover
