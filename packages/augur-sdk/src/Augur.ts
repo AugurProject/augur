@@ -161,7 +161,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
-    return Augur.connector.bindTo(f);
+    return Augur.connector && Augur.connector.bindTo(f);
   }
 
   async on(eventName: SubscriptionEventName | TXEventName | string, callback: Callback | TXStatusCallback): Promise<void> {
