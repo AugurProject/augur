@@ -24,7 +24,7 @@ const MarketScalarOutcomeDisplay = ({
       .dividedBy(range)
       .times(createBigNumber(100)).toNumber();
 
-    return outcome.price === null
+    return outcome && outcome.price === null
       ? 50
       : pricePercentage
   };

@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import MarketPreview from "modules/market/containers/market-preview";
 import Paginator from "modules/common/paginator_v1";
 import NullStateMessage from "modules/common/null-state-message";
 import { TYPE_TRADE } from "modules/common/constants";
-import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
+import MarketCard from "modules/market-cards/containers/market-card";
 import debounce from "utils/debounce";
 import { MarketData } from "modules/types";
 
@@ -165,33 +164,13 @@ export default class MarketsList extends Component<
             );
 
             if (market && market.id) {
-              if (showDisputingCard) {
-                return (
-                  <DisputeMarketCard
-                    key={market.id}
-                    market={market}
-                    isMobile={isMobile}
-                    location={location}
-                    history={history}
-                    outcomes={outcomes}
-                    isForkingMarket={false}
-                  />
-                );
-              }
               return (
-                <MarketPreview
-                  {...market}
-                  key={`${market.id} - ${market.outcomes}`}
-                  isLogged={isLogged}
-                  toggleFavorite={toggleFavorite}
+                <MarketCard
+                  market={market}
+                  condensed={false}
                   location={location}
                   history={history}
-                  isMobile={isMobile}
-                  linkType={linkType}
-                  id={market.id}
-                  testid={testid}
-                  pendingLiquidityOrders={pendingLiquidityOrders}
-                  showOutstandingReturns={showOutstandingReturns}
+                  key={`${market.id} - ${market.outcomes}`}
                 />
               );
             }
