@@ -49,14 +49,14 @@ describe('State API :: Markets :: ', () => {
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
+      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
     });
     const yesNoMarket2 = await john.createYesNoMarket({
       endTime,
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["yesNo 2 primary", "yesNo 2 secondary", "yesNo 2 tertiary"], "description": "yesNo description 2", "longDescription": "yesNo longDescription 2", "tags": ["yesNo tag2-1", "yesNo tag2-2", "yesNo tag2-3"]}',
+      extraInfo: '{"categories": ["yesNo 2 primary", "yesNo 2 secondary", "yesNo 2 tertiary"], "description": "yesNo description 2", "longDescription": "yesNo longDescription 2"}',
     });
     const categoricalMarket1 = await john.createCategoricalMarket({
       endTime,
@@ -64,7 +64,7 @@ describe('State API :: Markets :: ', () => {
       affiliateFeeDivisor,
       designatedReporter,
       outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
-      extraInfo: '{"categories": ["categorical 1 primary", "categorical 1 secondary", "categorical 1 tertiary"], "description": "categorical description 1", "longDescription": "categorical longDescription 1", "tags": ["categorical tag1-1", "categorical tag1-2", "categorical tag1-3"]}',
+      extraInfo: '{"categories": ["categorical 1 primary", "categorical 1 secondary", "categorical 1 tertiary"], "description": "categorical description 1", "longDescription": "categorical longDescription 1"}',
     });
     const categoricalMarket2 = await john.createCategoricalMarket({
       endTime,
@@ -72,7 +72,7 @@ describe('State API :: Markets :: ', () => {
       affiliateFeeDivisor,
       designatedReporter,
       outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
-      extraInfo: '{"categories": ["categorical 2 primary", "categorical 2 secondary", "categorical 2 tertiary"], "description": "categorical description 2", "longDescription": "categorical longDescription 2", "tags": ["categorical tag2-1", "categorical tag2-2", "categorical tag2-3"]}',
+      extraInfo: '{"categories": ["categorical 2 primary", "categorical 2 secondary", "categorical 2 tertiary"], "description": "categorical description 2", "longDescription": "categorical longDescription 2"}',
     });
     const scalarMarket1 = await john.createScalarMarket({
       endTime,
@@ -81,7 +81,7 @@ describe('State API :: Markets :: ', () => {
       designatedReporter,
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
-      extraInfo: '{"categories": ["scalar 1 primary", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1", "tags": ["scalar tag1-1", "scalar tag1-2", "scalar tag1-3"]}',
+      extraInfo: '{"categories": ["scalar 1 primary", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1"}',
     });
     endTime = endTime.plus(1);
     const scalarMarket2 = await john.createScalarMarket({
@@ -91,7 +91,7 @@ describe('State API :: Markets :: ', () => {
       designatedReporter,
       prices: [new BigNumber(0), new BigNumber(100)],
       numTicks: new BigNumber(100),
-      extraInfo: '{"categories": ["scalar 2 primary", "scalar 2 secondary", "scalar 2 tertiary"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2", "tags": ["scalar tag2-1", "scalar tag2-2", "scalar tag2-3"]}',
+      extraInfo: '{"categories": ["scalar 2 primary", "scalar 2 secondary", "scalar 2 tertiary"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2"}',
     });
     endTime = endTime.minus(1);
 

@@ -32,7 +32,6 @@ export interface MarketFields {
   longDescription: string;
   resolutionSource: string;
   _scalarDenomination: string;
-  tags: string;
   start: Date;
   end: Date;
 }
@@ -84,7 +83,6 @@ export class MarketDB extends DerivedDB {
             "longDescription",
             "resolutionSource",
             "_scalarDenomination",
-            "tags",
           ],
         },
       }
@@ -267,7 +265,6 @@ export class MarketDB extends DerivedDB {
           let longDescription = "";
           let resolutionSource = "";
           let _scalarDenomination = "";
-          let tags = "";
 
           const extraInfo = doc.extraInfo;
           if (extraInfo) {
@@ -288,7 +285,6 @@ export class MarketDB extends DerivedDB {
               longDescription = info.longDescription ? info.longDescription : "";
               resolutionSource = info.resolutionSource ? info.resolutionSource : "";
               _scalarDenomination = info._scalarDenomination ? info._scalarDenomination : "";
-              tags = info.tags ? info.tags.toString() : ""; // convert to comma separated so it is searchable
             }
 
             this.flexSearchIndex.add({
@@ -301,7 +297,6 @@ export class MarketDB extends DerivedDB {
               longDescription,
               resolutionSource,
               _scalarDenomination,
-              tags,
               start: new Date(),
               end: new Date(),
             });

@@ -105,7 +105,6 @@ export interface MarketInfo {
   details: string | null;
   resolutionSource: string | null;
   numTicks: string;
-  tags: string[];
   tickSize: string;
   consensus: string[] | null;
   outcomes: MarketInfoOutcome[];
@@ -780,7 +779,6 @@ export class Markets {
         let details = null;
         let resolutionSource = null;
         let scalarDenomination = null;
-        let tags = [];
         if (marketCreatedLog.extraInfo) {
           const extraInfo = JSON.parse(marketCreatedLog.extraInfo);
           categories = extraInfo.categories ? extraInfo.categories : [];
@@ -794,7 +792,6 @@ export class Markets {
           scalarDenomination = extraInfo._scalarDenomination
             ? extraInfo._scalarDenomination
             : null;
-          tags = extraInfo.tags ? extraInfo.tags : [];
         }
         const marketCreatorFeeRate = new BigNumber(
           marketCreatedLog.feeDivisor
@@ -845,7 +842,6 @@ export class Markets {
           numTicks: numTicks.toString(10),
           tickSize: tickSize.toString(10),
           consensus,
-          tags,
           outcomes: await getMarketOutcomes(
             db,
             marketCreatedLog,
