@@ -13,20 +13,6 @@
     height: 100%;
   }
 
-  > div:first-of-type {
-    display: none;
-
-    > svg {
-      fill: @color-secondary-text;
-      width: @size-32;
-    }
-
-    @media @breakpoint-mobile {
-      display: flex;
-      flex: 2;
-    }
-  }
-
   > div:last-of-type {
     align-items: center;
     flex: 1;
@@ -34,14 +20,16 @@
 
     @media @breakpoint-mobile {
       flex: unset;
-
-      > div {
-        display: none;
-      }
     }
 
     > div {
       height: 100%;
+    }
+  }
+
+  > div.TopBar_blockGasAcccount_HideMobile {
+    @media @breakpoint-mobile {
+      display: none;
     }
   }
 }
@@ -184,4 +172,9 @@ div.tooltip {
 
 .tooltip-denomination {
   font-size: @size-9;
+}
+
+.Logo {
+  background: @color-theme-primary;
+  margin-left: 2.5rem;
 }
