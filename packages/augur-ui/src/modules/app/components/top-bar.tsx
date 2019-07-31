@@ -80,7 +80,7 @@ const TopBar = ({
           </div>
         </div>
       )}
-      <div>
+      <div className={isLogged ? Styles.TopBar_blockGasAcccount_HideMobile : null}>
         <BlockInfoData />
         {isLogged && <GasPriceEdit />}
         <ConnectAccount />

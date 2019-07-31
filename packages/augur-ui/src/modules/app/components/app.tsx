@@ -555,11 +555,13 @@ export default class AppView extends Component<AppProps, AppState> {
             role="presentation"
           >
             {this.renderMobileMenuButton(unseenCount)}
-            {isMobile && <SideNav
+
+            {/* HIDDEN ON DESKTOP */}
+            <SideNav
               defaultMobileClick={() =>
                 updateMobileMenuState(MOBILE_MENU_STATES.CLOSED)
               }
-              isMobile={isMobile}
+              isMobile={true}
               isLogged={isLogged}
               mobileShow={
                 sidebarStatus.mobileMenuState ===
@@ -567,13 +569,14 @@ export default class AppView extends Component<AppProps, AppState> {
               }
               menuData={this.sideNavMenuData}
               currentBasePath={sidebarStatus.currentBasePath}
-            />}
+            />
 
-            {!isMobile && <TopNav
+            {/* HIDDEN ON MOBILE */}
+            <TopNav
               isLogged={isLogged}
               menuData={this.sideNavMenuData}
               currentBasePath={sidebarStatus.currentBasePath}
-            />}
+            />
           </section>
             <AlertsContainer
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}

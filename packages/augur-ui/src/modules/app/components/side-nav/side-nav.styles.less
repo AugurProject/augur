@@ -1,9 +1,13 @@
 @import (reference) '~assets/styles/shared';
 
 .SideNav {
+  display: none;
   background: @color-theme-primary;
-  display: flex;
   flex-flow: column nowrap;
+
+  @media @breakpoint-mobile {
+    display: flex;
+  }
 }
 
 .SideNav__nav {

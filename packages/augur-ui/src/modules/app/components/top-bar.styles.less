@@ -20,14 +20,16 @@
 
     @media @breakpoint-mobile {
       flex: unset;
-
-      > div {
-        display: none;
-      }
     }
 
     > div {
       height: 100%;
+    }
+  }
+
+  > div.TopBar_blockGasAcccount_HideMobile {
+    @media @breakpoint-mobile {
+      display: none;
     }
   }
 }
