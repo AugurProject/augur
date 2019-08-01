@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
+import { createBigNumber } from 'utils/create-big-number';
+import getValue from 'utils/get-value';
+import insufficientFunds from 'modules/markets/helpers/insufficient-funds';
 import { 
   Header, 
   LineBreak, 
@@ -19,6 +22,12 @@ import {
   DESIGNATED_REPORTER_SELF
 } from "modules/common/constants";
 import { MARKET_TYPE_NAME } from "modules/create-market/constants";
+import { getCreateMarketBreakdown } from 'modules/contracts/actions/contractCalls';
+import {
+  formatEtherEstimate,
+  formatGasCostToEther,
+  formatPercent,
+} from 'utils/format-number';
 
 import Styles from "modules/create-market/components/review.styles";
 
@@ -26,10 +35,19 @@ interface ReviewProps {
   newMarket: Object;
   updateNewMarket: Function;
   address: String;
+  gasPrice: number;
+  availableRep: number;
+  availableEth: number;
+  estimateSubmitNewMarket: Function;
 }
 
 interface ReviewState {
-  selected: number;
+  gasCost: number;
+  validityBond: number;
+  designatedReportNoShowReputationBond: number;
+  insufficientFundsString: string;
+  formattedInitialLiquidityEth: BigNumber;
+  formattedInitialLiquidityGas: BigNumber;
 }
 
 export default class Review extends React.Component<
@@ -37,8 +55,153 @@ export default class Review extends React.Component<
   ReviewState
 > {
   state: FormState = {
-    empty: ""
+    gasCost: null,
+    validityBond: null,
+    designatedReportNoShowReputationBond: null,
+    insufficientFundsString: '',
+    formattedInitialLiquidityEth: formatEtherEstimate(
+      this.props.newMarket.initialLiquidityEth
+    ),
+    formattedInitialLiquidityGas: formatEtherEstimate(
+      formatGasCostToEther(
+        this.props.newMarket.initialLiquidityGas,
+        { decimalsRounded: 4 },
+        this.props.gasPrice
+      )
+    ),
   };
+
+  componentWillMount() {
+    this.calculateMarketCreationCosts();
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    const { newMarket, gasPrice } = this.props;
+    if (
+      newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth
+    )
+      this.setState({
+        formattedInitialLiquidityEth: formatEtherEstimate(
+          nextProps.newMarket.initialLiquidityEth
+        ),
+      });
+    if (
+      newMarket.initialLiquidityGas !==
+        nextProps.newMarket.initialLiquidityGas ||
+      gasPrice !== nextProps.gasPrice
+    ) {
+      this.setState(
+        {
+          formattedInitialLiquidityGas: formatEtherEstimate(
+            formatGasCostToEther(
+              nextProps.newMarket.initialLiquidityGas,
+              { decimalsRounded: 4 },
+              gasPrice
+            )
+          ),
+        },
+        () => {
+          this.calculateMarketCreationCosts();
+        }
+      );
+    }
+    if (this.state.validityBond !== nextState.validityBond) {
+      if (nextState.validityBond) {
+        const insufficientFundsString = this.getFundsString();
+        if (this.state.insufficientFundsString !== insufficientFundsString) {
+          this.updateFunds(insufficientFundsString);
+        }
+      }
+    }
+    if (
+      this.props.availableEth !== nextProps.availableEth ||
+      this.props.availableRep !== nextProps.availableRep
+    ) {
+      this.calculateMarketCreationCosts();
+    }
+  }
+
+  getFundsString(testWithLiquidity = false) {
+    const { availableEth, availableRep } = this.props;
+    const s = this.state;
+    let insufficientFundsString = '';
+
+    if (s.validityBond) {
+      const validityBond = getValue(s, 'validityBond.formattedValue');
+      const gasCost = getValue(s, 'gasCost.formattedValue');
+      const designatedReportNoShowReputationBond = getValue(
+        s,
+        'designatedReportNoShowReputationBond.formattedValue'
+      );
+      const formattedInitialLiquidityGas = getValue(
+        s,
+        'formattedInitialLiquidityGas.formattedValue'
+      );
+      const formattedInitialLiquidityEth = getValue(
+        s,
+        'formattedInitialLiquidityEth.formattedValue'
+      );
+      insufficientFundsString = insufficientFunds(
+        validityBond,
+        gasCost || '0',
+        designatedReportNoShowReputationBond,
+        createBigNumber(availableEth, 10),
+        createBigNumber(availableRep, 10),
+        formattedInitialLiquidityGas || '0',
+        formattedInitialLiquidityEth || '0',
+        testWithLiquidity
+      );
+    }
+
+    return insufficientFundsString;
+  }
+
+  updateFunds(insufficientFundsString) {
+    this.setState({ insufficientFundsString });
+  }
+
+  async calculateMarketCreationCosts() {
+    const { meta, universe, newMarket, gasPrice } = this.props;
+
+    const marketCreationCostBreakdown = await getCreateMarketBreakdown();
+    this.setState(
+      {
+        designatedReportNoShowReputationBond: formatEtherEstimate(
+          marketCreationCostBreakdown.designatedReportNoShowReputationBond
+        ),
+        validityBond: formatEtherEstimate(
+          marketCreationCostBreakdown.validityBond
+        ),
+      },
+      () => {
+        const funds = this.getFundsString();
+        if (funds) {
+          return this.updateFunds(funds);
+        }
+
+        this.props.estimateSubmitNewMarket(
+          newMarket,
+          (err, gasEstimateValue) => {
+            if (err) console.error(err);
+            this.setState(
+              {
+                gasCost: formatEtherEstimate(
+                  formatGasCostToEther(
+                    gasEstimateValue || '0',
+                    { decimalsRounded: 4 },
+                    gasPrice
+                  )
+                ),
+              },
+              () => {
+                this.updateFunds(this.getFundsString(true));
+              }
+            );
+          }
+        );
+      }
+    );
+  }
 
   render() {
     const {

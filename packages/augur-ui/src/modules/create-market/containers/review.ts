@@ -8,17 +8,24 @@ import {
 } from "modules/markets/actions/update-new-market";
 import Review from "modules/create-market/components/review";
 import getValue from "utils/get-value";
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
   currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
   address: getValue(state, "loginAccount.address"),
+  gasPrice: getGasPrice(state),
+  availableEth: getValue(state, "loginAccount.eth"),
+  availableRep: getValue(state, "loginAccount.rep"),
 });
 
 const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   submitNewMarket: (data, history, cb) =>
     dispatch(submitNewMarket(data, history, cb)),
+  estimateSubmitNewMarket: (data, callback) =>
+    dispatch(estimateSubmitNewMarket(data, callback))
 });
 
 const ReviewContainer = withRouter(
