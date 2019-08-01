@@ -429,36 +429,31 @@ export default class Form extends React.Component<
         outcomesFormatted = YES_NO_OUTCOMES;
       }
       updateNewMarket({ outcomesFormatted, orderBook: {} });
-    } else if (name === 'setEndTime') {
-      const endTime = moment(value.timestamp * 1000).utc();
-
-      if (newMarket.hour !=="" && newMarket.minute !== "") {
-        endTime.set({
-          hour: newMarket.hour,
-          minute: newMarket.minute
-        });
-      }
-
-      if (newMarket.delayDays !== "" && newMarket.delayDays !== undefined) {
-        endTime.add(newMarket.delayDays, "day");
-      }
-      if (newMarket.delayHours !== "" && newMarket.delayHours !== undefined) {
-        endTime.add(newMarket.delayHours, "hour");
-      }
+    } else if (name === 'setEndTime' || name === 'hour' || name === 'minute' || name === 'meridiem') {
+      const endTime = name === 'setEndTime' ? moment(value.timestamp * 1000).utc() : moment(newMarket.endTime.timestamp * 1000).utc();
+      const hour = name === "hour" ? value : newMarket.hour;
+      const minute = name === "minute" ? value : newMarket.minute;
+      const meridiem = name === "meridiem" ? value : newMarket.meridiem;
+      const offset = name === "offset" ? value : newMarket.offset;
+      endTime.set({
+        hour: hour,
+        minute: minute
+      });
+      endTime.utcOffset(offset);
 
       if (
-        (newMarket.meridiem === "" || newMarket.meridiem === "AM") &&
+        (meridiem === "" || meridiem === "AM") &&
         endTime.hours() >= 12
       ) {
         endTime.hours(endTime.hours() - 12);
       } else if (
-        newMarket.meridiem &&
-        newMarket.meridiem === "PM" &&
+        meridiem &&
+        meridiem === "PM" &&
         endTime.hours() < 12
       ) {
         endTime.hours(endTime.hours() + 12);
       }
-      updateNewMarket({ endTime: formatDate(endTime.toDate())});
+      updateNewMarket({ endTime: formatDate(endTime.toDate()), [name]: value});
     }
     this.onError(name, '');
   };

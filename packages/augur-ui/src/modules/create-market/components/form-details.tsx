@@ -90,10 +90,12 @@ export default class FormDetails extends React.Component<
       designatedReporterAddress,
       designatedReporterType,
       validations,
-      currentStep
+      currentStep,
+      offset,
+      offsetName
     } = newMarket;
 
-    console.log(endTime);
+   // console.log(endTime);
 
     return (
       <div className={Styles.FormDetails}>
@@ -171,7 +173,11 @@ export default class FormDetails extends React.Component<
               focused={s.timeFocused}
               errorMessage={validations[currentStep].hour}
             />
-            <TimezoneDropdown onChange={(tz)=> console.log(tz)} timestamp={endTime} />
+            <TimezoneDropdown onChange={(value: number, offset: string) => {
+              onChange("offsetName", value);
+              onChange("offset", offset)
+              console.log(offset);
+            }} timestamp={endTime} timezone={offsetName} />
           </span>
 
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
