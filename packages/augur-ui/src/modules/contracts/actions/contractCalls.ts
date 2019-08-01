@@ -94,7 +94,6 @@ export async function getEthBalance(address: string): Promise<string> {
   const Augur = augurSdk.get();
   const balance = await Augur.getEthBalance(address);
   const balances = formatAttoEth(balance, { decimals: 4 }).formattedValue;
-  console.log('address balance', address, balances);
   return balances as string;
 }
 
