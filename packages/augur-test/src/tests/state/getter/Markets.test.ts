@@ -1,10 +1,10 @@
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import {
-  MarketInfo,
-  MarketInfoReportingState,
-  MarketOrderBook,
-  SECONDS_IN_A_DAY,
   GetMarketsSortBy,
+  MarketInfo,
+  MarketOrderBook,
+  MarketReportingState,
+  SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { makeDbMock, makeProvider } from "../../../libs";
@@ -312,18 +312,6 @@ describe('State API :: Markets :: ', () => {
       yesNoMarket2.address,
     ]);
 
-    // Test includeMarketsWithoutOrders
-    markets = await api.route('getMarkets', {
-      universe: universe.address,
-      includeMarketsWithoutOrders: false,
-      isSortDescending: false,
-    });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      categoricalMarket1.address,
-      scalarMarket1.address,
-    ]);
-
     // Partially fill orders
     const cost = numShares.multipliedBy(78).div(2);
     const yesNoOrderId1 = await john.getBestOrderId(
@@ -345,36 +333,10 @@ describe('State API :: Markets :: ', () => {
     await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), '43');
     await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), '43');
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // Test includeMarketsWithoutOrders
-    markets = await api.route('getMarkets', {
-      universe: universe.address,
-      includeMarketsWithoutOrders: false,
-      isSortDescending: false,
-    });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      categoricalMarket1.address,
-      scalarMarket1.address,
-    ]);
-
     // Completely fill orders
     await john.fillOrder(yesNoOrderId1, cost, numShares.div(2), '42');
     await mary.fillOrder(categoricalOrderId1, cost, numShares.div(2), '43');
     await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), '43');
-
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // Test includeMarketsWithoutOrders
-    markets = await api.route('getMarkets', {
-      universe: universe.address,
-      includeMarketsWithoutOrders: false,
-      isSortDescending: false,
-    });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-    ]);
 
     // Move timestamp to designated reporting phase
     await john.setTimestamp(endTime.plus(1));
@@ -396,27 +358,6 @@ describe('State API :: Markets :: ', () => {
       scalarMarket2.address,
     ]);
 
-    // Test reportingStates
-    markets = await api.route('getMarkets', {
-      universe: universe.address,
-      reportingStates: [MarketInfoReportingState.DESIGNATED_REPORTING],
-      isSortDescending: false,
-    });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
-
-    markets = await api.route('getMarkets', {
-      universe: universe.address,
-      reportingStates: [MarketInfoReportingState.PRE_REPORTING],
-    });
-    expect(markets).toEqual([]);
-
     await john.setTimestamp(endTime.plus(2));
 
     const noPayoutSet = [
@@ -436,46 +377,10 @@ describe('State API :: Markets :: ', () => {
     });
     expect(markets).toEqual([yesNoMarket1.address]);
 
-    markets = await api.route('getMarkets', {
-      universe: universe.address,
-      reportingStates: [MarketInfoReportingState.DESIGNATED_REPORTING],
-      isSortDescending: false,
-    });
-    expect(markets).toEqual([
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
-
-    markets = await api.route('getMarkets', {
-      universe: universe.address,
-      reportingStates: [MarketInfoReportingState.CROWDSOURCING_DISPUTE],
-    });
-    expect(markets).toEqual([yesNoMarket1.address]);
-
-    markets = await api.route('getMarkets', {
-      universe: universe.address,
-      reportingStates: [
-        MarketInfoReportingState.CROWDSOURCING_DISPUTE,
-        MarketInfoReportingState.DESIGNATED_REPORTING,
-      ],
-      isSortDescending: false,
-    });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
-
     // Test sortBy
     markets = await api.route('getMarkets', {
       universe: universe.address,
-      sortBy: GetMarketsSortBy.MARKET_END_TIMESTAMP,
+      sortBy: GetMarketsSortBy.EndTime,
     });
     expect(markets).toEqual([
       scalarMarket2.address,
@@ -488,7 +393,7 @@ describe('State API :: Markets :: ', () => {
 
     markets = await api.route('getMarkets', {
       universe: universe.address,
-      sortBy: GetMarketsSortBy.MARKET_END_TIMESTAMP,
+      sortBy: GetMarketsSortBy.EndTime,
       isSortDescending: false,
     });
     expect(markets).toEqual([
@@ -1536,13 +1441,13 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(markets[0].reportingState).toBe(
-      MarketInfoReportingState.PRE_REPORTING
+      MarketReportingState.PreReporting
     );
     expect(markets[1].reportingState).toBe(
-      MarketInfoReportingState.PRE_REPORTING
+      MarketReportingState.PreReporting
     );
     expect(markets[2].reportingState).toBe(
-      MarketInfoReportingState.PRE_REPORTING
+      MarketReportingState.PreReporting
     );
 
     // Skip to yes/no market end time
@@ -1560,13 +1465,13 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(markets[0].reportingState).toBe(
-      MarketInfoReportingState.DESIGNATED_REPORTING
+      MarketReportingState.DesignatedReporting
     );
     expect(markets[1].reportingState).toBe(
-      MarketInfoReportingState.DESIGNATED_REPORTING
+      MarketReportingState.DesignatedReporting
     );
     expect(markets[2].reportingState).toBe(
-      MarketInfoReportingState.DESIGNATED_REPORTING
+      MarketReportingState.DesignatedReporting
     );
 
     // Skip to open reporting
@@ -1584,13 +1489,13 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(markets[0].reportingState).toBe(
-      MarketInfoReportingState.OPEN_REPORTING
+      MarketReportingState.OpenReporting
     );
     expect(markets[1].reportingState).toBe(
-      MarketInfoReportingState.OPEN_REPORTING
+      MarketReportingState.OpenReporting
     );
     expect(markets[2].reportingState).toBe(
-      MarketInfoReportingState.OPEN_REPORTING
+      MarketReportingState.OpenReporting
     );
 
     // Submit intial reports
@@ -1625,13 +1530,13 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(markets[0].reportingState).toBe(
-      MarketInfoReportingState.CROWDSOURCING_DISPUTE
+      MarketReportingState.CrowdsourcingDispute
     );
     expect(markets[1].reportingState).toBe(
-      MarketInfoReportingState.CROWDSOURCING_DISPUTE
+      MarketReportingState.CrowdsourcingDispute
     );
     expect(markets[2].reportingState).toBe(
-      MarketInfoReportingState.OPEN_REPORTING
+      MarketReportingState.OpenReporting
     );
 
     // Dispute 10 times
@@ -1664,13 +1569,13 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(markets[0].reportingState).toBe(
-      MarketInfoReportingState.AWAITING_NEXT_WINDOW
+      MarketReportingState.AwaitingNextWindow
     );
     expect(markets[1].reportingState).toBe(
-      MarketInfoReportingState.CROWDSOURCING_DISPUTE
+      MarketReportingState.CrowdsourcingDispute
     );
     expect(markets[2].reportingState).toBe(
-      MarketInfoReportingState.OPEN_REPORTING
+      MarketReportingState.OpenReporting
     );
 
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(7));
@@ -1687,13 +1592,13 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(markets[0].reportingState).toBe(
-      MarketInfoReportingState.CROWDSOURCING_DISPUTE
+      MarketReportingState.CrowdsourcingDispute
     );
     expect(markets[1].reportingState).toBe(
-      MarketInfoReportingState.CROWDSOURCING_DISPUTE
+      MarketReportingState.CrowdsourcingDispute
     );
     expect(markets[2].reportingState).toBe(
-      MarketInfoReportingState.OPEN_REPORTING
+      MarketReportingState.OpenReporting
     );
 
     // Continue disputing
@@ -1774,7 +1679,7 @@ describe('State API :: Markets :: ', () => {
             volume: '0',
           },
         ],
-        reportingState: 'FORKING',
+        reportingState: MarketReportingState.Forking,
         resolutionSource: null,
         scalarDenomination: null,
         marketCreatorFeeRate: '0.01',
@@ -1853,7 +1758,7 @@ describe('State API :: Markets :: ', () => {
             volume: '0',
           },
         ],
-        reportingState: 'FINALIZED',
+        reportingState: MarketReportingState.Finalized,
         resolutionSource: null,
         scalarDenomination: null,
         marketCreatorFeeRate: '0.01',
@@ -1919,7 +1824,7 @@ describe('State API :: Markets :: ', () => {
             volume: '0',
           },
         ],
-        reportingState: 'AWAITING_FORK_MIGRATION',
+        reportingState: MarketReportingState.AwaitingForkMigration,
         resolutionSource: null,
         tickSize: '0.01',
         universe: john.augur.contracts.universe.address,

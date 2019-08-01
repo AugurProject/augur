@@ -29,6 +29,30 @@ import * as _ from 'lodash';
 import * as t from 'io-ts';
 import { ExtendedSearchOptions } from "flexsearch";
 
+export enum MarketReportingState {
+  PreReporting = 'PreReporting',
+  DesignatedReporting = 'DesignatedReporting',
+  OpenReporting = 'OpenReporting',
+  CrowdsourcingDispute = 'CrowdsourcingDispute',
+  AwaitingNextWindow = 'AwaitingNextWindow',
+  Finalized = 'Finalized',
+  Forking = 'Forking',
+  AwaitingNoReportMigration = 'AwaitingNoReportMigration',
+  AwaitingForkMigration = 'AwaitingForkMigration',
+}
+
+export enum GetMarketsSortBy {
+  MarketOI = 'MarketOI',
+  Liquidity = 'Liquidity',
+  Volume = 'Volume',
+  Timestamp = 'Timestamp',
+  EndTime = 'EndTime',
+  LastTradedTimestamp = 'LastTradedTimestamp',
+  LastLiquidityDepleted = 'LastLiquidityDepleted',
+}
+
+const getMarketsSortBy = t.keyof(GetMarketsSortBy);
+
 const getMarketsParamsSpecific = t.intersection([
   t.type({
     universe: t.string,
@@ -37,15 +61,14 @@ const getMarketsParamsSpecific = t.intersection([
     creator: t.string,
     category: t.string,
     search: t.string,
-    reportingStates: t.array(t.string),
     disputeWindow: t.string,
     designatedReporter: t.string,
     maxFee: t.string,
     maxEndTime: t.number,
-    includeMarketsWithoutOrders: t.boolean,
     maxLiquiditySpread: t.string,
     includeInvalidMarkets: t.boolean,
     categories: t.array(t.string),
+    sortBy: getMarketsSortBy,
   }),
 ]);
 
@@ -58,27 +81,6 @@ export interface MarketInfoOutcome {
   volume: string;
 }
 
-export enum MarketInfoReportingState {
-  PRE_REPORTING = 'PRE_REPORTING',
-  DESIGNATED_REPORTING = 'DESIGNATED_REPORTING',
-  OPEN_REPORTING = 'OPEN_REPORTING',
-  CROWDSOURCING_DISPUTE = 'CROWDSOURCING_DISPUTE',
-  AWAITING_NEXT_WINDOW = 'AWAITING_NEXT_WINDOW',
-  FINALIZED = 'FINALIZED',
-  FORKING = 'FORKING',
-  AWAITING_NO_REPORT_MIGRATION = 'AWAITING_NO_REPORT_MIGRATION',
-  AWAITING_FORK_MIGRATION = 'AWAITING_FORK_MIGRATION',
-}
-
-export enum GetMarketsSortBy {
-  OPEN_INTEREST = 'marketOI',
-  LIQUIDITY = 'liquidity',
-  VOLUME = 'volume',
-  MARKET_CREATED_TIMESTAMP = 'timestamp',
-  MARKET_END_TIMESTAMP = 'endTime',
-  LAST_TRADED_TIMESTAMP = '', // TODO
-  LAST_LIQUIDITY_DEPLETED = '', // TODO
-}
 
 export interface MarketInfo {
   id: Address;
@@ -95,7 +97,7 @@ export interface MarketInfo {
   category: string;
   volume: string;
   openInterest: string;
-  reportingState: MarketInfoReportingState;
+  reportingState: string;
   needsMigration: boolean;
   endTime: number;
   finalizationBlockNumber: number | null;
@@ -385,18 +387,10 @@ export class Markets {
       throw new Error('Invalid maxLiquiditySpread');
     }
     // Set sort defaults
-    if (typeof params.sortBy === 'undefined') {
-      params.sortBy = GetMarketsSortBy.OPEN_INTEREST;
-    }
-    if (typeof params.isSortDescending === 'undefined') {
-      params.isSortDescending = true;
-    }
-    if (typeof params.limit === 'undefined') {
-      params.limit = 10;
-    }
-    if (typeof params.offset === 'undefined') {
-      params.offset = 0;
-    }
+    params.sortBy = typeof params.sortBy === 'undefined' ? getMarketsSortBy['MarketOI'] : params.sortBy;
+    params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
+    params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
+    params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
 
     const request = {
       selector: {
@@ -505,40 +499,6 @@ export class Markets {
         }
       }
 
-      if (params.includeMarketsWithoutOrders === false) {
-        let marketHasOrders = false;
-        const request = {
-          selector: {
-            market: marketCreatedLogInfo['market'],
-          },
-        };
-        const currentOrders = await db.findCurrentOrderLogs(request);
-        for (let i = 0; i < currentOrders.length; i++) {
-          if (currentOrders[i].amount !== '0x00') {
-            marketHasOrders = true;
-            break;
-          }
-        }
-        if (!marketHasOrders) {
-          includeMarket = false;
-        }
-      }
-
-      if (params.reportingStates) {
-        const reportingStates = params.reportingStates;
-        const marketFinalizedLogs = await db.findMarketFinalizedLogs({
-          selector: { market: marketCreatedLogInfo['market'] },
-        });
-        const reportingState = await getMarketReportingState(
-          db,
-          marketCreatedLogInfo,
-          marketFinalizedLogs
-        );
-        if (!reportingStates.includes(reportingState)) {
-          includeMarket = false;
-        }
-      }
-
       marketCreatedLogInfo['timestamp'] = new BigNumber(marketCreatedLogInfo['timestamp']).toString();
       marketCreatedLogInfo['endTime'] = new BigNumber(marketCreatedLogInfo['endTime']).toString();
 
@@ -546,9 +506,9 @@ export class Markets {
       if (
         params.maxLiquiditySpread ||
         params.includeInvalidMarkets ||
-        params.sortBy === GetMarketsSortBy.LIQUIDITY ||
-        params.sortBy === GetMarketsSortBy.OPEN_INTEREST ||
-        params.sortBy === GetMarketsSortBy.VOLUME
+        params.sortBy === getMarketsSortBy['Liquidity'] ||
+        params.sortBy === getMarketsSortBy['MarketOI'] ||
+        params.sortBy === getMarketsSortBy['Volume']
       ) {
         const request = {
           selector: {
@@ -557,9 +517,9 @@ export class Markets {
         };
         marketInfo = await db.findMarkets(request);
         if (
-          params.sortBy === GetMarketsSortBy.LIQUIDITY ||
-          params.sortBy === GetMarketsSortBy.OPEN_INTEREST ||
-          params.sortBy === GetMarketsSortBy.VOLUME
+          params.sortBy === getMarketsSortBy['Liquidity'] ||
+          params.sortBy === getMarketsSortBy['MarketOI'] ||
+          params.sortBy === getMarketsSortBy['Volume']
         ) {
           marketCreatedLogInfo[params.sortBy] = marketInfo[params.sortBy] ? new BigNumber(marketInfo[params.sortBy]).toString() : '0';
         }
@@ -741,7 +701,7 @@ export class Markets {
           marketFinalizedLogs
         );
         const needsMigration =
-          reportingState === MarketInfoReportingState.AWAITING_FORK_MIGRATION
+          reportingState === MarketReportingState.AwaitingForkMigration
             ? true
             : false;
 
@@ -1046,18 +1006,18 @@ export async function getMarketReportingState(
   db: DB,
   marketCreatedLog: MarketCreatedLog,
   marketFinalizedLogs: MarketFinalizedLog[]
-): Promise<MarketInfoReportingState> {
+): Promise<MarketReportingState> {
   const universeForkedLogs = (await db.findUniverseForkedLogs({
     selector: { universe: marketCreatedLog.universe },
   })).reverse();
   if (universeForkedLogs.length > 0) {
     if (universeForkedLogs[0].forkingMarket === marketCreatedLog.market) {
-      return MarketInfoReportingState.FORKING;
+      return MarketReportingState.Forking;
     } else {
       if (marketFinalizedLogs.length > 0) {
-        return MarketInfoReportingState.FINALIZED;
+        return  MarketReportingState.Finalized;
       } else {
-        return MarketInfoReportingState.AWAITING_FORK_MIGRATION;
+        return  MarketReportingState.AwaitingForkMigration;
       }
     }
   } else {
@@ -1079,7 +1039,7 @@ export async function getMarketReportingState(
       currentTimestamp = new BigNumber(Math.round(Date.now() / 1000));
     }
     if (new BigNumber(currentTimestamp).lt(marketCreatedLog.endTime)) {
-      return MarketInfoReportingState.PRE_REPORTING;
+      return  MarketReportingState.PreReporting;
     } else {
       const initialReportSubmittedLogs = (await db.findInitialReportSubmittedLogs(
         { selector: { market: marketCreatedLog.market } }
@@ -1091,15 +1051,15 @@ export async function getMarketReportingState(
         initialReportSubmittedLogs.length === 0 &&
         currentTimestamp.lte(designatedReportingEndTime)
       ) {
-        return MarketInfoReportingState.DESIGNATED_REPORTING;
+        return  MarketReportingState.DesignatedReporting;
       } else if (
         initialReportSubmittedLogs.length === 0 &&
         currentTimestamp.gt(designatedReportingEndTime)
       ) {
-        return MarketInfoReportingState.OPEN_REPORTING;
+        return  MarketReportingState.OpenReporting;
       } else {
         if (marketFinalizedLogs.length > 0) {
-          return MarketInfoReportingState.FINALIZED;
+          return  MarketReportingState.Finalized;
         } else {
           const disputeCrowdsourcerCompletedLogs = (await db.findDisputeCrowdsourcerCompletedLogs(
             { selector: { market: marketCreatedLog.market } }
@@ -1111,9 +1071,9 @@ export async function getMarketReportingState(
               disputeCrowdsourcerCompletedLogs[0].nextWindowStartTime
             )
           ) {
-            return MarketInfoReportingState.AWAITING_NEXT_WINDOW;
+            return  MarketReportingState.AwaitingNextWindow;
           }
-          return MarketInfoReportingState.CROWDSOURCING_DISPUTE;
+          return  MarketReportingState.CrowdsourcingDispute;
         }
       }
     }
