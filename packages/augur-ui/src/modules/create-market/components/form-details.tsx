@@ -95,8 +95,6 @@ export default class FormDetails extends React.Component<
       offsetName
     } = newMarket;
 
-   // console.log(endTime);
-
     return (
       <div className={Styles.FormDetails}>
         <div>
@@ -176,7 +174,6 @@ export default class FormDetails extends React.Component<
             <TimezoneDropdown onChange={(value: number, offset: string) => {
               onChange("offsetName", value);
               onChange("offset", offset)
-              console.log(offset);
             }} timestamp={endTime} timezone={offsetName} />
           </span>
 
