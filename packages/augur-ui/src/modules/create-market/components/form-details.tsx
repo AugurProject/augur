@@ -135,13 +135,13 @@ export default class FormDetails extends React.Component<
                 onChange("setEndTime", formatDate(date.toDate()));
               }}
               isOutsideRange={day =>
-                day.isAfter(moment(currentTimestamp).add(6, "M")) ||
-                day.isBefore(moment(currentTimestamp))
+                day.isAfter(moment(currentTimestamp * 1000).add(6, "M")) ||
+                day.isBefore(moment(currentTimestamp * 1000))
               }
               numberOfMonths={1}
               onFocusChange= {({ focused }) => {
                 if (endTime === null) {
-                  const date = moment(currentTimestamp);
+                  const date = moment(currentTimestamp * 1000);
                   onChange("setEndTime", formatDate(date.toDate()));
                 }
                 this.setState({ dateFocused: focused });
