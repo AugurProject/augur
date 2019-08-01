@@ -187,8 +187,8 @@ export class DB {
     this.derivedDatabases[db.dbName] = db;
   }
 
-  registerEventListener(eventName: string, callback: LogCallbackType): void {
-    this.blockAndLogStreamerListener.listenForEvent(eventName, callback);
+  registerEventListener(eventNames: string | string[], callback: LogCallbackType): void {
+    this.blockAndLogStreamerListener.listenForEvent(eventNames, callback);
   }
 
   /**

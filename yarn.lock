@@ -1693,7 +1693,7 @@
   resolved "https://registry.yarnpkg.com/@types/jest-diff/-/jest-diff-20.0.1.tgz#35cc15b9c4f30a18ef21852e255fdb02f6d59b89"
   integrity sha512-yALhelO3i0hqZwhjtcr6dYyaLoCHbAMshwtj6cGxTvHZAKXHsYGdff6E8EPw3xLKY0ELUTQ69Q1rQiJENnccMA==
 
-"@types/jest-environment-puppeteer@4.0.0", "@types/jest-environment-puppeteer@^4.0.0":
+"@types/jest-environment-puppeteer@4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/jest-environment-puppeteer/-/jest-environment-puppeteer-4.0.0.tgz#0e696618965e7472471e4f1ae25adb72bcf38433"
   integrity sha512-On6C1NKiruviCSUaZgNW4yR0J05rLZTgOyIFMiT9F66rR8zwCQu1Wj9+c50+f5r6m207+hjxtPy1Tgrr+nkfkw==
@@ -12112,7 +12112,7 @@ jest-puppeteer@3.9.0:
     expect-puppeteer "^3.5.1"
     jest-environment-puppeteer "^3.9.0"
 
-jest-puppeteer@^4.3.0:
+jest-puppeteer@4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/jest-puppeteer/-/jest-puppeteer-4.3.0.tgz#432273c2c2c75fbec40d7659b75cbcc7c4ae57ad"
   integrity sha512-WXhaWlbQl01xadZyNmdZntrtIr8uWUmgjPogDih7dOnr3G/xRr3A034SCqdjwV6fE0tqz7c5hwO8oBTyGZPRgA==
@@ -16538,7 +16538,7 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-puppeteer@1.18.1, puppeteer@^1.18.1:
+puppeteer@1.18.1:
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-1.18.1.tgz#4a66f3bdab01115ededf70443ec904c99917a815"
   integrity sha512-luUy0HPSuWPsPZ1wAp6NinE0zgetWtudf5zwZ6dHjMWfYpTQcmKveFRox7VBNhQ98OjNA9PQ9PzQyX8k/KrxTg==
@@ -22126,10 +22126,10 @@ yargs@~3.10.0:
     decamelize "^1.0.0"
     window-size "0.1.0"
 
-yarn@1.15.2:
-  version "1.15.2"
-  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.15.2.tgz#7a064ca81ca34235f16376ad2f796ed432f9e285"
-  integrity sha512-DhqaGe2FcYKduO42d2hByXk7y8k2k42H3uzYdWBMTvcNcgWKx7xCkJWsVAQikXvaEQN2GyJNrz8CboqUmaBRrw==
+yarn@1.17.3:
+  version "1.17.3"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.17.3.tgz#60e0b77d079eb78e753bb616f7592b51b6a9adce"
+  integrity sha512-CgA8o7nRZaQvmeF/WBx2FC7f9W/0X59T2IaLYqgMo6637wfp5mMEsM3YXoJtKUspnpmDJKl/gGFhnqS+sON7hA==
 
 yauzl@2.4.1:
   version "2.4.1"

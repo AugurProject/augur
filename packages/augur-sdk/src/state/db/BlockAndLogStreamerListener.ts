@@ -26,11 +26,13 @@ export interface BlockAndLogStreamerListenerDependencies {
 
 type GenericLogCallbackType<T, P> = (blockIdentifier: T, logs: P[]) => void;
 
+type BlockCallback = (block: Block) => void;
+
 export type BlockstreamLogCallbackType = GenericLogCallbackType<string, Log>;
 export type LogCallbackType = GenericLogCallbackType<number, ParsedLog>;
 
 export interface IBlockAndLogStreamerListener {
-  listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogRemoved?: LogCallbackType): void;
+  listenForEvent(eventName: string | string[], onLogsAdded: LogCallbackType, onLogRemoved?: LogCallbackType): void;
   listenForBlockRemoved(callback: (blockNumber: number) => void): void;
   listenForBlockAdded(callback: (block: Block) => void): void;
   startBlockStreamListener(): void;
@@ -60,19 +62,29 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
     });
   }
 
-  listenForEvent(eventName: string, onLogsAdded: LogCallbackType, onLogsRemoved?: LogCallbackType): void {
-    const topics = this.deps.getEventTopics(eventName);
+  listenForEvent(eventNames: string | string[], onLogsAdded: LogCallbackType, onLogsRemoved?: LogCallbackType): void {
+    if(!Array.isArray(eventNames)) eventNames = [eventNames];
+
+    const topics = eventNames.reduce((acc, eventName) => {
+      const topics = this.deps.getEventTopics(eventName);
+      return [
+        ...acc,
+        ...topics,
+      ];
+    }, []);
 
     this.deps.blockAndLogStreamer.addLogFilter({
       address: this.address,
-      topics,
+      topics: [
+        topics,
+      ],
     });
 
-    this.deps.eventLogDBRouter.addLogCallback(topics[0], onLogsAdded);
+    this.deps.eventLogDBRouter.addLogCallback(topics, onLogsAdded);
   }
 
-  listenForBlockAdded(callback: (Block: Block) => void): void {
-    const wrapper = (callback: (Block: Block) => void) => (block: Block) => {
+  listenForBlockAdded(callback: BlockCallback): void {
+    const wrapper = (callback: BlockCallback) => (block: Block) => {
       callback(block);
     };
     this.deps.blockAndLogStreamer.subscribeToOnBlockAdded(wrapper(callback));
