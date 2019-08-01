@@ -51,13 +51,16 @@ export default class MarketCard extends React.Component<
     this.setState({expanded: !this.state.expanded})
   }
 
+  addToFavorites() {
+    this.props.toggleFavorite(this.props.market.id);
+  }
+
   render() {
     const {
       market,
       location,
       history,
       isLogged,
-      toggleFavorite,
       currentAugurTimestamp,
       reportingWindowStatsEndTime,
       condensed,
@@ -170,16 +173,14 @@ export default class MarketCard extends React.Component<
                 reportingWindowEndtime={reportingWindowStatsEndTime}
                 alignRight
               />
-              {toggleFavorite && (
-                <div>
-                  <FavoritesButton
-                    action={() => toggleFavorite()}
-                    isFavorite={isFavorite}
-                    hideText
-                    disabled={!isLogged}
-                  />
-                </div>
-              )}
+              <div>
+                <FavoritesButton
+                  action={this.addToFavorites}
+                  isFavorite={isFavorite}
+                  hideText
+                  disabled={!isLogged}
+                />
+              </div>
               <DotSelection>
                 <div
                   id="copy_marketId"

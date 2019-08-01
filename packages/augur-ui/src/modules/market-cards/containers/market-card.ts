@@ -15,7 +15,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleFavorite: () => dispatch(toggleFavorite()),
+  toggleFavorite: marketId => dispatch(toggleFavorite(marketId))
 });
 
 const MarketCardContainer = withRouter(

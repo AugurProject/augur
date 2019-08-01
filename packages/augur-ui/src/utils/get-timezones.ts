@@ -25,7 +25,7 @@ export const getTimezones = (
     // multiplying by -1 because of `POSIX compatibility requires that the offsets are inverted. `
     // more information <https://momentjs.com/timezone/docs/>
     const offsetValue = timestamp
-      ? moment.tz.zone(zone).utcOffset(timestamp.valueOf()) * -1
+      ? moment.tz.zone(zone).utcOffset(timestamp.timestamp * 1000) * -1
       : moment.tz(zone).utcOffset();
 
     const value: number = offsetValue / MINUTES_IN_HOUR;
