@@ -22,7 +22,9 @@
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
     "deploy": "ts-node ./src/flash/cli run deploy",
     "flash": "ts-node ./src/flash/cli",
-    "blockstream-console": "ts-node ./src/blockstream-console.ts"
+    "blockstream-console": "ts-node ./src/blockstream-console.ts",
+    "check": "gts check",
+    "fix": "gts fix"
   },
   "repository": {
     "type": "git",
@@ -57,6 +59,7 @@
     "levelup": "4.0.2",
     "memdown": "4.0.0",
     "options-parser": "0.4.0",
+    "gts": "1.1.0",
     "ts-node": "7.0.1",
     "vorpal": "1.12.0"
   },

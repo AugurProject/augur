@@ -10,12 +10,11 @@
   },
   "scripts": {
     "version": "yarn rebuild",
-    "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
-    "prepare": "tsc",
-    "prepush": "yarn lint"
+    "check": "gts check",
+    "fix": "gts fix"
   },
   "repository": {
     "type": "git",
@@ -31,6 +30,7 @@
     "contract-dependencies": "1.0.0-0"
   },
   "devDependencies": {
+    "gts": "1.1.0",
     "ts-node": "8.0.3"
   },
   "buildDependencies": [

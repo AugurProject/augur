@@ -8,7 +8,9 @@
   "scripts": {
     "build": "tsc -b",
     "watch": "tsc -b -w",
-    "prepare": "tsc -b"
+    "check": "gts check",
+    "fix": "gts fix"
+
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,7 @@
     "@augurproject/ethersjs-provider": "1.0.0-0"
   },
   "devDependencies": {
+    "gts": "1.1.0",
     "ts-node": "7.0.1"
   },
   "buildDependencies": [

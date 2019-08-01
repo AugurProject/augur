@@ -10,6 +10,11 @@
     "src": "src"
   },
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "check": "gts check",
+    "fix": "gts fix"
+  },
+  "devDependencies": {
+    "gts": "1.1.0"
   }
 }

@@ -10,7 +10,6 @@
   },
   "scripts": {
     "version": "yarn rebuild",
-    "lint": "tslint -c tslint.json -p . src/tests/*.ts ./tests/**/*.ts ./tests/**/**/*.ts ./tests/**/**/**/*.ts",
     "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
@@ -18,7 +17,9 @@
     "clean": "echo delete database",
     "rebuild": "yarn clean && yarn build",
     "prepush": "yarn lint",
-    "test": "jest"
+    "test": "jest",
+    "check": "gts check",
+    "fix": "gts fix"
   },
   "repository": {
     "type": "git",
@@ -46,6 +47,7 @@
     "@types/node": "10.12.29",
     "@types/supertest": "2.0.7",
     "ganache-core": "2.5.0",
+    "gts": "1.1.0",
     "jest": "24.1.0",
     "jest-puppeteer": "4.3.0",
     "pouchdb-adapter-memory": "7.1.1",

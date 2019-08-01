@@ -112,6 +112,7 @@
     "chai-as-promised": "7.1.1",
     "child_process": "1.0.2",
     "cross-env": "5.2.0",
+    "gts": "1.1.0",
     "jest": "23.6.0",
     "options-parser": "0.4.0",
     "solc": "0.5.4",
