@@ -83,6 +83,7 @@ export const generateTrade = memoize(
       limitPrice,
       sharesFilled: formatShares(sharesFilled),
       selfTrade: !!outcomeTradeInProgress.selfTrade,
+      numSimFills: outcomeTradeInProgress.numFills ? outcomeTradeInProgress.numFills.toNumber() : 0,
       totalOrderValue: totalOrderValue
         ? formatDaiValue(totalOrderValue)
         : null,
