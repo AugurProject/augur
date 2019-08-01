@@ -194,7 +194,6 @@ export default class FeesLiquidity extends React.Component<
           data={orderBook[s.selectedOutcome] || []}
           bottomBarContent={<OpenOrdersHeader showTotalCost />}
           renderRows={this.renderRows}
-          normalOnMobile
         />
         <QuadBox
           title="Depth chart"
