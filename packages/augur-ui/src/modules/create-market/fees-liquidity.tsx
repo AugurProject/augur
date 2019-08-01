@@ -74,6 +74,15 @@ export default class FeesLiquidity extends React.Component<
         quantity: s.orderQuantity,
         orderEstimate: s.orderEthEstimate
       });
+
+      // todo: also call this when orders are cancelled
+      // updateInitialLiquidityCosts({
+      //   outcome: this.state.selectedOutcome,
+      //   type: s.selectedNav,
+      //   price: s.orderPrice,
+      //   quantity: s.orderQuantity,
+      //   selectedOutcome: this.state.selectedOutcome
+      // });
   }
 
   renderRows = (data) => {

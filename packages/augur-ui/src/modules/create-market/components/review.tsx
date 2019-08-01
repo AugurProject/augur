@@ -228,6 +228,8 @@ export default class Review extends React.Component<
       affiliateFee
     } = newMarket;
 
+    console.log(this.state);
+
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
         <Header text="Market details" />
