@@ -54,6 +54,8 @@ export const DEFAULT_STATE: NewMarket = {
   hour: null,
   minute: null,
   meridiem: null,
+  offset: null,
+  offsetName: "",
   detailsText: "",
   categories: ["", "", ""],
   settlementFee: SETTLEMENT_FEE_DEFAULT,
