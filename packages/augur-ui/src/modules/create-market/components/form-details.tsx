@@ -75,6 +75,7 @@ export default class FormDetails extends React.Component<
       outcomes,
       marketType,
       endTime,
+      endTimeDropdown,
       hour,
       minute,
       meridiem,
@@ -126,7 +127,7 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Reporting start date and time" subheader="Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. " link />
           <span>
             <DatePicker
-              date={endTime ? moment(endTime.timestamp * 1000) : null}
+              date={endTimeDropdown ? moment(endTimeDropdown.timestamp * 1000) : null}
               placeholder="Date"
               displayFormat="MMM D, YYYY"
               id="input-date"
