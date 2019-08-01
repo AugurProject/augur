@@ -161,6 +161,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const {
       limitPrice,
       numShares,
+      numSimFills,
       potentialEthProfit,
       potentialEthLoss,
       totalCost,

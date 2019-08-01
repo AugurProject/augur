@@ -18,7 +18,7 @@ import { createBigNumber } from './create-big-number';
 export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
-  const allFee = parseInt(marketInfo.settlementFee || '0', 10);
+  const allFee = createBigNumber(marketInfo.settlementFee || '0');
   const marketData: MarketData = {
     ...marketInfo,
     marketId : marketInfo.id,
@@ -41,7 +41,7 @@ export function convertMarketInfoToMarketData(marketInfo: MarketInfo) {
       decimals: 4,
       decimalsRounded: 4,
     }),
-    settlementFeePercent: formatPercent(allFee * 100, {
+    settlementFeePercent: formatPercent(allFee.multipliedBy(100), {
       positiveSign: false,
       decimals: 4,
       decimalsRounded: 4,
