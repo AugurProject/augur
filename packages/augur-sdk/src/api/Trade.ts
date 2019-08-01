@@ -60,6 +60,7 @@ export interface ContractSimulateTradeData {
   _settlementFees: BigNumber;
   _sharesDepleted: BigNumber;
   _tokensDepleted: BigNumber;
+  _numFills: BigNumber;
 }
 
 export interface SimulateTradeData {
@@ -67,6 +68,7 @@ export interface SimulateTradeData {
   settlementFees: BigNumber;
   sharesDepleted: BigNumber;
   tokensDepleted: BigNumber;
+  numFills: BigNumber;
 }
 
 export class Trade {
@@ -132,11 +134,13 @@ export class Trade {
     const displaySharesDepleted = convertOnChainAmountToDisplayAmount(simulationData[2], tickSize);
     const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
     const displaySettlementFees = simulationData[3].dividedBy(QUINTILLION);
+    const numFills = simulationData[4];
     return {
       sharesFilled: displaySharesFilled,
       tokensDepleted: displayTokensDepleted,
       sharesDepleted: displaySharesDepleted,
       settlementFees: displaySettlementFees,
+      numFills
     };
   }
 
