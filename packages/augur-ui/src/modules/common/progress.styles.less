@@ -33,25 +33,25 @@
     }
   }
 
-  &.ProgressLabel__FirstBreakpoint {
+  &.FirstBreakpoint {
     > span:last-of-type {
       color: @color-in-reporting;
     }
   }
 
-  &.ProgressLabel__SecondBreakpoint {
+  &.SecondBreakpoint {
     > span:last-of-type {
       color: @color-resolved;
     }
   }
 
-  &.ProgressLabel__Finished {
+  &.Finished {
     > span:last-of-type {
       color: @color-alternate-text;
     }
   }
 
-  &.ProgressLabel__AlignRight {
+  &.AlignRight {
     > span:last-of-type {
       text-align: right;
     }
@@ -136,6 +136,7 @@
   > div {
     display: flex;
     justify-content: space-between;
+    line-height: @size-10;
   }
 
   > div:last-of-type {
@@ -150,7 +151,7 @@
     }
   }
 
-  > div.TimeLabel__fade:last-of-type {
+  > div.fade:last-of-type {
     > span:first-of-type {
       > span {
         color: @color-shadow-text;
@@ -159,19 +160,19 @@
   }
 }
 
-.MarketTimeline_open,
-.MarketTimeline_reported {
+.open,
+.reported {
   .mono-10;
 
   color: @color-shadow-text;
   text-transform: uppercase;
 }
 
-.MarketTimeline_open {
+.open {
   color: @color-shadow-text;
 }
 
-.MarketTimeline_reported {
+.reported {
   color: @color-primary-action;
 
   > div:first-of-type {

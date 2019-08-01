@@ -422,13 +422,13 @@ class Form extends Component<FromProps, FormState> {
 
         const order = {
           [this.INPUT_TYPES.QUANTITY]: orderQuantity
-            ? new BigNumber(orderQuantity).toFixed()
+            ? createBigNumber(orderQuantity).toFixed()
             : orderQuantity,
           [this.INPUT_TYPES.PRICE]: orderPrice
-            ? new BigNumber(orderPrice).toFixed()
+            ? createBigNumber(orderPrice).toFixed()
             : orderPrice,
           [this.INPUT_TYPES.EST_DAI]: orderEthEstimate
-            ? new BigNumber(orderEthEstimate).toFixed()
+            ? createBigNumber(orderEthEstimate).toFixed()
             : orderEthEstimate,
           selectedNav,
         };
@@ -634,7 +634,7 @@ class Form extends Component<FromProps, FormState> {
                 placeholder="0.00"
                 value={
                   s[this.INPUT_TYPES.PRICE]
-                    ? new BigNumber(s[this.INPUT_TYPES.PRICE]).toNumber()
+                    ? createBigNumber(s[this.INPUT_TYPES.PRICE]).toNumber()
                     : s[this.INPUT_TYPES.PRICE]
                 }
                 onChange={e =>
@@ -679,7 +679,7 @@ class Form extends Component<FromProps, FormState> {
                 placeholder="0.00"
                 value={
                   s[this.INPUT_TYPES.EST_DAI]
-                    ? new BigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber()
+                    ? createBigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber()
                     : s[this.INPUT_TYPES.EST_DAI]
                 }
                 onChange={e =>

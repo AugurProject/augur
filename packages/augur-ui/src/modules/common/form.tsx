@@ -136,6 +136,7 @@ interface TimezoneDropdownProps {
   autoCompleteList?: Array<SortedGroup>;
   disabled?: Boolean;
   timestamp?: Moment;
+  timezone: string;
 }
 
 interface TimezoneDropdownState {
@@ -147,13 +148,13 @@ export class TimezoneDropdown extends Component<
   TimezoneDropdownState
 > {
   state: TimezoneDropdownState = {
-    value: '',
+    value: this.props.timezone,
   };
 
   onChangeDropdown = choice => {
     const parse = /\(UTC (.*)\)/i;
     const offset = choice.match(parse)[1];
-    this.props.onChange(offset);
+    this.props.onChange(choice, offset);
     this.setState({
       value: choice,
     });
