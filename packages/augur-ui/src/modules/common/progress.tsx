@@ -173,10 +173,10 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
   return (
     <span
       className={classNames(Styles.ProgressLabel, {
-        [Styles.ProgressLabel__FirstBreakpoint]: breakpointOne,
-        [Styles.ProgressLabel__SecondBreakpoint]: breakpointTwo,
-        [Styles.ProgressLabel__Finished]: timeLeft < 0,
-        [Styles.ProgressLabel__AlignRight]: alignRight,
+        [Styles.FirstBreakpoint]: breakpointOne,
+        [Styles.SecondBreakpoint]: breakpointTwo,
+        [Styles.Finished]: timeLeft < 0,
+        [Styles.AlignRight]: alignRight,
       })}
     >
       <span>{label}</span>
@@ -253,17 +253,17 @@ export const MarketTimeline = (props: TimeProgressBarProps) => {
     <div className={Styles.MarketTimeline}>
       <div
         className={classNames({
-          [Styles.MarketTimeline_reported]: hasPassed,
-          [Styles.MarketTimeline_open]: !hasPassed
+          [Styles.reported]: hasPassed,
+          [Styles.open]: !hasPassed
         })}
       >
-        <div>DATE Created</div>
-        <div>{`Reporting ${endLabel}`}</div>
+        <span>Date Created</span>
+        <span>{`Reporting ${endLabel}`}</span>
       </div>
       <TimeProgressBar {...props} />
       <div
         className={classNames({
-          [Styles.TimeLabel__fade]: hasPassed
+          [Styles.fade]: hasPassed
         })}
       >
         <TimeLabel time={startTime} />

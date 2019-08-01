@@ -1,25 +1,17 @@
 @import (reference) "~assets/styles/shared";
 
 .CoreProperties {
-  display: flex;
-  flex: 1 0 20%;
-  flex-flow: row wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-gap: @size-20 0;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 1fr 1fr;
 
-  > div {
-    flex: 0 0 50%;
-    margin-top: @size-14;
-  }
-
-  > div:first-of-type,
-  > div:nth-of-type(2) {
-    margin-top: 0;
-  }
-}
-
-@media @breakpoint-mobile {
-  .CoreProperties {
+  @media @breakpoint-mobile {
     background: @color-secondary-action;
     padding: @size-16;
+  }
+
+  > div > span:last-of-type {
+    margin-top: @size-6;
   }
 }
