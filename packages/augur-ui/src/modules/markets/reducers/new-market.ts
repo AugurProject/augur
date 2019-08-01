@@ -50,6 +50,7 @@ export const DEFAULT_STATE: NewMarket = {
   designatedReporterType: DESIGNATED_REPORTER_SELF,
   designatedReporterAddress: "",
   endTime: null,
+  endTimeDropdown: null,
   tickSize: 0.01,
   hour: null,
   minute: null,

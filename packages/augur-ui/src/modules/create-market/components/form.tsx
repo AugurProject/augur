@@ -453,6 +453,9 @@ export default class Form extends React.Component<
       ) {
         endTime.hours(endTime.hours() + 12);
       }
+      if (name === 'setEndTime') {
+        updateNewMarket({endTimeDropdown: formatDate(moment(value.timestamp * 1000).utc().toDate())});
+      }
       updateNewMarket({ endTime: formatDate(endTime.toDate()), [name]: value});
     }
     this.onError(name, '');

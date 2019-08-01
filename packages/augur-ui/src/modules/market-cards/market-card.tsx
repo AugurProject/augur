@@ -33,6 +33,7 @@ interface MarketCardProps {
   expandedView?: Boolean;
   address: string;
   loading?: Boolean;
+  isFavorite?: Boolean;
 }
 
 interface MarketCardState {
@@ -51,8 +52,8 @@ export default class MarketCard extends React.Component<
     this.setState({expanded: !this.state.expanded})
   }
 
-  addToFavorites() {
-    this.props.toggleFavorite(this.props.market.id);
+  addToFavorites = () => {
+    this.props.toggleFavorite(this.props.market.marketId);
   }
 
   render() {
@@ -66,7 +67,8 @@ export default class MarketCard extends React.Component<
       condensed,
       address,
       expandedView,
-      loading
+      loading,
+      isFavorite
     } = this.props;
 
     const s = this.state;
@@ -81,7 +83,6 @@ export default class MarketCard extends React.Component<
       categories,
       id,
       marketStatus,
-      isFavorite,
       author,
       reportingState,
       endTime,
