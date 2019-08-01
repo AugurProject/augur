@@ -429,17 +429,18 @@ export default class Form extends React.Component<
         outcomesFormatted = YES_NO_OUTCOMES;
       }
       updateNewMarket({ outcomesFormatted, orderBook: {} });
-    } else if (name === 'setEndTime' || name === 'hour' || name === 'minute' || name === 'meridiem') {
+    } else if (name === 'setEndTime' || name === 'hour' || name === 'minute' || name === 'meridiem' || name === "offset") {
       const endTime = name === 'setEndTime' ? moment(value.timestamp * 1000).utc() : moment(newMarket.endTime.timestamp * 1000).utc();
       const hour = name === "hour" ? value : newMarket.hour;
       const minute = name === "minute" ? value : newMarket.minute;
       const meridiem = name === "meridiem" ? value : newMarket.meridiem;
       const offset = name === "offset" ? value : newMarket.offset;
+      
+      endTime.utcOffset(parseInt(offset));
       endTime.set({
         hour: hour,
         minute: minute
       });
-      endTime.utcOffset(offset);
 
       if (
         (meridiem === "" || meridiem === "AM") &&
