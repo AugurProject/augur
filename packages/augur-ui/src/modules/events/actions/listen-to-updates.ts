@@ -72,20 +72,42 @@ const EVENTS = {
   [SubscriptionEventName.DisputeCrowdsourcerCompleted]: wrapLogHandler(
     handleDisputeCrowdsourcerCompletedLog
   ),
-  [SubscriptionEventName.DisputeCrowdsourcerRedeemed]:
-     wrapLogHandler(handleDisputeCrowdsourcerRedeemedLog)
-  ,
-  [SubscriptionEventName.UniverseForked]: wrapLogHandler(handleUniverseForkedLog),
-  [SubscriptionEventName.DisputeWindowCreated]: wrapLogHandler(handleDisputeWindowCreatedLog),
-  [SubscriptionEventName.InitialReporterTransferred]: wrapLogHandler(handleInitialReporterTransferredLog),
-  [SubscriptionEventName.ParticipationTokensRedeemed]: wrapLogHandler(handleParticipationTokensRedeemedLog),
-  [SubscriptionEventName.ReportingParticipantDisavowed]: wrapLogHandler(handleReportingParticipantDisavowedLog),
-  [SubscriptionEventName.MarketParticipantsDisavowed]: wrapLogHandler(handleMarketParticipantsDisavowedLog),
-  [SubscriptionEventName.MarketTransferred]: wrapLogHandler(handleMarketTransferredLog),
-  [SubscriptionEventName.MarketVolumeChanged]: wrapLogHandler(handleMarketVolumeChangedLog),
-  [SubscriptionEventName.MarketOIChanged]: wrapLogHandler(handleMarketOIChangedLog),
-  [SubscriptionEventName.ProfitLossChanged]: wrapLogHandler(handleProfitLossChangedLog),
-  [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(handleTokenBalanceChangedLog),
+  [SubscriptionEventName.DisputeCrowdsourcerRedeemed]: wrapLogHandler(
+    handleDisputeCrowdsourcerRedeemedLog
+  ),
+  [SubscriptionEventName.UniverseForked]: wrapLogHandler(
+    handleUniverseForkedLog
+  ),
+  [SubscriptionEventName.DisputeWindowCreated]: wrapLogHandler(
+    handleDisputeWindowCreatedLog
+  ),
+  [SubscriptionEventName.InitialReporterTransferred]: wrapLogHandler(
+    handleInitialReporterTransferredLog
+  ),
+  [SubscriptionEventName.ParticipationTokensRedeemed]: wrapLogHandler(
+    handleParticipationTokensRedeemedLog
+  ),
+  [SubscriptionEventName.ReportingParticipantDisavowed]: wrapLogHandler(
+    handleReportingParticipantDisavowedLog
+  ),
+  [SubscriptionEventName.MarketParticipantsDisavowed]: wrapLogHandler(
+    handleMarketParticipantsDisavowedLog
+  ),
+  [SubscriptionEventName.MarketTransferred]: wrapLogHandler(
+    handleMarketTransferredLog
+  ),
+  [SubscriptionEventName.MarketVolumeChanged]: wrapLogHandler(
+    handleMarketVolumeChangedLog
+  ),
+  [SubscriptionEventName.MarketOIChanged]: wrapLogHandler(
+    handleMarketOIChangedLog
+  ),
+  [SubscriptionEventName.ProfitLossChanged]: wrapLogHandler(
+    handleProfitLossChangedLog
+  ),
+  [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(
+    handleTokenBalanceChangedLog
+  ),
   [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
   [TXEventName.Success]: wrapLogHandler(handleTxSuccess),
   [TXEventName.Pending]: wrapLogHandler(handleTxPending),
@@ -105,3 +127,12 @@ export const listenForStartUpEvents = (Augur: Augur<Provider>) => (
   Object.keys(StartUpEvents).map(e => {
     Augur.on(e, log => dispatch(StartUpEvents[e](log)));
   });
+
+export const unListenToEvents = (Augur: Augur<Provider>) => {
+  Object.keys(EVENTS).map(e => {
+    Augur.off(e);
+  });
+  Object.keys(StartUpEvents).map(e => {
+    Augur.off(e);
+  });
+};
