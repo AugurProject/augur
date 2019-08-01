@@ -74,23 +74,20 @@ function pollForAccount(
   }, ACCOUNTS_POLL_INTERVAL_DURATION);
 }
 
-function autoLoginAccount(
+async function autoLoginAccount(
   dispatch: ThunkDispatch<void, any, Action>,
   loggedInAccount: string
 ) {
-  getAccounts()
-    .then((accounts: Array<string>) => {
-      let index;
-      for (index in accounts) {
-        const account = accounts[index];
-        if (account === loggedInAccount) {
-          dispatch(useUnlockedAccount(account));
-        }
-      }
-    })
-    .catch((err: Error) => {
-      console.log('could not auto login account', err);
-    });
+  const windowApp = windowRef as WindowApp;
+  const accounts = await windowApp.ethereum.enable().catch((err: Error) => {
+    console.log('could not auto login account', err);
+  });
+  let account = null;
+  for (account of accounts) {
+    if (account === loggedInAccount) {
+      dispatch(useUnlockedAccount(account));
+    }
+  }
 }
 
 function pollForNetwork(

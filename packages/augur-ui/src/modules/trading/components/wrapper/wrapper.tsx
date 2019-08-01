@@ -35,7 +35,7 @@ interface WrapperProps {
   marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
   selectedOrderProperties: object;
-  availableFunds: BigNumber;
+  availableEth: BigNumber;
   availableDai: BigNumber;
   selectedOutcome: OutcomeFormatted;
   sortedOutcomes: OutcomeFormatted[];
@@ -367,7 +367,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   render() {
     const {
       allowanceAmount,
-      availableFunds,
+      availableEth,
       availableDai,
       market,
       selectedOutcome,
@@ -488,7 +488,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               trade={s.trade}
               gasPrice={gasPrice}
               gasLimit={s.trade.gasLimit}
-              availableFunds={availableFunds}
+              availableEth={availableEth}
               availableDai={availableDai}
               selectedOutcome={selectedOutcome}
               scalarDenomination={market.scalarDenomination}
