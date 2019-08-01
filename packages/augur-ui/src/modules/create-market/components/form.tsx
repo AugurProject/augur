@@ -436,11 +436,11 @@ export default class Form extends React.Component<
       const meridiem = name === "meridiem" ? value : newMarket.meridiem;
       const offset = name === "offset" ? value : newMarket.offset;
       
-      endTime.utcOffset(parseInt(offset));
       endTime.set({
         hour: hour,
         minute: minute
       });
+      endTime.add(parseInt(offset), "hours");
 
       if (
         (meridiem === "" || meridiem === "AM") &&
