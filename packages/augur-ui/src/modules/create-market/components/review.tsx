@@ -6,22 +6,22 @@ import moment from "moment";
 import { createBigNumber } from 'utils/create-big-number';
 import getValue from 'utils/get-value';
 import findInsufficientFunds from 'modules/markets/helpers/insufficient-funds';
-import { 
-  Header, 
-  LineBreak, 
-  SmallSubheaders, 
-  Subheaders, 
+import {
+  Header,
+  LineBreak,
+  SmallSubheaders,
+  Subheaders,
   OutcomesList,
   SmallSubheadersTooltip
 } from "modules/create-market/components/common";
 import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
-  SCALAR, 
-  CATEGORICAL, 
+  SCALAR,
+  CATEGORICAL,
   EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF,
-  ETH, 
-  DAI, 
+  ETH,
+  DAI,
   REP
 } from "modules/common/constants";
 import { MARKET_TYPE_NAME } from "modules/create-market/constants";
@@ -181,12 +181,11 @@ export default class Review extends React.Component<
     const marketCreationCostBreakdown = await getCreateMarketBreakdown();
     this.setState(
       {
-        designatedReportNoShowReputationBond: formatEtherEstimate(
-          marketCreationCostBreakdown.designatedReportNoShowReputationBond
-        ),
-        validityBond: formatEtherEstimate(
-          marketCreationCostBreakdown.validityBond
-        ),
+        designatedReportNoShowReputationBond:
+          marketCreationCostBreakdown.noShowFormatted
+        ,
+        validityBond: marketCreationCostBreakdown.validityBondFormatted
+        ,
       },
       () => {
         const funds = this.getFundsString();
@@ -267,7 +266,7 @@ export default class Review extends React.Component<
             </>
           }
           {marketType === CATEGORICAL &&
-            <OutcomesList 
+            <OutcomesList
               outcomes={outcomes}
             />
           }
@@ -280,16 +279,16 @@ export default class Review extends React.Component<
         <div>
           <SmallSubheaders header="Reporting start date and time" subheader={(endTime || {}).formattedUtc} />
           <SmallSubheaders header="resolution details" subheader={detailsText === "" ? "–" : detailsText} />
-          <SmallSubheaders 
-            header="Resolution source" 
+          <SmallSubheaders
+            header="Resolution source"
             subheader={expirySourceType === EXPIRY_SOURCE_GENERIC
               ? "General knowledge"
               : `Outcome will be detailed on public website: ${
                   expirySource
-                }`} 
+                }`}
           />
-          <SmallSubheaders 
-            header="Designated Reporter" 
+          <SmallSubheaders
+            header="Designated Reporter"
             subheader={designatedReporterType === DESIGNATED_REPORTER_SELF
                   ? "Myself"
                   : `Someone else: ${designatedReporterAddress}`}
@@ -342,10 +341,10 @@ export default class Review extends React.Component<
               value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue}
             />
           </span>
-          {(noEth || noRep || noDai) && 
-            <Error 
+          {(noEth || noRep || noDai) &&
+            <Error
               alternate
-              header="You don't have enough funds in your wallet" 
+              header="You don't have enough funds in your wallet"
               subheader={"You have " + (noEth ? availableEth + " ETH of " + s.formattedInitialLiquidityGas.formattedValue : "" ) + "required to create this market."}
             />
           }
