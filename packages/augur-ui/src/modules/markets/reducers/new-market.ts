@@ -67,7 +67,7 @@ export const DEFAULT_STATE: NewMarket = {
   maxPrice: 1,
   minPriceBigNumber: createBigNumber(0),
   maxPriceBigNumber: createBigNumber(1),
-  initialLiquidityEth: createBigNumber(0),
+  initialLiquidityDai: createBigNumber(0),
   initialLiquidityGas: createBigNumber(0),
 };
 

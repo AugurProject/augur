@@ -308,7 +308,7 @@ export interface NewMarket {
   affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
   orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
-  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
 }
@@ -345,7 +345,7 @@ export interface Draft {
   affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
   orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
-  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
 }
@@ -383,7 +383,7 @@ export interface Draft {
   affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
   orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
-  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
 }

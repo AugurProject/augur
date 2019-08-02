@@ -218,7 +218,7 @@ export default class Form extends React.Component<
     const maxPrice = newMarket.marketType === SCALAR ? newMarket.maxPrice : 1;
     const shareBalances = newMarket.outcomes.map(outcome => 0);
     let outcome;
-    let initialLiquidityEth;
+    let initialLiquidityDai;
     let initialLiquidityGas;
 
     switch (newMarket.marketType) {
@@ -242,14 +242,14 @@ export default class Form extends React.Component<
 
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
-      initialLiquidityEth = createBigNumber(newMarket.initialLiquidityEth).minus(
+      initialLiquidityDai = createBigNumber(newMarket.initialLiquidityDai).minus(
         totalCost
       );
       initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).minus(
         NEW_ORDER_GAS_ESTIMATE
       );
     } else {
-      initialLiquidityEth = createBigNumber(newMarket.initialLiquidityEth).plus(
+      initialLiquidityDai = createBigNumber(newMarket.initialLiquidityDai).plus(
         totalCost
       );
       initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).plus(
@@ -257,7 +257,7 @@ export default class Form extends React.Component<
       );
     }
 
-    updateNewMarket({ initialLiquidityEth, initialLiquidityGas });
+    updateNewMarket({ initialLiquidityDai, initialLiquidityGas });
   }
 
   findErrors = () => {
@@ -389,7 +389,7 @@ export default class Form extends React.Component<
       orderBook: {},
       orderBookSorted: {},
       orderBookSeries: {},
-      initialLiquidityEth: 0,
+      initialLiquidityDai: 0,
       initialLiquidityGas: 0,
       creationError: '',
     });

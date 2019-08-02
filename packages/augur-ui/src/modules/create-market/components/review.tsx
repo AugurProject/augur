@@ -53,7 +53,7 @@ interface ReviewState {
   validityBond: number;
   designatedReportNoShowReputationBond: number;
   insufficientFundsString: string;
-  formattedInitialLiquidityEth: BigNumber;
+  formattedInitialLiquidityDai: BigNumber;
   formattedInitialLiquidityGas: BigNumber;
 }
 
@@ -66,8 +66,8 @@ export default class Review extends React.Component<
     validityBond: null,
     designatedReportNoShowReputationBond: null,
     insufficientFundsString: '',
-    formattedInitialLiquidityEth: formatEtherEstimate(
-      this.props.newMarket.initialLiquidityEth
+    formattedInitialLiquidityDai: formatEtherEstimate(
+      this.props.newMarket.initialLiquidityDai
     ),
     formattedInitialLiquidityGas: formatEtherEstimate(
       formatGasCostToEther(
@@ -85,11 +85,11 @@ export default class Review extends React.Component<
   componentWillReceiveProps(nextProps, nextState) {
     const { newMarket, gasPrice } = this.props;
     if (
-      newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth
+      newMarket.initialLiquidityDai !== nextProps.newMarket.initialLiquidityDai
     )
       this.setState({
-        formattedInitialLiquidityEth: formatEtherEstimate(
-          nextProps.newMarket.initialLiquidityEth
+        formattedInitialLiquidityDai: formatEtherEstimate(
+          nextProps.newMarket.initialLiquidityDai
         ),
       });
     if (
@@ -144,9 +144,9 @@ export default class Review extends React.Component<
         s,
         'formattedInitialLiquidityGas.formattedValue'
       );
-      const formattedInitialLiquidityEth = getValue(
+      const formattedInitialLiquidityDai = getValue(
         s,
-        'formattedInitialLiquidityEth.formattedValue'
+        'formattedInitialLiquidityDai.formattedValue'
       );
       insufficientFundsString = insufficientFunds(
         validityBond,
@@ -156,7 +156,7 @@ export default class Review extends React.Component<
         createBigNumber(availableRep, 10),
         createBigNumber(availableDai, 10),
         formattedInitialLiquidityGas || '0',
-        formattedInitialLiquidityEth || '0',
+        formattedInitialLiquidityDai || '0',
         testWithLiquidity
       );
     }
@@ -237,7 +237,7 @@ export default class Review extends React.Component<
       affiliateFee
     } = newMarket;
 
-    const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityEth ? s.formattedInitialLiquidityEth.value : 0)));
+    const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
 
     const noEth = s.insufficientFundsString !== "" && s.insufficientFundsString[ETH];
     const noRep = s.insufficientFundsString !== "" && s.insufficientFundsString[REP];
@@ -312,7 +312,7 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Initial Liquidity"}
-              value={s.formattedInitialLiquidityEth.rounded + " DAI"}
+              value={s.formattedInitialLiquidityDai.rounded + " DAI"}
             />
             <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}

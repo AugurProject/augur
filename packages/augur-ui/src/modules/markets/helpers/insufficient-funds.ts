@@ -11,7 +11,7 @@ export default function insufficientFunds(
   availableRep,
   availableDai,
   formattedInitialLiquidityGas,
-  formattedInitialLiquidityEth,
+  formattedInitialLiquidityDai,
   testWithLiquidity = false
 ) {
   let insufficientFundsString = "";
@@ -20,7 +20,7 @@ export default function insufficientFunds(
     formatEther(validityBond).fullPrecision
   );
   const BNLiqGas = createBigNumber(formattedInitialLiquidityGas);
-  const BNLiqEth = createBigNumber(formattedInitialLiquidityEth); // this is DAI actually
+  const BNLiqEth = createBigNumber(formattedInitialLiquidityDai);
   const BNtotalEthCost = testWithLiquidity
     ? BNLiqEth
     : createBigNumber(0);
