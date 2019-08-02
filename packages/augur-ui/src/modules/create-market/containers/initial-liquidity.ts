@@ -13,7 +13,9 @@ import {
 
 const { COLUMN_TYPES } = constants;
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState) => ({
+  newMarket: state.newMarket
+});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   removeOrderFromNewMarket: data => dispatch(removeOrderFromNewMarket(data)),
@@ -57,6 +59,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.CANCEL_TEXT_BUTTON,
       text: "Cancel",
       action: (e: Event) => {
+        const orderData = sP.newMarket.orderBook[oP.selectedOutcome][order.id];
+        oP.updateInitialLiquidityCosts(
+          { ...orderData, outcome: oP.selectedOutcome },
+          true
+        );
         dP.removeOrderFromNewMarket({
           outcome: oP.selectedOutcome,
           index: order.id,

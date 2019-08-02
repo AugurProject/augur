@@ -191,7 +191,7 @@ export const calculateTotalOrderValue = (
   maxPrice,
   type,
 ) => {
-  if (!minPrice || !maxPrice || !side || !type || !limitPrice) {
+  if (minPrice === null || maxPrice === null || !side || !type || !limitPrice) {
     return null;
   }
 

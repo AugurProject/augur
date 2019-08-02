@@ -283,11 +283,11 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Valididty Bond"}
-              value={"3.44 DAI"}
+              value={s.validityBond && s.validityBond.rounded + " DAI"}
             />
             <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}
-              value={"0.0040 ETH"}
+              value={s.gasCost && s.gasCost.rounded + " ETH"}
             />
           </span>
 
@@ -295,11 +295,11 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"No-Show Bond"}
-              value={"44 REP"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.rounded + " REP"}
             />
             <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}
-              value={"0.0040 ETH"}
+              value={s.gasCost && s.gasCost.rounded + " ETH"}
             />
           </span>
 
@@ -307,11 +307,11 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Initial Liquidity"}
-              value={"121.00 DAI"}
+              value={s.formattedInitialLiquidityEth.rounded + " DAI"}
             />
             <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}
-              value={"0.0060 ETH"}
+              value={s.formattedInitialLiquidityGas.rounded + " ETH"}
             />
           </span>
 

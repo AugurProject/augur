@@ -31,11 +31,15 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
 } from 'modules/create-market/constants';
-import { CATEGORICAL, SCALAR } from 'modules/common/constants';
-import {
+import { 
+  CATEGORICAL, 
+  SCALAR, 
+  BID,
+  SELL,
+  BUY,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
-  YES_NO_OUTCOMES,
+  YES_NO_OUTCOMES, 
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { createMarket } from 'modules/contracts/actions/contractCalls';
@@ -65,10 +69,14 @@ import {
   checkAddress
 } from 'modules/common/validations';
 import { formatDate } from "utils/format-date";
+import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
+import { createBigNumber } from "utils/create-big-number";
 
 import Styles from 'modules/create-market/components/form.styles';
 
 import MarketView from 'modules/market/components/market-view/market-view';
+
+const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 
 interface FormProps {
   newMarket: NewMarket;
@@ -203,6 +211,54 @@ export default class Form extends React.Component<
     updateNewMarket({ currentStep: newStep });
     this.node.scrollIntoView();
   };
+
+   updateInitialLiquidityCosts = (order, shouldReduce) => {
+    const { newMarket, updateNewMarket } = this.props;
+    const minPrice = newMarket.marketType === SCALAR ? newMarket.minPrice : 0;
+    const maxPrice = newMarket.marketType === SCALAR ? newMarket.maxPrice : 1;
+    const shareBalances = newMarket.outcomes.map(outcome => 0);
+    let outcome;
+    let initialLiquidityEth;
+    let initialLiquidityGas;
+
+    switch (newMarket.marketType) {
+      case CATEGORICAL:
+        newMarket.outcomes.forEach((outcomeName, index) => {
+          if (order.outcome === outcomeName) outcome = index;
+        });
+        break;
+      case SCALAR:
+        ({ outcome } = order);
+        break;
+      default:
+        outcome = 1;
+        break;
+    }
+
+    const orderType = order.type === BID ? BUY : SELL;
+
+    // Calculate amount of DAI needed for order
+    const totalCost = calculateTotalOrderValue(order.quantity, order.price, orderType, minPrice, maxPrice, newMarket.marketType);
+
+    // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
+    if (shouldReduce) {
+      initialLiquidityEth = createBigNumber(newMarket.initialLiquidityEth).minus(
+        totalCost
+      );
+      initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).minus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
+    } else {
+      initialLiquidityEth = createBigNumber(newMarket.initialLiquidityEth).plus(
+        totalCost
+      );
+      initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).plus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
+    }
+
+    updateNewMarket({ initialLiquidityEth, initialLiquidityGas });
+  }
 
   findErrors = () => {
     const { newMarket } = this.props;
@@ -534,15 +590,14 @@ export default class Form extends React.Component<
               {mainContent === FORM_DETAILS && (
                 <FormDetails
                   onChange={this.onChange}
-                  evaluate={this.evaluate}
                   onError={this.onError}
                 />
               )}
               {mainContent === FEES_LIQUIDITY && (
                 <FeesLiquidity
-                  evaluate={this.evaluate}
                   onChange={this.onChange}
                   onError={this.onError}
+                  updateInitialLiquidityCosts={this.updateInitialLiquidityCosts}
                 />
               )}
               {mainContent === REVIEW && <Review />}
