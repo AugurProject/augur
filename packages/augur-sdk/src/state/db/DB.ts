@@ -5,7 +5,7 @@ import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 import { DerivedDB } from "./DerivedDB";
-import { MarketDB } from "./MarketDB";
+import { MarketDB, MarketFields } from "./MarketDB";
 import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
 import {
   CompleteSetsPurchasedLog,
@@ -32,6 +32,7 @@ import {
   UniverseForkedLog,
   MarketData,
 } from "../logs/types";
+import { ExtendedSearchOptions, SearchResults } from "flexsearch";
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -246,8 +247,8 @@ export class DB {
     return this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
-  fullTextMarketSearch(query: string): object[] {
-    return this.marketDatabase.fullTextSearch(query);
+  async fullTextMarketSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields>[]> {
+    return this.marketDatabase.fullTextSearch(query, extendedSearchOptions);
   }
 
   /**

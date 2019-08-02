@@ -25,18 +25,18 @@ sidebar_label: OutcomeOrderbook
 
 ###  asks
 
-**● asks**: *`Array`<[Order](api-interfaces-packages-augur-sdk-src-api-liquidity-order.md)>*
+**● asks**: *[Order](api-interfaces-packages-augur-sdk-src-api-liquidity-order.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Liquidity.ts#L14)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:13](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Liquidity.ts#L13)*
 
 ___
 <a id="bids"></a>
 
 ###  bids
 
-**● bids**: *`Array`<[Order](api-interfaces-packages-augur-sdk-src-api-liquidity-order.md)>*
+**● bids**: *[Order](api-interfaces-packages-augur-sdk-src-api-liquidity-order.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:13](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Liquidity.ts#L13)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:12](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Liquidity.ts#L12)*
 
 ___
 

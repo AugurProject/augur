@@ -31,15 +31,15 @@ sidebar_label: LoggerInterface
 
 ###  debug
 
-▸ **debug**(...msg: *`Array`<`string`>*): `void`
+▸ **debug**(...msg: *`string`[]*): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:10](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:10](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L10)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 
@@ -50,7 +50,7 @@ ___
 
 ▸ **error**(...err: *`Array`<`string` \| `Error`>*): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:2](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L2)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:2](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L2)*
 
 **Parameters:**
 
@@ -65,27 +65,27 @@ ___
 
 ###  info
 
-▸ **info**(...msg: *`Array`<`string`>*): `void`
+▸ **info**(...msg: *`string`[]*): `void`
 
-▸ **info**(...msg: *`Array`<`string`>*): `void`
+▸ **info**(...msg: *`string`[]*): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:6](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L6)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:6](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L6)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:8](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:8](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L8)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 
@@ -94,15 +94,15 @@ ___
 
 ###  warn
 
-▸ **warn**(...msg: *`Array`<`string`>*): `void`
+▸ **warn**(...msg: *`string`[]*): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:4](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:4](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L4)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 

@@ -28,7 +28,7 @@ sidebar_label: TimestampedPriceAmount
 
 **● amount**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:139](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L139)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:154](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L154)*
 
 ___
 <a id="price"></a>
@@ -37,7 +37,7 @@ ___
 
 **● price**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:138](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L138)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:153](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L153)*
 
 ___
 <a id="timestamp"></a>
@@ -46,7 +46,7 @@ ___
 
 **● timestamp**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:140](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L140)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:155](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L155)*
 
 ___
 

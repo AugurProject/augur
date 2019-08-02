@@ -94,7 +94,7 @@ sidebar_label: FormattedEventLog
 
 **● address**: *[Address](api-modules-packages-augur-sdk-src-event-handlers-module.md#address)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:9](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L9)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:9](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L9)*
 
 ___
 <a id="blockhash"></a>
@@ -103,7 +103,7 @@ ___
 
 **● blockHash**: *[Bytes32](api-modules-packages-augur-sdk-src-event-handlers-module.md#bytes32)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L16)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L16)*
 
 ___
 <a id="blocknumber"></a>
@@ -112,7 +112,7 @@ ___
 
 **● blockNumber**: *`number`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:10](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L10)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:10](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L10)*
 
 ___
 <a id="contractname"></a>
@@ -121,7 +121,7 @@ ___
 
 **● contractName**: *`string`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L14)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:14](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L14)*
 
 ___
 <a id="eventname"></a>
@@ -130,7 +130,7 @@ ___
 
 **● eventName**: *`string`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:15](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L15)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:15](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L15)*
 
 ___
 <a id="logindex"></a>
@@ -139,7 +139,7 @@ ___
 
 **● logIndex**: *`number`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:11](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L11)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:11](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L11)*
 
 ___
 <a id="removed"></a>
@@ -148,7 +148,7 @@ ___
 
 **● removed**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L17)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:17](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L17)*
 
 ___
 <a id="transactionhash"></a>
@@ -157,7 +157,7 @@ ___
 
 **● transactionHash**: *[Bytes32](api-modules-packages-augur-sdk-src-event-handlers-module.md#bytes32)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:12](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L12)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:12](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L12)*
 
 ___
 <a id="transactionindex"></a>
@@ -166,7 +166,7 @@ ___
 
 **● transactionIndex**: *`number`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:13](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L13)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:13](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L13)*
 
 ___
 

@@ -29,7 +29,7 @@ sidebar_label: JsonRpcRequest
 
 **● id**: *`string` \| `number` \| `null`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:11](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L11)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:11](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L11)*
 
 ___
 <a id="jsonrpc"></a>
@@ -38,7 +38,7 @@ ___
 
 **● jsonrpc**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:12](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L12)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:12](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L12)*
 
 ___
 <a id="method"></a>
@@ -47,7 +47,7 @@ ___
 
 **● method**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:13](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L13)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:13](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L13)*
 
 ___
 <a id="params"></a>
@@ -56,7 +56,7 @@ ___
 
 **● params**: *`any`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:14](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L14)*
 
 ___
 

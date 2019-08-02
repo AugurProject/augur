@@ -33,7 +33,7 @@ sidebar_label: EndpointSettings
 
 **● certificateFile**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:24](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L24)*
 
 ___
 <a id="certificatekeyfile"></a>
@@ -42,7 +42,7 @@ ___
 
 **● certificateKeyFile**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:25](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L25)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:25](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L25)*
 
 ___
 <a id="httpport"></a>
@@ -51,7 +51,7 @@ ___
 
 **● httpPort**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L18)*
 
 ___
 <a id="httpsport"></a>
@@ -60,7 +60,7 @@ ___
 
 **● httpsPort**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:19](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:19](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L19)*
 
 ___
 <a id="starthttps"></a>
@@ -69,7 +69,7 @@ ___
 
 **● startHTTPS**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L20)*
 
 ___
 <a id="startwss"></a>
@@ -78,7 +78,7 @@ ___
 
 **● startWSS**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:23](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L23)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:23](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L23)*
 
 ___
 <a id="wsport"></a>
@@ -87,7 +87,7 @@ ___
 
 **● wsPort**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:21](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:21](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L21)*
 
 ___
 <a id="wssport"></a>
@@ -96,7 +96,7 @@ ___
 
 **● wssPort**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:22](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:22](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L22)*
 
 ___
 

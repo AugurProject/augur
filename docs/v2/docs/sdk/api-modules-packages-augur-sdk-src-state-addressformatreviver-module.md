@@ -31,7 +31,7 @@ sidebar_label: packages/augur-sdk/src/state/AddressFormatReviver
 
 ▸ **AddressFormatReviver**(key: *`string`*, value: *`any`*): `any`
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:42](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L42)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:42](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L42)*
 
 **Parameters:**
 
@@ -49,7 +49,7 @@ ___
 
 ▸ **preCleanAddress**(address: *`string`*): `string`
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:38](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L38)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:38](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L38)*
 
 **Parameters:**
 
@@ -69,7 +69,7 @@ ___
 
 **inputsExpectedAsAddress**: *`object`*
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:12](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L12)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:12](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L12)*
 
 <a id="inputsexpectedasaddress.account"></a>
 
@@ -77,7 +77,7 @@ ___
 
 **● account**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:13](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L13)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:13](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L13)*
 
 ___
 <a id="inputsexpectedasaddress.author"></a>
@@ -86,7 +86,7 @@ ___
 
 **● author**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:14](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L14)*
 
 ___
 <a id="inputsexpectedasaddress.childuniverse"></a>
@@ -95,7 +95,7 @@ ___
 
 **● childUniverse**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:15](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L15)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:15](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L15)*
 
 ___
 <a id="inputsexpectedasaddress.creator"></a>
@@ -104,7 +104,7 @@ ___
 
 **● creator**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L16)*
 
 ___
 <a id="inputsexpectedasaddress.designatedreporter"></a>
@@ -113,7 +113,7 @@ ___
 
 **● designatedReporter**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:17](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L17)*
 
 ___
 <a id="inputsexpectedasaddress.disputecrowdsourcer"></a>
@@ -122,7 +122,7 @@ ___
 
 **● disputeCrowdsourcer**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L18)*
 
 ___
 <a id="inputsexpectedasaddress.from"></a>
@@ -131,7 +131,7 @@ ___
 
 **● from**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:19](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:19](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L19)*
 
 ___
 <a id="inputsexpectedasaddress.market"></a>
@@ -140,7 +140,7 @@ ___
 
 **● market**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L20)*
 
 ___
 <a id="inputsexpectedasaddress.marketcreator"></a>
@@ -149,7 +149,7 @@ ___
 
 **● marketCreator**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:21](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:21](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L21)*
 
 ___
 <a id="inputsexpectedasaddress.marketid"></a>
@@ -158,7 +158,7 @@ ___
 
 **● marketId**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:22](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:22](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L22)*
 
 ___
 <a id="inputsexpectedasaddress.marketids"></a>
@@ -167,7 +167,7 @@ ___
 
 **● marketIds**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:23](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L23)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:23](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L23)*
 
 ___
 <a id="inputsexpectedasaddress.newuniverse"></a>
@@ -176,7 +176,7 @@ ___
 
 **● newUniverse**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:24](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L24)*
 
 ___
 <a id="inputsexpectedasaddress.originaluniverse"></a>
@@ -185,7 +185,7 @@ ___
 
 **● originalUniverse**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:25](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L25)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:25](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L25)*
 
 ___
 <a id="inputsexpectedasaddress.owner"></a>
@@ -194,7 +194,7 @@ ___
 
 **● owner**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:26](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L26)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:26](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L26)*
 
 ___
 <a id="inputsexpectedasaddress.parentuniverse"></a>
@@ -203,7 +203,7 @@ ___
 
 **● parentUniverse**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:27](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L27)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:27](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L27)*
 
 ___
 <a id="inputsexpectedasaddress.reporter"></a>
@@ -212,7 +212,7 @@ ___
 
 **● reporter**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:30](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L30)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:30](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L30)*
 
 ___
 <a id="inputsexpectedasaddress.reportingparticipant"></a>
@@ -221,7 +221,7 @@ ___
 
 **● reportingParticipant**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:31](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L31)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:31](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L31)*
 
 ___
 <a id="inputsexpectedasaddress.sender"></a>
@@ -230,7 +230,7 @@ ___
 
 **● sender**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:28](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L28)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:28](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L28)*
 
 ___
 <a id="inputsexpectedasaddress.sharetoken"></a>
@@ -239,7 +239,7 @@ ___
 
 **● shareToken**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:29](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L29)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:29](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L29)*
 
 ___
 <a id="inputsexpectedasaddress.target"></a>
@@ -248,7 +248,7 @@ ___
 
 **● target**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:32](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L32)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:32](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L32)*
 
 ___
 <a id="inputsexpectedasaddress.to"></a>
@@ -257,7 +257,7 @@ ___
 
 **● to**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:33](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L33)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:33](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L33)*
 
 ___
 <a id="inputsexpectedasaddress.token"></a>
@@ -266,7 +266,7 @@ ___
 
 **● token**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:34](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L34)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:34](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L34)*
 
 ___
 <a id="inputsexpectedasaddress.universe"></a>
@@ -275,7 +275,7 @@ ___
 
 **● universe**: *`true`* = true
 
-*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:35](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/AddressFormatReviver.ts#L35)*
+*Defined in [packages/augur-sdk/src/state/AddressFormatReviver.ts:35](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/AddressFormatReviver.ts#L35)*
 
 ___
 

@@ -43,7 +43,7 @@ sidebar_label: Order
 
 **● amount**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:107](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L107)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:107](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L107)*
 
 ___
 <a id="amountfilled"></a>
@@ -52,7 +52,7 @@ ___
 
 **● amountFilled**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:108](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L108)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:108](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L108)*
 
 ___
 <a id="canceledblocknumber"></a>
@@ -61,7 +61,7 @@ ___
 
 **● canceledBlockNumber**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:113](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L113)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:113](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L113)*
 
 ___
 <a id="canceledtime"></a>
@@ -70,7 +70,7 @@ ___
 
 **● canceledTime**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:115](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L115)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:115](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L115)*
 
 ___
 <a id="canceledtransactionhash"></a>
@@ -79,7 +79,7 @@ ___
 
 **● canceledTransactionHash**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:114](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L114)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:114](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L114)*
 
 ___
 <a id="creationblocknumber"></a>
@@ -88,7 +88,7 @@ ___
 
 **● creationBlockNumber**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:117](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L117)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:117](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L117)*
 
 ___
 <a id="creationtime"></a>
@@ -97,7 +97,7 @@ ___
 
 **● creationTime**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:116](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L116)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:116](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L116)*
 
 ___
 <a id="fullprecisionamount"></a>
@@ -106,7 +106,7 @@ ___
 
 **● fullPrecisionAmount**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:110](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L110)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:110](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L110)*
 
 ___
 <a id="fullprecisionprice"></a>
@@ -115,7 +115,7 @@ ___
 
 **● fullPrecisionPrice**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:109](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L109)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:109](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L109)*
 
 ___
 <a id="logindex"></a>
@@ -124,7 +124,7 @@ ___
 
 **● logIndex**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:103](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L103)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:103](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L103)*
 
 ___
 <a id="orderid"></a>
@@ -133,7 +133,7 @@ ___
 
 **● orderId**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:101](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L101)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:101](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L101)*
 
 ___
 <a id="orderstate"></a>
@@ -142,7 +142,7 @@ ___
 
 **● orderState**: *[OrderState](api-enums-packages-augur-sdk-src-state-getter-trading-orderstate.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:105](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L105)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:105](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L105)*
 
 ___
 <a id="originalfullprecisionamount"></a>
@@ -151,7 +151,7 @@ ___
 
 **● originalFullPrecisionAmount**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:118](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L118)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:118](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L118)*
 
 ___
 <a id="owner"></a>
@@ -160,7 +160,7 @@ ___
 
 **● owner**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:104](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L104)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:104](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L104)*
 
 ___
 <a id="price"></a>
@@ -169,7 +169,7 @@ ___
 
 **● price**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:106](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L106)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:106](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L106)*
 
 ___
 <a id="sharesescrowed"></a>
@@ -178,7 +178,7 @@ ___
 
 **● sharesEscrowed**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:112](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L112)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:112](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L112)*
 
 ___
 <a id="tokensescrowed"></a>
@@ -187,7 +187,7 @@ ___
 
 **● tokensEscrowed**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:111](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L111)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:111](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L111)*
 
 ___
 <a id="transactionhash"></a>
@@ -196,7 +196,7 @@ ___
 
 **● transactionHash**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:102](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L102)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:102](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L102)*
 
 ___
 

@@ -2,10 +2,6 @@ import { Augur } from "@augurproject/sdk";
 import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 import { makeDbMock, makeTestAugur } from "../../libs";
 import { stringTo32ByteHex } from "../../libs/Utils";
-import { toAscii } from "@augurproject/sdk/build/state/utils/utils";
-
-// because flexsearch is a UMD type lib
-import FlexSearch = require("flexsearch");
 import { ParsedLog } from "@augurproject/types/build";
 
 const mock = makeDbMock();
@@ -119,36 +115,31 @@ test("Flexible Search", async () => {
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
         _scalarDenomination: "fake scalar denomination",
-        tags: ["humanity", "30"],
       }),
     },
   ];
   await db.addNewBlock(DBName, blockLogs);
   await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
 
-  let docs = db.fullTextMarketSearch("0x1111111111111111111111111111111111111111");  // market
+  let docs = await db.fullTextMarketSearch("0x1111111111111111111111111111111111111111", null);  // market
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("share");  // category
+  docs = await db.fullTextMarketSearch("share", null);  // category
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("Foobar");  // description/title
+  docs = await db.fullTextMarketSearch("Foobar", null);  // description/title
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("lol");  // longDescription/description
+  docs = await db.fullTextMarketSearch("lol", null);  // longDescription/description
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("blah");  // resolutionSource
+  docs = await db.fullTextMarketSearch("blah", null);  // resolutionSource
   expect(docs.length).toEqual(1);
 
-  docs = db.fullTextMarketSearch("fake");  // _scalarDenomination
+  docs = await db.fullTextMarketSearch("fake", null);  // _scalarDenomination
   expect(docs.length).toEqual(1);
-
-  docs = db.fullTextMarketSearch("humanity");  // tags
-  expect(docs.length).toEqual(1);
-
   const doc = docs[0];
-console.log(doc);
+
   expect(doc).toMatchObject({
     id: "0x1111111111111111111111111111111111111111",
     market: "0x1111111111111111111111111111111111111111",
@@ -157,7 +148,6 @@ console.log(doc);
     longDescription: "lol",
     resolutionSource: "http://www.blah.com",
     _scalarDenomination: "fake scalar denomination",
-    tags: "humanity,30",
   });
 
   expect(doc).toHaveProperty("start");

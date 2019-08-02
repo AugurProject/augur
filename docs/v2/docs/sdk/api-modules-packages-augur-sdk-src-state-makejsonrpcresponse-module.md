@@ -22,7 +22,7 @@ sidebar_label: packages/augur-sdk/src/state/MakeJsonRpcResponse
 
 ▸ **MakeJsonRpcResponse**(id: *`string` \| `null`*, result: *`object` \| `boolean`*): `string`
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcResponse.ts:1](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/MakeJsonRpcResponse.ts#L1)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcResponse.ts:1](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/MakeJsonRpcResponse.ts#L1)*
 
 **Parameters:**
 

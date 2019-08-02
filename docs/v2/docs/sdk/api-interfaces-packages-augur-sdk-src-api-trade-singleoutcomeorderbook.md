@@ -25,18 +25,18 @@ sidebar_label: SingleOutcomeOrderBook
 
 ###  buyOrders
 
-**● buyOrders**: *`Array`<[Order](api-interfaces-packages-augur-sdk-src-api-trade-order.md)>*
+**● buyOrders**: *[Order](api-interfaces-packages-augur-sdk-src-api-trade-order.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:54](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L54)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:54](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L54)*
 
 ___
 <a id="sellorders"></a>
 
 ###  sellorders
 
-**● sellorders**: *`Array`<[Order](api-interfaces-packages-augur-sdk-src-api-trade-order.md)>*
+**● sellorders**: *[Order](api-interfaces-packages-augur-sdk-src-api-trade-order.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:55](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L55)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:55](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L55)*
 
 ___
 

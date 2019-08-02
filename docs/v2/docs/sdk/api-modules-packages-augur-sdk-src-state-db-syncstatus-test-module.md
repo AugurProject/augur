@@ -22,7 +22,7 @@ sidebar_label: packages/augur-sdk/src/state/db/SyncStatus.test
 
 **● DB_FACTORY**: *`(Anonymous function)`* =  PouchDBFactory({ adapter: "memory" })
 
-*Defined in [packages/augur-sdk/src/state/db/SyncStatus.test.ts:4](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/SyncStatus.test.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/db/SyncStatus.test.ts:4](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/SyncStatus.test.ts#L4)*
 
 ___
 
