@@ -320,8 +320,8 @@ export default class Form extends React.Component<
           : newMarket.designatedReporterAddress,
       minPrice: newMarket.minPrice,
       maxPrice: newMarket.maxPrice,
-      endTime: newMarket.endTime.unix(), // newMarket.endTime, this is a number (timestamp)
-      tickSize: newMarket.tickSize, // maxPrice.tickSize, this needs to be a string
+      endTime: newMarket.endTime.timestamp,
+      tickSize: newMarket.tickSize,
       hour: newMarket.hour,
       minute: newMarket.minute,
       meridiem: newMarket.meridiem,

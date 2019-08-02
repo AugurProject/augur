@@ -16,6 +16,7 @@ interface MarketOutcomesListProps {
   selectedOutcomeId: number;
   scalarDenomination: string | undefined;
   marketType: string;
+  marketId: string;
   minPriceBigNumber: BigNumber;
   maxPriceBigNumber: BigNumber;
   popUp: boolean;
@@ -40,6 +41,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
       minPriceBigNumber,
       maxPriceBigNumber,
       popUp,
+      marketId,
     } = this.props;
 
     return (
@@ -59,6 +61,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
           {outcomesFormatted.filter(o => o.isTradable).map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
+              marketId={marketId}
               outcome={outcome}
               selectedOutcomeId={selectedOutcomeId}
               updateSelectedOutcome={updateSelectedOutcome}

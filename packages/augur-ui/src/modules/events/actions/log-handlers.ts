@@ -115,7 +115,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
     dispatch(updateConnectionStatus(true));
   }
   // update assets each block
-  dispatch(updateAssets());
+  if (getState().authStatus.isLogged) dispatch(updateAssets());
 };
 
 export const handleMarketCreatedLog = (log: any) => (

@@ -57,8 +57,8 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
     return (
       <div
-        className={classNames(Styles.SearchBar__container, {
-          [Styles.SearchBar__containerFocused]: isFocused
+        className={classNames(Styles.Container, {
+          [Styles.ContainerFocused]: isFocused
         })}
       >
         <div

@@ -3,27 +3,32 @@ import { withRouter } from "react-router-dom";
 import { AppState } from "store";
 import getValue from "utils/get-value";
 import * as constants from "modules/common/constants";
-
+import { selectMarketOutcomeBestBidAsk } from "modules/markets/selectors/select-market-outcome-best-bid-ask";
 import Row from "modules/common/row";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
 const { COLUMN_TYPES } = constants;
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState, ownProps) => {
+  return {
+    orderBook: state.orderBooks ? state.orderBooks[ownProps.marketId] : null,
+  };
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const outcome = oP.outcome;
-
   const outcomeName = outcome.description;
+  const orderBook = sP.orderBook && sP.orderBook[outcome.id];
+  const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(orderBook);
 
-  const topBidShares = getValue(outcome, "topBid.shares");
-  const topAskShares = getValue(outcome, "topAsk.shares");
+  const topBidShares = topBid.shares;
+  const topAskShares = topAsk.shares;
 
-  const topBidPrice = getValue(outcome, "topBid.price");
-  const topAskPrice = getValue(outcome, "topAsk.price");
+  const topBidPrice = topBid.price;
+  const topAskPrice = topAsk.price;
 
   const lastPrice = getValue(outcome, "lastPrice");
   const lastPricePercent = getValue(outcome, "lastPricePercent.full");
@@ -41,34 +46,34 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "topBidShares",
       columnType: COLUMN_TYPES.VALUE,
       value: topBidShares,
-      showEmptyDash: true
+      showEmptyDash: true,
     },
     {
       key: "topBidPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topBidPrice,
-      showEmptyDash: true
+      showEmptyDash: true,
     },
     {
       key: "topAskPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topAskPrice,
-      showEmptyDash: true
+      showEmptyDash: true,
     },
     {
       key: "topAskShares",
       columnType: COLUMN_TYPES.VALUE,
       value: topAskShares,
-      showEmptyDash: true
+      showEmptyDash: true,
     },
     {
       key: "lastPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: lastPrice,
       addIndicator: true,
-      outcome: outcome,
+      outcome,
       location: "tradingPage",
-    }
+    },
   ];
   return {
     ...oP,
@@ -76,7 +81,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     ...dP,
     rowProperties: outcome,
     columnProperties,
-    rowOnClick: (e: Event) => {oP.updateSelectedOutcome(outcome.id)},
+    rowOnClick: (e: Event) => {oP.updateSelectedOutcome(outcome.id);},
     styleOptions: {
       outcome: true,
       isSingle: true,
