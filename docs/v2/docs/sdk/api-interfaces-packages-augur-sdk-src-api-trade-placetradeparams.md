@@ -39,7 +39,7 @@ sidebar_label: PlaceTradeParams
 
 **● affiliateAddress**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:22](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L22)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:22](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L22)*
 
 ___
 <a id="direction"></a>
@@ -48,7 +48,7 @@ ___
 
 **● direction**: *`0` \| `1`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:15](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L15)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:15](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L15)*
 
 ___
 <a id="donotcreateorders"></a>
@@ -57,7 +57,7 @@ ___
 
 **● doNotCreateOrders**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:24](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L24)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L24)*
 
 ___
 <a id="ignoreshares"></a>
@@ -66,7 +66,7 @@ ___
 
 **● ignoreShares**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:21](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L21)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:21](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L21)*
 
 ___
 <a id="kyctoken"></a>
@@ -75,7 +75,7 @@ ___
 
 **● kycToken**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:23](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L23)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:23](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L23)*
 
 ___
 <a id="market"></a>
@@ -84,7 +84,7 @@ ___
 
 **● market**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L16)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L16)*
 
 ___
 <a id="numoutcomes"></a>
@@ -93,7 +93,7 @@ ___
 
 **● numOutcomes**: *`3` \| `4` \| `5` \| `6` \| `7` \| `8`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L18)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L18)*
 
 ___
 <a id="numticks"></a>
@@ -102,7 +102,7 @@ ___
 
 **● numTicks**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L17)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:17](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L17)*
 
 ___
 <a id="outcome"></a>
@@ -111,7 +111,7 @@ ___
 
 **● outcome**: *`0` \| `1` \| `2` \| `3` \| `4` \| `5` \| `6` \| `7`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:19](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L19)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:19](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L19)*
 
 ___
 <a id="tradegroupid"></a>
@@ -120,7 +120,7 @@ ___
 
 **● tradeGroupId**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L20)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L20)*
 
 ___
 

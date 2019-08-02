@@ -14,6 +14,8 @@ sidebar_label: SyncDocument
 
 ### Properties
 
+* [_id](api-interfaces-packages-augur-sdk-src-state-db-syncstatus-syncdocument.md#_id)
+* [_rev](api-interfaces-packages-augur-sdk-src-state-db-syncstatus-syncdocument.md#_rev)
 * [blockNumber](api-interfaces-packages-augur-sdk-src-state-db-syncstatus-syncdocument.md#blocknumber)
 * [syncing](api-interfaces-packages-augur-sdk-src-state-db-syncstatus-syncdocument.md#syncing)
 
@@ -21,13 +23,31 @@ sidebar_label: SyncDocument
 
 ## Properties
 
+<a id="_id"></a>
+
+### `<Optional>` _id
+
+**● _id**: *`string`*
+
+*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:5](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/SyncStatus.ts#L5)*
+
+___
+<a id="_rev"></a>
+
+### `<Optional>` _rev
+
+**● _rev**: *`string`*
+
+*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:6](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/SyncStatus.ts#L6)*
+
+___
 <a id="blocknumber"></a>
 
 ###  blockNumber
 
 **● blockNumber**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:4](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/SyncStatus.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:7](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/SyncStatus.ts#L7)*
 
 ___
 <a id="syncing"></a>
@@ -36,7 +56,7 @@ ___
 
 **● syncing**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:5](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/SyncStatus.ts#L5)*
+*Defined in [packages/augur-sdk/src/state/db/SyncStatus.ts:8](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/SyncStatus.ts#L8)*
 
 ___
 

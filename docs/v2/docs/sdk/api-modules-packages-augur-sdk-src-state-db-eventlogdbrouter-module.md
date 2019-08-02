@@ -12,5 +12,21 @@ sidebar_label: packages/augur-sdk/src/state/db/EventLogDBRouter
 
 * [EventLogDBRouter](api-classes-packages-augur-sdk-src-state-db-eventlogdbrouter-eventlogdbrouter.md)
 
+### Type aliases
+
+* [EventTopics](api-modules-packages-augur-sdk-src-state-db-eventlogdbrouter-module.md#eventtopics)
+
 ---
+
+## Type aliases
+
+<a id="eventtopics"></a>
+
+###  EventTopics
+
+**Ƭ EventTopics**: *`string` \| `string`[]*
+
+*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:6](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L6)*
+
+___
 

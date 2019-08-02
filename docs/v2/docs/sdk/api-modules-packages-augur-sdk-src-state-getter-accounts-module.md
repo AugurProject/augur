@@ -53,7 +53,7 @@ sidebar_label: packages/augur-sdk/src/state/getter/Accounts
 
 **● actionnDeserializer**: *`KeyofType`<[Action](api-enums-packages-augur-sdk-src-state-getter-accounts-action.md)>* =  t.keyof(Action)
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:45](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L45)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:45](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L45)*
 
 ___
 <a id="coindeserializer"></a>
@@ -62,7 +62,7 @@ ___
 
 **● coinDeserializer**: *`KeyofType`<[Coin](api-enums-packages-augur-sdk-src-state-getter-accounts-coin.md)>* =  t.keyof(Coin)
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:46](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L46)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:46](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L46)*
 
 ___
 <a id="getaccounttransactionhistoryparamsspecific"></a>
@@ -78,7 +78,7 @@ ___
   action: t.union([actionnDeserializer, t.null, t.undefined]),
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:48](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L48)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:48](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L48)*
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 ▸ **formatCompleteSetsPurchasedLogs**(transactionLogs: *[CompleteSetsPurchasedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetspurchasedlog.md)[]*, marketInfo: *[MarketCreatedInfo](api-interfaces-packages-augur-sdk-src-state-getter-accounts-marketcreatedinfo.md)*): [AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:839](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L839)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:839](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L839)*
 
 **Parameters:**
 
@@ -108,7 +108,7 @@ ___
 
 ▸ **formatCompleteSetsSoldLogs**(transactionLogs: *[CompleteSetsSoldLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetssoldlog.md)[]*, marketInfo: *[MarketCreatedInfo](api-interfaces-packages-augur-sdk-src-state-getter-accounts-marketcreatedinfo.md)*): [AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:870](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L870)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:870](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L870)*
 
 **Parameters:**
 
@@ -126,7 +126,7 @@ ___
 
 ▸ **formatCrowdsourcerRedeemedLogs**(transactionLogs: *[InitialReporterRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreporterredeemedlog.md)[] \| [DisputeCrowdsourcerRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcerredeemedlog.md)[]*, marketInfo: *[MarketCreatedInfo](api-interfaces-packages-augur-sdk-src-state-getter-accounts-marketcreatedinfo.md)*, params: *`t.TypeOf`<`IntersectionType`>*): `Promise`<[AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:657](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L657)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:657](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L657)*
 
 **Parameters:**
 
@@ -145,7 +145,7 @@ ___
 
 ▸ **formatDisputeCrowdsourcerContributionLogs**(transactionLogs: *[DisputeCrowdsourcerContributionLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercontributionlog.md)[]*, augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, marketInfo: *[MarketCreatedInfo](api-interfaces-packages-augur-sdk-src-state-getter-accounts-marketcreatedinfo.md)*): `Promise`<[AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:756](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L756)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:756](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L756)*
 
 **Parameters:**
 
@@ -164,7 +164,7 @@ ___
 
 ▸ **formatInitialReportSubmittedLogs**(transactionLogs: *[InitialReportSubmittedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreportsubmittedlog.md)[]*, augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, marketInfo: *[MarketCreatedInfo](api-interfaces-packages-augur-sdk-src-state-getter-accounts-marketcreatedinfo.md)*): `Promise`<[AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:796](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L796)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:796](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L796)*
 
 **Parameters:**
 
@@ -183,7 +183,7 @@ ___
 
 ▸ **formatMarketCreatedLogs**(transactionLogs: *[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)[]*): [AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:729](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L729)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:729](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L729)*
 
 **Parameters:**
 
@@ -200,7 +200,7 @@ ___
 
 ▸ **formatOrderCanceledLogs**(transactionLogs: *[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]*, marketInfo: *[MarketCreatedInfo](api-interfaces-packages-augur-sdk-src-state-getter-accounts-marketcreatedinfo.md)*): [AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:554](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L554)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:554](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L554)*
 
 **Parameters:**
 
@@ -218,7 +218,7 @@ ___
 
 ▸ **formatOrderFilledLogs**(transactionLogs: *[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]*, marketInfo: *[MarketCreatedInfo](api-interfaces-packages-augur-sdk-src-state-getter-accounts-marketcreatedinfo.md)*, params: *`t.TypeOf`<`IntersectionType`>*): [AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:472](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L472)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:472](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L472)*
 
 **Parameters:**
 
@@ -237,7 +237,7 @@ ___
 
 ▸ **formatParticipationTokensRedeemedLogs**(transactionLogs: *[ParticipationTokensRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-participationtokensredeemedlog.md)[]*): [AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:586](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L586)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:586](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L586)*
 
 **Parameters:**
 
@@ -254,7 +254,7 @@ ___
 
 ▸ **formatTradingProceedsClaimedLogs**(transactionLogs: *[TradingProceedsClaimedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tradingproceedsclaimedlog.md)[]*, marketInfo: *[MarketCreatedInfo](api-interfaces-packages-augur-sdk-src-state-getter-accounts-marketcreatedinfo.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*): `Promise`<[AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:611](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L611)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:611](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L611)*
 
 **Parameters:**
 
@@ -273,7 +273,7 @@ ___
 
 ▸ **getOutcomeDescriptionFromOutcome**(outcome: *`number`*, market: *[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)*): `string`
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:437](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L437)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:437](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L437)*
 
 **Parameters:**
 
@@ -291,7 +291,7 @@ ___
 
 ▸ **getOutcomeFromPayoutNumerators**(payoutNumerators: *`BigNumber`[]*): `number`
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:462](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Accounts.ts#L462)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:462](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L462)*
 
 **Parameters:**
 

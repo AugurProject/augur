@@ -22,7 +22,7 @@ sidebar_label: packages/augur-sdk/src/state/Server
 
 ▸ **run**(): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/Server.ts:7](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/Server.ts#L7)*
+*Defined in [packages/augur-sdk/src/state/Server.ts:7](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/Server.ts#L7)*
 
 **Returns:** `Promise`<`void`>
 

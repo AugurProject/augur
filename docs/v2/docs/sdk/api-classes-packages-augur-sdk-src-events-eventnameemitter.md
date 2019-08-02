@@ -81,18 +81,18 @@ ___
 
 ###  emit
 
-▸ **emit**(eventName: *[SubscriptionEventName](api-enums-packages-augur-sdk-src-constants-subscriptioneventname.md) \| `string`*, ...args: *`Array`<`any`>*): `boolean`
+▸ **emit**(eventName: *[SubscriptionEventName](api-enums-packages-augur-sdk-src-constants-subscriptioneventname.md) \| `string`*, ...args: *`any`[]*): `boolean`
 
 *Overrides EventEmitter.emit*
 
-*Defined in [packages/augur-sdk/src/events.ts:11](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/events.ts#L11)*
+*Defined in [packages/augur-sdk/src/events.ts:11](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/events.ts#L11)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
 | eventName | [SubscriptionEventName](api-enums-packages-augur-sdk-src-constants-subscriptioneventname.md) \| `string` |
-| `Rest` args | `Array`<`any`> |
+| `Rest` args | `any`[] |
 
 **Returns:** `boolean`
 

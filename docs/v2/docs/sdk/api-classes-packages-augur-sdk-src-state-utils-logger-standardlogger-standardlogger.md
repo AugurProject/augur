@@ -31,17 +31,17 @@ sidebar_label: StandardLogger
 
 ###  debug
 
-▸ **debug**(...msg: *`Array`<`string`>*): `void`
+▸ **debug**(...msg: *`string`[]*): `void`
 
 *Implementation of [LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md).[debug](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md#debug)*
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L16)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 
@@ -54,7 +54,7 @@ ___
 
 *Implementation of [LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md).[error](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md#error)*
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:4](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:4](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L4)*
 
 **Parameters:**
 
@@ -69,17 +69,17 @@ ___
 
 ###  info
 
-▸ **info**(...msg: *`Array`<`string`>*): `void`
+▸ **info**(...msg: *`string`[]*): `void`
 
 *Implementation of [LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md).[info](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md#info)*
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:12](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L12)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:12](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L12)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 
@@ -88,17 +88,17 @@ ___
 
 ###  warn
 
-▸ **warn**(...msg: *`Array`<`string`>*): `void`
+▸ **warn**(...msg: *`string`[]*): `void`
 
 *Implementation of [LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md).[warn](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md#warn)*
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:8](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/StandardLogger.ts:8](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/StandardLogger.ts#L8)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 

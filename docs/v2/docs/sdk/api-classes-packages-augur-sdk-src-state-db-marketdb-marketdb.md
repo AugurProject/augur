@@ -26,7 +26,7 @@ Market specific derived DB intended for filtering purposes
 * [db](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#db)
 * [dbName](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#dbname)
 * [events](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#events)
-* [flexSearch](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#flexsearch)
+* [flexSearchIndex](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#flexsearchindex)
 * [liquiditySpreads](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#liquidityspreads)
 * [networkId](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#networkid)
 * [stateDB](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#statedb)
@@ -44,6 +44,7 @@ Market specific derived DB intended for filtering purposes
 * [getInfo](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#getinfo)
 * [getOrderbook](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#getorderbook)
 * [getOrderbookData](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#getorderbookdata)
+* [getPouchRevFromId](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#getpouchrevfromid)
 * [handleMergeEvent](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#handlemergeevent)
 * [processLog](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#processlog)
 * [recalcInvalidFilter](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md#recalcinvalidfilter)
@@ -65,7 +66,7 @@ Market specific derived DB intended for filtering purposes
 
 *Overrides [DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md).[constructor](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md#constructor)*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:50](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L50)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:62](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L62)*
 
 **Parameters:**
 
@@ -87,7 +88,7 @@ ___
 
 **● augur**: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:47](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L47)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:59](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L59)*
 
 ___
 <a id="db"></a>
@@ -98,7 +99,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[db](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#db)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:21](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L24)*
 
 ___
 <a id="dbname"></a>
@@ -109,7 +110,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[dbName](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#dbname)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:23](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L23)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:26](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L26)*
 
 ___
 <a id="events"></a>
@@ -118,16 +119,16 @@ ___
 
 **● events**: *[Subscriptions](api-classes-packages-augur-sdk-src-subscriptions-subscriptions.md)* =  new Subscriptions(augurEmitter)
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:48](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L48)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:60](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L60)*
 
 ___
-<a id="flexsearch"></a>
+<a id="flexsearchindex"></a>
 
-### `<Private>``<Optional>` flexSearch
+### `<Private>``<Optional>` flexSearchIndex
 
-**● flexSearch**: *`FlexSearch`*
+**● flexSearchIndex**: *`Index`<[MarketFields](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md)>*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:49](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L49)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:61](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L61)*
 
 ___
 <a id="liquidityspreads"></a>
@@ -136,7 +137,7 @@ ___
 
 **● liquiditySpreads**: *`number`[]* =  [10, 15, 20, 100]
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:50](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L50)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:62](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L62)*
 
 ___
 <a id="networkid"></a>
@@ -147,7 +148,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[networkId](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#networkid)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:22](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:25](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L25)*
 
 ___
 <a id="statedb"></a>
@@ -158,7 +159,7 @@ ___
 
 *Inherited from [DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md).[stateDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md#statedb)*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:19](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DerivedDB.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:19](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L19)*
 
 ___
 <a id="syncstatus"></a>
@@ -169,7 +170,7 @@ ___
 
 *Inherited from [DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md).[syncStatus](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md#syncstatus)*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DerivedDB.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L18)*
 
 ___
 
@@ -183,7 +184,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[allDocs](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#alldocs)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:31](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L31)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:34](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L34)*
 
 **Returns:** `Promise`<`AllDocsResponse`<`__type`>>
 
@@ -196,7 +197,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[bulkUpsertOrderedDocuments](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#bulkupsertordereddocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:66](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L66)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:65](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L65)*
 
 **Parameters:**
 
@@ -216,7 +217,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[bulkUpsertUnorderedDocuments](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#bulkupsertunordereddocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:57](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L57)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:56](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L56)*
 
 **Parameters:**
 
@@ -235,7 +236,7 @@ ___
 
 *Overrides [DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md).[doSync](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md#dosync)*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:79](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L79)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:92](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L92)*
 
 **Parameters:**
 
@@ -254,7 +255,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[find](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#find)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:99](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L99)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:98](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L98)*
 
 **Parameters:**
 
@@ -269,17 +270,18 @@ ___
 
 ###  fullTextSearch
 
-▸ **fullTextSearch**(query: *`string`*): `Array`<`object`>
+▸ **fullTextSearch**(query: *`string` \| `null`*, extendedSearchOptions: *`ExtendedSearchOptions`[] \| `null`*): `Promise`<`SearchResults`<[MarketFields](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md)>[]>
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:223](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L223)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:236](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L236)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| query | `string` |
+| query | `string` \| `null` |
+| extendedSearchOptions | `ExtendedSearchOptions`[] \| `null` |
 
-**Returns:** `Array`<`object`>
+**Returns:** `Promise`<`SearchResults`<[MarketFields](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md)>[]>
 
 ___
 <a id="getdocument"></a>
@@ -290,7 +292,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[getDocument](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#getdocument)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:35](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L35)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:38](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L38)*
 
 **Type parameters:**
 
@@ -312,7 +314,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[getInfo](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#getinfo)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:95](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L95)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:94](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L94)*
 
 **Returns:** `Promise`<`DatabaseInfo`>
 
@@ -323,7 +325,7 @@ ___
 
 ▸ **getOrderbook**(marketData: *[MarketData](api-interfaces-packages-augur-sdk-src-state-logs-types-marketdata.md)*, numOutcomes: *`number`*, estimatedTradeGasCostInAttoDai: *`BigNumber`*): `Promise`<[Orderbook](api-interfaces-packages-augur-sdk-src-api-liquidity-orderbook.md)>
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:164](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L164)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:177](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L177)*
 
 **Parameters:**
 
@@ -342,7 +344,7 @@ ___
 
 ▸ **getOrderbookData**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, marketId: *`string`*, marketData: *[MarketData](api-interfaces-packages-augur-sdk-src-state-logs-types-marketdata.md)*, reportingFeeDivisor: *`BigNumber`*, ETHInAttoDAI: *`BigNumber`*): `Promise`<[MarketOrderbookData](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketorderbookdata.md)>
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:128](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L128)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:141](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L141)*
 
 **Parameters:**
 
@@ -357,22 +359,41 @@ ___
 **Returns:** `Promise`<[MarketOrderbookData](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketorderbookdata.md)>
 
 ___
+<a id="getpouchrevfromid"></a>
+
+### `<Protected>` getPouchRevFromId
+
+▸ **getPouchRevFromId**(id: *`string`*): `Promise`<`string` \| `undefined`>
+
+*Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[getPouchRevFromId](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#getpouchrevfromid)*
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:102](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L102)*
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| id | `string` |
+
+**Returns:** `Promise`<`string` \| `undefined`>
+
+___
 <a id="handlemergeevent"></a>
 
 ###  handleMergeEvent
 
-▸ **handleMergeEvent**(blocknumber: *`number`*, logs: *`Array`<[ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)>*, syncing?: *`boolean`*): `Promise`<`number`>
+▸ **handleMergeEvent**(blocknumber: *`number`*, logs: *[ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)[]*, syncing?: *`boolean`*): `Promise`<`number`>
 
 *Inherited from [DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md).[handleMergeEvent](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md#handlemergeevent)*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:92](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DerivedDB.ts#L92)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:116](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L116)*
 
 **Parameters:**
 
 | Name | Type | Default value |
 | ------ | ------ | ------ |
 | blocknumber | `number` | - |
-| logs | `Array`<[ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)> | - |
+| logs | [ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)[] | - |
 | `Default value` syncing | `boolean` | false |
 
 **Returns:** `Promise`<`number`>
@@ -386,7 +407,7 @@ ___
 
 *Inherited from [DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md).[processLog](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md#processlog)*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:129](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DerivedDB.ts#L129)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:171](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L171)*
 
 **Parameters:**
 
@@ -403,7 +424,7 @@ ___
 
 ▸ **recalcInvalidFilter**(orderbook: *[Orderbook](api-interfaces-packages-augur-sdk-src-api-liquidity-orderbook.md)*, marketData: *[MarketData](api-interfaces-packages-augur-sdk-src-state-logs-types-marketdata.md)*, feeMultiplier: *`BigNumber`*, estimatedTradeGasCostInAttoDai: *`BigNumber`*, estimatedClaimGasCostInAttoDai: *`BigNumber`*): `Promise`<`boolean`>
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:198](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L198)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:211](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L211)*
 
 **Parameters:**
 
@@ -426,7 +447,7 @@ ___
 
 *Inherited from [DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md).[rollback](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md#rollback)*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:66](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DerivedDB.ts#L66)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:83](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L83)*
 
 **Parameters:**
 
@@ -445,7 +466,7 @@ ___
 
 *Inherited from [DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md).[sync](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md#sync)*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:45](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DerivedDB.ts#L45)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:49](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L49)*
 
 **Parameters:**
 
@@ -462,7 +483,7 @@ ___
 
 ▸ **syncFullTextSearch**(): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:230](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L230)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:247](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L247)*
 
 **Returns:** `Promise`<`void`>
 
@@ -473,7 +494,7 @@ ___
 
 ▸ **syncOrderBooks**(syncing: *`boolean`*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:85](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L85)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:98](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L98)*
 
 **Parameters:**
 
@@ -488,11 +509,11 @@ ___
 
 ### `<Protected>` upsertDocument
 
-▸ **upsertDocument**(id: *`string`*, document: *`object`*): `Promise`<`Response`>
+▸ **upsertDocument**(id: *`string`*, document: *`object`*): `Promise`<`UpsertResponse`>
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[upsertDocument](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#upsertdocument)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:46](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/AbstractDB.ts#L46)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:49](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L49)*
 
 **Parameters:**
 
@@ -501,7 +522,7 @@ ___
 | id | `string` |
 | document | `object` |
 
-**Returns:** `Promise`<`Response`>
+**Returns:** `Promise`<`UpsertResponse`>
 
 ___
 

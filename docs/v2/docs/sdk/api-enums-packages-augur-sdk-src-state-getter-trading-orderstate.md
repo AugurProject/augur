@@ -25,7 +25,7 @@ sidebar_label: OrderState
 
 **ALL**:  = "ALL"
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:85](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L85)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:85](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L85)*
 
 ___
 <a id="canceled"></a>
@@ -34,7 +34,7 @@ ___
 
 **CANCELED**:  = "CANCELED"
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:88](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L88)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:88](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L88)*
 
 ___
 <a id="filled"></a>
@@ -43,7 +43,7 @@ ___
 
 **FILLED**:  = "FILLED"
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:87](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L87)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:87](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L87)*
 
 ___
 <a id="open"></a>
@@ -52,7 +52,7 @@ ___
 
 **OPEN**:  = "OPEN"
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:86](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Trading.ts#L86)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:86](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L86)*
 
 ___
 

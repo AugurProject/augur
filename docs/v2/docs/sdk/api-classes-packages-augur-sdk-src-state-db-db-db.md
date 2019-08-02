@@ -86,7 +86,7 @@ sidebar_label: DB
 
 ⊕ **new DB**(pouchDBFactory: *[PouchDBFactoryType](api-modules-packages-augur-sdk-src-state-db-abstractdb-module.md#pouchdbfactorytype)*): [DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:89](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L89)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:90](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L90)*
 
 **Parameters:**
 
@@ -106,22 +106,22 @@ ___
 
 **● augur**: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:59](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L59)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:60](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L60)*
 
 ___
 <a id="basicderiveddbs"></a>
 
 ###  basicDerivedDBs
 
-**● basicDerivedDBs**: *`Array`<[DerivedDBConfiguration](api-interfaces-packages-augur-sdk-src-state-db-db-deriveddbconfiguration.md)>* =  [
+**● basicDerivedDBs**: *[DerivedDBConfiguration](api-interfaces-packages-augur-sdk-src-state-db-db-deriveddbconfiguration.md)[]* =  [
     {
       "name": "CurrentOrders",
       "eventNames": ["OrderEvent"],
-      "idFields": ["orderId"]
+      "idFields": ["orderId"],
     },
   ]
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:63](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L63)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:64](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L64)*
 
 ___
 <a id="blockandlogstreamerlistener"></a>
@@ -130,7 +130,7 @@ ___
 
 **● blockAndLogStreamerListener**: *[IBlockAndLogStreamerListener](api-interfaces-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-iblockandlogstreamerlistener.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:58](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L58)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:59](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L59)*
 
 ___
 <a id="blockstreamdelay"></a>
@@ -139,7 +139,7 @@ ___
 
 **● blockstreamDelay**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:52](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L52)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:53](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L53)*
 
 ___
 <a id="deriveddatabases"></a>
@@ -148,7 +148,7 @@ ___
 
 **● derivedDatabases**: *`object`*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:56](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L56)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:57](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L57)*
 
 #### Type declaration
 
@@ -159,9 +159,9 @@ ___
 
 ### `<Private>` genericEventNames
 
-**● genericEventNames**: *`Array`<`string`>*
+**● genericEventNames**: *`string`[]*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:54](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L54)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:55](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L55)*
 
 ___
 <a id="marketdatabase"></a>
@@ -170,7 +170,7 @@ ___
 
 **● marketDatabase**: *[MarketDB](api-classes-packages-augur-sdk-src-state-db-marketdb-marketdb.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:57](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L57)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:58](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L58)*
 
 ___
 <a id="networkid"></a>
@@ -179,7 +179,7 @@ ___
 
 **● networkId**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:51](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L51)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:52](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L52)*
 
 ___
 <a id="pouchdbfactory"></a>
@@ -188,7 +188,7 @@ ___
 
 **● pouchDBFactory**: *[PouchDBFactoryType](api-modules-packages-augur-sdk-src-state-db-abstractdb-module.md#pouchdbfactorytype)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:60](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L60)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:61](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L61)*
 
 ___
 <a id="syncstatus"></a>
@@ -197,7 +197,7 @@ ___
 
 **● syncStatus**: *[SyncStatus](api-classes-packages-augur-sdk-src-state-db-syncstatus-syncstatus.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:61](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L61)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:62](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L62)*
 
 ___
 <a id="syncabledatabases"></a>
@@ -206,7 +206,7 @@ ___
 
 **● syncableDatabases**: *`object`*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:55](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L55)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:56](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L56)*
 
 #### Type declaration
 
@@ -219,14 +219,14 @@ ___
 
 **● trackedUsers**: *[TrackedUsers](api-classes-packages-augur-sdk-src-state-db-trackedusers-trackedusers.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:53](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L53)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:54](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L54)*
 
 ___
 <a id="userspecificdbs"></a>
 
 ###  userSpecificDBs
 
-**● userSpecificDBs**: *`Array`<[UserSpecificDBConfiguration](api-interfaces-packages-augur-sdk-src-state-db-db-userspecificdbconfiguration.md)>* =  [
+**● userSpecificDBs**: *[UserSpecificDBConfiguration](api-interfaces-packages-augur-sdk-src-state-db-db-userspecificdbconfiguration.md)[]* =  [
     {
       "name": "TokensTransferred",
       "numAdditionalTopics": 3,
@@ -241,11 +241,11 @@ ___
       "name": "TokenBalanceChanged",
       "numAdditionalTopics": 2,
       "userTopicIndicies": [1],
-      "idFields": ["token"]
+      "idFields": ["token"],
     },
   ]
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:72](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L72)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:73](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L73)*
 
 ___
 
@@ -257,7 +257,7 @@ ___
 
 ▸ **addNewBlock**(dbName: *`string`*, blockLogs: *`any`*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:346](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L346)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:347](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L347)*
 
 Adds a new block to a SyncableDB/UserSyncableDB and updates MetaDB.
 
@@ -277,9 +277,9 @@ ___
 
 ###  findCompleteSetsPurchasedLogs
 
-▸ **findCompleteSetsPurchasedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[CompleteSetsPurchasedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetspurchasedlog.md)>>
+▸ **findCompleteSetsPurchasedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[CompleteSetsPurchasedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetspurchasedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:393](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L393)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:394](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L394)*
 
 Queries the CompleteSetsPurchased DB
 
@@ -289,16 +289,16 @@ Queries the CompleteSetsPurchased DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[CompleteSetsPurchasedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetspurchasedlog.md)>>
+**Returns:** `Promise`<[CompleteSetsPurchasedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetspurchasedlog.md)[]>
 
 ___
 <a id="findcompletesetssoldlogs"></a>
 
 ###  findCompleteSetsSoldLogs
 
-▸ **findCompleteSetsSoldLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[CompleteSetsSoldLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetssoldlog.md)>>
+▸ **findCompleteSetsSoldLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[CompleteSetsSoldLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetssoldlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:404](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L404)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:405](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L405)*
 
 Queries the CompleteSetsSold DB
 
@@ -308,16 +308,16 @@ Queries the CompleteSetsSold DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[CompleteSetsSoldLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetssoldlog.md)>>
+**Returns:** `Promise`<[CompleteSetsSoldLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetssoldlog.md)[]>
 
 ___
 <a id="findcurrentorderlogs"></a>
 
 ###  findCurrentOrderLogs
 
-▸ **findCurrentOrderLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+▸ **findCurrentOrderLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:672](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L672)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:673](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L673)*
 
 Queries the CurrentOrders DB
 
@@ -327,16 +327,16 @@ Queries the CurrentOrders DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+**Returns:** `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
 ___
 <a id="finddisputecrowdsourcercompletedlogs"></a>
 
 ###  findDisputeCrowdsourcerCompletedLogs
 
-▸ **findDisputeCrowdsourcerCompletedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[DisputeCrowdsourcerCompletedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercompletedlog.md)>>
+▸ **findDisputeCrowdsourcerCompletedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[DisputeCrowdsourcerCompletedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercompletedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:415](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L415)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:416](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L416)*
 
 Queries the DisputeCrowdsourcerCompleted DB
 
@@ -346,16 +346,16 @@ Queries the DisputeCrowdsourcerCompleted DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[DisputeCrowdsourcerCompletedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercompletedlog.md)>>
+**Returns:** `Promise`<[DisputeCrowdsourcerCompletedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercompletedlog.md)[]>
 
 ___
 <a id="finddisputecrowdsourcercontributionlogs"></a>
 
 ###  findDisputeCrowdsourcerContributionLogs
 
-▸ **findDisputeCrowdsourcerContributionLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[DisputeCrowdsourcerContributionLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercontributionlog.md)>>
+▸ **findDisputeCrowdsourcerContributionLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[DisputeCrowdsourcerContributionLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercontributionlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:426](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L426)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:427](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L427)*
 
 Queries the DisputeCrowdsourcerContribution DB
 
@@ -365,16 +365,16 @@ Queries the DisputeCrowdsourcerContribution DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[DisputeCrowdsourcerContributionLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercontributionlog.md)>>
+**Returns:** `Promise`<[DisputeCrowdsourcerContributionLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercontributionlog.md)[]>
 
 ___
 <a id="finddisputecrowdsourcercreatedlogs"></a>
 
 ###  findDisputeCrowdsourcerCreatedLogs
 
-▸ **findDisputeCrowdsourcerCreatedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[DisputeCrowdsourcerCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercreatedlog.md)>>
+▸ **findDisputeCrowdsourcerCreatedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[DisputeCrowdsourcerCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercreatedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:437](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L437)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:438](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L438)*
 
 Queries the DisputeCrowdsourcerCreated DB
 
@@ -384,16 +384,16 @@ Queries the DisputeCrowdsourcerCreated DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[DisputeCrowdsourcerCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercreatedlog.md)>>
+**Returns:** `Promise`<[DisputeCrowdsourcerCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercreatedlog.md)[]>
 
 ___
 <a id="finddisputecrowdsourcerredeemedlogs"></a>
 
 ###  findDisputeCrowdsourcerRedeemedLogs
 
-▸ **findDisputeCrowdsourcerRedeemedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[DisputeCrowdsourcerRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcerredeemedlog.md)>>
+▸ **findDisputeCrowdsourcerRedeemedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[DisputeCrowdsourcerRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcerredeemedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:448](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L448)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:449](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L449)*
 
 Queries the DisputeCrowdsourcerRedeemed DB
 
@@ -403,16 +403,16 @@ Queries the DisputeCrowdsourcerRedeemed DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[DisputeCrowdsourcerRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcerredeemedlog.md)>>
+**Returns:** `Promise`<[DisputeCrowdsourcerRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcerredeemedlog.md)[]>
 
 ___
 <a id="finddisputewindowcreatedlogs"></a>
 
 ###  findDisputeWindowCreatedLogs
 
-▸ **findDisputeWindowCreatedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[DisputeWindowCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputewindowcreatedlog.md)>>
+▸ **findDisputeWindowCreatedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[DisputeWindowCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputewindowcreatedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:459](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L459)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:460](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L460)*
 
 Queries the DisputeWindowCreated DB
 
@@ -422,7 +422,7 @@ Queries the DisputeWindowCreated DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[DisputeWindowCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputewindowcreatedlog.md)>>
+**Returns:** `Promise`<[DisputeWindowCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputewindowcreatedlog.md)[]>
 
 ___
 <a id="findinderiveddb"></a>
@@ -431,7 +431,7 @@ ___
 
 ▸ **findInDerivedDB**(dbName: *`string`*, request: *`FindRequest`<`__type`>*): `Promise`<`FindResponse`<`__type`>>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:383](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L383)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:384](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L384)*
 
 Queries a DerivedDB.
 
@@ -452,7 +452,7 @@ ___
 
 ▸ **findInSyncableDB**(dbName: *`string`*, request: *`FindRequest`<`__type`>*): `Promise`<`FindResponse`<`__type`>>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:372](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L372)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:373](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L373)*
 
 Queries a SyncableDB.
 
@@ -471,9 +471,9 @@ ___
 
 ###  findInitialReportSubmittedLogs
 
-▸ **findInitialReportSubmittedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[InitialReportSubmittedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreportsubmittedlog.md)>>
+▸ **findInitialReportSubmittedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[InitialReportSubmittedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreportsubmittedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:481](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L481)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:482](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L482)*
 
 Queries the InitialReportSubmitted DB
 
@@ -483,16 +483,16 @@ Queries the InitialReportSubmitted DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[InitialReportSubmittedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreportsubmittedlog.md)>>
+**Returns:** `Promise`<[InitialReportSubmittedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreportsubmittedlog.md)[]>
 
 ___
 <a id="findinitialreporterredeemedlogs"></a>
 
 ###  findInitialReporterRedeemedLogs
 
-▸ **findInitialReporterRedeemedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[InitialReporterRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreporterredeemedlog.md)>>
+▸ **findInitialReporterRedeemedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[InitialReporterRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreporterredeemedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:470](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L470)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:471](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L471)*
 
 Queries the InitialReporterRedeemed DB
 
@@ -502,16 +502,16 @@ Queries the InitialReporterRedeemed DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[InitialReporterRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreporterredeemedlog.md)>>
+**Returns:** `Promise`<[InitialReporterRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreporterredeemedlog.md)[]>
 
 ___
 <a id="findmarketcreatedlogs"></a>
 
 ###  findMarketCreatedLogs
 
-▸ **findMarketCreatedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)>>
+▸ **findMarketCreatedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:492](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L492)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:493](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L493)*
 
 Queries the MarketCreated DB
 
@@ -521,16 +521,16 @@ Queries the MarketCreated DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)>>
+**Returns:** `Promise`<[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)[]>
 
 ___
 <a id="findmarketfinalizedlogs"></a>
 
 ###  findMarketFinalizedLogs
 
-▸ **findMarketFinalizedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[MarketFinalizedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketfinalizedlog.md)>>
+▸ **findMarketFinalizedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[MarketFinalizedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketfinalizedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:503](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L503)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:504](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L504)*
 
 Queries the MarketFinalized DB
 
@@ -540,16 +540,16 @@ Queries the MarketFinalized DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[MarketFinalizedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketfinalizedlog.md)>>
+**Returns:** `Promise`<[MarketFinalizedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketfinalizedlog.md)[]>
 
 ___
 <a id="findmarketmigratedlogs"></a>
 
 ###  findMarketMigratedLogs
 
-▸ **findMarketMigratedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[MarketMigratedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketmigratedlog.md)>>
+▸ **findMarketMigratedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[MarketMigratedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketmigratedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:514](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L514)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:515](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L515)*
 
 Queries the MarketMigrated DB
 
@@ -559,16 +559,16 @@ Queries the MarketMigrated DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[MarketMigratedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketmigratedlog.md)>>
+**Returns:** `Promise`<[MarketMigratedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketmigratedlog.md)[]>
 
 ___
 <a id="findmarketoichangedlogs"></a>
 
 ###  findMarketOIChangedLogs
 
-▸ **findMarketOIChangedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[MarketOIChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketoichangedlog.md)>>
+▸ **findMarketOIChangedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[MarketOIChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketoichangedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:536](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L536)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:537](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L537)*
 
 Queries the MarketOIChanged DB
 
@@ -578,16 +578,16 @@ Queries the MarketOIChanged DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[MarketOIChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketoichangedlog.md)>>
+**Returns:** `Promise`<[MarketOIChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketoichangedlog.md)[]>
 
 ___
 <a id="findmarketvolumechangedlogs"></a>
 
 ###  findMarketVolumeChangedLogs
 
-▸ **findMarketVolumeChangedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[MarketVolumeChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketvolumechangedlog.md)>>
+▸ **findMarketVolumeChangedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[MarketVolumeChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketvolumechangedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:525](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L525)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:526](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L526)*
 
 Queries the MarketVolumeChanged DB
 
@@ -597,16 +597,16 @@ Queries the MarketVolumeChanged DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[MarketVolumeChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketvolumechangedlog.md)>>
+**Returns:** `Promise`<[MarketVolumeChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketvolumechangedlog.md)[]>
 
 ___
 <a id="findmarkets"></a>
 
 ###  findMarkets
 
-▸ **findMarkets**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[MarketData](api-interfaces-packages-augur-sdk-src-state-logs-types-marketdata.md)>>
+▸ **findMarkets**(request: *`FindRequest`<`__type`>*): `Promise`<[MarketData](api-interfaces-packages-augur-sdk-src-state-logs-types-marketdata.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:685](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L685)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:686](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L686)*
 
 Queries the Markets DB
 
@@ -616,16 +616,16 @@ Queries the Markets DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[MarketData](api-interfaces-packages-augur-sdk-src-state-logs-types-marketdata.md)>>
+**Returns:** `Promise`<[MarketData](api-interfaces-packages-augur-sdk-src-state-logs-types-marketdata.md)[]>
 
 ___
 <a id="findordercanceledlogs"></a>
 
 ###  findOrderCanceledLogs
 
-▸ **findOrderCanceledLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+▸ **findOrderCanceledLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:547](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L547)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:548](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L548)*
 
 Queries the OrderEvent DB for Cancel events
 
@@ -635,16 +635,16 @@ Queries the OrderEvent DB for Cancel events
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+**Returns:** `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
 ___
 <a id="findordercreatedlogs"></a>
 
 ###  findOrderCreatedLogs
 
-▸ **findOrderCreatedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+▸ **findOrderCreatedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:561](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L561)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:562](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L562)*
 
 Queries the OrderEvent DB for Create events
 
@@ -654,16 +654,16 @@ Queries the OrderEvent DB for Create events
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+**Returns:** `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
 ___
 <a id="findorderfilledlogs"></a>
 
 ###  findOrderFilledLogs
 
-▸ **findOrderFilledLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+▸ **findOrderFilledLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:575](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L575)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:576](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L576)*
 
 Queries the OrderEvent DB for Fill events
 
@@ -673,16 +673,16 @@ Queries the OrderEvent DB for Fill events
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+**Returns:** `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
 ___
 <a id="findorderpricechangedlogs"></a>
 
 ###  findOrderPriceChangedLogs
 
-▸ **findOrderPriceChangedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+▸ **findOrderPriceChangedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:589](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L589)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:590](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L590)*
 
 Queries the OrderEvent DB for PriceChanged events
 
@@ -692,16 +692,16 @@ Queries the OrderEvent DB for PriceChanged events
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)>>
+**Returns:** `Promise`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]>
 
 ___
 <a id="findparticipationtokensredeemedlogs"></a>
 
 ###  findParticipationTokensRedeemedLogs
 
-▸ **findParticipationTokensRedeemedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[ParticipationTokensRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-participationtokensredeemedlog.md)>>
+▸ **findParticipationTokensRedeemedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[ParticipationTokensRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-participationtokensredeemedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:603](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L603)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:604](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L604)*
 
 **Parameters:**
 
@@ -709,16 +709,16 @@ ___
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[ParticipationTokensRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-participationtokensredeemedlog.md)>>
+**Returns:** `Promise`<[ParticipationTokensRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-participationtokensredeemedlog.md)[]>
 
 ___
 <a id="findprofitlosschangedlogs"></a>
 
 ###  findProfitLossChangedLogs
 
-▸ **findProfitLossChangedLogs**(user: *`string`*, request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[ProfitLossChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-profitlosschangedlog.md)>>
+▸ **findProfitLossChangedLogs**(user: *`string`*, request: *`FindRequest`<`__type`>*): `Promise`<[ProfitLossChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-profitlosschangedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:615](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L615)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:616](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L616)*
 
 **Parameters:**
 
@@ -727,16 +727,16 @@ ___
 | user | `string` |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[ProfitLossChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-profitlosschangedlog.md)>>
+**Returns:** `Promise`<[ProfitLossChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-profitlosschangedlog.md)[]>
 
 ___
 <a id="findtimestampsetlogs"></a>
 
 ###  findTimestampSetLogs
 
-▸ **findTimestampSetLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[TimestampSetLog](api-interfaces-packages-augur-sdk-src-state-logs-types-timestampsetlog.md)>>
+▸ **findTimestampSetLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[TimestampSetLog](api-interfaces-packages-augur-sdk-src-state-logs-types-timestampsetlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:626](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L626)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:627](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L627)*
 
 Queries the TimestampSet DB
 
@@ -746,16 +746,16 @@ Queries the TimestampSet DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[TimestampSetLog](api-interfaces-packages-augur-sdk-src-state-logs-types-timestampsetlog.md)>>
+**Returns:** `Promise`<[TimestampSetLog](api-interfaces-packages-augur-sdk-src-state-logs-types-timestampsetlog.md)[]>
 
 ___
 <a id="findtokenbalancechangedlogs"></a>
 
 ###  findTokenBalanceChangedLogs
 
-▸ **findTokenBalanceChangedLogs**(user: *`string`*, request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[TokenBalanceChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tokenbalancechangedlog.md)>>
+▸ **findTokenBalanceChangedLogs**(user: *`string`*, request: *`FindRequest`<`__type`>*): `Promise`<[TokenBalanceChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tokenbalancechangedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:638](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L638)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:639](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L639)*
 
 **Parameters:**
 
@@ -764,16 +764,16 @@ ___
 | user | `string` |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[TokenBalanceChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tokenbalancechangedlog.md)>>
+**Returns:** `Promise`<[TokenBalanceChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tokenbalancechangedlog.md)[]>
 
 ___
 <a id="findtradingproceedsclaimedlogs"></a>
 
 ###  findTradingProceedsClaimedLogs
 
-▸ **findTradingProceedsClaimedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[TradingProceedsClaimedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tradingproceedsclaimedlog.md)>>
+▸ **findTradingProceedsClaimedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[TradingProceedsClaimedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tradingproceedsclaimedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:650](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L650)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:651](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L651)*
 
 Queries the TradingProceedsClaimed DB
 
@@ -783,16 +783,16 @@ Queries the TradingProceedsClaimed DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[TradingProceedsClaimedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tradingproceedsclaimedlog.md)>>
+**Returns:** `Promise`<[TradingProceedsClaimedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tradingproceedsclaimedlog.md)[]>
 
 ___
 <a id="finduniverseforkedlogs"></a>
 
 ###  findUniverseForkedLogs
 
-▸ **findUniverseForkedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<`Array`<[UniverseForkedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-universeforkedlog.md)>>
+▸ **findUniverseForkedLogs**(request: *`FindRequest`<`__type`>*): `Promise`<[UniverseForkedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-universeforkedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:661](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L661)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:662](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L662)*
 
 Queries the UniverseForked DB
 
@@ -802,24 +802,25 @@ Queries the UniverseForked DB
 | ------ | ------ |
 | request | `FindRequest`<`__type`> |
 
-**Returns:** `Promise`<`Array`<[UniverseForkedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-universeforkedlog.md)>>
+**Returns:** `Promise`<[UniverseForkedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-universeforkedlog.md)[]>
 
 ___
 <a id="fulltextmarketsearch"></a>
 
 ###  fullTextMarketSearch
 
-▸ **fullTextMarketSearch**(query: *`string`*): `Array`<`object`>
+▸ **fullTextMarketSearch**(query: *`string` \| `null`*, extendedSearchOptions: *`ExtendedSearchOptions`[] \| `null`*): `Promise`<`SearchResults`<[MarketFields](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md)>[]>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:249](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L249)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:250](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L250)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| query | `string` |
+| query | `string` \| `null` |
+| extendedSearchOptions | `ExtendedSearchOptions`[] \| `null` |
 
-**Returns:** `Array`<`object`>
+**Returns:** `Promise`<`SearchResults`<[MarketFields](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md)>[]>
 
 ___
 <a id="getdatabasename"></a>
@@ -828,7 +829,7 @@ ___
 
 ▸ **getDatabaseName**(eventName: *`string`*, trackableUserAddress?: *`string`*): `string`
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:280](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L280)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:281](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L281)*
 
 Creates a name for a SyncableDB/UserSyncableDB based on `eventName` & `trackableUserAddress`.
 
@@ -848,7 +849,7 @@ ___
 
 ▸ **getDerivedDatabase**(dbName: *`string`*): [DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md)
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:301](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L301)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:302](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L302)*
 
 Gets a derived database based upon the name
 
@@ -867,7 +868,7 @@ ___
 
 ▸ **getSyncStartingBlock**(): `Promise`<`number`>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:260](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L260)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:261](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L261)*
 
 Gets the block number at which to begin syncing. (That is, the lowest last-synced block across all event log databases or the upload block number for this network.)
 
@@ -881,7 +882,7 @@ ___
 
 ▸ **getSyncableDatabase**(dbName: *`string`*): [SyncableDB](api-classes-packages-augur-sdk-src-state-db-syncabledb-syncabledb.md)
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:292](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L292)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:293](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L293)*
 
 Gets a syncable database based upon the name
 
@@ -898,9 +899,9 @@ ___
 
 ###  initializeDB
 
-▸ **initializeDB**(networkId: *`number`*, blockstreamDelay: *`number`*, defaultStartSyncBlockNumber: *`number`*, trackedUsers: *`Array`<`string`>*, blockAndLogStreamerListener: *[IBlockAndLogStreamerListener](api-interfaces-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-iblockandlogstreamerlistener.md)*): `Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>
+▸ **initializeDB**(networkId: *`number`*, blockstreamDelay: *`number`*, defaultStartSyncBlockNumber: *`number`*, trackedUsers: *`string`[]*, blockAndLogStreamerListener: *[IBlockAndLogStreamerListener](api-interfaces-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-iblockandlogstreamerlistener.md)*): `Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:130](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L130)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:131](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L131)*
 
 Creates databases to be used for syncing.
 
@@ -911,7 +912,7 @@ Creates databases to be used for syncing.
 | networkId | `number` |  Network on which to sync events |
 | blockstreamDelay | `number` |  Number of blocks by which to delay blockstream |
 | defaultStartSyncBlockNumber | `number` |  Block number at which to start sycing (if no higher block number has been synced) |
-| trackedUsers | `Array`<`string`> |  Array of user addresses for which to sync user-specific events |
+| trackedUsers | `string`[] |  Array of user addresses for which to sync user-specific events |
 | blockAndLogStreamerListener | [IBlockAndLogStreamerListener](api-interfaces-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-iblockandlogstreamerlistener.md) |  \- |
 
 **Returns:** `Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>
@@ -923,7 +924,7 @@ ___
 
 ▸ **notifyDerivedDBAdded**(db: *[DerivedDB](api-classes-packages-augur-sdk-src-state-db-deriveddb-deriveddb.md)*): `void`
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:186](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L186)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:187](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L187)*
 
 Called from DerivedDB constructor once DerivedDB is successfully created.
 
@@ -942,7 +943,7 @@ ___
 
 ▸ **notifySyncableDBAdded**(db: *[SyncableDB](api-classes-packages-augur-sdk-src-state-db-syncabledb-syncabledb.md)*): `void`
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:177](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L177)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:178](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L178)*
 
 Called from SyncableDB constructor once SyncableDB is successfully created.
 
@@ -959,15 +960,15 @@ ___
 
 ###  registerEventListener
 
-▸ **registerEventListener**(eventName: *`string`*, callback: *[LogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#logcallbacktype)*): `void`
+▸ **registerEventListener**(eventNames: *`string` \| `string`[]*, callback: *[LogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#logcallbacktype)*): `void`
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:190](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L190)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:191](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L191)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| eventName | `string` |
+| eventNames | `string` \| `string`[] |
 | callback | [LogCallbackType](api-modules-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-module.md#logcallbacktype) |
 
 **Returns:** `void`
@@ -979,7 +980,7 @@ ___
 
 ▸ **rollback**(blockNumber: *`number`*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:310](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L310)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:311](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L311)*
 
 Rolls back all blocks from blockNumber onward.
 
@@ -998,7 +999,7 @@ ___
 
 ▸ **sync**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, chunkSize: *`number`*, blockstreamDelay: *`number`*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:201](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L201)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:202](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L202)*
 
 Syncs generic events and user-specific events with blockchain and updates MetaDB info.
 
@@ -1017,9 +1018,9 @@ ___
 
 ### `<Static>` createAndInitializeDB
 
-▸ **createAndInitializeDB**(networkId: *`number`*, blockstreamDelay: *`number`*, defaultStartSyncBlockNumber: *`number`*, trackedUsers: *`Array`<`string`>*, augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, pouchDBFactory: *[PouchDBFactoryType](api-modules-packages-augur-sdk-src-state-db-abstractdb-module.md#pouchdbfactorytype)*, blockAndLogStreamerListener: *[IBlockAndLogStreamerListener](api-interfaces-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-iblockandlogstreamerlistener.md)*): `Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>
+▸ **createAndInitializeDB**(networkId: *`number`*, blockstreamDelay: *`number`*, defaultStartSyncBlockNumber: *`number`*, trackedUsers: *`string`[]*, augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, pouchDBFactory: *[PouchDBFactoryType](api-modules-packages-augur-sdk-src-state-db-abstractdb-module.md#pouchdbfactorytype)*, blockAndLogStreamerListener: *[IBlockAndLogStreamerListener](api-interfaces-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-iblockandlogstreamerlistener.md)*): `Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:109](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L109)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:110](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L110)*
 
 Creates and returns a new dbController.
 
@@ -1030,7 +1031,7 @@ Creates and returns a new dbController.
 | networkId | `number` |  Network on which to sync events |
 | blockstreamDelay | `number` |  Number of blocks by which to delay blockstream |
 | defaultStartSyncBlockNumber | `number` |  Block number at which to start sycing (if no higher block number has been synced) |
-| trackedUsers | `Array`<`string`> |  Array of user addresses for which to sync user-specific events |
+| trackedUsers | `string`[] |  Array of user addresses for which to sync user-specific events |
 | augur | [Augur](api-classes-packages-augur-sdk-src-augur-augur.md) |
 | pouchDBFactory | [PouchDBFactoryType](api-modules-packages-augur-sdk-src-state-db-abstractdb-module.md#pouchdbfactorytype) |  Factory function generatin PouchDB instance |
 | blockAndLogStreamerListener | [IBlockAndLogStreamerListener](api-interfaces-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-iblockandlogstreamerlistener.md) |  Stream listener for blocks and logs |

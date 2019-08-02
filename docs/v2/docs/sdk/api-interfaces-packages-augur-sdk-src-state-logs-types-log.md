@@ -76,7 +76,7 @@ sidebar_label: Log
 
 **● blockHash**: *[Bytes32](api-modules-packages-augur-sdk-src-state-logs-types-module.md#bytes32)*
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/logs/types.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:17](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L17)*
 
 ___
 <a id="blocknumber"></a>
@@ -85,7 +85,7 @@ ___
 
 **● blockNumber**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/logs/types.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L16)*
 
 ___
 <a id="logindex"></a>
@@ -94,7 +94,7 @@ ___
 
 **● logIndex**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/logs/types.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L20)*
 
 ___
 <a id="transactionhash"></a>
@@ -103,7 +103,7 @@ ___
 
 **● transactionHash**: *[Bytes32](api-modules-packages-augur-sdk-src-state-logs-types-module.md#bytes32)*
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:19](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/logs/types.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:19](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L19)*
 
 ___
 <a id="transactionindex"></a>
@@ -112,7 +112,7 @@ ___
 
 **● transactionIndex**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/logs/types.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L18)*
 
 ___
 

@@ -25,7 +25,7 @@ sidebar_label: OrderEventType
 
 **Cancel**:  = 1
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:223](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/logs/types.ts#L223)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:223](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L223)*
 
 ___
 <a id="create"></a>
@@ -34,7 +34,7 @@ ___
 
 **Create**:  = 0
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:222](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/logs/types.ts#L222)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:222](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L222)*
 
 ___
 <a id="fill"></a>
@@ -43,7 +43,7 @@ ___
 
 **Fill**:  = 3
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:225](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/logs/types.ts#L225)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:225](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L225)*
 
 ___
 <a id="pricechanged"></a>
@@ -52,7 +52,7 @@ ___
 
 **PriceChanged**:  = 2
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:224](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/logs/types.ts#L224)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:224](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L224)*
 
 ___
 

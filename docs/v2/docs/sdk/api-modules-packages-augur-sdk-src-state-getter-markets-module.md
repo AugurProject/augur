@@ -10,7 +10,8 @@ sidebar_label: packages/augur-sdk/src/state/getter/Markets
 
 ### Enumerations
 
-* [MarketInfoReportingState](api-enums-packages-augur-sdk-src-state-getter-markets-marketinforeportingstate.md)
+* [GetMarketsSortBy](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md)
+* [MarketReportingState](api-enums-packages-augur-sdk-src-state-getter-markets-marketreportingstate.md)
 
 ### Classes
 
@@ -33,6 +34,7 @@ sidebar_label: packages/augur-sdk/src/state/getter/Markets
 
 * [SECONDS_IN_A_DAY](api-modules-packages-augur-sdk-src-state-getter-markets-module.md#seconds_in_a_day)
 * [getMarketsParamsSpecific](api-modules-packages-augur-sdk-src-state-getter-markets-module.md#getmarketsparamsspecific)
+* [getMarketsSortBy](api-modules-packages-augur-sdk-src-state-getter-markets-module.md#getmarketssortby-1)
 * [outcomeIdType](api-modules-packages-augur-sdk-src-state-getter-markets-module.md#outcomeidtype)
 
 ### Functions
@@ -54,7 +56,7 @@ sidebar_label: packages/augur-sdk/src/state/getter/Markets
 
 **● SECONDS_IN_A_DAY**: *`BigNumber`* =  new BigNumber(86400, 10)
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:48](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L48)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:75](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L75)*
 
 ___
 <a id="getmarketsparamsspecific"></a>
@@ -69,16 +71,27 @@ ___
     creator: t.string,
     category: t.string,
     search: t.string,
-    reportingState: t.union([t.string, t.array(t.string)]),
     disputeWindow: t.string,
     designatedReporter: t.string,
     maxFee: t.string,
     maxEndTime: t.number,
-    hasOrders: t.boolean,
+    maxLiquiditySpread: t.string,
+    includeInvalidMarkets: t.boolean,
+    categories: t.array(t.string),
+    sortBy: getMarketsSortBy,
   }),
 ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:31](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L31)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:56](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L56)*
+
+___
+<a id="getmarketssortby-1"></a>
+
+### `<Const>` getMarketsSortBy
+
+**● getMarketsSortBy**: *`KeyofType`<[GetMarketsSortBy](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md)>* =  t.keyof(GetMarketsSortBy)
+
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:54](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L54)*
 
 ___
 <a id="outcomeidtype"></a>
@@ -87,7 +100,7 @@ ___
 
 **● outcomeIdType**: *`UnionType`<(`NumberType` \| `KeyofType`<`object`> \| `NullType` \| `UndefinedType`)[], `number`, `number`, `unknown`>* =  t.union([OutcomeParam, t.number, t.null, t.undefined])
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:165](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L165)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:180](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L180)*
 
 ___
 
@@ -99,7 +112,7 @@ ___
 
 ▸ **filterOrderFilledLogs**(orderFilledLogs: *[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]*, params: *`t.TypeOf`<`InterfaceType`>*): [ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md)[]
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:814](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L814)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:845](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L845)*
 
 **Parameters:**
 
@@ -117,7 +130,7 @@ ___
 
 ▸ **formatStakeDetails**(db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, marketId: *[Address](api-interfaces-packages-augur-sdk-src-event-handlers-tradingproceedsclaimed.md#address)*, stakeDetails: *`any`[]*): `Promise`<[StakeDetails](api-interfaces-packages-augur-sdk-src-state-getter-markets-stakedetails.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:1146](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L1146)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:1177](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L1177)*
 
 **Parameters:**
 
@@ -136,7 +149,7 @@ ___
 
 ▸ **getMarketDisputeInfo**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, marketId: *[Address](api-interfaces-packages-augur-sdk-src-event-handlers-tradingproceedsclaimed.md#address)*): `Promise`<[DisputeInfo](api-interfaces-packages-augur-sdk-src-state-getter-markets-disputeinfo.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:1065](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L1065)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:1096](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L1096)*
 
 **Parameters:**
 
@@ -155,7 +168,7 @@ ___
 
 ▸ **getMarketOutcomes**(db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, marketCreatedLog: *[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)*, marketVolumeChangedLogs: *[MarketVolumeChangedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketvolumechangedlog.md)[]*, scalarDenomination: *`string`*, tickSize: *`BigNumber`*, minPrice: *`BigNumber`*): `Promise`<[MarketInfoOutcome](api-interfaces-packages-augur-sdk-src-state-getter-markets-marketinfooutcome.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:845](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L845)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:876](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L876)*
 
 **Parameters:**
 
@@ -175,9 +188,9 @@ ___
 
 ###  getMarketReportingState
 
-▸ **getMarketReportingState**(db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, marketCreatedLog: *[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)*, marketFinalizedLogs: *[MarketFinalizedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketfinalizedlog.md)[]*): `Promise`<[MarketInfoReportingState](api-enums-packages-augur-sdk-src-state-getter-markets-marketinforeportingstate.md)>
+▸ **getMarketReportingState**(db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, marketCreatedLog: *[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)*, marketFinalizedLogs: *[MarketFinalizedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketfinalizedlog.md)[]*): `Promise`<[MarketReportingState](api-enums-packages-augur-sdk-src-state-getter-markets-marketreportingstate.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:974](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L974)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:1005](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L1005)*
 
 **Parameters:**
 
@@ -187,7 +200,7 @@ ___
 | marketCreatedLog | [MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md) |
 | marketFinalizedLogs | [MarketFinalizedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketfinalizedlog.md)[] |
 
-**Returns:** `Promise`<[MarketInfoReportingState](api-enums-packages-augur-sdk-src-state-getter-markets-marketinforeportingstate.md)>
+**Returns:** `Promise`<[MarketReportingState](api-enums-packages-augur-sdk-src-state-getter-markets-marketreportingstate.md)>
 
 ___
 <a id="getperiodstarttime"></a>
@@ -196,7 +209,7 @@ ___
 
 ▸ **getPeriodStartTime**(globalStarttime: *`number`*, periodStartime: *`number`*, period: *`number`*): `number`
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:1052](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L1052)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:1083](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L1083)*
 
 **Parameters:**
 

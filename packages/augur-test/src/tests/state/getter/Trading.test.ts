@@ -3,7 +3,7 @@ import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproj
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import {
-  MarketInfoReportingState,
+  MarketReportingState,
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import {
@@ -128,7 +128,7 @@ describe('State API :: Trading :: ', () => {
 
     trades = await api.route('getTradingHistory', {
       marketIds: [market1.address, market2.address],
-      ignoreReportingStates: [MarketInfoReportingState.FINALIZED],
+      ignoreReportingStates: [MarketReportingState.Finalized],
     });
 
     await expect(trades[market1.address]).toBeUndefined();
@@ -300,13 +300,13 @@ describe('State API :: Trading :: ', () => {
     // Test `ignoreReportingStates` param
     orders = await api.route('getOrders', {
       marketId: market.address,
-      ignoreReportingStates: [MarketInfoReportingState.FINALIZED],
+      ignoreReportingStates: [MarketReportingState.Finalized],
     });
     await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(2);
 
     orders = await api.route('getOrders', {
       marketId: market.address,
-      ignoreReportingStates: [MarketInfoReportingState.PRE_REPORTING],
+      ignoreReportingStates: [MarketReportingState.PreReporting],
     });
     await expect(orders).toMatchObject({});
   }, 60000);

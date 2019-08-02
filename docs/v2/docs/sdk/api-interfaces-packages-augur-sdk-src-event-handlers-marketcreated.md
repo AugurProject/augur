@@ -51,7 +51,7 @@ sidebar_label: MarketCreated
 
 *Inherited from [FormattedEventLog](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md).[address](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md#address)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:9](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L9)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:9](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L9)*
 
 ___
 <a id="blockhash"></a>
@@ -62,7 +62,7 @@ ___
 
 *Inherited from [FormattedEventLog](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md).[blockHash](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md#blockhash)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L16)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L16)*
 
 ___
 <a id="blocknumber"></a>
@@ -73,7 +73,7 @@ ___
 
 *Inherited from [FormattedEventLog](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md).[blockNumber](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md#blocknumber)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:10](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L10)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:10](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L10)*
 
 ___
 <a id="contractname"></a>
@@ -84,7 +84,7 @@ ___
 
 *Inherited from [FormattedEventLog](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md).[contractName](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md#contractname)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L14)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:14](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L14)*
 
 ___
 <a id="designatedreporter"></a>
@@ -93,7 +93,7 @@ ___
 
 **● designatedReporter**: *[Address](api-modules-packages-augur-sdk-src-event-handlers-module.md#address)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:121](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L121)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:121](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L121)*
 
 ___
 <a id="endtime"></a>
@@ -102,7 +102,7 @@ ___
 
 **● endTime**: *[Address](api-modules-packages-augur-sdk-src-event-handlers-module.md#address)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:116](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L116)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:116](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L116)*
 
 ___
 <a id="eventname"></a>
@@ -113,7 +113,7 @@ ___
 
 *Inherited from [FormattedEventLog](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md).[eventName](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md#eventname)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:15](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L15)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:15](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L15)*
 
 ___
 <a id="extrainfo"></a>
@@ -122,7 +122,7 @@ ___
 
 **● extraInfo**: *`string`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:118](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L118)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:118](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L118)*
 
 ___
 <a id="feedivisor"></a>
@@ -131,7 +131,7 @@ ___
 
 **● feeDivisor**: *`number`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:122](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L122)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:122](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L122)*
 
 ___
 <a id="logindex"></a>
@@ -142,7 +142,7 @@ ___
 
 *Inherited from [FormattedEventLog](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md).[logIndex](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md#logindex)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:11](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L11)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:11](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L11)*
 
 ___
 <a id="market"></a>
@@ -151,7 +151,7 @@ ___
 
 **● market**: *[Address](api-modules-packages-augur-sdk-src-event-handlers-module.md#address)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:119](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L119)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:119](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L119)*
 
 ___
 <a id="marketcreator"></a>
@@ -160,7 +160,7 @@ ___
 
 **● marketCreator**: *[Address](api-modules-packages-augur-sdk-src-event-handlers-module.md#address)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:120](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L120)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:120](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L120)*
 
 ___
 <a id="markettype"></a>
@@ -169,7 +169,7 @@ ___
 
 **● marketType**: *`number`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:124](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L124)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:124](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L124)*
 
 ___
 <a id="numticks"></a>
@@ -178,7 +178,7 @@ ___
 
 **● numTicks**: *`string`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:125](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L125)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:125](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L125)*
 
 ___
 <a id="outcomes"></a>
@@ -187,7 +187,7 @@ ___
 
 **● outcomes**: *`string`[]*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:126](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L126)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:126](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L126)*
 
 ___
 <a id="prices"></a>
@@ -196,7 +196,7 @@ ___
 
 **● prices**: *`string`[]*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:123](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L123)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:123](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L123)*
 
 ___
 <a id="removed"></a>
@@ -207,7 +207,7 @@ ___
 
 *Inherited from [FormattedEventLog](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md).[removed](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md#removed)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L17)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:17](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L17)*
 
 ___
 <a id="timestamp"></a>
@@ -216,7 +216,7 @@ ___
 
 **● timestamp**: *`number`*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:127](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L127)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:127](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L127)*
 
 ___
 <a id="topic"></a>
@@ -225,7 +225,7 @@ ___
 
 **● topic**: *[Address](api-modules-packages-augur-sdk-src-event-handlers-module.md#address)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:117](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L117)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:117](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L117)*
 
 ___
 <a id="transactionhash"></a>
@@ -236,7 +236,7 @@ ___
 
 *Inherited from [FormattedEventLog](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md).[transactionHash](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md#transactionhash)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:12](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L12)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:12](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L12)*
 
 ___
 <a id="transactionindex"></a>
@@ -247,7 +247,7 @@ ___
 
 *Inherited from [FormattedEventLog](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md).[transactionIndex](api-interfaces-packages-augur-sdk-src-event-handlers-formattedeventlog.md#transactionindex)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:13](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L13)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:13](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L13)*
 
 ___
 <a id="universe"></a>
@@ -256,7 +256,7 @@ ___
 
 **● universe**: *[Address](api-modules-packages-augur-sdk-src-event-handlers-module.md#address)*
 
-*Defined in [packages/augur-sdk/src/event-handlers.ts:115](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/event-handlers.ts#L115)*
+*Defined in [packages/augur-sdk/src/event-handlers.ts:115](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/event-handlers.ts#L115)*
 
 ___
 
