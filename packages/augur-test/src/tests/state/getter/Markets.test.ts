@@ -9,10 +9,10 @@ import {
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { makeDbMock, makeProvider } from "../../../libs";
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
-import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
+import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
-// import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
+import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
 import { ContractInterfaces } from '@augurproject/core';
 
 const mock = makeDbMock();
