@@ -3,7 +3,7 @@ import { createBigNumber } from "utils/create-big-number";
 import { formatEther, formatRep } from "utils/format-number";
 import { ETH, DAI, REP } from "modules/common/constants";
 
-export default function insufficientFunds(
+export default function findInsufficientFunds(
   validityBond,
   gasCost,
   designatedReportNoShowReputationBond,
@@ -14,7 +14,7 @@ export default function insufficientFunds(
   formattedInitialLiquidityDai,
   testWithLiquidity = false
 ) {
-  let insufficientFundsString = "";
+  let insufficientFunds = "";
 
   const BNvalidityBond = createBigNumber(
     formatEther(validityBond).fullPrecision
@@ -38,7 +38,7 @@ export default function insufficientFunds(
     BNtotalDaiCost
   );
  
-  insufficientFundsString = {[ETH]: insufficientEth, [REP]: insufficientRep, [DAI]: insufficientDai};
+  insufficientFunds = {[ETH]: insufficientEth, [REP]: insufficientRep, [DAI]: insufficientDai};
 
-  return insufficientFundsString;
+  return insufficientFunds;
 }

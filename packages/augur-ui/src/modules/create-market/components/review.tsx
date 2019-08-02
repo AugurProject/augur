@@ -5,7 +5,7 @@ import moment from "moment";
 
 import { createBigNumber } from 'utils/create-big-number';
 import getValue from 'utils/get-value';
-import insufficientFunds from 'modules/markets/helpers/insufficient-funds';
+import findInsufficientFunds from 'modules/markets/helpers/insufficient-funds';
 import { 
   Header, 
   LineBreak, 
@@ -34,11 +34,12 @@ import {
   formatEther
 } from 'utils/format-number';
 import { Error } from 'modules/common/form';
+import { NewMarket, FormattedNumber } from 'modules/types';
 
 import Styles from "modules/create-market/components/review.styles";
 
 interface ReviewProps {
-  newMarket: Object;
+  newMarket: NewMarket;
   updateNewMarket: Function;
   address: String;
   gasPrice: number;
@@ -48,24 +49,30 @@ interface ReviewProps {
   estimateSubmitNewMarket: Function;
 }
 
+interface InsufficientFunds {
+  [ETH]?: boolean;
+  [REP]?: boolean;
+  [DAI]?: boolean;
+}
+
 interface ReviewState {
-  gasCost: number;
-  validityBond: number;
-  designatedReportNoShowReputationBond: number;
-  insufficientFundsString: string;
-  formattedInitialLiquidityDai: BigNumber;
-  formattedInitialLiquidityGas: BigNumber;
+  gasCost: FormattedNumber;
+  validityBond: FormattedNumber;
+  designatedReportNoShowReputationBond: FormattedNumber;
+  insufficientFunds: InsufficientFunds;
+  formattedInitialLiquidityDai: FormattedNumber;
+  formattedInitialLiquidityGas: FormattedNumber;
 }
 
 export default class Review extends React.Component<
   ReviewProps,
   ReviewState
 > {
-  state: FormState = {
+  state: ReviewState = {
     gasCost: null,
     validityBond: null,
     designatedReportNoShowReputationBond: null,
-    insufficientFundsString: '',
+    insufficientFunds: {},
     formattedInitialLiquidityDai: formatEtherEstimate(
       this.props.newMarket.initialLiquidityDai
     ),
@@ -114,9 +121,9 @@ export default class Review extends React.Component<
     }
     if (this.state.validityBond !== nextState.validityBond) {
       if (nextState.validityBond) {
-        const insufficientFundsString = this.getFundsString();
-        if (this.state.insufficientFundsString !== insufficientFundsString) {
-          this.updateFunds(insufficientFundsString);
+        const insufficientFunds = this.getFundsString();
+        if (this.state.insufficientFunds !== insufficientFunds) {
+          this.updateFunds(insufficientFunds);
         }
       }
     }
@@ -131,7 +138,7 @@ export default class Review extends React.Component<
   getFundsString(testWithLiquidity = false) {
     const { availableEth, availableRep, availableDai } = this.props;
     const s = this.state;
-    let insufficientFundsString = '';
+    let insufficientFunds = '';
 
     if (s.validityBond) {
       const validityBond = getValue(s, 'validityBond.formattedValue');
@@ -148,7 +155,7 @@ export default class Review extends React.Component<
         s,
         'formattedInitialLiquidityDai.formattedValue'
       );
-      insufficientFundsString = insufficientFunds(
+      insufficientFunds = findInsufficientFunds(
         validityBond,
         gasCost || '0',
         designatedReportNoShowReputationBond,
@@ -161,15 +168,15 @@ export default class Review extends React.Component<
       );
     }
 
-    return insufficientFundsString;
+    return insufficientFunds;
   }
 
-  updateFunds(insufficientFundsString) {
-    this.setState({ insufficientFundsString });
+  updateFunds(insufficientFunds) {
+    this.setState({ insufficientFunds });
   }
 
   async calculateMarketCreationCosts() {
-    const { meta, universe, newMarket, gasPrice } = this.props;
+    const { newMarket, gasPrice } = this.props;
 
     const marketCreationCostBreakdown = await getCreateMarketBreakdown();
     this.setState(
@@ -239,11 +246,9 @@ export default class Review extends React.Component<
 
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
 
-    const noEth = s.insufficientFundsString !== "" && s.insufficientFundsString[ETH];
-    const noRep = s.insufficientFundsString !== "" && s.insufficientFundsString[REP];
-    const noDai = s.insufficientFundsString !== "" && s.insufficientFundsString[DAI];
-
-    console.log(totalDai)
+    const noEth = s.insufficientFunds !== "" && s.insufficientFunds[ETH];
+    const noRep = s.insufficientFunds !== "" && s.insufficientFunds[REP];
+    const noDai = s.insufficientFunds !== "" && s.insufficientFunds[DAI];
 
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
@@ -341,7 +346,7 @@ export default class Review extends React.Component<
             <Error 
               alternate
               header="You don't have enough funds in your wallet" 
-              subheader={"You have " + (noEth ? availableEth + " ETH of " + totalEth.formatted + " ETH " : "" ) + "required to create this market."}
+              subheader={"You have " + (noEth ? availableEth + " ETH of " + s.formattedInitialLiquidityGas.formatted  + " ETH " : "" ) + "required to create this market."}
             />
           }
         </div>
