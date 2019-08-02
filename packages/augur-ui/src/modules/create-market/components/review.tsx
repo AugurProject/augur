@@ -244,10 +244,12 @@ export default class Review extends React.Component<
     } = newMarket;
 
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
+    const totalEth = formatEther(createBigNumber(s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
 
     const noEth = s.insufficientFunds !== "" && s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds !== "" && s.insufficientFunds[REP];
     const noDai = s.insufficientFunds !== "" && s.insufficientFunds[DAI];
+
 
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
@@ -302,7 +304,7 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Valididty Bond"}
-              value={s.validityBond && s.validityBond.formatted + " DAI"}
+              value={s.validityBond && s.validityBond.formattedValue + " DAI"}
             />
           </span>
 
@@ -310,7 +312,7 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"No-Show Bond"}
-              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formatted + " REP"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REP"}
             />
           </span>
 
@@ -322,7 +324,7 @@ export default class Review extends React.Component<
             />
             <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}
-              value={s.formattedInitialLiquidityGas.formatted + " ETH"}
+              value={s.formattedInitialLiquidityGas.formattedValue + " ETH"}
             />
           </span>
 
@@ -330,22 +332,22 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
-              value={totalDai.formatted + " DAI"}
+              value={totalDai.formattedValue + " DAI"}
             />
             <LinearPropertyLabel
               label={"Total ETH"}
-              value={s.formattedInitialLiquidityGas.formatted + " ETH"}
+              value={totalEth.formattedValue + " ETH"}
             />
             <LinearPropertyLabel
               label={"TOTAL REP"}
-              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formatted + " REP"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REP"}
             />
           </span>
           {(noEth || noRep || noDai) &&
             <Error
               alternate
               header="You don't have enough funds in your wallet"
-              subheader={"You have " + (noEth ? availableEth + " ETH of " + s.formattedInitialLiquidityGas.formattedValue  + " ETH " : "" ) + "required to create this market."}
+              subheader={"You have " + (noEth ? availableEth + " ETH of " + totalEth.formattedValue  + " ETH " : "" ) + "required to create this market."}
             />
           }
         </div>
