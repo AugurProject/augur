@@ -31,15 +31,16 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
 } from 'modules/create-market/constants';
-import { 
-  CATEGORICAL, 
-  SCALAR, 
+import {
+  CATEGORICAL,
+  SCALAR,
   BID,
   SELL,
   BUY,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
-  YES_NO_OUTCOMES, 
+  YES_NO_OUTCOMES,
+  NEW_ORDER_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { createMarket } from 'modules/contracts/actions/contractCalls';
@@ -75,8 +76,6 @@ import { createBigNumber } from "utils/create-big-number";
 import Styles from 'modules/create-market/components/form.styles';
 
 import MarketView from 'modules/market/components/market-view/market-view';
-
-const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 
 interface FormProps {
   newMarket: NewMarket;
@@ -491,7 +490,7 @@ export default class Form extends React.Component<
       const minute = name === "minute" ? value : newMarket.minute;
       const meridiem = name === "meridiem" ? value : newMarket.meridiem;
       const offset = name === "offset" ? value : newMarket.offset;
-      
+
       endTime.set({
         hour: hour,
         minute: minute

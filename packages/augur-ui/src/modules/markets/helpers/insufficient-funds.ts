@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 
-import { formatEther, formatRep } from "utils/format-number";
+import { formatEther, formatRep, formatGasCostToEther } from "utils/format-number";
 import { ETH, DAI, REP } from "modules/common/constants";
 
 export default function findInsufficientFunds(
@@ -12,7 +12,8 @@ export default function findInsufficientFunds(
   availableDai,
   formattedInitialLiquidityGas,
   formattedInitialLiquidityDai,
-  testWithLiquidity = false
+  testWithLiquidity = false,
+  gasPrice
 ) {
   let insufficientFunds = "";
 
@@ -22,8 +23,9 @@ export default function findInsufficientFunds(
   const BNLiqGas = createBigNumber(formattedInitialLiquidityGas);
   const BNLiqEth = createBigNumber(formattedInitialLiquidityDai);
   const BNtotalEthCost = testWithLiquidity
-    ? BNLiqEth
+    ? BNLiqEth.plus(BNLiqGas)
     : createBigNumber(0);
+
   const insufficientEth = createBigNumber(availableEth || 0).lt(BNtotalEthCost);
 
   const BNdesignatedReportNoShowReputationBond = createBigNumber(
@@ -32,13 +34,11 @@ export default function findInsufficientFunds(
   const insufficientRep = createBigNumber(availableRep).lt(
     BNdesignatedReportNoShowReputationBond
   );
-  
+
   const BNtotalDaiCost = testWithLiquidity ? BNLiqEth.plus(BNvalidityBond) : BNvalidityBond;
   const insufficientDai = createBigNumber(availableDai).lt(
     BNtotalDaiCost
   );
- 
-  insufficientFunds = {[ETH]: insufficientEth, [REP]: insufficientRep, [DAI]: insufficientDai};
 
-  return insufficientFunds;
+  return {[ETH]: insufficientEth, [REP]: insufficientRep, [DAI]: insufficientDai};
 }

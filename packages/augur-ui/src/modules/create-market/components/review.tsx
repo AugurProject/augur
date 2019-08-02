@@ -41,8 +41,8 @@ import Styles from "modules/create-market/components/review.styles";
 interface ReviewProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
-  address: String;
-  gasPrice: number;
+  address: string;
+  gasPrice: string;
   availableRep: number;
   availableEth: number;
   availableDai: number;
@@ -136,7 +136,7 @@ export default class Review extends React.Component<
   }
 
   getFundsString(testWithLiquidity = false) {
-    const { availableEth, availableRep, availableDai } = this.props;
+    const { availableEth, availableRep, availableDai, gasPrice } = this.props;
     const s = this.state;
     let insufficientFunds = '';
 
@@ -164,7 +164,8 @@ export default class Review extends React.Component<
         createBigNumber(availableDai, 10),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
-        testWithLiquidity
+        testWithLiquidity,
+        gasPrice
       );
     }
 
