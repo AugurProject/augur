@@ -44,6 +44,8 @@ export default class MarketCard extends React.Component<
   MarketCardProps,
   MarketCardState
 > {
+  clipboardMarketId: any = new Clipboard("#copy_marketId");
+  clipboardAuthor: any = new Clipboard("#copy_author");
   state: FormDetailsState = {
     expanded: false,
   };

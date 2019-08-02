@@ -213,7 +213,7 @@ export function sumAndformatGasCostToEther(gases: Array<string>, opts: Formatted
     createBigNumber(gasPrice),
   );
 
-  return formatGasCost(estimatedGasCost, opts).roundedFormatted;
+  return formatGasCost(estimatedGasCost, opts).value;
 }
 
 export function formatGasCostToEther(num: string, opts: FormattedNumberOptions = optionsBlank(), gasPrice: string): string {

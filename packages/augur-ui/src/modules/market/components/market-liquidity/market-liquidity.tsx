@@ -7,8 +7,7 @@ import { formatEther, formatGasCostToEther } from "utils/format-number";
 import MarketLiquidityTable from "modules/market/components/market-liquidity-table/market-liquidity-table";
 
 import Styles from "modules/market/components/market-liquidity/market-liquidity.styles";
-
-const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
+import { NEW_ORDER_GAS_ESTIMATE } from "modules/common/constants";
 
 export default class MarketLiquidity extends Component {
   static propTypes = {
