@@ -33,6 +33,8 @@ const loadReportingHistoryInternal = (
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null, {});
+  return callback(null, {}); // TODO: needed to resolve promises in load-account-history;
+
   // TODO: get reporting history of user as part of the reporting redsign
   /*
   .reporting.getReportingHistory(
