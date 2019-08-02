@@ -571,6 +571,7 @@ export class Markets {
       db,
       { marketIds: filteredMarketsDetails.map(marketInfo => marketInfo.market) }
     );
+    // TODO: Add marketsInfo to returned object
 
     return filteredMarketsDetails.map(marketInfo => marketInfo.market);
   }
