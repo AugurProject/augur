@@ -275,7 +275,7 @@ export default class Review extends React.Component<
         <Header text="Resolution information" />
         <div>
           <SmallSubheaders header="Reporting start date and time" subheader={(endTime || {}).formattedUtc} />
-          <SmallSubheaders header="resolution details" subheader={detailsText} />
+          <SmallSubheaders header="resolution details" subheader={detailsText === "" ? "–" : detailsText} />
           <SmallSubheaders 
             header="Resolution source" 
             subheader={expirySourceType === EXPIRY_SOURCE_GENERIC
