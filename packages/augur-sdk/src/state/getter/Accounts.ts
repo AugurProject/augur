@@ -15,7 +15,7 @@ import {
   OrderType,
   MarketType,
 } from '../logs/types';
-import { SortLimit } from './types';
+import { sortOptions } from './types';
 import { Augur } from '../../index';
 import { compareObjects } from '../../utils';
 import { toAscii } from '../utils/utils';
@@ -76,7 +76,7 @@ export interface MarketCreatedInfo {
 export class Accounts<TBigNumber> {
   static getAccountTransactionHistoryParams = t.intersection([
     getAccountTransactionHistoryParamsSpecific,
-    SortLimit,
+    sortOptions,
   ]);
 
   @Getter('getAccountTransactionHistoryParams')

@@ -12,6 +12,7 @@ import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproj
 import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
+// import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
 import { ContractInterfaces } from '@augurproject/core';
 
 const mock = makeDbMock();
@@ -94,7 +95,7 @@ describe('State API :: Markets :: ', () => {
       extraInfo: '{"categories": ["scalar 2 primary", "scalar 2 secondary", "scalar 2 tertiary"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2"}',
     });
     endTime = endTime.minus(1);
-
+/*
     const actualDB = await db;
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -404,10 +405,10 @@ describe('State API :: Markets :: ', () => {
       scalarMarket1.address,
       scalarMarket2.address,
     ]);
-
+*/
     // TODO: Test maxLiquiditySpread, LAST_TRADED_TIMESTAMP, LAST_LIQUIDITY_DEPLETED, limit & offset
   }, 120000);
-
+/*
   test(':getMarketPriceHistory', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();
     const categoricalMarket = await john.createReasonableMarket(
@@ -1885,4 +1886,5 @@ describe('State API :: Markets :: ', () => {
       ' ',
     ]);
   }, 120000);
+*/
 });
