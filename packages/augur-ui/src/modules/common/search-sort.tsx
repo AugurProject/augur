@@ -47,7 +47,7 @@ export class SearchSort extends React.Component<
         <div className={classNames(Styles.SearchSort, Styles.ShowOnMobile)}>
           <SearchBar onChange={onChange} />
           {sortByOptions && (
-            <div className={Styles.SearchSort_dropdown}>
+            <div className={Styles.Dropdown}>
               <SquareDropdown
                 options={sortByOptions}
                 onChange={updateDropdown}

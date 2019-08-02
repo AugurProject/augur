@@ -120,11 +120,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       <div
         style={sortByStyles}
         className={classNames(className, {
-          [Styles.Dropdown_Large]: large,
-          [Styles.Dropdown_Normal]: !large,
-          [Styles.Dropdown_stretchOut]: stretchOutOnMobile,
-          [Styles.Dropdown_isOpen]: showList,
-          [Styles.Dropdown_openTop]: openTop,
+          [Styles.Large]: large,
+          [Styles.Normal]: !large,
+          [Styles.stretchOut]: stretchOutOnMobile,
+          [Styles.isOpen]: showList,
+          [Styles.openTop]: openTop,
           [`${activeClassName}`]: showList,
         })}
         ref={dropdown => {
@@ -134,13 +134,13 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         tabIndex={0}
         onClick={this.toggleList}
       >
-        <button className={classNames(Styles.Dropdown_label, {
+        <button className={classNames(Styles.label, {
           [Styles.SelectedLabel]: selected
         })}>
           {selected ? selected.label : staticLabel} {large ? TwoArrows : Chevron}
         </button>
         <div
-          className={classNames(Styles.Dropdown_list, {
+          className={classNames(Styles.list, {
             [`${Styles.active}`]: showList,
           })}
         >
@@ -195,10 +195,10 @@ export class StaticLabelDropdown extends Dropdown {
       <div
         style={sortByStyles}
         className={classNames({
-          [Styles.Dropdown_Large]: large,
-          [Styles.Dropdown_Normal]: !large,
-          [Styles.Dropdown_isOpen]: showList,
-          [Styles.Dropdown_highlight]: highlight,
+          [Styles.Large]: large,
+          [Styles.Normal]: !large,
+          [Styles.isOpen]: showList,
+          [Styles.highlight]: highlight,
         })}
         ref={dropdown => {
           this.refDropdown = dropdown;
@@ -326,8 +326,8 @@ export class DotSelection extends React.Component<
   render() {
     return (
       <div
-        className={classNames(Styles.DotSelection_Menu, {
-          [Styles["DotSelection_Menu-open"]]: this.state.toggleMenu
+        className={classNames(Styles.DotSelection, {
+          [Styles.MenuOpen]: this.state.toggleMenu
         })}
       >
         <button
@@ -346,7 +346,7 @@ export class DotSelection extends React.Component<
             }}
             onClick={() => this.toggleMenu()}
             tabIndex={0}
-            className={Styles.DotSelection_MenuItems}
+            className={Styles.MenuItems}
           >
             {this.props.children}
           </div>

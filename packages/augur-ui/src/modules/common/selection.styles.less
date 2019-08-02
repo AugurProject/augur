@@ -89,7 +89,7 @@
   color: @color-secondary-text;
 }
 
-.Dropdown_Large {
+.Large {
   .Dropdown;
 
   border-color: @color-primary-alternate;
@@ -130,7 +130,7 @@
   }
 }
 
-.Dropdown_Normal {
+.Normal {
   .Dropdown;
 
   height: 2rem;
@@ -172,9 +172,10 @@
   }
 }
 
-.Dropdown_stretchOut {
+.stretchOut {
   @media @breakpoint-mobile-mid {
-    height: unset;
+    height: @size-48;
+    // height: unset;
     max-width: unset;
 
     > div {
@@ -187,14 +188,16 @@
       padding: 1rem 0.75rem;
     }
 
-    > .Dropdown__list > button {
-      height: unset;
+    > .list > button {
+      .text-12;
+      // height: unset;
+      height: @size-48;
       padding: 1rem 0.75rem;
     }
   }
 }
 
-.Dropdown_isOpen {
+.isOpen {
   > button {
     background: fade(@color-highlight, 30%);
 
@@ -204,14 +207,14 @@
   }
 }
 
-.Dropdown_highlight {
+.highlight {
   > button {
     background: @color-highlight;
     border-radius: 0;
   }
 }
 
-.Dropdown_openTop {
+.openTop {
   > div {
     bottom: 106%;
     top: unset;
@@ -280,7 +283,7 @@
   }
 }
 
-.DotSelection_Menu {
+.DotSelection {
   cursor: pointer;
   position: relative;
 
@@ -303,13 +306,13 @@
   }
 }
 
-.DotSelection_Menu-open {
+.MenuOpen {
   > button > svg {
     fill: @color-secondary-text;
   }
 }
 
-.DotSelection_MenuItems {
+.MenuItems {
   .text-12-bold;
 
   align-items: flex-start;
