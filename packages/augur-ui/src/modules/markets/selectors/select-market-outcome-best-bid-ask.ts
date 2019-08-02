@@ -16,6 +16,7 @@ export const selectMarketOutcomeBestBidAsk = orderBook => {
     topAsk =
       orderBook.asks && orderBook.asks.length > 0
         ? orderBook.asks
+            // Ascending order for asks
             .sort((a, b) => Number(a.price) - Number(b.price))
             .map(item => formatData(item))
             .shift()
@@ -24,6 +25,7 @@ export const selectMarketOutcomeBestBidAsk = orderBook => {
     topBid =
       orderBook.bids && orderBook.bids.length > 0
         ? orderBook.bids
+            // Decreasing order for bids
             .sort((a, b) => Number(b.price) - Number(a.price))
             .map(item => formatData(item))
             .shift()
