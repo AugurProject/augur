@@ -18,6 +18,7 @@ const mapStateToProps = state => ({
   gasPrice: getGasPrice(state),
   availableEth: getValue(state, "loginAccount.eth"),
   availableRep: getValue(state, "loginAccount.rep"),
+  availableDai: getValue(state, "loginAccount.dai"),
 });
 
 const mapDispatchToProps = dispatch => ({

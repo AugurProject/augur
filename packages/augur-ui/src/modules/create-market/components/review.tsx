@@ -19,7 +19,10 @@ import {
   SCALAR, 
   CATEGORICAL, 
   EXPIRY_SOURCE_GENERIC,
-  DESIGNATED_REPORTER_SELF
+  DESIGNATED_REPORTER_SELF,
+  ETH, 
+  DAI, 
+  REP
 } from "modules/common/constants";
 import { MARKET_TYPE_NAME } from "modules/create-market/constants";
 import { getCreateMarketBreakdown } from 'modules/contracts/actions/contractCalls';
@@ -27,7 +30,10 @@ import {
   formatEtherEstimate,
   formatGasCostToEther,
   formatPercent,
+  formatDai,
+  formatEther
 } from 'utils/format-number';
+import { Error } from 'modules/common/form';
 
 import Styles from "modules/create-market/components/review.styles";
 
@@ -38,6 +44,7 @@ interface ReviewProps {
   gasPrice: number;
   availableRep: number;
   availableEth: number;
+  availableDai: number;
   estimateSubmitNewMarket: Function;
 }
 
@@ -122,7 +129,7 @@ export default class Review extends React.Component<
   }
 
   getFundsString(testWithLiquidity = false) {
-    const { availableEth, availableRep } = this.props;
+    const { availableEth, availableRep, availableDai } = this.props;
     const s = this.state;
     let insufficientFundsString = '';
 
@@ -147,6 +154,7 @@ export default class Review extends React.Component<
         designatedReportNoShowReputationBond,
         createBigNumber(availableEth, 10),
         createBigNumber(availableRep, 10),
+        createBigNumber(availableDai, 10),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityEth || '0',
         testWithLiquidity
@@ -176,7 +184,7 @@ export default class Review extends React.Component<
       () => {
         const funds = this.getFundsString();
         if (funds) {
-          return this.updateFunds(funds);
+          this.updateFunds(funds);
         }
 
         this.props.estimateSubmitNewMarket(
@@ -205,7 +213,8 @@ export default class Review extends React.Component<
 
   render() {
     const {
-      newMarket
+      newMarket,
+      availableEth
     } = this.props;
     const s = this.state;
 
@@ -228,7 +237,14 @@ export default class Review extends React.Component<
       affiliateFee
     } = newMarket;
 
-    console.log(this.state);
+    console.log(s.insufficientFundsString);
+
+    const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityEth ? s.formattedInitialLiquidityEth.value : 0)));
+    const totalEth = formatEther(createBigNumber(s.gasCost ? s.gasCost.value : 0).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)).plus(createBigNumber(s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0)));
+
+    const noEth = s.insufficientFundsString !== "" && s.insufficientFundsString[ETH];
+    const noRep = s.insufficientFundsString !== "" && s.insufficientFundsString[REP];
+    const noDai = s.insufficientFundsString !== "" && s.insufficientFundsString[DAI];
 
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
@@ -319,17 +335,24 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
-              value={"121.22 DAI"}
+              value={totalDai.rounded + " DAI"}
             />
             <LinearPropertyLabel
               label={"Total ETH"}
-              value={"0.100 ETH"}
+              value={totalEth.rounded + " ETH"}
             />
             <LinearPropertyLabel
               label={"TOTAL REP"}
-              value={"44.40 REP"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.rounded + " REP"}
             />
           </span>
+          {(noEth || noRep || noDai) && 
+            <Error 
+              alternate
+              header="You don't have enough funds in your wallet" 
+              subheader={"You have " + (noEth ? availableEth + " ETH of " + totalEth.rounded + " ETH " : "" ) + "required to create this market."}
+            />
+          }
         </div>
       </div>
     );

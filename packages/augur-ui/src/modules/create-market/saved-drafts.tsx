@@ -23,8 +23,7 @@ interface DraftRowProps {
 }
 
 const DraftRow = (props: DraftRowProps) => {
-  const date = formatDate(props.draft.updated * 1000).formattedLocalShortTime;
-  console.log(date);
+  const date = formatDate(new Date(props.draft.updated * 1000)).formattedLocalShortTime;
   return (
     <div className={Styles.DraftRow}>
       <button 

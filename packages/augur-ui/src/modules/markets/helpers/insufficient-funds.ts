@@ -1,6 +1,7 @@
 import { createBigNumber } from "utils/create-big-number";
 
 import { formatEther, formatRep } from "utils/format-number";
+import { ETH, DAI, REP } from "modules/common/constants";
 
 export default function insufficientFunds(
   validityBond,
@@ -8,6 +9,7 @@ export default function insufficientFunds(
   designatedReportNoShowReputationBond,
   availableEth,
   availableRep,
+  availableDai,
   formattedInitialLiquidityGas,
   formattedInitialLiquidityEth,
   testWithLiquidity = false
@@ -18,14 +20,13 @@ export default function insufficientFunds(
     formatEther(validityBond).fullPrecision
   );
   const BNLiqGas = createBigNumber(formattedInitialLiquidityGas);
-  const BNLiqEth = createBigNumber(formattedInitialLiquidityEth);
+  const BNLiqEth = createBigNumber(formattedInitialLiquidityEth); // this is DAI actually
   const BNgasCost = createBigNumber(formatEther(gasCost).fullPrecision);
   const BNtotalEthCost = testWithLiquidity
-    ? BNvalidityBond.plus(BNgasCost)
-        .plus(BNLiqGas)
+    ? BNgasCost.plus(BNLiqGas)
         .plus(BNLiqEth)
-    : BNvalidityBond.plus(BNgasCost);
-  const insufficientEth = createBigNumber(availableEth).lt(BNtotalEthCost);
+    : BNgasCost;
+  const insufficientEth = createBigNumber(availableEth || 0).lt(BNtotalEthCost);
 
   const BNdesignatedReportNoShowReputationBond = createBigNumber(
     formatRep(designatedReportNoShowReputationBond).fullPrecision
@@ -33,14 +34,13 @@ export default function insufficientFunds(
   const insufficientRep = createBigNumber(availableRep).lt(
     BNdesignatedReportNoShowReputationBond
   );
-
-  if (insufficientEth && insufficientRep) {
-    insufficientFundsString = "ETH and REP";
-  } else if (insufficientEth) {
-    insufficientFundsString = "ETH";
-  } else if (insufficientRep) {
-    insufficientFundsString = "REP";
-  }
+  
+  const BNtotalDaiCost = testWithLiquidity ? BNLiqEth.plus(BNvalidityBond) : BNvalidityBond;
+  const insufficientDai = createBigNumber(availableDai).lt(
+    BNtotalDaiCost
+  );
+ 
+  insufficientFundsString = {[ETH]: insufficientEth, [REP]: insufficientRep, [DAI]: insufficientDai};
 
   return insufficientFundsString;
 }
