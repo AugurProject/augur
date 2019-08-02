@@ -20,8 +20,9 @@ export const loginWithInjectedWeb3 = (
   callback: NodeStyleCallback = logError
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   const failure = () => callback('NOT_SIGNED_IN');
-  const success = async (account: string) => {
+  const success = async (account: string, refresh: boolean) => {
     if (!account) return failure();
+    if (refresh)  dispatch(updateAuthStatus(IS_LOGGED, false));
 
     const provider = new Web3Provider(window.web3.currentProvider);
     const networkId = window.web3.currentProvider.networkVersion;
@@ -54,15 +55,16 @@ export const loginWithInjectedWeb3 = (
             })
           );
         }
-        if (augurSdk.account !== config.selectedAddress) {
-          console.log("web3 updated, account changed to", config.selectedAddress);
-          dispatch(updateAuthStatus(IS_LOGGED, false));
-        }
       }
     );
   };
 
   windowRef.ethereum
     .enable()
-    .then((resolve: string[]) => success(resolve[0]), failure);
+    .then((resolve: string[]) => success(resolve[0], false), failure);
+
+  windowRef.ethereum.on('accountsChanged', function (accounts) {
+    console.log("refershing account to", accounts[0]);
+    success(accounts[0], true)
+  });
 };

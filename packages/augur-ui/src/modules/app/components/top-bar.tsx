@@ -12,7 +12,6 @@ import {
   LinearPropertyLabelMovement
 } from "modules/common/labels";
 import { CoreStats } from "modules/types";
-import { RepLogoIcon } from "modules/common/icons";
 import Styles from "modules/app/components/top-bar.styles.less";
 import { Link } from "react-router-dom";
 import makePath from "modules/routes/helpers/make-path";

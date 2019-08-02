@@ -33,7 +33,7 @@ interface ConfirmProps {
   trade: Trade;
   gasPrice: number;
   gasLimit: number;
-  availableFunds: BigNumber;
+  availableEth: BigNumber;
   availableDai: BigNumber;
   selectedOutcome: Getters.Markets.MarketInfoOutcome;
   marketType: string;
@@ -63,11 +63,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { trade, gasPrice, availableFunds } = this.props;
+    const { trade, gasPrice, availableEth } = this.props;
     if (
       trade !== nextProps.trade ||
       gasPrice !== nextProps.gasPrice ||
-      availableFunds !== nextProps.availableFunds
+      availableEth !== nextProps.availableEth
     ) {
       this.setState({
         messages: this.constructMessages(nextProps),
@@ -81,7 +81,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       allowanceAmount,
       gasPrice,
       gasLimit,
-      availableFunds,
+      availableEth,
       availableDai,
     } = props || this.props;
 
@@ -105,7 +105,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       totalCost &&
-      createBigNumber(gasCost, 10).gte(createBigNumber(availableFunds, 10))
+      createBigNumber(gasCost, 10).gte(createBigNumber(availableEth, 10))
     ) {
       messages = {
         header: 'Insufficient ETH',

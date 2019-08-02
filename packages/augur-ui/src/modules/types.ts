@@ -574,6 +574,7 @@ export interface Web3 {
 export interface WindowApp extends Window {
   app: object;
   web3: Web3;
+  ethereum: object;
   localStorage: Storage;
   integrationHelpers: any;
 }

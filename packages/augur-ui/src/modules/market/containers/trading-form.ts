@@ -27,7 +27,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     gasPrice: getGasPrice(state),
-    availableFunds: createBigNumber(state.loginAccount.eth || 0),
+    availableEth: createBigNumber(state.loginAccount.eth || 0),
     availableDai: createBigNumber(state.loginAccount.dai || 0),
     isLogged: authStatus.isLogged,
     allowanceAmount: loginAccount.allowanceFormatted,
