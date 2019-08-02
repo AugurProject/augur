@@ -303,7 +303,7 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Valididty Bond"}
-              value={s.validityBond && s.validityBond.formatted + " DAI"}
+              value={s.validityBond && s.validityBond.formattedValue}
             />
           </span>
 
@@ -311,7 +311,7 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"No-Show Bond"}
-              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formatted + " REP"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue}
             />
           </span>
 
@@ -319,11 +319,11 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Initial Liquidity"}
-              value={s.formattedInitialLiquidityDai.formatted + " DAI"}
+              value={s.formattedInitialLiquidityDai.formattedValue}
             />
             <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}
-              value={s.formattedInitialLiquidityGas.formatted + " ETH"}
+              value={s.formattedInitialLiquidityGas.formattedValue}
             />
           </span>
 
@@ -331,22 +331,22 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
-              value={totalDai.formatted + " DAI"}
+              value={totalDai.formattedValue + " DAI"}
             />
             <LinearPropertyLabel
               label={"Total ETH"}
-              value={s.formattedInitialLiquidityGas.formatted + " ETH"}
+              value={s.formattedInitialLiquidityGas.formattedValue}
             />
             <LinearPropertyLabel
               label={"TOTAL REP"}
-              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formatted + " REP"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue}
             />
           </span>
           {(noEth || noRep || noDai) && 
             <Error 
               alternate
               header="You don't have enough funds in your wallet" 
-              subheader={"You have " + (noEth ? availableEth + " ETH of " + s.formattedInitialLiquidityGas.formatted  + " ETH " : "" ) + "required to create this market."}
+              subheader={"You have " + (noEth ? availableEth + " ETH of " + s.formattedInitialLiquidityGas.formattedValue : "" ) + "required to create this market."}
             />
           }
         </div>

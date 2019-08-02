@@ -6,7 +6,7 @@
 // put all calls to contracts here that need conversion from display values to onChain values
 import { augurSdk } from 'services/augursdk';
 import { BigNumber } from 'bignumber.js';
-import { formatAttoRep, formatAttoEth } from 'utils/format-number';
+import { formatAttoRep, formatAttoEth, formatAttoDai } from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
   SimulateTradeData,
@@ -189,9 +189,15 @@ export function getRep() {
 
 export async function getCreateMarketBreakdown() {
   const { contracts } = augurSdk.get();
-  const validityBond = await contracts.universe.getOrCacheValidityBond_();
-  const designatedReportNoShowReputationBond = await contracts.universe.getOrCacheDesignatedReportNoShowBond_();
-  return { validityBond, designatedReportNoShowReputationBond };
+  const vBond = await contracts.universe.getOrCacheValidityBond_();
+  const noShowBond = await contracts.universe.getOrCacheDesignatedReportNoShowBond_();
+  const validityBondFormatted = formatAttoDai(vBond, {
+    decimals: 4,
+  });
+  const noShowFormatted = formatAttoRep(noShowBond, {
+    decimals: 4,
+  });
+  return { validityBondFormatted, noShowFormatted };
 }
 
 export function createMarket(newMarket: NewMarket) {
