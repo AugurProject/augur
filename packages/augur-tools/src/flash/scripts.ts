@@ -15,7 +15,11 @@ import moment from 'moment';
 
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { calculatePayoutNumeratorsArray, QUINTILLION } from '@augurproject/sdk';
+import {
+  calculatePayoutNumeratorsArray,
+  QUINTILLION,
+  Logs,
+} from '@augurproject/sdk';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -37,7 +41,7 @@ export function addScripts(flash: FlashSession) {
         abbr: 'u',
         description: `a few scripts need sdk, -u to wire up sdk`,
         flag: true,
-      }
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
@@ -234,7 +238,11 @@ export function addScripts(flash: FlashSession) {
 
       this.log(`block: ${blocktime}`);
       this.log(`local: ${moment(epoch).toString()}`);
-      this.log(`utc: ${moment(epoch).utc().toString()}\n`);
+      this.log(
+        `utc: ${moment(epoch)
+          .utc()
+          .toString()}\n`
+      );
     },
   });
 
@@ -266,7 +274,7 @@ export function addScripts(flash: FlashSession) {
       }
 
       await user.setTimestamp(new BigNumber(epoch));
-      await this.call("get-timestamp", {});
+      await this.call('get-timestamp', {});
     },
   });
 
@@ -303,10 +311,10 @@ export function addScripts(flash: FlashSession) {
         | 'm'
         | 's');
 
-      await this.call("get-timestamp", {});
+      await this.call('get-timestamp', {});
       this.log(`changing timestamp to ${newTime.unix()}`);
       await user.setTimestamp(new BigNumber(newTime.unix()));
-      await this.call("get-timestamp", {});
+      await this.call('get-timestamp', {});
     },
   });
 
@@ -329,7 +337,8 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'extraStake',
         abbr: 's',
-        description: 'added pre-emptive REP stake on the outcome in 10**18 format not atto REP(optional)',
+        description:
+          'added pre-emptive REP stake on the outcome in 10**18 format not atto REP(optional)',
         required: false,
       },
       {
@@ -347,17 +356,22 @@ export function addScripts(flash: FlashSession) {
       const outcome = Number(args.outcome);
       const extraStake = args.extraStake as string;
       const desc = args.description as string;
-      let preEmptiveStake = "0";
+      let preEmptiveStake = '0';
       if (extraStake) {
-        preEmptiveStake = new BigNumber(extraStake).dividedBy(QUINTILLION).toFixed();
+        preEmptiveStake = new BigNumber(extraStake)
+          .dividedBy(QUINTILLION)
+          .toFixed();
       }
-      if (!this.usingSdk) this.log("This script needs sdk, make sure to connect with -u flag");
+      if (!this.usingSdk)
+        this.log('This script needs sdk, make sure to connect with -u flag');
       if (!this.sdkReady) this.log("SDK hasn't fully syncd, need to wait");
 
-      const market: ContractInterfaces.Market = await user.getMarketContract(marketId);
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
       const marketInfos = await user.getMarketInfo(marketId);
       if (!marketInfos || marketInfos.length === 0) {
-        return this.log(`Error: marketId: ${marketId} not found`)
+        return this.log(`Error: marketId: ${marketId} not found`);
       }
       const marketInfo = marketInfos[0];
       const payoutNumerators = calculatePayoutNumeratorsArray(
@@ -369,10 +383,14 @@ export function addScripts(flash: FlashSession) {
         outcome
       );
 
-      await user.doInitialReport(market, payoutNumerators, desc, preEmptiveStake);
+      await user.doInitialReport(
+        market,
+        payoutNumerators,
+        desc,
+        preEmptiveStake
+      );
     },
   });
-
 
   flash.addScript({
     name: 'dispute',
@@ -380,7 +398,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'marketId',
         abbr: 'm',
-        description: 'market to initially dispute',
+        description: 'market to dispute',
         required: true,
       },
       {
@@ -400,7 +418,7 @@ export function addScripts(flash: FlashSession) {
         name: 'description',
         abbr: 'd',
         description:
-          'description to be added to contracts for initial report (optional)',
+          'description to be added to contracts for dispute (optional)',
         required: false,
       },
     ],
@@ -411,16 +429,22 @@ export function addScripts(flash: FlashSession) {
       const outcome = Number(args.outcome);
       const amount = args.amount as string;
       const desc = args.description as string;
-      if (amount === "0") return this.log("amount of REP is required");
+      if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
-      if (!this.usingSdk) return this.log("This script needs sdk, make sure to connect with -u flag");
-      if (!this.sdkReady) return this.log("SDK hasn't fully syncd, need to wait");
+      if (!this.usingSdk)
+        return this.log(
+          'This script needs sdk, make sure to connect with -u flag'
+        );
+      if (!this.sdkReady)
+        return this.log("SDK hasn't fully syncd, need to wait");
 
-      const market: ContractInterfaces.Market = await user.getMarketContract(marketId);
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
       const marketInfos = await user.getMarketInfo(marketId);
       if (!marketInfos || marketInfos.length === 0) {
-        return this.log(`Error: marketId: ${marketId} not found`)
+        return this.log(`Error: marketId: ${marketId} not found`);
       }
       const marketInfo = marketInfos[0];
       const payoutNumerators = calculatePayoutNumeratorsArray(
@@ -436,6 +460,175 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
+  flash.addScript({
+    name: 'contribute-to-tentative-winning-outcome',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description:
+          'market to contribute REP to its tentative winning outcome',
+        required: true,
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description:
+          'outcome of the market, non scalar markets 0,1,3,... for scalar markets use price',
+        required: true,
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'amount of REP to dispute with, use display value',
+        required: false,
+      },
+      {
+        name: 'description',
+        abbr: 'd',
+        description:
+          'description to be added to contracts for contribution (optional)',
+        required: false,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+      const marketId = args.marketId as string;
+      const outcome = Number(args.outcome);
+      const amount = args.amount as string;
+      const desc = args.description as string;
+      if (amount === '0') return this.log('amount of REP is required');
+      const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
+
+      if (!this.usingSdk)
+        return this.log(
+          'This script needs sdk, make sure to connect with -u flag'
+        );
+      if (!this.sdkReady)
+        return this.log("SDK hasn't fully syncd, need to wait");
+
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
+      const marketInfos = await user.getMarketInfo(marketId);
+      if (!marketInfos || marketInfos.length === 0) {
+        return this.log(`Error: marketId: ${marketId} not found`);
+      }
+      const marketInfo = marketInfos[0];
+      const payoutNumerators = calculatePayoutNumeratorsArray(
+        marketInfo.maxPrice,
+        marketInfo.minPrice,
+        marketInfo.numTicks,
+        marketInfo.numOutcomes,
+        marketInfo.marketType,
+        outcome
+      );
+
+      await user.contributeToTentative(market, payoutNumerators, stake, desc);
+    },
+  });
+
+  flash.addScript({
+    name: 'fork',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market to fork',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser();
+      const marketId = args.marketId as string;
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
+
+      if (!this.usingSdk)
+        return this.log(
+          'This script needs sdk, make sure to connect with -u flag'
+        );
+      if (!this.sdkReady)
+        return this.log("SDK hasn't fully syncd, need to wait");
+
+      const marketInfos = await user.getMarketInfo(marketId);
+      if (!marketInfos || marketInfos.length === 0) {
+        return this.log(`Error: marketId: ${marketId} not found`);
+      }
+      const blocktime = await user.getTimestamp();
+      const marketInfo = marketInfos[0];
+      const initialBondOnChain = await this.user.getInitialReportMinValue();
+      const thresholdOnChain = await this.user.getDisputeThresholdForDisputePacing();
+
+      const endTimeBN = new BigNumber(marketInfo.endTime);
+      if (endTimeBN.gt(blocktime)) {
+        await user.setTimestamp(endTimeBN.plus(1));
+      }
+
+      let outcomes = ['0', '1'];
+      if (marketInfo.marketType === Logs.MarketTypeName.Scalar) {
+        outcomes = [marketInfo.minPrice, marketInfo.maxPrice];
+      }
+
+      const outcome0 = calculatePayoutNumeratorsArray(
+        marketInfo.maxPrice,
+        marketInfo.minPrice,
+        marketInfo.numTicks,
+        marketInfo.numOutcomes,
+        marketInfo.marketType,
+        outcomes[0]
+      );
+      const outcome1 = calculatePayoutNumeratorsArray(
+        marketInfo.maxPrice,
+        marketInfo.minPrice,
+        marketInfo.numTicks,
+        marketInfo.numOutcomes,
+        marketInfo.marketType,
+        outcomes[1]
+      );
+      const payoutNumerators = [outcome0, outcome1];
+      this.log(`payout numerators ${JSON.stringify(payoutNumerators)}`);
+
+      let outcome = outcomes[1];
+      let message = `Initial Report on outcome ${outcome}, amount ${initialBondOnChain.toString()}`;
+      this.log(message);
+      await user.doInitialReport(
+        market,
+        payoutNumerators[1],
+        message,
+//        thresholdOnChain.minus(initialBondOnChain).toString()
+      );
+
+      outcome = outcomes[0];
+      const amount = initialBondOnChain.times(2);
+      message = `First Disptue for outcome ${outcome}, amount ${amount.toString()}`;
+      this.log(message);
+      await user.contribute(market, payoutNumerators[0], amount, message);
+
+      let isForking = false;
+      let roundCounter = 1;
+
+      while (!isForking) {
+        roundCounter++;
+        const index = roundCounter % 2;
+        const outcome = outcomes[index];
+        const numerators = payoutNumerators[index];
+
+        const endTime = await this.user.getDisputeWindowEndTime(market);
+        await user.setTimestamp(endTime.plus(1));
+        const amountOnChain = await this.user.getCrowdsourcerDisputeBond(market, numerators);
+        const message = `Dispute round ${roundCounter}, outcome ${outcome} is disputing, amount ${amountOnChain.toString()}`;
+        this.log(message);
+        await user.contribute(market, numerators, amountOnChain, message);
+
+        isForking = await user.isForking();
+        this.log(`is Market forking ${isForking}`);
+      }
+    },
+  });
 
   flash.addScript({
     name: 'finalize',
@@ -443,16 +636,18 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'marketId',
         abbr: 'm',
-        description: 'market to initially dispute',
+        description: 'market to finalize',
         required: true,
-      }
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
       const marketId = args.marketId as string;
 
-      const market: ContractInterfaces.Market = await user.getMarketContract(marketId);
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
       await user.finalizeMarket(market);
     },
   });
