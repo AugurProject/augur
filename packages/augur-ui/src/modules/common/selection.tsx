@@ -2,6 +2,8 @@ import * as React from "react";
 import classNames from "classnames";
 import Styles from "modules/common/selection.styles";
 import { Chevron, DotDotDot, TwoArrows } from "modules/common/icons";
+import ReactTooltip from "react-tooltip";
+import TooltipStyles from "modules/common/tooltip.styles.less";
 
 export interface NameValuePair {
   label: string;
@@ -57,10 +59,14 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     selected: this.props.defaultValue
       ? this.props.options.find(o => o.value === this.props.defaultValue)
       : null,
-    showList: false
+    showList: false,
+    scrollWidth: null,
+    clientWidth: null,
+    isDisabled: true
   };
 
   componentDidMount() {
+    this.measure();
     window.addEventListener("click", this.handleWindowOnClick);
   }
 
@@ -74,6 +80,29 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
 
   componentWillUnmount() {
     window.removeEventListener("click", this.handleWindowOnClick);
+  }
+
+  componentDidUpdate() {
+    this.measure();
+  }
+
+  shouldComponentUpdate(nextProps: any, nextState: any) {
+    if (nextState.selected !==  this.state.selected || nextState.showList !== this.state.showList) return true;
+
+    return (
+      this.state.scrollWidth !== nextState.scrollWidth ||
+      this.state.clientWidth !== nextState.clientWidth
+    );
+  }
+
+  measure = () => {
+    const { clientWidth, scrollWidth } = this.labelRef;
+
+    this.setState({
+      scrollWidth,
+      clientWidth,
+      isDisabled: !(scrollWidth > clientWidth)
+    });
   }
 
   refDropdown: any = null;
@@ -112,9 +141,10 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       openTop,
       className,
       activeClassName,
-      staticLabel
+      staticLabel,
+      id
     } = this.props;
-    const { selected, showList } = this.state;
+    const { selected, showList, isDisabled } = this.state;
 
     return (
       <div
@@ -133,11 +163,16 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         role="button"
         tabIndex={0}
         onClick={this.toggleList}
+        data-tip
+        data-for={"dropdown-"+id+staticLabel}
       >
-        <button className={classNames(Styles.label, {
-          [Styles.SelectedLabel]: selected
-        })}>
-          {selected ? selected.label : staticLabel} {large ? TwoArrows : Chevron}
+        <button 
+          className={classNames(Styles.label, {
+            [Styles.SelectedLabel]: selected
+          })}
+        >
+          <span ref={ref => (this.labelRef = ref)}>{selected ? selected.label : staticLabel}</span>
+          {large ? TwoArrows : Chevron}
         </button>
         <div
           className={classNames(Styles.list, {
@@ -168,6 +203,19 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             ))}
           </select>
         }
+        {!isDisabled && (
+          <ReactTooltip
+            id={"dropdown-"+id+staticLabel}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="top"
+            type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
+          >
+            {selected.label}
+          </ReactTooltip>
+        )}
       </div>
     );
   }
