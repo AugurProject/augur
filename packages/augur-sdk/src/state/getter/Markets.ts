@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { DisputeWindow } from '@augurproject/core/source/libraries/ContractInterfaces';
 import { DB } from '../db/DB';
 import { MarketFields } from '../db/MarketDB';
 import { Getter } from './Router';
@@ -13,9 +14,11 @@ import {
   MarketVolumeChangedLog,
   OrderEventType,
   OrderType,
-  ParsedOrderEventLog
+  ParsedOrderEventLog,
+  Timestamp,
 } from '../logs/types';
-import { SortLimit } from './types';
+import { NULL_ADDRESS,  sortOptions } from './types';
+
 import {
   Augur,
   numTicksToTickSize,
@@ -43,12 +46,12 @@ export enum MarketReportingState {
 
 export enum GetMarketsSortBy {
   MarketOI = 'MarketOI',
-  Liquidity = 'Liquidity',
+  Liquidity = 'Liquidity', // TODO: Make default sort
   Volume = 'Volume',
   Timestamp = 'Timestamp',
   EndTime = 'EndTime',
-  LastTradedTimestamp = 'LastTradedTimestamp',
-  LastLiquidityDepleted = 'LastLiquidityDepleted',
+  LastTradedTimestamp = 'LastTradedTimestamp', // TODO: Implement
+  LastLiquidityDepleted = 'LastLiquidityDepleted', // TODO: Implement
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
@@ -65,7 +68,7 @@ const getMarketsParamsSpecific = t.intersection([
     designatedReporter: t.string,
     maxFee: t.string,
     maxEndTime: t.number,
-    maxLiquiditySpread: t.string,
+    maxLiquiditySpread: t.string, // TODO: Implement maxLiquiditySpread filter
     includeInvalidMarkets: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
@@ -74,13 +77,23 @@ const getMarketsParamsSpecific = t.intersection([
 
 export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 
+export interface MarketListMeta {
+  // TODO
+}
+
+export interface MarketList {
+  markets: MarketInfo[];
+  meta: MarketListMeta;
+  filteredOutCount: number;
+  marketCount: number;
+}
+
 export interface MarketInfoOutcome {
   id: number;
   price: string | null;
   description: string;
   volume: string;
 }
-
 
 export interface MarketInfo {
   id: Address;
@@ -117,6 +130,11 @@ export interface MarketInfo {
 }
 
 export interface DisputeInfo {
+  disputeWindow: {
+    address: Address;
+    startTime: Timestamp | null;
+    endTime: Timestamp | null;
+  };
   disputePacingOn: boolean;
   stakeCompletedTotal: string;
   bondSizeOfNewStake: string;
@@ -190,7 +208,7 @@ export class Markets {
   static getMarketPriceHistoryParams = t.type({ marketId: t.string });
   static getMarketsParams = t.intersection([
     getMarketsParamsSpecific,
-    SortLimit,
+    sortOptions,
   ]);
   static getMarketsInfoParams = t.type({ marketIds: t.array(t.string) });
   static getMarketOrderBookParams = t.intersection([
@@ -485,7 +503,7 @@ export class Markets {
       }, []);
     }
 
-    let filteredMarketsInfo: any[] = [];
+    let filteredMarketsDetails: any[] = [];
     for (const marketCreatedLogInfo of Object.values(filteredKeyedMarketCreatedLogs)) {
       let includeMarket = true;
 
@@ -537,18 +555,25 @@ export class Markets {
 
       // Add any relevant sort information to marketCreatedLogInfo
       if (includeMarket) {
-        filteredMarketsInfo.push(marketCreatedLogInfo);
+        filteredMarketsDetails.push(marketCreatedLogInfo);
       }
     }
 
     // TODO Add `meta`, `filteredOutCount`, & `marketCount`
-    _.sortBy(filteredMarketsInfo, [(market: any) => market[params.sortBy]]);
+    _.sortBy(filteredMarketsDetails, [(market: any) => market[params.sortBy]]);
     if (params.isSortDescending) {
-      filteredMarketsInfo = filteredMarketsInfo.reverse();
+      filteredMarketsDetails = filteredMarketsDetails.reverse();
     }
     // TODO: Implement limit, offset
 
-    return filteredMarketsInfo.map(marketInfo => marketInfo.market);
+    const marketsInfo = await Markets.getMarketsInfo(
+      augur,
+      db,
+      { marketIds: filteredMarketsDetails.map(marketInfo => marketInfo.market) }
+    );
+    // TODO: Add marketsInfo to returned object
+
+    return filteredMarketsDetails.map(marketInfo => marketInfo.market);
   }
 
   @Getter('getMarketOrderBookParams')
@@ -1166,7 +1191,21 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
     }
   }
 
+  const disputeWindowAddress = await market.getDisputeWindow_();
+  let disputeWindowStartTime: string | null = null;
+  let disputeWindowEndTime: string | null = null;
+  if (disputeWindowAddress !== NULL_ADDRESS) {
+    const disputeWindow = augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
+    disputeWindowStartTime = await disputeWindow.getStartTime_().toString();
+    disputeWindowEndTime = await disputeWindow.getEndTime_().toString();
+  }
+
   return {
+    disputeWindow: {
+      address: disputeWindowAddress,
+      startTime: disputeWindowStartTime,
+      endTime: disputeWindowEndTime,
+    },
     disputePacingOn: await market.getDisputePacingOn_(),
     stakeCompletedTotal: (await market.getParticipantStake_()).toString(10),
     bondSizeOfNewStake: (await market.getParticipantStake_()).times(2).toString(10),

@@ -100,18 +100,17 @@ describe('State API :: Markets :: ', () => {
 
     let markets: MarketInfo[];
 
-    // Test non-existent universe address
-    const nonexistentAddress = '0x1111111111111111111111111111111111111111';
+    // Test invalid universe address
     let errorMessage = '';
     try {
       await api.route('getMarkets', {
-        universe: nonexistentAddress,
+        universe: NULL_ADDRESS,
       });
     } catch (error) {
       errorMessage = error.message;
     }
     expect(errorMessage).toEqual(
-      'Unknown universe: 0x1111111111111111111111111111111111111111'
+      'Unknown universe: ' + NULL_ADDRESS
     );
 
     // Test creator
@@ -131,7 +130,7 @@ describe('State API :: Markets :: ', () => {
 
     markets = await api.route('getMarkets', {
       universe: universe.address,
-      creator: nonexistentAddress,
+      creator: NULL_ADDRESS,
     });
     expect(markets).toEqual([]);
 
@@ -173,7 +172,7 @@ describe('State API :: Markets :: ', () => {
 
     markets = await api.route('getMarkets', {
       universe: universe.address,
-      designatedReporter: nonexistentAddress,
+      designatedReporter: NULL_ADDRESS,
     });
     expect(markets).toEqual([]);
 
@@ -216,6 +215,20 @@ describe('State API :: Markets :: ', () => {
     });
     expect(markets).toEqual([
       scalarMarket1.address,
+    ]);
+
+    markets = await api.route('getMarkets', {
+      universe: universe.address,
+      search: ACCOUNTS[0].publicKey,
+      isSortDescending: false,
+    });
+    expect(markets).toEqual([
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
+      scalarMarket2.address,
     ]);
 
     markets = await api.route('getMarkets', {
@@ -344,9 +357,10 @@ describe('State API :: Markets :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Test disputeWindow
+    let disputeWindow = await yesNoMarket1.getDisputeWindow_();
     markets = await api.route('getMarkets', {
       universe: universe.address,
-      disputeWindow: NULL_ADDRESS,
+      disputeWindow: disputeWindow,
       isSortDescending: false,
     });
     expect(markets).toEqual([
@@ -369,8 +383,8 @@ describe('State API :: Markets :: ', () => {
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
-    // Retest disputeWindow & reportingStates
-    const disputeWindow = await yesNoMarket1.getDisputeWindow_();
+    // Retest disputeWindow
+    disputeWindow = await yesNoMarket1.getDisputeWindow_();
     markets = await api.route('getMarkets', {
       universe: universe.address,
       disputeWindow,

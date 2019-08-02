@@ -25,6 +25,7 @@ import { Index, ExtendedSearchOptions, SearchResults } from 'flexsearch';
 export interface MarketFields {
   id: string;
   market: string;
+  marketCreator: string;
   category1: string;
   category2: string;
   category3: string;
@@ -39,6 +40,7 @@ export interface MarketFields {
 // Need this interface to access these items on the documents
 interface MarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
   market: string;
+  marketCreator: string;
   extraInfo: string;
 }
 
@@ -76,6 +78,7 @@ export class MarketDB extends DerivedDB {
           end: "end",
           field: [
             "market",
+            "marketCreator",
             "category1",
             "category2",
             "category3",
@@ -257,7 +260,7 @@ export class MarketDB extends DerivedDB {
 
         if (doc) {
           const market = doc.market ? doc.market : "";
-
+          const marketCreator = doc.marketCreator ? doc.marketCreator : "";
           let category1 = "";
           let category2 = "";
           let category3 = "";
@@ -290,6 +293,7 @@ export class MarketDB extends DerivedDB {
             this.flexSearchIndex.add({
               id: row.id,
               market,
+              marketCreator,
               category1,
               category2,
               category3,

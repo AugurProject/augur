@@ -16,7 +16,6 @@ import { BigNumber } from "bignumber.js";
 import { formatBytes32String } from "ethers/utils";
 import { Getters, Connectors } from "@augurproject/sdk";
 
-
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
 export class ContractAPI {
