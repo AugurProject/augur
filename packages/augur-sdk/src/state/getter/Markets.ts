@@ -17,8 +17,7 @@ import {
   ParsedOrderEventLog,
   Timestamp,
 } from '../logs/types';
-import { sortOptions/*, NULL_ADDRESS*/ } from './types';
-export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+import { NULL_ADDRESS,  sortOptions } from './types';
 
 import {
   Augur,
@@ -1192,13 +1191,12 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
   }
 
   const disputeWindowAddress = await market.getDisputeWindow_();
-  let disputeWindow: DisputeWindow | null = null;
   let disputeWindowStartTime: string | null = null;
   let disputeWindowEndTime: string | null = null;
   if (disputeWindowAddress !== NULL_ADDRESS) {
-    // disputeWindow = augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
-    // disputeWindowStartTime = await disputeWindow.getStartTime_().toString();
-    // disputeWindowEndTime = await disputeWindow.getEndTime_().toString();
+    const disputeWindow = augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
+    disputeWindowStartTime = await disputeWindow.getStartTime_().toString();
+    disputeWindowEndTime = await disputeWindow.getEndTime_().toString();
   }
 
   return {

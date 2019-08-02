@@ -9,10 +9,9 @@ import {
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { makeDbMock, makeProvider } from "../../../libs";
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
-import { stringTo32ByteHex } from '../../../libs/Utils';
+import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
-import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
 import { ContractInterfaces } from '@augurproject/core';
 
 const mock = makeDbMock();
@@ -95,7 +94,7 @@ describe('State API :: Markets :: ', () => {
       extraInfo: '{"categories": ["scalar 2 primary", "scalar 2 secondary", "scalar 2 tertiary"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2"}',
     });
     endTime = endTime.minus(1);
-/*
+
     const actualDB = await db;
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -340,14 +339,15 @@ describe('State API :: Markets :: ', () => {
     await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), '43');
 
     // Move timestamp to designated reporting phase
-    await john.setTimestamp(endTime.plus(1));
+    // await john.setTimestamp(endTime.plus(1));
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Test disputeWindow
+    let disputeWindow = await yesNoMarket1.getDisputeWindow_();
     markets = await api.route('getMarkets', {
       universe: universe.address,
-      disputeWindow: NULL_ADDRESS,
+      disputeWindow: disputeWindow,
       isSortDescending: false,
     });
     expect(markets).toEqual([
@@ -359,24 +359,24 @@ describe('State API :: Markets :: ', () => {
       scalarMarket2.address,
     ]);
 
-    await john.setTimestamp(endTime.plus(2));
+    // await john.setTimestamp(endTime.plus(2));
 
-    const noPayoutSet = [
-      new BigNumber(0),
-      new BigNumber(100),
-      new BigNumber(0),
-    ];
-    await john.doInitialReport(yesNoMarket1, noPayoutSet);
+    // const noPayoutSet = [
+    //   new BigNumber(0),
+    //   new BigNumber(100),
+    //   new BigNumber(0),
+    // ];
+    // await john.doInitialReport(yesNoMarket1, noPayoutSet);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
-    // Retest disputeWindow & reportingStates
-    const disputeWindow = await yesNoMarket1.getDisputeWindow_();
-    markets = await api.route('getMarkets', {
-      universe: universe.address,
-      disputeWindow,
-    });
-    expect(markets).toEqual([yesNoMarket1.address]);
+    // Retest disputeWindow
+    disputeWindow = await yesNoMarket1.getDisputeWindow_();
+    // markets = await api.route('getMarkets', {
+    //   universe: universe.address,
+    //   disputeWindow,
+    // });
+    // expect(markets).toEqual([yesNoMarket1.address]);
 
     // Test sortBy
     markets = await api.route('getMarkets', {
@@ -405,7 +405,7 @@ describe('State API :: Markets :: ', () => {
       scalarMarket1.address,
       scalarMarket2.address,
     ]);
-*/
+
     // TODO: Test maxLiquiditySpread, LAST_TRADED_TIMESTAMP, LAST_LIQUIDITY_DEPLETED, limit & offset
   }, 120000);
 /*
