@@ -80,6 +80,7 @@
     "ts-node": "8.0.3",
     "typedoc": "0.14.2",
     "typedoc-plugin-markdown": "1.2.1",
+    "typescript": "3.5.3",
     "webpack-dev-server": "3.2.1"
   },
   "buildDependencies": [

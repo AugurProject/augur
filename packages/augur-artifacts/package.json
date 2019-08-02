@@ -9,6 +9,7 @@
     "build": "tsc -b"
   },
   "devDependencies": {
-    "gts": "1.1.0"
+    "gts": "1.1.0",
+    "typescript": "3.5.3"
   }
 }

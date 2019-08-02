@@ -10,7 +10,6 @@
   },
   "scripts": {
     "version": "yarn rebuild",
-    "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "check": "gts check",
