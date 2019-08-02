@@ -565,13 +565,7 @@ export class Markets {
       db,
       { marketIds: filteredMarketsDetails.map(marketInfo => marketInfo.market) }
     );
-    console.log(await Markets.getMarketsInfo(augur, db, { marketIds: filteredMarketsDetails.map(marketInfo => marketInfo.market) }));
-    // return {
-    //   markets: await Markets.getMarketsInfo(augur, db, { marketIds: filteredMarketsDetails.map(marketInfo => marketInfo.market) }),
-    //   meta: {},
-    //   filteredOutCount: 0,
-    //   marketCount: 0,
-    // }
+
     return filteredMarketsDetails.map(marketInfo => marketInfo.market);
   }
 

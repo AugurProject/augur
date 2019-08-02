@@ -352,7 +352,7 @@ describe('State API :: Markets :: ', () => {
     await mary.fillOrder(scalarOrderId1, cost, numShares.div(2), '43');
 
     // Move timestamp to designated reporting phase
-    // await john.setTimestamp(endTime.plus(1));
+    await john.setTimestamp(endTime.plus(1));
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -372,24 +372,24 @@ describe('State API :: Markets :: ', () => {
       scalarMarket2.address,
     ]);
 
-    // await john.setTimestamp(endTime.plus(2));
+    await john.setTimestamp(endTime.plus(2));
 
-    // const noPayoutSet = [
-    //   new BigNumber(0),
-    //   new BigNumber(100),
-    //   new BigNumber(0),
-    // ];
-    // await john.doInitialReport(yesNoMarket1, noPayoutSet);
+    const noPayoutSet = [
+      new BigNumber(0),
+      new BigNumber(100),
+      new BigNumber(0),
+    ];
+    await john.doInitialReport(yesNoMarket1, noPayoutSet);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Retest disputeWindow
     disputeWindow = await yesNoMarket1.getDisputeWindow_();
-    // markets = await api.route('getMarkets', {
-    //   universe: universe.address,
-    //   disputeWindow,
-    // });
-    // expect(markets).toEqual([yesNoMarket1.address]);
+    markets = await api.route('getMarkets', {
+      universe: universe.address,
+      disputeWindow,
+    });
+    expect(markets).toEqual([yesNoMarket1.address]);
 
     // Test sortBy
     markets = await api.route('getMarkets', {
@@ -421,7 +421,7 @@ describe('State API :: Markets :: ', () => {
 
     // TODO: Test maxLiquiditySpread, LAST_TRADED_TIMESTAMP, LAST_LIQUIDITY_DEPLETED, limit & offset
   }, 120000);
-/*
+
   test(':getMarketPriceHistory', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();
     const categoricalMarket = await john.createReasonableMarket(
@@ -1899,5 +1899,4 @@ describe('State API :: Markets :: ', () => {
       ' ',
     ]);
   }, 120000);
-*/
 });
