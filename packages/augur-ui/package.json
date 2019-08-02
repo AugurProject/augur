@@ -24,8 +24,6 @@
     "integration": "HEADLESS=false npm run integration:headless",
     "lint": "node scripts/lint.js",
     "lit": "echo 'so lit'",
-    "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx}'",
     "test": "jest",
     "kickoff": "./scripts/setup-local-dev.sh",
     "heroku-postbuild": "webpack  --debug --config config/webpack.heroku.config.js",
@@ -38,7 +36,9 @@
     "docker:spin-up": "npm run docker:pull && npm run docker:start",
     "git:push:protected": "PUSH_PROTECTED_BRANCHES=true git push",
     "prepush": "yarn test && node scripts/pre-push.js",
-    "version": "npm run build:mainnet"
+    "version": "npm run build:mainnet",
+    "check": "gts check",
+    "fix": "gts fix"
   },
   "dependencies": {
     "@0xproject/order-utils": "1.0.7",
@@ -123,7 +123,6 @@
     "@types/react-router-dom": "4.3.1",
     "autoprefixer": "9.1.5",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "9.0.0",
     "babel-jest": "23.6.0",
     "babel-loader": "8.0.4",
     "chalk": "2.4.2",
@@ -133,16 +132,6 @@
     "cssnano": "4.1.10",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
-    "eslint": "5.16.0",
-    "eslint-config-airbnb": "17.1.0",
-    "eslint-config-prettier": "4.2.0",
-    "eslint-import-resolver-babel-module": "3.0.0",
-    "eslint-import-resolver-webpack": "0.11.0",
-    "eslint-plugin-import": "2.8.0",
-    "eslint-plugin-jest": "22.2.1",
-    "eslint-plugin-jsx-a11y": "6.2.0",
-    "eslint-plugin-prettier": "3.0.1",
-    "eslint-plugin-react": "7.12.4",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "file-loader": "4.1.0",
     "genversion": "2.1.1",
@@ -165,11 +154,9 @@
     "listr": "0.14.3",
     "normalize.css": "8.0.1",
     "null-loader": "0.1.1",
-    "nyc": "13.1.0",
     "onchange": "4.1.0",
     "postcss-loader": "3.0.0",
     "postcss-sass": "0.3.5",
-    "prettier": "1.18.2",
     "proxyquire": "1.8.0",
     "puppeteer": "1.18.1",
     "readline-sync": "1.4.9",
@@ -196,7 +183,9 @@
     "webpack-dev-middleware": "3.3.0",
     "webpack-hot-middleware": "2.24.2",
     "webpack-merge": "4.1.4",
-    "worker-loader": "2.0.0"
+    "worker-loader": "2.0.0",
+    "gts": "1.1.0",
+    "@types/node": "^10.0.3"
   },
   "resolutions": {
     "**/sha3": "2.0.1"
