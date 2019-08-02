@@ -77,9 +77,15 @@ const getMarketsParamsSpecific = t.intersection([
 
 export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 
+export interface MarketListMeta {
+  // TODO
+}
+
 export interface MarketList {
   markets: MarketInfo[];
-
+  meta: MarketListMeta;
+  filteredOutCount: number;
+  marketCount: number;
 }
 
 export interface MarketInfoOutcome {
