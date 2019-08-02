@@ -32,6 +32,7 @@ test("Bulksync Doc merge update", async () => {
       _id: "0x1111111111111111111111111111111111111111",
       blockNumber: 2,
       market: "0x1111111111111111111111111111111111111111",
+      marketCreator: ACCOUNTS[0].publicKey,
       topic: stringTo32ByteHex("Market share"),
       extraInfo,
     },{
@@ -66,6 +67,7 @@ test("Blockstream Doc merge update", async () => {
       _id: "0x1111111111111111111111111111111111111111",
       blockNumber: 1,
       market: "0x1111111111111111111111111111111111111111",
+      marketCreator: ACCOUNTS[0].publicKey,
       topic: stringTo32ByteHex("Market share"),
       extraInfo: JSON.stringify({
         description: "Foobar has 12% market share by 2041",
@@ -109,6 +111,7 @@ test("Flexible Search", async () => {
       _id: "0x1111111111111111111111111111111111111111",
       blockNumber: 1,
       market: "0x1111111111111111111111111111111111111111",
+      marketCreator: ACCOUNTS[0].publicKey,
       extraInfo: JSON.stringify({
         categories: ["Market share"],
         description: "Foobar has 12% market share by 2041",
@@ -136,6 +139,9 @@ test("Flexible Search", async () => {
   docs = await db.fullTextMarketSearch("blah", null);  // resolutionSource
   expect(docs.length).toEqual(1);
 
+  docs = await db.fullTextMarketSearch(ACCOUNTS[0].publicKey, null);  // marketCreator
+  expect(docs.length).toEqual(1);
+
   docs = await db.fullTextMarketSearch("fake", null);  // _scalarDenomination
   expect(docs.length).toEqual(1);
   const doc = docs[0];
@@ -143,6 +149,7 @@ test("Flexible Search", async () => {
   expect(doc).toMatchObject({
     id: "0x1111111111111111111111111111111111111111",
     market: "0x1111111111111111111111111111111111111111",
+    marketCreator: ACCOUNTS[0].publicKey,
     category1: "Market share",
     description: "Foobar has 12% market share by 2041",
     longDescription: "lol",
