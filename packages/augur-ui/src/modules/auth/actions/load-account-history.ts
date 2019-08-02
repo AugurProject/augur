@@ -17,13 +17,14 @@ export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   getState: () => AppState
 ) => {
   dispatch(clearTransactions());
-  loadTransactions(dispatch, () => {
+  loadTransactions(dispatch, getState(), () => {
     dispatch(loadAlerts());
   });
 };
 
 function loadTransactions(
   dispatch: ThunkDispatch<void, any, Action>,
+  appState: AppState,
   callback: NodeStyleCallback
 ) {
   const options = {};
@@ -33,16 +34,19 @@ function loadTransactions(
       dispatch(loadUserFilledOrders(options, resolve))
     )
   );
+
   promises.push(
     new Promise(resolve =>
       dispatch(loadAllAccountPositions(options, null, resolve))
     )
   );
+
   promises.push(
     new Promise(resolve =>
       dispatch(loadAccountOpenOrders(options, resolve))
     )
   );
+
   promises.push(
     new Promise(resolve =>
       dispatch(loadCreateMarketHistory(options, resolve))
@@ -54,8 +58,10 @@ function loadTransactions(
     )
   );
 
-  Promise.all(promises).then(marketIds => {
-    const uniqMarketIds = Array.from(
+  Promise.all(promises).then((marketIds: string[][]) => {
+    marketIds = [...marketIds, Object.keys(appState.pendingOrders)];
+
+    const uniqMarketIds: string[] = Array.from(
       new Set(
         marketIds.reduce(
           (p, mids) => p.concat(mids.filter(m => m !== null)),
@@ -65,8 +71,8 @@ function loadTransactions(
     );
 
     dispatch(getWinningBalance(uniqMarketIds));
-    dispatch(loadMarketsInfoIfNotLoaded(uniqMarketIds), () => {
-      callback();
-    });
+    dispatch(loadMarketsInfoIfNotLoaded(uniqMarketIds, () => {
+      callback(null);
+    }));
   });
 }
