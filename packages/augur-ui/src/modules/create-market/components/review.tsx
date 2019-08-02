@@ -243,6 +243,8 @@ export default class Review extends React.Component<
     const noRep = s.insufficientFundsString !== "" && s.insufficientFundsString[REP];
     const noDai = s.insufficientFundsString !== "" && s.insufficientFundsString[DAI];
 
+    console.log(totalDai)
+
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
         <Header text="Market details" />
@@ -296,7 +298,7 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Valididty Bond"}
-              value={s.validityBond && s.validityBond.rounded + " DAI"}
+              value={s.validityBond && s.validityBond.formatted + " DAI"}
             />
           </span>
 
@@ -304,7 +306,7 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"No-Show Bond"}
-              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.rounded + " REP"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formatted + " REP"}
             />
           </span>
 
@@ -312,11 +314,11 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Initial Liquidity"}
-              value={s.formattedInitialLiquidityDai.rounded + " DAI"}
+              value={s.formattedInitialLiquidityDai.formatted + " DAI"}
             />
             <LinearPropertyLabelTooltip
               label={"Estimated Gas Cost"}
-              value={s.formattedInitialLiquidityGas.rounded + " ETH"}
+              value={s.formattedInitialLiquidityGas.formatted + " ETH"}
             />
           </span>
 
@@ -324,22 +326,22 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
-              value={totalDai.rounded + " DAI"}
+              value={totalDai.formatted + " DAI"}
             />
             <LinearPropertyLabel
               label={"Total ETH"}
-              value={s.formattedInitialLiquidityGas.rounded + " ETH"}
+              value={s.formattedInitialLiquidityGas.formatted + " ETH"}
             />
             <LinearPropertyLabel
               label={"TOTAL REP"}
-              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.rounded + " REP"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formatted + " REP"}
             />
           </span>
           {(noEth || noRep || noDai) && 
             <Error 
               alternate
               header="You don't have enough funds in your wallet" 
-              subheader={"You have " + (noEth ? availableEth + " ETH of " + totalEth.rounded + " ETH " : "" ) + "required to create this market."}
+              subheader={"You have " + (noEth ? availableEth + " ETH of " + totalEth.formatted + " ETH " : "" ) + "required to create this market."}
             />
           }
         </div>
