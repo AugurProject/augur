@@ -237,10 +237,7 @@ export default class Review extends React.Component<
       affiliateFee
     } = newMarket;
 
-    console.log(s.insufficientFundsString);
-
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityEth ? s.formattedInitialLiquidityEth.value : 0)));
-    const totalEth = formatEther(createBigNumber(s.gasCost ? s.gasCost.value : 0).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)).plus(createBigNumber(s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0)));
 
     const noEth = s.insufficientFundsString !== "" && s.insufficientFundsString[ETH];
     const noRep = s.insufficientFundsString !== "" && s.insufficientFundsString[REP];
@@ -301,10 +298,6 @@ export default class Review extends React.Component<
               label={"Valididty Bond"}
               value={s.validityBond && s.validityBond.rounded + " DAI"}
             />
-            <LinearPropertyLabelTooltip
-              label={"Estimated Gas Cost"}
-              value={s.gasCost && s.gasCost.rounded + " ETH"}
-            />
           </span>
 
           <Subheaders header="No-show bond" subheader={"A “no-show” bond must be put up by the market creator which is lost if the designated reporter doesn’t show up on time (within 3 days of the market end time) to put forth the initial tentative outcome."} link />
@@ -312,10 +305,6 @@ export default class Review extends React.Component<
             <LinearPropertyLabel
               label={"No-Show Bond"}
               value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.rounded + " REP"}
-            />
-            <LinearPropertyLabelTooltip
-              label={"Estimated Gas Cost"}
-              value={s.gasCost && s.gasCost.rounded + " ETH"}
             />
           </span>
 
@@ -339,7 +328,7 @@ export default class Review extends React.Component<
             />
             <LinearPropertyLabel
               label={"Total ETH"}
-              value={totalEth.rounded + " ETH"}
+              value={s.formattedInitialLiquidityGas.rounded + " ETH"}
             />
             <LinearPropertyLabel
               label={"TOTAL REP"}

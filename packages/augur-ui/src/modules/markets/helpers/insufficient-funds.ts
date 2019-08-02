@@ -21,11 +21,9 @@ export default function insufficientFunds(
   );
   const BNLiqGas = createBigNumber(formattedInitialLiquidityGas);
   const BNLiqEth = createBigNumber(formattedInitialLiquidityEth); // this is DAI actually
-  const BNgasCost = createBigNumber(formatEther(gasCost).fullPrecision);
   const BNtotalEthCost = testWithLiquidity
-    ? BNgasCost.plus(BNLiqGas)
-        .plus(BNLiqEth)
-    : BNgasCost;
+    ? BNLiqEth
+    : createBigNumber(0);
   const insufficientEth = createBigNumber(availableEth || 0).lt(BNtotalEthCost);
 
   const BNdesignatedReportNoShowReputationBond = createBigNumber(
