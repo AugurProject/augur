@@ -435,4 +435,23 @@ export class ContractAPI {
       await this.augur.contracts.cash.approve(spender, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
     }
   }
+
+  async getGnosisSafeAddress(paymentToken: string, payment: BigNumber): Promise<string> {
+    const params = {
+      paymentToken,
+      payment,
+      owner: this.account.publicKey
+    }
+    return await this.augur.gnosis.getGnosisSafeAddress(params);
+  }
+
+  async createGnosisSafeDirectlyWithETH(paymentToken: string, payment: BigNumber): Promise<ContractInterfaces.GnosisSafe> {
+    const params = {
+      paymentToken,
+      payment,
+      owner: this.account.publicKey
+    }
+    const address = await this.augur.gnosis.createGnosisSafeDirectlyWithETH(params);
+    return this.augur.contracts.gnosisSafeFromAddress(address)
+  }
 }

@@ -2665,6 +2665,25 @@ export class ProxyFactory<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public calculateCreateProxyWithNonceAddress = async (mastercopy: string, initializer: string, saltNonce: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_mastercopy","type":"address"},{"name":"initializer","type":"bytes"},{"name":"saltNonce","type":"uint256"}],"name":"calculateCreateProxyWithNonceAddress","outputs":[{"name":"proxy","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [mastercopy, initializer, saltNonce], 'calculateCreateProxyWithNonceAddress', options.sender)
+	}
+	
+	public calculateCreateProxyWithNonceAddress_estimateGas = async (mastercopy: string, initializer: string, saltNonce: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_mastercopy","type":"address"},{"name":"initializer","type":"bytes"},{"name":"saltNonce","type":"uint256"}],"name":"calculateCreateProxyWithNonceAddress","outputs":[{"name":"proxy","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [mastercopy, initializer, saltNonce], 'calculateCreateProxyWithNonceAddress', options.sender)
+	}
+
+	public calculateCreateProxyWithNonceAddress_ = async (mastercopy: string, initializer: string, saltNonce: TBigNumber, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_mastercopy","type":"address"},{"name":"initializer","type":"bytes"},{"name":"saltNonce","type":"uint256"}],"name":"calculateCreateProxyWithNonceAddress","outputs":[{"name":"proxy","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [mastercopy, initializer, saltNonce], options.sender)
+		return <string>result[0]
+	}
+
 	public proxyCreationCode_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"proxyCreationCode","outputs":[{"name":"","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}
@@ -2688,6 +2707,20 @@ export class ProxyFactory<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"masterCopy","type":"address"},{"name":"data","type":"bytes"}],"name":"createProxy","outputs":[{"name":"proxy","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [masterCopy, data], options.sender)
+		return <string>result[0]
+	}
+
+	public getDeploymentData_ = async (mastercopy: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_mastercopy","type":"address"}],"name":"getDeploymentData","outputs":[{"name":"","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [mastercopy], options.sender)
+		return <string>result[0]
+	}
+
+	public getSalt_ = async (initializer: string, saltNonce: TBigNumber, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"initializer","type":"bytes"},{"name":"saltNonce","type":"uint256"}],"name":"getSalt","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [initializer, saltNonce], options.sender)
 		return <string>result[0]
 	}
 

@@ -3918,7 +3918,7 @@ Fallback function forwards all transactions and returns all received return data
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ProxyFactory.createProxy(address,bytes)"><code class="function-signature">createProxy(address masterCopy, bytes data)</code></a></li><li><a href="#ProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#ProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li><li><a href="#ProxyFactory.createProxyWithNonce(address,bytes,uint256)"><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ProxyFactory.ProxyCreation(contract Proxy)"><code class="function-signature">ProxyCreation(contract Proxy proxy)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ProxyFactory.createProxy(address,bytes)"><code class="function-signature">createProxy(address masterCopy, bytes data)</code></a></li><li><a href="#ProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#ProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li><li><a href="#ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.createProxyWithNonce(address,bytes,uint256)"><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.getSalt(bytes,uint256)"><code class="function-signature">getSalt(bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.getDeploymentData(address)"><code class="function-signature">getDeploymentData(address _mastercopy)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ProxyFactory.ProxyCreation(contract Proxy)"><code class="function-signature">ProxyCreation(contract Proxy proxy)</code></a></li></ul></div>
 
 
 
@@ -3942,12 +3942,45 @@ Allows to retrieve the creation code used for the Proxy deployment. With this it
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"></a><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">internal</span></h4>
+
+Allows to create new proxy contact using CREATE2 but it doesn&#x27;t run the initializer.
+      This method is only meant as an utility to be called from other methods
+ @param _mastercopy Address of master copy.
+ @param initializer Payload for message call sent to new proxy contract.
+ @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
 <h4><a class="anchor" aria-hidden="true" id="ProxyFactory.createProxyWithNonce(address,bytes,uint256)"></a><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">public</span></h4>
 
 Allows to create new proxy contact and execute a message call to the new proxy within one transaction.
  @param _mastercopy Address of master copy.
  @param initializer Payload for message call sent to new proxy contract.
  @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"></a><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">external</span></h4>
+
+Allows to get the address for a new proxy contact created via [`createProxyWithNonce`](.#ProxyFactory.createProxyWithNonce(address,bytes,uint256))
+      This method is only meant for address calculation purpose when you use an initializer that would revert,
+      therefore the response is returned with a revert. When calling this method set `from` to the address of the proxy factory.
+ @param _mastercopy Address of master copy.
+ @param initializer Payload for message call sent to new proxy contract.
+ @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.getSalt(bytes,uint256)"></a><code class="function-signature">getSalt(bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.getDeploymentData(address)"></a><code class="function-signature">getDeploymentData(address _mastercopy) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+
 
 
 

@@ -5,7 +5,9 @@ import { EthersProvider as EProvider } from "contract-dependencies-ethers";
 import { ethers } from "ethers";
 import { Abi } from "ethereum";
 import * as _ from "lodash";
+import { BigNumber } from "bignumber.js";
 import { AsyncQueue, queue, retry } from "async";
+import {isInstanceOfBigNumber, isInstanceOfArray } from "./utils"
 
 interface ContractMapping {
   [contractName: string]: ethers.utils.Interface;
@@ -42,10 +44,10 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
         function(err: Error, results: any) {
           if (err) {
             item.reject(err);
-            callback();
+            return callback();
           }
           item.resolve(results);
-          callback();
+          return callback();
         }
       );
     }, concurrency);
@@ -77,21 +79,32 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
   }
 
   public getEventTopic(contractName: string, eventName: string): string {
-    const contractInterface = this.contractMapping[contractName];
-    if (!contractInterface) {
-      throw new Error(`Contract name ${contractName} not found in EthersJSProvider. Call 'storeAbiData' first with this name and the contract abi`);
-    }
+    const contractInterface = this.getContractInterface(contractName);
     if (contractInterface.events[eventName] === undefined) {
       throw new Error(`Contract name ${contractName} did not have event ${eventName}`);
     }
     return contractInterface.events[eventName].topic;
   }
 
-  public parseLogValues(contractName: string, log: Log): LogValues {
-    const contractInterface = this.contractMapping[contractName];
-    if (!contractInterface) {
-      throw new Error(`Contract name ${contractName} not found in EthersJSProvider. Call 'storeAbiData' first with this name and the contract abi`);
+  public encodeContractFunction(contractName: string, functionName: string, funcParams: any[]): string {
+    const contractInterface = this.getContractInterface(contractName);
+    const func = contractInterface.functions[functionName];
+    if (func === undefined) {
+      throw new Error(`Contract name ${contractName} did not have function ${functionName}`);
     }
+    const ethersParams = _.map(funcParams, (param) => {
+      if (isInstanceOfBigNumber(param)) {
+        return new ethers.utils.BigNumber(param.toFixed());
+      } else if (isInstanceOfArray(param) && param.length > 0 && isInstanceOfBigNumber(param[0])) {
+        return _.map(param, (value) => new ethers.utils.BigNumber(value.toFixed()));
+      }
+      return param;
+    });
+    return func.encode(ethersParams);
+  }
+
+  public parseLogValues(contractName: string, log: Log): LogValues {
+    const contractInterface = this.getContractInterface(contractName);
     const parsedLog = contractInterface.parseLog(log);
     let omittedValues = _.map(_.range(parsedLog.values.length), (n) => n.toString());
     omittedValues.push('length');
@@ -111,6 +124,14 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       return val;
     });
     return logValues;
+  }
+
+  private getContractInterface(contractName: string): ethers.utils.Interface {
+    const contractInterface = this.contractMapping[contractName];
+    if (!contractInterface) {
+      throw new Error(`Contract name ${contractName} not found in EthersJSProvider. Call 'storeAbiData' first with this name and the contract abi`);
+    }
+    return contractInterface;
   }
 
   public async getLogs(filter: Filter): Promise<Array<Log>> {

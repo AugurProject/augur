@@ -7,6 +7,7 @@ import { ContractDependenciesEthers, TransactionStatusCallback, TransactionMetad
 import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
+import { Gnosis } from "./api/Gnosis";
 import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
@@ -31,6 +32,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly contracts: Contracts;
   readonly trade: Trade;
   readonly market: Market;
+  readonly gnosis: Gnosis;
   static connector: BaseConnector;
   readonly liquidity: Liquidity;
 
@@ -82,6 +84,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
+    this.gnosis = new Gnosis(this.provider, this);
 
     this.registerTransactionStatusEvents();
   }
@@ -127,6 +130,16 @@ export class Augur<TProvider extends Provider = Provider> {
     const account = await this.dependencies.address;
     if (!account) return account;
     return getAddress(account);
+  }
+
+  async sendETH(address: string, value: BigNumber): Promise<void> {
+    const transaction = {
+      to: address,
+      data: "0x",
+      value
+    };
+    const ethersTransaction = this.dependencies.transactionToEthersTransaction(transaction);
+    await this.dependencies.signer.sendTransaction(ethersTransaction);
   }
 
   getUniverse(address: string): ContractInterfaces.Universe {

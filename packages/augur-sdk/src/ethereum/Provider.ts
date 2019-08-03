@@ -11,6 +11,7 @@ export interface Provider {
   getBlock(blockHashOrBlockNumber: BlockTag | string): Promise<Block>;
   storeAbiData(abi: Abi, contractName: string): void;
   getEventTopic(contractName: string, eventName: string): string;
+  encodeContractFunction(contractName: string, functionName: string, funcParams: any[]): string;
   parseLogValues(contractName: string, log: Log): LogValues;
   getBalance(address: string): Promise<ethers.utils.BigNumber>;
 }

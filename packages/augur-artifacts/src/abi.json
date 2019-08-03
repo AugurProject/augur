@@ -5395,6 +5395,33 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_mastercopy",
+					"type": "address"
+				},
+				{
+					"name": "initializer",
+					"type": "bytes"
+				},
+				{
+					"name": "saltNonce",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateCreateProxyWithNonceAddress",
+			"outputs": [
+				{
+					"name": "proxy",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "proxyCreationCode",
@@ -5429,6 +5456,48 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_mastercopy",
+					"type": "address"
+				}
+			],
+			"name": "getDeploymentData",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "initializer",
+					"type": "bytes"
+				},
+				{
+					"name": "saltNonce",
+					"type": "uint256"
+				}
+			],
+			"name": "getSalt",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
