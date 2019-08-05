@@ -55,7 +55,7 @@ import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
 import makePath from 'modules/routes/helpers/make-path';
-import { CREATE_MARKET } from 'modules/routes/constants/views';
+import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
 import { DEFAULT_STATE } from 'modules/markets/reducers/new-market';
 import {
   isBetween,
@@ -80,7 +80,6 @@ import MarketView from 'modules/market/components/market-view/market-view';
 interface FormProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
-  address: String;
   updatePage: Function;
   addDraft: Function;
   drafts: Drafts;
@@ -88,6 +87,7 @@ interface FormProps {
   clearNewMarket: Function;
   discardModal: Function;
   template: boolean;
+  openCreateMarketModal: Function;
 }
 
 interface FormState {
@@ -353,47 +353,6 @@ export default class Form extends React.Component<
     }
   };
 
-  submitMarket = () => {
-    const { newMarket, address } = this.props;
-
-    createMarket({
-      isValid: true,
-      validations: newMarket.validations,
-      currentStep: newMarket.currentStep,
-      type: newMarket.type, // this isn't used
-      outcomes: [],
-      scalarSmallNum: newMarket.minPrice,
-      scalarBigNum: newMarket.maxPrice,
-      scalarDenomination: newMarket.scalarDenomination,
-      description: newMarket.description,
-      expirySourceType: newMarket.expirySourceType,
-      expirySource: newMarket.expirySource,
-      designatedReporterType: newMarket.designatedReporterType,
-      designatedReporterAddress:
-        newMarket.designatedReporterAddress === ''
-          ? address
-          : newMarket.designatedReporterAddress,
-      minPrice: newMarket.minPrice,
-      maxPrice: newMarket.maxPrice,
-      endTime: newMarket.endTime.timestamp,
-      tickSize: newMarket.tickSize,
-      hour: newMarket.hour,
-      minute: newMarket.minute,
-      meridiem: newMarket.meridiem,
-      marketType: newMarket.marketType,
-      detailsText: newMarket.detailsText,
-      categories: ['', '', ''],
-      settlementFee: 0,
-      affiliateFee: 0,
-      orderBook: {},
-      orderBookSorted: {},
-      orderBookSeries: {},
-      initialLiquidityDai: 0,
-      initialLiquidityGas: 0,
-      creationError: '',
-    });
-  };
-
   evaluate = (validationsObj: Validations) => {
     const { newMarket } = this.props;
 
@@ -533,7 +492,13 @@ export default class Form extends React.Component<
   };
 
   render() {
-    const { newMarket, drafts, template } = this.props;
+    const { 
+      newMarket, 
+      drafts, 
+      template, 
+      openCreateMarketModal,
+      history 
+    } = this.props;
     const { contentPages } = this.state;
 
     const { currentStep, validations, uniqueId } = newMarket;
@@ -617,7 +582,13 @@ export default class Form extends React.Component<
                     <PrimaryButton text="Next" action={this.nextPage} />
                   )}
                   {secondButton === CREATE && (
-                    <PrimaryButton text="Create" action={this.submitMarket} />
+                    <PrimaryButton text="Create" action={() => {
+                      openCreateMarketModal(() => {
+                        history.push({
+                          pathname: makePath(MY_POSITIONS, null),
+                        });
+                      })
+                    }} />
                   )}
                 </div>
               </div>
