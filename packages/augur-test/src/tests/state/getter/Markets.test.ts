@@ -130,6 +130,19 @@ describe('State API :: Markets :: ', () => {
 
     marketList = await api.route('getMarkets', {
       universe: universe.address,
+      sortBy: GetMarketsSortBy.EndTime,
+      isSortDescending: false,
+      offset: 1,
+      limit: 4
+    });
+    expect(marketList.markets.length).toEqual(4);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[3].id).toEqual(scalarMarket1.address);
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
       creator: NULL_ADDRESS,
     });
     expect(marketList).toEqual({
@@ -461,7 +474,7 @@ describe('State API :: Markets :: ', () => {
     expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
     expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
-    // TODO: Test maxLiquiditySpread, LAST_TRADED_TIMESTAMP, LAST_LIQUIDITY_DEPLETED, limit & offset
+    // TODO: Test maxLiquiditySpread, LAST_TRADED_TIMESTAMP, & LAST_LIQUIDITY_DEPLETED
   }, 120000);
 
   test(':getMarketPriceHistory', async () => {
