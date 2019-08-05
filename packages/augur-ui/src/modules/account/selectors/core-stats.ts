@@ -14,14 +14,17 @@ export const selectCoreStats = createSelector(
       availableFunds: {
         label: "Available Funds",
         value: formatEther(accountFunds.totalAvailableTradingBalance).formatted,
+        mobileValue: MobileLimitNumber(formatEther(accountFunds.totalAvailableTradingBalance).formatted)
       },
       frozenFunds: {
         label: "Frozen Funds",
         value: formatEther(accountFunds.totalFrozenFunds).formatted,
+        mobileValue: MobileLimitNumber(formatEther(accountFunds.totalFrozenFunds).formatted)
       },
       totalFunds: {
         label: "Total Funds",
         value: formatEther(accountFunds.totalAccountValue).formatted,
+        mobileValue: MobileLimitNumber(formatEther(accountFunds.totalAccountValue).formatted)
       },
       realizedPL: {
         label: "Realized P/L",
@@ -29,3 +32,14 @@ export const selectCoreStats = createSelector(
       },
     }),
 );
+
+export const MobileLimitNumber = (formattedValue: string) => {
+  const removeCommas = formattedValue.replace(/,/g, "");
+  const length = removeCommas.length;
+  const decimalPlace = removeCommas.indexOf(".");
+  if (length > 12) {
+    const withoutDecimals = removeCommas.slice(0, decimalPlace);
+    const firstTwoDecimals = removeCommas.slice(decimalPlace, length - 2);
+    return withoutDecimals.slice(0, 9) + firstTwoDecimals;
+  } else return removeCommas;
+}

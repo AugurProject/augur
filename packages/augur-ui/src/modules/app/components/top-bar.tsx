@@ -40,6 +40,7 @@ const TopBar = ({
     totalFunds,
     realizedPL
   } = stats;
+
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
