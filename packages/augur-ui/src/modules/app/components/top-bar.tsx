@@ -41,7 +41,6 @@ const TopBar = ({
     realizedPL
   } = stats;
 
-  console.log(availableFunds);
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
