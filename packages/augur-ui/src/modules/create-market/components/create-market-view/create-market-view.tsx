@@ -64,6 +64,6 @@ CreateMarketView.propTypes = {
 };
 
 CreateMarketView.defaultProps = {
-  availableEth: "0",
-  availableRep: "0"
+  availableEth: 0,
+  availableRep: 0
 };
