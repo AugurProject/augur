@@ -32,6 +32,7 @@ const yesNoOrderBook: OrderBook = {
 };
 
 export interface ExtraInfo {
+  categories: string[];
   resolutionSource?: string;
   description: string;
   tags: string[];
@@ -46,7 +47,6 @@ export interface CannedMarket {
   tickSize?: string;
   outcomes?: string[];
   affiliateFeeDivisor: number;
-  topic: string;
   extraInfo: ExtraInfo;
   orderBook: OrderBook;
 }
@@ -98,8 +98,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inOneMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "space",
     extraInfo: {
+      categories: ["space"],
       description:
         "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " +
         thisYear +
@@ -114,8 +114,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inOneMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "space",
     extraInfo: {
+      categories: ["space"],
       description:
         "Will SpaceX successfully complete a manned flight beyond Earth orbit by " +
         inOneMonths.toDateString() +
@@ -130,8 +130,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inTwoMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "space",
     extraInfo: {
+      categories: ["space"],
       description:
         "Will SpaceX successfully complete a Mars landing (manned or unmanned) by " +
         inTwoMonths.toDateString() +
@@ -146,8 +146,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inTwoMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "politics",
     extraInfo: {
+      categories: ["politics"],
       description:
         "Will California secede from the United States before, " +
         inTwoMonths.toDateString() +
@@ -163,8 +163,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: closingBellTomorrow.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "finance",
     extraInfo: {
+      categories: ["finance", "dow jones industrial average"],
       description:
         "Will the Dow Jones Industrial Average close at a higher price on " +
         closingBellTomorrow.toDateString() +
@@ -180,8 +180,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inThreeMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "Augur",
     extraInfo: {
+      categories: ["augur"],
       description:
         "Will Augur's live release happen by " +
         inThreeMonths.toDateString() +
@@ -196,8 +196,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inThreeMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "politics",
     extraInfo: {
+      categories: ["politics"],
       description:
         "Will Jair Messias Bolsonaro be elected the president of Brazil in " +
         inThreeMonths.toDateString() +
@@ -212,8 +212,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inFourMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "crypto",
     extraInfo: {
+      categories: ["crypto", "ethereum"],
       description:
         "Will Ethereum trade at $2000 or higher at any time before the end of " +
         inFourMonths.toDateString() +
@@ -228,8 +228,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inFourMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "climate",
     extraInfo: {
+      categories: ["climate"],
       description:
         "Will the Larsen B ice shelf collapse by " +
         inFourMonths.toDateString() +
@@ -243,8 +243,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inFiveMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "sports",
     extraInfo: {
+      categories: ["sports", "golden state warriors"],
       description:
         "Will the Golden State Warriors win the Championship on " +
         inFiveMonths.toDateString() +
@@ -259,8 +259,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     marketType: "yesNo",
     endTime: inFiveMonths.getTime() / 1000,
     affiliateFeeDivisor: 4,
-    topic: "agriculture",
     extraInfo: {
+      categories: ["agriculture"],
       description:
         "Will antibiotics be outlawed for agricultural use in China by " +
         inFiveMonths.toDateString() +
@@ -278,8 +278,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     maxPrice: "120",
     tickSize: "0.1",
     affiliateFeeDivisor: 4,
-    topic: "temperature",
     extraInfo: {
+      categories: ["temperature"],
       description:
         `High temperature (in degrees Fahrenheit) on ${today.toDateString()} at the San Francisco International Airport, as reported by Weather Underground`,
       resolutionSource:
@@ -316,8 +316,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     maxPrice: "5000",
     tickSize: ".01",
     affiliateFeeDivisor: 4,
-    topic: "science",
     extraInfo: {
+      categories: ["science"],
       description:
         "Average tropospheric methane concentration (in parts-per-billion) on " +
       inFiveMonths.toDateString(),
@@ -336,8 +336,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     maxPrice: "30",
     tickSize: "1",
     affiliateFeeDivisor: 4,
-    topic: "medicine",
     extraInfo: {
+      categories: ["medicine"],
       description:
         "New antibiotics approved by the FDA on " + inSixMonths.toDateString(),
       resolutionSource:
@@ -369,8 +369,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     maxPrice: "10000",
     tickSize: "1",
     affiliateFeeDivisor: 4,
-    topic: "crypto",
     extraInfo: {
+      categories: ["crypto"],
       description:
         "Millions of Tether tokens issued on " +
         today.toDateString() +
@@ -402,8 +402,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     endTime: midnightTomorrow.getTime() / 1000,
     outcomes: ["Georgia", "Florida"],
     affiliateFeeDivisor: 4,
-    topic: "sports",
     extraInfo: {
+      categories: ["sports", "football", "college football"],
       description:
         "Who will win the University of Georgia vs. University of Florida football game on " +
         midnightTomorrow.toDateString() +
@@ -433,8 +433,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       "Formally abolished",
     ],
     affiliateFeeDivisor: 4,
-    topic: "politics",
     extraInfo: {
+      categories: ["politics"],
       description:
         "What will be the status of the U.S. electoral college on " +
         midnightTomorrow.toDateString() +
@@ -458,8 +458,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       "other",
     ],
     affiliateFeeDivisor: 4,
-    topic: "science",
     extraInfo: {
+      categories: ["science"],
       description:
         "What will be the number one killer in the United States by " +
         inOneMonths.toDateString() +
@@ -507,8 +507,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       "Hong Kong",
     ],
     affiliateFeeDivisor: 4,
-    topic: "housing",
     extraInfo: {
+      categories: ["housing"],
       description:
         "Which city will have the lowest median single-family home price on " +
         inOneMonths.toDateString() +
@@ -560,8 +560,8 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       "Hong Kong",
     ],
     affiliateFeeDivisor: 4,
-    topic: "housing",
     extraInfo: {
+      categories: ["housing"],
       description:
         "Which city will have the highest median single-family home price on " +
         inTwoMonths.toDateString() +

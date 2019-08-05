@@ -526,35 +526,35 @@ class ContractsFixture:
         log = logs[0]
         return log.args.__dict__[argName]
 
-    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0):
+    def createYesNoMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\"]}", validityBond=0):
         sender = sender or self.accounts[0]
         marketCreationFee = validityBond or universe.getOrCacheMarketCreationCost(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createYesNoMarket(int(endTime), feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, topic, extraInfo, sender=sender, getReturnData=False)
+            assert universe.createYesNoMarket(int(endTime), feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, topic="", extraInfo="{description: '\"description\"}"):
+    def createCategoricalMarket(self, universe, numOutcomes, endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\"]}"):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheMarketCreationCost(commitTx=False)
         outcomes = [" "] * numOutcomes
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes, topic, extraInfo, sender=sender, getReturnData=False)
+            assert universe.createCategoricalMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, topic="", extraInfo="{description: '\"description\"}"):
+    def createScalarMarket(self, universe, endTime, feePerCashInAttoCash, affiliateFeeDivisor, maxPrice, minPrice, numTicks, designatedReporterAddress, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}"):
         sender = sender or self.accounts[0]
         marketCreationFee = universe.getOrCacheMarketCreationCost(commitTx=False)
         with BuyWithCash(self.contracts['Cash'], marketCreationFee, sender, "validity bond"):
-            assert universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, [minPrice, maxPrice], numTicks, topic, extraInfo, sender=sender, getReturnData=False)
+            assert universe.createScalarMarket(endTime, feePerCashInAttoCash, affiliateFeeDivisor, designatedReporterAddress, [minPrice, maxPrice], numTicks, extraInfo, sender=sender, getReturnData=False)
         marketAddress = self.getLogValue("MarketCreated", "market")
         market = self.applySignature('Market', marketAddress)
         return market
 
-    def createReasonableYesNoMarket(self, universe, sender=None, topic="", extraInfo="{description: '\"description\"}", validityBond=0, designatedReporterAddress=None):
+    def createReasonableYesNoMarket(self, universe, sender=None, extraInfo="{description: '\"description\", categories: [\"\", \"\", \"\"]}", validityBond=0, designatedReporterAddress=None):
         sender = sender or self.accounts[0]
         designatedReporter = designatedReporterAddress or sender
         return self.createYesNoMarket(
@@ -564,7 +564,6 @@ class ContractsFixture:
             affiliateFeeDivisor = 4,
             designatedReporterAddress = designatedReporter,
             sender = sender,
-            topic= topic,
             extraInfo= extraInfo,
             validityBond= validityBond)
 

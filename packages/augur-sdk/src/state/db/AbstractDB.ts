@@ -20,7 +20,7 @@ export interface BaseDocument {
 export abstract class AbstractDB {
   public db: PouchDB.Database;
   protected networkId: number;
-  public readonly dbName: string;
+  readonly dbName: string;
 
   protected constructor(networkId: number, dbName: string, dbFactory: PouchDBFactoryType) {
     this.networkId = networkId;
@@ -28,7 +28,7 @@ export abstract class AbstractDB {
     this.db = dbFactory(dbName);
   }
 
-  public async allDocs(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
+  async allDocs(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
     return this.db.allDocs({ include_docs: true });
   }
 
@@ -60,7 +60,7 @@ export abstract class AbstractDB {
       result[prevDoc._id] = prevDoc;
       return result;
     }, {} as DocumentIDToDoc);
-    return await this.bulkUpsertDocuments(previousDocs, documents);
+    return this.bulkUpsertDocuments(previousDocs, documents);
   }
 
   protected async bulkUpsertOrderedDocuments(startkey: string, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
@@ -69,7 +69,7 @@ export abstract class AbstractDB {
       result[prevDoc.id] = prevDoc.doc;
       return result;
     }, {} as DocumentIDToDoc);
-    return await this.bulkUpsertDocuments(previousDocs, documents);
+    return this.bulkUpsertDocuments(previousDocs, documents);
   }
 
   private async bulkUpsertDocuments(previousDocs: DocumentIDToDoc, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
@@ -85,18 +85,18 @@ export abstract class AbstractDB {
     });
     try {
       const results = await this.db.bulkDocs(mergedRevisionDocuments);
-      return _.every(results, (response) => (<PouchDB.Core.Response>response).ok);
+      return _.every(results, (response) => (response as PouchDB.Core.Response).ok);
     } catch (err) {
       console.error(`ERROR in bulk upsert: ${JSON.stringify(err)}`);
       return false;
     }
   }
 
-  public async getInfo(): Promise<PouchDB.Core.DatabaseInfo> {
+  async getInfo(): Promise<PouchDB.Core.DatabaseInfo> {
     return this.db.info();
   }
 
-  public async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
+  async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return this.db.find(request);
   }
 

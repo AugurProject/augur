@@ -54,8 +54,7 @@ export class ContractAPI {
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,
-      topic: " ",
-      extraInfo: JSON.stringify({description: "description"}),
+      extraInfo: JSON.stringify({categories: [" "], description: "description"}),
     });
   }
 
@@ -75,8 +74,7 @@ export class ContractAPI {
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,
-      topic: " ",
-      extraInfo: JSON.stringify({description: "description"}),
+      extraInfo: JSON.stringify({categories: [" "], description: "description"}),
       outcomes,
     });
   }
@@ -99,8 +97,7 @@ export class ContractAPI {
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,
-      topic: " ",
-      extraInfo: JSON.stringify({description: "description", _scalarDenomination: "scalar denom 1"}),
+      extraInfo: JSON.stringify({categories: [" "], description: "description", _scalarDenomination: "scalar denom 1"}),
       numTicks: new BigNumber(20000),
       prices: [minPrice, maxPrice],
     });
@@ -143,6 +140,15 @@ export class ContractAPI {
     }
 
     return orderId;
+  }
+
+  async simplePlaceOrder(
+    market: string,
+    type: BigNumber,
+    numShares: BigNumber,
+    price: BigNumber,
+    outcome: BigNumber): Promise<string> {
+    return await this.placeOrder(market, type, numShares, price, outcome, formatBytes32String(''), formatBytes32String(''), formatBytes32String('42'));
   }
 
   async fillOrder(orderId: string, cost: BigNumber, numShares: BigNumber, tradeGroupId: string) {

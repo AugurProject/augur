@@ -192,6 +192,7 @@ export default class FeesLiquidity extends React.Component<
         <QuadBox
           title="Depth chart"
           noBorders
+          normalOnMobile
           content={
             <MarketDepth
               market={newMarket}

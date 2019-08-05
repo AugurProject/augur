@@ -11,10 +11,10 @@ export interface SyncData {
 }
 
 export class Status {
-  public static getSyncDataParams = t.type({});
+  static getSyncDataParams = t.type({});
 
   @Getter("getSyncDataParams")
-  public static async getSyncData(augur: Augur, db: DB, params: t.TypeOf<typeof Status.getSyncDataParams>): Promise<SyncData> {
+  static async getSyncData(augur: Augur, db: DB, params: t.TypeOf<typeof Status.getSyncDataParams>): Promise<SyncData> {
     const dbName = db.getDatabaseName("MarketCreated");
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
     const lastSyncedBlockNumber = await db.syncStatus.getHighestSyncBlock(dbName);

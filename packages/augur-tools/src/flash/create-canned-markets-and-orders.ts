@@ -24,7 +24,6 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         feePerCashInAttoCash: feePerEthInWei,
         affiliateFeeDivisor: new BigNumber(affiliateFeeDivisor),
         designatedReporter,
-        topic: can.topic,
         extraInfo: JSON.stringify(can.extraInfo),
       });
       break;
@@ -48,7 +47,6 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         designatedReporter,
         prices: [minPrice, maxPrice],
         numTicks,
-        topic: can.topic,
         extraInfo: JSON.stringify(can.extraInfo),
       });
       break;
@@ -62,7 +60,6 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         affiliateFeeDivisor: new BigNumber(affiliateFeeDivisor),
         designatedReporter,
         outcomes: can.outcomes,
-        topic: can.topic,
         extraInfo: JSON.stringify(can.extraInfo),
       });
       break;

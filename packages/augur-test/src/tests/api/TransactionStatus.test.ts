@@ -119,9 +119,8 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
     designatedReporter: john.account.publicKey,
-    topic: 'yesNo topic 1',
     extraInfo:
-      '{"description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
+      '{"categories": ["yesNo category 1"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
   }).catch((e) => { });
 
   // expect(failure).toHaveBeenCalled();

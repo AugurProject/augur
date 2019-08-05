@@ -6,7 +6,6 @@ export const UPDATE_MARKET_CATEGORY = 'UPDATE_MARKET_CATEGORY';
 export const UPDATE_MARKET_REP_BALANCE = 'UPDATE_MARKET_REP_BALANCE';
 export const UPDATE_MARKET_FROZEN_SHARES_VALUE =
   'UPDATE_MARKET_FROZEN_SHARES_VALUE';
-export const UPDATE_MARKETS_DISPUTE_INFO = 'UPDATE_MARKETS_DISPUTE_INFO';
 export const UPDATE_MARKET_ETH_BALANCE = 'UPDATE_MARKET_ETH_BALANCE';
 export const REMOVE_MARKET = 'REMOVE_MARKET';
 
@@ -49,10 +48,7 @@ export const updateMarketFrozenSharesValue = (
     frozenSharesValue,
   },
 });
-export const updateMarketsDisputeInfo = (marketsDisputeInfo: any) => ({
-  type: UPDATE_MARKETS_DISPUTE_INFO,
-  data: { marketsDisputeInfo },
-});
+
 export const updateMarketEthBalance = (
   marketId: string,
   ethBalance: string

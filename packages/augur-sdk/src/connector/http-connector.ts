@@ -5,28 +5,28 @@ import fetch from "cross-fetch";
 
 export class HTTPConnector extends BaseConnector {
 
-  constructor(public readonly endpoint: string) {
+  constructor(readonly endpoint: string) {
     super();
   }
 
-  public async connect(params?: any): Promise<any> {
+  async connect(params?: any): Promise<any> {
     return Promise.resolve();
   }
 
-  public async disconnect(): Promise<any> {
+  async disconnect(): Promise<any> {
     return Promise.resolve();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
+  bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
-      return <R>(await (await fetch(this.endpoint, {
+      return (await (await fetch(this.endpoint, {
         method: "POST",
         body: JSON.stringify({ id: 42, method: f.name, params, jsonrpc: "2.0" }),
         headers: { "Content-Type": "application/json" },
-      })).json());
+      })).json()) as R;
     };
   }
 
-  public async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> { }
-  public async off(eventName: SubscriptionEventName | string): Promise<void> { }
+  async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> { }
+  async off(eventName: SubscriptionEventName | string): Promise<void> { }
 }

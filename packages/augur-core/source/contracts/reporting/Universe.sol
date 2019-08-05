@@ -602,13 +602,13 @@ contract Universe is ITyped, IUniverse {
      * @param _feePerCashInAttoCash The market creator fee specified as the attoCash to be taken from every 1 Cash which is received during settlement
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
-     * @param _topic bytes32 string to be used as the top level category for this market. Useful for applications built on top of Augur to categorize market displays
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, string memory _extraInfo) public returns (IMarket _newMarket) {
+
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, DEFAULT_NUM_TICKS);
-        augur.logYesNoMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash);
+        augur.logYesNoMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash);
         return _newMarket;
     }
 
@@ -619,13 +619,12 @@ contract Universe is ITyped, IUniverse {
      * @param _affiliateFeeDivisor The percentage of market creator fees which is designated for affiliates specified as a divisor (4 would mean that 25% of market creator fees may go toward affiliates)
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _outcomes Array of outcome labels / descriptions
-     * @param _topic bytes32 string to be used as the top level category for this market. Useful for applications built on top of Augur to categorize market displays
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, uint256(_outcomes.length), DEFAULT_NUM_TICKS);
-        augur.logCategoricalMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _outcomes);
+        augur.logCategoricalMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _outcomes);
         return _newMarket;
     }
 
@@ -637,13 +636,12 @@ contract Universe is ITyped, IUniverse {
      * @param _designatedReporterAddress The address which will provide the initial report on the market
      * @param _prices 2 element Array comprising a min price and max price in atto units in order to support decimal values. For example if the display range should be between .1 and .5 the prices should be 10**17 and 5 * 10 ** 17 respectively
      * @param _numTicks The number of ticks for the market. This controls the valid price range. Assume a market with min/maxPrices of 0 and 10**18. A numTicks of 100 would mean that the available valid display prices would be .01 to .99 with step size .01. Similarly a numTicks of 10 would be .1 to .9 with a step size of .1.
-     * @param _topic bytes32 string to be used as the top level category for this market. Useful for applications built on top of Augur to categorize market displays
      * @param _extraInfo Additional info about the market in JSON format.
      * @return The created Market
      */
-    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, bytes32 _topic, string memory _extraInfo) public returns (IMarket _newMarket) {
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket) {
         _newMarket = createMarketInternal(_endTime, _feePerCashInAttoCash, _affiliateFeeDivisor, _designatedReporterAddress, msg.sender, DEFAULT_NUM_OUTCOMES, _numTicks);
-        augur.logScalarMarketCreated(_endTime, _topic, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, _numTicks);
+        augur.logScalarMarketCreated(_endTime, _extraInfo, _newMarket, msg.sender, _designatedReporterAddress, _feePerCashInAttoCash, _prices, _numTicks);
         return _newMarket;
     }
 
