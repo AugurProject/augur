@@ -375,7 +375,7 @@ export default class Form extends React.Component<
           : newMarket.designatedReporterAddress,
       minPrice: newMarket.minPrice,
       maxPrice: newMarket.maxPrice,
-      endTime: newMarket.endTime.timestamp,
+      endTime: newMarket.endTime,
       tickSize: newMarket.tickSize,
       hour: newMarket.hour,
       minute: newMarket.minute,
@@ -485,9 +485,9 @@ export default class Form extends React.Component<
       }
       updateNewMarket({ outcomesFormatted, orderBook: {} });
     } else if (name === 'setEndTime' || name === 'hour' || name === 'minute' || name === 'meridiem' || name === "offset") {
-      const endTime = name === 'setEndTime' ? moment(value.timestamp * 1000).utc() : moment(newMarket.endTime.timestamp * 1000).utc();
-      const hour = name === "hour" ? value : newMarket.hour;
-      const minute = name === "minute" ? value : newMarket.minute;
+      const endTime = name === 'setEndTime' ? moment.unix(value.timestamp).utc() : moment.unix(newMarket.endTime).utc();
+      const hour = name === "hour" ? value : newMarket.hour || 12;
+      const minute = name === "minute" ? value : newMarket.minute || 0;
       const meridiem = name === "meridiem" ? value : newMarket.meridiem;
       const offset = name === "offset" ? value : newMarket.offset;
 
@@ -512,7 +512,7 @@ export default class Form extends React.Component<
       if (name === 'setEndTime') {
         updateNewMarket({endTimeDropdown: formatDate(moment(value.timestamp * 1000).utc().toDate())});
       }
-      updateNewMarket({ endTime: formatDate(endTime.toDate()), [name]: value});
+      updateNewMarket({ endTime: endTime.unix(), endTimeFormatted: formatDate(endTime.toDate()), [name]: value});
     }
     this.onError(name, '');
   };

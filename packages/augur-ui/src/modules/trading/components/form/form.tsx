@@ -432,7 +432,7 @@ class Form extends Component<FromProps, FormState> {
             : orderDaiEstimate,
           selectedNav,
         };
-        console.log("order est dai", order[this.INPUT_TYPES.EST_DAI]);
+
         // update the local state of this form then make call to calculate total or shares
         this.setState(
           {

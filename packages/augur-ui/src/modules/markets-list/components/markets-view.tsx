@@ -99,7 +99,6 @@ export default class MarketsView extends Component<
         if (err) return console.log('Error loadMarketsFilter:', err);
         if (this.componentWrapper) {
           this.setState({ filterSortedMarkets });
-          setTimeout(() => this.setState({ isSearchingMarkets: false }), 500);
         }
       }
     );

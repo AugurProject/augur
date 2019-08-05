@@ -277,6 +277,7 @@ export interface NewMarketPropertiesValidations {
 
 export interface NewMarketPropertyValidations {
   settlementFee: string | null;
+  scalarDenomination: string | null;
 }
 export interface NewMarket {
   isValid: boolean;
@@ -297,7 +298,7 @@ export interface NewMarket {
   minPrice: string;
   maxPrice: string;
   endTime: number;
-  tickSize: string;
+  tickSize: number;
   hour: string;
   minute: string;
   meridiem: string;
@@ -311,6 +312,7 @@ export interface NewMarket {
   initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
+  offset: number;
 }
 export interface Draft {
   uniqueId: number;
@@ -562,9 +564,9 @@ export interface LoginAccount {
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;
   allowance?: BigNumber;
-  eth?: string;
-  rep?: string;
-  dai?: string;
+  eth: number;
+  rep: number;
+  dai: number;
 }
 
 export interface Web3 {
