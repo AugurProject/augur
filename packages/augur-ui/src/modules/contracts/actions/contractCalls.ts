@@ -100,7 +100,7 @@ export async function getEthBalance(address: string): Promise<string> {
 export async function getDaiBalance(address: string) {
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
-  return formatAttoEth(balance).formattedValue;
+  return formatAttoDai(balance).formattedValue;
 }
 
 export async function sendEthers(address: string, amount: string) {

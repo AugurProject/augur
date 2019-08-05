@@ -12,6 +12,7 @@ import { MarketData, OutcomeFormatted, FormattedNumber } from 'modules/types';
 interface TradingFormProps {
   availableEth: BigNumber;
   availableDai: BigNumber;
+  hasFunds: boolean;
   isLogged: boolean;
   allowanceAmount: FormattedNumber;
   isConnectionTrayOpen: boolean;
@@ -79,6 +80,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
   render() {
     const {
       allowanceAmount,
+      hasFunds,
       availableEth,
       availableDai,
       isLogged,
@@ -99,12 +101,6 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       initialLiquidity,
     } = this.props;
     const s = this.state;
-
-    const hasFunds =
-      availableEth &&
-      availableEth.gt(0) &&
-      availableDai &&
-      availableDai.gt(0);
 
     const hasSelectedOutcome = s.selectedOutcome !== null;
 
