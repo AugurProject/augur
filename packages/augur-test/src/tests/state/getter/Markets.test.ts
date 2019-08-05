@@ -361,7 +361,6 @@ describe('State API :: Markets :: ', () => {
       universe: universe.address,
       includeInvalidMarkets: false,
     });
-    console.log(marketList);
     // expect(marketList.markets.length).toEqual(5);
     // expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
     // expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
