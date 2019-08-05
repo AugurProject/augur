@@ -2,6 +2,7 @@ import { API } from '@augurproject/sdk/build/state/getter/API';
 import {
   GetMarketsSortBy,
   MarketInfo,
+  MarketList,
   MarketOrderBook,
   MarketReportingState,
   SECONDS_IN_A_DAY,
@@ -98,7 +99,7 @@ describe('State API :: Markets :: ', () => {
     const actualDB = await db;
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
 
-    let markets: MarketInfo[];
+    let marketList: MarketList;
 
     // Test invalid universe address
     let errorMessage = '';
@@ -114,124 +115,130 @@ describe('State API :: Markets :: ', () => {
     );
 
     // Test creator
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       creator: ACCOUNTS[0].publicKey,
       isSortDescending: false,
     });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       creator: NULL_ADDRESS,
     });
-    expect(markets).toEqual([]);
+    expect(marketList).toEqual({
+      markets: [],
+      meta: {},
+      filteredOutCount: 0,
+      marketCount: 0,
+    });
 
     // Test maxEndTime
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       maxEndTime: endTime.toNumber(),
     });
-    expect(markets).toEqual([]);
+    expect(marketList).toEqual({
+      markets: [],
+      meta: {},
+      filteredOutCount: 0,
+      marketCount: 0,
+    });
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       maxEndTime: endTime.plus(2).toNumber(),
       isSortDescending: false,
     });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
     // Test designatedReporter
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       designatedReporter: ACCOUNTS[0].publicKey,
       isSortDescending: false,
     });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       designatedReporter: NULL_ADDRESS,
     });
-    expect(markets).toEqual([]);
+    expect(marketList).toEqual({
+      markets: [],
+      meta: {},
+      filteredOutCount: 0,
+      marketCount: 0,
+    });
 
     // Test maxFee
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       maxFee: '0.05',
     });
-    expect(markets).toEqual([]);
+    expect(marketList).toEqual({
+      markets: [],
+      meta: {},
+      filteredOutCount: 0,
+      marketCount: 0,
+    });
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       maxFee: '0.06',
       isSortDescending: false,
     });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       maxFee: '0.11',
       isSortDescending: false,
     });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
     // Test search & categories params
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       search: "scalar description 1",
     });
-    expect(markets).toEqual([
-      scalarMarket1.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(scalarMarket1.address);
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       search: ACCOUNTS[0].publicKey,
       isSortDescending: false,
     });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       categories: [
         "scalar 2 primary",
@@ -239,11 +246,9 @@ describe('State API :: Markets :: ', () => {
         "scalar 2 tertiary",
       ],
     });
-    expect(markets).toEqual([
-      scalarMarket2.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       search: "scalar description 1",
       categories: [
@@ -252,7 +257,12 @@ describe('State API :: Markets :: ', () => {
         "scalar 2 tertiary",
       ],
     });
-    expect(markets).toEqual([]);
+    expect(marketList).toEqual({
+      markets: [],
+      meta: {},
+      filteredOutCount: 0,
+      marketCount: 0,
+    });
 
     // Place orders on some markets
     const numShares = new BigNumber(10000000000000);
@@ -313,17 +323,19 @@ describe('State API :: Markets :: ', () => {
 
     // Test includeInvalidMarkets
     // TODO: Figure out why scalarMarket1's order is being set to Invalid instead of outcome 1
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       includeInvalidMarkets: false,
     });
-    expect(markets).toEqual([
-      scalarMarket2.address,
-      // scalarMarket1.address,
-      categoricalMarket2.address,
-      categoricalMarket1.address,
-      yesNoMarket2.address,
-    ]);
+    console.log(marketList);
+    expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
+    // expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
+    // expect(marketList.markets[2].id).toEqual(categoricalMarket2.address);
+    // expect(marketList.markets[3].id).toEqual(categoricalMarket1.address);
+    // expect(marketList.markets[4].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[3].id).toEqual(yesNoMarket2.address);
 
     // Partially fill orders
     const cost = numShares.multipliedBy(78).div(2);
@@ -358,19 +370,17 @@ describe('State API :: Markets :: ', () => {
 
     // Test disputeWindow
     let disputeWindow = await yesNoMarket1.getDisputeWindow_();
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       disputeWindow: disputeWindow,
       isSortDescending: false,
     });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
     await john.setTimestamp(endTime.plus(2));
 
@@ -385,18 +395,18 @@ describe('State API :: Markets :: ', () => {
 
     // Retest disputeWindow
     disputeWindow = await yesNoMarket1.getDisputeWindow_();
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       disputeWindow,
     });
-    expect(markets).toEqual([yesNoMarket1.address]);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
     // Test sortBy
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       sortBy: GetMarketsSortBy.EndTime,
     });
-    expect(markets).toEqual([
+    expect(marketList).toEqual([
       scalarMarket2.address,
       scalarMarket1.address,
       categoricalMarket2.address,
@@ -404,20 +414,24 @@ describe('State API :: Markets :: ', () => {
       yesNoMarket2.address,
       yesNoMarket1.address,
     ]);
+    expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
+    expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[4].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[5].id).toEqual(yesNoMarket1.address);
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       sortBy: GetMarketsSortBy.EndTime,
       isSortDescending: false,
     });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
     // TODO: Test maxLiquiditySpread, LAST_TRADED_TIMESTAMP, LAST_LIQUIDITY_DEPLETED, limit & offset
   }, 120000);
