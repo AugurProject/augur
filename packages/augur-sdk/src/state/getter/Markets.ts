@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { DisputeWindow } from '@augurproject/core/source/libraries/ContractInterfaces';
 import { DB } from '../db/DB';
 import { MarketFields } from '../db/MarketDB';
 import { Getter } from './Router';

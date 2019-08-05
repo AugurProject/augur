@@ -31,11 +31,16 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
 } from 'modules/create-market/constants';
-import { CATEGORICAL, SCALAR } from 'modules/common/constants';
 import {
+  CATEGORICAL,
+  SCALAR,
+  BID,
+  SELL,
+  BUY,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
   YES_NO_OUTCOMES,
+  NEW_ORDER_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { createMarket } from 'modules/contracts/actions/contractCalls';
@@ -65,6 +70,8 @@ import {
   checkAddress
 } from 'modules/common/validations';
 import { formatDate } from "utils/format-date";
+import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
+import { createBigNumber } from "utils/create-big-number";
 
 import Styles from 'modules/create-market/components/form.styles';
 
@@ -204,6 +211,54 @@ export default class Form extends React.Component<
     this.node.scrollIntoView();
   };
 
+   updateInitialLiquidityCosts = (order, shouldReduce) => {
+    const { newMarket, updateNewMarket } = this.props;
+    const minPrice = newMarket.marketType === SCALAR ? newMarket.minPrice : 0;
+    const maxPrice = newMarket.marketType === SCALAR ? newMarket.maxPrice : 1;
+    const shareBalances = newMarket.outcomes.map(outcome => 0);
+    let outcome;
+    let initialLiquidityDai;
+    let initialLiquidityGas;
+
+    switch (newMarket.marketType) {
+      case CATEGORICAL:
+        newMarket.outcomes.forEach((outcomeName, index) => {
+          if (order.outcome === outcomeName) outcome = index;
+        });
+        break;
+      case SCALAR:
+        ({ outcome } = order);
+        break;
+      default:
+        outcome = 1;
+        break;
+    }
+
+    const orderType = order.type === BID ? BUY : SELL;
+
+    // Calculate amount of DAI needed for order
+    const totalCost = calculateTotalOrderValue(order.quantity, order.price, orderType, minPrice, maxPrice, newMarket.marketType);
+
+    // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
+    if (shouldReduce) {
+      initialLiquidityDai = createBigNumber(newMarket.initialLiquidityDai).minus(
+        totalCost
+      );
+      initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).minus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
+    } else {
+      initialLiquidityDai = createBigNumber(newMarket.initialLiquidityDai).plus(
+        totalCost
+      );
+      initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).plus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
+    }
+
+    updateNewMarket({ initialLiquidityDai, initialLiquidityGas });
+  }
+
   findErrors = () => {
     const { newMarket } = this.props;
     const {
@@ -333,7 +388,7 @@ export default class Form extends React.Component<
       orderBook: {},
       orderBookSorted: {},
       orderBookSeries: {},
-      initialLiquidityEth: 0,
+      initialLiquidityDai: 0,
       initialLiquidityGas: 0,
       creationError: '',
     });
@@ -435,7 +490,7 @@ export default class Form extends React.Component<
       const minute = name === "minute" ? value : newMarket.minute;
       const meridiem = name === "meridiem" ? value : newMarket.meridiem;
       const offset = name === "offset" ? value : newMarket.offset;
-      
+
       endTime.set({
         hour: hour,
         minute: minute
@@ -534,15 +589,14 @@ export default class Form extends React.Component<
               {mainContent === FORM_DETAILS && (
                 <FormDetails
                   onChange={this.onChange}
-                  evaluate={this.evaluate}
                   onError={this.onError}
                 />
               )}
               {mainContent === FEES_LIQUIDITY && (
                 <FeesLiquidity
-                  evaluate={this.evaluate}
                   onChange={this.onChange}
                   onError={this.onError}
+                  updateInitialLiquidityCosts={this.updateInitialLiquidityCosts}
                 />
               )}
               {mainContent === REVIEW && <Review />}

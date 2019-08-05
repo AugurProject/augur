@@ -79,6 +79,7 @@ export interface PropertyLabelProps {
 export interface LinearPropertyLabelProps {
   label: string;
   value: string | FormattedNumber;
+  mobileValue?: string | FormattedNumber;
   accentValue?: boolean;
   highlightFirst?: boolean;
   highlight?: boolean;
@@ -445,34 +446,60 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
   </div>
 );
 
-export const LinearPropertyLabel = (props: LinearPropertyLabelProps) => (
+export const LinearPropertyLabel = ({
+  highlight,
+  highlightAlternateBolded,
+  highlightFirst,
+  label,
+  useValueLabel,
+  showDenomination,
+  accentValue,
+  value,
+  mobileValue
+}: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
-      [Styles.HighlightAlternate]:
-        props.highlightAlternate || props.highlightAlternateBolded,
-      [Styles.Highlight]: props.highlight,
-      [Styles.HighlightAlternateBolded]: props.highlightAlternateBolded,
-      [Styles.HighlightFirst]: props.highlightFirst
+      [Styles.Highlight]: highlight,
+      [Styles.HighlightAlternateBolded]: highlightAlternateBolded,
+      [Styles.HighlightFirst]: highlightFirst
     })}
   >
-    <span>{props.label}</span>
+    <span>{label}</span>
     <DashlineNormal />
-    {props.useValueLabel ? (
+    {useValueLabel ? (
       <ValueLabel
-        value={props.value}
-        showDenomination={props.showDenomination}
+        value={mobileValue || value}
+        showDenomination={showDenomination}
       />
     ) : (
       <span
         className={classNames({
-          [Styles.isAccented]: props.accentValue
+          [Styles.isAccented]: accentValue
         })}
       >
-        {props.value && props.value.formatted
-          ? `${props.value.formatted} ${
-              props.showDenomination ? props.value.denomination : ""
+        {(mobileValue || value) && (mobileValue.formatted || value.formatted)
+          ? `${(mobileValue.formatted || value.formatted)} ${
+              showDenomination ? (mobileValue.denomination || value.formatted) : ""
             }`
-          : props.value}
+          : (mobileValue || value)}
+      </span>
+    )}
+    {useValueLabel ? (
+      <ValueLabel
+        value={value}
+        showDenomination={showDenomination}
+      />
+    ) : (
+      <span
+        className={classNames({
+          [Styles.isAccented]: accentValue
+        })}
+      >
+        {value && value.formatted
+          ? `${value.formatted} ${
+              showDenomination ? value.denomination : ""
+            }`
+          : value}
       </span>
     )}
   </div>

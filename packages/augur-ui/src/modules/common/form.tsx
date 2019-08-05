@@ -183,11 +183,12 @@ export class TimezoneDropdown extends Component<
 interface ErrorProps {
   header?: string;
   subheader?: string;
+  alternate?: Boolean;
 }
 
 export const Error = (props: ErrorProps) => (
-  <section className={Styles.ErrorLabel}>
-    {ExclamationCircle}
+  <section className={classNames(Styles.ErrorLabel, {[Styles.Alternate]: props.alternate})}>
+    {!props.alternate && ExclamationCircle}
     <div>
       <span>{props.header}</span>
       <span>{props.subheader}</span>

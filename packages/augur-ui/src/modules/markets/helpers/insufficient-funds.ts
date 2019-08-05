@@ -1,31 +1,32 @@
 import { createBigNumber } from "utils/create-big-number";
 
-import { formatEther, formatRep } from "utils/format-number";
+import { formatEther, formatRep, formatGasCostToEther } from "utils/format-number";
+import { ETH, DAI, REP } from "modules/common/constants";
 
-export default function insufficientFunds(
+export default function findInsufficientFunds(
   validityBond,
   gasCost,
   designatedReportNoShowReputationBond,
   availableEth,
   availableRep,
+  availableDai,
   formattedInitialLiquidityGas,
-  formattedInitialLiquidityEth,
-  testWithLiquidity = false
+  formattedInitialLiquidityDai,
+  testWithLiquidity = false,
+  gasPrice
 ) {
-  let insufficientFundsString = "";
+  let insufficientFunds = "";
 
   const BNvalidityBond = createBigNumber(
     formatEther(validityBond).fullPrecision
   );
   const BNLiqGas = createBigNumber(formattedInitialLiquidityGas);
-  const BNLiqEth = createBigNumber(formattedInitialLiquidityEth);
-  const BNgasCost = createBigNumber(formatEther(gasCost).fullPrecision);
+  const BNLiqEth = createBigNumber(formattedInitialLiquidityDai);
   const BNtotalEthCost = testWithLiquidity
-    ? BNvalidityBond.plus(BNgasCost)
-        .plus(BNLiqGas)
-        .plus(BNLiqEth)
-    : BNvalidityBond.plus(BNgasCost);
-  const insufficientEth = createBigNumber(availableEth).lt(BNtotalEthCost);
+    ? BNLiqEth.plus(BNLiqGas)
+    : createBigNumber(0);
+
+  const insufficientEth = createBigNumber(availableEth || 0).lt(BNtotalEthCost);
 
   const BNdesignatedReportNoShowReputationBond = createBigNumber(
     formatRep(designatedReportNoShowReputationBond).fullPrecision
@@ -34,13 +35,10 @@ export default function insufficientFunds(
     BNdesignatedReportNoShowReputationBond
   );
 
-  if (insufficientEth && insufficientRep) {
-    insufficientFundsString = "ETH and REP";
-  } else if (insufficientEth) {
-    insufficientFundsString = "ETH";
-  } else if (insufficientRep) {
-    insufficientFundsString = "REP";
-  }
+  const BNtotalDaiCost = testWithLiquidity ? BNLiqEth.plus(BNvalidityBond) : BNvalidityBond;
+  const insufficientDai = createBigNumber(availableDai).lt(
+    BNtotalDaiCost
+  );
 
-  return insufficientFundsString;
+  return {[ETH]: insufficientEth, [REP]: insufficientRep, [DAI]: insufficientDai};
 }

@@ -43,14 +43,13 @@
     }
   }
 
-  > div {
+  > div:first-of-type {
     background-color: @color-secondary-text;
     border-radius: @border-radius-default;
     display: none;
     max-height: 256px;
     overflow-y: scroll;
     position: absolute;
-    right: 0;
     top: 106%;
     z-index: @mask;
 
@@ -155,6 +154,13 @@
       > path {
         stroke-width: 0.125rem;
       }
+    }
+    
+    > span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 

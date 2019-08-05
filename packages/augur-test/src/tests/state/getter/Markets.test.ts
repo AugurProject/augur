@@ -240,6 +240,20 @@ describe('State API :: Markets :: ', () => {
 
     marketList = await api.route('getMarkets', {
       universe: universe.address,
+      search: ACCOUNTS[0].publicKey,
+      isSortDescending: false,
+    });
+    expect(markets).toEqual([
+      yesNoMarket1.address,
+      yesNoMarket2.address,
+      categoricalMarket1.address,
+      categoricalMarket2.address,
+      scalarMarket1.address,
+      scalarMarket2.address,
+    ]);
+
+    markets = await api.route('getMarkets', {
+      universe: universe.address,
       categories: [
         "scalar 2 primary",
         "scalar 2 secondary",
