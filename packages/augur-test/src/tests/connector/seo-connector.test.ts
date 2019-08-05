@@ -87,10 +87,10 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
-      const markets = await getMarkets({
+      const marketList = await getMarkets({
         universe: john.augur.contracts.universe.address,
       });
-      expect(markets).toEqual([yesNoMarket1.address]);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
       await connector.off(SubscriptionEventName.MarketCreated);
       expect(connector.subscriptions).toEqual({});
@@ -128,11 +128,11 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
-      const markets = await getMarkets({
+      const marketList = await getMarkets({
         universe: john.augur.contracts.universe.address,
         isSortDescending: false,
       });
-      expect(markets[markets.length - 1]).toEqual(yesNoMarket1.address);
+      expect(marketList.markets[marketList.markets.length - 1].id).toEqual(yesNoMarket1.address);
 
       await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});
