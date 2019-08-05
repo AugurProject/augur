@@ -120,6 +120,7 @@ describe('State API :: Markets :: ', () => {
       creator: ACCOUNTS[0].publicKey,
       isSortDescending: false,
     });
+    expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
     expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
@@ -155,6 +156,7 @@ describe('State API :: Markets :: ', () => {
       maxEndTime: endTime.plus(2).toNumber(),
       isSortDescending: false,
     });
+    expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
     expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
@@ -168,6 +170,7 @@ describe('State API :: Markets :: ', () => {
       designatedReporter: ACCOUNTS[0].publicKey,
       isSortDescending: false,
     });
+    expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
     expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
@@ -203,6 +206,7 @@ describe('State API :: Markets :: ', () => {
       maxFee: '0.06',
       isSortDescending: false,
     });
+    expect(marketList.markets.length).toEqual(3);
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
     expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
@@ -212,6 +216,7 @@ describe('State API :: Markets :: ', () => {
       maxFee: '0.11',
       isSortDescending: false,
     });
+    expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
     expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
@@ -224,6 +229,7 @@ describe('State API :: Markets :: ', () => {
       universe: universe.address,
       search: "scalar description 1",
     });
+    expect(marketList.markets.length).toEqual(1);
     expect(marketList.markets[0].id).toEqual(scalarMarket1.address);
 
     marketList = await api.route('getMarkets', {
@@ -231,6 +237,7 @@ describe('State API :: Markets :: ', () => {
       search: ACCOUNTS[0].publicKey,
       isSortDescending: false,
     });
+    expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
     expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
@@ -243,16 +250,15 @@ describe('State API :: Markets :: ', () => {
       search: ACCOUNTS[0].publicKey,
       isSortDescending: false,
     });
-    expect(markets).toEqual([
-      yesNoMarket1.address,
-      yesNoMarket2.address,
-      categoricalMarket1.address,
-      categoricalMarket2.address,
-      scalarMarket1.address,
-      scalarMarket2.address,
-    ]);
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[3].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[4].id).toEqual(scalarMarket1.address);
+    expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
-    markets = await api.route('getMarkets', {
+    marketList = await api.route('getMarkets', {
       universe: universe.address,
       categories: [
         "scalar 2 primary",
@@ -260,6 +266,7 @@ describe('State API :: Markets :: ', () => {
         "scalar 2 tertiary",
       ],
     });
+    expect(marketList.markets.length).toEqual(1);
     expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
 
     marketList = await api.route('getMarkets', {
@@ -342,11 +349,14 @@ describe('State API :: Markets :: ', () => {
       includeInvalidMarkets: false,
     });
     console.log(marketList);
-    expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
+    // expect(marketList.markets.length).toEqual(5);
+    // expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
     // expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
     // expect(marketList.markets[2].id).toEqual(categoricalMarket2.address);
     // expect(marketList.markets[3].id).toEqual(categoricalMarket1.address);
     // expect(marketList.markets[4].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets.length).toEqual(4);
+    expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
     expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
     expect(marketList.markets[3].id).toEqual(yesNoMarket2.address);
@@ -389,6 +399,7 @@ describe('State API :: Markets :: ', () => {
       disputeWindow: disputeWindow,
       isSortDescending: false,
     });
+    expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
     expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
@@ -413,6 +424,7 @@ describe('State API :: Markets :: ', () => {
       universe: universe.address,
       disputeWindow,
     });
+    expect(marketList.markets.length).toEqual(1);
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
     // Test sortBy
@@ -428,6 +440,7 @@ describe('State API :: Markets :: ', () => {
       yesNoMarket2.address,
       yesNoMarket1.address,
     ]);
+    expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
     expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket2.address);
@@ -440,6 +453,7 @@ describe('State API :: Markets :: ', () => {
       sortBy: GetMarketsSortBy.EndTime,
       isSortDescending: false,
     });
+    expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
     expect(marketList.markets[1].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[2].id).toEqual(categoricalMarket1.address);
