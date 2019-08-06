@@ -1,11 +1,9 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import classNames from "classnames";
-import moment from "moment";
 
 import { createBigNumber } from 'utils/create-big-number';
 import getValue from 'utils/get-value';
-import findInsufficientFunds from 'modules/markets/helpers/insufficient-funds';
+import findInsufficientFunds, { InsufficientFunds } from 'modules/markets/helpers/insufficient-funds';
 import {
   Header,
   LineBreak,
@@ -29,14 +27,14 @@ import { getCreateMarketBreakdown } from 'modules/contracts/actions/contractCall
 import {
   formatEtherEstimate,
   formatGasCostToEther,
-  formatPercent,
   formatDai,
-  formatEther
+  formatEther,
+  formatRep
 } from 'utils/format-number';
-import { Error } from 'modules/common/form';
+import { NoFundsErrors } from 'modules/create-market/components/no-funds-error'
 import { NewMarket, FormattedNumber } from 'modules/types';
 
-import Styles from "modules/create-market/components/review.styles";
+import Styles from "modules/create-market/components/review.styles.less";
 
 interface ReviewProps {
   newMarket: NewMarket;
@@ -47,12 +45,6 @@ interface ReviewProps {
   availableEth: number;
   availableDai: number;
   estimateSubmitNewMarket: Function;
-}
-
-interface InsufficientFunds {
-  [ETH]?: boolean;
-  [REP]?: boolean;
-  [DAI]?: boolean;
 }
 
 interface ReviewState {
@@ -121,7 +113,7 @@ export default class Review extends React.Component<
     }
     if (this.state.validityBond !== nextState.validityBond) {
       if (nextState.validityBond) {
-        const insufficientFunds = this.getFundsString();
+        const insufficientFunds = this.getInsufficientFundsAmounts();
         if (this.state.insufficientFunds !== insufficientFunds) {
           this.updateFunds(insufficientFunds);
         }
@@ -135,10 +127,10 @@ export default class Review extends React.Component<
     }
   }
 
-  getFundsString(testWithLiquidity = false) {
+  getInsufficientFundsAmounts(testWithLiquidity = false): InsufficientFunds {
     const { availableEth, availableRep, availableDai, gasPrice } = this.props;
     const s = this.state;
-    let insufficientFunds = '';
+    let insufficientFunds: InsufficientFunds = null;
 
     if (s.validityBond) {
       const validityBond = getValue(s, 'validityBond.formattedValue');
@@ -159,9 +151,9 @@ export default class Review extends React.Component<
         validityBond,
         gasCost || '0',
         designatedReportNoShowReputationBond,
-        createBigNumber(availableEth || '0', 10),
-        createBigNumber(availableRep || '0', 10),
-        createBigNumber(availableDai || '0', 10),
+        createBigNumber(availableEth || '0'),
+        createBigNumber(availableRep || '0'),
+        createBigNumber(availableDai || '0'),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
         testWithLiquidity,
@@ -189,7 +181,7 @@ export default class Review extends React.Component<
         ,
       },
       () => {
-        const funds = this.getFundsString();
+        const funds = this.getInsufficientFundsAmounts();
         if (funds) {
           this.updateFunds(funds);
         }
@@ -209,7 +201,7 @@ export default class Review extends React.Component<
                 ),
               },
               () => {
-                this.updateFunds(this.getFundsString(true));
+                this.updateFunds(this.getInsufficientFundsAmounts(true));
               }
             );
           }
@@ -221,7 +213,9 @@ export default class Review extends React.Component<
   render() {
     const {
       newMarket,
-      availableEth
+      availableEth,
+      availableDai,
+      availableRep,
     } = this.props;
     const s = this.state;
 
@@ -247,10 +241,9 @@ export default class Review extends React.Component<
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
     const totalEth = formatEther(createBigNumber(s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
 
-    const noEth = s.insufficientFunds !== "" && s.insufficientFunds[ETH];
-    const noRep = s.insufficientFunds !== "" && s.insufficientFunds[REP];
-    const noDai = s.insufficientFunds !== "" && s.insufficientFunds[DAI];
-
+    const noEth = s.insufficientFunds[ETH];
+    const noRep = s.insufficientFunds[REP];
+    const noDai = s.insufficientFunds[DAI];
 
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
@@ -265,7 +258,7 @@ export default class Review extends React.Component<
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
               <SmallSubheaders header="Numeric range" subheader={minPrice + "-" + maxPrice} />
-              <SmallSubheaders header="precision" subheader={tickSize} />
+              <SmallSubheaders header="precision" subheader={tickSize.toString()} />
             </>
           }
           {marketType === CATEGORICAL &&
@@ -344,13 +337,17 @@ export default class Review extends React.Component<
               value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REP"}
             />
           </span>
-          {(noEth || noRep || noDai) &&
-            <Error
-              alternate
-              header="You don't have enough funds in your wallet"
-              subheader={"You have " + (noEth ? availableEth + " ETH of " + totalEth.formattedValue  + " ETH " : "" ) + "required to create this market."}
-            />
-          }
+          <NoFundsErrors
+            noEth={noEth}
+            noRep={noRep}
+            noDai={noDai}
+            availableDaiFormatted={formatDai(availableDai)}
+            availableEthFormatted={formatEther(availableEth)}
+            availableRepFormatted={formatRep(availableRep)}
+            totalDai={totalDai}
+            totalEth={totalEth}
+            totalRep={s.designatedReportNoShowReputationBond}
+          />
         </div>
       </div>
     );

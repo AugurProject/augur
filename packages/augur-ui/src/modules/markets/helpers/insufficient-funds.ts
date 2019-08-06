@@ -3,6 +3,12 @@ import { createBigNumber } from "utils/create-big-number";
 import { formatEther, formatRep, formatGasCostToEther } from "utils/format-number";
 import { ETH, DAI, REP } from "modules/common/constants";
 
+export interface InsufficientFunds {
+  [ETH]?: boolean;
+  [REP]?: boolean;
+  [DAI]?: boolean;
+}
+
 export default function findInsufficientFunds(
   validityBond,
   gasCost,
@@ -14,16 +20,16 @@ export default function findInsufficientFunds(
   formattedInitialLiquidityDai,
   testWithLiquidity = false,
   gasPrice
-) {
-
+): InsufficientFunds {
+  const BNGasCost = createBigNumber(gasCost);
   const BNvalidityBond = createBigNumber(
     formatEther(validityBond).fullPrecision
   );
   const BNLiqGas = createBigNumber(formattedInitialLiquidityGas);
   const BNLiqDai = createBigNumber(formattedInitialLiquidityDai);
   const BNtotalEthCost = testWithLiquidity
-    ? BNLiqGas
-    : createBigNumber(0);
+    ? BNLiqGas.plus(BNGasCost)
+    : BNGasCost
 
   const insufficientEth = createBigNumber(availableEth || 0).lt(BNtotalEthCost);
 
