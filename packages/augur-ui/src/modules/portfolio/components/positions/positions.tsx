@@ -86,16 +86,16 @@ export default class Positions extends Component<PositionsProps, PositionsState>
     const { showCurrentValue } = this.state;
 
     return showCurrentValue ? (
-      market.myPositionsSummary.currentValue.formatted
+      market.myPositionsSummary && market.myPositionsSummary.currentValue.formatted
     ) : (
       <div className={Styles.Column}>
-        <span>{market.myPositionsSummary.totalReturns.formatted}</span>
+        <span>{market.myPositionsSummary && market.myPositionsSummary.totalReturns.formatted}</span>
         <MovementLabel
           showPercent
           showPlusMinus
           showColors
           size="small"
-          value={market.myPositionsSummary.totalPercent.formatted}
+          value={market.myPositionsSummary && market.myPositionsSummary.totalPercent.formatted}
         />
       </div>
     );
