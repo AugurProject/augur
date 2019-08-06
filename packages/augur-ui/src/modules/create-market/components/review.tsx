@@ -10,7 +10,8 @@ import {
   SmallSubheaders,
   Subheaders,
   OutcomesList,
-  SmallSubheadersTooltip
+  SmallSubheadersTooltip,
+  NoFundsErrors
 } from "modules/create-market/components/common";
 import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
@@ -30,7 +31,6 @@ import {
   formatDai,
   formatEther,
 } from 'utils/format-number';
-import { NoFundsErrors } from 'modules/create-market/components/no-funds-error'
 import { NewMarket, FormattedNumber } from 'modules/types';
 
 import Styles from "modules/create-market/components/review.styles.less";
