@@ -2,6 +2,7 @@ import * as t from "io-ts";
 import { DB } from "../db/DB";
 import { Getter } from './Router';
 import { Augur } from '../../index';
+import * as _ from 'lodash';
 
 export interface AccountTimeRangedStatsResult {
   // Yea. The ProfitLossChanged event then
@@ -28,7 +29,7 @@ export class AccountTimeRangedStats {
   static getAccountTimeRangedStatsParams = t.intersection([
     t.type({
       universe: t.string,
-      creator: t.string,
+      account: t.string,
     }),
     t.partial({
       endTime: t.number,
@@ -66,49 +67,74 @@ export class AccountTimeRangedStats {
 
     const marketsRequest = {
       selector: Object.assign({
-        marketcreator: params.creator,
+        marketcreator: params.account,
       }, baseRequest),
     };
 
-    console.log("marketsRequest", marketsRequest);
-
     const initialReporterRequest = {
       selector: Object.assign({
-        reporter: params.creator,
+        reporter: params.account,
       }, baseRequest),
     };
 
     const disputeCrowdourcerRequest = {
       selector: Object.assign({
-        disputeCrowdsourcerer: params.creator,
+        disputeCrowdsourcerer: params.account,
       }, baseRequest),
     };
 
     const profitLossChangedRequest = {
       selector: Object.assign({
-        account: params.creator,
-
+        account: params.account,
+        netPosition: { $ne: 0 },
       }, baseRequest),
     };
 
     const orderFilledRequest = {
       selector: Object.assign({
+        orderCeator: params.account,
+        orderFiller: params.account,
+        eventType: 3,
       }, baseRequest),
     };
 
-    const markets = await db.findMarketCreatedLogs(marketsRequest as any as PouchDB.Find.FindRequest<{}>);
+    const marketsCreatedLogs = await db.findMarketCreatedLogs(marketsRequest as any as PouchDB.Find.FindRequest<{}>);
+    const marketsCreated = marketsCreatedLogs.length;
     const initialReporterReedeemedLogs = await db.findInitialReporterRedeemedLogs(initialReporterRequest as any as PouchDB.Find.FindRequest<{}>);
     const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerCompletedLogs(disputeCrowdourcerRequest as any as PouchDB.Find.FindRequest<{}>);
+
     const redeemedPositions = initialReporterReedeemedLogs.length + disputeCrowdsourcerReedeemedLogs.length;
 
-    const profitLossChangedLogs = await db.findProfitLossChangedLogs(params.creator, profitLossChangedRequest as any as PouchDB.Find.FindRequest<{}>);
     const orderFilledLogs = await db.findOrderFilledLogs(orderFilledRequest as any as PouchDB.Find.FindRequest<{}>);
+    const numberOfTrades = _.uniqWith(orderFilledLogs, (a: any, b: any) => {
+      return a.tradeGroupId == b.tradeGroupId;
+    }).length;
+    const marketsTraded = _.uniqWith(orderFilledLogs, (a: any, b: any) => {
+      return a.market == b.market;
+    }).length;
 
-    console.log("MarketLogs", markets.length);
+    const profitLossChangedLogs = await db.findProfitLossChangedLogs(params.account, profitLossChangedRequest as any as PouchDB.Find.FindRequest<{}>);
+    const positions = _.uniqWith(profitLossChangedLogs, (a: any, b: any) => {
+      return a.market == b.market && a.outcome == b.outcome;
+    }).length;
+
+    // XXX: TODO
+    const successfulDisputes = 0;
+
+    console.log("initialRedeemedLogs", initialReporterReedeemedLogs);
+    console.log("disputeCrowdsourcerRedeemedLogs", disputeCrowdsourcerReedeemedLogs);
+    console.log("MarketsCreated", marketsCreated);
     console.log("RedeemedPositions", redeemedPositions);
-    console.log("ProfitLoss", profitLossChangedLogs);
+    console.log("positions", positions);
     console.log("OrderFilled", orderFilledLogs);
 
-    return {} as AccountTimeRangedStatsResult;
+    return {
+      positions,
+      numberOfTrades,
+      marketsCreated,
+      marketsTraded,
+      successfulDisputes,
+      redeemedPositions,
+    };
   }
 }
