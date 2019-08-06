@@ -7,8 +7,9 @@ import { XIcon, AddIcon, HintAlternate } from 'modules/common/icons';
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
 import Link from "modules/create-market/containers/link";
-
-import Styles from 'modules/create-market/components/common.styles';
+import { Error } from 'modules/common/form';
+import Styles from 'modules/create-market/components/common.styles.less';
+import { FormattedNumber } from 'modules/types';
 
 export interface HeaderProps {
   text: string;
@@ -52,7 +53,7 @@ export const Subheaders = (props: SubheadersProps) => (
         <Link href={props.href} underline={props.underline} ownLine={props.ownLine} />
       )}
     </p>
-  </div>        
+  </div>
 );
 
 export interface XLargeSubheadersProps {
@@ -67,7 +68,7 @@ export const XLargeSubheaders = (props: XLargeSubheadersProps) => (
     <MediumHeader text={props.subheader}>
       {props.children}
     </MediumHeader>
-  </div>        
+  </div>
 );
 
 export interface HeaderLinkProps {
@@ -91,15 +92,15 @@ export const SmallHeaderLink = (props: HeaderLinkProps) => (
 export const LargeSubheaders = (props: SubheadersProps) => (
   <div className={classNames(Styles.LargeSubheaders, {[Styles.Small]: props.smallSubheader})}>
     <Header text={props.header} />
-    <SmallHeaderLink 
-      text={props.subheader} 
-      href={props.href} 
-      underline={props.underline} 
-      ownLine={props.ownLine} 
-      link={props.link} 
+    <SmallHeaderLink
+      text={props.subheader}
+      href={props.href}
+      underline={props.underline}
+      ownLine={props.ownLine}
+      link={props.link}
       smallSubheader={props.smallSubheader}
     />
-  </div>        
+  </div>
 );
 
 export const SmallSubheaders = (props: SubheadersProps) => (
@@ -108,7 +109,7 @@ export const SmallSubheaders = (props: SubheadersProps) => (
     <span>
       {props.subheader}
     </span>
-  </div>        
+  </div>
 );
 
 export interface SubheadersTooltipProps {
@@ -127,7 +128,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
   <div className={Styles.SmallSubheadersTooltip}>
     <h1>
       {props.header}
-      {!props.tooltipSubheader && 
+      {!props.tooltipSubheader &&
         <>
           <label
             className={TooltipStyles.TooltipHint}
@@ -153,7 +154,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
     <span>
       {props.subheader}
       {props.tooltipSubheader &&
-        <> 
+        <>
           <label
             className={TooltipStyles.TooltipHint}
             data-tip
@@ -175,7 +176,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
         </>
       }
     </span>
-  </div>        
+  </div>
 );
 
 
@@ -187,13 +188,13 @@ export const OutcomesList = (props: OutcomesListProps) => (
   <div className={Styles.OutcomesList}>
     <h1>Outcomes</h1>
     <div>
-      {props.outcomes.map((outcome:string, index: Number) => 
+      {props.outcomes.map((outcome:string, index: Number) =>
         <span key={index}>
           {index + 1}. {outcome}
         </span>
       )}
     </div>
-  </div>        
+  </div>
 );
 
 export interface ExplainerBlockProps {
@@ -206,12 +207,12 @@ export const ExplainerBlock = (props: ExplainerBlockProps) => (
     <h2>
       {props.title}
     </h2>
-    {props.subtexts.map((subtext, index) => 
+    {props.subtexts.map((subtext, index) =>
       <p key={index}>
         {subtext}
       </p>
     )}
-  </div>      
+  </div>
 );
 
 export interface ContentBlockProps {
@@ -223,7 +224,7 @@ export interface ContentBlockProps {
 export const ContentBlock = (props: ContentBlockProps) => (
   <div className={classNames(Styles.ContentBlock, {[Styles.NoDark]: props.noDarkBackground, [Styles.Dark]: props.dark})}>
     {props.children}
-  </div>      
+  </div>
 );
 
 export const LineBreak = () => (
@@ -355,3 +356,60 @@ export class NumberedList extends Component<
     );
   }
 }
+
+export interface NoFundsErrorsProps {
+  noEth: boolean;
+  noRep: boolean;
+  noDai: boolean;
+  totalEth: FormattedNumber;
+  totalRep: FormattedNumber;
+  totalDai: FormattedNumber;
+  availableEthFormatted: FormattedNumber;
+  availableRepFormatted: FormattedNumber;
+  availableDaiFormatted: FormattedNumber;
+}
+export const NoFundsErrors = (props: NoFundsErrorsProps) => {
+  const {
+    noEth,
+    noRep,
+    noDai,
+    totalEth,
+    totalRep,
+    totalDai,
+    availableEthFormatted,
+    availableRepFormatted,
+    availableDaiFormatted,
+  } = props;
+
+  return (
+    <div className={classNames({[Styles.HasError]: noEth || noDai || noRep})}>
+      {noEth && (
+        <Error
+          alternate
+          header="Not enough ETH in your wallet"
+          subheader={
+            `You have ${availableEthFormatted.formatted} ETH of ${totalEth.formatted} required to create this market`
+          }
+        />
+      )}
+      {noRep && (
+        <Error
+          alternate
+          header="Not enough REP in your wallet"
+          subheader={
+            `You have ${availableRepFormatted.formatted} V2 REP of ${totalRep.formatted} required to create this market.`
+          }
+        />
+      )}
+      {noDai && (
+        <Error
+          alternate
+          header="Not enough $ (DAI) in your wallet"
+          subheader={
+            `You have $${availableDaiFormatted.formatted} (DAI) of $${totalDai.formatted} (DAI) required to create this market`
+          }
+        />
+      )}
+    </div>
+  );
+};
