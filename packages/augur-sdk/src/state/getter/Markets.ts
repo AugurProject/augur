@@ -63,11 +63,12 @@ const getMarketsParamsSpecific = t.intersection([
     creator: t.string,
     category: t.string,
     search: t.string,
+    reportingStates: t.array(t.string),
     disputeWindow: t.string,
     designatedReporter: t.string,
     maxFee: t.string,
     maxEndTime: t.number,
-    maxLiquiditySpread: t.string, // TODO: Implement maxLiquiditySpread filter
+    maxLiquiditySpread: t.string,
     includeInvalidMarkets: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
@@ -92,6 +93,18 @@ export interface MarketInfoOutcome {
   price: string | null;
   description: string;
   volume: string;
+}
+
+export enum MarketInfoReportingState {
+  PRE_REPORTING = 'PRE_REPORTING',
+  DESIGNATED_REPORTING = 'DESIGNATED_REPORTING',
+  OPEN_REPORTING = 'OPEN_REPORTING',
+  CROWDSOURCING_DISPUTE = 'CROWDSOURCING_DISPUTE',
+  AWAITING_NEXT_WINDOW = 'AWAITING_NEXT_WINDOW',
+  FINALIZED = 'FINALIZED',
+  FORKING = 'FORKING',
+  AWAITING_NO_REPORT_MIGRATION = 'AWAITING_NO_REPORT_MIGRATION',
+  AWAITING_FORK_MIGRATION = 'AWAITING_FORK_MIGRATION',
 }
 
 export interface MarketInfo {
@@ -503,6 +516,7 @@ export class Markets {
     }
 
     let filteredMarketsDetails: any[] = [];
+    let filteredOutCount = 0; // Markets excluded by maxLiquiditySpread & includeInvalidMarkets filters
     for (const marketCreatedLogInfo of Object.values(filteredKeyedMarketCreatedLogs)) {
       let includeMarket = true;
 
@@ -512,6 +526,20 @@ export class Markets {
         );
         const disputeWindowAddress = await market.getDisputeWindow_();
         if (params.disputeWindow !== disputeWindowAddress) {
+          includeMarket = false;
+        }
+      }
+
+      if (params.reportingStates) {
+        const marketFinalizedLogs = await db.findMarketFinalizedLogs({
+          selector: { market: marketCreatedLogInfo['market'] },
+        });
+        const reportingState = await getMarketReportingState(
+          db,
+          marketCreatedLogInfo,
+          marketFinalizedLogs
+        );
+        if (!params.reportingStates.includes(reportingState)) {
           includeMarket = false;
         }
       }
@@ -540,8 +568,9 @@ export class Markets {
         ) {
           marketCreatedLogInfo[params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
-        if (params.maxLiquiditySpread && marketData[0].liquidity[params.maxLiquiditySpread] === '0x00') {
+        if (params.maxLiquiditySpread && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0') {
           includeMarket = false;
+          filteredOutCount++;
         }
         if (
           typeof params.includeInvalidMarkets !== "undefined" &&
@@ -549,6 +578,7 @@ export class Markets {
           marketData[0].invalidFilter === true
         ) {
           includeMarket = false;
+          filteredOutCount++;
         }
       }
 
@@ -580,11 +610,11 @@ export class Markets {
       }
     );
 
-    // TODO Set `meta`, `filteredOutCount`, & `marketCount`
+    // TODO Set `meta` & `marketCount`
     return {
       markets: marketsInfo,
       meta: {},
-      filteredOutCount: 0,
+      filteredOutCount,
       marketCount: 0,
     };
   }
