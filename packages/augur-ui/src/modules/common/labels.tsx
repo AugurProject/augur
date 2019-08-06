@@ -475,7 +475,7 @@ export const LinearPropertyLabel = ({
           [Styles.isAccented]: accentValue
         })}
       >
-        {value && value.formatted\
+        {value && value.formatted
           ? `${value.formatted} ${
               showDenomination ? value.formatted : ""
             }`
