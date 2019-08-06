@@ -6,13 +6,18 @@
 // put all calls to contracts here that need conversion from display values to onChain values
 import { augurSdk } from 'services/augursdk';
 import { BigNumber } from 'bignumber.js';
-import { formatAttoRep, formatAttoEth, formatAttoDai } from 'utils/format-number';
+import {
+  formatAttoRep,
+  formatAttoEth,
+  formatAttoDai,
+} from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
   SimulateTradeData,
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
+  stringTo32ByteHex,
 } from '@augurproject/sdk';
 
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
@@ -206,15 +211,14 @@ export function createMarket(newMarket: NewMarket) {
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
   const marketEndTime = new BigNumber(newMarket.endTime);
   const extraInfo = JSON.stringify({
-    categories: [newMarket.categories[0]],
+    categories: newMarket.categories,
     description: newMarket.description,
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
-    tags: [newMarket.categories[1], newMarket.categories[2]],
     scalarDenomination: newMarket.scalarDenomination,
   });
 
-  const baseParams = {
+  const baseParams: CreateYesNoMarketParams = {
     endTime: marketEndTime,
     feePerCashInAttoCash,
     affiliateFeeDivisor,
@@ -232,25 +236,20 @@ export function createMarket(newMarket: NewMarket) {
       const numTicks = prices[1]
         .minus(prices[0])
         .dividedBy(new BigNumber(newMarket.tickSize));
-      const params: CreateScalarMarketParams = {
-        ...baseParams,
+      const params: CreateScalarMarketParams = Object.assign(baseParams, {
         prices,
         numTicks,
-      };
+      });
       return Augur.createScalarMarket(params);
     }
     case CATEGORICAL: {
-      const params: CreateCategoricalMarketParams = {
-        ...baseParams,
-        outcomes: newMarket.outcomes,
-      };
+      const params: CreateCategoricalMarketParams = Object.assign(baseParams, {
+        outcomes: newMarket.outcomes.map(o => stringTo32ByteHex(o)),
+      });
       return Augur.createCategoricalMarket(params);
     }
     default: {
-      const params: CreateYesNoMarketParams = {
-        ...baseParams,
-      };
-      return Augur.createYesNoMarket(params);
+      return Augur.createYesNoMarket(baseParams);
     }
   }
 }

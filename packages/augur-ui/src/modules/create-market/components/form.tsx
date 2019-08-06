@@ -80,7 +80,7 @@ import MarketView from 'modules/market/components/market-view/market-view';
 interface FormProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
-  address: String;
+  address: string;
   updatePage: Function;
   addDraft: Function;
   drafts: Drafts;
@@ -361,7 +361,7 @@ export default class Form extends React.Component<
       validations: newMarket.validations,
       currentStep: newMarket.currentStep,
       type: newMarket.type, // this isn't used
-      outcomes: [],
+      outcomes: newMarket.outcomes,
       scalarSmallNum: newMarket.minPrice,
       scalarBigNum: newMarket.maxPrice,
       scalarDenomination: newMarket.scalarDenomination,
@@ -382,9 +382,9 @@ export default class Form extends React.Component<
       meridiem: newMarket.meridiem,
       marketType: newMarket.marketType,
       detailsText: newMarket.detailsText,
-      categories: ['', '', ''],
-      settlementFee: 0,
-      affiliateFee: 0,
+      categories: newMarket.categories,
+      settlementFee: newMarket.settlementFee,
+      affiliateFee: newMarket.affiliateFee,
       orderBook: {},
       orderBookSorted: {},
       orderBookSeries: {},
