@@ -53,7 +53,7 @@ interface WrapperProps {
 interface WrapperState {
   orderPrice: string;
   orderQuantity: string;
-  orderEthEstimate: string;
+  orderDaiEstimate: string;
   orderEscrowdEth: string;
   gasCostEst: string;
   selectedNav: string;
@@ -90,7 +90,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.state = {
       orderPrice: props.selectedOrderProperties.price || '',
       orderQuantity: props.selectedOrderProperties.quantity || '',
-      orderEthEstimate: '',
+      orderDaiEstimate: '',
       orderEscrowdEth: '',
       gasCostEst: '',
       selectedNav: props.selectedOrderProperties.selectedNav || BUY,
@@ -159,7 +159,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         {
           orderPrice: '',
           orderQuantity: '',
-          orderEthEstimate: '',
+          orderDaiEstimate: '',
           orderEscrowdEth: '',
           gasCostEst: '',
           doNotCreateOrders: false,
@@ -206,12 +206,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     const { updateTradeCost, selectedOutcome, market, gasPrice, initialLiquidity } = this.props;
     let useValues = {
       ...order,
-      orderEthEstimate: '',
+      orderDaiEstimate: '',
     };
     if (!fromOrderBook) {
       useValues = {
         ...this.state,
-        orderEthEstimate: '',
+        orderDaiEstimate: '',
       };
     }
     this.updateState(
@@ -223,14 +223,14 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         if (initialLiquidity) {
           let trade = order;
           const totalCost = calculateTotalOrderValue(order.orderQuantity, order.orderPrice, order.selectedNav, createBigNumber(market.minPrice), createBigNumber(market.maxPrice), market.marketType);
-          const formattedValue = formatDai(totalCost)
+          const formattedValue = formatDai(totalCost);
           trade.limitPrice = order.orderPrice;
           trade.selectedOutcome =
           this.updateState(
             {
               ...this.state,
               ...order,
-              orderEthEstimate: formattedValue.formatted,
+              orderDaiEstimate: totalCost ? formattedValue.formatted : '',
               orderEscrowdEth: '',
               gasCostEst: '',
               trade: trade,
@@ -253,7 +253,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                   {
                     ...this.state,
                     ...order,
-                    orderEthEstimate: '',
+                    orderDaiEstimate: '',
                     orderEscrowdEth: '',
                     gasCostEst: '',
                   },
@@ -261,7 +261,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 );
               }
 
-              const newOrderEthEstimate = formatShares(
+              const neworderDaiEstimate = formatShares(
                 createBigNumber(newOrder.totalOrderValue.fullPrecision),
                 {
                   decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
@@ -277,7 +277,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 {
                   ...this.state,
                   ...order,
-                  orderEthEstimate: newOrderEthEstimate,
+                  orderDaiEstimate: neworderDaiEstimate,
                   orderEscrowdEth: newOrder.potentialEthLoss.formatted,
                   trade: newOrder,
                   gasCostEst: formattedGasCost,
@@ -328,7 +328,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {
             limitPrice: order.orderPrice,
             side: order.selectedNav,
-            maxCost: order.orderEthEstimate,
+            maxCost: order.orderDaiEstimate,
           },
           (err, newOrder) => {
             if (err) return console.log(err); // what to do with error here
@@ -391,7 +391,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       selectedNav,
       orderPrice,
       orderQuantity,
-      orderEthEstimate,
+      orderDaiEstimate,
       orderEscrowdEth,
       gasCostEst,
       doNotCreateOrders,
@@ -460,7 +460,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               selectedNav={selectedNav}
               orderPrice={orderPrice}
               orderQuantity={orderQuantity}
-              orderEthEstimate={orderEthEstimate}
+              orderDaiEstimate={orderDaiEstimate}
               orderEscrowdEth={orderEscrowdEth}
               gasCostEst={gasCostEst}
               doNotCreateOrders={doNotCreateOrders}
@@ -507,7 +507,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             action={e => {
               e.preventDefault();
               if (initialLiquidity) {
-                updateLiquidity(selectedOutcome, s);
+                const orderType = s.selectedNav === BUY ? SELL : BUY;
+                updateLiquidity(selectedOutcome, { ...s, selectedNav: orderType });
                 this.clearOrderForm();
               } else {
                 if (!marketReviewTradeSeen) {

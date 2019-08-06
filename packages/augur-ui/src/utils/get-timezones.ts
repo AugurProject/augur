@@ -17,7 +17,7 @@ export const getUserTimezone = () => {
 // offset comes in minutes, needs to be converted to hours
 // moment.tz.zone('America/Los_Angeles').utcOffset(1403465838805); // 420
 export const getTimezones = (
-  timestamp?: Moment // moment object
+  timestamp?: number
 ): Timezones => {
   const userTimezone = getUserTimezone();
 
@@ -25,7 +25,7 @@ export const getTimezones = (
     // multiplying by -1 because of `POSIX compatibility requires that the offsets are inverted. `
     // more information <https://momentjs.com/timezone/docs/>
     const offsetValue = timestamp
-      ? moment.tz.zone(zone).utcOffset(timestamp.timestamp * 1000) * -1
+      ? moment.tz.zone(zone).utcOffset(timestamp * 1000) * -1
       : moment.tz(zone).utcOffset();
 
     const value: number = offsetValue / MINUTES_IN_HOUR;

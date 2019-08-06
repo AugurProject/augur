@@ -235,7 +235,7 @@ export const TimeProgressBar = (props: TimeProgressBarProps) => {
 
 export const MarketTimeline = (props: TimeProgressBarProps) => {
   const { startTime, endTime, currentTime } = props;
-  let formattedEndTime: DateFormattedObject = endTime;
+  const formattedEndTime: DateFormattedObject = endTime;
   let formattedCurrentTime: DateFormattedObject | number = currentTime;
 
   if (!currentTime) {

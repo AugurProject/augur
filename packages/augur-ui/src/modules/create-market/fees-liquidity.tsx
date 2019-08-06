@@ -72,7 +72,7 @@ export default class FeesLiquidity extends React.Component<
         type: s.selectedNav,
         price: s.orderPrice,
         quantity: s.orderQuantity,
-        orderEstimate: s.orderEthEstimate,
+        orderEstimate: s.orderDaiEstimate,
       });
 
       updateInitialLiquidityCosts({

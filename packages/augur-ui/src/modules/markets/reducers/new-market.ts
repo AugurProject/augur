@@ -29,7 +29,6 @@ export const DEFAULT_STATE: NewMarket = {
       hour: null,
       minute: null,
       meridiem: null,
-      outcomes: null,
       scalarDenomination: null,
       outcomes: ["", ""],
     },
@@ -63,8 +62,8 @@ export const DEFAULT_STATE: NewMarket = {
   affiliateFee: AFFILIATE_FEE_DEFAULT,
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
-  minPrice: 0,
-  maxPrice: 1,
+  minPrice: "0",
+  maxPrice: "1",
   minPriceBigNumber: createBigNumber(0),
   maxPriceBigNumber: createBigNumber(1),
   initialLiquidityDai: createBigNumber(0),
