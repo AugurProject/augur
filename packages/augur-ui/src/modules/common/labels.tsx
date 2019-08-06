@@ -79,7 +79,6 @@ export interface PropertyLabelProps {
 export interface LinearPropertyLabelProps {
   label: string;
   value: string | FormattedNumber;
-  mobileValue?: string | FormattedNumber;
   accentValue?: boolean;
   highlightFirst?: boolean;
   highlight?: boolean;
@@ -454,8 +453,7 @@ export const LinearPropertyLabel = ({
   useValueLabel,
   showDenomination,
   accentValue,
-  value,
-  mobileValue
+  value
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
@@ -468,7 +466,7 @@ export const LinearPropertyLabel = ({
     <DashlineNormal />
     {useValueLabel ? (
       <ValueLabel
-        value={mobileValue || value}
+        value={value}
         showDenomination={showDenomination}
       />
     ) : (
@@ -477,11 +475,11 @@ export const LinearPropertyLabel = ({
           [Styles.isAccented]: accentValue
         })}
       >
-        {(mobileValue || value) && (mobileValue.formatted || value.formatted)
-          ? `${(mobileValue.formatted || value.formatted)} ${
-              showDenomination ? (mobileValue.denomination || value.formatted) : ""
+        {value && value.formatted
+          ? `${value.formatted} ${
+              showDenomination ? value.formatted : ""
             }`
-          : (mobileValue || value)}
+          : value}
       </span>
     )}
     {useValueLabel ? (
