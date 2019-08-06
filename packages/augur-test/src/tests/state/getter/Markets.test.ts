@@ -444,14 +444,6 @@ describe('State API :: Markets :: ', () => {
       universe: universe.address,
       sortBy: GetMarketsSortBy.EndTime,
     });
-    expect(marketList).toEqual([
-      scalarMarket2.address,
-      scalarMarket1.address,
-      categoricalMarket2.address,
-      categoricalMarket1.address,
-      yesNoMarket2.address,
-      yesNoMarket1.address,
-    ]);
     expect(marketList.markets.length).toEqual(6);
     expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
     expect(marketList.markets[1].id).toEqual(scalarMarket1.address);
