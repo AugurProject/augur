@@ -7,11 +7,15 @@ import { abi } from "@augurproject/artifacts";
 import { Abi } from "ethereum";
 import * as ethUtil from "ethereumjs-util";
 import { NULL_ADDRESS } from "../constants";
+import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
 
 const CREATION_GAS_ESTIMATE = new BigNumber(400000);
 const CREATION_GAS_PRICE = new BigNumber(10**9);
 
 const AUGUR_GNOSIS_SAFE_NONCE = ethUtil.keccak256("AUGUR_GNOSIS_SAFE_NONCE").readUIntLE(0, 6);
+
+// TODO Remove once we can provide exact creation params
+const SALT_NONCE = 4242424242;
 
 export interface ProxyCreationLog {
   proxy: string;
@@ -26,10 +30,12 @@ export interface GetGnosisSafeAddressParams {
 export class Gnosis {
   private readonly provider: Provider;
   private readonly augur: Augur;
+  private readonly gnosisRelay: IGnosisRelayAPI;
 
-  constructor(provider: Provider, augur: Augur) {
+  constructor(provider: Provider, gnosisRelay: IGnosisRelayAPI, augur: Augur) {
     this.provider = provider;
     this.augur = augur;
+    this.gnosisRelay = gnosisRelay;
     this.provider.storeAbiData(abi.GnosisSafe as Abi, "GnosisSafe");
     this.provider.storeAbiData(abi.ProxyFactory as Abi, "ProxyFactory");
   }
@@ -62,5 +68,22 @@ export class Gnosis {
     return creationLog.proxy;
   }
 
-  // TODO createGnosisSafeWithRelay
+  async createGnosisSafeViaRelay(params: GetGnosisSafeAddressParams): Promise<string> {
+    if (this.gnosisRelay === undefined) throw new Error("No Gnosis Relay provided to Augur SDK");
+    // TODO use specific params when available so we can precompute the safe address
+    const response = await this.gnosisRelay.createSafe({
+      saltNonce: SALT_NONCE,
+      owners: [params.owner],
+      threshold: 1,
+      paymentToken: params.paymentToken
+    });
+    return response.safe;
+  }
+
+  // TODO: If the v2 API adds back more grnaular status data (funded, deployed, etc) provide it from this method.
+  async getGnosisSafeDeploymentStatusViaRelay(safeAddress: string): Promise<boolean> {
+    if (this.gnosisRelay === undefined) throw new Error("No Gnosis Relay provided to Augur SDK");
+    const response = await this.gnosisRelay.checkSafe(safeAddress);
+    return response.blockNumber !== null;
+  }
 }

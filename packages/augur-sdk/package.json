@@ -40,6 +40,7 @@
     "@augurproject/artifacts": "1.0.0-0",
     "@augurproject/core": "2.0.0-0",
     "@augurproject/ethersjs-provider": "1.0.0-0",
+    "@augurproject/gnosis-relay-api": "1.0.0-0",
     "@augurproject/sdk": "1.0.0-0",
     "@types/async": "3.0.0",
     "@types/cors": "2.8.4",

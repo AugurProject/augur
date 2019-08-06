@@ -4,6 +4,7 @@ import { Callback, TXStatusCallback } from "./events";
 import { BaseConnector } from "./connector/baseConnector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
 import { ContractDependenciesEthers, TransactionStatusCallback, TransactionMetadata, TransactionStatus } from "contract-dependencies-ethers";
+import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
 import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
@@ -69,7 +70,7 @@ export class Augur<TProvider extends Provider = Provider> {
     "UniverseForked",
   ];
 
-  constructor(provider: TProvider, dependencies: ContractDependenciesEthers, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()) {
+  constructor(provider: TProvider, dependencies: ContractDependenciesEthers, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined) {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
@@ -84,19 +85,19 @@ export class Augur<TProvider extends Provider = Provider> {
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
-    this.gnosis = new Gnosis(this.provider, this);
+    this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
 
     this.registerTransactionStatusEvents();
   }
 
-  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()): Promise<Augur> {
+  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined): Promise<Augur> {
     // has to be static because of the way we instantiate boundTo methods
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
     }
 
     const networkId = await provider.getNetworkId();
-    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector);
+    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay);
 
     await augur.contracts.setReputationToken(networkId);
 

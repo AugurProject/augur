@@ -17,14 +17,17 @@ import { Account } from "../constants";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";
 import { formatBytes32String } from "ethers/utils";
+import { Getters } from "@augurproject/sdk";
+import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
+
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
 export class ContractAPI {
-  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined) {
+  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeDependencies(account, provider, signer);
-    const augur = await Augur.create(provider, dependencies, addresses, connector);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay);
 
     return new ContractAPI(augur, provider, account);
   }
@@ -453,5 +456,18 @@ export class ContractAPI {
     }
     const address = await this.augur.gnosis.createGnosisSafeDirectlyWithETH(params);
     return this.augur.contracts.gnosisSafeFromAddress(address)
+  }
+
+  async createGnosisSafeViaRelay(paymentToken: string, payment: BigNumber): Promise<string> {
+    const params = {
+      paymentToken,
+      payment,
+      owner: this.account.publicKey
+    }
+    return await this.augur.gnosis.createGnosisSafeViaRelay(params);
+  }
+
+  async getGnosisSafeDeploymentStatusViaRelay(safeAddress: string): Promise<boolean> {
+    return await this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay(safeAddress);
   }
 }
