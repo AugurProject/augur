@@ -229,7 +229,7 @@ export default class Review extends React.Component<
       categories,
       marketType,
       description,
-      endTime,
+      endTimeFormatted,
       detailsText,
       expirySourceType,
       expirySource,
@@ -280,7 +280,7 @@ export default class Review extends React.Component<
         <LineBreak />
         <Header text="Resolution information" />
         <div>
-          <SmallSubheaders header="Reporting start date and time" subheader={(endTime || {}).formattedUtc} />
+          <SmallSubheaders header="Reporting start date and time" subheader={endTimeFormatted.formattedUtc} />
           <SmallSubheaders header="resolution details" subheader={detailsText === "" ? "–" : detailsText} />
           <SmallSubheaders
             header="Resolution source"
