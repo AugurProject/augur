@@ -128,9 +128,9 @@ export const loadMarketsByFilter = (
     }
   }
 
-  const requests = filter.map(filterType =>
+  const requests = filter.map(async filterType =>
     {
-      const marketList = augur.getMarkets({ ...params, reportingState: filterType });
+      const marketList = await augur.getMarkets({ ...params, reportingState: filterType });
       return marketList.markets.map(marketInfo => marketInfo.id);
     }
   );
