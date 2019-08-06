@@ -88,7 +88,7 @@ function getFirstMarket(augur, universe, marketId, callback) {
       return callback(err);
     }
     if (marketList.markets.length === 0) return callback("No markets found");
-    return return callback(null, marketList.markets[0]);
+    return callback(null, marketList.markets[0].id);
   });
 }
 
