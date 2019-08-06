@@ -19,7 +19,6 @@ export default function findInsufficientFunds(
   formattedInitialLiquidityGas,
   formattedInitialLiquidityDai,
   testWithLiquidity = false,
-  gasPrice
 ): InsufficientFunds {
   const BNGasCost = createBigNumber(gasCost);
   const BNvalidityBond = createBigNumber(

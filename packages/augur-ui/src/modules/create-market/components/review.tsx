@@ -29,7 +29,6 @@ import {
   formatGasCostToEther,
   formatDai,
   formatEther,
-  formatRep
 } from 'utils/format-number';
 import { NoFundsErrors } from 'modules/create-market/components/no-funds-error'
 import { NewMarket, FormattedNumber } from 'modules/types';
@@ -41,9 +40,9 @@ interface ReviewProps {
   updateNewMarket: Function;
   address: string;
   gasPrice: string;
-  availableRep: number;
-  availableEth: number;
-  availableDai: number;
+  availableRepFormatted: FormattedNumber;
+  availableEthFormatted: FormattedNumber;
+  availableDaiFormatted: FormattedNumber;
   estimateSubmitNewMarket: Function;
 }
 
@@ -120,15 +119,15 @@ export default class Review extends React.Component<
       }
     }
     if (
-      this.props.availableEth !== nextProps.availableEth ||
-      this.props.availableRep !== nextProps.availableRep
+      this.props.availableEthFormatted.value !== nextProps.availableEthFormatted.value ||
+      this.props.availableRepFormatted.value !== nextProps.availableRepFormatted.value
     ) {
       this.calculateMarketCreationCosts();
     }
   }
 
   getInsufficientFundsAmounts(testWithLiquidity = false): InsufficientFunds {
-    const { availableEth, availableRep, availableDai, gasPrice } = this.props;
+    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted } = this.props;
     const s = this.state;
     let insufficientFunds: InsufficientFunds = null;
 
@@ -151,13 +150,12 @@ export default class Review extends React.Component<
         validityBond,
         gasCost || '0',
         designatedReportNoShowReputationBond,
-        createBigNumber(availableEth || '0'),
-        createBigNumber(availableRep || '0'),
-        createBigNumber(availableDai || '0'),
+        createBigNumber(availableEthFormatted.value || '0'),
+        createBigNumber(availableRepFormatted.value || '0'),
+        createBigNumber(availableDaiFormatted.value || '0'),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
-        testWithLiquidity,
-        gasPrice
+        testWithLiquidity
       );
     }
 
@@ -213,9 +211,9 @@ export default class Review extends React.Component<
   render() {
     const {
       newMarket,
-      availableEth,
-      availableDai,
-      availableRep,
+      availableEthFormatted,
+      availableDaiFormatted,
+      availableRepFormatted,
     } = this.props;
     const s = this.state;
 
@@ -341,9 +339,9 @@ export default class Review extends React.Component<
             noEth={noEth}
             noRep={noRep}
             noDai={noDai}
-            availableDaiFormatted={formatDai(availableDai)}
-            availableEthFormatted={formatEther(availableEth)}
-            availableRepFormatted={formatRep(availableRep)}
+            availableDaiFormatted={availableDaiFormatted}
+            availableEthFormatted={availableEthFormatted}
+            availableRepFormatted={availableRepFormatted}
             totalDai={totalDai}
             totalEth={totalEth}
             totalRep={s.designatedReportNoShowReputationBond}
