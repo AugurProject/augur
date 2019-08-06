@@ -1,0 +1,49 @@
+{
+  "name": "@augurproject/gnosis-relay-api",
+  "version": "1.0.0-0",
+  "description": "Gnosis Relay API",
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "MIT",
+  "main": "build",
+  "directories": {
+    "src": "src"
+  },
+  "scripts": {
+    "version": "yarn rebuild",
+    "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
+    "build": "tsc -b",
+    "watch": "tsc -w",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
+    "prepare": "tsc",
+    "prepush": "yarn lint",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AugurProject/augur.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AugurProject/augur/issues"
+  },
+  "homepage": "https://github.com/AugurProject/augur#readme",
+  "dependencies": {
+    "axios": "0.19.0"
+  },
+  "devDependencies": {
+    "@augurproject/artifacts": "1.0.0-0",
+    "@types/argparse": "1.0.36",
+    "@types/jest": "24.0.4",
+    "@types/node": "10.12.29",
+    "@types/supertest": "2.0.7",
+    "ethers": "4.0.24",
+    "ganache-core": "2.5.0",
+    "jest": "24.1.0",
+    "supertest": "4.0.2",
+    "ts-jest": "23.10.5",
+    "ts-node": "8.0.3",
+    "tsconfig-paths": "3.7.0"
+  },
+  "buildDependencies": [
+    "typescript"
+  ]
+}

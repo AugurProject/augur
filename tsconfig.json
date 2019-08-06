@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "./packages/gnosis-relay-api"
+    },
+    {
       "path": "./packages/ethersjs-provider"
     },
     {

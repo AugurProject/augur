@@ -61,4 +61,6 @@ export class Gnosis {
     const creationLog = result[0].parameters as ProxyCreationLog;
     return creationLog.proxy;
   }
+
+  // TODO createGnosisSafeWithRelay
 }
