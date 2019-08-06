@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/core",
-  "version": "2.0.0-0",
+  "version": "10.0.1-alpha.0",
   "description": "Core augur contracts and deployment process",
   "author": "The Augur Developers <team@augur.net>",
   "repository": "http://github.com/AugurProject/augur-core",
@@ -67,7 +67,7 @@
     "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby"
   },
   "dependencies": {
-    "@augurproject/artifacts": "1.0.0-0",
+    "@augurproject/artifacts": "^10.0.1-alpha.0",
     "@augurproject/solidity-docgen": "0.2.0-alpha.2",
     "@types/get-port": "4.0.1",
     "@types/mkdirp": "0.5.2",
@@ -76,7 +76,7 @@
     "bignumber.js": "6.0.0",
     "binascii": "0.0.2",
     "bn.js": "5.0.0",
-    "contract-dependencies-ethers": "1.0.0-0",
+    "contract-dependencies-ethers": "^10.0.1-alpha.0",
     "copy-dir": "0.4.0",
     "crypto-promise": "2.1.0",
     "ethers": "4.0.24",

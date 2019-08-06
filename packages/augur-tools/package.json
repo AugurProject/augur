@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/tools",
-  "version": "6.0.0",
+  "version": "10.0.1-alpha.0",
   "description": "Tools and dev dependencies",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
@@ -28,18 +28,17 @@
     "type": "git",
     "url": "git+https://github.com/augurproject/augur.git"
   },
-
   "bugs": {
     "url": "https://github.com/augurproject/augur/issues"
   },
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "1.0.0-0",
-    "@augurproject/core": "2.0.0-0",
-    "@augurproject/ethersjs-provider": "1.0.0-0",
-    "@augurproject/sdk": "1.0.0-0",
+    "@augurproject/artifacts": "^10.0.1-alpha.0",
+    "@augurproject/core": "^10.0.1-alpha.0",
+    "@augurproject/ethersjs-provider": "^10.0.1-alpha.0",
+    "@augurproject/sdk": "^10.0.1-alpha.0",
     "argparse": "^1.0.10",
-    "blockstream-adapters": "1.0.0-0",
+    "blockstream-adapters": "^10.0.1-alpha.0",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
     "ethjs-abi": "0.2.1",

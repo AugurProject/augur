@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/types",
-  "version": "1.0.0-0",
+  "version": "10.0.1-alpha.0",
   "description": "Homespun types for packages we use",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",

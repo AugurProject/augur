@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/ui",
-  "version": "1.0.0-0",
+  "version": "10.0.1-alpha.0",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -43,7 +43,7 @@
   "dependencies": {
     "@0xproject/order-utils": "1.0.7",
     "@0xproject/utils": "2.0.2",
-    "@augurproject/sdk": "1.0.0-0",
+    "@augurproject/sdk": "^10.0.1-alpha.0",
     "@babel/polyfill": "7.4.4",
     "@ledgerhq/hw-app-eth": "4.48.0",
     "@ledgerhq/hw-transport-u2f": "4.48.0",
@@ -95,13 +95,13 @@
     "scroll-snap": "1.0.6",
     "shelljs": "0.8.3",
     "shifty": "2.6.1",
-    "speedomatic": "2.1.5",
+    "speedomatic": "^10.0.1-alpha.0",
     "trezor-connect": "7.0.3",
     "uuid-parse": "^1.1.0",
     "web3": "1.0.0-beta.55"
   },
   "devDependencies": {
-    "@augurproject/tools": "6.0.0",
+    "@augurproject/tools": "^10.0.1-alpha.0",
     "@babel/core": "7.5.4",
     "@babel/plugin-proposal-class-properties": "7.5.0",
     "@babel/plugin-syntax-dynamic-import": "7.2.0",
