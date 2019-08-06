@@ -196,7 +196,6 @@
     }
   }
 
-  > span:nth-of-type(2),
   > span:last-of-type {
     .mono-12;
 
@@ -210,7 +209,6 @@
   }
 
   &.HighlightAlternateBolded {
-    > span:nth-of-type(2),
     > span:last-of-type {
       font-weight: bold;
     }
@@ -231,18 +229,12 @@
       color: @color-secondary-text;
     }
 
-    > span:nth-of-type(2),
     > span:last-of-type,
-    > span:nth-of-type(2) > label,
     > span:last-of-type > label {
       .mono-12-bold;
 
       color: @color-secondary-text;
     }
-  }
-
-  > span:nth-of-type(2) {
-    display: none;
   }
 
   @media @breakpoint-mobile {
@@ -252,7 +244,6 @@
         .mono-9;
       }
 
-      > span:nth-of-type(2),
       > span:last-of-type {
         .mono-10;
 
@@ -264,19 +255,10 @@
       .mono-9;
     }
 
-    > span:nth-of-type(2),
     > span:last-of-type {
       .mono-10;
 
       color: @color-tertiary-text;
-    }
-
-    > span:nth-of-type(2) {
-      display: block
-    }
-
-    > span:last-of-type {
-      display: none;
     }
   }
 }

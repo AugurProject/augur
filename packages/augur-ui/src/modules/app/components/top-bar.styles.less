@@ -29,15 +29,13 @@
 
   > div.TopBar_blockGasAcccount_HideMobile {
     @media @breakpoint-mobile {
-      > div {
-        display: none;
-      }
+      display: none;
     }
   }
 }
 
 .statsContainer {
-  width: min-content;
+  width: 400px;
 
   @media @breakpoint-mobile {
     width: auto;
@@ -75,8 +73,8 @@
 
     @media @breakpoint-mobile {
       border: 0;
-      margin: @size-8 @size-12;
-      max-width: 180px;
+      margin: @size-12 @size-16;
+      max-width: 175px;
 
       > span {
         display: flex;
@@ -125,6 +123,10 @@
 
   &:focus {
     outline: none;
+  }
+
+  @media @breakpoint-mobile {
+    display: none;
   }
 }
 
