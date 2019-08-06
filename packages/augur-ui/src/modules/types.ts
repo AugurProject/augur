@@ -298,6 +298,7 @@ export interface NewMarket {
   minPrice: string;
   maxPrice: string;
   endTime: number;
+  endTimeFormatted: DateFormattedObject;
   tickSize: number;
   hour: string;
   minute: string;

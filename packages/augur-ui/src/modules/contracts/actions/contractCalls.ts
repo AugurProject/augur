@@ -205,9 +205,8 @@ export async function getCreateMarketBreakdown() {
 }
 
 export function createMarket(newMarket: NewMarket) {
-  const feePerCashInAttoCash = new BigNumber(
-    newMarket.settlementFee
-  ).multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
+  const fee = new BigNumber(newMarket.settlementFee).div(new BigNumber(100))
+  const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
   const marketEndTime = new BigNumber(newMarket.endTime);
   const extraInfo = JSON.stringify({
