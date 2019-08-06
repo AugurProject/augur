@@ -17,14 +17,15 @@ export const loadReportingFinal = (callback: NodeStyleCallback = logError) => as
   const param = {
     reportingState: [
       REPORTING_STATE.FINALIZED,
-      REPORTING_STATE.AWAITING_FINALIZATION
+      REPORTING_STATE.AWAITING_FINALIZATION,
     ],
     sortBy: "endTime",
     isSortDescending: true,
-    universe: universe.id
+    universe: universe.id,
   };
 
-  const resolvedMarketIds: Array<string> = await augur.getMarkets(param);
+  const marketList = await augur.getMarkets(param);
+  const resolvedMarketIds: string[] = marketList.markets.map(marketInfo => marketInfo.id);
   dispatch(updateResolvedMarkets(resolvedMarketIds));
   callback(null, resolvedMarketIds);
 

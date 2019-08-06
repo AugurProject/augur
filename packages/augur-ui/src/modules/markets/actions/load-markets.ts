@@ -22,7 +22,8 @@ export const loadAllMarketIds = (
   const augur = augurSdk.get();
   const { universe } = getState();
   if (!(universe && universe.id)) return;
-  const marketsArray = await augur.getMarkets({ universe: universe.id });
+  const marketList = await augur.getMarkets({ universe: universe.id });
+  const marketArray = marketList.markets.map(marketInfo => marketInfo.id);
 
   callback(null, marketsArray);
 };
@@ -127,8 +128,11 @@ export const loadMarketsByFilter = (
     }
   }
 
-  const requests = filter.map(filterType =>
-    augur.getMarkets({ ...params, reportingState: filterType })
+  const requests = filter.map(async filterType =>
+    {
+      const marketList = await augur.getMarkets({ ...params, reportingState: filterType });
+      return marketList.markets.map(marketInfo => marketInfo.id);
+    }
   );
   const nestedMarkets = await Promise.all(requests);
   // flatten, when we upgrade to es2019 we can use nestedMarkets.flat() instead

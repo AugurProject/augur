@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import { DisputeWindow } from '@augurproject/core/source/libraries/ContractInterfaces';
 import { DB } from '../db/DB';
 import { MarketFields } from '../db/MarketDB';
 import { Getter } from './Router';
@@ -396,7 +395,7 @@ export class Markets {
     augur: Augur,
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketsParams>
-  ): Promise<string[]> {
+  ): Promise<MarketList> {
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
@@ -520,7 +519,7 @@ export class Markets {
       marketCreatedLogInfo['timestamp'] = new BigNumber(marketCreatedLogInfo['timestamp']).toString();
       marketCreatedLogInfo['endTime'] = new BigNumber(marketCreatedLogInfo['endTime']).toString();
 
-      let marketInfo: MarketData[];
+      let marketData: MarketData[];
       if (
         params.maxLiquiditySpread ||
         params.includeInvalidMarkets ||
@@ -533,21 +532,21 @@ export class Markets {
             market: marketCreatedLogInfo['market'],
           },
         };
-        marketInfo = await db.findMarkets(request);
+        marketData = await db.findMarkets(request);
         if (
           params.sortBy === getMarketsSortBy['Liquidity'] ||
           params.sortBy === getMarketsSortBy['MarketOI'] ||
           params.sortBy === getMarketsSortBy['Volume']
         ) {
-          marketCreatedLogInfo[params.sortBy] = marketInfo[params.sortBy] ? new BigNumber(marketInfo[params.sortBy]).toString() : '0';
+          marketCreatedLogInfo[params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
-        if (params.maxLiquiditySpread && marketInfo[0].liquidity[params.maxLiquiditySpread] === '0x00') {
+        if (params.maxLiquiditySpread && marketData[0].liquidity[params.maxLiquiditySpread] === '0x00') {
           includeMarket = false;
         }
         if (
           typeof params.includeInvalidMarkets !== "undefined" &&
           params.includeInvalidMarkets === false &&
-          marketInfo[0].invalidFilter === true
+          marketData[0].invalidFilter === true
         ) {
           includeMarket = false;
         }
@@ -559,21 +558,35 @@ export class Markets {
       }
     }
 
-    // TODO Add `meta`, `filteredOutCount`, & `marketCount`
     _.sortBy(filteredMarketsDetails, [(market: any) => market[params.sortBy]]);
     if (params.isSortDescending) {
       filteredMarketsDetails = filteredMarketsDetails.reverse();
     }
-    // TODO: Implement limit, offset
+    filteredMarketsDetails = filteredMarketsDetails.slice(params.offset, params.offset + params.limit);
 
     const marketsInfo = await Markets.getMarketsInfo(
       augur,
       db,
       { marketIds: filteredMarketsDetails.map(marketInfo => marketInfo.market) }
     );
-    // TODO: Add marketsInfo to returned object
+    // TODO: Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
+    const filteredMarketsDetailsOrder = {};
+    for (let i = 0; i < filteredMarketsDetails.length; i++) {
+      filteredMarketsDetailsOrder[filteredMarketsDetails[i].market] = i;
+    }
+    marketsInfo.sort(
+      (a, b) => {
+        return filteredMarketsDetailsOrder[a.id] - filteredMarketsDetailsOrder[b.id];
+      }
+    );
 
-    return filteredMarketsDetails.map(marketInfo => marketInfo.market);
+    // TODO Set `meta`, `filteredOutCount`, & `marketCount`
+    return {
+      markets: marketsInfo,
+      meta: {},
+      filteredOutCount: 0,
+      marketCount: 0,
+    };
   }
 
   @Getter('getMarketOrderBookParams')

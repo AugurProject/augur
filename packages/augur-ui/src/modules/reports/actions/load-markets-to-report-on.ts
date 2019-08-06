@@ -30,16 +30,22 @@ export const loadMarketsToReportOn = (
     reportingState: "DESIGNATED_REPORTING",
     designatedReporter: loginAccount.address
   };
+  const designatedReportingMarketList = await augur.getMarkets(designatedReportingQuery);
+  const designatedReporting = designatedReportingMarketList.markets.map(marketInfo => marketInfo.id);
   const openReportingQuery = { ...query, reportingState: "OPEN_REPORTING" };
+  const openReportingMarketList = await augur.getMarkets(openReportingQuery);
+  const openReporting = openReportingMarketList.markets.map(marketInfo => marketInfo.id);
   const reportingQuery = { ...query, reportingState: "CROWDSOURCING_DISPUTE" };
+  const reportingMarketList = await augur.getMarkets(reportingQuery);
+  const reporting = reportingMarketList.markets.map(marketInfo => marketInfo.id);
   const augur = augurSdk.get();
 
   // TODO: refactor to combine all 3 reporting states into one call to get markets,
   // not sure how the result is shaped currently
   const marketsTypes = {
-    designatedReporting: await augur.getMarkets(designatedReportingQuery),
-    openReporting: await augur.getMarkets(openReportingQuery),
-    reporting: await augur.getMarkets(reportingQuery)
+    designatedReporting,
+    openReporting,
+    reporting,
   };
 
   dispatch(updateMarketsData(marketsTypes));

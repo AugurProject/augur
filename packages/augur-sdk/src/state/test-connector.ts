@@ -36,11 +36,11 @@ console.log("Starting web worker");
         console.log(args);
       });
 
-    const markets = await augur.getMarkets({
+    const marketList = await augur.getMarkets({
       universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
     });
 
-    console.log(markets);
+    console.log(marketList);
     console.log("Done");
   } catch (e) {
     console.log(e);
