@@ -116,7 +116,6 @@ export const loadMarketsByFilter = (
     case MARKET_CLOSED: {
       // resolved markets only:
       filter.push(
-        REPORTING_STATE.AWAITING_FINALIZATION,
         REPORTING_STATE.FINALIZED,
       );
       break;

@@ -17,7 +17,6 @@ export const loadReportingFinal = (callback: NodeStyleCallback = logError) => as
   const param = {
     reportingState: [
       REPORTING_STATE.FINALIZED,
-      REPORTING_STATE.AWAITING_FINALIZATION,
     ],
     sortBy: "endTime",
     isSortDescending: true,

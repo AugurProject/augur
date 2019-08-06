@@ -72,11 +72,6 @@ export const selectFinalizeMarkets = createSelector(
       const positionsMarkets = Object.keys(positions);
       return markets
         .filter(
-          market =>
-            market.reportingState ===
-            REPORTING_STATE.AWAITING_FINALIZATION
-        )
-        .filter(
           market => positionsMarkets.indexOf(market.id) > -1 || address === market.author
         )
         .map(getRequiredMarketData);

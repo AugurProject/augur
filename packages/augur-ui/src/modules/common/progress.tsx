@@ -83,7 +83,6 @@ const reportingStateToLabelTime = (
     case REPORTING_STATE.AWAITING_FORK_MIGRATION:
       label = "Awaiting Fork Migration";
       break;
-    case REPORTING_STATE.AWAITING_FINALIZATION:
     case REPORTING_STATE.FINALIZED:
     default:
       label = "Expired";
