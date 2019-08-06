@@ -9,6 +9,7 @@ import "./Trading";
 import "./Users";
 import "./Accounts";
 import "./status";
+import "./get-account-time-ranged-stats";
 
 export class API {
   private readonly router: Router;
