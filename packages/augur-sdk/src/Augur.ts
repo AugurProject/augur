@@ -100,16 +100,6 @@ export class Augur<TProvider extends Provider = Provider> {
     return augur;
   }
 
-  async isTransactionConfirmed(hash: string): Promise<boolean> {
-    const tx = await this.getTransaction(hash);
-    if (!tx) {
-      console.log("Transaction could not be found", hash);
-      return false;
-    }
-    // confirmations is number of blocks beyond block that includes tx
-    return tx.confirmations > 0;
-  }
-
   async getTransaction(hash: string): Promise<TransactionResponse> {
     const tx = await this.dependencies.provider.getTransaction(hash);
     return tx;
