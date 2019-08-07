@@ -37,7 +37,7 @@ export function addScripts(flash: FlashSession) {
         abbr: 'u',
         description: `a few scripts need sdk, -u to wire up sdk`,
         flag: true,
-      }
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
@@ -47,7 +47,7 @@ export function addScripts(flash: FlashSession) {
       flash.provider = this.makeProvider(networkConfiguration);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = Addresses[networkId];
-      flash.ensureUser(networkConfiguration, !!args.useSdk);
+      await flash.ensureUser(networkConfiguration, !!args.useSdk);
     },
   });
 
@@ -61,16 +61,24 @@ export function addScripts(flash: FlashSession) {
         description: 'Overwrite addresses.json.',
         flag: true,
       },
+      {
+        name: 'time-controlled',
+        description: 'Use the TimeControlled contract. For testing environments only.',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const writeArtifacts = args.write_artifacts as boolean;
-      const { addresses } = await deployContracts(
-        this.provider,
-        this.accounts,
-        compilerOutput,
-        writeArtifacts
-      );
+
+      const config = {
+        writeArtifacts: args.write_artifacts as boolean,
+      };
+      if (args.time_controlled === 'true') {
+        config['useNormalTime'] = false;
+      } else if (args.time_controlled === 'false') {
+        config['useNormalTime'] = true;
+      }
+
+      const { addresses } = await deployContracts(this.provider, this.accounts, compilerOutput, config);
       flash.contractAddresses = addresses;
     },
   });
@@ -357,7 +365,7 @@ export function addScripts(flash: FlashSession) {
       const market: ContractInterfaces.Market = await user.getMarketContract(marketId);
       const marketInfos = await user.getMarketInfo(marketId);
       if (!marketInfos || marketInfos.length === 0) {
-        return this.log(`Error: marketId: ${marketId} not found`)
+        return this.log(`Error: marketId: ${marketId} not found`);
       }
       const marketInfo = marketInfos[0];
       const payoutNumerators = calculatePayoutNumeratorsArray(
@@ -420,7 +428,7 @@ export function addScripts(flash: FlashSession) {
       const market: ContractInterfaces.Market = await user.getMarketContract(marketId);
       const marketInfos = await user.getMarketInfo(marketId);
       if (!marketInfos || marketInfos.length === 0) {
-        return this.log(`Error: marketId: ${marketId} not found`)
+        return this.log(`Error: marketId: ${marketId} not found`);
       }
       const marketInfo = marketInfos[0];
       const payoutNumerators = calculatePayoutNumeratorsArray(
@@ -445,7 +453,7 @@ export function addScripts(flash: FlashSession) {
         abbr: 'm',
         description: 'market to initially dispute',
         required: true,
-      }
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;

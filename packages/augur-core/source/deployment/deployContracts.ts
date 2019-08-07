@@ -3,7 +3,7 @@
 import { ethers } from 'ethers';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { ContractDeployer } from "../libraries/ContractDeployer";
-import { DeployerConfiguration } from '../libraries/DeployerConfiguration';
+import { CreateDeployerConfiguration } from '../libraries/DeployerConfiguration';
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 
@@ -17,7 +17,7 @@ export async function deployContracts() {
     const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
     const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
 
-    await ContractDeployer.deployToNetwork(networkConfiguration, dependencies, provider, signer, DeployerConfiguration.create());
+    await ContractDeployer.deployToNetwork(networkConfiguration, dependencies, provider, signer, CreateDeployerConfiguration());
 }
 
 deployContracts().then(() => {
