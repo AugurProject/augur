@@ -66,7 +66,7 @@ export class AccountTimeRangedStats {
 
     const marketsRequest = {
       selector: Object.assign({
-        marketcreator: params.account,
+        marketCreator: params.account,
       }, baseRequest),
     };
 
@@ -96,30 +96,40 @@ export class AccountTimeRangedStats {
       }, baseRequest),
     };
 
-    const narketsCreatedLog = await db.findMarketCreatedLogs(marketsRequest);
-    const marketsCreated = narketsCreatedLog.length;
+    const compareArrays = (lhs: string[], rhs: string[]): number => {
+      let equal = 1;
+
+      lhs.forEach((item: string, index: number) => {
+        if (index >= rhs.length || item !== rhs[index]) {
+          equal = 0;
+        }
+      });
+
+      return equal;
+    };
+
+    const marketsCreatedLog = await db.findMarketCreatedLogs(marketsRequest);
+
+    const marketsCreated = marketsCreatedLog.length;
     const initialReporterReedeemedLogs = await db.findInitialReporterRedeemedLogs(initialReporterRequest);
     const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(disputeCrowdourcerRequest);
 
-    const successfulDisputes = _.sum((disputeCrowdsourcerReedeemedLogs as any as DisputeCrowdsourcerRedeemed[])
+    const successfulDisputes = _.sum(await Promise.all((disputeCrowdsourcerReedeemedLogs as any as DisputeCrowdsourcerRedeemed[])
       .map(async (log: DisputeCrowdsourcerRedeemed) => {
         const marketFinalization = {
           selector: Object.assign({
             market: log.market,
           }, baseRequest),
         };
-        const market = (await db.findMarketFinalizedLogs(marketFinalization)) as any as MarketFinalized[];
+        const markets = (await db.findMarketFinalizedLogs(marketFinalization)) as any as MarketFinalized[];
 
-        console.log("markets", market[0].winningPayoutNumerators, log.payoutNumerators);
-        if (market.length && market[0].winningPayoutNumerators === log.payoutNumerators) {
-          console.log("returning 1 in equality test");
-          return 1;
+        if (markets.length) {
+          return compareArrays(markets[0].winningPayoutNumerators, log.payoutNumerators);
         }
         else {
-          console.log("returning 0 in equality test");
           return 0;
         }
-      }));
+      })));
 
     const redeemedPositions = initialReporterReedeemedLogs.length + successfulDisputes;
 
@@ -137,15 +147,6 @@ export class AccountTimeRangedStats {
       return a.market === b.market && a.outcome === b.outcome;
     }).length;
 
-    console.log("initialRedeemedLogs", initialReporterReedeemedLogs);
-    console.log("disputeCrowdsourcerRedeemedLogs", disputeCrowdsourcerReedeemedLogs);
-    console.log("MarketsCreated", marketsCreated);
-    console.log("RedeemedPositions", redeemedPositions);
-    console.log("positions", positions);
-    console.log("numberOfraders", numberOfTrades);
-    console.log("marketsTraded", marketsTraded);
-    console.log("successfulDisputes", successfulDisputes);
-
     return {
       positions,
       numberOfTrades,
@@ -155,4 +156,5 @@ export class AccountTimeRangedStats {
       redeemedPositions,
     };
   }
+
 }
