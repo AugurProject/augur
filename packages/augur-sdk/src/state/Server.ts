@@ -3,7 +3,6 @@ import * as Sync from "./Sync";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
 import { EndpointSettings } from "./getter/types";
 import { EventEmitter } from "events";
-import { DB } from "./db/DB";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");

@@ -11,7 +11,7 @@ export interface AccountTimeRangedStatsResult {
   positions: number;
 
   // OrderEvent table for fill events (eventType == 3) where they are the orderCreator or orderFiller address
-  // if multiple fills in the same tx count as one trade then also couldting just the unique tradeGroupId from those
+  // if multiple fills in the same tx count as one trade then also counting just the unique tradeGroupId from those
   numberOfTrades: number;
 
   marketsCreated: number;
@@ -130,6 +130,7 @@ export class AccountTimeRangedStats {
           return 0;
         }
       })));
+
 
     const redeemedPositions = initialReporterReedeemedLogs.length + successfulDisputes;
 
