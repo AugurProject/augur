@@ -258,7 +258,7 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
         );
         await mary.contribute(johnYesNoMarket, yesPayoutSet, remainingToFill);
       } else {
-        await john.contribute(
+        await john.contribute(
           johnYesNoMarket,
           noPayoutSet,
           new BigNumber(25000)

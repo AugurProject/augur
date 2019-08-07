@@ -3,7 +3,7 @@ import { DB } from "../db/DB";
 import { Getter } from './Router';
 import { Augur } from '../../index';
 import * as _ from 'lodash';
-import { OrderEvent, ProfitLossChanged } from "../../event-handlers";
+import { DisputeCrowdsourcerRedeemed, MarketFinalized, ProfitLossChanged, OrderEvent } from "../../event-handlers";
 
 export interface AccountTimeRangedStatsResult {
   // Yea. The ProfitLossChanged event then
@@ -16,7 +16,7 @@ export interface AccountTimeRangedStatsResult {
 
   marketsCreated: number;
 
-  // Trades? uniq the market 
+  // Trades? uniq the market
   marketsTraded: number;
 
   // DisputeCrowdsourcerRedeemed where the payoutNumerators match the MarketFinalized winningPayoutNumerators
@@ -96,14 +96,34 @@ export class AccountTimeRangedStats {
       }, baseRequest),
     };
 
-    const marketsCreatedLogs = await db.findMarketCreatedLogs(marketsRequest as any as PouchDB.Find.FindRequest<{}>);
-    const marketsCreated = marketsCreatedLogs.length;
-    const initialReporterReedeemedLogs = await db.findInitialReporterRedeemedLogs(initialReporterRequest as any as PouchDB.Find.FindRequest<{}>);
-    const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(disputeCrowdourcerRequest as any as PouchDB.Find.FindRequest<{}>);
+    const narketsCreatedLog = await db.findMarketCreatedLogs(marketsRequest);
+    const marketsCreated = narketsCreatedLog.length;
+    const initialReporterReedeemedLogs = await db.findInitialReporterRedeemedLogs(initialReporterRequest);
+    const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(disputeCrowdourcerRequest);
 
-    const redeemedPositions = initialReporterReedeemedLogs.length + disputeCrowdsourcerReedeemedLogs.length;
+    const successfulDisputes = _.sum((disputeCrowdsourcerReedeemedLogs as any as DisputeCrowdsourcerRedeemed[])
+      .map(async (log: DisputeCrowdsourcerRedeemed) => {
+        const marketFinalization = {
+          selector: Object.assign({
+            market: log.market,
+          }, baseRequest),
+        };
+        const market = (await db.findMarketFinalizedLogs(marketFinalization)) as any as MarketFinalized[];
 
-    const orderFilledLogs = await db.findOrderFilledLogs(orderFilledRequest as any as PouchDB.Find.FindRequest<{}>);
+        console.log("markets", market[0].winningPayoutNumerators, log.payoutNumerators);
+        if (market.length && market[0].winningPayoutNumerators === log.payoutNumerators) {
+          console.log("returning 1 in equality test");
+          return 1;
+        }
+        else {
+          console.log("returning 0 in equality test");
+          return 0;
+        }
+      }));
+
+    const redeemedPositions = initialReporterReedeemedLogs.length + successfulDisputes;
+
+    const orderFilledLogs = await db.findOrderFilledLogs(orderFilledRequest);
     const numberOfTrades = _.uniqWith(orderFilledLogs as any as OrderEvent[], (a: OrderEvent, b: OrderEvent) => {
       return a.tradeGroupId === b.tradeGroupId;
     }).length;
@@ -112,15 +132,10 @@ export class AccountTimeRangedStats {
       return a.market === b.market;
     }).length;
 
-    const profitLossChangedLogs = await db.findProfitLossChangedLogs(params.account, profitLossChangedRequest as any as PouchDB.Find.FindRequest<{}>);
+    const profitLossChangedLogs = await db.findProfitLossChangedLogs(params.account, profitLossChangedRequest);
     const positions = _.uniqWith(profitLossChangedLogs as any as ProfitLossChanged[], (a: ProfitLossChanged, b: ProfitLossChanged) => {
       return a.market === b.market && a.outcome === b.outcome;
     }).length;
-
-
-
-    // XXX: TODO
-    const successfulDisputes = 0;
 
     console.log("initialRedeemedLogs", initialReporterReedeemedLogs);
     console.log("disputeCrowdsourcerRedeemedLogs", disputeCrowdsourcerReedeemedLogs);
@@ -129,6 +144,7 @@ export class AccountTimeRangedStats {
     console.log("positions", positions);
     console.log("numberOfraders", numberOfTrades);
     console.log("marketsTraded", marketsTraded);
+    console.log("successfulDisputes", successfulDisputes);
 
     return {
       positions,
