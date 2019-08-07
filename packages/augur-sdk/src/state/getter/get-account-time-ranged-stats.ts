@@ -3,6 +3,7 @@ import { DB } from "../db/DB";
 import { Getter } from './Router';
 import { Augur } from '../../index';
 import * as _ from 'lodash';
+import { OrderEvent, ProfitLossChanged } from "../../event-handlers";
 
 export interface AccountTimeRangedStatsResult {
   // Yea. The ProfitLossChanged event then
@@ -42,8 +43,6 @@ export class AccountTimeRangedStats {
     db: DB,
     params: t.TypeOf<typeof AccountTimeRangedStats.getAccountTimeRangedStatsParams>
   ): Promise<AccountTimeRangedStatsResult> {
-
-    console.log("params", params);
 
     // guards
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
@@ -94,7 +93,6 @@ export class AccountTimeRangedStats {
       selector: Object.assign({
         orderCeator: params.account,
         orderFiller: params.account,
-        eventType: 3,
       }, baseRequest),
     };
 
@@ -106,16 +104,17 @@ export class AccountTimeRangedStats {
     const redeemedPositions = initialReporterReedeemedLogs.length + disputeCrowdsourcerReedeemedLogs.length;
 
     const orderFilledLogs = await db.findOrderFilledLogs(orderFilledRequest as any as PouchDB.Find.FindRequest<{}>);
-    const numberOfTrades = _.uniqWith(orderFilledLogs, (a: any, b: any) => {
-      return a.tradeGroupId == b.tradeGroupId;
+    const numberOfTrades = _.uniqWith(orderFilledLogs as any as OrderEvent[], (a: OrderEvent, b: OrderEvent) => {
+      return a.tradeGroupId === b.tradeGroupId;
     }).length;
-    const marketsTraded = _.uniqWith(orderFilledLogs, (a: any, b: any) => {
-      return a.market == b.market;
+
+    const marketsTraded = _.uniqWith(orderFilledLogs as any as OrderEvent[], (a: OrderEvent, b: OrderEvent) => {
+      return a.market === b.market;
     }).length;
 
     const profitLossChangedLogs = await db.findProfitLossChangedLogs(params.account, profitLossChangedRequest as any as PouchDB.Find.FindRequest<{}>);
-    const positions = _.uniqWith(profitLossChangedLogs, (a: any, b: any) => {
-      return a.market == b.market && a.outcome == b.outcome;
+    const positions = _.uniqWith(profitLossChangedLogs as any as ProfitLossChanged[], (a: ProfitLossChanged, b: ProfitLossChanged) => {
+      return a.market === b.market && a.outcome === b.outcome;
     }).length;
 
     // XXX: TODO
@@ -126,7 +125,8 @@ export class AccountTimeRangedStats {
     console.log("MarketsCreated", marketsCreated);
     console.log("RedeemedPositions", redeemedPositions);
     console.log("positions", positions);
-    console.log("OrderFilled", orderFilledLogs);
+    console.log("numberOfraders", numberOfTrades);
+    console.log("marketsTraded", marketsTraded);
 
     return {
       positions,

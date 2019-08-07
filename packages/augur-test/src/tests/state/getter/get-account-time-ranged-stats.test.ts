@@ -1,22 +1,18 @@
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import {
   MarketInfo,
-  MarketInfoReportingState,
-  MarketOrderBook,
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { makeDbMock, makeProvider } from "../../../libs";
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
-import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
+import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
-import { ContractInterfaces } from '@augurproject/core';
 
 const mock = makeDbMock();
 
 const outcome0 = new BigNumber(0);
-const outcome1 = new BigNumber(1);
 describe('State API :: get-account-time-ranged-stats :: ', () => {
   let db: Promise<DB>;
   let api: API;
@@ -29,6 +25,7 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
+
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
@@ -38,11 +35,6 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
   // NOTE: Full-text searching is tested more in SyncableDB.test.ts
   test(':getAccountTimeRangedStats', async () => {
     const universe = john.augur.contracts.universe;
-    const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
-    const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
-    const highFeePerCashInAttoCash = new BigNumber(10).pow(18).div(10); // 10% creator fee
-    const affiliateFeeDivisor = new BigNumber(0);
-    const designatedReporter = john.account.publicKey;
 
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
     const johnSecondMarket = await john.createReasonableYesNoMarket();
@@ -65,14 +57,243 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
-    console.log(price);
-
     const cost = numShares.multipliedBy(78).div(2);
 
     await mary.fillOrder(yesNoOrderId, cost, numShares.div(2), '42');
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
-    // // Move time to open reporting
+    // Test non-existent universe address
+    const nonexistentAddress = '0x1111111111111111111111111111111111111111';
+    let errorMessage = '';
+    try {
+      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
+        universe: nonexistentAddress,
+        account: nonexistentAddress,
+        startTime: 1234,
+        endTime: 45678,
+      });
+    } catch (error) {
+      errorMessage = error.message;
+    }
+    expect(errorMessage).toEqual(
+      'Unknown universe: 0x1111111111111111111111111111111111111111'
+    );
+
+    // Test account
+    let stats = await api.route('getAccountTimeRangedStats', {
+      universe: universe.address,
+      account: ACCOUNTS[0].publicKey,
+    });
+    expect(stats).toMatchObject({
+      marketsCreated: 2,
+      marketsTraded: 1,
+      numberOfTrades: 1,
+      positions: 1,
+      redeemedPositions: 0,
+      successfulDisputes: 0,
+    });
+
+    stats = await api.route('getAccountTimeRangedStats', {
+      universe: universe.address,
+      account: nonexistentAddress,
+    });
+    expect(stats).toEqual({});
+
+    // Test endTime and startTime
+    try {
+      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
+        universe: universe.address,
+        account: ACCOUNTS[0].publicKey,
+        startTime: 123456,
+        endTime: 12,
+      });
+    } catch (error) {
+      errorMessage = error.message;
+    }
+    expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
+  }, 120000);
+
+  test('getAccountTimeRngedAStatsa :: positions, redeemedPpsitions, successfulDisputres', async () => {
+    // Create markets with multiple users
+    const universe = john.augur.contracts.universe;
+    const johnYesNoMarket = await john.createReasonableYesNoMarket();
+    const johnCategoricalMarket = await john.createReasonableMarket([
+      stringTo32ByteHex('A'),
+      stringTo32ByteHex('B'),
+      stringTo32ByteHex('C'),
+    ]);
+    const johnScalarMarket = await john.createReasonableScalarMarket();
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    // Place orders
+    const bid = new BigNumber(0);
+    const outcome0 = new BigNumber(0);
+    const outcome1 = new BigNumber(1);
+    const outcome2 = new BigNumber(2);
+    const numShares = new BigNumber(10).pow(12);
+    const price = new BigNumber(22);
+    await john.placeOrder(
+      johnYesNoMarket.address,
+      bid,
+      numShares,
+      price,
+      outcome0,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+    await john.placeOrder(
+      johnYesNoMarket.address,
+      bid,
+      numShares,
+      price,
+      outcome1,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+    await john.placeOrder(
+      johnYesNoMarket.address,
+      bid,
+      numShares,
+      price,
+      outcome2,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+    await john.placeOrder(
+      johnCategoricalMarket.address,
+      bid,
+      numShares,
+      price,
+      outcome0,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+    await john.placeOrder(
+      johnCategoricalMarket.address,
+      bid,
+      numShares,
+      price,
+      outcome1,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+    await john.placeOrder(
+      johnCategoricalMarket.address,
+      bid,
+      numShares,
+      price,
+      outcome2,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+    await john.placeOrder(
+      johnScalarMarket.address,
+      bid,
+      numShares,
+      price,
+      outcome0,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+    await john.placeOrder(
+      johnScalarMarket.address,
+      bid,
+      numShares,
+      price,
+      outcome1,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+    await john.placeOrder(
+      johnScalarMarket.address,
+      bid,
+      numShares,
+      price,
+      outcome2,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    // Fill orders
+    const cost = numShares.times(78).div(10);
+    await mary.fillOrder(
+      await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
+      cost,
+      numShares.div(10).times(2),
+      '42'
+    );
+    await mary.fillOrder(
+      await john.getBestOrderId(bid, johnYesNoMarket.address, outcome1),
+      cost,
+      numShares.div(10).times(3),
+      '43'
+    );
+    await mary.fillOrder(
+      await john.getBestOrderId(bid, johnYesNoMarket.address, outcome2),
+      cost,
+      numShares.div(10).times(3),
+      '43'
+    );
+    await mary.fillOrder(
+      await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome0),
+      cost,
+      numShares.div(10).times(2),
+      '42'
+    );
+    await mary.fillOrder(
+      await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome1),
+      cost,
+      numShares.div(10).times(3),
+      '43'
+    );
+    await mary.fillOrder(
+      await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome2),
+      cost,
+      numShares.div(10).times(3),
+      '43'
+    );
+    await mary.fillOrder(
+      await john.getBestOrderId(bid, johnScalarMarket.address, outcome0),
+      cost,
+      numShares.div(10).times(2),
+      '42'
+    );
+    await mary.fillOrder(
+      await john.getBestOrderId(bid, johnScalarMarket.address, outcome1),
+      cost,
+      numShares.div(10).times(3),
+      '43'
+    );
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    // Cancel an order
+    await john.cancelOrder(
+      await john.getBestOrderId(bid, johnScalarMarket.address, outcome2)
+    );
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    // Purchase & sell complete sets
+    const numberOfCompleteSets = new BigNumber(1);
+    await john.buyCompleteSets(johnYesNoMarket, numberOfCompleteSets);
+    await john.sellCompleteSets(johnYesNoMarket, numberOfCompleteSets);
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    // Move time to open reporting
     let newTime = (await johnYesNoMarket.getEndTime_()).plus(
       SECONDS_IN_A_DAY.times(7)
     );
@@ -90,6 +311,7 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
       new BigNumber(100),
     ];
     await john.doInitialReport(johnYesNoMarket, noPayoutSet);
+
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Move time to dispute window start time
@@ -97,161 +319,86 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     const disputeWindow = await john.augur.contracts.disputeWindowFromAddress(
       disputeWindowAddress
     );
+    newTime = new BigNumber(await disputeWindow.getStartTime_()).plus(1);
+    await john.setTimestamp(newTime);
 
+    // Purchase participation tokens
+    await john.buyParticipationTokens(disputeWindow.address, new BigNumber(1));
+
+    // Dispute 2 times
+    for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
+      if (disputeRound % 2 !== 0) {
+        await mary.contribute(
+          johnYesNoMarket,
+          yesPayoutSet,
+          new BigNumber(25000)
+        );
+        const remainingToFill = await john.getRemainingToFill(
+          johnYesNoMarket,
+          yesPayoutSet
+        );
+        await mary.contribute(johnYesNoMarket, yesPayoutSet, remainingToFill);
+      } else {
+        await john.contribute(
+          johnYesNoMarket,
+          noPayoutSet,
+          new BigNumber(25000)
+        );
+        const remainingToFill = await john.getRemainingToFill(
+          johnYesNoMarket,
+          noPayoutSet
+        );
+        await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
+      }
+    }
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    // Move time forward by 2 weeks
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(14));
     await john.setTimestamp(newTime);
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    // Finalize markets & redeem crowdsourcer funds
+    await johnYesNoMarket.finalize();
 
-    // // Dispute 2 times
-    // for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
-    //   if (disputeRound % 2 !== 0) {
-    //     await mary.contribute(
-    //       johnYesNoMarket,
-    //       yesPayoutSet,
-    //       new BigNumber(25000)
-    //     );
-    //     const remainingToFill = await john.getRemainingToFill(
-    //       johnYesNoMarket,
-    //       yesPayoutSet
-    //     );
-    //     await mary.contribute(johnYesNoMarket, yesPayoutSet, remainingToFill);
-    //   } else {
-    //     await john.contribute(
-    //       johnYesNoMarket,
-    //       noPayoutSet,
-    //       new BigNumber(25000)
-    //     );
-    //     const remainingToFill = await john.getRemainingToFill(
-    //       johnYesNoMarket,
-    //       noPayoutSet
-    //     );
-    //     await john.contribute(johnYesNoMarket, noPayoutSet, remainingToFill);
-    //   }
-    // }
-
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    johnYesNoMarket.finalize();
-    johnSecondMarket.finalize();
-
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // Test non-existent universe address
-    const nonexistentAddress = '0x1111111111111111111111111111111111111111';
-    let errorMessage = '';
-    try {
-      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
-        universe: nonexistentAddress,
-        creator: nonexistentAddress,
-        endTime: 123456,
-        startTime: 123456,
-      });
-    } catch (error) {
-      errorMessage = error.message;
-    }
-    expect(errorMessage).toEqual(
-      'Unknown universe: 0x1111111111111111111111111111111111111111'
+    // Transfer cash to dispute window (so participation tokens can be redeemed -- normally this would come from fees)
+    await john.augur.contracts.cash.transfer(
+      disputeWindow.address,
+      new BigNumber(1)
     );
 
-    // Test creator
-    let stats = await api.route('getAccountTimeRangedStats', {
+    // Redeem participation tokens
+    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
+
+    // Claim initial reporter
+    const initialReporter = await john.getInitialReporter(johnYesNoMarket);
+    await initialReporter.redeem(john.account.publicKey);
+
+    // Claim winning crowdsourcers
+    const winningReportingParticipant = await john.getWinningReportingParticipant(
+      johnYesNoMarket
+    );
+    await winningReportingParticipant.redeem(john.account.publicKey);
+
+    // Claim trading proceeds
+    await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
+      johnYesNoMarket.address,
+      john.account.publicKey
+    );
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    const stats = await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
     });
-    expect(stats).toEqual({});
-
-
-    markets = await api.route('getAccountTimeRangedStats', {
-      universe: universe.address,
-      account: nonexistentAddress,
+    expect(stats).toMatchObject({
+      marketsCreated: 5,
+      marketsTraded: 4,
+      numberOfTrades: 3,
+      positions: 10,
+      redeemedPositions: 1,
+      successfulDisputes: 0,
     });
-    expect(markets).toEqual({});
-
-    // Test endTime and startTime
-    markets = await api.route('getAccountTimeRangedStats', {
-      universe: universe.address,
-      account: ACCOUNTS[0].publicKey,
-      startTime: 123456,
-      endTime: 12,
-    });
-    expect(markets).toEqual({});
-
-    // await john.augur.contracts.cash.transfer(
-    //   disputeWindow.address,
-    //   new BigNumber(1)
-    // );
-
-    // await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // // Redeem participation tokens
-    // await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
-
-    // // Claim initial reporter
-    // const initialReporter = await john.getInitialReporter(johnYesNoMarket);
-    // await initialReporter.redeem(john.account.publicKey);
-
-    // // Claim winning crowdsourcers
-    // const winningReportingParticipant = await john.getWinningReportingParticipant(
-    //   johnYesNoMarket
-    // );
-    // await winningReportingParticipant.redeem(john.account.publicKey);
-
-    // await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // // Claim trading proceeds
-    // await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
-    //   johnYesNoMarket.address,
-    //   john.account.publicKey
-    // );
-
-    // await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // let markets: MarketInfo[];
-
-
-
-    // // Place orders on some markets
-
-    // await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // // // Partially fill orders
-    // // const cost = numShares.multipliedBy(78).div(2);
-    // // const yesNoOrderId1 = await john.getBestOrderId(
-    // //   ORDER_TYPES.BID,
-    // //   johnYesNoMarket.address,
-    // //   outcome0
-    // // );
-    // // await john.fillOrder(yesNoOrderId1, cost, numShares.div(2), '42');
-
-    // // await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // // markets = await api.route('getAccountTimeRangedStats', {
-    // //   universe: universe.address,
-    // //   creator: ACCOUNTS[0].publicKey,
-    // // });
-    // // expect(markets).toEqual([
-    // //   johnYesNoMarket.address,
-    // // ]);
-
-    // // // Completely fill orders
-    // // await john.fillOrder(yesNoOrderId1, cost, numShares.div(2), '42');
-
-    // // await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // // markets = await api.route('getAccountTimeRangedStats', {
-    // //   universe: universe.address,
-    // //   creator: ACCOUNTS[0].publicKey,
-    // // });
-    // // expect(markets).toEqual([]);
-
-    // // // Move timestamp to designated reporting phase
-    // // await john.setTimestamp(endTime);
-
-    // // await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-
-    // // await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-  }, 120000);
+  }, 200000);
 });
