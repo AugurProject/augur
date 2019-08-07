@@ -2,6 +2,7 @@ import { UIOrder } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "store";
+import { isTransactionConfirmed } from "modules/contracts/actions/contractCalls";
 
 const blockComparison = 3;
 
@@ -10,7 +11,7 @@ export const REMOVE_PENDING_ORDER = "REMOVE_PENDING_ORDER";
 export const LOAD_PENDING_ORDERS = "LOAD_PENDING_ORDERS";
 export const UPDATE_PENDING_ORDER = "UPDATE_PENDING_ORDER";
 
-export const loadPendingOrders = (pendingOrders: Array<UIOrder>) => ({
+const loadPendingOrders = (pendingOrders: Array<UIOrder>) => ({
   type: LOAD_PENDING_ORDERS,
   data: { pendingOrders },
 });
@@ -28,9 +29,9 @@ export const removePendingOrder = (id: string, marketId: string) => ({
   data: { id, marketId }
 });
 
-export const updatePendingOrderStatus = (id: string, marketId: string, status: string) => ({
+export const updatePendingOrderStatus = (id: string, marketId: string, status: string, hash: string) => ({
   type: UPDATE_PENDING_ORDER,
-  data: { id, marketId, status }
+  data: { id, marketId, status, hash }
 });
 
 export const clearPendingOrders = () => (
@@ -55,3 +56,19 @@ export const clearPendingOrders = () => (
 
   dispatch(loadPendingOrders(pendingOrders));
 };
+
+export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  if (!pendingOrders || Object.keys(pendingOrders).length === 0) return;
+  Object.keys(pendingOrders).map(async marketId => {
+    const orders = pendingOrders[marketId];
+    if (!orders || orders.length === 0) return;
+    orders.map(async (o: UIOrder) => {
+      if (!o.hash) return;
+      const confirmed = await isTransactionConfirmed(o.hash);
+      if (confirmed) return;
+      dispatch(loadPendingOrders([o]))
+    })
+  })
+}
