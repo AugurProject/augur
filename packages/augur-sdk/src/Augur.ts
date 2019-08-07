@@ -19,6 +19,7 @@ import { Users } from "./state/getter/Users";
 import { getAddress } from "ethers/utils/address";
 import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
 import { Liquidity } from "./api/Liquidity";
+import { TransactionResponse } from "ethers/providers";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
@@ -99,11 +100,21 @@ export class Augur<TProvider extends Provider = Provider> {
     return augur;
   }
 
-  async getTransaction(hash: string): Promise<string> {
-    const tx = await this.dependencies.provider.getTransaction(hash);
-    if (!tx) return "";
-    return tx.from;
+  async isTransactionConfirmed(hash: string): Promise<boolean> {
+    const tx = await this.getTransaction(hash);
+    if (!tx) {
+      console.log("Transaction could not be found", hash);
+      return false;
+    }
+    // confirmations is number of blocks beyond block that includes tx
+    return tx.confirmations > 0;
   }
+
+  async getTransaction(hash: string): Promise<TransactionResponse> {
+    const tx = await this.dependencies.provider.getTransaction(hash);
+    return tx;
+  }
+
   async listAccounts() {
     return this.dependencies.provider.listAccounts();
   }

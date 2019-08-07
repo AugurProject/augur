@@ -24,12 +24,13 @@ export default function(
       };
     }
     case UPDATE_PENDING_ORDER: {
-      const { id, marketId, status } = data;
+      const { id, marketId, status, hash } = data;
       const orders = pendingOrders[marketId];
       if (!orders) return pendingOrders;
       const order = orders.find(o => o.id === id)
       if (!order) return pendingOrders;
       order.status = status;
+      order.hash = hash;
       return pendingOrders;
     }
     case REMOVE_PENDING_ORDER: {

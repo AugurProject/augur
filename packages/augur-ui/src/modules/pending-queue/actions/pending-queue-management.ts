@@ -3,7 +3,6 @@ import { BaseAction, UIOrder } from "modules/types";
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
 export const LOAD_PENDING_QUEUE = "LOAD_PENDING_QUEUE";
-import { PUBLICTRADE, CANCELORDER } from 'modules/common/constants';
 
 export const loadPendingQueue = (pendingQueue: any): BaseAction => ({
   type: LOAD_PENDING_QUEUE,
