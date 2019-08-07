@@ -42,7 +42,7 @@ sidebar_label: PlaceTradeChainParams
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[affiliateAddress](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#affiliateaddress)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:22](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L22)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:22](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L22)*
 
 ___
 <a id="amount"></a>
@@ -51,7 +51,7 @@ ___
 
 **● amount**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:36](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L36)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:36](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L36)*
 
 ___
 <a id="direction"></a>
@@ -62,7 +62,7 @@ ___
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[direction](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#direction)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:15](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L15)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:15](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L15)*
 
 ___
 <a id="donotcreateorders"></a>
@@ -73,7 +73,7 @@ ___
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[doNotCreateOrders](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#donotcreateorders)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:24](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L24)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L24)*
 
 ___
 <a id="ignoreshares"></a>
@@ -84,7 +84,7 @@ ___
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[ignoreShares](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#ignoreshares)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:21](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L21)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:21](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L21)*
 
 ___
 <a id="kyctoken"></a>
@@ -95,7 +95,7 @@ ___
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[kycToken](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#kyctoken)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:23](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L23)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:23](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L23)*
 
 ___
 <a id="market"></a>
@@ -106,7 +106,7 @@ ___
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[market](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#market)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L16)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L16)*
 
 ___
 <a id="numoutcomes"></a>
@@ -117,7 +117,7 @@ ___
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[numOutcomes](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#numoutcomes)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L18)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L18)*
 
 ___
 <a id="numticks"></a>
@@ -128,7 +128,7 @@ ___
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[numTicks](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#numticks)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L17)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:17](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L17)*
 
 ___
 <a id="outcome"></a>
@@ -139,7 +139,7 @@ ___
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[outcome](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#outcome)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:19](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L19)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:19](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L19)*
 
 ___
 <a id="price"></a>
@@ -148,7 +148,7 @@ ___
 
 **● price**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:37](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L37)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:37](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L37)*
 
 ___
 <a id="shares"></a>
@@ -157,7 +157,7 @@ ___
 
 **● shares**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:38](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L38)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:38](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L38)*
 
 ___
 <a id="tradegroupid"></a>
@@ -168,7 +168,7 @@ ___
 
 *Inherited from [PlaceTradeParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md).[tradeGroupId](api-interfaces-packages-augur-sdk-src-api-trade-placetradeparams.md#tradegroupid)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L20)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L20)*
 
 ___
 

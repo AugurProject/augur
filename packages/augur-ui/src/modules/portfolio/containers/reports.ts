@@ -42,7 +42,6 @@ const mapStateToProps = (state) => {
           upcomingDisputableMarkets.push(market);
         }
         break;
-      case constants.REPORTING_STATE.AWAITING_FINALIZATION:
       case constants.REPORTING_STATE.FINALIZED:
         resolvedMarkets.push(market);
         break;

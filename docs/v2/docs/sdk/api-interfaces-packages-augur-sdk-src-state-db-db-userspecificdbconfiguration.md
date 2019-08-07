@@ -30,16 +30,16 @@ sidebar_label: UserSpecificDBConfiguration
 
 **● eventName**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:44](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L44)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:45](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L45)*
 
 ___
 <a id="idfields"></a>
 
 ### `<Optional>` idFields
 
-**● idFields**: *`Array`<`string`>*
+**● idFields**: *`string`[]*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:45](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L45)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:46](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L46)*
 
 ___
 <a id="name"></a>
@@ -48,7 +48,7 @@ ___
 
 **● name**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:43](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L43)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:44](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L44)*
 
 ___
 <a id="numadditionaltopics"></a>
@@ -57,16 +57,16 @@ ___
 
 **● numAdditionalTopics**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:46](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L46)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:47](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L47)*
 
 ___
 <a id="usertopicindicies"></a>
 
 ###  userTopicIndicies
 
-**● userTopicIndicies**: *`Array`<`number`>*
+**● userTopicIndicies**: *`number`[]*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:47](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/DB.ts#L47)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:48](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DB.ts#L48)*
 
 ___
 

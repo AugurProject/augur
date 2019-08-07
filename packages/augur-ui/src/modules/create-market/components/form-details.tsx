@@ -3,22 +3,22 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 
-import { 
-  RadioCardGroup, 
-  FormDropdown, 
-  TextInput, 
-  DatePicker, 
-  TimeSelector, 
-  RadioBarGroup, 
-  TimezoneDropdown, 
-  CategoryMultiSelect 
+import {
+  RadioCardGroup,
+  FormDropdown,
+  TextInput,
+  DatePicker,
+  TimeSelector,
+  RadioBarGroup,
+  TimezoneDropdown,
+  CategoryMultiSelect
 } from "modules/common/form";
 import { setCategories } from "modules/categories/set-categories";
 import { Header, Subheaders, LineBreak, NumberedList } from "modules/create-market/components/common";
-import { 
-  YES_NO, 
-  SCALAR, 
-  CATEGORICAL, 
+import {
+  YES_NO,
+  SCALAR,
+  CATEGORICAL,
   EXPIRY_SOURCE_GENERIC,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
@@ -27,14 +27,15 @@ import {
 } from 'modules/common/constants';
 import { NewMarket } from "modules/types";
 import { RepLogoIcon } from "modules/common/icons";
-import { 
-  DESCRIPTION_PLACEHOLDERS, 
-  DESCRIPTION, 
+import {
+  DESCRIPTION_PLACEHOLDERS,
+  DESCRIPTION,
   DESIGNATED_REPORTER_ADDRESS,
   EXPIRY_SOURCE,
   CATEGORIES,
   OUTCOMES
 } from "modules/create-market/constants";
+import { formatDate } from "utils/format-date";
 
 import Styles from "modules/create-market/components/form-details.styles";
 
@@ -74,6 +75,7 @@ export default class FormDetails extends React.Component<
       outcomes,
       marketType,
       endTime,
+      endTimeDropdown,
       hour,
       minute,
       meridiem,
@@ -89,7 +91,9 @@ export default class FormDetails extends React.Component<
       designatedReporterAddress,
       designatedReporterType,
       validations,
-      currentStep
+      currentStep,
+      offset,
+      offsetName
     } = newMarket;
 
     return (
@@ -123,22 +127,23 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Reporting start date and time" subheader="Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. " link />
           <span>
             <DatePicker
-              date={endTime}
+              date={endTimeDropdown ? moment(endTimeDropdown.timestamp * 1000) : null}
               placeholder="Date"
               displayFormat="MMM D, YYYY"
               id="input-date"
               onDateChange={(date: Number) => {
-                onChange("endTime", date)
+                if (!date) return onChange("setEndTime", "");
+                onChange("setEndTime", formatDate(date.toDate()));
               }}
               isOutsideRange={day =>
-                day.isAfter(moment(currentTimestamp).add(6, "M")) ||
-                day.isBefore(moment(currentTimestamp))
+                day.isAfter(moment(currentTimestamp * 1000).add(6, "M")) ||
+                day.isBefore(moment(currentTimestamp * 1000))
               }
               numberOfMonths={1}
               onFocusChange= {({ focused }) => {
                 if (endTime === null) {
                   const date = moment(currentTimestamp * 1000);
-                  onChange("endTime", date)
+                  onChange("setEndTime", formatDate(date.toDate()));
                 }
                 this.setState({ dateFocused: focused });
               }}
@@ -155,10 +160,10 @@ export default class FormDetails extends React.Component<
               onFocusChange= {(focused: Boolean) => {
                 if (!hour) {
                   onChange("hour", "12");
-                } 
+                }
                 if (!minute) {
                   onChange("minute", "00");
-                } 
+                }
                 if (!meridiem) {
                   onChange("meridiem", "AM");
                 }
@@ -167,7 +172,10 @@ export default class FormDetails extends React.Component<
               focused={s.timeFocused}
               errorMessage={validations[currentStep].hour}
             />
-            <TimezoneDropdown />
+            <TimezoneDropdown onChange={(value: number, offset: string) => {
+              onChange("offsetName", value);
+              onChange("offset", offset)
+            }} timestamp={endTime} timezone={offsetName} />
           </span>
 
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
@@ -180,7 +188,7 @@ export default class FormDetails extends React.Component<
             errorMessage={validations[currentStep].description && (validations[currentStep].description.charAt(0).toUpperCase() + validations[currentStep].description.slice(1).toLowerCase())}
           />
 
-          {marketType === CATEGORICAL && 
+          {marketType === CATEGORICAL &&
             <>
               <Subheaders header="Outcomes" subheader="List the outcomes people can choose from." link />
               <NumberedList
@@ -209,7 +217,8 @@ export default class FormDetails extends React.Component<
                   type="number"
                   placeholder="0"
                   onChange={(value: string) => {
-                    onChange("minPrice", value)
+                    onChange("minPrice", value);
+                    onChange("minPriceBigNumber", createBigNumber(value));
                     onError("maxPrice", "");
                   }}
                   value={minPrice}
@@ -220,7 +229,8 @@ export default class FormDetails extends React.Component<
                   type="number"
                   placeholder="100"
                   onChange={(value: string) => {
-                    onChange("maxPrice", value)
+                    onChange("maxPrice", value);
+                    onChange("maxPriceBigNumber", createBigNumber(value));
                     onError("minPrice", "");
                   }}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
@@ -244,7 +254,7 @@ export default class FormDetails extends React.Component<
           <CategoryMultiSelect
             initialSelected={categories}
             sortedGroup={setCategories}
-            updateSelection={categoryArray => 
+            updateSelection={categoryArray =>
               onChange(CATEGORIES, categoryArray)
             }
             errorMessage={validations[currentStep].categories}

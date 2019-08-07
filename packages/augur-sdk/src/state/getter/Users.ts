@@ -15,7 +15,7 @@ import {
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
 } from '../../index';
-import { SortLimit } from './types';
+import { sortOptions } from './types';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -108,7 +108,7 @@ export interface ProfitLossResult {
 export class Users {
   static getUserTradingPositionsParams = t.intersection([
     userTradingPositionsParams,
-    SortLimit,
+    sortOptions,
   ]);
   static getProfitLossParams = getProfitLossParams;
   static getProfitLossSummaryParams = getProfitLossSummaryParams;

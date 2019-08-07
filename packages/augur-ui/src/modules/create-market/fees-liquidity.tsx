@@ -1,18 +1,12 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
+import React from "react";
 
-import { RadioCardGroup, TextInput } from "modules/common/form";
-import { LargeSubheaders, ContentBlock, SmallHeaderLink } from "modules/create-market/components/common";
-import { SecondaryButton } from "modules/common/buttons";
-import { SCRATCH, TEMPLATE, MARKET_TEMPLATES } from "modules/create-market/constants";
-import SavedDrafts from "modules/create-market/containers/saved-drafts";
+import { TextInput } from "modules/common/form";
+import { LargeSubheaders } from "modules/create-market/components/common";
 import InitialLiquidity from "modules/create-market/containers/initial-liquidity";
 import OrderBook from "modules/market-charts/containers/order-book";
 import TradingForm from "modules/market/containers/trading-form";
 import {
   BUY,
-  YES_NO, 
   SCALAR,
   CATEGORICAL
 } from "modules/common/constants";
@@ -22,7 +16,7 @@ import MarketDepth from "modules/market-charts/containers/market-outcome-chart-d
 import QuadBox from "modules/portfolio/components/common/quad-box";
 import { Visibility } from "modules/create-market/components/visibility";
 
-import Styles from "modules/create-market/fees-liquidity.styles";
+import Styles from "modules/create-market/fees-liquidity.styles.less";
 
 interface FeesLiquidityProps {
   newMarket: Object;
@@ -34,10 +28,13 @@ interface FeesLiquidityProps {
   removeOrderFromNewMarket: Function;
   onChange: Function;
   onError: Function;
+  updateInitialLiquidityCosts: Function;
 }
 
 interface FeesLiquidityState {
   selectedOutcome: Number;
+  hoveredDepth: any;
+  hoveredPrice: any;
 }
 
 export default class FeesLiquidity extends React.Component<
@@ -45,7 +42,9 @@ export default class FeesLiquidity extends React.Component<
   FeesLiquidityState
 > {
   state: FeesLiquidityState = {
-    selectedOutcome: this.props.newMarket.marketType === CATEGORICAL ? 1 : 2
+    selectedOutcome: this.props.newMarket.marketType === CATEGORICAL ? 1 : 2,
+    hoveredDepth: [],
+    hoveredPrice: null,
   };
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {
@@ -58,52 +57,72 @@ export default class FeesLiquidity extends React.Component<
   updateLiquidity = (selectedOutcome, s) => {
     const {
       addOrderToNewMarket,
-      newMarket
+      newMarket,
+      updateInitialLiquidityCosts
     } = this.props;
 
      const { marketType, scalarDenomination } = newMarket;
       let outcomeName = selectedOutcome.description;
       if (marketType === SCALAR) {
         outcomeName = scalarDenomination;
-      } 
+      }
       addOrderToNewMarket({
         outcomeName,
         outcome: this.state.selectedOutcome,
         type: s.selectedNav,
         price: s.orderPrice,
         quantity: s.orderQuantity,
-        orderEstimate: s.orderEthEstimate
+        orderEstimate: s.orderDaiEstimate,
+      });
+
+      updateInitialLiquidityCosts({
+        outcome: this.state.selectedOutcome,
+        type: s.selectedNav,
+        price: s.orderPrice,
+        quantity: s.orderQuantity,
+        selectedOutcome: this.state.selectedOutcome
       });
   }
 
   renderRows = (data) => {
-    const {
-      newMarket
-    } = this.props;
+    const { newMarket, updateInitialLiquidityCosts } = this.props;
+    const outcomeOrders = newMarket.orderBook[this.state.selectedOutcome];
 
-    if (!(newMarket.orderBook[this.state.selectedOutcome] && newMarket.orderBook[this.state.selectedOutcome][data.id])) return;
+    if (!outcomeOrders) {
+      return null; // no rows to render
+    }
 
+    const orderId = outcomeOrders.find(order => order.id === data.id);
+    if (!orderId) return null;
+
+    const id = Math.random().toString(16).substr(4,6);
     return (
       <InitialLiquidity
-        key={"order-"+data.id}
-        order={newMarket.orderBook[this.state.selectedOutcome][data.id]}
+        key={"order-" + orderId.id + id}
+        order={orderId}
         selectedOutcome={this.state.selectedOutcome}
+        updateInitialLiquidityCosts={updateInitialLiquidityCosts}
       />
     );
   }
 
-  updateHoveredDepth(hoveredDepth) { 
+  updateHoveredDepth(hoveredDepth) {
+    this.setState({
+      hoveredDepth,
+    });
   }
 
   updateHoveredPrice(hoveredPrice) {
+    this.setState({
+      hoveredPrice,
+    });
   }
 
 
   render() {
     const {
-      updatePage,
       newMarket,
-      onChange
+      onChange,
     } = this.props;
     const s = this.state;
 
@@ -116,7 +135,7 @@ export default class FeesLiquidity extends React.Component<
     } = newMarket;
 
     return (
-      <div 
+      <div
         className={Styles.FeesLiquidity}
       >
         <div>
@@ -127,7 +146,6 @@ export default class FeesLiquidity extends React.Component<
             subheader="You have the option of setting a fee on your market. It is a percentage amount you get whenever shares are redeemed for ETH. Fees are typically set below 2%."
           />
           <TextInput
-            type="number"
             value={settlementFee}
             placeholder="0"
             innerLabel="%"
@@ -144,7 +162,6 @@ export default class FeesLiquidity extends React.Component<
             subheader="You have the option of assigning a percentage of the market creator fee to anyone who helps to promote your market (affiliiates)."
           />
           <TextInput
-            type="number"
             placeholder="0"
             onChange={(value: string) => onChange("affiliateFee", value)}
             value={affiliateFee}
@@ -180,7 +197,7 @@ export default class FeesLiquidity extends React.Component<
             initialLiquidity
           />
         </div>
-        
+
         <Visibility />
         <FilterSwitchBox
           title="Initial liquidity"
@@ -199,10 +216,10 @@ export default class FeesLiquidity extends React.Component<
               initialLiquidity
               selectedOutcomeId={s.selectedOutcome}
               updateSelectedOrderProperties={this.updateSelectedOrderProperties}
-              hoveredPrice={null}
-              hoveredDepth={[]}
-              updateHoveredDepth={this.updateHoveredDepth}
-              updateHoveredPrice={this.updateHoveredPrice}
+              hoveredPrice={s.hoveredPrice}
+              hoveredDepth={s.hoveredDepth}
+              updateHoveredDepth={(price) => this.updateHoveredDepth(price)}
+              updateHoveredPrice={(price) => this.updateHoveredPrice(price)}
             />
           }
         />

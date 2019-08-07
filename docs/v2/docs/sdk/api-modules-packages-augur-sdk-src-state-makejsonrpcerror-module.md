@@ -26,7 +26,7 @@ sidebar_label: packages/augur-sdk/src/state/MakeJsonRpcError
 
 ▸ **MakeJsonRpcError**(id: *`string`*, code: *[JsonRpcErrorCode](api-enums-packages-augur-sdk-src-state-makejsonrpcerror-jsonrpcerrorcode.md)*, message: *`string`*, data: *`object` \| `boolean`*): `string`
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:10](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:10](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L10)*
 
 **Parameters:**
 

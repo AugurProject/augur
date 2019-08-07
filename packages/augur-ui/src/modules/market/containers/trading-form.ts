@@ -25,10 +25,12 @@ import { selectSortedMarketOutcomes } from "modules/markets/selectors/market";
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, loginAccount } = state;
 
+  const hasFunds = !!state.loginAccount.eth && !!state.loginAccount.dai
   return {
     gasPrice: getGasPrice(state),
-    availableFunds: createBigNumber(state.loginAccount.eth || 0),
+    availableEth: createBigNumber(state.loginAccount.eth || 0),
     availableDai: createBigNumber(state.loginAccount.dai || 0),
+    hasFunds,
     isLogged: authStatus.isLogged,
     allowanceAmount: loginAccount.allowanceFormatted,
     isConnectionTrayOpen: authStatus.isConnectionTrayOpen,

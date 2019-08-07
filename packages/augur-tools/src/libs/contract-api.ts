@@ -1,11 +1,15 @@
 import {
   Augur,
+  Connectors,
+  Getters,
   PlaceTradeDisplayParams,
   SimulateTradeData,
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
-  CreateCategoricalMarketParams
+  CreateCategoricalMarketParams,
+  SubscriptionEventName
 } from "@augurproject/sdk";
+import { MarketList } from "@augurproject/sdk/src/state/getter/Markets";
 import { ContractInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { makeDependencies, makeSigner } from "./blockchain";
@@ -14,15 +18,13 @@ import { ContractAddresses } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";
 import { formatBytes32String } from "ethers/utils";
 
-
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
-
 export class ContractAPI {
-  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses) {
+  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeDependencies(account, provider, signer);
-    const augur = await Augur.create(provider, dependencies, addresses);
+    const augur = await Augur.create(provider, dependencies, addresses, connector);
 
     return new ContractAPI(augur, provider, account);
   }
@@ -39,7 +41,7 @@ export class ContractAPI {
   }
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheMarketCreationCost_();
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     await this.faucet(marketCreationFee);
 
     return this.augur.createYesNoMarket(params);
@@ -59,7 +61,7 @@ export class ContractAPI {
   }
 
   async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheMarketCreationCost_();
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     await this.faucet(marketCreationFee);
 
     return this.augur.createCategoricalMarket(params);
@@ -80,7 +82,7 @@ export class ContractAPI {
   }
 
   async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheMarketCreationCost_();
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     await this.faucet(marketCreationFee);
 
     return this.augur.createScalarMarket(params);
@@ -261,8 +263,8 @@ export class ContractAPI {
     await this.augur.contracts.completeSets.publicSellCompleteSets(market.address, amount);
   }
 
-  async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber): Promise<void> {
-    await market.contribute(payoutNumerators, amount, "");
+  async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description: string = ""): Promise<void> {
+    await market.contribute(payoutNumerators, amount, description);
   }
 
   // TODO Update this to handle case where crowdsourcer is 0 address (hasn't gotten any contributions)
@@ -341,8 +343,21 @@ export class ContractAPI {
     return this.augur.contracts.augur.getTimestamp_();
   }
 
-  async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<void> {
-    await market.doInitialReport(payoutNumerators, "", new BigNumber(0));
+  async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], description: string = "", extraStake: string = "0"): Promise<void> {
+    await market.doInitialReport(payoutNumerators, description, new BigNumber(extraStake));
+  }
+
+  async getMarketContract(address: string): Promise<ContractInterfaces.Market> {
+    return this.augur.getMarket(address);
+  }
+
+  async getMarketInfo(address: string): Promise<Getters.Markets.MarketInfo[]> {
+    return this.augur.getMarketsInfo({marketIds: [address]});
+  }
+
+  async getMarkets(): Promise<MarketList> {
+    const universe = this.augur.contracts.universe.address
+    return this.augur.getMarkets({universe});
   }
 
   async getInitialReporterStake(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<BigNumber> {

@@ -21,12 +21,20 @@
   max-height: @button-height-default;
   padding: @size-12 @size-24;
 
-  &:disabled {
-    background: @color-primary-button-background-disabled;
+  &:not(:disabled):hover {
+    background: @color-primary-button-background-hover;
   }
 
-  &:hover:enabled {
-    background: @color-primary-button-background-hover;
+  &:not(:disabled):focus {
+    background: @color-primary-button-background-focus;
+  }
+
+  &:not(:disabled):active {
+    background: @color-primary-button-background-active;
+  }
+
+  &:disabled {
+    background: @color-primary-button-background-disabled;
   }
 }
 
@@ -44,9 +52,17 @@
   }
 
   &:hover:enabled {
-    background: @color-primary-light;
-    color: @color-secondary-text;
+    background: fade(@color-primary-action, 5%);
   }
+
+  &:focus:enabled {
+    background: fade(@color-primary-action, 10%);
+  }
+
+  &:active:enabled {
+    background: fade(@color-primary-action, 15%);
+  }
+
 }
 
 .BuyOrderButton {
@@ -226,6 +242,10 @@
   line-height: @size-10;
   text-transform: uppercase;
 
+  @media @breakpoint-mobile {
+    line-height: @size-24;
+  }
+
   &:hover {
     font-weight: bold;
   }
@@ -303,17 +323,16 @@
   }
 
   &:hover:enabled {
-    background: rgba(9, 207, 225, 0.05);
+    background: fade(@color-primary-action, 5%);
   }
 
   &:focus:enabled {
-    background: rgba(9, 207, 225, 0.1);
+    background: fade(@color-primary-action, 10%);
   }
 
   &:active:enabled {
-    background: rgba(9, 207, 225, 0.15);
+    background: fade(@color-primary-action, 15%);
   }
-
 }
 
 .ViewTransactionsButton {

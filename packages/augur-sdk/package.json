@@ -46,6 +46,7 @@
     "@types/express": "4.16.1",
     "@types/helmet": "0.0.43",
     "@types/node-fetch": "2.3.4",
+    "@types/pouchdb-upsert": "^2.2.6",
     "@types/web3": "1.0.19",
     "async": "3.1.0",
     "cors": "2.8.5",
@@ -53,7 +54,7 @@
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.24",
     "express": "4.16.4",
-    "flexsearch": "0.6.2",
+    "flexsearch": "0.6.30",
     "ganache-core": "2.5.5",
     "io-ts": "1.4.2",
     "isomorphic-ws": "4.0.1",
@@ -62,6 +63,7 @@
     "pouchdb": "7.1.1",
     "pouchdb-adapter-memory": "7.1.1",
     "pouchdb-find": "7.1.1",
+    "pouchdb-upsert": "^2.2.0",
     "speedomatic": "2.1.5",
     "ts-loader": "6.0.1",
     "webpack": "4.29.6",
@@ -69,7 +71,7 @@
     "websocket-as-promised": "brianosaurus/websocket-as-promised#a104f774d702c0fbefe7ac2438b682676cf7d005",
     "worker-loader": "2.0.0",
     "ws": "7.0.0",
-    "yarn": "1.15.2"
+    "yarn": "1.17.3"
   },
   "devDependencies": {
     "@augurproject/types": "1.0.0-0",

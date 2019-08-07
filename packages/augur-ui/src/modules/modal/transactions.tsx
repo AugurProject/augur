@@ -14,12 +14,10 @@ import {
 } from "modules/common/constants";
 import { Pagination } from "modules/common/pagination";
 import { ValueLabel, TextLabel } from "modules/common/labels";
-import { SquareDropdown } from "modules/common/selection";
-import { DatePicker } from "modules/common/form";
+import { DatePicker, FormDropdown } from "modules/common/form";
 import { Title } from "modules/modal/common";
 import { formatEther, formatShares } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
-import { FormDropdown } from "modules/common/form";
 
 interface TransactionsProps {
   closeAction: Function;

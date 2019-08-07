@@ -16,7 +16,24 @@ sidebar_label: packages/augur-sdk/src/state/db/MarketDB
 
 * [LiquidityResults](api-interfaces-packages-augur-sdk-src-state-db-marketdb-liquidityresults.md)
 * [MarketDataDoc](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketdatadoc.md)
+* [MarketFields](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md)
 * [MarketOrderbookData](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketorderbookdata.md)
 
+### Variables
+
+* [flexSearch](api-modules-packages-augur-sdk-src-state-db-marketdb-module.md#flexsearch)
+
 ---
+
+## Variables
+
+<a id="flexsearch"></a>
+
+### `<Const>` flexSearch
+
+**● flexSearch**: *`any`* =  require('flexsearch')
+
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:22](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L22)*
+
+___
 

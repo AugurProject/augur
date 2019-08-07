@@ -51,7 +51,7 @@ sidebar_label: SubscriptionEventName
 
 **CompleteSetsPurchased**:  = "CompleteSetsPurchased"
 
-*Defined in [packages/augur-sdk/src/constants.ts:15](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L15)*
+*Defined in [packages/augur-sdk/src/constants.ts:15](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L15)*
 
 ___
 <a id="completesetssold"></a>
@@ -60,7 +60,7 @@ ___
 
 **CompleteSetsSold**:  = "CompleteSetsSold"
 
-*Defined in [packages/augur-sdk/src/constants.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L16)*
+*Defined in [packages/augur-sdk/src/constants.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L16)*
 
 ___
 <a id="disputecrowdsourcercompleted"></a>
@@ -69,7 +69,7 @@ ___
 
 **DisputeCrowdsourcerCompleted**:  = "DisputeCrowdsourcerCompleted"
 
-*Defined in [packages/augur-sdk/src/constants.ts:17](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L17)*
+*Defined in [packages/augur-sdk/src/constants.ts:17](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L17)*
 
 ___
 <a id="disputecrowdsourcercontribution"></a>
@@ -78,7 +78,7 @@ ___
 
 **DisputeCrowdsourcerContribution**:  = "DisputeCrowdsourcerContribution"
 
-*Defined in [packages/augur-sdk/src/constants.ts:18](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L18)*
+*Defined in [packages/augur-sdk/src/constants.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L18)*
 
 ___
 <a id="disputecrowdsourcercreated"></a>
@@ -87,7 +87,7 @@ ___
 
 **DisputeCrowdsourcerCreated**:  = "DisputeCrowdsourcerCreated"
 
-*Defined in [packages/augur-sdk/src/constants.ts:19](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L19)*
+*Defined in [packages/augur-sdk/src/constants.ts:19](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L19)*
 
 ___
 <a id="disputecrowdsourcerredeemed"></a>
@@ -96,7 +96,7 @@ ___
 
 **DisputeCrowdsourcerRedeemed**:  = "DisputeCrowdsourcerRedeemed"
 
-*Defined in [packages/augur-sdk/src/constants.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L20)*
+*Defined in [packages/augur-sdk/src/constants.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L20)*
 
 ___
 <a id="disputewindowcreated"></a>
@@ -105,7 +105,7 @@ ___
 
 **DisputeWindowCreated**:  = "DisputeWindowCreated"
 
-*Defined in [packages/augur-sdk/src/constants.ts:21](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L21)*
+*Defined in [packages/augur-sdk/src/constants.ts:21](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L21)*
 
 ___
 <a id="initialreportsubmitted"></a>
@@ -114,7 +114,7 @@ ___
 
 **InitialReportSubmitted**:  = "InitialReportSubmitted"
 
-*Defined in [packages/augur-sdk/src/constants.ts:22](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L22)*
+*Defined in [packages/augur-sdk/src/constants.ts:22](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L22)*
 
 ___
 <a id="initialreporterredeemed"></a>
@@ -123,7 +123,7 @@ ___
 
 **InitialReporterRedeemed**:  = "InitialReporterRedeemed"
 
-*Defined in [packages/augur-sdk/src/constants.ts:23](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L23)*
+*Defined in [packages/augur-sdk/src/constants.ts:23](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L23)*
 
 ___
 <a id="initialreportertransferred"></a>
@@ -132,7 +132,7 @@ ___
 
 **InitialReporterTransferred**:  = "InitialReporterTransferred"
 
-*Defined in [packages/augur-sdk/src/constants.ts:24](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L24)*
+*Defined in [packages/augur-sdk/src/constants.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L24)*
 
 ___
 <a id="marketcreated"></a>
@@ -141,7 +141,7 @@ ___
 
 **MarketCreated**:  = "MarketCreated"
 
-*Defined in [packages/augur-sdk/src/constants.ts:25](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L25)*
+*Defined in [packages/augur-sdk/src/constants.ts:25](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L25)*
 
 ___
 <a id="marketfinalized"></a>
@@ -150,7 +150,7 @@ ___
 
 **MarketFinalized**:  = "MarketFinalized"
 
-*Defined in [packages/augur-sdk/src/constants.ts:26](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L26)*
+*Defined in [packages/augur-sdk/src/constants.ts:26](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L26)*
 
 ___
 <a id="marketmigrated"></a>
@@ -159,7 +159,7 @@ ___
 
 **MarketMigrated**:  = "MarketMigrated"
 
-*Defined in [packages/augur-sdk/src/constants.ts:27](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L27)*
+*Defined in [packages/augur-sdk/src/constants.ts:27](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L27)*
 
 ___
 <a id="marketoichanged"></a>
@@ -168,7 +168,7 @@ ___
 
 **MarketOIChanged**:  = "MarketOIChanged"
 
-*Defined in [packages/augur-sdk/src/constants.ts:31](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L31)*
+*Defined in [packages/augur-sdk/src/constants.ts:31](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L31)*
 
 ___
 <a id="marketparticipantsdisavowed"></a>
@@ -177,7 +177,7 @@ ___
 
 **MarketParticipantsDisavowed**:  = "MarketParticipantsDisavowed"
 
-*Defined in [packages/augur-sdk/src/constants.ts:28](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L28)*
+*Defined in [packages/augur-sdk/src/constants.ts:28](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L28)*
 
 ___
 <a id="markettransferred"></a>
@@ -186,7 +186,7 @@ ___
 
 **MarketTransferred**:  = "MarketTransferred"
 
-*Defined in [packages/augur-sdk/src/constants.ts:29](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L29)*
+*Defined in [packages/augur-sdk/src/constants.ts:29](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L29)*
 
 ___
 <a id="marketvolumechanged"></a>
@@ -195,7 +195,7 @@ ___
 
 **MarketVolumeChanged**:  = "MarketVolumeChanged"
 
-*Defined in [packages/augur-sdk/src/constants.ts:30](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L30)*
+*Defined in [packages/augur-sdk/src/constants.ts:30](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L30)*
 
 ___
 <a id="newblock"></a>
@@ -204,7 +204,7 @@ ___
 
 **NewBlock**:  = "NewBlock"
 
-*Defined in [packages/augur-sdk/src/constants.ts:32](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L32)*
+*Defined in [packages/augur-sdk/src/constants.ts:32](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L32)*
 
 ___
 <a id="orderevent"></a>
@@ -213,7 +213,7 @@ ___
 
 **OrderEvent**:  = "OrderEvent"
 
-*Defined in [packages/augur-sdk/src/constants.ts:33](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L33)*
+*Defined in [packages/augur-sdk/src/constants.ts:33](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L33)*
 
 ___
 <a id="participationtokensredeemed"></a>
@@ -222,7 +222,7 @@ ___
 
 **ParticipationTokensRedeemed**:  = "ParticipationTokensRedeemed"
 
-*Defined in [packages/augur-sdk/src/constants.ts:34](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L34)*
+*Defined in [packages/augur-sdk/src/constants.ts:34](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L34)*
 
 ___
 <a id="profitlosschanged"></a>
@@ -231,7 +231,7 @@ ___
 
 **ProfitLossChanged**:  = "ProfitLossChanged"
 
-*Defined in [packages/augur-sdk/src/constants.ts:35](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L35)*
+*Defined in [packages/augur-sdk/src/constants.ts:35](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L35)*
 
 ___
 <a id="reportingparticipantdisavowed"></a>
@@ -240,7 +240,7 @@ ___
 
 **ReportingParticipantDisavowed**:  = "ReportingParticipantDisavowed"
 
-*Defined in [packages/augur-sdk/src/constants.ts:36](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L36)*
+*Defined in [packages/augur-sdk/src/constants.ts:36](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L36)*
 
 ___
 <a id="timestampset"></a>
@@ -249,7 +249,7 @@ ___
 
 **TimestampSet**:  = "TimestampSet"
 
-*Defined in [packages/augur-sdk/src/constants.ts:37](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L37)*
+*Defined in [packages/augur-sdk/src/constants.ts:37](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L37)*
 
 ___
 <a id="tokenbalancechanged"></a>
@@ -258,7 +258,7 @@ ___
 
 **TokenBalanceChanged**:  = "TokenBalanceChanged"
 
-*Defined in [packages/augur-sdk/src/constants.ts:38](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L38)*
+*Defined in [packages/augur-sdk/src/constants.ts:38](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L38)*
 
 ___
 <a id="tokensburned"></a>
@@ -267,7 +267,7 @@ ___
 
 **TokensBurned**:  = "TokensBurned"
 
-*Defined in [packages/augur-sdk/src/constants.ts:39](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L39)*
+*Defined in [packages/augur-sdk/src/constants.ts:39](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L39)*
 
 ___
 <a id="tokensminted"></a>
@@ -276,7 +276,7 @@ ___
 
 **TokensMinted**:  = "TokensMinted"
 
-*Defined in [packages/augur-sdk/src/constants.ts:40](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L40)*
+*Defined in [packages/augur-sdk/src/constants.ts:40](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L40)*
 
 ___
 <a id="tokenstransferred"></a>
@@ -285,7 +285,7 @@ ___
 
 **TokensTransferred**:  = "TokensTransferred"
 
-*Defined in [packages/augur-sdk/src/constants.ts:41](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L41)*
+*Defined in [packages/augur-sdk/src/constants.ts:41](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L41)*
 
 ___
 <a id="tradingproceedsclaimed"></a>
@@ -294,7 +294,7 @@ ___
 
 **TradingProceedsClaimed**:  = "TradingProceedsClaimed"
 
-*Defined in [packages/augur-sdk/src/constants.ts:42](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L42)*
+*Defined in [packages/augur-sdk/src/constants.ts:42](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L42)*
 
 ___
 <a id="universecreated"></a>
@@ -303,7 +303,7 @@ ___
 
 **UniverseCreated**:  = "UniverseCreated"
 
-*Defined in [packages/augur-sdk/src/constants.ts:43](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L43)*
+*Defined in [packages/augur-sdk/src/constants.ts:43](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L43)*
 
 ___
 <a id="universeforked"></a>
@@ -312,7 +312,7 @@ ___
 
 **UniverseForked**:  = "UniverseForked"
 
-*Defined in [packages/augur-sdk/src/constants.ts:44](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/constants.ts#L44)*
+*Defined in [packages/augur-sdk/src/constants.ts:44](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L44)*
 
 ___
 

@@ -3,7 +3,7 @@ import { Getters, convertOnChainPriceToDisplayPrice, convertOnChainAmountToDispl
 import { SELL, BUY, TX_TRADE_GROUP_ID, TX_MARKET_ID, TX_OUTCOME_ID, TX_PRICE, TX_AMOUNT, TX_DIRECTION } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 
-export function convertTransactionOrderToUIOrder(onChainOrder, status: string, market: Getters.Markets.MarketInfo): UIOrder {
+export function convertTransactionOrderToUIOrder(hash: string, onChainOrder, status: string, market: Getters.Markets.MarketInfo): UIOrder {
   console.log(JSON.stringify(onChainOrder));
   const outcomeId = onChainOrder[TX_OUTCOME_ID].toNumber();
   const outcome = market.outcomes.find(o => o.id === outcomeId);
@@ -23,7 +23,8 @@ export function convertTransactionOrderToUIOrder(onChainOrder, status: string, m
     fullPrecisionAmount: amount,
     type: onChainOrder[TX_DIRECTION].eq(0) ? BUY : SELL,
     outcomeName: outcome.description,
-    status
+    status,
+    hash
   }
 }
 

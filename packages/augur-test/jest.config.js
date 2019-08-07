@@ -1,6 +1,10 @@
 module.exports = {
   "roots": [
-    "<rootDir>",
+    "<rootDir>/src/tests/api",
+    "<rootDir>/src/tests/connector",
+    "<rootDir>/src/tests/flash", // has a single very long test
+    "<rootDir>/src/tests/state",
+    // "<rootDir>/src/tests/ui", // disabled because this has its own jest config
   ],
   "transform": {
     "^.+\\.tsx?$": "ts-jest",

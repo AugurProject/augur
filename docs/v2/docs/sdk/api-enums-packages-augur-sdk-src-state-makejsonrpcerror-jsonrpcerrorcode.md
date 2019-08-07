@@ -27,7 +27,7 @@ sidebar_label: JsonRpcErrorCode
 
 **InternalError**:  =  -32603
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:6](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L6)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:6](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L6)*
 
 ___
 <a id="invalidparams"></a>
@@ -36,7 +36,7 @@ ___
 
 **InvalidParams**:  =  -32602
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:5](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L5)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:5](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L5)*
 
 ___
 <a id="invalidrequest"></a>
@@ -45,7 +45,7 @@ ___
 
 **InvalidRequest**:  =  -32600
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:3](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L3)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:3](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L3)*
 
 ___
 <a id="methodnotfound"></a>
@@ -54,7 +54,7 @@ ___
 
 **MethodNotFound**:  =  -32601
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:4](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:4](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L4)*
 
 ___
 <a id="parseerror"></a>
@@ -63,7 +63,7 @@ ___
 
 **ParseError**:  =  -32700
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:2](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L2)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:2](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L2)*
 
 ___
 <a id="servererror"></a>
@@ -72,7 +72,7 @@ ___
 
 **ServerError**:  =  -32000
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:7](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L7)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:7](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L7)*
 
 ___
 

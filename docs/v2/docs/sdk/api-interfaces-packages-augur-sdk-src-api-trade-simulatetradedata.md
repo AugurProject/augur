@@ -14,6 +14,7 @@ sidebar_label: SimulateTradeData
 
 ### Properties
 
+* [numFills](api-interfaces-packages-augur-sdk-src-api-trade-simulatetradedata.md#numfills)
 * [settlementFees](api-interfaces-packages-augur-sdk-src-api-trade-simulatetradedata.md#settlementfees)
 * [sharesDepleted](api-interfaces-packages-augur-sdk-src-api-trade-simulatetradedata.md#sharesdepleted)
 * [sharesFilled](api-interfaces-packages-augur-sdk-src-api-trade-simulatetradedata.md#sharesfilled)
@@ -23,13 +24,22 @@ sidebar_label: SimulateTradeData
 
 ## Properties
 
+<a id="numfills"></a>
+
+###  numFills
+
+**● numFills**: *`BigNumber`*
+
+*Defined in [packages/augur-sdk/src/api/Trade.ts:71](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L71)*
+
+___
 <a id="settlementfees"></a>
 
 ###  settlementFees
 
 **● settlementFees**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:67](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L67)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:68](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L68)*
 
 ___
 <a id="sharesdepleted"></a>
@@ -38,7 +48,7 @@ ___
 
 **● sharesDepleted**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:68](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L68)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:69](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L69)*
 
 ___
 <a id="sharesfilled"></a>
@@ -47,7 +57,7 @@ ___
 
 **● sharesFilled**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:66](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L66)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:67](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L67)*
 
 ___
 <a id="tokensdepleted"></a>
@@ -56,7 +66,7 @@ ___
 
 **● tokensDepleted**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:69](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L69)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:70](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L70)*
 
 ___
 

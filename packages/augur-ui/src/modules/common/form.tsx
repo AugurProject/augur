@@ -32,6 +32,8 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
+import { getTimezones, getUserTimezone, Timezones, UTC_Default } from 'utils/get-timezones';
+import { Moment } from 'moment';
 
 interface CheckboxProps {
   id: string;
@@ -68,6 +70,7 @@ interface TextInputProps {
   trailingLabel?: string;
   innerLabel?: string;
   autoCompleteList?: Array<SortedGroup>;
+  onAutoCompleteListSelected?: Function;
 }
 
 interface TextInputState {
@@ -130,30 +133,62 @@ interface TimezoneDropdownProps {
   id?: string;
   onChange: any;
   className?: string;
+  autoCompleteList?: Array<SortedGroup>;
   disabled?: Boolean;
+  timestamp?: Moment;
+  timezone: string;
 }
 
-export const TimezoneDropdown = (props: TimezoneDropdownProps) => (
-  <FormDropdown
-    {...props}
-    staticLabel="Timezone"
-    options={[
-      {
-        label: 'UTC - 0',
-        value: 0,
-      },
-    ]}
-  />
-);
+interface TimezoneDropdownState {
+  value: string;
+}
+
+export class TimezoneDropdown extends Component<
+  TimezoneDropdownProps,
+  TimezoneDropdownState
+> {
+  state: TimezoneDropdownState = {
+    value: this.props.timezone,
+  };
+
+  onChangeDropdown = choice => {
+    const parse = /\(UTC (.*)\)/i;
+    const offset = choice.match(parse)[1];
+    this.props.onChange(choice, offset);
+    this.setState({
+      value: choice,
+    });
+  };
+
+
+  render() {
+    const timezones: Timezones = getTimezones(
+      this.props.timestamp
+    );
+
+    return (
+      <section className={Styles.Timezones}>
+        <TextInput
+          value={this.state.value}
+          placeholder={UTC_Default}
+          autoCompleteList={timezones.timezones}
+          onChange={() => {}}
+          onAutoCompleteListSelected={value => this.onChangeDropdown(value)}
+        />
+      </section>
+    );
+  }
+}
 
 interface ErrorProps {
   header?: string;
   subheader?: string;
+  alternate?: Boolean;
 }
 
 export const Error = (props: ErrorProps) => (
-  <section className={Styles.ErrorLabel}>
-    {ExclamationCircle}
+  <section className={classNames(Styles.ErrorLabel, {[Styles.Alternate]: props.alternate})}>
+    {!props.alternate && ExclamationCircle}
     <div>
       <span>{props.header}</span>
       <span>{props.subheader}</span>
@@ -232,6 +267,7 @@ interface DropdownInputGroupProps {
   defaultValue?: string;
   staticLabel?: string;
   onChangeDropdown: Function;
+  autoCompleteList?: Array<SortedGroup>;
   options: Array<NameValuePair>;
   errorMessage?: string;
   value: string;
@@ -251,7 +287,11 @@ const defaultMultiSelect = (amount: number, justStrings: boolean = false) => {
   return result;
 };
 
-export const createGroups = (groups: Array<SortedGroup>, values: Array<String>, selected: Array<String>) => {
+export const createGroups = (
+  groups: Array<SortedGroup>,
+  values: Array<String>,
+  selected: Array<String>
+) => {
   const primaryOptions = createOptions(groups);
   const primarySubgroup = findSubgroup(groups, values[0]);
   const secondaryCustom = selected[1] === CUSTOM;
@@ -275,9 +315,13 @@ export const createGroups = (groups: Array<SortedGroup>, values: Array<String>, 
   };
 };
 
-export const determineVisible = (values: Array<string>, secondaryOptions: Array<NameValuePair>, tertiaryOptions: Array<NameValuePair>, selected: Array<string>) => {
-  const showSecondaryDropdown =
-    values[0] !== '' && secondaryOptions.length > 0;
+export const determineVisible = (
+  values: Array<string>,
+  secondaryOptions: Array<NameValuePair>,
+  tertiaryOptions: Array<NameValuePair>,
+  selected: Array<string>
+) => {
+  const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 0;
   const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
   const customPrimary = selected[0] === CUSTOM;
   const customSecondary =
@@ -292,24 +336,32 @@ export const determineVisible = (values: Array<string>, secondaryOptions: Array<
     customSecondary,
     customTertiary,
   };
-}
+};
 
-export const getNewValues = (value: string, position: number, values: Array<string>) => {
+export const getNewValues = (
+  value: string,
+  position: number,
+  values: Array<string>
+) => {
   const updatedValues = [...values];
   updatedValues[position] = value;
   return updatedValues;
-}
+};
 
-export const getNewSelected = (selection: string, position: number, selected: Array<string>) => {
+export const getNewSelected = (
+  selection: string,
+  position: number,
+  selected: Array<string>
+) => {
   const updatedSelected = [...selected];
   updatedSelected[position] = selection;
   return updatedSelected;
-}
+};
 
 export const createOptions = (sortedGroup: SortedGroup) => {
   let options = sortedGroup.map(({ label, value }) => ({ label, value }));
   return options;
-}
+};
 
 export const findSubgroup = (sortedGroup: SortedGroup, selection: string) => {
   if (selection === '') return [];
@@ -319,9 +371,12 @@ export const findSubgroup = (sortedGroup: SortedGroup, selection: string) => {
   } else {
     return [];
   }
-}
+};
 
-export const findAutoComplete = (sortedGroup: SortedGroup, selection: string) => {
+export const findAutoComplete = (
+  sortedGroup: SortedGroup,
+  selection: string
+) => {
   if (selection === '') return [];
   const selected = sortedGroup.find(item => item.value === selection);
   if (selected && selected.autoCompleteList) {
@@ -329,7 +384,7 @@ export const findAutoComplete = (sortedGroup: SortedGroup, selection: string) =>
   } else {
     return [];
   }
-}
+};
 
 export const DropdownInputGroup = ({
   defaultValue,
@@ -343,7 +398,7 @@ export const DropdownInputGroup = ({
   onChangeInput,
   showText,
   showIcon,
-  showDropdown
+  showDropdown,
 }: DropdownInputGroupProps) => (
   <li>
     {showIcon && RightAngle}
@@ -390,10 +445,10 @@ export class CategorySingleSelect extends Component<
   CategorySingleSelectState
 > {
   state: CategorySingleSelectState = {
-    selected: this.props.initialSelected || "",
-    value: this.props.initialValue || this.props.initialSelected || "",
-    showText: this.props.initialSelected === CUSTOM
-  }
+    selected: this.props.initialSelected || '',
+    value: this.props.initialValue || this.props.initialSelected || '',
+    showText: this.props.initialSelected === CUSTOM,
+  };
 
   onChangeDropdown(choice) {
     let value = choice;
@@ -403,11 +458,20 @@ export class CategorySingleSelect extends Component<
 
   handleUpdate(selected, value) {
     const { updateSelection } = this.props;
-    this.setState({ selected, value, showText: selected === CUSTOM }, () => updateSelection(value));
+    this.setState({ selected, value, showText: selected === CUSTOM }, () =>
+      updateSelection(value)
+    );
   }
 
   render() {
-    const { options, errorMessage, staticLabel, placeholder, defaultValue, autoCompleteList } = this.props;
+    const {
+      options,
+      errorMessage,
+      staticLabel,
+      placeholder,
+      defaultValue,
+      autoCompleteList,
+    } = this.props;
     const { selected, value, showText } = this.state;
     return (
       <ul className={Styles.CategoryMultiSelect}>
@@ -436,7 +500,8 @@ export class CategoryMultiSelect extends Component<
   state: CategoryMultiSelectState = {
     groups: this.props.sortedGroup || defaultMultiSelect(3),
     selected: this.props.initialSelected || ['', '', ''],
-    values: this.props.initialValues || this.props.initialSelected || ['', '', ''],
+    values: this.props.initialValues ||
+      this.props.initialSelected || ['', '', ''],
   };
 
   onChangeDropdown(choice, position) {
@@ -468,12 +533,7 @@ export class CategoryMultiSelect extends Component<
       customPrimary,
       customSecondary,
       customTertiary,
-    } = determineVisible(
-      values,
-      secondaryOptions,
-      tertiaryOptions,
-      selected
-    );
+    } = determineVisible(values, secondaryOptions, tertiaryOptions, selected);
 
     return (
       <ul className={Styles.CategoryMultiSelect}>
@@ -485,7 +545,9 @@ export class CategoryMultiSelect extends Component<
           errorMessage={errorMessage[0]}
           value={values[0]}
           placeholder="Custom Primary Category"
-          onChangeInput={v => this.handleUpdate(selected, getNewValues(v, 0, values))}
+          onChangeInput={v =>
+            this.handleUpdate(selected, getNewValues(v, 0, values))
+          }
           showText={customPrimary}
           showIcon={false}
           showDropdown={true}
@@ -499,9 +561,11 @@ export class CategoryMultiSelect extends Component<
             errorMessage={errorMessage[1]}
             value={values[1]}
             placeholder="Custom Secondary Category"
-            onChangeInput={v => this.handleUpdate(selected, getNewValues(v, 1, values))}
+            onChangeInput={v =>
+              this.handleUpdate(selected, getNewValues(v, 1, values))
+            }
             showText={customSecondary}
-            showIcon={(showSecondaryDropdown || customSecondary)}
+            showIcon={showSecondaryDropdown || customSecondary}
             showDropdown={showSecondaryDropdown}
             autoCompleteList={secondaryAutoComplete}
           />
@@ -515,9 +579,11 @@ export class CategoryMultiSelect extends Component<
             errorMessage={errorMessage[2]}
             value={values[2]}
             placeholder="Custom Tertiary Category"
-            onChangeInput={v => this.handleUpdate(selected, getNewValues(v, 2, values))}
+            onChangeInput={v =>
+              this.handleUpdate(selected, getNewValues(v, 2, values))
+            }
             showText={customTertiary}
-            showIcon={(showTertiaryDropdown || customTertiary)}
+            showIcon={showTertiaryDropdown || customTertiary}
             showDropdown={showTertiaryDropdown}
             autoCompleteList={tertiaryAutoComplete}
           />
@@ -721,14 +787,14 @@ export const LocationDisplay = ({
 }: LocationDisplayProps) => (
   <div className={Styles.LocationDisplay}>
     {pages.map((page: Object, index: Number) => (
-      <>
+      <React.Fragment key={index}>
         <span
           className={classNames({ [Styles.Selected]: index === currentStep })}
         >
           {page.title}
         </span>
         {index !== pages.length - 1 && DirectionArrow}
-      </>
+      </React.Fragment>
     ))}
   </div>
 );
@@ -738,6 +804,11 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     value: this.props.value === null ? '' : this.props.value,
     showList: false,
   };
+  refDropdown: any = null;
+
+  componentDidMount() {
+    window.addEventListener("click", this.handleWindowOnClick);
+  }
 
   componentWillReceiveProps(nextProps: TextInputProps) {
     const { value } = this.props;
@@ -745,6 +816,16 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       this.setState({ value: nextProps.value });
     }
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("click", this.handleWindowOnClick);
+  }
+
+  handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (this.refDropdown && !this.refDropdown.contains(event.target)) {
+        this.setState({ showList: false });
+    }
+  };
 
   toggleList = () => {
     this.setState({
@@ -759,7 +840,10 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   };
 
   onAutoCompleteSelect = value => {
-    this.props.onChange(value);
+    !!this.props.onAutoCompleteListSelected
+      ? this.props.onAutoCompleteListSelected(value)
+      : this.props.onChange(value);
+
     this.setState({ value, showList: false });
   };
 
@@ -772,22 +856,24 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       trailingLabel,
       innerLabel,
     } = this.props;
-    const { autoCompleteList = [], ...inputProps } = this.props;
+    const { autoCompleteList = [] } = this.props;
     const { showList } = this.state;
 
     const filteredList = autoCompleteList.filter(item =>
-      item.label.includes(this.state.value) ? item : null
+      item.label.toLowerCase().includes(this.state.value.toLowerCase()) ? item : null
     );
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
 
     return (
       <div className={Styles.TextInput}>
-        <div>
+        <div
+          ref={dropdown => {
+            this.refDropdown = dropdown;
+          }}>
           {type !== 'textarea' ? (
             <>
               <input
-                {...inputProps}
                 className={classNames({ [Styles.error]: error })}
                 value={this.state.value}
                 onChange={this.onChange}
@@ -803,7 +889,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
               >
                 {filteredList.map(item => (
                   <button
-                    key={item.value}
+                    key={`${item.value}${item.label}`}
                     value={item.value}
                     onClick={() => this.onAutoCompleteSelect(item.value)}
                   >
@@ -814,7 +900,6 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
             </>
           ) : (
             <textarea
-              {...inputProps}
               className={classNames({ [Styles.error]: error })}
               value={this.state.value}
               onChange={this.onChange}

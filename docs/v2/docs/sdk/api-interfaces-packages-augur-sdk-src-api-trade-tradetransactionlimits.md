@@ -27,7 +27,7 @@ sidebar_label: TradeTransactionLimits
 
 **● gasLimit**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:43](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L43)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:43](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L43)*
 
 ___
 <a id="looplimit"></a>
@@ -36,7 +36,7 @@ ___
 
 **● loopLimit**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:42](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/api/Trade.ts#L42)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:42](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L42)*
 
 ___
 

@@ -33,9 +33,9 @@ sidebar_label: Logger
 
 ### `<Private>` loggers
 
-**● loggers**: *`Array`<[LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md)>* =  []
+**● loggers**: *[LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md)[]* =  []
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:14](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:14](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L14)*
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 ▸ **addLogger**(logger: *[LoggerInterface](api-interfaces-packages-augur-sdk-src-state-utils-logger-logger-loggerinterface.md)*): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:16](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L16)*
 
 **Parameters:**
 
@@ -64,7 +64,7 @@ ___
 
 ▸ **clear**(): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:36](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L36)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:36](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L36)*
 
 **Returns:** `void`
 
@@ -73,15 +73,15 @@ ___
 
 ###  debug
 
-▸ **debug**(...msg: *`Array`<`string`>*): `void`
+▸ **debug**(...msg: *`string`[]*): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:32](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L32)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:32](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L32)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 
@@ -92,7 +92,7 @@ ___
 
 ▸ **error**(...err: *`Array`<`string` \| `Error`>*): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:20](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L20)*
 
 **Parameters:**
 
@@ -107,15 +107,15 @@ ___
 
 ###  info
 
-▸ **info**(...msg: *`Array`<`string`>*): `void`
+▸ **info**(...msg: *`string`[]*): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:28](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L28)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:28](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L28)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 
@@ -124,15 +124,15 @@ ___
 
 ###  warn
 
-▸ **warn**(...msg: *`Array`<`string`>*): `void`
+▸ **warn**(...msg: *`string`[]*): `void`
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:24](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/utils/logger/logger.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/logger.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/logger.ts#L24)*
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| `Rest` msg | `Array`<`string`> |
+| `Rest` msg | `string`[] |
 
 **Returns:** `void`
 

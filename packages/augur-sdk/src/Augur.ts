@@ -19,6 +19,7 @@ import { Users } from "./state/getter/Users";
 import { getAddress } from "ethers/utils/address";
 import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
 import { Liquidity } from "./api/Liquidity";
+import { TransactionResponse } from "ethers/providers";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
@@ -99,11 +100,11 @@ export class Augur<TProvider extends Provider = Provider> {
     return augur;
   }
 
-  async getTransaction(hash: string): Promise<string> {
+  async getTransaction(hash: string): Promise<TransactionResponse> {
     const tx = await this.dependencies.provider.getTransaction(hash);
-    if (!tx) return "";
-    return tx.from;
+    return tx;
   }
+
   async listAccounts() {
     return this.dependencies.provider.listAccounts();
   }
@@ -161,7 +162,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
-    return Augur.connector.bindTo(f);
+    return Augur.connector && Augur.connector.bindTo(f);
   }
 
   async on(eventName: SubscriptionEventName | TXEventName | string, callback: Callback | TXStatusCallback): Promise<void> {

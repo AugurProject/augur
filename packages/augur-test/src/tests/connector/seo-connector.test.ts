@@ -75,7 +75,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     affiliateFeeDivisor: new BigNumber(0),
     designatedReporter: john.account.publicKey,
     extraInfo:
-      '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
+      '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
   });
 
   await connector.on(
@@ -83,14 +83,14 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     async (arg: MarketCreated): Promise<void> => {
       expect(arg).toHaveProperty(
         'extraInfo',
-        '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}'
+        '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}'
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
-      const markets = await getMarkets({
+      const marketList = await getMarkets({
         universe: john.augur.contracts.universe.address,
       });
-      expect(markets).toEqual([yesNoMarket1.address]);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
       await connector.off(SubscriptionEventName.MarketCreated);
       expect(connector.subscriptions).toEqual({});
@@ -108,7 +108,7 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
     affiliateFeeDivisor: new BigNumber(0),
     designatedReporter: john.account.publicKey,
     extraInfo:
-      '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
+      '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
   });
 
   await connector.connect('');
@@ -128,10 +128,11 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
-      const markets = await getMarkets({
+      const marketList = await getMarkets({
         universe: john.augur.contracts.universe.address,
+        isSortDescending: false,
       });
-      expect(markets[markets.length - 1]).toEqual(yesNoMarket1.address);
+      expect(marketList.markets[marketList.markets.length - 1].id).toEqual(yesNoMarket1.address);
 
       await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});

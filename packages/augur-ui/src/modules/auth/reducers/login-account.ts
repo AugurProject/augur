@@ -6,9 +6,9 @@ import {
 import { LoginAccount, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: LoginAccount = {
-  eth: undefined,
-  rep: undefined,
-  dai: undefined
+  eth: 0,
+  rep: 0,
+  dai: 0
 };
 
 export default function(

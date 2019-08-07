@@ -19,6 +19,7 @@ console.log("Starting web worker");
 
 (async function() {
   try {
+<<<<<<< HEAD
     //     console.log("starting this thing");
     //     const connector = new WebWorkerConnector();
     //     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
@@ -102,6 +103,59 @@ console.log("Starting web worker");
     //     // const markets = await augur.getMarkets({
     //     //   universe: "0x8062dA104239cf70C76B77c61eA988bf6382736a",
     //     // });
+||||||| merged common ancestors
+    const connector = new SEOConnector();
+    const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
+    const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
+    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector);
+    await augur.connect("");
+
+    connector.on(
+      SubscriptionEventName.MarketCreated,
+      (...args: MarketCreated[]): void => {
+        console.log(args);
+        augur.off(SubscriptionEventName.CompleteSetsPurchased);
+      });
+
+    connector.on(
+      SubscriptionEventName.NewBlock,
+      (...args: NewBlock[]): void => {
+        console.log(args);
+      });
+
+    const markets = await augur.getMarkets({
+      universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
+    });
+
+    console.log(markets);
+    console.log("Done");
+=======
+    const connector = new SEOConnector();
+    const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
+    const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
+    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector);
+    await augur.connect("");
+
+    connector.on(
+      SubscriptionEventName.MarketCreated,
+      (...args: MarketCreated[]): void => {
+        console.log(args);
+        augur.off(SubscriptionEventName.CompleteSetsPurchased);
+      });
+
+    connector.on(
+      SubscriptionEventName.NewBlock,
+      (...args: NewBlock[]): void => {
+        console.log(args);
+      });
+
+    const marketList = await augur.getMarkets({
+      universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
+    });
+
+    console.log(marketList);
+    console.log("Done");
+>>>>>>> 7f8105a36e1980c7aa00704793a0449663eaa41d
   } catch (e) {
     console.log(e);
   }

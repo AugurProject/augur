@@ -89,8 +89,8 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       fixedPrecision: 4,
       selectedOutcomeProperties: {
         1: {
-          ...this.DEFAULT_ORDER_PROPERTIES
-        }
+          ...this.DEFAULT_ORDER_PROPERTIES,
+        },
       }
     };
 
@@ -195,7 +195,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
         {
           selectedOutcomeId,
           selectedOrderProperties: {
-            ...this.DEFAULT_ORDER_PROPERTIES
+            ...this.DEFAULT_ORDER_PROPERTIES,
           }
         }
       );
@@ -203,7 +203,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       const { selectedOutcomeProperties } = this.state;
       if (!selectedOutcomeProperties[selectedOutcomeId]) {
         selectedOutcomeProperties[selectedOutcomeId] = {
-          ...this.DEFAULT_ORDER_PROPERTIES
+          ...this.DEFAULT_ORDER_PROPERTIES,
         };
         this.setState({ selectedOutcomeProperties });
       }
@@ -212,7 +212,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
 
   updateSelectedOrderProperties(selectedOrderProperties) {
     this.setState({
-      selectedOrderProperties
+      selectedOrderProperties,
     });
   }
 
@@ -221,20 +221,19 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       marketId,
       outcomes,
       market,
-      updateModal
+      updateModal,
     } = this.props;
-    const s = this.state;
+    const { selectedOrderProperties, selectedOutcomeId } = this.state;
 
     updateModal({
       type: MODAL_TRADING_OVERLAY,
       market,
-      selectedOrderProperties: s.selectedOrderProperties,
-      selectedOutcomeId: s.selectedOutcomeId,
-      toggleForm: this.toggleForm,
+      selectedOrderProperties,
+      selectedOutcomeId,
       updateSelectedOutcome: this.updateSelectedOutcomeSwitch,
       updateSelectedOrderProperties: this.updateSelectedOrderProperties,
       outcomes,
-      marketId
+      marketId,
     });
   }
 
@@ -248,9 +247,14 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       market,
       marketType,
       history,
-      preview
+      preview,
     } = this.props;
-    const s = this.state;
+    const {
+      selectedOutcomeId,
+      extendOrderBook,
+      extendTradeHistory,
+      selectedOrderProperties,
+    } = this.state;
     if (isMarketLoading) {
       return (
         <section
@@ -261,11 +265,11 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
       );
     }
 
-    let outcomeId = s.selectedOutcomeId ? s.selectedOutcomeId : market.defaultSelectedOutcomeId;
+    let outcomeId = selectedOutcomeId === null || selectedOutcomeId === undefined ? market.defaultSelectedOutcomeId : selectedOutcomeId;
     if (preview) {
       outcomeId = getDefaultOutcomeSelected(market.marketType);
     }
-    const outcome = outcomes.find( outcomeValue => outcomeValue.id === outcomeId)
+    const outcome = outcomes.find( outcomeValue => outcomeValue.id === outcomeId);
     const selectedOutcomeName: string = outcome ? outcome.description : "";
 
     return (
@@ -299,10 +303,10 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                 >
                   <ModulePane label="Market Info">
                     <div className={Styles["MarketView__paneContainer--mobile"]}>
-                      <MarketHeader 
+                      <MarketHeader
                         marketId={marketId}
-                        market={preview && market} 
-                        preview={preview} 
+                        market={preview && market}
+                        preview={preview}
                       />
                       <MarketOutcomesList
                         marketId={marketId}
@@ -312,7 +316,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                         updateSelectedOutcome={this.updateSelectedOutcomeSwitch}
                       />
                       <div className={Styles.MarketView__priceHistoryChart}>
-                        <p>Price History</p>
+                        <h3>Price History</h3>
                         <MarketOutcomesChart
                           marketId={marketId}
                           selectedOutcomeId={outcomeId}
@@ -325,7 +329,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                     onClickCallback={() => {
                       this.node.children[0].children[1].scrollTo({
                         top: 0,
-                        behavior: "smooth"
+                        behavior: "smooth",
                       });
                     }}
                   >
@@ -360,8 +364,8 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                               marketId={marketId}
                               selectedOutcomeId={outcomeId}
                               toggle={this.toggleOrderBook}
-                              extend={s.extendOrderBook}
-                              hide={s.extendTradeHistory}
+                              extend={extendOrderBook}
+                              hide={extendTradeHistory}
                               market={market}
                               initialLiquidity={preview}
                             />
@@ -375,8 +379,8 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                                   marketId={marketId}
                                   outcome={outcomeId}
                                   toggle={this.toggleTradeHistory}
-                                  extend={s.extendTradeHistory}
-                                  hide={s.extendOrderBook}
+                                  extend={extendTradeHistory}
+                                  hide={extendOrderBook}
                                 />
                               )}
                             </div>
@@ -387,9 +391,8 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                       <TradingForm
                         market={market}
                         initialLiquidity={preview}
-                        selectedOrderProperties={s.selectedOrderProperties}
+                        selectedOrderProperties={selectedOrderProperties}
                         selectedOutcomeId={outcomeId}
-                        toggleForm={this.toggleForm}
                         updateSelectedOutcome={this.updateSelectedOutcome}
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
@@ -408,11 +411,10 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                       />
                     </div>
                   </ModulePane>
-                  <ModulePane label="Orders/Positions">
+                  <ModulePane label="Orders/Position">
                     <div
                       className={classNames(
                         Styles["MarketView__paneContainer--mobile"],
-                        Styles.MarketView__orderPositionsTable
                       )}
                     >
                       <h1>{description}</h1>
@@ -426,7 +428,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                 <div className={Styles.Market__upper}>
                   <MarketHeader marketId={marketId} market={preview && market} preview={preview} />
                 </div>
-                
+
                   <section className={Styles.MarketView__body}>
                     <div className={Styles.MarketView__firstColumn}>
                       <div className={Styles.MarketView__firstRow}>
@@ -435,9 +437,8 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                             <TradingForm
                               market={market}
                               initialLiquidity={preview}
-                              selectedOrderProperties={s.selectedOrderProperties}
+                              selectedOrderProperties={selectedOrderProperties}
                               selectedOutcomeId={outcomeId}
-                              toggleForm={this.toggleForm}
                               updateSelectedOutcome={this.updateSelectedOutcome}
                               updateSelectedOrderProperties={
                                 this.updateSelectedOrderProperties
@@ -489,8 +490,8 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                           Styles.MarketView__component,
                           Styles.MarketView__orders,
                           {
-                            [Styles.MarketView__hide]: s.extendTradeHistory,
-                            [Styles.MarketView__show]: s.extendOrderBook
+                            [Styles.MarketView__hide]: extendTradeHistory,
+                            [Styles.MarketView__show]: extendOrderBook,
                           }
                         )}
                       >
@@ -501,8 +502,8 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                           marketId={marketId}
                           selectedOutcomeId={outcomeId}
                           toggle={this.toggleOrderBook}
-                          extend={s.extendOrderBook}
-                          hide={s.extendTradeHistory}
+                          extend={extendOrderBook}
+                          hide={extendTradeHistory}
                           market={market}
                           initialLiquidity={preview}
                         />
@@ -512,8 +513,8 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                           Styles.MarketView__component,
                           Styles.MarketView__history,
                           {
-                            [Styles.MarketView__hide]: s.extendOrderBook,
-                            [Styles.MarketView__show]: s.extendTradeHistory
+                            [Styles.MarketView__hide]: extendOrderBook,
+                            [Styles.MarketView__show]: extendTradeHistory,
                           }
                         )}
                       >
@@ -523,8 +524,8 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                               marketId={marketId}
                               outcome={outcomeId}
                               toggle={this.toggleTradeHistory}
-                              extend={s.extendTradeHistory}
-                              hide={s.extendOrderBook}
+                              extend={extendTradeHistory}
+                              hide={extendOrderBook}
                             />
                           )}
                         </div>

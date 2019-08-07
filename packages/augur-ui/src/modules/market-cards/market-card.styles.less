@@ -1,0 +1,193 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketCard {
+	background: @color-secondary-action;
+	border-radius: @border-radius-default;
+	border: 1px solid @color-primary-light;
+	display: flex;
+	margin: @size-4 @size-16;
+    display: grid;
+    grid-template-columns: 111px auto;
+	padding: 0 @size-16;
+
+	> div:first-of-type, 
+	> div:nth-of-type(2) {
+		margin-top: @size-12;
+	}
+
+	> div:nth-of-type(2),
+	> div:last-of-type, 
+	> span,
+	> button:last-of-type {
+		border-left: 1px solid @color-primary-background;
+		padding-left: @size-16;
+	}
+
+	> div:first-of-type {
+		display: flex;
+		grid-column: 1 / span 1;
+		
+		> div:not(:first-of-type) {
+			margin-left: @size-4;
+		}
+	}
+
+	> span {
+		.text-16-medium;
+
+		color: @color-alternate-info-text;
+		padding-bottom: @size-16;
+		padding-top: @size-4;
+
+		&:hover {
+    		text-decoration: underline;
+    	}
+	}
+
+	> div:nth-of-type(2) {
+		display: flex;
+    	align-items: center;
+
+    	> span:nth-of-type(2) {
+    		margin: 0 @size-10;
+    	}
+
+    	> div:first-of-type {
+    		display: flex;
+    		flex: 1;
+    	}
+
+    	> span:last-of-type {
+    		margin-right: @size-12;
+    	}
+
+    	> div:nth-of-type(2) {
+    		> button {
+    	    	margin-right: 0 !important;
+
+    	    	&:hover {
+    	    		text-decoration: underline;
+    	    	}
+    	    }
+    	}
+
+    	> div:last-of-type {
+    		 > div > div > svg {
+		      	fill: @color-shadow-text;
+		      	stroke-width: 0.5;
+		      	stroke: @color-shadow-text;
+    		 	height: @size-16;
+    		 	margin-right: @size-16;
+    		 	width: @size-16;
+		    }
+    	}
+	}
+
+	> div:last-of-type {
+		display: grid;
+		grid-column: 2;
+		padding-bottom: @size-12;
+	}
+
+	> button:last-of-type {
+		.mono-10;
+
+		align-self: flex-start;
+		color: @color-secondary-text;
+		display: flex;
+		padding-bottom: @size-16;
+		text-transform: uppercase;
+		grid-column: 2;
+
+		> span {
+			margin-right: @size-6;
+		}
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	&.Loading {
+		display: grid;
+		grid-template-columns: 82px auto 96px;
+		grid-row-gap: @size-19;
+    	grid-column-gap: @size-12;
+    	padding-top: @size-16;
+    	padding-bottom: @size-48;
+
+		> div {
+			background: @color-theme-primary;
+			height: @size-12;
+		}
+
+		> div:nth-of-type(1) {
+			max-width: 53px;
+		}
+
+		> div:nth-of-type(2) {
+			max-width: 264px;
+		}
+
+		> div:nth-of-type(3) {
+			max-width: 96px;
+		}
+
+		> div:nth-of-type(4) {
+			max-width: 82px;
+		}
+
+		> div:nth-of-type(5) {
+			max-width: 412px;
+		}
+
+		> div:nth-of-type(6) {
+			max-width: 74px;
+		}
+
+		> div:nth-of-type(7) {
+			max-width: 154px;
+		}
+	}
+
+	@media @breakpoint-mobile-mid {
+		grid-template-rows: repeat(4, auto);
+    	grid-template-columns: auto auto;
+    	padding: @size-16 @size-12 @size-12;
+
+		> div:nth-of-type(2),
+		> div:last-of-type, 
+		> span,
+		> button:last-of-type {
+			border: 0;
+			padding: 0;
+			grid-column: 1 / span 2;
+		}
+		
+		> div:last-of-type {
+			grid-column: 1 / span 2;
+			margin-bottom: @size-10;
+		}
+
+		> div:nth-of-type(3) {
+			order: 4;
+
+			> div:last-of-type {
+				display: none;
+			}
+		}
+
+		> span {
+			margin: @size-12 0;
+		}
+
+		> div:first-of-type {
+			grid-column: unset;
+			order: 5;
+			padding-top: 0;
+		    display: flex;
+		    justify-content: flex-end;
+		    margin-top: @size-10;
+		}
+	}
+}

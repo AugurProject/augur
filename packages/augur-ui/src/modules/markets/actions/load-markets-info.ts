@@ -43,7 +43,7 @@ export const loadMarketsInfo = (
 };
 
 export const loadMarketsInfoIfNotLoaded = (
-  marketIds: Array<string>,
+  marketIds: string[],
   callback: NodeStyleCallback = logError
 ): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,

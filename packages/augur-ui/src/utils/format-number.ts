@@ -213,7 +213,7 @@ export function sumAndformatGasCostToEther(gases: Array<string>, opts: Formatted
     createBigNumber(gasPrice),
   );
 
-  return formatGasCost(estimatedGasCost, opts).roundedFormatted;
+  return formatGasCost(estimatedGasCost, opts).value;
 }
 
 export function formatGasCostToEther(num: string, opts: FormattedNumberOptions = optionsBlank(), gasPrice: string): string {
@@ -230,7 +230,8 @@ export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions
   );
 }
 
-export function formatAttoDai(num: NumStrBigNumber, opts: FormattedNumberOptions = optionsBlank()): FormattedNumber {
+export function formatAttoDai(num: NumStrBigNumber ): FormattedNumber {
+  const opts = Object.assign(optionsBlank(), { decimals: 4, decimalsRounded: 4, denomination: " DAI" })
   return formatAttoEth(num, opts);
 }
 

@@ -39,14 +39,6 @@ function pollForAccount(
 ) {
   const windowApp = windowRef as WindowApp;
   const { loginAccount } = getState();
-  let loggedInAccount: string = undefined;
-  if (!loginAccount.address) {
-    if (windowApp.localStorage && windowApp.localStorage.getItem) {
-      loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
-    }
-  } else {
-    loggedInAccount = loginAccount.address;
-  }
   let accountType =
     loginAccount && loginAccount.meta && loginAccount.meta.accountType;
   let usingMetaMask = accountType === ACCOUNT_TYPES.METAMASK;
@@ -56,6 +48,14 @@ function pollForAccount(
   setInterval(() => {
     const { authStatus, connection } = getState();
     if (connection.isConnected) {
+      let loggedInAccount: string = undefined;
+      if (!loginAccount.address) {
+        if (windowApp.localStorage && windowApp.localStorage.getItem) {
+          loggedInAccount = windowApp.localStorage.getItem('loggedInAccount');
+        }
+      } else {
+        loggedInAccount = loginAccount.address;
+      }
       if (!authStatus.isLogged && usingMetaMask && loggedInAccount) {
         autoLoginAccount(dispatch, loggedInAccount);
       }
@@ -74,23 +74,20 @@ function pollForAccount(
   }, ACCOUNTS_POLL_INTERVAL_DURATION);
 }
 
-function autoLoginAccount(
+async function autoLoginAccount(
   dispatch: ThunkDispatch<void, any, Action>,
   loggedInAccount: string
 ) {
-  getAccounts()
-    .then((accounts: Array<string>) => {
-      let index;
-      for (index in accounts) {
-        const account = accounts[index];
-        if (account === loggedInAccount) {
-          dispatch(useUnlockedAccount(account));
-        }
-      }
-    })
-    .catch((err: Error) => {
-      console.log('could not auto login account', err);
-    });
+  const windowApp = windowRef as WindowApp;
+  const accounts = await windowApp.ethereum.enable().catch((err: Error) => {
+    console.log('could not auto login account', err);
+  });
+  let account = null;
+  for (account of accounts) {
+    if (account === loggedInAccount) {
+      dispatch(useUnlockedAccount(account));
+    }
+  }
 }
 
 function pollForNetwork(

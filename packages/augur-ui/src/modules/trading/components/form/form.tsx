@@ -24,7 +24,7 @@ interface FromProps {
   minPrice: BigNumber;
   orderQuantity: string;
   orderPrice: string;
-  orderEthEstimate: string;
+  orderDaiEstimate: string;
   orderEscrowdEth: string;
   gasCostEst: string;
   selectedNav: string;
@@ -73,7 +73,7 @@ class Form extends Component<FromProps, FormState> {
       QUANTITY: 'orderQuantity',
       PRICE: 'orderPrice',
       DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
-      EST_DAI: 'orderEthEstimate',
+      EST_DAI: 'orderDaiEstimate',
       SELECTED_NAV: 'selectedNav',
     };
 
@@ -88,7 +88,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.PRICE]: props.orderPrice,
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
       [this.INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
-      [this.INPUT_TYPES.EST_DAI]: props.orderEthEstimate,
+      [this.INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
       errors: {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
@@ -409,10 +409,10 @@ class Form extends Component<FromProps, FormState> {
       () => {
         let orderQuantity = updatedState[this.INPUT_TYPES.QUANTITY];
         const orderPrice = updatedState[this.INPUT_TYPES.PRICE];
-        let orderEthEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
+        let orderDaiEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
 
         if (property === this.INPUT_TYPES.QUANTITY) {
-          orderEthEstimate = '';
+          orderDaiEstimate = '';
         } else if (
           property === this.INPUT_TYPES.EST_DAI ||
           (property === this.INPUT_TYPES.EST_DAI && value === '')
@@ -422,14 +422,14 @@ class Form extends Component<FromProps, FormState> {
 
         const order = {
           [this.INPUT_TYPES.QUANTITY]: orderQuantity
-            ? new BigNumber(orderQuantity).toFixed()
+            ? createBigNumber(orderQuantity).toFixed()
             : orderQuantity,
           [this.INPUT_TYPES.PRICE]: orderPrice
-            ? new BigNumber(orderPrice).toFixed()
+            ? createBigNumber(orderPrice).toFixed()
             : orderPrice,
-          [this.INPUT_TYPES.EST_DAI]: orderEthEstimate
-            ? new BigNumber(orderEthEstimate).toFixed()
-            : orderEthEstimate,
+          [this.INPUT_TYPES.EST_DAI]: orderDaiEstimate
+            ? createBigNumber(orderDaiEstimate).toFixed()
+            : orderDaiEstimate,
           selectedNav,
         };
 
@@ -634,7 +634,7 @@ class Form extends Component<FromProps, FormState> {
                 placeholder="0.00"
                 value={
                   s[this.INPUT_TYPES.PRICE]
-                    ? new BigNumber(s[this.INPUT_TYPES.PRICE]).toNumber()
+                    ? createBigNumber(s[this.INPUT_TYPES.PRICE]).toNumber()
                     : s[this.INPUT_TYPES.PRICE]
                 }
                 onChange={e =>
@@ -679,7 +679,7 @@ class Form extends Component<FromProps, FormState> {
                 placeholder="0.00"
                 value={
                   s[this.INPUT_TYPES.EST_DAI]
-                    ? new BigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber()
+                    ? createBigNumber(s[this.INPUT_TYPES.EST_DAI]).toNumber()
                     : s[this.INPUT_TYPES.EST_DAI]
                 }
                 onChange={e =>

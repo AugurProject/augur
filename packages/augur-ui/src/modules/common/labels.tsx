@@ -8,7 +8,8 @@ import {
   MarketIcon,
   InfoIcon,
   CheckCircleIcon,
-  HintAlternate
+  HintAlternate,
+  DoubleArrows
 } from "modules/common/icons";
 import { MarketProgress } from "modules/common/progress";
 import ReactTooltip from "react-tooltip";
@@ -34,8 +35,6 @@ export interface MarketTypeProps {
 
 export interface MarketStatusProps {
   marketStatus: string;
-  mini?: boolean;
-  alternate?: boolean;
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
@@ -446,34 +445,59 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
   </div>
 );
 
-export const LinearPropertyLabel = (props: LinearPropertyLabelProps) => (
+export const LinearPropertyLabel = ({
+  highlight,
+  highlightAlternateBolded,
+  highlightFirst,
+  label,
+  useValueLabel,
+  showDenomination,
+  accentValue,
+  value
+}: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
-      [Styles.HighlightAlternate]:
-        props.highlightAlternate || props.highlightAlternateBolded,
-      [Styles.Highlight]: props.highlight,
-      [Styles.HighlightAlternateBolded]: props.highlightAlternateBolded,
-      [Styles.HighlightFirst]: props.highlightFirst
+      [Styles.Highlight]: highlight,
+      [Styles.HighlightAlternateBolded]: highlightAlternateBolded,
+      [Styles.HighlightFirst]: highlightFirst
     })}
   >
-    <span>{props.label}</span>
+    <span>{label}</span>
     <DashlineNormal />
-    {props.useValueLabel ? (
+    {useValueLabel ? (
       <ValueLabel
-        value={props.value}
-        showDenomination={props.showDenomination}
+        value={value}
+        showDenomination={showDenomination}
       />
     ) : (
       <span
         className={classNames({
-          [Styles.isAccented]: props.accentValue
+          [Styles.isAccented]: accentValue
         })}
       >
-        {props.value && props.value.formatted
-          ? `${props.value.formatted} ${
-              props.showDenomination ? props.value.denomination : ""
+        {value && value.formatted
+          ? `${value.formatted} ${
+              showDenomination ? value.formatted : ""
             }`
-          : props.value}
+          : value}
+      </span>
+    )}
+    {useValueLabel ? (
+      <ValueLabel
+        value={value}
+        showDenomination={showDenomination}
+      />
+    ) : (
+      <span
+        className={classNames({
+          [Styles.isAccented]: accentValue
+        })}
+      >
+        {value && value.formatted
+          ? `${value.formatted} ${
+              showDenomination ? value.denomination : ""
+            }`
+          : value}
       </span>
     )}
   </div>
@@ -492,7 +516,7 @@ export const MarketTypeLabel = (props: MarketTypeProps) => {
 };
 
 export const MarketStatusLabel = (props: MarketStatusProps) => {
-  const { marketStatus, mini, alternate } = props;
+  const { marketStatus, mini } = props;
   let open: boolean = false;
   let resolved: boolean = false;
   let reporting: boolean = false;
@@ -514,7 +538,6 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
   return (
     <span
       className={classNames(Styles.MarketStatus, {
-        [Styles.MarketStatus_alternate]: alternate,
         [Styles.MarketStatus_mini]: mini,
         [Styles.MarketStatus_open]: open,
         [Styles.MarketStatus_resolved]: resolved,
@@ -581,16 +604,13 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
       <span
         className={classNames(
           Styles.MarketStatus,
-          Styles.MarketStatus_reporting,
-          {
-            [Styles.MarketStatus_alternate]: alternate,
-            [Styles.MarketStatus_mini]: mini
-          }
+          Styles.MarketStatus_reporting
         )}
       >
         {text}
         {reportingExtraText && (
           <span className={Styles.InReporting_reportingDetails}>
+            {DoubleArrows}
             {reportingExtraText}
           </span>
         )}
@@ -862,7 +882,8 @@ export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
         className={Styles.WordTrailButton}
         onClick={e => onClick()}
       >
-        {label}
+        <span>{label}</span>
+        <span>{index + 1 !== items.length && "/" }</span>
       </button>
     ))}
   </div>

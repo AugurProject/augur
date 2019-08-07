@@ -31,11 +31,16 @@ import {
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
 } from 'modules/create-market/constants';
-import { CATEGORICAL, SCALAR } from 'modules/common/constants';
 import {
+  CATEGORICAL,
+  SCALAR,
+  BID,
+  SELL,
+  BUY,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
   YES_NO_OUTCOMES,
+  NEW_ORDER_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { createMarket } from 'modules/contracts/actions/contractCalls';
@@ -61,7 +66,12 @@ import {
   isLessThan,
   isMoreThan,
   isPositive,
+  moreThanDecimals,
+  checkAddress
 } from 'modules/common/validations';
+import { formatDate } from "utils/format-date";
+import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
+import { createBigNumber } from "utils/create-big-number";
 
 import Styles from 'modules/create-market/components/form.styles';
 
@@ -70,7 +80,7 @@ import MarketView from 'modules/market/components/market-view/market-view';
 interface FormProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
-  address: String;
+  address: string;
   updatePage: Function;
   addDraft: Function;
   drafts: Drafts;
@@ -102,6 +112,10 @@ interface Validations {
   checkLessThan?: Boolean;
   checkMoreThan?: Boolean;
   checkPositive?: Boolean;
+  lessThanMessage?: string;
+  decimals?: number;
+  checkDecimals?: Boolean;
+  checkForAdresss?: Boolean;
 }
 
 const draftError = "ENTER A MARKET QUESTION";
@@ -196,6 +210,54 @@ export default class Form extends React.Component<
     updateNewMarket({ currentStep: newStep });
     this.node.scrollIntoView();
   };
+
+   updateInitialLiquidityCosts = (order, shouldReduce) => {
+    const { newMarket, updateNewMarket } = this.props;
+    const minPrice = newMarket.marketType === SCALAR ? newMarket.minPrice : 0;
+    const maxPrice = newMarket.marketType === SCALAR ? newMarket.maxPrice : 1;
+    const shareBalances = newMarket.outcomes.map(outcome => 0);
+    let outcome;
+    let initialLiquidityDai;
+    let initialLiquidityGas;
+
+    switch (newMarket.marketType) {
+      case CATEGORICAL:
+        newMarket.outcomes.forEach((outcomeName, index) => {
+          if (order.outcome === outcomeName) outcome = index;
+        });
+        break;
+      case SCALAR:
+        ({ outcome } = order);
+        break;
+      default:
+        outcome = 1;
+        break;
+    }
+
+    const orderType = order.type === BID ? BUY : SELL;
+
+    // Calculate amount of DAI needed for order
+    const totalCost = calculateTotalOrderValue(order.quantity, order.price, orderType, minPrice, maxPrice, newMarket.marketType);
+
+    // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
+    if (shouldReduce) {
+      initialLiquidityDai = createBigNumber(newMarket.initialLiquidityDai).minus(
+        totalCost
+      );
+      initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).minus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
+    } else {
+      initialLiquidityDai = createBigNumber(newMarket.initialLiquidityDai).plus(
+        totalCost
+      );
+      initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).plus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
+    }
+
+    updateNewMarket({ initialLiquidityDai, initialLiquidityGas });
+  }
 
   findErrors = () => {
     const { newMarket } = this.props;
@@ -299,7 +361,7 @@ export default class Form extends React.Component<
       validations: newMarket.validations,
       currentStep: newMarket.currentStep,
       type: newMarket.type, // this isn't used
-      outcomes: [],
+      outcomes: newMarket.outcomes,
       scalarSmallNum: newMarket.minPrice,
       scalarBigNum: newMarket.maxPrice,
       scalarDenomination: newMarket.scalarDenomination,
@@ -313,20 +375,20 @@ export default class Form extends React.Component<
           : newMarket.designatedReporterAddress,
       minPrice: newMarket.minPrice,
       maxPrice: newMarket.maxPrice,
-      endTime: newMarket.endTime.unix(), // newMarket.endTime, this is a number (timestamp)
-      tickSize: newMarket.tickSize, // maxPrice.tickSize, this needs to be a string
+      endTime: newMarket.endTime,
+      tickSize: newMarket.tickSize,
       hour: newMarket.hour,
       minute: newMarket.minute,
       meridiem: newMarket.meridiem,
       marketType: newMarket.marketType,
       detailsText: newMarket.detailsText,
-      categories: ['', '', ''],
-      settlementFee: 0,
-      affiliateFee: 0,
+      categories: newMarket.categories,
+      settlementFee: newMarket.settlementFee,
+      affiliateFee: newMarket.affiliateFee,
       orderBook: {},
       orderBookSorted: {},
       orderBookSeries: {},
-      initialLiquidityEth: 0,
+      initialLiquidityDai: 0,
       initialLiquidityGas: 0,
       creationError: '',
     });
@@ -352,6 +414,10 @@ export default class Form extends React.Component<
       checkMoreThan,
       checkLessThan,
       checkPositive,
+      lessThanMessage,
+      checkDecimals,
+      decimals,
+      checkForAddress
     } = validationsObj;
 
     const checkValidations = [
@@ -365,8 +431,10 @@ export default class Form extends React.Component<
       checkOutcomes ? checkOutcomesArray(value) : '',
       checkBetween ? isBetween(value, readableName, min, max) : '',
       checkMoreThan ? isMoreThan(value, readableName, newMarket.minPrice) : '',
-      checkLessThan ? isLessThan(value, readableName, newMarket.maxPrice) : '',
+      checkLessThan ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage) : '',
       checkPositive ? isPositive(value) : '',
+      checkDecimals ? moreThanDecimals(value, decimals) : '',
+      checkForAddress ? checkAddress(value) : '',
     ];
     const errorMsg = checkValidations.find(validation => validation !== '');
 
@@ -416,6 +484,35 @@ export default class Form extends React.Component<
         outcomesFormatted = YES_NO_OUTCOMES;
       }
       updateNewMarket({ outcomesFormatted, orderBook: {} });
+    } else if (name === 'setEndTime' || name === 'hour' || name === 'minute' || name === 'meridiem' || name === "offset") {
+      const endTime = name === 'setEndTime' ? moment.unix(value.timestamp).utc() : moment.unix(newMarket.endTime).utc();
+      const hour = name === "hour" ? value : newMarket.hour || 12;
+      const minute = name === "minute" ? value : newMarket.minute || 0;
+      const meridiem = name === "meridiem" ? value : newMarket.meridiem;
+      const offset = name === "offset" ? value : newMarket.offset;
+
+      endTime.set({
+        hour: hour,
+        minute: minute
+      });
+      endTime.add(parseInt(offset), "hours");
+
+      if (
+        (meridiem === "" || meridiem === "AM") &&
+        endTime.hours() >= 12
+      ) {
+        endTime.hours(endTime.hours() - 12);
+      } else if (
+        meridiem &&
+        meridiem === "PM" &&
+        endTime.hours() < 12
+      ) {
+        endTime.hours(endTime.hours() + 12);
+      }
+      if (name === 'setEndTime') {
+        updateNewMarket({endTimeDropdown: formatDate(moment(value.timestamp * 1000).utc().toDate())});
+      }
+      updateNewMarket({ endTime: endTime.unix(), endTimeFormatted: formatDate(endTime.toDate()), [name]: value});
     }
     this.onError(name, '');
   };
@@ -492,15 +589,14 @@ export default class Form extends React.Component<
               {mainContent === FORM_DETAILS && (
                 <FormDetails
                   onChange={this.onChange}
-                  evaluate={this.evaluate}
                   onError={this.onError}
                 />
               )}
               {mainContent === FEES_LIQUIDITY && (
                 <FeesLiquidity
-                  evaluate={this.evaluate}
                   onChange={this.onChange}
                   onError={this.onError}
+                  updateInitialLiquidityCosts={this.updateInitialLiquidityCosts}
                 />
               )}
               {mainContent === REVIEW && <Review />}

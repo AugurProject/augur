@@ -69,12 +69,11 @@ export function addGanacheScripts(flash: FlashSession) {
     name: "stop-ganache",
     description: "Stop the ganache node.",
     async call(this: FlashSession) {
-      if (typeof this.ganacheServer === "undefined") {
-        throw Error("Cannot stop ganache server when it isn't running.");
+      if (typeof this.ganacheServer !== "undefined") {
+        await this.ganacheServer.close();
+        delete this.ganacheServer;
       }
 
-      await this.ganacheServer.close();
-      delete this.ganacheServer;
       delete this.ganacheProvider;
       delete this.provider;
       delete this.contractAddresses;

@@ -11,15 +11,16 @@ import HeaderStyles from "modules/portfolio/components/common/data-table-header.
 import { OutcomeFormatted } from "modules/types";
 
 interface MarketOutcomesListProps {
-  outcomesFormatted: OutcomeFormatted[],
-  updateSelectedOutcome: Function,
-  selectedOutcomeId: number,
-  scalarDenomination: string | undefined,
-  marketType: string,
-  minPriceBigNumber: BigNumber,
-  maxPriceBigNumber: BigNumber,
-  popUp: boolean,
-};
+  outcomesFormatted: OutcomeFormatted[];
+  updateSelectedOutcome: Function;
+  selectedOutcomeId: number;
+  scalarDenomination: string | undefined;
+  marketType: string;
+  marketId: string;
+  minPriceBigNumber: BigNumber;
+  maxPriceBigNumber: BigNumber;
+  popUp: boolean;
+}
 
 export default class MarketOutcomesList extends Component<MarketOutcomesListProps> {
   static defaultProps = {
@@ -27,7 +28,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
     scalarDenomination: null,
     marketType: null,
     outcomesFormatted: [],
-    popUp: false
+    popUp: false,
   };
 
   render() {
@@ -39,13 +40,14 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
       scalarDenomination,
       minPriceBigNumber,
       maxPriceBigNumber,
-      popUp
+      popUp,
+      marketId,
     } = this.props;
 
     return (
       <section className={Styles.OutcomesList}>
         {!popUp && (
-          <div className={Styles.Heading}>Outcomes</div>
+          <h3 className={Styles.Heading}>Outcomes</h3>
         )}
         <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes)}>
           <ul className={classNames(HeaderStyles.DataTableHeader, HeaderStyles.OutcomesHeader)}>
@@ -59,6 +61,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
           {outcomesFormatted.filter(o => o.isTradable).map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
+              marketId={marketId}
               outcome={outcome}
               selectedOutcomeId={selectedOutcomeId}
               updateSelectedOutcome={updateSelectedOutcome}

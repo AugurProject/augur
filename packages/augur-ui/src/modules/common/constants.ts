@@ -1,4 +1,7 @@
 import {
+  Getters,
+} from '@augurproject/sdk';
+import {
   Edge,
   Fortmatic,
   Ledger,
@@ -209,19 +212,18 @@ export enum MARKET_SORT_PARAMS {
 
 // Open (PRE_REPORTING)
 // In Reporting (DESIGNATED_REPORTING, OPEN_REPORTING, CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW)
-// Resolved (AWAITING_FINALIZATION, FINALIZED)
+// Resolved (FINALIZED)
 // TODO: this will come from SDK in the near future
 export enum REPORTING_STATE {
-  PRE_REPORTING = 'PRE_REPORTING',
-  DESIGNATED_REPORTING = 'DESIGNATED_REPORTING',
-  OPEN_REPORTING = 'OPEN_REPORTING',
-  CROWDSOURCING_DISPUTE = 'CROWDSOURCING_DISPUTE',
-  AWAITING_NEXT_WINDOW = 'AWAITING_NEXT_WINDOW',
-  AWAITING_FINALIZATION = 'AWAITING_FINALIZATION',
-  FINALIZED = 'FINALIZED',
-  FORKING = 'FORKING',
-  AWAITING_NO_REPORT_MIGRATION = 'AWAITING_NO_REPORT_MIGRATION',
-  AWAITING_FORK_MIGRATION = 'AWAITING_FORK_MIGRATION',
+  PRE_REPORTING = Getters.Markets.MarketReportingState.PreReporting,
+  DESIGNATED_REPORTING = Getters.Markets.MarketReportingState.DesignatedReporting,
+  OPEN_REPORTING = Getters.Markets.MarketReportingState.OpenReporting,
+  CROWDSOURCING_DISPUTE = Getters.Markets.MarketReportingState.CrowdsourcingDispute,
+  AWAITING_NEXT_WINDOW = Getters.Markets.MarketReportingState.AwaitingNextWindow,
+  FINALIZED = Getters.Markets.MarketReportingState.Finalized,
+  FORKING = Getters.Markets.MarketReportingState.Forking,
+  AWAITING_NO_REPORT_MIGRATION = Getters.Markets.MarketReportingState.AwaitingNoReportMigration,
+  AWAITING_FORK_MIGRATION = Getters.Markets.MarketReportingState.AwaitingForkMigration
 }
 
 // TODO: this no longer exists and can be removed during refactor of claiming winnings
@@ -260,7 +262,7 @@ export const MARKET_STATUS_MESSAGES = {
 
 // Market Header
 export const COPY_MARKET_ID = 'Copy Market ID';
-export const COPY_AURTHOR = 'Copy Market Creator ID';
+export const COPY_AUTHOR = 'Copy Market Creator ID';
 
 // # Search/Filter Param Names
 export const FILTER_SEARCH_PARAM = 'keywords';
@@ -531,7 +533,6 @@ export const GETORCACHEDESIGNATEDREPORTNOSHOWBOND =
   'GETORCACHEDESIGNATEDREPORTNOSHOWBOND';
 export const GETORCACHEDESIGNATEDREPORTSTAKE =
   'GETORCACHEDESIGNATEDREPORTSTAKE';
-export const GETORCACHEMARKETCREATIONCOST = 'GETORCACHEMARKETCREATIONCOST';
 export const GETORCACHEREPORTINGFEEDIVISOR = 'GETORCACHEREPORTINGFEEDIVISOR';
 export const GETORCACHEVALIDITYBOND = 'GETORCACHEVALIDITYBOND';
 export const GETORCREATECURRENTFEEWINDOW = 'GETORCREATECURRENTFEEWINDOW';

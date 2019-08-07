@@ -40,7 +40,7 @@ sidebar_label: Markets
 
 **● getCategoriesParams**: *`InterfaceType`<`object`, `object`, `object`, `unknown`>* =  t.type({ universe: t.string })
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:188](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L188)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:203](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L203)*
 
 ___
 <a id="getmarketorderbookparams"></a>
@@ -54,7 +54,7 @@ ___
     }),
   ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:181](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L181)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:196](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L196)*
 
 ___
 <a id="getmarketpricecandlestickparams"></a>
@@ -69,7 +69,7 @@ ___
     period: t.union([t.number, t.null, t.undefined]),
   })
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:168](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L168)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:183](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L183)*
 
 ___
 <a id="getmarketpricehistoryparams"></a>
@@ -78,7 +78,7 @@ ___
 
 **● getMarketPriceHistoryParams**: *`InterfaceType`<`object`, `object`, `object`, `unknown`>* =  t.type({ marketId: t.string })
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:175](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L175)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:190](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L190)*
 
 ___
 <a id="getmarketsinfoparams"></a>
@@ -87,7 +87,7 @@ ___
 
 **● getMarketsInfoParams**: *`InterfaceType`<`object`, `object`, `object`, `unknown`>* =  t.type({ marketIds: t.array(t.string) })
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:180](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L180)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:195](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L195)*
 
 ___
 <a id="getmarketsparams"></a>
@@ -99,7 +99,7 @@ ___
     SortLimit,
   ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:176](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L176)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:191](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L191)*
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 ▸ **getCategories**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`InterfaceType`>*): `Promise`<`string`[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:789](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L789)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:820](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L820)*
 
 **Parameters:**
 
@@ -130,7 +130,7 @@ ___
 
 ▸ **getMarketOrderBook**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionType`>*): `Promise`<[MarketOrderBook](api-interfaces-packages-augur-sdk-src-state-getter-markets-marketorderbook.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:521](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L521)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:555](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L555)*
 
 **Parameters:**
 
@@ -149,7 +149,7 @@ ___
 
 ▸ **getMarketPriceCandlesticks**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`InterfaceType`>*): `Promise`<[MarketPriceCandlesticks](api-interfaces-packages-augur-sdk-src-state-getter-markets-marketpricecandlesticks.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:191](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L191)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:206](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L206)*
 
 **Parameters:**
 
@@ -168,7 +168,7 @@ ___
 
 ▸ **getMarketPriceHistory**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`InterfaceType`>*): `Promise`<[MarketPriceHistory](api-interfaces-packages-augur-sdk-src-state-getter-markets-marketpricehistory.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:329](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L329)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:344](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L344)*
 
 **Parameters:**
 
@@ -187,7 +187,7 @@ ___
 
 ▸ **getMarkets**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionType`>*): `Promise`<`string`[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:362](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L362)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:377](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L377)*
 
 **Parameters:**
 
@@ -206,7 +206,7 @@ ___
 
 ▸ **getMarketsInfo**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`InterfaceType`>*): `Promise`<[MarketInfo](api-interfaces-packages-augur-sdk-src-state-getter-markets-marketinfo.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:635](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/Markets.ts#L635)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:669](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L669)*
 
 **Parameters:**
 

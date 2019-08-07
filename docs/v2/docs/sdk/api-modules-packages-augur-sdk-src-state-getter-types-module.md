@@ -32,7 +32,7 @@ sidebar_label: packages/augur-sdk/src/state/getter/types
   offset: t.number,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:3](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/getter/types.ts#L3)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:3](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/types.ts#L3)*
 
 ___
 

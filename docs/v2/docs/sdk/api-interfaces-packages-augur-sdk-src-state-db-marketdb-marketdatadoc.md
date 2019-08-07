@@ -29,7 +29,7 @@ sidebar_label: MarketDataDoc
 
 **● extraInfo**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:26](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L26)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:42](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L42)*
 
 ___
 <a id="market"></a>
@@ -38,7 +38,7 @@ ___
 
 **● market**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:25](https://github.com/AugurProject/augur/blob/a689f5d0f9/packages/augur-sdk/src/state/db/MarketDB.ts#L25)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:41](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L41)*
 
 ___
 

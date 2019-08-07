@@ -4,6 +4,7 @@
   display: grid;
   flex-direction: row;
   grid-template-columns: repeat(5, 1fr);
+  max-height: @size-32;
   min-height: @size-32;
   padding: @size-12 2.8rem @size-12 0;
   width: 100%;
@@ -34,6 +35,8 @@
   &.Extended {
     grid-template-columns: repeat(6, 1fr);
     padding-right: 0;
+    min-height: unset;
+    max-height: unset;
   }
 }
 
@@ -102,6 +105,10 @@
 
       &:nth-of-type(2) {
         justify-content: flex-start;
+      }
+
+      &:nth-of-type(3) {
+        justify-content: center;
       }
     }
   }

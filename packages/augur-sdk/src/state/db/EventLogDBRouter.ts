@@ -1,6 +1,9 @@
 import { ExtendedLog } from "blockstream-adapters";
 import { Log, ParsedLog } from "@augurproject/types";
 import { LogCallbackType } from "./BlockAndLogStreamerListener";
+import * as _ from "lodash";
+
+type EventTopics = string | string[];
 
 export class EventLogDBRouter {
   private logCallbacks: LogCallbackType[] = [];
@@ -8,16 +11,17 @@ export class EventLogDBRouter {
   constructor(private parseLogs: (logs: Log[]) => ParsedLog[]) {
   }
 
-  filterCallbackByTopic(topic: string, callback: LogCallbackType): LogCallbackType {
+  filterCallbackByTopic(topics: EventTopics, callback: LogCallbackType): LogCallbackType {
+    if(!Array.isArray(topics)) topics = [topics];
     return (blockNumber: number, logs: Log[]) => {
-      const filteredLogs = logs.filter((log) => log.topics.includes(topic));
+      const filteredLogs = logs.filter((log) => !_.isEmpty(_.intersection(log.topics, topics)));
       const parsedLogs = this.parseLogs(filteredLogs);
 
       callback(blockNumber, parsedLogs);
     };
   }
 
-  addLogCallback(topic: string, callback: LogCallbackType) {
+  addLogCallback(topic: EventTopics, callback: LogCallbackType) {
     this.logCallbacks.push(this.filterCallbackByTopic(topic, callback));
   }
 

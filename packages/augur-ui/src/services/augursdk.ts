@@ -9,7 +9,7 @@ import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { JsonRpcProvider } from 'ethers/providers';
 import { Addresses } from '@augurproject/artifacts';
 import { EnvObject } from 'modules/types';
-import { listenToUpdates } from 'modules/events/actions/listen-to-updates';
+import { listenToUpdates, unListenToEvents } from 'modules/events/actions/listen-to-updates';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 export class SDK {
@@ -59,6 +59,8 @@ export class SDK {
   }
 
   public async destroy() {
+    unListenToEvents(this.sdk);
+    this.isSubscribed = false;
     if (this.sdk) this.sdk.disconnect();
     this.sdk = null;
   }
