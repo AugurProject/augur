@@ -7,9 +7,7 @@ import {
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
-  SubscriptionEventName
 } from "@augurproject/sdk";
-import { MarketList } from "@augurproject/sdk/src/state/getter/Markets";
 import { ContractInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { makeDependencies, makeSigner } from "./blockchain";
@@ -17,7 +15,6 @@ import { Account } from "../constants";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";
 import { formatBytes32String } from "ethers/utils";
-import { Getters } from "@augurproject/sdk";
 import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
 
 
@@ -361,7 +358,7 @@ export class ContractAPI {
     return this.augur.getMarketsInfo({marketIds: [address]});
   }
 
-  async getMarkets(): Promise<MarketList> {
+  async getMarkets(): Promise<Getters.Markets.MarketList> {
     const universe = this.augur.contracts.universe.address
     return this.augur.getMarkets({universe});
   }

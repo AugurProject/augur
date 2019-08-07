@@ -11,7 +11,7 @@ beforeAll(async () => {
 
   mockGnosisRelay = new MockGnosisRelayAPI();
   // TODO use Gnosis contract deps
-  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, mockGnosisRelay);
+  john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, undefined, mockGnosisRelay);
 }, 120000);
 
 test('Gnosis :: make safe directly', async () => {
