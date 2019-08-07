@@ -31,7 +31,6 @@ function updateBalances(
     getDaiBalance(address),
     getEthBalance(address),
   ]).then(amounts => {
-    console.log('amounts', amounts);
     const rep = amounts[0];
     const dai = amounts[1];
     const eth = amounts[2];
