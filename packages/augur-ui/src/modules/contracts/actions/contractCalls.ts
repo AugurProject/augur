@@ -41,6 +41,16 @@ export function isWeb3Transport(): boolean {
   return augurSdk.isWeb3Transport;
 }
 
+export async function isTransactionConfirmed(hash: string): Promise<boolean> {
+  const tx = await getTransaction(hash);
+  if (!tx) {
+    console.log("Transaction could not be found", hash);
+    return false;
+  }
+  // confirmations is number of blocks beyond block that includes tx
+  return tx.confirmations > 0;
+}
+
 export async function getTransaction(hash: string): Promise<any> {
   const Augur = augurSdk.get();
   const tx = await Augur.getTransaction(hash);
