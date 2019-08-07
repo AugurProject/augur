@@ -3,7 +3,8 @@ import { BigNumber } from 'bignumber.js';
 import { Callback, TXStatusCallback } from "./events";
 import { BaseConnector } from "./connector/baseConnector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { ContractDependenciesEthers, TransactionStatusCallback, TransactionMetadata, TransactionStatus } from "contract-dependencies-ethers";
+import { TransactionStatusCallback, TransactionStatus } from "contract-dependencies-ethers";
+import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
 import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
 import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
@@ -23,12 +24,9 @@ import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./c
 import { Liquidity } from "./api/Liquidity";
 import { TransactionResponse } from "ethers/providers";
 
-// TODO ContractDependenciesEthers -> ContractDependenciesGnosis
-// TODO Add hooks for modifying gnosis deps flags
-
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
-  private readonly dependencies: ContractDependenciesEthers;
+  private readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
   readonly events: Events;
@@ -73,7 +71,7 @@ export class Augur<TProvider extends Provider = Provider> {
     "UniverseForked",
   ];
 
-  constructor(provider: TProvider, dependencies: ContractDependenciesEthers, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined) {
+  constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined) {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
@@ -93,7 +91,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.registerTransactionStatusEvents();
   }
 
-  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined): Promise<Augur> {
+  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesGnosis, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined): Promise<Augur> {
     // has to be static because of the way we instantiate boundTo methods
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
@@ -144,6 +142,14 @@ export class Augur<TProvider extends Provider = Provider> {
     };
     const ethersTransaction = this.dependencies.transactionToEthersTransaction(transaction);
     await this.dependencies.signer.sendTransaction(ethersTransaction);
+  }
+
+  setUseGnosisSafe(useSafe: boolean): void {
+    this.dependencies.setUseSafe(useSafe);
+  }
+
+  setUseGnosisRelay(useRelay: boolean): void {
+    this.dependencies.setUseRelay(useRelay);
   }
 
   getUniverse(address: string): ContractInterfaces.Universe {

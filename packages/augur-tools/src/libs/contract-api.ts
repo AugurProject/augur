@@ -10,7 +10,7 @@ import {
 } from "@augurproject/sdk";
 import { ContractInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { makeDependencies, makeSigner } from "./blockchain";
+import { makeDependencies, makeGnosisDependencies, makeSigner } from "./blockchain";
 import { Account } from "../constants";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";
@@ -20,17 +20,15 @@ import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
+
 export class ContractAPI {
   static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined) {
     const signer = await makeSigner(account, provider);
-    // TODO allow choosing to make Gnosis contract deps
-    const dependencies = makeDependencies(account, provider, signer);
+    const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay);
 
     return new ContractAPI(augur, provider, account);
   }
-
-  // TODO expose toggles for dependencies
 
   constructor(
     readonly augur: Augur,
@@ -428,6 +426,14 @@ export class ContractAPI {
 
   getRepAllowance(owner: string, spender: string): Promise<BigNumber> {
     return this.augur.contracts.getReputationToken().allowance_(owner, spender);
+  }
+
+  setUseGnosisSafe(useSafe: boolean): void {
+    this.augur.setUseGnosisSafe(useSafe);
+  }
+
+  setUseGnosisRelay(useRelay: boolean): void {
+    this.augur.setUseGnosisRelay(useRelay);
   }
 
   async approveAugurEternalApprovalValue(owner: string) {

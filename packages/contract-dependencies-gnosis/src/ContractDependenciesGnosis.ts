@@ -7,26 +7,27 @@ import { getAddress } from "ethers/utils/address";
 import { abi } from "@augurproject/artifacts";
 import * as _ from "lodash";
 
-const BASE_GAS_ESTIMATE = 75000;
+const DEFAULT_GAS_PRICE = new BigNumber(10**9);
+const BASE_GAS_ESTIMATE = new BigNumber(75000);
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   private readonly gnosisRelay: IGnosisRelayAPI;
   public readonly gasToken: string;
-  public readonly gasPrice: BigNumber;
 
   public safeAddress: string;
 
   public useRelay: boolean = true;
   public useSafe: boolean = false;
+  public gasPrice: BigNumber;
 
   public gnosisSafe: ethers.Contract;
 
-  public constructor(provider: EthersProvider, gnosisRelay: IGnosisRelayAPI, signer: EthersSigner, gasToken: string, gasPrice: BigNumber, safeAddress?: string, address?: string) {
+  public constructor(provider: EthersProvider, gnosisRelay: IGnosisRelayAPI, signer: EthersSigner, gasToken?: string, gasPrice?: BigNumber, safeAddress?: string, address?: string) {
     super(provider, signer, address);
     this.gnosisRelay = gnosisRelay;
-    this.gasToken = gasToken;
-    this.gasPrice = gasPrice;
+    this.gasToken = gasToken ? gasToken : NULL_ADDRESS;
+    this.gasPrice = gasPrice ? gasPrice : DEFAULT_GAS_PRICE;
 
     if (safeAddress) {
       this.setSafeAddress(safeAddress);
@@ -52,6 +53,10 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
   public setUseRelay(useRelay: boolean): void {
     this.useRelay = useRelay;
+  }
+
+  public setGasPrice(gasPrice: BigNumber): void {
+    this.gasPrice = gasPrice;
   }
 
   public async getNonce(): Promise<number> {
@@ -138,7 +143,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     const refundReceiver = NULL_ADDRESS;
 
     let txHashBytes = await this.gnosisSafe.getTransactionHash(to, value, data, operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, nonce);
-    let sig = this.signer.signDigest(ethers.utils.arrayify(txHashBytes));
+    let sig = await this.signer.signDigest(ethers.utils.arrayify(txHashBytes));
 
     const signatures = [{
       s: new BigNumber(sig.s, 16).toFixed(),

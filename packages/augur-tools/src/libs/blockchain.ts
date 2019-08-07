@@ -5,6 +5,8 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { DeployerConfigurationOverwrite, CreateDeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
+import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import { ContractDeployer } from "@augurproject/core";
 
 import { Account } from "../constants";
@@ -45,4 +47,6 @@ export function makeDependencies(account: Account, provider: EthersProvider, sig
   return new ContractDependenciesEthers(provider, signer, account.publicKey);
 }
 
-// TODO make Gnosis Contract Dependencies
+export function makeGnosisDependencies(provider: EthersProvider, gnosisRelay: IGnosisRelayAPI, signer: EthersFastSubmitWallet, gasToken?: string, gasPrice?: BigNumber, safeAddress?: string, address?: string) {
+  return new ContractDependenciesGnosis(provider, gnosisRelay, signer, gasToken, gasPrice, safeAddress, address);
+}

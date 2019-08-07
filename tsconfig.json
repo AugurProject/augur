@@ -28,6 +28,9 @@
       "path": "./packages/contract-dependencies-ethers"
     },
     {
+      "path": "./packages/contract-dependencies-gnosis"
+    },
+    {
       "path": "./packages/blockstream-adapters"
     },
     {
