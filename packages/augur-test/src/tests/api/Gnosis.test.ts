@@ -10,7 +10,7 @@ beforeAll(async () => {
   const provider = await makeProvider(seed, ACCOUNTS);
 
   mockGnosisRelay = new MockGnosisRelayAPI();
-
+  // TODO use Gnosis contract deps
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, mockGnosisRelay);
 }, 120000);
 

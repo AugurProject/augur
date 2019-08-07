@@ -44,3 +44,5 @@ export async function makeSigner(account: Account, provider: EthersProvider) {
 export function makeDependencies(account: Account, provider: EthersProvider, signer: EthersFastSubmitWallet) {
   return new ContractDependenciesEthers(provider, signer, account.publicKey);
 }
+
+// TODO make Gnosis Contract Dependencies

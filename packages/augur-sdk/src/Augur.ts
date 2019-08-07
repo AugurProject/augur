@@ -23,6 +23,9 @@ import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./c
 import { Liquidity } from "./api/Liquidity";
 import { TransactionResponse } from "ethers/providers";
 
+// TODO ContractDependenciesEthers -> ContractDependenciesGnosis
+// TODO Add hooks for modifying gnosis deps flags
+
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
   private readonly dependencies: ContractDependenciesEthers;

@@ -26,11 +26,14 @@ const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffff
 export class ContractAPI {
   static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined) {
     const signer = await makeSigner(account, provider);
+    // TODO allow choosing to make Gnosis contract deps
     const dependencies = makeDependencies(account, provider, signer);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay);
 
     return new ContractAPI(augur, provider, account);
   }
+
+  // TODO expose toggles for dependencies
 
   constructor(
     readonly augur: Augur,

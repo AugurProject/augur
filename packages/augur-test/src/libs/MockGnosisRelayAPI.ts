@@ -3,7 +3,9 @@ import {
     CreateSafeData,
     SafeResponse,
     CheckSafeResponse,
-    RelayTransaction
+    RelayTransaction,
+    RelayTxEstimateData,
+    RelayTxEstimateResponse
 } from "@augurproject/gnosis-relay-api";
 
 export class MockGnosisRelayAPI implements IGnosisRelayAPI {
@@ -40,6 +42,10 @@ export class MockGnosisRelayAPI implements IGnosisRelayAPI {
     }
   
     public async execTransaction(relayTx: RelayTransaction): Promise<string> {
+      throw new Error("Not Implemented");
+    }
+
+    public async estimateTransaction(relayTxEstimateData: RelayTxEstimateData): Promise<RelayTxEstimateResponse> {
       throw new Error("Not Implemented");
     }
   }
