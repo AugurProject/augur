@@ -27,7 +27,7 @@ export default function(
     case UPDATE_LOGIN_ACCOUNT_BALANCES:
       return {
         ...loginAccount,
-        balances: data.balances,
+        balances: data,
       };
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

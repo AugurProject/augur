@@ -10,11 +10,11 @@ export interface UpdateLoginAccountAction {
 }
 
 export function updateLoginAccountBalances(
-  balances: AccountBalances
+  data: AccountBalances
 ) {
   return {
-    type: UPDATE_LOGIN_ACCOUNT,
-    balances,
+    type: UPDATE_LOGIN_ACCOUNT_BALANCES,
+    data,
   };
 }
 
