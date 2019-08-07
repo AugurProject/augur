@@ -244,6 +244,7 @@ export interface UIOrder {
   cumulativeShares?: number;
   ignoreShares?: boolean;
   status?: string;
+  hash?: string;
 }
 
 export interface LiquidityOrders {

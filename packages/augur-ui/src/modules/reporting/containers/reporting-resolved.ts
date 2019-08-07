@@ -13,8 +13,7 @@ const mapStateToProps = state => {
   const marketsData = selectMarkets(state);
   const resolvedMarkets = marketsData.filter(
     market =>
-      market.reportingState === REPORTING_STATE.FINALIZED ||
-      market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION
+      market.reportingState === REPORTING_STATE.FINALIZED
   );
   const resolvedMarketIds = state.marketReportState.resolved || [];
 

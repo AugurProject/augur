@@ -33,9 +33,6 @@ export const determineMarketLinkType = (market, loginAccount) => {
     case REPORTING_STATE.AWAITING_NEXT_WINDOW:
       return TYPE_VIEW;
 
-    case REPORTING_STATE.AWAITING_FINALIZATION:
-      return TYPE_FINALIZE_MARKET;
-
     case REPORTING_STATE.FINALIZED:
       return TYPE_CLAIM_PROCEEDS;
 

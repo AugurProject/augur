@@ -24,7 +24,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
           const market = marketInfos[marketId];
           return addOrder(txStatus, market, dispatch);
         }
-        dispatch(updatePendingOrderStatus(tradeGroupId, marketId, eventName));
+        dispatch(updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash));
         if (eventName === TXEventName.Success) {
           dispatch(removePendingOrder(tradeGroupId, marketId));
         }
@@ -44,9 +44,9 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   }
 };
 
-function addOrder(tx: Events.TXStatus, market: Getters.MarketInfo, dispatch) {
+function addOrder(tx: Events.TXStatus, market: Getters.Markets.MarketInfo, dispatch) {
   if (!market) return console.log(`Could not find ${market.id} to process transaction`)
-  const order: UIOrder = convertTransactionOrderToUIOrder(tx.transaction.params, tx.eventName, market);
+  const order: UIOrder = convertTransactionOrderToUIOrder(tx.hash, tx.transaction.params, tx.eventName, market);
   if (!order) return console.log(`Could not process order to add pending order for market ${market.id}`);
   dispatch(addPendingOrder(order, market.id));
 }
