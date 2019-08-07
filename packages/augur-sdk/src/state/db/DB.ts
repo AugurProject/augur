@@ -32,7 +32,7 @@ import {
   UniverseForkedLog,
   MarketData,
 } from "../logs/types";
-import { ExtendedSearchOptions, SearchResults } from "flexsearch";
+import { ExtendedSearchOptions, SearchOptions, SearchResults } from "flexsearch";
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -247,8 +247,12 @@ export class DB {
     return this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
-  async fullTextMarketSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields>[]> {
+  async marketFullTextSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields>[]> {
     return this.marketDatabase.fullTextSearch(query, extendedSearchOptions);
+  }
+
+  async marketCategorySearch(query: string, options: ExtendedSearchOptions): Promise<SearchResults<MarketFields>[]> {
+    return this.marketDatabase.categorySearch(query, options);
   }
 
   /**

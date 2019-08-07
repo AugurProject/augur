@@ -77,15 +77,19 @@ const getMarketsParamsSpecific = t.intersection([
 
 export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 
+export interface MarketListMetaCategory {
+  name: string;
+  count: number;
+}
 export interface MarketListMeta {
-  // TODO
+  categories: MarketListMetaCategory[];
+  filteredOutCount: number;
+  marketCount: number;
 }
 
 export interface MarketList {
   markets: MarketInfo[];
   meta: MarketListMeta;
-  filteredOutCount: number;
-  marketCount: number;
 }
 
 export interface MarketInfoOutcome {
@@ -416,11 +420,17 @@ export class Markets {
     if (params.maxLiquiditySpread && !validLiquiditySpreads.includes(params.maxLiquiditySpread)) {
       throw new Error('Invalid maxLiquiditySpread');
     }
-    // Set sort defaults
+    // Set param defaults
+    params.search = typeof params.search === 'undefined' ? "" : params.search;
     params.sortBy = typeof params.sortBy === 'undefined' ? getMarketsSortBy['MarketOI'] : params.sortBy;
     params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
+
+    // Initialize `meta` values
+    const categories: MarketListMetaCategory[] = [];
+    let filteredOutCount = 0; // Markets excluded by maxLiquiditySpread & includeInvalidMarkets filters
+    let marketCount = 0;
 
     const request = {
       selector: {
@@ -471,7 +481,7 @@ export class Markets {
       let keyedFullTextResults: any = {};
       let searchResults: any = [];
       if (params.search) {
-        searchResults = await db.fullTextMarketSearch(params.search, null);
+        searchResults = await db.marketFullTextSearch(params.search, null);
         keyedFullTextResults = _.keyBy(
           searchResults,
           (searchResult: MarketFields) =>  { return searchResult.market; }
@@ -479,15 +489,26 @@ export class Markets {
       }
       let keyedCategoryResults: any = {};
       if (params.categories) {
-        const extendedSearchOptions: ExtendedSearchOptions[] = [];
-        for (let i = 0; i < params.categories.length; i++) {
-          extendedSearchOptions.push({
-            field: ["category" + (i + 1)],
-            query: params.categories[i],
-            bool: "and",
-          });
+        // const extendedSearchOptions: ExtendedSearchOptions[] = [];
+        // for (let i = 0; i < params.categories.length; i++) {
+        //   extendedSearchOptions.push({
+        //     field: ["category" + (i + 1)],
+        //     query: params.categories[i],
+        //     bool: "and",
+        //   });
+        // }
+        // const categoryResults = await db.fullTextMarketSearch(null, extendedSearchOptions);
+
+        const searchOptions = {
+          query: params.search,
+          where: {},
+        };
+        for (let i = 0; i < categories.length; i++) {
+          searchOptions.where['category' + (i + 1)] = categories[i];
         }
-        const categoryResults = await db.fullTextMarketSearch(null, extendedSearchOptions);
+        searchOptions.where['sort'] = "category1:category2:category3";
+        const categoryResults = db.marketCategorySearch(params.search, searchOptions);
+        console.log(keyedCategoryResults);
         keyedCategoryResults = _.keyBy(
           categoryResults,
           (searchResult: MarketFields) =>  { return searchResult.market; }
@@ -516,7 +537,6 @@ export class Markets {
     }
 
     let filteredMarketsDetails: any[] = [];
-    let filteredOutCount = 0; // Markets excluded by maxLiquiditySpread & includeInvalidMarkets filters
     for (const marketCreatedLogInfo of Object.values(filteredKeyedMarketCreatedLogs)) {
       let includeMarket = true;
 
@@ -613,9 +633,11 @@ export class Markets {
     // TODO Set `meta` & `marketCount`
     return {
       markets: marketsInfo,
-      meta: {},
-      filteredOutCount,
-      marketCount: 0,
+      meta: {
+        categories: [],
+        filteredOutCount,
+        marketCount: 0,
+      },
     };
   }
 

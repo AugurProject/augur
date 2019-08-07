@@ -20,7 +20,7 @@ import { Orderbook } from "../../api/Liquidity";
 
 // because flexsearch is a UMD type lib
 const flexSearch = require('flexsearch');
-import { Index, ExtendedSearchOptions, SearchResults } from 'flexsearch';
+import { Index, ExtendedSearchOptions, SearchOptions, SearchResults } from 'flexsearch';
 
 export interface MarketFields {
   id: string;
@@ -60,7 +60,7 @@ interface LiquidityResults {
 export class MarketDB extends DerivedDB {
   protected augur: Augur;
   private readonly events = new Subscriptions(augurEmitter);
-  private flexSearchIndex?: Index<MarketFields>;
+  private flexSearchIndex: Index<MarketFields>;
   readonly liquiditySpreads = [10, 15, 20, 100];
 
   constructor(db: DB, networkId: number, augur: Augur) {
@@ -236,16 +236,35 @@ export class MarketDB extends DerivedDB {
     return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI);
   }
 
-  async fullTextSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields>[]> {
-    if (this.flexSearchIndex) {
-      if (query !== null) {
-        return this.flexSearchIndex.search(query);
-      } else if (extendedSearchOptions !== null)  {
-        return this.flexSearchIndex.search(extendedSearchOptions);
-      }
+  async fullTextSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<Array<SearchResults<MarketFields>>> {
+    if (query !== null) {
+      return this.flexSearchIndex.search(query);
+    } else if (extendedSearchOptions !== null)  {
+      return this.flexSearchIndex.search(extendedSearchOptions);
     }
-    return [];
+    throw new Error(`query and extendedSearchOptions cannot both be null`);
   }
+
+  categorySearch(query: string, options: ExtendedSearchOptions): Promise<Array<SearchResults<MarketFields>>> {
+    console.log(query);
+    console.log(options);
+    return this.flexSearchIndex.search(options);
+    // if (categories.length === 3) {
+    //   return this.flexSearchIndex.where((item) => {
+    //     return item.category1 === categories[0] && item.category2 === categories[1] && item.category3 === categories[2];
+    //   });
+    // } else if (categories.length === 2) {
+    //   return this.flexSearchIndex.where((item) => {
+    //     return item.category1 === categories[0] && item.category2 === categories[1];
+    //   });
+    // } else if (categories.length === 1) {
+    //   return this.flexSearchIndex.where((item) => {
+    //     return item.category1 === categories[0];
+    //   });
+    // } else {
+    // }
+  }
+
 
   private async syncFullTextSearch(): Promise<void> {
     if (this.flexSearchIndex) {

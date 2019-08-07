@@ -124,25 +124,25 @@ test("Flexible Search", async () => {
   await db.addNewBlock(DBName, blockLogs);
   await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
 
-  let docs = await db.fullTextMarketSearch("0x1111111111111111111111111111111111111111", null);  // market
+  let docs = await db.marketFullTextSearch("0x1111111111111111111111111111111111111111", null);  // market
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch("share", null);  // category
+  docs = await db.marketFullTextSearch("share", null);  // category
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch("Foobar", null);  // description/title
+  docs = await db.marketFullTextSearch("Foobar", null);  // description/title
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch("lol", null);  // longDescription/description
+  docs = await db.marketFullTextSearch("lol", null);  // longDescription/description
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch("blah", null);  // resolutionSource
+  docs = await db.marketFullTextSearch("blah", null);  // resolutionSource
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch(ACCOUNTS[0].publicKey, null);  // marketCreator
+  docs = await db.marketFullTextSearch(ACCOUNTS[0].publicKey, null);  // marketCreator
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch("fake", null);  // _scalarDenomination
+  docs = await db.marketFullTextSearch("fake", null);  // _scalarDenomination
   expect(docs.length).toEqual(1);
   const doc = docs[0];
 

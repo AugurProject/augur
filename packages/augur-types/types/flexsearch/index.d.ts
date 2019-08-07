@@ -41,6 +41,7 @@ declare module "flexsearch" {
       field?: string[],
       bool?: "and" | "or" | "not"
       page?: boolean | Cursor;
+      sort?: string;
       //TODO: Sorting
   }
 
