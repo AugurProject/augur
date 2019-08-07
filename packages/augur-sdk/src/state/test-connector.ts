@@ -7,7 +7,6 @@ import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
 import { MarketCreated, NewBlock } from "../events";
-import { Markets } from "./getter/Markets";
 import { SubscriptionEventName } from "../constants";
 import { SEOConnector } from "../connector/seo-connector";
 
@@ -36,11 +35,11 @@ console.log("Starting web worker");
         console.log(args);
       });
 
-    const marketList = await augur.getMarkets({
+    const markets = await augur.getMarkets({
       universe: "0x02149d40d255fceac54a3ee3899807b0539bad60",
     });
 
-    console.log(marketList);
+    console.log(markets);
     console.log("Done");
   } catch (e) {
     console.log(e);

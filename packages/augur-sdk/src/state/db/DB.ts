@@ -371,7 +371,12 @@ export class DB {
    * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
    */
   async findInSyncableDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
-    return this.syncableDatabases[dbName].find(request);
+    if (this.syncableDatabases[dbName]) {
+      return this.syncableDatabases[dbName].find(request);
+    }
+    else {
+      return {} as PouchDB.Find.FindResponse<{}>;
+    }
   }
 
   /**

@@ -24,7 +24,7 @@ export interface UsefulContractObjects {
   addresses: ContractAddresses;
 }
 
-export async function deployContracts(provider: EthersProvider,  accounts: Account[], compiledContracts: CompilerOutput, writeArtifacts = false): Promise<UsefulContractObjects> {
+export async function deployContracts(provider: EthersProvider, accounts: Account[], compiledContracts: CompilerOutput, writeArtifacts = false): Promise<UsefulContractObjects> {
   const signer = await makeSigner(accounts[0], provider);
   const dependencies = makeDependencies(accounts[0], provider, signer);
 
@@ -32,7 +32,7 @@ export async function deployContracts(provider: EthersProvider,  accounts: Accou
   const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider.provider, signer, compiledContracts);
   const addresses = await contractDeployer.deploy();
 
-  return {provider, signer, dependencies, addresses};
+  return { provider, signer, dependencies, addresses };
 }
 
 export async function makeSigner(account: Account, provider: EthersProvider) {
