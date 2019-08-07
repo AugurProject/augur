@@ -206,15 +206,14 @@ export class DB {
     for (const trackedUser of await this.trackedUsers.getUsers()) {
       for (const userSpecificEvent of this.userSpecificDBs) {
         const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        if (this.syncableDatabases[dbName])
-          dbSyncPromises.push(
-            this.syncableDatabases[dbName].sync(
-              augur,
-              chunkSize,
-              blockstreamDelay,
-              highestAvailableBlockNumber
-            )
-          );
+        dbSyncPromises.push(
+          this.syncableDatabases[dbName].sync(
+            augur,
+            chunkSize,
+            blockstreamDelay,
+            highestAvailableBlockNumber
+          )
+        );
       }
     }
 
@@ -314,16 +313,14 @@ export class DB {
     // Perform rollback on SyncableDBs & UserSyncableDBs
     for (const eventName of this.genericEventNames) {
       const dbName = this.getDatabaseName(eventName);
-      if (this.syncableDatabases[dbName])
-        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+      dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
     }
 
     // Perform rollback on UserSyncableDBs
     for (const trackedUser of await this.trackedUsers.getUsers()) {
       for (const userSpecificEvent of this.userSpecificDBs) {
         const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        if (this.syncableDatabases[dbName])
-          dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+        dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
       }
     }
 

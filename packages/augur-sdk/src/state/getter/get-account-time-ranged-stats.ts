@@ -99,7 +99,7 @@ export class AccountTimeRangedStats {
     const marketsCreatedLogs = await db.findMarketCreatedLogs(marketsRequest as any as PouchDB.Find.FindRequest<{}>);
     const marketsCreated = marketsCreatedLogs.length;
     const initialReporterReedeemedLogs = await db.findInitialReporterRedeemedLogs(initialReporterRequest as any as PouchDB.Find.FindRequest<{}>);
-    const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerCompletedLogs(disputeCrowdourcerRequest as any as PouchDB.Find.FindRequest<{}>);
+    const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(disputeCrowdourcerRequest as any as PouchDB.Find.FindRequest<{}>);
 
     const redeemedPositions = initialReporterReedeemedLogs.length + disputeCrowdsourcerReedeemedLogs.length;
 
@@ -116,6 +116,8 @@ export class AccountTimeRangedStats {
     const positions = _.uniqWith(profitLossChangedLogs as any as ProfitLossChanged[], (a: ProfitLossChanged, b: ProfitLossChanged) => {
       return a.market === b.market && a.outcome === b.outcome;
     }).length;
+
+
 
     // XXX: TODO
     const successfulDisputes = 0;

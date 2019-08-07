@@ -32,88 +32,7 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     await mary.approveCentralAuthority();
   }, 120000);
 
-  // NOTE: Full-text searching is tested more in SyncableDB.test.ts
-  test(':getAccountTimeRangedStats', async () => {
-    const universe = john.augur.contracts.universe;
-
-    const johnYesNoMarket = await john.createReasonableYesNoMarket();
-    const johnSecondMarket = await john.createReasonableYesNoMarket();
-
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    // await (await db).sync(mary.augur, mock.constants.chunkSize, 0);
-
-    const numShares = new BigNumber(10000000000000);
-    const price = new BigNumber(22);
-    const yesNoOrderId = await john.placeOrder(
-      johnYesNoMarket.address,
-      ORDER_TYPES.BID,
-      numShares,
-      price,
-      outcome0,
-      stringTo32ByteHex(''),
-      stringTo32ByteHex(''),
-      stringTo32ByteHex('42')
-    );
-
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    const cost = numShares.multipliedBy(78).div(2);
-
-    await mary.fillOrder(yesNoOrderId, cost, numShares.div(2), '42');
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // Test non-existent universe address
-    const nonexistentAddress = '0x1111111111111111111111111111111111111111';
-    let errorMessage = '';
-    try {
-      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
-        universe: nonexistentAddress,
-        account: nonexistentAddress,
-        startTime: 1234,
-        endTime: 45678,
-      });
-    } catch (error) {
-      errorMessage = error.message;
-    }
-    expect(errorMessage).toEqual(
-      'Unknown universe: 0x1111111111111111111111111111111111111111'
-    );
-
-    // Test account
-    let stats = await api.route('getAccountTimeRangedStats', {
-      universe: universe.address,
-      account: ACCOUNTS[0].publicKey,
-    });
-    expect(stats).toMatchObject({
-      marketsCreated: 2,
-      marketsTraded: 1,
-      numberOfTrades: 1,
-      positions: 1,
-      redeemedPositions: 0,
-      successfulDisputes: 0,
-    });
-
-    stats = await api.route('getAccountTimeRangedStats', {
-      universe: universe.address,
-      account: nonexistentAddress,
-    });
-    expect(stats).toEqual({});
-
-    // Test endTime and startTime
-    try {
-      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
-        universe: universe.address,
-        account: ACCOUNTS[0].publicKey,
-        startTime: 123456,
-        endTime: 12,
-      });
-    } catch (error) {
-      errorMessage = error.message;
-    }
-    expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
-  }, 120000);
-
-  test('getAccountTimeRngedAStatsa :: positions, redeemedPpsitions, successfulDisputres', async () => {
+  test('getAccountTimeRngedAStatsa', async () => {
     // Create markets with multiple users
     const universe = john.augur.contracts.universe;
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
@@ -388,7 +307,43 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
-    const stats = await api.route('getAccountTimeRangedStats', {
+    // Test non-existent universe address
+    const nonexistentAddress = '0x1111111111111111111111111111111111111111';
+    let errorMessage = '';
+    try {
+      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
+        universe: nonexistentAddress,
+        account: nonexistentAddress,
+        startTime: 1234,
+        endTime: 45678,
+      });
+    } catch (error) {
+      errorMessage = error.message;
+    }
+    expect(errorMessage).toEqual(
+      'Unknown universe: 0x1111111111111111111111111111111111111111'
+    );
+
+    let stats = await api.route('getAccountTimeRangedStats', {
+      universe: universe.address,
+      account: nonexistentAddress,
+    });
+    expect(stats).toEqual({});
+
+    // Test endTime and startTime
+    try {
+      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
+        universe: universe.address,
+        account: ACCOUNTS[0].publicKey,
+        startTime: 123456,
+        endTime: 12,
+      });
+    } catch (error) {
+      errorMessage = error.message;
+    }
+    expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
+
+    stats = await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
     });
