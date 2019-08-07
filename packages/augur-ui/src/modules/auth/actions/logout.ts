@@ -12,6 +12,7 @@ export function logout() {
       localStorageRef.removeItem("airbitz.users");
       localStorageRef.removeItem("loggedInAccount");
     }
+    console.log("user has logged out");
     dispatch(clearLoginAccount());
   };
 }

@@ -15,9 +15,9 @@ const mapStateToProps = state => ({
   currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
   address: getValue(state, "loginAccount.address"),
   gasPrice: getGasPrice(state),
-  availableEthFormatted: formatEther(state.loginAccount.eth),
-  availableRepFormatted: formatRep(state.loginAccount.rep),
-  availableDaiFormatted: formatDai(state.loginAccount.dai),
+  availableEthFormatted: formatEther(state.loginAccount.balances.eth),
+  availableRepFormatted: formatRep(state.loginAccount.balances.rep),
+  availableDaiFormatted: formatDai(state.loginAccount.balances.dai),
 });
 
 const mapDispatchToProps = dispatch => ({

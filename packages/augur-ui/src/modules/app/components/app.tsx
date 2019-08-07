@@ -590,7 +590,7 @@ export default class AppView extends Component<AppProps, AppState> {
                     location={location}
                     universe={universe}
                     currentTime={blockchain.currentAugurTimestamp}
-                    doesUserHaveRep={loginAccount.rep > 0}
+                    doesUserHaveRep={loginAccount.balances.rep > 0}
                     marginLeft={tagsMargin}
                     finalizeMarket={finalizeMarket}
                   />

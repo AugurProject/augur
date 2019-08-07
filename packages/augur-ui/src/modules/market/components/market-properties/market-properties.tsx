@@ -134,7 +134,7 @@ export default class MarketProperties extends Component {
     const linkType =
       isForking && p.linkType === TYPE_DISPUTE ? TYPE_VIEW : p.linkType;
     const disableDispute =
-      loginAccount.rep === "0" && p.linkType === TYPE_DISPUTE;
+      loginAccount.balances.rep === "0" && p.linkType === TYPE_DISPUTE;
     if (getValue(p, "consensus.isInvalid")) {
       consensus = "Invalid";
     }

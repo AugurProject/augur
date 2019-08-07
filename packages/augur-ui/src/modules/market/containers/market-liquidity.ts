@@ -1,6 +1,5 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import getValue from "utils/get-value";
 import {
   removeLiquidityOrder,
   startOrderSending,
@@ -14,7 +13,7 @@ import MarketLiquidity from "modules/market/components/market-liquidity/market-l
 
 const mapStateToProps = (state, ownProps) => ({
   isLogged: state.authStatus.isLogged,
-  availableEth: getValue(state, "loginAccount.eth") || "0",
+  availableEth: state.loginAccount.balances.eth,
   loginAccount: state.loginAccount,
   gasPrice: getGasPrice(state)
 });
