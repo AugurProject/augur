@@ -31,7 +31,7 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     await mary.approveCentralAuthority();
   }, 120000);
 
-  test('getAccountTimeRngedAStatsa', async () => {
+  test('getAccountTimeRangedStats', async () => {
     // Create markets with multiple users
     const universe = john.augur.contracts.universe;
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
