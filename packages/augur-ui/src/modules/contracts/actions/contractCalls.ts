@@ -214,7 +214,26 @@ export async function getCreateMarketBreakdown() {
   return { validityBondFormatted, noShowFormatted };
 }
 
-export function createMarket(newMarket: NewMarket) {
+export interface CreateNewMarketParams {
+  outcomes?: string[];
+  scalarSmallNum: string;
+  scalarBigNum: string;
+  scalarDenomination: string;
+  expirySource: string;
+  description: string;
+  designatedReporterAddress: string;
+  minPrice: string;
+  maxPrice: string;
+  endTime: number;
+  tickSize: number;
+  marketType: string;
+  detailsText?: string;
+  categories: string[];
+  settlementFee: number;
+  affiliateFee: number;
+}
+
+export function createMarket(newMarket: CreateNewMarketParams) {
   const fee = new BigNumber(newMarket.settlementFee).div(new BigNumber(100))
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);

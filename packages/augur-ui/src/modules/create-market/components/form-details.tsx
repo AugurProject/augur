@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 import {
   RadioCardGroup,
@@ -35,14 +35,15 @@ import {
   CATEGORIES,
   OUTCOMES
 } from "modules/create-market/constants";
-import { formatDate } from "utils/format-date";
+import { formatDate, convertUnixToFormattedDate } from "utils/format-date";
 
 import Styles from "modules/create-market/components/form-details.styles";
+import { createBigNumber } from "utils/create-big-number";
 
 interface FormDetailsProps {
   updateNewMarket: Function;
   newMarket: NewMarket;
-  currentTimestamp: string;
+  currentTimestamp: number;
   onChange: Function;
   onError: Function;
 }
@@ -63,7 +64,6 @@ export default class FormDetails extends React.Component<
 
   render() {
     const {
-      addOrderToNewMarket,
       newMarket,
       currentTimestamp,
       onChange,
@@ -74,8 +74,7 @@ export default class FormDetails extends React.Component<
     const {
       outcomes,
       marketType,
-      endTime,
-      endTimeDropdown,
+      setEndTime,
       hour,
       minute,
       meridiem,
@@ -92,8 +91,7 @@ export default class FormDetails extends React.Component<
       designatedReporterType,
       validations,
       currentStep,
-      offset,
-      offsetName
+      timezone
     } = newMarket;
 
     return (
@@ -127,13 +125,13 @@ export default class FormDetails extends React.Component<
           <Subheaders header="Reporting start date and time" subheader="Choose a date and time that is sufficiently after the end of the event. If reporting starts before the event end time the market will likely be reported as invalid. Make sure to factor in potential delays that can impact the event end time. " link />
           <span>
             <DatePicker
-              date={endTimeDropdown ? moment(endTimeDropdown.timestamp * 1000) : null}
+              date={setEndTime ? moment(setEndTime * 1000) : null}
               placeholder="Date"
               displayFormat="MMM D, YYYY"
               id="input-date"
-              onDateChange={(date: Number) => {
+              onDateChange={(date: Moment) => {
                 if (!date) return onChange("setEndTime", "");
-                onChange("setEndTime", formatDate(date.toDate()));
+                onChange("setEndTime", date.startOf('day').unix());
               }}
               isOutsideRange={day =>
                 day.isAfter(moment(currentTimestamp * 1000).add(6, "M")) ||
@@ -141,28 +139,27 @@ export default class FormDetails extends React.Component<
               }
               numberOfMonths={1}
               onFocusChange= {({ focused }) => {
-                if (endTime === null) {
-                  const date = moment(currentTimestamp * 1000);
-                  onChange("setEndTime", formatDate(date.toDate()));
+                if (setEndTime === null) {
+                  onChange("setEndTime", currentTimestamp);
                 }
                 this.setState({ dateFocused: focused });
               }}
               focused={s.dateFocused}
-              errorMessage={validations[currentStep].endTime}
+              errorMessage={validations[currentStep].setEndTime}
             />
             <TimeSelector
               hour={hour}
               minute={minute}
               meridiem={meridiem}
-              onChange={(label: string, value: string) => {
+              onChange={(label: string, value: number) => {
                 onChange(label, value)
               }}
               onFocusChange= {(focused: Boolean) => {
                 if (!hour) {
-                  onChange("hour", "12");
+                  onChange("hour", 12);
                 }
                 if (!minute) {
-                  onChange("minute", "00");
+                  onChange("minute", 0);
                 }
                 if (!meridiem) {
                   onChange("meridiem", "AM");
@@ -172,12 +169,12 @@ export default class FormDetails extends React.Component<
               focused={s.timeFocused}
               errorMessage={validations[currentStep].hour}
             />
-            <TimezoneDropdown onChange={(value: number, offset: string) => {
-              onChange("offsetName", value);
+            <TimezoneDropdown onChange={(offsetName: string, offset: number, timezone: string) => {
               onChange("offset", offset)
-            }} timestamp={endTime} timezone={offsetName} />
+              onChange("timezone", timezone)
+              onChange("offsetName", offsetName);
+            }} timestamp={setEndTime} timezone={timezone} />
           </span>
-
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
           <TextInput
             type="textarea"

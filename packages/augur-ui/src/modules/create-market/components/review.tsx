@@ -11,7 +11,8 @@ import {
   Subheaders,
   OutcomesList,
   SmallSubheadersTooltip,
-  NoFundsErrors
+  NoFundsErrors,
+  DateTimeHeaders
 } from "modules/create-market/components/common";
 import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
@@ -34,6 +35,7 @@ import {
 import { NewMarket, FormattedNumber } from 'modules/types';
 
 import Styles from "modules/create-market/components/review.styles.less";
+import { buildformattedDate } from "utils/format-date";
 
 interface ReviewProps {
   newMarket: NewMarket;
@@ -221,7 +223,6 @@ export default class Review extends React.Component<
       categories,
       marketType,
       description,
-      endTimeFormatted,
       detailsText,
       expirySourceType,
       expirySource,
@@ -233,7 +234,9 @@ export default class Review extends React.Component<
       tickSize,
       outcomes,
       settlementFee,
-      affiliateFee
+      affiliateFee,
+      endTimeFormatted,
+      timezone,
     } = newMarket;
 
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
@@ -271,7 +274,7 @@ export default class Review extends React.Component<
         <LineBreak />
         <Header text="Resolution information" />
         <div>
-          <SmallSubheaders header="Reporting start date and time" subheader={endTimeFormatted.formattedUtc} />
+          <DateTimeHeaders header="Reporting start date and time" timezone={timezone} subheader={endTimeFormatted.formattedUtc} timezoneDateTime={endTimeFormatted.formattedTimezone} />
           <SmallSubheaders header="resolution details" subheader={detailsText === "" ? "–" : detailsText} />
           <SmallSubheaders
             header="Resolution source"
