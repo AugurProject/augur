@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Abi } from 'ethereum';
 import { CompilerOutput } from 'solc';
 
@@ -20,7 +21,7 @@ export class Contracts implements Iterable<ContractData> {
     private readonly contracts = new Map<string, ContractData>();
 
     public constructor(compilerOutput: CompilerOutput) {
-        console.log(`Processing ${compilerOutput.contracts.length}`)
+        console.log(`Processing ${_.size(compilerOutput.contracts)} contracts`);
         for (let relativeFilePath in compilerOutput.contracts) {
             for (let contractName in compilerOutput.contracts[relativeFilePath]) {
                 const bytecode = Buffer.from(compilerOutput.contracts[relativeFilePath][contractName].evm.bytecode.object, 'hex');
