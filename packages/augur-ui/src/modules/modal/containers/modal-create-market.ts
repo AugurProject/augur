@@ -19,12 +19,12 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  title: "Create Market",
-  description: ["Create Market"],
+  title: "Final confirmation",
+  description: ["Are you sure you want to proceeed?", "Once you create the market you can’t make any changes to the market or resolution details. Ensure that all market details are accurate before proceeding."],
   closeAction: () => dP.closeModal(),
   buttons: [
     {
-      text: "Create",
+      text: "Confirm",
       action: () => {
         const { newMarket, address } = sP;
         createMarket({
