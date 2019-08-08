@@ -9,6 +9,8 @@ const PRODUCTION_VAT_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000
 const PRODUCTION_POT_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // TODO when MC DAI is released
 const PRODUCTION_JOIN_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // TODO when MC DAI is released
 const PRODUCTION_REP_PRICE_ORACLE_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // TODO when uniswap price oracle is released
+const PRODUCTION_GNOSIS_SAFE = "0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A";
+const PRODUCTION_PROXY_FACTORY = "0x12302fE9c02ff50939BaAaaf415fc226C078613C";
 
 export interface DeployerConfiguration {
   contractInputPath: string;
@@ -24,6 +26,8 @@ export interface DeployerConfiguration {
   potAddress: string;
   joinAddress: string;
   repPriceOracleAddress: string;
+  gnosisSafeAddress: string;
+  proxyFactoryAddress: string;
   writeArtifacts: boolean;
 }
 
@@ -53,6 +57,8 @@ export const defaultDeployerConfiguration: DeployerConfiguration = {
   vatAddress: PRODUCTION_VAT_CONTRACT_ADDRESS,
   potAddress: PRODUCTION_POT_CONTRACT_ADDRESS,
   joinAddress: PRODUCTION_JOIN_CONTRACT_ADDRESS,
+  gnosisSafeAddress: PRODUCTION_GNOSIS_SAFE,
+  proxyFactoryAddress: PRODUCTION_PROXY_FACTORY,
   writeArtifacts: true,
 };
 

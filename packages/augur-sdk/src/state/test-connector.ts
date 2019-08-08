@@ -3,12 +3,14 @@
 //
 import { Addresses } from "@augurproject/artifacts";
 import { Augur } from "../Augur";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
 import { MarketCreated, NewBlock } from "../events";
 import { SubscriptionEventName } from "../constants";
 import { SEOConnector } from "../connector/seo-connector";
+import { GnosisRelayAPI } from "@augurproject/gnosis-relay-api";
+
 
 const settings = require("@augurproject/sdk/src/state/settings.json");
 
@@ -18,7 +20,8 @@ console.log("Starting web worker");
   try {
     const connector = new SEOConnector();
     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
-    const contractDependencies = new ContractDependenciesEthers(ethersProvider, undefined, settings.testAccounts[0]);
+    const gnosisRelay = new GnosisRelayAPI("http://localhost:8000");
+    const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, settings.testAccounts[0]);
     const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector);
     await augur.connect("");
 

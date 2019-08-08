@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "./packages/gnosis-relay-api"
+    },
+    {
       "path": "./packages/ethersjs-provider"
     },
     {
@@ -23,6 +26,9 @@
     },
     {
       "path": "./packages/contract-dependencies-ethers"
+    },
+    {
+      "path": "./packages/contract-dependencies-gnosis"
     },
     {
       "path": "./packages/blockstream-adapters"

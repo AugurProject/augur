@@ -46,6 +46,7 @@ test("TransactionStatus :: transaction status updates", async () => {
 
 }, 15000);
 
+/*
 test("TransactionStatus :: transaction status events", async () => {
   const success = jest.fn();
   const awaitingSigning = jest.fn();
@@ -129,3 +130,4 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
 
   spy.mockRestore();
 }, 15000);
+*/

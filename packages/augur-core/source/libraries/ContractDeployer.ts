@@ -99,9 +99,20 @@ Deploying to: ${networkConfiguration.networkName}
             await this.augur!.registerContract(stringTo32ByteHex("DaiJoin"), this.configuration.joinAddress);
             contract = await this.contracts.get("DaiJoin");
             contract.address = this.configuration.joinAddress;
+            
+            // Proxy Factory
+            contract = await this.contracts.get("ProxyFactory");
+            contract.address = this.configuration.proxyFactoryAddress;
+
+            // Gnosis Safe
+            contract = await this.contracts.get("GnosisSafe");
+            contract.address = this.configuration.gnosisSafeAddress;
         } else {
             console.log(`Uploading Test Dai Contracts`);
             await this.uploadTestDaiContracts();
+
+            console.log(`Uploading Gnosis Contracts`);
+            await this.uploadGnosisContracts();
         }
 
         await this.initializeAllContracts();
@@ -204,6 +215,14 @@ Deploying to: ${networkConfiguration.networkName}
         await cash.initialize(this.augur!.address);
     }
 
+    private async uploadGnosisContracts(): Promise<void> {
+        const proxyFactoryContract = await this.contracts.get("ProxyFactory");
+        proxyFactoryContract.address = await this.construct(proxyFactoryContract, []);
+
+        const gnosisSafeContract = await this.contracts.get("GnosisSafe");
+        gnosisSafeContract.address = await this.construct(gnosisSafeContract, []);
+    }
+
     public async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get("LegacyReputationToken");
         contract.address = await this.construct(contract, []);
@@ -229,6 +248,8 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'Universe') return;
         if (contractName === 'ReputationToken') return;
         if (contractName === 'TestNetReputationToken') return;
+        if (contractName === 'ProxyFactory') return;
+        if (contractName === 'GnosisSafe') return;
         if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
         if (contractName === 'ReputationTokenFactory') contract = this.configuration.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
@@ -372,6 +393,8 @@ Deploying to: ${networkConfiguration.networkName}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.contracts.get('Cash').address!;
+        mapping['ProxyFactory'] = this.contracts.get('ProxyFactory').address!;
+        mapping['GnosisSafe'] = this.contracts.get('GnosisSafe').address!;
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
         for (let contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;
