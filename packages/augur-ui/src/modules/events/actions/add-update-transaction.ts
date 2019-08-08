@@ -1,5 +1,16 @@
 import { addCanceledOrder, removeCanceledOrder } from 'modules/orders/actions/update-order-status';
-import { PUBLICTRADE, CANCELORDER, TX_ORDER_ID, TX_MARKET_ID, TX_TRADE_GROUP_ID } from 'modules/common/constants';
+import { 
+  PUBLICTRADE, 
+  CANCELORDER, 
+  TX_ORDER_ID, 
+  TX_MARKET_ID, 
+  TX_TRADE_GROUP_ID, 
+  CREATEMARKET, 
+  CREATECATEGORICALMARKET, 
+  CREATESCALARMARKET, 
+  CREATEYESNOMARKET,
+  CREATE_MARKET 
+} from 'modules/common/constants';
 import { UIOrder } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
 import { addPendingOrder, updatePendingOrderStatus, removePendingOrder } from 'modules/orders/actions/pending-orders-management';
@@ -7,6 +18,10 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
 import { Events, Getters, TXEventName } from '@augurproject/sdk';
+import {
+  addPendingData,
+  removePendingData,
+} from 'modules/pending-queue/actions/pending-queue-management';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -27,6 +42,16 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         dispatch(updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash));
         if (eventName === TXEventName.Success) {
           dispatch(removePendingOrder(tradeGroupId, marketId));
+        }
+        break;
+      }
+      case CREATEMARKET:
+      case CREATECATEGORICALMARKET:
+      case CREATESCALARMARKET:
+      case CREATEYESNOMARKET: {
+        if (hash) dispatch(addPendingData(hash, CREATE_MARKET, eventName));
+        if (hash && eventName === TXEventName.Success) {
+          dispatch(removePendingData(hash, CREATE_MARKET));
         }
         break;
       }
