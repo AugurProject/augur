@@ -60,10 +60,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
           settlementFee: newMarket.settlementFee,
           affiliateFee: newMarket.affiliateFee,
         });
-        dP.closeModal();
         if (sP.modal.cb) {
           sP.modal.cb();
         }
+        dP.closeModal();
       },
     },
     {

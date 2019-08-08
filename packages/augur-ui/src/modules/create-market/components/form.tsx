@@ -609,8 +609,10 @@ export default class Form extends React.Component<FormProps, FormState> {
                   {secondButton === CREATE && (
                     <PrimaryButton text="Create" action={() => {
                       openCreateMarketModal(() => {
-                        history.push({
-                          pathname: makePath(MY_POSITIONS, null),
+                        this.setState({blockShown: true}, () => {
+                          history.push({
+                            pathname: makePath(MY_POSITIONS, null),
+                          });
                         });
                       })
                     }} />
