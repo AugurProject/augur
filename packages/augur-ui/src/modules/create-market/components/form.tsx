@@ -67,11 +67,11 @@ import {
   isMoreThan,
   isPositive,
   moreThanDecimals,
-  checkAddress
+  checkAddress,
 } from 'modules/common/validations';
-import { formatDate } from "utils/format-date";
-import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
-import { createBigNumber } from "utils/create-big-number";
+import { formatDate, buildformattedDate } from 'utils/format-date';
+import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
+import { createBigNumber } from 'utils/create-big-number';
 
 import Styles from 'modules/create-market/components/form.styles';
 
@@ -119,12 +119,9 @@ interface Validations {
   checkForAdresss?: Boolean;
 }
 
-const draftError = "ENTER A MARKET QUESTION";
+const draftError = 'ENTER A MARKET QUESTION';
 
-export default class Form extends React.Component<
-  FormProps,
-  FormState
-> {
+export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
     blockShown: false,
     contentPages: this.props.template
@@ -152,8 +149,11 @@ export default class Form extends React.Component<
     let market = JSON.parse(JSON.stringify(newMarket));
     market.validations = [];
 
-    const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
-    const unsaved = !newMarket.uniqueId && JSON.stringify(market) !== JSON.stringify(defaultState);
+    const disabledSave =
+      savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+    const unsaved =
+      !newMarket.uniqueId &&
+      JSON.stringify(market) !== JSON.stringify(defaultState);
 
     if (unsaved && !disabledSave) {
       discardModal((close: Boolean) => {
@@ -212,7 +212,7 @@ export default class Form extends React.Component<
     this.node.scrollIntoView();
   };
 
-   updateInitialLiquidityCosts = (order, shouldReduce) => {
+  updateInitialLiquidityCosts = (order, shouldReduce) => {
     const { newMarket, updateNewMarket } = this.props;
     const minPrice = newMarket.marketType === SCALAR ? newMarket.minPrice : 0;
     const maxPrice = newMarket.marketType === SCALAR ? newMarket.maxPrice : 1;
@@ -238,16 +238,23 @@ export default class Form extends React.Component<
     const orderType = order.type === BID ? BUY : SELL;
 
     // Calculate amount of DAI needed for order
-    const totalCost = calculateTotalOrderValue(order.quantity, order.price, orderType, minPrice, maxPrice, newMarket.marketType);
+    const totalCost = calculateTotalOrderValue(
+      order.quantity,
+      order.price,
+      orderType,
+      minPrice,
+      maxPrice,
+      newMarket.marketType
+    );
 
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
-      initialLiquidityDai = createBigNumber(newMarket.initialLiquidityDai).minus(
-        totalCost
-      );
-      initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).minus(
-        NEW_ORDER_GAS_ESTIMATE
-      );
+      initialLiquidityDai = createBigNumber(
+        newMarket.initialLiquidityDai
+      ).minus(totalCost);
+      initialLiquidityGas = createBigNumber(
+        newMarket.initialLiquidityGas
+      ).minus(NEW_ORDER_GAS_ESTIMATE);
     } else {
       initialLiquidityDai = createBigNumber(newMarket.initialLiquidityDai).plus(
         totalCost
@@ -258,7 +265,7 @@ export default class Form extends React.Component<
     }
 
     updateNewMarket({ initialLiquidityDai, initialLiquidityGas });
-  }
+  };
 
   findErrors = () => {
     const { newMarket } = this.props;
@@ -320,7 +327,7 @@ export default class Form extends React.Component<
     } = this.props;
 
     if (newMarket.description === DEFAULT_STATE.description) {
-      this.onError("description", draftError)
+      this.onError('description', draftError);
       return;
     }
 
@@ -377,7 +384,7 @@ export default class Form extends React.Component<
       lessThanMessage,
       checkDecimals,
       decimals,
-      checkForAddress
+      checkForAddress,
     } = validationsObj;
 
     const checkValidations = [
@@ -391,7 +398,9 @@ export default class Form extends React.Component<
       checkOutcomes ? checkOutcomesArray(value) : '',
       checkBetween ? isBetween(value, readableName, min, max) : '',
       checkMoreThan ? isMoreThan(value, readableName, newMarket.minPrice) : '',
-      checkLessThan ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage) : '',
+      checkLessThan
+        ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
+        : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
@@ -444,35 +453,33 @@ export default class Form extends React.Component<
         outcomesFormatted = YES_NO_OUTCOMES;
       }
       updateNewMarket({ outcomesFormatted, orderBook: {} });
-    } else if (name === 'setEndTime' || name === 'hour' || name === 'minute' || name === 'meridiem' || name === "offset") {
-      const endTime = name === 'setEndTime' ? moment.unix(value.timestamp).utc() : moment.unix(newMarket.endTime).utc();
-      const hour = name === "hour" ? value : newMarket.hour || 12;
-      const minute = name === "minute" ? value : newMarket.minute || 0;
-      const meridiem = name === "meridiem" ? value : newMarket.meridiem;
-      const offset = name === "offset" ? value : newMarket.offset;
+    } else if (
+      name === 'setEndTime' ||
+      name === 'hour' ||
+      name === 'minute' ||
+      name === 'meridiem' ||
+      name === 'offset' ||
+      name === 'offsetName' ||
+      name === 'timezone'
+    ) {
+      // timezone needs to be set on NewMarket object, this value is used to set timezone picker default value
+      const setEndTime =
+        name === 'setEndTime' ? value : newMarket.setEndTime;
+      const hour = name === 'hour' ? value : newMarket.hour;
+      const minute = name === 'minute' ? value : newMarket.minute;
+      const meridiem = name === 'meridiem' ? value : newMarket.meridiem;
+      const offset = name === 'offset' ? value : newMarket.offset;
+      const offsetName = name === 'offsetName' ? value : newMarket.offsetName;
+      const endTimeFormatted = buildformattedDate(
+        setEndTime,
+        hour,
+        minute,
+        meridiem,
+        offsetName,
+        offset
+      );
 
-      endTime.set({
-        hour: hour,
-        minute: minute
-      });
-      endTime.add(parseInt(offset), "hours");
-
-      if (
-        (meridiem === "" || meridiem === "AM") &&
-        endTime.hours() >= 12
-      ) {
-        endTime.hours(endTime.hours() - 12);
-      } else if (
-        meridiem &&
-        meridiem === "PM" &&
-        endTime.hours() < 12
-      ) {
-        endTime.hours(endTime.hours() + 12);
-      }
-      if (name === 'setEndTime') {
-        updateNewMarket({endTimeDropdown: formatDate(moment(value.timestamp * 1000).utc().toDate())});
-      }
-      updateNewMarket({ endTime: endTime.unix(), endTimeFormatted: formatDate(endTime.toDate()), [name]: value});
+      updateNewMarket({ endTimeFormatted, [name]: value });
     }
     this.onError(name, '');
   };
@@ -516,10 +523,20 @@ export default class Form extends React.Component<
     } = contentPages[currentStep];
 
     const savedDraft = drafts[uniqueId];
-    const disabledSave = savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
+    const disabledSave =
+      savedDraft && JSON.stringify(newMarket) === JSON.stringify(savedDraft);
 
-    const noErrors = Object.values(((validations && validations[currentStep]) || {})).every(field => (Array.isArray(field) ? field.every(val => val === "" || !val) : !field || field === ''));
-    const saveDraftError = validations && validations[currentStep] && validations[currentStep].description === draftError;
+    const noErrors = Object.values(
+      (validations && validations[currentStep]) || {}
+    ).every(field =>
+      Array.isArray(field)
+        ? field.every(val => val === '' || !val)
+        : !field || field === ''
+    );
+    const saveDraftError =
+      validations &&
+      validations[currentStep] &&
+      validations[currentStep].description === draftError;
 
     return (
       <div
@@ -553,10 +570,7 @@ export default class Form extends React.Component<
             )}
             <ContentBlock noDarkBackground={noDarkBackground}>
               {mainContent === FORM_DETAILS && (
-                <FormDetails
-                  onChange={this.onChange}
-                  onError={this.onError}
-                />
+                <FormDetails onChange={this.onChange} onError={this.onError} />
               )}
               {mainContent === FEES_LIQUIDITY && (
                 <FeesLiquidity
@@ -567,8 +581,18 @@ export default class Form extends React.Component<
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === SUB_CATEGORIES && <SubCategories />}
-              {saveDraftError && <Error header="Unable to save draft" subheader="Enter a market question to save this market as a draft"/>}
-              {(!noErrors && !saveDraftError) && <Error header="complete all Required fields" subheader="You must complete all required fields highlighted above before you can continue"/>}
+              {saveDraftError && (
+                <Error
+                  header="Unable to save draft"
+                  subheader="Enter a market question to save this market as a draft"
+                />
+              )}
+              {!noErrors && !saveDraftError && (
+                <Error
+                  header="complete all Required fields"
+                  subheader="You must complete all required fields highlighted above before you can continue"
+                />
+              )}
               <div>
                 {firstButton === BACK && (
                   <SecondaryButton text="Back" action={this.prevPage} />

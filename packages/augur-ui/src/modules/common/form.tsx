@@ -135,7 +135,7 @@ interface TimezoneDropdownProps {
   className?: string;
   autoCompleteList?: Array<SortedGroup>;
   disabled?: Boolean;
-  timestamp?: Moment;
+  timestamp?: number;
   timezone: string;
 }
 
@@ -151,12 +151,13 @@ export class TimezoneDropdown extends Component<
     value: this.props.timezone,
   };
 
-  onChangeDropdown = choice => {
+  onChangeDropdown = timezone => {
     const parse = /\(UTC (.*)\)/i;
-    const offset = choice.match(parse)[1];
-    this.props.onChange(choice, offset);
+    const offset = timezone.match(parse)[1];
+    const offsetName = timezone.split(')')[1].trim();
+    this.props.onChange(offsetName, offset, timezone);
     this.setState({
-      value: choice,
+      value: timezone,
     });
   };
 
@@ -918,8 +919,8 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
 }
 
 interface TimeSelectorProps {
-  minute: string;
-  hour: string;
+  minute: number;
+  hour: number;
   meridiem: string;
   onFocusChange: Function;
   onDateChange: Function;
