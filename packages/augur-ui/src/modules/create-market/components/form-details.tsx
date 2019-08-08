@@ -37,7 +37,7 @@ import {
 } from "modules/create-market/constants";
 import { formatDate, convertUnixToFormattedDate } from "utils/format-date";
 
-import Styles from "modules/create-market/components/form-details.styles";
+import Styles from "modules/create-market/components/form-details.styles.less";
 import { createBigNumber } from "utils/create-big-number";
 
 interface FormDetailsProps {
@@ -156,10 +156,10 @@ export default class FormDetails extends React.Component<
               }}
               onFocusChange= {(focused: Boolean) => {
                 if (!hour) {
-                  onChange("hour", 12);
+                  onChange("hour", "12");
                 }
                 if (!minute) {
-                  onChange("minute", 0);
+                  onChange("minute", "00");
                 }
                 if (!meridiem) {
                   onChange("meridiem", "AM");

@@ -302,8 +302,8 @@ export interface NewMarket {
   endTimeFormatted: DateFormattedObject;
   setEndTime: number;
   tickSize: number;
-  hour: number;
-  minute: number;
+  hour: string;
+  minute: string;
   meridiem: string;
   marketType: string;
   detailsText: string;

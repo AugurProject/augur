@@ -52,7 +52,7 @@ export const DEFAULT_STATE: NewMarket = {
   setEndTime: null,
   tickSize: 0.01,
   hour: null,
-  minute: 0,
+  minute: null,
   meridiem: "AM",
   offset: 0,
   offsetName: null,
