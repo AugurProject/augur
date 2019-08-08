@@ -214,16 +214,16 @@ export enum MARKET_SORT_PARAMS {
 // In Reporting (DESIGNATED_REPORTING, OPEN_REPORTING, CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW)
 // Resolved (FINALIZED)
 // TODO: this will come from SDK in the near future
-export enum REPORTING_STATE {
-  PRE_REPORTING = Getters.Markets.MarketReportingState.PreReporting,
-  DESIGNATED_REPORTING = Getters.Markets.MarketReportingState.DesignatedReporting,
-  OPEN_REPORTING = Getters.Markets.MarketReportingState.OpenReporting,
-  CROWDSOURCING_DISPUTE = Getters.Markets.MarketReportingState.CrowdsourcingDispute,
-  AWAITING_NEXT_WINDOW = Getters.Markets.MarketReportingState.AwaitingNextWindow,
-  FINALIZED = Getters.Markets.MarketReportingState.Finalized,
-  FORKING = Getters.Markets.MarketReportingState.Forking,
-  AWAITING_NO_REPORT_MIGRATION = Getters.Markets.MarketReportingState.AwaitingNoReportMigration,
-  AWAITING_FORK_MIGRATION = Getters.Markets.MarketReportingState.AwaitingForkMigration
+export const REPORTING_STATE = {
+  PRE_REPORTING: Getters.Markets.MarketReportingState.PreReporting,
+  DESIGNATED_REPORTING: Getters.Markets.MarketReportingState.DesignatedReporting,
+  OPEN_REPORTING: Getters.Markets.MarketReportingState.OpenReporting,
+  CROWDSOURCING_DISPUTE: Getters.Markets.MarketReportingState.CrowdsourcingDispute,
+  AWAITING_NEXT_WINDOW: Getters.Markets.MarketReportingState.AwaitingNextWindow,
+  FINALIZED: Getters.Markets.MarketReportingState.Finalized,
+  FORKING: Getters.Markets.MarketReportingState.Forking,
+  AWAITING_NO_REPORT_MIGRATION: Getters.Markets.MarketReportingState.AwaitingNoReportMigration,
+  AWAITING_FORK_MIGRATION: Getters.Markets.MarketReportingState.AwaitingForkMigration
 }
 
 // TODO: this no longer exists and can be removed during refactor of claiming winnings

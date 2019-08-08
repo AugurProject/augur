@@ -561,10 +561,10 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   } = props;
 
   const reportingStates = [
-    REPORTING_STATE.DESIGNATED_REPORTING.toString(),
-    REPORTING_STATE.OPEN_REPORTING.toString(),
-    REPORTING_STATE.AWAITING_NEXT_WINDOW.toString(),
-    REPORTING_STATE.CROWDSOURCING_DISPUTE.toString()
+    REPORTING_STATE.DESIGNATED_REPORTING,
+    REPORTING_STATE.OPEN_REPORTING,
+    REPORTING_STATE.AWAITING_NEXT_WINDOW,
+    REPORTING_STATE.CROWDSOURCING_DISPUTE
   ];
 
   if (!reportingStates.includes(reportingState)) {
@@ -576,18 +576,18 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   const text: string = constants.IN_REPORTING;
   let customLabel: string | null = null;
 
-  if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING.toString()) {
+  if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
     reportingExtraText = constants.WAITING_ON_REPORTER;
     reportingCountdown = true;
     customLabel = constants.REPORTING_ENDS;
-  } else if (reportingState === REPORTING_STATE.OPEN_REPORTING.toString()) {
+  } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
-  } else if (reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW.toString()) {
+  } else if (reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW) {
     reportingExtraText = constants.AWAITING_NEXT_DISPUTE;
     reportingCountdown = true;
   } else if (
-    reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE.toString() ||
-    reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION.toString()
+    reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+    reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION
   ) {
     reportingExtraText =
       disputeInfo && disputeInfo.disputeRound

@@ -54,36 +54,36 @@ const reportingStateToLabelTime = (
   let label: string = "";
   let time: DateFormattedObject = null;
   switch (reportingState) {
-    case REPORTING_STATE.PRE_REPORTING.toString():
+    case REPORTING_STATE.PRE_REPORTING:
       label = "Reporting Begins";
       time = endTimeFormatted;
       break;
-    case REPORTING_STATE.DESIGNATED_REPORTING.toString():
+    case REPORTING_STATE.DESIGNATED_REPORTING:
       label = "Designated Reporting";
       time = formatTime(endTimeFormatted.timestamp + OneDay);
       break;
-    case REPORTING_STATE.OPEN_REPORTING.toString():
+    case REPORTING_STATE.OPEN_REPORTING:
       label = "Open Reporting";
       break;
-    case REPORTING_STATE.CROWDSOURCING_DISPUTE.toString():
+    case REPORTING_STATE.CROWDSOURCING_DISPUTE:
       label = "Disputing Ends";
       time = reportingEndTime;
       break;
-    case REPORTING_STATE.AWAITING_NEXT_WINDOW.toString():
+    case REPORTING_STATE.AWAITING_NEXT_WINDOW:
       label = "Next Dispute";
       time = reportingEndTime;
       break;
-    case REPORTING_STATE.FORKING.toString():
+    case REPORTING_STATE.FORKING:
       label = "Forking";
       time = endTimeFormatted;
       break;
-    case REPORTING_STATE.AWAITING_NO_REPORT_MIGRATION.toString():
+    case REPORTING_STATE.AWAITING_NO_REPORT_MIGRATION:
       label = "Awaiting No Report Migration";
       break;
-    case REPORTING_STATE.AWAITING_FORK_MIGRATION.toString():
+    case REPORTING_STATE.AWAITING_FORK_MIGRATION:
       label = "Awaiting Fork Migration";
       break;
-    case REPORTING_STATE.FINALIZED.toString():
+    case REPORTING_STATE.FINALIZED:
     default:
       label = "Expired";
       break;
