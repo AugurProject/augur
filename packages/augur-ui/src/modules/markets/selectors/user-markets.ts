@@ -28,12 +28,12 @@ export const selectAuthorOwnedMarkets = createSelector(
       data.id = key;
       data.description = extraInfo.description;
       data.pending = true;
-      data.endTime = convertUnixToFormattedDate(parseInt(data.info.endTime));
+      data.endTime = convertUnixToFormattedDate(data.info._endTime);
       data.recentlyTraded = convertUnixToFormattedDate(currentTimestamp);
       data.creationTime = convertUnixToFormattedDate(currentTimestamp);
       return data;
     });
-    filteredMarkets = filteredMarkets.concat(pendingMarkets);
+    filteredMarkets = pendingMarkets.concat(filteredMarkets);
     return filteredMarkets.map(m => ({
       ...m,
       recentlyTraded: getLastTradeTimestamp(marketTradingHistory[m.id])

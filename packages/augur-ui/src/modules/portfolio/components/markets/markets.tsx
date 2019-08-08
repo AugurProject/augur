@@ -14,6 +14,8 @@ const sortByOptions = [
     label: "Sort by Expiring Soonest",
     value: END_TIME,
     comp(marketA, marketB) {
+      if (marketA.pending) return 1;
+      if (marketB.pending) return 0;
       return marketA.endTime.timestamp - marketB.endTime.timestamp;
     },
   },
