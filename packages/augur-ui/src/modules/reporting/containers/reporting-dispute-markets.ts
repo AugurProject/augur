@@ -23,7 +23,7 @@ const mapStateToProps = (state, { history }) => {
   return {
     isLogged: state.authStatus.isLogged,
     isConnected: state.connection.isConnected && id != null,
-    doesUserHaveRep: loginAccount.rep.value > 0 || !state.authStatus.isLogged,
+    doesUserHaveRep: loginAccount.balances.rep > 0 || !state.authStatus.isLogged,
     markets: disputableMarkets,
     showPagination: disputableMarketIds.length > PAGINATION_COUNT,
     disputableMarketsLength: disputableMarketIds.length,

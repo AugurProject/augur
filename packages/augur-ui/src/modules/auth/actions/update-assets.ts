@@ -1,33 +1,40 @@
-import { LoginAccount, NodeStyleCallback } from "modules/types";
-import {
-  updateLoginAccount
-} from "modules/account/actions/login-account";
-import logError from "utils/log-error";
+import { LoginAccount, NodeStyleCallback, AccountBalances } from 'modules/types';
+import { updateLoginAccount, updateLoginAccountBalances } from 'modules/account/actions/login-account';
+import logError from 'utils/log-error';
 import {
   getEthBalance,
   getDaiBalance,
-  getRepBalance
-} from "modules/contracts/actions/contractCalls";
-import { AppState } from "store";
-import { ThunkDispatch, ThunkAction } from "redux-thunk";
-import { Action } from "redux";
+  getRepBalance,
+} from 'modules/contracts/actions/contractCalls';
+import { AppState } from 'store';
+import { ThunkDispatch, ThunkAction } from 'redux-thunk';
+import { Action } from 'redux';
 
-export function updateAssets(callback: NodeStyleCallback = logError): ThunkAction<any, any, any, any> {
-  return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-    const { loginAccount } = getState();
-    const balances: LoginAccount = Object.assign(loginAccount, {
-      eth: undefined,
-      rep: undefined,
-      dai: undefined,
-    });
+export const updateAssets = (
+  callback: NodeStyleCallback = logError
+): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  const { loginAccount } = getState();
+  const { address } = loginAccount;
+  return updateBalances(address, dispatch, callback);
+};
 
-    if (!loginAccount.address)
-      return dispatch(updateLoginAccount(balances));
-    const { address } = loginAccount;
-    balances.rep = await getRepBalance(address);
-    balances.dai = await getDaiBalance(address);
-    balances.eth = await getEthBalance(address);
-    dispatch(updateLoginAccount(balances));
-    return callback(null, balances);
-  };
+function updateBalances(
+  address: string,
+  dispatch: ThunkDispatch<void, any, Action>,
+  callback: NodeStyleCallback
+) {
+  Promise.all([
+    getRepBalance(address),
+    getDaiBalance(address),
+    getEthBalance(address),
+  ]).then(amounts => {
+    const rep = amounts[0];
+    const dai = amounts[1];
+    const eth = amounts[2];
+    dispatch(updateLoginAccountBalances({ rep, dai, eth }));
+    return callback(null, { rep, dai, eth });
+  });
 }
