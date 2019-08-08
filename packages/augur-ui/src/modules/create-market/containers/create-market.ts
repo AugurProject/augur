@@ -14,8 +14,8 @@ import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const mapStateToProps = state => ({
   universe: state.universe,
-  availableEth: getValue(state, "loginAccount.eth"),
-  availableRep: getValue(state, "loginAccount.rep"),
+  availableEth: state.loginAccount.balances.eth,
+  availableRep: state.loginAccount.balances.rep,
   meta: getValue(state, "loginAccount.meta"),
   newMarket: state.newMarket,
   categories: state.categories,

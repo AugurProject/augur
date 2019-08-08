@@ -19,7 +19,7 @@ const mapStateToProps = state => ({
   universe: state.universe.id,
   marketsData: state.marketsData,
   isMobile: state.appStatus.isMobile,
-  availableRep: getValue(state, "loginAccount.rep") || "0",
+  availableRep: state.loginAccount.balances.rep,
   gasPrice: getGasPrice(state)
 });
 

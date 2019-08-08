@@ -59,12 +59,10 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
           tabIndex={-1}
         >
           <div>
-            <div className={Styles.status}>
-              <div
-                className={classNames(Styles.statusIndicator, {
-                  [Styles.statusGreen]: isLogged,
-                })}
-              />
+            <div className={classNames(Styles.status, {
+                  [Styles.logged]: isLogged,
+                })}>
+              <div className={Styles.statusIndicator} />
               {isLogged ? "Connected" : "Disconnected"}
             </div>
             <div className={Styles.title}>

@@ -21,7 +21,7 @@ export interface BaseDocument {
 }
 
 export abstract class AbstractDB {
-  protected db: PouchDB.Database;
+  public db: PouchDB.Database;
   protected networkId: number;
   readonly dbName: string;
 
