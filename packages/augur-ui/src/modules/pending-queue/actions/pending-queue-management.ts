@@ -13,6 +13,7 @@ export const addPendingData = (
   pendingId: string,
   queueName: string,
   status: string,
+  info?: object,
 ): BaseAction => ({
   type: ADD_PENDING_DATA,
   data: {

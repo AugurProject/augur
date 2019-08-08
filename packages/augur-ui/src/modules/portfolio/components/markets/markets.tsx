@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
-import { LinearPropertyLabel } from "modules/common/labels";
+import { LinearPropertyLabel, PendingLabel } from "modules/common/labels";
 import { MarketProgress } from "modules/common/progress";
 import { END_TIME } from "modules/common/constants";
 
@@ -43,20 +43,22 @@ function filterComp(input, market) {
 function renderToggleContent(market) {
   return (
     <div className={Styles.InfoParent}>
-      <div>
+      {!market.pending &&
         <div>
-          <LinearPropertyLabel
-            label="Volume"
-            highlightFirst
-            value={`${market.volumeFormatted.formatted} DAI`}
-          />
-          <LinearPropertyLabel
-            label="Open Interest"
-            highlightFirst
-            value={`${market.openInterestFormatted.formatted} DAI`}
-          />
+          <div>
+            <LinearPropertyLabel
+              label="Volume"
+              highlightFirst
+              value={`${market.volumeFormatted.formatted} DAI`}
+            />
+            <LinearPropertyLabel
+              label="Open Interest"
+              highlightFirst
+              value={`${market.openInterestFormatted.formatted} DAI`}
+            />
+          </div>
         </div>
-      </div>
+      }
     </div>
   );
 }
@@ -83,18 +85,26 @@ class MyMarkets extends Component<MyMarketsProps> {
     const { currentAugurTimestamp, reportingWindowStatsEndTime } = this.props;
 
     return (
-      <MarketProgress
-        reportingState={market.reportingState}
-        currentTime={currentAugurTimestamp}
-        endTime={market.endTime}
-        reportingWindowEndtime={reportingWindowStatsEndTime}
-        alignRight
-      />
+      <>
+        {market.pending && 
+          <PendingLabel />
+        }
+        {!market.pending && 
+          <MarketProgress
+            reportingState={market.reportingState}
+            currentTime={currentAugurTimestamp}
+            endTime={market.endTime}
+            reportingWindowEndtime={reportingWindowStatsEndTime}
+            alignRight
+          />
+        }
+      </>
     );
   }
 
   render() {
     const { myMarkets } = this.props;
+    console.log(myMarkets);
 
     return (
       // @ts-ignore
