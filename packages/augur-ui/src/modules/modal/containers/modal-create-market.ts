@@ -52,7 +52,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
               : newMarket.designatedReporterAddress,
           minPrice: newMarket.minPrice,
           maxPrice: newMarket.maxPrice,
-          endTime: newMarket.endTime.timestamp,
+          endTime: newMarket.endTimeFormatted.timestamp,
           tickSize: newMarket.tickSize,
           marketType: newMarket.marketType,
           detailsText: newMarket.detailsText,
