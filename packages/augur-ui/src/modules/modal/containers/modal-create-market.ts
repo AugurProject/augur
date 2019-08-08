@@ -40,17 +40,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       action: () => {
         const { newMarket, address } = sP;
         createMarket({
-          isValid: true,
-          validations: newMarket.validations,
-          currentStep: newMarket.currentStep,
-          outcomes: [],
+          outcomes: newMarket.outcomes,
           scalarSmallNum: newMarket.minPrice,
           scalarBigNum: newMarket.maxPrice,
           scalarDenomination: newMarket.scalarDenomination,
           description: newMarket.description,
-          expirySourceType: newMarket.expirySourceType,
           expirySource: newMarket.expirySource,
-          designatedReporterType: newMarket.designatedReporterType,
           designatedReporterAddress:
             newMarket.designatedReporterAddress === ''
               ? address
@@ -59,20 +54,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
           maxPrice: newMarket.maxPrice,
           endTime: newMarket.endTime.timestamp,
           tickSize: newMarket.tickSize,
-          hour: newMarket.hour,
-          minute: newMarket.minute,
-          meridiem: newMarket.meridiem,
           marketType: newMarket.marketType,
           detailsText: newMarket.detailsText,
-          categories: ['', '', ''],
-          settlementFee: 0,
-          affiliateFee: 0,
-          orderBook: {},
-          orderBookSorted: {},
-          orderBookSeries: {},
-          initialLiquidityDai: 0,
-          initialLiquidityGas: 0,
-          creationError: '',
+          categories: newMarket.categories,
+          settlementFee: newMarket.settlementFee,
+          affiliateFee: newMarket.affiliateFee,
         });
         dP.closeModal();
         if (sP.modal.cb) {
