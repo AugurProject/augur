@@ -19,6 +19,7 @@ export const addPendingData = (
     pendingId,
     queueName,
     status,
+    info
   },
 });
 
