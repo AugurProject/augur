@@ -637,7 +637,8 @@ contract GnosisSafe is MasterCopy, BaseSafe, SignatureDecoder, SecuredTokenTrans
         // Increase nonce and execute transaction.
         nonce++;
         checkSignatures(keccak256(txHashData), txHashData, signatures, true);
-        require(gasleft() >= safeTxGas, "Not enough gas to execute safe transaction");
+        // XXX Removed the require below as it causes errors currently in ganache
+        //require(gasleft() >= safeTxGas, "Not enough gas to execute safe transaction");
         uint256 gasUsed = gasleft();
         // If no safeTxGas has been set and the gasPrice is 0 we assume that all available gas can be used
         success = execute(to, value, data, operation, safeTxGas == 0 && gasPrice == 0 ? gasleft() : safeTxGas);

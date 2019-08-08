@@ -16,6 +16,8 @@ import { ContractAddresses } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";
 import { formatBytes32String } from "ethers/utils";
 import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
+import { ContractDependenciesGnosis } from "contract-dependencies-gnosis/build";
+import { GnosisSafe } from "@augurproject/core/build/libraries/GenericContractInterfaces";
 
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -27,12 +29,13 @@ export class ContractAPI {
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay);
 
-    return new ContractAPI(augur, provider, account);
+    return new ContractAPI(augur, provider, dependencies, account);
   }
 
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
+    readonly dependencies: ContractDependenciesGnosis,
     public account: Account
   ) {}
 
@@ -44,7 +47,6 @@ export class ContractAPI {
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
     const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     await this.faucet(marketCreationFee);
-
     return this.augur.createYesNoMarket(params);
   }
 
@@ -426,6 +428,10 @@ export class ContractAPI {
 
   getRepAllowance(owner: string, spender: string): Promise<BigNumber> {
     return this.augur.contracts.getReputationToken().allowance_(owner, spender);
+  }
+
+  setGnosisSafeAddress(safeAddress: string): void {
+    this.augur.setGnosisSafeAddress(safeAddress);
   }
 
   setUseGnosisSafe(useSafe: boolean): void {

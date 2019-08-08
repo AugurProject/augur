@@ -129,7 +129,12 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getAccount(): Promise<string | null> {
-    const account = await this.dependencies.address;
+    let account;
+    if (this.dependencies.useSafe) {
+      account = this.dependencies.safeAddress;
+    } else {
+      account = await this.dependencies.address;
+    }
     if (!account) return account;
     return getAddress(account);
   }
@@ -142,6 +147,10 @@ export class Augur<TProvider extends Provider = Provider> {
     };
     const ethersTransaction = this.dependencies.transactionToEthersTransaction(transaction);
     await this.dependencies.signer.sendTransaction(ethersTransaction);
+  }
+
+  setGnosisSafeAddress(safeAddress: string): void {
+    this.dependencies.setSafeAddress(safeAddress);
   }
 
   setUseGnosisSafe(useSafe: boolean): void {
