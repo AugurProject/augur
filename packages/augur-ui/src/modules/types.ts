@@ -274,7 +274,7 @@ export interface NewMarketPropertiesValidations {
   hour?: string;
   minute?: string;
   meridiem?: string;
-  outcomes?: string;
+  outcomes?: string[];
 }
 
 export interface NewMarketPropertyValidations {
