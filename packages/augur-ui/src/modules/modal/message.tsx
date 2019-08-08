@@ -21,6 +21,7 @@ import {
   CheckboxCTAProps,
   Content,
   ContentProps,
+  Subheader
 } from "modules/modal/common";
 import {
   LinearPropertyLabelProps,
@@ -57,7 +58,9 @@ export const Message = ({
   marketReview,
   checkbox,
   content,
-  buttons
+  buttons,
+  subheader,
+  subheader_2
 }: MessageProps) => (
   <div className={Styles.Message}>
     <Title title={title} closeAction={closeAction} />
@@ -71,6 +74,8 @@ export const Message = ({
       {/*
         // @ts-ignore */}
       {description && <Description description={description} />}
+      {subheader && <Subheader subheaderContent={subheader} />}
+      {subheader_2 && <Subheader subheaderContent={subheader_2} />}
       {breakdown && <Breakdown rows={breakdown} />}
       {readableAddress && <ReadableAddress {...readableAddress} />}
       {depositInfo && <DepositInfo {...depositInfo} />}

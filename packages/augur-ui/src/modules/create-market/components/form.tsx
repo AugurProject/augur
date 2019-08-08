@@ -55,7 +55,7 @@ import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
 import makePath from 'modules/routes/helpers/make-path';
-import { CREATE_MARKET } from 'modules/routes/constants/views';
+import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
 import { DEFAULT_STATE } from 'modules/markets/reducers/new-market';
 import {
   isBetween,
@@ -88,6 +88,7 @@ interface FormProps {
   clearNewMarket: Function;
   discardModal: Function;
   template: boolean;
+  openCreateMarketModal: Function;
 }
 
 interface FormState {
@@ -360,32 +361,6 @@ export default class Form extends React.Component<FormProps, FormState> {
     }
   };
 
-  submitMarket = () => {
-    const { newMarket, address } = this.props;
-
-    createMarket({
-      outcomes: newMarket.outcomes,
-      scalarSmallNum: newMarket.minPrice,
-      scalarBigNum: newMarket.maxPrice,
-      scalarDenomination: newMarket.scalarDenomination,
-      expirySource: newMarket.expirySource,
-      description: newMarket.description,
-      designatedReporterAddress:
-        newMarket.designatedReporterAddress === ''
-          ? address
-          : newMarket.designatedReporterAddress,
-      minPrice: newMarket.minPrice,
-      maxPrice: newMarket.maxPrice,
-      endTime: newMarket.endTimeFormatted.timestamp,
-      tickSize: newMarket.tickSize,
-      marketType: newMarket.marketType,
-      detailsText: newMarket.detailsText,
-      categories: newMarket.categories,
-      settlementFee: newMarket.settlementFee,
-      affiliateFee: newMarket.affiliateFee,
-    });
-  };
-
   evaluate = (validationsObj: Validations) => {
     const { newMarket } = this.props;
 
@@ -525,7 +500,13 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   render() {
-    const { newMarket, drafts, template } = this.props;
+    const { 
+      newMarket, 
+      drafts, 
+      template, 
+      openCreateMarketModal,
+      history 
+    } = this.props;
     const { contentPages } = this.state;
 
     const { currentStep, validations, uniqueId } = newMarket;
@@ -626,7 +607,15 @@ export default class Form extends React.Component<FormProps, FormState> {
                     <PrimaryButton text="Next" action={this.nextPage} />
                   )}
                   {secondButton === CREATE && (
-                    <PrimaryButton text="Create" action={this.submitMarket} />
+                    <PrimaryButton text="Create" action={() => {
+                      openCreateMarketModal(() => {
+                        this.setState({blockShown: true}, () => {
+                          history.push({
+                            pathname: makePath(MY_POSITIONS, null),
+                          });
+                        });
+                      })
+                    }} />
                   )}
                 </div>
               </div>
