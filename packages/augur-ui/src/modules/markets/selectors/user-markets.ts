@@ -9,7 +9,7 @@ import { CREATE_MARKET } from 'modules/common/constants';
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import { isSameAddress } from "utils/isSameAddress";
-import { formatDate } from "utils/format-date";
+import { convertUnixToFormattedDate } from "utils/format-date";
 
 export const selectAuthorOwnedMarkets = createSelector(
   selectAllMarkets,
@@ -28,9 +28,9 @@ export const selectAuthorOwnedMarkets = createSelector(
       data.id = key;
       data.description = extraInfo.description;
       data.pending = true;
-      data.endTime = formatDate(data.info.endTime);
-      data.recentlyTraded = formatDate(currentTimestamp);
-      data.creationTime = formatDate(currentTimestamp);
+      data.endTime = convertUnixToFormattedDate(parseInt(data.info.endTime));
+      data.recentlyTraded = convertUnixToFormattedDate(currentTimestamp);
+      data.creationTime = convertUnixToFormattedDate(currentTimestamp);
       return data;
     });
     filteredMarkets = filteredMarkets.concat(pendingMarkets);

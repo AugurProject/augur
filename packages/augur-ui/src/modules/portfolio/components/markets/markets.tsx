@@ -104,7 +104,6 @@ class MyMarkets extends Component<MyMarketsProps> {
 
   render() {
     const { myMarkets } = this.props;
-    console.log(myMarkets);
 
     return (
       // @ts-ignore
