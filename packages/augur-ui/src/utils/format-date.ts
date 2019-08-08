@@ -65,7 +65,6 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
 
   return {
     value: date,
-    simpleDate: `${date.getUTCDate()} ${months[date.getUTCMonth()]}`,
     formatted: `${
       months[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(
@@ -78,14 +77,6 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     formattedShort: `${shortMonths[date.getUTCMonth()]}${(
       '0' + date.getUTCDate()
     ).slice(-2)} ${date.getUTCFullYear()} ${utcTimeWithSeconds.join(':')}`,
-    formattedLocal: `${
-      months[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
-      ':'
-    )} ${localAMPM} (UTC ${localOffsetFormatted})`, // local time
-    formattedLocalShortDate: `${
-      shortMonths[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()}`,
     formattedLocalShortDateSecondary: `${date.getDate()} ${
       shortMonths[date.getMonth()]
     } ${date.getFullYear()}`,
@@ -97,7 +88,6 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ':'
     )} ${localAMPM} (UTC ${localOffsetFormatted})`, // local time
-    full: date.toUTCString(),
     timestamp: date.getTime() / 1000,
     utcLocalOffset: localOffset,
     clockTimeLocal: `${localTimeTwelve.join(
