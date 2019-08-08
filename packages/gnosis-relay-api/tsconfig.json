@@ -8,5 +8,8 @@
     "src/**/*"
   ],
   "references": [
+    {
+      "path": "../augur-artifacts"
+    }
   ]
 }

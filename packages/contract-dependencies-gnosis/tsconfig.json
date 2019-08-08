@@ -11,6 +11,8 @@
     "path": "../contract-dependencies"
   },{
     "path": "../contract-dependencies-ethers"
+  },{
+    "path": "../gnosis-relay-api"
   }
 ]
 }
