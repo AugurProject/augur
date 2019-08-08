@@ -9,7 +9,7 @@ import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
-  rep: state.loginAccount.rep,
+  rep: state.loginAccount.balances.rep,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

@@ -29,13 +29,15 @@
 
   > div.TopBar_blockGasAcccount_HideMobile {
     @media @breakpoint-mobile {
-      display: none;
+      > div {
+        display: none;
+      }
     }
   }
 }
 
 .statsContainer {
-  width: 400px;
+  width: min-content;
 
   @media @breakpoint-mobile {
     width: auto;
@@ -73,8 +75,8 @@
 
     @media @breakpoint-mobile {
       border: 0;
-      margin: @size-12 @size-16;
-      max-width: 175px;
+      margin: @size-8 @size-12;
+      max-width: 180px;
 
       > span {
         display: flex;
@@ -124,10 +126,6 @@
   &:focus {
     outline: none;
   }
-
-  @media @breakpoint-mobile {
-    display: none;
-  }
 }
 
 .alertsDisabled {
@@ -176,5 +174,6 @@ div.tooltip {
 
 .Logo {
   background: @color-theme-primary;
-  margin-left: 2.5rem;
+  margin-left: 3rem;
+  margin-right: auto;
 }

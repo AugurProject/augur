@@ -1,8 +1,8 @@
 import * as HTTPEndpoint from "./HTTPEndpoint";
 import * as Sync from "./Sync";
 import * as WebsocketEndpoint from "./WebsocketEndpoint";
-import {EndpointSettings} from "./getter/types";
-import {EventEmitter} from "events";
+import { EndpointSettings } from "./getter/types";
+import { EventEmitter } from "events";
 
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");

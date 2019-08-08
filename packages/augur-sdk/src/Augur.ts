@@ -19,6 +19,7 @@ import { Users } from "./state/getter/Users";
 import { getAddress } from "ethers/utils/address";
 import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
 import { Liquidity } from "./api/Liquidity";
+import { TransactionResponse } from "ethers/providers";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
@@ -99,11 +100,11 @@ export class Augur<TProvider extends Provider = Provider> {
     return augur;
   }
 
-  async getTransaction(hash: string): Promise<string> {
+  async getTransaction(hash: string): Promise<TransactionResponse> {
     const tx = await this.dependencies.provider.getTransaction(hash);
-    if (!tx) return "";
-    return tx.from;
+    return tx;
   }
+
   async listAccounts() {
     return this.dependencies.provider.listAccounts();
   }

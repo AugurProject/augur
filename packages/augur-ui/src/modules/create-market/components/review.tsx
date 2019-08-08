@@ -1,18 +1,17 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import classNames from "classnames";
-import moment from "moment";
 
 import { createBigNumber } from 'utils/create-big-number';
 import getValue from 'utils/get-value';
-import findInsufficientFunds from 'modules/markets/helpers/insufficient-funds';
+import findInsufficientFunds, { InsufficientFunds } from 'modules/markets/helpers/insufficient-funds';
 import {
   Header,
   LineBreak,
   SmallSubheaders,
   Subheaders,
   OutcomesList,
-  SmallSubheadersTooltip
+  SmallSubheadersTooltip,
+  NoFundsErrors
 } from "modules/create-market/components/common";
 import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
 import {
@@ -29,30 +28,22 @@ import { getCreateMarketBreakdown } from 'modules/contracts/actions/contractCall
 import {
   formatEtherEstimate,
   formatGasCostToEther,
-  formatPercent,
   formatDai,
-  formatEther
+  formatEther,
 } from 'utils/format-number';
-import { Error } from 'modules/common/form';
 import { NewMarket, FormattedNumber } from 'modules/types';
 
-import Styles from "modules/create-market/components/review.styles";
+import Styles from "modules/create-market/components/review.styles.less";
 
 interface ReviewProps {
   newMarket: NewMarket;
   updateNewMarket: Function;
   address: string;
   gasPrice: string;
-  availableRep: number;
-  availableEth: number;
-  availableDai: number;
+  availableRepFormatted: FormattedNumber;
+  availableEthFormatted: FormattedNumber;
+  availableDaiFormatted: FormattedNumber;
   estimateSubmitNewMarket: Function;
-}
-
-interface InsufficientFunds {
-  [ETH]?: boolean;
-  [REP]?: boolean;
-  [DAI]?: boolean;
 }
 
 interface ReviewState {
@@ -121,24 +112,24 @@ export default class Review extends React.Component<
     }
     if (this.state.validityBond !== nextState.validityBond) {
       if (nextState.validityBond) {
-        const insufficientFunds = this.getFundsString();
+        const insufficientFunds = this.getInsufficientFundsAmounts();
         if (this.state.insufficientFunds !== insufficientFunds) {
           this.updateFunds(insufficientFunds);
         }
       }
     }
     if (
-      this.props.availableEth !== nextProps.availableEth ||
-      this.props.availableRep !== nextProps.availableRep
+      this.props.availableEthFormatted.value !== nextProps.availableEthFormatted.value ||
+      this.props.availableRepFormatted.value !== nextProps.availableRepFormatted.value
     ) {
       this.calculateMarketCreationCosts();
     }
   }
 
-  getFundsString(testWithLiquidity = false) {
-    const { availableEth, availableRep, availableDai, gasPrice } = this.props;
+  getInsufficientFundsAmounts(testWithLiquidity = false): InsufficientFunds {
+    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted } = this.props;
     const s = this.state;
-    let insufficientFunds = '';
+    let insufficientFunds: InsufficientFunds = null;
 
     if (s.validityBond) {
       const validityBond = getValue(s, 'validityBond.formattedValue');
@@ -159,13 +150,12 @@ export default class Review extends React.Component<
         validityBond,
         gasCost || '0',
         designatedReportNoShowReputationBond,
-        createBigNumber(availableEth, 10),
-        createBigNumber(availableRep, 10),
-        createBigNumber(availableDai, 10),
+        createBigNumber(availableEthFormatted.value || '0'),
+        createBigNumber(availableRepFormatted.value || '0'),
+        createBigNumber(availableDaiFormatted.value || '0'),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
-        testWithLiquidity,
-        gasPrice
+        testWithLiquidity
       );
     }
 
@@ -189,7 +179,7 @@ export default class Review extends React.Component<
         ,
       },
       () => {
-        const funds = this.getFundsString();
+        const funds = this.getInsufficientFundsAmounts();
         if (funds) {
           this.updateFunds(funds);
         }
@@ -209,7 +199,7 @@ export default class Review extends React.Component<
                 ),
               },
               () => {
-                this.updateFunds(this.getFundsString(true));
+                this.updateFunds(this.getInsufficientFundsAmounts(true));
               }
             );
           }
@@ -221,7 +211,9 @@ export default class Review extends React.Component<
   render() {
     const {
       newMarket,
-      availableEth
+      availableEthFormatted,
+      availableDaiFormatted,
+      availableRepFormatted,
     } = this.props;
     const s = this.state;
 
@@ -229,7 +221,7 @@ export default class Review extends React.Component<
       categories,
       marketType,
       description,
-      endTime,
+      endTimeFormatted,
       detailsText,
       expirySourceType,
       expirySource,
@@ -247,10 +239,9 @@ export default class Review extends React.Component<
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
     const totalEth = formatEther(createBigNumber(s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
 
-    const noEth = s.insufficientFunds !== "" && s.insufficientFunds[ETH];
-    const noRep = s.insufficientFunds !== "" && s.insufficientFunds[REP];
-    const noDai = s.insufficientFunds !== "" && s.insufficientFunds[DAI];
-
+    const noEth = s.insufficientFunds[ETH];
+    const noRep = s.insufficientFunds[REP];
+    const noDai = s.insufficientFunds[DAI];
 
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
@@ -265,7 +256,7 @@ export default class Review extends React.Component<
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
               <SmallSubheaders header="Numeric range" subheader={minPrice + "-" + maxPrice} />
-              <SmallSubheaders header="precision" subheader={tickSize} />
+              <SmallSubheaders header="precision" subheader={tickSize.toString()} />
             </>
           }
           {marketType === CATEGORICAL &&
@@ -280,7 +271,7 @@ export default class Review extends React.Component<
         <LineBreak />
         <Header text="Resolution information" />
         <div>
-          <SmallSubheaders header="Reporting start date and time" subheader={(endTime || {}).formattedUtc} />
+          <SmallSubheaders header="Reporting start date and time" subheader={endTimeFormatted.formattedUtc} />
           <SmallSubheaders header="resolution details" subheader={detailsText === "" ? "–" : detailsText} />
           <SmallSubheaders
             header="Resolution source"
@@ -344,13 +335,17 @@ export default class Review extends React.Component<
               value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REP"}
             />
           </span>
-          {(noEth || noRep || noDai) &&
-            <Error
-              alternate
-              header="You don't have enough funds in your wallet"
-              subheader={"You have " + (noEth ? availableEth + " ETH of " + totalEth.formattedValue  + " ETH " : "" ) + "required to create this market."}
-            />
-          }
+          <NoFundsErrors
+            noEth={noEth}
+            noRep={noRep}
+            noDai={noDai}
+            availableDaiFormatted={availableDaiFormatted}
+            availableEthFormatted={availableEthFormatted}
+            availableRepFormatted={availableRepFormatted}
+            totalDai={totalDai}
+            totalEth={totalEth}
+            totalRep={s.designatedReportNoShowReputationBond}
+          />
         </div>
       </div>
     );

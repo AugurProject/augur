@@ -18,11 +18,12 @@ export function loadCreateMarketHistory(
     const Augur = augurSdk.get();
     const universeId = universe.id;
     if (universeId) {
-      const marketIds = await Augur.getMarkets({
+      const marketList = await Augur.getMarkets({
         ...options,
         creator: loginAccount.address,
         universe: universeId,
       });
+      const marketIds = marketList.markets.map(marketInfo => marketInfo.id);
       if (marketIdAggregator) marketIdAggregator(marketIds);
     }
   };

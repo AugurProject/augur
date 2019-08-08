@@ -445,34 +445,59 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
   </div>
 );
 
-export const LinearPropertyLabel = (props: LinearPropertyLabelProps) => (
+export const LinearPropertyLabel = ({
+  highlight,
+  highlightAlternateBolded,
+  highlightFirst,
+  label,
+  useValueLabel,
+  showDenomination,
+  accentValue,
+  value
+}: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
-      [Styles.HighlightAlternate]:
-        props.highlightAlternate || props.highlightAlternateBolded,
-      [Styles.Highlight]: props.highlight,
-      [Styles.HighlightAlternateBolded]: props.highlightAlternateBolded,
-      [Styles.HighlightFirst]: props.highlightFirst
+      [Styles.Highlight]: highlight,
+      [Styles.HighlightAlternateBolded]: highlightAlternateBolded,
+      [Styles.HighlightFirst]: highlightFirst
     })}
   >
-    <span>{props.label}</span>
+    <span>{label}</span>
     <DashlineNormal />
-    {props.useValueLabel ? (
+    {useValueLabel ? (
       <ValueLabel
-        value={props.value}
-        showDenomination={props.showDenomination}
+        value={value}
+        showDenomination={showDenomination}
       />
     ) : (
       <span
         className={classNames({
-          [Styles.isAccented]: props.accentValue
+          [Styles.isAccented]: accentValue
         })}
       >
-        {props.value && props.value.formatted
-          ? `${props.value.formatted} ${
-              props.showDenomination ? props.value.denomination : ""
+        {value && value.formatted
+          ? `${value.formatted} ${
+              showDenomination ? value.formatted : ""
             }`
-          : props.value}
+          : value}
+      </span>
+    )}
+    {useValueLabel ? (
+      <ValueLabel
+        value={value}
+        showDenomination={showDenomination}
+      />
+    ) : (
+      <span
+        className={classNames({
+          [Styles.isAccented]: accentValue
+        })}
+      >
+        {value && value.formatted
+          ? `${value.formatted} ${
+              showDenomination ? value.denomination : ""
+            }`
+          : value}
       </span>
     )}
   </div>

@@ -83,7 +83,6 @@ const reportingStateToLabelTime = (
     case REPORTING_STATE.AWAITING_FORK_MIGRATION:
       label = "Awaiting Fork Migration";
       break;
-    case REPORTING_STATE.AWAITING_FINALIZATION:
     case REPORTING_STATE.FINALIZED:
     default:
       label = "Expired";
@@ -235,7 +234,7 @@ export const TimeProgressBar = (props: TimeProgressBarProps) => {
 
 export const MarketTimeline = (props: TimeProgressBarProps) => {
   const { startTime, endTime, currentTime } = props;
-  let formattedEndTime: DateFormattedObject = endTime;
+  const formattedEndTime: DateFormattedObject = endTime;
   let formattedCurrentTime: DateFormattedObject | number = currentTime;
 
   if (!currentTime) {

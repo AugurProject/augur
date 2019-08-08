@@ -244,6 +244,7 @@ export interface UIOrder {
   cumulativeShares?: number;
   ignoreShares?: boolean;
   status?: string;
+  hash?: string;
 }
 
 export interface LiquidityOrders {
@@ -277,6 +278,7 @@ export interface NewMarketPropertiesValidations {
 
 export interface NewMarketPropertyValidations {
   settlementFee: string | null;
+  scalarDenomination: string | null;
 }
 export interface NewMarket {
   isValid: boolean;
@@ -297,7 +299,8 @@ export interface NewMarket {
   minPrice: string;
   maxPrice: string;
   endTime: number;
-  tickSize: string;
+  endTimeFormatted: DateFormattedObject;
+  tickSize: number;
   hour: string;
   minute: string;
   meridiem: string;
@@ -311,6 +314,7 @@ export interface NewMarket {
   initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
+  offset: number;
 }
 export interface Draft {
   uniqueId: number;
@@ -553,6 +557,11 @@ export interface TimeframeData {
   successfulDisputes: number;
   redeemedPositions: number;
 }
+export interface AccountBalances {
+  eth: number;
+  rep: number;
+  dai: number;
+}
 export interface LoginAccount {
   address?: string;
   displayAddress?: string;
@@ -562,9 +571,7 @@ export interface LoginAccount {
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;
   allowance?: BigNumber;
-  eth?: string;
-  rep?: string;
-  dai?: string;
+  balances: AccountBalances;
 }
 
 export interface Web3 {

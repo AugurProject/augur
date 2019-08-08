@@ -25,15 +25,15 @@ export const selectLoginAccount = createSelector(
     return {
       ...loginAccount,
       ...genAccountProperties,
-      rep: formatRep(loginAccount.rep, {
+      rep: formatRep(loginAccount.balances.rep, {
         zeroStyled: false,
         decimalsRounded: 4
       }),
-      dai: formatDai(loginAccount.dai, {
+      dai: formatDai(loginAccount.balances.dai, {
         zeroStyled: false,
         decimalsRounded: 4
       }),
-      eth: formatEther(loginAccount.eth, {
+      eth: formatEther(loginAccount.balances.eth, {
         zeroStyled: false,
         decimalsRounded: 4
       })
@@ -47,8 +47,8 @@ export const selectAccountFunds = createSelector(
     let totalAvailableTradingBalance = createBigNumber(0);
     let totalFrozenFunds = createBigNumber(0);
 
-    if (loginAccount.dai && loginAccount.dai.value) {
-      totalAvailableTradingBalance = createBigNumber(loginAccount.dai.value);
+    if (loginAccount.balances.dai && loginAccount.balances.dai) {
+      totalAvailableTradingBalance = createBigNumber(loginAccount.balances.dai);
     }
 
     if (loginAccount.totalFrozenFunds) {

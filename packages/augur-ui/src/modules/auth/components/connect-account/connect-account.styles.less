@@ -52,25 +52,30 @@
 .status {
   .mono-10;
 
-  color: @color-tertiary-text;
+  color: @color-negative;
   margin-bottom: @size-4;
 }
 
 .statusIndicator {
-  background-color: @color-offwhite;
+  background-color: @color-negative;
   border-radius: 50%;
   display: inline-block;
   margin-right: @size-5;
   min-height: @size-8;
   min-width: @size-8;
+  text-transform: uppercase;
 }
 
-.statusGreen {
-  background-color: #00ffb1;
+.logged {
+  color: @color-positive;
+
+  > div {
+    background-color: @color-positive;
+  }
 }
 
 .title {
-  .text-14-bold;
+  .mono-12;
 
   display: flex;
 }

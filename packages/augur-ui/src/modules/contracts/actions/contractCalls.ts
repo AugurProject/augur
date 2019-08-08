@@ -6,13 +6,18 @@
 // put all calls to contracts here that need conversion from display values to onChain values
 import { augurSdk } from 'services/augursdk';
 import { BigNumber } from 'bignumber.js';
-import { formatAttoRep, formatAttoEth, formatAttoDai } from 'utils/format-number';
+import {
+  formatAttoRep,
+  formatAttoEth,
+  formatAttoDai,
+} from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
   SimulateTradeData,
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
+  stringTo32ByteHex,
 } from '@augurproject/sdk';
 
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
@@ -34,6 +39,16 @@ export function clearUserTx(): void {
 
 export function isWeb3Transport(): boolean {
   return augurSdk.isWeb3Transport;
+}
+
+export async function isTransactionConfirmed(hash: string): Promise<boolean> {
+  const tx = await getTransaction(hash);
+  if (!tx) {
+    console.log("Transaction could not be found", hash);
+    return false;
+  }
+  // confirmations is number of blocks beyond block that includes tx
+  return tx.confirmations > 0;
 }
 
 export async function getTransaction(hash: string): Promise<any> {
@@ -83,24 +98,24 @@ export async function getTimestamp(): Promise<number> {
   return timestamp.toNumber();
 }
 
-export async function getRepBalance(address: string) {
+export async function getRepBalance(address: string): Promise<number> {
   const { contracts } = augurSdk.get();
   const RepToken = contracts.getReputationToken();
   const balance = await RepToken.balanceOf_(address);
-  return formatAttoRep(balance).formattedValue;
+  return formatAttoRep(balance).value;
 }
 
-export async function getEthBalance(address: string): Promise<string> {
+export async function getEthBalance(address: string): Promise<number> {
   const Augur = augurSdk.get();
   const balance = await Augur.getEthBalance(address);
-  const balances = formatAttoEth(balance, { decimals: 4 }).formattedValue;
-  return balances as string;
+  const balances = formatAttoEth(balance, { decimals: 4 });
+  return balances.value;
 }
 
-export async function getDaiBalance(address: string) {
+export async function getDaiBalance(address: string): Promise<number> {
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
-  return formatAttoEth(balance).formattedValue;
+  return formatAttoDai(balance).value;
 }
 
 export async function sendEthers(address: string, amount: string) {
@@ -200,21 +215,19 @@ export async function getCreateMarketBreakdown() {
 }
 
 export function createMarket(newMarket: NewMarket) {
-  const feePerCashInAttoCash = new BigNumber(
-    newMarket.settlementFee
-  ).multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
+  const fee = new BigNumber(newMarket.settlementFee).div(new BigNumber(100))
+  const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
   const marketEndTime = new BigNumber(newMarket.endTime);
   const extraInfo = JSON.stringify({
-    categories: [newMarket.categories[0]],
+    categories: newMarket.categories,
     description: newMarket.description,
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
-    tags: [newMarket.categories[1], newMarket.categories[2]],
     scalarDenomination: newMarket.scalarDenomination,
   });
 
-  const baseParams = {
+  const baseParams: CreateYesNoMarketParams = {
     endTime: marketEndTime,
     feePerCashInAttoCash,
     affiliateFeeDivisor,
@@ -232,25 +245,20 @@ export function createMarket(newMarket: NewMarket) {
       const numTicks = prices[1]
         .minus(prices[0])
         .dividedBy(new BigNumber(newMarket.tickSize));
-      const params: CreateScalarMarketParams = {
-        ...baseParams,
+      const params: CreateScalarMarketParams = Object.assign(baseParams, {
         prices,
         numTicks,
-      };
+      });
       return Augur.createScalarMarket(params);
     }
     case CATEGORICAL: {
-      const params: CreateCategoricalMarketParams = {
-        ...baseParams,
-        outcomes: newMarket.outcomes,
-      };
+      const params: CreateCategoricalMarketParams = Object.assign(baseParams, {
+        outcomes: newMarket.outcomes.map(o => stringTo32ByteHex(o)),
+      });
       return Augur.createCategoricalMarket(params);
     }
     default: {
-      const params: CreateYesNoMarketParams = {
-        ...baseParams,
-      };
-      return Augur.createYesNoMarket(params);
+      return Augur.createYesNoMarket(baseParams);
     }
   }
 }

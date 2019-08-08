@@ -42,7 +42,6 @@ const mapStateToProps = (state) => {
           upcomingDisputableMarkets.push(market);
         }
         break;
-      case constants.REPORTING_STATE.AWAITING_FINALIZATION:
       case constants.REPORTING_STATE.FINALIZED:
         resolvedMarkets.push(market);
         break;
@@ -66,7 +65,7 @@ const mapStateToProps = (state) => {
   return {
     currentTimestamp: selectCurrentTimestamp(state),
     forkedMarket,
-    availableRep: state.loginAccount.rep,
+    availableRep: state.loginAccount.balances.rep,
     isLogged: state.authStatus.isLogged,
     isMobile: state.appStatus.isMobile,
     isConnected: state.connection.isConnected && state.universe.id != null,

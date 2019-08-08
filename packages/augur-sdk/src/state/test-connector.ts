@@ -7,7 +7,6 @@ import { ContractDependenciesEthers } from "contract-dependencies-ethers";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { JsonRpcProvider } from "ethers/providers";
 import { MarketCreated, NewBlock } from "../events";
-import { Markets } from "./getter/Markets";
 import { SubscriptionEventName } from "../constants";
 import { SEOConnector } from "../connector/seo-connector";
 

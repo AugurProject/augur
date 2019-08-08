@@ -21,24 +21,26 @@ export const loadDisputing = (
   const args = {
     sortBy: "endTime",
     isSortDescending: false,
-    universe: universe.id
+    universe: universe.id,
   };
   const augur = augurSdk.get();
-  const disputingMarkets =         {
+  const disputingMarkets = {
     reportingState: [
       REPORTING_STATE.CROWDSOURCING_DISPUTE,
       REPORTING_STATE.AWAITING_FORK_MIGRATION
     ],
-    ...args
+    ...args,
   };
   const awaitingMarkets = {
     reportingState: REPORTING_STATE.AWAITING_NEXT_WINDOW,
-    ...args
+    ...args,
   };
-  const disputing = await augur.getMarkets(disputingMarkets);
+  const disputingMarketList = await augur.getMarkets(disputingMarkets);
+  const disputing = disputingMarketList.markets.map(marketInfo => marketInfo.id);
   dispatch(loadMarketsDisputeInfo(disputing));
   dispatch(updateCrowdDisputeMarkets(disputing));
-  const awaiting = await augur.getMarkets(awaitingMarkets);
+  const awaitingMarketList = await augur.getMarkets(awaitingMarkets);
+  const awaiting = awaitingMarketList.markets.map(marketInfo => marketInfo.id);
   dispatch(updateAwaitingDisputeMarkets(awaiting));
   callback(null);
 };

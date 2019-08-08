@@ -58,26 +58,29 @@ export const loadReporting = (
   }
   const augur = augurSdk.get();
   if (loginAccount.address) {
-    const preReportingIds = await augur.getMarkets({
+    const preReportingMarketList = await augur.getMarkets({
       reportingState: REPORTING_STATE.PRE_REPORTING,
       sortBy: "endTime",
-      ...designatedReportingParams
+      ...designatedReportingParams,
     });
-    dispatch(updateUpcomingDesignatedReportingMarkets(preReportingIds));
+    const preReportingMarketIds = preReportingMarketList.markets.map(marketInfo => marketInfo.id);
+    dispatch(updateUpcomingDesignatedReportingMarkets(preReportingMarketIds));
 
-    const designatedIds = await augur.getMarkets({
+    const designatedReportingMarketList = await augur.getMarkets({
       reportingState: REPORTING_STATE.DESIGNATED_REPORTING,
       sortBy: "endTime",
-      ...designatedReportingParams
+      ...designatedReportingParams,
     });
-    dispatch(updateDesignatedReportingMarkets(designatedIds));
+    const designatedReportingMarketIds = designatedReportingMarketList.markets.map(marketInfo => marketInfo.id);
+    dispatch(updateDesignatedReportingMarkets(designatedReportingMarketIds));
 
-    const marketIds = await augur.getMarkets({
+    const openReportingMarketList = await augur.getMarkets({
       reportingState: REPORTING_STATE.OPEN_REPORTING,
       sortBy: "endTime",
-      universe: universe.id
+      universe: universe.id,
     });
+    const openReportingMarketIds = designatedReportingMarketList.markets.map(marketInfo => marketInfo.id);
 
-    dispatch(updateOpenMarkets(marketIds));
+    dispatch(updateOpenMarkets(openReportingMarketIds));
   }
 };
