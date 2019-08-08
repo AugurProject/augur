@@ -50,6 +50,7 @@
     "@types/pouchdb-upsert": "^2.2.6",
     "@types/web3": "1.0.19",
     "async": "3.1.0",
+    "contract-dependencies-gnosis": "1.0.0-0",
     "cors": "2.8.5",
     "cross-fetch": "3.0.2",
     "ethereumjs-blockstream": "7.0.0",
