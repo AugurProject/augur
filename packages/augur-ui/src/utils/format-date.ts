@@ -132,6 +132,21 @@ function getTwelveHourTime(time: Array<number>): Array<string> {
   return values;
 }
 
+function getTimezoneAbbr(date: Date, timezone: string): string {
+  if (!timezone) return '';
+  let timezoneLocal = "";
+  try {
+    timezoneLocal = date.toLocaleTimeString('en-US', {
+      timeZone: timezone.replace(' ', '_'),
+      timeZoneName: 'short',
+    });
+  } catch(e){
+    console.log("could not find timezone", timezone);
+  }
+  return timezoneLocal.split(' ')[2];
+}
+const LONG_FORMAT = 'MMMM d, YYYY h:mm: A';
+
 export function buildformattedDate(
   timestamp: number,
   hour: number,
@@ -140,6 +155,7 @@ export function buildformattedDate(
   timezone: string,
   offset: number
 ) {
+
   const endTime = moment
     .unix(timestamp)
     .utc()
@@ -155,15 +171,13 @@ export function buildformattedDate(
   } else if (meridiem && meridiem === 'PM' && endTime.hours() < 12) {
     endTime.hours(endTime.hours() + 12);
   }
-
-  const longformat = "MMMM d YYYY h:mm: A";
-
-  const timezoneFormat = endTime.format(longformat);
-  const formattedTimezone = `${timezoneFormat} (${timezone})`;
+  const abbr = getTimezoneAbbr(endTime.toDate(), timezone);
+  const timezoneFormat = endTime.format(LONG_FORMAT);
+  const formattedTimezone = `${timezoneFormat} (${abbr})`;
 
   endTime.add(offset, 'hours');
 
-  const utcFormat = endTime.format(longformat);
+  const utcFormat = endTime.format(LONG_FORMAT);
   const formattedUtc = `${utcFormat} (UTC 0)`;
 
   return {
