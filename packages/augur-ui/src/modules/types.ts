@@ -25,17 +25,13 @@ export interface Alert {
 
 export interface DateFormattedObject {
   value: Date;
-  simpleDate: string;
   formatted: string;
   formattedShortDate: string;
   formattedShortTime: string;
   formattedShort: string;
-  formattedLocal: string;
-  formattedLocalShortDate: string;
   formattedLocalShort: string;
   formattedLocalShortTime: string;
   formattedLocalShortDateSecondary: string;
-  full: string;
   timestamp: number;
   utcLocalOffset: number;
   clockTimeLocal: string;
