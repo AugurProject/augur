@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js'
 import { ContractCompiler } from '../libraries/ContractCompiler';
 import { ContractDeployer } from '../libraries/ContractDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
-import { DeployerConfiguration } from '../libraries/DeployerConfiguration';
+import { CreateDeployerConfiguration } from '../libraries/DeployerConfiguration';
 import { NetworkConfiguration } from '../libraries/NetworkConfiguration';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { DisputeWindow, ShareToken, ClaimTradingProceeds, CompleteSets, TimeControlled, Cash, Universe, Market, CreateOrder, Orders, Trade, CancelOrder, LegacyReputationToken, DisputeCrowdsourcer, ReputationToken,  } from '../libraries/ContractInterfaces';
@@ -40,14 +40,15 @@ export class TestFixture {
         const signer = await EthersFastSubmitWallet.create(<string>networkConfiguration.privateKey, provider);
         const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
 
-        const deployerConfiguration = DeployerConfiguration.createWithControlledTime();
+        const deployerConfiguration = CreateDeployerConfiguration({ useNormalTime: false });
+
         let contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider, signer, compiledContracts);
 
         if (pretendToBeProduction) {
             const legacyRepAddress = await contractDeployer.uploadLegacyRep();
             await contractDeployer.initializeLegacyRep();
 
-            const fakeProdDeployerConfiguration = DeployerConfiguration.createWithControlledTime(legacyRepAddress, true);
+            const fakeProdDeployerConfiguration = CreateDeployerConfiguration({ useNormalTime: false, legacyRepAddress, isProduction: true });
             contractDeployer = new ContractDeployer(fakeProdDeployerConfiguration, dependencies, provider, signer, compiledContracts);
         }
 

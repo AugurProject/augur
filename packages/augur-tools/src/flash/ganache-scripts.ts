@@ -256,7 +256,7 @@ export function addGanacheScripts(flash: FlashSession) {
       }
 
       await this.call("ganache", { internal: true });
-      await this.call("deploy", { write_artifacts: writeArtifacts });
+      await this.call("deploy", { write_artifacts: writeArtifacts, time_controlled: "true" });
       await this.call("make-seed", { name, filepath, save: true });
     },
   });
