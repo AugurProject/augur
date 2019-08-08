@@ -43,7 +43,6 @@ import {
   NEW_ORDER_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { createMarket } from 'modules/contracts/actions/contractCalls';
 import {
   LargeHeader,
   ExplainerBlock,
@@ -500,12 +499,12 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   render() {
-    const { 
-      newMarket, 
-      drafts, 
-      template, 
+    const {
+      newMarket,
+      drafts,
+      template,
       openCreateMarketModal,
-      history 
+      history
     } = this.props;
     const { contentPages } = this.state;
 

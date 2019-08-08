@@ -156,9 +156,21 @@ export function buildformattedDate(
     endTime.hours(endTime.hours() + 12);
   }
 
+  const longformat = "MMMM d YYYY h:mm: A";
+
+  const timezoneFormat = endTime.format(longformat);
+  const formattedTimezone = `${timezoneFormat} (${timezone})`;
+
   endTime.add(offset, 'hours');
 
-  return formatDate(endTime.toDate(), timezone ? timezone.replace(' ', '_') : null);
+  const utcFormat = endTime.format(longformat);
+  const formattedUtc = `${utcFormat} (UTC 0)`;
+
+  return {
+    formattedUtc: formattedUtc,
+    formattedTimezone: formattedTimezone,
+    timestamp: endTime.unix(),
+  };
 }
 
 export function convertUnixToFormattedDate(integer: number = 0) {
