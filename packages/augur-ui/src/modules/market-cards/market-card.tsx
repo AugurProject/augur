@@ -111,7 +111,7 @@ export default class MarketCard extends React.Component<
       onClick: toggleTag(tag, path, history)
     }));
 
-    const marketResolved = reportingState === REPORTING_STATE.FINALIZED.toString();
+    const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
 
     return (
       <div
