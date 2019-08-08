@@ -10,8 +10,8 @@ import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 
 const mock = makeDbMock();
-
 const outcome0 = new BigNumber(0);
+
 describe('State API :: get-account-time-ranged-stats :: ', () => {
   let db: Promise<DB>;
   let api: API;

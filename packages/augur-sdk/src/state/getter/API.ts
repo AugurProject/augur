@@ -10,10 +10,11 @@ import "./Users";
 import "./Accounts";
 import "./status";
 import "./get-account-time-ranged-stats";
+import "./get-platform-activity-stats";
 
 export class API {
+  db: Promise<DB>;
   private readonly router: Router;
-  public db: Promise<DB>;
 
   constructor(augur: Augur, db: Promise<DB>) {
     this.db = db;
