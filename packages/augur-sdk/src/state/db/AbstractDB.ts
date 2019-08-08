@@ -3,6 +3,7 @@ import Find from "pouchdb-find";
 import Memory from "pouchdb-adapter-memory";
 import PouchDB from "pouchdb";
 import Upsert from "pouchdb-upsert";
+import Debug from "pouchdb-debug";
 
 import * as _ from "lodash";
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
@@ -10,6 +11,7 @@ import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
 PouchDB.plugin(Upsert);
+PouchDB.plugin(Debug);
 
 interface DocumentIDToDoc {
   [docId: string]: PouchDB.Core.ExistingDocument<{}>;

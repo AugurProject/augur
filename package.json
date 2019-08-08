@@ -76,11 +76,11 @@
     "eslint-plugin-prettier": "3.0.1",
     "eslint-plugin-react": "7.12.4",
     "execa": "1.0.0",
+    "gts": "1.0.0",
     "jest": "23.6.0",
     "jest-junit": "7.0.0",
     "listr": "0.14.3",
     "npm-run-all": "4.1.5",
-    "gts": "1.0.0",
     "prettier": "1.18.2",
     "rxjs-compat": "6.3.3",
     "ts-node": "7.0.1",
@@ -105,6 +105,7 @@
     "**/sha3": "2.0.1"
   },
   "dependencies": {
-    "docusaurus-init": "1.11.0"
+    "docusaurus-init": "1.11.0",
+    "pouchdb-debug": "^7.1.1"
   }
 }

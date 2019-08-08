@@ -4,6 +4,7 @@ import { Getter } from './Router';
 import { Augur } from '../../index';
 import * as _ from 'lodash';
 import { DisputeCrowdsourcerRedeemed, MarketFinalized, ProfitLossChanged, OrderEvent } from "../../event-handlers";
+import PouchDB from "pouchdb";
 
 export interface AccountTimeRangedStatsResult {
   // Yea. The ProfitLossChanged event then
@@ -56,106 +57,59 @@ export class AccountTimeRangedStats {
       throw new Error("startTime must be less than or equal to endTime");
     }
 
-    const baseRequest = {
-      universe: params.universe,
-      $and: [
-        { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-        { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-      ],
-    };
+    PouchDB.debug.enable("*");
 
     const marketsRequest = {
-      selector: Object.assign({
+      selector: {
+        universe: params.universe,
         marketCreator: params.account,
-      }, baseRequest),
+        $and: [
+          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+        ],
+      },
     };
 
-    const initialReporterRequest = {
-      selector: Object.assign({
-        reporter: params.account,
-      }, baseRequest),
+    const marketsRequest2 = {
+      selector: {
+        $and: [
+          { universe: params.universe },
+          { marketCreator: params.account },
+          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+        ],
+      },
     };
 
-    const disputeCrowdourcerRequest = {
-      selector: Object.assign({
-        disputeCrowdsourcerer: params.account,
-      }, baseRequest),
+    const marketsRequest3 = {
+      selector: {
+        universe: params.universe,
+        marketCreator: params.account,
+      },
     };
 
-    const profitLossChangedRequest = {
-      selector: Object.assign({
-        account: params.account,
-        netPosition: { $ne: 0 },
-      }, baseRequest),
-    };
+    console.log("Market search selector", marketsRequest);
+    console.log("Market search selector2", marketsRequest2);
+    console.log("Market search selector3", marketsRequest2);
 
-    const orderFilledRequest = {
-      selector: Object.assign({
-        orderCeator: params.account,
-        orderFiller: params.account,
-      }, baseRequest),
-    };
+    const marketDB = db.getSyncableDatabase(db.getDatabaseName("MarketCreated"));
+    await marketDB.db.createIndex({
+      index: { fields: ['universe', 'marketCreator', 'timestamp'] },
+    });
 
-    const compareArrays = (lhs: string[], rhs: string[]): number => {
-      let equal = 1;
+    const searchResults = await db.findMarketCreatedLogs(marketsRequest);
+    const searchResults2 = await db.findMarketCreatedLogs(marketsRequest2);
+    const searchResults3 = await db.findMarketCreatedLogs(marketsRequest3);
 
-      lhs.forEach((item: string, index: number) => {
-        if (index >= rhs.length || item !== rhs[index]) {
-          equal = 0;
-        }
-      });
-
-      return equal;
-    };
-
-    const marketsCreatedLog = await db.findMarketCreatedLogs(marketsRequest);
-
-    const marketsCreated = marketsCreatedLog.length;
-    const initialReporterReedeemedLogs = await db.findInitialReporterRedeemedLogs(initialReporterRequest);
-    const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(disputeCrowdourcerRequest);
-
-    const successfulDisputes = _.sum(await Promise.all((disputeCrowdsourcerReedeemedLogs as any as DisputeCrowdsourcerRedeemed[])
-      .map(async (log: DisputeCrowdsourcerRedeemed) => {
-        const marketFinalization = {
-          selector: Object.assign({
-            market: log.market,
-          }, baseRequest),
-        };
-        const markets = (await db.findMarketFinalizedLogs(marketFinalization)) as any as MarketFinalized[];
-
-        if (markets.length) {
-          return compareArrays(markets[0].winningPayoutNumerators, log.payoutNumerators);
-        }
-        else {
-          return 0;
-        }
-      })));
-
-
-    const redeemedPositions = initialReporterReedeemedLogs.length + successfulDisputes;
-
-    const orderFilledLogs = await db.findOrderFilledLogs(orderFilledRequest);
-    const numberOfTrades = _.uniqWith(orderFilledLogs as any as OrderEvent[], (a: OrderEvent, b: OrderEvent) => {
-      return a.tradeGroupId === b.tradeGroupId;
-    }).length;
-
-    const marketsTraded = _.uniqWith(orderFilledLogs as any as OrderEvent[], (a: OrderEvent, b: OrderEvent) => {
-      return a.market === b.market;
-    }).length;
-
-    const profitLossChangedLogs = await db.findProfitLossChangedLogs(params.account, profitLossChangedRequest);
-    const positions = _.uniqWith(profitLossChangedLogs as any as ProfitLossChanged[], (a: ProfitLossChanged, b: ProfitLossChanged) => {
-      return a.market === b.market && a.outcome === b.outcome;
-    }).length;
+    // console.log("Market search result ", searchResults);
 
     return {
-      positions,
-      numberOfTrades,
-      marketsCreated,
-      marketsTraded,
-      successfulDisputes,
-      redeemedPositions,
+      positions: 0,
+      numberOfTrades: 0,
+      marketsCreated: 0,
+      marketsTraded: 0,
+      successfulDisputes: 0,
+      redeemedPositions: 0,
     };
   }
-
 }
