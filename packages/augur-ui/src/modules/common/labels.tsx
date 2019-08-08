@@ -40,7 +40,7 @@ export interface MarketStatusProps {
 export interface InReportingLabelProps extends MarketStatusProps {
   reportingState: string;
   disputeInfo: any;
-  endTime: DateFormattedObject;
+  endTimeFormatted: DateFormattedObject;
   reportingWindowStatsEndTime: number;
   currentAugurTimestamp: number;
 }
@@ -555,16 +555,16 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     alternate,
     reportingState,
     disputeInfo,
-    endTime,
+    endTimeFormatted,
     reportingWindowStatsEndTime,
     currentAugurTimestamp
   } = props;
 
   const reportingStates = [
-    REPORTING_STATE.DESIGNATED_REPORTING,
-    REPORTING_STATE.OPEN_REPORTING,
-    REPORTING_STATE.AWAITING_NEXT_WINDOW,
-    REPORTING_STATE.CROWDSOURCING_DISPUTE
+    REPORTING_STATE.DESIGNATED_REPORTING.toString(),
+    REPORTING_STATE.OPEN_REPORTING.toString(),
+    REPORTING_STATE.AWAITING_NEXT_WINDOW.toString(),
+    REPORTING_STATE.CROWDSOURCING_DISPUTE.toString()
   ];
 
   if (!reportingStates.includes(reportingState)) {
@@ -576,18 +576,18 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   const text: string = constants.IN_REPORTING;
   let customLabel: string | null = null;
 
-  if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
+  if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING.toString()) {
     reportingExtraText = constants.WAITING_ON_REPORTER;
     reportingCountdown = true;
     customLabel = constants.REPORTING_ENDS;
-  } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
+  } else if (reportingState === REPORTING_STATE.OPEN_REPORTING.toString()) {
     reportingExtraText = constants.OPEN_REPORTING;
-  } else if (reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW) {
+  } else if (reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW.toString()) {
     reportingExtraText = constants.AWAITING_NEXT_DISPUTE;
     reportingCountdown = true;
   } else if (
-    reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-    reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION
+    reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE.toString() ||
+    reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION.toString()
   ) {
     reportingExtraText =
       disputeInfo && disputeInfo.disputeRound
@@ -621,7 +621,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
             <MarketProgress
               currentTime={currentAugurTimestamp}
               reportingState={reportingState}
-              endTime={endTime}
+              endTimeFormatted={endTimeFormatted}
               reportingWindowEndtime={reportingWindowStatsEndTime}
               customLabel={customLabel}
             />
