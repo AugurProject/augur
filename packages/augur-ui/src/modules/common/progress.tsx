@@ -6,7 +6,7 @@ import { DateFormattedObject } from "modules/types";
 import { REPORTING_STATE } from "modules/common/constants";
 
 export interface CountdownProgressProps {
-  time: DateFormattedObject | null;
+  time?: DateFormattedObject;
   currentTime?: DateFormattedObject;
   label: string;
   countdownBreakpoint?: number;
@@ -29,7 +29,7 @@ export interface TimeProgressBarProps {
 export interface MarketProgressProps {
   reportingState: string;
   currentTime: DateFormattedObject | number;
-  endTime: DateFormattedObject;
+  endTimeFormatted: DateFormattedObject;
   reportingWindowEndtime: DateFormattedObject | number;
   customLabel?: string;
   alignRight?: Boolean;
@@ -48,42 +48,42 @@ export const formatTime = (time: DateFormattedObject | number) => {
 
 const reportingStateToLabelTime = (
   reportingState: string,
-  endTime: DateFormattedObject,
+  endTimeFormatted: DateFormattedObject,
   reportingEndTime: DateFormattedObject
 ) => {
   let label: string = "";
-  let time: DateFormattedObject | null = null;
+  let time: DateFormattedObject = null;
   switch (reportingState) {
-    case REPORTING_STATE.PRE_REPORTING:
+    case REPORTING_STATE.PRE_REPORTING.toString():
       label = "Reporting Begins";
-      time = endTime;
+      time = endTimeFormatted;
       break;
-    case REPORTING_STATE.DESIGNATED_REPORTING:
+    case REPORTING_STATE.DESIGNATED_REPORTING.toString():
       label = "Designated Reporting";
-      time = formatTime(endTime.timestamp + OneDay);
+      time = formatTime(endTimeFormatted.timestamp + OneDay);
       break;
-    case REPORTING_STATE.OPEN_REPORTING:
+    case REPORTING_STATE.OPEN_REPORTING.toString():
       label = "Open Reporting";
       break;
-    case REPORTING_STATE.CROWDSOURCING_DISPUTE:
+    case REPORTING_STATE.CROWDSOURCING_DISPUTE.toString():
       label = "Disputing Ends";
       time = reportingEndTime;
       break;
-    case REPORTING_STATE.AWAITING_NEXT_WINDOW:
+    case REPORTING_STATE.AWAITING_NEXT_WINDOW.toString():
       label = "Next Dispute";
       time = reportingEndTime;
       break;
-    case REPORTING_STATE.FORKING:
+    case REPORTING_STATE.FORKING.toString():
       label = "Forking";
-      time = endTime;
+      time = endTimeFormatted;
       break;
-    case REPORTING_STATE.AWAITING_NO_REPORT_MIGRATION:
+    case REPORTING_STATE.AWAITING_NO_REPORT_MIGRATION.toString():
       label = "Awaiting No Report Migration";
       break;
-    case REPORTING_STATE.AWAITING_FORK_MIGRATION:
+    case REPORTING_STATE.AWAITING_FORK_MIGRATION.toString():
       label = "Awaiting Fork Migration";
       break;
-    case REPORTING_STATE.FINALIZED:
+    case REPORTING_STATE.FINALIZED.toString():
     default:
       label = "Expired";
       break;
@@ -96,17 +96,16 @@ export const MarketProgress = (props: MarketProgressProps) => {
   const {
     reportingState,
     currentTime,
-    endTime,
+    endTimeFormatted,
     reportingWindowEndtime,
     customLabel,
     alignRight,
   } = props;
   const currTime = formatTime(currentTime);
-  const marketEndTime = endTime;
   const reportingEndTime = formatTime(reportingWindowEndtime);
   const { label, time } = reportingStateToLabelTime(
     reportingState,
-    marketEndTime,
+    endTimeFormatted,
     reportingEndTime
   );
 
