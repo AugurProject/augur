@@ -204,7 +204,9 @@ export default class MarketHeaderReporting extends Component {
     }
 
     return (
+      <>
       {content}
+      </>
     );
   }
 }
