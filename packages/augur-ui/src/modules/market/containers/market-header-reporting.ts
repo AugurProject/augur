@@ -30,6 +30,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId, cb }))
 });
 
+
 const MarketHeaderReportingContainer = withRouter(
   connect(
     mapStateToProps,
