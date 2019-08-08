@@ -102,6 +102,29 @@ describe('State API :: Markets :: ', () => {
 
     let marketList: MarketList;
 
+
+
+
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      search: "",
+      categories: [
+        // "scalar 2 primary",
+        // "scalar 2 secondary",
+        // "scalar 2 tertiary",
+      ],
+    });
+    expect(marketList.markets.length).toEqual(1);
+    expect(marketList.markets[0].id).toEqual(scalarMarket2.address);
+
+
+
+
+
+
+
+/*
     // Test invalid universe address
     let errorMessage = '';
     try {

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { SearchResults } from "flexsearch";
 import { DB } from '../db/DB';
 import { MarketFields } from '../db/MarketDB';
 import { Getter } from './Router';
@@ -29,7 +30,6 @@ import { calculatePayoutNumeratorsValue } from '../../utils';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
-import { ExtendedSearchOptions } from "flexsearch";
 
 export enum MarketReportingState {
   PreReporting = 'PreReporting',
@@ -61,7 +61,6 @@ const getMarketsParamsSpecific = t.intersection([
   }),
   t.partial({
     creator: t.string,
-    category: t.string,
     search: t.string,
     reportingStates: t.array(t.string),
     disputeWindow: t.string,
@@ -413,6 +412,7 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketsParams>
   ): Promise<MarketList> {
+    // Validate params
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
@@ -420,18 +420,16 @@ export class Markets {
     if (params.maxLiquiditySpread && !validLiquiditySpreads.includes(params.maxLiquiditySpread)) {
       throw new Error('Invalid maxLiquiditySpread');
     }
-    // Set param defaults
+
+    // Set params defaults
     params.search = typeof params.search === 'undefined' ? "" : params.search;
+    params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
     params.sortBy = typeof params.sortBy === 'undefined' ? getMarketsSortBy['MarketOI'] : params.sortBy;
     params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
 
-    // Initialize `meta` values
-    const categories: MarketListMetaCategory[] = [];
-    let filteredOutCount = 0; // Markets excluded by maxLiquiditySpread & includeInvalidMarkets filters
-    let marketCount = 0;
-
+    // Get MarketCreated logs for all markets with the specified filters
     const request = {
       selector: {
         universe: params.universe,
@@ -446,6 +444,7 @@ export class Markets {
     }
     const marketCreatedLogs = await db.findMarketCreatedLogs(request);
 
+    // Filter out MarketCreated logs with fees > params.maxFee and key them by market ID
     let marketCreatorFeeDivisor: BigNumber | undefined = undefined;
     if (params.maxFee) {
       const universe = augur.getUniverse(params.universe);
@@ -458,10 +457,8 @@ export class Markets {
         marketCreatorFee
       );
     }
-
     const keyedMarketCreatedLogs: MarketCreatedLog[] = marketCreatedLogs.reduce(
       (previousValue: any, currentValue: MarketData) => {
-        // Filter markets with fees > maxFee
         if (
           params.maxFee &&
           typeof marketCreatorFeeDivisor !== 'undefined' &&
@@ -475,67 +472,29 @@ export class Markets {
       []
     );
 
-    let filteredKeyedMarketCreatedLogs = keyedMarketCreatedLogs;
+    // Sort search results by categories and key them by market ID
+    const keyedSearchResults = _.keyBy(
+      _.sortBy(
+        await getMarketsSearchResults(db, params.search, params.categories),
+        ['category1', 'category2', 'category3']
+      ),
+      (searchResult: MarketFields) =>  searchResult.market
+    );
 
-    if (params.search || params.categories) {
-      let keyedFullTextResults: any = {};
-      let searchResults: any = [];
-      if (params.search) {
-        searchResults = await db.marketFullTextSearch(params.search, null);
-        keyedFullTextResults = _.keyBy(
-          searchResults,
-          (searchResult: MarketFields) =>  { return searchResult.market; }
-        );
-      }
-      let keyedCategoryResults: any = {};
-      if (params.categories) {
-        // const extendedSearchOptions: ExtendedSearchOptions[] = [];
-        // for (let i = 0; i < params.categories.length; i++) {
-        //   extendedSearchOptions.push({
-        //     field: ["category" + (i + 1)],
-        //     query: params.categories[i],
-        //     bool: "and",
-        //   });
-        // }
-        // const categoryResults = await db.fullTextMarketSearch(null, extendedSearchOptions);
-
-        const searchOptions = {
-          query: params.search,
-          where: {},
-        };
-        for (let i = 0; i < categories.length; i++) {
-          searchOptions.where['category' + (i + 1)] = categories[i];
-        }
-        searchOptions.where['sort'] = "category1:category2:category3";
-        const categoryResults = db.marketCategorySearch(params.search, searchOptions);
-        console.log(keyedCategoryResults);
-        keyedCategoryResults = _.keyBy(
-          categoryResults,
-          (searchResult: MarketFields) =>  { return searchResult.market; }
-        );
-        if (!_.isEmpty(keyedFullTextResults)) {
-          // Reset keyedSearchResults to intersection of searchResults & categoryResults
-          keyedFullTextResults = {};
-          for (let i = 0; i < searchResults.length; i++) {
-            if (categoryResults[searchResults[i].market]) {
-              keyedFullTextResults[searchResults[i].market] = categoryResults[searchResults[i].market];
-            }
-          }
-        } else {
-          keyedFullTextResults = keyedCategoryResults;
-        }
-      }
-
-      filteredKeyedMarketCreatedLogs = Object.values(
-        keyedMarketCreatedLogs
-      ).reduce((previousValue: any, currentValue: any) => {
-        if (keyedFullTextResults[currentValue.market]) {
+    // Filter out MarketCreated logs that aren't in keyedSearchResults
+    const filteredKeyedMarketCreatedLogs: MarketCreatedLog[] = Object.values(
+      keyedMarketCreatedLogs
+    ).reduce(
+      (previousValue: any, currentValue: any) => {
+        if (keyedSearchResults[currentValue.market]) {
           previousValue[currentValue.market] = currentValue;
         }
         return previousValue;
-      }, []);
-    }
+      },
+      []
+    );
 
+    let filteredOutCount = 0; // Markets excluded by maxLiquiditySpread & includeInvalidMarkets filters
     let filteredMarketsDetails: any[] = [];
     for (const marketCreatedLogInfo of Object.values(filteredKeyedMarketCreatedLogs)) {
       let includeMarket = true;
@@ -630,14 +589,9 @@ export class Markets {
       }
     );
 
-    // TODO Set `meta` & `marketCount`
     return {
       markets: marketsInfo,
-      meta: {
-        categories: [],
-        filteredOutCount,
-        marketCount: 0,
-      },
+      meta: getMarketsMeta(filteredOutCount),
     };
   }
 
@@ -1316,4 +1270,32 @@ async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]
     };
   }
   return formattedStakeDetails;
+}
+
+function getMarketsMeta(
+  filteredOutCount: number
+): MarketListMeta {
+  const categories: MarketListMetaCategory[] = [];
+  let marketCount = 0;
+  return {
+    categories,
+    filteredOutCount,
+    marketCount,
+  };
+}
+
+async function getMarketsSearchResults(
+  db: DB,
+  query: string,
+  categories: string[]
+): Promise<Array<SearchResults<MarketFields>>> {
+  const whereObj = {};
+  for (let i = 0; i < categories.length; i++) {
+    whereObj['category' + (i + 1)] = categories[i];
+  }
+  if (query) {
+    return db.search(query, { where: whereObj });
+  } else {
+    return db.where(whereObj);
+  }
 }
