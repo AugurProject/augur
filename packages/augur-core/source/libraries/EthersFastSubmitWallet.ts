@@ -14,6 +14,11 @@ export class EthersFastSubmitWallet extends ethers.Wallet {
         this.nonce = nonce;
     }
 
+    signDigest(message: ethers.utils.Arrayish | string): Promise<ethers.utils.Signature> {
+        const signingKey = new ethers.utils.SigningKey(this.privateKey);
+        return Promise.resolve(signingKey.signDigest(message));
+    }
+
     sendTransaction(transaction: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse> {
         transaction = ethers.utils.shallowCopy(transaction);
         transaction.nonce = this.nonce;
