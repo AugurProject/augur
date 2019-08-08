@@ -28,7 +28,6 @@ import {
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
 } from 'modules/common/constants';
-import { NewMarket } from 'modules/types';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 
 export function clearUserTx(): void {
@@ -231,6 +230,7 @@ export interface CreateNewMarketParams {
   categories: string[];
   settlementFee: number;
   affiliateFee: number;
+  offsetName?: string;
 }
 
 export function createMarket(newMarket: CreateNewMarketParams) {
@@ -244,6 +244,7 @@ export function createMarket(newMarket: CreateNewMarketParams) {
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
     scalarDenomination: newMarket.scalarDenomination,
+    offsetName: newMarket.offsetName,
   });
 
   const baseParams: CreateYesNoMarketParams = {

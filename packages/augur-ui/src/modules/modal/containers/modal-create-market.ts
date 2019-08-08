@@ -21,14 +21,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: "Final confirmation",
   subheader: {
-    header: "Are you sure you want to proceeed?", 
+    header: "Are you sure you want to proceeed?",
     subheaders: ["Once you create the market you can’t make any changes to the market or resolution details. Ensure that all market details are accurate before proceeding."]
   },
   subheader_2: {
-    header: "Ready to proceed? Here’s what happens next, you will:", 
+    header: "Ready to proceed? Here’s what happens next, you will:",
     numbered: true,
     subheaders: [
-      "Be taken to the portfolio page where your market will be listed as “Pending”", 
+      "Be taken to the portfolio page where your market will be listed as “Pending”",
       "Receive an alert when the market has been processed",
       "Receive a notification in your Account Summary to submit any initial liquidity previously entered"
     ]
@@ -59,6 +59,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
           categories: newMarket.categories,
           settlementFee: newMarket.settlementFee,
           affiliateFee: newMarket.affiliateFee,
+          offsetName: newMarket.offsetName,
         });
         if (sP.modal.cb) {
           sP.modal.cb();
