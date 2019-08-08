@@ -2,7 +2,7 @@
     "blockstreamDelay": 10,
     "chunkSize": 100000,
     "gnosisRelayURLs": {
-        "4": "https://safe-relay.rinkeby.gnosis.pm/api/",
+        "4": "https://safe-relay.rinkeby.gnosis.pm/api/"
     },
     "ethNodeURLs": {
         "4": "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
