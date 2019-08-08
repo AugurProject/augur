@@ -98,24 +98,24 @@ export async function getTimestamp(): Promise<number> {
   return timestamp.toNumber();
 }
 
-export async function getRepBalance(address: string) {
+export async function getRepBalance(address: string): Promise<number> {
   const { contracts } = augurSdk.get();
   const RepToken = contracts.getReputationToken();
   const balance = await RepToken.balanceOf_(address);
-  return formatAttoRep(balance).formattedValue;
+  return formatAttoRep(balance).value;
 }
 
-export async function getEthBalance(address: string): Promise<string> {
+export async function getEthBalance(address: string): Promise<number> {
   const Augur = augurSdk.get();
   const balance = await Augur.getEthBalance(address);
-  const balances = formatAttoEth(balance, { decimals: 4 }).formattedValue;
-  return balances as string;
+  const balances = formatAttoEth(balance, { decimals: 4 });
+  return balances.value;
 }
 
-export async function getDaiBalance(address: string) {
+export async function getDaiBalance(address: string): Promise<number> {
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
-  return formatAttoDai(balance).formattedValue;
+  return formatAttoDai(balance).value;
 }
 
 export async function sendEthers(address: string, amount: string) {

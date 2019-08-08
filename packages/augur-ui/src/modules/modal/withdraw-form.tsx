@@ -13,7 +13,7 @@ import isAddress from "modules/auth/helpers/is-address";
 import Styles from "modules/modal/modal.styles.less";
 import { createBigNumber } from "utils/create-big-number";
 import convertExponentialToDecimal from "utils/convert-exponential";
-import { FormattedNumber } from "modules/types";
+import { FormattedNumber, LoginAccount } from "modules/types";
 import { FormDropdown, TextInput } from "modules/common/form";
 
 interface WithdrawFormProps {
@@ -23,10 +23,7 @@ interface WithdrawFormProps {
     eth: FormattedNumber;
     rep: FormattedNumber;
   };
-  loginAccount: {
-    rep: string;
-    eth: string;
-  };
+  loginAccount: LoginAccount;
 }
 
 interface WithdrawFormState {
@@ -91,7 +88,7 @@ export class WithdrawForm extends Component<
     const bnNewAmount = createBigNumber(newAmount || "0");
     const { errors: updatedErrors, currency } = this.state;
     updatedErrors.amount = "";
-    const availableEth = createBigNumber(loginAccount.eth);
+    const availableEth = createBigNumber(loginAccount.balances.eth);
     let amountMinusGas = createBigNumber(0);
     if (currency === ETH && newAmount) {
       amountMinusGas = availableEth

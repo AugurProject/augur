@@ -9,10 +9,10 @@ import { updateModal } from "modules/modal/actions/update-modal";
 const mapStateToProps = state => ({
   reportingWindowStats: state.reportingWindowStats,
   isMobile: state.appStatus.isMobile,
-  repBalance: state.loginAccount.rep || "0",
+  repBalance: state.loginAccount.balances.rep,
   forkingMarket: state.universe.forkingMarket,
   currentTime: state.blockchain.currentAugurTimestamp,
-  doesUserHaveRep: state.loginAccount.rep > 0,
+  doesUserHaveRep: state.loginAccount.balances.rep > 0,
   forkReputationGoal: state.universe.forkReputationGoal,
   isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
   isLogged: state.authStatus.isLogged,

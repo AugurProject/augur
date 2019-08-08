@@ -17,7 +17,7 @@ export const loadMarketsToReportOn = (
 ) => {
   const { env, universe, loginAccount } = getState();
   if (!loginAccount.address) return callback(null);
-  if (!loginAccount.rep || loginAccount.rep === "0") return callback(null);
+  if (!loginAccount.balances.rep || loginAccount.balances.rep === 0) return callback(null);
   if (!universe.id) return callback(null);
   const query = {
     ...options,
@@ -30,6 +30,7 @@ export const loadMarketsToReportOn = (
     reportingState: "DESIGNATED_REPORTING",
     designatedReporter: loginAccount.address
   };
+  const augur = augurSdk.get();
   const designatedReportingMarketList = await augur.getMarkets(designatedReportingQuery);
   const designatedReporting = designatedReportingMarketList.markets.map(marketInfo => marketInfo.id);
   const openReportingQuery = { ...query, reportingState: "OPEN_REPORTING" };
@@ -38,7 +39,7 @@ export const loadMarketsToReportOn = (
   const reportingQuery = { ...query, reportingState: "CROWDSOURCING_DISPUTE" };
   const reportingMarketList = await augur.getMarkets(reportingQuery);
   const reporting = reportingMarketList.markets.map(marketInfo => marketInfo.id);
-  const augur = augurSdk.get();
+
 
   // TODO: refactor to combine all 3 reporting states into one call to get markets,
   // not sure how the result is shaped currently

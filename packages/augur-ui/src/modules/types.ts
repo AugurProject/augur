@@ -557,6 +557,11 @@ export interface TimeframeData {
   successfulDisputes: number;
   redeemedPositions: number;
 }
+export interface AccountBalances {
+  eth: number;
+  rep: number;
+  dai: number;
+}
 export interface LoginAccount {
   address?: string;
   displayAddress?: string;
@@ -566,9 +571,7 @@ export interface LoginAccount {
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;
   allowance?: BigNumber;
-  eth: number;
-  rep: number;
-  dai: number;
+  balances: AccountBalances;
 }
 
 export interface Web3 {
