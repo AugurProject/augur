@@ -15,8 +15,6 @@ const flashDeployerConfigurationDefaults: DeployerConfigurationOverwrite = {
   contractInputPath: path.join(root, 'contracts.json'),
   contractAddressesOutputPath: path.join(root, 'addresses.json'),
   uploadBlockNumbersOutputPath: path.join(root, 'upload-block-numbers.json'),
-  writeArtifacts: false,
-  useNormalTime: true,
 };
 
 export interface UsefulContractObjects {

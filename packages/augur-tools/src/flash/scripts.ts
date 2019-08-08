@@ -63,7 +63,7 @@ export function addScripts(flash: FlashSession) {
       },
       {
         name: 'time-controlled',
-        description: 'Use the TimeControlled contract. For testing environments only.',
+        description: 'Use the TimeControlled contract gor testing environments. Set to "true" or "false".',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
