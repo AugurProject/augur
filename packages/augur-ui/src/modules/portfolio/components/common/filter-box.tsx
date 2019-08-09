@@ -216,7 +216,7 @@ export default class FilterBox extends React.Component<
                   <MarketRow
                     key={"position_" + market.id}
                     market={dataObj[market.id]}
-                    showState={selectedTab === ALL_MARKETS && !market.pending}
+                    showState={selectedTab === ALL_MARKETS && !dataObj[market.id].pending}
                     noToggle={noToggle}
                     toggleContent={
                       renderToggleContent &&
