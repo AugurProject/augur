@@ -32,14 +32,11 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
       return new API(john.augur, db);
     },
     create: () => {
-      const eventLogDBRouter = new EventLogDBRouter(
-        john.augur.events.parseLogs
-      );
       const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
         provider,
-        eventLogDBRouter,
         addresses.Augur,
-        john.augur.events.getEventTopics
+        john.augur.events.getEventTopics,
+        john.augur.events.parseLogs
       );
       const api = new API(john.augur, db);
       const controller = new Controller(
