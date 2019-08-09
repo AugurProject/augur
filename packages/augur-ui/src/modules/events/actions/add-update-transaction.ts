@@ -22,6 +22,8 @@ import {
   addPendingData,
   removePendingData,
 } from 'modules/pending-queue/actions/pending-queue-management';
+import { convertUnixToFormattedDate } from "utils/format-date";
+import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -49,7 +51,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET: {
-        if (hash) dispatch(addPendingData(hash, CREATE_MARKET, eventName, transaction.params));
+        if (hash) {
+          const { blockchain } = getState();
+          const data = createMarketData(transaction.params, hash, blockchain.currentAugurTimestamp * 1000);
+          dispatch(addPendingData(hash, CREATE_MARKET, eventName, data));
+        }
         if (hash && eventName === TXEventName.Success) {
           dispatch(removePendingData(hash, CREATE_MARKET));
         }
@@ -68,6 +74,19 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     }
   }
 };
+
+function createMarketData(params: TransactionMetadataParams, hash: string, currentTimestamp: number) {
+  let data = params;
+  const extraInfo = JSON.parse(data._extraInfo);
+  data.id = hash;
+  data.description = extraInfo.description;
+  data.pending = true;
+  data.endTime = convertUnixToFormattedDate(data._endTime);
+  data.recentlyTraded = convertUnixToFormattedDate(currentTimestamp);
+  data.creationTime = convertUnixToFormattedDate(currentTimestamp);
+  data.txParams = params;
+  return data;
+}
 
 function addOrder(tx: Events.TXStatus, market: Getters.Markets.MarketInfo, dispatch) {
   if (!market) return console.log(`Could not find ${market.id} to process transaction`)
