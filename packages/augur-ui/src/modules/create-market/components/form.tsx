@@ -419,7 +419,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     }
   };
 
-  onChange = (name, value) => {
+  onChange = (name, value, callback) => {
     const { updateNewMarket, newMarket } = this.props;
     updateNewMarket({ [name]: value });
 
@@ -457,18 +457,29 @@ export default class Form extends React.Component<FormProps, FormState> {
       name === 'hour' ||
       name === 'minute' ||
       name === 'meridiem' ||
-      name === 'offset' ||
-      name === 'offsetName' ||
-      name === 'timezone'
+      name === 'timezoneDropdown' ||
+      name === 'timeSelector'
     ) {
       // timezone needs to be set on NewMarket object, this value is used to set timezone picker default value
       const setEndTime =
         name === 'setEndTime' ? value : newMarket.setEndTime;
-      const hour = name === 'hour' ? value : newMarket.hour;
-      const minute = name === 'minute' ? value : newMarket.minute;
-      const meridiem = name === 'meridiem' ? value : newMarket.meridiem;
-      const offset = name === 'offset' ? value : newMarket.offset;
-      const offsetName = name === 'offsetName' ? value : newMarket.offsetName;
+      let hour = name === 'hour' ? value : newMarket.hour;
+      let minute = name === 'minute' ? value : newMarket.minute;
+      let meridiem = name === 'meridiem' ? value : newMarket.meridiem;
+      let offset = newMarket.offset;
+      let offsetName = newMarket.offsetName;
+      let timezone = newMarket.timezone;
+
+      if (name === "timeSelector") {
+        hour = value.hour || hour;
+        minute = value.minute || minute;
+        meridiem = value.meridiem || meridiem;
+      }
+      if (name === "timezoneDropdown") {
+        offset = value.offset;
+        offsetName = value.offsetName;
+        timezone = value.timezone;
+      }
       const endTimeFormatted = buildformattedDate(
         setEndTime,
         hour,
@@ -478,9 +489,10 @@ export default class Form extends React.Component<FormProps, FormState> {
         offset
       );
 
-      updateNewMarket({ endTimeFormatted, [name]: value });
+      updateNewMarket({ endTimeFormatted, setEndTime, hour, minute, meridiem, offset, offsetName, timezone });
     }
     this.onError(name, '');
+    if (callback) callback(name);
   };
 
   onError = (name, error) => {

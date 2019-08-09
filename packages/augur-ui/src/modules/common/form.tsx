@@ -919,8 +919,8 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
 }
 
 interface TimeSelectorProps {
-  minute: number;
-  hour: number;
+  minute: string;
+  hour: string;
   meridiem: string;
   onFocusChange: Function;
   onDateChange: Function;
