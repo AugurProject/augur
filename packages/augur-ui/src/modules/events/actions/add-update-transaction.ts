@@ -76,7 +76,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
 };
 
 function createMarketData(params: TransactionMetadataParams, hash: string, currentTimestamp: number): CreateMarketData {
-  let data: CreateMarketData;
+  let data: CreateMarketData = {};
   const extraInfo = JSON.parse(params._extraInfo);
   data.id = hash;
   data.description = extraInfo.description;
