@@ -25,6 +25,7 @@ import { Index, SearchOptions, SearchResults } from 'flexsearch';
 export interface MarketFields {
   id: string;
   market: string;
+  universe: string;
   marketCreator: string;
   category1: string;
   category2: string;
@@ -40,6 +41,7 @@ export interface MarketFields {
 // Need this interface to access these items on the documents
 interface MarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
   market: string;
+  universe: string;
   marketCreator: string;
   extraInfo: string;
 }
@@ -236,14 +238,13 @@ export class MarketDB extends DerivedDB {
     return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI);
   }
 
-  async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
+  async search(query: string, options?: SearchOptions): Promise<SearchResults<MarketFields>> {
     return this.flexSearchIndex.search(query, options);
   }
 
-  async where(whereObj: {[key: string]: string}): Promise<Array<SearchResults<MarketFields>>> {
+  async where(whereObj: {[key: string]: string}): Promise<SearchResults<MarketFields>> {
     return this.flexSearchIndex.where(whereObj);
   }
-
 
   private async syncFullTextSearch(): Promise<void> {
     if (this.flexSearchIndex) {
@@ -258,6 +259,7 @@ export class MarketDB extends DerivedDB {
 
         if (doc) {
           const market = doc.market ? doc.market : "";
+          const universe = doc.universe ? doc.universe : "";
           const marketCreator = doc.marketCreator ? doc.marketCreator : "";
           let category1 = "";
           let category2 = "";
@@ -291,6 +293,7 @@ export class MarketDB extends DerivedDB {
             this.flexSearchIndex.add({
               id: row.id,
               market,
+              universe,
               marketCreator,
               category1,
               category2,

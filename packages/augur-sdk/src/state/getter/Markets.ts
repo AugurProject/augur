@@ -44,13 +44,13 @@ export enum MarketReportingState {
 }
 
 export enum GetMarketsSortBy {
-  MarketOI = 'MarketOI',
-  Liquidity = 'Liquidity', // TODO: Make default sort
-  Volume = 'Volume',
-  Timestamp = 'Timestamp',
-  EndTime = 'EndTime',
-  LastTradedTimestamp = 'LastTradedTimestamp', // TODO: Implement
-  LastLiquidityDepleted = 'LastLiquidityDepleted', // TODO: Implement
+  marketOI = 'marketOI',
+  liquidity = 'liquidity', // TODO: Make default sort
+  volume = 'volume',
+  timestamp = 'timestamp',
+  endTime = 'endTime',
+  lastTradedTimestamp = 'lastTradedTimestamp', // TODO: Implement
+  lastLiquidityDepleted = 'lastLiquidityDepleted', // TODO: Implement
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
@@ -76,12 +76,24 @@ const getMarketsParamsSpecific = t.intersection([
 
 export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 
-export interface MarketListMetaCategory {
-  name: string;
-  count: number;
+export interface MarketListMetaCategories {
+  [key: string]: {
+    count: number;
+    children: {
+      [key: string]: {
+        count: number;
+        children: {
+          [key: string]: {
+            count: number;
+          }
+        }
+      }
+    }
+  }
 }
+
 export interface MarketListMeta {
-  categories: MarketListMetaCategory[];
+  categories: MarketListMetaCategories;
   filteredOutCount: number;
   marketCount: number;
 }
@@ -422,9 +434,10 @@ export class Markets {
     }
 
     // Set params defaults
+    params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? false : params.includeInvalidMarkets;
     params.search = typeof params.search === 'undefined' ? "" : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
-    params.sortBy = typeof params.sortBy === 'undefined' ? getMarketsSortBy['MarketOI'] : params.sortBy;
+    params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.marketOI : params.sortBy;
     params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
@@ -442,7 +455,7 @@ export class Markets {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
       });
     }
-    const marketCreatedLogs = await db.findMarketCreatedLogs(request);
+    let marketCreatedLogs = await db.findMarketCreatedLogs(request);
 
     // Filter out MarketCreated logs with fees > params.maxFee and key them by market ID
     let marketCreatorFeeDivisor: BigNumber | undefined = undefined;
@@ -457,7 +470,7 @@ export class Markets {
         marketCreatorFee
       );
     }
-    const keyedMarketCreatedLogs: MarketCreatedLog[] = marketCreatedLogs.reduce(
+    let keyedMarketCreatedLogs: MarketCreatedLog[] = marketCreatedLogs.reduce(
       (previousValue: any, currentValue: MarketData) => {
         if (
           params.maxFee &&
@@ -471,37 +484,46 @@ export class Markets {
       },
       []
     );
+    marketCreatedLogs = [];
+    // marketCreatedLogs = marketCreatedLogs.reduce(
+    //   (previousValue: any, currentValue: MarketData) => {
+    //     if (
+    //       params.maxFee &&
+    //       typeof marketCreatorFeeDivisor !== 'undefined' &&
+    //       new BigNumber(currentValue.feeDivisor).gt(marketCreatorFeeDivisor)
+    //     ) {
+    //       return previousValue;
+    //     }
+    //     previousValue[currentValue.market] = currentValue;
+    //     return previousValue;
+    //   },
+    //   []
+    // );
+    // const keyedMarketCreatedLogs = marketCreatedLogs;
 
-    // Sort search results by categories and key them by market ID
-    const keyedSearchResults = _.keyBy(
-      _.sortBy(
-        await getMarketsSearchResults(db, params.search, params.categories),
-        ['category1', 'category2', 'category3']
-      ),
-      (searchResult: MarketFields) =>  searchResult.market
+    // Sort search results by categories
+    let marketsResults: any[]  = _.sortBy(
+      await getMarketsSearchResults(db, params.universe, params.search, params.categories),
+      ['category1', 'category2', 'category3']
     );
 
-    // Filter out MarketCreated logs that aren't in keyedSearchResults
-    const filteredKeyedMarketCreatedLogs: MarketCreatedLog[] = Object.values(
-      keyedMarketCreatedLogs
-    ).reduce(
-      (previousValue: any, currentValue: any) => {
-        if (keyedSearchResults[currentValue.market]) {
-          previousValue[currentValue.market] = currentValue;
-        }
-        return previousValue;
-      },
-      []
-    );
-
+    // Create intersection array of marketsResults & keyedMarketCreatedLogs
+    for (let i = marketsResults.length - 1; i >= 0; i--) {
+      if (keyedMarketCreatedLogs[marketsResults[i].market]) {
+        marketsResults[i] = Object.assign(marketsResults[i], keyedMarketCreatedLogs[marketsResults[i].market]);
+      } else {
+        marketsResults.splice(i, 1);
+      }
+    }
+    keyedMarketCreatedLogs = null;
+console.log(marketsResults);
     let filteredOutCount = 0; // Markets excluded by maxLiquiditySpread & includeInvalidMarkets filters
-    let filteredMarketsDetails: any[] = [];
-    for (const marketCreatedLogInfo of Object.values(filteredKeyedMarketCreatedLogs)) {
+    for (let i = marketsResults.length - 1; i >= 0; i--) {
       let includeMarket = true;
 
       if (params.disputeWindow) {
         const market = await augur.contracts.marketFromAddress(
-          marketCreatedLogInfo['market']
+          marketsResults[i]['market']
         );
         const disputeWindowAddress = await market.getDisputeWindow_();
         if (params.disputeWindow !== disputeWindowAddress) {
@@ -510,12 +532,13 @@ export class Markets {
       }
 
       if (params.reportingStates) {
+        // TODO: Get reporting states for all markets as a batched call
         const marketFinalizedLogs = await db.findMarketFinalizedLogs({
-          selector: { market: marketCreatedLogInfo['market'] },
+          selector: { market: marketsResults[i]['market'] },
         });
         const reportingState = await getMarketReportingState(
           db,
-          marketCreatedLogInfo,
+          marketsResults[i],
           marketFinalizedLogs
         );
         if (!params.reportingStates.includes(reportingState)) {
@@ -523,65 +546,63 @@ export class Markets {
         }
       }
 
-      marketCreatedLogInfo['timestamp'] = new BigNumber(marketCreatedLogInfo['timestamp']).toString();
-      marketCreatedLogInfo['endTime'] = new BigNumber(marketCreatedLogInfo['endTime']).toString();
+      marketsResults[i]['timestamp'] = new BigNumber(marketsResults[i]['timestamp']).toString();
+      marketsResults[i]['endTime'] = new BigNumber(marketsResults[i]['endTime']).toString();
 
       let marketData: MarketData[];
       if (
         params.maxLiquiditySpread ||
         params.includeInvalidMarkets ||
-        params.sortBy === getMarketsSortBy['Liquidity'] ||
-        params.sortBy === getMarketsSortBy['MarketOI'] ||
-        params.sortBy === getMarketsSortBy['Volume']
+        params.sortBy === GetMarketsSortBy.liquidity ||
+        params.sortBy === GetMarketsSortBy.marketOI ||
+        params.sortBy === GetMarketsSortBy.volume
       ) {
         const request = {
           selector: {
-            market: marketCreatedLogInfo['market'],
+            market: marketsResults[i]['market'],
           },
         };
         marketData = await db.findMarkets(request);
         if (
-          params.sortBy === getMarketsSortBy['Liquidity'] ||
-          params.sortBy === getMarketsSortBy['MarketOI'] ||
-          params.sortBy === getMarketsSortBy['Volume']
+          params.sortBy === GetMarketsSortBy.liquidity ||
+          params.sortBy === GetMarketsSortBy.marketOI ||
+          params.sortBy === GetMarketsSortBy.volume
         ) {
-          marketCreatedLogInfo[params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
-        }
-        if (params.maxLiquiditySpread && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0') {
-          includeMarket = false;
-          filteredOutCount++;
+          marketsResults[i][params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
         if (
-          typeof params.includeInvalidMarkets !== "undefined" &&
-          params.includeInvalidMarkets === false &&
-          marketData[0].invalidFilter === true
+          (params.maxLiquiditySpread && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0') ||
+          (params.includeInvalidMarkets === false && marketData[0].invalidFilter === true)
         ) {
           includeMarket = false;
           filteredOutCount++;
         }
       }
 
-      // Add any relevant sort information to marketCreatedLogInfo
-      if (includeMarket) {
-        filteredMarketsDetails.push(marketCreatedLogInfo);
+      if (!includeMarket) {
+        marketsResults.splice(i, 1);
       }
     }
 
-    _.sortBy(filteredMarketsDetails, [(market: any) => market[params.sortBy]]);
+    const meta = getMarketsMeta(marketsResults, filteredOutCount);
+// console.log("marketsResults before");
+// console.log(marketsResults);
+    _.sortBy(marketsResults, [(market: any) => market[params.sortBy]]);
     if (params.isSortDescending) {
-      filteredMarketsDetails = filteredMarketsDetails.reverse();
+      marketsResults = marketsResults.reverse();
     }
-    filteredMarketsDetails = filteredMarketsDetails.slice(params.offset, params.offset + params.limit);
-
+    marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
+// console.log("marketsResults after");
+// console.log(marketsResults);
     const marketsInfo = await Markets.getMarketsInfo(
       augur,
       db,
-      { marketIds: filteredMarketsDetails.map(marketInfo => marketInfo.market) }
+      { marketIds: marketsResults.map(marketInfo => marketInfo.market) }
     );
     // TODO: Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
     const filteredMarketsDetailsOrder = {};
-    for (let i = 0; i < filteredMarketsDetails.length; i++) {
-      filteredMarketsDetailsOrder[filteredMarketsDetails[i].market] = i;
+    for (let i = 0; i < marketsResults.length; i++) {
+      filteredMarketsDetailsOrder[marketsResults[i].market] = i;
     }
     marketsInfo.sort(
       (a, b) => {
@@ -591,7 +612,7 @@ export class Markets {
 
     return {
       markets: marketsInfo,
-      meta: getMarketsMeta(filteredOutCount),
+      meta,
     };
   }
 
@@ -1273,29 +1294,55 @@ async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]
 }
 
 function getMarketsMeta(
+  marketsResults: any[],
   filteredOutCount: number
 ): MarketListMeta {
-  const categories: MarketListMetaCategory[] = [];
-  let marketCount = 0;
+  let categories = {};
+  for (let i = 0; i < marketsResults.length; i++) {
+    const marketsResult = marketsResults[i];
+    if (categories[marketsResult.category1]) {
+      categories[marketsResult.category1]['count']++;
+    } else {
+      categories[marketsResult.category1] = {
+        'count': 1,
+        'children': {},
+      };
+    }
+    if (categories[marketsResult.category1].children[marketsResult.category2]) {
+      categories[marketsResult.category1].children[marketsResult.category2]['count']++;
+    } else {
+      categories[marketsResult.category1].children[marketsResult.category2] = {
+        count: 1,
+        children: {},
+      };
+    }
+    if (categories[marketsResult.category1].children[marketsResult.category2].children[marketsResult.category3]) {
+      categories[marketsResult.category1].children[marketsResult.category2].children[marketsResult.category3]['count']++;
+    } else {
+      categories[marketsResult.category1].children[marketsResult.category2].children[marketsResult.category3] = {
+        count: 1,
+      };
+    }
+  }
   return {
     categories,
     filteredOutCount,
-    marketCount,
+    marketCount: marketsResults.length,
   };
 }
 
 async function getMarketsSearchResults(
   db: DB,
+  universe: string,
   query: string,
   categories: string[]
-): Promise<Array<SearchResults<MarketFields>>> {
-  const whereObj = {};
+): Promise<SearchResults<MarketFields>> {
+  const whereObj = { universe };
   for (let i = 0; i < categories.length; i++) {
     whereObj['category' + (i + 1)] = categories[i];
   }
   if (query) {
     return db.search(query, { where: whereObj });
-  } else {
-    return db.where(whereObj);
   }
+  return db.where(whereObj);
 }

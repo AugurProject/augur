@@ -247,11 +247,11 @@ export class DB {
     return this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
-  async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
+  async search(query: string, options?: SearchOptions): Promise<SearchResults<MarketFields>> {
     return this.marketDatabase.search(query, options);
   }
 
-  where(whereObj): Promise<Array<SearchResults<MarketFields>>> {
+  async where(whereObj): Promise<SearchResults<MarketFields>> {
     return this.marketDatabase.where(whereObj);
   }
 

@@ -1,6 +1,7 @@
 // This is a modified version of FlexSearch's index.d.ts.
-// It includes additional signatures for the `add` and `search` functions,
-// and changes the return type for `search` to SearchResults<T>[].
+// It includes an additional signature for the `add` function.
+// Ideally, it can be removed in the future, once FlexSearch's
+// TypeScript definitions are more complete.
 
 declare module "flexsearch" {
   interface Index<T> {
@@ -14,7 +15,7 @@ declare module "flexsearch" {
     add(id: number, o: T);
     add(o: T): void;
     search(query: string, options: number | SearchOptions, callback: (results: SearchResults<T>) => void): void;
-    search(query: string, options?: number | SearchOptions): Promise<SearchResults<T>[]>;
+    search(query: string, options?: number | SearchOptions): Promise<SearchResults<T>>;
     search(options: SearchOptions & {query: string}, callback: (results: SearchResults<T>) => void): void;
     search(options: SearchOptions & {query: string}): Promise<SearchResults<T>>;
     update(id: number, o: T);
