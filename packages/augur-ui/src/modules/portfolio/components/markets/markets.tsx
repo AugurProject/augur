@@ -5,6 +5,7 @@ import FilterBox from "modules/portfolio/containers/filter-box";
 import { LinearPropertyLabel, PendingLabel } from "modules/common/labels";
 import { MarketProgress } from "modules/common/progress";
 import { END_TIME } from "modules/common/constants";
+import { TXEventName } from '@augurproject/sdk';
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
 import { MarketData } from "modules/types";
@@ -43,6 +44,7 @@ function filterComp(input, market) {
 }
 
 function renderToggleContent(market) {
+  //console.log(market);
   return (
     <div className={Styles.InfoParent}>
       {!market.pending &&
@@ -60,6 +62,9 @@ function renderToggleContent(market) {
             />
           </div>
         </div>
+      }
+      {market.pending && market.status === TXEventName.Pending && 
+        <span>You will receive an alert and notification when your market has been processed. </span>
       }
     </div>
   );

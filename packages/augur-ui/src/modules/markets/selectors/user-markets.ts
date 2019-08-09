@@ -24,11 +24,11 @@ export const selectAuthorOwnedMarkets = createSelector(
     );
     const pendingMarkets = Object.keys(pendingQueue[CREATE_MARKET] || {}).map(key => {
       let data = pendingQueue[CREATE_MARKET][key];
-      const extraInfo = JSON.parse(data.info._extraInfo);
+      const extraInfo = JSON.parse(data.data._extraInfo);
       data.id = key;
       data.description = extraInfo.description;
       data.pending = true;
-      data.endTime = convertUnixToFormattedDate(data.info._endTime);
+      data.endTime = convertUnixToFormattedDate(data.data._endTime);
       data.recentlyTraded = convertUnixToFormattedDate(currentTimestamp);
       data.creationTime = convertUnixToFormattedDate(currentTimestamp);
       return data;

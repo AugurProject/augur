@@ -1,6 +1,5 @@
 import {
   ADD_PENDING_DATA,
-  LOAD_PENDING_QUEUE,
   REMOVE_PENDING_DATA,
 } from "modules/pending-queue/actions/pending-queue-management";
 import { PendingQueue, BaseAction } from "modules/types";
@@ -14,14 +13,14 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
       if (pendingQueue[queueName]) {
         pendingQueue[queueName][pendingId] = {
           status,
-          info,
+          data: info,
           blockNumber,
         };
       } else {
         pendingQueue[queueName] = {};
         pendingQueue[queueName][pendingId] = {
           status,
-          info,
+          data: info,
           blockNumber,
         };
       }
@@ -32,13 +31,12 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
     }
     case REMOVE_PENDING_DATA: {
       const { pendingId, queueName } = data;
-      delete pendingQueue[queueName][pendingId];
+      if (pendingQueue[queueName] && pendingQueue[queueName][pendingId]) {
+        delete pendingQueue[queueName][pendingId];
+      }
       return {
         ...pendingQueue,
       };
-    }
-    case LOAD_PENDING_QUEUE: {
-      return data.pendingQueue;
     }
     default:
       return pendingQueue;
