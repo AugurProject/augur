@@ -26,7 +26,11 @@ export class Controller {
       this.events.subscribe('controller:new:block', this.notifyNewBlockEvent.bind(this));
 
       const db = await this.db;
-      db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
+      await db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
+
+      augurEmitter.emit(SubscriptionEventName.SDKReady, {
+        eventName: SubscriptionEventName.SDKReady,
+      });
 
       this.blockAndLogStreamerListener.listenForBlockRemoved(
         db.rollback.bind(db)
