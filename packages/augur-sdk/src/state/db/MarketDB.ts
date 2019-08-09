@@ -238,11 +238,11 @@ export class MarketDB extends DerivedDB {
     return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI);
   }
 
-  async search(query: string, options?: SearchOptions): Promise<SearchResults<MarketFields>> {
+  async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
     return this.flexSearchIndex.search(query, options);
   }
 
-  async where(whereObj: {[key: string]: string}): Promise<SearchResults<MarketFields>> {
+  async where(whereObj: {[key: string]: string}): Promise<Array<SearchResults<MarketFields>>> {
     return this.flexSearchIndex.where(whereObj);
   }
 

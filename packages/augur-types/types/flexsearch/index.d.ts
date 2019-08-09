@@ -1,5 +1,6 @@
 // This is a modified version of FlexSearch's index.d.ts.
-// It includes an additional signature for the `add` function.
+// It includes an additional signature for the `add` function
+// and modifies the signatures for the `search` & `where` functions.
 // Ideally, it can be removed in the future, once FlexSearch's
 // TypeScript definitions are more complete.
 
@@ -15,7 +16,7 @@ declare module "flexsearch" {
     add(id: number, o: T);
     add(o: T): void;
     search(query: string, options: number | SearchOptions, callback: (results: SearchResults<T>) => void): void;
-    search(query: string, options?: number | SearchOptions): Promise<SearchResults<T>>;
+    search(query: string, options?: number | SearchOptions): Promise<Array<SearchResults<T>>>;
     search(options: SearchOptions & {query: string}, callback: (results: SearchResults<T>) => void): void;
     search(options: SearchOptions & {query: string}): Promise<SearchResults<T>>;
     update(id: number, o: T);
@@ -23,7 +24,7 @@ declare module "flexsearch" {
     clear();
     destroy();
     addMatcher(matcher: Matcher);
-    where(whereFn: (o: T) => boolean): SearchResult<T>[];
+    where(whereFn: (o: T) => boolean): Promise<Array<SearchResults<T>>>;
     where(whereObj: {[key: string]: string});
     encode(str: string): string;
     export(): string;
