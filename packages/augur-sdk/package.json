@@ -64,6 +64,7 @@
     "lodash": "4.17.13",
     "postinstall-build": "5.0.3",
     "pouchdb": "7.1.1",
+    "pouchdb-debug": "7.1.1",
     "pouchdb-adapter-memory": "7.1.1",
     "pouchdb-find": "7.1.1",
     "pouchdb-upsert": "^2.2.0",
