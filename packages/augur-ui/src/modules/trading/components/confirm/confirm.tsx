@@ -41,6 +41,8 @@ interface ConfirmProps {
   minPrice: BigNumber;
   scalarDenomination: string | null;
   numOutcomes: number;
+  numFills: number;
+  loopLimit: number;
 }
 
 interface ConfirmState {
@@ -85,8 +87,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableDai,
     } = props || this.props;
 
-    const { totalCost, selfTrade, potentialEthLoss } = trade;
-
+    const { totalCost, selfTrade, potentialEthLoss, numFills, loopLimit } = trade;
+    const numTrades = Math.ceil(numFills / loopLimit);
     let messages: Message | null = null;
     const tradeTotalCost = createBigNumber(totalCost.fullPrecision, 10);
     const gasCost = formatGasCostToEther(
@@ -94,6 +96,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       { decimalsRounded: 4 },
       gasPrice
     );
+
+    if (!isNaN(numTrades) && numTrades > 1) {
+      messages = {
+        header: 'MULTIPLE TRANSACTIONS',
+        type: WARNING,
+        message: `This trade will take ${numTrades} Transactions`,
+      };
+    }
 
     if (selfTrade) {
       messages = {
@@ -161,7 +171,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const {
       limitPrice,
       numShares,
-      numSimFills,
       potentialEthProfit,
       potentialEthLoss,
       totalCost,

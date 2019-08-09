@@ -26,7 +26,6 @@ interface FromProps {
   orderPrice: string;
   orderDaiEstimate: string;
   orderEscrowdEth: string;
-  gasCostEst: string;
   selectedNav: string;
   selectedOutcome: Getters.Markets.MarketInfoOutcome;
   updateState: Function;
@@ -532,7 +531,6 @@ class Form extends Component<FromProps, FormState> {
       minPrice,
       updateState,
       orderEscrowdEth,
-      gasCostEst,
       updateSelectedOutcome,
       sortedOutcomes,
       initialLiquidity
@@ -699,12 +697,6 @@ class Form extends Component<FromProps, FormState> {
               <label className={Styles.smallLabel}>
                 {ExclamationCircle}
                 {` Max cost of ${orderEscrowdEth} DAI will be escrowed`}
-              </label>
-            )}
-            {gasCostEst && (
-              <label className={Styles.smallLabel}>
-                {ExclamationCircle}
-                {` Max cost of ${gasCostEst} ETH required for gas`}
               </label>
             )}
           </li>
