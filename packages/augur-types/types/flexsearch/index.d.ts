@@ -4,7 +4,7 @@
 
 declare module "flexsearch" {
   interface Index<T> {
-    //TODO: Chaining
+    // @TODO: Chaining
     readonly id: string;
     readonly index: string;
     readonly length: number;
@@ -41,7 +41,7 @@ declare module "flexsearch" {
       field?: string[],
       bool?: "and" | "or" | "not"
       page?: boolean | Cursor;
-      //TODO: Sorting
+      // @TODO: Sorting
   }
 
   interface SearchResults<T> {
