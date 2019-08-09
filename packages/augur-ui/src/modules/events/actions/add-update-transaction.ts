@@ -24,6 +24,7 @@ import {
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
+import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -51,13 +52,16 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET: {
-        if (hash) {
+        // if (!hash && eventName === TXEventName.AwaitingSigning) {
+        // }
+        // if (hash) {
+          const id = generateTxParameterId(transaction.params);
           const { blockchain } = getState();
-          const data = createMarketData(transaction.params, hash, blockchain.currentAugurTimestamp * 1000);
-          dispatch(addPendingData(hash, CREATE_MARKET, eventName, data));
-        }
+          const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000);
+          dispatch(addPendingData(id, CREATE_MARKET, eventName, data));
+        //}
         if (hash && eventName === TXEventName.Success) {
-          dispatch(removePendingData(hash, CREATE_MARKET));
+          dispatch(removePendingData(id, CREATE_MARKET));
         }
         break;
       }
@@ -75,10 +79,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   }
 };
 
-function createMarketData(params: TransactionMetadataParams, hash: string, currentTimestamp: number): CreateMarketData {
+function createMarketData(params: TransactionMetadataParams, id: string, hash: string, currentTimestamp: number): CreateMarketData {
   let data: CreateMarketData = {};
   const extraInfo = JSON.parse(params._extraInfo);
-  data.id = hash;
+  data.hash = hash;
+  data.id = id;
   data.description = extraInfo.description;
   data.pending = true;
   data.endTime = convertUnixToFormattedDate(params._endTime);
