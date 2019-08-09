@@ -87,9 +87,14 @@ export class AccountTimeRangedStats {
     };
 
     const disputeCrowdourcerRequest = {
-      selector: Object.assign({
-        disputeCrowdsourcerer: params.account,
-      }, baseRequest),
+      selector: {
+        $and: [
+          { reporter: params.account },
+          { universe: params.universe },
+          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+        ],
+      },
     };
 
     const profitLossChangedRequest = {
