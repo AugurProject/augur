@@ -44,6 +44,7 @@ const MarketRow = (props: MarketRowProps) => {
       <div
         className={classNames({
           [Styles.Show]: props.showState,
+          [Styles.Pending]: props.market.pending
         })}
       >
         {props.showState && !props.market.pending &&
@@ -58,7 +59,7 @@ const MarketRow = (props: MarketRowProps) => {
         <MarketLink id={props.market.id}>
           {props.market.description}
         </MarketLink>
-        {props.market.pending && props.market.status === TXEventName.Pending && 
+        {props.market.pending && props.market.status === TXEventName.Pending &&
           <span>When the market is confirmed you can submit initial liquidity</span>
         }
       </div>
@@ -71,8 +72,6 @@ const MarketRow = (props: MarketRowProps) => {
       </span>
     </div>
   );
-
-  //console.log(props.market);
 
   return (
     <div className={Styles.MarketRow}>

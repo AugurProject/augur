@@ -51,7 +51,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATEYESNOMARKET: {
         if (hash) dispatch(addPendingData(hash, CREATE_MARKET, eventName, transaction.params));
         if (hash && eventName === TXEventName.Success) {
-         dispatch(removePendingData(hash, CREATE_MARKET));
+          dispatch(removePendingData(hash, CREATE_MARKET));
         }
         break;
       }

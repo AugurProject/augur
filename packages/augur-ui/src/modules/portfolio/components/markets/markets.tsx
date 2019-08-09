@@ -44,28 +44,27 @@ function filterComp(input, market) {
 }
 
 function renderToggleContent(market) {
-  //console.log(market);
   return (
     <div className={Styles.InfoParent}>
-      {!market.pending &&
         <div>
-          <div>
-            <LinearPropertyLabel
-              label="Volume"
-              highlightFirst
-              value={`${market.volumeFormatted.formatted} DAI`}
-            />
-            <LinearPropertyLabel
-              label="Open Interest"
-              highlightFirst
-              value={`${market.openInterestFormatted.formatted} DAI`}
-            />
-          </div>
+          {!market.pending &&
+            <div>
+              <LinearPropertyLabel
+                label="Volume"
+                highlightFirst
+                value={`${market.volumeFormatted.formatted} DAI`}
+              />
+              <LinearPropertyLabel
+                label="Open Interest"
+                highlightFirst
+                value={`${market.openInterestFormatted.formatted} DAI`}
+              />
+            </div>
+          }
+          {market.pending && market.status === TXEventName.Pending &&
+            <span>You will receive an alert and notification when your market has been processed. </span>
+          }
         </div>
-      }
-      {market.pending && market.status === TXEventName.Pending && 
-        <span>You will receive an alert and notification when your market has been processed. </span>
-      }
     </div>
   );
 }

@@ -164,12 +164,19 @@ export interface ReportingWindowStats {
     gasCosts: string;
   };
 }
+
+export interface CreateMarketData {
+  _extraInfo: string;
+  endTime: DateFormattedObject;
+}
+
 export interface PendingQueue {
   [queueName: string]: {
     [pendingId: string]: {
       status: string;
       blockNumber: number;
       parameters?: UIOrder | NewMarket;
+      data: CreateMarketData;
     };
   };
 }

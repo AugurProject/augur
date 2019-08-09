@@ -1,4 +1,4 @@
-import { BaseAction, UIOrder } from "modules/types";
+import { BaseAction, UIOrder, CreateMarketData } from "modules/types";
 import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls';
 
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
@@ -26,7 +26,7 @@ export const addPendingData = (
   pendingId: string,
   queueName: string,
   status: string,
-  info?: object,
+  info?: CreateMarketData,
 ): BaseAction => ({
   type: ADD_PENDING_DATA,
   data: {
