@@ -56,14 +56,6 @@ export class AccountTimeRangedStats {
       throw new Error("startTime must be less than or equal to endTime");
     }
 
-    const baseRequest = {
-      $and: [
-        { universe: params.universe },
-        { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-        { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-      ],
-    };
-
     const marketsRequest = {
       selector: {
         $and: [
