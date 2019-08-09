@@ -10,6 +10,7 @@ import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
 PouchDB.plugin(Upsert);
+PouchDB.debug.enable('*');
 
 interface DocumentIDToDoc {
   [docId: string]: PouchDB.Core.ExistingDocument<{}>;
