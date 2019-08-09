@@ -30,7 +30,7 @@ sidebar_label: ContractSimulateTradeData
 
 **● _numFills**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:63](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L63)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:63](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L63)*
 
 ___
 <a id="_settlementfees"></a>
@@ -39,7 +39,7 @@ ___
 
 **● _settlementFees**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:60](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L60)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:60](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L60)*
 
 ___
 <a id="_sharesdepleted"></a>
@@ -48,7 +48,7 @@ ___
 
 **● _sharesDepleted**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:61](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L61)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:61](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L61)*
 
 ___
 <a id="_sharesfilled"></a>
@@ -57,7 +57,7 @@ ___
 
 **● _sharesFilled**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:59](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L59)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:59](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L59)*
 
 ___
 <a id="_tokensdepleted"></a>
@@ -66,7 +66,7 @@ ___
 
 **● _tokensDepleted**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:62](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L62)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:62](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L62)*
 
 ___
 

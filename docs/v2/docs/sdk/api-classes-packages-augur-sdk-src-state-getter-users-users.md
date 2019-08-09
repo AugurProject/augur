@@ -34,7 +34,7 @@ sidebar_label: Users
 
 **● getProfitLossParams**: *`IntersectionType`<[`PartialType`<`object`, `object`, `object`, `unknown`>, `PartialType`<`object`, `object`, `object`, `unknown`>], `object`, `object`, `unknown`>* =  getProfitLossParams
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:113](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L113)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:113](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L113)*
 
 ___
 <a id="getprofitlosssummaryparams"></a>
@@ -43,7 +43,7 @@ ___
 
 **● getProfitLossSummaryParams**: *`PartialType`<`object`, `object`, `object`, `unknown`>* =  getProfitLossSummaryParams
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:114](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L114)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:114](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L114)*
 
 ___
 <a id="getusertradingpositionsparams"></a>
@@ -52,10 +52,10 @@ ___
 
 **● getUserTradingPositionsParams**: *`IntersectionType`<[`IntersectionType`<[`InterfaceType`<`object`, `object`, `object`, `unknown`>, `PartialType`<`object`, `object`, `object`, `unknown`>], `object`, `object`, `unknown`>, `PartialType`<`object`, `object`, `object`, `unknown`>], `object`, `object`, `unknown`>* =  t.intersection([
     userTradingPositionsParams,
-    SortLimit,
+    sortOptions,
   ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:109](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L109)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:109](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L109)*
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 ▸ **getProfitLoss**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionType`>*): `Promise`<[MarketTradingPosition](api-interfaces-packages-augur-sdk-src-state-getter-users-markettradingposition.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:283](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L283)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:283](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L283)*
 
 **Parameters:**
 
@@ -86,7 +86,7 @@ ___
 
 ▸ **getProfitLossSummary**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`PartialType`>*): `Promise`<`NumericDictionary`<[MarketTradingPosition](api-interfaces-packages-augur-sdk-src-state-getter-users-markettradingposition.md)>>
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:426](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L426)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:426](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L426)*
 
 **Parameters:**
 
@@ -105,7 +105,7 @@ ___
 
 ▸ **getUserTradingPositions**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionType`>*): `Promise`<[UserTradingPositions](api-interfaces-packages-augur-sdk-src-state-getter-users-usertradingpositions.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:117](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Users.ts#L117)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:117](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Users.ts#L117)*
 
 **Parameters:**
 

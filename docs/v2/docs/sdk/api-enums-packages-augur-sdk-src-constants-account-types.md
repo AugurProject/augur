@@ -28,7 +28,7 @@ sidebar_label: ACCOUNT_TYPES
 
 **EDGE**:  = "edge"
 
-*Defined in [packages/augur-sdk/src/constants.ts:11](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L11)*
+*Defined in [packages/augur-sdk/src/constants.ts:13](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L13)*
 
 ___
 <a id="ledger"></a>
@@ -37,7 +37,7 @@ ___
 
 **LEDGER**:  = "ledger"
 
-*Defined in [packages/augur-sdk/src/constants.ts:6](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L6)*
+*Defined in [packages/augur-sdk/src/constants.ts:8](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L8)*
 
 ___
 <a id="meta_mask"></a>
@@ -46,7 +46,7 @@ ___
 
 **META_MASK**:  = "metaMask"
 
-*Defined in [packages/augur-sdk/src/constants.ts:9](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L9)*
+*Defined in [packages/augur-sdk/src/constants.ts:11](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L11)*
 
 ___
 <a id="private_key"></a>
@@ -55,7 +55,7 @@ ___
 
 **PRIVATE_KEY**:  = "privateKey"
 
-*Defined in [packages/augur-sdk/src/constants.ts:7](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L7)*
+*Defined in [packages/augur-sdk/src/constants.ts:9](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L9)*
 
 ___
 <a id="trezor"></a>
@@ -64,7 +64,7 @@ ___
 
 **TREZOR**:  = "trezor"
 
-*Defined in [packages/augur-sdk/src/constants.ts:10](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L10)*
+*Defined in [packages/augur-sdk/src/constants.ts:12](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L12)*
 
 ___
 <a id="unlocked_ethereum_node"></a>
@@ -73,7 +73,7 @@ ___
 
 **UNLOCKED_ETHEREUM_NODE**:  = "unlockedEthereumNode"
 
-*Defined in [packages/augur-sdk/src/constants.ts:8](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L8)*
+*Defined in [packages/augur-sdk/src/constants.ts:10](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L10)*
 
 ___
 <a id="u_port"></a>
@@ -82,7 +82,7 @@ ___
 
 **U_PORT**:  = "uPort"
 
-*Defined in [packages/augur-sdk/src/constants.ts:5](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L5)*
+*Defined in [packages/augur-sdk/src/constants.ts:7](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L7)*
 
 ___
 

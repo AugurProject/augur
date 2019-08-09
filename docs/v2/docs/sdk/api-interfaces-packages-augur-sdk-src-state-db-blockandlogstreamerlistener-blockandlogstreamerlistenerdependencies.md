@@ -31,7 +31,7 @@ sidebar_label: BlockAndLogStreamerListenerDependencies
 
 **● address**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:18](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L18)*
 
 ___
 <a id="blockandlogstreamer"></a>
@@ -40,7 +40,7 @@ ___
 
 **● blockAndLogStreamer**: *[BlockAndLogStreamerInterface](api-interfaces-packages-augur-sdk-src-state-db-blockandlogstreamerlistener-blockandlogstreamerinterface.md)<`Block`, `ExtendedLog`>*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:19](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:19](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L19)*
 
 ___
 <a id="eventlogdbrouter"></a>
@@ -49,7 +49,7 @@ ___
 
 **● eventLogDBRouter**: *[EventLogDBRouter](api-classes-packages-augur-sdk-src-state-db-eventlogdbrouter-eventlogdbrouter.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:21](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:21](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L21)*
 
 ___
 <a id="getblockbyhash"></a>
@@ -58,7 +58,7 @@ ___
 
 **● getBlockByHash**: *`function`*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:20](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L20)*
 
 #### Type declaration
 ▸(hashOrTag: *`string`*): `Promise`<`Block`>
@@ -78,7 +78,7 @@ ___
 
 **● getEventTopics**: *`function`*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:22](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:22](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L22)*
 
 #### Type declaration
 ▸(eventName: *`string`*): `string`[]
@@ -98,7 +98,7 @@ ___
 
 **● listenForNewBlocks**: *`function`*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts:24](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamerListener.ts#L24)*
 
 #### Type declaration
 ▸(callback: *`function`*): `void`

@@ -33,7 +33,7 @@ sidebar_label: StakeDetails
 
 **● bondSizeCurrent**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:129](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L129)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:174](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L174)*
 
 ___
 <a id="bondsizetotal"></a>
@@ -42,7 +42,7 @@ ___
 
 **● bondSizeTotal**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:130](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L130)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:175](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L175)*
 
 ___
 <a id="isinvalid"></a>
@@ -51,7 +51,7 @@ ___
 
 **● isInvalid**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:128](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L128)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:173](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L173)*
 
 ___
 <a id="outcome"></a>
@@ -60,7 +60,7 @@ ___
 
 **● outcome**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:127](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L127)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:172](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L172)*
 
 ___
 <a id="stakecompleted"></a>
@@ -69,7 +69,7 @@ ___
 
 **● stakeCompleted**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:133](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L133)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:178](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L178)*
 
 ___
 <a id="stakecurrent"></a>
@@ -78,7 +78,7 @@ ___
 
 **● stakeCurrent**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:131](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L131)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:176](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L176)*
 
 ___
 <a id="stakeremaining"></a>
@@ -87,7 +87,7 @@ ___
 
 **● stakeRemaining**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:132](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L132)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:177](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L177)*
 
 ___
 <a id="tentativewinning"></a>
@@ -96,7 +96,7 @@ ___
 
 **● tentativeWinning**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:134](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L134)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:179](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L179)*
 
 ___
 

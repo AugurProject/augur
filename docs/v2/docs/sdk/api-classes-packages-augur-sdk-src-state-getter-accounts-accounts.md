@@ -33,10 +33,10 @@ sidebar_label: Accounts
 
 **● getAccountTransactionHistoryParams**: *`IntersectionType`<[`InterfaceType`<`object`, `object`, `object`, `unknown`>, `PartialType`<`object`, `object`, `object`, `unknown`>], `object`, `object`, `unknown`>* =  t.intersection([
     getAccountTransactionHistoryParamsSpecific,
-    SortLimit,
+    sortOptions,
   ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:77](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L77)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:77](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L77)*
 
 ___
 
@@ -48,7 +48,7 @@ ___
 
 ▸ **getAccountTransactionHistory**<`TBigNumber`>(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionType`>*): `Promise`<[AccountTransaction](api-interfaces-packages-augur-sdk-src-state-getter-accounts-accounttransaction.md)[]>
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:83](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L83)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:83](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L83)*
 
 **Type parameters:**
 
@@ -70,7 +70,7 @@ ___
 
 ▸ **getMarketCreatedInfo**<`TBigNumber`>(db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, transactionLogs: *`Array`<[ParsedOrderEventLog](api-interfaces-packages-augur-sdk-src-state-logs-types-parsedordereventlog.md) \| [TradingProceedsClaimedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-tradingproceedsclaimedlog.md) \| [DisputeCrowdsourcerRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcerredeemedlog.md) \| [InitialReporterRedeemedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreporterredeemedlog.md) \| [DisputeCrowdsourcerContributionLog](api-interfaces-packages-augur-sdk-src-state-logs-types-disputecrowdsourcercontributionlog.md) \| [InitialReportSubmittedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-initialreportsubmittedlog.md) \| [CompleteSetsPurchasedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetspurchasedlog.md) \| [CompleteSetsSoldLog](api-interfaces-packages-augur-sdk-src-state-logs-types-completesetssoldlog.md)>*): `Promise`<[MarketCreatedInfo](api-interfaces-packages-augur-sdk-src-state-getter-accounts-marketcreatedinfo.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:410](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L410)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:410](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L410)*
 
 **Type parameters:**
 

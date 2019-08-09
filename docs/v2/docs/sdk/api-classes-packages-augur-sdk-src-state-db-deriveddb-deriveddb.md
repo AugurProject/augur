@@ -62,7 +62,7 @@ Stores derived data from multiple logs and post-log processing
 
 *Overrides [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[constructor](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#constructor)*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:23](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L23)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:23](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L23)*
 
 **Parameters:**
 
@@ -82,13 +82,13 @@ ___
 
 <a id="db"></a>
 
-### `<Protected>` db
+###  db
 
 **● db**: *`Database`*
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[db](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#db)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:24](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L24)*
 
 ___
 <a id="dbname"></a>
@@ -99,7 +99,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[dbName](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#dbname)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:26](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L26)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:26](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L26)*
 
 ___
 <a id="idfields"></a>
@@ -108,7 +108,7 @@ ___
 
 **● idFields**: *`string`[]*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:20](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L20)*
 
 ___
 <a id="mergeeventnames"></a>
@@ -117,7 +117,7 @@ ___
 
 **● mergeEventNames**: *`string`[]*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:21](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:21](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L21)*
 
 ___
 <a id="name"></a>
@@ -126,7 +126,7 @@ ___
 
 **● name**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:22](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:22](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L22)*
 
 ___
 <a id="networkid"></a>
@@ -137,7 +137,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[networkId](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#networkid)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:25](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L25)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:25](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L25)*
 
 ___
 <a id="statedb"></a>
@@ -146,7 +146,7 @@ ___
 
 **● stateDB**: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:19](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:19](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L19)*
 
 ___
 <a id="syncstatus"></a>
@@ -155,7 +155,7 @@ ___
 
 **● syncStatus**: *[SyncStatus](api-classes-packages-augur-sdk-src-state-db-syncstatus-syncstatus.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:18](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L18)*
 
 ___
 <a id="updatinghighestsyncblock"></a>
@@ -164,7 +164,7 @@ ___
 
 **● updatingHighestSyncBlock**: *`boolean`* = false
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:23](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L23)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:23](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L23)*
 
 ___
 
@@ -178,7 +178,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[allDocs](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#alldocs)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:34](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L34)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:34](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L34)*
 
 **Returns:** `Promise`<`AllDocsResponse`<`__type`>>
 
@@ -191,7 +191,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[bulkUpsertOrderedDocuments](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#bulkupsertordereddocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:65](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L65)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:65](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L65)*
 
 **Parameters:**
 
@@ -211,7 +211,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[bulkUpsertUnorderedDocuments](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#bulkupsertunordereddocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:56](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L56)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:56](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L56)*
 
 **Parameters:**
 
@@ -228,7 +228,7 @@ ___
 
 ▸ **doSync**(highestAvailableBlockNumber: *`number`*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:59](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L59)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:59](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L59)*
 
 **Parameters:**
 
@@ -247,7 +247,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[find](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#find)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:98](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L98)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:98](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L98)*
 
 **Parameters:**
 
@@ -266,7 +266,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[getDocument](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#getdocument)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:38](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L38)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:38](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L38)*
 
 **Type parameters:**
 
@@ -288,7 +288,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[getInfo](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#getinfo)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:94](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L94)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:94](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L94)*
 
 **Returns:** `Promise`<`DatabaseInfo`>
 
@@ -301,7 +301,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[getPouchRevFromId](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#getpouchrevfromid)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:102](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L102)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:102](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L102)*
 
 **Parameters:**
 
@@ -318,7 +318,7 @@ ___
 
 ▸ **handleMergeEvent**(blocknumber: *`number`*, logs: *[ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)[]*, syncing?: *`boolean`*): `Promise`<`number`>
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:116](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L116)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:116](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L116)*
 
 **Parameters:**
 
@@ -337,7 +337,7 @@ ___
 
 ▸ **processLog**(log: *[Log](api-interfaces-node-modules--augurproject-types-types-logs-log.md)*): [BaseDocument](api-interfaces-packages-augur-sdk-src-state-db-abstractdb-basedocument.md)
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:171](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L171)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:171](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L171)*
 
 **Parameters:**
 
@@ -354,7 +354,7 @@ ___
 
 ▸ **rollback**(blockNumber: *`number`*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:83](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L83)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:83](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L83)*
 
 **Parameters:**
 
@@ -371,7 +371,7 @@ ___
 
 ▸ **sync**(highestAvailableBlockNumber: *`number`*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:49](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/DerivedDB.ts#L49)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:49](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/DerivedDB.ts#L49)*
 
 **Parameters:**
 
@@ -390,7 +390,7 @@ ___
 
 *Inherited from [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md).[upsertDocument](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md#upsertdocument)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:49](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L49)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:49](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L49)*
 
 **Parameters:**
 

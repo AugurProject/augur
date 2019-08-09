@@ -37,7 +37,7 @@ sidebar_label: Market
 
 ⊕ **new Market**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*): [Market](api-classes-packages-augur-sdk-src-api-market-market.md)
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:34](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L34)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:34](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L34)*
 
 **Parameters:**
 
@@ -57,7 +57,7 @@ ___
 
 **● augur**: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:34](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L34)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:34](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L34)*
 
 ___
 
@@ -69,7 +69,7 @@ ___
 
 ▸ **createCategoricalMarket**(params: *[CreateCategoricalMarketParams](api-interfaces-packages-augur-sdk-src-api-market-createcategoricalmarketparams.md)*): `Promise`<`Market`>
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:54](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L54)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:54](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L54)*
 
 **Parameters:**
 
@@ -86,7 +86,7 @@ ___
 
 ▸ **createScalarMarket**(params: *[CreateScalarMarketParams](api-interfaces-packages-augur-sdk-src-api-market-createscalarmarketparams.md)*): `Promise`<`Market`>
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:69](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L69)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:69](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L69)*
 
 **Parameters:**
 
@@ -103,7 +103,7 @@ ___
 
 ▸ **createYesNoMarket**(params: *[CreateYesNoMarketParams](api-interfaces-packages-augur-sdk-src-api-market-createyesnomarketparams.md)*): `Promise`<`Market`>
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:40](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L40)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:40](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L40)*
 
 **Parameters:**
 
@@ -120,7 +120,7 @@ ___
 
 ▸ **extractMarketIdFromEvents**(events: *`any`*): `string`
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:85](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L85)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:85](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L85)*
 
 **Parameters:**
 
