@@ -52,14 +52,10 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET: {
-        // if (!hash && eventName === TXEventName.AwaitingSigning) {
-        // }
-        // if (hash) {
-          const id = generateTxParameterId(transaction.params);
-          const { blockchain } = getState();
-          const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000);
-          dispatch(addPendingData(id, CREATE_MARKET, eventName, data));
-        //}
+        const id = generateTxParameterId(transaction.params);
+        const { blockchain } = getState();
+        const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000);
+        dispatch(addPendingData(id, CREATE_MARKET, eventName, data));
         if (hash && eventName === TXEventName.Success) {
           dispatch(removePendingData(id, CREATE_MARKET));
         }
