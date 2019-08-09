@@ -454,7 +454,7 @@ describe('State API :: Markets :: ', () => {
     // Test reportingStates
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      reportingStates: [MarketReportingState.DESIGNATED_REPORTING],
+      reportingStates: [MarketReportingState.DesignatedReporting],
       isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(6);
@@ -467,7 +467,7 @@ describe('State API :: Markets :: ', () => {
 
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      reportingStates: [MarketReportingState.PRE_REPORTING],
+      reportingStates: [MarketReportingState.PreReporting],
     });
     expect(marketList.markets).toEqual([]);
 
