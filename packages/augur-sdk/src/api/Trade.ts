@@ -69,6 +69,7 @@ export interface SimulateTradeData {
   sharesDepleted: BigNumber;
   tokensDepleted: BigNumber;
   numFills: BigNumber;
+  loopLimit: BigNumber;
 }
 
 export class Trade {
@@ -119,7 +120,7 @@ export class Trade {
       result = await this.augur.contracts.trade.publicTrade(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, nullOrderId, nullOrderId, params.tradeGroupId, loopLimit, params.ignoreShares, params.affiliateAddress, params.kycToken);
     }
 
-    const amountRemaining = this.getTradeAmountRemaining(result);
+    const amountRemaining = this.getTradeAmountRemaining(params.amount, result);
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
       return this.placeOnChainTrade(params);
@@ -134,13 +135,15 @@ export class Trade {
     const displaySharesDepleted = convertOnChainAmountToDisplayAmount(simulationData[2], tickSize);
     const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
     const displaySettlementFees = simulationData[3].dividedBy(QUINTILLION);
+    const { loopLimit } = await this.getTradeTransactionLimits(onChainTradeParams);
     const numFills = simulationData[4];
     return {
       sharesFilled: displaySharesFilled,
       tokensDepleted: displayTokensDepleted,
       sharesDepleted: displaySharesDepleted,
       settlementFees: displaySettlementFees,
-      numFills
+      numFills,
+      loopLimit
     };
   }
 
@@ -180,8 +183,8 @@ export class Trade {
     };
   }
 
-  private getTradeAmountRemaining(events: Event[]): BigNumber {
-    let tradeOnChainAmountRemaining = new BigNumber(0);
+  private getTradeAmountRemaining(tradeOnChainAmountRemaining: BigNumber, events: Event[]): BigNumber {
+    let amountRemaining = tradeOnChainAmountRemaining;
     for (const event of events) {
       if (event.name === "OrderEvent") {
         const eventParams = event.parameters as OrderEventLog;
@@ -189,10 +192,10 @@ export class Trade {
           return new BigNumber(0);
         } else if (eventParams.eventType === 3) {// Fill
           const onChainAmountFilled = eventParams.uint256Data[OrderEventUint256Value.amountFilled];
-          tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(onChainAmountFilled);
+          amountRemaining = tradeOnChainAmountRemaining.minus(onChainAmountFilled);
         }
       }
     }
-    return tradeOnChainAmountRemaining;
+    return amountRemaining;
   }
 }
