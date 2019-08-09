@@ -40,7 +40,7 @@ export interface MarketStatusProps {
 export interface InReportingLabelProps extends MarketStatusProps {
   reportingState: string;
   disputeInfo: any;
-  endTime: DateFormattedObject;
+  endTimeFormatted: DateFormattedObject;
   reportingWindowStatsEndTime: number;
   currentAugurTimestamp: number;
 }
@@ -555,7 +555,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     alternate,
     reportingState,
     disputeInfo,
-    endTime,
+    endTimeFormatted,
     reportingWindowStatsEndTime,
     currentAugurTimestamp
   } = props;
@@ -621,7 +621,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
             <MarketProgress
               currentTime={currentAugurTimestamp}
               reportingState={reportingState}
-              endTime={endTime}
+              endTimeFormatted={endTimeFormatted}
               reportingWindowEndtime={reportingWindowStatsEndTime}
               customLabel={customLabel}
             />

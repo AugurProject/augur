@@ -214,16 +214,16 @@ export enum MARKET_SORT_PARAMS {
 // In Reporting (DESIGNATED_REPORTING, OPEN_REPORTING, CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW)
 // Resolved (FINALIZED)
 // TODO: this will come from SDK in the near future
-export enum REPORTING_STATE {
-  PRE_REPORTING = Getters.Markets.MarketReportingState.PreReporting,
-  DESIGNATED_REPORTING = Getters.Markets.MarketReportingState.DesignatedReporting,
-  OPEN_REPORTING = Getters.Markets.MarketReportingState.OpenReporting,
-  CROWDSOURCING_DISPUTE = Getters.Markets.MarketReportingState.CrowdsourcingDispute,
-  AWAITING_NEXT_WINDOW = Getters.Markets.MarketReportingState.AwaitingNextWindow,
-  FINALIZED = Getters.Markets.MarketReportingState.Finalized,
-  FORKING = Getters.Markets.MarketReportingState.Forking,
-  AWAITING_NO_REPORT_MIGRATION = Getters.Markets.MarketReportingState.AwaitingNoReportMigration,
-  AWAITING_FORK_MIGRATION = Getters.Markets.MarketReportingState.AwaitingForkMigration
+export const REPORTING_STATE = {
+  PRE_REPORTING: Getters.Markets.MarketReportingState.PreReporting,
+  DESIGNATED_REPORTING: Getters.Markets.MarketReportingState.DesignatedReporting,
+  OPEN_REPORTING: Getters.Markets.MarketReportingState.OpenReporting,
+  CROWDSOURCING_DISPUTE: Getters.Markets.MarketReportingState.CrowdsourcingDispute,
+  AWAITING_NEXT_WINDOW: Getters.Markets.MarketReportingState.AwaitingNextWindow,
+  FINALIZED: Getters.Markets.MarketReportingState.Finalized,
+  FORKING: Getters.Markets.MarketReportingState.Forking,
+  AWAITING_NO_REPORT_MIGRATION: Getters.Markets.MarketReportingState.AwaitingNoReportMigration,
+  AWAITING_FORK_MIGRATION: Getters.Markets.MarketReportingState.AwaitingForkMigration
 }
 
 // TODO: this no longer exists and can be removed during refactor of claiming winnings
@@ -455,6 +455,7 @@ export const MODAL_CONFIRM = 'MODAL_CONFIRM';
 export const MODAL_REVIEW = 'MODAL_REVIEW';
 export const MODAL_GAS_PRICE = 'MODAL_GAS_PRICE';
 export const MODAL_REP_FAUCET = 'MODAL_REP_FAUCET';
+export const MODAL_CREATE_MARKET = 'MODAL_CREATE_MARKET';
 export const MODAL_DAI_FAUCET = 'MODAL_DAI_FAUCET';
 export const MODAL_CREATION_HELP = 'MODAL_CREATION_HELP';
 export const MODAL_DEPOSIT = 'MODAL_DEPOSIT';

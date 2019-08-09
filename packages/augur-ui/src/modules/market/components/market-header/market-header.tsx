@@ -193,7 +193,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                 isFavorite={isFavorite}
                 reportingState={market.reportingState}
                 disputeInfo={market.disputeInfo}
-                endTimeFormatted={market.endTimeFormatted || convertUnixToFormattedDate(market.endTime)}
+                endTimeFormatted={market.endTimeFormatted}
                 isLogged={isLogged}
               />
             )}
@@ -256,7 +256,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                   isFavorite={isFavorite}
                   reportingState={market.reportingState}
                   disputeInfo={market.disputeInfo}
-                  endTimeFormatted={market.endTimeFormatted || convertUnixToFormattedDate(market.endTime)}
+                  endTimeFormatted={market.endTimeFormatted}
                   isLogged={isLogged}
                 />
               )}

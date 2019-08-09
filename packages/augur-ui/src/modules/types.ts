@@ -255,7 +255,7 @@ export interface LiquidityOrders {
 
 export interface LiquidityOrder {
   id?: string;
-  outcome?: string | number; // TODO: need to be consistent with outcome naming and type
+  outcome?: string; // TODO: need to be consistent with outcome naming and type
   index?: number;
   quantity: BigNumber;
   price: BigNumber;
@@ -264,21 +264,22 @@ export interface LiquidityOrder {
   outcomeName: string;
 }
 export interface NewMarketPropertiesValidations {
-  description: string | null;
-  categories: Array<string>;
-  type: string | null;
-  designatedReporterType: string | null;
-  designatedReporterAddress: string | null;
-  expirySourceType: string | null;
-  endTime: string | null;
-  hour: string | null;
-  minute: string | null;
-  meridiem: string | null;
+  description?: string;
+  categories?: string[];
+  type?: string;
+  designatedReporterType?: string;
+  designatedReporterAddress?: string;
+  expirySourceType?: string;
+  setEndTime?: string;
+  hour?: string;
+  minute?: string;
+  meridiem?: string;
+  outcomes?: string[];
 }
 
 export interface NewMarketPropertyValidations {
-  settlementFee: string | null;
-  scalarDenomination: string | null;
+  settlementFee?: string;
+  scalarDenomination?: string;
 }
 export interface NewMarket {
   isValid: boolean;
@@ -298,8 +299,8 @@ export interface NewMarket {
   designatedReporterAddress: string;
   minPrice: string;
   maxPrice: string;
-  endTime: number;
   endTimeFormatted: DateFormattedObject;
+  setEndTime: number;
   tickSize: number;
   hour: string;
   minute: string;
@@ -314,7 +315,9 @@ export interface NewMarket {
   initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
+  offsetName: string;
   offset: number;
+  timezone: string;
 }
 export interface Draft {
   uniqueId: number;

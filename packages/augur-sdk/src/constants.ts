@@ -1,6 +1,8 @@
 import { utils as ethersUtils } from "ethers";
 import { BigNumber } from "bignumber.js";
 
+export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+
 export enum ACCOUNT_TYPES {
   U_PORT = "uPort",
   LEDGER = "ledger",

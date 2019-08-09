@@ -40,6 +40,8 @@ export interface ContractAddresses {
     TradingEscapeHatch?: string;
     Time?: string;
     TimeControlled?: string;
+    GnosisSafe?: string;
+    ProxyFactory?: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually

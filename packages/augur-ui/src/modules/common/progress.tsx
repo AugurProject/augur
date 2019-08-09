@@ -6,7 +6,7 @@ import { DateFormattedObject } from "modules/types";
 import { REPORTING_STATE } from "modules/common/constants";
 
 export interface CountdownProgressProps {
-  time: DateFormattedObject | null;
+  time?: DateFormattedObject;
   currentTime?: DateFormattedObject;
   label: string;
   countdownBreakpoint?: number;
@@ -29,7 +29,7 @@ export interface TimeProgressBarProps {
 export interface MarketProgressProps {
   reportingState: string;
   currentTime: DateFormattedObject | number;
-  endTime: DateFormattedObject;
+  endTimeFormatted: DateFormattedObject;
   reportingWindowEndtime: DateFormattedObject | number;
   customLabel?: string;
   alignRight?: Boolean;
@@ -48,19 +48,19 @@ export const formatTime = (time: DateFormattedObject | number) => {
 
 const reportingStateToLabelTime = (
   reportingState: string,
-  endTime: DateFormattedObject,
+  endTimeFormatted: DateFormattedObject,
   reportingEndTime: DateFormattedObject
 ) => {
   let label: string = "";
-  let time: DateFormattedObject | null = null;
+  let time: DateFormattedObject = null;
   switch (reportingState) {
     case REPORTING_STATE.PRE_REPORTING:
       label = "Reporting Begins";
-      time = endTime;
+      time = endTimeFormatted;
       break;
     case REPORTING_STATE.DESIGNATED_REPORTING:
       label = "Designated Reporting";
-      time = formatTime(endTime.timestamp + OneDay);
+      time = formatTime(endTimeFormatted.timestamp + OneDay);
       break;
     case REPORTING_STATE.OPEN_REPORTING:
       label = "Open Reporting";
@@ -75,7 +75,7 @@ const reportingStateToLabelTime = (
       break;
     case REPORTING_STATE.FORKING:
       label = "Forking";
-      time = endTime;
+      time = endTimeFormatted;
       break;
     case REPORTING_STATE.AWAITING_NO_REPORT_MIGRATION:
       label = "Awaiting No Report Migration";
@@ -96,17 +96,16 @@ export const MarketProgress = (props: MarketProgressProps) => {
   const {
     reportingState,
     currentTime,
-    endTime,
+    endTimeFormatted,
     reportingWindowEndtime,
     customLabel,
     alignRight,
   } = props;
   const currTime = formatTime(currentTime);
-  const marketEndTime = endTime;
   const reportingEndTime = formatTime(reportingWindowEndtime);
   const { label, time } = reportingStateToLabelTime(
     reportingState,
-    marketEndTime,
+    endTimeFormatted,
     reportingEndTime
   );
 

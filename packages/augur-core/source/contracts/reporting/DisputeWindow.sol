@@ -1,6 +1,6 @@
 // Copyright (C) 2015 Forecast Foundation OU, full GPL notice in LICENSE
 
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 
 import 'ROOT/reporting/IDisputeWindow.sol';
