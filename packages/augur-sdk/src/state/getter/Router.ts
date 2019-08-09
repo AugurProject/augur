@@ -68,6 +68,10 @@ export class Router {
     }
 
     const db = await this.db;
-    return getter.func(this.augur, db, decodedParams.value);
+    const timerName = `getter: ${name} called at ${Date.now()}`;
+    console.time(timerName);
+    const result = getter.func(this.augur, db, decodedParams.value);
+    console.timeEnd(timerName);
+    return result;
   }
 }
