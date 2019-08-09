@@ -145,7 +145,7 @@ function getTimezoneAbbr(date: Date, timezone: string): string {
   }
   return timezoneLocal.split(' ')[2];
 }
-const LONG_FORMAT = 'MMMM d, YYYY h:mm A';
+const LONG_FORMAT = 'MMMM DD, YYYY h:mm A';
 
 export function buildformattedDate(
   timestamp: number,
