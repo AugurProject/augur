@@ -6,7 +6,7 @@ import { Augur } from './../Augur';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 
-// XXX TEMP for better worse order ids
+// @TODO: TEMP for better worse order ids
 export function stringTo32ByteHex(stringToEncode: string): string {
   return `0x${Buffer.from(stringToEncode, 'utf8').toString('hex').padEnd(64, '0')}`;
 }
@@ -110,11 +110,11 @@ export class Trade {
 
     let result: Event[] = [];
 
-    // TODO: Use the calculated gasLimit above instead of relying on an estimate once we can send an override gasLimit
+    // @TODO: Use the calculated gasLimit above instead of relying on an estimate once we can send an override gasLimit
     if (params.doNotCreateOrders) {
       result = await this.augur.contracts.trade.publicFillBestOrder(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, params.tradeGroupId, loopLimit, params.ignoreShares, params.affiliateAddress, params.kycToken);
     } else {
-      // TODO: Use the state provided better worse orders
+      // @TODO: Use the state provided better worse orders
       const nullOrderId = stringTo32ByteHex("");
       result = await this.augur.contracts.trade.publicTrade(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, nullOrderId, nullOrderId, params.tradeGroupId, loopLimit, params.ignoreShares, params.affiliateAddress, params.kycToken);
     }

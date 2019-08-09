@@ -583,7 +583,7 @@ export class Markets {
       db,
       { marketIds: marketsResults.map(marketInfo => marketInfo.market) }
     );
-    // TODO: Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
+    // @TODO: Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
     const filteredMarketsDetailsOrder = {};
     for (let i = 0; i < marketsResults.length; i++) {
       filteredMarketsDetailsOrder[marketsResults[i].market] = i;
