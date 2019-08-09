@@ -110,7 +110,7 @@ export interface MarketInfoOutcome {
   volume: string;
 }
 
-export enum MarketInfoReportingState {
+export enum MarketReportingState {
   PRE_REPORTING = 'PRE_REPORTING',
   DESIGNATED_REPORTING = 'DESIGNATED_REPORTING',
   OPEN_REPORTING = 'OPEN_REPORTING',
@@ -434,7 +434,7 @@ export class Markets {
     }
 
     // Set params defaults
-    params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? false : params.includeInvalidMarkets;
+    params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
     params.search = typeof params.search === 'undefined' ? "" : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
     params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.marketOI : params.sortBy;
@@ -470,7 +470,7 @@ export class Markets {
         marketCreatorFee
       );
     }
-    let keyedMarketCreatedLogs: MarketCreatedLog[] = marketCreatedLogs.reduce(
+    marketCreatedLogs = marketCreatedLogs.reduce(
       (previousValue: any, currentValue: MarketData) => {
         if (
           params.maxFee &&
@@ -484,22 +484,6 @@ export class Markets {
       },
       []
     );
-    marketCreatedLogs = [];
-    // marketCreatedLogs = marketCreatedLogs.reduce(
-    //   (previousValue: any, currentValue: MarketData) => {
-    //     if (
-    //       params.maxFee &&
-    //       typeof marketCreatorFeeDivisor !== 'undefined' &&
-    //       new BigNumber(currentValue.feeDivisor).gt(marketCreatorFeeDivisor)
-    //     ) {
-    //       return previousValue;
-    //     }
-    //     previousValue[currentValue.market] = currentValue;
-    //     return previousValue;
-    //   },
-    //   []
-    // );
-    // const keyedMarketCreatedLogs = marketCreatedLogs;
 
     // Sort search results by categories
     let marketsResults: any[]  = _.sortBy(
@@ -507,16 +491,16 @@ export class Markets {
       ['category1', 'category2', 'category3']
     );
 
-    // Create intersection array of marketsResults & keyedMarketCreatedLogs
+    // Create intersection array of marketsResults & marketCreatedLogs
     for (let i = marketsResults.length - 1; i >= 0; i--) {
-      if (keyedMarketCreatedLogs[marketsResults[i].market]) {
-        marketsResults[i] = Object.assign(marketsResults[i], keyedMarketCreatedLogs[marketsResults[i].market]);
+      if (marketCreatedLogs[marketsResults[i].market]) {
+        marketsResults[i] = Object.assign(marketsResults[i], marketCreatedLogs[marketsResults[i].market]);
       } else {
         marketsResults.splice(i, 1);
       }
     }
-    keyedMarketCreatedLogs = null;
-console.log(marketsResults);
+
+    // TODO: Break this section into a separate function
     let filteredOutCount = 0; // Markets excluded by maxLiquiditySpread & includeInvalidMarkets filters
     for (let i = marketsResults.length - 1; i >= 0; i--) {
       let includeMarket = true;
@@ -585,15 +569,15 @@ console.log(marketsResults);
     }
 
     const meta = getMarketsMeta(marketsResults, filteredOutCount);
-// console.log("marketsResults before");
-// console.log(marketsResults);
+
+    // Sort & limit markets
     _.sortBy(marketsResults, [(market: any) => market[params.sortBy]]);
     if (params.isSortDescending) {
       marketsResults = marketsResults.reverse();
     }
     marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
-// console.log("marketsResults after");
-// console.log(marketsResults);
+
+    // Get markets info to return
     const marketsInfo = await Markets.getMarketsInfo(
       augur,
       db,

@@ -23,7 +23,7 @@ sidebar_label: packages/augur-sdk/src/state/db/TrackedUsers.test
 
 **● DB_FACTORY**: *`(Anonymous function)`* =  PouchDBFactory({adapter: "memory"})
 
-*Defined in [packages/augur-sdk/src/state/db/TrackedUsers.test.ts:5](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/TrackedUsers.test.ts#L5)*
+*Defined in [packages/augur-sdk/src/state/db/TrackedUsers.test.ts:5](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/TrackedUsers.test.ts#L5)*
 
 ___
 <a id="test_network_id"></a>
@@ -32,7 +32,7 @@ ___
 
 **● TEST_NETWORK_ID**: *`4`* = 4
 
-*Defined in [packages/augur-sdk/src/state/db/TrackedUsers.test.ts:4](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/TrackedUsers.test.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/db/TrackedUsers.test.ts:4](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/TrackedUsers.test.ts#L4)*
 
 ___
 

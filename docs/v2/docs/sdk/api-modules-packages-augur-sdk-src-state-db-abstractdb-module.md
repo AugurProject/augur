@@ -35,7 +35,7 @@ sidebar_label: packages/augur-sdk/src/state/db/AbstractDB
 
 **Ƭ PouchDBFactoryType**: *`function`*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:109](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L109)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:109](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L109)*
 
 #### Type declaration
 ▸(dbName: *`string`*): `Database`
@@ -58,7 +58,7 @@ ___
 
 ▸ **PouchDBFactory**(dbArgs: *`DatabaseConfiguration`*): `(Anonymous function)`
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:111](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L111)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:111](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L111)*
 
 **Parameters:**
 

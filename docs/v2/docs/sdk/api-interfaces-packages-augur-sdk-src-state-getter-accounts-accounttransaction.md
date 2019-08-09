@@ -37,7 +37,7 @@ sidebar_label: AccountTransaction
 
 **● action**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:58](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L58)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:58](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L58)*
 
 ___
 <a id="coin"></a>
@@ -46,7 +46,7 @@ ___
 
 **● coin**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:59](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L59)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:59](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L59)*
 
 ___
 <a id="details"></a>
@@ -55,7 +55,7 @@ ___
 
 **● details**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:60](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L60)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:60](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L60)*
 
 ___
 <a id="fee"></a>
@@ -64,7 +64,7 @@ ___
 
 **● fee**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:61](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L61)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:61](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L61)*
 
 ___
 <a id="marketdescription"></a>
@@ -73,7 +73,7 @@ ___
 
 **● marketDescription**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:62](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L62)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:62](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L62)*
 
 ___
 <a id="outcome"></a>
@@ -82,7 +82,7 @@ ___
 
 **● outcome**: *`number` \| `null`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:63](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L63)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:63](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L63)*
 
 ___
 <a id="outcomedescription"></a>
@@ -91,7 +91,7 @@ ___
 
 **● outcomeDescription**: *`string` \| `null`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:64](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L64)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:64](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L64)*
 
 ___
 <a id="price"></a>
@@ -100,7 +100,7 @@ ___
 
 **● price**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:65](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L65)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:65](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L65)*
 
 ___
 <a id="quantity"></a>
@@ -109,7 +109,7 @@ ___
 
 **● quantity**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:66](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L66)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:66](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L66)*
 
 ___
 <a id="timestamp"></a>
@@ -118,7 +118,7 @@ ___
 
 **● timestamp**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:67](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L67)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:67](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L67)*
 
 ___
 <a id="total"></a>
@@ -127,7 +127,7 @@ ___
 
 **● total**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:68](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L68)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:68](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L68)*
 
 ___
 <a id="transactionhash"></a>
@@ -136,7 +136,7 @@ ___
 
 **● transactionHash**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:69](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Accounts.ts#L69)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:69](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Accounts.ts#L69)*
 
 ___
 

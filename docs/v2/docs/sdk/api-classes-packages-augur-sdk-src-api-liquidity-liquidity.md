@@ -36,7 +36,7 @@ sidebar_label: Liquidity
 
 ⊕ **new Liquidity**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*): [Liquidity](api-classes-packages-augur-sdk-src-api-liquidity-liquidity.md)
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:50](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Liquidity.ts#L50)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:50](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Liquidity.ts#L50)*
 
 **Parameters:**
 
@@ -56,7 +56,7 @@ ___
 
 **● augur**: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:50](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Liquidity.ts#L50)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:50](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Liquidity.ts#L50)*
 
 ___
 
@@ -68,7 +68,7 @@ ___
 
 ▸ **getHorizontalLiquidity**(orderbook: *[Orderbook](api-interfaces-packages-augur-sdk-src-api-liquidity-orderbook.md)*, numTicks: *`BigNumber`*, feeMultiplier: *`BigNumber`*, numOutcomes: *`number`*, spread: *`number`*): [HorizontalLiquidity](api-interfaces-packages-augur-sdk-src-api-liquidity-horizontalliquidity.md)
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:73](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Liquidity.ts#L73)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:73](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Liquidity.ts#L73)*
 
 **Parameters:**
 
@@ -89,7 +89,7 @@ ___
 
 ▸ **getLiquidityForSpread**(params: *[GetLiquidityParams](api-interfaces-packages-augur-sdk-src-api-liquidity-getliquidityparams.md)*): `Promise`<`BigNumber`>
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:56](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Liquidity.ts#L56)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:56](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Liquidity.ts#L56)*
 
 **Parameters:**
 
@@ -106,7 +106,7 @@ ___
 
 ▸ **getVerticalLiquidity**(orderbook: *[Orderbook](api-interfaces-packages-augur-sdk-src-api-liquidity-orderbook.md)*, numTicks: *`BigNumber`*, marketType: *[MarketType](api-enums-packages-augur-sdk-src-state-logs-types-markettype.md)*, feeMultiplier: *`BigNumber`*, numOutcomes: *`number`*, spread: *`number`*): [VerticalLiquidity](api-interfaces-packages-augur-sdk-src-api-liquidity-verticalliquidity.md)
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:132](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Liquidity.ts#L132)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:132](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Liquidity.ts#L132)*
 
 **Parameters:**
 

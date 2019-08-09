@@ -29,7 +29,7 @@ sidebar_label: MarketCreatedLogExtraInfo
 
 **● _scalarDenomination**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:114](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L114)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:114](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/logs/types.ts#L114)*
 
 ___
 <a id="description"></a>
@@ -38,7 +38,7 @@ ___
 
 **● description**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:111](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L111)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:111](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/logs/types.ts#L111)*
 
 ___
 <a id="longdescription"></a>
@@ -47,7 +47,7 @@ ___
 
 **● longDescription**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:112](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L112)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:112](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/logs/types.ts#L112)*
 
 ___
 <a id="resolutionsource"></a>
@@ -56,7 +56,7 @@ ___
 
 **● resolutionSource**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/logs/types.ts:113](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/logs/types.ts#L113)*
+*Defined in [packages/augur-sdk/src/state/logs/types.ts:113](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/logs/types.ts#L113)*
 
 ___
 

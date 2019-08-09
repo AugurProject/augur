@@ -37,7 +37,7 @@ sidebar_label: Router
 
 ⊕ **new Router**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *`Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>*): [Router](api-classes-packages-augur-sdk-src-state-getter-router-router.md)
 
-*Defined in [packages/augur-sdk/src/state/getter/Router.ts:42](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Router.ts#L42)*
+*Defined in [packages/augur-sdk/src/state/getter/Router.ts:42](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Router.ts#L42)*
 
 **Parameters:**
 
@@ -58,7 +58,7 @@ ___
 
 **● augur**: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Router.ts:41](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Router.ts#L41)*
+*Defined in [packages/augur-sdk/src/state/getter/Router.ts:41](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Router.ts#L41)*
 
 ___
 <a id="db"></a>
@@ -67,7 +67,7 @@ ___
 
 **● db**: *`Promise`<[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)>*
 
-*Defined in [packages/augur-sdk/src/state/getter/Router.ts:42](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Router.ts#L42)*
+*Defined in [packages/augur-sdk/src/state/getter/Router.ts:42](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Router.ts#L42)*
 
 ___
 <a id="routings"></a>
@@ -76,7 +76,7 @@ ___
 
 **● routings**: *`Map`<`any`, `any`>* =  new Map()
 
-*Defined in [packages/augur-sdk/src/state/getter/Router.ts:39](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Router.ts#L39)*
+*Defined in [packages/augur-sdk/src/state/getter/Router.ts:39](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Router.ts#L39)*
 
 ___
 
@@ -88,7 +88,7 @@ ___
 
 ▸ **route**(name: *`string`*, params: *`any`*): `Promise`<`any`>
 
-*Defined in [packages/augur-sdk/src/state/getter/Router.ts:49](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Router.ts#L49)*
+*Defined in [packages/augur-sdk/src/state/getter/Router.ts:49](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Router.ts#L49)*
 
 **Parameters:**
 
@@ -106,7 +106,7 @@ ___
 
 ▸ **Add**<`T`,`R`,`TBigNumber`>(name: *`string`*, getterFunction: *[GetterFunction](api-modules-packages-augur-sdk-src-state-getter-router-module.md#getterfunction)<`T`, `TBigNumber`>*, decodedParams: *`t.Validation`<`T`>*): `void`
 
-*Defined in [packages/augur-sdk/src/state/getter/Router.ts:35](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Router.ts#L35)*
+*Defined in [packages/augur-sdk/src/state/getter/Router.ts:35](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Router.ts#L35)*
 
 **Type parameters:**
 

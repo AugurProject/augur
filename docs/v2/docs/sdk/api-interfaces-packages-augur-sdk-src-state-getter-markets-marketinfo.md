@@ -56,7 +56,7 @@ sidebar_label: MarketInfo
 
 **● author**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:93](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L93)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:133](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L133)*
 
 ___
 <a id="category"></a>
@@ -65,7 +65,7 @@ ___
 
 **● category**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:97](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L97)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:137](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L137)*
 
 ___
 <a id="consensus"></a>
@@ -74,7 +74,7 @@ ___
 
 **● consensus**: *`string`[] \| `null`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:111](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L111)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:151](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L151)*
 
 ___
 <a id="creationblock"></a>
@@ -83,7 +83,7 @@ ___
 
 **● creationBlock**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:95](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L95)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:135](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L135)*
 
 ___
 <a id="creationtime"></a>
@@ -92,7 +92,7 @@ ___
 
 **● creationTime**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:96](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L96)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:136](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L136)*
 
 ___
 <a id="cumulativescale"></a>
@@ -101,7 +101,7 @@ ___
 
 **● cumulativeScale**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:92](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L92)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:132](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L132)*
 
 ___
 <a id="description"></a>
@@ -110,7 +110,7 @@ ___
 
 **● description**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:105](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L105)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:145](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L145)*
 
 ___
 <a id="designatedreporter"></a>
@@ -119,7 +119,7 @@ ___
 
 **● designatedReporter**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:94](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L94)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:134](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L134)*
 
 ___
 <a id="details"></a>
@@ -128,7 +128,7 @@ ___
 
 **● details**: *`string` \| `null`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:107](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L107)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:147](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L147)*
 
 ___
 <a id="disputeinfo"></a>
@@ -137,7 +137,7 @@ ___
 
 **● disputeInfo**: *[DisputeInfo](api-interfaces-packages-augur-sdk-src-state-getter-markets-disputeinfo.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:116](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L116)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:156](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L156)*
 
 ___
 <a id="endtime"></a>
@@ -146,7 +146,7 @@ ___
 
 **● endTime**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:102](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L102)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:142](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L142)*
 
 ___
 <a id="finalizationblocknumber"></a>
@@ -155,7 +155,7 @@ ___
 
 **● finalizationBlockNumber**: *`number` \| `null`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:103](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L103)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:143](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L143)*
 
 ___
 <a id="finalizationtime"></a>
@@ -164,7 +164,7 @@ ___
 
 **● finalizationTime**: *`number` \| `null`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:104](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L104)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:144](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L144)*
 
 ___
 <a id="id"></a>
@@ -173,7 +173,7 @@ ___
 
 **● id**: *[Address](api-interfaces-packages-augur-sdk-src-event-handlers-tradingproceedsclaimed.md#address)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:86](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L86)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:126](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L126)*
 
 ___
 <a id="marketcreatorfeerate"></a>
@@ -182,7 +182,7 @@ ___
 
 **● marketCreatorFeeRate**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:113](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L113)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:153](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L153)*
 
 ___
 <a id="markettype"></a>
@@ -191,7 +191,7 @@ ___
 
 **● marketType**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:88](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L88)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:128](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L128)*
 
 ___
 <a id="maxprice"></a>
@@ -200,7 +200,7 @@ ___
 
 **● maxPrice**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:91](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L91)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:131](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L131)*
 
 ___
 <a id="minprice"></a>
@@ -209,7 +209,7 @@ ___
 
 **● minPrice**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:90](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L90)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:130](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L130)*
 
 ___
 <a id="needsmigration"></a>
@@ -218,7 +218,7 @@ ___
 
 **● needsMigration**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:101](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L101)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:141](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L141)*
 
 ___
 <a id="numoutcomes"></a>
@@ -227,7 +227,7 @@ ___
 
 **● numOutcomes**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:89](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L89)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:129](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L129)*
 
 ___
 <a id="numticks"></a>
@@ -236,7 +236,7 @@ ___
 
 **● numTicks**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:109](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L109)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:149](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L149)*
 
 ___
 <a id="openinterest"></a>
@@ -245,7 +245,7 @@ ___
 
 **● openInterest**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:99](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L99)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:139](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L139)*
 
 ___
 <a id="outcomes"></a>
@@ -254,7 +254,7 @@ ___
 
 **● outcomes**: *[MarketInfoOutcome](api-interfaces-packages-augur-sdk-src-state-getter-markets-marketinfooutcome.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:112](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L112)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:152](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L152)*
 
 ___
 <a id="reportingfeerate"></a>
@@ -263,7 +263,7 @@ ___
 
 **● reportingFeeRate**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:115](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L115)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:155](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L155)*
 
 ___
 <a id="reportingstate"></a>
@@ -272,7 +272,7 @@ ___
 
 **● reportingState**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:100](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L100)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:140](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L140)*
 
 ___
 <a id="resolutionsource"></a>
@@ -281,7 +281,7 @@ ___
 
 **● resolutionSource**: *`string` \| `null`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:108](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L108)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:148](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L148)*
 
 ___
 <a id="scalardenomination"></a>
@@ -290,7 +290,7 @@ ___
 
 **● scalarDenomination**: *`string` \| `null`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:106](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L106)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:146](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L146)*
 
 ___
 <a id="settlementfee"></a>
@@ -299,7 +299,7 @@ ___
 
 **● settlementFee**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:114](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L114)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:154](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L154)*
 
 ___
 <a id="ticksize"></a>
@@ -308,7 +308,7 @@ ___
 
 **● tickSize**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:110](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L110)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:150](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L150)*
 
 ___
 <a id="universe"></a>
@@ -317,7 +317,7 @@ ___
 
 **● universe**: *[Address](api-interfaces-packages-augur-sdk-src-event-handlers-tradingproceedsclaimed.md#address)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:87](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L87)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:127](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L127)*
 
 ___
 <a id="volume"></a>
@@ -326,7 +326,7 @@ ___
 
 **● volume**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:98](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L98)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:138](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L138)*
 
 ___
 

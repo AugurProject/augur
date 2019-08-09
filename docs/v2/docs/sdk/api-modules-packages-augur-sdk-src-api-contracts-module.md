@@ -27,7 +27,7 @@ sidebar_label: packages/augur-sdk/src/api/Contracts
 
 **Ƭ SomeRepToken**: *`ReputationToken` \| `TestNetReputationToken`*
 
-*Defined in [packages/augur-sdk/src/api/Contracts.ts:5](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Contracts.ts#L5)*
+*Defined in [packages/augur-sdk/src/api/Contracts.ts:5](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Contracts.ts#L5)*
 
 ___
 <a id="sometime"></a>
@@ -36,7 +36,7 @@ ___
 
 **Ƭ SomeTime**: *`Time` \| `TimeControlled`*
 
-*Defined in [packages/augur-sdk/src/api/Contracts.ts:6](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Contracts.ts#L6)*
+*Defined in [packages/augur-sdk/src/api/Contracts.ts:6](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Contracts.ts#L6)*
 
 ___
 
