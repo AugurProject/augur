@@ -4,6 +4,7 @@ import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/para
 import { AnyAction } from "redux";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
 import { Getters } from "@augurproject/sdk";
+import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 
 export enum SizeTypes {
   SMALL = "small",
@@ -166,8 +167,13 @@ export interface ReportingWindowStats {
 }
 
 export interface CreateMarketData {
-  _extraInfo: string;
+  txParams: TransactionMetadataParams;
   endTime: DateFormattedObject;
+  description: string;
+  id: string;
+  pending: boolean;
+  recentlyTraded: DateFormattedObject;
+  creationTime: DateFormattedObject;
 }
 
 export interface PendingQueue {

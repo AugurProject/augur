@@ -11,7 +11,7 @@ import {
   CREATEYESNOMARKET,
   CREATE_MARKET 
 } from 'modules/common/constants';
-import { UIOrder } from 'modules/types';
+import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
 import { addPendingOrder, updatePendingOrderStatus, removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { ThunkDispatch } from 'redux-thunk';
@@ -75,13 +75,13 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   }
 };
 
-function createMarketData(params: TransactionMetadataParams, hash: string, currentTimestamp: number) {
-  let data = params;
-  const extraInfo = JSON.parse(data._extraInfo);
+function createMarketData(params: TransactionMetadataParams, hash: string, currentTimestamp: number): CreateMarketData {
+  let data: CreateMarketData;
+  const extraInfo = JSON.parse(params._extraInfo);
   data.id = hash;
   data.description = extraInfo.description;
   data.pending = true;
-  data.endTime = convertUnixToFormattedDate(data._endTime);
+  data.endTime = convertUnixToFormattedDate(params._endTime);
   data.recentlyTraded = convertUnixToFormattedDate(currentTimestamp);
   data.creationTime = convertUnixToFormattedDate(currentTimestamp);
   data.txParams = params;
