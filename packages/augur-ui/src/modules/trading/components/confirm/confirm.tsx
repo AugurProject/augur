@@ -99,7 +99,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (!isNaN(numTrades) && numTrades > 1) {
       messages = {
-        header: 'MULTIPLE TRADES',
+        header: 'MULTIPLE TRANSACTIONS',
         type: WARNING,
         message: `This trade will take ${numTrades} Transactions`,
       };
