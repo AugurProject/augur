@@ -45,12 +45,12 @@ export enum MarketReportingState {
 
 export enum GetMarketsSortBy {
   MarketOI = 'MarketOI',
-  Liquidity = 'Liquidity', // TODO: Make default sort
+  Liquidity = 'Liquidity', // @TODO: Make default sort
   Volume = 'Volume',
   Timestamp = 'Timestamp',
   EndTime = 'EndTime',
-  LastTradedTimestamp = 'LastTradedTimestamp', // TODO: Implement
-  LastLiquidityDepleted = 'LastLiquidityDepleted', // TODO: Implement
+  LastTradedTimestamp = 'LastTradedTimestamp', // @TODO: Implement
+  LastLiquidityDepleted = 'LastLiquidityDepleted', // @TODO: Implement
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
@@ -67,7 +67,7 @@ const getMarketsParamsSpecific = t.intersection([
     designatedReporter: t.string,
     maxFee: t.string,
     maxEndTime: t.number,
-    maxLiquiditySpread: t.string, // TODO: Implement maxLiquiditySpread filter
+    maxLiquiditySpread: t.string, // @TODO: Implement maxLiquiditySpread filter
     includeInvalidMarkets: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
@@ -569,7 +569,7 @@ export class Markets {
       db,
       { marketIds: filteredMarketsDetails.map(marketInfo => marketInfo.market) }
     );
-    // TODO: Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
+    // @TODO: Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
     const filteredMarketsDetailsOrder = {};
     for (let i = 0; i < filteredMarketsDetails.length; i++) {
       filteredMarketsDetailsOrder[filteredMarketsDetails[i].market] = i;
