@@ -17023,6 +17023,13 @@ pouchdb-collections@7.1.1:
   resolved "https://registry.yarnpkg.com/pouchdb-collections/-/pouchdb-collections-7.1.1.tgz#4f7704896e4055ba354241c0fd75bbb7446a809f"
   integrity sha512-Iwdv74+H8tSc9cM7co0X4eJQglaPp+uIX7qjzK5MIeZThUHNcJQxOC92qGK1qE3Z2feAD5LxhXEIYDia/lB8pw==
 
+pouchdb-debug@7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/pouchdb-debug/-/pouchdb-debug-7.1.1.tgz#51cd6feafb49afa5e2a9e56ea319a0de0e85feff"
+  integrity sha512-p6k6CArGcBg+VTcNr95fQj6wrgLTH4W4PVPeeP9I+g+PYgxphkVKRjUnuzH3+vkP7bKYuTvOsIP6hBX5AAxoPA==
+  dependencies:
+    debug "3.1.0"
+
 pouchdb-errors@7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/pouchdb-errors/-/pouchdb-errors-7.1.1.tgz#799603a46e3dfc9ec9403fe11610236a46354cf6"

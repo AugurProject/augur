@@ -105,7 +105,7 @@ const MarketPortfolioCardFooter = ({
                   <span className={Styles["MarketCard__proceeds-text-small"]}>
                     { endTimestamp &&
                       convertUnixToFormattedDate(endTimestamp.toNumber())
-                        .formattedLocal
+                        .formatted
                     }
                   </span>
                   <span className={Styles["MarketCard__proceeds-clock"]}>

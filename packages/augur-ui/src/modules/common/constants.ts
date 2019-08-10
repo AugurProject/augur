@@ -750,6 +750,8 @@ export const TIMEFRAME_OPTIONS = [
 // Pending Queue Types
 export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
 export const CLAIM_PROCEEDS = 'CLAIM_PROCEEDS';
+export const CREATE_MARKET = 'CREATE_MARKET';
+
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
 

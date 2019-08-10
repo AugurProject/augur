@@ -65,7 +65,6 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
 
   return {
     value: date,
-    simpleDate: `${date.getUTCDate()} ${months[date.getUTCMonth()]}`,
     formatted: `${
       months[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(
@@ -78,14 +77,6 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     formattedShort: `${shortMonths[date.getUTCMonth()]}${(
       '0' + date.getUTCDate()
     ).slice(-2)} ${date.getUTCFullYear()} ${utcTimeWithSeconds.join(':')}`,
-    formattedLocal: `${
-      months[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
-      ':'
-    )} ${localAMPM} (UTC ${localOffsetFormatted})`, // local time
-    formattedLocalShortDate: `${
-      shortMonths[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()}`,
     formattedLocalShortDateSecondary: `${date.getDate()} ${
       shortMonths[date.getMonth()]
     } ${date.getFullYear()}`,
@@ -97,7 +88,6 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
       ':'
     )} ${localAMPM} (UTC ${localOffsetFormatted})`, // local time
-    full: date.toUTCString(),
     timestamp: date.getTime() / 1000,
     utcLocalOffset: localOffset,
     clockTimeLocal: `${localTimeTwelve.join(
@@ -142,6 +132,21 @@ function getTwelveHourTime(time: Array<number>): Array<string> {
   return values;
 }
 
+function getTimezoneAbbr(date: Date, timezone: string): string {
+  if (!timezone) return '';
+  let timezoneLocal = "";
+  try {
+    timezoneLocal = date.toLocaleTimeString('en-US', {
+      timeZone: timezone.replace(' ', '_'),
+      timeZoneName: 'short',
+    });
+  } catch(e){
+    console.log("could not find timezone", timezone);
+  }
+  return timezoneLocal.split(' ')[2];
+}
+const LONG_FORMAT = 'MMMM DD, YYYY h:mm A';
+
 export function buildformattedDate(
   timestamp: number,
   hour: number,
@@ -150,6 +155,7 @@ export function buildformattedDate(
   timezone: string,
   offset: number
 ) {
+
   const endTime = moment
     .unix(timestamp)
     .utc()
@@ -165,10 +171,20 @@ export function buildformattedDate(
   } else if (meridiem && meridiem === 'PM' && endTime.hours() < 12) {
     endTime.hours(endTime.hours() + 12);
   }
+  const abbr = getTimezoneAbbr(endTime.toDate(), timezone);
+  const timezoneFormat = endTime.format(LONG_FORMAT);
+  const formattedTimezone = `${timezoneFormat} (${abbr})`;
 
   endTime.add(offset, 'hours');
 
-  return formatDate(endTime.toDate(), timezone ? timezone.replace(' ', '_') : null);
+  const utcFormat = endTime.format(LONG_FORMAT);
+  const formattedUtc = `${utcFormat} (UTC 0)`;
+
+  return {
+    formattedUtc: formattedUtc,
+    formattedTimezone: formattedTimezone,
+    timestamp: endTime.unix(),
+  };
 }
 
 export function convertUnixToFormattedDate(integer: number = 0) {

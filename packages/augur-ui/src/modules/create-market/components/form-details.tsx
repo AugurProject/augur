@@ -53,6 +53,11 @@ interface FormDetailsState {
   timeFocused: Boolean;
 }
 
+interface TimeSelectorParams {
+  hour?: string;
+  minute?: string;
+  meridiem?: string;
+}
 export default class FormDetails extends React.Component<
   FormDetailsProps,
   FormDetailsState
@@ -155,24 +160,26 @@ export default class FormDetails extends React.Component<
                 onChange(label, value)
               }}
               onFocusChange= {(focused: Boolean) => {
+                const timeSelector: TimeSelectorParams = {}
                 if (!hour) {
-                  onChange("hour", "12");
+                  timeSelector.hour = "12";
                 }
                 if (!minute) {
-                  onChange("minute", "00");
+                  timeSelector.minute = "00";
                 }
                 if (!meridiem) {
-                  onChange("meridiem", "AM");
+                  timeSelector.meridiem = "AM";
                 }
+
+                onChange("timeSelector", timeSelector);
                 this.setState({ timeFocused: focused });
               }}
               focused={s.timeFocused}
               errorMessage={validations[currentStep].hour}
             />
             <TimezoneDropdown onChange={(offsetName: string, offset: number, timezone: string) => {
-              onChange("offset", offset)
-              onChange("timezone", timezone)
-              onChange("offsetName", offsetName);
+              const timezoneParams = {offset, timezone, offsetName};
+              onChange("timezoneDropdown", timezoneParams);
             }} timestamp={setEndTime} timezone={timezone} />
           </span>
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
