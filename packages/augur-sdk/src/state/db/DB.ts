@@ -365,6 +365,12 @@ export class DB {
     }
   }
 
+  // TODO: This is a temporary hack. This function can be removed once
+  // flexSearch is broken into a separate module from MarketDB.
+  async syncFullTextSearch() {
+    this.marketDatabase.syncFullTextSearch();
+  }
+
   // TODO Combine find functions into single function
 
   /**
