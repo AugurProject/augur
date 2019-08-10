@@ -6,7 +6,6 @@ import { ContractAddresses } from '@augurproject/artifacts';
 import { Controller } from '@augurproject/sdk/build/state/Controller';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { EventLogDBRouter } from '@augurproject/sdk/build/state/db/EventLogDBRouter';
 import { BlockAndLogStreamerListener } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
 import {
   Markets,
