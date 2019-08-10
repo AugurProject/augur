@@ -137,7 +137,7 @@ def test_redeem_shares_in_categorical_market(kitchenSinkFixture, universe, cash,
 
     # redeem shares with a1
     claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], nullAddress)
-    assert market.isFinalized() == true
+    assert market.isFinalized()
     # redeem shares with a2
     claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], nullAddress)
 
@@ -208,7 +208,7 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
 
     # validate that everything else is OK
     assert claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1])
-    assert market.isFinalized() == true
+    assert market.isFinalized()
 
 def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, market, scalarMarket):
     claimTradingProceeds = kitchenSinkFixture.contracts['ClaimTradingProceeds']
