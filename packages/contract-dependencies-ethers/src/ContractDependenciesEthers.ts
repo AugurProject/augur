@@ -9,6 +9,8 @@ import * as _ from "lodash";
 export interface EthersSigner {
   sendTransaction(transaction: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse>;
   getAddress(): Promise<string>;
+  signMessage(message: ethers.utils.Arrayish | string): Promise<string>;
+  signDigest(message: ethers.utils.Arrayish | string): Promise<ethers.utils.Signature>;
 }
 
 export interface EthersProvider {
@@ -43,10 +45,10 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   public readonly signer?: EthersSigner;
   public readonly address?: string;
 
-  private readonly abiCoder: ethers.utils.AbiCoder;
+  protected readonly abiCoder: ethers.utils.AbiCoder;
 
-  private transactionDataMetaData: { [data: string]: TransactionMetadata } = {};
-  private transactionStatusCallbacks: { [key: string]: TransactionStatusCallback } = {};
+  protected transactionDataMetaData: { [data: string]: TransactionMetadata } = {};
+  protected transactionStatusCallbacks: { [key: string]: TransactionStatusCallback } = {};
 
   public constructor(provider: EthersProvider, signer?: EthersSigner, address?: string) {
     this.provider = provider;
@@ -62,6 +64,15 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
       from: transaction.from,
       data: transaction.data,
       value: transaction.value ? new ethers.utils.BigNumber(transaction.value.toString()) : new ethers.utils.BigNumber(0)
+    }
+  }
+
+  public ethersTransactionToTransaction(transaction: Transaction<ethers.utils.BigNumber>): Transaction<BigNumber> {
+    return {
+      to: transaction.to,
+      from: transaction.from,
+      data: transaction.data,
+      value: transaction.value ? new BigNumber(transaction.value.toString()) : new BigNumber(0)
     }
   }
 
@@ -140,8 +151,8 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
   public async submitTransaction(transaction: Transaction<BigNumber>): Promise<TransactionReceipt> {
     if (!this.signer) throw new Error("Attempting to sign a transaction while not providing a signer");
-    // TODO: figure out a way to propagate a warning up to the user in this scenario, we don't currently have a mechanism for error propagation, so will require infrastructure work
-    // TODO: https://github.com/ethers-io/ethers.js/issues/321
+    // @TODO: figure out a way to propagate a warning up to the user in this scenario, we don't currently have a mechanism for error propagation, so will require infrastructure work
+    // @BODY https://github.com/ethers-io/ethers.js/issues/321
     const tx = this.transactionToEthersTransaction(transaction);
     delete tx.from;
     const txMetadataKey = `0x${transaction.data.substring(10)}`;
@@ -149,10 +160,8 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     this.onTransactionStatusChanged(txMetadata, TransactionStatus.AWAITING_SIGNING);
     let hash = undefined;
     try {
-      const response = await this.signer.sendTransaction(tx);
-      hash = response.hash;
-      this.onTransactionStatusChanged(txMetadata, TransactionStatus.PENDING, hash);
-      const receipt = await response.wait();
+      const receipt = await this.sendTransaction(tx, txMetadata);
+      hash = receipt.transactionHash;
       const status = receipt.status == 1 ? TransactionStatus.SUCCESS : TransactionStatus.FAILURE;
       this.onTransactionStatusChanged(txMetadata, status, hash);
       // ethers has `status` on the receipt as optional, even though it isn't and never will be undefined if using a modern network (which this is designed for)
@@ -163,7 +172,13 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     } finally {
       delete this.transactionDataMetaData[txMetadataKey];
     }
+  }
 
+  public async sendTransaction(tx: Transaction<ethers.utils.BigNumber>, txMetadata: TransactionMetadata): Promise<ethers.providers.TransactionReceipt> {
+    const response = await this.signer.sendTransaction(tx);
+    const hash = response.hash;
+    this.onTransactionStatusChanged(txMetadata, TransactionStatus.PENDING, hash);
+    return await response.wait();
   }
 
   public async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {

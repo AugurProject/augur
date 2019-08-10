@@ -1,4 +1,4 @@
-pragma solidity ^0.5.4;
+pragma solidity ^0.5.10;
 
 import 'ROOT/libraries/CashAutoConverter.sol';
 import 'ROOT/trading/ICash.sol';

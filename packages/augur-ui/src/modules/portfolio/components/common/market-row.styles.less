@@ -37,6 +37,11 @@
       padding-top: @size-8;
     }
 
+    &.Pending {
+      padding-bottom: @size-16;
+      padding-top: @size-20;
+    }
+
     > div {
       padding: 0 0 @size-10;
     }
@@ -50,6 +55,13 @@
       flex: 1;
       line-height: @size-16;
       margin-right: @size-16;
+    }
+
+    > span:nth-of-type(2) {
+      .text-12;
+
+      color: @color-tertiary-info-text;
+      margin-top: @size-4;
     }
   }
 

@@ -9,7 +9,11 @@ export class Cash extends c.Cash<BigNumber> {
 }
 export class ERC1820Registry extends c.ERC1820Registry<BigNumber> {
 }
+export class GnosisSafe extends c.GnosisSafe<BigNumber> {
+}
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
+}
+export class ProxyFactory extends c.ProxyFactory<BigNumber> {
 }
 export class RepPriceOracle extends c.RepPriceOracle<BigNumber> {
 }

@@ -135,7 +135,7 @@ interface TimezoneDropdownProps {
   className?: string;
   autoCompleteList?: Array<SortedGroup>;
   disabled?: Boolean;
-  timestamp?: Moment;
+  timestamp?: number;
   timezone: string;
 }
 
@@ -151,12 +151,13 @@ export class TimezoneDropdown extends Component<
     value: this.props.timezone,
   };
 
-  onChangeDropdown = choice => {
+  onChangeDropdown = timezone => {
     const parse = /\(UTC (.*)\)/i;
-    const offset = choice.match(parse)[1];
-    this.props.onChange(choice, offset);
+    const offset = timezone.match(parse)[1];
+    const offsetName = timezone.split(')')[1].trim();
+    this.props.onChange(offsetName, offset, timezone);
     this.setState({
-      value: choice,
+      value: timezone,
     });
   };
 
@@ -183,11 +184,12 @@ export class TimezoneDropdown extends Component<
 interface ErrorProps {
   header?: string;
   subheader?: string;
+  alternate?: Boolean;
 }
 
 export const Error = (props: ErrorProps) => (
-  <section className={Styles.ErrorLabel}>
-    {ExclamationCircle}
+  <section className={classNames(Styles.ErrorLabel, {[Styles.Alternate]: props.alternate})}>
+    {!props.alternate && ExclamationCircle}
     <div>
       <span>{props.header}</span>
       <span>{props.subheader}</span>

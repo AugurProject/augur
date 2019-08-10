@@ -6,7 +6,6 @@ import { ContractAddresses } from '@augurproject/artifacts';
 import { Controller } from '@augurproject/sdk/build/state/Controller';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { EventLogDBRouter } from '@augurproject/sdk/build/state/db/EventLogDBRouter';
 import { BlockAndLogStreamerListener } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
 import {
   Markets,
@@ -32,14 +31,11 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
       return new API(john.augur, db);
     },
     create: () => {
-      const eventLogDBRouter = new EventLogDBRouter(
-        john.augur.events.parseLogs
-      );
       const blockAndLogStreamerListener = BlockAndLogStreamerListener.create(
         provider,
-        eventLogDBRouter,
         addresses.Augur,
-        john.augur.events.getEventTopics
+        john.augur.events.getEventTopics,
+        john.augur.events.parseLogs
       );
       const api = new API(john.augur, db);
       const controller = new Controller(
@@ -68,7 +64,7 @@ beforeAll(async () => {
   await connector.connect('');
 }, 120000);
 
-test('SEOConnector :: Should route correctly and handle events', async done => {
+test('SEOConnector :: Should route correctly and handle events, extraInfo', async done => {
   const yesNoMarket1 = await john.createYesNoMarket({
     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
@@ -87,10 +83,10 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
-      const markets = await getMarkets({
+      const marketList = await getMarkets({
         universe: john.augur.contracts.universe.address,
       });
-      expect(markets).toEqual([yesNoMarket1.address]);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
       await connector.off(SubscriptionEventName.MarketCreated);
       expect(connector.subscriptions).toEqual({});
@@ -128,11 +124,12 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
       );
 
       const getMarkets = connector.bindTo(Markets.getMarkets);
-      const markets = await getMarkets({
+      const marketList = await getMarkets({
         universe: john.augur.contracts.universe.address,
         isSortDescending: false,
       });
-      expect(markets[markets.length - 1]).toEqual(yesNoMarket1.address);
+
+      expect(marketList.markets.map(m => m.id).includes(yesNoMarket1.address));
 
       await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});

@@ -87,22 +87,6 @@ export default class MarketHeaderReporting extends Component {
                 : consensus.outcomeName || consensus.winningOutcome}
             </span>
           </div>
-          {reportingState ===
-            REPORTING_STATE.AWAITING_FINALIZATION && (
-            <PrimaryButton
-              id="button"
-              action={() => {
-                this.setState({ disableFinalize: true });
-                finalizeMarket(id, err => {
-                  if (err) {
-                    this.setState({ disableFinalize: false });
-                  }
-                });
-              }}
-              text="Finalize"
-              disabled={this.state.disableFinalize || !isLogged}
-            />
-          )}
           {outstandingReturns &&
             reportingState === REPORTING_STATE.FINALIZED && (
               <PrimaryButton
@@ -221,24 +205,7 @@ export default class MarketHeaderReporting extends Component {
 
     return (
       <>
-        {reportingState === REPORTING_STATE.AWAITING_FINALIZATION && (
-          <div className={Styles.Finalization}>
-            <div>Awaiting market finalization</div>
-            {!isLogged && (
-              <div>
-                Please Login to Finalize the market and start the three day
-                waiting period in order to claim your proceeds.
-              </div>
-            )}
-            {isLogged && (
-              <div>
-                Finalize the market to start the three day waiting period in
-                order to claim your proceeds.
-              </div>
-            )}
-          </div>
-        )}
-        {content}
+      {content}
       </>
     );
   }

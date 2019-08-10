@@ -1,36 +1,41 @@
 import {
   Augur,
+  Connectors,
+  Getters,
   PlaceTradeDisplayParams,
   SimulateTradeData,
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
-  SubscriptionEventName
 } from "@augurproject/sdk";
 import { ContractInterfaces } from "@augurproject/core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { makeDependencies, makeSigner } from "./blockchain";
+import { makeDependencies, makeGnosisDependencies, makeSigner } from "./blockchain";
 import { Account } from "../constants";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { BigNumber } from "bignumber.js";
 import { formatBytes32String } from "ethers/utils";
-import { Getters, Connectors } from "@augurproject/sdk";
+import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
+import { ContractDependenciesGnosis } from "contract-dependencies-gnosis/build";
+import { GnosisSafe } from "@augurproject/core/build/libraries/GenericContractInterfaces";
 
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
-export class ContractAPI {
-  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined) {
-    const signer = await makeSigner(account, provider);
-    const dependencies = makeDependencies(account, provider, signer);
-    const augur = await Augur.create(provider, dependencies, addresses, connector);
 
-    return new ContractAPI(augur, provider, account);
+export class ContractAPI {
+  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined) {
+    const signer = await makeSigner(account, provider);
+    const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay);
+
+    return new ContractAPI(augur, provider, dependencies, account);
   }
 
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
+    readonly dependencies: ContractDependenciesGnosis,
     public account: Account
   ) {}
 
@@ -42,7 +47,6 @@ export class ContractAPI {
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
     const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     await this.faucet(marketCreationFee);
-
     return this.augur.createYesNoMarket(params);
   }
 
@@ -227,8 +231,8 @@ export class ContractAPI {
     });
   }
 
-  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string): Promise<void> {
-    await this.augur.contracts.claimTradingProceeds.claimTradingProceeds(market.address, shareholder);
+  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, affiliateAddress: string = "0x0000000000000000000000000000000000000000"): Promise<void> {
+    await this.augur.contracts.claimTradingProceeds.claimTradingProceeds(market.address, shareholder, affiliateAddress);
   }
 
   async getOrderPrice(orderID: string): Promise<BigNumber> {
@@ -382,7 +386,7 @@ export class ContractAPI {
     return this.augur.getMarketsInfo({marketIds: [address]});
   }
 
-  async getMarkets(): Promise<string[]> {
+  async getMarkets(): Promise<Getters.Markets.MarketList> {
     const universe = this.augur.contracts.universe.address
     return this.augur.getMarkets({universe});
   }
@@ -458,6 +462,18 @@ export class ContractAPI {
     return this.augur.contracts.getReputationToken().allowance_(owner, spender);
   }
 
+  setGnosisSafeAddress(safeAddress: string): void {
+    this.augur.setGnosisSafeAddress(safeAddress);
+  }
+
+  setUseGnosisSafe(useSafe: boolean): void {
+    this.augur.setUseGnosisSafe(useSafe);
+  }
+
+  setUseGnosisRelay(useRelay: boolean): void {
+    this.augur.setUseGnosisRelay(useRelay);
+  }
+
   async approveAugurEternalApprovalValue(owner: string) {
     const spender = this.augur.addresses.Augur;
     const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, spender));
@@ -465,5 +481,37 @@ export class ContractAPI {
     if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
       await this.augur.contracts.cash.approve(spender, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
     }
+  }
+
+  async getGnosisSafeAddress(paymentToken: string, payment: BigNumber): Promise<string> {
+    const params = {
+      paymentToken,
+      payment,
+      owner: this.account.publicKey
+    }
+    return await this.augur.gnosis.getGnosisSafeAddress(params);
+  }
+
+  async createGnosisSafeDirectlyWithETH(paymentToken: string, payment: BigNumber): Promise<ContractInterfaces.GnosisSafe> {
+    const params = {
+      paymentToken,
+      payment,
+      owner: this.account.publicKey
+    }
+    const address = await this.augur.gnosis.createGnosisSafeDirectlyWithETH(params);
+    return this.augur.contracts.gnosisSafeFromAddress(address)
+  }
+
+  async createGnosisSafeViaRelay(paymentToken: string, payment: BigNumber): Promise<string> {
+    const params = {
+      paymentToken,
+      payment,
+      owner: this.account.publicKey
+    }
+    return await this.augur.gnosis.createGnosisSafeViaRelay(params);
+  }
+
+  async getGnosisSafeDeploymentStatusViaRelay(safeAddress: string): Promise<boolean> {
+    return await this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay(safeAddress);
   }
 }

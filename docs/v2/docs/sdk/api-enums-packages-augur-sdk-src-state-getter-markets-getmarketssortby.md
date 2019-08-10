@@ -10,13 +10,13 @@ sidebar_label: GetMarketsSortBy
 
 ### Enumeration members
 
-* [EndTime](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#endtime)
-* [LastLiquidityDepleted](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#lastliquiditydepleted)
-* [LastTradedTimestamp](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#lasttradedtimestamp)
-* [Liquidity](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#liquidity)
-* [MarketOI](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#marketoi)
-* [Timestamp](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#timestamp)
-* [Volume](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#volume)
+* [endTime](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#endtime)
+* [lastLiquidityDepleted](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#lastliquiditydepleted)
+* [lastTradedTimestamp](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#lasttradedtimestamp)
+* [liquidity](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#liquidity)
+* [marketOI](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#marketoi)
+* [timestamp](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#timestamp)
+* [volume](api-enums-packages-augur-sdk-src-state-getter-markets-getmarketssortby.md#volume)
 
 ---
 
@@ -24,65 +24,65 @@ sidebar_label: GetMarketsSortBy
 
 <a id="endtime"></a>
 
-###  EndTime
+###  endTime
 
-**EndTime**:  = "EndTime"
+**endTime**:  = "endTime"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:49](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L49)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:51](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L51)*
 
 ___
 <a id="lastliquiditydepleted"></a>
 
-###  LastLiquidityDepleted
+###  lastLiquidityDepleted
 
-**LastLiquidityDepleted**:  = "LastLiquidityDepleted"
+**lastLiquidityDepleted**:  = "lastLiquidityDepleted"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:51](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L51)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:53](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L53)*
 
 ___
 <a id="lasttradedtimestamp"></a>
 
-###  LastTradedTimestamp
+###  lastTradedTimestamp
 
-**LastTradedTimestamp**:  = "LastTradedTimestamp"
+**lastTradedTimestamp**:  = "lastTradedTimestamp"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:50](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L50)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:52](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L52)*
 
 ___
 <a id="liquidity"></a>
 
-###  Liquidity
+###  liquidity
 
-**Liquidity**:  = "Liquidity"
+**liquidity**:  = "liquidity"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:46](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L46)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:48](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L48)*
 
 ___
 <a id="marketoi"></a>
 
-###  MarketOI
+###  marketOI
 
-**MarketOI**:  = "MarketOI"
+**marketOI**:  = "marketOI"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:45](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L45)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:47](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L47)*
 
 ___
 <a id="timestamp"></a>
 
-###  Timestamp
+###  timestamp
 
-**Timestamp**:  = "Timestamp"
+**timestamp**:  = "timestamp"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:48](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L48)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:50](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L50)*
 
 ___
 <a id="volume"></a>
 
-###  Volume
+###  volume
 
-**Volume**:  = "Volume"
+**volume**:  = "volume"
 
-*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:47](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Markets.ts#L47)*
+*Defined in [packages/augur-sdk/src/state/getter/Markets.ts:49](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Markets.ts#L49)*
 
 ___
 

@@ -34,7 +34,7 @@ sidebar_label: ServerController
 
 ⊕ **new ServerController**(data: *`number`*): [ServerController](api-classes-packages-augur-sdk-src-state-server-servercontroller-servercontroller.md)
 
-*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:2](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/server/ServerController.ts#L2)*
+*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:2](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/server/ServerController.ts#L2)*
 
 **Parameters:**
 
@@ -54,7 +54,7 @@ ___
 
 **● data**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:2](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/server/ServerController.ts#L2)*
+*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:2](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/server/ServerController.ts#L2)*
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 ▸ **start**(data: *`number`*): `Promise`<`number`>
 
-*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:9](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/server/ServerController.ts#L9)*
+*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:9](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/server/ServerController.ts#L9)*
 
 **Parameters:**
 

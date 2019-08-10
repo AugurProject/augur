@@ -722,8 +722,8 @@
       color: @color-primary-alternate-two;
 
       > svg {
-        height: @size-12;
-        width: @size-12;
+        min-height: @size-12;
+        min-width: @size-12;
 
         > path {
           stroke: @color-secondary-text;
@@ -962,6 +962,10 @@ div.FormDropdownActive {
       border: 1px solid @color-primary-light;
       min-height: 44px;
       min-width: 210px;
+
+      @media @breakpoint-mobile {
+        min-width: 155px;
+      }
     }
 
     .DateInput_input.DateInput_input_1 {
@@ -1484,6 +1488,28 @@ div.FormDropdownActive {
       .text-11;
 
       color: @color-secondary-text;
+    }
+  }
+
+  &.Alternate {
+    background: transparent;
+    padding: @size-20 @size-20 @size-24;
+    border-radius: @size-8;
+    border: 1px solid @color-primary-alternate-two;
+
+    > div {
+      > span:first-of-type {
+        .text-14-medium;
+
+        color: @color-negative;
+        text-transform: none;
+      }
+
+      > span:last-of-type {
+        .text-12;
+
+        color: @color-tertiary-info-text;
+      }
     }
   }
 }

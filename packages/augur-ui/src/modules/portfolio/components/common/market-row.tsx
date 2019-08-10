@@ -4,6 +4,7 @@ import classNames from "classnames";
 import ToggleRow from "modules/common/toggle-row";
 import { MarketStatusLabel } from "modules/common/labels";
 import MarketLink from "modules/market/components/market-link/market-link";
+import { TXEventName } from '@augurproject/sdk';
 
 import Styles from "modules/portfolio/components/common/market-row.styles.less";
 
@@ -43,9 +44,10 @@ const MarketRow = (props: MarketRowProps) => {
       <div
         className={classNames({
           [Styles.Show]: props.showState,
+          [Styles.Pending]: props.market.pending
         })}
       >
-        {props.showState && (
+        {props.showState && !props.market.pending &&
           <div>
             <MarketStatusLabel
               marketStatus={props.market.marketStatus}
@@ -53,10 +55,13 @@ const MarketRow = (props: MarketRowProps) => {
               mini
             />
           </div>
-        )}
+        }
         <MarketLink id={props.market.id}>
           {props.market.description}
         </MarketLink>
+        {props.market.pending && props.market.status === TXEventName.Pending &&
+          <span>When the market is confirmed you can submit initial liquidity</span>
+        }
       </div>
       <span
         className={classNames({

@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 /**
  * @dev Interface for an ERC1820 implementer, as defined in the

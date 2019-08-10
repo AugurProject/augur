@@ -47,7 +47,7 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
           marketStatus={marketStatus}
           reportingState={reportingState}
           disputeInfo={disputeInfo}
-          endTime={endTimeFormatted}
+          endTimeFormatted={endTimeFormatted}
           currentAugurTimestamp={currentAugurTimestamp}
           reportingWindowStatsEndTime={reportingWindowStatsEndTime}
         />

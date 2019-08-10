@@ -3,10 +3,13 @@ import { BigNumber } from 'bignumber.js';
 import { Callback, TXStatusCallback } from "./events";
 import { BaseConnector } from "./connector/baseConnector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { ContractDependenciesEthers, TransactionStatusCallback, TransactionMetadata, TransactionStatus } from "contract-dependencies-ethers";
+import { TransactionStatusCallback, TransactionStatus } from "contract-dependencies-ethers";
+import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
+import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
 import { ContractInterfaces } from "@augurproject/core";
 import { Contracts } from "./api/Contracts";
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from "./api/Market";
+import { Gnosis } from "./api/Gnosis";
 import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
@@ -19,10 +22,11 @@ import { Users } from "./state/getter/Users";
 import { getAddress } from "ethers/utils/address";
 import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
 import { Liquidity } from "./api/Liquidity";
+import { TransactionResponse } from "ethers/providers";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
-  private readonly dependencies: ContractDependenciesEthers;
+  private readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
   readonly events: Events;
@@ -30,6 +34,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly contracts: Contracts;
   readonly trade: Trade;
   readonly market: Market;
+  readonly gnosis: Gnosis;
   static connector: BaseConnector;
   readonly liquidity: Liquidity;
 
@@ -66,7 +71,7 @@ export class Augur<TProvider extends Provider = Provider> {
     "UniverseForked",
   ];
 
-  constructor(provider: TProvider, dependencies: ContractDependenciesEthers, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()) {
+  constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined) {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
@@ -81,29 +86,30 @@ export class Augur<TProvider extends Provider = Provider> {
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
+    this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
 
     this.registerTransactionStatusEvents();
   }
 
-  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesEthers, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector()): Promise<Augur> {
+  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesGnosis, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined): Promise<Augur> {
     // has to be static because of the way we instantiate boundTo methods
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
     }
 
     const networkId = await provider.getNetworkId();
-    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector);
+    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay);
 
     await augur.contracts.setReputationToken(networkId);
 
     return augur;
   }
 
-  async getTransaction(hash: string): Promise<string> {
+  async getTransaction(hash: string): Promise<TransactionResponse> {
     const tx = await this.dependencies.provider.getTransaction(hash);
-    if (!tx) return "";
-    return tx.from;
+    return tx;
   }
+
   async listAccounts() {
     return this.dependencies.provider.listAccounts();
   }
@@ -123,9 +129,36 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getAccount(): Promise<string | null> {
-    const account = await this.dependencies.address;
+    let account;
+    if (this.dependencies.useSafe) {
+      account = this.dependencies.safeAddress;
+    } else {
+      account = await this.dependencies.address;
+    }
     if (!account) return account;
     return getAddress(account);
+  }
+
+  async sendETH(address: string, value: BigNumber): Promise<void> {
+    const transaction = {
+      to: address,
+      data: "0x",
+      value
+    };
+    const ethersTransaction = this.dependencies.transactionToEthersTransaction(transaction);
+    await this.dependencies.signer.sendTransaction(ethersTransaction);
+  }
+
+  setGnosisSafeAddress(safeAddress: string): void {
+    this.dependencies.setSafeAddress(safeAddress);
+  }
+
+  setUseGnosisSafe(useSafe: boolean): void {
+    this.dependencies.setUseSafe(useSafe);
+  }
+
+  setUseGnosisRelay(useRelay: boolean): void {
+    this.dependencies.setUseRelay(useRelay);
   }
 
   getUniverse(address: string): ContractInterfaces.Universe {

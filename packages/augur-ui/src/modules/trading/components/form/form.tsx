@@ -24,9 +24,8 @@ interface FromProps {
   minPrice: BigNumber;
   orderQuantity: string;
   orderPrice: string;
-  orderEthEstimate: string;
+  orderDaiEstimate: string;
   orderEscrowdEth: string;
-  gasCostEst: string;
   selectedNav: string;
   selectedOutcome: Getters.Markets.MarketInfoOutcome;
   updateState: Function;
@@ -73,7 +72,7 @@ class Form extends Component<FromProps, FormState> {
       QUANTITY: 'orderQuantity',
       PRICE: 'orderPrice',
       DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
-      EST_DAI: 'orderEthEstimate',
+      EST_DAI: 'orderDaiEstimate',
       SELECTED_NAV: 'selectedNav',
     };
 
@@ -88,7 +87,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.PRICE]: props.orderPrice,
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
       [this.INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
-      [this.INPUT_TYPES.EST_DAI]: props.orderEthEstimate,
+      [this.INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
       errors: {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
@@ -409,10 +408,10 @@ class Form extends Component<FromProps, FormState> {
       () => {
         let orderQuantity = updatedState[this.INPUT_TYPES.QUANTITY];
         const orderPrice = updatedState[this.INPUT_TYPES.PRICE];
-        let orderEthEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
+        let orderDaiEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
 
         if (property === this.INPUT_TYPES.QUANTITY) {
-          orderEthEstimate = '';
+          orderDaiEstimate = '';
         } else if (
           property === this.INPUT_TYPES.EST_DAI ||
           (property === this.INPUT_TYPES.EST_DAI && value === '')
@@ -427,9 +426,9 @@ class Form extends Component<FromProps, FormState> {
           [this.INPUT_TYPES.PRICE]: orderPrice
             ? createBigNumber(orderPrice).toFixed()
             : orderPrice,
-          [this.INPUT_TYPES.EST_DAI]: orderEthEstimate
-            ? createBigNumber(orderEthEstimate).toFixed()
-            : orderEthEstimate,
+          [this.INPUT_TYPES.EST_DAI]: orderDaiEstimate
+            ? createBigNumber(orderDaiEstimate).toFixed()
+            : orderDaiEstimate,
           selectedNav,
         };
 
@@ -532,7 +531,6 @@ class Form extends Component<FromProps, FormState> {
       minPrice,
       updateState,
       orderEscrowdEth,
-      gasCostEst,
       updateSelectedOutcome,
       sortedOutcomes,
       initialLiquidity
@@ -699,12 +697,6 @@ class Form extends Component<FromProps, FormState> {
               <label className={Styles.smallLabel}>
                 {ExclamationCircle}
                 {` Max cost of ${orderEscrowdEth} DAI will be escrowed`}
-              </label>
-            )}
-            {gasCostEst && (
-              <label className={Styles.smallLabel}>
-                {ExclamationCircle}
-                {` Max cost of ${gasCostEst} ETH required for gas`}
               </label>
             )}
           </li>

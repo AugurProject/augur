@@ -13,7 +13,6 @@ import Styles from "modules/market/components/market-orders-positions-table/open
 const MarketOrdersPositionsTable = ({
   hasPending,
   marketId,
-  outcomes,
   market,
   openOrders,
   filledOrders,
@@ -28,7 +27,6 @@ const MarketOrdersPositionsTable = ({
     <ModulePane label="Open Orders">
       <OpenOrdersTable
         openOrders={openOrders}
-        marketId={marketId}
         market={market}
       />
       <div className={Styles.Footer}>
@@ -55,7 +53,7 @@ const MarketOrdersPositionsTable = ({
 
 MarketOrdersPositionsTable.propTypes = {
   hasPending: PropTypes.bool,
-  marketId: PropTypes.string.isRequired,
+  marketId: PropTypes.string,
   outcomes: PropTypes.array,
   openOrders: PropTypes.array,
   market: PropTypes.object.isRequired,
@@ -67,7 +65,8 @@ MarketOrdersPositionsTable.defaultProps = {
   hasPending: false,
   outcomes: [],
   openOrders: [],
-  filledOrders: []
+  filledOrders: [],
+  marketId: null,
 };
 
 export default MarketOrdersPositionsTable;

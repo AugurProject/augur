@@ -4,6 +4,7 @@ import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/para
 import { AnyAction } from "redux";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
 import { Getters } from "@augurproject/sdk";
+import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 
 export enum SizeTypes {
   SMALL = "small",
@@ -25,17 +26,13 @@ export interface Alert {
 
 export interface DateFormattedObject {
   value: Date;
-  simpleDate: string;
   formatted: string;
   formattedShortDate: string;
   formattedShortTime: string;
   formattedShort: string;
-  formattedLocal: string;
-  formattedLocalShortDate: string;
   formattedLocalShort: string;
   formattedLocalShortTime: string;
   formattedLocalShortDateSecondary: string;
-  full: string;
   timestamp: number;
   utcLocalOffset: number;
   clockTimeLocal: string;
@@ -164,12 +161,25 @@ export interface ReportingWindowStats {
     gasCosts: string;
   };
 }
+
+export interface CreateMarketData {
+  txParams: TransactionMetadataParams;
+  endTime: DateFormattedObject;
+  description: string;
+  id: string;
+  hash: string;
+  pending: boolean;
+  recentlyTraded: DateFormattedObject;
+  creationTime: DateFormattedObject;
+}
+
 export interface PendingQueue {
   [queueName: string]: {
     [pendingId: string]: {
       status: string;
       blockNumber: number;
       parameters?: UIOrder | NewMarket;
+      data: CreateMarketData;
     };
   };
 }
@@ -244,6 +254,7 @@ export interface UIOrder {
   cumulativeShares?: number;
   ignoreShares?: boolean;
   status?: string;
+  hash?: string;
 }
 
 export interface LiquidityOrders {
@@ -254,7 +265,7 @@ export interface LiquidityOrders {
 
 export interface LiquidityOrder {
   id?: string;
-  outcome?: string | number; // TODO: need to be consistent with outcome naming and type
+  outcome?: string; // TODO: need to be consistent with outcome naming and type
   index?: number;
   quantity: BigNumber;
   price: BigNumber;
@@ -263,20 +274,22 @@ export interface LiquidityOrder {
   outcomeName: string;
 }
 export interface NewMarketPropertiesValidations {
-  description: string | null;
-  categories: Array<string>;
-  type: string | null;
-  designatedReporterType: string | null;
-  designatedReporterAddress: string | null;
-  expirySourceType: string | null;
-  endTime: string | null;
-  hour: string | null;
-  minute: string | null;
-  meridiem: string | null;
+  description?: string;
+  categories?: string[];
+  type?: string;
+  designatedReporterType?: string;
+  designatedReporterAddress?: string;
+  expirySourceType?: string;
+  setEndTime?: string;
+  hour?: string;
+  minute?: string;
+  meridiem?: string;
+  outcomes?: string[];
 }
 
 export interface NewMarketPropertyValidations {
-  settlementFee: string | null;
+  settlementFee?: string;
+  scalarDenomination?: string;
 }
 export interface NewMarket {
   isValid: boolean;
@@ -296,8 +309,9 @@ export interface NewMarket {
   designatedReporterAddress: string;
   minPrice: string;
   maxPrice: string;
-  endTime: number;
-  tickSize: string;
+  endTimeFormatted: DateFormattedObject;
+  setEndTime: number;
+  tickSize: number;
   hour: string;
   minute: string;
   meridiem: string;
@@ -308,9 +322,12 @@ export interface NewMarket {
   affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
   orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
-  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
+  offsetName: string;
+  offset: number;
+  timezone: string;
 }
 export interface Draft {
   uniqueId: number;
@@ -345,45 +362,7 @@ export interface Draft {
   affiliateFee: number;
   orderBook: {[outcome: number]: Array<LiquidityOrder> };
   orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
-  initialLiquidityEth: any; // TODO: big number type
-  initialLiquidityGas: any; // TODO: big number type
-  creationError: string;
-}
-
-export interface Draft {
-  uniqueId: number;
-  created: number;
-  updated: number;
-  isValid: boolean;
-  validations: Array<
-    NewMarketPropertiesValidations | NewMarketPropertyValidations
-  >;
-  currentStep: number;
-  type: string;
-  outcomes: Array<string>;
-  scalarSmallNum: string;
-  scalarBigNum: string;
-  scalarDenomination: string;
-  description: string;
-  expirySourceType: string;
-  expirySource: string;
-  designatedReporterType: string;
-  designatedReporterAddress: string;
-  minPrice: string;
-  maxPrice: string;
-  endTime: number;
-  tickSize: string;
-  hour: string;
-  minute: string;
-  meridiem: string;
-  marketType: string;
-  detailsText: string;
-  category: string;
-  settlementFee: number;
-  affiliateFee: number;
-  orderBook: {[outcome: number]: Array<LiquidityOrder> };
-  orderBookSorted: {[outcome: number]: Array<LiquidityOrder> };
-  initialLiquidityEth: any; // TODO: big number type
+  initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
 }
@@ -553,6 +532,11 @@ export interface TimeframeData {
   successfulDisputes: number;
   redeemedPositions: number;
 }
+export interface AccountBalances {
+  eth: number;
+  rep: number;
+  dai: number;
+}
 export interface LoginAccount {
   address?: string;
   displayAddress?: string;
@@ -562,9 +546,7 @@ export interface LoginAccount {
   timeframeData?: TimeframeData;
   allowanceFormatted?: FormattedNumber;
   allowance?: BigNumber;
-  eth?: string;
-  rep?: string;
-  dai?: string;
+  balances: AccountBalances;
 }
 
 export interface Web3 {

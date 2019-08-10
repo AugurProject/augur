@@ -82,17 +82,13 @@ function publicBuyCompleteSets(augur, contract, marketId, value, amount, auth, c
 }
 
 function getFirstMarket(augur, universe, marketId, callback) {
-  augur.markets.getMarkets({ universe: universe, limit: 1 }, function (err, marketIds) {
-    if (marketIds.length === 0) return callback("No markets found");
-    var getMarketId = marketId || marketIds[0];
-    augur.markets.getMarketsInfo({ marketIds: [getMarketId] }, function (err, marketsInfo) {
-      if (err) {
-        console.log(chalk.red(err));
-        return callback(err);
-      }
-      if (marketsInfo.length === 0) return callback("Market Info not found");
-      return callback(null, marketsInfo[0]);
-    });
+  augur.markets.getMarkets({ universe: universe, limit: 1 }, function (err, marketList) {
+    if (err) {
+      console.log(chalk.red(err));
+      return callback(err);
+    }
+    if (marketList.markets.length === 0) return callback("No markets found");
+    return callback(null, marketList.markets[0].id);
   });
 }
 

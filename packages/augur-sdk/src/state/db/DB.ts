@@ -32,7 +32,7 @@ import {
   UniverseForkedLog,
   MarketData,
 } from "../logs/types";
-import { ExtendedSearchOptions, SearchResults } from "flexsearch";
+import { SearchOptions, SearchResults } from "flexsearch";
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -247,8 +247,12 @@ export class DB {
     return this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
-  async fullTextMarketSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields>[]> {
-    return this.marketDatabase.fullTextSearch(query, extendedSearchOptions);
+  async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
+    return this.marketDatabase.search(query, options);
+  }
+
+  async where(whereObj): Promise<Array<SearchResults<MarketFields>>> {
+    return this.marketDatabase.where(whereObj);
   }
 
   /**
@@ -361,6 +365,12 @@ export class DB {
     }
   }
 
+  // TODO: This is a temporary hack. This function can be removed once
+  // flexSearch is broken into a separate module from MarketDB.
+  async syncFullTextSearch() {
+    this.marketDatabase.syncFullTextSearch();
+  }
+
   // TODO Combine find functions into single function
 
   /**
@@ -371,7 +381,12 @@ export class DB {
    * @returns {Promise<PouchDB.Find.FindResponse<{}>>} Promise to a FindResponse
    */
   async findInSyncableDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
-    return this.syncableDatabases[dbName].find(request);
+    if (this.syncableDatabases[dbName]) {
+      return this.syncableDatabases[dbName].find(request);
+    }
+    else {
+      return {} as PouchDB.Find.FindResponse<{}>;
+    }
   }
 
   /**

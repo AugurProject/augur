@@ -1,4 +1,4 @@
-import { SortLimit } from "./types";
+import { sortOptions } from "./types";
 import { DB } from "../db/DB";
 import * as _ from "lodash";
 import {
@@ -147,7 +147,7 @@ export interface BetterWorseResult {
 
 export class Trading {
   static GetTradingHistoryParams = t.intersection([
-    SortLimit,
+    sortOptions,
     TradingHistoryParams,
   ]);
   static GetAllOrdersParams = t.partial({
@@ -155,7 +155,7 @@ export class Trading {
     ignoreReportingStates: t.array(t.string),
     makerTaker,
   });
-  static GetOrdersParams = t.intersection([SortLimit, OrdersParams]);
+  static GetOrdersParams = t.intersection([sortOptions, OrdersParams]);
   static GetBetterWorseOrdersParams = BetterWorseOrdersParams;
 
   @Getter('GetTradingHistoryParams')

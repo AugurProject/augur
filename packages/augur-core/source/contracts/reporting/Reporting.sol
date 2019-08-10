@@ -1,10 +1,11 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 
 library Reporting {
     uint256 private constant DESIGNATED_REPORTING_DURATION_SECONDS = 1 days;
     uint256 private constant DISPUTE_ROUND_DURATION_SECONDS = 7 days;
     uint256 private constant INITIAL_DISPUTE_ROUND_DURATION_SECONDS = 1 days;
+    uint256 private constant DISPUTE_WINDOW_BUFFER_SECONDS = 1 hours;
     uint256 private constant FORK_DURATION_SECONDS = 60 days;
 
     uint256 private constant BASE_MARKET_DURATION_MAXIMUM = 30 days; // A market of 30 day length can always be created
@@ -13,8 +14,8 @@ library Reporting {
 
     uint256 private constant INITIAL_REP_SUPPLY = 11 * 10 ** 6 * 10 ** 18; // 11 Million REP
 
-    uint256 private constant DEFAULT_VALIDITY_BOND = 1 ether / 100;
-    uint256 private constant VALIDITY_BOND_FLOOR = 1 ether / 100;
+    uint256 private constant DEFAULT_VALIDITY_BOND = 10 ether; // 10 Cash (Dai)
+    uint256 private constant VALIDITY_BOND_FLOOR = 10 ether; // 10 Cash (Dai)
     uint256 private constant DEFAULT_REPORTING_FEE_DIVISOR = 100; // 1% fees
     uint256 private constant MAXIMUM_REPORTING_FEE_DIVISOR = 10000; // Minimum .01% fees
     uint256 private constant MINIMUM_REPORTING_FEE_DIVISOR = 3; // Maximum 33.3~% fees. Note than anything less than a value of 2 here will likely result in bugs such as divide by 0 cases.
@@ -28,10 +29,9 @@ library Reporting {
     uint256 private constant MAXIMUM_DISPUTE_ROUNDS = 20; // We ensure that after 20 rounds of disputes a fork will occur
     uint256 private constant MINIMUM_SLOW_ROUNDS = 8; // We ensure that at least 8 dispute rounds take DISPUTE_ROUND_DURATION_SECONDS+ seconds to complete until the next round begins
 
-    uint256 private constant DSR_TOGGLE_REWARD_IN_ATTO_REP = 1 ether; // 1 REP for toggling the DSR
-
     function getDesignatedReportingDurationSeconds() internal pure returns (uint256) { return DESIGNATED_REPORTING_DURATION_SECONDS; }
     function getInitialDisputeRoundDurationSeconds() internal pure returns (uint256) { return INITIAL_DISPUTE_ROUND_DURATION_SECONDS; }
+    function getDisputeWindowBufferSeconds() internal pure returns (uint256) { return DISPUTE_WINDOW_BUFFER_SECONDS; }
     function getDisputeRoundDurationSeconds() internal pure returns (uint256) { return DISPUTE_ROUND_DURATION_SECONDS; }
     function getForkDurationSeconds() internal pure returns (uint256) { return FORK_DURATION_SECONDS; }
     function getBaseMarketDurationMaximum() internal pure returns (uint256) { return BASE_MARKET_DURATION_MAXIMUM; }
@@ -50,5 +50,4 @@ library Reporting {
     function getForkThresholdDivisor() internal pure returns (uint256) { return FORK_THRESHOLD_DIVISOR; }
     function getMaximumDisputeRounds() internal pure returns (uint256) { return MAXIMUM_DISPUTE_ROUNDS; }
     function getMinimumSlowRounds() internal pure returns (uint256) { return MINIMUM_SLOW_ROUNDS; }
-    function getDSRToggleRewardInAttoREP() internal pure returns (uint256) { return DSR_TOGGLE_REWARD_IN_ATTO_REP; }
 }

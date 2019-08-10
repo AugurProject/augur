@@ -23,6 +23,9 @@
       "path": "../contract-dependencies-ethers"
     },
     {
+      "path": "../contract-dependencies-gnosis"
+    },
+    {
       "path": "../augur-core"
     }
   ]

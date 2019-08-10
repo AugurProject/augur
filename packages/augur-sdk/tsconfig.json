@@ -24,6 +24,12 @@
     },
     {
       "path": "../augur-types"
+    },
+    {
+      "path": "../contract-dependencies-gnosis"
+    },
+    {
+      "path": "../gnosis-relay-api"
     }
   ]
 }

@@ -9,7 +9,8 @@ const mapStateToProps = (state: AppState, ownProps: any) => {
   if (!marketId) {
     marketId = ownProps.market.id;
   }
-  const positions = selectUserMarketPositions(state, marketId);
+  let positions = []
+  if (marketId) positions = selectUserMarketPositions(state, marketId);
 
   return {
     positions

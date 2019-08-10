@@ -9,11 +9,14 @@ import "./Trading";
 import "./Users";
 import "./Accounts";
 import "./status";
+import "./get-account-time-ranged-stats";
 
 export class API {
   private readonly router: Router;
+  public db: Promise<DB>;
 
   constructor(augur: Augur, db: Promise<DB>) {
+    this.db = db;
     this.router = new Router(augur, db);
   }
 

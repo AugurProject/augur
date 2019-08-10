@@ -5,6 +5,7 @@ import ModalSignTransaction from "modules/modal/containers/modal-sign-transactio
 import ModalConfirm from "modules/modal/components/modal-confirm";
 import ModalReview from "modules/modal/components/modal-review";
 import ModalRepFaucet from "modules/modal/containers/modal-rep-faucet";
+import ModalCreateMarket from "modules/modal/containers/modal-create-market";
 import ModalDaiFaucet from "modules/modal/containers/modal-dai-faucet";
 import ModalCreationHelp from "modules/modal/containers/modal-creation-help";
 import ModalDeposit from "modules/modal/containers/modal-deposit";
@@ -63,6 +64,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTransactions />;
     case TYPES.MODAL_REP_FAUCET:
       return <ModalRepFaucet />;
+    case TYPES.MODAL_CREATE_MARKET: 
+      return <ModalCreateMarket />;
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:

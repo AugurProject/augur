@@ -2110,7 +2110,7 @@ title: Contracts
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Reporting.getDesignatedReportingDurationSeconds()"><code class="function-signature">getDesignatedReportingDurationSeconds()</code></a></li><li><a href="#Reporting.getInitialDisputeRoundDurationSeconds()"><code class="function-signature">getInitialDisputeRoundDurationSeconds()</code></a></li><li><a href="#Reporting.getDisputeRoundDurationSeconds()"><code class="function-signature">getDisputeRoundDurationSeconds()</code></a></li><li><a href="#Reporting.getForkDurationSeconds()"><code class="function-signature">getForkDurationSeconds()</code></a></li><li><a href="#Reporting.getBaseMarketDurationMaximum()"><code class="function-signature">getBaseMarketDurationMaximum()</code></a></li><li><a href="#Reporting.getUpgradeCadence()"><code class="function-signature">getUpgradeCadence()</code></a></li><li><a href="#Reporting.getInitialUpgradeTimestamp()"><code class="function-signature">getInitialUpgradeTimestamp()</code></a></li><li><a href="#Reporting.getDefaultValidityBond()"><code class="function-signature">getDefaultValidityBond()</code></a></li><li><a href="#Reporting.getValidityBondFloor()"><code class="function-signature">getValidityBondFloor()</code></a></li><li><a href="#Reporting.getTargetInvalidMarketsDivisor()"><code class="function-signature">getTargetInvalidMarketsDivisor()</code></a></li><li><a href="#Reporting.getTargetIncorrectDesignatedReportMarketsDivisor()"><code class="function-signature">getTargetIncorrectDesignatedReportMarketsDivisor()</code></a></li><li><a href="#Reporting.getTargetDesignatedReportNoShowsDivisor()"><code class="function-signature">getTargetDesignatedReportNoShowsDivisor()</code></a></li><li><a href="#Reporting.getTargetRepMarketCapMultiplier()"><code class="function-signature">getTargetRepMarketCapMultiplier()</code></a></li><li><a href="#Reporting.getMaximumReportingFeeDivisor()"><code class="function-signature">getMaximumReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getMinimumReportingFeeDivisor()"><code class="function-signature">getMinimumReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getDefaultReportingFeeDivisor()"><code class="function-signature">getDefaultReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getInitialREPSupply()"><code class="function-signature">getInitialREPSupply()</code></a></li><li><a href="#Reporting.getForkThresholdDivisor()"><code class="function-signature">getForkThresholdDivisor()</code></a></li><li><a href="#Reporting.getMaximumDisputeRounds()"><code class="function-signature">getMaximumDisputeRounds()</code></a></li><li><a href="#Reporting.getMinimumSlowRounds()"><code class="function-signature">getMinimumSlowRounds()</code></a></li><li><a href="#Reporting.getDSRToggleRewardInAttoREP()"><code class="function-signature">getDSRToggleRewardInAttoREP()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Reporting.getDesignatedReportingDurationSeconds()"><code class="function-signature">getDesignatedReportingDurationSeconds()</code></a></li><li><a href="#Reporting.getInitialDisputeRoundDurationSeconds()"><code class="function-signature">getInitialDisputeRoundDurationSeconds()</code></a></li><li><a href="#Reporting.getDisputeWindowBufferSeconds()"><code class="function-signature">getDisputeWindowBufferSeconds()</code></a></li><li><a href="#Reporting.getDisputeRoundDurationSeconds()"><code class="function-signature">getDisputeRoundDurationSeconds()</code></a></li><li><a href="#Reporting.getForkDurationSeconds()"><code class="function-signature">getForkDurationSeconds()</code></a></li><li><a href="#Reporting.getBaseMarketDurationMaximum()"><code class="function-signature">getBaseMarketDurationMaximum()</code></a></li><li><a href="#Reporting.getUpgradeCadence()"><code class="function-signature">getUpgradeCadence()</code></a></li><li><a href="#Reporting.getInitialUpgradeTimestamp()"><code class="function-signature">getInitialUpgradeTimestamp()</code></a></li><li><a href="#Reporting.getDefaultValidityBond()"><code class="function-signature">getDefaultValidityBond()</code></a></li><li><a href="#Reporting.getValidityBondFloor()"><code class="function-signature">getValidityBondFloor()</code></a></li><li><a href="#Reporting.getTargetInvalidMarketsDivisor()"><code class="function-signature">getTargetInvalidMarketsDivisor()</code></a></li><li><a href="#Reporting.getTargetIncorrectDesignatedReportMarketsDivisor()"><code class="function-signature">getTargetIncorrectDesignatedReportMarketsDivisor()</code></a></li><li><a href="#Reporting.getTargetDesignatedReportNoShowsDivisor()"><code class="function-signature">getTargetDesignatedReportNoShowsDivisor()</code></a></li><li><a href="#Reporting.getTargetRepMarketCapMultiplier()"><code class="function-signature">getTargetRepMarketCapMultiplier()</code></a></li><li><a href="#Reporting.getMaximumReportingFeeDivisor()"><code class="function-signature">getMaximumReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getMinimumReportingFeeDivisor()"><code class="function-signature">getMinimumReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getDefaultReportingFeeDivisor()"><code class="function-signature">getDefaultReportingFeeDivisor()</code></a></li><li><a href="#Reporting.getInitialREPSupply()"><code class="function-signature">getInitialREPSupply()</code></a></li><li><a href="#Reporting.getForkThresholdDivisor()"><code class="function-signature">getForkThresholdDivisor()</code></a></li><li><a href="#Reporting.getMaximumDisputeRounds()"><code class="function-signature">getMaximumDisputeRounds()</code></a></li><li><a href="#Reporting.getMinimumSlowRounds()"><code class="function-signature">getMinimumSlowRounds()</code></a></li></ul></div>
 
 
 
@@ -2121,6 +2121,12 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="Reporting.getInitialDisputeRoundDurationSeconds()"></a><code class="function-signature">getInitialDisputeRoundDurationSeconds() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Reporting.getDisputeWindowBufferSeconds()"></a><code class="function-signature">getDisputeWindowBufferSeconds() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2229,12 +2235,6 @@ title: Contracts
 
 
 <h4><a class="anchor" aria-hidden="true" id="Reporting.getMinimumSlowRounds()"></a><code class="function-signature">getMinimumSlowRounds() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Reporting.getDSRToggleRewardInAttoREP()"></a><code class="function-signature">getDSRToggleRewardInAttoREP() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2597,6 +2597,526 @@ Make a call on a contract without throwing if the function does not exist.
 
 
 <h4><a class="anchor" aria-hidden="true" id="ERC1820Registry.ManagerChanged(address,address)"></a><code class="function-signature">ManagerChanged(address addr, address newManager)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `BaseSafe`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#BaseSafe.setupSafe(address[],uint256,address,bytes)"><code class="function-signature">setupSafe(address[] _owners, uint256 _threshold, address to, bytes data)</code></a></li><li class="inherited"><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li class="inherited"><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li class="inherited"><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li><li class="inherited"><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li class="inherited"><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li class="inherited"><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li><li class="inherited"><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="BaseSafe.setupSafe(address[],uint256,address,bytes)"></a><code class="function-signature">setupSafe(address[] _owners, uint256 _threshold, address to, bytes data)</code><span class="function-visibility">internal</span></h4>
+
+Setup function sets initial storage of contract.
+ @param _owners List of Safe owners.
+ @param _threshold Number of required confirmations for a Safe transaction.
+ @param to Contract address for optional delegate call.
+ @param data Data payload for optional delegate call.
+
+
+
+
+
+### `Enum`
+
+
+
+<div class="contract-index"></div>
+
+
+
+
+
+### `EtherPaymentFallback`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="EtherPaymentFallback.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+Fallback function accepts Ether transactions.
+
+
+
+
+
+### `Executor`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"></a><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.executeCall(address,uint256,bytes,uint256)"></a><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.executeDelegateCall(address,bytes,uint256)"></a><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.executeCreate(bytes)"></a><code class="function-signature">executeCreate(bytes data) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Executor.ContractCreation(address)"></a><code class="function-signature">ContractCreation(address newContract)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `GnosisSafe`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GnosisSafe.setup(address[],uint256,address,bytes,address,uint256,address payable)"><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address paymentToken, uint256 payment, address payable paymentReceiver)</code></a></li><li><a href="#GnosisSafe.execTransaction(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address payable,bytes)"><code class="function-signature">execTransaction(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address payable refundReceiver, bytes signatures)</code></a></li><li><a href="#GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)"><code class="function-signature">checkSignatures(bytes32 dataHash, bytes data, bytes signatures, bool consumeHash)</code></a></li><li><a href="#GnosisSafe.requiredTxGas(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">requiredTxGas(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li><a href="#GnosisSafe.approveHash(bytes32)"><code class="function-signature">approveHash(bytes32 hashToApprove)</code></a></li><li><a href="#GnosisSafe.signMessage(bytes)"><code class="function-signature">signMessage(bytes _data)</code></a></li><li><a href="#GnosisSafe.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#GnosisSafe.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes message)</code></a></li><li><a href="#GnosisSafe.encodeTransactionData(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">encodeTransactionData(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li><a href="#GnosisSafe.getTransactionHash(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"><code class="function-signature">getTransactionHash(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce)</code></a></li><li class="inherited"><a href="#SecuredTokenTransfer.transferToken(address,address,uint256)"><code class="function-signature">transferToken(address token, address receiver, uint256 amount)</code></a></li><li class="inherited"><a href="#SignatureDecoder.recoverKey(bytes32,bytes,uint256)"><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos)</code></a></li><li class="inherited"><a href="#SignatureDecoder.signatureSplit(bytes,uint256)"><code class="function-signature">signatureSplit(bytes signatures, uint256 pos)</code></a></li><li class="inherited"><a href="#BaseSafe.setupSafe(address[],uint256,address,bytes)"><code class="function-signature">setupSafe(address[] _owners, uint256 _threshold, address to, bytes data)</code></a></li><li class="inherited"><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li class="inherited"><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li class="inherited"><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li class="inherited"><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li><li class="inherited"><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li class="inherited"><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li class="inherited"><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#GnosisSafe.ExecutionFailed(bytes32)"><code class="function-signature">ExecutionFailed(bytes32 txHash)</code></a></li><li class="inherited"><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li class="inherited"><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li><li class="inherited"><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.setup(address[],uint256,address,bytes,address,uint256,address payable)"></a><code class="function-signature">setup(address[] _owners, uint256 _threshold, address to, bytes data, address paymentToken, uint256 payment, address payable paymentReceiver)</code><span class="function-visibility">external</span></h4>
+
+Setup function sets initial storage of contract.
+ @param _owners List of Safe owners.
+ @param _threshold Number of required confirmations for a Safe transaction.
+ @param to Contract address for optional delegate call.
+ @param data Data payload for optional delegate call.
+ @param paymentToken Token that should be used for the payment (0 is ETH)
+ @param payment Value that should be paid
+ @param paymentReceiver Adddress that should receive the payment (or 0 if tx.origin)
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.execTransaction(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address payable,bytes)"></a><code class="function-signature">execTransaction(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address payable refundReceiver, bytes signatures) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+Allows to execute a Safe transaction confirmed by required number of owners and then pays the account that submitted the transaction.
+      Note: The fees are always transfered, even if the user transaction fails.
+ @param to Destination address of Safe transaction.
+ @param value Ether value of Safe transaction.
+ @param data Data payload of Safe transaction.
+ @param operation Operation type of Safe transaction.
+ @param safeTxGas Gas that should be used for the Safe transaction.
+ @param baseGas Gas costs for that are indipendent of the transaction execution(e.g. base transaction fee, signature check, payment of the refund)
+ @param gasPrice Gas price that should be used for the payment calculation.
+ @param gasToken Token address (or 0 if ETH) that is used for the payment.
+ @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
+ @param signatures Packed signature data ({bytes32 r}{bytes32 s}{uint8 v})
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.checkSignatures(bytes32,bytes,bytes,bool)"></a><code class="function-signature">checkSignatures(bytes32 dataHash, bytes data, bytes signatures, bool consumeHash)</code><span class="function-visibility">internal</span></h4>
+
+Checks whether the signature provided is valid for the provided data, hash. Will revert otherwise.
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.requiredTxGas(address,uint256,bytes,enum Enum.Operation)"></a><code class="function-signature">requiredTxGas(address to, uint256 value, bytes data, enum Enum.Operation operation) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+Allows to estimate a Safe transaction.
+      This method is only meant for estimation purpose, therfore two different protection mechanism against execution in a transaction have been made:
+      1.) The method can only be called from the safe itself
+      2.) The response is returned with a revert
+      When estimating set `from` to the address of the safe.
+      Since the `estimateGas` function includes refunds, call this method to get an estimated of the costs that are deducted from the safe with [`execTransaction`](.#GnosisSafe.execTransaction(address,uint256,bytes,enum%20Enum.Operation,uint256,uint256,uint256,address,address%20payable,bytes))
+ @param to Destination address of Safe transaction.
+ @param value Ether value of Safe transaction.
+ @param data Data payload of Safe transaction.
+ @param operation Operation type of Safe transaction.
+ @return Estimate without refunds and overhead fees (base transaction and payload data gas costs).
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.approveHash(bytes32)"></a><code class="function-signature">approveHash(bytes32 hashToApprove)</code><span class="function-visibility">external</span></h4>
+
+Marks a hash as approved. This can be used to validate a hash that is used by a signature.
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.signMessage(bytes)"></a><code class="function-signature">signMessage(bytes _data)</code><span class="function-visibility">external</span></h4>
+
+Marks a message as signed
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
+
+Should return whether the signature provided is valid for the provided data
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.getMessageHash(bytes)"></a><code class="function-signature">getMessageHash(bytes message) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
+
+Returns hash of a message that can be signed by owners.
+ @param message Message that should be hashed
+ @return Message hash.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.encodeTransactionData(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"></a><code class="function-signature">encodeTransactionData(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+Returns the bytes that are hashed to be signed by owners.
+ @param to Destination address.
+ @param value Ether value.
+ @param data Data payload.
+ @param operation Operation type.
+ @param safeTxGas Fas that should be used for the safe transaction.
+ @param baseGas Gas costs for data used to trigger the safe transaction.
+ @param gasPrice Maximum gas price that should be used for this transaction.
+ @param gasToken Token address (or 0 if ETH) that is used for the payment.
+ @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
+ @param _nonce Transaction nonce.
+ @return Transaction hash bytes.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.getTransactionHash(address,uint256,bytes,enum Enum.Operation,uint256,uint256,uint256,address,address,uint256)"></a><code class="function-signature">getTransactionHash(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 safeTxGas, uint256 baseGas, uint256 gasPrice, address gasToken, address refundReceiver, uint256 _nonce) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
+
+Returns hash to be signed by owners.
+ @param to Destination address.
+ @param value Ether value.
+ @param data Data payload.
+ @param operation Operation type.
+ @param safeTxGas Fas that should be used for the safe transaction.
+ @param baseGas Gas costs for data used to trigger the safe transaction.
+ @param gasPrice Maximum gas price that should be used for this transaction.
+ @param gasToken Token address (or 0 if ETH) that is used for the payment.
+ @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
+ @param _nonce Transaction nonce.
+ @return Transaction hash.
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="GnosisSafe.ExecutionFailed(bytes32)"></a><code class="function-signature">ExecutionFailed(bytes32 txHash)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `ISignatureValidator`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISignatureValidator.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ISignatureValidator.isValidSignature(bytes,bytes)"></a><code class="function-signature">isValidSignature(bytes _data, bytes _signature) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
+
+Should return whether the signature provided is valid for the provided data
+
+
+
+
+
+
+### `MasterCopy`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="MasterCopy.changeMasterCopy(address)"></a><code class="function-signature">changeMasterCopy(address _masterCopy)</code><span class="function-visibility">public</span></h4>
+
+Allows to upgrade the contract. This can only be done via a Safe transaction.
+ @param _masterCopy New contract address.
+
+
+
+
+
+### `Module`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Module.setManager()"><code class="function-signature">setManager()</code></a></li><li class="inherited"><a href="#MasterCopy.changeMasterCopy(address)"><code class="function-signature">changeMasterCopy(address _masterCopy)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Module.setManager()"></a><code class="function-signature">setManager()</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+### `ModuleManager`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ModuleManager.setupModules(address,bytes)"><code class="function-signature">setupModules(address to, bytes data)</code></a></li><li><a href="#ModuleManager.enableModule(contract Module)"><code class="function-signature">enableModule(contract Module module)</code></a></li><li><a href="#ModuleManager.disableModule(contract Module,contract Module)"><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code></a></li><li><a href="#ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation)</code></a></li><li><a href="#ModuleManager.getModules()"><code class="function-signature">getModules()</code></a></li><li class="inherited"><a href="#Executor.execute(address,uint256,bytes,enum Enum.Operation,uint256)"><code class="function-signature">execute(address to, uint256 value, bytes data, enum Enum.Operation operation, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCall(address,uint256,bytes,uint256)"><code class="function-signature">executeCall(address to, uint256 value, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeDelegateCall(address,bytes,uint256)"><code class="function-signature">executeDelegateCall(address to, bytes data, uint256 txGas)</code></a></li><li class="inherited"><a href="#Executor.executeCreate(bytes)"><code class="function-signature">executeCreate(bytes data)</code></a></li><li class="inherited"><a href="#EtherPaymentFallback.fallback()"><code class="function-signature">fallback()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ModuleManager.EnabledModule(contract Module)"><code class="function-signature">EnabledModule(contract Module module)</code></a></li><li><a href="#ModuleManager.DisabledModule(contract Module)"><code class="function-signature">DisabledModule(contract Module module)</code></a></li><li class="inherited"><a href="#Executor.ContractCreation(address)"><code class="function-signature">ContractCreation(address newContract)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.setupModules(address,bytes)"></a><code class="function-signature">setupModules(address to, bytes data)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.enableModule(contract Module)"></a><code class="function-signature">enableModule(contract Module module)</code><span class="function-visibility">public</span></h4>
+
+Allows to add a module to the whitelist.
+      This can only be done via a Safe transaction.
+ @param module Module to be whitelisted.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.disableModule(contract Module,contract Module)"></a><code class="function-signature">disableModule(contract Module prevModule, contract Module module)</code><span class="function-visibility">public</span></h4>
+
+Allows to remove a module from the whitelist.
+      This can only be done via a Safe transaction.
+ @param prevModule Module that pointed to the module to be removed in the linked list
+ @param module Module to be removed.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.execTransactionFromModule(address,uint256,bytes,enum Enum.Operation)"></a><code class="function-signature">execTransactionFromModule(address to, uint256 value, bytes data, enum Enum.Operation operation) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+Allows a Module to execute a Safe transaction without any further confirmations.
+ @param to Destination address of module transaction.
+ @param value Ether value of module transaction.
+ @param data Data payload of module transaction.
+ @param operation Operation type of module transaction.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.getModules()"></a><code class="function-signature">getModules() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
+
+Returns array of modules.
+ @return Array of modules.
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.EnabledModule(contract Module)"></a><code class="function-signature">EnabledModule(contract Module module)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ModuleManager.DisabledModule(contract Module)"></a><code class="function-signature">DisabledModule(contract Module module)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `OwnerManager`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#OwnerManager.setupOwners(address[],uint256)"><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code></a></li><li><a href="#OwnerManager.addOwnerWithThreshold(address,uint256)"><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code></a></li><li><a href="#OwnerManager.removeOwner(address,address,uint256)"><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code></a></li><li><a href="#OwnerManager.swapOwner(address,address,address)"><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code></a></li><li><a href="#OwnerManager.changeThreshold(uint256)"><code class="function-signature">changeThreshold(uint256 _threshold)</code></a></li><li><a href="#OwnerManager.getThreshold()"><code class="function-signature">getThreshold()</code></a></li><li><a href="#OwnerManager.isOwner(address)"><code class="function-signature">isOwner(address owner)</code></a></li><li><a href="#OwnerManager.getOwners()"><code class="function-signature">getOwners()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#OwnerManager.AddedOwner(address)"><code class="function-signature">AddedOwner(address owner)</code></a></li><li><a href="#OwnerManager.RemovedOwner(address)"><code class="function-signature">RemovedOwner(address owner)</code></a></li><li><a href="#OwnerManager.ChangedThreshold(uint256)"><code class="function-signature">ChangedThreshold(uint256 threshold)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.setupOwners(address[],uint256)"></a><code class="function-signature">setupOwners(address[] _owners, uint256 _threshold)</code><span class="function-visibility">internal</span></h4>
+
+Setup function sets initial storage of contract.
+ @param _owners List of Safe owners.
+ @param _threshold Number of required confirmations for a Safe transaction.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.addOwnerWithThreshold(address,uint256)"></a><code class="function-signature">addOwnerWithThreshold(address owner, uint256 _threshold)</code><span class="function-visibility">public</span></h4>
+
+Allows to add a new owner to the Safe and update the threshold at the same time.
+      This can only be done via a Safe transaction.
+ @param owner New owner address.
+ @param _threshold New threshold.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.removeOwner(address,address,uint256)"></a><code class="function-signature">removeOwner(address prevOwner, address owner, uint256 _threshold)</code><span class="function-visibility">public</span></h4>
+
+Allows to remove an owner from the Safe and update the threshold at the same time.
+      This can only be done via a Safe transaction.
+ @param prevOwner Owner that pointed to the owner to be removed in the linked list
+ @param owner Owner address to be removed.
+ @param _threshold New threshold.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.swapOwner(address,address,address)"></a><code class="function-signature">swapOwner(address prevOwner, address oldOwner, address newOwner)</code><span class="function-visibility">public</span></h4>
+
+Allows to swap/replace an owner from the Safe with another address.
+      This can only be done via a Safe transaction.
+ @param prevOwner Owner that pointed to the owner to be replaced in the linked list
+ @param oldOwner Owner address to be replaced.
+ @param newOwner New owner address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.changeThreshold(uint256)"></a><code class="function-signature">changeThreshold(uint256 _threshold)</code><span class="function-visibility">public</span></h4>
+
+Allows to update the number of required confirmations by Safe owners.
+      This can only be done via a Safe transaction.
+ @param _threshold New threshold.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.getThreshold()"></a><code class="function-signature">getThreshold() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.isOwner(address)"></a><code class="function-signature">isOwner(address owner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.getOwners()"></a><code class="function-signature">getOwners() <span class="return-arrow">→</span> <span class="return-type">address[]</span></code><span class="function-visibility">public</span></h4>
+
+Returns array of owners.
+ @return Array of Safe owners.
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.AddedOwner(address)"></a><code class="function-signature">AddedOwner(address owner)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.RemovedOwner(address)"></a><code class="function-signature">RemovedOwner(address owner)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="OwnerManager.ChangedThreshold(uint256)"></a><code class="function-signature">ChangedThreshold(uint256 threshold)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `SafeMath`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SafeMath.mul(uint256,uint256)"><code class="function-signature">mul(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.div(uint256,uint256)"><code class="function-signature">div(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.sub(uint256,uint256)"><code class="function-signature">sub(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.add(uint256,uint256)"><code class="function-signature">add(uint256 a, uint256 b)</code></a></li><li><a href="#SafeMath.mod(uint256,uint256)"><code class="function-signature">mod(uint256 a, uint256 b)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.mul(uint256,uint256)"></a><code class="function-signature">mul(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Multiplies two numbers, reverts on overflow.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.div(uint256,uint256)"></a><code class="function-signature">div(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Integer division of two numbers truncating the quotient, reverts on division by zero.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.sub(uint256,uint256)"></a><code class="function-signature">sub(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Subtracts two numbers, reverts on overflow (i.e. if subtrahend is greater than minuend).
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.add(uint256,uint256)"></a><code class="function-signature">add(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Adds two numbers, reverts on overflow.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeMath.mod(uint256,uint256)"></a><code class="function-signature">mod(uint256 a, uint256 b) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+Divides two numbers and returns the remainder (unsigned integer modulo),
+reverts when dividing by zero.
+
+
+
+
+
+### `SecuredTokenTransfer`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SecuredTokenTransfer.transferToken(address,address,uint256)"><code class="function-signature">transferToken(address token, address receiver, uint256 amount)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SecuredTokenTransfer.transferToken(address,address,uint256)"></a><code class="function-signature">transferToken(address token, address receiver, uint256 amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+Transfers a token and returns if it was a success
+ @param token Token that should be transferred
+ @param receiver Receiver to whom the token should be transferred
+ @param amount The amount of tokens that should be transferred
+
+
+
+
+
+### `SelfAuthorized`
+
+
+
+<div class="contract-index"></div>
+
+
+
+
+
+### `SignatureDecoder`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SignatureDecoder.recoverKey(bytes32,bytes,uint256)"><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos)</code></a></li><li><a href="#SignatureDecoder.signatureSplit(bytes,uint256)"><code class="function-signature">signatureSplit(bytes signatures, uint256 pos)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SignatureDecoder.recoverKey(bytes32,bytes,uint256)"></a><code class="function-signature">recoverKey(bytes32 messageHash, bytes messageSignature, uint256 pos) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+Recovers address who signed the message
+ @param messageHash operation ethereum signed message hash
+ @param messageSignature message `txHash` signature
+ @param pos which signature to read
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SignatureDecoder.signatureSplit(bytes,uint256)"></a><code class="function-signature">signatureSplit(bytes signatures, uint256 pos) <span class="return-arrow">→</span> <span class="return-type">uint8,bytes32,bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+divides bytes signature into `uint8 v, bytes32 r, bytes32 s`.
+ @notice Make sure to peform a bounds check for @param pos, to avoid out of bounds access on @param signatures
+ @param pos which signature to read. A prior bounds check of this parameter should be performed, to avoid out of bounds access
+ @param signatures concatenated rsv signatures
 
 
 
@@ -3366,6 +3886,95 @@ Copies the allowances of a batch of addresses from the legacy contract. This is 
 <h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address, uint256)</code><span class="function-visibility">internal</span></h4>
 
 
+
+
+
+
+
+### `Proxy`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Proxy.constructor(address)"><code class="function-signature">constructor(address _masterCopy)</code></a></li><li><a href="#Proxy.fallback()"><code class="function-signature">fallback()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Proxy.constructor(address)"></a><code class="function-signature">constructor(address _masterCopy)</code><span class="function-visibility">public</span></h4>
+
+Constructor function sets address of master copy contract.
+ @param _masterCopy Master copy address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Proxy.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+Fallback function forwards all transactions and returns all received return data.
+
+
+
+
+
+### `ProxyFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ProxyFactory.createProxy(address,bytes)"><code class="function-signature">createProxy(address masterCopy, bytes data)</code></a></li><li><a href="#ProxyFactory.proxyRuntimeCode()"><code class="function-signature">proxyRuntimeCode()</code></a></li><li><a href="#ProxyFactory.proxyCreationCode()"><code class="function-signature">proxyCreationCode()</code></a></li><li><a href="#ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.createProxyWithNonce(address,bytes,uint256)"><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li><li><a href="#ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ProxyFactory.ProxyCreation(contract Proxy)"><code class="function-signature">ProxyCreation(contract Proxy proxy)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.createProxy(address,bytes)"></a><code class="function-signature">createProxy(address masterCopy, bytes data) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">public</span></h4>
+
+Allows to create new proxy contact and execute a message call to the new proxy within one transaction.
+ @param masterCopy Address of master copy.
+ @param data Payload for message call sent to new proxy contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.proxyRuntimeCode()"></a><code class="function-signature">proxyRuntimeCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+Allows to retrieve the runtime code of a deployed Proxy. This can be used to check that the expected Proxy was deployed.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.proxyCreationCode()"></a><code class="function-signature">proxyCreationCode() <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">public</span></h4>
+
+Allows to retrieve the creation code used for the Proxy deployment. With this it is easily possible to calculate predicted address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.deployProxyWithNonce(address,bytes,uint256)"></a><code class="function-signature">deployProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">internal</span></h4>
+
+Allows to create new proxy contact using CREATE2 but it doesn&#x27;t run the initializer.
+      This method is only meant as an utility to be called from other methods
+ @param _mastercopy Address of master copy.
+ @param initializer Payload for message call sent to new proxy contract.
+ @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.createProxyWithNonce(address,bytes,uint256)"></a><code class="function-signature">createProxyWithNonce(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">public</span></h4>
+
+Allows to create new proxy contact and execute a message call to the new proxy within one transaction.
+ @param _mastercopy Address of master copy.
+ @param initializer Payload for message call sent to new proxy contract.
+ @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.calculateCreateProxyWithNonceAddress(address,bytes,uint256)"></a><code class="function-signature">calculateCreateProxyWithNonceAddress(address _mastercopy, bytes initializer, uint256 saltNonce) <span class="return-arrow">→</span> <span class="return-type">contract Proxy</span></code><span class="function-visibility">external</span></h4>
+
+Allows to get the address for a new proxy contact created via [`createProxyWithNonce`](.#ProxyFactory.createProxyWithNonce(address,bytes,uint256))
+      This method is only meant for address calculation purpose when you use an initializer that would revert,
+      therefore the response is returned with a revert. When calling this method set `from` to the address of the proxy factory.
+ @param _mastercopy Address of master copy.
+ @param initializer Payload for message call sent to new proxy contract.
+ @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ProxyFactory.ProxyCreation(contract Proxy)"></a><code class="function-signature">ProxyCreation(contract Proxy proxy)</code><span class="function-visibility"></span></h4>
 
 
 

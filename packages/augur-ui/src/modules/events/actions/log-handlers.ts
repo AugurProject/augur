@@ -94,6 +94,15 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
+export const handleSDKReadyEvent = () =>  (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  // wire up events for sdk
+  augurSdk.subscribe(dispatch);
+  // app is connected when subscribed to sdk
+  dispatch(updateConnectionStatus(true));
+};
+
 export const handleNewBlockLog = (log: Events.NewBlock) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -107,15 +116,8 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
       currentAugurTimestamp: log.timestamp,
     })
   );
-  // TODO: figure out a good way to know if SDK is ready to subscribe to events
-  if (log.blocksBehindCurrent === 0 && !augurSdk.isSubscribed) {
-    // wire up events for sdk
-    augurSdk.subscribe(dispatch);
-    // app is connected when subscribed to sdk
-    dispatch(updateConnectionStatus(true));
-  }
   // update assets each block
-  dispatch(updateAssets());
+  if (getState().authStatus.isLogged) dispatch(updateAssets());
 };
 
 export const handleMarketCreatedLog = (log: any) => (

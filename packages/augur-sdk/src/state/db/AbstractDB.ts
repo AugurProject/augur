@@ -3,6 +3,7 @@ import Find from "pouchdb-find";
 import Memory from "pouchdb-adapter-memory";
 import PouchDB from "pouchdb";
 import Upsert from "pouchdb-upsert";
+import pouchdbDebug from 'pouchdb-debug';
 
 import * as _ from "lodash";
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
@@ -10,6 +11,7 @@ import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
 PouchDB.plugin(Upsert);
+PouchDB.plugin(pouchdbDebug);
 
 interface DocumentIDToDoc {
   [docId: string]: PouchDB.Core.ExistingDocument<{}>;
@@ -21,7 +23,7 @@ export interface BaseDocument {
 }
 
 export abstract class AbstractDB {
-  protected db: PouchDB.Database;
+  public db: PouchDB.Database;
   protected networkId: number;
   readonly dbName: string;
 

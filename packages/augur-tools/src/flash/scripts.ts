@@ -51,7 +51,7 @@ export function addScripts(flash: FlashSession) {
       flash.provider = this.makeProvider(networkConfiguration);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = Addresses[networkId];
-      flash.ensureUser(networkConfiguration, !!args.useSdk);
+      await flash.ensureUser(networkConfiguration, !!args.useSdk);
     },
   });
 
@@ -65,16 +65,24 @@ export function addScripts(flash: FlashSession) {
         description: 'Overwrite addresses.json.',
         flag: true,
       },
+      {
+        name: 'time-controlled',
+        description: 'Use the TimeControlled contract gor testing environments. Set to "true" or "false".',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const writeArtifacts = args.write_artifacts as boolean;
-      const { addresses } = await deployContracts(
-        this.provider,
-        this.accounts,
-        compilerOutput,
-        writeArtifacts
-      );
+
+      const config = {
+        writeArtifacts: args.write_artifacts as boolean,
+      };
+      if (args.time_controlled === 'true') {
+        config['useNormalTime'] = false;
+      } else if (args.time_controlled === 'false') {
+        config['useNormalTime'] = true;
+      }
+
+      const { addresses } = await deployContracts(this.provider, this.accounts, compilerOutput, config);
       flash.contractAddresses = addresses;
     },
   });

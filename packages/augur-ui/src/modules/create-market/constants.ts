@@ -304,7 +304,7 @@ export const DESCRIPTION_PLACEHOLDERS = {
 
 // Create market fields for validations
 export const DESCRIPTION = 'description';
-export const END_TIME = 'endTime';
+export const END_TIME = 'setEndTime';
 export const CATEGORIES = 'categories';
 export const HOUR = 'hour';
 export const DESIGNATED_REPORTER_ADDRESS = 'designatedReporterAddress';

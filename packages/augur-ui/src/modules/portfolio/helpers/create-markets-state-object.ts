@@ -15,11 +15,10 @@ export const createMarketsStateObject = (markets) => {
 
   markets.forEach((market) => {
     if (
-      market.reportingState === REPORTING_STATE.FINALIZED ||
-      market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION
+      market.reportingState && market.reportingState === REPORTING_STATE.FINALIZED
     ) {
       closedMarkets.push(market);
-    } else if (market.reportingState !== REPORTING_STATE.PRE_REPORTING) {
+    } else if (market.reportingState && market.reportingState !== REPORTING_STATE.PRE_REPORTING) {
       reportingMarkets.push(market);
     } else {
       openPositionMarkets.push(market);

@@ -98,7 +98,7 @@
 	}
 }
 
-.SmallHeaderLink {	
+.SmallHeaderLink {
 	> span,
 	> button {
 		.text-14;
@@ -154,7 +154,7 @@
 					fill: @color-secondary-text;
 				}
 			}
-			
+
 			&:disabled {
 				> svg > path {
 					fill: @color-neutral;
@@ -176,7 +176,7 @@
     flex: 0 0 auto;
     padding: @size-16;
 	}
-	
+
 	> div {
 		width: 440px;
 	}
@@ -198,7 +198,7 @@
 .SmallSubheaders {
 	display: flex;
 	flex-direction: column;
-			
+
 	> h1 {
 		.mono-10;
 
@@ -212,7 +212,12 @@
 		.text-16-medium;
 
 		color: @color-alternate-info-text;
-	}
+  }
+  > span:nth-of-type(2) {
+    .text-14-medium;
+
+    margin-top: @size-4;
+  }
 }
 
 .SmallSubheadersTooltip {
@@ -236,13 +241,13 @@
         width: @size-16;
         height: @size-16;
       }
-	}	
+	}
 
-	> h1, 
+	> h1,
 	> span {
 		align-items: center;
 		display: flex;
-		
+
 		> label > svg > path {
 			fill: @color-primary-action;
 		}
@@ -329,4 +334,12 @@
 	border-bottom: 1px solid @color-primary-alternate;
 	margin-bottom: @size-48;
 	padding-bottom: @size-48;
+}
+
+.HasError {
+  margin-top: @size-32;
+
+  > section {
+    margin-top: @size-12;
+  }
 }

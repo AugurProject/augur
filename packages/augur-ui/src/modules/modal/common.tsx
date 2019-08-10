@@ -50,6 +50,16 @@ export interface DescriptionMessageProps {
   messages: Array<AlertMessageProps>;
 }
 
+interface SubheaderContent {
+  header: string;
+  subheaders: Array<string>;
+  numbered?: Boolean;
+}
+
+export interface SubheaderProps {
+  subheaderContent: SubheaderContent;
+}
+
 export interface CallToActionProps {
   callToAction: string;
 }
@@ -261,6 +271,26 @@ export const DescriptionMessage = (props: DescriptionMessageProps) => (
           </b>
         )}
         {message.postText}
+      </span>
+    ))}
+  </div>
+);
+
+export const Subheader = (props: SubheaderProps) => (
+  <div className={Styles.Subheader}>
+    <span>{props.subheaderContent.header}</span>
+    {props.subheaderContent.numbered && 
+      <ol>
+        {props.subheaderContent.subheaders.map((subheader, index) => (
+          <li key={index}>
+            {subheader}
+          </li>
+        ))}
+      </ol>
+    }
+    {!props.subheaderContent.numbered && props.subheaderContent.subheaders.map((subheader, index) => (
+      <span key={index}>
+        {subheader}
       </span>
     ))}
   </div>

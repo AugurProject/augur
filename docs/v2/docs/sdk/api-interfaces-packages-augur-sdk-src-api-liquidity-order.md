@@ -27,7 +27,7 @@ sidebar_label: Order
 
 **● amount**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:8](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Liquidity.ts#L8)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:8](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Liquidity.ts#L8)*
 
 ___
 <a id="price"></a>
@@ -36,7 +36,7 @@ ___
 
 **● price**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:7](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Liquidity.ts#L7)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:7](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Liquidity.ts#L7)*
 
 ___
 

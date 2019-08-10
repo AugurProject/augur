@@ -26,7 +26,7 @@ sidebar_label: packages/augur-sdk/src/state/db/EventLogDBRouter
 
 **Ƭ EventTopics**: *`string` \| `string`[]*
 
-*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:6](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L6)*
+*Defined in [packages/augur-sdk/src/state/db/EventLogDBRouter.ts:6](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/EventLogDBRouter.ts#L6)*
 
 ___
 

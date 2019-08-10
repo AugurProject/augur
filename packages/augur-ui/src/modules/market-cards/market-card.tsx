@@ -44,6 +44,8 @@ export default class MarketCard extends React.Component<
   MarketCardProps,
   MarketCardState
 > {
+  clipboardMarketId: any = new Clipboard("#copy_marketId");
+  clipboardAuthor: any = new Clipboard("#copy_author");
   state: FormDetailsState = {
     expanded: false,
   };
@@ -85,7 +87,6 @@ export default class MarketCard extends React.Component<
       marketStatus,
       author,
       reportingState,
-      endTime,
       openInterestFormatted,
       volumeFormatted,
       tags,
@@ -111,9 +112,9 @@ export default class MarketCard extends React.Component<
     }));
 
     const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
- 
+
     return (
-      <div 
+      <div
         className={classNames(Styles.MarketCard, {[Styles.Loading]: loading})}
       >
         {loading &&
@@ -127,7 +128,7 @@ export default class MarketCard extends React.Component<
             <div/>
           </>
         }
-        {!loading && 
+        {!loading &&
           <>
             <div>
               {address && address.toUpperCase() === author.toUpperCase() &&
@@ -158,7 +159,7 @@ export default class MarketCard extends React.Component<
                 marketStatus={marketStatus}
                 reportingState={reportingState}
                 disputeInfo={disputeInfo}
-                endTime={endTimeFormatted}
+                endTimeFormatted={endTimeFormatted}
                 currentAugurTimestamp={currentAugurTimestamp}
                 reportingWindowStatsEndTime={reportingWindowStatsEndTime}
               />
@@ -170,7 +171,7 @@ export default class MarketCard extends React.Component<
               <MarketProgress
                 reportingState={reportingState}
                 currentTime={currentAugurTimestamp}
-                endTime={endTime}
+                endTimeFormatted={endTimeFormatted}
                 reportingWindowEndtime={reportingWindowStatsEndTime}
                 alignRight
               />
@@ -204,7 +205,7 @@ export default class MarketCard extends React.Component<
                     label="VOL"
                     value={volumeFormatted.formatted}
                   />
-                  {!condensed && 
+                  {!condensed &&
                     <LabelValue
                       label="OI"
                       value={openInterestFormatted.formatted}
@@ -220,14 +221,14 @@ export default class MarketCard extends React.Component<
                 />
               }
             </div>
-            
+
             <MarketLink id={id}>
               {description}
             </MarketLink>
             {!condensed && !marketResolved &&
               <>
-                <OutcomeGroup 
-                  outcomes={outcomesFormatted} 
+                <OutcomeGroup
+                  outcomes={outcomesFormatted}
                   marketType={marketType}
                   scalarDenomination={scalarDenomination}
                   min={minPrice}

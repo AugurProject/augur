@@ -1,11 +1,10 @@
-import { Augur } from '../Augur';
-import { DB } from './db/DB';
-import { IBlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
-import { Block } from 'ethers/providers';
-import { augurEmitter } from '../events';
-import { SubscriptionEventName } from '../constants';
-import { Subscriptions } from '../subscriptions';
-import { throttle } from "lodash";
+import { Augur } from "../Augur";
+import { DB } from "./db/DB";
+import { IBlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
+import { Block } from "ethers/providers";
+import { augurEmitter } from "../events";
+import { SubscriptionEventName } from "../constants";
+import { Subscriptions } from "../subscriptions";
 
 const settings = require('./settings.json');
 
@@ -20,15 +19,18 @@ export class Controller {
     private db: Promise<DB>,
     private blockAndLogStreamerListener: IBlockAndLogStreamerListener
   ) {
-    Controller.throttled = throttle(this.notifyNewBlockEvent, 1000);
   }
 
   async run(): Promise<void> {
     try {
-      this.events.subscribe('controller:new:block', Controller.throttled);
+      this.events.subscribe('controller:new:block', this.notifyNewBlockEvent.bind(this));
 
       const db = await this.db;
-      db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
+      await db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
+
+      augurEmitter.emit(SubscriptionEventName.SDKReady, {
+        eventName: SubscriptionEventName.SDKReady,
+      });
 
       this.blockAndLogStreamerListener.listenForBlockRemoved(
         db.rollback.bind(db)
@@ -49,20 +51,18 @@ export class Controller {
     }
 
     const blocksBehindCurrent = block.number - lowestBlock;
-    const percentSynced = (
-      (lowestBlock / block.number) *
-      100
-    ).toFixed(4);
+    const percentSynced = ((lowestBlock / block.number) * 100).toFixed(4);
 
+    const timestamp = await this.augur.getTimestamp();
     augurEmitter.emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
       highestAvailableBlockNumber: block.number,
       lastSyncedBlockNumber: lowestBlock,
       blocksBehindCurrent,
       percentSynced,
-      timestamp: block.timestamp,
+      timestamp: timestamp.toNumber(),
     });
-  }
+  };
 
   private async getLatestBlock(): Promise<Block> {
     const blockNumber: number = await this.augur.provider.getBlockNumber();

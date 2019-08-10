@@ -38,7 +38,7 @@ describe("modules/markets/reducers/new-market.js", () => {
       settlementFee: 0,
       orderBook: {},
       orderBookSorted: {},
-      initialLiquidityEth: createBigNumber(0),
+      initialLiquidityDai: createBigNumber(0),
       initialLiquidityGas: createBigNumber(0),
       validations: [
         {
@@ -412,7 +412,7 @@ describe("modules/markets/reducers/new-market.js", () => {
       settlementFee: 0,
       orderBook: {},
       orderBookSorted: {},
-      initialLiquidityEth: createBigNumber(0),
+      initialLiquidityDai: createBigNumber(0),
       initialLiquidityGas: createBigNumber(0),
       validations: [
         {

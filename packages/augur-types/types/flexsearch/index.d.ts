@@ -1,10 +1,12 @@
-// This is a modified version of FlexSearch's index.d.ts
-// It includes additional signatures for the `add` and `search`
-// functions, and changes some return types to SearchResults<T>[].
+// This is a modified version of FlexSearch's index.d.ts.
+// It includes an additional signature for the `add` function
+// and modifies the signatures for the `search` & `where` functions.
+// Ideally, it can be removed in the future, once FlexSearch's
+// TypeScript definitions are more complete.
 
 declare module "flexsearch" {
   interface Index<T> {
-    //TODO: Chaining
+    // @TODO: Chaining
     readonly id: string;
     readonly index: string;
     readonly length: number;
@@ -13,25 +15,20 @@ declare module "flexsearch" {
     init(options: CreateOptions);
     add(id: number, o: T);
     add(o: T): void;
-    search(query: string, options: number | SearchOptions, callback: (results: SearchResults<T>[]) => void): void;
-    search(query: string, options?: number | SearchOptions): Promise<SearchResults<T>[]>;
-    search(options: ExtendedSearchOptions, callback: (results: SearchResults<T>[]) => void): void;
-    search(options: ExtendedSearchOptions): Promise<SearchResults<T>[]>;
-    search(options: ExtendedSearchOptions[]): Promise<SearchResults<T>[]>;
+    search(query: string, options: number | SearchOptions, callback: (results: SearchResults<T>) => void): void;
+    search(query: string, options?: number | SearchOptions): Promise<Array<SearchResults<T>>>;
+    search(options: SearchOptions & {query: string}, callback: (results: SearchResults<T>) => void): void;
+    search(options: SearchOptions & {query: string}): Promise<SearchResults<T>>;
     update(id: number, o: T);
     remove(id: number);
     clear();
     destroy();
     addMatcher(matcher: Matcher);
-    where(whereFn: (o: T) => boolean): SearchResult<T>[];
+    where(whereFn: (o: T) => boolean): Promise<Array<SearchResults<T>>>;
     where(whereObj: {[key: string]: string});
     encode(str: string): string;
     export(): string;
     import(exported: string);
-  }
-
-  interface ExtendedSearchOptions extends SearchOptions {
-    query: string;
   }
 
   interface SearchOptions {
@@ -41,7 +38,7 @@ declare module "flexsearch" {
       field?: string[],
       bool?: "and" | "or" | "not"
       page?: boolean | Cursor;
-      //TODO: Sorting
+      // @TODO: Sorting
   }
 
   interface SearchResults<T> {
@@ -64,7 +61,7 @@ declare module "flexsearch" {
     threshold?: false | number;
     resolution?: number;
     stemmer?: Stemmer | string | false;
-    filter?: FilterFn | string | false;
+    filter?: FilterFn | string | false;
     rtl?: boolean;
   };
 

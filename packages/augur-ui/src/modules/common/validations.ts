@@ -1,4 +1,4 @@
-import { 
+import {
   INVALID_OUTCOME
 } from "modules/create-market/constants";
 import isAddress from "modules/auth/helpers/is-address";
@@ -59,7 +59,7 @@ export function checkCategoriesArray(value) {
 export function moreThanDecimals(value, decimals) {
   if (Math.floor(value) === value) return "";
 
-  const decimalsValue = value.toString().split(".")[1].length;
+  const decimalsValue = value.includes(".") ? value.toString().split(".")[1].length : 0;
   if (decimalsValue > decimals) return "Can't enter more than " + decimals + " decimal points";
   return "";
 }
@@ -88,7 +88,7 @@ export function checkOutcomesArray(value) {
     value.forEach((outcome,index) => {
       dupes[outcome] = dupes[outcome] || [];
       dupes[outcome].push(index);
-    });  
+    });
     Object.keys(dupes).map(key => {
       if (dupes[key].length > 1) {
         errors[dupes[key][dupes[key].length - 1]] = "Can't enter a duplicate outcome";

@@ -69,7 +69,6 @@ function getMarketStatus(reportingState: string) {
     case REPORTING_STATE.PRE_REPORTING:
       marketStatus = MARKET_OPEN;
       break;
-    case REPORTING_STATE.AWAITING_FINALIZATION:
     case REPORTING_STATE.FINALIZED:
       marketStatus = MARKET_CLOSED;
       break;

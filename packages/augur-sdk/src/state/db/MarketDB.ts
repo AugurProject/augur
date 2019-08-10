@@ -20,11 +20,13 @@ import { Orderbook } from "../../api/Liquidity";
 
 // because flexsearch is a UMD type lib
 const flexSearch = require('flexsearch');
-import { Index, ExtendedSearchOptions, SearchResults } from 'flexsearch';
+import { Index, SearchOptions, SearchResults } from 'flexsearch';
 
 export interface MarketFields {
   id: string;
   market: string;
+  universe: string;
+  marketCreator: string;
   category1: string;
   category2: string;
   category3: string;
@@ -39,6 +41,8 @@ export interface MarketFields {
 // Need this interface to access these items on the documents
 interface MarketDataDoc extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
   market: string;
+  universe: string;
+  marketCreator: string;
   extraInfo: string;
 }
 
@@ -58,7 +62,7 @@ interface LiquidityResults {
 export class MarketDB extends DerivedDB {
   protected augur: Augur;
   private readonly events = new Subscriptions(augurEmitter);
-  private flexSearchIndex?: Index<MarketFields>;
+  private flexSearchIndex: Index<MarketFields>;
   readonly liquiditySpreads = [10, 15, 20, 100];
 
   constructor(db: DB, networkId: number, augur: Augur) {
@@ -67,7 +71,6 @@ export class MarketDB extends DerivedDB {
     this.augur = augur;
 
     this.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
-
     this.flexSearchIndex = flexSearch.create(
       {
         doc: {
@@ -76,6 +79,8 @@ export class MarketDB extends DerivedDB {
           end: "end",
           field: [
             "market",
+            "universe",
+            "marketCreator",
             "category1",
             "category2",
             "category3",
@@ -233,18 +238,16 @@ export class MarketDB extends DerivedDB {
     return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI);
   }
 
-  async fullTextSearch(query: string | null, extendedSearchOptions: ExtendedSearchOptions[] | null): Promise<SearchResults<MarketFields>[]> {
-    if (this.flexSearchIndex) {
-      if (query !== null) {
-        return this.flexSearchIndex.search(query);
-      } else if (extendedSearchOptions !== null)  {
-        return this.flexSearchIndex.search(extendedSearchOptions);
-      }
-    }
-    return [];
+  async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
+    return this.flexSearchIndex.search(query, options);
   }
 
-  private async syncFullTextSearch(): Promise<void> {
+  async where(whereObj: {[key: string]: string}): Promise<Array<SearchResults<MarketFields>>> {
+    return this.flexSearchIndex.where(whereObj);
+  }
+
+  // TODO: This function is only made public as a hack until flexSearch is made into a separate module
+  public async syncFullTextSearch(): Promise<void> {
     if (this.flexSearchIndex) {
       const previousDocumentEntries = await this.db.allDocs({ include_docs: true });
 
@@ -257,7 +260,8 @@ export class MarketDB extends DerivedDB {
 
         if (doc) {
           const market = doc.market ? doc.market : "";
-
+          const universe = doc.universe ? doc.universe : "";
+          const marketCreator = doc.marketCreator ? doc.marketCreator : "";
           let category1 = "";
           let category2 = "";
           let category3 = "";
@@ -290,6 +294,8 @@ export class MarketDB extends DerivedDB {
             this.flexSearchIndex.add({
               id: row.id,
               market,
+              universe,
+              marketCreator,
               category1,
               category2,
               category3,

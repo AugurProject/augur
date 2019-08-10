@@ -58,7 +58,7 @@ sidebar_label: packages/augur-sdk/src/state/getter/Trading
   price: t.number,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:136](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L136)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:136](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L136)*
 
 ___
 <a id="ordertype"></a>
@@ -70,7 +70,7 @@ ___
   sell: null,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:131](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L131)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:131](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L131)*
 
 ___
 <a id="ordersparams"></a>
@@ -90,7 +90,7 @@ ___
   latestCreationTime: t.number,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:49](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L49)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:49](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L49)*
 
 ___
 <a id="outcomeparam"></a>
@@ -108,7 +108,7 @@ ___
   7: null,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:30](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L30)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:30](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L30)*
 
 ___
 <a id="tradinghistoryparams"></a>
@@ -125,7 +125,7 @@ ___
   latestCreationTime: t.number,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:20](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L20)*
 
 ___
 <a id="zero"></a>
@@ -134,7 +134,7 @@ ___
 
 **● ZERO**: *`BigNumber`* =  new BigNumber(0)
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:18](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:18](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L18)*
 
 ___
 <a id="makertaker"></a>
@@ -143,7 +143,7 @@ ___
 
 **● makerTaker**: *`KeyofType`<`object`>* =  t.keyof(makerTakerValues)
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:47](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L47)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:47](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L47)*
 
 ___
 
@@ -155,7 +155,7 @@ ___
 
 ▸ **filterMarketsByReportingState**(marketIds: *`string`[]*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, ignoreReportingStates: *`string`[]*): `Promise`<`Dictionary`<[MarketCreatedLog](api-interfaces-packages-augur-sdk-src-state-logs-types-marketcreatedlog.md)>>
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:580](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L580)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:580](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L580)*
 
 **Parameters:**
 
@@ -177,7 +177,7 @@ ___
 
 **makerTakerValues**: *`object`*
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:41](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L41)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:41](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L41)*
 
 <a id="makertakervalues.either"></a>
 
@@ -185,7 +185,7 @@ ___
 
 **● either**: *`string`* = "either"
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:42](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L42)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:42](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L42)*
 
 ___
 <a id="makertakervalues.maker"></a>
@@ -194,7 +194,7 @@ ___
 
 **● maker**: *`string`* = "maker"
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:43](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L43)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:43](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L43)*
 
 ___
 <a id="makertakervalues.taker"></a>
@@ -203,7 +203,7 @@ ___
 
 **● taker**: *`string`* = "taker"
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:44](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L44)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:44](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L44)*
 
 ___
 

@@ -10,7 +10,8 @@ import {
 import Form from "modules/create-market/components/form";
 import getValue from "utils/get-value";
 import {
-  MODAL_DISCARD
+  MODAL_DISCARD,
+  MODAL_CREATE_MARKET
 } from "modules/common/constants";
 import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
 import { updateModal } from "modules/modal/actions/update-modal";
@@ -18,7 +19,6 @@ import { updateModal } from "modules/modal/actions/update-modal";
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
   currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
-  address: getValue(state, "loginAccount.address"),
   drafts: state.drafts,
 });
 
@@ -31,6 +31,8 @@ const mapDispatchToProps = dispatch => ({
   updateDraft: (key, data) => dispatch(updateDraft(key, data)),
   discardModal: (cb: NodeStyleCallback) =>
     dispatch(updateModal({ type: MODAL_DISCARD, cb })),
+  openCreateMarketModal: (cb: NodeStyleCallback) =>
+    dispatch(updateModal({ type: MODAL_CREATE_MARKET, cb })),
 });
 
 const FormContainer = withRouter(

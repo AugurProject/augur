@@ -157,9 +157,6 @@ export class SyncableDB extends AbstractDB {
       }
 
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
-
-      // let the controller know a new block was added so it can update the UI
-      augurEmitter.emit('controller:new:block', {});
     } else {
       throw new Error(`Unable to add new block`);
     }
@@ -196,7 +193,7 @@ export class SyncableDB extends AbstractDB {
       throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
     }
     let _id = '';
-    // TODO: This works in bulk sync currently because we process logs chronologically. When we switch to reverse chrono for bulk sync we'll need to add more logic
+    // @TODO: This works in bulk sync currently because we process logs chronologically. When we switch to reverse chrono for bulk sync we'll need to add more logic
     if (this.idFields.length > 0) {
       // need to preserve order of fields in id
       for (const fieldName of this.idFields) {

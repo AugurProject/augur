@@ -3,7 +3,7 @@ import { loadDrafts } from "modules/create-market/actions/update-drafts";
 import { addAlert } from "modules/alerts/actions/alerts";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
-import { loadPendingOrders } from "modules/orders/actions/pending-orders-management";
+import { loadPendingOrdersTransactions } from "modules/orders/actions/pending-orders-management";
 import { updateGasPriceInfo } from "modules/app/actions/update-gas-price-info";
 import { registerUserDefinedGasPriceFunction } from "modules/app/actions/register-user-defined-gasPrice-function";
 import { updateUniverse } from "modules/universe/actions/update-universe";
@@ -74,9 +74,9 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         );
       }
       if (
-        pendingOrders
+        pendingOrders && Object.keys(pendingOrders).length > 0
       ) {
-        dispatch(loadPendingOrders(pendingOrders));
+        dispatch(loadPendingOrdersTransactions(pendingOrders));
       }
       if (
         pendingQueue
