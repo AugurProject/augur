@@ -71,7 +71,6 @@ export class MarketDB extends DerivedDB {
     this.augur = augur;
 
     this.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
-
     this.flexSearchIndex = flexSearch.create(
       {
         doc: {
@@ -80,6 +79,7 @@ export class MarketDB extends DerivedDB {
           end: "end",
           field: [
             "market",
+            "universe",
             "marketCreator",
             "category1",
             "category2",
@@ -97,7 +97,6 @@ export class MarketDB extends DerivedDB {
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     await super.doSync(highestAvailableBlockNumber);
     await this.syncOrderBooks(true);
-    await this.syncFullTextSearch();
   }
 
   syncOrderBooks = async (syncing: boolean): Promise<void> => {
@@ -246,7 +245,8 @@ export class MarketDB extends DerivedDB {
     return this.flexSearchIndex.where(whereObj);
   }
 
-  private async syncFullTextSearch(): Promise<void> {
+  // TODO: This function is only made public as a hack until flexSearch is made into a separate module
+  public async syncFullTextSearch(): Promise<void> {
     if (this.flexSearchIndex) {
       const previousDocumentEntries = await this.db.allDocs({ include_docs: true });
 

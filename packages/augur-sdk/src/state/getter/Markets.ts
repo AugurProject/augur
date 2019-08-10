@@ -45,7 +45,7 @@ export enum MarketReportingState {
 
 export enum GetMarketsSortBy {
   marketOI = 'marketOI',
-  liquidity = 'liquidity', // TODO: Make default sort
+  liquidity = 'liquidity',
   volume = 'volume',
   timestamp = 'timestamp',
   endTime = 'endTime',
@@ -412,6 +412,10 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketsParams>
   ): Promise<MarketList> {
+    // This is a temporary hack to make sure flexSearchIndex is up-to-date on the UI side before searching
+    // TODO: Break flexSearch into a seprate module and remove this hack
+    await db.syncFullTextSearch();
+
     // Validate params
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
@@ -425,7 +429,7 @@ export class Markets {
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
     params.search = typeof params.search === 'undefined' ? "" : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
-    params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.marketOI : params.sortBy;
+    params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.marketOI : params.sortBy; // TODO: Make liquidity the default sort
     params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
