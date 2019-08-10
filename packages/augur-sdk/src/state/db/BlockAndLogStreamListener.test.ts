@@ -5,8 +5,8 @@ import {
 } from "./BlockAndLogStreamerListener";
 import { Block } from "ethereumjs-blockstream";
 import { ExtendedLog } from "blockstream-adapters";
-import { EventLogDBRouter } from "./EventLogDBRouter";
 import { ParsedLog } from "@augurproject/types";
+import { Log } from "../logs/types";
 
 // this extends syntax handles nested "mockify" types.
 type Mockify<T> = {
@@ -17,7 +17,6 @@ describe("BlockstreamListener", () => {
   let blockAndLogStreamer: Mockify<BlockAndLogStreamerInterface<Block, ExtendedLog>>;
   let deps: Mockify<BlockAndLogStreamerListenerDependencies>;
   let blockAndLogStreamerListener: BlockAndLogStreamerListener;
-  let eventLogDBRouter: EventLogDBRouter;
 
   // Most of this data is invented to satisfy typescript.
   const sampleLogs: ExtendedLog[] = [{
@@ -42,36 +41,41 @@ describe("BlockstreamListener", () => {
     transactionIndex: 2,
   }];
 
+  const nextBlock: Block = {
+    number: "1234",
+    hash: "1234",
+    parentHash: "ParentHash",
+  } as const;
+
   beforeEach(() => {
     // Gotta be a better way to do this...
     blockAndLogStreamer = {
       reconcileNewBlock: jest.fn(),
       addLogFilter: jest.fn(),
+      removeLogFilter: jest.fn(),
       subscribeToOnBlockAdded: jest.fn(),
       subscribeToOnBlockRemoved: jest.fn(),
       subscribeToOnLogsAdded: jest.fn(),
       subscribeToOnLogsRemoved: jest.fn(),
     };
 
-    eventLogDBRouter = new EventLogDBRouter((logs) => {
-      return logs.map<ParsedLog>((log) => ({
-        blockHash: log.blockHash,
-        blockNumber: log.blockNumber,
-        transactionIndex: parseInt(log.transactionHash || "0", 10),
-        transactionHash: log.transactionHash,
-        transactionLogIndex: 1,
-        logIndex: 1,
-        removed: false,
-      }));
-    });
+    const parseLogs = jest.fn().mockImplementation((logs:Log[]) => logs.map<ParsedLog>((log) => ({
+      blockHash: log.blockHash,
+      blockNumber: log.blockNumber,
+      transactionIndex: parseInt(log.transactionHash || "0", 10),
+      transactionHash: log.transactionHash,
+      transactionLogIndex: 1,
+      logIndex: 1,
+      removed: false,
+    })));
 
     deps = {
       address: "0xSomeAddress",
       blockAndLogStreamer,
-      eventLogDBRouter,
       listenForNewBlocks: jest.fn(),
       getEventTopics: jest.fn(),
-      getBlockByHash: jest.fn(),
+      getBlockByHash: jest.fn().mockReturnValue(nextBlock),
+      parseLogs,
     };
 
     blockAndLogStreamerListener = new BlockAndLogStreamerListener(deps);
@@ -103,19 +107,12 @@ describe("BlockstreamListener", () => {
       });
 
       test("should notify log listeners", () => {
-        const nextBlock: Block = {
-          number: "1234",
-          hash: "1234",
-          parentHash: "ParentHash",
-        };
-
         blockAndLogStreamerListener.onNewBlock(nextBlock);
         expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
       });
 
-      test("should filter logs passed to listeners", () => {
-        eventLogDBRouter.onLogsAdded(1234, sampleLogs);
-
+      test("should filter logs passed to listeners", async () => {
+        await blockAndLogStreamerListener.onLogsAdded("1234", sampleLogs);
         expect(onNewLogCallback).toBeCalledWith(1234,
           [
             expect.objectContaining({
@@ -132,19 +129,12 @@ describe("BlockstreamListener", () => {
       });
 
       test("should notify log listeners", () => {
-        const nextBlock: Block = {
-          number: "1234",
-          hash: "1234",
-          parentHash: "ParentHash",
-        };
-
         blockAndLogStreamerListener.onNewBlock(nextBlock);
         expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
       });
 
-      test("should filter logs passed to listeners", () => {
-        eventLogDBRouter.onLogsAdded(1234, sampleLogs);
-
+      test("should filter logs passed to listeners", async () => {
+        await blockAndLogStreamerListener.onLogsAdded("1234", sampleLogs);
         expect(onNewLogCallback).toBeCalledWith(1234,
           [
             expect.objectContaining({
