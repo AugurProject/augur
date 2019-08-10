@@ -97,6 +97,7 @@ export class MarketDB extends DerivedDB {
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     await super.doSync(highestAvailableBlockNumber);
     await this.syncOrderBooks(true);
+    await this.syncFullTextSearch();
   }
 
   syncOrderBooks = async (syncing: boolean): Promise<void> => {
