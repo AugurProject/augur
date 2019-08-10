@@ -64,7 +64,7 @@ beforeAll(async () => {
   await connector.connect('');
 }, 120000);
 
-test('SEOConnector :: Should route correctly and handle events', async done => {
+test('SEOConnector :: Should route correctly and handle events, extraInfo', async done => {
   const yesNoMarket1 = await john.createYesNoMarket({
     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
@@ -128,7 +128,8 @@ test('SEOConnector :: Should route correctly and handle events', async done => {
         universe: john.augur.contracts.universe.address,
         isSortDescending: false,
       });
-      expect(marketList.markets[marketList.markets.length - 1].id).toEqual(yesNoMarket1.address);
+
+      expect(marketList.markets.map(m => m.id).includes(yesNoMarket1.address));
 
       await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});
