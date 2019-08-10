@@ -31,6 +31,7 @@ export const selectPendingLiquidityOrders = (state: AppState) =>
   state.pendingLiquidityOrders;
 export const selectFilledOrders = (state: AppState) => state.filledOrders;
 export const selectUserMarketOpenOrders = (state: AppState) => state.userOpenOrders;
+export const selectPendingQueue = (state: AppState) => state.pendingQueue;
 
 export const selectCurrentTimestamp = createSelector(
   selectBlockchainState,
