@@ -40,6 +40,10 @@ def acquireShortShareSet(kitchenSinkFixture, cash, market, outcome, amount, appr
         assert otherShareToken.approve(approvalAddress, amount, sender = sender)
 
 def finalizeMarket(fixture, market, payoutNumerators):
+    prepare_finalize_market(fixture, market, payoutNumerators)
+    assert market.finalize()
+
+def prepare_finalize_market(fixture, market, payoutNumerators):
     # set timestamp to after market end
     fixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
     # have kitchenSinkFixture.accounts[0] submit designated report
@@ -48,7 +52,6 @@ def finalizeMarket(fixture, market, payoutNumerators):
     disputeWindow = fixture.applySignature('DisputeWindow', market.getDisputeWindow())
     fixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
     # finalize the market
-    assert market.finalize()
 
 def test_helpers(kitchenSinkFixture, scalarMarket):
     market = scalarMarket
@@ -130,12 +133,13 @@ def test_redeem_shares_in_categorical_market(kitchenSinkFixture, universe, cash,
     acquireShortShareSet(kitchenSinkFixture, cash, market, 3, 1, claimTradingProceeds.address, sender = kitchenSinkFixture.accounts[2])
     assert universe.getOpenInterestInAttoCash() == 2 * numTicks
 
-    finalizeMarket(kitchenSinkFixture, market, [0, 0, 0, numTicks])
+    prepare_finalize_market(kitchenSinkFixture, market, [0, 0, 0, numTicks])
 
     assert universe.getOpenInterestInAttoCash() == 0
 
     # redeem shares with a1
     claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], nullAddress)
+    assert market.isFinalized() == true
     # redeem shares with a2
     claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], nullAddress)
 
