@@ -196,7 +196,7 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
 
     # can't claim trading proceeds before market ends
     with raises(TransactionFailed):
-        claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1])
+        claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], nullAddress)
 
     # set timestamp to after market end
     kitchenSinkFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
@@ -208,7 +208,7 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
     kitchenSinkFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     # validate that everything else is OK
-    assert claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1])
+    assert claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], nullAddress)
     assert market.isFinalized()
 
 def test_redeem_shares_in_multiple_markets(kitchenSinkFixture, universe, cash, market, scalarMarket):
