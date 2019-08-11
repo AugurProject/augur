@@ -193,12 +193,13 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
     acquireLongShares(kitchenSinkFixture, cash, market, YES, 1, claimTradingProceeds.address, sender = kitchenSinkFixture.accounts[1])
     # get NO shares with a2
     acquireShortShareSet(kitchenSinkFixture, cash, market, YES, 1, claimTradingProceeds.address, sender = kitchenSinkFixture.accounts[2])
-    # set timestamp to after market end
-    kitchenSinkFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
 
-    # don't submit report so market can't be finalized
+    # can't claim trading proceeds before market ends
     with raises(TransactionFailed):
         claimTradingProceeds.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1])
+
+    # set timestamp to after market end
+    kitchenSinkFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
 
     # have kitchenSinkFixture.accounts[0] subimt designated report (75% high, 25% low, range -10*10^18 to 30*10^18)
     market.doInitialReport([0, 0, 100], "", 0)
