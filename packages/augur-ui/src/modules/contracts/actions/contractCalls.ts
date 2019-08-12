@@ -243,6 +243,7 @@ export function createMarket(newMarket: CreateNewMarketParams) {
     description: newMarket.description,
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
+    backupSource: newMarket.backupSource,
     scalarDenomination: newMarket.scalarDenomination,
     offsetName: newMarket.offsetName,
   });
