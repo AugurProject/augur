@@ -110,12 +110,14 @@ interface Validations {
   max?: Number;
   checkFilledNumberMessage?: string;
   checkFilledStringMessage?: string;
+  checkDateGreaterMessage?: string;
   checkCategories?: Boolean;
   checkOutcomes?: Boolean;
   checkLessThan?: Boolean;
   checkDividedBy?: Boolean;
   checkMoreThan?: Boolean;
   checkPositive?: Boolean;
+  checkDateGreater?: Boolean;
   lessThanMessage?: string;
   decimals?: number;
   checkDecimals?: Boolean;
@@ -301,10 +303,14 @@ export default class Form extends React.Component<FormProps, FormState> {
     }
 
     fields.map(field => {
+      let value = newMarket[field];
+      if (field === END_TIME && newMarket.endTimeFormatted) {
+        value = newMarket.endTimeFormatted.timestamp;
+      }
       const error = this.evaluate({
         ...VALIDATION_ATTRIBUTES[field],
         updateValue: false,
-        value: newMarket[field],
+        value,
       });
       if (error) hasErrors = true;
     });
@@ -378,12 +384,14 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkFilledNumberMessage,
       checkFilledString,
       checkFilledStringMessage,
+      checkDateGreaterMessage,
       checkCategories,
       checkOutcomes,
       checkMoreThan,
       checkLessThan,
       checkDividedBy,
       checkPositive,
+      checkDateGreater,
       lessThanMessage,
       checkDecimals,
       decimals,
@@ -405,6 +413,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
         : '',
       checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
+      checkDateGreater ? dateGreater(value, currentTimestamp, checkDateGreaterMessage) : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
