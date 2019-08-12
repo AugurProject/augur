@@ -29,17 +29,22 @@ export interface OutcomeProps {
   lastPricePercent?: number;
   invalid?: Boolean;
   index: number;
+  min: number;
+  max: number;
 }
 
-export const Outcome = (props: OutcomeProps) => (
-  <div className={classNames(Styles.Outcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
-  	<div>
-    	<span>{props.description}</span>
-    	<span>{props.lastPricePercent.formatted}%</span>
+export const Outcome = (props: OutcomeProps) => {
+  const percent = calculatePosition(props.min, props.max, props.lastPricePercent.value);
+  return (
+      <div className={classNames(Styles.Outcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
+    	<div>
+      	<span>{props.description}</span>
+      	<span>{percent}%</span>
+      </div>
+      <Percent percent={percent} />
     </div>
-    <Percent percent={props.lastPricePercent.value} />
-  </div>
-);
+  );
+}
 
 export interface ScalarOutcomeProps {
   scalarDenomination: string;
@@ -51,7 +56,7 @@ export interface ScalarOutcomeProps {
 function calculatePosition(min, max, lastPrice) {
 	const range = createBigNumber(max).minus(createBigNumber(min));
 	const pricePercentage = createBigNumber(lastPrice || 0)
-	  .minus(min)
+	  .minus(createBigNumber(min))
 	  .dividedBy(range)
 	  .times(createBigNumber(100)).toNumber();
 
@@ -109,6 +114,8 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             lastPricePercent={removedInvalid.lastPricePercent}
             invalid={true}
             index={0}
+            min={props.min}
+            max={props.max}
           /> 
         </>
   		}
@@ -119,6 +126,8 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
 	  			lastPricePercent={outcome.lastPricePercent}
 	  			invalid={outcome.id === 0}
 	  			index={index > 2 ? index : index + 1}
+          min={props.min}
+          max={props.max}
 	  		/> 
 	  	)}
   	</div>
