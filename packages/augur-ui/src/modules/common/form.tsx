@@ -62,6 +62,7 @@ interface DatePickerProps {
 }
 
 interface TextInputProps {
+  type?: string;
   errorMessage?: string;
   disabled?: boolean;
   placeholder?: string;
@@ -805,6 +806,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     value: this.props.value === null ? '' : this.props.value,
     showList: false,
   };
+  ignoreNumberCharacters: string[] = ["-", ""];
   refDropdown: any = null;
 
   componentDidMount() {
@@ -836,7 +838,11 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
 
   onChange = (e: any) => {
     const value = e.target.value;
-    this.props.onChange(value);
+    if (this.props.type === "number") {
+      if (!this.ignoreNumberCharacters.includes(value)) this.props.onChange(value);
+    } else {
+      this.props.onChange(value);
+    }
     this.setState({ value });
   };
 

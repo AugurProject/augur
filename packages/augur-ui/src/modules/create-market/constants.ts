@@ -389,7 +389,6 @@ export const VALIDATION_ATTRIBUTES = {
     checkPositive: true,
     checkLessThan: false,
     checkDividedBy: true,
-    dividedBy: true,
     checkDecimals: true,
     decimals: 9,
   },
