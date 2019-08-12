@@ -5,7 +5,6 @@ import { Block } from "ethers/providers";
 import { augurEmitter } from "../events";
 import { SubscriptionEventName } from "../constants";
 import { Subscriptions } from "../subscriptions";
-import { throttle } from "lodash";
 
 const settings = require('./settings.json');
 
@@ -20,15 +19,18 @@ export class Controller {
     private db: Promise<DB>,
     private blockAndLogStreamerListener: IBlockAndLogStreamerListener
   ) {
-    Controller.throttled = throttle(this.notifyNewBlockEvent, 1000);
   }
 
   async run(): Promise<void> {
     try {
-      this.events.subscribe('controller:new:block', Controller.throttled);
+      this.events.subscribe('controller:new:block', this.notifyNewBlockEvent.bind(this));
 
       const db = await this.db;
-      db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
+      await db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
+
+      augurEmitter.emit(SubscriptionEventName.SDKReady, {
+        eventName: SubscriptionEventName.SDKReady,
+      });
 
       this.blockAndLogStreamerListener.listenForBlockRemoved(
         db.rollback.bind(db)

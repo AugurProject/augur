@@ -12,7 +12,6 @@ PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
 PouchDB.plugin(Upsert);
 PouchDB.plugin(pouchdbDebug);
-PouchDB.debug.enable('*');
 
 interface DocumentIDToDoc {
   [docId: string]: PouchDB.Core.ExistingDocument<{}>;

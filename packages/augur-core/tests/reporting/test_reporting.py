@@ -1,7 +1,7 @@
 from datetime import timedelta
 from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, mark, raises
-from utils import longTo32Bytes, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash
+from utils import longTo32Bytes, TokenDelta, AssertLog, EtherDelta, longToHexString, BuyWithCash, nullAddress
 from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalize
 from decimal import Decimal
 from constants import YES, NO
@@ -276,11 +276,11 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
 
     expectedYesPayout = expectedYesOutcomePayout * yesShare.balanceOf(localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
     with TokenDelta(cash, expectedYesPayout, localFixture.accounts[0], "Payout for Yes Shares was wrong in forking market"):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[0])
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[0], nullAddress)
 
     expectedNoPayout = expectedNoOutcomePayout * noShare.balanceOf(localFixture.accounts[1]) * .98 # to account for fees
     with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
-        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1])
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
 
     # buy some complete sets to change OI of the cat market
     numSets = 10
