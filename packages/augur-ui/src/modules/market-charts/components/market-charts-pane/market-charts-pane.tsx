@@ -34,8 +34,6 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
     daysPassed: 0,
   };
 
-  public ordersContainer;
-
   constructor(props) {
     super(props);
 
@@ -91,12 +89,7 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
                 />
               }
             </ModulePane>
-            <ModulePane
-              ref={(ordersContainer) => {
-                this.ordersContainer = ordersContainer;
-              }}
-              label="Market Depth"
-            >
+            <ModulePane label="Market Depth">
               <MarketDepth
                 marketId={marketId}
                 selectedOutcomeId={selectedOutcomeId}
@@ -132,12 +125,7 @@ export default class MarketChartsPane extends Component<MarketChartsPaneProps, M
                 />
               }
             </ModulePane>
-            <ModulePane
-              ref={(ordersContainer) => {
-                this.ordersContainer = ordersContainer;
-              }}
-              label="Market Depth"
-            >
+            <ModulePane label="Market Depth">
               <MarketDepth
                 marketId={marketId}
                 selectedOutcomeId={selectedOutcomeId}
