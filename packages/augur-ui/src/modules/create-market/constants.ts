@@ -342,6 +342,7 @@ export const VALIDATION_ATTRIBUTES = {
     label: END_TIME,
     readableName: 'date',
     checkFilledNumber: true,
+    checkGreaterDate: true,
     checkFilledNumberMessage: 'Choose a date',
   },
   [DESIGNATED_REPORTER_ADDRESS]: {

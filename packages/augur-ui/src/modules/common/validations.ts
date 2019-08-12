@@ -50,6 +50,13 @@ export function isMoreThan(value, readable, target) {
   return "";
 }
 
+export function dateGreater(value, target) {
+  if (value !== null && createBigNumber(value).lt(createBigNumber(target))) {
+    return 'Reporting start must be in the future';
+  }
+  return "";
+}
+
 export function checkCategoriesArray(value) {
   let errors = ["", "", ""];
   if (value[0] === "") {

@@ -68,6 +68,7 @@ import {
   moreThanDecimals,
   checkAddress,
   dividedBy,
+  dateGreater,
 } from 'modules/common/validations';
 import { formatDate, buildformattedDate } from 'utils/format-date';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
@@ -89,6 +90,7 @@ interface FormProps {
   discardModal: Function;
   template: boolean;
   openCreateMarketModal: Function;
+  currentTimestamp: number;
 }
 
 interface FormState {
@@ -113,6 +115,7 @@ interface Validations {
   checkLessThan?: Boolean;
   checkDividedBy?: Boolean;
   checkMoreThan?: Boolean;
+  checkGreaterDate?: Boolean;
   checkPositive?: Boolean;
   lessThanMessage?: string;
   decimals?: number;
@@ -363,7 +366,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   evaluate = (validationsObj: Validations) => {
-    const { newMarket } = this.props;
+    const { newMarket, currentTimestamp } = this.props;
 
     const {
       checkBetween,
@@ -383,6 +386,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkLessThan,
       checkDividedBy,
       checkPositive,
+      checkGreaterDate,
       lessThanMessage,
       checkDecimals,
       decimals,
@@ -404,6 +408,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
         : '',
       checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
+      checkGreaterDate ? dateGreater(value, currentTimestamp) : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
