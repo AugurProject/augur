@@ -115,7 +115,6 @@ interface Validations {
   checkLessThan?: Boolean;
   checkDividedBy?: Boolean;
   checkMoreThan?: Boolean;
-  checkGreaterDate?: Boolean;
   checkPositive?: Boolean;
   lessThanMessage?: string;
   decimals?: number;
@@ -379,14 +378,12 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkFilledNumberMessage,
       checkFilledString,
       checkFilledStringMessage,
-      updateValue,
       checkCategories,
       checkOutcomes,
       checkMoreThan,
       checkLessThan,
       checkDividedBy,
       checkPositive,
-      checkGreaterDate,
       lessThanMessage,
       checkDecimals,
       decimals,
@@ -408,11 +405,23 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
         : '',
       checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
-      checkGreaterDate && newMarket.endTimeFormatted ? dateGreater(newMarket.endTimeFormatted.timestamp, currentTimestamp) : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
     ];
+
+    if (label === END_TIME) {
+      const endTimeFormatted = buildformattedDate(
+        newMarket.setEndTime,
+        parseInt(newMarket.hour, 10),
+        parseInt(newMarket.minute, 10),
+        newMarket.meridiem,
+        newMarket.offsetName,
+        newMarket.offset
+      );
+      checkValidations.push(dateGreater(endTimeFormatted.timestamp, currentTimestamp));
+    }
+
     const errorMsg = checkValidations.find(validation => validation !== '');
 
     if (errorMsg) {
