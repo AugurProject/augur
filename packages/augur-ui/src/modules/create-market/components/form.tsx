@@ -422,8 +422,6 @@ export default class Form extends React.Component<FormProps, FormState> {
 
     // no errors
     if (updateValue) {
-      this.onChange(label, value);
-    } else {
       this.onError(label, '');
     }
   };
