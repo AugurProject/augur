@@ -474,6 +474,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         hour = value.hour || hour;
         minute = value.minute || minute;
         meridiem = value.meridiem || meridiem;
+        this.onError('hour', '');
       }
       if (name === "timezoneDropdown") {
         offset = value.offset;
