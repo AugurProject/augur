@@ -29,6 +29,7 @@ describe("BlockstreamListener", () => {
     topics: ["0xSOMETOPIC"],
     transactionHash: "HASHONE",
     transactionIndex: 1,
+    transactionLogIndex: 1,
   }, {
     blockHash: "hashone",
     blockNumber: "1234",
@@ -39,6 +40,7 @@ describe("BlockstreamListener", () => {
     topics: ["0xSOMEOTHERTOPIC"],
     transactionHash: "HASHTWO",
     transactionIndex: 2,
+    transactionLogIndex: 2,
   }];
 
   const nextBlock: Block = {

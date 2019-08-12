@@ -137,16 +137,10 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
     if (block) {
       const blockNumber: number = parseInt(block.number, 10);
 
-      const logs: Log[] = extendedLogs.map((log) => ({
+      const logs: L              og[] = extendedLogs.map((log) => ({
         ...log,
         logIndex: parseInt(log.logIndex, 10),
         blockNumber: parseInt(log.blockNumber, 10),
-
-        // TODO Should these be optional in the Log type?
-        removed: log.removed ? log.removed : false,
-        transactionIndex: log.transactionIndex ? log.transactionIndex : 0,
-        transactionLogIndex: log.transactionLogIndex ? log.transactionLogIndex : 0,
-        transactionHash: log.transactionHash ? log.transactionHash : "",
       }));
 
       const logCallbackPromises = this.logCallbackMetaData.map((cb) => cb.onLogsAdded(blockNumber, logs));
