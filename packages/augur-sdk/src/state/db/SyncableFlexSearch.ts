@@ -37,8 +37,6 @@ export class SyncableFlexSearch {
   constructor(syncableDB: SyncableDB) {
     this.events.subscribe('MarketCreated', this.sync);
 
-console.log("SYNCABLEDB ");
-console.log(syncableDB);
     this.syncableDB = syncableDB;
 
     this.flexSearchIndex = flexSearch.create(
