@@ -16,8 +16,8 @@ const mapStateToProps = (state, ownProps) => {
     state.orderBooks[market.marketId][selectedOutcomeId];
 
   if (ownProps.initialLiquidity) {
-    const bids = (outcomeOrderBook || []).filter(order => order.type === SELL);
-    const asks = (outcomeOrderBook || []).filter(order => order.type === BUY);
+    const bids = (outcomeOrderBook || []).filter(order => order.type === BUY);
+    const asks = (outcomeOrderBook || []).filter(order => order.type === SELL);
     outcomeOrderBook = {};
     outcomeOrderBook[ASKS] = asks;
     outcomeOrderBook[BIDS] = bids;
