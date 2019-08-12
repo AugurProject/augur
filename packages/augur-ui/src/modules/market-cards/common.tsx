@@ -40,7 +40,7 @@ export const Outcome = (props: OutcomeProps) => {
       <div className={classNames(Styles.Outcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
     	<div>
       	<span>{props.description}</span>
-      	<span>{percent}%</span>
+      	<span>{formatDai(percent).formatted}%</span>
       </div>
       <Percent percent={percent} />
     </div>
