@@ -15,21 +15,21 @@ export function isMaxLength(value, maxLength) {
 }
 
 export function isFilledNumber(value, readable, message) {
-  if (value !== null && value !== "") return "";
+  if (value !== null && value !== "" && value !== "-") return "";
   return message ? message : readable + " is required";
 }
 
 export function isBetween(value, readable, min, max) {
-  if (value > max) {
+  if (createBigNumber(value).gt(createBigNumber(max))) {
     return readable + " must be less than " + max;
-  } else if (value < min) {
+  } else if (createBigNumber(value).lt(createBigNumber(min))) {
     return readable + " must be more than " + min;
   }
   return "";
 }
 
 export function isLessThan(value, readable, target, message) {
-  if (target !== null && value >= target) {
+  if (target !== null && createBigNumber(value).gte(createBigNumber(target))) {
     return message ? message : 'Must be less than ' + target;
   }
   return "";
@@ -40,11 +40,11 @@ export function dividedBy(value, readable, min, max) {
   if (range.mod(value).eq(ZERO)) {
     return "";
   }
-  return `Price range needs to be divisible by ${readable}`;
+  return `Price range needs to be divisible by ${readable.toLowerCase()}`;
 }
 
 export function isMoreThan(value, readable, target) {
-  if (target !== null && value <= target) {
+  if (target !== null && createBigNumber(value).lte(createBigNumber(target))) {
     return 'Max can\'t be lower than min';
   }
   return "";
