@@ -1,6 +1,7 @@
 import { Subscriptions } from "../../subscriptions";
 import { augurEmitter } from "../../events";
 import { SyncableDB } from "./SyncableDB";
+import { SubscriptionEventName } from "../../constants";
 
 // because flexsearch is a UMD type lib
 const flexSearch = require('flexsearch');
@@ -35,7 +36,7 @@ export class SyncableFlexSearch {
   private flexSearchIndex: Index<MarketFields>;
   private readonly events = new Subscriptions(augurEmitter);
   constructor(syncableDB: SyncableDB) {
-    this.events.subscribe('MarketCreated', this.sync);
+    this.events.subscribe(SubscriptionEventName.MarketCreated, this.sync);
 
     this.syncableDB = syncableDB;
 
