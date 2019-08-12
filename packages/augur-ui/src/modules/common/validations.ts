@@ -50,9 +50,9 @@ export function isMoreThan(value, readable, target) {
   return "";
 }
 
-export function dateGreater(value, target) {
+export function dateGreater(value, target, message) {
   if (value !== null && createBigNumber(value).lt(createBigNumber(target))) {
-    return 'Reporting start must be in the future';
+    return message;
   }
   return "";
 }
