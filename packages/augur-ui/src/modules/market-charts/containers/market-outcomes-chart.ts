@@ -13,7 +13,7 @@ const mapStateToProps = (state, ownProps) => {
     outcomes = [],
     marketType,
     scalarDenomination,
-  } = selectMarket(ownProps.marketId);
+  } = ownProps.marketId ? selectMarket(ownProps.marketId) : ownProps.market;
   const isScalar = marketType === SCALAR;
   const bucketedPriceTimeSeries = selectBucketedPriceTimeSeries(
     ownProps.marketId,

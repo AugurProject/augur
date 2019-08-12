@@ -265,9 +265,9 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
                 {(market.id || preview) && <CoreProperties market={market} />}
                 <div className={Styles.Time}>
                   <MarketTimeline
-                    startTime={market.creationTime || currentTime}
+                    startTime={market.creationTime || convertUnixToFormattedDate(currentTime)}
                     currentTime={currentTime || 0}
-                    endTime={market.endTimeFormatted}
+                    endTime={convertUnixToFormattedDate(market.endTimeFormatted.timestamp)}
                   />
                 </div>
               </div>
