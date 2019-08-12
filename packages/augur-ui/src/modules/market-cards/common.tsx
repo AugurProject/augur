@@ -11,6 +11,7 @@ import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
 import { CheckCircleIcon } from "modules/common/icons";
 import { OutcomeFormatted } from "modules/types";
+import { formatDai } from "utils/format-number";
 
 import Styles from 'modules/market-cards/common.styles';
 
@@ -73,9 +74,9 @@ export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   		}
   	</div>
   	<div>
-	  	{props.min}
+	  	{formatDai(props.min).formatted}
 	  	<span>{props.scalarDenomination}</span>
-	  	{props.max}
+	  	{formatDai(props.max).formatted}
   	</div>
   </div>
 );
