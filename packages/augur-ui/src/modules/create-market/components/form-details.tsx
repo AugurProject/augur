@@ -222,9 +222,11 @@ export default class FormDetails extends React.Component<
                   type="number"
                   placeholder="0"
                   onChange={(value: string) => {
-                    onChange("minPrice", value);
-                    onChange("minPriceBigNumber", createBigNumber(value));
-                    onError("maxPrice", "");
+                    if (value !== "-") {
+                      onChange("minPrice", value);
+                      onChange("minPriceBigNumber", createBigNumber(value));
+                      onError("maxPrice", "");
+                    }
                   }}
                   value={minPrice}
                   errorMessage={validations[currentStep].minPrice}
@@ -234,9 +236,11 @@ export default class FormDetails extends React.Component<
                   type="number"
                   placeholder="100"
                   onChange={(value: string) => {
-                    onChange("maxPrice", value);
-                    onChange("maxPriceBigNumber", createBigNumber(value));
-                    onError("minPrice", "");
+                    if (value !== "-") {
+                      onChange("maxPrice", value);
+                      onChange("maxPriceBigNumber", createBigNumber(value));
+                      onError("minPrice", "");
+                    }
                   }}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
                   value={maxPrice}

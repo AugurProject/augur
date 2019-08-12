@@ -2,6 +2,8 @@ import {
   INVALID_OUTCOME
 } from "modules/create-market/constants";
 import isAddress from "modules/auth/helpers/is-address";
+import { createBigNumber } from "utils/create-big-number";
+import { ZERO } from "./constants";
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== "") return "";
@@ -31,6 +33,15 @@ export function isLessThan(value, readable, target, message) {
     return message ? message : 'Must be less than ' + target;
   }
   return "";
+}
+
+export function dividedBy(value, readable, min, max) {
+  const range = createBigNumber(max).minus(createBigNumber(min));
+  console.log("range.mod(value) value", range.mod(value).toString());
+  if (range.mod(value).eq(ZERO)) {
+    return "";
+  }
+  return `Price range needs to be divisible by ${readable}`;
 }
 
 export function isMoreThan(value, readable, target) {

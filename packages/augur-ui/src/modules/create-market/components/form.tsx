@@ -67,6 +67,7 @@ import {
   isPositive,
   moreThanDecimals,
   checkAddress,
+  dividedBy,
 } from 'modules/common/validations';
 import { formatDate, buildformattedDate } from 'utils/format-date';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
@@ -110,6 +111,7 @@ interface Validations {
   checkCategories?: Boolean;
   checkOutcomes?: Boolean;
   checkLessThan?: Boolean;
+  checkDividedBy?: Boolean;
   checkMoreThan?: Boolean;
   checkPositive?: Boolean;
   lessThanMessage?: string;
@@ -379,6 +381,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkOutcomes,
       checkMoreThan,
       checkLessThan,
+      checkDividedBy,
       checkPositive,
       lessThanMessage,
       checkDecimals,
@@ -400,6 +403,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkLessThan
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
         : '',
+      checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
