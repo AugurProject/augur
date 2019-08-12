@@ -265,7 +265,7 @@ export function createMarket(newMarket: CreateNewMarketParams) {
       ];
       const numTicks = prices[1]
         .minus(prices[0])
-        .dividedBy(new BigNumber(newMarket.tickSize));
+        .dividedBy(new BigNumber(newMarket.tickSize)).abs();
       const params: CreateScalarMarketParams = Object.assign(baseParams, {
         prices,
         numTicks,
