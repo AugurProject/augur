@@ -507,8 +507,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             action={e => {
               e.preventDefault();
               if (initialLiquidity) {
-                const orderType = s.selectedNav === BUY ? SELL : BUY;
-                updateLiquidity(selectedOutcome, { ...s, selectedNav: orderType });
+                updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
               } else {
                 if (!marketReviewTradeSeen) {
