@@ -37,7 +37,6 @@ export function isLessThan(value, readable, target, message) {
 
 export function dividedBy(value, readable, min, max) {
   const range = createBigNumber(max).minus(createBigNumber(min));
-  console.log("range.mod(value) value", range.mod(value).toString());
   if (range.mod(value).eq(ZERO)) {
     return "";
   }
