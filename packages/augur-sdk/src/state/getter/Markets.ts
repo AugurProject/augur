@@ -412,10 +412,6 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketsParams>
   ): Promise<MarketList> {
-    // This is a temporary hack to make sure flexSearchIndex is up-to-date on the UI side before searching
-    // TODO: Break flexSearch into a seprate module and remove this hack
-    await db.syncFullTextSearch();
-
     // Validate params
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
