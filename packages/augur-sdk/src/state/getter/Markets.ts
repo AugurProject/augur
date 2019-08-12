@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { SearchResults } from "flexsearch";
 import { DB } from '../db/DB';
-import { MarketFields } from '../db/MarketDB';
+import { MarketFields } from '../db/SyncableFlexSearch';
 import { Getter } from './Router';
 import { Order, Orders, OutcomeParam, Trading, OrderState } from './Trading';
 import {
@@ -412,10 +412,6 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketsParams>
   ): Promise<MarketList> {
-    // This is a temporary hack to make sure flexSearchIndex is up-to-date on the UI side before searching
-    // TODO: Break flexSearch into a seprate module and remove this hack
-    await db.syncFullTextSearch();
-
     // Validate params
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
@@ -575,7 +571,7 @@ export class Markets {
       db,
       { marketIds: marketsResults.map(marketInfo => marketInfo.market) }
     );
-    // @TODO: Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
+    // Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
     const filteredMarketsDetailsOrder = {};
     for (let i = 0; i < marketsResults.length; i++) {
       filteredMarketsDetailsOrder[marketsResults[i].market] = i;
@@ -1318,7 +1314,7 @@ async function getMarketsSearchResults(
     whereObj['category' + (i + 1)] = categories[i];
   }
   if (query) {
-    return db.search(query, { where: whereObj });
+    return db.flexSearch(query, { where: whereObj });
   }
-  return db.where(whereObj);
+  return db.flexWhere(whereObj);
 }

@@ -5,7 +5,7 @@ import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 import { DerivedDB } from "./DerivedDB";
-import { MarketDB, MarketFields } from "./MarketDB";
+import { MarketDB } from "./MarketDB";
 import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
 import {
   CompleteSetsPurchasedLog,
@@ -32,6 +32,7 @@ import {
   UniverseForkedLog,
   MarketData,
 } from "../logs/types";
+import { SyncableFlexSearch, MarketFields } from "./SyncableFlexSearch";
 import { SearchOptions, SearchResults } from "flexsearch";
 
 export interface DerivedDBConfiguration {
@@ -56,6 +57,7 @@ export class DB {
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
   private marketDatabase: MarketDB;
+  private syncableFlexSearch: SyncableFlexSearch;
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   readonly pouchDBFactory: PouchDBFactoryType;
@@ -159,6 +161,8 @@ export class DB {
       }
     }
 
+    this.syncableFlexSearch = new SyncableFlexSearch(this.syncableDatabases[this.getDatabaseName("MarketCreated")]);
+
     // Always start syncing from 10 blocks behind the lowest
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
@@ -242,17 +246,18 @@ export class DB {
 
     await Promise.all(dbSyncPromises).then(() => undefined);
 
+    await this.syncableFlexSearch.sync();
 
     // The Market DB syncs last as it depends on a derived DB
     return this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
-  async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
-    return this.marketDatabase.search(query, options);
+  async flexSearch(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
+    return this.syncableFlexSearch.search(query, options);
   }
 
-  async where(whereObj): Promise<Array<SearchResults<MarketFields>>> {
-    return this.marketDatabase.where(whereObj);
+  async flexWhere(whereObj): Promise<Array<SearchResults<MarketFields>>> {
+    return this.syncableFlexSearch.where(whereObj);
   }
 
   /**
@@ -363,12 +368,6 @@ export class DB {
     } catch (err) {
       throw err;
     }
-  }
-
-  // TODO: This is a temporary hack. This function can be removed once
-  // flexSearch is broken into a separate module from MarketDB.
-  async syncFullTextSearch() {
-    this.marketDatabase.syncFullTextSearch();
   }
 
   // TODO Combine find functions into single function
