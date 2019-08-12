@@ -289,27 +289,32 @@
 }
 
 .RadioBarExpanded {
-  grid-template-columns: 52px auto @size-16;
-  grid-template-rows: @size-20 @size-16 @size-12 54px @size-28;
+  grid-template-columns: 52px auto;
+  grid-template-rows: auto;
   height: auto;
 
   > svg {
     grid-row: 1 / span 20;
+    margin: 0 auto;
   }
 
   > h5 {
-    grid-row: 2;
+    grid-row: unset;
+    margin-bottom: @size-10;
+    margin-top: @size-20;
+
+    &:nth-of-type(2) {
+      color: @color-tertiary-info-text;
+      margin-top: @size-16;
+    }
   }
 
   > div {
-    grid-column: 2;
-    grid-row: 4;
     width: 210px;
-  }
 
-  > span {
-    grid-row: 5;
-    margin-bottom: @size-8;
+    &:last-of-type {
+      margin-bottom: @size-20;
+    }
   }
 }
 
