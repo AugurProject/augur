@@ -18,6 +18,7 @@ import {
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
   stringTo32ByteHex,
+  QUINTILLION,
 } from '@augurproject/sdk';
 
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
@@ -260,8 +261,8 @@ export function createMarket(newMarket: CreateNewMarketParams) {
   switch (newMarket.marketType) {
     case SCALAR: {
       const prices = [
-        new BigNumber(newMarket.minPrice),
-        new BigNumber(newMarket.maxPrice),
+        new BigNumber(newMarket.minPrice).multipliedBy(QUINTILLION),
+        new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
       ];
       const numTicks = prices[1]
         .minus(prices[0])
