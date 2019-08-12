@@ -56,9 +56,14 @@ const MarketRow = (props: MarketRowProps) => {
             />
           </div>
         }
-        <MarketLink id={props.market.id}>
-          {props.market.description}
-        </MarketLink>
+        {!props.market.pending &&
+          <MarketLink id={props.market.id}>
+            {props.market.description}
+          </MarketLink>
+        }
+        {props.market.pending && 
+          <span>{props.market.description}</span>
+        }
         {props.market.pending && props.market.status === TXEventName.Pending &&
           <span>When the market is confirmed you can submit initial liquidity</span>
         }
