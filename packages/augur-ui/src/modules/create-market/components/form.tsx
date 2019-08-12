@@ -408,7 +408,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
         : '',
       checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
-      checkGreaterDate ? dateGreater(value, currentTimestamp) : '',
+      checkGreaterDate && newMarket.endTimeFormatted ? dateGreater(newMarket.endTimeFormatted.timestamp, currentTimestamp) : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
@@ -424,7 +424,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     if (updateValue) {
       this.onChange(label, value);
     } else {
-      this.onError(name, '');
+      this.onError(label, '');
     }
   };
 
