@@ -8,7 +8,6 @@ import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { getSelectedTagsAndCategoriesFromLocation } from "modules/markets/helpers/get-selected-tags-and-categories-from-location";
 import { loadMarketsByFilter, LoadMarketsFilterOptions } from "modules/markets/actions/load-markets";
 import { buildSearchString } from "modules/markets/selectors/build-search-string";
-import debounce from "utils/debounce";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -46,7 +45,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => 
   loadMarketsInfoIfNotLoaded: (marketIds) =>
     dispatch(loadMarketsInfoIfNotLoaded((marketIds))),
   loadMarketsByFilter: (filter: LoadMarketsFilterOptions, cb: NodeStyleCallback) =>
-    debounce(dispatch(loadMarketsByFilter(filter, cb))),
+    dispatch(loadMarketsByFilter(filter, cb)),
 });
 
 const Markets = withRouter(
