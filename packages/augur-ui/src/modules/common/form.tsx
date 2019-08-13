@@ -829,7 +829,6 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     value: this.props.value === null ? '' : this.props.value,
     showList: false,
   };
-  ignoreNumberCharacters: string[] = ["-", ""];
   refDropdown: any = null;
 
   componentDidMount() {
@@ -861,11 +860,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
 
   onChange = (e: any) => {
     const value = e.target.value;
-    if (this.props.type === "number") {
-      if (!this.ignoreNumberCharacters.includes(value)) this.props.onChange(value);
-    } else {
-      this.props.onChange(value);
-    }
+    this.props.onChange(value);
     this.setState({ value });
   };
 
@@ -1385,7 +1380,6 @@ export class Input extends Component<InputProps, InputState> {
 
   handleOnChange = e => {
     const newValue = e.target.value;
-
     this.props.onChange(newValue);
     this.setState({ value: newValue });
   };
