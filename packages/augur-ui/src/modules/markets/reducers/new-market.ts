@@ -11,7 +11,9 @@ import {
   DESIGNATED_REPORTER_SELF,
   AFFILIATE_FEE_DEFAULT,
   YES_NO,
-  YES_NO_OUTCOMES
+  YES_NO_OUTCOMES,
+  ZERO,
+  ONE
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
@@ -66,10 +68,10 @@ export const DEFAULT_STATE: NewMarket = {
   orderBookSorted: {}, // for order book table
   minPrice: "0",
   maxPrice: "1",
-  minPriceBigNumber: createBigNumber(0),
-  maxPriceBigNumber: createBigNumber(1),
-  initialLiquidityDai: createBigNumber(0),
-  initialLiquidityGas: createBigNumber(0),
+  minPriceBigNumber: ZERO,
+  maxPriceBigNumber: ONE,
+  initialLiquidityDai: ZERO,
+  initialLiquidityGas: ZERO
 };
 
 export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: BaseAction): NewMarket {

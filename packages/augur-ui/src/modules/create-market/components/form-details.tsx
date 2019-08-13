@@ -223,7 +223,7 @@ export default class FormDetails extends React.Component<
                   placeholder="0"
                   onChange={(value: string) => {
                     onChange("minPrice", value);
-                    onChange("minPriceBigNumber", createBigNumber(value));
+                    if (value !=="" && !isNaN(value)) onChange("minPriceBigNumber", createBigNumber(value));
                     onError("maxPrice", "");
                   }}
                   value={minPrice}
@@ -235,7 +235,7 @@ export default class FormDetails extends React.Component<
                   placeholder="100"
                   onChange={(value: string) => {
                     onChange("maxPrice", value);
-                    onChange("maxPriceBigNumber", createBigNumber(value));
+                    if (value !=="" && !isNaN(value)) onChange("maxPriceBigNumber", createBigNumber(value));
                     onError("minPrice", "");
                   }}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}

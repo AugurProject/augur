@@ -20,6 +20,10 @@ export function isFilledNumber(value, readable, message) {
 }
 
 export function isBetween(value, readable, min, max) {
+  if (isNaN(value) || value === "") {
+    return "";
+  }
+
   if (createBigNumber(value).gt(createBigNumber(max))) {
     return readable + " must be less than " + max;
   } else if (createBigNumber(value).lt(createBigNumber(min))) {
@@ -29,6 +33,10 @@ export function isBetween(value, readable, min, max) {
 }
 
 export function isLessThan(value, readable, target, message) {
+  if (isNaN(value) || value === "" || target === "" || isNaN(target)) {
+    return "";
+  }
+
   if (target !== null && createBigNumber(value).gte(createBigNumber(target))) {
     return message ? message : 'Must be less than ' + target;
   }
@@ -36,6 +44,10 @@ export function isLessThan(value, readable, target, message) {
 }
 
 export function dividedBy(value, readable, min, max) {
+  if (isNaN(value) || value === "" || min === "" || isNaN(min) || max === "" || isNaN(max)) {
+    return "";
+  }
+
   const range = createBigNumber(max).minus(createBigNumber(min));
   if (range.mod(value).eq(ZERO)) {
     return "";
@@ -44,6 +56,10 @@ export function dividedBy(value, readable, min, max) {
 }
 
 export function isMoreThan(value, readable, target) {
+  if (isNaN(value) || value === "" || target === "" || isNaN(target)) {
+    return "";
+  }
+
   if (target !== null && createBigNumber(value).lte(createBigNumber(target))) {
     return 'Max can\'t be lower than min';
   }
@@ -51,6 +67,10 @@ export function isMoreThan(value, readable, target) {
 }
 
 export function dateGreater(value, target, message) {
+  if (isNaN(value) || value === "" || target === "" || isNaN(target)) {
+    return "";
+  }
+  
   if (value !== null && createBigNumber(value).lt(createBigNumber(target))) {
     return message;
   }
