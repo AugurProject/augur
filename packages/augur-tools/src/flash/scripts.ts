@@ -489,7 +489,7 @@ export function addScripts(flash: FlashSession) {
         name: 'amount',
         abbr: 'a',
         description: 'amount of REP to dispute with, use display value',
-        required: false,
+        required: true,
       },
       {
         name: 'description',
