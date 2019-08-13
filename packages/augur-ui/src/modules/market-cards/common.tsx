@@ -55,7 +55,7 @@ export interface ScalarOutcomeProps {
 }
 
 function calculatePosition(min, max, lastPrice) {
-	const range = max.minus(min);
+	const range = max.abs().minus(min.abs());
 	const pricePercentage = createBigNumber(lastPrice || 0)
 	  .minus(min)
 	  .dividedBy(range)
