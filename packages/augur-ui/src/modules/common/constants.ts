@@ -431,7 +431,7 @@ export const PERIODS = [
 ];
 
 // # Precision Constants
-export const UPPER_FIXED_PRECISION_BOUND = 8;
+export const UPPER_FIXED_PRECISION_BOUND = 2;
 export const LOWER_FIXED_PRECISION_BOUND = 0;
 
 // # Modal Constants
