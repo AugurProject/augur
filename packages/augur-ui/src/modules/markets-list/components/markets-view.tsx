@@ -5,6 +5,7 @@ import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import { TYPE_TRADE } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
+import { Getters } from '@augurproject/sdk';
 
 interface MarketsViewProps {
   isLogged: boolean;
@@ -17,7 +18,7 @@ interface MarketsViewProps {
   isMobile: boolean;
   loadMarketsByFilter: Function;
   search?: string;
-  category?: string;
+  categories?: string;
   universe?: string;
   defaultFilter: string;
   defaultSort: string;
@@ -40,7 +41,7 @@ export default class MarketsView extends Component<
 > {
   static defaultProps = {
     search: null,
-    category: null,
+    categories: [],
     universe: null,
   };
   loadMarketsByFilter: any;
@@ -72,10 +73,10 @@ export default class MarketsView extends Component<
   }
 
   componentDidUpdate(prevProps) {
-    const { search, category, isConnected } = this.props;
+    const { search, categories, isConnected } = this.props;
     if (
       isConnected !== prevProps.isConnected ||
-      (search !== prevProps.search || category !== prevProps.category)
+      (search !== prevProps.search || categories !== prevProps.categories)
     ) {
       this.updateFilteredMarkets();
     }
@@ -90,14 +91,16 @@ export default class MarketsView extends Component<
   }
 
   updateFilteredMarkets() {
-    const { search, category } = this.props;
+    const { search, categories } = this.props;
     const { filter, sort, maxFee, hasOrders } = this.state;
     this.setState({ isSearchingMarkets: true });
     this.loadMarketsByFilter(
-      { category, search, filter, sort, maxFee, hasOrders },
-      (err, filterSortedMarkets) => {
+      { categories, search, filter, sort, maxFee, hasOrders },
+      (err, result: Getters.Markets.MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);
         if (this.componentWrapper) {
+          // categories is also on results
+          const filterSortedMarkets = result.markets.map(m=> m.id);
           this.setState({ filterSortedMarkets });
         }
       }
