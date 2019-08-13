@@ -35,7 +35,7 @@ export interface OutcomeProps {
 }
 
 export const Outcome = (props: OutcomeProps) => {
-  const percent = props.lastPricePercent ? calculatePosition(props.min, props.max, props.lastPricePercent.value) : 0;
+  const percent = props.lastPricePercent ? calculatePosition(props.min, props.max, props.lastPricePercent) : 0;
   return (
       <div className={classNames(Styles.Outcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
     	<div>
@@ -55,22 +55,22 @@ export interface ScalarOutcomeProps {
 }
 
 function calculatePosition(min, max, lastPrice) {
-	const range = max.minus(min);
-	const pricePercentage = createBigNumber(lastPrice || 0)
+  const range = max.minus(min);
+	const pricePercentage = createBigNumber(lastPrice ? lastPrice.value : 0)
 	  .minus(min)
 	  .dividedBy(range)
 	  .times(createBigNumber(100)).toNumber();
 
 	return lastPrice === null
 	  ? 50
-	  : pricePercentage
+    : pricePercentage
 }
 
 export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   <div className={Styles.ScalarOutcome}>
   	<div>
   		{ props.lastPrice !== null &&
-  			<span style={{left: calculatePosition(props.min, props.max, props.lastPrice) + '%'}}>{props.lastPrice}</span>
+  			<span style={{left: calculatePosition(props.min, props.max, props.lastPrice) + '%'}}>{props.lastPrice.formatted}</span>
   		}
   	</div>
   	<div>
