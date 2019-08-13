@@ -232,6 +232,7 @@ export interface CreateNewMarketParams {
   settlementFee: number;
   affiliateFee: number;
   offsetName?: string;
+  backupSource?: string;
 }
 
 export function createMarket(newMarket: CreateNewMarketParams) {
@@ -245,7 +246,7 @@ export function createMarket(newMarket: CreateNewMarketParams) {
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
     backupSource: newMarket.backupSource,
-    scalarDenomination: newMarket.scalarDenomination,
+    _scalarDenomination: newMarket.scalarDenomination,
     offsetName: newMarket.offsetName,
   });
 
