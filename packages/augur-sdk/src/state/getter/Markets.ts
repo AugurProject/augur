@@ -475,7 +475,7 @@ export class Markets {
 
     // Sort search results by categories
     let marketsResults: any[]  = _.sortBy(
-      await getMarketsSearchResults(db, params.universe, params.search, params.categories),
+      await getMarketsSearchResults(params.universe, params.search, params.categories),
       ['category1', 'category2', 'category3']
     );
 
@@ -1304,7 +1304,6 @@ function getMarketsMeta(
 }
 
 async function getMarketsSearchResults(
-  db: DB,
   universe: string,
   query: string,
   categories: string[]
@@ -1314,7 +1313,7 @@ async function getMarketsSearchResults(
     whereObj['category' + (i + 1)] = categories[i];
   }
   if (query) {
-    return db.flexSearch(query, { where: whereObj });
+    return Augur.syncableFlexSearch.search(query, { where: whereObj });
   }
-  return db.flexWhere(whereObj);
+  return Augur.syncableFlexSearch.where(whereObj);
 }

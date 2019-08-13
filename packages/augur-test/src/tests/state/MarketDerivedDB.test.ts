@@ -124,25 +124,25 @@ test("Flexible Search", async () => {
   await db.addNewBlock(DBName, blockLogs);
   await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
 
-  let docs = await db.flexSearch("0x1111111111111111111111111111111111111111");  // market
+  let docs = await Augur.syncableFlexSearch.search("0x1111111111111111111111111111111111111111");  // market
   expect(docs.length).toEqual(1);
 
-  docs = await db.flexSearch("share");  // category
+  docs = await Augur.syncableFlexSearch.search("share");  // category
   expect(docs.length).toEqual(1);
 
-  docs = await db.flexSearch("Foobar");  // description/title
+  docs = await Augur.syncableFlexSearch.search("Foobar");  // description/title
   expect(docs.length).toEqual(1);
 
-  docs = await db.flexSearch("lol");  // longDescription/description
+  docs = await Augur.syncableFlexSearch.search("lol");  // longDescription/description
   expect(docs.length).toEqual(1);
 
-  docs = await db.flexSearch("blah");  // resolutionSource
+  docs = await Augur.syncableFlexSearch.search("blah");  // resolutionSource
   expect(docs.length).toEqual(1);
 
-  docs = await db.flexSearch(ACCOUNTS[0].publicKey);  // marketCreator
+  docs = await Augur.syncableFlexSearch.search(ACCOUNTS[0].publicKey);  // marketCreator
   expect(docs.length).toEqual(1);
 
-  docs = await db.flexSearch("fake");  // _scalarDenomination
+  docs = await Augur.syncableFlexSearch.search("fake");  // _scalarDenomination
   expect(docs.length).toEqual(1);
   const doc = docs[0];
 

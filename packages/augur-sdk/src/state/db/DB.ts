@@ -32,8 +32,6 @@ import {
   UniverseForkedLog,
   MarketData,
 } from "../logs/types";
-import { SyncableFlexSearch, MarketFields } from "./SyncableFlexSearch";
-import { SearchOptions, SearchResults } from "flexsearch";
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -57,7 +55,6 @@ export class DB {
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
   private marketDatabase: MarketDB;
-  private syncableFlexSearch: SyncableFlexSearch;
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   readonly pouchDBFactory: PouchDBFactoryType;
@@ -161,8 +158,6 @@ export class DB {
       }
     }
 
-    this.syncableFlexSearch = new SyncableFlexSearch(this.syncableDatabases[this.getDatabaseName("MarketCreated")]);
-
     // Always start syncing from 10 blocks behind the lowest
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
@@ -246,18 +241,10 @@ export class DB {
 
     await Promise.all(dbSyncPromises).then(() => undefined);
 
-    await this.syncableFlexSearch.sync();
+    Augur.syncableFlexSearch.sync(this.syncableDatabases[this.getDatabaseName("MarketCreated")]);
 
     // The Market DB syncs last as it depends on a derived DB
     return this.marketDatabase.sync(highestAvailableBlockNumber);
-  }
-
-  async flexSearch(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
-    return this.syncableFlexSearch.search(query, options);
-  }
-
-  async flexWhere(whereObj): Promise<Array<SearchResults<MarketFields>>> {
-    return this.syncableFlexSearch.where(whereObj);
   }
 
   /**
