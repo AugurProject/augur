@@ -23,6 +23,14 @@ export function numTicksToTickSizeWithDisplayPrices(
   return maxPrice.minus(minPrice).div(numTicks);
 }
 
+export function tickSizeToNumTickWithDisplayPrices(
+  tickSize: BigNumber,
+  minPrice: BigNumber,
+  maxPrice: BigNumber
+): BigNumber {
+  return maxPrice.minus(minPrice).dividedBy(tickSize);
+}
+
 export function convertOnChainAmountToDisplayAmount(
   onChainAmount: BigNumber,
   tickSize: BigNumber
