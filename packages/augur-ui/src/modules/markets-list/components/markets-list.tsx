@@ -5,7 +5,6 @@ import Paginator from "modules/common/paginator_v1";
 import NullStateMessage from "modules/common/null-state-message";
 import { TYPE_TRADE } from "modules/common/constants";
 import MarketCard from "modules/market-cards/containers/market-card";
-import debounce from "utils/debounce";
 import { MarketData } from "modules/types";
 
 const PAGINATION_COUNT = 10;
@@ -68,10 +67,7 @@ export default class MarketsList extends Component<
 
     this.setSegment = this.setSegment.bind(this);
     this.setMarketIDsMissingInfo = this.setMarketIDsMissingInfo.bind(this);
-    this.loadMarketsInfoIfNotLoaded = debounce(
-      // @ts-ignore
-      this.loadMarketsInfoIfNotLoaded.bind(this)
-    );
+    this.loadMarketsInfoIfNotLoaded = this.loadMarketsInfoIfNotLoaded.bind(this);
   }
 
   componentWillMount() {
