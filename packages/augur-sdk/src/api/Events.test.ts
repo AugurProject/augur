@@ -27,6 +27,7 @@ function makeProviderMock(opts?: any): Provider {
 
 test("get logs", async () => {
   const logs: Log[] = [{
+    name: "fake",
     blockNumber: 19,
     address: "0xthere",
     data: "some data",

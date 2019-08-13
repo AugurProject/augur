@@ -31,6 +31,8 @@ export class EventLogDBRouter {
       logIndex: parseInt(log.logIndex, 10),
       blockNumber: parseInt(log.blockNumber, 10),
 
+      name: "", // TODO
+
       // TODO Should these be optional in the Log type?
       removed: log.removed ? log.removed : false,
       transactionIndex: log.transactionIndex ? log.transactionIndex : 0,

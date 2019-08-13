@@ -14,7 +14,8 @@ import { ethers } from "ethers";
 import * as ganache from "ganache-core";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { setAddresses, NetworkId } from "@augurproject/artifacts";
-import * as fs from "fs";
+import * as fs from "async-file";
+import { LogReplayer } from "./replay-logs";
 
 export const defaultSeedPath = `/tmp/seed.json`;
 
@@ -248,7 +249,7 @@ export function addGanacheScripts(flash: FlashSession) {
       const filepath = args.filepath as string || defaultSeedPath;
       const writeArtifacts = args.write_artifacts as boolean;
 
-      if (fs.existsSync(filepath)) {
+      if (fs.exists(filepath)) {
         const seed: Seed = await loadSeedFile(filepath);
         if (seed.contractsHash === hashContracts()) {
           return; // no need to update seed
@@ -258,6 +259,39 @@ export function addGanacheScripts(flash: FlashSession) {
       await this.call("ganache", { internal: true });
       await this.call("deploy", { write_artifacts: writeArtifacts, time_controlled: "true" });
       await this.call("make-seed", { name, filepath, save: true });
+    },
+  });
+
+  flash.addScript({
+    name: 'create-log-commands',
+    options: [
+      {
+        name: "logs",
+        description: `Filepath for logs`,
+        required: true,
+      },
+      {
+        name: "seed",
+        description: "Filepath for seed",
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<void> {
+      const logsFilePath = args.logs as string;
+      const seedFilePath = args.seed as string;
+
+      const logs = JSON.parse(await fs.readFile(logsFilePath));
+
+      // Build a local environment to replay to.
+      await this.call("ganache", { internal: true });
+      await this.call("deploy", { write_artifacts: false, time_controlled: "true" });
+      const user = await this.ensureUser();
+      await user.approveCentralAuthority();
+
+      const replayer = new LogReplayer(user);
+      await replayer.Replay(logs);
+
+      await this.call("make-seed", { name: "from-logs", save: true, filepath: seedFilePath });
     },
   });
 }

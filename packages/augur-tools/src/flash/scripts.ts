@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH } from '../constants';
+import { _1_ETH, NULL_ADDRESS } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -195,7 +195,7 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'all-logs',
     async call(this: FlashSession) {
-      if (this.noProvider()) return;
+      if (this.noProvider()) return [];
       const user = await this.ensureUser();
 
       const logs = await this.provider.getLogs({
@@ -217,7 +217,8 @@ export function addScripts(flash: FlashSession) {
       }));
 
       const parsedLogs = user.augur.events.parseLogs(logsWithBlockNumber);
-      parsedLogs.forEach(log => this.log(JSON.stringify(log, null, 2)));
+      // this.log(JSON.stringify(parsedLogs, null, 2));
+      return parsedLogs;
     },
   });
 
@@ -381,7 +382,6 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
-
   flash.addScript({
     name: 'dispute',
     options: [
@@ -443,7 +443,6 @@ export function addScripts(flash: FlashSession) {
       await user.contribute(market, payoutNumerators, stake, desc);
     },
   });
-
 
   flash.addScript({
     name: 'finalize',

@@ -122,7 +122,7 @@ export class FlashSession {
       this.user.augur.connect(network.http, this.getAccount().publicKey);
       this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
     }
-    await this.user.approveCentralAuthority();
+    // await this.user.approveCentralAuthority();
 
     return this.user;
   }

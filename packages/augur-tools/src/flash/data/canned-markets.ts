@@ -1,4 +1,10 @@
 import { formatBytes32String } from "ethers/utils";
+import {
+  today, thisYear,
+  inOneMonths, inTwoMonths, inThreeMonths, inFourMonths, inFiveMonths, inSixMonths,
+  closingBellTomorrow,
+  midnightTomorrow,
+} from "../time";
 
 interface AskBid {
   shares: string;
@@ -50,39 +56,6 @@ export interface CannedMarket {
   extraInfo: ExtraInfo;
   orderBook: OrderBook;
 }
-
-function daysInMonth(month: number, year: number) {
-  return new Date(year, month, 0).getDate();
-}
-
-function addMonths(date: Date, months: number) {
-  const targetMonth = date.getMonth() + months;
-  const year = date.getFullYear() + targetMonth / 12;
-  const month = targetMonth % 12;
-  let day = date.getDate();
-  const lastDay = daysInMonth(year, month);
-  if (day > lastDay) {
-    day = lastDay;
-  }
-  return new Date(year, month, day);
-}
-
-const midnightTomorrow = new Date();
-midnightTomorrow.setDate(midnightTomorrow.getDate() + 1);
-midnightTomorrow.setHours(0, 0, 0, 0);
-const closingBellTomorrow = new Date();
-closingBellTomorrow.setDate(closingBellTomorrow.getDate() + 1);
-closingBellTomorrow.setHours(20, 0, 0, 0);
-const today = new Date();
-// needs to be less than 90 days. todo: update when contracts allow for 6 months
-today.setDate(today.getDate() - 3);
-const inOneMonths = addMonths(today, 1);
-const inTwoMonths = addMonths(today, 2);
-const inThreeMonths = addMonths(today, 3);
-const inFourMonths = addMonths(today, 1);
-const inFiveMonths = addMonths(today, 2);
-const inSixMonths = addMonths(today, 3);
-const thisYear = today.getUTCFullYear();
 
 function massageMarkets(markets: CannedMarket[]): CannedMarket[] {
   return markets.map((market): CannedMarket => {
@@ -544,7 +517,7 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
       7: {
         buy: singleOutcomeBids,
         sell: singleOutcomeAsks,
-      }
+      },
     },
   },
   {

@@ -93,7 +93,7 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       throw new Error(`Contract name ${contractName} not found in EthersJSProvider. Call 'storeAbiData' first with this name and the contract abi`);
     }
     const parsedLog = contractInterface.parseLog(log);
-    let omittedValues = _.map(_.range(parsedLog.values.length), (n) => n.toString());
+    const omittedValues = _.map(_.range(parsedLog.values.length), (n) => n.toString());
     omittedValues.push('length');
     let logValues = _.omit(parsedLog.values, omittedValues);
     logValues = _.mapValues(logValues, (val) => {
@@ -106,16 +106,18 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
             return innerVal._hex;
           }
           return innerVal;
-        })
+        });
       }
       return val;
     });
+    logValues.name = parsedLog.name;
     return logValues;
   }
 
   public async getLogs(filter: Filter): Promise<Array<Log>> {
     const logs = await super.getLogs(filter);
     return logs.map<Log>((log) => ({
+      name: "",
       transactionHash: "",
       blockNumber: 0,
       blockHash: "",

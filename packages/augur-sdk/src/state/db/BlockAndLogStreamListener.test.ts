@@ -55,6 +55,7 @@ describe("BlockstreamListener", () => {
 
     eventLogDBRouter = new EventLogDBRouter((logs) => {
       return logs.map<ParsedLog>((log) => ({
+        name: log.name,
         blockHash: log.blockHash,
         blockNumber: log.blockNumber,
         transactionIndex: parseInt(log.transactionHash || "0", 10),
