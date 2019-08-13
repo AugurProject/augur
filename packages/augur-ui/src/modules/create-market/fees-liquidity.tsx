@@ -147,6 +147,7 @@ export default class FeesLiquidity extends React.Component<
           />
           <TextInput
             value={settlementFee}
+            type="number"
             placeholder="0"
             innerLabel="%"
             errorMessage={validations[currentStep].settlementFee}
@@ -163,6 +164,7 @@ export default class FeesLiquidity extends React.Component<
           />
           <TextInput
             placeholder="0"
+            type="number"
             onChange={(value: string) => onChange("affiliateFee", value)}
             value={affiliateFee}
             innerLabel="%"
