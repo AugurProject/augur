@@ -87,7 +87,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableDai,
     } = props || this.props;
 
-    const { totalCost, selfTrade, potentialEthLoss, numFills, loopLimit } = trade;
+    const { totalCost, selfTrade, potentialDaiLoss, numFills, loopLimit } = trade;
     const numTrades = Math.ceil(numFills / loopLimit);
     let messages: Message | null = null;
     const tradeTotalCost = createBigNumber(totalCost.fullPrecision, 10);
@@ -126,7 +126,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       totalCost &&
-      createBigNumber(potentialEthLoss.fullPrecision, 10).gt(
+      createBigNumber(potentialDaiLoss.fullPrecision, 10).gt(
         createBigNumber(availableDai, 10)
       )
     ) {
@@ -140,7 +140,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     if (
       totalCost &&
       allowanceAmount &&
-      createBigNumber(potentialEthLoss.fullPrecision, 10).gt(
+      createBigNumber(potentialDaiLoss.fullPrecision, 10).gt(
         createBigNumber(allowanceAmount.fullPrecision, 10)
       )
     ) {
@@ -171,8 +171,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const {
       limitPrice,
       numShares,
-      potentialEthProfit,
-      potentialEthLoss,
+      potentialDaiProfit,
+      potentialDaiLoss,
       totalCost,
       shareCost,
       side,
@@ -216,8 +216,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const notProfitable =
       (orderShareProfit && createBigNumber(orderShareProfit.value).lte(0)) ||
       (totalCost.value > 0 &&
-        potentialEthProfit &&
-        potentialEthProfit.value <= 0);
+        potentialDaiProfit &&
+        potentialDaiProfit.value <= 0);
 
     return (
       <section className={Styles.TradingConfirm}>
@@ -298,11 +298,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               </div>
               <LinearPropertyLabel
                 label="Max Profit"
-                value={`${potentialEthProfit.rounded} DAI`}
+                value={`${potentialDaiProfit.formatted} DAI`}
               />
               <LinearPropertyLabel
                 label="Max Loss"
-                value={`${potentialEthLoss.rounded} DAI`}
+                value={`${potentialDaiLoss.formatted} DAI`}
               />
             </div>
           )}
