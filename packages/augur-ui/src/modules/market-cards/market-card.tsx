@@ -80,8 +80,8 @@ export default class MarketCard extends React.Component<
       outcomesFormatted,
       marketType,
       scalarDenomination,
-      minPrice,
-      maxPrice,
+      minPriceBigNumber,
+      maxPriceBigNumber,
       categories,
       id,
       marketStatus,
@@ -232,8 +232,8 @@ export default class MarketCard extends React.Component<
                   outcomes={outcomesFormatted}
                   marketType={marketType}
                   scalarDenomination={scalarDenomination}
-                  min={minPrice}
-                  max={maxPrice}
+                  min={minPriceBigNumber}
+                  max={maxPriceBigNumber}
                   lastPrice={0}
                   expanded={expandedView ? true : s.expanded}
                 />

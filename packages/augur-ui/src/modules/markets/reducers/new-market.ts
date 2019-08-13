@@ -46,6 +46,7 @@ export const DEFAULT_STATE: NewMarket = {
   description: "",
   expirySourceType: EXPIRY_SOURCE_GENERIC,
   expirySource: "",
+  backupSource: "",
   designatedReporterType: DESIGNATED_REPORTER_SELF,
   designatedReporterAddress: "",
   endTime: null,
@@ -93,7 +94,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           orderInfo.quantity = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toString();
           orderInfo.shares = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toString();
           orderInfo.orderEstimate = createBigNumber(order.orderEstimate).plus(
-            createBigNumber(orderEstimate.replace(" DAI", ""))
+            createBigNumber(orderEstimate)
           ),
           orderAdded = true;
           return orderInfo;
@@ -110,11 +111,11 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           shares: quantity,
           mySize: quantity,
           cumulativeShares: quantity,
-          orderEstimate: createBigNumber(orderEstimate.replace(" DAI", "")),
+          orderEstimate: createBigNumber(orderEstimate),
           avgPrice: formatDai(price),
           unmatchedShares: formatShares(quantity),
           sharesEscrowed: formatShares(quantity),
-          tokensEscrowed: formatDai(createBigNumber(orderEstimate.replace(" DAI", ""))),
+          tokensEscrowed: formatDai(createBigNumber(orderEstimate)),
           id: updatedOrders.length,
         } as any);
       }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
-import { 
+import {
   CATEGORICAL,
   SCALAR,
   YES_NO
@@ -10,7 +10,8 @@ import { createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
 import { CheckCircleIcon } from "modules/common/icons";
-import { OutcomeFormatted } from "modules/types";
+import { OutcomeFormatted, FormattedNumber } from "modules/types";
+import { formatDai } from "utils/format-number";
 
 import Styles from 'modules/market-cards/common.styles';
 
@@ -26,30 +27,35 @@ export const Percent = (props: PercentProps) => (
 
 export interface OutcomeProps {
   description: string;
-  lastPricePercent?: number;
+  lastPricePercent?: FormattedNumber;
   invalid?: Boolean;
   index: number;
+  min: BigNumber;
+  max: BigNumber;
 }
 
-export const Outcome = (props: OutcomeProps) => (
-  <div className={classNames(Styles.Outcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
-  	<div>
-    	<span>{props.description}</span>
-    	<span>{props.lastPricePercent.formatted}%</span>
+export const Outcome = (props: OutcomeProps) => {
+  const percent = calculatePosition(props.min, props.max, props.lastPricePercent.value);
+  return (
+      <div className={classNames(Styles.Outcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
+    	<div>
+      	<span>{props.description}</span>
+      	<span>{formatDai(percent).formatted}%</span>
+      </div>
+      <Percent percent={percent} />
     </div>
-    <Percent percent={props.lastPricePercent.value} />
-  </div>
-);
+  );
+}
 
 export interface ScalarOutcomeProps {
   scalarDenomination: string;
-  min: number;
-  max: number;
-  lastPrice?: number;
+  min: BigNumber;
+  max: BigNumber;
+  lastPrice?: FormattedNumber;
 }
 
 function calculatePosition(min, max, lastPrice) {
-	const range = createBigNumber(max).minus(createBigNumber(min));
+	const range = max.minus(min);
 	const pricePercentage = createBigNumber(lastPrice || 0)
 	  .minus(min)
 	  .dividedBy(range)
@@ -68,9 +74,9 @@ export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   		}
   	</div>
   	<div>
-	  	{props.min}
+	  	{formatDai(props.min).formatted}
 	  	<span>{props.scalarDenomination}</span>
-	  	{props.max}
+	  	{formatDai(props.max).formatted}
   	</div>
   </div>
 );
@@ -80,8 +86,8 @@ export interface OutcomeGroupProps {
 	expanded?: Boolean;
 	marketType: string;
 	scalarDenomination?: string;
-	min?: number;
-	max?: number;
+	min?: BigNumber;
+	max?: BigNumber;
   lastPrice?: number;
 }
 
@@ -92,8 +98,8 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
 
   return (
     <div className={classNames(Styles.OutcomeGroup, {
-			[Styles.Categorical]: props.marketType === CATEGORICAL, 
-			[Styles.Scalar]: props.marketType === SCALAR, 
+			[Styles.Categorical]: props.marketType === CATEGORICAL,
+			[Styles.Scalar]: props.marketType === SCALAR,
 			[Styles.YesNo]: props.marketType === YES_NO
 		})}>
   		{props.marketType === SCALAR &&
@@ -109,7 +115,9 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             lastPricePercent={removedInvalid.lastPricePercent}
             invalid={true}
             index={0}
-          /> 
+            min={props.min}
+            max={props.max}
+          />
         </>
   		}
 	  	{props.marketType !== SCALAR && outcomesShow.map((outcome: Outcome, index: number) =>
@@ -119,7 +127,9 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
 	  			lastPricePercent={outcome.lastPricePercent}
 	  			invalid={outcome.id === 0}
 	  			index={index > 2 ? index : index + 1}
-	  		/> 
+          min={props.min}
+          max={props.max}
+	  		/>
 	  	)}
   	</div>
   );
@@ -145,7 +155,7 @@ export interface HoverIconProps {
 }
 
 export const HoverIcon = (props: HoverIconProps) => (
-  <div 
+  <div
     className={Styles.HoverIcon}
     data-tip
     data-for={`tooltip-${props.label}`}
@@ -183,7 +193,7 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
          <div>
            <span>other outcomes</span>
            <div>
-             {outcomes.map((outcome, index) => 
+             {outcomes.map((outcome, index) =>
                outcome.isTradable && (
                  <span>
                    {outcome.description}

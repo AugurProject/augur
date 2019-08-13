@@ -44,8 +44,8 @@ const CoreProperties = ({ market }) => (
     )}
     {getValue(market, "marketType") === SCALAR && (
       <PropertyLabel
-        label="Min - Max"
-        value={`${market.minPrice} — ${market.maxPrice}`}
+        label="Numeric Range"
+        value={`${market.minPrice} to ${market.maxPrice}`}
       />
     )}
   </div>

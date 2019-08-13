@@ -54,8 +54,8 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
     const actual = calcProfits("10", "0.4", BUY, "0", "1", YES_NO, "0.02");
 
     const expected = {
-      potentialEthProfit: createBigNumber("6"),
-      potentialEthLoss: createBigNumber("4"),
+      potentialDaiProfit: createBigNumber("6"),
+      potentialDaiLoss: createBigNumber("4"),
       potentialProfitPercent: createBigNumber("150"),
       potentialLossPercent: createBigNumber("100"),
       tradingFees: createBigNumber("0.2"),
@@ -68,8 +68,8 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
     const actual = calcProfits("10", "0.4", SELL, "0", "1", YES_NO, "0.04");
 
     const expected = {
-      potentialEthProfit: createBigNumber("4"),
-      potentialEthLoss: createBigNumber("6"),
+      potentialDaiProfit: createBigNumber("4"),
+      potentialDaiLoss: createBigNumber("6"),
       potentialProfitPercent: createBigNumber("66.666666666666666667"),
       potentialLossPercent: createBigNumber("100"),
       tradingFees: createBigNumber("0.4"),
@@ -82,8 +82,8 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
     const actual = calcProfits("10", "1", BUY, "-5", "10", SCALAR, "0.25");
 
     const expected = {
-      potentialEthProfit: createBigNumber("90"),
-      potentialEthLoss: createBigNumber("60"),
+      potentialDaiProfit: createBigNumber("90"),
+      potentialDaiLoss: createBigNumber("60"),
       potentialProfitPercent: createBigNumber("150"),
       potentialLossPercent: createBigNumber("100"),
       tradingFees: createBigNumber("37.5"),
@@ -96,8 +96,8 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
     const actual = calcProfits("10", "1", SELL, "-5", "10", SCALAR, "0.2");
 
     const expected = {
-      potentialEthProfit: createBigNumber("60"),
-      potentialEthLoss: createBigNumber("90"),
+      potentialDaiProfit: createBigNumber("60"),
+      potentialDaiLoss: createBigNumber("90"),
       potentialProfitPercent: createBigNumber("66.666666666666666667"),
       potentialLossPercent: createBigNumber("100"),
       tradingFees: createBigNumber("30"),
@@ -119,7 +119,7 @@ describe("modules/trades/helpers/calc-order-profit-loss-percents.js", () => {
     );
 
     const expected = {
-      potentialEthProfit: createBigNumber("3"),
+      potentialDaiProfit: createBigNumber("3"),
       tradingFees: createBigNumber("2"),
     };
 
