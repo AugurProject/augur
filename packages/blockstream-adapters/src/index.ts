@@ -4,13 +4,13 @@ import { Block, FilterOptions, Log } from "ethereumjs-blockstream";
 export type GetBlockByString = (hash: string) => Promise<Block | null>
 
 export interface ExtendedLog extends Log {
-  transactionIndex?: number;
-  removed?: boolean;
-  transactionLogIndex?: number;
+  transactionIndex: number;
+  removed: boolean;
+  transactionLogIndex: number;
+  transactionHash: string;
   address: string;
   data: string;
   topics: Array<string>;
-  transactionHash?: string;
 }
 
 export interface BlockAndLogStreamerDependencies<T extends Log, B extends Block> {
