@@ -18,6 +18,7 @@ import {
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
   stringTo32ByteHex,
+  QUINTILLION,
 } from '@augurproject/sdk';
 
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
@@ -231,6 +232,7 @@ export interface CreateNewMarketParams {
   settlementFee: number;
   affiliateFee: number;
   offsetName?: string;
+  backupSource?: string;
 }
 
 export function createMarket(newMarket: CreateNewMarketParams) {
@@ -244,7 +246,7 @@ export function createMarket(newMarket: CreateNewMarketParams) {
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
     backupSource: newMarket.backupSource,
-    scalarDenomination: newMarket.scalarDenomination,
+    _scalarDenomination: newMarket.scalarDenomination,
     offsetName: newMarket.offsetName,
   });
 
@@ -260,12 +262,12 @@ export function createMarket(newMarket: CreateNewMarketParams) {
   switch (newMarket.marketType) {
     case SCALAR: {
       const prices = [
-        new BigNumber(newMarket.minPrice),
-        new BigNumber(newMarket.maxPrice),
+        new BigNumber(newMarket.minPrice).multipliedBy(QUINTILLION),
+        new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
       ];
       const numTicks = prices[1]
         .minus(prices[0])
-        .dividedBy(new BigNumber(newMarket.tickSize));
+        .dividedBy(new BigNumber(newMarket.tickSize)).abs();
       const params: CreateScalarMarketParams = Object.assign(baseParams, {
         prices,
         numTicks,

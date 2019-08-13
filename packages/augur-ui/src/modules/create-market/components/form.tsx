@@ -67,6 +67,8 @@ import {
   isPositive,
   moreThanDecimals,
   checkAddress,
+  dividedBy,
+  dateGreater,
 } from 'modules/common/validations';
 import { formatDate, buildformattedDate } from 'utils/format-date';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
@@ -88,6 +90,7 @@ interface FormProps {
   discardModal: Function;
   template: boolean;
   openCreateMarketModal: Function;
+  currentTimestamp: number;
 }
 
 interface FormState {
@@ -107,11 +110,14 @@ interface Validations {
   max?: Number;
   checkFilledNumberMessage?: string;
   checkFilledStringMessage?: string;
+  checkDateGreaterMessage?: string;
   checkCategories?: Boolean;
   checkOutcomes?: Boolean;
   checkLessThan?: Boolean;
+  checkDividedBy?: Boolean;
   checkMoreThan?: Boolean;
   checkPositive?: Boolean;
+  checkDateGreater?: Boolean;
   lessThanMessage?: string;
   decimals?: number;
   checkDecimals?: Boolean;
@@ -297,10 +303,14 @@ export default class Form extends React.Component<FormProps, FormState> {
     }
 
     fields.map(field => {
+      let value = newMarket[field];
+      if (field === END_TIME && newMarket.endTimeFormatted) {
+        value = newMarket.endTimeFormatted.timestamp;
+      }
       const error = this.evaluate({
         ...VALIDATION_ATTRIBUTES[field],
         updateValue: false,
-        value: newMarket[field],
+        value,
       });
       if (error) hasErrors = true;
     });
@@ -361,7 +371,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   evaluate = (validationsObj: Validations) => {
-    const { newMarket } = this.props;
+    const { newMarket, currentTimestamp } = this.props;
 
     const {
       checkBetween,
@@ -374,12 +384,14 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkFilledNumberMessage,
       checkFilledString,
       checkFilledStringMessage,
-      updateValue,
+      checkDateGreaterMessage,
       checkCategories,
       checkOutcomes,
       checkMoreThan,
       checkLessThan,
+      checkDividedBy,
       checkPositive,
+      checkDateGreater,
       lessThanMessage,
       checkDecimals,
       decimals,
@@ -400,10 +412,25 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkLessThan
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
         : '',
+      checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
+      checkDateGreater ? dateGreater(value, currentTimestamp, checkDateGreaterMessage) : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
     ];
+
+    if (label === END_TIME) {
+      const endTimeFormatted = buildformattedDate(
+        newMarket.setEndTime,
+        parseInt(newMarket.hour, 10),
+        parseInt(newMarket.minute, 10),
+        newMarket.meridiem,
+        newMarket.offsetName,
+        newMarket.offset
+      );
+      checkValidations.push(dateGreater(endTimeFormatted.timestamp, currentTimestamp));
+    }
+
     const errorMsg = checkValidations.find(validation => validation !== '');
 
     if (errorMsg) {
@@ -412,11 +439,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     }
 
     // no errors
-    if (updateValue) {
-      this.onChange(label, value);
-    } else {
-      this.onError(name, '');
-    }
+    this.onError(label, '');
   };
 
   onChange = (name, value, callback) => {
@@ -491,6 +514,16 @@ export default class Form extends React.Component<FormProps, FormState> {
       );
 
       updateNewMarket({ endTimeFormatted, setEndTime, hour, minute, meridiem, offset, offsetName, timezone });
+    } else if (
+      name === "minPrice"
+    ) {
+      const minPriceBigNumber = createBigNumber(value);
+      updateNewMarket({ minPriceBigNumber });
+    } else if (
+      name === "maxPrice"
+    ) {
+      const maxPriceBigNumber = createBigNumber(value);
+      updateNewMarket({ maxPriceBigNumber });
     }
     this.onError(name, '');
     if (callback) callback(name);

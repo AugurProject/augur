@@ -602,8 +602,8 @@ export interface WalletObject {
 export interface Trade {
   numShares: FormattedNumber;
   limitPrice: FormattedNumber;
-  potentialEthProfit: FormattedNumber;
-  potentialEthLoss: FormattedNumber;
+  potentialDaiProfit: FormattedNumber;
+  potentialDaiLoss: FormattedNumber;
   totalCost: FormattedNumber;
   sharesFilled: FormattedNumber;
   shareCost: FormattedNumber;

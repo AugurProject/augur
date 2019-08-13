@@ -342,6 +342,8 @@ export const VALIDATION_ATTRIBUTES = {
     label: END_TIME,
     readableName: 'date',
     checkFilledNumber: true,
+    checkDateGreater: true,
+    checkDateGreaterMessage: 'Reporting start must be in the future',
     checkFilledNumberMessage: 'Choose a date',
   },
   [DESIGNATED_REPORTER_ADDRESS]: {
@@ -387,7 +389,8 @@ export const VALIDATION_ATTRIBUTES = {
     checkFilledNumber: true,
     checkFilledNumberMessage: 'Enter precision',
     checkPositive: true,
-    checkLessThan: true,
+    checkLessThan: false,
+    checkDividedBy: true,
     checkDecimals: true,
     decimals: 9,
   },

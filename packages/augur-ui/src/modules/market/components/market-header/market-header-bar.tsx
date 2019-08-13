@@ -3,7 +3,7 @@ import Styles from "modules/market/components/market-header/market-header-bar.st
 import { FavoritesButton } from "modules/common/buttons";
 import { InReportingLabel } from "modules/common/labels";
 import { PaperClip, Person } from "modules/common/icons";
-import * as constants from "modules/common/constants";
+import { MARKET_OPEN, COPY_MARKET_ID, COPY_AUTHOR } from "modules/common/constants";
 import Clipboard from "clipboard";
 import { DotSelection } from "modules/common/selection";
 import { DateFormattedObject } from "modules/types";
@@ -44,7 +44,7 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
     return (
       <section className={Styles.HeaderBar}>
         <InReportingLabel
-          marketStatus={marketStatus}
+          marketStatus={marketStatus || MARKET_OPEN}
           reportingState={reportingState}
           disputeInfo={disputeInfo}
           endTimeFormatted={endTimeFormatted}
@@ -67,13 +67,13 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
             id="copy_marketId"
             data-clipboard-text={marketId}
           >
-            {PaperClip} {constants.COPY_MARKET_ID}
+            {PaperClip} {COPY_MARKET_ID}
           </div>
           <div
             id="copy_author"
             data-clipboard-text={author}
           >
-            {Person} {constants.COPY_AUTHOR}
+            {Person} {COPY_AUTHOR}
           </div>
         </DotSelection>
       </section>

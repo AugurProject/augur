@@ -230,7 +230,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             {
               ...this.state,
               ...order,
-              orderDaiEstimate: totalCost ? formattedValue.formatted : '',
+              orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
               orderEscrowdEth: '',
               gasCostEst: '',
               trade: trade,
@@ -266,7 +266,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 {
                   decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
                 }
-              ).rounded;
+              ).roundedValue;
 
               const formattedGasCost = formatGasCostToEther(
                 newOrder.gasLimit,
@@ -278,7 +278,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                   ...this.state,
                   ...order,
                   orderDaiEstimate: neworderDaiEstimate,
-                  orderEscrowdEth: newOrder.potentialEthLoss.formatted,
+                  orderEscrowdEth: newOrder.potentialDaiLoss.formatted,
                   trade: newOrder,
                   gasCostEst: formattedGasCost,
                 },
@@ -351,7 +351,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
                 ...this.state,
                 ...order,
                 orderQuantity: numShares,
-                orderEscrowdEth: newOrder.potentialEthLoss.formatted,
+                orderEscrowdEth: newOrder.potentialDaiLoss.formatted,
                 trade: newOrder,
                 gasCostEst: formattedGasCost,
               },
@@ -507,8 +507,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             action={e => {
               e.preventDefault();
               if (initialLiquidity) {
-                const orderType = s.selectedNav === BUY ? SELL : BUY;
-                updateLiquidity(selectedOutcome, { ...s, selectedNav: orderType });
+                updateLiquidity(selectedOutcome, s);
                 this.clearOrderForm();
               } else {
                 if (!marketReviewTradeSeen) {

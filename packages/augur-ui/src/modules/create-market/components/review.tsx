@@ -258,7 +258,7 @@ export default class Review extends React.Component<
           {marketType === SCALAR &&
             <>
               <SmallSubheaders header="Unit of Measurement" subheader={scalarDenomination} />
-              <SmallSubheaders header="Numeric range" subheader={minPrice + "-" + maxPrice} />
+              <SmallSubheaders header="Numeric range" subheader={minPrice + " to " + maxPrice} />
               <SmallSubheaders header="precision" subheader={tickSize.toString()} />
             </>
           }
