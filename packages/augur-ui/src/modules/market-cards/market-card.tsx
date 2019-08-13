@@ -112,6 +112,7 @@ export default class MarketCard extends React.Component<
     }));
 
     const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
+    console.log(market);
 
     return (
       <div

@@ -6,6 +6,9 @@ import { Helmet } from "react-helmet";
 import classNames from "classnames";
 import Media from "react-media";
 
+import MarketCard from "modules/market-cards/containers/market-card";
+
+
 import { FindReact } from "utils/find-react";
 import MarketHeader from "modules/market/containers/market-header";
 import MarketOrdersPositionsTable from "modules/market/containers/market-orders-positions-table";
@@ -282,6 +285,10 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
         <Helmet>
           <title>{parseMarketTitle(description)}</title>
         </Helmet>
+        <MarketCard
+          market={market}
+          condensed={false}
+        />
         <Media query={TEMP_TABLET}>
           {matches =>
             matches ? (
