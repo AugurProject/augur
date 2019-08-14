@@ -29,9 +29,9 @@ const mapStateToProps = (state, ownProps) => {
   const hasFunds = !!state.loginAccount.balances.eth && !!state.loginAccount.balances.dai;
 
   const selectedOutcomeId = (ownProps.selectedOutcomeId !== undefined && ownProps.selectedOutcomeId !== null) ? ownProps.selectedOutcomeId : market.defaultSelectedOutcomeId;
-  let outcomeOrderBook = ownProps.market.orderBook[selectedOutcomeId];
+  let outcomeOrderBook = {};
   if (ownProps.initialLiquidity) {
-    outcomeOrderBook = formatOrderBook(outcomeOrderBook);
+    outcomeOrderBook = formatOrderBook(ownProps.market.orderBook[selectedOutcomeId]);
   }
 
   const cumulativeOrderBook = orderAndAssignCumulativeShares(
@@ -43,7 +43,7 @@ const mapStateToProps = (state, ownProps) => {
     availableEth: createBigNumber(state.loginAccount.balances.eth),
     availableDai: createBigNumber(state.loginAccount.balances.dai),
     hasFunds,
-    orderBook: outcomeOrderBook,
+    orderBook: cumulativeOrderBook,
     isLogged: authStatus.isLogged,
     allowanceAmount: loginAccount.allowanceFormatted,
     isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
