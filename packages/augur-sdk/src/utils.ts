@@ -157,7 +157,7 @@ export function calculatePayoutNumeratorsArray(
     const longPayout = reportNormalizedToZero
       .times(numTicks)
       .dividedBy(priceRange);
-    const shortPayout = numTicks.minus(longPayout);
+    const shortPayout = new BigNumber(numTicks).minus(longPayout);
     payoutNumerators[0] = shortPayout;
     payoutNumerators[1] = longPayout;
   } else {
