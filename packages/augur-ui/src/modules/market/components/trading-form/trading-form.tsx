@@ -7,7 +7,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
 import { PrimaryButton } from 'modules/common/buttons';
-import { MarketData, OutcomeFormatted, FormattedNumber } from 'modules/types';
+import { MarketData, OutcomeFormatted, FormattedNumber, OutcomeOrderBook } from 'modules/types';
 
 interface TradingFormProps {
   availableEth: BigNumber;
@@ -32,6 +32,7 @@ interface TradingFormProps {
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
   initialLiquidity?: Boolean;
+  orderBook: OutcomeOrderBook;
 }
 
 interface TradingFormState {
@@ -99,6 +100,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
+      orderBook
     } = this.props;
     const s = this.state;
 
@@ -143,6 +145,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           marketReviewTradeSeen={marketReviewTradeSeen}
           updateLiquidity={updateLiquidity}
           initialLiquidity={initialLiquidity}
+          orderBook={orderBook}
         />
         {initialMessage && (
           <div>

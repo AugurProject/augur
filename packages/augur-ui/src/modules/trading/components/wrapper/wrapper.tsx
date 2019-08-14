@@ -15,7 +15,7 @@ import Styles from 'modules/trading/components/wrapper/wrapper.styles.less';
 import { OrderButton } from 'modules/common/buttons';
 import { formatShares, formatGasCostToEther } from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData, OutcomeFormatted, FormattedNumber } from 'modules/types';
+import { MarketData, OutcomeFormatted, FormattedNumber, OutcomeOrderBook } from 'modules/types';
 import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
 import { formatDai } from "utils/format-number";
 
@@ -30,6 +30,7 @@ function pick(object, keys) {
 }
 
 interface WrapperProps {
+  orderBook: OutcomeOrderBook;
   allowanceAmount: FormattedNumber;
   market: MarketData;
   marketReviewTradeSeen: boolean;
@@ -377,7 +378,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       marketReviewTradeModal,
       sortedOutcomes,
       updateLiquidity,
-      initialLiquidity
+      initialLiquidity,
+      orderBook
     } = this.props;
     let { marketType, minPriceBigNumber, maxPriceBigNumber, minPrice, maxPrice } = market;
     if (!minPriceBigNumber) {
@@ -453,6 +455,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           {market && market.marketType && (
             <Form
               market={market}
+              orderBook={orderBook}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}
               minPrice={minPriceBigNumber}
