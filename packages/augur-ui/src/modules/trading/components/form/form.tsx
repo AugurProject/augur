@@ -246,7 +246,6 @@ class Form extends Component<FromProps, FormState> {
         `Price must be a multiple of ${tickSize}`
       );
     }
-    console.log(orderBook);
     if (initialLiquidity &&
       selectedNav === BUY &&
       orderBook.asks &&
