@@ -7,7 +7,6 @@ import {
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
-  SubscriptionEventName
 } from "@augurproject/sdk";
 import { MarketList } from "@augurproject/sdk/src/state/getter/Markets";
 import { ContractInterfaces } from "@augurproject/core";
@@ -47,6 +46,20 @@ export class ContractAPI {
     return this.augur.createYesNoMarket(params);
   }
 
+  async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
+    await this.faucet(marketCreationFee);
+
+    return this.augur.createCategoricalMarket(params);
+  }
+
+  async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
+    await this.faucet(marketCreationFee);
+
+    return this.augur.createScalarMarket(params);
+  }
+
   async createReasonableYesNoMarket(): Promise<ContractInterfaces.Market> {
     const time = this.augur.contracts.getTime();
     const currentTimestamp = (await time.getTimestamp_()).toNumber();
@@ -58,13 +71,6 @@ export class ContractAPI {
       designatedReporter: this.account.publicKey,
       extraInfo: JSON.stringify({categories: [" "], description: "description"}),
     });
-  }
-
-  async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
-    await this.faucet(marketCreationFee);
-
-    return this.augur.createCategoricalMarket(params);
   }
 
   async createReasonableMarket(outcomes: string[]): Promise<ContractInterfaces.Market> {
@@ -79,13 +85,6 @@ export class ContractAPI {
       extraInfo: JSON.stringify({categories: [" "], description: "description"}),
       outcomes,
     });
-  }
-
-  async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
-    await this.faucet(marketCreationFee);
-
-    return this.augur.createScalarMarket(params);
   }
 
   async createReasonableScalarMarket(): Promise<ContractInterfaces.Market> {
@@ -115,8 +114,18 @@ export class ContractAPI {
     worseOrderID: string,
     tradeGroupID: string
   ): Promise<string> {
-    const cost = numShares.multipliedBy(price);
-    await this.faucet(cost);
+
+    if (type.isEqualTo(0)) { // BID
+      const cost = numShares.multipliedBy(price);
+      await this.faucet(cost);
+    } else if (type.isEqualTo(1)) { // ASK
+      const m = await this.getMarketContract(market);
+      const numTicks = await m.getNumTicks_();
+      const cost = numTicks.plus(price.multipliedBy(-1)).multipliedBy(numShares);
+      await this.faucet(cost);
+    } else {
+      throw Error(`Invalid order type ${type.toString()}`);
+    }
 
     const events = await this.augur.contracts.createOrder.publicCreateOrder(
       type,
@@ -154,7 +163,6 @@ export class ContractAPI {
   }
 
   async fillOrder(orderId: string, cost: BigNumber, numShares: BigNumber, tradeGroupId: string) {
-    await this.faucet(cost.multipliedBy(10000));
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), false, NULL_ADDRESS);
   }
 

@@ -243,11 +243,13 @@ const COMMON_FIELDS = [
 ];
 
 interface AddressMapping { [addr1: string]: string; }
+interface IdMapping { [id1: string]: string; }
 
 export class LogReplayer {
   accounts: AddressMapping = {};
   universes: AddressMapping = {};
   markets: AddressMapping = {};
+  orders: IdMapping = {};
 
   constructor(private user: ContractAPI) {
     this.universes[NULL_ADDRESS] = NULL_ADDRESS;
@@ -264,14 +266,12 @@ export class LogReplayer {
       case "UniverseCreated": return this.UniverseCreated(log);
       case "MarketCreated": return this.MarketCreated(log);
       case "OrderEvent": return this.OrderEvent(log);
-      default:// console.log(`x ${log.name}`);
+      default:
     }
   }
 
   async UniverseCreated(log: ParsedLog) {
     const { parentUniverse, childUniverse, payoutNumberators } = log;
-
-    console.log("> UniverseCreated", parentUniverse, childUniverse);
 
     if (parentUniverse === NULL_ADDRESS) {
       // Deployment already gave us a genesis universe so just record it.
@@ -287,11 +287,6 @@ export class LogReplayer {
       universe, endTime, extraInfo, market, marketCreator, designatedReporter,
       feeDivisor, prices, marketType, numTicks, outcomes } = log;
 
-    console.log("> MarktedCreated", universe, marketType);
-
-    // TODO
-    // const u = new ContractInterfaces.Universe(1, universe);
-
     // TODO marketCreator is a user so we need to use it
 
     const feePerCashInAttoCash = new BigNumber(10).pow(16); // TODO this is used in canned markets but is it correct?
@@ -301,43 +296,41 @@ export class LogReplayer {
     let result;
     switch(marketType) {
       case 0: // YES_NO
-        result = await this.user.augur.contracts.universe.createYesNoMarket(
-          adjustedEndTime,
-          feePerCashInAttoCash,
-          feeDivisor,
-          designatedReporter, // TODO use mapped address of user since this user does not exist in the target chain
-          extraInfo
-          // options?: { sender?: string }
+        result = await this.user.createYesNoMarket({
+            endTime: adjustedEndTime,
+            feePerCashInAttoCash,
+            affiliateFeeDivisor: feeDivisor,
+            designatedReporter, // TODO use mapped address of user since this user does not exist in the target chain
+            extraInfo}
+            // options?: { sender?: string }
           );
         break;
       case 1: // CATEGORICAL
-        result = await this.user.augur.contracts.universe.createCategoricalMarket(
-          adjustedEndTime,
+        result = await this.user.createCategoricalMarket({
+          endTime: adjustedEndTime,
           feePerCashInAttoCash,
-          feeDivisor,
+          affiliateFeeDivisor: feeDivisor,
           designatedReporter, // TODO use mapped address of user since this user does not exist in the target chain
           outcomes,
-          extraInfo);
+          extraInfo});
         break;
       case 2: // SCALAR
-        result = await this.user.augur.contracts.universe.createScalarMarket(
-          adjustedEndTime,
+        result = await this.user.createScalarMarket({
+          endTime: adjustedEndTime,
           feePerCashInAttoCash,
-          feeDivisor,
+          affiliateFeeDivisor: feeDivisor,
           designatedReporter, // TODO use mapped address of user since this user does not exist in the target chain
           prices,
           numTicks,
-          extraInfo);
+          extraInfo});
         break;
       default: throw Error(`Unexpected market type "${marketType}`);
     }
 
-    const resultingMarketLog =_.filter(result, (log) => log.name === "MarketCreated")[0];
-    this.markets[market] = resultingMarketLog.parameters.market;
+    this.markets[market] = result.address;
   }
 
   async OrderEvent(log: ParsedLog) {
-    console.log(log);
     const { universe, market, eventType, orderType, orderId, tradeGroupId, addressData, uint256Data } = log;
 
     // From packages/augur-core/source/contracts/Augur.sol:61
@@ -347,58 +340,37 @@ export class LogReplayer {
     const betterOrderId = formatBytes32String("");
     const worseOrderId = formatBytes32String("");
 
-    console.log("MARINA", eventType);
-    const [ numShares, cost ] = [ new BigNumber(amount), new BigNumber(price) ];
-
     switch(eventType) { // See packages/augur-core/source/contracts/Augur.sol:40
       case 0: // OrderEventType.Create
-        await this.user.placeOrder(market, orderType, numShares, price, outcome, betterOrderId, worseOrderId, tradeGroupId);
+        this.orders[orderId] = await this.user.placeOrder(
+          this.markets[market],
+          new BigNumber(orderType),
+          new BigNumber(amount),
+          new BigNumber(price),
+          outcome,
+          betterOrderId,
+          worseOrderId,
+          tradeGroupId);
         break;
       case 1: // OrderEventType.Cancel
-        await this.user.cancelOrder(orderId);
+        await this.user.cancelOrder(this.orders[orderId]);
         break;
       case 2: // OrderEventType.ChangePrice
-        await this.user.setOrderPrice(orderId, price, betterOrderId, worseOrderId);
+        await this.user.setOrderPrice(
+          this.orders[orderId],
+          new BigNumber(price),
+          betterOrderId,
+          worseOrderId);
         break;
       case 3: // OrderEventType.Fill
-        await this.user.fillOrder(orderId, cost, numShares, tradeGroupId);
+        await this.user.augur.contracts.fillOrder.publicFillOrder(
+          this.orders[orderId],
+          new BigNumber(amount),
+          tradeGroupId,
+          false,
+          kycToken);
         break;
       default: throw Error(`Unexpected order event type "${eventType}"`);
     }
-
-
-
-    // async function placeOrder(person: ContractAPI,
-    //                           market: Market,
-    //                           can: CannedMarket,
-    //                           tradeGroupId: string,
-    //                           outcome: BigNumber,
-    //                           orderType: BigNumber,
-    //                           shares: BigNumber,
-    //                           price: BigNumber): Promise<string> {
-    //   const tickSize = can.tickSize
-    //     ? new BigNumber(can.tickSize)
-    //     : numTicksToTickSize(new BigNumber("100"), new BigNumber("0"), new BigNumber("0x0de0b6b3a7640000"));
-    //
-    //   const minDisplayPrice = new BigNumber(can.minPrice || "0");
-    //   const attoShares = convertDisplayAmountToOnChainAmount(shares, tickSize);
-    //   const attoPrice = convertDisplayPriceToOnChainPrice(price, minDisplayPrice, tickSize);
-    //   const betterOrderId = formatBytes32String("");
-    //   const worseOrderId = formatBytes32String("");
-    //
-    //   console.log("Shares:", attoShares.toString());
-    //   console.log("Price:", attoPrice.toString());
-    //
-    //   return person.placeOrder(
-    //     market.address,
-    //     orderType,
-    //     attoShares,
-    //     attoPrice,
-    //     outcome,
-    //     betterOrderId,
-    //     worseOrderId,
-    //     tradeGroupId
-    //   );
-    // }
   }
 }

@@ -52,7 +52,7 @@ export const ACCOUNTS: Account[] = [
     secretKey: "0xa429eeb001c683cf3d8faf4b26d82dbf973fb45b04daad26e1363efd2fd43913",
     publicKey: "0x8fFf40Efec989Fc938bBA8b19584dA08ead986eE",
     balance: _10000_ETH,
-  }
+  },
 ];
 
 export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";

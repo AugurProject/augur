@@ -71,7 +71,7 @@ function makeVorpalCLI(flash: FlashSession): Vorpal {
       //   string: --foo <bar>
       const flag = option.flag || false;
       const abbr = option.abbr ? `-${option.abbr},` : "";
-      const optionValue = `${abbr}--${option.name}${flag ? "" : ` <arg>`}`
+      const optionValue = `${abbr}--${option.name}${flag ? "" : ` <arg>`}`;
       v = v.option(optionValue, option.description);
       if (flag) {
         types.boolean.push(option.name);

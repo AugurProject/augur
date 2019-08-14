@@ -319,7 +319,6 @@ Deploying to: ${networkConfiguration.networkName}
 
     public async initializeCash(): Promise<void> {
         const cash = new LegacyReputationToken(this.dependencies, this.getContractAddress('Cash'));
-        await cash.faucet(new BigNumber(10).pow(18).multipliedBy(new BigNumber(1000)));
         const defaultAddress = await this.signer.getAddress();
         const legacyBalance = await cash.balanceOf_(defaultAddress);
         if (!legacyBalance || legacyBalance == new BigNumber(0)) {
