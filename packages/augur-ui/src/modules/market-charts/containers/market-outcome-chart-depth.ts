@@ -8,8 +8,9 @@ import orderForMarketDepth from 'modules/markets/helpers/order-for-market-depth'
 import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
 import getPrecision from 'utils/get-number-precision';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { ASKS, BIDS, BUY, SELL } from 'modules/common/constants';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { ASKS, BIDS } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.marketId ? selectMarket(ownProps.marketId) : ownProps.market;
@@ -31,11 +32,7 @@ const mapStateToProps = (state, ownProps) => {
     state.orderBooks[market.marketId][ownProps.selectedOutcomeId];
 
   if (ownProps.initialLiquidity) {
-    const bids = (outcomeOrderBook || []).filter(order => order.type === BUY);
-    const asks = (outcomeOrderBook || []).filter(order => order.type === SELL);
-    outcomeOrderBook = {};
-    outcomeOrderBook[ASKS] = asks;
-    outcomeOrderBook[BIDS] = bids;
+    outcomeOrderBook = formatOrderBook(outcomeOrderBook);
   }
 
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcomeOrderBook);

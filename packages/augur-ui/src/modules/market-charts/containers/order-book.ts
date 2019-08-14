@@ -4,8 +4,9 @@ import { createBigNumber } from "utils/create-big-number";
 import OrderBook from "modules/market-charts/components/order-book/order-book";
 import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-assign-cumulative-shares";
 import { selectMarket } from "modules/markets/selectors/market";
-import { ASKS, BIDS, BUY, SELL } from "modules/common/constants";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { ASKS, BIDS } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
@@ -16,11 +17,7 @@ const mapStateToProps = (state, ownProps) => {
     state.orderBooks[market.marketId][selectedOutcomeId];
 
   if (ownProps.initialLiquidity) {
-    const bids = (outcomeOrderBook || []).filter(order => order.type === BUY);
-    const asks = (outcomeOrderBook || []).filter(order => order.type === SELL);
-    outcomeOrderBook = {};
-    outcomeOrderBook[ASKS] = asks;
-    outcomeOrderBook[BIDS] = bids;
+    outcomeOrderBook = formatOrderBook(outcomeOrderBook);
   }
 
   const minPrice = market.minPriceBigNumber || createBigNumber(0);
