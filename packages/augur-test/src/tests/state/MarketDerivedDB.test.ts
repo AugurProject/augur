@@ -123,6 +123,20 @@ test("Flexible Search", async () => {
         _scalarDenomination: "fake scalar denomination",
       }),
     },
+    {
+      _id: "0x2222222222222222222222222222222222222222",
+      blockNumber: 2,
+      market: "0x2222222222222222222222222222222222222222",
+      marketCreator: ACCOUNTS[0].publicKey,
+      extraInfo: JSON.stringify({
+        categories: [""],
+        description: "",
+        longDescription: "",
+        resolutionSource: "",
+        backupSource: "",
+        _scalarDenomination: "",
+      }),
+    },
   ];
   await db.addNewBlock(DBName, blockLogs);
   await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
@@ -143,7 +157,7 @@ test("Flexible Search", async () => {
   expect(docs.length).toEqual(1);
 
   docs = await Augur.syncableFlexSearch.search(ACCOUNTS[0].publicKey);  // marketCreator
-  expect(docs.length).toEqual(1);
+  expect(docs.length).toEqual(2);
 
   docs = await Augur.syncableFlexSearch.search("fake");  // _scalarDenomination
   expect(docs.length).toEqual(1);
@@ -163,4 +177,10 @@ test("Flexible Search", async () => {
 
   expect(doc).toHaveProperty("start");
   expect(doc).toHaveProperty("end");
+
+  // @TODO Figure out why the test of rollback below times out
+  // await db.rollback(1);
+
+  // docs = await Augur.syncableFlexSearch.search("blah");
+  // expect(docs.length).toEqual(0);
 });
