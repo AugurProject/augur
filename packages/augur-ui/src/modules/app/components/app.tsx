@@ -597,7 +597,9 @@ export default class AppView extends Component<AppProps, AppState> {
                 </section>
               )}
             <section
-              className={Styles.Main__wrap}
+              className={classNames(Styles.Main__wrap, {
+                [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
+              })}
               style={{ marginLeft: categoriesMargin }}
             >
               {InnerNav && (

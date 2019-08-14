@@ -3,14 +3,6 @@ import {
   MARKET_SORT_PARAMS,
   MARKET_OPEN,
   MARKET_REPORTING,
-  MARKET_CLOSED,
-  MAX_FEE_02_PERCENT,
-  MAX_FEE_05_PERCENT,
-  MAX_FEE_100_PERCENT,
-  MAX_FEE_10_PERCENT,
-  MAX_FEE_20_PERCENT,
-  MAX_FEE_30_PERCENT,
-  MAX_FEE_40_PERCENT,
   MOBILE_MENU_STATES,
 } from "modules/common/constants";
 import { Checkbox } from "modules/common/form";
@@ -33,31 +25,17 @@ const sortOptions = [
 const filterOptions = [
   { value: MARKET_OPEN, label: "Open" },
   { value: MARKET_REPORTING, label: "In Reporting" },
-  { value: MARKET_CLOSED, label: "Resolved" },
-];
-
-const maxFeesOptions = [
-  { label: "All Fees", value: MAX_FEE_100_PERCENT },
-  { label: "Fees < 2%", value: MAX_FEE_02_PERCENT },
-  { label: "Fees < 5%", value: MAX_FEE_05_PERCENT },
-  { label: "Fees < 10%", value: MAX_FEE_10_PERCENT },
-  { label: "Fees < 20%", value: MAX_FEE_20_PERCENT },
-  { label: "Fees < 30%", value: MAX_FEE_30_PERCENT },
-  { label: "Fees < 40%", value: MAX_FEE_40_PERCENT },
 ];
 
 interface FilterSearchProps {
   filter: string;
   sort: string;
-  maxFee: string;
   updateFilter: Function;
   defaultFilter: string;
   defaultSort: string;
-  defaultMaxFee: string;
   hasOrders: boolean;
   updateFilterOption: Function;
   updateSortOption: Function;
-  updateMaxFee: Function;
   updateHasOpenOrders: Function;
   updateMobileMenuState: Function;
   history: History;
@@ -69,7 +47,6 @@ export default class FilterSearch extends Component<FilterSearchProps> {
     super(props);
     this.changeSortDropdown = this.changeSortDropdown.bind(this);
     this.changeFilterDropdown = this.changeFilterDropdown.bind(this);
-    this.changeMaxFees = this.changeMaxFees.bind(this);
     this.goToPageOne = this.goToPageOne.bind(this);
     this.changeHasOrders = this.changeHasOrders.bind(this);
   }
@@ -92,13 +69,12 @@ export default class FilterSearch extends Component<FilterSearchProps> {
       filter,
       updateSortOption,
       updateFilter,
-      maxFee,
       hasOrders,
     } = this.props;
 
     this.goToPageOne();
     updateSortOption(value);
-    updateFilter({ filter, sort: value, maxFee, hasOrders });
+    updateFilter({ filter, sort: value, hasOrders });
   }
 
   changeFilterDropdown(value) {
@@ -106,28 +82,18 @@ export default class FilterSearch extends Component<FilterSearchProps> {
       sort,
       updateFilterOption,
       updateFilter,
-      maxFee,
       hasOrders,
     } = this.props;
 
     this.goToPageOne();
     updateFilterOption(value);
-    updateFilter({ filter: value, sort, maxFee, hasOrders });
-  }
-
-  changeMaxFees(maxFee) {
-    const { sort, filter, updateMaxFee, hasOrders, updateFilter } = this.props;
-
-    this.goToPageOne();
-    updateMaxFee(maxFee);
-    updateFilter({ filter, sort, maxFee, hasOrders });
+    updateFilter({ filter: value, sort, hasOrders });
   }
 
   changeHasOrders(event) {
     const {
       filter,
       sort,
-      maxFee,
       updateFilter,
       hasOrders,
       updateHasOpenOrders,
@@ -137,7 +103,6 @@ export default class FilterSearch extends Component<FilterSearchProps> {
     updateFilter({
       filter,
       sort,
-      maxFee,
       hasOrders: hasOpenOrders,
     });
   }
@@ -146,7 +111,6 @@ export default class FilterSearch extends Component<FilterSearchProps> {
     const {
       defaultFilter,
       defaultSort,
-      defaultMaxFee,
       hasOrders,
       updateMobileMenuState,
     } = this.props;
@@ -162,11 +126,6 @@ export default class FilterSearch extends Component<FilterSearchProps> {
           defaultValue={defaultSort}
           onChange={this.changeSortDropdown}
           options={sortOptions}
-        />
-        <SquareDropdown
-          defaultValue={defaultMaxFee}
-          onChange={this.changeMaxFees}
-          options={maxFeesOptions}
         />
         <FilterButton
           action={() =>

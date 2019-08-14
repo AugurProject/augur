@@ -5,44 +5,48 @@ import {
   MARKET_REPORTING,
   MARKET_CLOSED,
   REPORTING_STATE,
+  MAX_SPREAD_ALL_SPREADS,
 } from 'modules/common/constants';
-import { NodeStyleCallback } from 'modules/types';
-import { ThunkAction } from "redux-thunk";
+import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
 import { Getters } from '@augurproject/sdk';
 import { UpdateMarketsAction, updateMarketsData } from './update-markets-data';
 
 interface SortOptions {
-  sortBy?: Getters.Markets.GetMarketsSortBy,
-  isSortDescending?: boolean,
+  sortBy?: Getters.Markets.GetMarketsSortBy;
+  isSortDescending?: boolean;
 }
 
 export interface LoadMarketsFilterOptions {
-  categories: string[],
-  search: string,
-  filter: string,
-  sort: string,
-  maxFee: string,
-  maxLiquiditySpread: string,
-  includeInvalidMarkets: boolean,
-  limit: number,
-  offset: number,
+  categories: string[];
+  search: string;
+  filter: string;
+  sort: string;
+  maxFee: string;
+  maxLiquiditySpread: string;
+  includeInvalidMarkets: boolean;
+  limit: number;
+  offset: number;
 }
 
 export const loadMarketsByFilter = (
   filterOptions: LoadMarketsFilterOptions,
   cb: Function = () => {}
-):ThunkAction<void, AppState, void, UpdateMarketsAction > => async (
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
   dispatch,
   getState
 ) => {
-  const augur = augurSdk.get();
-  const { universe } = getState();
-
+  const { universe, connection } = getState();
   if (!(universe && universe.id)) return;
 
+  // Check to see if SDK is connected first
+  // since URL parameters can trigger this action before the SDK is ready
+  if (!connection.isConnected) return;
+
+  const augur = augurSdk.get();
+
   const reportingStates: string[] = [];
-  const sort:SortOptions = {};
+  const sort: SortOptions = {};
   switch (filterOptions.sort) {
     case MARKET_SORT_PARAMS.RECENTLY_TRADED: {
       // Sort By Recently Traded:
@@ -82,15 +86,13 @@ export const loadMarketsByFilter = (
         REPORTING_STATE.OPEN_REPORTING,
         REPORTING_STATE.CROWDSOURCING_DISPUTE,
         REPORTING_STATE.AWAITING_NEXT_WINDOW,
-        REPORTING_STATE.AWAITING_FORK_MIGRATION,
+        REPORTING_STATE.AWAITING_FORK_MIGRATION
       );
       break;
     }
     case MARKET_CLOSED: {
       // resolved markets only:
-      reportingStates.push(
-        REPORTING_STATE.FINALIZED,
-      );
+      reportingStates.push(REPORTING_STATE.FINALIZED);
       break;
     }
     default: {
@@ -100,21 +102,33 @@ export const loadMarketsByFilter = (
     }
   }
 
-  const params = {
+  let params = {
     universe: universe.id,
     categories: filterOptions.categories,
     // search: filterOptions.search,
     maxFee: filterOptions.maxFee,
-    // maxLiquiditySpread: filterOptions.maxLiquiditySpread,
-    // includeInvalidMarkets: filterOptions.includeInvalidMarkets,
+    includeInvalidMarkets: filterOptions.includeInvalidMarkets,
     // limit: filterOptions.limit,
     // offset: filterOptions.offset,
     reportingStates,
-    ...sort
+    ...sort,
   };
 
+  if (
+    filterOptions.maxLiquiditySpread &&
+    filterOptions.maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS
+  ) {
+    params = Object.assign(params, {
+      ...params,
+      maxLiquiditySpread: filterOptions.maxLiquiditySpread,
+    });
+  }
+
   const markets = await augur.getMarkets({ ...params });
-  const marketInfos =  markets.markets.reduce((p, m) => ({...p, [m.id]: m}), {})
+  const marketInfos = markets.markets.reduce(
+    (p, m) => ({ ...p, [m.id]: m }),
+    {}
+  );
   dispatch(updateMarketsData(marketInfos));
   cb(null, markets);
 };

@@ -1,0 +1,81 @@
+@import (reference) '~assets/styles/shared';
+
+.Filters {
+  display: flex;
+  flex-direction: column;
+  margin: 0 40px;
+
+  @media @breakpoint-mobile {
+    margin: 2rem 1rem;
+  }
+
+  > span {
+    .text-14-bold;
+
+    text-transform: uppercase;
+    color:#AFA7C1;
+    margin: @size-32 0 0 0;
+  }
+
+  > div {
+    > div {
+      grid-template-columns: 34px auto 1rem;
+      border: none;
+      height: auto;
+      margin: 12px 0;
+      cursor: pointer;
+      background: #07030E;
+
+      > h5 {
+        text-transform: capitalize;
+      }
+
+      > svg {
+        margin: 0
+      }
+
+      &:hover {
+        border: none;
+      }
+    }
+  }
+}
+
+.Filter {
+  display: flex;
+
+
+  > span:first-of-type {
+    .text-10-bold;
+
+    text-transform: uppercase;
+    color:@color-tertiary-info-text;
+    margin: @size-28 0 @size-6 0;
+  }
+
+  > span:last-of-type {
+    margin: @size-28 0 @size-6 @size-6;
+
+    @media @breakpoint-mobile {
+      margin-top: @size-24;
+    }
+  }
+}
+
+
+.Filter_TooltipHint {
+  > svg {
+    height: @size-12;
+    width: @size-12;
+    fill: @color-tertiary-info-text;
+
+    @media @breakpoint-mobile {
+      height: @size-16;
+      width: @size-16;
+    }
+  }
+}
+
+.Filter_TooltipContainer {
+  margin: 0 0 0 6px;
+}

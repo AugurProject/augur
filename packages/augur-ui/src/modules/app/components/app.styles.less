@@ -46,6 +46,7 @@ h6 {
   @media @breakpoint-mobile {
     /* topbar mobile height */
     grid-template-rows: @top-bar-height-mobile auto;
+    overflow: visible;
   }
 }
 
@@ -53,9 +54,9 @@ h6 {
   display: grid;
 
   /* inner menubar width */
-  grid-template-columns: 6.875rem auto;
+  grid-template-columns: 6.5rem auto;
+
   margin-left: -100px;
-  overflow: hidden;
 
   @media @breakpoint-mobile {
     grid-template-columns: none;
@@ -64,12 +65,24 @@ h6 {
   }
 }
 
+.Main__wrapMarkets {
+  grid-template-columns: 350px auto;
+
+  @media @breakpoint-mobile {
+    grid-template-columns: none;
+    grid-template-rows: 0 auto;
+    margin-left: 0;
+  }
+}
+
+
 .Main__content {
   height: calc(~"100vh - @{top-bar-height}");
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
 
+  padding-bottom: 4rem;
   @media @breakpoint-mobile {
     height: calc(~"100vh - @{top-bar-height-mobile}");
     width: 100vw;

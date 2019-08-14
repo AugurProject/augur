@@ -43,6 +43,17 @@ export function isLessThan(value, readable, target, message) {
   return "";
 }
 
+export function isValidFee(value, readable, fee) {
+  if (!checkValidNumbers([value, fee])) {
+    return "";
+  }
+
+  if (createBigNumber(value).eq(ZERO) && createBigNumber(fee).gt(ZERO)) {
+    return 'Market creator fee must be greater than 0% when affiliate fee is greater than 0%';
+  }
+  return "";
+}
+
 export function dividedBy(value, readable, min, max) {
   if (!checkValidNumbers([value, min, max])) {
     return "";
@@ -96,7 +107,7 @@ export function checkCategoriesArray(value) {
 export function moreThanDecimals(value, decimals) {
   if (Math.floor(value) === value) return "";
 
-  const decimalsValue = value.toString().includes(".") ? value.toString().split(".")[1].length : 0;
+  const decimalsValue = value.toString().includes(".") ? parseFloat(value).toString().split(".")[1].length : 0;
   if (decimalsValue > decimals) return "Can't enter more than " + decimals + " decimal points";
   return "";
 }

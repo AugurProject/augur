@@ -399,6 +399,7 @@ export const VALIDATION_ATTRIBUTES = {
     readableName: 'Market creator fee',
     checkBetween: true,
     checkFilledNumber: true,
+    checkFee: true,
     min: 0,
     max: 50,
   },
