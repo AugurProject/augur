@@ -6,14 +6,13 @@
 
 declare module "flexsearch" {
   interface Index<T> {
-    // @TODO: Chaining
     readonly id: string;
     readonly index: string;
     readonly length: number;
 
     init();
     init(options: CreateOptions);
-    add(id: number, o: T);
+    add(id: number, o: T):this;
     add(o: T): void;
     search(query: string, options: number | SearchOptions, callback: (results: SearchResults<T>) => void): void;
     search(query: string, options?: number | SearchOptions): Promise<Array<SearchResults<T>>>;
@@ -23,7 +22,7 @@ declare module "flexsearch" {
     remove(id: number);
     clear();
     destroy();
-    addMatcher(matcher: Matcher);
+    addMatcher(matcher: Matcher):this;
     where(whereFn: (o: T) => boolean): Promise<Array<SearchResults<T>>>;
     where(whereObj: {[key: string]: string});
     encode(str: string): string;
