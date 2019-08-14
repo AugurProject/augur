@@ -810,6 +810,7 @@ export class Markets {
           maxPrice: displayMaxPrice.toString(10),
           cumulativeScale: cumulativeScale.toString(10),
           author: marketCreatedLog.marketCreator,
+          designatedReporter: marketCreatedLog.designatedReporter,
           creationBlock: marketCreatedLog.blockNumber,
           creationTime: marketCreatedLog.timestamp,
           categories,
