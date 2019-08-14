@@ -15,11 +15,15 @@ export function isMaxLength(value, maxLength) {
 }
 
 export function isFilledNumber(value, readable, message) {
-  if (value !== null && value !== "" && value !== "-") return "";
+  if (value !== null && !checkValidNumber(value)) return "";
   return message ? message : readable + " is required";
 }
 
 export function isBetween(value, readable, min, max) {
+  if (!checkValidNumbers([value])) {
+    return "";
+  }
+
   if (createBigNumber(value).gt(createBigNumber(max))) {
     return readable + " must be less than " + max;
   } else if (createBigNumber(value).lt(createBigNumber(min))) {
@@ -29,6 +33,10 @@ export function isBetween(value, readable, min, max) {
 }
 
 export function isLessThan(value, readable, target, message) {
+  if (!checkValidNumbers([value, target])) {
+    return "";
+  }
+
   if (target !== null && createBigNumber(value).gte(createBigNumber(target))) {
     return message ? message : 'Must be less than ' + target;
   }
@@ -36,6 +44,10 @@ export function isLessThan(value, readable, target, message) {
 }
 
 export function dividedBy(value, readable, min, max) {
+  if (!checkValidNumbers([value, min, max])) {
+    return "";
+  }
+
   const range = createBigNumber(max).minus(createBigNumber(min));
   if (range.mod(value).eq(ZERO)) {
     return "";
@@ -44,6 +56,10 @@ export function dividedBy(value, readable, min, max) {
 }
 
 export function isMoreThan(value, readable, target) {
+  if (!checkValidNumbers([value, target])) {
+    return "";
+  }
+
   if (target !== null && createBigNumber(value).lte(createBigNumber(target))) {
     return 'Max can\'t be lower than min';
   }
@@ -51,6 +67,10 @@ export function isMoreThan(value, readable, target) {
 }
 
 export function dateGreater(value, target, message) {
+  if (!checkValidNumbers([value, target])) {
+    return "";
+  }
+
   if (value !== null && createBigNumber(value).lt(createBigNumber(target))) {
     return message;
   }
@@ -119,4 +139,16 @@ export function checkOutcomesArray(value) {
 export function isPositive(value) {
   if (value && value < 0) return "Can't enter negative number";
   return "";
+}
+
+export function checkValidNumber(value) {
+  return isNaN(value) || value === "" || value === "-";
+}
+
+function checkValidNumbers(values) {
+  let valid = true;
+  values.map(value => {
+    if (checkValidNumber(value)) valid = false;
+  });
+  return valid;
 }

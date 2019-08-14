@@ -6,5 +6,7 @@
   "extends": [
     "gts/tslint.json"
   ],
-  "rules": {}
+  "rules": {
+    "quotemark": [true, "single", "jsx-single", "avoid-template", "avoid-escape"]
+  }
 }

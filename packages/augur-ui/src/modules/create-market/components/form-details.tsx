@@ -36,6 +36,7 @@ import {
   OUTCOMES
 } from "modules/create-market/constants";
 import { formatDate, convertUnixToFormattedDate } from "utils/format-date";
+import { checkValidNumber } from 'modules/common/validations';
 
 import Styles from "modules/create-market/components/form-details.styles.less";
 import { createBigNumber } from "utils/create-big-number";
@@ -223,7 +224,7 @@ export default class FormDetails extends React.Component<
                   placeholder="0"
                   onChange={(value: string) => {
                     onChange("minPrice", value);
-                    onChange("minPriceBigNumber", createBigNumber(value));
+                    if (!checkValidNumber(value)) onChange("minPriceBigNumber", createBigNumber(value));
                     onError("maxPrice", "");
                   }}
                   value={minPrice}
@@ -235,7 +236,7 @@ export default class FormDetails extends React.Component<
                   placeholder="100"
                   onChange={(value: string) => {
                     onChange("maxPrice", value);
-                    onChange("maxPriceBigNumber", createBigNumber(value));
+                    if (!checkValidNumber(value)) onChange("maxPriceBigNumber", createBigNumber(value));
                     onError("minPrice", "");
                   }}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}

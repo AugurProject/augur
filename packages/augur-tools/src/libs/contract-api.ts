@@ -270,6 +270,10 @@ export class ContractAPI {
     await market.contribute(payoutNumerators, amount, description);
   }
 
+  async contributeToTentative(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description: string = ""): Promise<void> {
+    await market.contributeToTentative(payoutNumerators, amount, description);
+  }
+
   // TODO Update this to handle case where crowdsourcer is 0 address (hasn't gotten any contributions)
   async getRemainingToFill(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<BigNumber> {
     const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
@@ -278,12 +282,36 @@ export class ContractAPI {
     return crowdsourcer.getRemainingToFill_();
   }
 
+  async getCrowdsourcerDisputeBond(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<BigNumber> {
+    const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
+    const crowdsourcerAddress = await market.getCrowdsourcer_(payoutDistributionHash);
+    if (crowdsourcerAddress === "0") {
+      const totalStake = await market.getParticipantStake_();
+      return totalStake.times(2);
+    }
+    const crowdsourcer = this.augur.contracts.getReportingParticipant(crowdsourcerAddress);
+    const remaining = await crowdsourcer.getRemainingToFill_();
+    return remaining;
+  }
+
   async derivePayoutDistributionHash(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<string> {
     return market.derivePayoutDistributionHash_(payoutNumerators);
   }
 
   async isForking(): Promise<boolean> {
     return this.augur.contracts.universe.isForking_();
+  }
+
+  async getDisputeThresholdForFork_(): Promise<BigNumber> {
+    return this.augur.contracts.universe.getDisputeThresholdForFork_();
+  }
+
+  async getDisputeThresholdForDisputePacing(): Promise<BigNumber> {
+    return this.augur.contracts.universe.getDisputeThresholdForDisputePacing_();
+  }
+
+  async getInitialReportMinValue(): Promise<BigNumber> {
+    return this.augur.contracts.universe.  getInitialReportMinValue_();
   }
 
   migrateOutByPayout(reputationToken: ContractInterfaces.ReputationToken, payoutNumerators: BigNumber[], attotokens: BigNumber) {
@@ -368,6 +396,10 @@ export class ContractAPI {
     const initialReporterAddress = await market.getCrowdsourcer_(payoutDistributionHash);
     const initialReporter = this.augur.contracts.getInitialReporter(initialReporterAddress);
     return initialReporter.getStake_();
+  }
+
+  async getParticipantStake(market: ContractInterfaces.Market): Promise<BigNumber> {
+    return market.getParticipantStake_();
   }
 
   async finalizeMarket(market: ContractInterfaces.Market): Promise<void> {

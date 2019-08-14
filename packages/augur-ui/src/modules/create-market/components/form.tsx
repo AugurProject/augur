@@ -514,16 +514,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       );
 
       updateNewMarket({ endTimeFormatted, setEndTime, hour, minute, meridiem, offset, offsetName, timezone });
-    } else if (
-      name === "minPrice"
-    ) {
-      const minPriceBigNumber = createBigNumber(value);
-      updateNewMarket({ minPriceBigNumber });
-    } else if (
-      name === "maxPrice"
-    ) {
-      const maxPriceBigNumber = createBigNumber(value);
-      updateNewMarket({ maxPriceBigNumber });
     }
     this.onError(name, '');
     if (callback) callback(name);
