@@ -22,7 +22,7 @@ export const selectMarketPositionsSummary = createSelector(
     }
     const marketPositions = marketAccountPositions.tradingPositionsPerMarket;
 
-    const currentValue = formatDai(marketPositions.unrealizedRevenue || ZERO);
+    const currentValue = formatDai(marketPositions.unrealized || ZERO);
     const totalReturns = formatDai(marketPositions.total || ZERO);
     const totalPercent = formatPercent(
       createBigNumber(marketPositions.totalPercent || ZERO).times(100),
