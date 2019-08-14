@@ -101,16 +101,6 @@ export default class MarketsView extends Component<
     } = this.props;
     const { filter, sort, hasOrders } = this.state;
     this.setState({ isSearchingMarkets: true });
-    console.log('callingLOADWITH:::', {
-      categories,
-      search,
-      filter,
-      sort,
-      maxFee,
-      hasOrders,
-      maxLiquiditySpread,
-      includeInvalidMarkets: includeInvalidMarkets==='show',
-    });
     this.loadMarketsByFilter(
       {
         categories,
