@@ -198,7 +198,7 @@ contract Augur is IAugur {
     //
     // Share Tokens
     //
-    function recordMarketShareTokens(IMarket _market) private returns (bool) {
+    function recordMarketShareTokens(IMarket _market) private {
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
         for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {
             shareTokens[address(_market.getShareToken(_outcome))] = true;
