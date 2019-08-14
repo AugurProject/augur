@@ -118,7 +118,11 @@ export class SyncableFlexSearch {
     }
   }
 
-  removeMarketCreatedDocs(marketCreatedDocs: MarketCreatedDoc[]) {
-
+  async removeMarketCreatedDocs(marketCreatedDocs: any[]) {
+    for (const marketCreatedDoc of marketCreatedDocs) {
+      if (marketCreatedDoc._id) {
+        await this.flexSearchIndex.remove(marketCreatedDoc._id);
+      }
+    }
   }
 }
