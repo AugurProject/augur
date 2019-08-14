@@ -6,25 +6,25 @@
   margin: 0 40px;
 
   @media @breakpoint-mobile {
-    margin: 2rem 1rem;
+    margin: @size-32 @size-16;
   }
 
   > span {
     .text-14-bold;
 
     text-transform: uppercase;
-    color:#AFA7C1;
+    color:@color-tertiary-info-text;
     margin: @size-32 0 0 0;
   }
 
   > div {
     > div {
-      grid-template-columns: 34px auto 1rem;
+      grid-template-columns: 34px auto @size-16;
       border: none;
       height: auto;
-      margin: 12px 0;
+      margin: @size-12 0;
       cursor: pointer;
-      background: #07030E;
+      background: @color-primary-background;
 
       > h5 {
         text-transform: capitalize;
@@ -77,5 +77,5 @@
 }
 
 .Filter_TooltipContainer {
-  margin: 0 0 0 6px;
+  margin: 0 0 0 @size-6;
 }
