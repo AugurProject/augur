@@ -1,0 +1,14 @@
+pull_request_rules:
+  - name: automatic merge on CI success and review
+    conditions:
+      - "#approved-reviews-by>=1"
+      - "#review-requested=0"
+      - "#changes-requested-reviews-by=0"
+      - "#commented-reviews-by=0"
+      - status-check=AugurProject.augur
+      - base=master
+      - label!=work-in-progress
+    actions:
+      merge:
+        method: merge
+        strict: smart
