@@ -38,7 +38,7 @@ declare module "flexsearch" {
       field?: string[],
       bool?: "and" | "or" | "not"
       page?: boolean | Cursor;
-      // @TODO: Sorting
+      sort?: (a, b)=>boolean | string;
   }
 
   interface SearchResults<T> {
