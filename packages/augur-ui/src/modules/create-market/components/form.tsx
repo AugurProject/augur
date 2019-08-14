@@ -69,6 +69,7 @@ import {
   checkAddress,
   dividedBy,
   dateGreater,
+  isValidFee
 } from 'modules/common/validations';
 import { formatDate, buildformattedDate } from 'utils/format-date';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
@@ -396,6 +397,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkDecimals,
       decimals,
       checkForAddress,
+      checkFee
     } = validationsObj;
 
     const checkValidations = [
@@ -411,6 +413,9 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkMoreThan ? isMoreThan(value, readableName, newMarket.minPrice) : '',
       checkLessThan
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
+        : '',
+      checkFee
+        ? isValidFee(value, readableName, newMarket.affiliateFee)
         : '',
       checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
       checkDateGreater ? dateGreater(value, currentTimestamp, checkDateGreaterMessage) : '',

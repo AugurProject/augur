@@ -43,6 +43,17 @@ export function isLessThan(value, readable, target, message) {
   return "";
 }
 
+export function isValidFee(value, readable, fee) {
+  if (!checkValidNumbers([value, fee])) {
+    return "";
+  }
+
+  if (createBigNumber(value).eq(ZERO) && createBigNumber(fee).gt(ZERO)) {
+    return 'Market creator fee must be greater than 0% when affiliate fee is greater than 0%';
+  }
+  return "";
+}
+
 export function dividedBy(value, readable, min, max) {
   if (!checkValidNumbers([value, min, max])) {
     return "";
