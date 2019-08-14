@@ -111,6 +111,7 @@ export interface MarketCreatedLogExtraInfo {
   description: string;
   longDescription?: string;
   resolutionSource?: string;
+  backupSource?: string;
   _scalarDenomination?: string;
 }
 

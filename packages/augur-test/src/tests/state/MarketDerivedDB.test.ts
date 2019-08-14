@@ -24,6 +24,7 @@ test("Bulksync Doc merge update", async () => {
     description: "Foobar has 12% market share by 2041",
     longDescription: "lol",
     resolutionSource: "http://www.blah.com",
+    backupSource: "http://www.blah2.com",
     _scalarDenomination: "fake scalar denomination",
     tags: ["humanity", "30"],
   });
@@ -73,6 +74,7 @@ test("Blockstream Doc merge update", async () => {
         description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
+        backupSource: "http://www.blah2.com",
         _scalarDenomination: "fake scalar denomination",
         tags: ["humanity", "30"],
       }),
@@ -117,6 +119,7 @@ test("Flexible Search", async () => {
         description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
+        backupSource: "http://www.blah2.com",
         _scalarDenomination: "fake scalar denomination",
       }),
     },
@@ -154,6 +157,7 @@ test("Flexible Search", async () => {
     description: "Foobar has 12% market share by 2041",
     longDescription: "lol",
     resolutionSource: "http://www.blah.com",
+    backupSource: "http://www.blah2.com",
     _scalarDenomination: "fake scalar denomination",
   });
 

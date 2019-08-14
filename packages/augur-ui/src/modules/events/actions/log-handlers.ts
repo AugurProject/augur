@@ -35,6 +35,7 @@ import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs } from '@augurproject/sdk';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
+import { Augur } from '@augurproject/sdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 
 const handleAlertUpdate = (
@@ -118,6 +119,14 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   );
   // update assets each block
   if (getState().authStatus.isLogged) dispatch(updateAssets());
+};
+
+export const handleMarketCreatedBulkSyncFinished = (log: any) => {
+  Augur.syncableFlexSearch.addMarketCreatedDocs(log.marketCreatedDocs);
+};
+
+export const handleMarketCreatedRollbackFinished = (log: any) => {
+  Augur.syncableFlexSearch.removeMarketCreatedDocs(log.marketCreatedDocs);
 };
 
 export const handleMarketCreatedLog = (log: any) => (

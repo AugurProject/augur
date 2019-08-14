@@ -4,7 +4,7 @@ There are a variety of "events" that are emitted by the Augur contracts.  Each e
 
 <aside class="notice">The Events API described here should not be confused with the (unrelated) concept of "events" that <a href="#reporter">Reporters</a> <a href="#report">Report</a> on. These concepts are sufficiently different that the context should always make clear which kind of "event" is being discussed. However, if this documentation is ever ambiguous about this, feel free to drop us a note at <a href="mailto:hugs@augur.net">hugs@augur.net</a>, <a href="https://www.reddit.com/r/augur">Reddit</a>, or <a href="https://twitter.com/AugurProject">Twitter</a>!</aside>
 
-The augur.js Events API includes event listeners, which provide notifications of events that are currently happening. The functions `augur.events.startAugurNodeEventListeners`, `augur.events.startBlockchainEventListeners`, and `augur.events.startBlockListeners` can be used to listen for incoming events. 
+The augur.js Events API includes event listeners, which provide notifications of events that are currently happening. The functions `augur.events.startAugurNodeEventListeners`, `augur.events.startBlockchainEventListeners`, and `augur.events.startBlockListeners` can be used to listen for incoming events.
 
 The function `augur.events.getAllAugurLogs` can be used to get an array of all Augur-related events that have been logged in the past.
 
@@ -50,7 +50,7 @@ augur.events.getAllAugurLogs({
 
 augur.events.startAugurNodeEventListeners({
   TokensTransferred: function(error, result){
-    console.log("A new TokensTransferred event has occurred: ", result); 
+    console.log("A new TokensTransferred event has occurred: ", result);
   }
 }, function() {
   console.log("Started Augur Node event listeners!");
@@ -72,8 +72,8 @@ augur.events.startAugurNodeEventListeners({
 augur.events.startBlockchainEventListeners(
   {
     Augur: ["TokensTransferred"],
-  }, 
-  3414977, 
+  },
+  3414977,
   function(blockHash, logsAdded) {
     console.log("Logs added");
     console.log(logsAdded);
@@ -83,7 +83,7 @@ augur.events.startBlockchainEventListeners(
     console.log(logsRemoved);
   }
 );
-// example output: 
+// example output:
 "Starting blockstream at block  3414977"
 "Logs added"
 [
@@ -117,7 +117,7 @@ augur.events.startBlockchainEventListeners(
 augur.events.startBlockListeners({
   onAdded: function(block) {
     console.log("New block added!", block);
-  }, 
+  },
   onRemoved: function(block) {
     console.log("Block removed!", block);
   }
@@ -166,7 +166,7 @@ augur.events.stopAugurNodeEventListeners(
 "Stopped Augur Node event listeners!"
 
 augur.events.stopBlockchainEventListeners();
-// example output: 
+// example output:
 "true"
 
 augur.events.stopBlockListeners();
@@ -230,7 +230,7 @@ Start listening for blocks being added/removed from the Ethereum blockchain.
 
 #### **Parameters:**
 
-* **`blockCallbacks`** (Object) Parameters object. 
+* **`blockCallbacks`** (Object) Parameters object.
     * **`blockCallbacks.onAdded`** (function) &lt;optional> Callback to fire when new blocks are received.
     * **`blockCallbacks.onRemoved`** (function) &lt;optional> Callback to fire when blocks are removed.
 
@@ -244,7 +244,7 @@ Removes all active listeners for events emitted by Augur Node.
 
 #### **Parameters:**
 
-* **`callback`** (function) &lt;optional> 
+* **`callback`** (function) &lt;optional>
 
 ### augur.events.stopBlockchainEventListeners()
 
@@ -272,7 +272,7 @@ Label                     | Contract                                            
 <a name="Burn"></a>Burn                      | [VariableSupplyToken](https://github.com/AugurProject/augur-core/blob/master/source/contracts/libraries/token/VariableSupplyToken.sol) | `value` amount of `target`'s tokens have been burned (i.e., completely destroyed).  | target | value
 <a name="CompleteSetsPurchased"></a>CompleteSetsPurchased | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The Ethereum address `account` purchased `numCompleteSets` in `market` of `universe`. | universe, market, account | numCompleteSets
 <a name="CompleteSetsSold"></a>CompleteSetsSold | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The Ethereum address `account` sold `numCompleteSets` in `market` of `universe`. | universe, market, account | numCompleteSets
-<a name="DisputeCrowdsourcerCompleted"></a>DisputeCrowdsourcerCompleted | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The Ethereum contract address `disputeCrowdsourcer` for `market` in `universe` filled the [Dispute Bond](#dispute-bond) required to [Challenge](#challenge) `market`'s [Tentative Outcome](#tentative-outcome). | universe, market | disputeCrowdsourcer 
+<a name="DisputeCrowdsourcerCompleted"></a>DisputeCrowdsourcerCompleted | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The Ethereum contract address `disputeCrowdsourcer` for `market` in `universe` filled the [Dispute Bond](#dispute-bond) required to [Challenge](#challenge) `market`'s [Tentative Outcome](#tentative-outcome). | universe, market | disputeCrowdsourcer
 <a name="DisputeCrowdsourcerContribution"></a>DisputeCrowdsourcerContribution | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The Ethereum address `reporter` [Staked](#dispute-stake) `amountStaked` [REP](#rep) on the [Outcome](#outcome) for `disputeCrowdsourcer` in `market` of `universe`. | universe, reporter, market | disputeCrowdsourcer, amountStaked
 <a name="DisputeCrowdsourcerCreated"></a>DisputeCrowdsourcerCreated | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The Ethereum contract address `disputeCrowdsourcer` with [Payout Set](#payout-set) `payoutNumerators` and [Dispute Bond](#dispute-bond) size `size` was created in `market` of `universe`. | universe, market | disputeCrowdsourcer, payoutNumerators, size
 <a name="DisputeCrowdsourcerRedeemed"></a>DisputeCrowdsourcerRedeemed | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | `reporter` redeemed `amountRedeemed` [REP](#rep) and received `repReceived` additional REP, plus `reportingFeesReceived` [attoETH](#atto-prefix), from `disputeCrowdsourcer` (with `payoutNumerators`) in `market` of `universe`. | universe, reporter, market | disputeCrowdsourcer, amountRedeemed, repReceived, reportingFeesReceived, payoutNumerators
@@ -283,10 +283,10 @@ Label                     | Contract                                            
 <a name="InitialReportSubmitted"></a>InitialReportSubmitted | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | `reporter` has submitted an [Initial Report](#initial-report) for the `market` in `universe` with `amountStaked` [REP](#rep) staked on the [Outcome](#outcome) `payoutNumerators`. If `reporter` is the [Designated Reporter](#designated-reporter) (as opposed to the [First Public Reporter](#first-public-reporter)), `isDesignatedReporter` is set to true. | universe, reporter, market | amountStaked, isDesignatedReporter, payoutNumerators
 <a name="InitialReporterTransferred"></a>InitialReporterTransferred | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | Ownership of an InitialReporter contract was transferred between Ethereum addresses `from` and `to` for `market` in `universe`. | universe, market | from, to
 <a name="MarketCreated"></a>MarketCreated             | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | `marketCreator` has created a `marketType` `market` with `outcomes` and `topic` in `universe` for a price of `marketCreationFee` and a price range of `minPrice` to `maxPrice`. Additional information about `market` can be found in `description` and `extraInfo`. | topic, universe, marketCreator | description, extraInfo, market, outcomes, marketCreationFee, minPrice, maxPrice, marketType
-<a name="MarketFinalized"></a>MarketFinalized           | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The [Outcome](#outcome) of `market` in `universe` is now considered final. | universe, market |  
-<a name="MarketMigrated"></a>MarketMigrated           | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | `market` was migrated from `originalUniverse` to `newUniverse`. | market, originalUniverse, newUniverse |  
+<a name="MarketFinalized"></a>MarketFinalized           | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The [Outcome](#outcome) of `market` in `universe` is now considered final. | universe, market |
+<a name="MarketMigrated"></a>MarketMigrated           | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | `market` was migrated from `originalUniverse` to `newUniverse`. | market, originalUniverse, newUniverse |
 <a name="MarketMailboxTransferred"></a>MarketMailboxTransferred  | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | Ownership of Market Creator Mailbox `mailbox` for `market` in `universe` was transferred from `from` address to `to` address. | universe, market, mailbox | from, to
-<a name="MarketParticipantsDisavowed"></a>MarketParticipantsDisavowed   | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The DisputeCrowdsourcers belonging to `market` in `universe` has been disavowed. | universe, market | 
+<a name="MarketParticipantsDisavowed"></a>MarketParticipantsDisavowed   | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | The DisputeCrowdsourcers belonging to `market` in `universe` has been disavowed. | universe, market |
 <a name="MarketTransferred"></a>MarketTransferred  | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | Ownership of `market` in `universe` was transferred from `from` address to `to` address. | universe, market | from, to
 <a name="Mint"></a>Mint                      | [VariableSupplyToken](https://github.com/AugurProject/augur-core/blob/master/source/contracts/libraries/token/VariableSupplyToken.sol) | `value` amount of brand new tokens were created for `target`. | target | value
 <a name="OrderCanceled"></a>OrderCanceled             | [Augur](https://github.com/AugurProject/augur-core/blob/master/source/contracts/Augur.sol) | `sender`'s [Order](#order) (with ID `orderId` and type `orderType`) for the Share Token at address `shareToken` was canceled in `universe`, and `sender` was refunded either `tokenRefund` in [attoETH](#atto-prefix) or `sharesRefund` Share Tokens. | universe, shareToken, sender | orderId, orderType, tokenRefund, sharesRefund

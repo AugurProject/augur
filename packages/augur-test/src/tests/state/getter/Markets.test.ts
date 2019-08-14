@@ -50,7 +50,7 @@ describe('State API :: Markets :: ', () => {
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
       designatedReporter,
-      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
+      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "resolutionSource": "http://www.blah.com", "backupSource": "http://www.blah2.com"}',
     });
     const yesNoMarket2 = await john.createYesNoMarket({
       endTime,
@@ -1793,7 +1793,6 @@ describe('State API :: Markets :: ', () => {
         ],
         reportingState: MarketReportingState.Forking,
         resolutionSource: null,
-        scalarDenomination: null,
         marketCreatorFeeRate: '0.01',
         settlementFee: '0.0100000000000001',
         reportingFeeRate: '0.0000000000000001',

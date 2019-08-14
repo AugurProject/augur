@@ -20,6 +20,7 @@ export interface MarketFields {
   description: string;
   longDescription: string;
   resolutionSource: string;
+  backupSource: string;
   _scalarDenomination: string;
   start: Date;
   end: Date;
@@ -29,6 +30,9 @@ export class SyncableFlexSearch {
   constructor() {
     this.flexSearchIndex = flexSearch.create(
       {
+        async: true,
+        cache: true,
+        worker: 3,
         doc:
         {
           id: "id",
@@ -44,6 +48,7 @@ export class SyncableFlexSearch {
             "description",
             "longDescription",
             "resolutionSource",
+            "backupSource",
             "_scalarDenomination",
           ],
         },
@@ -67,6 +72,7 @@ export class SyncableFlexSearch {
       let description = "";
       let longDescription = "";
       let resolutionSource = "";
+      let backupSource = "";
       let _scalarDenomination = "";
 
       // Parse extraInfo string
@@ -88,6 +94,7 @@ export class SyncableFlexSearch {
           description = info.description ? info.description : "";
           longDescription = info.longDescription ? info.longDescription : "";
           resolutionSource = info.resolutionSource ? info.resolutionSource : "";
+          backupSource = info.backupSource ? info.backupSource : "";
           _scalarDenomination = info._scalarDenomination ? info._scalarDenomination : "";
         }
       }
@@ -103,6 +110,7 @@ export class SyncableFlexSearch {
         description,
         longDescription,
         resolutionSource,
+        backupSource,
         _scalarDenomination,
         start: new Date(),
         end: new Date(),
@@ -110,5 +118,7 @@ export class SyncableFlexSearch {
     }
   }
 
-  // TODO: Add functionality for rolling back MarketCreated events from FlexSearch
+  removeMarketCreatedDocs(marketCreatedDocs: MarketCreatedDoc[]) {
+
+  }
 }

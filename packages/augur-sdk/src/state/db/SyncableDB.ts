@@ -5,6 +5,7 @@ import { DB } from "./DB";
 import { Log, ParsedLog } from "@augurproject/types";
 import { SyncStatus } from "./SyncStatus";
 import { augurEmitter } from "../../events";
+import { SubscriptionEventName } from "../../constants";
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -77,7 +78,21 @@ export class SyncableDB extends AbstractDB {
     this.syncing = false;
     await this.syncStatus.updateSyncingToFalse(this.dbName);
 
-    // TODO Make any external calls as needed (such as pushing user's balance to UI)
+    // Add MarketCreated docs to FlexSearch in web worker (so that unit tests will run)
+    if (this.eventName === 'MarketCreated') {
+      const marketCreatedRawDocs = await this.allDocs();
+      let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
+      marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
+      Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
+
+      // Emit MarketCreatedBulkSyncFinished event so FlexSearch will sync in DOM thread outside of web worker
+      augurEmitter.emit(SubscriptionEventName.MarketCreatedBulkSyncFinished, {
+        eventName: SubscriptionEventName.MarketCreatedBulkSyncFinished,
+        marketCreatedDocs,
+      });
+    }
+
+    // TODO Make any other external calls as needed (such as pushing user's balance to UI)
   }
 
   private parseLogArrays(logs: ParsedLog[]): void {
@@ -109,7 +124,7 @@ export class SyncableDB extends AbstractDB {
       return -1;
     }
 
-    if (this.eventName === "OrderEvent") {
+    if (this.eventName === 'OrderEvent') {
       this.parseLogArrays(logs);
     }
 
@@ -158,7 +173,7 @@ export class SyncableDB extends AbstractDB {
 
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
     } else {
-      throw new Error(`Unable to add new block`);
+      throw new Error('Unable to add new block');
     }
 
     return blocknumber;
@@ -176,6 +191,21 @@ export class SyncableDB extends AbstractDB {
       for (const doc of blocksToRemove.docs) {
         await this.db.remove(doc._id, doc._rev);
       }
+
+    // Remove MarketCreated docs to FlexSearch in web worker (so that unit tests will run)
+    if (this.eventName === 'MarketCreated') {
+      const marketCreatedRawDocs = await this.db.allDocs();
+      let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
+      marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
+      Augur.syncableFlexSearch.removeMarketCreatedDocs(marketCreatedDocs);
+
+      // Emit MarketCreatedRollbackFinished event so FlexSearch will sync in DOM thread outside of web worker
+      augurEmitter.emit(SubscriptionEventName.MarketCreatedRollbackFinished, {
+        eventName: SubscriptionEventName.MarketCreatedRollbackFinished,
+        blocksToRemove,
+      });
+    }
+
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing, true);
     } catch (err) {
       console.error(err);

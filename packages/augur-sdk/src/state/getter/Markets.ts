@@ -134,6 +134,7 @@ export interface MarketInfo {
   scalarDenomination: string | null;
   details: string | null;
   resolutionSource: string | null;
+  backupSource: string | null;
   numTicks: string;
   tickSize: string;
   consensus: string[] | null;
@@ -775,6 +776,7 @@ export class Markets {
         let description = null;
         let details = null;
         let resolutionSource = null;
+        let backupSource = null;
         let scalarDenomination = null;
         if (marketCreatedLog.extraInfo) {
           const extraInfo = JSON.parse(marketCreatedLog.extraInfo);
@@ -785,6 +787,9 @@ export class Markets {
             : null;
           resolutionSource = extraInfo.resolutionSource
             ? extraInfo.resolutionSource
+            : null;
+          backupSource = extraInfo.backupSource
+            ? extraInfo.backupSource
             : null;
           scalarDenomination = extraInfo._scalarDenomination
             ? extraInfo._scalarDenomination
@@ -836,6 +841,7 @@ export class Markets {
           reportingFeeRate: reportingFeeRate.toString(10),
           details,
           resolutionSource,
+          backupSource,
           numTicks: numTicks.toString(10),
           tickSize: tickSize.toString(10),
           consensus,
