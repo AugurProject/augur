@@ -82,7 +82,8 @@
 }
 
 .InnerNav__menu--main {
-  background: @color-theme-primary;
+  background: @color-primary-background;
+  border-right: 1px solid @color-primary-light;
   position: relative;
   z-index: @mask;
 }
@@ -113,9 +114,11 @@
     overflow-x: hidden;
     transition: left 0.2s ease-in-out;
     width: 12.5rem;
+    z-index: @mask-above;
 
     &.mobileShow {
       left: 0;
+      position: sticky;
 
       > div {
         align-items: center;
@@ -126,7 +129,6 @@
         flex-flow: row nowrap;
         height: 50px;
         padding: @size-16;
-        position: fixed;
         width: 200px;
         z-index: @mask-above;
 
@@ -200,6 +202,7 @@
   .InnerNav__menu--submenu {
     width: 100%;
     z-index: @above-all-content;
+    overflow: scroll;
   }
 
   .InnerNav__menu--submenu {

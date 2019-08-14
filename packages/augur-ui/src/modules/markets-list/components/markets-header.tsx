@@ -15,7 +15,6 @@ interface MarketsHeaderProps {
   location: object;
   filter: string;
   sort: string;
-  maxFee: string;
   hasOrders: boolean;
   updateFilter: Function;
   history: object;

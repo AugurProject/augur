@@ -402,6 +402,8 @@ export interface FilterSortOptions {
   marketFilter: string;
   marketSort: string;
   maxFee: string;
+  maxLiquiditySpread: string;
+  includeInvalidMarkets: string;
   transactionPeriod: string;
   hasOrders: boolean;
 }
