@@ -24,6 +24,7 @@ const mapStateToProps = (state: AppState, { location }) => {
 
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
 
+
   return {
     isConnected: state.connection.isConnected && state.universe.id != null,
     isLogged: state.authStatus.isLogged,
@@ -31,10 +32,12 @@ const mapStateToProps = (state: AppState, { location }) => {
     search: searchPhrase,
     isMobile: state.appStatus.isMobile,
     markets,
+    maxFee: state.filterSortOptions.maxFee,
+    maxLiquiditySpread: state.filterSortOptions.maxLiquiditySpread,
+    includeInvalidMarkets: state.filterSortOptions.includeInvalidMarkets,
     category: selectedCategoryName,
     defaultFilter: state.filterSortOptions.marketFilter,
     defaultSort: state.filterSortOptions.marketSort,
-    defaultMaxFee: state.filterSortOptions.maxFee,
     defaultHasOrders: state.filterSortOptions.hasOrders,
   };
 };

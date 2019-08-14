@@ -12,24 +12,25 @@ interface MarketsViewProps {
   markets: Array<MarketData>;
   location: object;
   history: object;
-  isConnected: boolean,
+  isConnected: boolean;
   toggleFavorite: (...args: any[]) => any;
   loadMarketsInfoIfNotLoaded: (...args: any[]) => any;
   isMobile: boolean;
   loadMarketsByFilter: Function;
   search?: string;
   categories?: string;
+  maxFee: string;
+  maxLiquiditySpread: string;
+  includeInvalidMarkets: string;
   universe?: string;
   defaultFilter: string;
   defaultSort: string;
-  defaultMaxFee: string;
   defaultHasOrders: boolean;
 }
 
 interface MarketsViewState {
   filter: string;
   sort: string;
-  maxFee: string;
   hasOrders: boolean;
   filterSortedMarkets: Array<string>;
   isSearchingMarkets: boolean;
@@ -54,7 +55,6 @@ export default class MarketsView extends Component<
     this.state = {
       filter: props.defaultFilter,
       sort: props.defaultSort,
-      maxFee: props.defaultMaxFee,
       hasOrders: props.defaultHasOrders,
       filterSortedMarkets: [],
       isSearchingMarkets: false,
@@ -73,34 +73,60 @@ export default class MarketsView extends Component<
   }
 
   componentDidUpdate(prevProps) {
-    const { search, categories, isConnected } = this.props;
+    const { search, categories, maxFee, maxLiquiditySpread, includeInvalidMarkets, isConnected } = this.props;
     if (
       isConnected !== prevProps.isConnected ||
-      (search !== prevProps.search || categories !== prevProps.categories)
+      (search !== prevProps.search ||
+        categories !== prevProps.categories ||
+        maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
+        maxFee !== prevProps.maxFee ||
+        includeInvalidMarkets !== prevProps.includeInvalidMarkets)
     ) {
       this.updateFilteredMarkets();
     }
   }
 
   updateFilter(params) {
-    const { filter, sort, maxFee, hasOrders } = params;
-    this.setState(
-      { filter, sort, maxFee, hasOrders },
-      this.updateFilteredMarkets
-    );
+    const { filter, sort, hasOrders } = params;
+    this.setState({ filter, sort, hasOrders }, this.updateFilteredMarkets);
   }
 
   updateFilteredMarkets() {
-    const { search, categories } = this.props;
-    const { filter, sort, maxFee, hasOrders } = this.state;
+    const {
+      search,
+      categories,
+      maxFee,
+      maxLiquiditySpread,
+      includeInvalidMarkets,
+    } = this.props;
+    const { filter, sort, hasOrders } = this.state;
     this.setState({ isSearchingMarkets: true });
+    console.log('callingLOADWITH:::', {
+      categories,
+      search,
+      filter,
+      sort,
+      maxFee,
+      hasOrders,
+      maxLiquiditySpread,
+      includeInvalidMarkets: includeInvalidMarkets==='show',
+    });
     this.loadMarketsByFilter(
-      { categories, search, filter, sort, maxFee, hasOrders },
+      {
+        categories,
+        search,
+        filter,
+        sort,
+        maxFee,
+        hasOrders,
+        maxLiquiditySpread,
+        includeInvalidMarkets: includeInvalidMarkets === 'show',
+      },
       (err, result: Getters.Markets.MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);
         if (this.componentWrapper) {
           // categories is also on results
-          const filterSortedMarkets = result.markets.map(m=> m.id);
+          const filterSortedMarkets = result.markets.map(m => m.id);
           this.setState({ filterSortedMarkets });
         }
       }
@@ -120,7 +146,6 @@ export default class MarketsView extends Component<
     const {
       filter,
       sort,
-      maxFee,
       hasOrders,
       filterSortedMarkets,
       isSearchingMarkets,
@@ -139,7 +164,6 @@ export default class MarketsView extends Component<
           isSearchingMarkets={isSearchingMarkets}
           filter={filter}
           sort={sort}
-          maxFee={maxFee}
           hasOrders={hasOrders}
           updateFilter={this.updateFilter}
           history={history}
