@@ -20,9 +20,10 @@ import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
 import { Trading } from "./state/getter/Trading";
 import { Users } from "./state/getter/Users";
 import { getAddress } from "ethers/utils/address";
-import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
+import { ControlMessageType, isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
 import { Liquidity } from "./api/Liquidity";
 import { TransactionResponse } from "ethers/providers";
+import { MarketCreatedDoc, SyncableFlexSearch } from "./state/db/SyncableFlexSearch";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
@@ -35,6 +36,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
+  static syncableFlexSearch: SyncableFlexSearch;
   static connector: BaseConnector;
   readonly liquidity: Liquidity;
 
@@ -87,7 +89,11 @@ export class Augur<TProvider extends Provider = Provider> {
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
-
+    Augur.syncableFlexSearch = new SyncableFlexSearch();
+    if (Augur.connector) {
+      Augur.connector.on(ControlMessageType.BulkSyncFinished, (...args: any[]) => Augur.syncableFlexSearch.addMarketCreatedDocs(args[0].marketCreatedDocs));
+      Augur.connector.on(SubscriptionEventName.MarketCreated, (...args: MarketCreatedDoc[]) => Augur.syncableFlexSearch.addMarketCreatedDocs(args));
+    }
     this.registerTransactionStatusEvents();
   }
 

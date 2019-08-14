@@ -5,7 +5,7 @@ import { SyncStatus } from "./SyncStatus";
 import { TrackedUsers } from "./TrackedUsers";
 import { UserSyncableDB } from "./UserSyncableDB";
 import { DerivedDB } from "./DerivedDB";
-import { MarketDB, MarketFields } from "./MarketDB";
+import { MarketDB } from "./MarketDB";
 import { IBlockAndLogStreamerListener, LogCallbackType } from "./BlockAndLogStreamerListener";
 import {
   CompleteSetsPurchasedLog,
@@ -32,7 +32,9 @@ import {
   UniverseForkedLog,
   MarketData,
 } from "../logs/types";
-import { SearchOptions, SearchResults } from "flexsearch";
+import { augurEmitter } from "../../events";
+import { ControlMessageType } from "../../constants";
+import { MarketCreatedDoc } from "./SyncableFlexSearch";
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -242,17 +244,20 @@ export class DB {
 
     await Promise.all(dbSyncPromises).then(() => undefined);
 
+    // Add MarketCreated docs to FlexSearch in web worker (so that unit tests will run)
+    const marketCreatedRawDocs = await (this.getSyncableDatabase(this.getDatabaseName("MarketCreated"))).allDocs();
+    let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
+    marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
+    Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
+
+    // Emit BulkSyncFinished event so FlexSearch will sync in DOM thread outside of web worker
+    augurEmitter.emit(ControlMessageType.BulkSyncFinished, {
+      eventName: ControlMessageType.BulkSyncFinished,
+      marketCreatedDocs,
+    });
 
     // The Market DB syncs last as it depends on a derived DB
     return this.marketDatabase.sync(highestAvailableBlockNumber);
-  }
-
-  async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
-    return this.marketDatabase.search(query, options);
-  }
-
-  async where(whereObj): Promise<Array<SearchResults<MarketFields>>> {
-    return this.marketDatabase.where(whereObj);
   }
 
   /**
@@ -363,12 +368,6 @@ export class DB {
     } catch (err) {
       throw err;
     }
-  }
-
-  // TODO: This is a temporary hack. This function can be removed once
-  // flexSearch is broken into a separate module from MarketDB.
-  async syncFullTextSearch() {
-    this.marketDatabase.syncFullTextSearch();
   }
 
   // TODO Combine find functions into single function
