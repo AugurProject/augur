@@ -90,9 +90,10 @@ export class Augur<TProvider extends Provider = Provider> {
     this.events = new Events(this.provider, this.addresses.Augur);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
     Augur.syncableFlexSearch = new SyncableFlexSearch();
-    Augur.connector.on(ControlMessageType.BulkSyncFinished, (...args: any[]) => Augur.syncableFlexSearch.addMarketCreatedDocs(args[0].marketCreatedDocs));
-    Augur.connector.on(SubscriptionEventName.MarketCreated, (...args: MarketCreatedDoc[]) => Augur.syncableFlexSearch.addMarketCreatedDocs(args));
-
+    if (Augur.connector) {
+      Augur.connector.on(ControlMessageType.BulkSyncFinished, (...args: any[]) => Augur.syncableFlexSearch.addMarketCreatedDocs(args[0].marketCreatedDocs));
+      Augur.connector.on(SubscriptionEventName.MarketCreated, (...args: MarketCreatedDoc[]) => Augur.syncableFlexSearch.addMarketCreatedDocs(args));
+    }
     this.registerTransactionStatusEvents();
   }
 
