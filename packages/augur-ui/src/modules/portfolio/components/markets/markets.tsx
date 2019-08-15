@@ -93,7 +93,7 @@ class MyMarkets extends Component<MyMarketsProps> {
     return (
       <>
         {market.pending && 
-          <PendingLabel />
+          <PendingLabel status={market.status} />
         }
         {!market.pending && 
           <MarketProgress

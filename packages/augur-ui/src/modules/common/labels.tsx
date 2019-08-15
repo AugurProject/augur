@@ -28,6 +28,7 @@ import {
 import { ViewTransactionDetailsButton } from "modules/common/buttons";
 import { formatNumber } from "utils/format-number";
 import { FormattedNumber, SizeTypes, DateFormattedObject } from "modules/types";
+import { TXEventName } from '@augurproject/sdk';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -632,20 +633,31 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   );
 };
 
-export const PendingLabel = () => (
-  <span className={Styles.PendingLabel} data-tip data-for={"processing"}>
-    Processing <ClipLoader size={8} color="#ffffff" />
-    <ReactTooltip
-      id={"processing"}
-      className={TooltipStyles.Tooltip}
-      effect="solid"
-      place="top"
-      type="light"
-      data-event="mouseover"
-      data-event-off="blur scroll"
-    >
-      You will receive an alert when the transaction has finalized.
-    </ReactTooltip>
+interface PendingLabelProps {
+  status?: string;
+}
+
+export const PendingLabel = (props: PendingLabelProps) => (
+  <span className={classNames(Styles.PendingLabel, {[Styles.Failure]: status && status === TXEventName.Failure})} data-tip data-for={"processing"}>
+    {(!status || status === TXEventName.Pending) &&
+      <>
+        <span>Processing <ClipLoader size={8} color="#ffffff" /></span>
+        <ReactTooltip
+          id={"processing"}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type="light"
+          data-event="mouseover"
+          data-event-off="blur scroll"
+        >
+          You will receive an alert when the transaction has finalized.
+        </ReactTooltip>
+      </>
+    }
+    {status && status === TXEventName.Failure && 
+      <span>Failed</span>
+    }
   </span>
 );
 

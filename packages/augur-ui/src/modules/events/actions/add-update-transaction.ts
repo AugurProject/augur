@@ -44,7 +44,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         }
         dispatch(updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash));
         if (eventName === TXEventName.Success) {
-          dispatch(removePendingOrder(tradeGroupId, marketId));
+          //dispatch(removePendingOrder(tradeGroupId, marketId));
         }
         break;
       }
@@ -52,6 +52,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET: {
+        console.log(txStatus);
         const id = generateTxParameterId(transaction.params);
         const { blockchain } = getState();
         const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000);

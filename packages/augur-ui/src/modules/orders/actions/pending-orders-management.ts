@@ -40,7 +40,7 @@ export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => (
     orders.map(async (o: UIOrder) => {
       if (!o.hash) return;
       const confirmed = await isTransactionConfirmed(o.hash);
-      confirmed
+      false
         ? dispatch(removePendingOrder(o.id, marketId))
         : dispatch(addPendingOrder(o, marketId));
     });
