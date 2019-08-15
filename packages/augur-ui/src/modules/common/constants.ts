@@ -822,6 +822,8 @@ export const PORTIS_API_KEY = 'b67817cf-8dd0-4116-a0cf-657820ddc019';
 export const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB';
 export const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148';
 
+export const NON_EXISTENT = 'N/A';
+
 export const YES_NO_OUTCOMES = [
   {
     id: 0,
@@ -838,3 +840,17 @@ export const YES_NO_OUTCOMES = [
     isTradable: true,
   },
 ];
+
+export const SCALAR_OUTCOMES = [
+  {
+    id: 0,
+    description: 'Invalid',
+    isTradable: true,
+  },
+  {
+    id: 1,
+    description: NON_EXISTENT,
+    isTradable: true,
+  },
+];
+
