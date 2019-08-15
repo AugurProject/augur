@@ -22,8 +22,7 @@ import {
   EXPIRY_SOURCE_GENERIC,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
-  DESIGNATED_REPORTER_SPECIFIC,
-  YES_NO_OUTCOMES
+  DESIGNATED_REPORTER_SPECIFIC
 } from 'modules/common/constants';
 import { NewMarket } from "modules/types";
 import { RepLogoIcon } from "modules/common/icons";
