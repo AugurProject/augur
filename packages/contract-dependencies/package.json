@@ -10,6 +10,7 @@
   },
   "scripts": {
     "version": "yarn rebuild",
+    "rebuild": "yarn build",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "build": "tsc -b",
     "watch": "tsc -w",
