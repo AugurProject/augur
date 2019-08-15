@@ -8,8 +8,6 @@ import { LiquidityOrder, UIOrder } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 
 function calcSpread(asks, bids, minPrice, maxPrice) {
-  console.log(asks);
-  console.log(bids);
   if (asks.length === 0 && bids.length === 0) {
     return maxPrice.plus(minPrice).dividedBy(2);
   } else if (asks.length === 0 && bids.length > 0) {
