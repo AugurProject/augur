@@ -24,6 +24,7 @@ test("Bulksync Doc merge update", async () => {
     description: "Foobar has 12% market share by 2041",
     longDescription: "lol",
     resolutionSource: "http://www.blah.com",
+    backupSource: "http://www.blah2.com",
     _scalarDenomination: "fake scalar denomination",
     tags: ["humanity", "30"],
   });
@@ -73,6 +74,7 @@ test("Blockstream Doc merge update", async () => {
         description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
+        backupSource: "http://www.blah2.com",
         _scalarDenomination: "fake scalar denomination",
         tags: ["humanity", "30"],
       }),
@@ -117,7 +119,22 @@ test("Flexible Search", async () => {
         description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
+        backupSource: "http://www.blah2.com",
         _scalarDenomination: "fake scalar denomination",
+      }),
+    },
+    {
+      _id: "0x2222222222222222222222222222222222222222",
+      blockNumber: 2,
+      market: "0x2222222222222222222222222222222222222222",
+      marketCreator: ACCOUNTS[0].publicKey,
+      extraInfo: JSON.stringify({
+        categories: [""],
+        description: "",
+        longDescription: "",
+        resolutionSource: "",
+        backupSource: "",
+        _scalarDenomination: "",
       }),
     },
   ];
@@ -140,7 +157,7 @@ test("Flexible Search", async () => {
   expect(docs.length).toEqual(1);
 
   docs = await Augur.syncableFlexSearch.search(ACCOUNTS[0].publicKey);  // marketCreator
-  expect(docs.length).toEqual(1);
+  expect(docs.length).toEqual(2);
 
   docs = await Augur.syncableFlexSearch.search("fake");  // _scalarDenomination
   expect(docs.length).toEqual(1);
@@ -154,9 +171,16 @@ test("Flexible Search", async () => {
     description: "Foobar has 12% market share by 2041",
     longDescription: "lol",
     resolutionSource: "http://www.blah.com",
+    backupSource: "http://www.blah2.com",
     _scalarDenomination: "fake scalar denomination",
   });
 
   expect(doc).toHaveProperty("start");
   expect(doc).toHaveProperty("end");
+
+  // @TODO Figure out why the test of rollback below times out
+  // await db.rollback(1);
+
+  // docs = await Augur.syncableFlexSearch.search("blah");
+  // expect(docs.length).toEqual(0);
 });
