@@ -32,9 +32,6 @@ import {
   UniverseForkedLog,
   MarketData,
 } from "../logs/types";
-import { augurEmitter } from "../../events";
-import { ControlMessageType } from "../../constants";
-import { MarketCreatedDoc } from "./SyncableFlexSearch";
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -243,18 +240,6 @@ export class DB {
     }
 
     await Promise.all(dbSyncPromises).then(() => undefined);
-
-    // Add MarketCreated docs to FlexSearch in web worker (so that unit tests will run)
-    const marketCreatedRawDocs = await (this.getSyncableDatabase(this.getDatabaseName("MarketCreated"))).allDocs();
-    let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
-    marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
-    Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
-
-    // Emit BulkSyncFinished event so FlexSearch will sync in DOM thread outside of web worker
-    augurEmitter.emit(ControlMessageType.BulkSyncFinished, {
-      eventName: ControlMessageType.BulkSyncFinished,
-      marketCreatedDocs,
-    });
 
     // The Market DB syncs last as it depends on a derived DB
     return this.marketDatabase.sync(highestAvailableBlockNumber);
