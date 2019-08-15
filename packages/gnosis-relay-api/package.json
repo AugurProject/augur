@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/gnosis-relay-api",
-  "version": "1.0.0-0",
+  "version": "10.0.0-alpha.1",
   "description": "Gnosis Relay API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "1.0.0-0",
+    "@augurproject/artifacts": "10.0.0-alpha.1",
     "axios": "0.19.0"
   },
   "devDependencies": {
