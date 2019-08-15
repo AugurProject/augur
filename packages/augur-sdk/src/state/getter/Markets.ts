@@ -542,6 +542,7 @@ export class Markets {
         ) {
           marketsResults[i][params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
+        // @TODO Figure out why marketData is sometimes returning no results here
         if (
           (params.maxLiquiditySpread && marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0') ||
           (params.includeInvalidMarkets === false && marketData.length > 0 && marketData[0].invalidFilter === true)
