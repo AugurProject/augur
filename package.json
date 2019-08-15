@@ -14,7 +14,7 @@
     "build:watch": "tsc -b -w",
     "build:release": "tsc -b tsconfig.release.json",
     "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest",
-    "bump": "lerna version --no-commit-hooks --no-git-tag-version prerelease",
+    "bump": "lerna version --no-commit-hooks --no-git-tag-version --exact prerelease",
     "clean": "git clean -e .idea -xdf",
     "rebuild": "git clean -e .idea -xdf && yarn && yarn build",
     "test": "jest",
