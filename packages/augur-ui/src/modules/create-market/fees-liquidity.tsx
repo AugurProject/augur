@@ -8,7 +8,7 @@ import TradingForm from "modules/market/containers/trading-form";
 import {
   BUY,
   SCALAR,
-  CATEGORICAL
+  YES_NO
 } from "modules/common/constants";
 import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
 import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
@@ -42,7 +42,7 @@ export default class FeesLiquidity extends React.Component<
   FeesLiquidityState
 > {
   state: FeesLiquidityState = {
-    selectedOutcome: this.props.newMarket.marketType === CATEGORICAL ? 1 : 2,
+    selectedOutcome: this.props.newMarket.marketType === YES_NO ? 2 : 1,
     hoveredDepth: [],
     hoveredPrice: null,
   };
@@ -63,9 +63,6 @@ export default class FeesLiquidity extends React.Component<
 
      const { marketType, scalarDenomination } = newMarket;
       let outcomeName = selectedOutcome.description;
-      if (marketType === SCALAR) {
-        outcomeName = scalarDenomination;
-      }
       addOrderToNewMarket({
         outcomeName,
         outcome: this.state.selectedOutcome,
