@@ -421,7 +421,7 @@ function determineDrawParams(options) {
     ? midPrice.plus(maxDistance)
     : midPrice.plus(minDistance);
 
-  const xDomain = [0, xDomainMax];
+  const xDomain = [xDomainMin, xDomainMax];
   const yDomain = [
     0,
     Object.keys(marketDepth)
