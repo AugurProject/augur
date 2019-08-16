@@ -3,7 +3,7 @@ import { API } from '@augurproject/sdk/src/state/getter/API';
 // import { AddressFormatReviver } from '@augurproject/sdk/src/state/AddressFormatReviver';
 // import { IsJsonRpcRequest } from '@augurproject/sdk/src/state/IsJsonRpcRequest';
 // import { JsonRpcRequest } from '@augurproject/sdk/src/state/getter/types';
-// import { MakeJsonRpcResponse } from '@augurproject/sdk/src/state/MakeJsonRpcResponse';
+import { MakeJsonRpcResponse } from '@augurproject/sdk/src/state';
 // import { JsonRpcErrorCode, MakeJsonRpcError } from '@augurproject/sdk/src/state/MakeJsonRpcError';
 
 // this to be as typesafe as possible with self and addEventListener + postMessage
@@ -12,6 +12,7 @@ let api: API;
 const subscriptions = new Subscriptions(Events.augurEmitter);
 
 // @TODO Create equivalent to `safeSend` in WebSocketEndpoint.ts
+/*
 function MakeJsonRpcResponse(id: string | null, result: object | boolean): string {
   return JSON.stringify({ id, result, jsonrpc: '2.0' });
 }
@@ -26,7 +27,7 @@ export enum JsonRpcErrorCode {
 export function MakeJsonRpcError(id: string, code: JsonRpcErrorCode, message: string, data: object | boolean): string {
   return JSON.stringify({ id, jsonrpc: '2.0', error: { code, message, data } });
 }
-
+*/
 ctx.addEventListener('message', async (message: any) => {
   const messageData = message.data;
 
@@ -85,7 +86,7 @@ console.log(messageData);
       try {
         const result = await api.route(messageData.method, messageData.params);
         ctx.postMessage(
-          MakeJsonRpcResponse(messageData.id, result || null)
+          MakeJsonRpcResponse(messageData.id, result | null)
         );
       } catch (err) {
         ctx.postMessage(
