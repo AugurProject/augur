@@ -22,8 +22,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
   async connect(ethNodeUrl: string, account?: string): Promise<any> {
     this.worker = new RunWorker();
 
-
-    await this.worker.postMessage({
+    this.worker.postMessage({
       id: iterator.next().value,
       method: 'start',
       params: [],
@@ -33,18 +32,23 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     });
 console.log("In WebWorkerConnector.connect");
 
-    this.worker.onMessage = (event: MessageEvent) => {
+    this.worker.onmessage = (event: MessageEvent) => {
 console.log("In WebWorkerConnector.onMessage");
 console.log(event);
       try {
-        if (event.data.subscribed) {
-          this.subscriptions[event.data.subscribed].id =
-            event.data.subscription;
+        const eventData = JSON.parse(event.data);
+console.log(eventData);
+        if (eventData.result && eventData.result.subscription) {
+console.log("in if");
+          if (this.subscriptions[eventData.result.eventName]) {
+            this.subscriptions[eventData.result.eventName]['id'] = eventData.result.subscription;
+          }
         } else {
-          this.messageReceived(event.data);
+          this.messageReceived(eventData);
         }
+console.error(this.subscriptions);
       } catch (error) {
-        console.error('Bad Web Worker response: ' + event);
+        console.error('Bad Web Worker response: ' + error);
       }
     };
 
@@ -59,11 +63,13 @@ console.log(event);
   messageReceived(message: any) {
 console.log("In WebWorkerConnector.messageReceived");
 console.log(message);
-    if (message.result) {
-      if (this.subscriptions[message.eventName]) {
-        this.subscriptions[message.eventName].callback(message.result);
+    if (message.result && message.result.result) {
+      if (this.subscriptions[message.result.eventName]) {
+console.log(this.subscriptions[message.result.eventName].callback);
+        this.subscriptions[message.result.eventName].callback(message.result.result);
       }
     }
+console.log(this.subscriptions);
   }
 
   async disconnect(): Promise<any> {
@@ -73,7 +79,9 @@ console.log(message);
   bindTo<R, P>(
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {
+console.log("In WebWorkerConnector.bindTo");
     return async (params: P): Promise<R> => {
+console.log(params);
       return this.worker.postMessage({
         id: iterator.next().value,
         method: f.name,
@@ -87,38 +95,36 @@ console.log(message);
     eventName: SubscriptionEventName | string,
     callback: Events.Callback
   ): Promise<void> {
-    const response = await this.worker.postMessage({
+console.log("In WebWorkerConnector.on");
+console.log(eventName);
+console.log(callback);
+    this.subscriptions[eventName] = {
+      id: '',
+      callback: this.callbackWrapper(callback),
+    };
+    this.worker.postMessage({
       id: iterator.next().value,
       method: 'subscribe',
       params: [eventName],
       eventName,
       jsonrpc: '2.0',
-
     });
-console.log("In WebWorkerConnector.on");
-console.log(eventName);
-console.log(response);
-    if (response) {
-      this.subscriptions[eventName] = {
-        id: response.result.subscription,
-        callback: this.callbackWrapper(callback),
-      };
-    }
+console.error(this.subscriptions);
   }
 
   async off(eventName: SubscriptionEventName | string): Promise<void> {
-    const subscription = this.subscriptions[eventName];
 console.log("In WebWorkerConnector.off");
+    const subscription = this.subscriptions[eventName];
+
     if (subscription) {
-      const response = await this.worker.postMessage({
+      delete this.subscriptions[eventName];
+      this.worker.postMessage({
         id: iterator.next().value,
         method: 'unsubscribe',
         params: [subscription.id],
         subscription: subscription.id,
         jsonrpc: '2.0',
       });
-      console.log(response);
-      delete this.subscriptions[eventName];
     }
   }
 }
