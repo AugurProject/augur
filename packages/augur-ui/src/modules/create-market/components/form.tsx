@@ -487,6 +487,16 @@ export default class Form extends React.Component<FormProps, FormState> {
       } else {
         outcomesFormatted = YES_NO_OUTCOMES;
       }
+      if (value !== SCALAR) {
+        this.onError('minPrice', '');
+        this.onError('maxPrice', '');
+        this.onError('scalarDenomination', '');
+        this.onError('tickSize', '');
+        updateNewMarket({ minPrice: 0, maxPrice: 1, minPriceBigNumber: createBigNumber(0), maxPriceBigNumber: createBigNumber(1) });
+      }
+      if (value !== CATEGORICAL) {
+        this.onError('outcomes', '');
+      }
       updateNewMarket({ outcomesFormatted, orderBook: {} });
     } else if (name === 'scalarDenomination') {
       let outcomesFormatted = SCALAR_OUTCOMES;
