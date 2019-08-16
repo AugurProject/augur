@@ -7,7 +7,7 @@ import {
   TYPE_CLAIM_PROCEEDS
 } from "modules/common/constants";
 import { REPORTING_STATE } from "modules/common/constants";
-import { isEmpty } from "utils/is-populated";
+import { isEmpty } from "utils/is-empty";
 
 export const determineMarketLinkType = (market, loginAccount) => {
   if (isEmpty(market) || !loginAccount.address) return TYPE_VIEW;

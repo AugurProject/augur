@@ -4,7 +4,7 @@ import {
   ZERO
 } from "modules/common/constants";
 import { calculatePayoutNumeratorsValue } from "@augurproject/sdk";
-import { isEmpty } from "utils/is-populated";
+import { isEmpty } from "utils/is-empty";
 import { createBigNumber } from "utils/create-big-number";
 
 export default function(

@@ -7,6 +7,7 @@ import { TYPE_TRADE } from "modules/common/constants";
 import MarketCard from "modules/market-cards/containers/market-card";
 import { MarketData } from "modules/types";
 import Styles from "modules/markets-list/components/markets-list.sytles.less";
+import { LoadingMarketCard } from "modules/market-cards/common";
 
 interface MarketsListProps {
   testid?: string;
@@ -31,6 +32,7 @@ interface MarketsListProps {
   limit: number;
   offset: number;
   setOffset: Function;
+  isSearchingMarkets: boolean;
 }
 
 interface MarketsListState {
@@ -132,10 +134,20 @@ export default class MarketsList extends Component<
       showPagination,
       limit,
       offset,
-      setOffset
+      setOffset,
+      isSearchingMarkets,
     } = this.props;
     const s = this.state;
 
+    if (isSearchingMarkets) {
+      return (
+        <article data-testid={testid}>
+          {<LoadingMarketCard
+            numMarketCards={limit}
+          />}
+        </article>
+      );
+    }
     return (
       <article data-testid={testid}>
         {marketCount && s.boundedLength ? (
@@ -153,6 +165,7 @@ export default class MarketsList extends Component<
                   location={location}
                   history={history}
                   key={`${market.id} - ${market.outcomes}`}
+                  loading={isSearchingMarkets}
                 />
               );
             }

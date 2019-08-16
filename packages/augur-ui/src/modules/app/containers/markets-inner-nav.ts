@@ -8,7 +8,7 @@ import {
   FILTER_SEARCH_PARAM,
 } from 'modules/common/constants';
 import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
-import { isEmpty } from 'utils/is-populated';
+import { isEmpty } from 'utils/is-empty';
 import { curriedToggleMemberOfArray } from 'utils/toggle-member-of-array';
 import makeQuery from 'modules/routes/helpers/make-query';
 import makePath from 'modules/routes/helpers/make-path';
