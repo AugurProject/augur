@@ -7,7 +7,7 @@ import { TYPE_TRADE } from "modules/common/constants";
 import MarketCard from "modules/market-cards/containers/market-card";
 import { MarketData } from "modules/types";
 import Styles from "modules/markets-list/components/markets-list.sytles.less";
-import { LoadingMarketCard } from "modules/market-cards/common";
+import { LoadingMarketCards } from "modules/market-cards/common";
 
 interface MarketsListProps {
   testid?: string;
@@ -36,8 +36,6 @@ interface MarketsListProps {
 }
 
 interface MarketsListState {
-  lowerBound: number;
-  boundedLength: number;
   marketIdsMissingInfo: Array<any>;
 }
 
@@ -57,70 +55,6 @@ export default class MarketsList extends Component<
     showOutstandingReturns: false
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      lowerBound: 1,
-      boundedLength: 10,
-      marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
-    };
-
-    this.setMarketIDsMissingInfo = this.setMarketIDsMissingInfo.bind(this);
-    this.loadMarketsInfoIfNotLoaded = this.loadMarketsInfoIfNotLoaded.bind(this);
-  }
-
-  componentWillMount() {
-    const { filteredMarkets, loadMarketsInfoIfNotLoaded } = this.props;
-    if (loadMarketsInfoIfNotLoaded) {
-      this.loadMarketsInfoIfNotLoaded(filteredMarkets);
-    }
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    const { filteredMarkets, loadMarketsInfoIfNotLoaded } = this.props;
-    const { lowerBound, boundedLength, marketIdsMissingInfo } = this.state;
-    if (
-      lowerBound !== nextState.lowerBound ||
-      boundedLength !== nextState.boundedLength ||
-      JSON.stringify(filteredMarkets) !==
-        JSON.stringify(nextProps.filteredMarkets)
-    ) {
-      this.setMarketIDsMissingInfo(
-        nextProps.filteredMarkets,
-        nextState.lowerBound,
-        nextState.boundedLength
-      );
-    }
-
-    if (
-      JSON.stringify(marketIdsMissingInfo) !==
-      JSON.stringify(nextState.marketIdsMissingInfo)
-    ) {
-      if (loadMarketsInfoIfNotLoaded) {
-        this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo);
-      }
-    }
-  }
-
-  setMarketIDsMissingInfo(filteredMarkets, lowerBound, boundedLength) {
-    if (filteredMarkets.length && boundedLength) {
-      const marketIdLength = boundedLength + (lowerBound - 1);
-      const marketIdsMissingInfo = filteredMarkets.slice(
-        lowerBound - 1,
-        marketIdLength
-      );
-      this.setState({ marketIdsMissingInfo });
-    }
-  }
-
-  // debounced call
-  loadMarketsInfoIfNotLoaded(marketIds) {
-    const { loadMarketsInfoIfNotLoaded } = this.props;
-    loadMarketsInfoIfNotLoaded(marketIds || this.state.marketIdsMissingInfo);
-  }
-
-  // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
   render() {
     const {
       filteredMarkets,
@@ -137,41 +71,41 @@ export default class MarketsList extends Component<
       setOffset,
       isSearchingMarkets,
     } = this.props;
-    const s = this.state;
+    let marketCards = [];
 
     if (isSearchingMarkets) {
-      return (
-        <article data-testid={testid}>
-          {<LoadingMarketCard
-            numMarketCards={limit}
-          />}
-        </article>
-      );
+      new Array(limit).fill(null).map((prop, index) => (
+        marketCards.push(
+          <LoadingMarketCards
+            key={index + "loading"}
+          />)
+      ));
+    } else {
+      filteredMarkets.map((id) => {
+        const market = markets.find(
+          (market: MarketData) => market.id === id
+        );
+        if (market && market.id) {
+          marketCards.push(
+            <MarketCard
+              market={market}
+              condensed={false}
+              location={location}
+              history={history}
+              key={`${market.id} - ${market.outcomes}`}
+              loading={isSearchingMarkets}
+            />
+          );
+        }
+      })
     }
+
     return (
       <article data-testid={testid}>
-        {marketCount && s.boundedLength ? (
-          filteredMarkets.map((unused, i) => {
-            const id = filteredMarkets[s.lowerBound - 1 + i];
-            const market = markets.find(
-              (market: MarketData) => market.id === id
-            );
-
-            if (market && market.id) {
-              return (
-                <MarketCard
-                  market={market}
-                  condensed={false}
-                  location={location}
-                  history={history}
-                  key={`${market.id} - ${market.outcomes}`}
-                  loading={isSearchingMarkets}
-                />
-              );
-            }
-
-            return null;
-          })
+        {marketCards.length > 0 ? (
+          <>
+          {marketCards}
+          </>
         ) : (
           <NullStateMessage
             addNullPadding={addNullPadding}

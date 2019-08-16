@@ -212,26 +212,14 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
   );
 }
 
-interface LoadingMarketCardProps {
-  numMarketCards: number;
-}
-
-export const LoadingMarketCard = (props: LoadingMarketCardProps) => {
-  const items = [];
-  new Array(props.numMarketCards).fill(null).map((prop, index) => (
-    items.push(
-      <MarketCard loading={true} market={{} as MarketData}
-      key={index}
-      history={{}}
-      location={{}}
-      toggleFavorite={() => {}}
-      currentAugurTimestamp={0}
-      reportingWindowStatsEndTime={0}
-      address=""
-    />)
-  ))
-
-  return items;
-}
-
-
+export const LoadingMarketCards = () =>
+  <MarketCard
+    loading={true}
+    market={{} as MarketData}
+    history={{}}
+    location={{}}
+    toggleFavorite={() => {}}
+    currentAugurTimestamp={0}
+    reportingWindowStatsEndTime={0}
+    address=""
+  />
