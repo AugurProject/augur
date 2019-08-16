@@ -1226,6 +1226,7 @@ export const DatePicker = (props: DatePickerProps) => (
       navNext={props.navNext || OutlineChevron}
       weekDayFormat="ddd"
       customInputIcon={Calendar}
+      readOnly={true}
     />
     {props.errorMessage &&
       props.errorMessage !== '' &&
