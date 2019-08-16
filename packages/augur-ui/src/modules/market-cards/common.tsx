@@ -212,7 +212,7 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
   );
 }
 
-export const LoadingMarketCards = () =>
+export const LoadingMarketCard = () =>
   <MarketCard
     loading={true}
     market={{} as MarketData}

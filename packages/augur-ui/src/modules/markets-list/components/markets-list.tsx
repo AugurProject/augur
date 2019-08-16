@@ -7,7 +7,7 @@ import { TYPE_TRADE } from "modules/common/constants";
 import MarketCard from "modules/market-cards/containers/market-card";
 import { MarketData } from "modules/types";
 import Styles from "modules/markets-list/components/markets-list.sytles.less";
-import { LoadingMarketCards } from "modules/market-cards/common";
+import { LoadingMarketCard } from "modules/market-cards/common";
 
 interface MarketsListProps {
   testid?: string;
@@ -76,7 +76,7 @@ export default class MarketsList extends Component<
     if (isSearchingMarkets) {
       new Array(limit).fill(null).map((prop, index) => (
         marketCards.push(
-          <LoadingMarketCards
+          <LoadingMarketCard
             key={index + "loading"}
           />)
       ));
