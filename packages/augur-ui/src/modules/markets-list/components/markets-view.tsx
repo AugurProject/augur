@@ -7,6 +7,8 @@ import { TYPE_TRADE } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 
+const PAGINATION_COUNT = 10;
+
 interface MarketsViewProps {
   isLogged: boolean;
   markets: Array<MarketData>;
@@ -34,6 +36,10 @@ interface MarketsViewState {
   hasOrders: boolean;
   filterSortedMarkets: Array<string>;
   isSearchingMarkets: boolean;
+  marketCount: number;
+  limit: number;
+  offset: number;
+  showPagination: boolean;
 }
 
 export default class MarketsView extends Component<
@@ -58,8 +64,13 @@ export default class MarketsView extends Component<
       hasOrders: props.defaultHasOrders,
       filterSortedMarkets: [],
       isSearchingMarkets: false,
+      marketCount: 0,
+      limit: PAGINATION_COUNT,
+      offset: 1,
+      showPagination: false,
     };
 
+    this.setPageNumber = this.setPageNumber.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
     this.loadMarketsByFilter = props.loadMarketsByFilter.bind(this);
@@ -86,9 +97,13 @@ export default class MarketsView extends Component<
     }
   }
 
+  setPageNumber(offset) {
+    this.updateFilter(Object.assign(this.state, { offset }))
+  }
+
   updateFilter(params) {
-    const { filter, sort, hasOrders } = params;
-    this.setState({ filter, sort, hasOrders }, this.updateFilteredMarkets);
+    const { filter, sort, limit, offset } = params;
+    this.setState({ filter, sort, limit, offset }, this.updateFilteredMarkets);
   }
 
   updateFilteredMarkets() {
@@ -99,7 +114,7 @@ export default class MarketsView extends Component<
       maxLiquiditySpread,
       includeInvalidMarkets,
     } = this.props;
-    const { filter, sort, hasOrders } = this.state;
+    const { filter, sort, limit, offset } = this.state;
     this.setState({ isSearchingMarkets: true });
     this.loadMarketsByFilter(
       {
@@ -108,7 +123,8 @@ export default class MarketsView extends Component<
         filter,
         sort,
         maxFee,
-        hasOrders,
+        limit,
+        offset,
         maxLiquiditySpread,
         includeInvalidMarkets: includeInvalidMarkets === 'show',
       },
@@ -117,7 +133,9 @@ export default class MarketsView extends Component<
         if (this.componentWrapper) {
           // categories is also on results
           const filterSortedMarkets = result.markets.map(m => m.id);
-          this.setState({ filterSortedMarkets });
+          const marketCount = result.meta.marketCount;
+          const showPagination = marketCount > limit;
+          this.setState({ filterSortedMarkets, marketCount, showPagination });
         }
       }
     );
@@ -139,6 +157,10 @@ export default class MarketsView extends Component<
       hasOrders,
       filterSortedMarkets,
       isSearchingMarkets,
+      marketCount,
+      limit,
+      offset,
+      showPagination
     } = this.state;
     return (
       <section
@@ -162,13 +184,18 @@ export default class MarketsView extends Component<
           testid="markets"
           isLogged={isLogged}
           markets={markets}
+          showPagination={showPagination}
           filteredMarkets={filterSortedMarkets}
+          marketCount={marketCount}
           location={location}
           history={history}
           toggleFavorite={toggleFavorite}
           loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           linkType={TYPE_TRADE}
           isMobile={isMobile}
+          limit={limit}
+          offset={offset}
+          setOffset={this.setPageNumber}
         />
       </section>
     );

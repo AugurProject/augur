@@ -108,8 +108,8 @@ export const loadMarketsByFilter = (
     // search: filterOptions.search,
     maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
-    // limit: filterOptions.limit,
-    // offset: filterOptions.offset,
+    limit: filterOptions.limit,
+    offset: filterOptions.offset,
     reportingStates,
     ...sort,
   };
