@@ -69,12 +69,11 @@ export default class FilterSearch extends Component<FilterSearchProps> {
       filter,
       updateSortOption,
       updateFilter,
-      hasOrders,
     } = this.props;
 
     this.goToPageOne();
     updateSortOption(value);
-    updateFilter({ filter, sort: value, hasOrders });
+    updateFilter({ filter, sort: value, limit: 0, offset: 1 });
   }
 
   changeFilterDropdown(value) {
@@ -82,12 +81,11 @@ export default class FilterSearch extends Component<FilterSearchProps> {
       sort,
       updateFilterOption,
       updateFilter,
-      hasOrders,
     } = this.props;
 
     this.goToPageOne();
     updateFilterOption(value);
-    updateFilter({ filter: value, sort, hasOrders });
+    updateFilter({ filter: value, sort, limit: 0, offset: 1 });
   }
 
   changeHasOrders(event) {
@@ -95,15 +93,12 @@ export default class FilterSearch extends Component<FilterSearchProps> {
       filter,
       sort,
       updateFilter,
-      hasOrders,
-      updateHasOpenOrders,
     } = this.props;
-    const hasOpenOrders = !hasOrders;
-    updateHasOpenOrders(hasOpenOrders);
     updateFilter({
       filter,
       sort,
-      hasOrders: hasOpenOrders,
+      limit: 0,
+      offset: 1,
     });
   }
 
