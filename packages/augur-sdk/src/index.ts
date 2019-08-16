@@ -17,3 +17,7 @@ export {
 };
 
 export { buildAPI, Getters, Logs, Sync } from "./state";
+export { IsJsonRpcRequest } from './state/IsJsonRpcRequest';
+export { JsonRpcRequest } from './state/getter/types';
+export { MakeJsonRpcResponse } from './state/MakeJsonRpcResponse';
+export { JsonRpcErrorCode, MakeJsonRpcError } from './state/MakeJsonRpcError';

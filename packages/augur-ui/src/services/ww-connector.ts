@@ -26,6 +26,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     await this.worker.postMessage({
       id: iterator.next().value,
       method: 'start',
+      params: [],
       ethNodeUrl,
       account,
       jsonrpc: '2.0',
@@ -89,9 +90,10 @@ console.log(message);
     const response = await this.worker.postMessage({
       id: iterator.next().value,
       method: 'subscribe',
+      params: [eventName],
       eventName,
       jsonrpc: '2.0',
-      params: [eventName],
+
     });
 console.log("In WebWorkerConnector.on");
 console.log(eventName);
@@ -111,9 +113,9 @@ console.log("In WebWorkerConnector.off");
       const response = await this.worker.postMessage({
         id: iterator.next().value,
         method: 'unsubscribe',
+        params: [subscription.id],
         subscription: subscription.id,
         jsonrpc: '2.0',
-        params: [subscription.id],
       });
       console.log(response);
       delete this.subscriptions[eventName];

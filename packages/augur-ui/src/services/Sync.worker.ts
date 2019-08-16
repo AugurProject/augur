@@ -1,46 +1,32 @@
-import { Events, Subscriptions, Sync } from '@augurproject/sdk';
+import {
+  Events,
+  IsJsonRpcRequest,
+  JsonRpcErrorCode,
+  JsonRpcRequest,
+  MakeJsonRpcError,
+  MakeJsonRpcResponse,
+  Subscriptions,
+  Sync
+} from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/src/state/getter/API';
-// import { AddressFormatReviver } from '@augurproject/sdk/src/state/AddressFormatReviver';
-// import { IsJsonRpcRequest } from '@augurproject/sdk/src/state/IsJsonRpcRequest';
-// import { JsonRpcRequest } from '@augurproject/sdk/src/state/getter/types';
-import { MakeJsonRpcResponse } from '@augurproject/sdk/src/state/MakeJsonRpcResponse';
-// import { JsonRpcErrorCode, MakeJsonRpcError } from '@augurproject/sdk/src/state/MakeJsonRpcError';
 
 // this to be as typesafe as possible with self and addEventListener + postMessage
 const ctx: Worker = self as any;
 let api: API;
 const subscriptions = new Subscriptions(Events.augurEmitter);
 
-// @TODO Create equivalent to `safeSend` in WebSocketEndpoint.ts
-/*
-function MakeJsonRpcResponse(id: string | null, result: object | boolean): string {
-  return JSON.stringify({ id, result, jsonrpc: '2.0' });
-}
-export enum JsonRpcErrorCode {
-  ParseError = -32700,
-  InvalidRequest = -32600,
-  MethodNotFound = -32601,
-  InvalidParams = -32602,
-  InternalError = -32603,
-  ServerError = -32000,
-}
-export function MakeJsonRpcError(id: string, code: JsonRpcErrorCode, message: string, data: object | boolean): string {
-  return JSON.stringify({ id, jsonrpc: '2.0', error: { code, message, data } });
-}
-*/
 ctx.addEventListener('message', async (message: any) => {
   const messageData = message.data;
 
-  // try {
-  //   messageData = JSON.parse(message.data as string, AddressFormatReviver);
-  //   if (!IsJsonRpcRequest(message)) {
-  //     return console.error('Bad JSON RPC message received:', message);
-  //   }
-  // } catch (err) {
-  //   ctx.postMessage(
-  //     MakeJsonRpcError('-1', JsonRpcErrorCode.ParseError, 'Bad JSON RPC message received', { originalText: message.data as string })
-  //   );
-  // }
+  try {
+    if (!IsJsonRpcRequest(messageData)) {
+      return console.error('Bad JSON RPC message received:', messageData);
+    }
+  } catch (err) {
+    ctx.postMessage(
+      MakeJsonRpcError('-1', JsonRpcErrorCode.ParseError, 'Bad JSON RPC message received', { originalText: messageData as string })
+    );
+  }
 
   try {
     if (messageData.method === 'subscribe') {
@@ -56,7 +42,6 @@ console.log(messageData);
             );
           }
         );
-console.log(subscription);
         ctx.postMessage(
           MakeJsonRpcResponse(messageData.id, { subscribed: messageData.subscribe, subscription })
         );
@@ -84,9 +69,10 @@ console.log(messageData);
 console.log("In Sync.worker.addEventListener (else)");
 console.log(messageData);
       try {
-        const result = await api.route(messageData.method, messageData.params);
+        const request = messageData as JsonRpcRequest;
+        const result = await api.route(request.method, request.params);
         ctx.postMessage(
-          MakeJsonRpcResponse(messageData.id, result | null)
+          MakeJsonRpcResponse(messageData.id, result || null)
         );
       } catch (err) {
         ctx.postMessage(
