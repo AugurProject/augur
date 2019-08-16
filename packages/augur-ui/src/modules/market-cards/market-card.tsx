@@ -90,7 +90,8 @@ export default class MarketCard extends React.Component<
       volumeFormatted,
       tags,
       disputeInfo,
-      endTimeFormatted
+      endTimeFormatted,
+      designatedReporter
     } = market;
 
     if (loading) {
@@ -145,11 +146,13 @@ export default class MarketCard extends React.Component<
                   hoverText="Market Creator"
                 />
               }
-              <HoverIcon
-                label="reporter"
-                icon={DesignatedReporter}
-                hoverText="Designated Reporter"
-              />
+              {address && address.toUpperCase() === designatedReporter.toUpperCase() &&
+                <HoverIcon
+                  label="reporter"
+                  icon={DesignatedReporter}
+                  hoverText="Designated Reporter"
+                />
+              }
               <HoverIcon
                 label="Position"
                 icon={PositionIcon}
