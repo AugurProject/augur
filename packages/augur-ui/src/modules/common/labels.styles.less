@@ -444,7 +444,9 @@ div.LinearPropertyViewTransaction {
   }
 
   &.Failure {
-    background: @color-error-text;
+    > span {
+      background: @color-error-text;
+    }
   }
  
 }

@@ -638,8 +638,8 @@ interface PendingLabelProps {
 }
 
 export const PendingLabel = (props: PendingLabelProps) => (
-  <span className={classNames(Styles.PendingLabel, {[Styles.Failure]: status && status === TXEventName.Failure})} data-tip data-for={"processing"}>
-    {(!status || status === TXEventName.Pending) &&
+  <span className={classNames(Styles.PendingLabel, {[Styles.Failure]: props.status && props.status === TXEventName.Failure})} data-tip data-for={"processing"}>
+    {(!props.status || props.status === TXEventName.Pending) &&
       <>
         <span>Processing <ClipLoader size={8} color="#ffffff" /></span>
         <ReactTooltip
@@ -655,7 +655,7 @@ export const PendingLabel = (props: PendingLabelProps) => (
         </ReactTooltip>
       </>
     }
-    {status && status === TXEventName.Failure && 
+    {props.status && props.status === TXEventName.Failure && 
       <span>Failed</span>
     }
   </span>

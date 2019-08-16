@@ -44,7 +44,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         }
         dispatch(updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash));
         if (eventName === TXEventName.Success) {
-          //dispatch(removePendingOrder(tradeGroupId, marketId));
+          dispatch(removePendingOrder(tradeGroupId, marketId));
         }
         break;
       }
@@ -80,7 +80,7 @@ function createMarketData(params: TransactionMetadataParams, id: string, hash: s
   let data: CreateMarketData = {};
   const extraInfo = JSON.parse(params._extraInfo);
   data.hash = hash;
-  data.id = id;
+  data.pendingId = id;
   data.description = extraInfo.description;
   data.pending = true;
   data.endTime = convertUnixToFormattedDate(params._endTime);
