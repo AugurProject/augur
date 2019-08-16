@@ -18,15 +18,25 @@ const subscriptions = new Subscriptions(Events.augurEmitter);
 ctx.addEventListener('message', async (message: any) => {
   const messageData = message.data;
 
+  try {
+    if (!IsJsonRpcRequest(messageData)) {
+      return console.error('Bad JSON RPC message received:', messageData);
+    }
+  } catch (err) {
+    ctx.postMessage(
+      MakeJsonRpcError('-1', JsonRpcErrorCode.ParseError, 'Bad JSON RPC message received', { originalText: messageData as string })
+    );
+  }
+
 console.log("MessageData");
 console.log(messageData);
   try {
-    if (messageData.subscribe) {
+    if (messageData.method === 'subscribe') {
 console.log("In Sync.worker.addEventListener (subscribe)");
-
       try {
+        const eventName: string = messageData.params.shift();
         const subscription: string = subscriptions.subscribe(
-          messageData.subscribe,
+          eventName,
           (data: {eventName: string}): void => {
             ctx.postMessage(
               MakeJsonRpcResponse(null, { eventName: data.eventName, result: data })
@@ -34,17 +44,17 @@ console.log("In Sync.worker.addEventListener (subscribe)");
           }
         );
         ctx.postMessage(
-          MakeJsonRpcResponse(messageData.id, { subscribed: messageData.subscribe, subscription })
+          MakeJsonRpcResponse(messageData.id, { subscribed: eventName, subscription })
         );
       } catch (err) {
         ctx.postMessage(
           MakeJsonRpcError(messageData.id, JsonRpcErrorCode.MethodNotFound, err.toString(), false)
         );
       }
-    } else if (messageData.unsubscribe) {
+    } else if (messageData.method === 'unsubscribe') {
 console.log("In Sync.worker.addEventListener (unsubscribe)");
-console.log(messageData);
-      subscriptions.unsubscribe(messageData.unsubscribe);
+      const subscription: string = messageData.params.shift();
+      subscriptions.unsubscribe(subscription);
       ctx.postMessage(
         MakeJsonRpcResponse(messageData.id, true)
       );
@@ -52,13 +62,14 @@ console.log(messageData);
 console.log("In Sync.worker.addEventListener (start)");
       api = await Sync.start(messageData.ethNodeUrl, messageData.account);
       ctx.postMessage(
-        MakeJsonRpcResponse(messageData.id, null)
+        MakeJsonRpcResponse(messageData.id, true)
       );
     } else {
-console.log("In Sync.worker.addEventListener (else)");
+console.error("In Sync.worker.addEventListener (else)");
       try {
         const request = messageData as JsonRpcRequest;
         const result = await api.route(request.method, request.params);
+console.error(result);
         ctx.postMessage(
           MakeJsonRpcResponse(messageData.id, result || null)
         );

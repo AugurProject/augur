@@ -95,7 +95,8 @@ console.log(this.subscriptions);
     };
     this.worker.postMessage({
       id: iterator.next().value,
-      subscribe: eventName,
+      method: 'subscribe',
+      params: [eventName],
       jsonrpc: '2.0',
     });
   }
@@ -107,7 +108,8 @@ console.log(this.subscriptions);
       delete this.subscriptions[eventName];
       this.worker.postMessage({
         id: iterator.next().value,
-        unsubscribe: subscription.id,
+        method: 'unsubscribe',
+        params: [subscription.id],
         jsonrpc: '2.0',
       });
     }
