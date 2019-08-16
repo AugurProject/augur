@@ -13,7 +13,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
 import networkConfig from 'config/network.json';
-import { isEmpty } from 'utils/is-populated';
+import { isEmpty } from 'utils/is-empty';
 import {
   MODAL_NETWORK_MISMATCH,
   MODAL_NETWORK_DISCONNECTED,

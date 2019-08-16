@@ -10,10 +10,11 @@ import { createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
 import { CheckCircleIcon } from "modules/common/icons";
-import { OutcomeFormatted, FormattedNumber } from "modules/types";
+import { OutcomeFormatted, FormattedNumber, MarketData } from "modules/types";
 import { formatDai } from "utils/format-number";
 
-import Styles from 'modules/market-cards/common.styles';
+import Styles from 'modules/market-cards/common.styles.less';
+import MarketCard from 'modules/market-cards/market-card';
 
 export interface PercentProps {
   percent: number;
@@ -119,7 +120,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           />
         </>
   		}
-	  	{props.marketType !== SCALAR && outcomesShow.map((outcome: Outcome, index: number) =>
+	  	{props.marketType !== SCALAR && outcomesShow.map((outcome: OutcomeFormatted, index: number) =>
 	  		(!props.expanded && index < 3 || (props.expanded || props.marketType === YES_NO)) && <Outcome
           key={outcome.id}
 	  			description={outcome.description}
@@ -210,3 +211,15 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
     </div>
   );
 }
+
+export const LoadingMarketCard = () =>
+  <MarketCard
+    loading={true}
+    market={{} as MarketData}
+    history={{}}
+    location={{}}
+    toggleFavorite={() => {}}
+    currentAugurTimestamp={0}
+    reportingWindowStatsEndTime={0}
+    address=""
+  />

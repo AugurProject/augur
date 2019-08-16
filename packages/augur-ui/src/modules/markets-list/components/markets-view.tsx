@@ -63,7 +63,7 @@ export default class MarketsView extends Component<
       sort: props.defaultSort,
       hasOrders: props.defaultHasOrders,
       filterSortedMarkets: [],
-      isSearchingMarkets: false,
+      isSearchingMarkets: true,
       marketCount: 0,
       limit: PAGINATION_COUNT,
       offset: 1,
@@ -135,7 +135,7 @@ export default class MarketsView extends Component<
           const filterSortedMarkets = result.markets.map(m => m.id);
           const marketCount = result.meta.marketCount;
           const showPagination = marketCount > limit;
-          this.setState({ filterSortedMarkets, marketCount, showPagination });
+          this.setState({ isSearchingMarkets: false, filterSortedMarkets, marketCount, showPagination });
         }
       }
     );
@@ -196,6 +196,7 @@ export default class MarketsView extends Component<
           limit={limit}
           offset={offset}
           setOffset={this.setPageNumber}
+          isSearchingMarkets={isSearchingMarkets}
         />
       </section>
     );
