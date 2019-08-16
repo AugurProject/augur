@@ -16,4 +16,4 @@ export {
   Events
 };
 
-export { buildAPI, Getters, Logs, /*MakeJsonRpcResponse,*/ Sync } from "./state";
+export { buildAPI, Getters, Logs, Sync } from "./state";

@@ -3,7 +3,7 @@ import { API } from '@augurproject/sdk/src/state/getter/API';
 // import { AddressFormatReviver } from '@augurproject/sdk/src/state/AddressFormatReviver';
 // import { IsJsonRpcRequest } from '@augurproject/sdk/src/state/IsJsonRpcRequest';
 // import { JsonRpcRequest } from '@augurproject/sdk/src/state/getter/types';
-import { MakeJsonRpcResponse } from '@augurproject/sdk/src/state';
+import { MakeJsonRpcResponse } from '@augurproject/sdk/src/state/MakeJsonRpcResponse';
 // import { JsonRpcErrorCode, MakeJsonRpcError } from '@augurproject/sdk/src/state/MakeJsonRpcError';
 
 // this to be as typesafe as possible with self and addEventListener + postMessage
