@@ -1,13 +1,12 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
 import { selectMarket } from "modules/markets/selectors/market";
 import MarketCard from "modules/market-cards/market-card";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 
 const mapStateToProps = (state, ownProps) => {
-  const positions = getLoginAccountPositions();
+  const positions = state.accountPositions;
 
   return {
     hasPosition: !!positions[ownProps.market.marketId],
