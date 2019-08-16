@@ -252,7 +252,9 @@ class Form extends Component<FromProps, FormState> {
       orderBook.asks.length &&
       value.gte(orderBook.asks[0].price)
     ) {
-       errors[this.INPUT_TYPES.PRICE].push(
+      errorCount += 1;
+      passedTest = false;
+      errors[this.INPUT_TYPES.PRICE].push(
         `Price must be less than best ask of ${orderBook.asks[0].price}`
       );
     } else if (initialLiquidity &&
@@ -261,7 +263,9 @@ class Form extends Component<FromProps, FormState> {
       orderBook.bids.length &&
       value.lte(orderBook.bids[0].price)
     ) {
-       errors[this.INPUT_TYPES.PRICE].push(
+      errorCount += 1;
+      passedTest = false;
+      errors[this.INPUT_TYPES.PRICE].push(
         `Price must be more than best bid of ${orderBook.bids[0].price}`
       );
     }
