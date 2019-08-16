@@ -34,6 +34,7 @@ interface MarketCardProps {
   address: string;
   loading?: Boolean;
   isFavorite?: Boolean;
+  hasPosition?: Boolean;
 }
 
 interface MarketCardState {
@@ -70,7 +71,8 @@ export default class MarketCard extends React.Component<
       address,
       expandedView,
       loading,
-      isFavorite
+      isFavorite,
+      hasPosition
     } = this.props;
 
     const s = this.state;
@@ -146,11 +148,13 @@ export default class MarketCard extends React.Component<
                   hoverText="Designated Reporter"
                 />
               }
-              <HoverIcon
-                label="Position"
-                icon={PositionIcon}
-                hoverText="Position"
-              />
+              {hasPosition && 
+                <HoverIcon
+                  label="Position"
+                  icon={PositionIcon}
+                  hoverText="Position"
+                />
+              }
               <HoverIcon
                 label="dispute"
                 icon={DisputeStake}
