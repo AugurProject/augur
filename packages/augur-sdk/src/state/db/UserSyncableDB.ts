@@ -3,6 +3,7 @@ import { SyncableDB } from "./SyncableDB";
 import { Augur } from "../../Augur";
 import { ParsedLog } from "@augurproject/types";
 import { DB } from "./DB";
+import _ from "lodash";
 
 /**
  * Stores event logs for user-specific events.
@@ -34,7 +35,8 @@ export class UserSyncableDB extends SyncableDB {
     for (const topics of this.additionalTopics) {
       logs = logs.concat(await augur.events.getLogs(this.eventName, startBlock, endBlock, topics));
     }
-    return logs;
+    // It is possible for the same log to appear twice if it matches  multiple "additional topics" filters.
+    return _.uniqWith(logs, _.isEqual);
   }
 
   getFullEventName(): string {

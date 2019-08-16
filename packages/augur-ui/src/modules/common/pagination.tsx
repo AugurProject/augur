@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { DirectionButton } from "modules/common/buttons";
 
-import Styles from "modules/common/pagination.styles";
+import Styles from "modules/common/pagination.styles.less";
 
 interface PaginationProps {
   page: number;
