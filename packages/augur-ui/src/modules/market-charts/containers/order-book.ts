@@ -16,12 +16,13 @@ const mapStateToProps = (state, ownProps) => {
     ownProps.initialLiquidity ? market.orderBook[selectedOutcomeId] : state.orderBooks[market.marketId] &&
     state.orderBooks[market.marketId][selectedOutcomeId];
 
+  const minPrice = createBigNumber(market.minPriceBigNumber) || createBigNumber(0);
+  const maxPrice = createBigNumber(market.maxPriceBigNumber) || createBigNumber(0);
+
   if (ownProps.initialLiquidity) {
-    outcomeOrderBook = formatOrderBook(outcomeOrderBook);
+    outcomeOrderBook = formatOrderBook(outcomeOrderBook, minPrice, maxPrice);
   }
 
-  const minPrice = market.minPriceBigNumber || createBigNumber(0);
-  const maxPrice = market.maxPriceBigNumber || createBigNumber(0);
   const outcome =
     (market.outcomesFormatted || []).find(
       (outcome) => outcome.id === selectedOutcomeId

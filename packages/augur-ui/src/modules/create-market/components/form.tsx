@@ -40,7 +40,9 @@ import {
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
   YES_NO_OUTCOMES,
+  SCALAR_OUTCOMES,
   NEW_ORDER_GAS_ESTIMATE,
+  NON_EXISTENT
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
@@ -464,6 +466,9 @@ export default class Form extends React.Component<FormProps, FormState> {
           description: 'Invalid',
           isTradable: true,
         });
+      } else if (newMarket.marketType === SCALAR) {
+        outcomesFormatted = SCALAR_OUTCOMES;
+        outcomesFormatted[1].description = newMarket.scalarDenomination === "" ? NON_EXISTENT : newMarket.scalarDenomination;
       } else {
         outcomesFormatted = YES_NO_OUTCOMES;
       }
@@ -476,10 +481,27 @@ export default class Form extends React.Component<FormProps, FormState> {
           id: index,
           isTradable: true,
         }));
+      } else if (value === SCALAR) {
+        outcomesFormatted = SCALAR_OUTCOMES;
+        outcomesFormatted[1].description = newMarket.scalarDenomination === "" ? NON_EXISTENT : newMarket.scalarDenomination;
       } else {
         outcomesFormatted = YES_NO_OUTCOMES;
       }
+      if (value !== SCALAR) {
+        this.onError('minPrice', '');
+        this.onError('maxPrice', '');
+        this.onError('scalarDenomination', '');
+        this.onError('tickSize', '');
+        updateNewMarket({ minPrice: 0, maxPrice: 1, minPriceBigNumber: createBigNumber(0), maxPriceBigNumber: createBigNumber(1) });
+      }
+      if (value !== CATEGORICAL) {
+        this.onError('outcomes', '');
+      }
       updateNewMarket({ outcomesFormatted, orderBook: {} });
+    } else if (name === 'scalarDenomination') {
+      let outcomesFormatted = SCALAR_OUTCOMES;
+      outcomesFormatted[1].description = value;
+      updateNewMarket({ outcomesFormatted });
     } else if (
       name === 'setEndTime' ||
       name === 'hour' ||
