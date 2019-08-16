@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { isEmpty } from 'utils/is-populated';
+import { isEmpty } from 'utils/is-empty';
 
 import { createBigNumber } from 'utils/create-big-number';
 import MarketOutcomeChartsDepth from 'modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth';

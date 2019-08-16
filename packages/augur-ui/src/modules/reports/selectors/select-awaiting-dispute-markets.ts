@@ -4,7 +4,7 @@ import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { REPORTING_STATE } from "modules/common/constants";
 import store from "store";
 import { orderBy } from "lodash";
-import { isEmpty } from "utils/is-populated";
+import { isEmpty } from "utils/is-empty";
 import selectDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { selectUniverseState } from "store/select-state";
 

@@ -143,6 +143,7 @@ export interface MarketInfo {
   settlementFee: string;
   reportingFeeRate: string;
   disputeInfo: DisputeInfo;
+  categories: string[];
 }
 
 export interface DisputeInfo {
