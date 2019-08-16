@@ -52,7 +52,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET: {
-        console.log(txStatus);
         const id = generateTxParameterId(transaction.params);
         const { blockchain } = getState();
         const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000);
