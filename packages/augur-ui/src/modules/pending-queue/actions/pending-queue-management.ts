@@ -13,8 +13,8 @@ export const loadPendingQueue = (pendingQueue: any) => (
     if (!data) return;
     Object.keys(data).map(async (d: any) => {
       const pendingData = data[d];
-      if (!pendingData.id) return;
-      const confirmed = await isTransactionConfirmed(pendingData.id);
+      if (!pendingData.pendingId) return;
+      const confirmed = await isTransactionConfirmed(pendingData.pendingId);
       confirmed
         ? dispatch(removePendingData(d, queue))
       : dispatch(addPendingData(d, queue, pendingData.status, pendingData.data));
