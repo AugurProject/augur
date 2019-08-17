@@ -424,21 +424,31 @@ div.LinearPropertyViewTransaction {
 }
 
 .PendingLabel {
-  .mono-10;
+  > span {
+    .mono-10;
 
-  align-items: center;
-  background: @color-primary-light;
-  border-radius: @border-radius-rounded;
-  color: @color-secondary-text;
-  display: flex;
-  flex-flow: row nowrap;
-  height: @size-16;
-  line-height: @size-10;
-  padding: 1px 0.375rem;
+    align-items: center;
+    background: @color-primary-light;
+    border-radius: @border-radius-rounded;
+    color: @color-secondary-text;
+    display: flex;
+    flex-flow: row nowrap;
+    height: @size-16;
+    line-height: @size-10;
+    padding: 1px 0.375rem;
 
-  > div {
-    border-width: 1px;
-    margin-left: 0.3125rem;
+    > div {
+      border-width: 1px;
+      margin-left: 0.3125rem;
+    }
+  }
+
+  &.Failure {
+    > span {
+      .mono-10-medium;
+
+      background: @color-error-text;
+    }
   }
 }
 
