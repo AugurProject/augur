@@ -28,8 +28,6 @@ import {
   handleTxPending,
   handleTxFailure,
   handleSDKReadyEvent,
-  handleMarketCreatedBulkSyncFinished,
-  handleMarketCreatedRollbackFinished,
 } from "modules/events/actions/log-handlers";
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -43,8 +41,6 @@ import {
 
 const StartUpEvents = {
   "SDKReady": wrapLogHandler(handleSDKReadyEvent),
-  "MarketCreatedBulkSyncFinished": wrapLogHandler(handleMarketCreatedBulkSyncFinished),
-  "MarketCreatedRollbackFinished": wrapLogHandler(handleMarketCreatedRollbackFinished),
 };
 
 const EVENTS = {
