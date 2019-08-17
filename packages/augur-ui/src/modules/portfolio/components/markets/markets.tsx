@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 
 import FilterBox from "modules/portfolio/containers/filter-box";
 import { LinearPropertyLabel, PendingLabel } from "modules/common/labels";
 import { MarketProgress } from "modules/common/progress";
 import { END_TIME } from "modules/common/constants";
 import { TXEventName } from '@augurproject/sdk';
+import { CancelTextButton, SubmitTextButton } from "modules/common/buttons";
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
 import { MarketData } from "modules/types";
@@ -43,36 +45,11 @@ function filterComp(input, market) {
   return market.description ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0 : true;
 }
 
-function renderToggleContent(market) {
-  return (
-    <div className={Styles.InfoParent}>
-        <div>
-          {!market.pending &&
-            <div>
-              <LinearPropertyLabel
-                label="Volume"
-                highlightFirst
-                value={`${market.volumeFormatted.formatted} DAI`}
-              />
-              <LinearPropertyLabel
-                label="Open Interest"
-                highlightFirst
-                value={`${market.openInterestFormatted.formatted} DAI`}
-              />
-            </div>
-          }
-          {market.pending && market.status === TXEventName.Pending &&
-            <span>You will receive an alert and notification when your market has been processed. </span>
-          }
-        </div>
-    </div>
-  );
-}
-
 interface MyMarketsProps {
   myMarkets: Array<MarketData>;
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
+  removePendingMarket: Function;
 }
 
 class MyMarkets extends Component<MyMarketsProps> {
@@ -85,6 +62,7 @@ class MyMarkets extends Component<MyMarketsProps> {
     super(props);
 
     this.renderRightContent = this.renderRightContent.bind(this);
+    this.renderToggleContent = this.renderToggleContent.bind(this);
   }
 
   renderRightContent(market) {
@@ -93,7 +71,7 @@ class MyMarkets extends Component<MyMarketsProps> {
     return (
       <>
         {market.pending && 
-          <PendingLabel />
+          <PendingLabel status={market.status} />
         }
         {!market.pending && 
           <MarketProgress
@@ -105,6 +83,41 @@ class MyMarkets extends Component<MyMarketsProps> {
           />
         }
       </>
+    );
+  }
+
+  renderToggleContent(market) {
+    return (
+      <div className={classNames(Styles.InfoParent, {[Styles.Failure]: market.pending && market.status === TXEventName.Failure})}>
+          <div>
+            {!market.pending &&
+              <div>
+                <LinearPropertyLabel
+                  label="Volume"
+                  highlightFirst
+                  value={`${market.volumeFormatted.formatted} DAI`}
+                />
+                <LinearPropertyLabel
+                  label="Open Interest"
+                  highlightFirst
+                  value={`${market.openInterestFormatted.formatted} DAI`}
+                />
+              </div>
+            }
+            {market.pending && market.status === TXEventName.Pending &&
+              <span>You will receive an alert and notification when your market has been processed. </span>
+            }
+            {market.pending && market.status === TXEventName.Failure &&
+              <>
+                <span>Market failed to create.</span>
+                <div>
+                  <SubmitTextButton text={"submit again"} action={null} />
+                  <CancelTextButton text={"cancel"} action={() => this.props.removePendingMarket(market.pendingId)} />
+                </div>
+              </>
+            }
+          </div>
+      </div>
     );
   }
 
@@ -120,7 +133,7 @@ class MyMarkets extends Component<MyMarketsProps> {
         markets={myMarkets}
         filterComp={filterComp}
         renderRightContent={this.renderRightContent}
-        renderToggleContent={renderToggleContent}
+        renderToggleContent={this.renderToggleContent}
         filterLabel="markets"
         pickVariables={[
           "id",
