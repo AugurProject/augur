@@ -43,6 +43,7 @@ test("topic filtering", async () => {
   expect(callbackValues).toEqual([{
     blocknumber: 12,
     logs: [Object.assign({}, log, {
+      name: "",
       blockNumber: parseInt(log.blockNumber, 10),
       logIndex: parseInt(log.logIndex, 10),
       foo: "bar",

@@ -548,7 +548,7 @@ describe('State API :: Users :: ', () => {
     const direction = trade.direction === SHORT ? BID : ASK;
     const longCost = quantity.multipliedBy(onChainLongPrice);
     const shortCost = quantity.multipliedBy(onChainShortPrice);
-    const fillerCost = trade.direction === ASK ? longCost : shortCost;
+    const fillerCost = trade.direction === ASK ? shortCost : longCost;
 
     const orderID = await john.placeOrder(
       market.address,
@@ -561,6 +561,6 @@ describe('State API :: Users :: ', () => {
       ZERO_BYTES
     );
 
-    await mary.fillOrder(orderID, fillerCost, quantity, '');
+    await mary.fillOrder(orderID, quantity, '', fillerCost);
   }
 });

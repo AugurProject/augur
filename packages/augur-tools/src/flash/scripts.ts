@@ -78,7 +78,7 @@ export function addScripts(flash: FlashSession) {
         config['useNormalTime'] = true;
       }
 
-      const { addresses } = await deployContracts(this.provider, this.accounts, compilerOutput, config);
+      const { addresses } = await deployContracts(this.provider, this.accounts[0], compilerOutput, config);
       flash.contractAddresses = addresses;
     },
   });
@@ -196,7 +196,7 @@ export function addScripts(flash: FlashSession) {
     name: 'all-logs',
     async call(this: FlashSession) {
       if (this.noProvider()) return [];
-      const user = await this.ensureUser();
+      const user = await this.ensureUser(null, true, true);
 
       const logs = await this.provider.getLogs({
         address: user.augur.addresses.Augur,

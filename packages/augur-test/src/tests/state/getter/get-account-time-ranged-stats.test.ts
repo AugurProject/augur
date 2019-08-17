@@ -1,8 +1,5 @@
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import {
-  MarketInfo,
-  SECONDS_IN_A_DAY,
-} from '@augurproject/sdk/build/state/getter/Markets';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { makeDbMock, makeProvider } from "../../../libs";
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
@@ -11,7 +8,6 @@ import { BigNumber } from 'bignumber.js';
 
 const mock = makeDbMock();
 
-const outcome0 = new BigNumber(0);
 describe('State API :: get-account-time-ranged-stats :: ', () => {
   let db: Promise<DB>;
   let api: API;
@@ -31,7 +27,7 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     await mary.approveCentralAuthority();
   }, 120000);
 
-  test('getAccountTimeRngedAStatsa', async () => {
+  test('getAccountTimeRangedStats', async () => {
     // Create markets with multiple users
     const universe = john.augur.contracts.universe;
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
@@ -145,52 +141,44 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Fill orders
-    const cost = numShares.times(78).div(10);
+    await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
       '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome2),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
       '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome2),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
       '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
@@ -246,8 +234,9 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
+        const market = await mary.getMarketContract(johnYesNoMarket.address);
         await mary.contribute(
-          johnYesNoMarket,
+          market,
           yesPayoutSet,
           new BigNumber(25000)
         );
@@ -255,7 +244,7 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
           johnYesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(johnYesNoMarket, yesPayoutSet, remainingToFill);
+        await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(
           johnYesNoMarket,
@@ -310,7 +299,7 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     const nonexistentAddress = '0x1111111111111111111111111111111111111111';
     let errorMessage = '';
     try {
-      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
+      await api.route('getAccountTimeRangedStats', {
         universe: nonexistentAddress,
         account: nonexistentAddress,
         startTime: 1234,
@@ -323,16 +312,14 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
       'Unknown universe: 0x1111111111111111111111111111111111111111'
     );
 
-    let stats = await api.route('getAccountTimeRangedStats', {
+    await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: nonexistentAddress,
     });
-    // console.log("stats1", stats);
-    // expect(stats).toEqual({});
 
     // Test endTime and startTime
     try {
-      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
+      await api.route('getAccountTimeRangedStats', {
         universe: universe.address,
         account: ACCOUNTS[0].publicKey,
         startTime: 123456,
@@ -343,11 +330,10 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     }
     expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
 
-    stats = await api.route('getAccountTimeRangedStats', {
+    let stats = await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
     });
-    // console.log("stats2", stats);
     expect(stats).toMatchObject({
       marketsCreated: 3,
       marketsTraded: 3,
@@ -465,49 +451,41 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     // Fill orders
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome0),
-      cost,
       numShares.div(10).times(2),
       '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome1),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome2),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome0),
-      cost,
       numShares.div(10).times(2),
       '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome1),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome2),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome0),
-      cost,
       numShares.div(10).times(2),
       '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome1),
-      cost,
       numShares.div(10).times(3),
       '43'
     );
@@ -552,8 +530,9 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
+        const market = await mary.getMarketContract(johnYesNoMarket2.address);
         await mary.contribute(
-          johnYesNoMarket2,
+          market,
           yesPayoutSet,
           new BigNumber(25000)
         );
@@ -561,7 +540,7 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
           johnYesNoMarket2,
           yesPayoutSet
         );
-        await mary.contribute(johnYesNoMarket2, yesPayoutSet, remainingToFill);
+        await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(
           johnYesNoMarket2,
@@ -616,7 +595,6 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
     });
-    // console.log("stats3", stats);
     expect(stats).toMatchObject({
       marketsCreated: 6,
       marketsTraded: 6,
@@ -625,5 +603,6 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
       redeemedPositions: 4,
       successfulDisputes: 2,
     });
+
   }, 200000);
 });

@@ -1,10 +1,12 @@
-import { NULL_ADDRESS } from "../constants";
+import { Account, NULL_ADDRESS, _1_HUNDRED_ETH } from "../constants";
 import { ContractAPI } from "..";
 import { ParsedLog } from "@augurproject/types";
 import { BigNumber } from "bignumber.js";
-import _ from "lodash";
 import { inOneMonths } from "./time";
 import { formatBytes32String } from "ethers/utils";
+import { ContractAddresses } from "@augurproject/artifacts";
+import { EthersProvider } from "@augurproject/ethersjs-provider";
+import { ethers } from "ethers";
 
 const EVENTS = {
   "MarketCreated": {
@@ -244,15 +246,58 @@ const COMMON_FIELDS = [
 
 interface AddressMapping { [addr1: string]: string; }
 interface IdMapping { [id1: string]: string; }
+interface AccountMapping { [addr1: string]: Account; }
 
 export class LogReplayer {
-  accounts: AddressMapping = {};
+  accounts: AccountMapping = {};
   universes: AddressMapping = {};
   markets: AddressMapping = {};
   orders: IdMapping = {};
 
-  constructor(private user: ContractAPI) {
+  piggybank: Account;
+  availableAccounts: Account[];
+
+  constructor(
+    initialAccounts: Account[],
+    private provider: EthersProvider,
+    private contractAddresses: ContractAddresses
+  ) {
+    if (initialAccounts.length < 1) {
+      throw Error("LogReplayer's initial accounts list must contain at least one account");
+    }
+    this.piggybank = initialAccounts[0];
+    this.availableAccounts = initialAccounts.slice(1);
+
     this.universes[NULL_ADDRESS] = NULL_ADDRESS;
+  }
+
+  async User(account: Account): Promise<ContractAPI> {
+    const user = await ContractAPI.userWrapper(account, this.provider, this.contractAddresses);
+    await user.approveCentralAuthority();
+    return user;
+  }
+
+  async Account(address: string): Promise<Account> {
+    if (typeof this.accounts[address] === 'undefined') {
+      if (this.availableAccounts.length > 0) {
+        this.accounts[address] = this.availableAccounts.pop();
+      } else { // Create and fund new account.
+        const wallet = ethers.Wallet.createRandom();
+        this.accounts[address] = {
+          secretKey: wallet.privateKey,
+          publicKey: wallet.address,
+          balance: _1_HUNDRED_ETH,
+        };
+
+        const piggybankWallet = new ethers.Wallet(this.piggybank.secretKey, this.provider);
+        await piggybankWallet.sendTransaction({
+          to: wallet.address,
+          value: `0x${new BigNumber(_1_HUNDRED_ETH).toString(16)}`,
+        });
+      }
+    }
+
+    return this.accounts[address];
   }
 
   async Replay(logs: ParsedLog[]) {
@@ -273,9 +318,11 @@ export class LogReplayer {
   async UniverseCreated(log: ParsedLog) {
     const { parentUniverse, childUniverse, payoutNumberators } = log;
 
-    if (parentUniverse === NULL_ADDRESS) {
-      // Deployment already gave us a genesis universe so just record it.
-      this.universes[childUniverse] = this.user.augur.addresses.Universe;
+    console.log(`Replaying UniverseCreated "${childUniverse}"`);
+
+    if (parentUniverse === NULL_ADDRESS) { // Deployment already gave us a genesis universe so just record it.
+      const user = await this.User(this.piggybank); // Piggybank is typically the Augur deployer, including genesis universe.
+      this.universes[childUniverse] = user.augur.addresses.Universe;
     } else {
       // TODO No need to support forking yet. But when it is supported, remember
       //      that parentPayoutDistributionHash is part of the Universe contract.
@@ -287,39 +334,41 @@ export class LogReplayer {
       universe, endTime, extraInfo, market, marketCreator, designatedReporter,
       feeDivisor, prices, marketType, numTicks, outcomes } = log;
 
-    // TODO marketCreator is a user so we need to use it
+    console.log(`Replaying MarketCreated "${market}"`);
 
-    const feePerCashInAttoCash = new BigNumber(10).pow(16); // TODO this is used in canned markets but is it correct?
+    const user = await this.Account(marketCreator).then((account) => this.User(account));
+    const reporter = await this.Account(designatedReporter);
+
     // TODO extract original market creation date to derive market length, to derive new endTime
     const adjustedEndTime = new BigNumber(inOneMonths.getTime() / 1000);
+    const feePerCashInAttoCash = new BigNumber(10).pow(16); // 1% fee
 
     let result;
     switch(marketType) {
       case 0: // YES_NO
-        result = await this.user.createYesNoMarket({
-            endTime: adjustedEndTime,
-            feePerCashInAttoCash,
-            affiliateFeeDivisor: feeDivisor,
-            designatedReporter, // TODO use mapped address of user since this user does not exist in the target chain
-            extraInfo}
-            // options?: { sender?: string }
-          );
-        break;
-      case 1: // CATEGORICAL
-        result = await this.user.createCategoricalMarket({
+        result = await user.createYesNoMarket({
           endTime: adjustedEndTime,
           feePerCashInAttoCash,
           affiliateFeeDivisor: feeDivisor,
-          designatedReporter, // TODO use mapped address of user since this user does not exist in the target chain
+          designatedReporter: reporter.publicKey,
+          extraInfo,
+        });
+        break;
+      case 1: // CATEGORICAL
+        result = await user.createCategoricalMarket({
+          endTime: adjustedEndTime,
+          feePerCashInAttoCash,
+          affiliateFeeDivisor: feeDivisor,
+          designatedReporter: reporter.publicKey,
           outcomes,
           extraInfo});
         break;
       case 2: // SCALAR
-        result = await this.user.createScalarMarket({
+        result = await user.createScalarMarket({
           endTime: adjustedEndTime,
           feePerCashInAttoCash,
           affiliateFeeDivisor: feeDivisor,
-          designatedReporter, // TODO use mapped address of user since this user does not exist in the target chain
+          designatedReporter: reporter.publicKey,
           prices,
           numTicks,
           extraInfo});
@@ -340,9 +389,13 @@ export class LogReplayer {
     const betterOrderId = formatBytes32String("");
     const worseOrderId = formatBytes32String("");
 
+    console.log(`Replaying OrderEvent "${orderId}"`);
+
+    const orderCreatorUser = await this.Account(orderCreator).then((account) => this.User(account));
+
     switch(eventType) { // See packages/augur-core/source/contracts/Augur.sol:40
       case 0: // OrderEventType.Create
-        this.orders[orderId] = await this.user.placeOrder(
+        this.orders[orderId] = await orderCreatorUser.placeOrder(
           this.markets[market],
           new BigNumber(orderType),
           new BigNumber(amount),
@@ -353,22 +406,23 @@ export class LogReplayer {
           tradeGroupId);
         break;
       case 1: // OrderEventType.Cancel
-        await this.user.cancelOrder(this.orders[orderId]);
+        await orderCreatorUser.cancelOrder(this.orders[orderId]);
         break;
       case 2: // OrderEventType.ChangePrice
-        await this.user.setOrderPrice(
+        await orderCreatorUser.setOrderPrice(
           this.orders[orderId],
           new BigNumber(price),
           betterOrderId,
           worseOrderId);
         break;
       case 3: // OrderEventType.Fill
-        await this.user.augur.contracts.fillOrder.publicFillOrder(
+        const orderFillerUser = await this.Account(orderFiller).then((account) => this.User(account));
+        await orderFillerUser.fillOrder(
           this.orders[orderId],
-          new BigNumber(amount),
-          tradeGroupId,
-          false,
-          kycToken);
+          new BigNumber(amountFilled),
+          ethers.utils.parseBytes32String(tradeGroupId),
+          new BigNumber(price).times(amountFilled).times(3) // not sure why this needs to be x3
+        );
         break;
       default: throw Error(`Unexpected order event type "${eventType}"`);
     }

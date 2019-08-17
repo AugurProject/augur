@@ -40,6 +40,7 @@ test("get logs", async () => {
     transactionLogIndex: 0,
   }];
   const logValues: LogValues = {
+    name: "joy",
     blockNumber: 12,
     address: "0xthere",
     data: "other data",
@@ -61,6 +62,7 @@ test("get logs", async () => {
   const eventLogs = await events.getLogs(eventName, fromBlock, toBlock);
   expect(eventLogs).toEqual([
     {
+      name: "joy",
       blockNumber: 19,
       address: "0xthere",
       data: "other data",

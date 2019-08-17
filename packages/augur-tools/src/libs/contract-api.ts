@@ -40,24 +40,25 @@ export class ContractAPI {
   }
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
-    await this.faucet(marketCreationFee);
-
+    await this.marketFauceting();
     return this.augur.createYesNoMarket(params);
   }
 
   async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
-    await this.faucet(marketCreationFee);
-
+    await this.marketFauceting();
     return this.augur.createCategoricalMarket(params);
   }
 
   async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
-    await this.faucet(marketCreationFee);
-
+    await this.marketFauceting();
     return this.augur.createScalarMarket(params);
+  }
+
+  async marketFauceting() {
+    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
+    const repBond = await this.augur.contracts.universe.getOrCacheMarketRepBond_();
+    await this.faucet(marketCreationFee);
+    await this.repFaucet(repBond);
   }
 
   async createReasonableYesNoMarket(): Promise<ContractInterfaces.Market> {
@@ -159,10 +160,13 @@ export class ContractAPI {
     numShares: BigNumber,
     price: BigNumber,
     outcome: BigNumber): Promise<string> {
-    return await this.placeOrder(market, type, numShares, price, outcome, formatBytes32String(''), formatBytes32String(''), formatBytes32String('42'));
+    return this.placeOrder(market, type, numShares, price, outcome, formatBytes32String(''), formatBytes32String(''), formatBytes32String('42'));
   }
 
-  async fillOrder(orderId: string, cost: BigNumber, numShares: BigNumber, tradeGroupId: string) {
+  async fillOrder(orderId: string, numShares: BigNumber, tradeGroupId: string, cost?: BigNumber) {
+    if (cost) {
+      await this.faucet(cost);
+    }
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), false, NULL_ADDRESS);
   }
 
@@ -272,6 +276,7 @@ export class ContractAPI {
   }
 
   async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description: string = ""): Promise<void> {
+    await this.repFaucet(amount.times(1e9)); // make sure you have the REP you're trying to contribute
     await market.contribute(payoutNumerators, amount, description);
   }
 

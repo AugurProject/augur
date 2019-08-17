@@ -313,54 +313,54 @@ describe('State API :: Accounts :: ', () => {
     ]);
 
     // Fill orders
-    const cost = numShares.times(78).div(10);
+    const cost = numShares.times(78).div(10).times(1e18);
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -605,8 +605,12 @@ describe('State API :: Accounts :: ', () => {
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
+        // TODO this is a problem. `mary.contribute` does not involve mary: only
+        //  the market johnYesNoMarket is used
+        //  this used to work because john has a ton of extra REP. now he doesn't
+        const market = await mary.getMarketContract(johnYesNoMarket.address);
         await mary.contribute(
-          johnYesNoMarket,
+          market,
           yesPayoutSet,
           new BigNumber(25000)
         );
@@ -614,7 +618,7 @@ describe('State API :: Accounts :: ', () => {
           johnYesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(johnYesNoMarket, yesPayoutSet, remainingToFill);
+        await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(
           johnYesNoMarket,
@@ -646,30 +650,6 @@ describe('State API :: Accounts :: ', () => {
         details: 'REP staked in dispute crowdsourcers',
         fee: '0',
         marketDescription: 'description',
-        outcome: 2,
-        outcomeDescription: 'Yes',
-        price: '0',
-        quantity: '25000',
-        total: '0',
-      },
-      {
-        action: 'DISPUTE',
-        coin: 'REP',
-        details: 'REP staked in dispute crowdsourcers',
-        fee: '0',
-        marketDescription: 'description',
-        outcome: 2,
-        outcomeDescription: 'Yes',
-        price: '0',
-        quantity: '699361165364558334',
-        total: '0',
-      },
-      {
-        action: 'DISPUTE',
-        coin: 'REP',
-        details: 'REP staked in dispute crowdsourcers',
-        fee: '0',
-        marketDescription: 'description',
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
@@ -686,30 +666,6 @@ describe('State API :: Accounts :: ', () => {
         outcomeDescription: 'No',
         price: '0',
         quantity: '1049041748046850001',
-        total: '0',
-      },
-      {
-        action: 'DISPUTE',
-        coin: 'REP',
-        details: 'REP staked in dispute crowdsourcers',
-        fee: '0',
-        marketDescription: 'description',
-        outcome: 2,
-        outcomeDescription: 'Yes',
-        price: '0',
-        quantity: '25000',
-        total: '0',
-      },
-      {
-        action: 'DISPUTE',
-        coin: 'REP',
-        details: 'REP staked in dispute crowdsourcers',
-        fee: '0',
-        marketDescription: 'description',
-        outcome: 2,
-        outcomeDescription: 'Yes',
-        price: '0',
-        quantity: '2098083496093725002',
         total: '0',
       },
     ]);
@@ -814,7 +770,7 @@ describe('State API :: Accounts :: ', () => {
         outcomeDescription: 'Yes',
         price: '0',
         quantity: '0',
-        total: '2098083496093750002',
+        total: '0',
       },
       {
         action: 'CLAIM_WINNING_CROWDSOURCERS',
@@ -826,7 +782,7 @@ describe('State API :: Accounts :: ', () => {
         outcomeDescription: 'Yes',
         price: '0',
         quantity: '0',
-        total: '2937316894531250004',
+        total: '0',
       },
     ]);
 
@@ -881,7 +837,7 @@ describe('State API :: Accounts :: ', () => {
         latestTransactionTime: (await john.getTimestamp()).toNumber(),
       }
     );
-    expect(accountTransactionHistory.length).toEqual(13);
+    expect(accountTransactionHistory.length).toEqual(9);
 
     // Test limit/offset params
     accountTransactionHistory = await api.route(

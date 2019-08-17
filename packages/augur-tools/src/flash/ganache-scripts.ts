@@ -249,7 +249,7 @@ export function addGanacheScripts(flash: FlashSession) {
       const filepath = args.filepath as string || defaultSeedPath;
       const writeArtifacts = args.write_artifacts as boolean;
 
-      if (fs.exists(filepath)) {
+      if (await fs.exists(filepath)) {
         const seed: Seed = await loadSeedFile(filepath);
         if (seed.contractsHash === hashContracts()) {
           return; // no need to update seed
@@ -285,12 +285,12 @@ export function addGanacheScripts(flash: FlashSession) {
       // Build a local environment to replay to.
       await this.call("ganache", { internal: true });
       await this.call("deploy", { write_artifacts: false, time_controlled: "true" });
-      const user = await this.ensureUser();
-      await user.approveCentralAuthority();
 
-      const replayer = new LogReplayer(user);
+      // Replay the logs.
+      const replayer = new LogReplayer(this.accounts, this.provider, this.contractAddresses);
       await replayer.Replay(logs);
 
+      // Save the replayed state to a seed for later use.
       await this.call("make-seed", { name: "from-logs", save: true, filepath: seedFilePath });
     },
   });
