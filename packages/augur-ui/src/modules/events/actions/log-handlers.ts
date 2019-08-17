@@ -99,7 +99,6 @@ export const handleSDKReadyEvent = () =>  (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   // wire up events for sdk
-console.log("In handleSDKReadyEvent");
   augurSdk.subscribe(dispatch);
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
