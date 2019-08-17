@@ -3,7 +3,8 @@ import { withRouter } from "react-router-dom";
 
 import MyMarkets from "modules/portfolio/components/markets/markets";
 import { selectAuthorOwnedMarkets } from "modules/markets/selectors/user-markets";
-
+import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { CREATE_MARKET } from 'modules/common/constants';
 import { collectMarketCreatorFees } from "modules/markets/actions/market-creator-fees-management";
 import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 
@@ -21,6 +22,7 @@ const mapStateToProps = (state) => {
 };
 // TOJDO confirm with TOm whats up with this, getBalance Only
 const mapDispatchToProps = (dispatch) => ({
+  removePendingMarket: (id) => dispatch(removePendingData(id, CREATE_MARKET)),
   collectMarketCreatorFees: (getBalanceOnly, marketId, callback) =>
     dispatch(collectMarketCreatorFees(getBalanceOnly, marketId, callback)),
 });

@@ -79,7 +79,7 @@ function createMarketData(params: TransactionMetadataParams, id: string, hash: s
   let data: CreateMarketData = {};
   const extraInfo = JSON.parse(params._extraInfo);
   data.hash = hash;
-  data.id = id;
+  data.pendingId = id;
   data.description = extraInfo.description;
   data.pending = true;
   data.endTime = convertUnixToFormattedDate(params._endTime);
