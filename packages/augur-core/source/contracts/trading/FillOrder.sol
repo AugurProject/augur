@@ -55,6 +55,8 @@ library Trade {
         FilledOrder order;
         Participant creator;
         Participant filler;
+        address longFundsAccount;
+        address shortFundsAccount;
         address affiliateAddress;
     }
 
@@ -74,6 +76,8 @@ library Trade {
             order: _order,
             creator: _creator,
             filler: _filler,
+            longFundsAccount: _creator.direction == Direction.Long ? address(_contracts.market) : _filler.participantAddress,
+            shortFundsAccount: _creator.direction == Direction.Short ? address(_contracts.market) : _filler.participantAddress,
             affiliateAddress: _affiliateAddress
         });
     }
@@ -88,23 +92,10 @@ library Trade {
             return (0, 0);
         }
 
-        // transfer shares to this contract from each participant
-        _data.contracts.longShareToken.trustedFillOrderTransfer(getLongShareSellerSource(_data), address(this), _numberOfCompleteSets);
-        for (uint256 _i = 0; _i < _data.contracts.shortShareTokens.length; ++_i) {
-            _data.contracts.shortShareTokens[_i].trustedFillOrderTransfer(getShortShareSellerSource(_data), address(this), _numberOfCompleteSets);
-        }
-
-        // sell complete sets
+        // transfer shares and sell complete sets distributing payouts based on the price
         uint256 _marketCreatorFees;
         uint256 _reporterFees;
-        (_marketCreatorFees, _reporterFees) = _data.contracts.completeSets.sellCompleteSets(address(this), _data.contracts.market, _numberOfCompleteSets, _data.affiliateAddress);
-
-        // distribute payout proportionately (fees will have been deducted)
-        uint256 _payout = _data.contracts.denominationToken.balanceOf(address(this));
-        uint256 _longShare = _payout.mul(_data.order.sharePriceLong) / _data.order.sharePriceRange;
-        uint256 _shortShare = _payout.sub(_longShare);
-        _data.contracts.denominationToken.transfer(getLongShareSellerDestination(_data), _longShare);
-        _data.contracts.denominationToken.transfer(getShortShareSellerDestination(_data), _shortShare);
+        (_marketCreatorFees, _reporterFees) = _data.contracts.completeSets.jointSellCompleteSets(_data.contracts.market, _numberOfCompleteSets, getLongShareSellerSource(_data), getShortShareSellerSource(_data), _data.order.outcome, getLongShareSellerDestination(_data), getShortShareSellerDestination(_data), _data.order.sharePriceLong, _data.affiliateAddress);
 
         // update available shares for creator and filler
         _data.creator.sharesToSell -= _numberOfCompleteSets;
@@ -167,12 +158,10 @@ library Trade {
             return 0;
         }
 
-        // transfer tokens to this contract
-        uint256 _creatorTokensToCover = getTokensToCover(_data, _data.creator.direction, _numberOfCompleteSets);
-        uint256 _fillerTokensToCover = getTokensToCover(_data, _data.filler.direction, _numberOfCompleteSets);
-
         // If someone is filling their own order with CASH both ways we just return the CASH
         if (_data.creator.participantAddress == _data.filler.participantAddress) {
+            uint256 _creatorTokensToCover = getTokensToCover(_data, _data.creator.direction, _numberOfCompleteSets);
+            uint256 _fillerTokensToCover = getTokensToCover(_data, _data.filler.direction, _numberOfCompleteSets);
             _data.contracts.market.getUniverse().withdraw(_data.creator.participantAddress, _creatorTokensToCover, address(_data.contracts.market));
 
             _data.creator.sharesToBuy -= _numberOfCompleteSets;
@@ -180,23 +169,11 @@ library Trade {
             return _creatorTokensToCover.add(_fillerTokensToCover);
         }
 
-        _data.contracts.market.getUniverse().withdraw(address(this), _creatorTokensToCover, address(_data.contracts.market));
-        _data.contracts.augur.trustedTransfer(_data.contracts.denominationToken, _data.filler.participantAddress, address(this), _fillerTokensToCover);
+        // buy complete sets and distribute shares to participants
+        address _longRecipient = getLongShareBuyerDestination(_data);
+        address _shortRecipient = getShortShareBuyerDestination(_data);
 
-        // buy complete sets
-        uint256 _cost = _numberOfCompleteSets.mul(_data.contracts.market.getNumTicks());
-        if (_data.contracts.denominationToken.allowance(address(this), address(_data.contracts.augur)) < _cost) {
-            require(_data.contracts.denominationToken.approve(address(_data.contracts.augur), _cost));
-        }
-        _data.contracts.completeSets.buyCompleteSets(address(this), _data.contracts.market, _numberOfCompleteSets);
-
-        // distribute shares to participants
-        address _longBuyer = getLongShareBuyerDestination(_data);
-        address _shortBuyer = getShortShareBuyerDestination(_data);
-        require(_data.contracts.longShareToken.trustedFillOrderTransfer(address(this), _longBuyer, _numberOfCompleteSets));
-        for (uint256 _i = 0; _i < _data.contracts.shortShareTokens.length; ++_i) {
-            require(_data.contracts.shortShareTokens[_i].trustedFillOrderTransfer(address(this), _shortBuyer, _numberOfCompleteSets));
-        }
+        _data.contracts.completeSets.jointBuyCompleteSets(_data.contracts.market, _numberOfCompleteSets, _data.longFundsAccount, _data.shortFundsAccount, _data.order.outcome, _longRecipient, _shortRecipient, _data.order.sharePriceLong);
 
         _data.creator.sharesToBuy -= _numberOfCompleteSets;
         _data.filler.sharesToBuy -= _numberOfCompleteSets;
