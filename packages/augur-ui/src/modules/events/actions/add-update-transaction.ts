@@ -9,7 +9,10 @@ import {
   CREATECATEGORICALMARKET, 
   CREATESCALARMARKET, 
   CREATEYESNOMARKET,
-  CREATE_MARKET 
+  CREATE_MARKET,
+  CATEGORICAL,
+  SCALAR,
+  YES_NO
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -54,7 +57,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATEYESNOMARKET: {
         const id = generateTxParameterId(transaction.params);
         const { blockchain } = getState();
-        const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000);
+        const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000, methodCall);
         dispatch(addPendingData(id, CREATE_MARKET, eventName, data));
         if (hash && eventName === TXEventName.Success) {
           dispatch(removePendingData(id, CREATE_MARKET));
@@ -75,7 +78,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   }
 };
 
-function createMarketData(params: TransactionMetadataParams, id: string, hash: string, currentTimestamp: number): CreateMarketData {
+function createMarketData(params: TransactionMetadataParams, id: string, hash: string, currentTimestamp: number, methodCall: string): CreateMarketData {
   let data: CreateMarketData = {};
   const extraInfo = JSON.parse(params._extraInfo);
   data.hash = hash;
@@ -86,6 +89,13 @@ function createMarketData(params: TransactionMetadataParams, id: string, hash: s
   data.recentlyTraded = convertUnixToFormattedDate(currentTimestamp);
   data.creationTime = convertUnixToFormattedDate(currentTimestamp);
   data.txParams = params;
+  if (methodCall === CREATECATEGORICALMARKET) {
+    data.marketType = CATEGORICAL;
+  } else if (methodCall === CREATESCALARMARKET) {
+    data.marketType = SCALAR;
+  } else {
+    data.marketType = YES_NO;
+  }
   return data;
 }
 

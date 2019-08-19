@@ -217,8 +217,6 @@ export async function getCreateMarketBreakdown() {
 
 export interface CreateNewMarketParams {
   outcomes?: string[];
-  scalarSmallNum: string;
-  scalarBigNum: string;
   scalarDenomination: string;
   expirySource: string;
   description: string;
@@ -283,6 +281,30 @@ export function createMarket(newMarket: CreateNewMarketParams) {
       return Augur.createYesNoMarket(baseParams);
     }
   }
+}
+
+export function createMarketRetry(market: CreateMarketData) {
+  let newMarket: CreateNewMarketParams = {};
+  const extraInfo = JSON.parse(market.txParams._extraInfo);
+  newMarket.outcomes = extraInfo.outcomes;
+  newMarket.scalarDenomination = extraInfo._scalarDenomination;
+  newMarket.marketType = market.marketType;
+  newMarket.endTime = market.endTime.timestamp;
+  newMarket.expirySource = extraInfo.resolutionSource;
+  newMarket.description = market.description;
+  newMarket.designatedReporterAddress = market.txParams._designatedReporterAddress;
+  newMarket.minPrice = market.txParams._prices[0];
+  newMarket.maxPrice = market.txParams._prices[1];
+  newMarket.tickSize = market.txParams._numTicks;
+  newMarket.detailsText = extraInfo.longDescription;
+  newMarket.categories = extraInfo.categories;
+  newMarket.settlementFee = market.txParams._feePerCashInAttoCash;
+  newMarket.affiliateFee = market.txParams._affiliateFeeDivisor;
+  newMarket.offsetName = extraInfo.offsetName;
+  newMarket.backupSource = extraInfo.backupSource;
+  // newMarket.orderBook = extraInfo.orderBook;
+
+  createMarket(newMarket);
 }
 
 export async function approveToTrade(amount: BigNumber) {
