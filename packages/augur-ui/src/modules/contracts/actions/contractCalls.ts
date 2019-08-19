@@ -273,7 +273,7 @@ export function createMarketRetry(market: CreateMarketData) {
   newMarket.offsetName = extraInfo.offsetName;
   newMarket.backupSource = extraInfo.backupSource;
 
-  createMarket(newMarket);
+  return createMarket(newMarket);
 }
 
 export async function approveToTrade(amount: BigNumber) {

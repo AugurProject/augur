@@ -20,7 +20,6 @@ export function generateTxParameters(newMarket: NewMarket, copyReturn: Boolean):
   const fee = new BigNumber(newMarket.settlementFee).div(new BigNumber(100))
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
-  console.log(newMarket.endTimeFormatted);
   const marketEndTime = new BigNumber(newMarket.endTime);
   const extraInfo = JSON.stringify({
     categories: newMarket.categories,
@@ -43,10 +42,10 @@ export function generateTxParameters(newMarket: NewMarket, copyReturn: Boolean):
   if (copyReturn) {
   	baseParams = {
 	    _endTime: marketEndTime,
-	    _feePerCashInAttoCash,
-	    _affiliateFeeDivisor,
+	    _feePerCashInAttoCash: feePerCashInAttoCash,
+	    _affiliateFeeDivisor: affiliateFeeDivisor,
 	    _designatedReporter: newMarket.designatedReporterAddress,
-	    _extraInfo,
+	    _extraInfo: extraInfo,
   	};
   };
 
@@ -57,17 +56,29 @@ export function generateTxParameters(newMarket: NewMarket, copyReturn: Boolean):
         new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
       ];
       const numTicks = tickSizeToNumTickWithDisplayPrices(new BigNumber(newMarket.tickSize), new BigNumber(newMarket.minPrice), new BigNumber(newMarket.maxPrice));
-      const params: CreateScalarMarketParams = Object.assign(baseParams, {
+      let params: CreateScalarMarketParams = Object.assign(baseParams, {
         prices,
         numTicks,
       });
-	  return params;
+
+      if (copyReturn) {
+        params = Object.assign(baseParams, {
+          _prices: prices,
+          _numTicks: numTicks,
+        });
+      }
+	    return params;
     }
     case CATEGORICAL: {
-      const params: CreateCategoricalMarketParams = Object.assign(baseParams, {
+      let params: CreateCategoricalMarketParams = Object.assign(baseParams, {
         outcomes: newMarket.outcomes.map(o => stringTo32ByteHex(o)),
       });
-	  return params;
+      if (copyReturn) {
+        params = Object.assign(baseParams, {
+          _outcomes: newMarket.outcomes.map(o => stringTo32ByteHex(o)),
+        });
+      }
+	    return params;
     }
     default: {
       return baseParams;

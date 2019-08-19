@@ -21,9 +21,12 @@ import { createMarket } from "modules/contracts/actions/contractCalls";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { generateTxParameters } from 'modules/create-market/helpers/construct-market-params';
+import { createMarketRetry } from "modules/contracts/actions/contractCalls";
 
 export function submitNewMarket(
   newMarket: NewMarket,
+  marketRetry: CreateMarketData,
+  retry: Boolean,
   callback: NodeStyleCallback = noop
 ) {
   return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
@@ -41,25 +44,46 @@ export function submitNewMarket(
         })
       );
     }
+    if (retry) {
+      const marketRetry = await createMarketRetry(marketRetry);
 
-    const market = await createMarket({
-      outcomes: newMarket.outcomes,
-      scalarDenomination: newMarket.scalarDenomination,
-      description: newMarket.description,
-      expirySource: newMarket.expirySource,
-      designatedReporterAddress: newMarket.designatedReporterAddress,
-      minPrice: newMarket.minPrice,
-      maxPrice: newMarket.maxPrice,
-      backupSource: newMarket.backupSource,
-      endTime: newMarket.endTime,
-      tickSize: newMarket.tickSize,
-      marketType: newMarket.marketType,
-      detailsText: newMarket.detailsText,
-      categories: newMarket.categories,
-      settlementFee: newMarket.settlementFee,
-      affiliateFee: newMarket.affiliateFee,
-      offsetName: newMarket.offsetName,
-    });
+      if (hasOrders) {
+        dispatch(
+          addMarketLiquidityOrders({
+            marketId: marketRetry.address,
+            liquidityOrders: newMarket.orderBook
+          })
+        );
+      }
+    } else {
+      const market = await createMarket({
+        outcomes: newMarket.outcomes,
+        scalarDenomination: newMarket.scalarDenomination,
+        description: newMarket.description,
+        expirySource: newMarket.expirySource,
+        designatedReporterAddress: newMarket.designatedReporterAddress,
+        minPrice: newMarket.minPrice,
+        maxPrice: newMarket.maxPrice,
+        backupSource: newMarket.backupSource,
+        endTime: newMarket.endTime,
+        tickSize: newMarket.tickSize,
+        marketType: newMarket.marketType,
+        detailsText: newMarket.detailsText,
+        categories: newMarket.categories,
+        settlementFee: newMarket.settlementFee,
+        affiliateFee: newMarket.affiliateFee,
+        offsetName: newMarket.offsetName,
+      });
+
+      if (hasOrders) {
+        dispatch(
+          addMarketLiquidityOrders({
+            marketId: market.address,
+            liquidityOrders: newMarket.orderBook
+          })
+        );
+      }
+    }
   };
 }
 
