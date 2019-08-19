@@ -31,8 +31,6 @@ export function submitNewMarket(
 
     const market = await createMarket({
       outcomes: newMarket.outcomes,
-      scalarSmallNum: newMarket.minPrice,
-      scalarBigNum: newMarket.maxPrice,
       scalarDenomination: newMarket.scalarDenomination,
       description: newMarket.description,
       expirySource: newMarket.expirySource,

@@ -296,6 +296,7 @@ export interface NewMarket {
   validations: Array<
     NewMarketPropertiesValidations | NewMarketPropertyValidations
   >;
+  backupSource: string;
   currentStep: number;
   type: string;
   outcomes: Array<string>;
