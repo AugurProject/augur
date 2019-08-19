@@ -20,10 +20,10 @@ import { Trade, PlaceTradeDisplayParams, SimulateTradeData } from "./api/Trade";
 import { Trading } from "./state/getter/Trading";
 import { Users } from "./state/getter/Users";
 import { getAddress } from "ethers/utils/address";
-import { ControlMessageType, isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
+import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
 import { Liquidity } from "./api/Liquidity";
 import { TransactionResponse } from "ethers/providers";
-import { MarketCreatedDoc, SyncableFlexSearch } from "./state/db/SyncableFlexSearch";
+import { SyncableFlexSearch } from "./state/db/SyncableFlexSearch";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;

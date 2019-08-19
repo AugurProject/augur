@@ -121,14 +121,6 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
   if (getState().authStatus.isLogged) dispatch(updateAssets());
 };
 
-export const handleMarketCreatedBulkSyncFinished = (log: any) => {
-  Augur.syncableFlexSearch.addMarketCreatedDocs(log.marketCreatedDocs);
-};
-
-export const handleMarketCreatedRollbackFinished = (log: any) => {
-  Augur.syncableFlexSearch.removeMarketCreatedDocs(log.marketCreatedDocs);
-};
-
 export const handleMarketCreatedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState

@@ -79,17 +79,11 @@ export class SyncableDB extends AbstractDB {
     await this.syncStatus.updateSyncingToFalse(this.dbName);
 
     // Add MarketCreated docs to FlexSearch in web worker (so that unit tests will run)
-    if (this.eventName === 'MarketCreated') {
+    if (this.eventName === SubscriptionEventName.MarketCreated) {
       const marketCreatedRawDocs = await this.allDocs();
       let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
       marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
       Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
-
-      // Emit MarketCreatedBulkSyncFinished event so FlexSearch will sync in DOM thread outside of web worker
-      augurEmitter.emit(SubscriptionEventName.MarketCreatedBulkSyncFinished, {
-        eventName: SubscriptionEventName.MarketCreatedBulkSyncFinished,
-        marketCreatedDocs,
-      });
     }
 
     // TODO Make any other external calls as needed (such as pushing user's balance to UI)
@@ -124,7 +118,7 @@ export class SyncableDB extends AbstractDB {
       return -1;
     }
 
-    if (this.eventName === 'OrderEvent') {
+    if (this.eventName === SubscriptionEventName.OrderEvent) {
       this.parseLogArrays(logs);
     }
 
@@ -193,14 +187,8 @@ export class SyncableDB extends AbstractDB {
       }
 
       // Remove MarketCreated docs to FlexSearch in web worker (so that unit tests will run)
-      if (this.eventName === 'MarketCreated') {
+      if (this.eventName === SubscriptionEventName.MarketCreated) {
         Augur.syncableFlexSearch.removeMarketCreatedDocs(blocksToRemove.docs);
-
-        // Emit MarketCreatedRollbackFinished event so FlexSearch will sync in DOM thread outside of web worker
-        augurEmitter.emit(SubscriptionEventName.MarketCreatedRollbackFinished, {
-          eventName: SubscriptionEventName.MarketCreatedRollbackFinished,
-          marketCreatedDocs: blocksToRemove.docs,
-        });
       }
 
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing, true);
