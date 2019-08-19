@@ -95,6 +95,17 @@ export class FlashSession {
     return false;
   }
 
+  noAddresses() {
+    if (typeof this.contractAddresses === 'undefined') {
+      this.log(
+        'ERROR: Must first load contract addresses.'
+      );
+      return true;
+    }
+
+    return false;
+  }
+
   usingSdk = false;
   sdkReady = false;
   async ensureUser(

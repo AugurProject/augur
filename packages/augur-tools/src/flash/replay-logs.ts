@@ -2,7 +2,6 @@ import { Account, NULL_ADDRESS, _1_HUNDRED_ETH } from "../constants";
 import { ContractAPI } from "..";
 import { ParsedLog } from "@augurproject/types";
 import { BigNumber } from "bignumber.js";
-import { inOneMonths } from "./time";
 import { formatBytes32String } from "ethers/utils";
 import { ContractAddresses } from "@augurproject/artifacts";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
@@ -332,16 +331,17 @@ export class LogReplayer {
   async MarketCreated(log: ParsedLog) {
     const {
       universe, endTime, extraInfo, market, marketCreator, designatedReporter,
-      feeDivisor, prices, marketType, numTicks, outcomes } = log;
+      feeDivisor, prices, marketType, numTicks, outcomes, timestamp } = log;
 
     console.log(`Replaying MarketCreated "${market}"`);
 
+    const feePerCashInAttoCash = new BigNumber(10).pow(16); // 1% fee
+    const [ start, end ] = [ makeDate(timestamp), makeDate(endTime) ];
+    const marketLength = end.getTime() - start.getTime();
+    const adjustedEndTime = new BigNumber(Math.floor((Date.now() + marketLength) / 1000));
+
     const user = await this.Account(marketCreator).then((account) => this.User(account));
     const reporter = await this.Account(designatedReporter);
-
-    // TODO extract original market creation date to derive market length, to derive new endTime
-    const adjustedEndTime = new BigNumber(inOneMonths.getTime() / 1000);
-    const feePerCashInAttoCash = new BigNumber(10).pow(16); // 1% fee
 
     let result;
     switch(marketType) {
@@ -386,10 +386,10 @@ export class LogReplayer {
     const [ kycToken, orderCreator, orderFiller ] = addressData;
     const [ price, amount, outcome, tokenRefund, sharesRefund, fees, amountFilled, timestamp, sharesEscrowed, tokensEscrowed ] = uint256Data;
 
+    console.log(`Replaying OrderEvent "${orderId}"`);
+
     const betterOrderId = formatBytes32String("");
     const worseOrderId = formatBytes32String("");
-
-    console.log(`Replaying OrderEvent "${orderId}"`);
 
     const orderCreatorUser = await this.Account(orderCreator).then((account) => this.User(account));
 
@@ -421,10 +421,16 @@ export class LogReplayer {
           this.orders[orderId],
           new BigNumber(amountFilled),
           ethers.utils.parseBytes32String(tradeGroupId),
-          new BigNumber(price).times(amountFilled).times(3) // not sure why this needs to be x3
+          new BigNumber(price).times(amountFilled).times(10) // not sure why this needs to be multiplied
         );
         break;
       default: throw Error(`Unexpected order event type "${eventType}"`);
     }
   }
+}
+
+function makeDate(fromChain: string): Date {
+  const bn = new BigNumber(fromChain);
+  const n = bn.toNumber() * 1000;
+  return new Date(n);
 }

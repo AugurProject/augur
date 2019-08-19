@@ -63,7 +63,7 @@ export function addScripts(flash: FlashSession) {
       },
       {
         name: 'time-controlled',
-        description: 'Use the TimeControlled contract gor testing environments. Set to "true" or "false".',
+        description: 'Use the TimeControlled contract for testing environments. Set to "true" or "false".',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -194,9 +194,17 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'all-logs',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'quiet',
+        abbr: 'q',
+        description: 'Do not print anything (just returns). Only useful in interactive mode.',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return [];
-      const user = await this.ensureUser(null, true, true);
+      const user = await this.ensureUser(null, false, false);
 
       const logs = await this.provider.getLogs({
         address: user.augur.addresses.Augur,
@@ -217,7 +225,9 @@ export function addScripts(flash: FlashSession) {
       }));
 
       const parsedLogs = user.augur.events.parseLogs(logsWithBlockNumber);
-      // this.log(JSON.stringify(parsedLogs, null, 2));
+      if (!args.quiet) {
+        this.log(JSON.stringify(parsedLogs, null, 2));
+      }
       return parsedLogs;
     },
   });

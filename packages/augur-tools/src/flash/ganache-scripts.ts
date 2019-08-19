@@ -263,7 +263,7 @@ export function addGanacheScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'create-log-commands',
+    name: 'create-seed-from-logs',
     options: [
       {
         name: "logs",
@@ -292,6 +292,29 @@ export function addGanacheScripts(flash: FlashSession) {
 
       // Save the replayed state to a seed for later use.
       await this.call("make-seed", { name: "from-logs", save: true, filepath: seedFilePath });
+    },
+  });
+
+
+  flash.addScript({
+    name: 'replay-logs',
+    options: [
+      {
+        name: "logs",
+        description: `Filepath for logs`,
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<void> {
+      if (this.noProvider()) return;
+      if (this.noAddresses()) return;
+
+      const logsFilePath = args.logs as string;
+      const logs = JSON.parse(await fs.readFile(logsFilePath));
+
+      // Replay the logs.
+      const replayer = new LogReplayer(this.accounts, this.provider, this.contractAddresses);
+      await replayer.Replay(logs);
     },
   });
 }
