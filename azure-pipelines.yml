@@ -6,6 +6,7 @@ variables:
     CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
     CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
     PRIMARY_NODE_VERSION: 10.16.x
+    GETH_VERSION: v1.8.27
 
 trigger:
   batch: false
