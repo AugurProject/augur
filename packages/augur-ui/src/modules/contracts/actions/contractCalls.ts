@@ -286,15 +286,15 @@ export function createMarket(newMarket: CreateNewMarketParams) {
 export function createMarketRetry(market: CreateMarketData) {
   let newMarket: CreateNewMarketParams = {};
   const extraInfo = JSON.parse(market.txParams._extraInfo);
-  newMarket.outcomes = extraInfo.outcomes;
+  newMarket.outcomes = market.txParams._outcomes;
   newMarket.scalarDenomination = extraInfo._scalarDenomination;
   newMarket.marketType = market.marketType;
   newMarket.endTime = market.endTime.timestamp;
   newMarket.expirySource = extraInfo.resolutionSource;
   newMarket.description = market.description;
   newMarket.designatedReporterAddress = market.txParams._designatedReporterAddress;
-  newMarket.minPrice = market.txParams._prices[0];
-  newMarket.maxPrice = market.txParams._prices[1];
+  newMarket.minPrice = market.txParams._prices && market.txParams._prices[0];
+  newMarket.maxPrice = market.txParams._prices && market.txParams._prices[1];
   newMarket.tickSize = market.txParams._numTicks;
   newMarket.detailsText = extraInfo.longDescription;
   newMarket.categories = extraInfo.categories;
