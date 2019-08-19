@@ -36,7 +36,7 @@ ctx.addEventListener('message', async (message: any) => {
           eventName,
           (data: {eventName: string}): void => {
             ctx.postMessage(
-              MakeJsonRpcResponse(null, { eventName: data.eventName, result: data })
+              MakeJsonRpcResponse(null, data)
             );
           }
         );
