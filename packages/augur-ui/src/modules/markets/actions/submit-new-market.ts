@@ -14,56 +14,52 @@ import { MY_POSITIONS } from "modules/routes/constants/views";
 import { sortOrders } from "modules/orders/helpers/liquidity";
 import { addMarketLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { AppState } from "store";
-import { NodeStyleCallback } from "modules/types";
+import { NodeStyleCallback, NewMarket } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 
 export function submitNewMarket(
-  newMarket: any,
-  history: any,
+  newMarket: NewMarket,
   callback: NodeStyleCallback = noop
 ) {
-  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
-    // TODO: need to handle if it fails
-    // Don't auto sign orders, liquidity will be handled with unsigned orders modal from account summary
-    const result = createMarket(newMarket);
     const hasOrders = Object.keys(newMarket.orderBook).length;
     newMarket.orderBook = sortOrders(newMarket.orderBook);
 
-    dispatch(
-      getHasApproval(hasOrders, (err: any) => {
-        if (err) return callback(err);
-        createMarket({
-          ...formattedNewMarket,
-          meta: loginAccount.meta,
-          onSent: res => {
-            history.push(makePath(MY_POSITIONS));
-            dispatch(clearNewMarket());
-            if (hasOrders) {
-              dispatch(
-                addMarketLiquidityOrders({
-                  marketId: res.callReturn,
-                  liquidityOrders: newMarket.orderBook
-                })
-              );
-              // orders submission will be kicked off from handleMarketCreatedLog event
-            }
-          },
-          onSuccess: (res: any) => {
-            const marketId = res.callReturn;
-            if (callback) callback(null, marketId);
-          },
-          onFailed: (err: any) => {
-            console.error("ERROR create market failed:", err);
-            callback(err);
-            dispatch(invalidateMarketCreation(err.message));
-          }
-        });
-      })
-    );
+    const market = await createMarket({
+      outcomes: newMarket.outcomes,
+      scalarSmallNum: newMarket.minPrice,
+      scalarBigNum: newMarket.maxPrice,
+      scalarDenomination: newMarket.scalarDenomination,
+      description: newMarket.description,
+      expirySource: newMarket.expirySource,
+      designatedReporterAddress:
+        newMarket.designatedReporterAddress === ''
+          ? loginAccount.address
+          : newMarket.designatedReporterAddress,
+      minPrice: newMarket.minPrice,
+      maxPrice: newMarket.maxPrice,
+      backupSource: newMarket.backupSource,
+      endTime: newMarket.endTimeFormatted.timestamp,
+      tickSize: newMarket.tickSize,
+      marketType: newMarket.marketType,
+      detailsText: newMarket.detailsText,
+      categories: newMarket.categories,
+      settlementFee: newMarket.settlementFee,
+      affiliateFee: newMarket.affiliateFee,
+      offsetName: newMarket.offsetName,
+    });
+    if (hasOrders) {
+      dispatch(
+        addMarketLiquidityOrders({
+          marketId: market.address,
+          liquidityOrders: newMarket.orderBook
+        })
+      );
+    }
   };
 }
 

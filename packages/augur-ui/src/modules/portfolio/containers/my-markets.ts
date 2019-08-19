@@ -14,7 +14,6 @@ const mapStateToProps = (state) => {
   return {
     isLogged: state.authStatus.isLogged,
     myMarkets: createdMarkets,
-    pendingLiquidityOrders: state.pendingLiquidityOrders,
     outcomes: marketDisputeOutcomes() || {},
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     reportingWindowStatsEndTime: state.reportingWindowStats.endTime,

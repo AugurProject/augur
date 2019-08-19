@@ -122,6 +122,7 @@ class MyMarkets extends Component<MyMarketsProps> {
         renderRightContent={this.renderRightContent}
         renderToggleContent={renderToggleContent}
         filterLabel="markets"
+        showPending
         pickVariables={[
           "id",
           "description",
