@@ -2,6 +2,7 @@ import RunWorker from './Sync.worker';
 import {
   Connectors,
   Events,
+  JsonRpcResponse,
   SubscriptionEventName,
 } from '@augurproject/sdk';
 import { Callback } from '@augurproject/sdk/src/events';
@@ -40,7 +41,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
 
     this.worker.onmessage = (event: MessageEvent) => {
       try {
-        const eventData = JSON.parse(event.data);
+        const eventData: JsonRpcResponse = JSON.parse(event.data);
 
         // Handle response for outstanding request
         this.outstandingRequests.filter((r) => r.id === eventData.id).forEach((r) => {
@@ -73,7 +74,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
   }
 
   messageReceived(message: any) {
-    if (message.result && message.result.result) {
+    if (message.result) {
       if (this.subscriptions[message.result.eventName]) {
         this.subscriptions[message.result.eventName].callback(message.result);
       }
