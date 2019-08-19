@@ -19,6 +19,8 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
+import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
+import { generateTxParameters } from 'modules/create-market/helpers/construct-market-params';
 
 export function submitNewMarket(
   newMarket: NewMarket,
@@ -28,20 +30,28 @@ export function submitNewMarket(
     const { loginAccount } = getState();
     const hasOrders = Object.keys(newMarket.orderBook).length;
     newMarket.orderBook = sortOrders(newMarket.orderBook);
+    newMarket.endTime = newMarket.endTimeFormatted.timestamp;
+    newMarket.designatedReporterAddress = newMarket.designatedReporterAddress === '' ? loginAccount.address : newMarket.designatedReporterAddress;
+
+    if (hasOrders) {
+      dispatch(
+        addMarketLiquidityOrders({
+          marketId: generateTxParameterId(generateTxParameters(newMarket, true)),
+          liquidityOrders: newMarket.orderBook
+        })
+      );
+    }
 
     const market = await createMarket({
       outcomes: newMarket.outcomes,
       scalarDenomination: newMarket.scalarDenomination,
       description: newMarket.description,
       expirySource: newMarket.expirySource,
-      designatedReporterAddress:
-        newMarket.designatedReporterAddress === ''
-          ? loginAccount.address
-          : newMarket.designatedReporterAddress,
+      designatedReporterAddress: newMarket.designatedReporterAddress,
       minPrice: newMarket.minPrice,
       maxPrice: newMarket.maxPrice,
       backupSource: newMarket.backupSource,
-      endTime: newMarket.endTimeFormatted.timestamp,
+      endTime: newMarket.endTime,
       tickSize: newMarket.tickSize,
       marketType: newMarket.marketType,
       detailsText: newMarket.detailsText,
@@ -50,14 +60,6 @@ export function submitNewMarket(
       affiliateFee: newMarket.affiliateFee,
       offsetName: newMarket.offsetName,
     });
-    if (hasOrders) {
-      dispatch(
-        addMarketLiquidityOrders({
-          marketId: market.address,
-          liquidityOrders: newMarket.orderBook
-        })
-      );
-    }
   };
 }
 
