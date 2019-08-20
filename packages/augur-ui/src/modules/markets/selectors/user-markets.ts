@@ -26,6 +26,7 @@ export const selectAuthorOwnedMarkets = createSelector(
     const pendingMarkets = Object.keys(pendingQueue[CREATE_MARKET] || {}).map(key => {
       let data = pendingQueue[CREATE_MARKET][key];
       data = Object.assign(data, data.data)
+      data.id = data.pendingId;
       return data;
     });
     filteredMarkets = pendingMarkets.concat(filteredMarkets);
