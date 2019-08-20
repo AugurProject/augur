@@ -2,12 +2,10 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import ReportingDisputeForm from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form";
-import { addUpdateAccountDispute } from "modules/reports/actions/update-account-disputes";
-import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-info";
 
 const mapStateToProps = (state, ownProps) => {
-  const disputeOutcomes = marketDisputeOutcomes() || {};
+  const disputeOutcomes = {}; // marketDisputeOutcomes() || {};
 
   return {
     isLogged: state.authStatus.isLogged,
@@ -21,8 +19,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => ({
   loadMarketsDisputeInfo: (marketId, callback) =>
-    dispatch(loadMarketsDisputeInfo([marketId], callback)),
-  addUpdateAccountDispute: data => dispatch(addUpdateAccountDispute(data))
+    dispatch(loadMarketsDisputeInfo([marketId], callback))
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -33,8 +30,7 @@ const mergeProps = (sP, dP, oP) => {
     ...sP,
     accountDisputeData,
     loadMarketsDisputeInfo: (marketId, callback) =>
-      dP.loadMarketsDisputeInfo([marketId], callback),
-    addUpdateAccountDispute: data => dP.addUpdateAccountDispute(data)
+      dP.loadMarketsDisputeInfo([marketId], callback)
   };
 };
 

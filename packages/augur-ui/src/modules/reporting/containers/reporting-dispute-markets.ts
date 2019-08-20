@@ -5,20 +5,15 @@ import ReportingDisputeMarkets from "modules/reporting/components/reporting-disp
 import makePath from "modules/routes/helpers/make-path";
 import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
-import { selectMarketsInDispute } from "modules/reports/selectors/select-dispute-markets";
-import awaitingDisputeMarkets from "modules/reports/selectors/select-awaiting-dispute-markets";
-import { loadDisputing } from "modules/reports/actions/load-disputing";
-import { loadDisputingDetails } from "modules/reports/actions/load-disputing-details";
-import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 
 const mapStateToProps = (state, { history }) => {
   const PAGINATION_COUNT = 10;
   const loginAccount = selectLoginAccount(state);
-  const disputeOutcomes = marketDisputeOutcomes() || {};
-  const disputableMarkets = selectMarketsInDispute(state) || [];
-  const upcomingDisputableMarkets = awaitingDisputeMarkets() || [];
-  const disputableMarketIds = state.marketReportState.dispute || [];
-  const upcomingDisputableMarketIds = state.marketReportState.awaiting || [];
+  const disputeOutcomes = {}; // marketDisputeOutcomes() || {};
+  const disputableMarkets = []; //selectMarketsInDispute(state) || [];
+  const upcomingDisputableMarkets = []; //awaitingDisputeMarkets() || [];
+  const disputableMarketIds = []; //state.marketReportState.dispute || [];
+  const upcomingDisputableMarketIds = []; //state.marketReportState.awaiting || [];
   const { isForking, forkEndTime, forkingMarket, id } = state.universe;
   return {
     isLogged: state.authStatus.isLogged,
@@ -45,9 +40,9 @@ const mapStateToProps = (state, { history }) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: () => dispatch(loadDisputing()),
+  loadMarkets: () => () => {},
   loadDisputingDetails: (marketIds, cb) =>
-    dispatch(loadDisputingDetails(marketIds, cb))
+    () => {}
 });
 
 const ReportingDisputeContainer = connect(
