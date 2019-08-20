@@ -10,6 +10,8 @@ import { CREATE_MARKET } from 'modules/common/constants';
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import { isSameAddress } from "utils/isSameAddress";
+import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
+import { generateTxParameters } from 'modules/create-market/helpers/construct-market-params';
 
 export const selectAuthorOwnedMarkets = createSelector(
   selectAllMarkets,
@@ -28,11 +30,15 @@ export const selectAuthorOwnedMarkets = createSelector(
       return data;
     });
     filteredMarkets = pendingMarkets.concat(filteredMarkets);
-    return filteredMarkets.map(m => ({
-      ...m,
-      hasPendingLiquidityOrders: !!pendingLiquidityOrders[m.id],
-      orderBook: pendingLiquidityOrders[m.id],
-      recentlyTraded: getLastTradeTimestamp(marketTradingHistory[m.id])
-    }));
+    return filteredMarkets.map(m => {
+      const pendingOrderId = m.pending && generateTxParameterId(m.txParams);
+
+      return {
+        ...m,
+        hasPendingLiquidityOrders: !!pendingLiquidityOrders[m.id],
+        orderBook: pendingLiquidityOrders[m.id] || (pendingOrderId && pendingLiquidityOrders[pendingOrderId]),
+        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[m.id])
+      }
+    });
   }
 );

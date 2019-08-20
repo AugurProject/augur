@@ -12,9 +12,9 @@ import { createBigNumber } from "utils/create-big-number";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MY_POSITIONS } from "modules/routes/constants/views";
 import { sortOrders } from "modules/orders/helpers/liquidity";
-import { addMarketLiquidityOrders } from "modules/orders/actions/liquidity-management";
+import { addMarketLiquidityOrders, clearMarketLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { AppState } from "store";
-import { NodeStyleCallback, NewMarket } from "modules/types";
+import { NodeStyleCallback, NewMarket, CreateMarketData } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { createMarket } from "modules/contracts/actions/contractCalls";
@@ -31,37 +31,33 @@ export function submitNewMarket(
 ) {
   return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
-   
-    if (retry) {
-      // MAKE ANOTHER FUNCTION PROBABLY
-      const hasOrders = marketRetry.orderBook && Object.keys(marketRetry.orderBook).length;
-      const sortOrderBook = sortOrders(marketRetry.orderBook);
 
-      if (hasOrders) {
-        dispatch(
-          addMarketLiquidityOrders({
-            marketId: generateTxParameterId(generateTxParameters(marketRetry, true)),
-            liquidityOrders: sortOrderBook
-          })
-        );
-      }
-      const marketResult = await createMarketRetry(marketRetry);
-
-      if (hasOrders) {
-        dispatch(
-          addMarketLiquidityOrders({
-            marketId: marketResult.address,
-            liquidityOrders: sortOrderBook
-          })
-        );
-      }
-    } else {
-      const hasOrders = Object.keys(newMarket.orderBook).length;
+    if (!retry) {
       newMarket.orderBook = sortOrders(newMarket.orderBook);
       newMarket.endTime = newMarket.endTimeFormatted.timestamp;
       newMarket.designatedReporterAddress = newMarket.designatedReporterAddress === '' ? loginAccount.address : newMarket.designatedReporterAddress;
+    }
+
+    const market = retry ? marketRetry : newMarket;
+    const hasOrders = market.orderBook && Object.keys(market.orderBook).length
+    const sortOrderBook = hasOrders && sortOrders(market.orderBook);
+    const pendingId = retry ? generateTxParameterId(market.txParams) : generateTxParameterId(generateTxParameters(market, true))
+
+    if (hasOrders) {
+      dispatch(
+        addMarketLiquidityOrders({
+          marketId: pendingId,
+          liquidityOrders: sortOrderBook
+        })
+      );
+    }
+
+    let marketResult;
    
-      const market = await createMarket({
+    if (retry) {
+      marketResult = await createMarketRetry(market);
+    } else {
+      marketResult = await createMarket({
         outcomes: newMarket.outcomes,
         scalarDenomination: newMarket.scalarDenomination,
         description: newMarket.description,
@@ -79,15 +75,16 @@ export function submitNewMarket(
         affiliateFee: newMarket.affiliateFee,
         offsetName: newMarket.offsetName,
       });
+    }
 
-      if (hasOrders) {
-        dispatch(
-          addMarketLiquidityOrders({
-            marketId: market.address,
-            liquidityOrders: newMarket.orderBook
-          })
-        );
-      }
+    if (hasOrders) {
+      dispatch(clearMarketLiquidityOrders(pendingId));
+      dispatch(
+        addMarketLiquidityOrders({
+          marketId: marketResult.address,
+          liquidityOrders: sortOrderBook
+        })
+      );
     }
   };
 }

@@ -311,6 +311,7 @@ export interface NewMarket {
   designatedReporterAddress: string;
   minPrice: string;
   maxPrice: string;
+  endTime: number;
   endTimeFormatted: DateFormattedObject;
   setEndTime: number;
   tickSize: number;

@@ -17,9 +17,9 @@ import {
 } from 'modules/common/constants';
 
 export function generateTxParameters(newMarket: NewMarket, copyReturn: Boolean): TransactionMetadataParams {
-  const fee = new BigNumber(newMarket.settlementFee).div(new BigNumber(100))
+  const fee = new BigNumber(newMarket.settlementFee || 0).div(new BigNumber(100))
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
-  const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
+  const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee || 0);
   const marketEndTime = new BigNumber(newMarket.endTime);
   const extraInfo = JSON.stringify({
     categories: newMarket.categories,
