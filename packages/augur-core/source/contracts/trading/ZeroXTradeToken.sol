@@ -102,42 +102,42 @@ contract ZeroXTradeToken is Initializable {
     /**
      * Perform Augur Trades using 0x signed orders
      *
-     * @param  requestedFillAmount  Share amount to fill
-     * @param  affiliateAddress     Address of affiliate to be paid fees if any
-     * @param  tradeGroupId         Random id to correlate these fills as one trade action
-     * @param  orders               Array of encoded Order struct data
-     * @param  signatures           Array of signature data
-     * @return                      The amount the taker still wants
+     * @param  _requestedFillAmount  Share amount to fill
+     * @param  _affiliateAddress     Address of affiliate to be paid fees if any
+     * @param  _tradeGroupId         Random id to correlate these fills as one trade action
+     * @param  _orders               Array of encoded Order struct data
+     * @param  _signatures           Array of signature data
+     * @return                       The amount the taker still wants
      */
     function trade(
-        uint256 requestedFillAmount,
-        address affiliateAddress,
-        bytes32 tradeGroupId,
-        IExchange.Order[] memory orders,
-        bytes[] memory signatures
+        uint256 _requestedFillAmount,
+        address _affiliateAddress,
+        bytes32 _tradeGroupId,
+        IExchange.Order[] memory _orders,
+        bytes[] memory _signatures
     )
         public
         returns (uint256)
     {
-        uint256 _fillAmountRemaining = requestedFillAmount;
+        uint256 _fillAmountRemaining = _requestedFillAmount;
 
         transferFromAllowed = true;
 
         // Do the actual asset exchanges
-        for (uint256 i = 0; i < orders.length && _fillAmountRemaining != 0; i++) {
-            IExchange.Order memory _order = orders[i];
+        for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
+            IExchange.Order memory _order = _orders[i];
 
             // Update 0x. This will also validate signatures and order state for us.
             IExchange.FillResults memory totalFillResults = exchange.fillOrderNoThrow(
                 _order,
                 _fillAmountRemaining,
-                signatures[i]
+                _signatures[i]
             );
             if (totalFillResults.takerAssetFilledAmount == 0) {
                 continue;
             }
 
-            uint256 _amountTraded = doTrade(_order, totalFillResults.takerAssetFilledAmount, affiliateAddress, tradeGroupId, msg.sender);
+            uint256 _amountTraded = doTrade(_order, totalFillResults.takerAssetFilledAmount, _affiliateAddress, _tradeGroupId, msg.sender);
 
             _fillAmountRemaining = _fillAmountRemaining.sub(_amountTraded);
         }
@@ -205,21 +205,21 @@ contract ZeroXTradeToken is Initializable {
         view
         returns (bytes memory)
     {
-        bytes memory result = new bytes(36);
+        bytes memory _result = new bytes(36);
 
         // padded version of bytes4(keccak256("ERC20Token(address)"));
-        bytes32 selector = 0xf47261b000000000000000000000000000000000000000000000000000000000;
-        address tokenAddress = address(this);
+        bytes32 _selector = 0xf47261b000000000000000000000000000000000000000000000000000000000;
+        address _tokenAddress = address(this);
 
         /* solium-disable-next-line security/no-inline-assembly */
         assembly {
             // Store the selector and address in the asset data
             // The first 32 bytes of an array are the length (already set above)
-            mstore(add(result, 32), selector)
-            mstore(add(result, 36), tokenAddress)
+            mstore(add(_result, 32), _selector)
+            mstore(add(_result, 36), _tokenAddress)
         }
 
-        return result;
+        return _result;
     }
 
     /**
@@ -230,26 +230,26 @@ contract ZeroXTradeToken is Initializable {
         view
         returns (bytes memory)
     {
-        bytes memory result = new bytes(228);
+        bytes memory _result = new bytes(228);
 
         // padded version of bytes4(keccak256("ERC20Token(address)"));
-        bytes32 selector = 0xf47261b000000000000000000000000000000000000000000000000000000000;
-        address tokenAddress = address(this);
+        bytes32 _selector = 0xf47261b000000000000000000000000000000000000000000000000000000000;
+        address _tokenAddress = address(this);
 
         /* solium-disable-next-line security/no-inline-assembly */
         assembly {
             // Store the selector and address in the asset data
             // The first 32 bytes of an array are the length (already set above)
-            mstore(add(result, 32), selector)
-            mstore(add(result, 36), tokenAddress)
-            mstore(add(result, 68), _marketAddress)
-            mstore(add(result, 100), _price)
-            mstore(add(result, 132), _outcome)
-            mstore(add(result, 164), _orderType)
-            mstore(add(result, 196), _kycToken)
+            mstore(add(_result, 32), _selector)
+            mstore(add(_result, 36), _tokenAddress)
+            mstore(add(_result, 68), _marketAddress)
+            mstore(add(_result, 100), _price)
+            mstore(add(_result, 132), _outcome)
+            mstore(add(_result, 164), _orderType)
+            mstore(add(_result, 196), _kycToken)
         }
 
-        return result;
+        return _result;
     }
 
     function parseAssetData(bytes memory _assetData) public pure returns (AugurOrderData memory _data) {

@@ -107,10 +107,10 @@
     ethers "4.0.0-beta.14"
     lodash "^4.17.5"
 
-"@augurproject/solidity-docgen@0.2.0-alpha.2":
-  version "0.2.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@augurproject/solidity-docgen/-/solidity-docgen-0.2.0-alpha.2.tgz#656e171625e40eed4ff8fc54d04372c674f39473"
-  integrity sha512-I6o3BqYOoteQGkav1/bzj8UW8anjQevUU/Kt6C5WzVnE3ZgcHAvTfgkxnOy6cMsmB9pNzWJdxTqGek2PObOHQg==
+"@augurproject/solidity-docgen@0.2.0-alpha.3":
+  version "0.2.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/@augurproject/solidity-docgen/-/solidity-docgen-0.2.0-alpha.3.tgz#7ccb905f5e9b213a505fe1ae14ddaf23efc9d390"
+  integrity sha512-BOYvq7rxaTM9Alo1yohgMaNFmZQJNP3lzjHX1Zrz970CFy4ywz4+mQuJ/uB3xhlypEhQl1jkSBXtb61mvKkqqA==
   dependencies:
     async-file "^2.0.2"
     commander "^2.14.1"
