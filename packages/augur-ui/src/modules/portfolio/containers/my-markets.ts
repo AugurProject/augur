@@ -8,6 +8,7 @@ import { CREATE_MARKET } from 'modules/common/constants';
 import { collectMarketCreatorFees } from "modules/markets/actions/market-creator-fees-management";
 import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
+import { createMarketRetry } from "modules/contracts/actions/contractCalls";
 
 const mapStateToProps = (state) => {
   const createdMarkets = selectAuthorOwnedMarkets(state);
@@ -16,7 +17,7 @@ const mapStateToProps = (state) => {
   return {
     isLogged: state.authStatus.isLogged,
     myMarkets: createdMarkets,
-    outcomes: marketDisputeOutcomes() || {},
+    outcomes: {}, // marketDisputeOutcomes() || {},
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     reportingWindowStatsEndTime: state.reportingWindowStats.endTime,
   };

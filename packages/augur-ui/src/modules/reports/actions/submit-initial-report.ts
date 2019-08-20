@@ -22,11 +22,13 @@ export const submitInitialReport = ({
 
   const market = marketInfos[marketId];
   if (!market) return callback("Market not found");
+  /* TODO call method in sdk
   const payoutNumerators = getPayoutNumerators(
     market,
     selectedOutcome,
     invalid
   );
+  */
     // TODO: allow user to initially report as part of the reporting redesign
     /*
   .api.Market.doInitialReport({

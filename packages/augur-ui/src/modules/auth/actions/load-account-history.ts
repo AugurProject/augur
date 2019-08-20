@@ -1,11 +1,9 @@
 import { loadAllAccountPositions } from 'modules/positions/actions/load-account-positions';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
-import { loadReportingHistory } from 'modules/reports/actions/load-reporting-history';
 import { loadUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
 import { loadAlerts } from 'modules/alerts/actions/alerts';
-import { getWinningBalance } from 'modules/reports/actions/get-winning-balance';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
@@ -52,12 +50,13 @@ function loadTransactions(
       dispatch(loadCreateMarketHistory(options, resolve))
     )
   );
+/*
   promises.push(
     new Promise(resolve =>
       dispatch(loadReportingHistory(options, null, resolve))
     )
   );
-
+*/
   Promise.all(promises).then((marketIds: string[][]) => {
     marketIds = [...marketIds, Object.keys(appState.pendingOrders)];
 
@@ -70,7 +69,7 @@ function loadTransactions(
       )
     );
 
-    dispatch(getWinningBalance(uniqMarketIds));
+    // dispatch(getWinningBalance(uniqMarketIds));
     dispatch(loadMarketsInfoIfNotLoaded(uniqMarketIds, () => {
       callback(null);
     }));
