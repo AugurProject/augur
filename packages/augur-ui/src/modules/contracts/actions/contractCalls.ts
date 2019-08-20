@@ -20,6 +20,8 @@ import {
   stringTo32ByteHex,
   QUINTILLION,
   tickSizeToNumTickWithDisplayPrices,
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
 } from '@augurproject/sdk';
 
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
@@ -31,7 +33,8 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { CreateMarketData } from "modules/types";
+import { CreateMarketData } from 'modules/types';
+import { formatBytes32String } from 'ethers/utils';
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -46,7 +49,7 @@ export function isWeb3Transport(): boolean {
 export async function isTransactionConfirmed(hash: string): Promise<boolean> {
   const tx = await getTransaction(hash);
   if (!tx) {
-    console.log("Transaction could not be found", hash);
+    console.log('Transaction could not be found', hash);
     return false;
   }
   // confirmations is number of blocks beyond block that includes tx
@@ -236,7 +239,7 @@ export interface CreateNewMarketParams {
 }
 
 export function createMarket(newMarket: CreateNewMarketParams) {
-  const fee = new BigNumber(newMarket.settlementFee).div(new BigNumber(100))
+  const fee = new BigNumber(newMarket.settlementFee).div(new BigNumber(100));
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
   const marketEndTime = new BigNumber(newMarket.endTime);
@@ -265,7 +268,11 @@ export function createMarket(newMarket: CreateNewMarketParams) {
         new BigNumber(newMarket.minPrice).multipliedBy(QUINTILLION),
         new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
       ];
-      const numTicks = tickSizeToNumTickWithDisplayPrices(new BigNumber(newMarket.tickSize), new BigNumber(newMarket.minPrice), new BigNumber(newMarket.maxPrice));
+      const numTicks = tickSizeToNumTickWithDisplayPrices(
+        new BigNumber(newMarket.tickSize),
+        new BigNumber(newMarket.minPrice),
+        new BigNumber(newMarket.maxPrice)
+      );
       const params: CreateScalarMarketParams = Object.assign(baseParams, {
         prices,
         numTicks,
@@ -285,7 +292,7 @@ export function createMarket(newMarket: CreateNewMarketParams) {
 }
 
 export function createMarketRetry(market: CreateMarketData) {
-   const extraInfo = JSON.parse(market.txParams._extraInfo);
+  const extraInfo = JSON.parse(market.txParams._extraInfo);
 
   const newMarket: CreateNewMarketParams = {
     outcomes: market.txParams._outcomes,
@@ -303,9 +310,9 @@ export function createMarketRetry(market: CreateMarketData) {
     settlementFee: market.txParams._feePerCashInAttoCash,
     affiliateFee: market.txParams._affiliateFeeDivisor,
     offsetName: extraInfo.offsetName,
-    backupSource: extraInfo.backupSource
+    backupSource: extraInfo.backupSource,
   };
-  
+
   createMarket(newMarket);
 }
 
@@ -332,6 +339,33 @@ export async function cancelOpenOrder(orderId: string) {
   const { contracts } = augurSdk.get();
   return contracts.cancelOrder.cancelOrder(orderId);
 }
+
+export async function createLiquidityOrder(
+  market: ,
+  type: BigNumber,
+  numShares: BigNumber,
+  price: BigNumber,
+  outcome: BigNumber
+) {
+  const Augur = augurSdk.get();
+  const tradeGroupId = generateTradeGroupId();
+  const attoShares = convertDisplayAmountToOnChainAmount(numShares, tickSize);
+  const attoPrice = convertDisplayPriceToOnChainPrice(price, minDisplayPrice, tickSize);
+  return Augur.contracts.createOrder.publicCreateOrder(
+    type,
+    numShares,
+    price,
+    market,
+    outcome,
+    formatBytes32String(""),
+    formatBytes32String(""),
+    tradeGroupId,
+    false,
+    NULL_ADDRESS
+  );
+}
+
+export async function createLiquidityOrders() {}
 
 export async function placeTrade(
   direction: number,
