@@ -89,7 +89,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
-    if (enableFlexSearch) {
+    if (enableFlexSearch && !Augur.syncableFlexSearch) {
       Augur.syncableFlexSearch = new SyncableFlexSearch();
     }
     this.registerTransactionStatusEvents();
