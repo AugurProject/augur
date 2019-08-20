@@ -172,7 +172,7 @@ export interface CreateMarketData {
   creationTime: DateFormattedObject;
   marketType: string;
   pendingId: string;
-  orderBook: IndividualOrderBook;
+  orderBook?: IndividualOrderBook;
 }
 
 export interface PendingQueue {

@@ -17,7 +17,7 @@ import {
 } from 'modules/common/constants';
 import { CreateNewMarketParams } from 'modules/contracts/actions/contractCalls';
 
-export function generateTxParameters(newMarket: CreateNewMarketParams): CreateYesNoMarketParams|CreateScalarMarketParams|CreateCategoricalMarketParams {
+export function constructMarketParams(newMarket: CreateNewMarketParams): CreateYesNoMarketParams|CreateScalarMarketParams|CreateCategoricalMarketParams {
   const fee = new BigNumber(newMarket.settlementFee || 0).div(new BigNumber(100))
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee || 0);
@@ -66,7 +66,7 @@ export function generateTxParameters(newMarket: CreateNewMarketParams): CreateYe
   }
 }
 
-export function generateTxParametersCopy(newMarket: NewMarket): TransactionMetadataParams {
+export function constructMarketParamsReturn(newMarket: NewMarket): TransactionMetadataParams {
   const fee = new BigNumber(newMarket.settlementFee || 0).div(new BigNumber(100))
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee || 0);
@@ -106,6 +106,8 @@ export function generateTxParametersCopy(newMarket: NewMarket): TransactionMetad
       const params = Object.assign(baseParams, {
         _outcomes: newMarket.outcomes.map(o => stringTo32ByteHex(o)),
       });
+      console.log(params);
+      console.log(newMarket);
 	    return params;
     }
     default: {

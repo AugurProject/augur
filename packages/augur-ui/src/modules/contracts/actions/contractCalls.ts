@@ -31,7 +31,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { generateTxParameters } from 'modules/create-market/helpers/construct-market-params';
+import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import { CreateMarketData, NewMarket } from "modules/types";
 
 export function clearUserTx(): void {
@@ -237,7 +237,7 @@ export interface CreateNewMarketParams {
 }
 
 export function createMarket(newMarket: CreateNewMarketParams) {
-  const params = generateTxParameters(newMarket);
+  const params = constructMarketParams(newMarket);
 
   const Augur = augurSdk.get();
 

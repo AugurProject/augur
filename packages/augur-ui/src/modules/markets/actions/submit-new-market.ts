@@ -20,7 +20,7 @@ import { Action } from "redux";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
-import { generateTxParametersCopy } from 'modules/create-market/helpers/construct-market-params';
+import { constructMarketParamsReturn } from 'modules/create-market/helpers/construct-market-params';
 import { createMarketRetry } from "modules/contracts/actions/contractCalls";
 
 export function submitNewMarket(
@@ -36,7 +36,7 @@ export function submitNewMarket(
 
     const hasOrders = market.orderBook && Object.keys(market.orderBook).length
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
-    const pendingId = generateTxParameterId(generateTxParametersCopy(market))
+    const pendingId = generateTxParameterId(constructMarketParamsReturn(market))
 
     if (hasOrders) {
       dispatch(
@@ -78,7 +78,7 @@ export function submitNewMarket(
   };
 }
 
-export function submitNewMarketRetry(
+export function retrySubmitMarket(
   market: CreateMarketData,
   callback: NodeStyleCallback = noop
 ) {
