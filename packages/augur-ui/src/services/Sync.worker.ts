@@ -55,7 +55,7 @@ ctx.addEventListener('message', async (message: any) => {
         MakeJsonRpcResponse(messageData.id, true)
       );
     } else if (messageData.method === 'start') {
-      api = await Sync.start(messageData.ethNodeUrl, messageData.account);
+      api = await Sync.start(messageData.ethNodeUrl, messageData.account, {}, true);
       ctx.postMessage(
         MakeJsonRpcResponse(messageData.id, true)
       );

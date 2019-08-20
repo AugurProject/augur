@@ -22,7 +22,7 @@ console.log("Starting web worker");
     const ethersProvider = new EthersProvider(new JsonRpcProvider(settings.ethNodeURLs[4]), 10, 0, 40);
     const gnosisRelay = new GnosisRelayAPI("http://localhost:8000");
     const contractDependencies = new ContractDependenciesGnosis(ethersProvider, gnosisRelay, undefined, undefined, undefined, undefined, settings.testAccounts[0]);
-    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector);
+    const augur = await Augur.create(ethersProvider, contractDependencies, Addresses[4], connector, undefined, true);
     await augur.connect("");
 
     connector.on(
