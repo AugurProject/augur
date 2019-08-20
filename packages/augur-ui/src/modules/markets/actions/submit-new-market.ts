@@ -31,31 +31,36 @@ export function submitNewMarket(
 ) {
   return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
-    const hasOrders = Object.keys(newMarket.orderBook).length;
-    newMarket.orderBook = sortOrders(newMarket.orderBook);
-    newMarket.endTime = newMarket.endTimeFormatted.timestamp;
-    newMarket.designatedReporterAddress = newMarket.designatedReporterAddress === '' ? loginAccount.address : newMarket.designatedReporterAddress;
-
-    if (hasOrders) {
-      dispatch(
-        addMarketLiquidityOrders({
-          marketId: generateTxParameterId(generateTxParameters(newMarket, true)),
-          liquidityOrders: newMarket.orderBook
-        })
-      );
-    }
+   
     if (retry) {
-      const marketRetry = await createMarketRetry(marketRetry);
+      // MAKE ANOTHER FUNCTION PROBABLY
+      const hasOrders = marketRetry.orderBook && Object.keys(marketRetry.orderBook).length;
+      const sortOrderBook = sortOrders(marketRetry.orderBook);
 
       if (hasOrders) {
         dispatch(
           addMarketLiquidityOrders({
-            marketId: marketRetry.address,
-            liquidityOrders: newMarket.orderBook
+            marketId: generateTxParameterId(generateTxParameters(marketRetry, true)),
+            liquidityOrders: sortOrderBook
+          })
+        );
+      }
+      const marketResult = await createMarketRetry(marketRetry);
+
+      if (hasOrders) {
+        dispatch(
+          addMarketLiquidityOrders({
+            marketId: marketResult.address,
+            liquidityOrders: sortOrderBook
           })
         );
       }
     } else {
+      const hasOrders = Object.keys(newMarket.orderBook).length;
+      newMarket.orderBook = sortOrders(newMarket.orderBook);
+      newMarket.endTime = newMarket.endTimeFormatted.timestamp;
+      newMarket.designatedReporterAddress = newMarket.designatedReporterAddress === '' ? loginAccount.address : newMarket.designatedReporterAddress;
+   
       const market = await createMarket({
         outcomes: newMarket.outcomes,
         scalarDenomination: newMarket.scalarDenomination,

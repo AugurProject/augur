@@ -31,6 +31,7 @@ export const selectAuthorOwnedMarkets = createSelector(
     return filteredMarkets.map(m => ({
       ...m,
       hasPendingLiquidityOrders: !!pendingLiquidityOrders[m.id],
+      orderBook: pendingLiquidityOrders[m.id],
       recentlyTraded: getLastTradeTimestamp(marketTradingHistory[m.id])
     }));
   }
