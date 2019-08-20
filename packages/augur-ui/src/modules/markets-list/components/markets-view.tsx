@@ -66,7 +66,7 @@ export default class MarketsView extends Component<
       isSearchingMarkets: true,
       marketCount: 0,
       limit: PAGINATION_COUNT,
-      offset: 1,
+      offset: 0,
       showPagination: false,
     };
 
