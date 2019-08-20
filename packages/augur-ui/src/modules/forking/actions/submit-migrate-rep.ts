@@ -1,7 +1,6 @@
 import logError from "utils/log-error";
 import makePath from "modules/routes/helpers/make-path";
 import { UNIVERSE_ID } from "modules/common/constants";
-import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
@@ -24,12 +23,13 @@ export const submitMigrateREP = ({
 
   const market = marketInfos[marketId];
   if (!market) return callback("Market not found");
-  const payoutNumerators = getPayoutNumerators(
-    market,
-    selectedOutcome,
-    invalid
-  );
-
+  /* use method in sdk
+    const payoutNumerators = getPayoutNumerators(
+      market,
+      selectedOutcome,
+      invalid
+    );
+  */
   // TODO: refactor to call contract methods as part of forking redesign
   /*
   api.Universe.getReputationToken(
