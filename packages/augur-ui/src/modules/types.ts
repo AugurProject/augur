@@ -166,11 +166,12 @@ export interface CreateMarketData {
   txParams: TransactionMetadataParams;
   endTime: DateFormattedObject;
   description: string;
-  id: string;
   hash: string;
   pending: boolean;
   recentlyTraded: DateFormattedObject;
   creationTime: DateFormattedObject;
+  marketType: string;
+  pendingId: string;
 }
 
 export interface PendingQueue {
@@ -296,6 +297,7 @@ export interface NewMarket {
   validations: Array<
     NewMarketPropertiesValidations | NewMarketPropertyValidations
   >;
+  backupSource: string;
   currentStep: number;
   type: string;
   outcomes: Array<string>;
