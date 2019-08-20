@@ -17,11 +17,11 @@ export const loadPendingQueue = (pendingQueue: any) => (
     Object.keys(data).map(async (d: any) => {
       const pendingData = data[d];
       if (!pendingData.pendingId) return;
-      if (pendingData.status === TXEventName.Failure) dispatch(addPendingData(d, queue, pendingData.status, pendingData.data));;
-      const confirmed = await isTransactionConfirmed(pendingData.pendingId);
+      if (pendingData.status === TXEventName.Failure) dispatch(addPendingData(d, queue, pendingData.status, pendingData.hash, pendingData.data));;
+      const confirmed = await isTransactionConfirmed(pendingData.hash);
       confirmed
         ? dispatch(removePendingData(d, queue))
-      : dispatch(addPendingData(d, queue, pendingData.status, pendingData.data));
+      : dispatch(addPendingData(d, queue, pendingData.status, pendingData.hash, pendingData.data));
     });
   });
 };
@@ -30,6 +30,7 @@ export const addPendingData = (
   pendingId: string,
   queueName: string,
   status: string,
+  hash: string,
   info?: CreateMarketData,
 ): BaseAction => ({
   type: ADD_PENDING_DATA,
@@ -37,6 +38,7 @@ export const addPendingData = (
     pendingId,
     queueName,
     status,
+    hash,
     info
   },
 });
