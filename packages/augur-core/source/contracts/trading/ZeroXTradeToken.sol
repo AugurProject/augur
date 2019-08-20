@@ -36,7 +36,8 @@ contract ZeroXTradeToken is Initializable {
     string constant internal EIP712_DOMAIN_VERSION = "2";
 
     // Hash of the EIP712 Domain Separator Schema
-    bytes32 constant internal EIP712_DOMAIN_SEPARATOR_SCHEMA_HASH = keccak256(abi.encodePacked(
+    bytes32 constant internal EIP712_DOMAIN_SEPARATOR_SCHEMA_HASH = keccak256(
+        abi.encodePacked(
         "EIP712Domain(",
         "string name,",
         "string version,",
@@ -44,7 +45,8 @@ contract ZeroXTradeToken is Initializable {
         ")"
     ));
 
-    bytes32 constant internal EIP712_ORDER_SCHEMA_HASH = keccak256(abi.encodePacked(
+    bytes32 constant internal EIP712_ORDER_SCHEMA_HASH = keccak256(
+        abi.encodePacked(
         "Order(",
         "address makerAddress,",
         "address takerAddress,",
@@ -90,7 +92,7 @@ contract ZeroXTradeToken is Initializable {
     // ERC20
     // TODO make other interface members error?
 
-    function transferFrom(address holder, address recipient, uint256 amount) public returns (bool) {
+    function transferFrom(address, address, uint256) public view returns (bool) {
         require(transferFromAllowed);
         return true;
     }
@@ -160,7 +162,7 @@ contract ZeroXTradeToken is Initializable {
         return _amount;
     }
 
-    function creatorHasFundsForTrade(AugurOrderData memory _augurOrderData, address _creator, uint256 _amount) public returns (bool) {
+    function creatorHasFundsForTrade(AugurOrderData memory _augurOrderData, address _creator, uint256 _amount) public view returns (bool) {
         Order.Types _orderType = Order.Types(_augurOrderData.orderType);
         if (_orderType == Order.Types.Ask) {
             return partyHasFundsForAsk(_creator, _amount, IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, _augurOrderData.price);
@@ -169,7 +171,7 @@ contract ZeroXTradeToken is Initializable {
         }
     }
 
-    function partyHasFundsForBid(address _party, uint256 _attosharesToCover, IMarket _market, uint256 _outcome, uint256 _price) private returns (bool) {
+    function partyHasFundsForBid(address _party, uint256 _attosharesToCover, IMarket _market, uint256 _outcome, uint256 _price) private view returns (bool) {
         uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
 
         // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
@@ -187,7 +189,7 @@ contract ZeroXTradeToken is Initializable {
         return cash.balanceOf(_party) >= _attosharesToCover.mul(_price);
     }
 
-    function partyHasFundsForAsk(address _party, uint256 _attosharesToCover, IMarket _market, uint256 _outcome, uint256 _price) private returns (bool) {
+    function partyHasFundsForAsk(address _party, uint256 _attosharesToCover, IMarket _market, uint256 _outcome, uint256 _price) private view returns (bool) {
         // Figure out how many shares of the outcome the creator has
         _attosharesToCover -= _market.getShareToken(_outcome).balanceOf(_party);
 
@@ -250,7 +252,7 @@ contract ZeroXTradeToken is Initializable {
         return result;
     }
 
-    function parseAssetData(bytes memory _assetData) public returns (AugurOrderData memory _data) {
+    function parseAssetData(bytes memory _assetData) public pure returns (AugurOrderData memory _data) {
         /* solium-disable-next-line security/no-inline-assembly */
         assembly {
             // The load offset begins where the standard ERC20 Proxy data ends at 36 bytes + 32 bytes array initial length data
@@ -262,7 +264,7 @@ contract ZeroXTradeToken is Initializable {
         }
     }
 
-    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
+    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         _zeroXOrder.makerAddress = msg.sender;
         _zeroXOrder.takerAddress = address(0);
         _zeroXOrder.feeRecipientAddress = address(0);

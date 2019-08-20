@@ -1,8 +1,8 @@
 pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
-import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/external/IExchange.sol';
+import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/external/IWallet.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/token/IERC20.sol';
@@ -21,7 +21,8 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
     string constant internal EIP712_DOMAIN_VERSION = "2";
 
     // Hash of the EIP712 Domain Separator Schema
-    bytes32 constant internal EIP712_DOMAIN_SEPARATOR_SCHEMA_HASH = keccak256(abi.encodePacked(
+    bytes32 constant internal EIP712_DOMAIN_SEPARATOR_SCHEMA_HASH = keccak256(
+        abi.encodePacked(
         "EIP712Domain(",
         "string name,",
         "string version,",
@@ -29,7 +30,8 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
         ")"
     ));
 
-    bytes32 constant internal EIP712_ORDER_SCHEMA_HASH = keccak256(abi.encodePacked(
+    bytes32 constant internal EIP712_ORDER_SCHEMA_HASH = keccak256(
+        abi.encodePacked(
         "Order(",
         "address makerAddress,",
         "address takerAddress,",
@@ -95,56 +97,13 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
     constructor ()
         public
     {
-        EIP712_DOMAIN_HASH = keccak256(abi.encodePacked(
+        EIP712_DOMAIN_HASH = keccak256(
+            abi.encodePacked(
             EIP712_DOMAIN_SEPARATOR_SCHEMA_HASH,
             keccak256(bytes(EIP712_DOMAIN_NAME)),
             keccak256(bytes(EIP712_DOMAIN_VERSION)),
             uint256(address(this))
         ));
-    }
-
-    /// @dev Synchronously executes multiple calls of fillOrder until total amount of takerAsset is sold by taker.
-    ///      Returns false if the transaction would otherwise revert.
-    /// @param orders Array of order specifications.
-    /// @param takerAssetFillAmount Desired amount of takerAsset to sell.
-    /// @param signatures Proofs that orders have been signed by makers.
-    /// @return Amounts filled and fees paid by makers and taker.
-    function marketSellOrdersNoThrow(
-        Order[] memory orders,
-        uint256 takerAssetFillAmount,
-        bytes[] memory signatures
-    )
-        public
-        returns (FillResults memory totalFillResults)
-    {
-        bytes memory takerAssetData = orders[0].takerAssetData;
-
-        uint256 ordersLength = orders.length;
-        for (uint256 i = 0; i != ordersLength; i++) {
-
-            // We assume that asset being sold by taker is the same for each order.
-            // Rather than passing this in as calldata, we use the takerAssetData from the first order in all later orders.
-            orders[i].takerAssetData = takerAssetData;
-
-            // Calculate the remaining amount of takerAsset to sell
-            uint256 remainingTakerAssetFillAmount = takerAssetFillAmount.sub(totalFillResults.takerAssetFilledAmount);
-
-            // Attempt to sell the remaining amount of takerAsset
-            FillResults memory singleFillResults = fillOrderNoThrow(
-                orders[i],
-                remainingTakerAssetFillAmount,
-                signatures[i]
-            );
-
-            // Update amounts filled and fees paid by maker and taker
-            addFillResults(totalFillResults, singleFillResults);
-
-            // Stop execution if the entire amount of takerAsset has been sold
-            if (totalFillResults.takerAssetFilledAmount >= takerAssetFillAmount) {
-                break;
-            }
-        }
-        return totalFillResults;
     }
 
     /// @dev Adds properties of both FillResults instances.
@@ -470,12 +429,10 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
     }
 
     /// @dev Updates state with results of a fill order.
-    /// @param order that was filled.
-    /// @param takerAddress Address of taker who filled the order.
     /// @param orderTakerAssetFilledAmount Amount of order already filled.
     function updateFilledState(
-        Order memory order,
-        address takerAddress,
+        Order memory,
+        address,
         bytes32 orderHash,
         uint256 orderTakerAssetFilledAmount,
         FillResults memory fillResults
@@ -562,7 +519,7 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
         uint256 makerAssetFilledAmount
     )
         internal
-        view
+        pure
     {
         // Revert if fill amount is invalid
         // TODO: reconsider necessity for v2.1
@@ -1196,10 +1153,8 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
             r = readBytes32(signature, 1);
             s = readBytes32(signature, 33);
             recovered = ecrecover(
-                keccak256(abi.encodePacked(
-                    "\x19Ethereum Signed Message:\n32",
-                    hash
-                )),
+                keccak256(
+                    abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)),
                 v,
                 r,
                 s

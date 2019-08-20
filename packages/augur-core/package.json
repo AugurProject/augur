@@ -68,7 +68,7 @@
   },
   "dependencies": {
     "@augurproject/artifacts": "10.0.0-alpha.1",
-    "@augurproject/solidity-docgen": "0.2.0-alpha.2",
+    "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "@types/get-port": "4.0.1",
     "@types/mkdirp": "0.5.2",
     "async-mkdirp": "1.2.7",
@@ -89,7 +89,7 @@
     "solidity-coverage": "0.6.0-beta.5"
   },
   "devDependencies": {
-    "@augurproject/solidity-typescript-generator": "1.1.5",
+    "@augurproject/solidity-typescript-generator": "1.1.6",
     "@babel/core": "7.5.4",
     "@babel/plugin-proposal-class-properties": "7.5.0",
     "@babel/plugin-proposal-export-namespace-from": "7.5.2",

@@ -86,7 +86,7 @@ library Trade {
     function createWithData(IAugur _augur, OrderData memory _orderData, address _fillerAddress, uint256 _fillerSize, address _affiliateAddress) internal view returns (Data memory) {
         Contracts memory _contracts = getContracts(_augur, _orderData.market, _orderData.outcome);
         FilledOrder memory _order = getOrder(_contracts, _orderData.outcome, _orderData.kycToken, _orderData.price, _orderData.orderId);
-        Participant memory _creator = getMaker(_contracts, _orderData.sharesEscrowed, _orderData.amount, _orderData.creator, _orderData.orderType);
+        Participant memory _creator = getMaker(_orderData.sharesEscrowed, _orderData.amount, _orderData.creator, _orderData.orderType);
         Participant memory _filler = getFiller(_contracts, _orderData.orderType, _fillerAddress, _fillerSize);
 
         // Signed orders which have no order id get their funds from the signed order "creator" whereas on chain orders have funds escrowed.
@@ -331,7 +331,7 @@ library Trade {
         uint256 _sharePriceRange;
         uint256 _sharePriceLong;
         uint256 _sharePriceShort;
-        (_sharePriceRange, _sharePriceLong, _sharePriceShort) = getSharePriceDetails(_contracts.market, _contracts.orders, _price);
+        (_sharePriceRange, _sharePriceLong, _sharePriceShort) = getSharePriceDetails(_contracts.market, _price);
         return FilledOrder({
             orderId: _orderId,
             outcome: _outcome,
@@ -342,7 +342,7 @@ library Trade {
         });
     }
 
-    function getMaker(Contracts memory _contracts, uint256 _sharesEscrowed, uint256 _amount, address _creator, Order.Types _orderOrderType) private view returns (Participant memory) {
+    function getMaker(uint256 _sharesEscrowed, uint256 _amount, address _creator, Order.Types _orderOrderType) private pure returns (Participant memory) {
         Direction _direction = (_orderOrderType == Order.Types.Bid) ? Direction.Long : Direction.Short;
         uint256 _sharesToBuy = _amount.sub(_sharesEscrowed);
         return Participant({
@@ -386,7 +386,7 @@ library Trade {
         return _shortShareTokens;
     }
 
-    function getSharePriceDetails(IMarket _market, IOrders _orders, uint256 _price) private view returns (uint256 _sharePriceRange, uint256 _sharePriceLong, uint256 _sharePriceShort) {
+    function getSharePriceDetails(IMarket _market, uint256 _price) private view returns (uint256 _sharePriceRange, uint256 _sharePriceLong, uint256 _sharePriceShort) {
         uint256 _numTicks = _market.getNumTicks();
         _sharePriceShort = uint256(_numTicks.sub(_price));
         return (_numTicks, _price, _sharePriceShort);
@@ -450,17 +450,17 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     function fillOrder(address _filler, bytes32 _orderId, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress) external returns (uint256) {
         require(msg.sender == trade || msg.sender == address(this));
         Trade.Data memory _tradeData = Trade.create(augur, _orderId, _filler, _amountFillerWants, _affiliateAddress);
-        return fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId, _affiliateAddress);
+        return fillOrderInternal(_filler, _tradeData, _amountFillerWants, _tradeGroupId);
     }
 
     function fillZeroXOrder(IMarket _market, uint256 _outcome, IERC20 _kycToken, uint256 _price, Order.Types _orderType, uint256 _amount, address _creator, bytes32 _tradeGroupId, address _affiliateAddress, address _filler) external returns (uint256) {
         require(msg.sender == zeroXTradeToken);
         Trade.OrderData memory _orderData = Trade.createOrderData(_market, _outcome, _kycToken, _price, _orderType, _amount, _creator);
         Trade.Data memory _tradeData = Trade.createWithData(augur, _orderData, _filler, _amount, _affiliateAddress);
-        return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId, _affiliateAddress);
+        return fillOrderInternal(_filler, _tradeData, _amount, _tradeGroupId);
     }
 
-    function fillOrderInternal(address _filler, Trade.Data memory _tradeData, uint256 _amountFillerWants, bytes32 _tradeGroupId, address _affiliateAddress) internal nonReentrant returns (uint256) {
+    function fillOrderInternal(address _filler, Trade.Data memory _tradeData, uint256 _amountFillerWants, bytes32 _tradeGroupId) internal nonReentrant returns (uint256) {
         require(_tradeData.order.kycToken == IERC20(0) || _tradeData.order.kycToken.balanceOf(_filler) > 0, "FillOrder.fillOrder: KYC token failure");
         uint256 _marketCreatorFees;
         uint256 _reporterFees;

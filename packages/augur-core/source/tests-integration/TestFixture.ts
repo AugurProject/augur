@@ -92,7 +92,7 @@ export class TestFixture {
         const ethValue = numShares.multipliedBy(price);
 
         await this.cash.faucet(ethValue);
-        await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, false, NULL_ADDRESS);
+        await createOrder.publicCreateOrder(type, numShares, price, market, outcome, betterOrderID, worseOrderID, tradeGroupID, NULL_ADDRESS);
         return;
     }
 
@@ -110,12 +110,12 @@ export class TestFixture {
 
         await this.cash.faucet(ethValue);
 
-        const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
+        const bestPriceAmount = await trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
         if (bestPriceAmount == new BigNumber(0)) {
             throw new Error("Could not take best Order");
         }
 
-        await trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
+        await trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
         return;
     }
 
