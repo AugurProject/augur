@@ -17,7 +17,7 @@ import {
 } from 'modules/common/constants';
 import { CreateNewMarketParams } from 'modules/contracts/actions/contractCalls';
 
-export function constructMarketParams(newMarket: CreateNewMarketParams): CreateYesNoMarketParams|CreateScalarMarketParams|CreateCategoricalMarketParams {
+export function constructMarketParams(newMarket: CreateNewMarketParams, isRetry: Boolean): CreateYesNoMarketParams|CreateScalarMarketParams|CreateCategoricalMarketParams {
   const fee = new BigNumber(newMarket.settlementFee || 0).div(new BigNumber(100))
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee || 0);
@@ -56,7 +56,7 @@ export function constructMarketParams(newMarket: CreateNewMarketParams): CreateY
     }
     case CATEGORICAL: {
       const params: CreateCategoricalMarketParams = Object.assign(baseParams, {
-        outcomes: newMarket.outcomes.map(o => stringTo32ByteHex(o)),
+        outcomes: newMarket.outcomes.map(o => isRetry ? o : stringTo32ByteHex(o)),
       });
 	    return params;
     }

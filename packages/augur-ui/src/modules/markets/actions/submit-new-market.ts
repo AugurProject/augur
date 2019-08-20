@@ -64,7 +64,7 @@ export function submitNewMarket(
       settlementFee: market.settlementFee,
       affiliateFee: market.affiliateFee,
       offsetName: market.offsetName,
-    });
+    }, false);
 
     if (hasOrders) {
       dispatch(clearMarketLiquidityOrders(pendingId));

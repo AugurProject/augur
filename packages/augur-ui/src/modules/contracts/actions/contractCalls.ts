@@ -236,8 +236,8 @@ export interface CreateNewMarketParams {
   backupSource?: string;
 }
 
-export function createMarket(newMarket: CreateNewMarketParams) {
-  const params = constructMarketParams(newMarket);
+export function createMarket(newMarket: CreateNewMarketParams, isRetry: Boolean) {
+  const params = constructMarketParams(newMarket, isRetry);
 
   const Augur = augurSdk.get();
 
@@ -276,7 +276,7 @@ export function createMarketRetry(market: CreateMarketData) {
     backupSource: extraInfo.backupSource
   };
   
-  return createMarket(newMarket);
+  return createMarket(newMarket, true);
 }
 
 export async function approveToTrade(amount: BigNumber) {
