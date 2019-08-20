@@ -96,7 +96,7 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn test --ci --reporters=default --reporters=jest-junit --runInBand
+          yarn test --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
       - bash: |
           set -euo pipefail
