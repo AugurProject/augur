@@ -18875,15 +18875,15 @@
 			"constant": false,
 			"inputs": [
 				{
-					"name": "requestedFillAmount",
+					"name": "_requestedFillAmount",
 					"type": "uint256"
 				},
 				{
-					"name": "affiliateAddress",
+					"name": "_affiliateAddress",
 					"type": "address"
 				},
 				{
-					"name": "tradeGroupId",
+					"name": "_tradeGroupId",
 					"type": "bytes32"
 				},
 				{
@@ -18937,11 +18937,11 @@
 							"type": "bytes"
 						}
 					],
-					"name": "orders",
+					"name": "_orders",
 					"type": "tuple[]"
 				},
 				{
-					"name": "signatures",
+					"name": "_signatures",
 					"type": "bytes[]"
 				}
 			],
