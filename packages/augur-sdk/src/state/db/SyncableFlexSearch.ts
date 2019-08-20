@@ -32,7 +32,7 @@ export class SyncableFlexSearch {
       {
         async: true,
         cache: true,
-        worker: 3,
+        worker: false, // TODO: Check impact on performance before enabling worker option in FlexSearch
         doc:
         {
           id: "id",
