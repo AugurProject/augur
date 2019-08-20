@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH, NULL_ADDRESS } from '../constants';
+import { _1_ETH } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -16,6 +16,8 @@ import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { calculatePayoutNumeratorsArray, QUINTILLION } from '@augurproject/sdk';
+import { ethers } from "ethers";
+import { abiV1 } from "@augurproject/artifacts";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -201,15 +203,36 @@ export function addScripts(flash: FlashSession) {
         description: 'Do not print anything (just returns). Only useful in interactive mode.',
         flag: true,
       },
+      {
+        name: "v1",
+        description: 'Fetch logs from V1 contracts.',
+        flag: true,
+      },
+      {
+        name: 'from',
+        abbr: 'f',
+        description: 'First block from which to request logs.',
+      },
+      {
+        name: 'to',
+        abbr: 't',
+        description: 'Final block from which to request logs.',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return [];
       const user = await this.ensureUser(null, false, false);
+      const quiet = args.quiet as boolean;
+      const v1 = args.v1 as boolean;
+      const fromBlock = Number(args.from || 0);
+      const toBlock = args.to === null || args.to === 'latest'
+        ? 'latest'
+        : Number(args.to);
 
       const logs = await this.provider.getLogs({
         address: user.augur.addresses.Augur,
-        fromBlock: 0, // TODO programmatically figure out which block number augur was uploaded to
-        toBlock: 'latest',
+        fromBlock,
+        toBlock,
         topics: [],
       });
 
@@ -224,8 +247,28 @@ export function addScripts(flash: FlashSession) {
         removed: log.removed || false,
       }));
 
-      const parsedLogs = user.augur.events.parseLogs(logsWithBlockNumber);
-      if (!args.quiet) {
+      let parsedLogs = user.augur.events.parseLogs(logsWithBlockNumber);
+
+      // Logs from AugurV1 require additional calls to the blockchain.
+      if (v1) {
+        parsedLogs = await Promise.all(parsedLogs.map(async (log) => {
+          if (log.name === 'OrderCreated') {
+            const { shareToken } = log;
+            const shareTokenContract = new ethers.Contract(
+              shareToken,
+              new ethers.utils.Interface(abiV1.ShareToken),
+              this.provider);
+            const market = await shareTokenContract.functions['getMarket']();
+            const outcome = (await shareTokenContract.functions['getOutcome']()).toNumber();
+
+            return Object.assign({}, log, { market, outcome });
+          } else {
+            return log;
+          }
+        }));
+      }
+
+      if (!quiet) {
         this.log(JSON.stringify(parsedLogs, null, 2));
       }
       return parsedLogs;

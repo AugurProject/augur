@@ -16,6 +16,7 @@ import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { setAddresses, NetworkId } from "@augurproject/artifacts";
 import * as fs from "async-file";
 import { LogReplayer } from "./replay-logs";
+import { LogReplayerV1 } from "./replay-logs-v1";
 
 export const defaultSeedPath = `/tmp/seed.json`;
 
@@ -275,10 +276,16 @@ export function addGanacheScripts(flash: FlashSession) {
         description: "Filepath for seed",
         required: true,
       },
+      {
+        name: "v1",
+        description: "Use this flag if the logs come from a V1 contract.",
+        flag: true,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments): Promise<void> {
       const logsFilePath = args.logs as string;
       const seedFilePath = args.seed as string;
+      const v1 = args.v1 as boolean;
 
       const logs = JSON.parse(await fs.readFile(logsFilePath));
 
@@ -287,7 +294,9 @@ export function addGanacheScripts(flash: FlashSession) {
       await this.call("deploy", { write_artifacts: false, time_controlled: "true" });
 
       // Replay the logs.
-      const replayer = new LogReplayer(this.accounts, this.provider, this.contractAddresses);
+      const replayer = v1
+        ? new LogReplayerV1(this.accounts, this.provider, this.contractAddresses)
+        : new LogReplayer(this.accounts, this.provider, this.contractAddresses);
       await replayer.Replay(logs);
 
       // Save the replayed state to a seed for later use.
@@ -304,16 +313,24 @@ export function addGanacheScripts(flash: FlashSession) {
         description: `Filepath for logs`,
         required: true,
       },
+      {
+        name: "v1",
+        description: "Use this flag if the logs come from a V1 contract.",
+        flag: true,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments): Promise<void> {
       if (this.noProvider()) return;
       if (this.noAddresses()) return;
-
+      const v1 = args.v1 as boolean;
       const logsFilePath = args.logs as string;
+
       const logs = JSON.parse(await fs.readFile(logsFilePath));
 
       // Replay the logs.
-      const replayer = new LogReplayer(this.accounts, this.provider, this.contractAddresses);
+      const replayer = v1
+        ? new LogReplayerV1(this.accounts, this.provider, this.contractAddresses)
+        : new LogReplayer(this.accounts, this.provider, this.contractAddresses);
       await replayer.Replay(logs);
     },
   });

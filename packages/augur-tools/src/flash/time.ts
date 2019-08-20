@@ -1,9 +1,9 @@
 
-export function daysInMonth(month: number, year: number) {
+export function daysInMonth(month: number, year: number): number {
   return new Date(year, month, 0).getDate();
 }
 
-export function addMonths(date: Date, months: number) {
+export function addMonths(date: Date, months: number): Date {
   const targetMonth = date.getMonth() + months;
   const year = date.getFullYear() + targetMonth / 12;
   const month = targetMonth % 12;

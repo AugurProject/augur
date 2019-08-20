@@ -12,7 +12,7 @@ interface AddressMapping { [addr1: string]: string; }
 interface IdMapping { [id1: string]: string; }
 interface AccountMapping { [addr1: string]: Account; }
 
-export class LogReplayer {
+export class LogReplayerV1 {
   accounts: AccountMapping = {};
   universes: AddressMapping = {};
   markets: AddressMapping = {};
@@ -74,7 +74,7 @@ export class LogReplayer {
     switch(log.name) {
       case "UniverseCreated": return this.UniverseCreated(log);
       case "MarketCreated": return this.MarketCreated(log);
-      case "OrderEvent": return this.OrderEvent(log);
+      case "OrderCreated": return this.OrderCreated(log);
       default:
     }
   }
@@ -95,10 +95,15 @@ export class LogReplayer {
 
   async MarketCreated(log: ParsedLog) {
     const {
-      universe, extraInfo, market, marketCreator, designatedReporter, prices,
-      marketType, numTicks, outcomes, timestamp, endTime, feeDivisor } = log;
+      universe, extraInfo, market, marketCreator, designatedReporter,
+      prices, marketType, numTicks, outcomes } = log;
 
     console.log(`Replaying MarketCreated "${market}"`);
+    console.log(log);
+
+    const timestamp = `${today.getTime() / 1000}`;
+    const endTime = `${inOneMonths.getTime() / 1000}`;
+    const feeDivisor = new BigNumber(0);
 
     const feePerCashInAttoCash = new BigNumber(10).pow(16); // 1% fee
     const [ start, end ] = [ makeDate(timestamp), makeDate(endTime) ];
@@ -144,47 +149,31 @@ export class LogReplayer {
     this.markets[market] = result.address;
   }
 
-  async OrderEvent(log: ParsedLog) {
-    const { universe, market, eventType, orderType, orderId, tradeGroupId, addressData, uint256Data } = log;
+  async OrderCreated(log: ParsedLog) {
+    const {
+      name, orderType, amount, price, creator, moneyEscrowed, sharesEscrowed,
+      tradeGroupId, orderId, universe, shareToken, market, outcome } = log;
 
-    // From packages/augur-core/source/contracts/Augur.sol:61
-    const [ kycToken, orderCreator, orderFiller ] = addressData;
-    const [ price, amount, outcome, tokenRefund, sharesRefund, fees, amountFilled, timestamp, sharesEscrowed, tokensEscrowed ] = uint256Data;
-
-    console.log(`Replaying OrderEvent "${orderId}"`);
+    console.log(`Replaying OrderCreated "${orderId}"`);
+    console.log(log);
 
     const betterOrderId = formatBytes32String("");
     const worseOrderId = formatBytes32String("");
 
-    const orderCreatorUser = await this.Account(orderCreator).then((account) => this.User(account));
+    const orderCreatorUser = await this.Account(creator).then((account) => this.User(account));
 
-    switch(eventType) { // See packages/augur-core/source/contracts/Augur.sol:40
-      case 0: // OrderEventType.Create
-        this.orders[orderId] = await orderCreatorUser.placeOrder(
-          this.markets[market],
-          new BigNumber(orderType),
-          new BigNumber(amount),
-          new BigNumber(price),
-          outcome,
-          betterOrderId,
-          worseOrderId,
-          tradeGroupId);
-        break;
-      case 1: // OrderEventType.Cancel
-        await orderCreatorUser.cancelOrder(this.orders[orderId]);
-        break;
-      case 2: // OrderEventType.Fill (later v2)
-      case 3: // OrderEventType.Fill (earlier v2)
-        const orderFillerUser = await this.Account(orderFiller).then((account) => this.User(account));
-        await orderFillerUser.fillOrder(
-          this.orders[orderId],
-          new BigNumber(amountFilled),
-          ethers.utils.parseBytes32String(tradeGroupId),
-          new BigNumber(price).times(amountFilled).times(10) // not sure why this needs to be multiplied
-        );
-        break;
-      default: throw Error(`Unexpected order event type "${eventType}"`);
-    }
+    // TODO must query chain with shareToken to get the market address
+
+    this.orders[orderId] = await orderCreatorUser.placeOrder(
+      this.markets[market],
+      new BigNumber(orderType),
+      new BigNumber(amount),
+      new BigNumber(price),
+      outcome,
+      betterOrderId,
+      worseOrderId,
+      tradeGroupId
+    );
   }
 }
 

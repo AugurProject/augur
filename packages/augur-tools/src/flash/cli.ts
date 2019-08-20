@@ -42,8 +42,10 @@ function parse(flash: FlashSession): Args {
     const script = flash.scripts[name];
     const command = commands.addParser(script.name, { description: script.description });
     for (const opt of script.options || []) {
+      const args = [ `--${opt.name}`];
+      if (opt.abbr) args.push(`-${opt.abbr}`);
       command.addArgument(
-        [ `--${opt.name}`],
+        args,
         {
           help: opt.description || "",
           required: opt.required || false,
