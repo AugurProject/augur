@@ -23,7 +23,7 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
     orderEventLog = {
         "universe": universe.address,
         "market": market.address,
-        "eventType": 3,
+        "eventType": 2,
         "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[2]],
         "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }

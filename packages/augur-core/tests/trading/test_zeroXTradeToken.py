@@ -81,7 +81,7 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
 
     # fill signed order
     orderEventLog = {
-	    "eventType": 3,
+	    "eventType": 2,
 	    "addressData": [nullAddress, contractsFixture.accounts[2] if withSelf else contractsFixture.accounts[1] , contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
@@ -114,7 +114,7 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
 
     # fill signed order
     orderEventLog = {
-	    "eventType": 3,
+	    "eventType": 2,
 	    "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
@@ -211,7 +211,7 @@ def test_one_ask_on_books_buy_full_order(contractsFixture, cash, market, univers
 
     # fill signed order
     orderEventLog = {
-        "eventType": 3,
+        "eventType": 2,
         "addressData": [nullAddress, contractsFixture.accounts[1] , contractsFixture.accounts[2]],
         "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
@@ -243,7 +243,7 @@ def test_one_ask_on_books_buy_partial_order(contractsFixture, cash, market, univ
 
     # fill signed order
     orderEventLog = {
-        "eventType": 3,
+        "eventType": 2,
         "addressData": [nullAddress, contractsFixture.accounts[1] , contractsFixture.accounts[2]],
         "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
@@ -496,5 +496,59 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
         with TokenDelta(cash, 0, contractsFixture.accounts[3], "Affiliate double received fees"):
             market.withdrawAffiliateFees(contractsFixture.accounts[3])
 
-# TODO test kyc token
-# TODO test order creator not having funds
+def test_kyc_token(contractsFixture, cash, market, universe, reputationToken):
+    zeroXTradeToken = contractsFixture.contracts['ZeroXTradeToken']
+    completeSets = contractsFixture.contracts['CompleteSets']
+    expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
+    salt = 5
+    tradeGroupID = longTo32Bytes(42)
+
+    yesShareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(YES))
+    noShareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(NO))
+
+    # Using the reputation token as "KYC"
+    reputationToken.transfer(contractsFixture.accounts[1], 1)
+
+    # create signed order
+    cash.faucet(fix('1', '40'), sender=contractsFixture.accounts[1])
+    rawZeroXOrderData, orderHash = zeroXTradeToken.createZeroXOrder(ASK, fix(1), 60, market.address, YES, reputationToken.address, expirationTime, salt, sender=contractsFixture.accounts[1])
+    signature = signOrder(orderHash, contractsFixture.privateKeys[1])
+    orders = [rawZeroXOrderData]
+    signatures = [signature]
+
+    # without the kyc token we cannot fill the order
+    cash.faucet(fix('1', '60'), sender=contractsFixture.accounts[2])
+    with raises(TransactionFailed):
+        zeroXTradeToken.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+
+    reputationToken.transfer(contractsFixture.accounts[2], 1)
+
+    # fill order
+    with TokenDelta(noShareToken, fix(1), contractsFixture.accounts[1], "Creator Shares not taken"):
+        with TokenDelta(yesShareToken, fix(1), contractsFixture.accounts[2], "Taker Shares not received"):
+            with TokenDelta(cash, -fix(1, 40), contractsFixture.accounts[1], "Creator cash not received"):
+                with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[2], "Taker cash not taken"):
+                    assert zeroXTradeToken.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+
+def test_order_creator_lacks_funds(contractsFixture, cash, market, universe):
+    zeroXTradeToken = contractsFixture.contracts['ZeroXTradeToken']
+    completeSets = contractsFixture.contracts['CompleteSets']
+    expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
+    salt = 5
+    tradeGroupID = longTo32Bytes(42)
+
+    yesShareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(YES))
+    noShareToken = contractsFixture.applySignature("ShareToken", market.getShareToken(NO))
+
+    # create signed order
+    rawZeroXOrderData, orderHash = zeroXTradeToken.createZeroXOrder(ASK, fix(1), 60, market.address, YES, nullAddress, expirationTime, salt, sender=contractsFixture.accounts[1])
+    signature = signOrder(orderHash, contractsFixture.privateKeys[1])
+    orders = [rawZeroXOrderData]
+    signatures = [signature]
+
+    # The TX will succeed when the order creator lacks funds but no trade occurs
+    with TokenDelta(noShareToken, 0, contractsFixture.accounts[1], "Creator Shares not taken"):
+        with TokenDelta(yesShareToken, 0, contractsFixture.accounts[2], "Taker Shares not received"):
+            with TokenDelta(cash, 0, contractsFixture.accounts[1], "Creator cash not received"):
+                with TokenDelta(cash, 0, contractsFixture.accounts[2], "Taker cash not taken"):
+                    assert zeroXTradeToken.trade(fix(1), nullAddress, tradeGroupID, orders, signatures, sender=contractsFixture.accounts[2]) == fix(1)

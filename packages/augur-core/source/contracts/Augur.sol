@@ -40,7 +40,6 @@ contract Augur is IAugur {
     enum OrderEventType {
         Create,
         Cancel,
-        ChangePrice,
         Fill
     }
 
@@ -586,15 +585,6 @@ contract Augur is IAugur {
     function logTokensMinted(address _universe, address _token, address _target, uint256 _amount, TokenType _tokenType, address _market, uint256 _totalSupply, uint256 _balance, uint256 _outcome) private returns (bool) {
         emit TokensMinted(_universe, _token, _target, _amount, _tokenType, _market, _totalSupply);
         emit TokenBalanceChanged(_universe, _target, _token, _tokenType, _market, _balance, _outcome);
-        return true;
-    }
-
-    function logOrderPriceChanged(IUniverse _universe, bytes32 _orderId) public returns (bool) {
-        require(msg.sender == registry["Orders"]);
-        IOrders _orders = IOrders(registry["Orders"]);
-        (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
-        _uint256Data[7] = getTimestamp();
-        emit OrderEvent(address(_universe), address(_orders.getMarket(_orderId)), OrderEventType.ChangePrice, _orderType, _orderId, 0, _addressData, _uint256Data);
         return true;
     }
 

@@ -177,7 +177,7 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
     assert yesShareToken.approve(fillOrder.address, fix(12), sender = contractsFixture.accounts[2])
 
     orderFilledEventLog = {
-	    "eventType": 3,
+	    "eventType": 2,
 	    "addressData": [nullAddress, contractsFixture.accounts[1] , contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, completeSetFees, fix(12),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }

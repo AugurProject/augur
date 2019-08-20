@@ -24,7 +24,7 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
 
     # fill best order
     orderEventLog = {
-	    "eventType": 3,
+	    "eventType": 2,
 	    "addressData": [nullAddress, contractsFixture.accounts[2] if withSelf else contractsFixture.accounts[1] , contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
@@ -54,7 +54,7 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
     # fill best order
     fillOrderID = None
     orderEventLog = {
-	    "eventType": 3,
+	    "eventType": 2,
 	    "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[2]],
 	    "uint256Data": [60, fix(1), YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp(), 0, fix(1, 60)],
     }
@@ -84,7 +84,7 @@ def test_one_bid_on_books_buy_partial_order_fill_loop_limit(contractsFixture, ca
 
     # fill best order
     orderEventLog = {
-	    "eventType": 3,
+	    "eventType": 2,
 	    "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[2]],
 	    "uint256Data": [60, fix(1), YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp(), 0, fix(1, 60)],
     }
@@ -115,7 +115,7 @@ def test_one_bid_on_books_buy_excess_order(contractsFixture, cash, market, unive
 
     # fill best order
     orderFilledEventLog = {
-	    "eventType": 3,
+	    "eventType": 2,
 	    "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[2]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(4),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
@@ -631,7 +631,7 @@ def test_trade_with_self(contractsFixture, cash, market, universe):
 
     # fill best order
     orderFilledEventLog = {
-	    "eventType": 3,
+	    "eventType": 2,
 	    "addressData": [nullAddress, contractsFixture.accounts[1], contractsFixture.accounts[1]],
 	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(4),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
