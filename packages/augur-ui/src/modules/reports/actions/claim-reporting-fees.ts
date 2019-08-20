@@ -29,12 +29,12 @@ export function claimReportingFeesForkedMarket(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { loginAccount } = getState();
-    const payload = {
-      ...options,
-      meta: loginAccount.meta,
-      redeemer: loginAccount.address
-    };
+    // const { loginAccount } = getState();
+    // const payload = {
+    //   ...options,
+    //   meta: loginAccount.meta,
+    //   redeemer: loginAccount.address
+    // };
 
     // TODO: address this call durring the forking redesign
     /*
