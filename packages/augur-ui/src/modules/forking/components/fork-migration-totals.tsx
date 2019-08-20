@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import classNames from "classnames";
 import Styles from "modules/forking/components/fork-migration-totals.styles.less";
-import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
 import { createBigNumber } from "utils/create-big-number";
 import { MarketData } from "modules/types";
 
