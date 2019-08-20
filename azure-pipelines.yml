@@ -96,11 +96,7 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/ui build
-        displayName: ui build
-      - bash: |
-          set -euo pipefail
-          yarn test --ci --reporters=default --reporters=jest-junit GnosisSafe.test.ts
+          yarn test --ci --reporters=default --reporters=jest-junit --testPathPattern=GnosisSafe.test.ts
         displayName: yarn test
       - bash: |
           set -euo pipefail
