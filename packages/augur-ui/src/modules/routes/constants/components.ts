@@ -25,5 +25,3 @@ export {
 export {
   default as Dispute
 } from "modules/reporting/containers/reporting-dispute";
-
-export { default as MigrateRep } from "modules/forking/containers/migrate-rep";

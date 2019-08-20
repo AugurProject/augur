@@ -12,7 +12,6 @@ import { tween } from "shifty";
 
 import Modal from "modules/modal/containers/modal-view";
 import TopBar from "modules/app/containers/top-bar";
-import ForkingAlert from "modules/forking/components/forking-alert";
 import AccountInnerNav from "modules/app/components/inner-nav/account-inner-nav";
 import SideNav from "modules/app/components/side-nav/side-nav";
 import TopNav from "modules/app/components/top-nav/top-nav";
@@ -578,14 +577,6 @@ export default class AppView extends Component<AppProps, AppState> {
               blockchain &&
               blockchain.currentAugurTimestamp && (
                 <section className={Styles.TopBar}>
-                  <ForkingAlert
-                    location={location}
-                    universe={universe}
-                    currentTime={blockchain.currentAugurTimestamp}
-                    doesUserHaveRep={loginAccount.balances.rep > 0}
-                    marginLeft={tagsMargin}
-                    finalizeMarket={finalizeMarket}
-                  />
                 </section>
               )}
             <section

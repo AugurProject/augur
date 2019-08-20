@@ -24,10 +24,6 @@ const Routes = (p) => (
       component={COMPONENTS.Report}
     />
     <AuthenticatedRoute
-      path={makePath(VIEWS.MIGRATE_REP)}
-      component={COMPONENTS.MigrateRep}
-    />
-    <AuthenticatedRoute
       path={makePath(VIEWS.MY_POSITIONS)}
       component={COMPONENTS.Portfolio}
     />
