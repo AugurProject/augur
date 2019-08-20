@@ -213,10 +213,10 @@ export default class FilterBox extends React.Component<
               />
             )}
             {filteredData.length > 0 &&
-              filteredData.map((market: any) =>
+              filteredData.map((market: any, index: string) =>
                 dataObj[market.id] ? (
                   <MarketRow
-                    key={"position_" + market.id}
+                    key={"position_" + market.id + "_" + index}
                     market={dataObj[market.id]}
                     showState={selectedTab === ALL_MARKETS}
                     noToggle={noToggle}
