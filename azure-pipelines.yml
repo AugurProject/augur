@@ -378,7 +378,6 @@ jobs:
           sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
           sudo systemctl status docker
           cd packages/augur-tools/ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth:$(GETH_VERSION) .
-          #yarn workspace @augurproject/tools docker:geth:dev
           docker push augurproject/dev-node-geth:$(GETH_VERSION)
         displayName: 'build and push dev-node-geth image'
       - task: Docker@1
