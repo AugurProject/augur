@@ -4,8 +4,9 @@ import {
   ASKS,
   BIDS
 } from "modules/common/constants";
-import { LiquidityOrder, UIOrder } from 'modules/types';
+import { LiquidityOrder, UIOrder, OutcomeOrderBook } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
+import { Getters } from "@augurproject/sdk";
 
 function calcSpread(asks, bids, minPrice, maxPrice) {
   if (asks.length === 0 && bids.length === 0) {
@@ -21,12 +22,12 @@ function calcSpread(asks, bids, minPrice, maxPrice) {
     .dividedBy(2);
 }
 
-export function formatOrderBook(outcomeOrderBook: {[outcome: number]: Array<LiquidityOrder> }, minPrice?: BigNumber, maxPrice?: BigNumber) {
-	const bids = (outcomeOrderBook || []).filter((order: UIOrder) => order.type === BUY);
-  const asks = (outcomeOrderBook || []).filter((order: UIOrder) => order.type === SELL);
-  outcomeOrderBook = {}
-  outcomeOrderBook[ASKS] = asks;
-  outcomeOrderBook[BIDS] = bids;
-  outcomeOrderBook.spread = minPrice && maxPrice && calcSpread(asks, bids, minPrice, maxPrice);
-  return outcomeOrderBook;
+export function formatOrderBook(outcomesOrderBook: LiquidityOrder[], minPrice?: BigNumber, maxPrice?: BigNumber): OutcomeOrderBook {
+	const bids = (outcomesOrderBook || []).filter((order: UIOrder) => order.type === BUY);
+  const asks = (outcomesOrderBook || []).filter((order: UIOrder) => order.type === SELL);
+  const orderBook: OutcomeOrderBook = {}
+  orderBook[ASKS] = asks;
+  orderBook[BIDS] = bids;
+  orderBook.spread = minPrice && maxPrice && calcSpread(asks, bids, minPrice, maxPrice);
+  return orderBook;
 }

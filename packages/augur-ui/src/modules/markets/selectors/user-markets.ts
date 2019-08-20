@@ -3,7 +3,8 @@ import {
   selectLoginAccountAddress,
   selectMarketTradingHistoryState,
   selectPendingQueue,
-  selectCurrentTimestamp
+  selectCurrentTimestamp,
+  selectPendingLiquidityOrders
 } from "store/select-state";
 import { CREATE_MARKET } from 'modules/common/constants';
 import selectAllMarkets from "modules/markets/selectors/markets-all";
@@ -13,9 +14,10 @@ import { isSameAddress } from "utils/isSameAddress";
 export const selectAuthorOwnedMarkets = createSelector(
   selectAllMarkets,
   selectPendingQueue,
+  selectPendingLiquidityOrders,
   selectMarketTradingHistoryState,
   selectLoginAccountAddress,
-  (allMarkets, pendingQueue, marketTradingHistory, authorId) => {
+  (allMarkets, pendingQueue, pendingLiquidityOrders, marketTradingHistory, authorId) => {
     if (!allMarkets || !authorId) return null;
     let filteredMarkets = allMarkets.filter(
       market => isSameAddress(market.author, authorId)
@@ -28,6 +30,7 @@ export const selectAuthorOwnedMarkets = createSelector(
     filteredMarkets = pendingMarkets.concat(filteredMarkets);
     return filteredMarkets.map(m => ({
       ...m,
+      hasPendingLiquidityOrders: !!pendingLiquidityOrders[m.id],
       recentlyTraded: getLastTradeTimestamp(marketTradingHistory[m.id])
     }));
   }
