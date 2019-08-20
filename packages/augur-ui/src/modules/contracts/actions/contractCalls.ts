@@ -31,6 +31,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
+import { CreateMarketData } from "modules/types";
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -217,8 +218,6 @@ export async function getCreateMarketBreakdown() {
 
 export interface CreateNewMarketParams {
   outcomes?: string[];
-  scalarSmallNum: string;
-  scalarBigNum: string;
   scalarDenomination: string;
   expirySource: string;
   description: string;
@@ -283,6 +282,31 @@ export function createMarket(newMarket: CreateNewMarketParams) {
       return Augur.createYesNoMarket(baseParams);
     }
   }
+}
+
+export function createMarketRetry(market: CreateMarketData) {
+   const extraInfo = JSON.parse(market.txParams._extraInfo);
+
+  const newMarket: CreateNewMarketParams = {
+    outcomes: market.txParams._outcomes,
+    scalarDenomination: extraInfo._scalarDenomination,
+    marketType: market.marketType,
+    endTime: market.endTime.timestamp,
+    expirySource: extraInfo.resolutionSource,
+    description: market.description,
+    designatedReporterAddress: market.txParams._designatedReporterAddress,
+    minPrice: market.txParams._prices && market.txParams._prices[0],
+    maxPrice: market.txParams._prices && market.txParams._prices[1],
+    tickSize: market.txParams._numTicks,
+    detailsText: extraInfo.longDescription,
+    categories: extraInfo.categories,
+    settlementFee: market.txParams._feePerCashInAttoCash,
+    affiliateFee: market.txParams._affiliateFeeDivisor,
+    offsetName: extraInfo.offsetName,
+    backupSource: extraInfo.backupSource
+  };
+  
+  createMarket(newMarket);
 }
 
 export async function approveToTrade(amount: BigNumber) {

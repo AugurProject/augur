@@ -5,8 +5,9 @@ import { AppState } from "store";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { createMarket } from 'modules/contracts/actions/contractCalls';
 import getValue from "utils/get-value";
+import { submitNewMarket } from "modules/markets/actions/submit-new-market";
+import { NewMarket, NodeStyleCallback } from "modules/types";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -16,6 +17,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
+  submitNewMarket: (data: NewMarket, cb: NodeStyleCallback) =>
+    dispatch(submitNewMarket(data, cb)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -39,29 +42,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: "Confirm",
       action: () => {
         const { newMarket, address } = sP;
-        createMarket({
-          outcomes: newMarket.outcomes,
-          scalarSmallNum: newMarket.minPrice,
-          scalarBigNum: newMarket.maxPrice,
-          scalarDenomination: newMarket.scalarDenomination,
-          description: newMarket.description,
-          expirySource: newMarket.expirySource,
-          designatedReporterAddress:
-            newMarket.designatedReporterAddress === ''
-              ? address
-              : newMarket.designatedReporterAddress,
-          minPrice: newMarket.minPrice,
-          maxPrice: newMarket.maxPrice,
-          backupSource: newMarket.backupSource,
-          endTime: newMarket.endTimeFormatted.timestamp,
-          tickSize: newMarket.tickSize,
-          marketType: newMarket.marketType,
-          detailsText: newMarket.detailsText,
-          categories: newMarket.categories,
-          settlementFee: newMarket.settlementFee,
-          affiliateFee: newMarket.affiliateFee,
-          offsetName: newMarket.offsetName,
-        });
+        dP.submitNewMarket(newMarket, oP.history);
         if (sP.modal.cb) {
           sP.modal.cb();
         }

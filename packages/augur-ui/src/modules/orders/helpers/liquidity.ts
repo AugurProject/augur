@@ -1,4 +1,5 @@
 import { BID } from "modules/common/constants";
+import { createBigNumber } from "utils/create-big-number";
 
 export function sortOrders(orderBook) {
   const sortedOrderBook = {};
@@ -39,20 +40,20 @@ export function sortOrders(orderBook) {
 }
 
 function compareBidPrices(a, b) {
-  if (a.price.lt(b.price)) {
+  if (createBigNumber(a.price).lt(createBigNumber(b.price))) {
     return -1;
   }
-  if (a.price.gt(b.price)) {
+  if (createBigNumber(a.price).gt(createBigNumber(b.price))) {
     return 1;
   }
   return 0;
 }
 
 function compareAskPrices(a, b) {
-  if (a.price.gt(b.price)) {
+  if (createBigNumber(a.price).gt(createBigNumber(b.price))) {
     return -1;
   }
-  if (a.price.lt(b.price)) {
+  if (createBigNumber(a.price).lt(createBigNumber(b.price))) {
     return 1;
   }
   return 0;
