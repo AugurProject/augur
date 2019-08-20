@@ -4,6 +4,8 @@ import classNames from "classnames";
 import ToggleRow from "modules/common/toggle-row";
 import { MarketStatusLabel } from "modules/common/labels";
 import MarketLink from "modules/market/components/market-link/market-link";
+import { TXEventName } from '@augurproject/sdk';
+import { SubmitTextButton } from "modules/common/buttons";
 
 import Styles from "modules/portfolio/components/common/market-row.styles.less";
 
@@ -23,6 +25,7 @@ export interface Market {
   volume: FormatObject;
   openInterest: FormatObject;
   marketStatus: string;
+  unsignedOrdersModal: Function;
 }
 
 export interface MarketRowProps {
@@ -31,6 +34,7 @@ export interface MarketRowProps {
   toggleContent: ReactNode;
   rightContent: ReactNode;
   noToggle?: boolean;
+  showPending?: boolean;
 }
 
 const MarketRow = (props: MarketRowProps) => {
@@ -43,9 +47,10 @@ const MarketRow = (props: MarketRowProps) => {
       <div
         className={classNames({
           [Styles.Show]: props.showState,
+          [Styles.Pending]: props.market.pending || (props.showPending && props.market.hasPendingLiquidityOrders)
         })}
       >
-        {props.showState && (
+        {props.showState && !props.market.pending &&
           <div>
             <MarketStatusLabel
               marketStatus={props.market.marketStatus}
@@ -53,10 +58,24 @@ const MarketRow = (props: MarketRowProps) => {
               mini
             />
           </div>
-        )}
-        <MarketLink id={props.market.id}>
-          {props.market.description}
-        </MarketLink>
+        }
+        {!props.market.pending &&
+          <MarketLink id={props.market.id}>
+            {props.market.description}
+          </MarketLink>
+        }
+        {props.market.pending && 
+          <span>{props.market.description}</span>
+        }
+        {props.market.pending && props.market.status === TXEventName.Pending &&
+          <span>When the market is confirmed you can submit initial liquidity</span>
+        }
+        {props.showPending && props.market.hasPendingLiquidityOrders && 
+          <span>
+            You have pending initial liquidity. 
+            <SubmitTextButton action={() => props.unsignedOrdersModal(props.market.marketId)} text="View orders"/>
+          </span>
+        }
       </div>
       <span
         className={classNames({

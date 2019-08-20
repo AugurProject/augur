@@ -40,10 +40,11 @@ import {
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
   YES_NO_OUTCOMES,
+  SCALAR_OUTCOMES,
   NEW_ORDER_GAS_ESTIMATE,
+  NON_EXISTENT
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { createMarket } from 'modules/contracts/actions/contractCalls';
 import {
   LargeHeader,
   ExplainerBlock,
@@ -68,6 +69,9 @@ import {
   isPositive,
   moreThanDecimals,
   checkAddress,
+  dividedBy,
+  dateGreater,
+  isValidFee
 } from 'modules/common/validations';
 import { formatDate, buildformattedDate } from 'utils/format-date';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
@@ -89,6 +93,7 @@ interface FormProps {
   discardModal: Function;
   template: boolean;
   openCreateMarketModal: Function;
+  currentTimestamp: number;
 }
 
 interface FormState {
@@ -108,11 +113,14 @@ interface Validations {
   max?: Number;
   checkFilledNumberMessage?: string;
   checkFilledStringMessage?: string;
+  checkDateGreaterMessage?: string;
   checkCategories?: Boolean;
   checkOutcomes?: Boolean;
   checkLessThan?: Boolean;
+  checkDividedBy?: Boolean;
   checkMoreThan?: Boolean;
   checkPositive?: Boolean;
+  checkDateGreater?: Boolean;
   lessThanMessage?: string;
   decimals?: number;
   checkDecimals?: Boolean;
@@ -298,10 +306,14 @@ export default class Form extends React.Component<FormProps, FormState> {
     }
 
     fields.map(field => {
+      let value = newMarket[field];
+      if (field === END_TIME && newMarket.endTimeFormatted) {
+        value = newMarket.endTimeFormatted.timestamp;
+      }
       const error = this.evaluate({
         ...VALIDATION_ATTRIBUTES[field],
         updateValue: false,
-        value: newMarket[field],
+        value,
       });
       if (error) hasErrors = true;
     });
@@ -362,7 +374,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   evaluate = (validationsObj: Validations) => {
-    const { newMarket } = this.props;
+    const { newMarket, currentTimestamp } = this.props;
 
     const {
       checkBetween,
@@ -375,16 +387,19 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkFilledNumberMessage,
       checkFilledString,
       checkFilledStringMessage,
-      updateValue,
+      checkDateGreaterMessage,
       checkCategories,
       checkOutcomes,
       checkMoreThan,
       checkLessThan,
+      checkDividedBy,
       checkPositive,
+      checkDateGreater,
       lessThanMessage,
       checkDecimals,
       decimals,
       checkForAddress,
+      checkFee
     } = validationsObj;
 
     const checkValidations = [
@@ -401,10 +416,28 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkLessThan
         ? isLessThan(value, readableName, newMarket.maxPrice, lessThanMessage)
         : '',
+      checkFee
+        ? isValidFee(value, readableName, newMarket.affiliateFee)
+        : '',
+      checkDividedBy ? dividedBy(value, readableName, newMarket.minPrice, newMarket.maxPrice) : '',
+      checkDateGreater ? dateGreater(value, currentTimestamp, checkDateGreaterMessage) : '',
       checkPositive ? isPositive(value) : '',
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
     ];
+
+    if (label === END_TIME) {
+      const endTimeFormatted = buildformattedDate(
+        newMarket.setEndTime,
+        parseInt(newMarket.hour, 10),
+        parseInt(newMarket.minute, 10),
+        newMarket.meridiem,
+        newMarket.offsetName,
+        newMarket.offset
+      );
+      checkValidations.push(dateGreater(endTimeFormatted.timestamp, currentTimestamp));
+    }
+
     const errorMsg = checkValidations.find(validation => validation !== '');
 
     if (errorMsg) {
@@ -413,14 +446,10 @@ export default class Form extends React.Component<FormProps, FormState> {
     }
 
     // no errors
-    if (updateValue) {
-      this.onChange(label, value);
-    } else {
-      this.onError(name, '');
-    }
+    this.onError(label, '');
   };
 
-  onChange = (name, value) => {
+  onChange = (name, value, callback) => {
     const { updateNewMarket, newMarket } = this.props;
     updateNewMarket({ [name]: value });
 
@@ -437,6 +466,9 @@ export default class Form extends React.Component<FormProps, FormState> {
           description: 'Invalid',
           isTradable: true,
         });
+      } else if (newMarket.marketType === SCALAR) {
+        outcomesFormatted = SCALAR_OUTCOMES;
+        outcomesFormatted[1].description = newMarket.scalarDenomination === "" ? NON_EXISTENT : newMarket.scalarDenomination;
       } else {
         outcomesFormatted = YES_NO_OUTCOMES;
       }
@@ -449,27 +481,56 @@ export default class Form extends React.Component<FormProps, FormState> {
           id: index,
           isTradable: true,
         }));
+      } else if (value === SCALAR) {
+        outcomesFormatted = SCALAR_OUTCOMES;
+        outcomesFormatted[1].description = newMarket.scalarDenomination === "" ? NON_EXISTENT : newMarket.scalarDenomination;
       } else {
         outcomesFormatted = YES_NO_OUTCOMES;
       }
+      if (value !== SCALAR) {
+        this.onError('minPrice', '');
+        this.onError('maxPrice', '');
+        this.onError('scalarDenomination', '');
+        this.onError('tickSize', '');
+        updateNewMarket({ minPrice: 0, maxPrice: 1, minPriceBigNumber: createBigNumber(0), maxPriceBigNumber: createBigNumber(1) });
+      }
+      if (value !== CATEGORICAL) {
+        this.onError('outcomes', '');
+      }
       updateNewMarket({ outcomesFormatted, orderBook: {} });
+    } else if (name === 'scalarDenomination') {
+      let outcomesFormatted = SCALAR_OUTCOMES;
+      outcomesFormatted[1].description = value;
+      updateNewMarket({ outcomesFormatted });
     } else if (
       name === 'setEndTime' ||
       name === 'hour' ||
       name === 'minute' ||
       name === 'meridiem' ||
-      name === 'offset' ||
-      name === 'offsetName' ||
-      name === 'timezone'
+      name === 'timezoneDropdown' ||
+      name === 'timeSelector'
     ) {
       // timezone needs to be set on NewMarket object, this value is used to set timezone picker default value
       const setEndTime =
         name === 'setEndTime' ? value : newMarket.setEndTime;
-      const hour = name === 'hour' ? value : newMarket.hour;
-      const minute = name === 'minute' ? value : newMarket.minute;
-      const meridiem = name === 'meridiem' ? value : newMarket.meridiem;
-      const offset = name === 'offset' ? value : newMarket.offset;
-      const offsetName = name === 'offsetName' ? value : newMarket.offsetName;
+      let hour = name === 'hour' ? value : newMarket.hour;
+      let minute = name === 'minute' ? value : newMarket.minute;
+      let meridiem = name === 'meridiem' ? value : newMarket.meridiem;
+      let offset = newMarket.offset;
+      let offsetName = newMarket.offsetName;
+      let timezone = newMarket.timezone;
+
+      if (name === "timeSelector") {
+        hour = value.hour || hour;
+        minute = value.minute || minute;
+        meridiem = value.meridiem || meridiem;
+        this.onError('hour', '');
+      }
+      if (name === "timezoneDropdown") {
+        offset = value.offset;
+        offsetName = value.offsetName;
+        timezone = value.timezone;
+      }
       const endTimeFormatted = buildformattedDate(
         setEndTime,
         hour,
@@ -479,9 +540,10 @@ export default class Form extends React.Component<FormProps, FormState> {
         offset
       );
 
-      updateNewMarket({ endTimeFormatted, [name]: value });
+      updateNewMarket({ endTimeFormatted, setEndTime, hour, minute, meridiem, offset, offsetName, timezone });
     }
     this.onError(name, '');
+    if (callback) callback(name);
   };
 
   onError = (name, error) => {
@@ -500,12 +562,12 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   render() {
-    const { 
-      newMarket, 
-      drafts, 
-      template, 
+    const {
+      newMarket,
+      drafts,
+      template,
       openCreateMarketModal,
-      history 
+      history
     } = this.props;
     const { contentPages } = this.state;
 

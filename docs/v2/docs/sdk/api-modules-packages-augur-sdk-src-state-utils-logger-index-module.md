@@ -23,7 +23,7 @@ sidebar_label: packages/augur-sdk/src/state/utils/logger/index
 
 **● logger**: *[Logger](api-classes-packages-augur-sdk-src-state-utils-logger-logger-logger.md)* =  new Logger()
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/index.ts:7](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/index.ts#L7)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/index.ts:7](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/utils/logger/index.ts#L7)*
 
 ___
 <a id="standardlogger"></a>
@@ -32,7 +32,7 @@ ___
 
 **● standardLogger**: *[StandardLogger](api-classes-packages-augur-sdk-src-state-utils-logger-standardlogger-standardlogger.md)* =  new StandardLogger()
 
-*Defined in [packages/augur-sdk/src/state/utils/logger/index.ts:4](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/utils/logger/index.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/utils/logger/index.ts:4](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/utils/logger/index.ts#L4)*
 
 ___
 

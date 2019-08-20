@@ -13,13 +13,12 @@ import { CATEGORICAL, COPY_MARKET_ID, COPY_AUTHOR, REPORTING_STATE } from 'modul
 import { FavoritesButton } from "modules/common/buttons";
 import Clipboard from "clipboard";
 import { DotSelection } from "modules/common/selection";
-import { DateFormattedObject } from "modules/types";
 import { PaperClip, Person, MarketCreator, PositionIcon, DesignatedReporter, DisputeStake } from "modules/common/icons";
 import { MarketProgress } from "modules/common/progress";
 import ChevronFlip from "modules/common/chevron-flip";
 import { MarketData } from "modules/types";
 
-import Styles from "modules/market-cards/market-card.styles";
+import Styles from "modules/market-cards/market-card.styles.less";
 
 interface MarketCardProps {
   market: MarketData;
@@ -34,6 +33,7 @@ interface MarketCardProps {
   address: string;
   loading?: Boolean;
   isFavorite?: Boolean;
+  hasPosition?: Boolean;
 }
 
 interface MarketCardState {
@@ -46,7 +46,7 @@ export default class MarketCard extends React.Component<
 > {
   clipboardMarketId: any = new Clipboard("#copy_marketId");
   clipboardAuthor: any = new Clipboard("#copy_author");
-  state: FormDetailsState = {
+  state: MarketCardState = {
     expanded: false,
   };
 
@@ -70,7 +70,8 @@ export default class MarketCard extends React.Component<
       address,
       expandedView,
       loading,
-      isFavorite
+      isFavorite,
+      hasPosition
     } = this.props;
 
     const s = this.state;
@@ -80,8 +81,8 @@ export default class MarketCard extends React.Component<
       outcomesFormatted,
       marketType,
       scalarDenomination,
-      minPrice,
-      maxPrice,
+      minPriceBigNumber,
+      maxPriceBigNumber,
       categories,
       id,
       marketStatus,
@@ -91,8 +92,29 @@ export default class MarketCard extends React.Component<
       volumeFormatted,
       tags,
       disputeInfo,
-      endTimeFormatted
+      endTimeFormatted,
+      designatedReporter
     } = market;
+
+    if (loading) {
+      return (
+        <div
+        className={classNames(Styles.MarketCard, {[Styles.Loading]: loading})}
+      >
+        {loading &&
+          <>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+          </>
+        }
+        </div>
+      )
+    }
 
     const path =
     location.pathname === makePath(MARKETS)
@@ -117,18 +139,6 @@ export default class MarketCard extends React.Component<
       <div
         className={classNames(Styles.MarketCard, {[Styles.Loading]: loading})}
       >
-        {loading &&
-          <>
-            <div/>
-            <div/>
-            <div/>
-            <div/>
-            <div/>
-            <div/>
-            <div/>
-          </>
-        }
-        {!loading &&
           <>
             <div>
               {address && address.toUpperCase() === author.toUpperCase() &&
@@ -138,16 +148,20 @@ export default class MarketCard extends React.Component<
                   hoverText="Market Creator"
                 />
               }
-              <HoverIcon
-                label="reporter"
-                icon={DesignatedReporter}
-                hoverText="Designated Reporter"
-              />
-              <HoverIcon
-                label="Position"
-                icon={PositionIcon}
-                hoverText="Position"
-              />
+              {address && address.toUpperCase() === designatedReporter.toUpperCase() &&
+                <HoverIcon
+                  label="reporter"
+                  icon={DesignatedReporter}
+                  hoverText="Designated Reporter"
+                />
+              }
+              {hasPosition && 
+                <HoverIcon
+                  label="Position"
+                  icon={PositionIcon}
+                  hoverText="Position"
+                />
+              }
               <HoverIcon
                 label="dispute"
                 icon={DisputeStake}
@@ -231,9 +245,8 @@ export default class MarketCard extends React.Component<
                   outcomes={outcomesFormatted}
                   marketType={marketType}
                   scalarDenomination={scalarDenomination}
-                  min={minPrice}
-                  max={maxPrice}
-                  lastPrice={0}
+                  min={minPriceBigNumber}
+                  max={maxPriceBigNumber}
                   expanded={expandedView ? true : s.expanded}
                 />
                 {marketType === CATEGORICAL && outcomesFormatted.length > 3 && !expandedView &&
@@ -257,7 +270,6 @@ export default class MarketCard extends React.Component<
               />
             }
           </>
-        }
       </div>
     );
   }

@@ -37,7 +37,7 @@ sidebar_label: Events
 
 ⊕ **new Events**(provider: *[Provider](api-interfaces-packages-augur-sdk-src-ethereum-provider-provider.md)*, augurAddress: *`string`*): [Events](api-classes-packages-augur-sdk-src-api-events-events.md)
 
-*Defined in [packages/augur-sdk/src/api/Events.ts:7](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Events.ts#L7)*
+*Defined in [packages/augur-sdk/src/api/Events.ts:7](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Events.ts#L7)*
 
 **Parameters:**
 
@@ -58,7 +58,7 @@ ___
 
 **● augurAddress**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Events.ts:7](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Events.ts#L7)*
+*Defined in [packages/augur-sdk/src/api/Events.ts:7](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Events.ts#L7)*
 
 ___
 <a id="provider"></a>
@@ -67,7 +67,7 @@ ___
 
 **● provider**: *[Provider](api-interfaces-packages-augur-sdk-src-ethereum-provider-provider.md)*
 
-*Defined in [packages/augur-sdk/src/api/Events.ts:6](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Events.ts#L6)*
+*Defined in [packages/augur-sdk/src/api/Events.ts:6](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Events.ts#L6)*
 
 ___
 
@@ -79,7 +79,7 @@ ___
 
 ▸ **getEventTopics**(eventName: *`string`*): `string`[]
 
-*Defined in [packages/augur-sdk/src/api/Events.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Events.ts#L24)*
+*Defined in [packages/augur-sdk/src/api/Events.ts:24](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Events.ts#L24)*
 
 **Parameters:**
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **getLogs**(eventName: *`string`*, fromBlock: *`number`*, toBlock: *`number`*, additionalTopics?: *`Array`<`string` \| `string`[]>*): `Promise`<[ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)[]>
 
-*Defined in [packages/augur-sdk/src/api/Events.ts:15](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Events.ts#L15)*
+*Defined in [packages/augur-sdk/src/api/Events.ts:15](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Events.ts#L15)*
 
 **Parameters:**
 
@@ -116,7 +116,7 @@ ___
 
 ▸ **parseLogs**(logs: *[Log](api-interfaces-node-modules--augurproject-types-types-logs-log.md)[]*): [ParsedLog](api-interfaces-node-modules--augurproject-types-types-logs-parsedlog.md)[]
 
-*Defined in [packages/augur-sdk/src/api/Events.ts:28](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Events.ts#L28)*
+*Defined in [packages/augur-sdk/src/api/Events.ts:28](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Events.ts#L28)*
 
 **Parameters:**
 

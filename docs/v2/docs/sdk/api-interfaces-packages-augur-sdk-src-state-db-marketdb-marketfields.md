@@ -23,8 +23,10 @@ sidebar_label: MarketFields
 * [id](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md#id)
 * [longDescription](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md#longdescription)
 * [market](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md#market)
+* [marketCreator](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md#marketcreator)
 * [resolutionSource](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md#resolutionsource)
 * [start](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md#start)
+* [universe](api-interfaces-packages-augur-sdk-src-state-db-marketdb-marketfields.md#universe)
 
 ---
 
@@ -36,7 +38,7 @@ sidebar_label: MarketFields
 
 **● _scalarDenomination**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:34](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L34)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:36](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L36)*
 
 ___
 <a id="category1"></a>
@@ -45,7 +47,7 @@ ___
 
 **● category1**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:28](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L28)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:30](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L30)*
 
 ___
 <a id="category2"></a>
@@ -54,7 +56,7 @@ ___
 
 **● category2**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:29](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L29)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:31](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L31)*
 
 ___
 <a id="category3"></a>
@@ -63,7 +65,7 @@ ___
 
 **● category3**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:30](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L30)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:32](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L32)*
 
 ___
 <a id="description"></a>
@@ -72,7 +74,7 @@ ___
 
 **● description**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:31](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L31)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:33](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L33)*
 
 ___
 <a id="end"></a>
@@ -81,7 +83,7 @@ ___
 
 **● end**: *`Date`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:36](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L36)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:38](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L38)*
 
 ___
 <a id="id"></a>
@@ -90,7 +92,7 @@ ___
 
 **● id**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:26](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L26)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:26](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L26)*
 
 ___
 <a id="longdescription"></a>
@@ -99,7 +101,7 @@ ___
 
 **● longDescription**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:32](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L32)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:34](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L34)*
 
 ___
 <a id="market"></a>
@@ -108,7 +110,16 @@ ___
 
 **● market**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:27](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L27)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:27](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L27)*
+
+___
+<a id="marketcreator"></a>
+
+###  marketCreator
+
+**● marketCreator**: *`string`*
+
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:29](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L29)*
 
 ___
 <a id="resolutionsource"></a>
@@ -117,7 +128,7 @@ ___
 
 **● resolutionSource**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:33](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L33)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:35](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L35)*
 
 ___
 <a id="start"></a>
@@ -126,7 +137,16 @@ ___
 
 **● start**: *`Date`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:35](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L35)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:37](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L37)*
+
+___
+<a id="universe"></a>
+
+###  universe
+
+**● universe**: *`string`*
+
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:28](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L28)*
 
 ___
 

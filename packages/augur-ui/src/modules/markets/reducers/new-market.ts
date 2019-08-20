@@ -11,7 +11,9 @@ import {
   DESIGNATED_REPORTER_SELF,
   AFFILIATE_FEE_DEFAULT,
   YES_NO,
-  YES_NO_OUTCOMES
+  YES_NO_OUTCOMES,
+  ZERO,
+  ONE
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
@@ -46,6 +48,7 @@ export const DEFAULT_STATE: NewMarket = {
   description: "",
   expirySourceType: EXPIRY_SOURCE_GENERIC,
   expirySource: "",
+  backupSource: "",
   designatedReporterType: DESIGNATED_REPORTER_SELF,
   designatedReporterAddress: "",
   endTime: null,
@@ -65,10 +68,10 @@ export const DEFAULT_STATE: NewMarket = {
   orderBookSorted: {}, // for order book table
   minPrice: "0",
   maxPrice: "1",
-  minPriceBigNumber: createBigNumber(0),
-  maxPriceBigNumber: createBigNumber(1),
-  initialLiquidityDai: createBigNumber(0),
-  initialLiquidityGas: createBigNumber(0),
+  minPriceBigNumber: ZERO,
+  maxPriceBigNumber: ONE,
+  initialLiquidityDai: ZERO,
+  initialLiquidityGas: ZERO
 };
 
 export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: BaseAction): NewMarket {
@@ -93,7 +96,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           orderInfo.quantity = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toString();
           orderInfo.shares = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toString();
           orderInfo.orderEstimate = createBigNumber(order.orderEstimate).plus(
-            createBigNumber(orderEstimate.replace(" DAI", ""))
+            createBigNumber(orderEstimate)
           ),
           orderAdded = true;
           return orderInfo;
@@ -110,11 +113,11 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           shares: quantity,
           mySize: quantity,
           cumulativeShares: quantity,
-          orderEstimate: createBigNumber(orderEstimate.replace(" DAI", "")),
+          orderEstimate: createBigNumber(orderEstimate),
           avgPrice: formatDai(price),
           unmatchedShares: formatShares(quantity),
           sharesEscrowed: formatShares(quantity),
-          tokensEscrowed: formatDai(createBigNumber(orderEstimate.replace(" DAI", ""))),
+          tokensEscrowed: formatDai(createBigNumber(orderEstimate)),
           id: updatedOrders.length,
         } as any);
       }

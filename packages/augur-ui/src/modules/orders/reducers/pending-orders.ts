@@ -15,7 +15,6 @@ export default function(
   switch (type) {
     case ADD_PENDING_ORDER: {
       const { pendingOrder, marketId } = data;
-      console.log('add pending orders', pendingOrder);
       const orders = pendingOrders[marketId] || [];
       if (pendingOrder) orders.push(pendingOrder);
 

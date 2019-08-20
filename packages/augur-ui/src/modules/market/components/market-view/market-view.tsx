@@ -319,6 +319,7 @@ export default class MarketView extends Component<MarketViewProps, MarketViewSta
                         <h3>Price History</h3>
                         <MarketOutcomesChart
                           marketId={marketId}
+                          market={preview && market}
                           selectedOutcomeId={outcomeId}
                         />
                       </div>

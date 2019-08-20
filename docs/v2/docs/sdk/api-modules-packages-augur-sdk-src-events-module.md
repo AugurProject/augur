@@ -31,7 +31,7 @@ sidebar_label: packages/augur-sdk/src/events
 
 **Ƭ Callback**: *`function`*
 
-*Defined in [packages/augur-sdk/src/events.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/events.ts#L20)*
+*Defined in [packages/augur-sdk/src/events.ts:20](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/events.ts#L20)*
 
 #### Type declaration
 ▸(...args: *[SubscriptionType](api-modules-packages-augur-sdk-src-event-handlers-module.md#subscriptiontype)[]*): `void`
@@ -51,7 +51,7 @@ ___
 
 **Ƭ TXStatusCallback**: *`function`*
 
-*Defined in [packages/augur-sdk/src/events.ts:21](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/events.ts#L21)*
+*Defined in [packages/augur-sdk/src/events.ts:21](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/events.ts#L21)*
 
 #### Type declaration
 ▸(...args: *[TXStatus](api-interfaces-packages-augur-sdk-src-event-handlers-txstatus.md)[]*): `void`
@@ -74,7 +74,7 @@ ___
 
 **● augurEmitter**: *[EventNameEmitter](api-classes-packages-augur-sdk-src-events-eventnameemitter.md)* =  new EventNameEmitter()
 
-*Defined in [packages/augur-sdk/src/events.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/events.ts#L16)*
+*Defined in [packages/augur-sdk/src/events.ts:16](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/events.ts#L16)*
 
 ___
 

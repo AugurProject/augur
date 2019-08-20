@@ -28,7 +28,7 @@ sidebar_label: MarketOrderbookData
 
 **● _id**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:46](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L46)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:50](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L50)*
 
 ___
 <a id="invalidfilter"></a>
@@ -37,7 +37,7 @@ ___
 
 **● invalidFilter**: *`boolean`*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:47](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L47)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:51](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L51)*
 
 ___
 <a id="liquidity"></a>
@@ -46,7 +46,7 @@ ___
 
 **● liquidity**: *[LiquidityResults](api-interfaces-packages-augur-sdk-src-state-db-marketdb-liquidityresults.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:48](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/MarketDB.ts#L48)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:52](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/MarketDB.ts#L52)*
 
 ___
 

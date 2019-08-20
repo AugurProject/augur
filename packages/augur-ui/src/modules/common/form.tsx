@@ -62,6 +62,7 @@ interface DatePickerProps {
 }
 
 interface TextInputProps {
+  type?: string;
   errorMessage?: string;
   disabled?: boolean;
   placeholder?: string;
@@ -231,6 +232,11 @@ interface RadioBarProps {
   placeholder?: string;
   textValue?: string;
   errorMessage?: string;
+  onSecondTextChange?: Function;
+  secondPlaceholder?: string;
+  secondTextValue?: string;
+  secondErrorMessage?: string;
+  secondHeader?: string;
 }
 
 interface RadioTwoLineBarProps {
@@ -652,6 +658,11 @@ export const RadioBar = ({
   placeholder,
   textValue,
   errorMessage,
+  onSecondTextChange,
+  secondPlaceholder,
+  secondTextValue,
+  secondErrorMessage,
+  secondHeader
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
@@ -664,12 +675,25 @@ export const RadioBar = ({
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
     {expandable && checked ? (
-      <TextInput
-        placeholder={placeholder}
-        value={textValue}
-        onChange={onTextChange}
-        errorMessage={errorMessage}
-      />
+      <>
+        <TextInput
+          placeholder={placeholder}
+          value={textValue}
+          onChange={onTextChange}
+          errorMessage={errorMessage}
+        />
+        {onSecondTextChange && 
+          <>
+            <h5>{secondHeader}</h5>
+            <TextInput
+              placeholder={secondPlaceholder}
+              value={secondTextValue}
+              onChange={onSecondTextChange}
+              errorMessage={secondErrorMessage}
+            />
+          </>
+        }
+      </>
     ) : null}
   </div>
 );
@@ -919,8 +943,8 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
 }
 
 interface TimeSelectorProps {
-  minute: number;
-  hour: number;
+  minute: string;
+  hour: string;
   meridiem: string;
   onFocusChange: Function;
   onDateChange: Function;
@@ -1202,6 +1226,7 @@ export const DatePicker = (props: DatePickerProps) => (
       navNext={props.navNext || OutlineChevron}
       weekDayFormat="ddd"
       customInputIcon={Calendar}
+      readOnly={true}
     />
     {props.errorMessage &&
       props.errorMessage !== '' &&
@@ -1356,7 +1381,6 @@ export class Input extends Component<InputProps, InputState> {
 
   handleOnChange = e => {
     const newValue = e.target.value;
-
     this.props.onChange(newValue);
     this.setState({ value: newValue });
   };

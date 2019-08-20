@@ -301,7 +301,8 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     // Claim trading proceeds
     await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
       johnYesNoMarket.address,
-      john.account.publicKey
+      john.account.publicKey,
+      "0x0000000000000000000000000000000000000000"
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -607,7 +608,8 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     // Claim trading proceeds
     await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
       johnYesNoMarket2.address,
-      john.account.publicKey
+      john.account.publicKey,
+      "0x0000000000000000000000000000000000000000"
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);

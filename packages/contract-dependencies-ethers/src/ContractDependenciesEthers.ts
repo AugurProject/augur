@@ -151,8 +151,8 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
   public async submitTransaction(transaction: Transaction<BigNumber>): Promise<TransactionReceipt> {
     if (!this.signer) throw new Error("Attempting to sign a transaction while not providing a signer");
-    // TODO: figure out a way to propagate a warning up to the user in this scenario, we don't currently have a mechanism for error propagation, so will require infrastructure work
-    // TODO: https://github.com/ethers-io/ethers.js/issues/321
+    // @TODO: figure out a way to propagate a warning up to the user in this scenario, we don't currently have a mechanism for error propagation, so will require infrastructure work
+    // @BODY https://github.com/ethers-io/ethers.js/issues/321
     const tx = this.transactionToEthersTransaction(transaction);
     delete tx.from;
     const txMetadataKey = `0x${transaction.data.substring(10)}`;

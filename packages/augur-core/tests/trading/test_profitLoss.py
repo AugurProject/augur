@@ -73,8 +73,8 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
     assert market.finalize()
 
     # Claim proceeds
-    claimTradingProceeds.claimTradingProceeds(market.address, contractsFixture.accounts[1])
-    claimTradingProceeds.claimTradingProceeds(market.address, contractsFixture.accounts[2])
+    claimTradingProceeds.claimTradingProceeds(market.address, contractsFixture.accounts[1], nullAddress)
+    claimTradingProceeds.claimTradingProceeds(market.address, contractsFixture.accounts[2], nullAddress)
 
     assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[1], YES) == 0
     assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[1], YES) == 0

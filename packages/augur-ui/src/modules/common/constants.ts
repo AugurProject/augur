@@ -186,6 +186,36 @@ export const MAX_FEE_10_PERCENT = '0.1';
 export const MAX_FEE_05_PERCENT = '0.05';
 export const MAX_FEE_02_PERCENT = '0.02';
 
+export const feeFilters = [
+  { header: 'All', value: MAX_FEE_100_PERCENT },
+  { header: '0-2%', value: MAX_FEE_02_PERCENT },
+  { header: '0-5%', value: MAX_FEE_05_PERCENT },
+  { header: '0-10%', value: MAX_FEE_10_PERCENT },
+];
+
+
+// # Valid Market Liquidity Spreads
+export const MAX_SPREAD_ALL_SPREADS = 'all';
+export const MAX_SPREAD_20_PERCENT = '20';
+export const MAX_SPREAD_15_PERCENT = '15';
+export const MAX_SPREAD_10_PERCENT = '10';
+
+export const spreadFilters = [
+  { header: 'All', value: MAX_SPREAD_ALL_SPREADS },
+  { header: 'Less than 10%', value: MAX_SPREAD_10_PERCENT },
+  { header: 'Less than 15%', value: MAX_SPREAD_15_PERCENT },
+  { header: 'Less than 20%', value: MAX_SPREAD_20_PERCENT },
+];
+
+// # Market Invalid Show/Hide
+export const INVALID_SHOW = 'show';
+export const INVALID_HIDE = 'hide';
+
+export const invalidFilters = [
+  { header: 'Hide', value: INVALID_HIDE },
+  { header: 'show', value: INVALID_SHOW },
+];
+
 // # Sorting Options
 export const NEUTRAL = 'neutral';
 export const ASCENDING = 'ascending';
@@ -268,6 +298,9 @@ export const COPY_AUTHOR = 'Copy Market Creator ID';
 export const FILTER_SEARCH_PARAM = 'keywords';
 export const TAGS_PARAM_NAME = 'tags';
 export const CATEGORY_PARAM_NAME = 'category';
+export const MAXFEE_PARAM_NAME = 'maxFee';
+export const SPREAD_PARAM_NAME = 'spread';
+export const SHOW_INVALID_MARKETS_PARAM_NAME = 'showInvalid';
 
 // # Close Dialog Status
 export const CLOSE_DIALOG_CLOSING = 'CLOSE_DIALOG_CLOSING';
@@ -431,7 +464,7 @@ export const PERIODS = [
 ];
 
 // # Precision Constants
-export const UPPER_FIXED_PRECISION_BOUND = 8;
+export const UPPER_FIXED_PRECISION_BOUND = 2;
 export const LOWER_FIXED_PRECISION_BOUND = 0;
 
 // # Modal Constants
@@ -750,6 +783,8 @@ export const TIMEFRAME_OPTIONS = [
 // Pending Queue Types
 export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
 export const CLAIM_PROCEEDS = 'CLAIM_PROCEEDS';
+export const CREATE_MARKET = 'CREATE_MARKET';
+
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
 
@@ -787,6 +822,8 @@ export const PORTIS_API_KEY = 'b67817cf-8dd0-4116-a0cf-657820ddc019';
 export const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB';
 export const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148';
 
+export const NON_EXISTENT = 'N/A';
+
 export const YES_NO_OUTCOMES = [
   {
     id: 0,
@@ -803,3 +840,17 @@ export const YES_NO_OUTCOMES = [
     isTradable: true,
   },
 ];
+
+export const SCALAR_OUTCOMES = [
+  {
+    id: 0,
+    description: 'Invalid',
+    isTradable: true,
+  },
+  {
+    id: 1,
+    description: NON_EXISTENT,
+    isTradable: true,
+  },
+];
+

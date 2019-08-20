@@ -24,6 +24,7 @@ test("Bulksync Doc merge update", async () => {
     description: "Foobar has 12% market share by 2041",
     longDescription: "lol",
     resolutionSource: "http://www.blah.com",
+    backupSource: "http://www.blah2.com",
     _scalarDenomination: "fake scalar denomination",
     tags: ["humanity", "30"],
   });
@@ -73,6 +74,7 @@ test("Blockstream Doc merge update", async () => {
         description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
+        backupSource: "http://www.blah2.com",
         _scalarDenomination: "fake scalar denomination",
         tags: ["humanity", "30"],
       }),
@@ -117,32 +119,47 @@ test("Flexible Search", async () => {
         description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
+        backupSource: "http://www.blah2.com",
         _scalarDenomination: "fake scalar denomination",
+      }),
+    },
+    {
+      _id: "0x2222222222222222222222222222222222222222",
+      blockNumber: 2,
+      market: "0x2222222222222222222222222222222222222222",
+      marketCreator: ACCOUNTS[0].publicKey,
+      extraInfo: JSON.stringify({
+        categories: [""],
+        description: "",
+        longDescription: "",
+        resolutionSource: "",
+        backupSource: "",
+        _scalarDenomination: "",
       }),
     },
   ];
   await db.addNewBlock(DBName, blockLogs);
   await db.sync(augur, mock.constants.chunkSize, mock.constants.blockstreamDelay);
 
-  let docs = await db.fullTextMarketSearch("0x1111111111111111111111111111111111111111", null);  // market
+  let docs = await Augur.syncableFlexSearch.search("0x1111111111111111111111111111111111111111");  // market
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch("share", null);  // category
+  docs = await Augur.syncableFlexSearch.search("share");  // category
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch("Foobar", null);  // description/title
+  docs = await Augur.syncableFlexSearch.search("Foobar");  // description/title
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch("lol", null);  // longDescription/description
+  docs = await Augur.syncableFlexSearch.search("lol");  // longDescription/description
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch("blah", null);  // resolutionSource
+  docs = await Augur.syncableFlexSearch.search("blah");  // resolutionSource
   expect(docs.length).toEqual(1);
 
-  docs = await db.fullTextMarketSearch(ACCOUNTS[0].publicKey, null);  // marketCreator
-  expect(docs.length).toEqual(1);
+  docs = await Augur.syncableFlexSearch.search(ACCOUNTS[0].publicKey);  // marketCreator
+  expect(docs.length).toEqual(2);
 
-  docs = await db.fullTextMarketSearch("fake", null);  // _scalarDenomination
+  docs = await Augur.syncableFlexSearch.search("fake");  // _scalarDenomination
   expect(docs.length).toEqual(1);
   const doc = docs[0];
 
@@ -154,9 +171,16 @@ test("Flexible Search", async () => {
     description: "Foobar has 12% market share by 2041",
     longDescription: "lol",
     resolutionSource: "http://www.blah.com",
+    backupSource: "http://www.blah2.com",
     _scalarDenomination: "fake scalar denomination",
   });
 
   expect(doc).toHaveProperty("start");
   expect(doc).toHaveProperty("end");
+
+  // @TODO Figure out why the test of rollback below times out
+  // await db.rollback(1);
+
+  // docs = await Augur.syncableFlexSearch.search("blah");
+  // expect(docs.length).toEqual(0);
 });

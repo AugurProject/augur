@@ -22,8 +22,7 @@ import {
   EXPIRY_SOURCE_GENERIC,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SELF,
-  DESIGNATED_REPORTER_SPECIFIC,
-  YES_NO_OUTCOMES
+  DESIGNATED_REPORTER_SPECIFIC
 } from 'modules/common/constants';
 import { NewMarket } from "modules/types";
 import { RepLogoIcon } from "modules/common/icons";
@@ -36,6 +35,7 @@ import {
   OUTCOMES
 } from "modules/create-market/constants";
 import { formatDate, convertUnixToFormattedDate } from "utils/format-date";
+import { checkValidNumber } from 'modules/common/validations';
 
 import Styles from "modules/create-market/components/form-details.styles.less";
 import { createBigNumber } from "utils/create-big-number";
@@ -53,6 +53,11 @@ interface FormDetailsState {
   timeFocused: Boolean;
 }
 
+interface TimeSelectorParams {
+  hour?: string;
+  minute?: string;
+  meridiem?: string;
+}
 export default class FormDetails extends React.Component<
   FormDetailsProps,
   FormDetailsState
@@ -86,6 +91,7 @@ export default class FormDetails extends React.Component<
       detailsText,
       categories,
       expirySource,
+      backupSource,
       expirySourceType,
       designatedReporterAddress,
       designatedReporterType,
@@ -155,24 +161,26 @@ export default class FormDetails extends React.Component<
                 onChange(label, value)
               }}
               onFocusChange= {(focused: Boolean) => {
+                const timeSelector: TimeSelectorParams = {}
                 if (!hour) {
-                  onChange("hour", "12");
+                  timeSelector.hour = "12";
                 }
                 if (!minute) {
-                  onChange("minute", "00");
+                  timeSelector.minute = "00";
                 }
                 if (!meridiem) {
-                  onChange("meridiem", "AM");
+                  timeSelector.meridiem = "AM";
                 }
+
+                onChange("timeSelector", timeSelector);
                 this.setState({ timeFocused: focused });
               }}
               focused={s.timeFocused}
               errorMessage={validations[currentStep].hour}
             />
             <TimezoneDropdown onChange={(offsetName: string, offset: number, timezone: string) => {
-              onChange("offset", offset)
-              onChange("timezone", timezone)
-              onChange("offsetName", offsetName);
+              const timezoneParams = {offset, timezone, offsetName};
+              onChange("timezoneDropdown", timezoneParams);
             }} timestamp={setEndTime} timezone={timezone} />
           </span>
           <Subheaders header="Market question" link subheader="What do you want people to predict? If entering a date and time in the Market Question and/or Additional Details, enter a date and time in the UTC-0 timezone that is sufficiently before the Official Reporting Start Time." />
@@ -215,7 +223,7 @@ export default class FormDetails extends React.Component<
                   placeholder="0"
                   onChange={(value: string) => {
                     onChange("minPrice", value);
-                    onChange("minPriceBigNumber", createBigNumber(value));
+                    if (!checkValidNumber(value)) onChange("minPriceBigNumber", createBigNumber(value));
                     onError("maxPrice", "");
                   }}
                   value={minPrice}
@@ -227,7 +235,7 @@ export default class FormDetails extends React.Component<
                   placeholder="100"
                   onChange={(value: string) => {
                     onChange("maxPrice", value);
-                    onChange("maxPriceBigNumber", createBigNumber(value));
+                    if (!checkValidNumber(value)) onChange("maxPriceBigNumber", createBigNumber(value));
                     onError("minPrice", "");
                   }}
                   trailingLabel={scalarDenomination !=="" ? scalarDenomination : "Denomination"}
@@ -275,7 +283,11 @@ export default class FormDetails extends React.Component<
                 placeholder: "Enter website",
                 textValue: expirySource,
                 onTextChange: (value: string) => onChange("expirySource", value),
-                errorMessage: validations[currentStep].expirySource
+                errorMessage: validations[currentStep].expirySource,
+                secondPlaceholder: "Back up website (optional)",
+                secondTextValue: backupSource,
+                secondHeader: "If the primary resolution source is not available",
+                onSecondTextChange: (value: string) => onChange("backupSource", value),
               }
             ]}
             defaultSelected={expirySourceType}

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
 import store from 'store';
-import { selectAccountPositionsState } from 'store/select-state';
+import { selectAccountPositionsState, selectMarketInfosState } from 'store/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { selectMarketPositionsSummary } from 'modules/markets/selectors/select-market-position-summary';
 import { selectUserMarketPositions } from 'modules/markets/selectors/select-user-market-positions';
@@ -20,13 +20,16 @@ export default function() {
   };
 }
 
+// need to add marketInfos in case positions load before markets
 export const selectLoginAccountPositionsMarkets = createSelector(
   selectAccountPositionsState,
-  positions => {
+  selectMarketInfosState,
+  (positions, markets) => {
     return Object.keys(positions)
-      .map(marketId => ({
-        ...selectMarket(marketId)
-      }))
-      .filter(m => m);
+      .reduce((p, marketId) => {
+        if (!Object.keys(markets).includes(marketId)) return p;
+        const market = selectMarket(marketId)
+        return market ? [...p, market] : p
+    }, [])
   }
 );

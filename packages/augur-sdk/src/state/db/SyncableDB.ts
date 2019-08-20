@@ -5,6 +5,7 @@ import { DB } from "./DB";
 import { Log, ParsedLog } from "@augurproject/types";
 import { SyncStatus } from "./SyncStatus";
 import { augurEmitter } from "../../events";
+import { SubscriptionEventName } from "../../constants";
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -77,7 +78,14 @@ export class SyncableDB extends AbstractDB {
     this.syncing = false;
     await this.syncStatus.updateSyncingToFalse(this.dbName);
 
-    // TODO Make any external calls as needed (such as pushing user's balance to UI)
+    if (Augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
+      const marketCreatedRawDocs = await this.allDocs();
+      let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
+      marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
+      Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
+    }
+
+    // TODO Make any other external calls as needed (such as pushing user's balance to UI)
   }
 
   private parseLogArrays(logs: ParsedLog[]): void {
@@ -109,7 +117,7 @@ export class SyncableDB extends AbstractDB {
       return -1;
     }
 
-    if (this.eventName === "OrderEvent") {
+    if (this.eventName === SubscriptionEventName.OrderEvent) {
       this.parseLogArrays(logs);
     }
 
@@ -157,11 +165,8 @@ export class SyncableDB extends AbstractDB {
       }
 
       await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber, this.syncing);
-
-      // let the controller know a new block was added so it can update the UI
-      augurEmitter.emit('controller:new:block', {});
     } else {
-      throw new Error(`Unable to add new block`);
+      throw new Error('Unable to add new block');
     }
 
     return blocknumber;
@@ -179,6 +184,11 @@ export class SyncableDB extends AbstractDB {
       for (const doc of blocksToRemove.docs) {
         await this.db.remove(doc._id, doc._rev);
       }
+
+      if (Augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
+        Augur.syncableFlexSearch.removeMarketCreatedDocs(blocksToRemove.docs);
+      }
+
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing, true);
     } catch (err) {
       console.error(err);
@@ -196,7 +206,7 @@ export class SyncableDB extends AbstractDB {
       throw new Error(`Corrupt log: ${JSON.stringify(log)}`);
     }
     let _id = '';
-    // TODO: This works in bulk sync currently because we process logs chronologically. When we switch to reverse chrono for bulk sync we'll need to add more logic
+    // @TODO: This works in bulk sync currently because we process logs chronologically. When we switch to reverse chrono for bulk sync we'll need to add more logic
     if (this.idFields.length > 0) {
       // need to preserve order of fields in id
       for (const fieldName of this.idFields) {

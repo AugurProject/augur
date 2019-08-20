@@ -6,6 +6,8 @@ import {
   SCALAR,
   MIN_QUANTITY,
   UPPER_FIXED_PRECISION_BOUND,
+  BUY,
+  SELL
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form/form.styles.less';
@@ -14,7 +16,7 @@ import { SquareDropdown } from 'modules/common/selection';
 import { Checkbox } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData, OutcomeFormatted } from 'modules/types';
+import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { Getters } from "@augurproject/sdk";
 
 interface FromProps {
@@ -26,7 +28,6 @@ interface FromProps {
   orderPrice: string;
   orderDaiEstimate: string;
   orderEscrowdEth: string;
-  gasCostEst: string;
   selectedNav: string;
   selectedOutcome: Getters.Markets.MarketInfoOutcome;
   updateState: Function;
@@ -39,6 +40,7 @@ interface FromProps {
   updateTradeNumShares: Function;
   clearOrderConfirmation: Function;
   initialLiquidity?: Boolean;
+  orderBook: OutcomeOrderBook;
 }
 
 interface TestResults {
@@ -215,7 +217,7 @@ class Form extends Component<FromProps, FormState> {
     nextProps
   ): TestResults {
     const props = nextProps || this.props;
-    const { maxPrice, minPrice, market } = props;
+    const { maxPrice, minPrice, market, initialLiquidity, selectedNav, orderBook, selectedOutcome } = props;
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
     let passedTest = !!isOrderValid;
@@ -228,7 +230,7 @@ class Form extends Component<FromProps, FormState> {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.PRICE].push(
-        `Price must be between ${minPrice} - ${maxPrice}`
+        `Price must be between ${minPrice} and ${maxPrice}`
       );
     }
     if (
@@ -242,6 +244,29 @@ class Form extends Component<FromProps, FormState> {
       passedTest = false;
       errors[this.INPUT_TYPES.PRICE].push(
         `Price must be a multiple of ${tickSize}`
+      );
+    }
+    if (initialLiquidity &&
+      selectedNav === BUY &&
+      orderBook.asks &&
+      orderBook.asks.length &&
+      value.gte(orderBook.asks[0].price)
+    ) {
+      errorCount += 1;
+      passedTest = false;
+      errors[this.INPUT_TYPES.PRICE].push(
+        `Price must be less than best ask of ${orderBook.asks[0].price}`
+      );
+    } else if (initialLiquidity &&
+      selectedNav === SELL &&
+      orderBook.bids &&
+      orderBook.bids.length &&
+      value.lte(orderBook.bids[0].price)
+    ) {
+      errorCount += 1;
+      passedTest = false;
+      errors[this.INPUT_TYPES.PRICE].push(
+        `Price must be more than best bid of ${orderBook.bids[0].price}`
       );
     }
     return { isOrderValid: passedTest, errors, errorCount };
@@ -532,7 +557,6 @@ class Form extends Component<FromProps, FormState> {
       minPrice,
       updateState,
       orderEscrowdEth,
-      gasCostEst,
       updateSelectedOutcome,
       sortedOutcomes,
       initialLiquidity
@@ -699,12 +723,6 @@ class Form extends Component<FromProps, FormState> {
               <label className={Styles.smallLabel}>
                 {ExclamationCircle}
                 {` Max cost of ${orderEscrowdEth} DAI will be escrowed`}
-              </label>
-            )}
-            {gasCostEst && (
-              <label className={Styles.smallLabel}>
-                {ExclamationCircle}
-                {` Max cost of ${gasCostEst} ETH required for gas`}
               </label>
             )}
           </li>

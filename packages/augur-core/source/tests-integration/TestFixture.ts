@@ -127,10 +127,10 @@ export class TestFixture {
         return;
     }
 
-    public async claimTradingProceeds(market: Market, shareholder: string): Promise<void> {
+    public async claimTradingProceeds(market: Market, shareholder: string, affailiateAddress: string = "0x0000000000000000000000000000000000000000"): Promise<void> {
         const claimTradingProceedsContract = await this.contractDeployer.getContractAddress("ClaimTradingProceeds");
         const claimTradingProceeds = new ClaimTradingProceeds(this.dependencies, claimTradingProceedsContract);
-        await claimTradingProceeds.claimTradingProceeds(market.address, shareholder);
+        await claimTradingProceeds.claimTradingProceeds(market.address, shareholder, affailiateAddress);
         return;
     }
 

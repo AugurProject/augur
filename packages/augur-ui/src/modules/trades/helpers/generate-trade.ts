@@ -83,21 +83,22 @@ export const generateTrade = memoize(
       limitPrice,
       sharesFilled: formatShares(sharesFilled),
       selfTrade: !!outcomeTradeInProgress.selfTrade,
-      numSimFills: outcomeTradeInProgress.numFills ? outcomeTradeInProgress.numFills.toNumber() : 0,
+      numFills: outcomeTradeInProgress.numFills ? outcomeTradeInProgress.numFills.toNumber() : 0,
+      loopLimit: outcomeTradeInProgress.loopLimit ? outcomeTradeInProgress.loopLimit.toNumber() : 0,
       totalOrderValue: totalOrderValue
         ? formatDaiValue(totalOrderValue)
         : null,
       orderShareProfit: orderShareProfitLoss
-        ? formatDaiValue(orderShareProfitLoss.potentialEthProfit)
+        ? formatDaiValue(orderShareProfitLoss.potentialDaiProfit)
         : null,
       orderShareTradingFee: orderShareProfitLoss
         ? formatDaiValue(orderShareProfitLoss.tradingFees)
         : null,
-      potentialEthProfit: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.potentialEthProfit)
+      potentialDaiProfit: preOrderProfitLoss
+        ? formatDaiValue(preOrderProfitLoss.potentialDaiProfit)
         : null,
-      potentialEthLoss: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.potentialEthLoss)
+      potentialDaiLoss: preOrderProfitLoss
+        ? formatDaiValue(preOrderProfitLoss.potentialDaiLoss)
         : null,
       potentialLossPercent: preOrderProfitLoss
         ? formatDaiValue(preOrderProfitLoss.potentialLossPercent)

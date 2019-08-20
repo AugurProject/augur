@@ -1,4 +1,3 @@
-import { getWinningBalance } from 'modules/reports/actions/get-winning-balance';
 import { eachOfLimit } from 'async-es';
 import noop from 'utils/noop';
 import logError from 'utils/log-error';

@@ -10,7 +10,7 @@ export class SEOConnector extends BaseConnector {
   private events = new Subscriptions(augurEmitter);
 
   async connect(ethNodeUrl: string, account?: string): Promise<any> {
-    this.api = await Sync.start(ethNodeUrl, account, { adapter: "memory" });
+    this.api = await Sync.start(ethNodeUrl, account, { adapter: "memory" }, true);
   }
 
   async disconnect(): Promise<any> {

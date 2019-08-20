@@ -30,7 +30,7 @@ sidebar_label: CreateYesNoMarketParams
 
 **● affiliateFeeDivisor**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:9](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L9)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:9](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L9)*
 
 ___
 <a id="designatedreporter"></a>
@@ -39,7 +39,7 @@ ___
 
 **● designatedReporter**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:10](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L10)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:10](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L10)*
 
 ___
 <a id="endtime"></a>
@@ -48,7 +48,7 @@ ___
 
 **● endTime**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:7](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L7)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:7](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L7)*
 
 ___
 <a id="extrainfo"></a>
@@ -57,7 +57,7 @@ ___
 
 **● extraInfo**: *`string`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:11](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L11)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:11](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L11)*
 
 ___
 <a id="feepercashinattocash"></a>
@@ -66,7 +66,7 @@ ___
 
 **● feePerCashInAttoCash**: *`BigNumber`*
 
-*Defined in [packages/augur-sdk/src/api/Market.ts:8](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Market.ts#L8)*
+*Defined in [packages/augur-sdk/src/api/Market.ts:8](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Market.ts#L8)*
 
 ___
 
