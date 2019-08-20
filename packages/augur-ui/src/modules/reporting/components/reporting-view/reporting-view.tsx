@@ -11,8 +11,6 @@ import AuthenticatedRoute from "modules/routes/components/authenticated-route/au
 import {
   REPORTING_DISPUTE_MARKETS,
   REPORTING_REPORT_MARKETS,
-  REPORTING_RESOLVED_MARKETS,
-  REPORTING_REPORTS
 } from "modules/routes/constants/views";
 
 const ReportingView = p => (
@@ -25,14 +23,6 @@ const ReportingView = p => (
       <Route
         path={makePath(REPORTING_REPORT_MARKETS)}
         component={ReportingReportMarkets}
-      />
-      <Route
-        path={makePath(REPORTING_RESOLVED_MARKETS)}
-        component={ReportingResolved}
-      />
-      <AuthenticatedRoute
-        path={makePath(REPORTING_REPORTS)}
-        component={Reports}
       />
     </Switch>
   </section>

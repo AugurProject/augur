@@ -2,7 +2,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { REPORTING_STATE } from "modules/common/constants";
 import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
-import { loadReportingFinal } from "modules/reports/actions/load-reporting-final";
 
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
@@ -15,7 +14,7 @@ const mapStateToProps = state => {
     market =>
       market.reportingState === REPORTING_STATE.FINALIZED
   );
-  const resolvedMarketIds = state.marketReportState.resolved || [];
+  const resolvedMarketIds = [];
 
   return {
     isConnected: !!state.universe.id,
@@ -31,7 +30,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  loadReporting: () => dispatch(loadReportingFinal()),
+  loadReporting: () => {},
   loadMarketsInfoIfNotLoaded: marketIds =>
     dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId))

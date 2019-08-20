@@ -11,7 +11,6 @@ import filterSortOptions from "modules/filter-sort/reducers/filter-sort-options"
 import gasPriceInfo from "modules/app/reducers/gas-price-info";
 import loginAccount from "modules/auth/reducers/login-account";
 import marketTradingHistory from "modules/markets/reducers/market-trading-history";
-import marketReportState from "modules/reports/reducers/market-report-state";
 import marketInfos from "modules/markets/reducers/market-infos";
 import modal from "modules/modal/reducers/modal";
 import newMarket from "modules/markets/reducers/new-market";
@@ -75,7 +74,6 @@ export function createReducer() {
     filterSortOptions,
     gasPriceInfo,
     loginAccount,
-    marketReportState,
     marketTradingHistory,
     marketInfos,
     modal,
@@ -112,7 +110,6 @@ export interface AppStateInterface {
   filterSortOptions: FilterSortOptions;
   gasPriceInfo: GasPriceInfo;
   loginAccount: LoginAccount;
-  marketReportState: MarketsInReporting;
   marketTradingHistory: MarketTradingHistoryState;
   marketInfos: MarketInfos;
   modal: any;

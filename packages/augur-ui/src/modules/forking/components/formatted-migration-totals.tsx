@@ -3,7 +3,6 @@ import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 
 import FormStyles from "modules/common/form-styles.less";
-import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
 import Styles from "modules/forking/components/migrate-rep-form.styles.less";
 import { MarketData } from "modules/types";
 
@@ -60,10 +59,14 @@ export default class FormattedMigrationTotals extends Component<FormattedMigrati
     getForkMigrationTotals((err, forkMigrationTotals) => {
       if (err) return console.error(err);
       const { outcomes } = market;
-      const formattedMigrationTotals = selectMigrateTotals(
+
+      const formattedMigrationTotals = []
+      /*
+      selectMigrateTotals(
         outcomes,
         forkMigrationTotals,
       );
+      */
       this.setState({
         formattedMigrationTotals,
       });

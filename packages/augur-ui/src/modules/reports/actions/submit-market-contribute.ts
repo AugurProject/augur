@@ -1,7 +1,5 @@
 import makePath from "modules/routes/helpers/make-path";
 import logError from "utils/log-error";
-import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
-import { removeAccountDispute } from "modules/reports/actions/update-account-disputes";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
@@ -24,11 +22,13 @@ export const submitMarketContribute = ({
 
   const market = marketInfos[marketId];
   if (!market) return callback("Market not found");
+  /* TODO use method in sdk
   const payoutNumerators = getPayoutNumerators(
     market,
     selectedOutcome,
     invalid
   );
+  */
     // TODO: allow user to dispute as part of the reporting redsign
     /*
   .api.Market.contribute({

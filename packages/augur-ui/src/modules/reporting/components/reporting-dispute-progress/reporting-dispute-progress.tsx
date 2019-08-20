@@ -2,10 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { formatAttoRep } from "utils/format-number";
 import Styles from "modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress.styles";
-import {
-  calculateAddedStakePercentage,
-  calculateTentativeCurrentRep
-} from "modules/reports/helpers/progress-calculations";
 
 const ReportingDisputeProgress = ({
   percentageComplete = 0,
@@ -34,15 +30,8 @@ const ReportingDisputeProgress = ({
       decimals: 4,
       roundUp: true
     }).formattedValue;
-    userPercentage = calculateAddedStakePercentage(
-      bondSizeCurrentFormatted.fullPrecision,
-      accountStakeCurrentFormatted,
-      tentativeStake
-    );
-    repStakedFormatted = calculateTentativeCurrentRep(
-      stakeCurrent,
-      tentativeStake
-    );
+    userPercentage = 0;
+    repStakedFormatted = "0";
     totalPercentageComplete = currentPercentageComplete + userPercentage;
   }
 
