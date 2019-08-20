@@ -106,8 +106,6 @@ export function constructMarketParamsReturn(newMarket: NewMarket): TransactionMe
       const params = Object.assign(baseParams, {
         _outcomes: newMarket.outcomes.map(o => stringTo32ByteHex(o)),
       });
-      console.log(params);
-      console.log(newMarket);
 	    return params;
     }
     default: {
