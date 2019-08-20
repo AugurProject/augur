@@ -359,7 +359,7 @@ describe('State API :: Users :: ', () => {
     const nonexistentAddress = '0x1111111111111111111111111111111111111111';
     let errorMessage = '';
     try {
-      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
+      await api.route('getAccountTimeRangedStats', {
         universe: nonexistentAddress,
         account: nonexistentAddress,
         startTime: 1234,
@@ -381,7 +381,7 @@ describe('State API :: Users :: ', () => {
 
     // Test endTime and startTime
     try {
-      const markets: MarketInfo[] = await api.route('getAccountTimeRangedStats', {
+      await api.route('getAccountTimeRangedStats', {
         universe: universe.address,
         account: ACCOUNTS[0].publicKey,
         startTime: 123456,
@@ -391,6 +391,22 @@ describe('State API :: Users :: ', () => {
       errorMessage = error.message;
     }
     expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
+
+    stats = await api.route('getAccountTimeRangedStats', {
+      universe: universe.address,
+      account: ACCOUNTS[0].publicKey,
+      startTime: 0,
+      endTime: newTime.minus(1).toNumber(),
+    });
+    expect(stats).toMatchObject({});
+
+    stats = await api.route('getAccountTimeRangedStats', {
+      universe: universe.address,
+      account: ACCOUNTS[0].publicKey,
+      startTime: newTime.plus(1).toNumber(),
+      endTime: newTime.plus(100).toNumber(),
+    });
+    expect(stats).toMatchObject({});
 
     stats = await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
@@ -562,6 +578,38 @@ describe('State API :: Users :: ', () => {
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    // Re-test startTime and endTime with order filler account
+    stats = await api.route('getAccountTimeRangedStats', {
+      universe: universe.address,
+      account: ACCOUNTS[1].publicKey,
+      startTime: 0,
+      endTime: newTime.minus(1).toNumber(),
+    });
+    expect(stats).toMatchObject({});
+
+    stats = await api.route('getAccountTimeRangedStats', {
+      universe: universe.address,
+      account: ACCOUNTS[1].publicKey,
+      startTime: 0,
+      endTime: newTime.toNumber(),
+    });
+    expect(stats).toMatchObject({
+      positions: 16,
+      numberOfTrades: 3,
+      marketsCreated: 0,
+      marketsTraded: 6,
+      successfulDisputes: 0,
+      redeemedPositions: 0,
+    });
+
+    stats = await api.route('getAccountTimeRangedStats', {
+      universe: universe.address,
+      account: ACCOUNTS[1].publicKey,
+      startTime: newTime.plus(1).toNumber(),
+      endTime: newTime.plus(100).toNumber(),
+    });
+    expect(stats).toMatchObject({});
 
     // Cancel an order
     await john.cancelOrder(
@@ -771,6 +819,7 @@ describe('State API :: Users :: ', () => {
     await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
       9.5
     );
+
   }, 120000);
 
   test(':getUserTradingPositions binary-1', async () => {
