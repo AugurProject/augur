@@ -1,6 +1,9 @@
 import { BaseAction, CreateMarketData } from "modules/types";
 import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls';
 import { TXEventName } from '@augurproject/sdk';
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
 
