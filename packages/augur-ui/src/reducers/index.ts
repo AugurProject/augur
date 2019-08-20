@@ -19,7 +19,6 @@ import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
 import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
-import reports from "modules/reports/reducers/reports";
 import universe from "modules/universe/reducers/universe";
 import versions from "modules/app/reducers/versions";
 import pendingOrders from "modules/orders/reducers/pending-orders";
@@ -40,7 +39,6 @@ import {
   Favorite,
   FilterSortOptions,
   GasPriceInfo,
-  MarketsInReporting,
   MarketInfos,
   NewMarket,
   Alert,
@@ -52,7 +50,6 @@ import {
   PendingQueue,
   FilledOrders,
   ReportingWindowStats,
-  UserReports,
   Universe,
   Versions,
   OpenOrders,
@@ -86,7 +83,6 @@ export function createReducer() {
     pendingQueue,
     filledOrders,
     reportingWindowStats,
-    reports,
     sidebarStatus,
     universe,
     versions,
@@ -122,7 +118,6 @@ export interface AppStateInterface {
   pendingQueue: PendingQueue;
   filledOrders: FilledOrders;
   reportingWindowStats: ReportingWindowStats;
-  reports: UserReports;
   sidebarStatus: any;
   universe: Universe;
   versions: Versions;

@@ -54,7 +54,6 @@ import {
 
 import Styles from "modules/app/components/app.styles.less";
 import MarketsInnerNavContainer from "modules/app/containers/markets-inner-nav";
-import ReportingInnerNav from "modules/app/containers/reporting-inner-nav";
 
 const SUB_MENU = "subMenu";
 const MAIN_MENU = "mainMenu";
@@ -65,8 +64,6 @@ const navTypes = {
   [ACCOUNT_WITHDRAW]: AccountInnerNav,
   [ACCOUNT_REP_FAUCET]: AccountInnerNav,
   [ACCOUNT_UNIVERSES]: AccountInnerNav,
-  [REPORTING_DISPUTE_MARKETS]: ReportingInnerNav,
-  [REPORTING_REPORT_MARKETS]: ReportingInnerNav,
 };
 
 interface AppProps {
