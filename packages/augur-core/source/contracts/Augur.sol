@@ -407,6 +407,13 @@ contract Augur is IAugur {
         return true;
     }
 
+    function logZeroXOrderFilled(IUniverse _universe, IMarket _market, bytes32 _tradeGroupId, Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) public returns (bool) {
+        require(msg.sender == registry["FillOrder"]);
+        _uint256Data[7] = getTimestamp();
+        emit OrderEvent(address(_universe), address(_market), OrderEventType.Fill, _orderType, bytes32(0), _tradeGroupId, _addressData, _uint256Data);
+        return true;
+    }
+
     function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool) {
         require(msg.sender == registry["CompleteSets"]);
         emit CompleteSetsPurchased(address(_universe), address(_market), _account, _numCompleteSets, getTimestamp());

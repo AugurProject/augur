@@ -7,6 +7,7 @@ import "ROOT/libraries/token/IERC20.sol";
 import "ROOT/external/IExchange.sol";
 import "ROOT/trading/ICreateOrder.sol";
 import "ROOT/trading/IFillOrder.sol";
+import "ROOT/trading/ICash.sol";
 import "ROOT/trading/Order.sol";
 import 'ROOT/libraries/Initializable.sol';
 import "ROOT/IAugur.sol";
@@ -20,7 +21,6 @@ contract ZeroXTradeToken is Initializable {
         uint256 price;                          // Price
         uint8 outcome;                          // Outcome
         uint8 orderType;                        // Order Type
-        bool ignoreShares;                      // Ignore Shares
         address kycToken;                       // KYC Token
     }
 
@@ -65,17 +65,17 @@ contract ZeroXTradeToken is Initializable {
     // solhint-disable-next-line var-name-mixedcase
     bytes32 public EIP712_DOMAIN_HASH;
 
-    uint256 constant ORDER_DATA_LENGTH = 680;
-
     ICreateOrder public createOrder;
     IFillOrder public fillOrder;
     IExchange public exchange;
+    ICash public cash;
 
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
         createOrder = ICreateOrder(_augur.lookup("CreateOrder"));
         fillOrder = IFillOrder(_augur.lookup("FillOrder"));
         exchange = IExchange(_augur.lookup("ZeroXExchange"));
+        cash = ICash(_augur.lookup("Cash"));
 
         EIP712_DOMAIN_HASH = keccak256(
             abi.encodePacked(
@@ -101,7 +101,6 @@ contract ZeroXTradeToken is Initializable {
      * Perform Augur Trades using 0x signed orders
      *
      * @param  requestedFillAmount  Share amount to fill
-     * @param  ignoreShares         If true will ignore owned shares and only use dai
      * @param  affiliateAddress     Address of affiliate to be paid fees if any
      * @param  tradeGroupId         Random id to correlate these fills as one trade action
      * @param  orders               Array of encoded Order struct data
@@ -110,7 +109,6 @@ contract ZeroXTradeToken is Initializable {
      */
     function trade(
         uint256 requestedFillAmount,
-        bool ignoreShares,
         address affiliateAddress,
         bytes32 tradeGroupId,
         IExchange.Order[] memory orders,
@@ -128,7 +126,7 @@ contract ZeroXTradeToken is Initializable {
             IExchange.Order memory _order = orders[i];
 
             // Update 0x. This will also validate signatures and order state for us.
-            IExchange.FillResults memory totalFillResults = exchange.fillOrder(
+            IExchange.FillResults memory totalFillResults = exchange.fillOrderNoThrow(
                 _order,
                 _fillAmountRemaining,
                 signatures[i]
@@ -136,9 +134,10 @@ contract ZeroXTradeToken is Initializable {
             if (totalFillResults.takerAssetFilledAmount == 0) {
                 continue;
             }
-            _fillAmountRemaining = _fillAmountRemaining.sub(totalFillResults.takerAssetFilledAmount);
 
-            doTrade(_order, msg.sender, totalFillResults.takerAssetFilledAmount, ignoreShares, affiliateAddress, tradeGroupId);
+            uint256 _amountTraded = doTrade(_order, totalFillResults.takerAssetFilledAmount, affiliateAddress, tradeGroupId, msg.sender);
+
+            _fillAmountRemaining = _fillAmountRemaining.sub(_amountTraded);
         }
 
         transferFromAllowed = false;
@@ -146,11 +145,54 @@ contract ZeroXTradeToken is Initializable {
         return _fillAmountRemaining;
     }
 
-    // TODO find ways to optimize this. Highly inneficient
-    function doTrade(IExchange.Order memory _order, address _taker, uint256 _amount, bool _ignoreShares, address _affiliateAddress, bytes32 _tradeGroupId) private {
+    function doTrade(IExchange.Order memory _order, uint256 _amount, address _affiliateAddress, bytes32 _tradeGroupId, address _taker) private returns (uint256) {
         AugurOrderData memory _augurOrderData = parseAssetData(_order.takerAssetData);
-        bytes32 _orderId = createOrder.createOrder(_order.makerAddress, Order.Types(_augurOrderData.orderType), _amount, _augurOrderData.price, IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, bytes32(0), bytes32(0), _tradeGroupId, _augurOrderData.ignoreShares, IERC20(_augurOrderData.kycToken));
-        fillOrder.fillOrder(_taker, _orderId, _amount, _tradeGroupId, _ignoreShares, _affiliateAddress);
+        // If the signed order creator doesnt have enough funds we still want to continue and take their order out of the list
+        // If the filler doesn't have funds this will just fail, which is fine
+        if (!creatorHasFundsForTrade(_augurOrderData, _order.makerAddress, _amount)) {
+            return 0;
+        }
+        // If the maker is also the taker we also just skip the trade
+        if (_order.makerAddress == _taker) {
+            return 0;
+        }
+        fillOrder.fillZeroXOrder(IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, IERC20(_augurOrderData.kycToken), _augurOrderData.price, Order.Types(_augurOrderData.orderType), _amount, _order.makerAddress, _tradeGroupId, _affiliateAddress, _taker);
+        return _amount;
+    }
+
+    function creatorHasFundsForTrade(AugurOrderData memory _augurOrderData, address _creator, uint256 _amount) public returns (bool) {
+        Order.Types _orderType = Order.Types(_augurOrderData.orderType);
+        if (_orderType == Order.Types.Ask) {
+            return partyHasFundsForAsk(_creator, _amount, IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, _augurOrderData.price);
+        } else if (_orderType == Order.Types.Bid) {
+            return partyHasFundsForBid(_creator, _amount, IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, _augurOrderData.price);
+        }
+    }
+
+    function partyHasFundsForBid(address _party, uint256 _attosharesToCover, IMarket _market, uint256 _outcome, uint256 _price) private returns (bool) {
+        uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
+
+        // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
+        uint256 _attosharesHeld = 2**254;
+        for (uint256 _i = 0; _i < _numberOfOutcomes; _i++) {
+            if (_i != _outcome) {
+                uint256 _creatorShareTokenBalance = _market.getShareToken(_i).balanceOf(_party);
+                _attosharesHeld = _creatorShareTokenBalance.min(_attosharesHeld);
+            }
+        }
+
+        _attosharesToCover -= _attosharesHeld;
+
+        // If not able to cover entire order with shares alone, then cover remaining with tokens
+        return cash.balanceOf(_party) >= _attosharesToCover.mul(_price);
+    }
+
+    function partyHasFundsForAsk(address _party, uint256 _attosharesToCover, IMarket _market, uint256 _outcome, uint256 _price) private returns (bool) {
+        // Figure out how many shares of the outcome the creator has
+        _attosharesToCover -= _market.getShareToken(_outcome).balanceOf(_party);
+
+        // If not able to cover entire order with shares alone, then cover remaining with tokens
+        return cash.balanceOf(_party) >= _market.getNumTicks().sub(_price).mul(_attosharesToCover);
     }
 
     /**
@@ -181,7 +223,7 @@ contract ZeroXTradeToken is Initializable {
     /**
      * Get 0xV2 assetData with Augur order metadata
      */
-    function getAugurTokenAssetData(address _marketAddress, uint256 _price, uint8 _outcome, uint8 _orderType, bool _ignoreShares, address _kycToken)
+    function getAugurTokenAssetData(address _marketAddress, uint256 _price, uint8 _outcome, uint8 _orderType, address _kycToken)
         private
         view
         returns (bytes memory)
@@ -202,8 +244,7 @@ contract ZeroXTradeToken is Initializable {
             mstore(add(result, 100), _price)
             mstore(add(result, 132), _outcome)
             mstore(add(result, 164), _orderType)
-            mstore(add(result, 196), _ignoreShares)
-            mstore(add(result, 228), _kycToken)
+            mstore(add(result, 196), _kycToken)
         }
 
         return result;
@@ -217,12 +258,11 @@ contract ZeroXTradeToken is Initializable {
             mstore(add(_data, 32),  mload(add(_assetData, 100)))    // price
             mstore(add(_data, 64),  mload(add(_assetData, 132)))    // outcome
             mstore(add(_data, 96),  mload(add(_assetData, 164)))    // orderType
-            mstore(add(_data, 128), mload(add(_assetData, 196)))    // ignoreShares
-            mstore(add(_data, 160), mload(add(_assetData, 228)))    // kycToken
+            mstore(add(_data, 128), mload(add(_assetData, 196)))    // kycToken
         }
     }
 
-    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, bool _ignoreShares, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
+    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         _zeroXOrder.makerAddress = msg.sender;
         _zeroXOrder.takerAddress = address(0);
         _zeroXOrder.feeRecipientAddress = address(0);
@@ -234,7 +274,7 @@ contract ZeroXTradeToken is Initializable {
         _zeroXOrder.expirationTimeSeconds = _expirationTimeSeconds;
         _zeroXOrder.salt = _salt;
         _zeroXOrder.makerAssetData = getBasicTokenAssetData();
-        _zeroXOrder.takerAssetData = getAugurTokenAssetData(_market, _price, _outcome, _type, _ignoreShares, _kycToken);
+        _zeroXOrder.takerAssetData = getAugurTokenAssetData(_market, _price, _outcome, _type, _kycToken);
         _orderHash = exchange.getOrderInfo(_zeroXOrder).orderHash;
     }
 }
