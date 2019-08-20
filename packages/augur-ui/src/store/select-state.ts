@@ -12,8 +12,6 @@ export const selectLoginAccountState = (state: AppState): LoginAccount =>
   state.loginAccount;
 export const selectLoginAccountTotalsState = (state: AppState) =>
   state.loginAccount.tradingPositionsTotal;
-export const selectMarketReportState = (state: AppState) =>
-  state.marketReportState;
 export const selectMarketInfosState = (state: AppState): MarketInfos =>
   state.marketInfos;
 export const selectModal = (state: AppState) => state.modal;

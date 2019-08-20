@@ -16,6 +16,13 @@ export interface JsonRpcRequest {
   params: any;
 }
 
+export interface JsonRpcResponse {
+  id: string | number | null;
+  jsonrpc: string;
+  result?: any;
+  error?: any;
+}
+
 export interface EndpointSettings {
   httpPort: number;
   httpsPort: number;

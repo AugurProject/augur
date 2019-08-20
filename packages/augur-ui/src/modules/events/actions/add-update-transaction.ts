@@ -9,7 +9,10 @@ import {
   CREATECATEGORICALMARKET, 
   CREATESCALARMARKET, 
   CREATEYESNOMARKET,
-  CREATE_MARKET 
+  CREATE_MARKET,
+  CATEGORICAL,
+  SCALAR,
+  YES_NO
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -54,7 +57,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATEYESNOMARKET: {
         const id = generateTxParameterId(transaction.params);
         const { blockchain } = getState();
-        const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000);
+        const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000, methodCall);
         dispatch(addPendingData(id, CREATE_MARKET, eventName, data));
         if (hash && eventName === TXEventName.Success) {
           dispatch(removePendingData(id, CREATE_MARKET));
@@ -75,17 +78,25 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   }
 };
 
-function createMarketData(params: TransactionMetadataParams, id: string, hash: string, currentTimestamp: number): CreateMarketData {
-  let data: CreateMarketData = {};
+function createMarketData(params: TransactionMetadataParams, id: string, hash: string, currentTimestamp: number, methodCall: string): CreateMarketData {
   const extraInfo = JSON.parse(params._extraInfo);
-  data.hash = hash;
-  data.pendingId = id;
-  data.description = extraInfo.description;
-  data.pending = true;
-  data.endTime = convertUnixToFormattedDate(params._endTime);
-  data.recentlyTraded = convertUnixToFormattedDate(currentTimestamp);
-  data.creationTime = convertUnixToFormattedDate(currentTimestamp);
-  data.txParams = params;
+  let data: CreateMarketData = {
+    hash,
+    pendingId: id,
+    description: extraInfo.description,
+    pending: true,
+    endTime: convertUnixToFormattedDate(params._endTime),
+    recentlyTraded: convertUnixToFormattedDate(currentTimestamp),
+    creationTime: convertUnixToFormattedDate(currentTimestamp),
+    txParams: params,
+    marketType: YES_NO,
+  };
+  
+  if (methodCall === CREATECATEGORICALMARKET) {
+    data.marketType = CATEGORICAL;
+  } else if (methodCall === CREATESCALARMARKET) {
+    data.marketType = SCALAR;
+  }
   return data;
 }
 

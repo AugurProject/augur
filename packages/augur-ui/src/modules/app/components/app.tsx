@@ -43,10 +43,8 @@ import {
   ACCOUNT_UNIVERSES,
   MY_POSITIONS,
   CREATE_MARKET,
-  REPORTING_REPORTS,
   REPORTING_DISPUTE_MARKETS,
   REPORTING_REPORT_MARKETS,
-  REPORTING_RESOLVED_MARKETS,
 } from "modules/routes/constants/views";
 import {
   MODAL_NETWORK_CONNECT,
@@ -56,21 +54,16 @@ import {
 
 import Styles from "modules/app/components/app.styles.less";
 import MarketsInnerNavContainer from "modules/app/containers/markets-inner-nav";
-import ReportingInnerNav from "modules/app/containers/reporting-inner-nav";
 
 const SUB_MENU = "subMenu";
 const MAIN_MENU = "mainMenu";
 
 const navTypes = {
   [MARKETS]: MarketsInnerNavContainer,
-  [REPORTING_REPORTS]: ReportingInnerNav,
   [ACCOUNT_DEPOSIT]: AccountInnerNav,
   [ACCOUNT_WITHDRAW]: AccountInnerNav,
   [ACCOUNT_REP_FAUCET]: AccountInnerNav,
   [ACCOUNT_UNIVERSES]: AccountInnerNav,
-  [REPORTING_DISPUTE_MARKETS]: ReportingInnerNav,
-  [REPORTING_REPORT_MARKETS]: ReportingInnerNav,
-  [REPORTING_RESOLVED_MARKETS]: ReportingInnerNav,
 };
 
 interface AppProps {
@@ -357,7 +350,6 @@ export default class AppView extends Component<AppProps, AppState> {
         case MY_POSITIONS:
         case REPORTING_DISPUTE_MARKETS:
         case REPORTING_REPORT_MARKETS:
-        case REPORTING_RESOLVED_MARKETS:
           openNewMenu();
           break;
         default:
