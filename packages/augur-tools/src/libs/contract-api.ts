@@ -27,7 +27,7 @@ export class ContractAPI {
   static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
-    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true);
 
     return new ContractAPI(augur, provider, dependencies, account);
   }

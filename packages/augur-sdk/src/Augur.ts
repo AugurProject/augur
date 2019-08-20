@@ -73,7 +73,7 @@ export class Augur<TProvider extends Provider = Provider> {
     "UniverseForked",
   ];
 
-  constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined) {
+  constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false) {
     this.provider = provider;
     this.dependencies = dependencies;
     this.networkId = networkId;
@@ -89,18 +89,20 @@ export class Augur<TProvider extends Provider = Provider> {
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
-    Augur.syncableFlexSearch = new SyncableFlexSearch();
+    if (enableFlexSearch && !Augur.syncableFlexSearch) {
+      Augur.syncableFlexSearch = new SyncableFlexSearch();
+    }
     this.registerTransactionStatusEvents();
   }
 
-  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesGnosis, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined): Promise<Augur> {
+  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesGnosis, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false): Promise<Augur> {
     // has to be static because of the way we instantiate boundTo methods
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
     }
 
     const networkId = await provider.getNetworkId();
-    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay);
+    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay, enableFlexSearch);
 
     await augur.contracts.setReputationToken(networkId);
 

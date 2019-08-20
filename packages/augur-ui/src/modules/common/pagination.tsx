@@ -87,7 +87,7 @@ const renderPageButtons = (
 
 export const Pagination = (props: PaginationProps) => {
   const { page, action, itemCount, itemsPerPage } = props;
-  const totalPages = Math.ceil(itemCount / itemsPerPage) || 1;
+  const totalPages = Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
   return (
     <div className={Styles.Pagination}>
       <DirectionButton
