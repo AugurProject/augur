@@ -50,6 +50,7 @@ interface MyMarketsProps {
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
   removePendingMarket: Function;
+  createMarketRetry: Function;
 }
 
 class MyMarkets extends Component<MyMarketsProps> {
@@ -111,7 +112,7 @@ class MyMarkets extends Component<MyMarketsProps> {
               <>
                 <span>Market failed to create.</span>
                 <div>
-                  <SubmitTextButton text={"submit again"} action={null} />
+                  <SubmitTextButton text={"submit again"} action={() => this.props.createMarketRetry(market)} />
                   <CancelTextButton text={"cancel"} action={() => this.props.removePendingMarket(market.pendingId)} />
                 </div>
               </>
@@ -135,6 +136,7 @@ class MyMarkets extends Component<MyMarketsProps> {
         renderRightContent={this.renderRightContent}
         renderToggleContent={this.renderToggleContent}
         filterLabel="markets"
+        showPending
         pickVariables={[
           "id",
           "description",

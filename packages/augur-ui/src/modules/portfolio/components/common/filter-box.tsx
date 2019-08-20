@@ -4,7 +4,7 @@ import { ALL_MARKETS, END_TIME } from "modules/common/constants";
 import QuadBox from "modules/portfolio/components/common/quad-box";
 import { SwitchLabelsGroup } from "modules/common/switch-labels-group";
 import { NameValuePair, Market, Tab} from "modules/portfolio/types";
-import MarketRow from "modules/portfolio/components/common/market-row";
+import MarketRow from "modules/portfolio/containers/market-row";
 import EmptyDisplay from "modules/portfolio/components/common/empty-display";
 import { createTabsInfo } from "modules/portfolio/helpers/create-tabs-info";
 
@@ -27,6 +27,7 @@ export interface FilterBoxProps {
   sortByStyles?: object;
   currentAugurTimestamp: number;
   renderRightContent?: Function;
+  showPending?: Boolean;
 }
 
 interface FilterBoxState {
@@ -171,7 +172,8 @@ export default class FilterBox extends React.Component<
       dataObj,
       renderToggleContent,
       filterLabel,
-      sortByStyles
+      sortByStyles,
+      showPending
     } = this.props;
 
     const { filteredData, search, selectedTab, tabs } = this.state;
@@ -218,6 +220,7 @@ export default class FilterBox extends React.Component<
                     market={dataObj[market.id]}
                     showState={selectedTab === ALL_MARKETS}
                     noToggle={noToggle}
+                    showPending={showPending}
                     toggleContent={
                       renderToggleContent &&
                       renderToggleContent(dataObj[market.id])
