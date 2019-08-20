@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   submitNewMarket: (data: NewMarket, cb: NodeStyleCallback) =>
-    dispatch(submitNewMarket(data, null, false, cb)),
+    dispatch(submitNewMarket(data, cb)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({

@@ -7,8 +7,7 @@ import { removePendingData } from 'modules/pending-queue/actions/pending-queue-m
 import { CREATE_MARKET } from 'modules/common/constants';
 import { collectMarketCreatorFees } from "modules/markets/actions/market-creator-fees-management";
 import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
-import { submitNewMarket } from "modules/markets/actions/submit-new-market";
-import { createMarketRetry } from "modules/contracts/actions/contractCalls";
+import { submitNewMarketRetry } from "modules/markets/actions/submit-new-market";
 
 const mapStateToProps = (state) => {
   const createdMarkets = selectAuthorOwnedMarkets(state);
@@ -25,7 +24,7 @@ const mapStateToProps = (state) => {
 // TOJDO confirm with TOm whats up with this, getBalance Only
 const mapDispatchToProps = (dispatch) => ({
   removePendingMarket: (id) => dispatch(removePendingData(id, CREATE_MARKET)),
-  createMarketRetry: (data) => dispatch(submitNewMarket(null, data, true)),
+  createMarketRetry: (data) => dispatch(submitNewMarketRetry(data)),
   collectMarketCreatorFees: (getBalanceOnly, marketId, callback) =>
     dispatch(collectMarketCreatorFees(getBalanceOnly, marketId, callback)),
 });

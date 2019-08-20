@@ -11,7 +11,6 @@ import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import { isSameAddress } from "utils/isSameAddress";
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
-import { generateTxParameters } from 'modules/create-market/helpers/construct-market-params';
 
 export const selectAuthorOwnedMarkets = createSelector(
   selectAllMarkets,

@@ -32,7 +32,7 @@ import {
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { generateTxParameters } from 'modules/create-market/helpers/construct-market-params';
-import { CreateMarketData } from "modules/types";
+import { CreateMarketData, NewMarket } from "modules/types";
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -237,7 +237,7 @@ export interface CreateNewMarketParams {
 }
 
 export function createMarket(newMarket: CreateNewMarketParams) {
-  const params = generateTxParameters(newMarket, false);
+  const params = generateTxParameters(newMarket);
 
   const Augur = augurSdk.get();
 

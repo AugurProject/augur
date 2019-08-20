@@ -20,28 +20,23 @@ import { Action } from "redux";
 import { createMarket } from "modules/contracts/actions/contractCalls";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
-import { generateTxParameters } from 'modules/create-market/helpers/construct-market-params';
+import { generateTxParametersCopy } from 'modules/create-market/helpers/construct-market-params';
 import { createMarketRetry } from "modules/contracts/actions/contractCalls";
 
 export function submitNewMarket(
-  newMarket: NewMarket,
-  marketRetry: CreateMarketData,
-  retry: Boolean,
+  market: NewMarket,
   callback: NodeStyleCallback = noop
 ) {
   return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
     const { loginAccount } = getState();
 
-    if (!retry) {
-      newMarket.orderBook = sortOrders(newMarket.orderBook);
-      newMarket.endTime = newMarket.endTimeFormatted.timestamp;
-      newMarket.designatedReporterAddress = newMarket.designatedReporterAddress === '' ? loginAccount.address : newMarket.designatedReporterAddress;
-    }
+    market.orderBook = sortOrders(market.orderBook);
+    market.endTime = market.endTimeFormatted.timestamp;
+    market.designatedReporterAddress = market.designatedReporterAddress === '' ? loginAccount.address : market.designatedReporterAddress;
 
-    const market = retry ? marketRetry : newMarket;
     const hasOrders = market.orderBook && Object.keys(market.orderBook).length
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
-    const pendingId = retry ? generateTxParameterId(market.txParams) : generateTxParameterId(generateTxParameters(market, true))
+    const pendingId = generateTxParameterId(generateTxParametersCopy(market))
 
     if (hasOrders) {
       dispatch(
@@ -52,30 +47,24 @@ export function submitNewMarket(
       );
     }
 
-    let marketResult;
-   
-    if (retry) {
-      marketResult = await createMarketRetry(market);
-    } else {
-      marketResult = await createMarket({
-        outcomes: newMarket.outcomes,
-        scalarDenomination: newMarket.scalarDenomination,
-        description: newMarket.description,
-        expirySource: newMarket.expirySource,
-        designatedReporterAddress: newMarket.designatedReporterAddress,
-        minPrice: newMarket.minPrice,
-        maxPrice: newMarket.maxPrice,
-        backupSource: newMarket.backupSource,
-        endTime: newMarket.endTime,
-        tickSize: newMarket.tickSize,
-        marketType: newMarket.marketType,
-        detailsText: newMarket.detailsText,
-        categories: newMarket.categories,
-        settlementFee: newMarket.settlementFee,
-        affiliateFee: newMarket.affiliateFee,
-        offsetName: newMarket.offsetName,
-      });
-    }
+    const marketResult = await createMarket({
+      outcomes: market.outcomes,
+      scalarDenomination: market.scalarDenomination,
+      description: market.description,
+      expirySource: market.expirySource,
+      designatedReporterAddress: market.designatedReporterAddress,
+      minPrice: market.minPrice,
+      maxPrice: market.maxPrice,
+      backupSource: market.backupSource,
+      endTime: market.endTime,
+      tickSize: market.tickSize,
+      marketType: market.marketType,
+      detailsText: market.detailsText,
+      categories: market.categories,
+      settlementFee: market.settlementFee,
+      affiliateFee: market.affiliateFee,
+      offsetName: market.offsetName,
+    });
 
     if (hasOrders) {
       dispatch(clearMarketLiquidityOrders(pendingId));
@@ -88,6 +77,40 @@ export function submitNewMarket(
     }
   };
 }
+
+export function submitNewMarketRetry(
+  market: CreateMarketData,
+  callback: NodeStyleCallback = noop
+) {
+  return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+    const { loginAccount } = getState();
+
+    const hasOrders = market.orderBook && Object.keys(market.orderBook).length
+    const sortOrderBook = hasOrders && sortOrders(market.orderBook);
+    const pendingId = generateTxParameterId(market.txParams);
+
+    if (hasOrders) {
+      dispatch(
+        addMarketLiquidityOrders({
+          marketId: pendingId,
+          liquidityOrders: sortOrderBook
+        })
+      );
+    }
+
+    const marketResult = await createMarketRetry(market);
+    if (hasOrders) {
+      dispatch(clearMarketLiquidityOrders(pendingId));
+      dispatch(
+        addMarketLiquidityOrders({
+          marketId: marketResult.address,
+          liquidityOrders: sortOrderBook
+        })
+      );
+    }
+  };
+}
+
 
 function getHasApproval(hasOrders: Boolean, callback: NodeStyleCallback) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
