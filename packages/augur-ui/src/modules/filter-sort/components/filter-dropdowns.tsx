@@ -73,7 +73,7 @@ export default class FilterSearch extends Component<FilterSearchProps> {
 
     this.goToPageOne();
     updateSortOption(value);
-    updateFilter({ filter, sort: value, limit: 0, offset: 1 });
+    updateFilter({ filter, sort: value });
   }
 
   changeFilterDropdown(value) {
@@ -85,7 +85,7 @@ export default class FilterSearch extends Component<FilterSearchProps> {
 
     this.goToPageOne();
     updateFilterOption(value);
-    updateFilter({ filter: value, sort, limit: 0, offset: 1 });
+    updateFilter({ filter: value, sort });
   }
 
   changeHasOrders(event) {
@@ -96,9 +96,7 @@ export default class FilterSearch extends Component<FilterSearchProps> {
     } = this.props;
     updateFilter({
       filter,
-      sort,
-      limit: 0,
-      offset: 1,
+      sort
     });
   }
 
