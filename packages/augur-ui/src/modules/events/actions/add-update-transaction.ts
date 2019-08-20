@@ -79,22 +79,23 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
 };
 
 function createMarketData(params: TransactionMetadataParams, id: string, hash: string, currentTimestamp: number, methodCall: string): CreateMarketData {
-  let data: CreateMarketData = {};
   const extraInfo = JSON.parse(params._extraInfo);
-  data.hash = hash;
-  data.pendingId = id;
-  data.description = extraInfo.description;
-  data.pending = true;
-  data.endTime = convertUnixToFormattedDate(params._endTime);
-  data.recentlyTraded = convertUnixToFormattedDate(currentTimestamp);
-  data.creationTime = convertUnixToFormattedDate(currentTimestamp);
-  data.txParams = params;
+  let data: CreateMarketData = {
+    hash,
+    pendingId: id,
+    description: extraInfo.description,
+    pending: true,
+    endTime: convertUnixToFormattedDate(params._endTime),
+    recentlyTraded: convertUnixToFormattedDate(currentTimestamp),
+    creationTime: convertUnixToFormattedDate(currentTimestamp),
+    txParams: params,
+    marketType: YES_NO,
+  };
+  
   if (methodCall === CREATECATEGORICALMARKET) {
     data.marketType = CATEGORICAL;
   } else if (methodCall === CREATESCALARMARKET) {
     data.marketType = SCALAR;
-  } else {
-    data.marketType = YES_NO;
   }
   return data;
 }
