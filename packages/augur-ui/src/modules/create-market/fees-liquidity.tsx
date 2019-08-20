@@ -17,6 +17,7 @@ import QuadBox from "modules/portfolio/components/common/quad-box";
 import { Visibility } from "modules/create-market/components/visibility";
 
 import Styles from "modules/create-market/fees-liquidity.styles.less";
+import { OutcomeFormatted } from "modules/types";
 
 interface FeesLiquidityProps {
   newMarket: Object;
@@ -54,18 +55,18 @@ export default class FeesLiquidity extends React.Component<
     this.setState({selectedOutcome: value});
   }
 
-  updateLiquidity = (selectedOutcome, s) => {
+  updateLiquidity = (selectedOutcome: OutcomeFormatted, s) => {
     const {
       addOrderToNewMarket,
       newMarket,
       updateInitialLiquidityCosts
     } = this.props;
 
-     const { marketType, scalarDenomination } = newMarket;
-      let outcomeName = selectedOutcome.description;
+      const outcomeName = selectedOutcome.description;
       addOrderToNewMarket({
         outcomeName,
         outcome: this.state.selectedOutcome,
+        outcomeId: selectedOutcome.id,
         type: s.selectedNav,
         price: s.orderPrice,
         quantity: s.orderQuantity,

@@ -33,8 +33,9 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { CreateMarketData } from 'modules/types';
+import { CreateMarketData, UIOrder } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
+import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -340,32 +341,35 @@ export async function cancelOpenOrder(orderId: string) {
   return contracts.cancelOrder.cancelOrder(orderId);
 }
 
-export async function createLiquidityOrder(
-  market: ,
-  type: BigNumber,
-  numShares: BigNumber,
-  price: BigNumber,
-  outcome: BigNumber
-) {
+export async function createLiquidityOrder(order: UIOrder) {
   const Augur = augurSdk.get();
-  const tradeGroupId = generateTradeGroupId();
-  const attoShares = convertDisplayAmountToOnChainAmount(numShares, tickSize);
-  const attoPrice = convertDisplayPriceToOnChainPrice(price, minDisplayPrice, tickSize);
+  const orderProperties = createOrderParameters(order.tickSize, order.amount, order.price, order.minPrice);
   return Augur.contracts.createOrder.publicCreateOrder(
-    type,
-    numShares,
-    price,
-    market,
-    outcome,
+    new BigNumber(order.type),
+    orderProperties.attoShares,
+    orderProperties.attoPrice,
+    order.marketId,
+    new BigNumber(order.outcomeId),
     formatBytes32String(""),
     formatBytes32String(""),
-    tradeGroupId,
+    orderProperties.tradeGroupId,
     false,
     NULL_ADDRESS
   );
 }
 
-export async function createLiquidityOrders() {}
+export async function createLiquidityOrders(orders: UIOrder[]) {
+
+}
+
+function createOrderParameters(tickSize, numShares, price, minPrice) {
+  const tickSizeBigNumber = new BigNumber(tickSize)
+  return {
+    tradeGroupId: generateTradeGroupId(),
+    attoShares: convertDisplayAmountToOnChainAmount(numShares, tickSizeBigNumber),
+    attoPrice: convertDisplayPriceToOnChainPrice(price, new BigNumber(minPrice), tickSizeBigNumber),
+  }
+}
 
 export async function placeTrade(
   direction: number,
