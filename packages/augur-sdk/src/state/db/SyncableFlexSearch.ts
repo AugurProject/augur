@@ -32,7 +32,7 @@ export class SyncableFlexSearch {
       {
         async: true,
         cache: true,
-        worker: 3,
+        worker: 1,
         doc:
         {
           id: "id",
