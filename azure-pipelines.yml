@@ -5,6 +5,7 @@ variables:
     DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
     CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
     CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
+    PRIMARY_NODE_VERSION: 10.16.x
 
 trigger:
   batch: false
@@ -71,7 +72,7 @@ jobs:
     strategy:
       matrix:
         node_10_x:
-          node_version: 10.15.x
+          node_version: $(PRIMARY_NODE_VERSION)
     steps:
       - checkout: self
       - task: NodeTool@0
@@ -126,7 +127,7 @@ jobs:
       - checkout: self
       - task: NodeTool@0
         inputs:
-          versionSpec: 10.15.x
+          versionSpec: $(PRIMARY_NODE_VERSION)
       - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
@@ -172,7 +173,7 @@ jobs:
           versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
-          versionSpec: '10.15.x'
+          versionSpec: $(PRIMARY_NODE_VERSION)
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -235,7 +236,7 @@ jobs:
           versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
-          versionSpec: '10.15.x'
+          versionSpec: $(PRIMARY_NODE_VERSION)
       - task: Docker@1
         displayName: docker login
         inputs:
@@ -314,7 +315,7 @@ jobs:
           versionSpec: '3.x'
       - task: NodeTool@0
         inputs:
-          versionSpec: '10.15'
+          versionSpec: $(PRIMARY_NODE_VERSION)
       - bash: |
           set -euo pipefail
           which node
