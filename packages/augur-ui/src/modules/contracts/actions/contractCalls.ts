@@ -31,6 +31,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
+import { CreateMarketData } from "modules/types";
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -284,7 +285,7 @@ export function createMarket(newMarket: CreateNewMarketParams) {
 }
 
 export function createMarketRetry(market: CreateMarketData) {
-  let newMarket: CreateNewMarketParams = {};
+  let newMarket: CreateNewMarketParams;
   const extraInfo = JSON.parse(market.txParams._extraInfo);
   newMarket.outcomes = market.txParams._outcomes;
   newMarket.scalarDenomination = extraInfo._scalarDenomination;
@@ -302,7 +303,6 @@ export function createMarketRetry(market: CreateMarketData) {
   newMarket.affiliateFee = market.txParams._affiliateFeeDivisor;
   newMarket.offsetName = extraInfo.offsetName;
   newMarket.backupSource = extraInfo.backupSource;
-  // newMarket.orderBook = extraInfo.orderBook;
 
   createMarket(newMarket);
 }

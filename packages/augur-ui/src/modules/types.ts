@@ -171,6 +171,7 @@ export interface CreateMarketData {
   pending: boolean;
   recentlyTraded: DateFormattedObject;
   creationTime: DateFormattedObject;
+  marketType: string;
 }
 
 export interface PendingQueue {
