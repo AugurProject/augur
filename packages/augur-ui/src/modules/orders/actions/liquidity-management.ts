@@ -74,15 +74,12 @@ export const sendLiquidityOrder = (options: any) => (
 ) => {
   const {
     marketId,
-    marketType,
     order,
     marketOutcomesArray,
     minPrice,
     maxPrice,
     numTicks,
-    orderId,
     bnAllowance,
-    loginAccount,
     orderCB,
     seriesCB,
     outcome,

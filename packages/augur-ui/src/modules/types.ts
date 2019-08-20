@@ -256,6 +256,8 @@ export interface UIOrder {
   ignoreShares?: boolean;
   status?: string;
   hash?: string;
+  tickSize: number;
+  minPrice: string;
 }
 
 export interface LiquidityOrders {
@@ -273,6 +275,7 @@ export interface LiquidityOrder {
   type: string;
   orderEstimate: BigNumber;
   outcomeName: string;
+  outcomeId: number;
 }
 export interface NewMarketPropertiesValidations {
   description?: string;

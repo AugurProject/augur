@@ -2,8 +2,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
-  addOrderToNewMarket,
-  removeOrderFromNewMarket,
   updateNewMarket,
   clearNewMarket
 } from "modules/markets/actions/update-new-market";
@@ -15,6 +13,7 @@ import {
 } from "modules/common/constants";
 import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
 import { updateModal } from "modules/modal/actions/update-modal";
+import { NodeStyleCallback } from "modules/types";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,

@@ -85,16 +85,16 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
         orderEstimate,
         outcome,
         outcomeName,
+        outcomeId,
       } = orderToAdd;
       const existingOrders = newMarket.orderBook[outcome] || [];
 
       let orderAdded = false;
 
-      const updatedOrders = existingOrders.map((order: LiquidityOrder) => {
+      const updatedOrders: LiquidityOrder[] = existingOrders.map((order: LiquidityOrder) => {
           const orderInfo = Object.assign({}, order);
         if (createBigNumber(order.price).eq(createBigNumber(price)) && order.type === type) {
-          orderInfo.quantity = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toString();
-          orderInfo.shares = createBigNumber(order.quantity).plus(createBigNumber(quantity)).toString();
+          orderInfo.quantity = createBigNumber(order.quantity).plus(createBigNumber(quantity));
           orderInfo.orderEstimate = createBigNumber(order.orderEstimate).plus(
             createBigNumber(orderEstimate)
           ),
@@ -107,6 +107,7 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
       if (!orderAdded) {
         updatedOrders.push({
           outcomeName,
+          outcomeId,
           type,
           price,
           quantity,
@@ -166,7 +167,6 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           hour: null,
           minute: null,
           meridiem: null,
-          outcomes: null,
           scalarDenomination: null,
           outcomes: ["", ""],
         },
