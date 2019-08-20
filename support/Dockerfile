@@ -1,5 +1,5 @@
 # when updating node version, make sure link to yarn in /opt is still the correct version
-ARG NODE_VERSION=10.15.3
+ARG NODE_VERSION=10.16
 FROM node:${NODE_VERSION}-alpine
 
 RUN apk add --no-cache \
