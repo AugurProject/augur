@@ -11,7 +11,6 @@ import {
   TYPE_CLAIM_PROCEEDS,
   TYPE_TRADE,
   SCALAR,
-  MODAL_MIGRATE_MARKET
 } from "modules/common/constants";
 import { ValueDenomination } from "modules/common/labels";
 import getValue from "utils/get-value";
@@ -257,23 +256,6 @@ export default class MarketProperties extends Component {
                 >
                   {TYPE_VIEW}
                 </MarketLink>
-              )}
-            {isForking &&
-              isForkingMarketFinalized &&
-              forkingMarket !== id &&
-              !finalizationTime && (
-                <button
-                  className={Styles.MarketProperties__migrate}
-                  onClick={() =>
-                    updateModal({
-                      type: MODAL_MIGRATE_MARKET,
-                      marketId: id,
-                      marketDescription: description
-                    })
-                  }
-                >
-                  Migrate
-                </button>
               )}
           </div>
         </section>
