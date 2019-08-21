@@ -1753,7 +1753,7 @@ describe('State API :: Markets :: ', () => {
       {
         author: john.account.publicKey,
         categories:
-          [' '],
+          ['flash', 'Reasonable', 'YesNo'],
         consensus: null,
         cumulativeScale: '1',
         details: null,
@@ -1823,7 +1823,7 @@ describe('State API :: Markets :: ', () => {
       {
         author: john.account.publicKey,
         categories:
-          [' '],
+          ['flash', 'Reasonable', 'Categorical'],
         consensus: ['100', '0', '0', '0'],
         cumulativeScale: '1',
         details: null,
@@ -1893,7 +1893,7 @@ describe('State API :: Markets :: ', () => {
       {
         author: john.account.publicKey,
         categories:
-          [' '],
+          ['flash', 'Reasonable', 'Scalar'],
         consensus: null,
         cumulativeScale: '200',
         details: null,
@@ -1987,7 +1987,11 @@ describe('State API :: Markets :: ', () => {
       'scalar 2 primary',
       'scalar 2 secondary',
       'scalar 2 tertiary',
-      ' ',
+      'flash',
+      'Reasonable',
+      'YesNo',
+      'Categorical',
+      'Scalar',
     ]);
   }, 120000);
 });

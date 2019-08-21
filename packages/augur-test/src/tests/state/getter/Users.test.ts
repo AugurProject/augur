@@ -8,7 +8,6 @@ import {
 } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import {
-  MarketInfo,
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
@@ -193,54 +192,46 @@ describe('State API :: Users :: ', () => {
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
     // Fill orders
-    const cost = numShares.times(78).div(10);
+    await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
       numShares.div(10).times(2),
-      '42',
-      cost
+      '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome1),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome2),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome0),
       numShares.div(10).times(2),
-      '42',
-      cost
+      '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome1),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome2),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome0),
       numShares.div(10).times(2),
-      '42',
-      cost
+      '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome1),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -294,8 +285,9 @@ describe('State API :: Users :: ', () => {
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
+        const market = await mary.getMarketContract(johnYesNoMarket.address);
         await mary.contribute(
-          johnYesNoMarket,
+          market,
           yesPayoutSet,
           new BigNumber(25000)
         );
@@ -303,7 +295,7 @@ describe('State API :: Users :: ', () => {
           johnYesNoMarket,
           yesPayoutSet
         );
-        await mary.contribute(johnYesNoMarket, yesPayoutSet, remainingToFill);
+        await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(
           johnYesNoMarket,
@@ -529,50 +521,42 @@ describe('State API :: Users :: ', () => {
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome0),
       numShares.div(10).times(2),
-      '42',
-      cost
+      '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome1),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome2),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome0),
       numShares.div(10).times(2),
-      '42',
-      cost
+      '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome1),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome2),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome0),
       numShares.div(10).times(2),
-      '42',
-      cost
+      '42'
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome1),
       numShares.div(10).times(3),
-      '43',
-      cost
+      '43'
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -647,8 +631,9 @@ describe('State API :: Users :: ', () => {
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
+        const market = await mary.getMarketContract(johnYesNoMarket2.address);
         await mary.contribute(
-          johnYesNoMarket2,
+          market,
           yesPayoutSet,
           new BigNumber(25000)
         );
@@ -656,7 +641,7 @@ describe('State API :: Users :: ', () => {
           johnYesNoMarket2,
           yesPayoutSet
         );
-        await mary.contribute(johnYesNoMarket2, yesPayoutSet, remainingToFill);
+        await mary.contribute(market, yesPayoutSet, remainingToFill);
       } else {
         await john.contribute(
           johnYesNoMarket2,
