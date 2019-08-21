@@ -3,7 +3,8 @@ import { withRouter } from "react-router-dom";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
   updateNewMarket,
-  clearNewMarket
+  clearNewMarket,
+  removeAllOrdersFromNewMarket
 } from "modules/markets/actions/update-new-market";
 import Form from "modules/create-market/components/form";
 import getValue from "utils/get-value";
@@ -23,6 +24,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
+  removeAllOrdersFromNewMarket: () => dispatch(removeAllOrdersFromNewMarket()),
   submitNewMarket: (data, history, cb) =>
     dispatch(submitNewMarket(data, history, cb)),
   addDraft: (key, data) => dispatch(addDraft(key, data)),

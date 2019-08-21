@@ -2,7 +2,8 @@ import {
   ADD_ORDER_TO_NEW_MARKET,
   REMOVE_ORDER_FROM_NEW_MARKET,
   UPDATE_NEW_MARKET,
-  CLEAR_NEW_MARKET
+  CLEAR_NEW_MARKET,
+  REMOVE_ALL_ORDER_FROM_NEW_MARKET
 } from "modules/markets/actions/update-new-market";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import {
@@ -156,7 +157,14 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
         orderBook,
       };
     }
-
+    case REMOVE_ALL_ORDER_FROM_NEW_MARKET: {
+      return {
+        ...newMarket,
+        initialLiquidityDai: ZERO,
+        initialLiquidityGas: ZERO,
+        orderBook: {},
+      };
+    }
     case UPDATE_NEW_MARKET: {
       const { newMarketData } = data;
       return {

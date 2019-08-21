@@ -91,6 +91,7 @@ interface FormProps {
   drafts: Drafts;
   updateDraft: Function;
   clearNewMarket: Function;
+  removeAllOrdersFromNewMarket: Function;
   discardModal: Function;
   template: boolean;
   openCreateMarketModal: Function;
@@ -396,7 +397,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   };
 
   onChange = (name, value, callback) => {
-    const { updateNewMarket, newMarket } = this.props;
+    const { updateNewMarket, newMarket, removeAllOrdersFromNewMarket } = this.props;
     updateNewMarket({ [name]: value });
 
     if (name === 'outcomes') {
@@ -443,7 +444,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       if (value !== CATEGORICAL) {
         this.onError('outcomes', '');
       }
-      updateNewMarket({ outcomesFormatted, orderBook: {} });
+      updateNewMarket({ outcomesFormatted });
+      removeAllOrdersFromNewMarket();
     } else if (name === 'scalarDenomination') {
       let outcomesFormatted = SCALAR_OUTCOMES;
       outcomesFormatted[1].description = value;
