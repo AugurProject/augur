@@ -119,8 +119,8 @@ export class FlashSession {
     );
 
     if (wireUpSdk) {
-      this.user.augur.connect(network.http, this.getAccount().publicKey);
-      this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
+      await this.user.augur.connect(network.http, this.getAccount().publicKey);
+      await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
     }
     await this.user.approveCentralAuthority();
 
