@@ -20,10 +20,8 @@ export {
 
 export {
   default as Report
-} from "modules/reporting/containers/reporting-report";
+} from "modules/reporting/containers/reporting";
 
 export {
   default as Dispute
-} from "modules/reporting/containers/reporting-dispute";
-
-export { default as MigrateRep } from "modules/forking/containers/migrate-rep";
+} from "modules/reporting/containers/disputing";
