@@ -13,7 +13,8 @@ import {
   YES_NO,
   YES_NO_OUTCOMES,
   ZERO,
-  ONE
+  ONE,
+  NEW_ORDER_GAS_ESTIMATE
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { NewMarket, BaseAction, LiquidityOrder } from "modules/types";
@@ -83,11 +84,10 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
         price,
         type,
         orderEstimate,
-        outcome,
         outcomeName,
         outcomeId,
       } = orderToAdd;
-      const existingOrders = newMarket.orderBook[outcome] || [];
+      const existingOrders = newMarket.orderBook[outcomeId] || [];
 
       let orderAdded = false;
 
@@ -124,26 +124,36 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
       }
 
       const newUpdatedOrders = recalculateCumulativeShares(updatedOrders);
+      const orderBook = {
+        ...newMarket.orderBook,
+        [outcomeId]: newUpdatedOrders,
+      };
+
+      const {initialLiquidityDai, initialLiquidityGas} = calculateLiquidity(orderBook);
 
       return {
         ...newMarket,
-        orderBook: {
-          ...newMarket.orderBook,
-          [outcome]: newUpdatedOrders,
-        },
+        initialLiquidityDai,
+        initialLiquidityGas,
+        orderBook,
       };
     }
     case REMOVE_ORDER_FROM_NEW_MARKET: {
       const { outcome, orderId } = data && data.order;
       const updatedOrders = newMarket.orderBook[outcome].filter(order => order.id !== orderId);
       const updatedOutcomeUpdatedShares = recalculateCumulativeShares(updatedOrders);
+      const orderBook = {
+        ...newMarket.orderBook,
+        [outcome]: updatedOutcomeUpdatedShares,
+      }
+
+      const {initialLiquidityDai, initialLiquidityGas} = calculateLiquidity(orderBook);
 
       return {
         ...newMarket,
-        orderBook: {
-          ...newMarket.orderBook,
-          [outcome]: updatedOutcomeUpdatedShares,
-        },
+        initialLiquidityDai,
+        initialLiquidityGas,
+        orderBook,
       };
     }
 
@@ -203,3 +213,17 @@ const recalculateCumulativeShares = (orders) => {
 
   return [...bids, ...asks];
 };
+
+const calculateLiquidity = (orderBook) => {
+  let initialLiquidityDai = ZERO;
+  let initialLiquidityGas = ZERO;
+  Object.keys(orderBook).map(id => {
+    orderBook[id].map((order: LiquidityOrder) => {
+      initialLiquidityDai = initialLiquidityDai.plus(order.orderEstimate)
+      initialLiquidityGas = createBigNumber(initialLiquidityGas).plus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
+    })
+  })
+  return {initialLiquidityDai, initialLiquidityGas}
+}

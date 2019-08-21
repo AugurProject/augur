@@ -42,7 +42,8 @@ import {
   YES_NO_OUTCOMES,
   SCALAR_OUTCOMES,
   NEW_ORDER_GAS_ESTIMATE,
-  NON_EXISTENT
+  NON_EXISTENT,
+  ZERO
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
@@ -50,7 +51,7 @@ import {
   ExplainerBlock,
   ContentBlock,
 } from 'modules/create-market/components/common';
-import { NewMarket, Drafts } from 'modules/types';
+import { NewMarket, Drafts, LiquidityOrder } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
@@ -218,61 +219,6 @@ export default class Form extends React.Component<FormProps, FormState> {
         : newMarket.currentStep + 1;
     updateNewMarket({ currentStep: newStep });
     this.node.scrollIntoView();
-  };
-
-  updateInitialLiquidityCosts = (order, shouldReduce) => {
-    const { newMarket, updateNewMarket } = this.props;
-    const minPrice = newMarket.marketType === SCALAR ? newMarket.minPrice : 0;
-    const maxPrice = newMarket.marketType === SCALAR ? newMarket.maxPrice : 1;
-    const shareBalances = newMarket.outcomes.map(outcome => 0);
-    let outcome;
-    let initialLiquidityDai;
-    let initialLiquidityGas;
-
-    switch (newMarket.marketType) {
-      case CATEGORICAL:
-        newMarket.outcomes.forEach((outcomeName, index) => {
-          if (order.outcome === outcomeName) outcome = index;
-        });
-        break;
-      case SCALAR:
-        ({ outcome } = order);
-        break;
-      default:
-        outcome = 1;
-        break;
-    }
-
-    const orderType = order.type === BID ? BUY : SELL;
-
-    // Calculate amount of DAI needed for order
-    const totalCost = calculateTotalOrderValue(
-      order.quantity,
-      order.price,
-      orderType,
-      minPrice,
-      maxPrice,
-      newMarket.marketType
-    );
-
-    // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
-    if (shouldReduce) {
-      initialLiquidityDai = createBigNumber(
-        newMarket.initialLiquidityDai
-      ).minus(totalCost);
-      initialLiquidityGas = createBigNumber(
-        newMarket.initialLiquidityGas
-      ).minus(NEW_ORDER_GAS_ESTIMATE);
-    } else {
-      initialLiquidityDai = createBigNumber(newMarket.initialLiquidityDai).plus(
-        totalCost
-      );
-      initialLiquidityGas = createBigNumber(newMarket.initialLiquidityGas).plus(
-        NEW_ORDER_GAS_ESTIMATE
-      );
-    }
-
-    updateNewMarket({ initialLiquidityDai, initialLiquidityGas });
   };
 
   findErrors = () => {
@@ -638,7 +584,6 @@ export default class Form extends React.Component<FormProps, FormState> {
                 <FeesLiquidity
                   onChange={this.onChange}
                   onError={this.onError}
-                  updateInitialLiquidityCosts={this.updateInitialLiquidityCosts}
                 />
               )}
               {mainContent === REVIEW && <Review />}

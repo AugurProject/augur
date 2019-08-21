@@ -29,11 +29,10 @@ interface FeesLiquidityProps {
   removeOrderFromNewMarket: Function;
   onChange: Function;
   onError: Function;
-  updateInitialLiquidityCosts: Function;
 }
 
 interface FeesLiquidityState {
-  selectedOutcome: Number;
+  selectedOutcome: number;
   hoveredDepth: any;
   hoveredPrice: any;
 }
@@ -51,14 +50,13 @@ export default class FeesLiquidity extends React.Component<
   updateSelectedOrderProperties = (selectedOrderProperties) => {
   }
 
-  updateSelectedOutcome = (value: Number) => {
+  updateSelectedOutcome = (value: number) => {
     this.setState({selectedOutcome: value});
   }
 
   updateLiquidity = (selectedOutcome: OutcomeFormatted, s) => {
     const {
-      addOrderToNewMarket,
-      updateInitialLiquidityCosts
+      addOrderToNewMarket
     } = this.props;
 
       const outcomeName = selectedOutcome.description;
@@ -71,18 +69,10 @@ export default class FeesLiquidity extends React.Component<
         quantity: s.orderQuantity,
         orderEstimate: s.orderDaiEstimate,
       });
-
-      updateInitialLiquidityCosts({
-        outcome: this.state.selectedOutcome,
-        type: s.selectedNav,
-        price: s.orderPrice,
-        quantity: s.orderQuantity,
-        selectedOutcome: this.state.selectedOutcome
-      });
   }
 
   renderRows = (data) => {
-    const { newMarket, updateInitialLiquidityCosts } = this.props;
+    const { newMarket } = this.props;
     const outcomeOrders = newMarket.orderBook[this.state.selectedOutcome];
 
     if (!outcomeOrders) {
@@ -98,7 +88,6 @@ export default class FeesLiquidity extends React.Component<
         key={"order-" + orderId.id + id}
         order={orderId}
         selectedOutcome={this.state.selectedOutcome}
-        updateInitialLiquidityCosts={updateInitialLiquidityCosts}
       />
     );
   }

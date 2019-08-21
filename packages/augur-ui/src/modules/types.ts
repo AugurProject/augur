@@ -257,7 +257,7 @@ export interface UIOrder {
   ignoreShares?: boolean;
   status?: string;
   hash?: string;
-  tickSize: number;
+  numTicks: number;
   minPrice: string;
 }
 
@@ -290,11 +290,14 @@ export interface NewMarketPropertiesValidations {
   minute?: string;
   meridiem?: string;
   outcomes?: string[];
+  settlementFee?: string;
+  affiliateFee?: number;
 }
 
 export interface NewMarketPropertyValidations {
   settlementFee?: string;
   scalarDenomination?: string;
+  affiliateFee?: number;
 }
 export interface NewMarket {
   isValid: boolean;

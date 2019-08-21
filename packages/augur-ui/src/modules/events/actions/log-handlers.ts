@@ -13,7 +13,6 @@ import {
   loadMarketsInfo,
   loadMarketsInfoIfNotLoaded,
 } from 'modules/markets/actions/load-markets-info';
-import { startOrderSending } from 'modules/orders/actions/liquidity-management';
 import {
   loadMarketTradingHistory,
   loadUserFilledOrders,
@@ -129,8 +128,9 @@ export const handleMarketCreatedLog = (log: any) => (
     dispatch(loadMarketsInfo([log.market]));
   }
   if (isStoredTransaction) {
+    // TODO: could tell that logged in user can create liquidity orders
     // My Market? start kicking off liquidity orders
-    if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
+    // if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
   }
 };
 

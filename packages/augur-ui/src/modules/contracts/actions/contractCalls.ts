@@ -23,6 +23,7 @@ import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
   Getters,
+  numTicksToTickSizeWithDisplayPrices,
 } from '@augurproject/sdk';
 
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
@@ -34,7 +35,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { CreateMarketData, UIOrder } from 'modules/types';
+import { CreateMarketData, UIOrder, LiquidityOrder } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 
@@ -228,7 +229,7 @@ export interface CreateNewMarketParams {
   minPrice: string;
   maxPrice: string;
   endTime: number;
-  tickSize: number;
+  numTicks: number;
   marketType: string;
   detailsText?: string;
   categories: string[];
@@ -273,7 +274,7 @@ export function createMarketRetry(market: CreateMarketData) {
     designatedReporterAddress: market.txParams._designatedReporterAddress,
     minPrice: market.txParams._prices && market.txParams._prices[0],
     maxPrice: market.txParams._prices && market.txParams._prices[1],
-    tickSize: market.txParams._numTicks,
+    numTicks: market.txParams._numTicks,
     detailsText: extraInfo.longDescription,
     categories: extraInfo.categories,
     settlementFee: market.txParams._feePerCashInAttoCash,
@@ -309,16 +310,25 @@ export async function cancelOpenOrder(orderId: string) {
   return contracts.cancelOrder.cancelOrder(orderId);
 }
 
-export async function createLiquidityOrder(order: UIOrder) {
+interface MarketLiquidityOrder extends LiquidityOrder {
+  marketId: string;
+  minPrice: string;
+  maxPrice: string;
+  numTicks: string;
+  orderType: number;
+}
+
+export async function createLiquidityOrder(order: MarketLiquidityOrder) {
   const Augur = augurSdk.get();
   const orderProperties = createOrderParameters(
-    order.tickSize,
-    order.amount,
+    order.numTicks,
+    order.quantity,
     order.price,
-    order.minPrice
+    order.minPrice,
+    order.maxPrice
   );
   return Augur.contracts.createOrder.publicCreateOrder(
-    new BigNumber(order.type),
+    new BigNumber(order.orderType),
     orderProperties.attoShares,
     orderProperties.attoPrice,
     order.marketId,
@@ -331,18 +341,25 @@ export async function createLiquidityOrder(order: UIOrder) {
   );
 }
 
-export async function createLiquidityOrders(orders: UIOrder[]) {}
+export async function createLiquidityOrders(orders: UIOrder[]) {
+  const Augur = augurSdk.get();
+  // return Augur.contracts.createOrder.publicCreateOrders();
+}
 
-function createOrderParameters(tickSize, numShares, price, minPrice) {
-  const tickSizeBigNumber = new BigNumber(tickSize);
+function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice) {
+  const tickSizeBigNumber = numTicksToTickSizeWithDisplayPrices(
+    new BigNumber(numTicks),
+    new BigNumber(minPrice),
+    new BigNumber(maxPrice)
+  );
   return {
     tradeGroupId: generateTradeGroupId(),
     attoShares: convertDisplayAmountToOnChainAmount(
-      numShares,
+      new BigNumber(numShares),
       tickSizeBigNumber
     ),
     attoPrice: convertDisplayPriceToOnChainPrice(
-      price,
+      new BigNumber(price),
       new BigNumber(minPrice),
       tickSizeBigNumber
     ),

@@ -10,7 +10,6 @@ import makePath from "modules/routes/helpers/make-path";
 import noop from "utils/noop";
 import { createBigNumber } from "utils/create-big-number";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { MY_POSITIONS } from "modules/routes/constants/views";
 import { sortOrders } from "modules/orders/helpers/liquidity";
 import { addMarketLiquidityOrders, clearMarketLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { AppState } from "store";
@@ -83,8 +82,6 @@ export function retrySubmitMarket(
   callback: NodeStyleCallback = noop
 ) {
   return async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-    const { loginAccount } = getState();
-
     const hasOrders = market.orderBook && Object.keys(market.orderBook).length
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
     const pendingId = generateTxParameterId(market.txParams);
