@@ -57,7 +57,7 @@ export function submitNewMarket(
       maxPrice: market.maxPrice,
       backupSource: market.backupSource,
       endTime: market.endTime,
-      numTicks: market.numTicks,
+      tickSize: market.tickSize,
       marketType: market.marketType,
       detailsText: market.detailsText,
       categories: market.categories,

@@ -54,11 +54,13 @@ export function constructMarketParams(
         new BigNumber(newMarket.minPrice).multipliedBy(QUINTILLION),
         new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
       ];
-      const numTicks = tickSizeToNumTickWithDisplayPrices(
-        new BigNumber(newMarket.tickSize),
-        new BigNumber(newMarket.minPrice),
-        new BigNumber(newMarket.maxPrice)
-      );
+      const numTicks = newMarket.numTicks
+        ? newMarket.numTicks
+        : tickSizeToNumTickWithDisplayPrices(
+            new BigNumber(newMarket.tickSize),
+            new BigNumber(newMarket.minPrice),
+            new BigNumber(newMarket.maxPrice)
+          );
       const params: CreateScalarMarketParams = Object.assign(baseParams, {
         prices,
         numTicks,

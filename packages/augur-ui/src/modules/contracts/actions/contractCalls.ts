@@ -229,7 +229,8 @@ export interface CreateNewMarketParams {
   minPrice: string;
   maxPrice: string;
   endTime: number;
-  numTicks: number;
+  numTicks?: number;
+  tickSize?: number;
   marketType: string;
   detailsText?: string;
   categories: string[];
