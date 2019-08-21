@@ -124,7 +124,7 @@ export interface OutcomeGroupProps {
 }
 
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
-  const inDispute = props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE || props.reportingState === AWAITING_NEXT_WINDOW;
+  const inDispute = props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE || props.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
   let outcomesShow = props.outcomes.filter(outcome => inDispute || outcome.isTradable);
   const removedInvalid = outcomesShow.splice(0, 1)[0];
   outcomesShow.splice(2, 0, removedInvalid);
