@@ -50,12 +50,14 @@ export function constructMarketParams(
 
   switch (newMarket.marketType) {
     case SCALAR: {
-      const prices = [
-        new BigNumber(newMarket.minPrice).multipliedBy(QUINTILLION),
-        new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
-      ];
+      const prices = isRetry
+        ? [new BigNumber(newMarket.minPrice), new BigNumber(newMarket.maxPrice)]
+        : [
+            new BigNumber(newMarket.minPrice).multipliedBy(QUINTILLION),
+            new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
+          ];
       const numTicks = newMarket.numTicks
-        ? newMarket.numTicks
+        ? new BigNumber(newMarket.numTicks)
         : tickSizeToNumTickWithDisplayPrices(
             new BigNumber(newMarket.tickSize),
             new BigNumber(newMarket.minPrice),
@@ -106,6 +108,7 @@ export function constructMarketParamsReturn(
     _feePerCashInAttoCash: feePerCashInAttoCash,
     _affiliateFeeDivisor: affiliateFeeDivisor,
     _designatedReporterAddress: newMarket.designatedReporterAddress,
+    _extraInfo: extraInfo,
   };
 
   if (newMarket.marketType === SCALAR) {
@@ -129,7 +132,5 @@ export function constructMarketParamsReturn(
     });
   }
 
-  return Object.assign(params, {
-    _extraInfo: extraInfo,
-  });
+  return params;
 }
