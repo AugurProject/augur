@@ -5,12 +5,10 @@ import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { createBigNumber } from 'utils/create-big-number';
 
 import {
-  CATEGORICAL,
   MODAL_ACCOUNT_APPROVAL,
-  BID,
   BUY,
 } from 'modules/common/constants';
-import { OrderBook, BaseAction, UIOrder } from 'modules/types';
+import { OrderBook, BaseAction } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';

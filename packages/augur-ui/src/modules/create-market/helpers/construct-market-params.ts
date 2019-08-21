@@ -39,7 +39,7 @@ export function constructMarketParams(newMarket: CreateNewMarketParams, isRetry:
     designatedReporter: newMarket.designatedReporterAddress,
     extraInfo,
   };
-  
+
    switch (newMarket.marketType) {
     case SCALAR: {
       const prices = [
@@ -85,10 +85,10 @@ export function constructMarketParamsReturn(newMarket: NewMarket): TransactionMe
     _endTime: marketEndTime,
     _feePerCashInAttoCash: feePerCashInAttoCash,
     _affiliateFeeDivisor: affiliateFeeDivisor,
-    _designatedReporter: newMarket.designatedReporterAddress,
+    _designatedReporterAddress: newMarket.designatedReporterAddress,
     _extraInfo: extraInfo,
   };
-  
+
    switch (newMarket.marketType) {
     case SCALAR: {
       const prices = [

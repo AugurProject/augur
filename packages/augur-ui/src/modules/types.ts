@@ -163,6 +163,7 @@ export interface ReportingWindowStats {
 }
 
 export interface CreateMarketData {
+  id: string;
   txParams: TransactionMetadataParams;
   endTime: DateFormattedObject;
   description: string;
