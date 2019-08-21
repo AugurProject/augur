@@ -110,8 +110,14 @@
 	}
 
 	> div:not(:last-of-type) {
+		border-radius: @size-4;
 		margin-bottom: @size-9;
 		margin-top: @size-10;
+
+		> span {
+			background: fade(@color-faded-bright, 50);
+			border-radius: @size-4;
+		}
 	}
 
 	&.invalid {
