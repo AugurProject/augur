@@ -322,6 +322,7 @@ export interface NewMarket {
   endTimeFormatted: DateFormattedObject;
   setEndTime: number;
   tickSize: number;
+  numTicks: number;
   hour: string;
   minute: string;
   meridiem: string;
