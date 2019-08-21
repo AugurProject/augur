@@ -56,44 +56,63 @@ export class AccountTimeRangedStats {
       throw new Error("startTime must be less than or equal to endTime");
     }
 
-    const baseRequest = {
-      universe: params.universe,
-      $and: [
-        { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-        { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-      ],
-    };
-
     const marketsRequest = {
-      selector: Object.assign({
-        marketCreator: params.account,
-      }, baseRequest),
+      selector: {
+        $and: [
+          { marketCreator: params.account },
+          { universe: params.universe },
+          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+        ],
+      },
     };
 
     const initialReporterRequest = {
-      selector: Object.assign({
-        reporter: params.account,
-      }, baseRequest),
+      selector: {
+        $and: [
+          { reporter: params.account },
+          { universe: params.universe },
+          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+        ],
+      },
     };
 
     const disputeCrowdourcerRequest = {
-      selector: Object.assign({
-        disputeCrowdsourcerer: params.account,
-      }, baseRequest),
+      selector: {
+        $and: [
+          { reporter: params.account },
+          { universe: params.universe },
+          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+        ],
+      },
     };
 
     const profitLossChangedRequest = {
-      selector: Object.assign({
-        account: params.account,
-        netPosition: { $ne: 0 },
-      }, baseRequest),
+      selector: {
+        $and: [
+          { account: params.account },
+          { netPosition: { $ne: 0 } },
+          { universe: params.universe },
+          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+        ],
+      },
     };
 
     const orderFilledRequest = {
-      selector: Object.assign({
-        orderCeator: params.account,
-        orderFiller: params.account,
-      }, baseRequest),
+      selector: {
+        $or: [
+          { orderCeator: params.account },
+          { orderFiller: params.account },
+        ],
+        $and: [
+          { universe: params.universe },
+          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+          { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+        ],
+      },
     };
 
     const compareArrays = (lhs: string[], rhs: string[]): number => {
@@ -117,10 +136,16 @@ export class AccountTimeRangedStats {
     const successfulDisputes = _.sum(await Promise.all((disputeCrowdsourcerReedeemedLogs as any as DisputeCrowdsourcerRedeemed[])
       .map(async (log: DisputeCrowdsourcerRedeemed) => {
         const marketFinalization = {
-          selector: Object.assign({
-            market: log.market,
-          }, baseRequest),
+          selector: {
+            $and: [
+              { market: log.market },
+              { universe: params.universe },
+              { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+              { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+            ],
+          },
         };
+
         const markets = (await db.findMarketFinalizedLogs(marketFinalization)) as any as MarketFinalized[];
 
         if (markets.length) {
