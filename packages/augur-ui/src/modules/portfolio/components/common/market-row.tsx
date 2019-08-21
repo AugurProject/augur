@@ -70,7 +70,7 @@ const MarketRow = (props: MarketRowProps) => {
         {props.market.pending && props.market.status === TXEventName.Pending &&
           <span>When the market is confirmed you can submit initial liquidity</span>
         }
-        {props.showPending && props.market.hasPendingLiquidityOrders && 
+        {!props.market.pending && props.showPending && props.market.hasPendingLiquidityOrders && 
           <span>
             You have pending initial liquidity. 
             <SubmitTextButton action={() => props.unsignedOrdersModal(props.market.marketId)} text="View orders"/>
