@@ -72,9 +72,9 @@ export class LogReplayerV1 {
 
   async ReplayLog(log: ParsedLog) {
     switch(log.name) {
-      case "UniverseCreated": return this.UniverseCreated(log);
-      case "MarketCreated": return this.MarketCreated(log);
-      case "OrderCreated": return this.OrderCreated(log);
+      case 'UniverseCreated': return this.UniverseCreated(log);
+      case 'MarketCreated': return this.MarketCreated(log);
+      case 'OrderCreated': return this.OrderCreated(log);
       default:
     }
   }
@@ -85,7 +85,7 @@ export class LogReplayerV1 {
     console.log(`Replaying UniverseCreated "${childUniverse}"`);
 
     if (parentUniverse === NULL_ADDRESS) { // Deployment already gave us a genesis universe so just record it.
-      const user = await this.User(this.piggybank); // Piggybank is typically the Augur deployer, including genesis universe.
+      const user = await this.User(this.piggybank); // Treating piggybank as the Augur deployer since typically it is.
       this.universes[childUniverse] = user.augur.addresses.Universe;
     } else {
       // TODO No need to support forking yet. But when it is supported, remember
@@ -96,10 +96,9 @@ export class LogReplayerV1 {
   async MarketCreated(log: ParsedLog) {
     const {
       universe, extraInfo, market, marketCreator, designatedReporter,
-      prices, marketType, numTicks, outcomes } = log;
+      prices, marketType, numTicks, outcomes, topic } = log;
 
     console.log(`Replaying MarketCreated "${market}"`);
-    console.log(log);
 
     const timestamp = `${today.getTime() / 1000}`;
     const endTime = `${inOneMonths.getTime() / 1000}`;
@@ -109,6 +108,13 @@ export class LogReplayerV1 {
     const [ start, end ] = [ makeDate(timestamp), makeDate(endTime) ];
     const marketLength = end.getTime() - start.getTime();
     const adjustedEndTime = new BigNumber(Math.floor((Date.now() + marketLength) / 1000));
+
+    let adjustedExtraInfo = JSON.parse(extraInfo);
+    adjustedExtraInfo.categories = extraInfo.categories || [];
+    adjustedExtraInfo.categories.push(topic);
+    adjustedExtraInfo.categories.push('from v1');
+    adjustedExtraInfo.categories.push('flash');
+    adjustedExtraInfo = JSON.stringify(adjustedExtraInfo);
 
     const user = await this.Account(marketCreator).then((account) => this.User(account));
     const reporter = await this.Account(designatedReporter);
@@ -121,7 +127,7 @@ export class LogReplayerV1 {
           feePerCashInAttoCash,
           affiliateFeeDivisor: feeDivisor,
           designatedReporter: reporter.publicKey,
-          extraInfo,
+          extraInfo: adjustedExtraInfo,
         });
         break;
       case 1: // CATEGORICAL
@@ -131,7 +137,8 @@ export class LogReplayerV1 {
           affiliateFeeDivisor: feeDivisor,
           designatedReporter: reporter.publicKey,
           outcomes,
-          extraInfo});
+          extraInfo: adjustedExtraInfo,
+        });
         break;
       case 2: // SCALAR
         result = await user.createScalarMarket({
@@ -141,7 +148,8 @@ export class LogReplayerV1 {
           designatedReporter: reporter.publicKey,
           prices,
           numTicks,
-          extraInfo});
+          extraInfo: adjustedExtraInfo,
+        });
         break;
       default: throw Error(`Unexpected market type "${marketType}`);
     }
@@ -155,14 +163,11 @@ export class LogReplayerV1 {
       tradeGroupId, orderId, universe, shareToken, market, outcome } = log;
 
     console.log(`Replaying OrderCreated "${orderId}"`);
-    console.log(log);
 
-    const betterOrderId = formatBytes32String("");
-    const worseOrderId = formatBytes32String("");
+    const betterOrderId = formatBytes32String('');
+    const worseOrderId = formatBytes32String('');
 
     const orderCreatorUser = await this.Account(creator).then((account) => this.User(account));
-
-    // TODO must query chain with shareToken to get the market address
 
     this.orders[orderId] = await orderCreatorUser.placeOrder(
       this.markets[market],

@@ -74,7 +74,10 @@ export class ContractAPI {
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,
-      extraInfo: JSON.stringify({categories: [' '], description: 'description'}),
+      extraInfo: JSON.stringify({
+        categories: ['flash', 'Reasonable', 'YesNo'],
+        description: 'description',
+      }),
     });
   }
 
@@ -87,7 +90,10 @@ export class ContractAPI {
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,
-      extraInfo: JSON.stringify({categories: [' '], description: 'description'}),
+      extraInfo: JSON.stringify({
+        categories: ['flash', 'Reasonable', 'Categorical'],
+        description: 'description',
+      }),
       outcomes,
     });
   }
@@ -103,7 +109,11 @@ export class ContractAPI {
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,
-      extraInfo: JSON.stringify({categories: [' '], description: 'description', _scalarDenomination: 'scalar denom 1'}),
+      extraInfo: JSON.stringify({
+        categories: ['flash', 'Reasonable', 'Scalar'],
+        description: 'description',
+        _scalarDenomination: 'scalar denom 1',
+      }),
       numTicks: new BigNumber(20000),
       prices: [minPrice, maxPrice],
     });
