@@ -35,7 +35,8 @@ export function submitNewMarket(
 
     const hasOrders = market.orderBook && Object.keys(market.orderBook).length
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
-    const pendingId = generateTxParameterId(constructMarketParamsReturn(market))
+    const parameters = constructMarketParamsReturn(market);
+    const pendingId = generateTxParameterId(parameters);
 
     if (hasOrders) {
       dispatch(
