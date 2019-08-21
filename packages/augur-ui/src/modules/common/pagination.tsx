@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { DirectionButton } from "modules/common/buttons";
 
-import Styles from "modules/common/pagination.styles";
+import Styles from "modules/common/pagination.styles.less";
 
 interface PaginationProps {
   page: number;
@@ -79,7 +79,7 @@ const renderPageButtons = (
         onClick={() => action(page.page)}
         disabled={page.page === null}
       >
-        {page.page ? page.page : string.fromCodePoint(0x2026)}
+        {page.page ? page.page : String.fromCodePoint(0x2026)}
       </button>
     ))}
   </>
@@ -87,7 +87,7 @@ const renderPageButtons = (
 
 export const Pagination = (props: PaginationProps) => {
   const { page, action, itemCount, itemsPerPage } = props;
-  const totalPages = Math.ceil(itemCount / itemsPerPage);
+  const totalPages = Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
   return (
     <div className={Styles.Pagination}>
       <DirectionButton

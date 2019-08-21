@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';

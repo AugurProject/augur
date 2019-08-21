@@ -40,7 +40,7 @@ sidebar_label: Trading
     makerTaker,
   })
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:153](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L153)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:153](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L153)*
 
 ___
 <a id="getbetterworseordersparams"></a>
@@ -49,16 +49,16 @@ ___
 
 **● GetBetterWorseOrdersParams**: *`InterfaceType`<`object`, `object`, `object`, `unknown`>* =  BetterWorseOrdersParams
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:159](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L159)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:159](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L159)*
 
 ___
 <a id="getordersparams"></a>
 
 ### `<Static>` GetOrdersParams
 
-**● GetOrdersParams**: *`IntersectionType`<[`PartialType`<`object`, `object`, `object`, `unknown`>, `PartialType`<`object`, `object`, `object`, `unknown`>], `object`, `object`, `unknown`>* =  t.intersection([SortLimit, OrdersParams])
+**● GetOrdersParams**: *`IntersectionType`<[`PartialType`<`object`, `object`, `object`, `unknown`>, `PartialType`<`object`, `object`, `object`, `unknown`>], `object`, `object`, `unknown`>* =  t.intersection([sortOptions, OrdersParams])
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:158](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L158)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:158](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L158)*
 
 ___
 <a id="gettradinghistoryparams"></a>
@@ -66,11 +66,11 @@ ___
 ### `<Static>` GetTradingHistoryParams
 
 **● GetTradingHistoryParams**: *`IntersectionType`<[`PartialType`<`object`, `object`, `object`, `unknown`>, `PartialType`<`object`, `object`, `object`, `unknown`>], `object`, `object`, `unknown`>* =  t.intersection([
-    SortLimit,
+    sortOptions,
     TradingHistoryParams,
   ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:149](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L149)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:149](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L149)*
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 ▸ **getAllOrders**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`PartialType`>*): `Promise`<[AllOrders](api-interfaces-packages-augur-sdk-src-state-getter-trading-allorders.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:258](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L258)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:258](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L258)*
 
 **Parameters:**
 
@@ -101,7 +101,7 @@ ___
 
 ▸ **getBetterWorseOrders**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`InterfaceType`>*): `Promise`<[BetterWorseResult](api-interfaces-packages-augur-sdk-src-state-getter-trading-betterworseresult.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:515](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L515)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:515](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L515)*
 
 **Parameters:**
 
@@ -120,7 +120,7 @@ ___
 
 ▸ **getOrders**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionType`>*): `Promise`<[Orders](api-interfaces-packages-augur-sdk-src-state-getter-trading-orders.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:333](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L333)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:333](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L333)*
 
 **Parameters:**
 
@@ -139,7 +139,7 @@ ___
 
 ▸ **getTradingHistory**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*, db: *[DB](api-classes-packages-augur-sdk-src-state-db-db-db.md)*, params: *`t.TypeOf`<`IntersectionType`>*): `Promise`<[MarketTradingHistory](api-interfaces-packages-augur-sdk-src-state-getter-trading-markettradinghistory.md)>
 
-*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:162](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/getter/Trading.ts#L162)*
+*Defined in [packages/augur-sdk/src/state/getter/Trading.ts:162](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/getter/Trading.ts#L162)*
 
 **Parameters:**
 

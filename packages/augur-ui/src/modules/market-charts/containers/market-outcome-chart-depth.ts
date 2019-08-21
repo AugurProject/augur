@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { isEmpty } from 'utils/is-populated';
+import { isEmpty } from 'utils/is-empty';
 
 import { createBigNumber } from 'utils/create-big-number';
 import MarketOutcomeChartsDepth from 'modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth';
@@ -8,8 +8,9 @@ import orderForMarketDepth from 'modules/markets/helpers/order-for-market-depth'
 import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
 import getPrecision from 'utils/get-number-precision';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { ASKS, BIDS, BUY, SELL } from 'modules/common/constants';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { ASKS, BIDS } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.marketId ? selectMarket(ownProps.marketId) : ownProps.market;
@@ -31,11 +32,7 @@ const mapStateToProps = (state, ownProps) => {
     state.orderBooks[market.marketId][ownProps.selectedOutcomeId];
 
   if (ownProps.initialLiquidity) {
-    const bids = (outcomeOrderBook || []).filter(order => order.type === SELL);
-    const asks = (outcomeOrderBook || []).filter(order => order.type === BUY);
-    outcomeOrderBook = {};
-    outcomeOrderBook[ASKS] = asks;
-    outcomeOrderBook[BIDS] = bids;
+    outcomeOrderBook = formatOrderBook(outcomeOrderBook, minPrice, maxPrice);
   }
 
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcomeOrderBook);

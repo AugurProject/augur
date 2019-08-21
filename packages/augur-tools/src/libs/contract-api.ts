@@ -7,30 +7,34 @@ import {
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
-} from "@augurproject/sdk";
-import { MarketList } from "@augurproject/sdk/src/state/getter/Markets";
-import { ContractInterfaces } from "@augurproject/core";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { makeDependencies, makeSigner } from "./blockchain";
-import { Account } from "../constants";
-import { ContractAddresses } from "@augurproject/artifacts";
-import { BigNumber } from "bignumber.js";
-import { formatBytes32String } from "ethers/utils";
+} from '@augurproject/sdk';
+import { ContractInterfaces } from '@augurproject/core';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { makeGnosisDependencies, makeSigner } from './blockchain';
+import { Account } from '../constants';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { BigNumber } from 'bignumber.js';
+import { formatBytes32String } from 'ethers/utils';
+import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
+import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 
-const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
-const ETERNAL_APPROVAL_VALUE = new BigNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // 2^256 - 1
+
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
+
 export class ContractAPI {
-  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined) {
+  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeDependencies(account, provider, signer);
-    const augur = await Augur.create(provider, dependencies, addresses, connector);
+    const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true);
 
-    return new ContractAPI(augur, provider, account);
+    return new ContractAPI(augur, provider, dependencies, account);
   }
 
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
+    readonly dependencies: ContractDependenciesGnosis,
     public account: Account
   ) {}
 
@@ -70,7 +74,7 @@ export class ContractAPI {
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,
-      extraInfo: JSON.stringify({categories: [" "], description: "description"}),
+      extraInfo: JSON.stringify({categories: [' '], description: 'description'}),
     });
   }
 
@@ -83,7 +87,7 @@ export class ContractAPI {
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,
-      extraInfo: JSON.stringify({categories: [" "], description: "description"}),
+      extraInfo: JSON.stringify({categories: [' '], description: 'description'}),
       outcomes,
     });
   }
@@ -99,7 +103,7 @@ export class ContractAPI {
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,
-      extraInfo: JSON.stringify({categories: [" "], description: "description", _scalarDenomination: "scalar denom 1"}),
+      extraInfo: JSON.stringify({categories: [' '], description: 'description', _scalarDenomination: 'scalar denom 1'}),
       numTicks: new BigNumber(20000),
       prices: [minPrice, maxPrice],
     });
@@ -141,9 +145,9 @@ export class ContractAPI {
       NULL_ADDRESS
     );
 
-    let orderId = "";
+    let orderId = '';
     for (const ev of events) {
-      if (ev.name === "OrderEvent") {
+      if (ev.name === 'OrderEvent') {
         interface HasOrderId {
           orderId: string;
         }
@@ -179,7 +183,7 @@ export class ContractAPI {
     await this.faucet(cost);
     const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
     if (bestPriceAmount === new BigNumber(0)) {
-      throw new Error("Could not take best Order");
+      throw new Error('Could not take best Order');
     }
 
     await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
@@ -207,7 +211,7 @@ export class ContractAPI {
       numTicks: await market.getNumTicks_(),
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
-      tradeGroupId: formatBytes32String("42"),
+      tradeGroupId: formatBytes32String('42'),
       ignoreShares: false,
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
@@ -227,7 +231,7 @@ export class ContractAPI {
       numTicks: await market.getNumTicks_(),
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
-      tradeGroupId: formatBytes32String("42"),
+      tradeGroupId: formatBytes32String('42'),
       ignoreShares: false,
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
@@ -240,14 +244,14 @@ export class ContractAPI {
     });
   }
 
-  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string): Promise<void> {
-    await this.augur.contracts.claimTradingProceeds.claimTradingProceeds(market.address, shareholder);
+  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, affiliateAddress = '0x0000000000000000000000000000000000000000'): Promise<void> {
+    await this.augur.contracts.claimTradingProceeds.claimTradingProceeds(market.address, shareholder, affiliateAddress);
   }
 
   async getOrderPrice(orderID: string): Promise<BigNumber> {
     const price = await this.augur.contracts.orders.getPrice_(orderID);
     if (price.toNumber() === 0) {
-      throw new Error("Unable to get order price");
+      throw new Error('Unable to get order price');
     }
     return price;
   }
@@ -259,7 +263,7 @@ export class ContractAPI {
   async getBestOrderId(type: BigNumber, market: string, outcome: BigNumber): Promise<string> {
     const orderID = await this.augur.contracts.orders.getBestOrderId_(type, market, outcome, NULL_ADDRESS);
     if (!orderID) {
-      throw new Error("Unable to get order price");
+      throw new Error('Unable to get order price');
     }
     return orderID;
   }
@@ -275,9 +279,13 @@ export class ContractAPI {
     await this.augur.contracts.completeSets.publicSellCompleteSets(market.address, amount);
   }
 
-  async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description: string = ""): Promise<void> {
+  async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
     await this.repFaucet(amount.times(1e9)); // make sure you have the REP you're trying to contribute
     await market.contribute(payoutNumerators, amount, description);
+  }
+
+  async contributeToTentative(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
+    await market.contributeToTentative(payoutNumerators, amount, description);
   }
 
   // TODO Update this to handle case where crowdsourcer is 0 address (hasn't gotten any contributions)
@@ -288,12 +296,36 @@ export class ContractAPI {
     return crowdsourcer.getRemainingToFill_();
   }
 
+  async getCrowdsourcerDisputeBond(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<BigNumber> {
+    const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
+    const crowdsourcerAddress = await market.getCrowdsourcer_(payoutDistributionHash);
+    if (crowdsourcerAddress === '0') {
+      const totalStake = await market.getParticipantStake_();
+      return totalStake.times(2);
+    }
+    const crowdsourcer = this.augur.contracts.getReportingParticipant(crowdsourcerAddress);
+    const remaining = await crowdsourcer.getRemainingToFill_();
+    return remaining;
+  }
+
   async derivePayoutDistributionHash(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<string> {
     return market.derivePayoutDistributionHash_(payoutNumerators);
   }
 
   async isForking(): Promise<boolean> {
     return this.augur.contracts.universe.isForking_();
+  }
+
+  async getDisputeThresholdForFork_(): Promise<BigNumber> {
+    return this.augur.contracts.universe.getDisputeThresholdForFork_();
+  }
+
+  async getDisputeThresholdForDisputePacing(): Promise<BigNumber> {
+    return this.augur.contracts.universe.getDisputeThresholdForDisputePacing_();
+  }
+
+  async getInitialReportMinValue(): Promise<BigNumber> {
+    return this.augur.contracts.universe.  getInitialReportMinValue_();
   }
 
   migrateOutByPayout(reputationToken: ContractInterfaces.ReputationToken, payoutNumerators: BigNumber[], attotokens: BigNumber) {
@@ -348,7 +380,7 @@ export class ContractAPI {
     if (this.augur.contracts.isTimeControlled(time)) {
       await time.setTimestamp(timestamp);
     } else {
-      throw Error("Cannot set timestamp because Time contract is not TimeControlled");
+      throw Error('Cannot set timestamp because Time contract is not TimeControlled');
     }
   }
 
@@ -356,7 +388,7 @@ export class ContractAPI {
     return this.augur.contracts.augur.getTimestamp_();
   }
 
-  async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], description: string = "", extraStake: string = "0"): Promise<void> {
+  async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], description = '', extraStake = '0'): Promise<void> {
     await market.doInitialReport(payoutNumerators, description, new BigNumber(extraStake));
   }
 
@@ -368,8 +400,8 @@ export class ContractAPI {
     return this.augur.getMarketsInfo({marketIds: [address]});
   }
 
-  async getMarkets(): Promise<MarketList> {
-    const universe = this.augur.contracts.universe.address
+  async getMarkets(): Promise<Getters.Markets.MarketList> {
+    const universe = this.augur.contracts.universe.address;
     return this.augur.getMarkets({universe});
   }
 
@@ -378,6 +410,10 @@ export class ContractAPI {
     const initialReporterAddress = await market.getCrowdsourcer_(payoutDistributionHash);
     const initialReporter = this.augur.contracts.getInitialReporter(initialReporterAddress);
     return initialReporter.getStake_();
+  }
+
+  async getParticipantStake(market: ContractInterfaces.Market): Promise<BigNumber> {
+    return market.getParticipantStake_();
   }
 
   async finalizeMarket(market: ContractInterfaces.Market): Promise<void> {
@@ -440,6 +476,18 @@ export class ContractAPI {
     return this.augur.contracts.getReputationToken().allowance_(owner, spender);
   }
 
+  setGnosisSafeAddress(safeAddress: string): void {
+    this.augur.setGnosisSafeAddress(safeAddress);
+  }
+
+  setUseGnosisSafe(useSafe: boolean): void {
+    this.augur.setUseGnosisSafe(useSafe);
+  }
+
+  setUseGnosisRelay(useRelay: boolean): void {
+    this.augur.setUseGnosisRelay(useRelay);
+  }
+
   async approveAugurEternalApprovalValue(owner: string) {
     const spender = this.augur.addresses.Augur;
     const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, spender));
@@ -447,5 +495,37 @@ export class ContractAPI {
     if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
       await this.augur.contracts.cash.approve(spender, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
     }
+  }
+
+  async getGnosisSafeAddress(paymentToken: string, payment: BigNumber): Promise<string> {
+    const params = {
+      paymentToken,
+      payment,
+      owner: this.account.publicKey,
+    };
+    return this.augur.gnosis.getGnosisSafeAddress(params);
+  }
+
+  async createGnosisSafeDirectlyWithETH(paymentToken: string, payment: BigNumber): Promise<ContractInterfaces.GnosisSafe> {
+    const params = {
+      paymentToken,
+      payment,
+      owner: this.account.publicKey,
+    };
+    const address = await this.augur.gnosis.createGnosisSafeDirectlyWithETH(params);
+    return this.augur.contracts.gnosisSafeFromAddress(address);
+  }
+
+  async createGnosisSafeViaRelay(paymentToken: string, payment: BigNumber): Promise<string> {
+    const params = {
+      paymentToken,
+      payment,
+      owner: this.account.publicKey,
+    };
+    return this.augur.gnosis.createGnosisSafeViaRelay(params);
+  }
+
+  async getGnosisSafeDeploymentStatusViaRelay(safeAddress: string): Promise<boolean> {
+    return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay(safeAddress);
   }
 }

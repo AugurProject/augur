@@ -23,6 +23,14 @@ export function numTicksToTickSizeWithDisplayPrices(
   return maxPrice.minus(minPrice).div(numTicks);
 }
 
+export function tickSizeToNumTickWithDisplayPrices(
+  tickSize: BigNumber,
+  minPrice: BigNumber,
+  maxPrice: BigNumber
+): BigNumber {
+  return maxPrice.minus(minPrice).dividedBy(tickSize);
+}
+
 export function convertOnChainAmountToDisplayAmount(
   onChainAmount: BigNumber,
   tickSize: BigNumber
@@ -149,7 +157,7 @@ export function calculatePayoutNumeratorsArray(
     const longPayout = reportNormalizedToZero
       .times(numTicks)
       .dividedBy(priceRange);
-    const shortPayout = numTicks.minus(longPayout);
+    const shortPayout = new BigNumber(numTicks).minus(longPayout);
     payoutNumerators[0] = shortPayout;
     payoutNumerators[1] = longPayout;
   } else {

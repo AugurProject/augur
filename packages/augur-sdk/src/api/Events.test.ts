@@ -20,6 +20,7 @@ function makeProviderMock(opts?: any): Provider {
     getBlock: (blockHashOrBlockNumber: BlockTag | string): Promise<Block> => Promise.resolve(block),
     storeAbiData: (abi: Abi, contractName: string): void => { },
     getEventTopic: (contractName: string, eventName: string): string => eventTopic,
+    encodeContractFunction: (contractName: string, functionName: string, funcParams: any[]): string => "0x0",
     parseLogValues: (contractName: string, log: Log): LogValues => logValues,
     getBalance: (address: string) => balance,
   };

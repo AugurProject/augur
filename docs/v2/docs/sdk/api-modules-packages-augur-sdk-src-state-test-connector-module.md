@@ -22,7 +22,7 @@ sidebar_label: packages/augur-sdk/src/state/test-connector
 
 **● settings**: *`any`* =  require("@augurproject/sdk/src/state/settings.json")
 
-*Defined in [packages/augur-sdk/src/state/test-connector.ts:14](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/test-connector.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/test-connector.ts:15](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/test-connector.ts#L15)*
 
 ___
 

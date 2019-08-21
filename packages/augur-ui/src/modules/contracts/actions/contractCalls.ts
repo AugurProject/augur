@@ -18,6 +18,8 @@ import {
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
   stringTo32ByteHex,
+  QUINTILLION,
+  tickSizeToNumTickWithDisplayPrices,
 } from '@augurproject/sdk';
 
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
@@ -28,8 +30,8 @@ import {
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
 } from 'modules/common/constants';
-import { NewMarket } from 'modules/types';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
+import { CreateMarketData } from "modules/types";
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -214,7 +216,26 @@ export async function getCreateMarketBreakdown() {
   return { validityBondFormatted, noShowFormatted };
 }
 
-export function createMarket(newMarket: NewMarket) {
+export interface CreateNewMarketParams {
+  outcomes?: string[];
+  scalarDenomination: string;
+  expirySource: string;
+  description: string;
+  designatedReporterAddress: string;
+  minPrice: string;
+  maxPrice: string;
+  endTime: number;
+  tickSize: number;
+  marketType: string;
+  detailsText?: string;
+  categories: string[];
+  settlementFee: number;
+  affiliateFee: number;
+  offsetName?: string;
+  backupSource?: string;
+}
+
+export function createMarket(newMarket: CreateNewMarketParams) {
   const fee = new BigNumber(newMarket.settlementFee).div(new BigNumber(100))
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee);
@@ -224,7 +245,9 @@ export function createMarket(newMarket: NewMarket) {
     description: newMarket.description,
     longDescription: newMarket.detailsText,
     resolutionSource: newMarket.expirySource,
-    scalarDenomination: newMarket.scalarDenomination,
+    backupSource: newMarket.backupSource,
+    _scalarDenomination: newMarket.scalarDenomination,
+    offsetName: newMarket.offsetName,
   });
 
   const baseParams: CreateYesNoMarketParams = {
@@ -239,12 +262,10 @@ export function createMarket(newMarket: NewMarket) {
   switch (newMarket.marketType) {
     case SCALAR: {
       const prices = [
-        new BigNumber(newMarket.minPrice),
-        new BigNumber(newMarket.maxPrice),
+        new BigNumber(newMarket.minPrice).multipliedBy(QUINTILLION),
+        new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
       ];
-      const numTicks = prices[1]
-        .minus(prices[0])
-        .dividedBy(new BigNumber(newMarket.tickSize));
+      const numTicks = tickSizeToNumTickWithDisplayPrices(new BigNumber(newMarket.tickSize), new BigNumber(newMarket.minPrice), new BigNumber(newMarket.maxPrice));
       const params: CreateScalarMarketParams = Object.assign(baseParams, {
         prices,
         numTicks,
@@ -261,6 +282,31 @@ export function createMarket(newMarket: NewMarket) {
       return Augur.createYesNoMarket(baseParams);
     }
   }
+}
+
+export function createMarketRetry(market: CreateMarketData) {
+   const extraInfo = JSON.parse(market.txParams._extraInfo);
+
+  const newMarket: CreateNewMarketParams = {
+    outcomes: market.txParams._outcomes,
+    scalarDenomination: extraInfo._scalarDenomination,
+    marketType: market.marketType,
+    endTime: market.endTime.timestamp,
+    expirySource: extraInfo.resolutionSource,
+    description: market.description,
+    designatedReporterAddress: market.txParams._designatedReporterAddress,
+    minPrice: market.txParams._prices && market.txParams._prices[0],
+    maxPrice: market.txParams._prices && market.txParams._prices[1],
+    tickSize: market.txParams._numTicks,
+    detailsText: extraInfo.longDescription,
+    categories: extraInfo.categories,
+    settlementFee: market.txParams._feePerCashInAttoCash,
+    affiliateFee: market.txParams._affiliateFeeDivisor,
+    offsetName: extraInfo.offsetName,
+    backupSource: extraInfo.backupSource
+  };
+  
+  createMarket(newMarket);
 }
 
 export async function approveToTrade(amount: BigNumber) {

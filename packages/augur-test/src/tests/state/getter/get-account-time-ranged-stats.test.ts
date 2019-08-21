@@ -1,8 +1,8 @@
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { makeDbMock, makeProvider } from "../../../libs";
-import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
+import { makeDbMock, makeProvider } from '../../../libs';
+import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 
@@ -290,7 +290,8 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     // Claim trading proceeds
     await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
       johnYesNoMarket.address,
-      john.account.publicKey
+      john.account.publicKey,
+      '0x0000000000000000000000000000000000000000'
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -586,7 +587,8 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
     // Claim trading proceeds
     await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
       johnYesNoMarket2.address,
-      john.account.publicKey
+      john.account.publicKey,
+      '0x0000000000000000000000000000000000000000'
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -604,5 +606,5 @@ describe('State API :: get-account-time-ranged-stats :: ', () => {
       successfulDisputes: 2,
     });
 
-  }, 200000);
+  }, 300000);
 });

@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 import 'ROOT/ITime.sol';
 import 'ROOT/IAugur.sol';

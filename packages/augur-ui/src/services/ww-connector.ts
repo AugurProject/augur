@@ -1,59 +1,138 @@
-import RunWorker from "./Sync.worker";
-import { buildAPI, Connectors, Events, Getters, SubscriptionEventName } from "@augurproject/sdk";
+import RunWorker from './Sync.worker';
+import {
+  Connectors,
+  Events,
+  JsonRpcResponse,
+  SubscriptionEventName,
+} from '@augurproject/sdk';
+import { Callback } from '@augurproject/sdk/src/events';
+
+interface OutstandingRequest {
+  id: number;
+  resolve: (value) => void;
+  reject: (reason) => void;
+}
+
+// Generator function for creating request IDs
+function* infiniteSequence() {
+    let i = 0;
+    while(true) {
+        yield i++;
+    }
+}
+const iterator = infiniteSequence();
 
 export class WebWorkerConnector extends Connectors.BaseConnector {
-  private api: Promise<Getters.API>;
+  private outstandingRequests: OutstandingRequest[] = [];
   private worker: any;
+  subscriptions: { [event: string]: { id: string, callback: Callback } } = {};
 
-  public async connect(ethNodeUrl: string, account?: string): Promise<any> {
+  async connect(ethNodeUrl: string, account?: string): Promise<any> {
     this.worker = new RunWorker();
-    this.worker.postMessage({
-      method: "start",
-      ethNodeUrl,
-      account
-    });
 
-    this.api = buildAPI(ethNodeUrl, account);
+    this.worker.postMessage({
+      id: iterator.next().value,
+      method: 'start',
+      params: [],
+      ethNodeUrl,
+      account,
+      jsonrpc: '2.0',
+    });
 
     this.worker.onmessage = (event: MessageEvent) => {
       try {
-        if (event.data.subscribed) {
-          this.subscriptions[event.data.subscribed].id = event.data.subscription;
+        const eventData: JsonRpcResponse = JSON.parse(event.data);
+
+        // Handle response for outstanding request
+        this.outstandingRequests.filter((r) => r.id === eventData.id).forEach((r) => {
+          if (eventData.error) {
+            r.reject(new Error(eventData.error.message));
+          } else {
+            r.resolve(eventData.result);
+          }
+        });
+        _.remove(this.outstandingRequests, function(r) {
+          return r.id === eventData.id;
+        });
+
+        if (eventData.result && eventData.result.subscribed) {
+          this.subscriptions[eventData.result.subscribed].id = eventData.result.subscription;
         } else {
-          this.messageReceived(event.data);
+          this.messageReceived(eventData);
         }
       } catch (error) {
-        console.error("Bad Web Worker response: " + event);
+        console.error('Bad Web Worker response: ' + error);
       }
     };
+
+    this.worker.onClose = (message: string) => {
+      console.log('Web worker closed');
+      console.log(message);
+    };
+
+    return this.worker;
   }
 
-  public messageReceived(data: any) {
-    if (this.subscriptions[data.eventName]) {
-      this.subscriptions[data.eventName].callback(data.result);
+  messageReceived(message: any) {
+    if (message.result) {
+      if (this.subscriptions[message.result.eventName]) {
+        this.subscriptions[message.result.eventName].callback(message.result);
+      }
     }
   }
 
-  public async disconnect(): Promise<any> {
+  async disconnect(): Promise<any> {
     this.worker.terminate();
   }
 
-  public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>) {
+  bindTo<R, P>(
+    f: (db: any, augur: any, params: P) => Promise<R>
+  ): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
-      return (await this.api).route(f.name, params);
+      return new Promise<R>((resolve, reject)=>{
+        const id = iterator.next().value;
+        this.outstandingRequests.push({
+          id,
+          resolve,
+          reject,
+        });
+        this.worker.postMessage({
+          id,
+          method: f.name,
+          params,
+          jsonrpc: '2.0',
+        });
+      });
     };
   }
-  public async on(eventName: SubscriptionEventName | string, callback: Events.Callback): Promise<void> {
-    this.subscriptions[eventName] = { id: "", callback: this.callbackWrapper(callback) };
-    this.worker.postMessage({ subscribe: eventName });
+
+  async on(
+    eventName: SubscriptionEventName | string,
+    callback: Events.Callback
+  ): Promise<void> {
+    this.subscriptions[eventName] = {
+      id: '',
+      callback: this.callbackWrapper(callback),
+    };
+    this.worker.postMessage({
+      id: iterator.next().value,
+      method: 'subscribe',
+      params: [eventName],
+      jsonrpc: '2.0',
+    });
   }
 
-  public async off(eventName: SubscriptionEventName | string): Promise<void> {
+  async off(eventName: SubscriptionEventName | string): Promise<void> {
     const subscription = this.subscriptions[eventName];
 
     if (subscription) {
       delete this.subscriptions[eventName];
-      this.worker.postMessage({ unsubscribe: subscription.id });
+      this.worker.postMessage({
+        id: iterator.next().value,
+        method: 'unsubscribe',
+        params: [subscription.id],
+        jsonrpc: '2.0',
+      });
     }
   }
 }

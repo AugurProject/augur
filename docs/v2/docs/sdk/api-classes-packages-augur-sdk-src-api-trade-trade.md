@@ -41,7 +41,7 @@ sidebar_label: Trade
 
 ⊕ **new Trade**(augur: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*): [Trade](api-classes-packages-augur-sdk-src-api-trade-trade.md)
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:75](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L75)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:75](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L75)*
 
 **Parameters:**
 
@@ -61,7 +61,7 @@ ___
 
 **● augur**: *[Augur](api-classes-packages-augur-sdk-src-augur-augur.md)*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:75](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L75)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:75](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L75)*
 
 ___
 
@@ -73,7 +73,7 @@ ___
 
 ▸ **checkIfTradeValid**(params: *[PlaceTradeChainParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradechainparams.md)*): `Promise`<`string` \| `null`>
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:147](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L147)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:147](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L147)*
 
 **Parameters:**
 
@@ -90,7 +90,7 @@ ___
 
 ▸ **getOnChainTradeParams**(params: *[PlaceTradeDisplayParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradedisplayparams.md)*): [PlaceTradeChainParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradechainparams.md)
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:93](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L93)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:93](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L93)*
 
 **Parameters:**
 
@@ -107,7 +107,7 @@ ___
 
 ▸ **getTradeAmountRemaining**(events: *`Event`[]*): `BigNumber`
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:183](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L183)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:183](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L183)*
 
 **Parameters:**
 
@@ -124,7 +124,7 @@ ___
 
 ▸ **getTradeTransactionLimits**(params: *[PlaceTradeChainParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradechainparams.md)*): [TradeTransactionLimits](api-interfaces-packages-augur-sdk-src-api-trade-tradetransactionlimits.md)
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:167](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L167)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:167](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L167)*
 
 **Parameters:**
 
@@ -141,7 +141,7 @@ ___
 
 ▸ **placeOnChainTrade**(params: *[PlaceTradeChainParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradechainparams.md)*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:105](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L105)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:105](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L105)*
 
 **Parameters:**
 
@@ -158,7 +158,7 @@ ___
 
 ▸ **placeTrade**(params: *[PlaceTradeDisplayParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradedisplayparams.md)*): `Promise`<`void`>
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:81](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L81)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:81](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L81)*
 
 **Parameters:**
 
@@ -175,7 +175,7 @@ ___
 
 ▸ **simulateTrade**(params: *[PlaceTradeDisplayParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradedisplayparams.md)*): `Promise`<[SimulateTradeData](api-interfaces-packages-augur-sdk-src-api-trade-simulatetradedata.md)>
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:129](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L129)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:129](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L129)*
 
 **Parameters:**
 
@@ -192,7 +192,7 @@ ___
 
 ▸ **simulateTradeGasLimit**(params: *[PlaceTradeDisplayParams](api-interfaces-packages-augur-sdk-src-api-trade-placetradedisplayparams.md)*): `Promise`<`BigNumber`>
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:87](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/api/Trade.ts#L87)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:87](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/api/Trade.ts#L87)*
 
 **Parameters:**
 

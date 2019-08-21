@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/token/IERC20.sol';
@@ -198,7 +198,7 @@ contract Augur is IAugur {
     //
     // Share Tokens
     //
-    function recordMarketShareTokens(IMarket _market) private returns (bool) {
+    function recordMarketShareTokens(IMarket _market) private {
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
         for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {
             shareTokens[address(_market.getShareToken(_outcome))] = true;

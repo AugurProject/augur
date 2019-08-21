@@ -1,7 +1,9 @@
-import { 
+import {
   INVALID_OUTCOME
 } from "modules/create-market/constants";
 import isAddress from "modules/auth/helpers/is-address";
+import { createBigNumber } from "utils/create-big-number";
+import { ZERO } from "./constants";
 
 export function isFilledString(value, readable, message) {
   if (value && value.trim().length > 0 && value !== "") return "";
@@ -13,29 +15,75 @@ export function isMaxLength(value, maxLength) {
 }
 
 export function isFilledNumber(value, readable, message) {
-  if (value !== null && value !== "") return "";
+  if (value !== null && !checkValidNumber(value)) return "";
   return message ? message : readable + " is required";
 }
 
 export function isBetween(value, readable, min, max) {
-  if (value > max) {
+  if (!checkValidNumbers([value])) {
+    return "";
+  }
+
+  if (createBigNumber(value).gt(createBigNumber(max))) {
     return readable + " must be less than " + max;
-  } else if (value < min) {
+  } else if (createBigNumber(value).lt(createBigNumber(min))) {
     return readable + " must be more than " + min;
   }
   return "";
 }
 
 export function isLessThan(value, readable, target, message) {
-  if (target !== null && value >= target) {
+  if (!checkValidNumbers([value, target])) {
+    return "";
+  }
+
+  if (target !== null && createBigNumber(value).gte(createBigNumber(target))) {
     return message ? message : 'Must be less than ' + target;
   }
   return "";
 }
 
+export function isValidFee(value, readable, fee) {
+  if (!checkValidNumbers([value, fee])) {
+    return "";
+  }
+
+  if (createBigNumber(value).eq(ZERO) && createBigNumber(fee).gt(ZERO)) {
+    return 'Market creator fee must be greater than 0% when affiliate fee is greater than 0%';
+  }
+  return "";
+}
+
+export function dividedBy(value, readable, min, max) {
+  if (!checkValidNumbers([value, min, max])) {
+    return "";
+  }
+
+  const range = createBigNumber(max).minus(createBigNumber(min));
+  if (range.mod(value).eq(ZERO)) {
+    return "";
+  }
+  return `Price range needs to be divisible by ${readable.toLowerCase()}`;
+}
+
 export function isMoreThan(value, readable, target) {
-  if (target !== null && value <= target) {
+  if (!checkValidNumbers([value, target])) {
+    return "";
+  }
+
+  if (target !== null && createBigNumber(value).lte(createBigNumber(target))) {
     return 'Max can\'t be lower than min';
+  }
+  return "";
+}
+
+export function dateGreater(value, target, message) {
+  if (!checkValidNumbers([value, target])) {
+    return "";
+  }
+
+  if (value !== null && createBigNumber(value).lt(createBigNumber(target))) {
+    return message;
   }
   return "";
 }
@@ -59,7 +107,7 @@ export function checkCategoriesArray(value) {
 export function moreThanDecimals(value, decimals) {
   if (Math.floor(value) === value) return "";
 
-  const decimalsValue = value.toString().split(".")[1].length;
+  const decimalsValue = value.toString().includes(".") ? parseFloat(value).toString().split(".")[1].length : 0;
   if (decimalsValue > decimals) return "Can't enter more than " + decimals + " decimal points";
   return "";
 }
@@ -88,7 +136,7 @@ export function checkOutcomesArray(value) {
     value.forEach((outcome,index) => {
       dupes[outcome] = dupes[outcome] || [];
       dupes[outcome].push(index);
-    });  
+    });
     Object.keys(dupes).map(key => {
       if (dupes[key].length > 1) {
         errors[dupes[key][dupes[key].length - 1]] = "Can't enter a duplicate outcome";
@@ -102,4 +150,16 @@ export function checkOutcomesArray(value) {
 export function isPositive(value) {
   if (value && value < 0) return "Can't enter negative number";
   return "";
+}
+
+export function checkValidNumber(value) {
+  return isNaN(value) || value === "" || value === "-";
+}
+
+function checkValidNumbers(values) {
+  let valid = true;
+  values.map(value => {
+    if (checkValidNumber(value)) valid = false;
+  });
+  return valid;
 }

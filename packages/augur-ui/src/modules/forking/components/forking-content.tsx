@@ -70,7 +70,7 @@ const ForkingContent = ({
             Portfolio: Reporting page. Then, migrate your REP to your chosen
             child universe. All REP migrated during the forking period will
             receive a 5% bonus. The forking period will end on{" "}
-            {unixFormattedDate.formattedLocalShort} or when at least{" "}
+            {unixFormattedDate.formatted} or when at least{" "}
             {threshold.formatted} REP has been migrated to a single child
             universe. Read more about the forking process{" "}
             <a

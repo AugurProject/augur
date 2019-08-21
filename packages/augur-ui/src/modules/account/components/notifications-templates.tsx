@@ -147,7 +147,7 @@ const Counter = (props: CounterProps) => {
             <MarketProgress
               reportingState={reportingState}
               currentTime={props.currentTime}
-              endTime={endTimeFormatted}
+              endTimeFormatted={endTimeFormatted}
               reportingWindowEndtime={props.reportingWindowStatsEndTime}
               customLabel={REPORTING_ENDS}
             />

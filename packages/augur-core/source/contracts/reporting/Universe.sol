@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 
 import 'ROOT/reporting/IUniverse.sol';
@@ -226,7 +226,7 @@ contract Universe is IUniverse {
      * @return The id of the specified dispute window
      */
     function getDisputeWindowId(uint256 _timestamp, bool _initial) public view returns (uint256) {
-        uint256 _windowId = _timestamp.div(getDisputeRoundDurationInSeconds(_initial));
+        uint256 _windowId = _timestamp.sub(Reporting.getDisputeWindowBufferSeconds()).div(getDisputeRoundDurationInSeconds(_initial));
         if (_initial) {
             _windowId = _windowId.add(INITIAL_WINDOW_ID_BUFFER);
         }
@@ -250,7 +250,7 @@ contract Universe is IUniverse {
         uint256 _windowId = getDisputeWindowId(_timestamp, _initial);
         if (disputeWindows[_windowId] == IDisputeWindow(0)) {
             uint256 _duration = getDisputeRoundDurationInSeconds(_initial);
-            uint256 _startTime = _timestamp.div(_duration).mul(_duration);
+            uint256 _startTime = _timestamp.div(_duration).mul(_duration).add(Reporting.getDisputeWindowBufferSeconds());
             IDisputeWindow _disputeWindow = disputeWindowFactory.createDisputeWindow(augur, _windowId, _duration, _startTime);
             disputeWindows[_windowId] = _disputeWindow;
             augur.logDisputeWindowCreated(_disputeWindow, _windowId, _initial);

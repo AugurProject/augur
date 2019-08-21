@@ -42,7 +42,7 @@ sidebar_label: HTTPConnector
 
 ⊕ **new HTTPConnector**(endpoint: *`string`*): [HTTPConnector](api-classes-packages-augur-sdk-src-connector-http-connector-httpconnector.md)
 
-*Defined in [packages/augur-sdk/src/connector/http-connector.ts:6](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/http-connector.ts#L6)*
+*Defined in [packages/augur-sdk/src/connector/http-connector.ts:6](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/http-connector.ts#L6)*
 
 **Parameters:**
 
@@ -62,7 +62,7 @@ ___
 
 **● endpoint**: *`string`*
 
-*Defined in [packages/augur-sdk/src/connector/http-connector.ts:8](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/http-connector.ts#L8)*
+*Defined in [packages/augur-sdk/src/connector/http-connector.ts:8](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/http-connector.ts#L8)*
 
 ___
 <a id="subscriptions"></a>
@@ -73,7 +73,7 @@ ___
 
 *Inherited from [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[subscriptions](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#subscriptions)*
 
-*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
+*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
 
 #### Type declaration
 
@@ -95,7 +95,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[bindTo](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#bindto)*
 
-*Defined in [packages/augur-sdk/src/connector/http-connector.ts:20](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/http-connector.ts#L20)*
+*Defined in [packages/augur-sdk/src/connector/http-connector.ts:20](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/http-connector.ts#L20)*
 
 **Type parameters:**
 
@@ -118,7 +118,7 @@ ___
 
 *Inherited from [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[callbackWrapper](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#callbackwrapper)*
 
-*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
+*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
 
 **Type parameters:**
 
@@ -140,7 +140,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[connect](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#connect)*
 
-*Defined in [packages/augur-sdk/src/connector/http-connector.ts:12](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/http-connector.ts#L12)*
+*Defined in [packages/augur-sdk/src/connector/http-connector.ts:12](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/http-connector.ts#L12)*
 
 **Parameters:**
 
@@ -159,7 +159,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[disconnect](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#disconnect)*
 
-*Defined in [packages/augur-sdk/src/connector/http-connector.ts:16](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/http-connector.ts#L16)*
+*Defined in [packages/augur-sdk/src/connector/http-connector.ts:16](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/http-connector.ts#L16)*
 
 **Returns:** `Promise`<`any`>
 
@@ -172,7 +172,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[off](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#off)*
 
-*Defined in [packages/augur-sdk/src/connector/http-connector.ts:31](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/http-connector.ts#L31)*
+*Defined in [packages/augur-sdk/src/connector/http-connector.ts:31](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/http-connector.ts#L31)*
 
 **Parameters:**
 
@@ -191,7 +191,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[on](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#on)*
 
-*Defined in [packages/augur-sdk/src/connector/http-connector.ts:30](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/http-connector.ts#L30)*
+*Defined in [packages/augur-sdk/src/connector/http-connector.ts:30](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/http-connector.ts#L30)*
 
 **Parameters:**
 

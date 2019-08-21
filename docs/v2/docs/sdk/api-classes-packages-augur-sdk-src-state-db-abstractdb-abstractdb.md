@@ -52,7 +52,7 @@ sidebar_label: AbstractDB
 
 ⊕ **new AbstractDB**(networkId: *`number`*, dbName: *`string`*, dbFactory: *[PouchDBFactoryType](api-modules-packages-augur-sdk-src-state-db-abstractdb-module.md#pouchdbfactorytype)*): [AbstractDB](api-classes-packages-augur-sdk-src-state-db-abstractdb-abstractdb.md)
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:26](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L26)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:26](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L26)*
 
 **Parameters:**
 
@@ -70,11 +70,11 @@ ___
 
 <a id="db"></a>
 
-### `<Protected>` db
+###  db
 
 **● db**: *`Database`*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:24](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:24](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L24)*
 
 ___
 <a id="dbname"></a>
@@ -83,7 +83,7 @@ ___
 
 **● dbName**: *`string`*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:26](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L26)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:26](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L26)*
 
 ___
 <a id="networkid"></a>
@@ -92,7 +92,7 @@ ___
 
 **● networkId**: *`number`*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:25](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L25)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:25](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L25)*
 
 ___
 
@@ -104,7 +104,7 @@ ___
 
 ▸ **allDocs**(): `Promise`<`AllDocsResponse`<`__type`>>
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:34](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L34)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:34](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L34)*
 
 **Returns:** `Promise`<`AllDocsResponse`<`__type`>>
 
@@ -115,7 +115,7 @@ ___
 
 ▸ **bulkUpsertDocuments**(previousDocs: *[DocumentIDToDoc](api-interfaces-packages-augur-sdk-src-state-db-abstractdb-documentidtodoc.md)*, documents: *`Array`<`PouchDB.Core.PutDocument`<`__type`>>*): `Promise`<`boolean`>
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:74](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L74)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:74](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L74)*
 
 **Parameters:**
 
@@ -133,7 +133,7 @@ ___
 
 ▸ **bulkUpsertOrderedDocuments**(startkey: *`string`*, documents: *`Array`<`PouchDB.Core.PutDocument`<`__type`>>*): `Promise`<`boolean`>
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:65](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L65)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:65](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L65)*
 
 **Parameters:**
 
@@ -151,7 +151,7 @@ ___
 
 ▸ **bulkUpsertUnorderedDocuments**(documents: *`Array`<`PouchDB.Core.PutDocument`<`__type`>>*): `Promise`<`boolean`>
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:56](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L56)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:56](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L56)*
 
 **Parameters:**
 
@@ -168,7 +168,7 @@ ___
 
 ▸ **find**(request: *`FindRequest`<`__type`>*): `Promise`<`FindResponse`<`__type`>>
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:98](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L98)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:98](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L98)*
 
 **Parameters:**
 
@@ -185,7 +185,7 @@ ___
 
 ▸ **getDocument**<`Document`>(id: *`string`*): `Promise`<`Document` \| `undefined`>
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:38](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L38)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:38](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L38)*
 
 **Type parameters:**
 
@@ -205,7 +205,7 @@ ___
 
 ▸ **getInfo**(): `Promise`<`DatabaseInfo`>
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:94](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L94)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:94](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L94)*
 
 **Returns:** `Promise`<`DatabaseInfo`>
 
@@ -216,7 +216,7 @@ ___
 
 ▸ **getPouchRevFromId**(id: *`string`*): `Promise`<`string` \| `undefined`>
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:102](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L102)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:102](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L102)*
 
 **Parameters:**
 
@@ -233,7 +233,7 @@ ___
 
 ▸ **upsertDocument**(id: *`string`*, document: *`object`*): `Promise`<`UpsertResponse`>
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:49](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/AbstractDB.ts#L49)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractDB.ts:49](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/AbstractDB.ts#L49)*
 
 **Parameters:**
 

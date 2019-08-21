@@ -1,4 +1,4 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 .Container {
   background: @color-tertiary-background;
@@ -63,7 +63,7 @@
 
   @media @breakpoint-mobile {
     margin: 0 0 @size-16;
-    padding: @size-16;
+    padding: @size-8 @size-16 @size-16;
   }
 
   > h1 {
@@ -154,11 +154,11 @@ div.ButtonsRow:last-of-type {
     }
 
     > select,
-    > select[class$="selected"] {
+    > select[class$='selected'] {
       color: @color-alternate-info-text;
     }
 
-    > span[class$="selected"]:first-of-type {
+    > span[class$='selected']:first-of-type {
       color: @color-alternate-info-text;
     }
   }
@@ -384,6 +384,40 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+.Subheader {
+  display: flex;
+  flex-direction: column;
+  
+  > span:first-of-type {
+    .text-16-medium; 
+
+    color: @color-alternate-info-text;
+  }
+
+  > ol {
+    margin: 0;
+    padding-left: @size-14;
+  }
+
+  > span:not(:first-of-type),
+  > ol > li {
+    .text-14; 
+
+    color: @color-tertiary-info-text;
+    line-height: @size-18;
+    margin-top: @size-4;
+  }
+
+  &:nth-of-type(1) {
+    margin-top: @size-8;
+  }
+
+  &:nth-of-type(2) {
+    margin-top: @size-24;
+    margin-bottom: @size-8;
+  }
+}
+
 .Content {
   > h5 {
     .text-16-medium;
@@ -475,13 +509,13 @@ div.ButtonsRow:last-of-type {
       }
     }
 
-    > input[type="number"]::-webkit-outer-spin-button,
-    > input[type="number"]::-webkit-inner-spin-button {
+    > input[type='number']::-webkit-outer-spin-button,
+    > input[type='number']::-webkit-inner-spin-button {
       appearance: none;
       margin: 0;
     }
 
-    > input[type="number"] {
+    > input[type='number'] {
       appearance: textfield;
     }
   }
@@ -616,6 +650,7 @@ div.ButtonsRow:last-of-type {
   .Container;
 
   max-width: 95vw;
+  overflow-y: auto;
   padding: 0 @size-24 @size-24;
 
   > header {
@@ -656,7 +691,7 @@ div.ButtonsRow:last-of-type {
         order: 6;
       }
 
-      > div[role="button"] {
+      > div[role='button'] {
         > div {
           left: 0;
           max-height: 40vh;
@@ -669,6 +704,11 @@ div.ButtonsRow:last-of-type {
             white-space: nowrap;
           }
         }
+      }
+
+      > div[class*='FormDropdown'] > div[class*='Normal'] {
+        min-width: min-content;
+        max-width: min-content;
       }
 
       > div:nth-of-type(2) {
@@ -733,7 +773,7 @@ div.ButtonsRow:last-of-type {
       }
     }
 
-    > div[role="button"] {
+    > div[role='button'] {
       height: @size-40;
       max-width: 100%;
 
@@ -802,7 +842,7 @@ div.ButtonsRow:last-of-type {
     overflow: auto;
 
     @media @breakpoint-mobile {
-      max-height: 416px;
+      max-height: 600px;
     }
 
     > span {

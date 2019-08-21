@@ -62,6 +62,7 @@ interface DatePickerProps {
 }
 
 interface TextInputProps {
+  type?: string;
   errorMessage?: string;
   disabled?: boolean;
   placeholder?: string;
@@ -135,7 +136,7 @@ interface TimezoneDropdownProps {
   className?: string;
   autoCompleteList?: Array<SortedGroup>;
   disabled?: Boolean;
-  timestamp?: Moment;
+  timestamp?: number;
   timezone: string;
 }
 
@@ -151,12 +152,13 @@ export class TimezoneDropdown extends Component<
     value: this.props.timezone,
   };
 
-  onChangeDropdown = choice => {
+  onChangeDropdown = timezone => {
     const parse = /\(UTC (.*)\)/i;
-    const offset = choice.match(parse)[1];
-    this.props.onChange(choice, offset);
+    const offset = timezone.match(parse)[1];
+    const offsetName = timezone.split(')')[1].trim();
+    this.props.onChange(offsetName, offset, timezone);
     this.setState({
-      value: choice,
+      value: timezone,
     });
   };
 
@@ -230,6 +232,11 @@ interface RadioBarProps {
   placeholder?: string;
   textValue?: string;
   errorMessage?: string;
+  onSecondTextChange?: Function;
+  secondPlaceholder?: string;
+  secondTextValue?: string;
+  secondErrorMessage?: string;
+  secondHeader?: string;
 }
 
 interface RadioTwoLineBarProps {
@@ -651,6 +658,11 @@ export const RadioBar = ({
   placeholder,
   textValue,
   errorMessage,
+  onSecondTextChange,
+  secondPlaceholder,
+  secondTextValue,
+  secondErrorMessage,
+  secondHeader
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
@@ -663,12 +675,25 @@ export const RadioBar = ({
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
     {expandable && checked ? (
-      <TextInput
-        placeholder={placeholder}
-        value={textValue}
-        onChange={onTextChange}
-        errorMessage={errorMessage}
-      />
+      <>
+        <TextInput
+          placeholder={placeholder}
+          value={textValue}
+          onChange={onTextChange}
+          errorMessage={errorMessage}
+        />
+        {onSecondTextChange && 
+          <>
+            <h5>{secondHeader}</h5>
+            <TextInput
+              placeholder={secondPlaceholder}
+              value={secondTextValue}
+              onChange={onSecondTextChange}
+              errorMessage={secondErrorMessage}
+            />
+          </>
+        }
+      </>
     ) : null}
   </div>
 );
@@ -1201,6 +1226,7 @@ export const DatePicker = (props: DatePickerProps) => (
       navNext={props.navNext || OutlineChevron}
       weekDayFormat="ddd"
       customInputIcon={Calendar}
+      readOnly={true}
     />
     {props.errorMessage &&
       props.errorMessage !== '' &&
@@ -1355,7 +1381,6 @@ export class Input extends Component<InputProps, InputState> {
 
   handleOnChange = e => {
     const newValue = e.target.value;
-
     this.props.onChange(newValue);
     this.setState({ value: newValue });
   };

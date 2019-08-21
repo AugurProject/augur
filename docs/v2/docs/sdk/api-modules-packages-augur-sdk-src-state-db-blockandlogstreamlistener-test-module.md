@@ -22,7 +22,7 @@ sidebar_label: packages/augur-sdk/src/state/db/BlockAndLogStreamListener.test
 
 **Ƭ Mockify**: *`object`*
 
-*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamListener.test.ts:12](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/state/db/BlockAndLogStreamListener.test.ts#L12)*
+*Defined in [packages/augur-sdk/src/state/db/BlockAndLogStreamListener.test.ts:12](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/state/db/BlockAndLogStreamListener.test.ts#L12)*
 
 #### Type declaration
 

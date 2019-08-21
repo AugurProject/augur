@@ -26,6 +26,9 @@
     },
     {
       "path": "./packages/contract-dependencies-ethers/tsconfig.release.json"
+    },
+    {
+      "path": "./packages/contract-dependencies-gnosis/tsconfig.release.json"
     }
   ]
 }

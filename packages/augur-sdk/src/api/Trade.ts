@@ -6,7 +6,7 @@ import { Augur } from './../Augur';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 
-// XXX TEMP for better worse order ids
+// @TODO: TEMP for better worse order ids
 export function stringTo32ByteHex(stringToEncode: string): string {
   return `0x${Buffer.from(stringToEncode, 'utf8').toString('hex').padEnd(64, '0')}`;
 }
@@ -69,6 +69,7 @@ export interface SimulateTradeData {
   sharesDepleted: BigNumber;
   tokensDepleted: BigNumber;
   numFills: BigNumber;
+  loopLimit: BigNumber;
 }
 
 export class Trade {
@@ -110,16 +111,16 @@ export class Trade {
 
     let result: Event[] = [];
 
-    // TODO: Use the calculated gasLimit above instead of relying on an estimate once we can send an override gasLimit
+    // @TODO: Use the calculated gasLimit above instead of relying on an estimate once we can send an override gasLimit
     if (params.doNotCreateOrders) {
       result = await this.augur.contracts.trade.publicFillBestOrder(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, params.tradeGroupId, loopLimit, params.ignoreShares, params.affiliateAddress, params.kycToken);
     } else {
-      // TODO: Use the state provided better worse orders
+      // @TODO: Use the state provided better worse orders
       const nullOrderId = stringTo32ByteHex("");
       result = await this.augur.contracts.trade.publicTrade(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), params.amount, params.price, nullOrderId, nullOrderId, params.tradeGroupId, loopLimit, params.ignoreShares, params.affiliateAddress, params.kycToken);
     }
 
-    const amountRemaining = this.getTradeAmountRemaining(result);
+    const amountRemaining = this.getTradeAmountRemaining(params.amount, result);
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
       return this.placeOnChainTrade(params);
@@ -134,13 +135,15 @@ export class Trade {
     const displaySharesDepleted = convertOnChainAmountToDisplayAmount(simulationData[2], tickSize);
     const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
     const displaySettlementFees = simulationData[3].dividedBy(QUINTILLION);
+    const { loopLimit } = await this.getTradeTransactionLimits(onChainTradeParams);
     const numFills = simulationData[4];
     return {
       sharesFilled: displaySharesFilled,
       tokensDepleted: displayTokensDepleted,
       sharesDepleted: displaySharesDepleted,
       settlementFees: displaySettlementFees,
-      numFills
+      numFills,
+      loopLimit
     };
   }
 
@@ -180,8 +183,8 @@ export class Trade {
     };
   }
 
-  private getTradeAmountRemaining(events: Event[]): BigNumber {
-    let tradeOnChainAmountRemaining = new BigNumber(0);
+  private getTradeAmountRemaining(tradeOnChainAmountRemaining: BigNumber, events: Event[]): BigNumber {
+    let amountRemaining = tradeOnChainAmountRemaining;
     for (const event of events) {
       if (event.name === "OrderEvent") {
         const eventParams = event.parameters as OrderEventLog;
@@ -189,10 +192,10 @@ export class Trade {
           return new BigNumber(0);
         } else if (eventParams.eventType === 3) {// Fill
           const onChainAmountFilled = eventParams.uint256Data[OrderEventUint256Value.amountFilled];
-          tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(onChainAmountFilled);
+          amountRemaining = tradeOnChainAmountRemaining.minus(onChainAmountFilled);
         }
       }
     }
-    return tradeOnChainAmountRemaining;
+    return amountRemaining;
   }
 }

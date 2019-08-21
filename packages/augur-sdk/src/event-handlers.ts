@@ -173,7 +173,7 @@ export interface NewBlock extends FormattedEventLog {
   timestamp: number;
 }
 
-// XXX: TODO - verify eventType and orderType somehow
+// @TODO:: TODO - verify eventType and orderType somehow
 export interface OrderEvent extends FormattedEventLog {
   universe: Address;
   market: Address;

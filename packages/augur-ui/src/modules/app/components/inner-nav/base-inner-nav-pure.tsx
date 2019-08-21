@@ -1,11 +1,27 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { MOBILE_MENU_STATES } from "modules/common/constants";
-import Styles from "modules/app/components/inner-nav/inner-nav.styles";
 import MenuItem from "modules/app/components/inner-nav/menu-item";
 import { XIcon, RotatableChevron } from "modules/common/icons";
+import MarketsListFilters from "modules/app/containers/markets-list-filters";
+
+import Styles from "modules/app/components/inner-nav/inner-nav.styles.less";
+
+interface MenuItemInterface {
+  label: string;
+  value: string;
+  description?: string;
+}
+
+interface BaseInnerNavPureProps {
+  isMobile: boolean;
+  mobileMenuState: number;
+  subMenuScalar: number;
+  menuItems: MenuItemInterface[];
+  submenuItems: MenuItemInterface[];
+  updateMobileMenuState: Function;
+};
 
 const BaseInnerNavPure = ({
   isMobile,
@@ -13,8 +29,8 @@ const BaseInnerNavPure = ({
   submenuItems = [],
   subMenuScalar,
   mobileMenuState,
-  updateMobileMenuState
-}) => {
+  updateMobileMenuState,
+}: BaseInnerNavPureProps) => {
   const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
   const showSubMenu = mobileMenuState === MOBILE_MENU_STATES.SUBMENU_OPEN;
 
@@ -49,7 +65,6 @@ const BaseInnerNavPure = ({
     <aside
       className={classNames(Styles.InnerNav, {
         [Styles.mobileShow]: showMainMenu,
-        [Styles.AddMargins]: showSubMenu
       })}
     >
       {showMainMenu && (
@@ -89,18 +104,11 @@ const BaseInnerNavPure = ({
         {menuItems.map(item => (
           <DataToItem key={item.label} {...item} />
         ))}
+
+        <MarketsListFilters />
       </ul>
     </aside>
   );
-};
-
-BaseInnerNavPure.propTypes = {
-  isMobile: PropTypes.bool.isRequired,
-  mobileMenuState: PropTypes.number.isRequired,
-  subMenuScalar: PropTypes.number.isRequired,
-  menuItems: PropTypes.array.isRequired,
-  submenuItems: PropTypes.array.isRequired,
-  updateMobileMenuState: PropTypes.func.isRequired
 };
 
 export default BaseInnerNavPure;

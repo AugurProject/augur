@@ -8,8 +8,6 @@ import {
 } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import { helpers } from 'helpers/helpers';
-
 import thunk from 'redux-thunk';
 
 import { createReducer, AppStateInterface } from 'reducers';
@@ -123,10 +121,6 @@ if (process.env.NODE_ENV !== 'test') {
     get: store.getState,
     enumerable: true,
   });
-}
-
-if (process.env.NODE_ENV === 'development') {
-  (window as WindowApp).integrationHelpers = helpers(store);
 }
 
 if ((module as any).hot) {

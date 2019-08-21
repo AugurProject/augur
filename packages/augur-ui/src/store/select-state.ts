@@ -12,8 +12,6 @@ export const selectLoginAccountState = (state: AppState): LoginAccount =>
   state.loginAccount;
 export const selectLoginAccountTotalsState = (state: AppState) =>
   state.loginAccount.tradingPositionsTotal;
-export const selectMarketReportState = (state: AppState) =>
-  state.marketReportState;
 export const selectMarketInfosState = (state: AppState): MarketInfos =>
   state.marketInfos;
 export const selectModal = (state: AppState) => state.modal;
@@ -31,6 +29,7 @@ export const selectPendingLiquidityOrders = (state: AppState) =>
   state.pendingLiquidityOrders;
 export const selectFilledOrders = (state: AppState) => state.filledOrders;
 export const selectUserMarketOpenOrders = (state: AppState) => state.userOpenOrders;
+export const selectPendingQueue = (state: AppState) => state.pendingQueue;
 
 export const selectCurrentTimestamp = createSelector(
   selectBlockchainState,

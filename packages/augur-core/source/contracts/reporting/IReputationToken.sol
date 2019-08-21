@@ -1,4 +1,4 @@
-pragma solidity 0.5.4;
+pragma solidity 0.5.10;
 
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/token/IERC20.sol';

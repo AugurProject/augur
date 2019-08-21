@@ -44,7 +44,7 @@ sidebar_label: WebsocketConnector
 
 ⊕ **new WebsocketConnector**(endpoint: *`string`*): [WebsocketConnector](api-classes-packages-augur-sdk-src-connector-ws-connector-websocketconnector.md)
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:8](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/ws-connector.ts#L8)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:8](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/ws-connector.ts#L8)*
 
 **Parameters:**
 
@@ -64,7 +64,7 @@ ___
 
 **● endpoint**: *`string`*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:10](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/ws-connector.ts#L10)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:10](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/ws-connector.ts#L10)*
 
 ___
 <a id="socket"></a>
@@ -73,7 +73,7 @@ ___
 
 **● socket**: *`WebSocketAsPromised`*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:8](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/ws-connector.ts#L8)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:8](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/ws-connector.ts#L8)*
 
 ___
 <a id="subscriptions"></a>
@@ -84,7 +84,7 @@ ___
 
 *Inherited from [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[subscriptions](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#subscriptions)*
 
-*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
+*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:5](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/baseConnector.ts#L5)*
 
 #### Type declaration
 
@@ -106,7 +106,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[bindTo](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#bindto)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:52](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/ws-connector.ts#L52)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:52](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/ws-connector.ts#L52)*
 
 **Type parameters:**
 
@@ -129,7 +129,7 @@ ___
 
 *Inherited from [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[callbackWrapper](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#callbackwrapper)*
 
-*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
+*Defined in [packages/augur-sdk/src/connector/baseConnector.ts:17](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/baseConnector.ts#L17)*
 
 **Type parameters:**
 
@@ -151,7 +151,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[connect](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#connect)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:14](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/ws-connector.ts#L14)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:14](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/ws-connector.ts#L14)*
 
 **Parameters:**
 
@@ -171,7 +171,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[disconnect](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#disconnect)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:48](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/ws-connector.ts#L48)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:48](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/ws-connector.ts#L48)*
 
 **Returns:** `Promise`<`any`>
 
@@ -182,7 +182,7 @@ ___
 
 ▸ **messageReceived**(message: *`any`*): `void`
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:40](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/ws-connector.ts#L40)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:40](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/ws-connector.ts#L40)*
 
 **Parameters:**
 
@@ -201,7 +201,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[off](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#off)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:64](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/ws-connector.ts#L64)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:64](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/ws-connector.ts#L64)*
 
 **Parameters:**
 
@@ -220,7 +220,7 @@ ___
 
 *Overrides [BaseConnector](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md).[on](api-classes-packages-augur-sdk-src-connector-baseconnector-baseconnector.md#on)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:58](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/connector/ws-connector.ts#L58)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:58](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/connector/ws-connector.ts#L58)*
 
 **Type parameters:**
 

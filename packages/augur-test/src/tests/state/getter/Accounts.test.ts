@@ -699,7 +699,8 @@ describe('State API :: Accounts :: ', () => {
     // Claim trading proceeds
     await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
       johnYesNoMarket.address,
-      john.account.publicKey
+      john.account.publicKey,
+      "0x0000000000000000000000000000000000000000",
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);

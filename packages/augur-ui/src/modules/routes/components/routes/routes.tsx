@@ -32,10 +32,6 @@ const Routes = (p) => (
       component={COMPONENTS.Portfolio}
     />
     <AuthenticatedRoute
-      path={makePath(VIEWS.REPORTING_REPORTS)}
-      component={COMPONENTS.Reporting}
-    />
-    <AuthenticatedRoute
       path={makePath(VIEWS.ACCOUNT)}
       component={COMPONENTS.Account}
     />
@@ -65,10 +61,6 @@ const Routes = (p) => (
     />
     <Route
       path={makePath(VIEWS.REPORTING_REPORT_MARKETS)}
-      component={COMPONENTS.Reporting}
-    />
-    <Route
-      path={makePath(VIEWS.REPORTING_RESOLVED_MARKETS)}
       component={COMPONENTS.Reporting}
     />
     <Redirect to={makePath(VIEWS.MARKETS)} />

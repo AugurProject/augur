@@ -23,7 +23,6 @@ export default class ReportingDisputeForm extends Component {
     market: PropTypes.object.isRequired,
     updateState: PropTypes.func.isRequired,
     stakeInfo: PropTypes.object.isRequired,
-    addUpdateAccountDispute: PropTypes.func.isRequired,
     loadMarketsDisputeInfo: PropTypes.func.isRequired,
     forkThreshold: PropTypes.object.isRequired,
     accountDisputeData: PropTypes.object,
@@ -100,25 +99,6 @@ export default class ReportingDisputeForm extends Component {
       });
       updateState({
         validations: updatedValidations
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    const { addUpdateAccountDispute, market } = this.props;
-    const {
-      selectedOutcome,
-      selectedOutcomeName,
-      isMarketInValid,
-      validations
-    } = this.state;
-    if (selectedOutcome !== "" || isMarketInValid) {
-      addUpdateAccountDispute({
-        marketId: market.id,
-        selectedOutcome,
-        selectedOutcomeName,
-        isMarketInValid,
-        validations
       });
     }
   }

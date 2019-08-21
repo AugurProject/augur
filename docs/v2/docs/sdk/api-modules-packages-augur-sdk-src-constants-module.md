@@ -27,6 +27,7 @@ sidebar_label: packages/augur-sdk/src/constants
 * [MAX_GAS_LIMIT_FOR_TRADE](api-modules-packages-augur-sdk-src-constants-module.md#max_gas_limit_for_trade)
 * [MAX_TRADE_GAS_PERCENTAGE_DIVISOR](api-modules-packages-augur-sdk-src-constants-module.md#max_trade_gas_percentage_divisor)
 * [MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI](api-modules-packages-augur-sdk-src-constants-module.md#minimum_invalid_order_value_in_atto_dai)
+* [NULL_ADDRESS](api-modules-packages-augur-sdk-src-constants-module.md#null_address)
 * [SECONDS_IN_YEAR](api-modules-packages-augur-sdk-src-constants-module.md#seconds_in_year)
 * [TRADE_GAS_BUFFER](api-modules-packages-augur-sdk-src-constants-module.md#trade_gas_buffer)
 
@@ -51,7 +52,7 @@ sidebar_label: packages/augur-sdk/src/constants
 
 **● CLAIM_GAS_COST**: *`BigNumber`* =  new BigNumber(667419)
 
-*Defined in [packages/augur-sdk/src/constants.ts:121](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L121)*
+*Defined in [packages/augur-sdk/src/constants.ts:123](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L123)*
 
 ___
 <a id="default_gas_price_in_gwei"></a>
@@ -60,7 +61,7 @@ ___
 
 **● DEFAULT_GAS_PRICE_IN_GWEI**: *`4`* = 4
 
-*Defined in [packages/augur-sdk/src/constants.ts:134](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L134)*
+*Defined in [packages/augur-sdk/src/constants.ts:136](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L136)*
 
 ___
 <a id="ether"></a>
@@ -69,7 +70,7 @@ ___
 
 **● ETHER**: *`BigNumber`* =  new ethersUtils.BigNumber(10).pow(18)
 
-*Defined in [packages/augur-sdk/src/constants.ts:83](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L83)*
+*Defined in [packages/augur-sdk/src/constants.ts:85](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L85)*
 
 ___
 <a id="eulers_number"></a>
@@ -78,7 +79,7 @@ ___
 
 **● EULERS_NUMBER**: *`2.71828182845905`* = 2.71828182845905
 
-*Defined in [packages/augur-sdk/src/constants.ts:136](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L136)*
+*Defined in [packages/augur-sdk/src/constants.ts:138](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L138)*
 
 ___
 <a id="invalid_outcome"></a>
@@ -87,7 +88,7 @@ ___
 
 **● INVALID_OUTCOME**: *`0`* = 0
 
-*Defined in [packages/augur-sdk/src/constants.ts:130](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L130)*
+*Defined in [packages/augur-sdk/src/constants.ts:132](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L132)*
 
 ___
 <a id="malformed_outcome"></a>
@@ -96,7 +97,7 @@ ___
 
 **● MALFORMED_OUTCOME**: *"malformed outcome"* = "malformed outcome"
 
-*Defined in [packages/augur-sdk/src/constants.ts:128](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L128)*
+*Defined in [packages/augur-sdk/src/constants.ts:130](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L130)*
 
 ___
 <a id="max_fills_per_tx"></a>
@@ -105,7 +106,7 @@ ___
 
 **● MAX_FILLS_PER_TX**: *`BigNumber`* =  new BigNumber("3", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:87](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L87)*
+*Defined in [packages/augur-sdk/src/constants.ts:89](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L89)*
 
 ___
 <a id="max_gas_limit_for_trade"></a>
@@ -114,7 +115,7 @@ ___
 
 **● MAX_GAS_LIMIT_FOR_TRADE**: *`BigNumber`* =  new BigNumber("3500000", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:89](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L89)*
+*Defined in [packages/augur-sdk/src/constants.ts:91](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L91)*
 
 ___
 <a id="max_trade_gas_percentage_divisor"></a>
@@ -123,7 +124,7 @@ ___
 
 **● MAX_TRADE_GAS_PERCENTAGE_DIVISOR**: *`100`* = 100
 
-*Defined in [packages/augur-sdk/src/constants.ts:132](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L132)*
+*Defined in [packages/augur-sdk/src/constants.ts:134](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L134)*
 
 ___
 <a id="minimum_invalid_order_value_in_atto_dai"></a>
@@ -132,7 +133,16 @@ ___
 
 **● MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI**: *`BigNumber`* =  new BigNumber(10).multipliedBy(10**18)
 
-*Defined in [packages/augur-sdk/src/constants.ts:138](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L138)*
+*Defined in [packages/augur-sdk/src/constants.ts:140](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L140)*
+
+___
+<a id="null_address"></a>
+
+### `<Const>` NULL_ADDRESS
+
+**● NULL_ADDRESS**: *"0x0000000000000000000000000000000000000000"* = "0x0000000000000000000000000000000000000000"
+
+*Defined in [packages/augur-sdk/src/constants.ts:4](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L4)*
 
 ___
 <a id="seconds_in_year"></a>
@@ -141,7 +151,7 @@ ___
 
 **● SECONDS_IN_YEAR**: *`BigNumber`* =  new BigNumber(60).multipliedBy(60).multipliedBy(24).multipliedBy(365)
 
-*Defined in [packages/augur-sdk/src/constants.ts:140](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L140)*
+*Defined in [packages/augur-sdk/src/constants.ts:142](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L142)*
 
 ___
 <a id="trade_gas_buffer"></a>
@@ -150,7 +160,7 @@ ___
 
 **● TRADE_GAS_BUFFER**: *`BigNumber`* =  new BigNumber("100000", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:85](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L85)*
+*Defined in [packages/augur-sdk/src/constants.ts:87](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L87)*
 
 ___
 
@@ -162,7 +172,7 @@ ___
 
 ▸ **isSubscriptionEventName**(eventName: *`string`*): `string` \| `null`
 
-*Defined in [packages/augur-sdk/src/constants.ts:54](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L54)*
+*Defined in [packages/augur-sdk/src/constants.ts:56](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L56)*
 
 **Parameters:**
 
@@ -182,7 +192,7 @@ ___
 
 **ORDER_TYPES**: *`object`*
 
-*Defined in [packages/augur-sdk/src/constants.ts:123](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L123)*
+*Defined in [packages/augur-sdk/src/constants.ts:125](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L125)*
 
 <a id="order_types.ask"></a>
 
@@ -190,7 +200,7 @@ ___
 
 **● ASK**: *`BigNumber`* =  new BigNumber(1)
 
-*Defined in [packages/augur-sdk/src/constants.ts:125](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L125)*
+*Defined in [packages/augur-sdk/src/constants.ts:127](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L127)*
 
 ___
 <a id="order_types.bid"></a>
@@ -199,7 +209,7 @@ ___
 
 **● BID**: *`BigNumber`* =  new BigNumber(0)
 
-*Defined in [packages/augur-sdk/src/constants.ts:124](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L124)*
+*Defined in [packages/augur-sdk/src/constants.ts:126](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L126)*
 
 ___
 
@@ -210,7 +220,7 @@ ___
 
 **PLACE_ORDER_NO_SHARES**: *`object`*
 
-*Defined in [packages/augur-sdk/src/constants.ts:91](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L91)*
+*Defined in [packages/augur-sdk/src/constants.ts:93](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L93)*
 
 <a id="place_order_no_shares.2"></a>
 
@@ -218,7 +228,7 @@ ___
 
 **● 2**: *`BigNumber`* =  new BigNumber("547694", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:92](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L92)*
+*Defined in [packages/augur-sdk/src/constants.ts:94](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L94)*
 
 ___
 <a id="place_order_no_shares.3"></a>
@@ -227,7 +237,7 @@ ___
 
 **● 3**: *`BigNumber`* =  new BigNumber("562138", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:93](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L93)*
+*Defined in [packages/augur-sdk/src/constants.ts:95](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L95)*
 
 ___
 <a id="place_order_no_shares.4"></a>
@@ -236,7 +246,7 @@ ___
 
 **● 4**: *`BigNumber`* =  new BigNumber("576582", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:94](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L94)*
+*Defined in [packages/augur-sdk/src/constants.ts:96](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L96)*
 
 ___
 <a id="place_order_no_shares.5"></a>
@@ -245,7 +255,7 @@ ___
 
 **● 5**: *`BigNumber`* =  new BigNumber("591026", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:95](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L95)*
+*Defined in [packages/augur-sdk/src/constants.ts:97](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L97)*
 
 ___
 <a id="place_order_no_shares.6"></a>
@@ -254,7 +264,7 @@ ___
 
 **● 6**: *`BigNumber`* =  new BigNumber("605470", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:96](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L96)*
+*Defined in [packages/augur-sdk/src/constants.ts:98](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L98)*
 
 ___
 <a id="place_order_no_shares.7"></a>
@@ -263,7 +273,7 @@ ___
 
 **● 7**: *`BigNumber`* =  new BigNumber("619914", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:97](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L97)*
+*Defined in [packages/augur-sdk/src/constants.ts:99](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L99)*
 
 ___
 <a id="place_order_no_shares.8"></a>
@@ -272,7 +282,7 @@ ___
 
 **● 8**: *`BigNumber`* =  new BigNumber("634358", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:98](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L98)*
+*Defined in [packages/augur-sdk/src/constants.ts:100](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L100)*
 
 ___
 
@@ -283,7 +293,7 @@ ___
 
 **PLACE_ORDER_WITH_SHARES**: *`object`*
 
-*Defined in [packages/augur-sdk/src/constants.ts:101](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L101)*
+*Defined in [packages/augur-sdk/src/constants.ts:103](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L103)*
 
 <a id="place_order_with_shares.2-1"></a>
 
@@ -291,7 +301,7 @@ ___
 
 **● 2**: *`BigNumber`* =  new BigNumber("695034", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:102](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L102)*
+*Defined in [packages/augur-sdk/src/constants.ts:104](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L104)*
 
 ___
 <a id="place_order_with_shares.3-1"></a>
@@ -300,7 +310,7 @@ ___
 
 **● 3**: *`BigNumber`* =  new BigNumber("794664", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:103](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L103)*
+*Defined in [packages/augur-sdk/src/constants.ts:105](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L105)*
 
 ___
 <a id="place_order_with_shares.4-1"></a>
@@ -309,7 +319,7 @@ ___
 
 **● 4**: *`BigNumber`* =  new BigNumber("894294", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:104](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L104)*
+*Defined in [packages/augur-sdk/src/constants.ts:106](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L106)*
 
 ___
 <a id="place_order_with_shares.5-1"></a>
@@ -318,7 +328,7 @@ ___
 
 **● 5**: *`BigNumber`* =  new BigNumber("993924", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:105](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L105)*
+*Defined in [packages/augur-sdk/src/constants.ts:107](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L107)*
 
 ___
 <a id="place_order_with_shares.6-1"></a>
@@ -327,7 +337,7 @@ ___
 
 **● 6**: *`BigNumber`* =  new BigNumber("1093554", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:106](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L106)*
+*Defined in [packages/augur-sdk/src/constants.ts:108](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L108)*
 
 ___
 <a id="place_order_with_shares.7-1"></a>
@@ -336,7 +346,7 @@ ___
 
 **● 7**: *`BigNumber`* =  new BigNumber("1193184", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:107](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L107)*
+*Defined in [packages/augur-sdk/src/constants.ts:109](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L109)*
 
 ___
 <a id="place_order_with_shares.8-1"></a>
@@ -345,7 +355,7 @@ ___
 
 **● 8**: *`BigNumber`* =  new BigNumber("1292814", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:108](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L108)*
+*Defined in [packages/augur-sdk/src/constants.ts:110](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L110)*
 
 ___
 
@@ -356,7 +366,7 @@ ___
 
 **WORST_CASE_FILL**: *`object`*
 
-*Defined in [packages/augur-sdk/src/constants.ts:111](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L111)*
+*Defined in [packages/augur-sdk/src/constants.ts:113](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L113)*
 
 <a id="worst_case_fill.2-2"></a>
 
@@ -364,7 +374,7 @@ ___
 
 **● 2**: *`BigNumber`* =  new BigNumber("933495", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:112](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L112)*
+*Defined in [packages/augur-sdk/src/constants.ts:114](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L114)*
 
 ___
 <a id="worst_case_fill.3-2"></a>
@@ -373,7 +383,7 @@ ___
 
 **● 3**: *`BigNumber`* =  new BigNumber("1172245", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:113](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L113)*
+*Defined in [packages/augur-sdk/src/constants.ts:115](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L115)*
 
 ___
 <a id="worst_case_fill.4-2"></a>
@@ -382,7 +392,7 @@ ___
 
 **● 4**: *`BigNumber`* =  new BigNumber("1410995", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:114](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L114)*
+*Defined in [packages/augur-sdk/src/constants.ts:116](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L116)*
 
 ___
 <a id="worst_case_fill.5-2"></a>
@@ -391,7 +401,7 @@ ___
 
 **● 5**: *`BigNumber`* =  new BigNumber("1649744", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:115](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L115)*
+*Defined in [packages/augur-sdk/src/constants.ts:117](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L117)*
 
 ___
 <a id="worst_case_fill.6-2"></a>
@@ -400,7 +410,7 @@ ___
 
 **● 6**: *`BigNumber`* =  new BigNumber("1888494", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:116](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L116)*
+*Defined in [packages/augur-sdk/src/constants.ts:118](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L118)*
 
 ___
 <a id="worst_case_fill.7-2"></a>
@@ -409,7 +419,7 @@ ___
 
 **● 7**: *`BigNumber`* =  new BigNumber("2127244", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:117](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L117)*
+*Defined in [packages/augur-sdk/src/constants.ts:119](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L119)*
 
 ___
 <a id="worst_case_fill.8-2"></a>
@@ -418,7 +428,7 @@ ___
 
 **● 8**: *`BigNumber`* =  new BigNumber("2365994", 10)
 
-*Defined in [packages/augur-sdk/src/constants.ts:118](https://github.com/AugurProject/augur/blob/bae2172ca0/packages/augur-sdk/src/constants.ts#L118)*
+*Defined in [packages/augur-sdk/src/constants.ts:120](https://github.com/AugurProject/augur/blob/0ea8996003/packages/augur-sdk/src/constants.ts#L120)*
 
 ___
 

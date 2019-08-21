@@ -1,7 +1,7 @@
 /**
  * @todo Update text for FINALIZE once alert triggering is moved
  */
-import { isEmpty } from "utils/is-populated";
+import { isEmpty } from "utils/is-empty";
 import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { getOutcomeName } from "utils/get-outcome";

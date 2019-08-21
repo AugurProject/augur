@@ -304,7 +304,7 @@ export const DESCRIPTION_PLACEHOLDERS = {
 
 // Create market fields for validations
 export const DESCRIPTION = 'description';
-export const END_TIME = 'endTime';
+export const END_TIME = 'setEndTime';
 export const CATEGORIES = 'categories';
 export const HOUR = 'hour';
 export const DESIGNATED_REPORTER_ADDRESS = 'designatedReporterAddress';
@@ -342,6 +342,8 @@ export const VALIDATION_ATTRIBUTES = {
     label: END_TIME,
     readableName: 'date',
     checkFilledNumber: true,
+    checkDateGreater: true,
+    checkDateGreaterMessage: 'Reporting start must be in the future',
     checkFilledNumberMessage: 'Choose a date',
   },
   [DESIGNATED_REPORTER_ADDRESS]: {
@@ -387,7 +389,8 @@ export const VALIDATION_ATTRIBUTES = {
     checkFilledNumber: true,
     checkFilledNumberMessage: 'Enter precision',
     checkPositive: true,
-    checkLessThan: true,
+    checkLessThan: false,
+    checkDividedBy: true,
     checkDecimals: true,
     decimals: 9,
   },
@@ -396,6 +399,7 @@ export const VALIDATION_ATTRIBUTES = {
     readableName: 'Market creator fee',
     checkBetween: true,
     checkFilledNumber: true,
+    checkFee: true,
     min: 0,
     max: 50,
   },
