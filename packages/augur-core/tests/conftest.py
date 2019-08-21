@@ -221,6 +221,7 @@ class ContractsFixture:
         self.testerProvider = EthereumTesterProvider(ethereum_tester=self.eth_tester)
         self.w3 = Web3(self.testerProvider)
         self.eth_tester.backend.chain.gas_estimator = dumb_gas_search
+        self.privateKeys = self.eth_tester.backend.account_keys
         self.accounts = self.eth_tester.get_accounts()
         self.contracts = {}
         self.relativeContractsPath = '../source/contracts'
@@ -476,7 +477,7 @@ class ContractsFixture:
         self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
     def initializeAllContracts(self):
-        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade']
+        contractsToInitialize = ['CompleteSets','CreateOrder','FillOrder','CancelOrder','Trade','ClaimTradingProceeds','Orders','Time','LegacyReputationToken','ProfitLoss','SimulateTrade','ZeroXTradeToken']
         for contractName in contractsToInitialize:
             if getattr(self.contracts[contractName], "initializeERC1820", None):
                 self.contracts[contractName].initializeERC1820(self.contracts['Augur'].address)

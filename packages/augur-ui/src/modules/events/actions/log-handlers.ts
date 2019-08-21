@@ -179,10 +179,6 @@ export const handleOrderLog = (log: any) => {
     case Logs.OrderEventType.Create: {
       return handleOrderCreatedLog(log);
     }
-    case Logs.OrderEventType.PriceChanged: {
-      // TODO: figure out what needs to change for price change
-      return console.log('order price changed need to add UI functionality');
-    }
     default:
       return handleOrderFilledLog(log);
   }
