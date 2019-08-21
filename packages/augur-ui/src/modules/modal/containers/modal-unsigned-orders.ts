@@ -20,6 +20,7 @@ import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { BaseAction } from "modules/types";
+import { Getters } from "@augurproject/sdk";
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
@@ -45,12 +46,10 @@ const mergeProps = (sP, dP, oP) => {
   let numberOfTransactions = 0;
   let totalCost = createBigNumber(0);
 
-  sP.market.outcomes.forEach((outcome: any) => {
-    const target =
-      sP.market.marketType === CATEGORICAL ? outcome.name : outcome.id;
+  sP.market.outcomes.forEach((outcome: Getters.Markets.MarketInfoOutcome) => {
     sP.liquidity &&
-      sP.liquidity[target] &&
-      sP.liquidity[target].forEach((order: any, index: number) => {
+      sP.liquidity[outcome.id] &&
+      sP.liquidity[outcome.id].forEach((order: any, index: number) => {
         totalCost = totalCost.plus(order.orderEstimate);
         numberOfTransactions += numberOfTransactions;
       });
