@@ -8,7 +8,8 @@ import TradingForm from "modules/market/containers/trading-form";
 import {
   BUY,
   SCALAR,
-  YES_NO
+  YES_NO,
+  CATEGORICAL
 } from "modules/common/constants";
 import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
 import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
@@ -42,7 +43,7 @@ export default class FeesLiquidity extends React.Component<
   FeesLiquidityState
 > {
   state: FeesLiquidityState = {
-    selectedOutcome: this.props.newMarket.marketType === YES_NO ? 2 : 1,
+    selectedOutcome: this.props.newMarket.marketType === CATEGORICAL ? 1 : 2,
     hoveredDepth: [],
     hoveredPrice: null,
   };

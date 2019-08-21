@@ -847,7 +847,7 @@ export const SCALAR_OUTCOMES = [
     isTradable: true,
   },
   {
-    id: 1,
+    id: 2,
     description: NON_EXISTENT,
     isTradable: true,
   },

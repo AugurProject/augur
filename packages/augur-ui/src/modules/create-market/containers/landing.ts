@@ -1,9 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
-  addOrderToNewMarket,
-  removeOrderFromNewMarket,
   updateNewMarket,
   clearNewMarket
 } from "modules/markets/actions/update-new-market";
