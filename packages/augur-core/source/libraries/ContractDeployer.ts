@@ -19,7 +19,8 @@ import {
     ClaimTradingProceeds,
     Cash,
     ProfitLoss,
-    SimulateTrade
+    SimulateTrade,
+    ZeroXTradeToken
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -99,7 +100,7 @@ Deploying to: ${networkConfiguration.networkName}
             await this.augur!.registerContract(stringTo32ByteHex("DaiJoin"), this.configuration.joinAddress);
             contract = await this.contracts.get("DaiJoin");
             contract.address = this.configuration.joinAddress;
-            
+
             // Proxy Factory
             contract = await this.contracts.get("ProxyFactory");
             contract.address = this.configuration.proxyFactoryAddress;
@@ -107,12 +108,21 @@ Deploying to: ${networkConfiguration.networkName}
             // Gnosis Safe
             contract = await this.contracts.get("GnosisSafe");
             contract.address = this.configuration.gnosisSafeAddress;
+
+            // 0x Exchange
+            console.log(`Registering 0x Exchange Contract at ${this.configuration.zeroXExchange}`);
+            await this.augur!.registerContract(stringTo32ByteHex("ZeroXExchange"), this.configuration.zeroXExchange);
+            contract = await this.contracts.get("ZeroXExchange");
+            contract.address = this.configuration.zeroXExchange;
         } else {
             console.log(`Uploading Test Dai Contracts`);
             await this.uploadTestDaiContracts();
 
             console.log(`Uploading Gnosis Contracts`);
             await this.uploadGnosisContracts();
+
+            console.log(`Uploading 0x Contracts`);
+            await this.upload0xContracts();
         }
 
         await this.initializeAllContracts();
@@ -223,6 +233,11 @@ Deploying to: ${networkConfiguration.networkName}
         gnosisSafeContract.address = await this.construct(gnosisSafeContract, []);
     }
 
+    private async upload0xContracts(): Promise<void> {
+        const zeroXExchangeContract = await this.contracts.get("ZeroXExchange");
+        zeroXExchangeContract.address = await this.construct(zeroXExchangeContract, []);
+    }
+
     public async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get("LegacyReputationToken");
         contract.address = await this.construct(contract, []);
@@ -317,6 +332,10 @@ Deploying to: ${networkConfiguration.networkName}
         const simulateTradeContract = await this.getContractAddress("SimulateTrade");
         const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
         promises.push(simulateTrade.initialize(this.augur!.address));
+
+        const zeroXTradeTokenContract = await this.getContractAddress("ZeroXTradeToken");
+        const zeroXTradeToken = new ZeroXTradeToken(this.dependencies, zeroXTradeTokenContract);
+        promises.push(zeroXTradeToken.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");

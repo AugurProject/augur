@@ -53,13 +53,13 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
 
         uint256 _cost = _amount.mul(_market.getNumTicks());
 
-        _market.getUniverse().deposit(_sender, _cost, address(_market));
+        IUniverse _universe = _market.getUniverse();
+
+        _universe.deposit(_sender, _cost, address(_market));
 
         for (uint256 _outcome = 0; _outcome < _numOutcomes; ++_outcome) {
             _market.getShareToken(_outcome).createShares(_sender, _amount);
         }
-
-        IUniverse _universe = _market.getUniverse();
 
         if (!_market.isFinalized()) {
             _universe.incrementOpenInterest(_cost);
@@ -68,6 +68,41 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         augur.logMarketOIChanged(_universe, _market);
 
         return true;
+    }
+
+    function jointBuyCompleteSets(IMarket _market, uint256 _amount, address _longParticipant, address _shortParticipant, uint256 _longOutcome, address _longRecipient, address _shortRecipient, uint256 _price) external nonReentrant {
+        require(augur.isKnownMarket(_market));
+        require(msg.sender == fillOrder);
+
+        uint256 _cost = _amount.mul(_market.getNumTicks());
+
+        uint256 _longCost = _amount.mul(_price);
+        uint256 _shortCost = _cost.sub(_longCost);
+        IUniverse _universe = _market.getUniverse();
+
+        // Transfer cost from both participants. If the funds were already escrowed in the market do nothing.
+        if (_longParticipant != address(_market)) {
+            _universe.deposit(_longParticipant, _longCost, address(_market));
+        }
+        if (_shortParticipant != address(_market)) {
+            _universe.deposit(_shortParticipant, _shortCost, address(_market));
+        }
+
+        // Mint shares as specified to recipients
+
+        _market.getShareToken(_longOutcome).createShares(_longRecipient, _amount);
+        for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
+            if (_longOutcome == _outcome) {
+                continue;
+            }
+            _market.getShareToken(_outcome).createShares(_shortRecipient, _amount);
+        }
+
+        if (!_market.isFinalized()) {
+            _universe.incrementOpenInterest(_cost);
+        }
+
+        augur.logMarketOIChanged(_universe, _market);
     }
 
     /**
@@ -119,5 +154,55 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
         augur.logMarketOIChanged(_universe, _market);
 
         return (_creatorFee, _reportingFee);
+    }
+
+    function jointSellCompleteSets(IMarket _market, uint256 _amount, address _shortParticipant, address _longParticipant, uint256 _shortOutcome, address _shortRecipient, address _longRecipient, uint256 _price, address _affiliateAddress) external nonReentrant returns (uint256 _creatorFee, uint256 _reportingFee) {
+        require(augur.isKnownMarket(_market));
+        require(msg.sender == fillOrder);
+
+        uint256 _payout = _amount.mul(_market.getNumTicks());
+
+        IUniverse _universe = _market.getUniverse();
+
+        if (!_market.isFinalized()) {
+            _universe.decrementOpenInterest(_payout);
+        }
+
+        _creatorFee = _market.deriveMarketCreatorFeeAmount(_payout);
+        _reportingFee = _payout.div(_universe.getOrCacheReportingFeeDivisor());
+        _payout = _payout.sub(_creatorFee).sub(_reportingFee);
+
+        // Takes shares away from participants
+        _market.getShareToken(_shortOutcome).destroyShares(_shortParticipant, _amount);
+        for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
+            if (_outcome == _shortOutcome) {
+                continue;
+            }
+            _market.getShareToken(_outcome).destroyShares(_longParticipant, _amount);
+        }
+
+        distributePayout(_market, _price, _shortRecipient, _longRecipient, _payout, _creatorFee, _reportingFee, _affiliateAddress);
+
+        augur.logMarketOIChanged(_universe, _market);
+
+        return (_creatorFee, _reportingFee);
+    }
+
+    function distributePayout(IMarket _market, uint256 _price, address _shortRecipient, address _longRecipient, uint256 _payout, uint256 _creatorFee, uint256 _reportingFee, address _affiliateAddress) private {
+        // Distribute fees
+        if (_creatorFee != 0) {
+            _market.recordMarketCreatorFees(_creatorFee, _affiliateAddress);
+        }
+
+        _market.getUniverse().withdraw(address(this), _payout.add(_reportingFee), address(_market));
+
+        if (_reportingFee != 0) {
+            require(cash.transfer(address(_market.getUniverse().getOrCreateNextDisputeWindow(false)), _reportingFee));
+        }
+
+        // Distribute cash to the recipients
+        uint256 _shortPayout = _payout.mul(_price) / _market.getNumTicks();
+        require(cash.transfer(_shortRecipient, _shortPayout));
+        require(cash.transfer(_longRecipient, _payout.sub(_shortPayout)));
     }
 }
