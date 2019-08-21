@@ -13,7 +13,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
 import {
-  placeTrade,
   createLiquidityOrder,
 } from 'modules/contracts/actions/contractCalls';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
