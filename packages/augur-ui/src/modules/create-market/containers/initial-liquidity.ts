@@ -1,20 +1,18 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import getValue from "utils/get-value";
-import { AppState } from "store";
-import * as constants from "modules/common/constants";
-import { formatShares, formatEther } from "utils/format-number";
-import Row from "modules/common/row";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import {
-  removeOrderFromNewMarket,
-} from "modules/markets/actions/update-new-market";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import getValue from 'utils/get-value';
+import { AppState } from 'store';
+import * as constants from 'modules/common/constants';
+import { formatShares, formatEther } from 'utils/format-number';
+import Row from 'modules/common/row';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { removeOrderFromNewMarket } from 'modules/markets/actions/update-new-market';
 
 const { COLUMN_TYPES } = constants;
 
 const mapStateToProps = (state: AppState) => ({
-  newMarket: state.newMarket
+  newMarket: state.newMarket,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -26,48 +24,43 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const columnProperties = [
     {
-      key: "orderName-" + order.outcomeName,
+      key: 'orderName-' + order.outcomeName,
       columnType: COLUMN_TYPES.TEXT,
       text: order.outcomeName,
       keyId: order.id + order.outcomeName,
     },
     {
-      key: "orderType",
+      key: 'orderType',
       columnType: COLUMN_TYPES.POSITION_TYPE,
       type: order.type,
     },
     {
-      key: "quantity",
+      key: 'quantity',
       columnType: COLUMN_TYPES.VALUE,
       value: formatShares(order.quantity),
-      keyId: "order-quantity-" + order.id,
+      keyId: 'order-quantity-' + order.id,
     },
     {
-      key: "price",
+      key: 'price',
       columnType: COLUMN_TYPES.VALUE,
       value: formatEther(order.price),
-      keyId: "order-price-" + order.id,
+      keyId: 'order-price-' + order.id,
     },
     {
-      key: "orderEstimate",
+      key: 'orderEstimate',
       columnType: COLUMN_TYPES.VALUE,
       value: formatEther(order.orderEstimate),
-      keyId: "order-orderEstimate-" + order.id,
+      keyId: 'order-orderEstimate-' + order.id,
     },
     {
-      key: "cancel",
+      key: 'cancel',
       columnType: COLUMN_TYPES.CANCEL_TEXT_BUTTON,
-      text: "Cancel",
+      text: 'Cancel',
       action: (e: Event) => {
-        const orderData = sP.newMarket.orderBook[oP.selectedOutcome][order.id];
-        oP.updateInitialLiquidityCosts(
-          { ...orderData, outcome: oP.selectedOutcome },
-          true
-        );
         dP.removeOrderFromNewMarket({
           outcome: oP.selectedOutcome,
           index: order.id,
-          orderId: order.id
+          orderId: order.id,
         });
       },
     },
@@ -85,10 +78,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-  )(Row),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(Row);

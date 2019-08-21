@@ -335,8 +335,6 @@ export const YES_NO_YES_ID = 2;
 export const YES_NO_YES_OUTCOME_NAME = 'Yes';
 export const SCALAR_DOWN_ID = 1;
 export const SCALAR_UP_ID = 2;
-export const YES_NO_INDETERMINATE_OUTCOME_ID = '0.5';
-export const CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID = '0.5';
 export const INDETERMINATE_PLUS_ONE = '0.500000000000000001';
 export const INDETERMINATE_OUTCOME_NAME = 'Indeterminate';
 
@@ -627,6 +625,7 @@ export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.00000001');
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
+export const MAX_BULK_ORDER_COUNT = 5;
 export const ETHER = createBigNumber(10).pow(18);
 
 // # Positions
@@ -847,7 +846,7 @@ export const SCALAR_OUTCOMES = [
     isTradable: true,
   },
   {
-    id: 1,
+    id: 2,
     description: NON_EXISTENT,
     isTradable: true,
   },

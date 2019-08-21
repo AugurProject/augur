@@ -163,6 +163,7 @@ export interface ReportingWindowStats {
 }
 
 export interface CreateMarketData {
+  id: string;
   txParams: TransactionMetadataParams;
   endTime: DateFormattedObject;
   description: string;
@@ -257,6 +258,8 @@ export interface UIOrder {
   ignoreShares?: boolean;
   status?: string;
   hash?: string;
+  numTicks: number;
+  minPrice: string;
 }
 
 export interface LiquidityOrders {
@@ -274,6 +277,7 @@ export interface LiquidityOrder {
   type: string;
   orderEstimate: BigNumber;
   outcomeName: string;
+  outcomeId: number;
 }
 export interface NewMarketPropertiesValidations {
   description?: string;
@@ -287,11 +291,14 @@ export interface NewMarketPropertiesValidations {
   minute?: string;
   meridiem?: string;
   outcomes?: string[];
+  settlementFee?: string;
+  affiliateFee?: number;
 }
 
 export interface NewMarketPropertyValidations {
   settlementFee?: string;
   scalarDenomination?: string;
+  affiliateFee?: number;
 }
 export interface NewMarket {
   isValid: boolean;
@@ -316,6 +323,7 @@ export interface NewMarket {
   endTimeFormatted: DateFormattedObject;
   setEndTime: number;
   tickSize: number;
+  numTicks: number;
   hour: string;
   minute: string;
   meridiem: string;
