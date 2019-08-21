@@ -196,51 +196,51 @@ describe('State API :: Users :: ', () => {
     const cost = numShares.times(78).div(10);
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -372,12 +372,10 @@ describe('State API :: Users :: ', () => {
       'Unknown universe: 0x1111111111111111111111111111111111111111'
     );
 
-    let stats = await api.route('getAccountTimeRangedStats', {
+    await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: nonexistentAddress,
     });
-    // console.log("stats1", stats);
-    // expect(stats).toEqual({});
 
     // Test endTime and startTime
     try {
@@ -392,7 +390,7 @@ describe('State API :: Users :: ', () => {
     }
     expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
 
-    stats = await api.route('getAccountTimeRangedStats', {
+    let stats = await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
       account: ACCOUNTS[0].publicKey,
       startTime: 0,
@@ -530,51 +528,51 @@ describe('State API :: Users :: ', () => {
     // Fill orders
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket2.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnCategoricalMarket2.address, outcome2),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome0),
-      cost,
       numShares.div(10).times(2),
-      '42'
+      '42',
+      cost
     );
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnScalarMarket2.address, outcome1),
-      cost,
       numShares.div(10).times(3),
-      '43'
+      '43',
+      cost
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
