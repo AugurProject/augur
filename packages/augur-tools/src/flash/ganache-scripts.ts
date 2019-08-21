@@ -253,10 +253,12 @@ export function addGanacheScripts(flash: FlashSession) {
       if (await fs.exists(filepath)) {
         const seed: Seed = await loadSeedFile(filepath);
         if (seed.contractsHash === hashContracts()) {
+          console.log('Seed file exists and is up to date.');
           return; // no need to update seed
         }
       }
 
+      console.log('Creating seed file.');
       await this.call("ganache", { internal: true });
       await this.call("deploy", { write_artifacts: writeArtifacts, time_controlled: "true" });
       await this.call("make-seed", { name, filepath, save: true });

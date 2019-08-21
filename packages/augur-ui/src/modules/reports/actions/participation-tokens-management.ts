@@ -41,29 +41,29 @@ const callMethod = (
   estimateGas: boolean = false,
   callback: NodeStyleCallback,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount } = getState();
-  method({
-    tx: {
-      to: address,
-      estimateGas,
-    },
-    meta: loginAccount.meta,
-    _attotokens: speedomatic.fix(amount, "hex"),
-    onSent: () => {
-      // need fee window to do gas estimate
-      if (!estimateGas) dispatch(closeModal());
-    },
-    onSuccess: (res: any) => {
-      if (estimateGas) {
-        const gasPrice = getGasPrice(getState());
-        return callback(
-          null,
-          formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice),
-        );
-      }
-      // dispatch(loadReportingWindowBounds());
-      return callback(null, res);
-    },
-    onFailed: (err: any) => callback(err),
-  });
+  // const { loginAccount } = getState();
+  // method({
+  //   tx: {
+  //     to: address,
+  //     estimateGas,
+  //   },
+  //   meta: loginAccount.meta,
+  //   _attotokens: speedomatic.fix(amount, "hex"),
+  //   onSent: () => {
+  //     // need fee window to do gas estimate
+  //     if (!estimateGas) dispatch(closeModal());
+  //   },
+  //   onSuccess: (res: any) => {
+  //     if (estimateGas) {
+  //       const gasPrice = getGasPrice(getState());
+  //       return callback(
+  //         null,
+  //         formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice),
+  //       );
+  //     }
+  //     // dispatch(loadReportingWindowBounds());
+  //     return callback(null, res);
+  //   },
+  //   onFailed: (err: any) => callback(err),
+  // });
 };
