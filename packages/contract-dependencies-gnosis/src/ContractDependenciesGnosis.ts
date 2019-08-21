@@ -123,6 +123,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
   public async ethersTransactionToRelayTransaction(tx: Transaction<ethers.utils.BigNumber>): Promise<RelayTransaction> {
     const nonce = await this.getNonce();
+    console.log(`TX SENDING WITH NONCE: ${nonce}`);
     const to = tx.to;
     const value = tx.value;
     const data = tx.data;
@@ -178,6 +179,7 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       signatures,
     }, relayEstimateRequest);
 
+    console.log(`RELAY TX: ${JSON.stringify(relayTransaction)}`);
     return relayTransaction;
   }
 }
