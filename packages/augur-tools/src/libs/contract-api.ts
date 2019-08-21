@@ -151,7 +151,6 @@ export class ContractAPI {
       betterOrderID,
       worseOrderID,
       tradeGroupID,
-      false,
       NULL_ADDRESS
     );
 
@@ -181,22 +180,18 @@ export class ContractAPI {
     if (cost) {
       await this.faucet(cost);
     }
-    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), false, NULL_ADDRESS);
-  }
-
-  async setOrderPrice(orderId: string, price: BigNumber, betterOrderId: string, worseOrderId: string): Promise<void> {
-    await this.augur.contracts.orders.setOrderPrice(orderId, price, betterOrderId, worseOrderId);
+    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), NULL_ADDRESS);
   }
 
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
+    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error('Could not take best Order');
     }
 
-    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
+    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
   }
 
   async cancelOrder(orderID: string): Promise<void> {
@@ -222,7 +217,6 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      ignoreShares: false,
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
@@ -242,7 +236,6 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String('42'),
-      ignoreShares: false,
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
