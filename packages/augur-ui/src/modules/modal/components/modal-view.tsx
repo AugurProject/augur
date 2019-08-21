@@ -20,10 +20,8 @@ import ModalFinalize from "modules/modal/containers/modal-finalize";
 import ModalDiscard from "modules/modal/containers/modal-discard";
 import ModalMarketReview from "modules/modal/containers/modal-market-review";
 import ModalMarketReviewTrade from "modules/modal/containers/modal-market-review-trade";
-import ModalClaimReportingFeesForkedMarket from "modules/modal/containers/modal-claim-reporting-fees-forked-market";
 import ModalClaimFees from "modules/modal/containers/modal-claim-fees";
 import ModalParticipate from "modules/modal/containers/modal-participate";
-import ModalMigrateMarket from "modules/modal/containers/modal-migrate-market";
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalDisclaimer from "modules/modal/containers/modal-disclaimer";
 import ModalGasPrice from "modules/modal/containers/modal-gas-price";
@@ -105,8 +103,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalClaimReportingFeesForkedMarket {...modal} />;
     case TYPES.MODAL_CLAIM_FEES:
       return <ModalClaimFees {...modal} />;
-    case TYPES.MODAL_MIGRATE_MARKET:
-      return <ModalMigrateMarket {...modal} closeModal={closeModal} />;
     case TYPES.MODAL_DISCLAIMER:
       return <ModalDisclaimer {...modal} />;
     case TYPES.MODAL_TRADING_OVERLAY:
