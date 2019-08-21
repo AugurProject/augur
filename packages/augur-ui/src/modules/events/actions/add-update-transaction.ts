@@ -58,7 +58,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         const id = generateTxParameterId(transaction.params);
         const { blockchain } = getState();
         const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000, methodCall);
-        dispatch(addPendingData(id, CREATE_MARKET, eventName, data));
+        dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
         if (hash && eventName === TXEventName.Success) {
           dispatch(removePendingData(id, CREATE_MARKET));
         }

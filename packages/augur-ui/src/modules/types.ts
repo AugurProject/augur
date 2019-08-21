@@ -172,6 +172,7 @@ export interface CreateMarketData {
   creationTime: DateFormattedObject;
   marketType: string;
   pendingId: string;
+  orderBook?: IndividualOrderBook;
 }
 
 export interface PendingQueue {
@@ -311,6 +312,7 @@ export interface NewMarket {
   designatedReporterAddress: string;
   minPrice: string;
   maxPrice: string;
+  endTime: number;
   endTimeFormatted: DateFormattedObject;
   setEndTime: number;
   tickSize: number;

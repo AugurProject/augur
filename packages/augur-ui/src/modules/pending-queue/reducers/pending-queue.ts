@@ -9,11 +9,12 @@ const DEFAULT_STATE: PendingQueue = {};
 export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data }: BaseAction): PendingQueue {
   switch (type) {
     case ADD_PENDING_DATA: {
-      const { pendingId, queueName, status, blockNumber, info } = data;
+      const { pendingId, queueName, status, blockNumber, hash, info } = data;
       if (pendingQueue[queueName]) {
         pendingQueue[queueName][pendingId] = {
           status,
           data: info,
+          hash: hash,
           blockNumber,
         };
       } else {
@@ -21,6 +22,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
         pendingQueue[queueName][pendingId] = {
           status,
           data: info,
+          hash: hash,
           blockNumber,
         };
       }

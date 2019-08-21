@@ -50,7 +50,7 @@ interface MyMarketsProps {
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
   removePendingMarket: Function;
-  createMarketRetry: Function;
+  retrySubmitMarket: Function;
 }
 
 class MyMarkets extends Component<MyMarketsProps> {
@@ -96,12 +96,12 @@ class MyMarkets extends Component<MyMarketsProps> {
                 <LinearPropertyLabel
                   label="Volume"
                   highlightFirst
-                  value={`${market.volumeFormatted.formatted} DAI`}
+                  value={`${market.volumeFormatted && market.volumeFormatted.formatted} DAI`}
                 />
                 <LinearPropertyLabel
                   label="Open Interest"
                   highlightFirst
-                  value={`${market.openInterestFormatted.formatted} DAI`}
+                  value={`${market.openInterestFormatted && market.openInterestFormatted.formatted} DAI`}
                 />
               </div>
             }
@@ -112,7 +112,7 @@ class MyMarkets extends Component<MyMarketsProps> {
               <>
                 <span>Market failed to create.</span>
                 <div>
-                  <SubmitTextButton text={"submit again"} action={() => this.props.createMarketRetry(market)} />
+                  <SubmitTextButton text={"submit again"} action={() => this.props.retrySubmitMarket(market)} />
                   <CancelTextButton text={"cancel"} action={() => this.props.removePendingMarket(market.pendingId)} />
                 </div>
               </>
