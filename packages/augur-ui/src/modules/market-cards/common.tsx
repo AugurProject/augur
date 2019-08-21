@@ -4,14 +4,17 @@ import classNames from 'classnames';
 import {
   CATEGORICAL,
   SCALAR,
-  YES_NO
+  YES_NO,
+  REPORTING_STATE
 } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
 import { CheckCircleIcon } from "modules/common/icons";
 import { OutcomeFormatted, FormattedNumber, MarketData } from "modules/types";
-import { formatDai } from "utils/format-number";
+import { formatDai, formatAttoRep } from "utils/format-number";
+import { Getters } from "@augurproject/sdk";
+import { SecondaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
 import MarketCard from 'modules/market-cards/market-card';
@@ -47,6 +50,33 @@ export const Outcome = (props: OutcomeProps) => {
     </div>
   );
 }
+
+export interface DisputeOutcomeProps {
+  description: string;
+  invalid?: Boolean;
+  index: number;
+  stake: Getters.Markets.StakeDetails|null;
+}
+
+export const DisputeOutcome = (props: DisputeOutcomeProps) => {
+  const bondSizeCurrent = props.stake && formatAttoRep(props.stake.bondSizeCurrent);
+  const bondSizeTotal = props.stake && formatAttoRep(props.stake.bondSizeTotal);
+
+  return (
+    <div className={classNames(Styles.DisputeOutcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
+      <span>{props.description}</span>
+      {props.stake && props.stake.tentativeWinning ? <span>tentative winner</span> : <Percent percent={props.stake ? calculatePosition(createBigNumber(0), createBigNumber(bondSizeTotal.value), bondSizeCurrent) : 0} />}
+      <div>
+        <div>
+          <span>{props.stake && props.stake.tentativeWinning ? "pre-filled stake" : "make tentative winner"}</span>
+          <span>{props.stake ? bondSizeCurrent.formatted : 0}<span>/ {props.stake ? bondSizeTotal.formatted : 0} REP</span></span>
+        </div>
+        <SecondaryButton text={props.stake && props.stake.tentativeWinning ? "Support Tentative Winner" : "Dispute Tentative Winner"} action={null} />
+      </div>
+    </div>
+  );
+}
+
 
 export interface ScalarOutcomeProps {
   scalarDenomination: string;
@@ -89,20 +119,23 @@ export interface OutcomeGroupProps {
 	scalarDenomination?: string;
 	min?: BigNumber;
 	max?: BigNumber;
+  reportingState: string;
+  stakes: Getters.Markets.StakeDetails[];
 }
 
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
-  let outcomesShow = props.outcomes.filter(outcome => outcome.isTradable);
+  const inDispute = props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE || props.reportingState === AWAITING_NEXT_WINDOW;
+  let outcomesShow = props.outcomes.filter(outcome => inDispute || outcome.isTradable);
   const removedInvalid = outcomesShow.splice(0, 1)[0];
   outcomesShow.splice(2, 0, removedInvalid);
-
   return (
     <div className={classNames(Styles.OutcomeGroup, {
 			[Styles.Categorical]: props.marketType === CATEGORICAL,
 			[Styles.Scalar]: props.marketType === SCALAR,
-			[Styles.YesNo]: props.marketType === YES_NO
+			[Styles.YesNo]: props.marketType === YES_NO,
+      [Styles.Dispute]: inDispute
 		})}>
-  		{props.marketType === SCALAR &&
+  		{props.marketType === SCALAR && !inDispute &&
         <>
     			<ScalarOutcome
     				min={props.min}
@@ -120,16 +153,26 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           />
         </>
   		}
-	  	{props.marketType !== SCALAR && outcomesShow.map((outcome: OutcomeFormatted, index: number) =>
-	  		(!props.expanded && index < 3 || (props.expanded || props.marketType === YES_NO)) && <Outcome
-          key={outcome.id}
-	  			description={outcome.description}
-	  			lastPricePercent={outcome.lastPricePercent}
-	  			invalid={outcome.id === 0}
-	  			index={index > 2 ? index : index + 1}
-          min={props.min}
-          max={props.max}
-	  		/>
+	  	{(props.marketType !== SCALAR || inDispute) && outcomesShow.map((outcome: OutcomeFormatted, index: number) =>
+	  		(!props.expanded && index < 3 || (props.expanded || props.marketType === YES_NO)) && (
+          inDispute ? 
+             <DisputeOutcome
+               key={outcome.id}
+               description={outcome.description}
+               invalid={outcome.id === 0}
+               index={index > 2 ? index : index + 1}
+               stake={props.stakes.find(stake => parseFloat(stake.outcome) === outcome.id)}
+             />
+          : <Outcome
+              key={outcome.id}
+    	  			description={outcome.description}
+    	  			lastPricePercent={outcome.lastPricePercent}
+    	  			invalid={outcome.id === 0}
+    	  			index={index > 2 ? index : index + 1}
+              min={props.min}
+              max={props.max}
+    	  		/>
+        )
 	  	)}
   	</div>
   );

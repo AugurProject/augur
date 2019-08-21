@@ -55,6 +55,72 @@
 	}
 }
 
+.DisputeOutcome {
+	.Outcome;
+
+	> span:first-of-type {
+		.text-12-bold;
+
+		color: @color-alternate-info-text;
+	}
+
+	> span:nth-of-type(2) {
+		.mono-10;
+
+		color: @color-neutral-affirmative;
+		margin-bottom: @size-6;
+		margin-top: @size-4;
+		text-transform: uppercase;
+	}
+
+	> div {
+		align-items: center;
+		display: flex;
+		flex-direction: row;
+		margin-bottom: 0;
+
+		> div {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+
+			> span:first-of-type {
+				.mono-10;
+
+				color: @color-tertiary-info-text;
+				margin-bottom: @size-2;
+				text-transform: uppercase;
+			}
+
+			> span:nth-of-type(2) {
+				.mono-10;
+
+				color: @color-alternate-info-text;
+
+				> span {
+					color: @color-tertiary-info-text;
+					margin-left: @size-4;
+				}
+			}
+		}
+	}
+
+	> div:first-of-type {
+		margin-bottom: 0;
+	}
+
+	> div:not(:last-of-type) {
+		margin-bottom: @size-9;
+		margin-top: @size-10;
+	}
+
+	&.invalid {
+		> span:first-of-type {
+			color: @color-invalid;
+		}
+	}
+}
+
 .Percent {
 	background: fade(@color-secondary-action, 50);
 	height: @size-4;
@@ -140,6 +206,15 @@
 
 		> div:first-of-type {
 			grid-column: 1 / span 2;
+		}
+	}
+
+	&.Dispute {
+		grid-template-columns: repeat(2, 1fr);
+	    grid-column: 2;
+
+	    > div:first-of-type {
+			grid-column: unset;
 		}
 	}
 
