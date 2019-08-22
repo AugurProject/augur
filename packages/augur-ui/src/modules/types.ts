@@ -263,7 +263,7 @@ export interface UIOrder {
 }
 
 export interface LiquidityOrders {
-  [marketId: string]: {
+  [txParamHash: string]: {
     [outcome: number]: Array<LiquidityOrder>;
   };
 }

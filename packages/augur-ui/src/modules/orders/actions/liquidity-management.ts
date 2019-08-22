@@ -4,23 +4,19 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { createBigNumber } from 'utils/create-big-number';
 
-import {
-  MODAL_ACCOUNT_APPROVAL,
-  BUY,
-} from 'modules/common/constants';
+import { MODAL_ACCOUNT_APPROVAL, BUY } from 'modules/common/constants';
 import { OrderBook, BaseAction } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
-import {
-  placeTrade,
-  createLiquidityOrder,
-} from 'modules/contracts/actions/contractCalls';
+import { createLiquidityOrder } from 'modules/contracts/actions/contractCalls';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
 export const LOAD_PENDING_LIQUIDITY_ORDERS = 'LOAD_PENDING_LIQUIDITY_ORDERS';
 export const CLEAR_ALL_MARKET_ORDERS = 'CLEAR_ALL_MARKET_ORDERS';
+export const UPDATE_TX_PARAM_HASH_TX_HASH = 'UPDATE_TX_PARAM_HASH_TX_HASH';
+export const SET_LIQUIDITY_ORDER_PENDING = 'SET_LIQUIDITY_ORDER_PENDING';
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
@@ -31,17 +27,25 @@ export const loadPendingLiquidityOrders = (
   data: { pendingLiquidityOrders },
 });
 
-export const addMarketLiquidityOrders = ({ liquidityOrders, marketId }) => ({
+export const addMarketLiquidityOrders = ({ liquidityOrders, txParamHash }) => ({
   type: ADD_MARKET_LIQUIDITY_ORDERS,
   data: {
     liquidityOrders,
-    marketId,
+    txParamHash,
+  },
+});
+
+export const updateLiqTransactionParamHash = ({ txParamHash, txHash }) => ({
+  type: UPDATE_TX_PARAM_HASH_TX_HASH,
+  data: {
+    txParamHash,
+    txHash,
   },
 });
 
 export const clearMarketLiquidityOrders = (marketId: string) => ({
   type: CLEAR_ALL_MARKET_ORDERS,
-  data: { marketId },
+  data: { txParamHash: marketId },
 });
 
 export const updateLiquidityOrder = ({
@@ -54,18 +58,18 @@ export const updateLiquidityOrder = ({
   data: {
     order,
     updates,
-    marketId,
+    txParamHash: marketId,
     outcomeId,
   },
 });
 
 export const removeLiquidityOrder = ({
-  marketId,
+  transactionHash,
   outcomeId,
   orderId,
 }: BaseAction) => ({
   type: REMOVE_LIQUIDITY_ORDER,
-  data: { marketId, outcomeId, orderId },
+  data: { txParamHash: transactionHash, outcomeId, orderId },
 });
 
 export const sendLiquidityOrder = (options: any) => (
@@ -85,7 +89,14 @@ export const sendLiquidityOrder = (options: any) => (
   const { orderEstimate } = order;
   const sendOrder = async () => {
     try {
-      createLiquidityOrder({ ...order, orderType, minPrice, maxPrice, numTicks, marketId });
+      createLiquidityOrder({
+        ...order,
+        orderType,
+        minPrice,
+        maxPrice,
+        numTicks,
+        marketId,
+      });
     } catch (e) {
       console.error('could not create order', e);
     }

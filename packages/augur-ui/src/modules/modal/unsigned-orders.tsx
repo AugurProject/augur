@@ -35,6 +35,7 @@ interface UnsignedOrdersProps {
   liquidity: object;
   marketTitle: string;
   marketId: string;
+  transactionHash: string;
   numTicks: string;
   minPrice: object;
   maxPrice: object;
@@ -51,21 +52,22 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
   const {
     removeLiquidityOrder,
     sendLiquidityOrder,
-    marketId,
     marketType,
     numTicks,
     maxPrice,
     minPrice,
     outcomes,
     bnAllowance,
-    loginAccount
+    loginAccount,
+    transactionHash,
+    marketId,
   } = props;
   const buttons = [
     {
       text: "cancel",
       action: () =>
         removeLiquidityOrder({
-          marketId,
+          transactionHash,
           outcomeId,
           orderId: index,
         }),
