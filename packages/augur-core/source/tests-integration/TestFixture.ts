@@ -69,8 +69,8 @@ export class TestFixture {
     }
 
     async repFaucet(attoRep: BigNumber): Promise<void> {
-      const reputationToken = this.getReputationToken();
-      reputationToken.faucet(attoRep);
+      const reputationToken = await this.getReputationToken();
+      await reputationToken.faucet(attoRep);
     }
 
   async createMarket(universe: Universe, outcomes: string[], endTime: BigNumber, feePerEthInWei: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string): Promise<Market> {
