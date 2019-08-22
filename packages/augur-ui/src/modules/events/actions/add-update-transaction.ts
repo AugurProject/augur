@@ -29,7 +29,7 @@ import {
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
-import { updateTransactionParamHash } from 'modules/orders/actions/liquidity-management';
+import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -62,7 +62,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         const { blockchain } = getState();
         const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000, methodCall);
         dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
-        if (hash) dispatch(updateTransactionParamHash({txParamHash: id, txHash: hash}))
+        if (hash) dispatch(updateLiqTransactionParamHash({txParamHash: id, txHash: hash}))
         if (hash && eventName === TXEventName.Success) {
           dispatch(removePendingData(id, CREATE_MARKET));
         }

@@ -34,7 +34,7 @@ export const addMarketLiquidityOrders = ({ liquidityOrders, txParamHash }) => ({
   },
 });
 
-export const updateTransactionParamHash = ({ txParamHash, txHash }) => ({
+export const updateLiqTransactionParamHash = ({ txParamHash, txHash }) => ({
   type: UPDATE_TX_PARAM_HASH_TX_HASH,
   data: {
     txParamHash,
