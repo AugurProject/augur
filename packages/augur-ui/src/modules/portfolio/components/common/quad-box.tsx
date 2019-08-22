@@ -48,6 +48,7 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
     mostRightContent={
       props.switchHeaders && (
         <SquareDropdown
+          defaultValue={props.sortByOptions[0].value}
           options={props.sortByOptions}
           onChange={props.updateDropdown}
           stretchOutOnMobile
