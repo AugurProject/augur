@@ -16,7 +16,7 @@ contract MaliciousTrader {
 
     function makeOrder(ICreateOrder _createOrder, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, uint256 _outcome, bytes32 _betterOrderId, bytes32 _worseOrderId, bytes32 _tradeGroupId) external payable returns (bytes32) {
 
-        return _createOrder.publicCreateOrder(_type, _attoshares, _price, _market, _outcome, _betterOrderId, _worseOrderId, _tradeGroupId, false, IERC20(0));
+        return _createOrder.publicCreateOrder(_type, _attoshares, _price, _market, _outcome, _betterOrderId, _worseOrderId, _tradeGroupId, IERC20(0));
     }
 
     function setEvil(bool _evil) public returns (bool) {

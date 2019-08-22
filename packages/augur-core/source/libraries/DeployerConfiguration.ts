@@ -11,6 +11,7 @@ const PRODUCTION_JOIN_CONTRACT_ADDRESS = "0x000000000000000000000000000000000000
 const PRODUCTION_REP_PRICE_ORACLE_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // TODO when uniswap price oracle is released
 const PRODUCTION_GNOSIS_SAFE = "0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A";
 const PRODUCTION_PROXY_FACTORY = "0x12302fE9c02ff50939BaAaaf415fc226C078613C";
+const PRODUCTION_ZEROX_EXCHANGE = "0x080bf510FCbF18b91105470639e9561022937712";
 
 export interface DeployerConfiguration {
   contractInputPath: string;
@@ -28,6 +29,7 @@ export interface DeployerConfiguration {
   repPriceOracleAddress: string;
   gnosisSafeAddress: string;
   proxyFactoryAddress: string;
+  zeroXExchange: string;
   writeArtifacts: boolean;
 }
 
@@ -59,6 +61,7 @@ export const defaultDeployerConfiguration: DeployerConfiguration = {
   joinAddress: PRODUCTION_JOIN_CONTRACT_ADDRESS,
   gnosisSafeAddress: PRODUCTION_GNOSIS_SAFE,
   proxyFactoryAddress: PRODUCTION_PROXY_FACTORY,
+  zeroXExchange: PRODUCTION_ZEROX_EXCHANGE,
   writeArtifacts: true,
 };
 

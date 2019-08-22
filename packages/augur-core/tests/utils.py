@@ -147,7 +147,6 @@ class AssertLog():
                 self.skip -= 1
 
         if not foundLog:
-            import pdb;pdb.set_trace()
             raise Exception("Assert log failed to find the log with event name %s" % (self.eventName))
 
         for (key, expectedValue) in self.data.items():
