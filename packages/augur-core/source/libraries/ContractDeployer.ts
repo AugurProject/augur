@@ -371,7 +371,7 @@ Deploying to: ${networkConfiguration.networkName}
       console.log('Resetting Timestamp for false time...');
       const time = new TimeControlled(this.dependencies, this.getContractAddress("TimeControlled"));
       const currentTimestamp = await time.getTimestamp_();
-      time.setTimestamp(currentTimestamp);
+      await time.setTimestamp(currentTimestamp);
     }
 
     private async createGenesisUniverse(): Promise<Universe> {

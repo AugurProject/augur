@@ -23,7 +23,7 @@ beforeAll(async () => {
 test("State API :: Status :: getSyncData", async () => {
   const dbName = (await db).getDatabaseName("MarketCreated");
 
-  (await db).syncStatus.setHighestSyncBlock(dbName, 10, false);
+  await (await db).syncStatus.setHighestSyncBlock(dbName, 10, false);
 
   const syncData = await api.route("getSyncData", {});
 
