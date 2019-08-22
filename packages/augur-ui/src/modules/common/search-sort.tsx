@@ -49,6 +49,7 @@ export class SearchSort extends React.Component<
           {sortByOptions && (
             <div className={Styles.Dropdown}>
               <SquareDropdown
+                defaultValue={sortByOptions[0].value}
                 options={sortByOptions}
                 onChange={updateDropdown}
                 stretchOutOnMobile
@@ -60,6 +61,7 @@ export class SearchSort extends React.Component<
         <div className={classNames(Styles.SearchSort, Styles.HideOnMobile)}>
           {sortByOptions && (
             <SquareDropdown
+              defaultValue={sortByOptions[0].value}
               className={classNames({ [Styles.Hide]: !showSortByOptions })}
               options={sortByOptions}
               onChange={updateDropdown}

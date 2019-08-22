@@ -110,7 +110,7 @@ export const MarketProgress = (props: MarketProgressProps) => {
   );
 
   // Don't flash countdown component if we don't have reporting / augur timestamp data on state yet
-  if (!reportingWindowEndtime || !currentTime) {
+  if (reportingWindowEndtime === null || currentTime === null) {
     return null;
   }
 
