@@ -20,7 +20,6 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { BaseAction } from "modules/types";
 import { Getters } from "@augurproject/sdk";
-import { generateTxParameterId } from "utils/generate-tx-parameter-id";
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
@@ -118,8 +117,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         text: "Cancel All",
         action: () => {
-          const txParamHash = generateTxParameterId(sP.market.txParams);
-          dP.clearMarketLiquidityOrders(txParamHash);
+          dP.clearMarketLiquidityOrders(sP.market.transactionHash);
           dP.closeModal();
         },
       },
