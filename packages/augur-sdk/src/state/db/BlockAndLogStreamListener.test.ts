@@ -110,8 +110,8 @@ describe("BlockstreamListener", () => {
         blockAndLogStreamerListener.listenForEvent("SomeEvent", onNewLogCallback);
       });
 
-      test("should notify log listeners", () => {
-        blockAndLogStreamerListener.onNewBlock(nextBlock);
+      test("should notify log listeners", async () => {
+        await blockAndLogStreamerListener.onNewBlock(nextBlock);
         expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
       });
 
@@ -132,8 +132,8 @@ describe("BlockstreamListener", () => {
         blockAndLogStreamerListener.listenForEvent(["SomeEvent", "SomeOtherEvent", "SomeEventWithoutLogs"], onNewLogCallback);
       });
 
-      test("should notify log listeners", () => {
-        blockAndLogStreamerListener.onNewBlock(nextBlock);
+      test("should notify log listeners", async () => {
+        await blockAndLogStreamerListener.onNewBlock(nextBlock);
         expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
       });
 

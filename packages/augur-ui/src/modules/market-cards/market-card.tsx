@@ -17,6 +17,7 @@ import { PaperClip, Person, MarketCreator, PositionIcon, DesignatedReporter, Dis
 import { MarketProgress } from "modules/common/progress";
 import ChevronFlip from "modules/common/chevron-flip";
 import { MarketData } from "modules/types";
+import { formatAttoRep } from "utils/format-number";
 
 import Styles from "modules/market-cards/market-card.styles.less";
 
@@ -231,7 +232,7 @@ export default class MarketCard extends React.Component<
                 <LabelValue
                   condensed
                   label="Total Dispute Stake"
-                  value={disputeInfo.stakeCompletedTotal}
+                  value={formatAttoRep(disputeInfo.stakeCompletedTotal).formatted}
                 />
               }
             </div>
@@ -248,6 +249,8 @@ export default class MarketCard extends React.Component<
                   min={minPriceBigNumber}
                   max={maxPriceBigNumber}
                   expanded={expandedView ? true : s.expanded}
+                  reportingState={reportingState}
+                  stakes={disputeInfo.stakes}
                 />
                 {marketType === CATEGORICAL && outcomesFormatted.length > 3 && !expandedView &&
                   <button onClick={this.expand}>
