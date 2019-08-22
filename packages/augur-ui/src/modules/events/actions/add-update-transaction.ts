@@ -23,6 +23,7 @@ import {
   TX_ORDER_TYPE,
   BUY,
   SELL,
+  ZERO,
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -224,6 +225,6 @@ function processLiquidityOrder(
     createBigNumber(attoShares),
     createBigNumber(tickSize)
   ).toString();
-  const type = orderType === 0 ? BUY : SELL;
+  const type = orderType.eq(ZERO) ? BUY : SELL;
   return { outcomeId, type, quantity, transactionHash };
 }

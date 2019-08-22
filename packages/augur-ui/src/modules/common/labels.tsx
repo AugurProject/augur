@@ -639,7 +639,7 @@ interface PendingLabelProps {
 
 export const PendingLabel = (props: PendingLabelProps) => (
   <span className={classNames(Styles.PendingLabel, {[Styles.Failure]: props.status && props.status === TXEventName.Failure})} data-tip data-for={"processing"}>
-    {(!props.status || props.status === TXEventName.Pending) &&
+    {(!props.status || props.status === TXEventName.Pending || props.status === TXEventName.AwaitingSigning) &&
       <>
         <span>Processing <ClipLoader size={8} color="#ffffff" /></span>
         <ReactTooltip
@@ -655,7 +655,7 @@ export const PendingLabel = (props: PendingLabelProps) => (
         </ReactTooltip>
       </>
     }
-    {props.status && props.status === TXEventName.Failure && 
+    {props.status && props.status === TXEventName.Failure &&
       <span>Failed</span>
     }
   </span>

@@ -15,13 +15,14 @@ import {
   Breakdown,
 } from "modules/modal/common";
 import {
-  LinearPropertyLabelProps,
+  LinearPropertyLabelProps, PendingLabel,
 } from "modules/common/labels";
-import { BID } from "modules/common/constants";
+import { BUY } from "modules/common/constants";
 import { formatShares, formatEther } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
 import { LiquidityOrder } from "modules/types";
+import { TXEventName } from "@augurproject/sdk";
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -48,7 +49,7 @@ interface UnsignedOrdersProps {
 }
 
 const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
-  const { outcomeId, outcomeName, type, quantity, price, orderEstimate, index } = order;
+  const { outcomeId, outcomeName, type, quantity, price, orderEstimate, index, status } = order;
   const {
     removeLiquidityOrder,
     sendLiquidityOrder,
@@ -95,15 +96,16 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
   return (
     <div key={`${outcomeName}-${price}-${index}`}>
       <span>{outcomeName}</span>
-      <span className={type === BID ? Styles.bid : Styles.ask}>{type}</span>
+      <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>
       <span>{formatShares(quantity).formatted}</span>
       <span>{formatEther(Number(price)).formatted}</span>
       <span>{formatEther(Number(orderEstimate)).formatted}</span>
+      <span>{status && <PendingLabel status={status} />}</span>
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
           if (index === 0)
-            return <CancelTextButton key={Button.text} {...Button} />;
-          return <SubmitTextButton key={Button.text} {...Button} />;
+            return <CancelTextButton key={Button.text} {...Button} disabled={status && status !== TXEventName.Failure} />;
+          return <SubmitTextButton key={Button.text} {...Button} disabled={status && status !== TXEventName.Failure} />;
         })}
       </div>
     </div>
@@ -120,8 +122,8 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
       <MarketTitle title={props.marketTitle} />
       {props.header && (
         <div className={Styles.Orders__header}>
-          {props.header.map((headerLabel: string) => (
-            <span key={headerLabel}>{headerLabel}</span>
+          {props.header.map((headerLabel: string, index) => (
+            <span key={headerLabel+index}>{headerLabel}</span>
           ))}
         </div>
       )}

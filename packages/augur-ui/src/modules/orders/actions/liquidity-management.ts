@@ -5,11 +5,14 @@ import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { createBigNumber } from 'utils/create-big-number';
 
 import { MODAL_ACCOUNT_APPROVAL, BUY } from 'modules/common/constants';
-import { IndividualOrderBook, BaseAction } from 'modules/types';
+import { IndividualOrderBook, BaseAction, LiquidityOrder } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
-import { createLiquidityOrder } from 'modules/contracts/actions/contractCalls';
+import {
+  createLiquidityOrder,
+  isTransactionConfirmed,
+} from 'modules/contracts/actions/contractCalls';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -17,11 +20,45 @@ export const LOAD_PENDING_LIQUIDITY_ORDERS = 'LOAD_PENDING_LIQUIDITY_ORDERS';
 export const CLEAR_ALL_MARKET_ORDERS = 'CLEAR_ALL_MARKET_ORDERS';
 export const UPDATE_TX_PARAM_HASH_TX_HASH = 'UPDATE_TX_PARAM_HASH_TX_HASH';
 export const UPDATE_LIQUIDITY_ORDER_STATUS = 'UPDATE_LIQUIDITY_ORDER_STATUS';
-export const DELETE_SUCCESSFUL_LIQUIDITY_ORDER = 'DELETE_SUCCESSFUL_LIQUIDITY_ORDER';
+export const DELETE_SUCCESSFUL_LIQUIDITY_ORDER =
+  'DELETE_SUCCESSFUL_LIQUIDITY_ORDER';
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
 export const loadPendingLiquidityOrders = (
+  pendingLiquidityOrders: IndividualOrderBook
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
+  const ordersWithHashes = [];
+  Object.keys(pendingLiquidityOrders).map((txMarketHashId: string) => {
+    Object.keys(pendingLiquidityOrders[txMarketHashId]).map(outcomeId => {
+      const orders = pendingLiquidityOrders[txMarketHashId][outcomeId];
+      orders.map((o: LiquidityOrder) => {
+        if (!o.hash && o.status) delete o.status;
+        if (o.hash) ordersWithHashes.push({ ...o, txMarketHashId });
+      });
+      if (pendingLiquidityOrders[txMarketHashId][outcomeId].length === 0)
+        delete pendingLiquidityOrders[txMarketHashId][outcomeId];
+    });
+    if (Object.keys(pendingLiquidityOrders[txMarketHashId]).length === 0)
+      delete pendingLiquidityOrders[txMarketHashId];
+  });
+  dispatch(loadBulkPendingLiquidityOrders(pendingLiquidityOrders));
+
+  // remove orders that have been confirmed
+  ordersWithHashes.map(async o => {
+    const confirmed = await isTransactionConfirmed(o.hash);
+    if (confirmed)
+      dispatch(
+        removeLiquidityOrder({
+          transactionHash: o.txMarketHashId,
+          outcomeId: o.outcomeId,
+          orderId: o.index
+        })
+      );
+  });
+};
+
+export const loadBulkPendingLiquidityOrders = (
   pendingLiquidityOrders: IndividualOrderBook
 ) => ({
   type: LOAD_PENDING_LIQUIDITY_ORDERS,
@@ -64,9 +101,9 @@ export const updateLiquidityOrderStatus = ({
     type,
     quantity,
     eventName,
-    hash
-  }
-})
+    hash,
+  },
+});
 
 export const deleteSuccessfulLiquidityOrder = ({
   txParamHash,
@@ -80,10 +117,8 @@ export const deleteSuccessfulLiquidityOrder = ({
     outcomeId,
     type,
     quantity,
-  }
-})
-
-
+  },
+});
 
 export const updateLiquidityOrder = ({
   order,
@@ -104,7 +139,7 @@ export const removeLiquidityOrder = ({
   transactionHash,
   outcomeId,
   orderId,
-}: BaseAction) => ({
+}) => ({
   type: REMOVE_LIQUIDITY_ORDER,
   data: { txParamHash: transactionHash, outcomeId, orderId },
 });
