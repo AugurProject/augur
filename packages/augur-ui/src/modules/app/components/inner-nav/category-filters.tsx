@@ -70,10 +70,10 @@ export default class CategoryFilters extends React.Component<
     return (
       <div className={Styles.CategoryFilters}>
         {!hasSelectedCategories && this.renderPopularCategories()}
-        {!hasSelectedCategories && this.renderAllCategories()}
+        {!hasSelectedCategories && this.props.categoryMetaData && this.renderAllCategories()}
 
-        {hasSelectedCategories && showAllCategoriesButton}
-        {hasSelectedCategories && hasSelectedCategoriesCount > 0 && this.renderSelectedCategories()}
+        {hasSelectedCategories && this.props.categoryMetaData && showAllCategoriesButton}
+        {hasSelectedCategories && this.props.categoryMetaData && hasSelectedCategoriesCount > 0 && this.renderSelectedCategories()}
       </div>
     );
   }

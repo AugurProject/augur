@@ -16,12 +16,6 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 
-interface MenuItem {
-  label: string;
-  value: string;
-  description?: string;
-}
-
 interface MarketsListFiltersProps {
   maxFee: string;
   maxLiquiditySpread: string;
