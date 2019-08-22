@@ -90,7 +90,7 @@ export const updateLiquidityOrderStatus = ({
   txParamHash,
   outcomeId,
   type,
-  quantity,
+  price,
   eventName,
   hash,
 }) => ({
@@ -99,7 +99,7 @@ export const updateLiquidityOrderStatus = ({
     txParamHash,
     outcomeId,
     type,
-    quantity,
+    price,
     eventName,
     hash,
   },
@@ -109,14 +109,14 @@ export const deleteSuccessfulLiquidityOrder = ({
   txParamHash,
   outcomeId,
   type,
-  quantity,
+  price,
 }) => ({
   type: DELETE_SUCCESSFUL_LIQUIDITY_ORDER,
   data: {
     txParamHash,
     outcomeId,
     type,
-    quantity,
+    price,
   },
 });
 

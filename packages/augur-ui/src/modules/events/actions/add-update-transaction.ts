@@ -24,6 +24,7 @@ import {
   BUY,
   SELL,
   ZERO,
+  TX_PRICE,
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -41,6 +42,7 @@ import {
   TXEventName,
   QUINTILLION,
   convertOnChainAmountToDisplayAmount,
+  convertOnChainPriceToDisplayPrice,
 } from '@augurproject/sdk';
 import {
   addPendingData,
@@ -216,14 +218,15 @@ function processLiquidityOrder(
   market: Getters.Markets.MarketInfo
 ) {
   const { transaction } = tx;
-  const { transactionHash, tickSize } = market;
+  const { transactionHash, tickSize, minPrice } = market;
   const outcomeId = transaction.params[TX_OUTCOME_ID];
   const orderType = transaction.params[TX_ORDER_TYPE];
-  const attoShares = transaction.params[TX_NUM_SHARES];
-  const quantity = convertOnChainAmountToDisplayAmount(
-    createBigNumber(attoShares),
+  const onChainPrice = transaction.params[TX_PRICE];
+  const price = convertOnChainPriceToDisplayPrice(
+    createBigNumber(onChainPrice),
+    createBigNumber(minPrice),
     createBigNumber(tickSize)
   ).toString();
   const type = orderType.eq(ZERO) ? BUY : SELL;
-  return { outcomeId, type, quantity, transactionHash };
+  return { outcomeId, type, price, transactionHash };
 }
