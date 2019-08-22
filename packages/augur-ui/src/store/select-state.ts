@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { LoginAccount, MarketInfos } from 'modules/types';
+import { LoginAccount, MarketInfos, MarketsList } from 'modules/types';
 import { AppState } from 'store';
 
 export const selectAccountPositionsState = (state: AppState) =>
@@ -16,6 +16,8 @@ export const selectMarketReportState = (state: AppState) =>
   state.marketReportState;
 export const selectMarketInfosState = (state: AppState): MarketInfos =>
   state.marketInfos;
+  export const selectMarketsListsState = (state: AppState): MarketsList =>
+  state.marketsList;
 export const selectModal = (state: AppState) => state.modal;
 export const selectReadNotificationState = (state: AppState) =>
   state.readNotifications;

@@ -3,21 +3,17 @@
 .Filters {
   display: flex;
   flex-direction: column;
-  margin: 0 40px;
+  margin: @size-48 0 0 0;
+  overflow: auto;
+  min-height: 100%;
+}
 
-  @media @breakpoint-mobile {
-    margin: @size-32 @size-16;
-  }
-
-  > span {
-    .text-14-bold;
-
-    text-transform: uppercase;
-    color:@color-tertiary-info-text;
-    margin: @size-32 0 0 0;
-  }
+.FiltersGroup {
+  border-top: 1px solid @color-primary-light;
 
   > div {
+    margin: 0 @size-40;
+
     > div {
       grid-template-columns: 34px auto @size-16;
       border: none;
@@ -38,12 +34,27 @@
         border: none;
       }
     }
+
+    @media @breakpoint-mobile {
+      margin: 0 @size-16;
+    }
+  }
+
+  > div:first-of-type {
+    .text-14-bold;
+
+    text-transform: uppercase;
+    color: @color-tertiary-info-text;
+    margin: @size-32 @size-40 0 @size-40;
+
+    @media @breakpoint-mobile {
+      margin: @size-32 @size-16 0 @size-16;
+    }
   }
 }
 
 .Filter {
   display: flex;
-
 
   > span:first-of-type {
     .text-10-bold;

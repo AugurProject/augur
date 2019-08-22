@@ -1,0 +1,105 @@
+@import (reference) '~assets/styles/shared';
+
+.CategoryFilters {
+  display: flex;
+  flex-direction: column;
+  margin: @size-48 0 0 0;
+  overflow: auto;
+
+  > .CategoriesGroup:first-of-type {
+    margin: 0 @size-40 @size-40;
+
+    @media @breakpoint-mobile {
+      margin: @size-16;
+    }
+
+    > div {
+      margin: 0;
+      height: 14px;
+    }
+  }
+
+  > .CategoriesGroup:nth-of-type(2) {
+    margin: 0 @size-40 0 @size-40;
+
+    @media @breakpoint-mobile {
+      margin: @size-16;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    margin: 0 0 @size-16 0;
+  }
+}
+
+.CategoriesGroup {
+  > span {
+    .text-10-bold;
+
+    display: block;
+    color: @color-shadow-text;
+    margin: 0 0 @size-16 0;
+  }
+}
+
+.ShowAll {
+  .mono-12;
+
+  cursor: pointer;
+  color: @color-primary-action;
+  margin: @size-16 0 0 0;
+}
+
+
+.AllCategories {
+  .text-14;
+
+  color: @color-alternate-info-text;
+  text-transform: capitalize;
+  margin: 0 @size-32;
+  user-select: none;
+  cursor: pointer;
+
+  > svg {
+    fill: @color-secondary-text;
+    height: 10px;
+    margin-right: 8px;
+  }
+}
+
+.SelectedCategories {
+  .text-14;
+
+  color: @color-alternate-info-text;
+  text-transform: capitalize;
+  user-select: none;
+  cursor: pointer;
+
+  > svg {
+    fill: @color-secondary-text;
+    height: 10px;
+    margin-right: @size-8;
+  }
+
+  > div:not(.SelectedCategory):not(.SelectedCategories_back) {
+    margin: @size-8 @size-40 0 4.25rem;
+  }
+}
+
+.SelectedCategories_back {
+  margin: @size-8 @size-32;
+  user-select: none;
+  cursor: pointer;
+
+  > svg {
+    fill: @color-secondary-text;
+    height: 10px;
+    margin-right: @size-8;
+  }
+}
+
+.SelectedCategory {
+  .text-14-bold;
+
+  margin: @size-8 @size-40 @size-8 3.25rem;
+}

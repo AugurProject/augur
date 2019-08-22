@@ -29,6 +29,7 @@ import readNotifications from "modules/notifications/reducers/read-notifications
 import pendingQueue from "modules/pending-queue/reducers/pending-queue";
 import userOpenOrders from "modules/orders/reducers/open-orders";
 import drafts from "modules/create-market/reducers/drafts";
+import marketsList from "modules/markets-list/reducers/markets-list";
 import {
   LoginAccount,
   AccountPosition,
@@ -59,6 +60,7 @@ import {
   OpenOrders,
   MarketTradingHistoryState,
   Drafts,
+  MarketsList,
 } from "modules/types";
 
 export function createReducer() {
@@ -94,6 +96,7 @@ export function createReducer() {
     versions,
     userOpenOrders,
     drafts,
+    marketsList,
   };
 }
 
@@ -131,4 +134,5 @@ export interface AppStateInterface {
   versions: Versions;
   userOpenOrders: OpenOrders;
   drafts: Drafts;
+  marketsList: MarketsList;
 }
