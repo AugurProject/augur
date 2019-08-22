@@ -65,7 +65,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     const methodCall = transaction.name.toUpperCase();
     switch (methodCall) {
       case PUBLICCREATEORDER: {
-        console.log(JSON.stringify(transaction.params));
         const { marketInfos } = getState();
         const marketId = transaction.params[TX_MARKET_ID];
         const market = marketInfos[marketId];
