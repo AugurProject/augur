@@ -35,6 +35,7 @@ export interface DefaultButtonProps {
   disabled?: boolean;
   title?: string;
   icon?: any;
+  small?: boolean;
 }
 
 export interface SortButtonProps {
@@ -104,7 +105,7 @@ export const PrimaryButton = (props: DefaultButtonProps) => (
 export const SecondaryButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={Styles.SecondaryButton}
+    className={classNames(Styles.SecondaryButton, {[Styles.Small]: props.small})}
     disabled={props.disabled}
     title={props.title || props.text}
   >
