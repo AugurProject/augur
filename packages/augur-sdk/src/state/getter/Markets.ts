@@ -49,7 +49,7 @@ export enum GetMarketsSortBy {
   volume = 'volume',
   timestamp = 'timestamp',
   endTime = 'endTime',
-  lastTradedTimestamp = 'lastTradedTimestamp', // TODO: Implement
+  lastTradedTimestamp = 'lastTradedTimestamp',
   lastLiquidityDepleted = 'lastLiquidityDepleted', // TODO: Implement
 }
 
