@@ -8,7 +8,8 @@ import TradingForm from "modules/market/containers/trading-form";
 import {
   BUY,
   SCALAR,
-  YES_NO
+  YES_NO,
+  CATEGORICAL
 } from "modules/common/constants";
 import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
 import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
@@ -17,9 +18,10 @@ import QuadBox from "modules/portfolio/components/common/quad-box";
 import { Visibility } from "modules/create-market/components/visibility";
 
 import Styles from "modules/create-market/fees-liquidity.styles.less";
+import { OutcomeFormatted, NewMarket } from "modules/types";
 
 interface FeesLiquidityProps {
-  newMarket: Object;
+  newMarket: NewMarket;
   updateNewMarket: Function;
   address: String;
   updatePage: Function;
@@ -28,11 +30,10 @@ interface FeesLiquidityProps {
   removeOrderFromNewMarket: Function;
   onChange: Function;
   onError: Function;
-  updateInitialLiquidityCosts: Function;
 }
 
 interface FeesLiquidityState {
-  selectedOutcome: Number;
+  selectedOutcome: number;
   hoveredDepth: any;
   hoveredPrice: any;
 }
@@ -42,7 +43,7 @@ export default class FeesLiquidity extends React.Component<
   FeesLiquidityState
 > {
   state: FeesLiquidityState = {
-    selectedOutcome: this.props.newMarket.marketType === YES_NO ? 2 : 1,
+    selectedOutcome: this.props.newMarket.marketType === CATEGORICAL ? 1 : 2,
     hoveredDepth: [],
     hoveredPrice: null,
   };
@@ -50,39 +51,29 @@ export default class FeesLiquidity extends React.Component<
   updateSelectedOrderProperties = (selectedOrderProperties) => {
   }
 
-  updateSelectedOutcome = (value: Number) => {
+  updateSelectedOutcome = (value: number) => {
     this.setState({selectedOutcome: value});
   }
 
-  updateLiquidity = (selectedOutcome, s) => {
+  updateLiquidity = (selectedOutcome: OutcomeFormatted, s) => {
     const {
-      addOrderToNewMarket,
-      newMarket,
-      updateInitialLiquidityCosts
+      addOrderToNewMarket
     } = this.props;
 
-     const { marketType, scalarDenomination } = newMarket;
-      let outcomeName = selectedOutcome.description;
+      const outcomeName = selectedOutcome.description;
       addOrderToNewMarket({
         outcomeName,
         outcome: this.state.selectedOutcome,
+        outcomeId: selectedOutcome.id,
         type: s.selectedNav,
         price: s.orderPrice,
         quantity: s.orderQuantity,
         orderEstimate: s.orderDaiEstimate,
       });
-
-      updateInitialLiquidityCosts({
-        outcome: this.state.selectedOutcome,
-        type: s.selectedNav,
-        price: s.orderPrice,
-        quantity: s.orderQuantity,
-        selectedOutcome: this.state.selectedOutcome
-      });
   }
 
   renderRows = (data) => {
-    const { newMarket, updateInitialLiquidityCosts } = this.props;
+    const { newMarket } = this.props;
     const outcomeOrders = newMarket.orderBook[this.state.selectedOutcome];
 
     if (!outcomeOrders) {
@@ -98,7 +89,6 @@ export default class FeesLiquidity extends React.Component<
         key={"order-" + orderId.id + id}
         order={orderId}
         selectedOutcome={this.state.selectedOutcome}
-        updateInitialLiquidityCosts={updateInitialLiquidityCosts}
       />
     );
   }

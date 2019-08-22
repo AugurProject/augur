@@ -1,10 +1,7 @@
-import noop from "utils/noop";
 import * as speedomatic from "speedomatic";
 import logError from "utils/log-error";
-import { UNIVERSE_ID } from "modules/common/constants";
 import { formatGasCostToEther } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
-import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import { AppState } from "store";
 import { NodeStyleCallback } from "modules/types";
@@ -44,29 +41,29 @@ const callMethod = (
   estimateGas: boolean = false,
   callback: NodeStyleCallback,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount } = getState();
-  method({
-    tx: {
-      to: address,
-      estimateGas,
-    },
-    meta: loginAccount.meta,
-    _attotokens: speedomatic.fix(amount, "hex"),
-    onSent: () => {
-      // need fee window to do gas estimate
-      if (!estimateGas) dispatch(closeModal());
-    },
-    onSuccess: (res: any) => {
-      if (estimateGas) {
-        const gasPrice = getGasPrice(getState());
-        return callback(
-          null,
-          formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice),
-        );
-      }
-      dispatch(loadReportingWindowBounds());
-      return callback(null, res);
-    },
-    onFailed: (err: any) => callback(err),
-  });
+  // const { loginAccount } = getState();
+  // method({
+  //   tx: {
+  //     to: address,
+  //     estimateGas,
+  //   },
+  //   meta: loginAccount.meta,
+  //   _attotokens: speedomatic.fix(amount, "hex"),
+  //   onSent: () => {
+  //     // need fee window to do gas estimate
+  //     if (!estimateGas) dispatch(closeModal());
+  //   },
+  //   onSuccess: (res: any) => {
+  //     if (estimateGas) {
+  //       const gasPrice = getGasPrice(getState());
+  //       return callback(
+  //         null,
+  //         formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice),
+  //       );
+  //     }
+  //     // dispatch(loadReportingWindowBounds());
+  //     return callback(null, res);
+  //   },
+  //   onFailed: (err: any) => callback(err),
+  // });
 };

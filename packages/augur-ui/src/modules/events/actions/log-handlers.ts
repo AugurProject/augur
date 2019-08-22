@@ -4,28 +4,21 @@ import {
   loadAccountPositionsTotals,
 } from 'modules/positions/actions/load-account-positions';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-book';
-import { loadReportingWindowBounds } from 'modules/reports/actions/load-reporting-window-bounds';
 import { removeMarket } from 'modules/markets/actions/update-markets-data';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import makePath from 'modules/routes/helpers/make-path';
 import { MY_MARKETS, TRANSACTIONS } from 'modules/routes/constants/views';
-import { loadReporting } from 'modules/reports/actions/load-reporting';
-import { loadDisputing } from 'modules/reports/actions/load-disputing';
 import loadCategories from 'modules/categories/actions/load-categories';
-import { getReportingFees } from 'modules/reports/actions/get-reporting-fees';
 import {
   loadMarketsInfo,
   loadMarketsInfoIfNotLoaded,
 } from 'modules/markets/actions/load-markets-info';
-import { getWinningBalance } from 'modules/reports/actions/get-winning-balance';
-import { startOrderSending } from 'modules/orders/actions/liquidity-management';
 import {
   loadMarketTradingHistory,
   loadUserFilledOrders,
 } from 'modules/markets/actions/market-trading-history-management';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
-import { appendCategoryIfNew } from 'modules/categories/actions/append-category';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -60,7 +53,7 @@ const loadUserPositionsAndBalances = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   dispatch(loadMarketAccountPositions(marketId));
-  dispatch(getWinningBalance([marketId]));
+  // dispatch(getWinningBalance([marketId]));
 };
 
 export const handleTxAwaitingSigning = (txStatus: Events.TXStatus) => (
@@ -135,8 +128,9 @@ export const handleMarketCreatedLog = (log: any) => (
     dispatch(loadMarketsInfo([log.market]));
   }
   if (isStoredTransaction) {
+    // TODO: could tell that logged in user can create liquidity orders
     // My Market? start kicking off liquidity orders
-    if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
+    // if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
   }
 };
 
@@ -172,7 +166,7 @@ export const handleTokenBalanceChangedLog = (
   const { address } = getState().loginAccount;
   const isStoredTransaction = isSameAddress(log.owner, address);
   if (isStoredTransaction) {
-    dispatch(loadReportingWindowBounds());
+    // dispatch(loadReportingWindowBounds());
   }
 };
 
@@ -184,10 +178,6 @@ export const handleOrderLog = (log: any) => {
     }
     case Logs.OrderEventType.Create: {
       return handleOrderCreatedLog(log);
-    }
-    case Logs.OrderEventType.PriceChanged: {
-      // TODO: figure out what needs to change for price change
-      return console.log('order price changed need to add UI functionality');
     }
     default:
       return handleOrderFilledLog(log);
@@ -261,13 +251,13 @@ export const handleInitialReportSubmittedLog = (
   log: Logs.InitialReportSubmittedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
-  dispatch(loadReporting([log.market]));
+  //dispatch(loadReporting([log.market]));
   const isStoredTransaction = isSameAddress(
     log.reporter,
     getState().loginAccount.address
   );
   if (isStoredTransaction) {
-    dispatch(loadDisputing());
+    // dispatch(loadDisputing());
   }
 };
 
@@ -280,10 +270,10 @@ export const handleInitialReporterRedeemedLog = (
     getState().loginAccount.address
   );
   if (isStoredTransaction) {
-    dispatch(loadReporting([log.market]));
-    dispatch(loadDisputing());
+    // dispatch(loadReporting([log.market]));
+    // dispatch(loadDisputing());
   }
-  dispatch(getReportingFees());
+  // dispatch(getReportingFees());
 };
 
 export const handleProfitLossChangedLog = (log: Logs.ProfitLossChangedLog) => (
@@ -361,7 +351,7 @@ export const handleMarketFinalizedLog = (log: Logs.MarketFinalizedLog) => (
   dispatch(
     loadMarketsInfo([log.market], (err: any) => {
       if (err) return console.error(err);
-      dispatch(getWinningBalance([log.market]));
+      // dispatch(getWinningBalance([log.market]));
     })
   );
 
@@ -369,7 +359,7 @@ export const handleDisputeCrowdsourcerCreatedLog = (
   log: Logs.DisputeCrowdsourcerCreatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadMarketsInfo([log.market]));
-  dispatch(loadReportingWindowBounds());
+  // dispatch(loadReportingWindowBounds());
 };
 
 export const handleDisputeCrowdsourcerContributionLog = (
@@ -377,7 +367,7 @@ export const handleDisputeCrowdsourcerContributionLog = (
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
   if (log.reporter === getState().loginAccount.address) {
-    dispatch(loadReportingWindowBounds());
+    // dispatch(loadReportingWindowBounds());
   }
 };
 
@@ -385,20 +375,20 @@ export const handleDisputeCrowdsourcerCompletedLog = (
   log: Logs.DisputeCrowdsourcerCompletedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadMarketsInfo([log.market]));
-  dispatch(loadReportingWindowBounds());
+  // dispatch(loadReportingWindowBounds());
 };
 
 export const handleDisputeCrowdsourcerRedeemedLog = (
   log: Logs.DisputeCrowdsourcerRedeemedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadMarketsInfo([log.market]));
-  dispatch(loadReportingWindowBounds());
-  dispatch(getReportingFees());
+  // dispatch(loadReportingWindowBounds());
+  // dispatch(getReportingFees());
 };
 
 export const handleDisputeWindowCreatedLog = (
   log: Logs.DisputeWindowCreatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  dispatch(loadReportingWindowBounds());
-  dispatch(getReportingFees());
+  // dispatch(loadReportingWindowBounds());
+  // dispatch(getReportingFees());
 };

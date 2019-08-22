@@ -163,6 +163,7 @@ export interface ReportingWindowStats {
 }
 
 export interface CreateMarketData {
+  id: string;
   txParams: TransactionMetadataParams;
   endTime: DateFormattedObject;
   description: string;
@@ -172,6 +173,7 @@ export interface CreateMarketData {
   creationTime: DateFormattedObject;
   marketType: string;
   pendingId: string;
+  orderBook?: IndividualOrderBook;
 }
 
 export interface PendingQueue {
@@ -256,10 +258,12 @@ export interface UIOrder {
   ignoreShares?: boolean;
   status?: string;
   hash?: string;
+  numTicks: number;
+  minPrice: string;
 }
 
 export interface LiquidityOrders {
-  [marketId: string]: {
+  [txParamHash: string]: {
     [outcome: number]: Array<LiquidityOrder>;
   };
 }
@@ -273,6 +277,7 @@ export interface LiquidityOrder {
   type: string;
   orderEstimate: BigNumber;
   outcomeName: string;
+  outcomeId: number;
 }
 export interface NewMarketPropertiesValidations {
   description?: string;
@@ -286,11 +291,14 @@ export interface NewMarketPropertiesValidations {
   minute?: string;
   meridiem?: string;
   outcomes?: string[];
+  settlementFee?: string;
+  affiliateFee?: number;
 }
 
 export interface NewMarketPropertyValidations {
   settlementFee?: string;
   scalarDenomination?: string;
+  affiliateFee?: number;
 }
 export interface NewMarket {
   isValid: boolean;
@@ -311,9 +319,11 @@ export interface NewMarket {
   designatedReporterAddress: string;
   minPrice: string;
   maxPrice: string;
+  endTime: number;
   endTimeFormatted: DateFormattedObject;
   setEndTime: number;
   tickSize: number;
+  numTicks: number;
   hour: string;
   minute: string;
   meridiem: string;

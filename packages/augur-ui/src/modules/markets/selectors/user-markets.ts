@@ -3,13 +3,13 @@ import {
   selectLoginAccountAddress,
   selectMarketTradingHistoryState,
   selectPendingQueue,
-  selectCurrentTimestamp,
   selectPendingLiquidityOrders
 } from "store/select-state";
 import { CREATE_MARKET } from 'modules/common/constants';
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import { isSameAddress } from "utils/isSameAddress";
+import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 
 export const selectAuthorOwnedMarkets = createSelector(
   selectAllMarkets,
@@ -22,16 +22,21 @@ export const selectAuthorOwnedMarkets = createSelector(
     let filteredMarkets = allMarkets.filter(
       market => isSameAddress(market.author, authorId)
     );
-    const pendingMarkets = Object.keys(pendingQueue[CREATE_MARKET] || {}).map(key => {
-      let data = pendingQueue[CREATE_MARKET][key];
-      data = Object.assign(data, data.data)
+    const pendingMarkets = Object.keys(pendingQueue[CREATE_MARKET] || {}).map(pendingId => {
+      const pendingData = pendingQueue[CREATE_MARKET][pendingId];
+      const data = Object.assign(pendingData, pendingData.data)
+      data.id = pendingId;
       return data;
     });
     filteredMarkets = pendingMarkets.concat(filteredMarkets);
-    return filteredMarkets.map(m => ({
-      ...m,
-      hasPendingLiquidityOrders: !!pendingLiquidityOrders[m.id],
-      recentlyTraded: getLastTradeTimestamp(marketTradingHistory[m.id])
-    }));
+    return filteredMarkets.map(m => {
+      const pendingOrderId = m.transactionHash || generateTxParameterId(m.txParams);
+      return {
+        ...m,
+        hasPendingLiquidityOrders: !!pendingLiquidityOrders[pendingOrderId],
+        orderBook: pendingLiquidityOrders[pendingOrderId],
+        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[pendingOrderId])
+      }
+    });
   }
 );

@@ -11,7 +11,6 @@ import filterSortOptions from "modules/filter-sort/reducers/filter-sort-options"
 import gasPriceInfo from "modules/app/reducers/gas-price-info";
 import loginAccount from "modules/auth/reducers/login-account";
 import marketTradingHistory from "modules/markets/reducers/market-trading-history";
-import marketReportState from "modules/reports/reducers/market-report-state";
 import marketInfos from "modules/markets/reducers/market-infos";
 import modal from "modules/modal/reducers/modal";
 import newMarket from "modules/markets/reducers/new-market";
@@ -20,7 +19,6 @@ import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
 import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
-import reports from "modules/reports/reducers/reports";
 import universe from "modules/universe/reducers/universe";
 import versions from "modules/app/reducers/versions";
 import pendingOrders from "modules/orders/reducers/pending-orders";
@@ -42,7 +40,6 @@ import {
   Favorite,
   FilterSortOptions,
   GasPriceInfo,
-  MarketsInReporting,
   MarketInfos,
   NewMarket,
   Alert,
@@ -54,7 +51,6 @@ import {
   PendingQueue,
   FilledOrders,
   ReportingWindowStats,
-  UserReports,
   Universe,
   Versions,
   OpenOrders,
@@ -77,7 +73,6 @@ export function createReducer() {
     filterSortOptions,
     gasPriceInfo,
     loginAccount,
-    marketReportState,
     marketTradingHistory,
     marketInfos,
     modal,
@@ -90,7 +85,6 @@ export function createReducer() {
     pendingQueue,
     filledOrders,
     reportingWindowStats,
-    reports,
     sidebarStatus,
     universe,
     versions,
@@ -115,7 +109,6 @@ export interface AppStateInterface {
   filterSortOptions: FilterSortOptions;
   gasPriceInfo: GasPriceInfo;
   loginAccount: LoginAccount;
-  marketReportState: MarketsInReporting;
   marketTradingHistory: MarketTradingHistoryState;
   marketInfos: MarketInfos;
   modal: any;
@@ -128,7 +121,6 @@ export interface AppStateInterface {
   pendingQueue: PendingQueue;
   filledOrders: FilledOrders;
   reportingWindowStats: ReportingWindowStats;
-  reports: UserReports;
   sidebarStatus: any;
   universe: Universe;
   versions: Versions;

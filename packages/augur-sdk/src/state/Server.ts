@@ -7,7 +7,7 @@ import { EventEmitter } from "events";
 export async function run() {
   const settings = require("@augurproject/sdk/src/state/settings.json");
 
-  const api = await Sync.start(settings.ethNodeURLs[4], settings.testAccounts[0]);
+  const api = await Sync.start(settings.ethNodeURLs[4], settings.testAccounts[0], {}, false);
   const endpointSettings = {} as EndpointSettings;
 
   try {

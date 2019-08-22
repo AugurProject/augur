@@ -11,7 +11,6 @@ import {
 } from "modules/orders/actions/liquidity-management";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import {
-  CATEGORICAL,
   NEW_ORDER_GAS_ESTIMATE,
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
@@ -20,13 +19,14 @@ import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { BaseAction } from "modules/types";
+import { Getters } from "@augurproject/sdk";
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
   return {
     modal: state.modal,
     market,
-    liquidity: state.pendingLiquidityOrders[market.id],
+    liquidity: state.pendingLiquidityOrders[market.transactionHash],
     gasPrice: getGasPrice(state),
     loginAccount: state.loginAccount,
   };
@@ -45,12 +45,10 @@ const mergeProps = (sP, dP, oP) => {
   let numberOfTransactions = 0;
   let totalCost = createBigNumber(0);
 
-  sP.market.outcomes.forEach((outcome: any) => {
-    const target =
-      sP.market.marketType === CATEGORICAL ? outcome.name : outcome.id;
+  sP.market.outcomes.forEach((outcome: Getters.Markets.MarketInfoOutcome) => {
     sP.liquidity &&
-      sP.liquidity[target] &&
-      sP.liquidity[target].forEach((order: any, index: number) => {
+      sP.liquidity[outcome.id] &&
+      sP.liquidity[outcome.id].forEach((order: any, index: number) => {
         totalCost = totalCost.plus(order.orderEstimate);
         numberOfTransactions += numberOfTransactions;
       });
@@ -69,6 +67,7 @@ const mergeProps = (sP, dP, oP) => {
     numTicks,
     minPrice,
     maxPrice,
+    transactionHash
   } = sP.market;
   return {
     title: "Unsigned Orders",
@@ -82,6 +81,7 @@ const mergeProps = (sP, dP, oP) => {
     numTicks,
     maxPrice,
     minPrice,
+    transactionHash,
     breakdown: [
       {
         label: "Estimated GAS",
@@ -117,7 +117,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         text: "Cancel All",
         action: () => {
-          dP.clearMarketLiquidityOrders(sP.market.id);
+          dP.clearMarketLiquidityOrders(sP.market.transactionHash);
           dP.closeModal();
         },
       },

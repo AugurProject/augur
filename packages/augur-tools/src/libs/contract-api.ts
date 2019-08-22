@@ -27,7 +27,7 @@ export class ContractAPI {
   static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
-    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay);
+    const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true);
 
     return new ContractAPI(augur, provider, dependencies, account);
   }
@@ -130,7 +130,6 @@ export class ContractAPI {
       betterOrderID,
       worseOrderID,
       tradeGroupID,
-      false,
       NULL_ADDRESS
     );
 
@@ -158,22 +157,18 @@ export class ContractAPI {
 
   async fillOrder(orderId: string, cost: BigNumber, numShares: BigNumber, tradeGroupId: string) {
     await this.faucet(cost.multipliedBy(10000));
-    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), false, NULL_ADDRESS);
-  }
-
-  async setOrderPrice(orderId: string, price: BigNumber, betterOrderId: string, worseOrderId: string): Promise<void> {
-    await this.augur.contracts.orders.setOrderPrice(orderId, price, betterOrderId, worseOrderId);
+    await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), NULL_ADDRESS);
   }
 
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
     const cost = numShares.multipliedBy(price);
     await this.faucet(cost);
-    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
+    const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error("Could not take best Order");
     }
 
-    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), false, NULL_ADDRESS, NULL_ADDRESS);
+    await this.augur.contracts.trade.publicFillBestOrder(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), NULL_ADDRESS, NULL_ADDRESS);
   }
 
   async cancelOrder(orderID: string): Promise<void> {
@@ -199,7 +194,6 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String("42"),
-      ignoreShares: false,
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
@@ -219,7 +213,6 @@ export class ContractAPI {
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
       tradeGroupId: formatBytes32String("42"),
-      ignoreShares: false,
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,

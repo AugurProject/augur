@@ -78,12 +78,11 @@ export class SyncableDB extends AbstractDB {
     this.syncing = false;
     await this.syncStatus.updateSyncingToFalse(this.dbName);
 
-    // Add MarketCreated docs to FlexSearch in web worker (so that unit tests will run)
-    if (this.eventName === SubscriptionEventName.MarketCreated) {
+    if (Augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
       const marketCreatedRawDocs = await this.allDocs();
       let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
       marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
-      Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
+      await Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
     }
 
     // TODO Make any other external calls as needed (such as pushing user's balance to UI)
@@ -186,9 +185,8 @@ export class SyncableDB extends AbstractDB {
         await this.db.remove(doc._id, doc._rev);
       }
 
-      // Remove MarketCreated docs to FlexSearch in web worker (so that unit tests will run)
-      if (this.eventName === SubscriptionEventName.MarketCreated) {
-        Augur.syncableFlexSearch.removeMarketCreatedDocs(blocksToRemove.docs);
+      if (Augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
+        await Augur.syncableFlexSearch.removeMarketCreatedDocs(blocksToRemove.docs);
       }
 
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing, true);

@@ -138,6 +138,7 @@ export interface MarketInfo {
   numTicks: string;
   tickSize: string;
   consensus: string[] | null;
+  transactionHash: string;
   outcomes: MarketInfoOutcome[];
   marketCreatorFeeRate: string;
   settlementFee: string;
@@ -559,14 +560,14 @@ export class Markets {
       }
     }
 
-    const meta = getMarketsMeta(marketsResults, filteredOutCount);
-
     // Sort & limit markets
     _.sortBy(marketsResults, [(market: any) => market[params.sortBy]]);
     if (params.isSortDescending) {
       marketsResults = marketsResults.reverse();
     }
     marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
+
+    const meta = getMarketsMeta(marketsResults, filteredOutCount);
 
     // Get markets info to return
     const marketsInfo = await Markets.getMarketsInfo(
@@ -848,6 +849,7 @@ export class Markets {
           numTicks: numTicks.toString(10),
           tickSize: tickSize.toString(10),
           consensus,
+          transactionHash: marketCreatedLog.transactionHash,
           outcomes: await getMarketOutcomes(
             db,
             marketCreatedLog,
