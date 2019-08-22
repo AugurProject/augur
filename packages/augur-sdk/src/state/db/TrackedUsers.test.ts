@@ -13,7 +13,7 @@ test("track a user", async () => {
   } catch (e) {
     err = e;
   }
-  expect(err.message).toMatch('invalid address (arg="address", value="mock", version=4.0.24)');
+  await expect(err.message).toMatch('invalid address (arg="address", value="mock", version=4.0.24)');
 
   expect(await trackedUsers.getUsers()).toEqual([]);
 });

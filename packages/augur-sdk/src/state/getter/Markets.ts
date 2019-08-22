@@ -138,6 +138,7 @@ export interface MarketInfo {
   numTicks: string;
   tickSize: string;
   consensus: string[] | null;
+  transactionHash: string;
   outcomes: MarketInfoOutcome[];
   marketCreatorFeeRate: string;
   settlementFee: string;
@@ -848,6 +849,7 @@ export class Markets {
           numTicks: numTicks.toString(10),
           tickSize: tickSize.toString(10),
           consensus,
+          transactionHash: marketCreatedLog.transactionHash,
           outcomes: await getMarketOutcomes(
             db,
             marketCreatedLog,

@@ -22,8 +22,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
-  submitNewMarket: (data, history, cb) =>
-    dispatch(submitNewMarket(data, history, cb)),
+  submitNewMarket: (data, cb) =>
+    dispatch(submitNewMarket(data, cb)),
   estimateSubmitNewMarket: (data, callback) =>
     dispatch(estimateSubmitNewMarket(data, callback))
 });

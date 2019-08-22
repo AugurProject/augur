@@ -222,8 +222,7 @@ export enum OrderType {
 export enum OrderEventType {
   Create = 0,
   Cancel = 1,
-  PriceChanged = 2,
-  Fill = 3,
+  Fill = 2,
 }
 
 export enum OrderState {

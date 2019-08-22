@@ -57,7 +57,7 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
 
       await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});
-      connector.disconnect();
+      await connector.disconnect();
       done();
     }
   );

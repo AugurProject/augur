@@ -13,7 +13,7 @@ function startPollingForBlocks(blockstream: BlockAndLogStreamer<Block, Log>, get
   setInterval(async function () {
     let block = await getBlockByNumber("latest");
     if (block === null) return console.warn("bad block");
-    blockstream.reconcileNewBlock(block);
+    await blockstream.reconcileNewBlock(block);
   }, POLLING_FREQUENCY);
 }
 

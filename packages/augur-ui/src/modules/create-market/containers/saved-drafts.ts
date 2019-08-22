@@ -2,8 +2,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
-  addOrderToNewMarket,
-  removeOrderFromNewMarket,
   updateNewMarket
 } from "modules/markets/actions/update-new-market";
 import SavedDrafts from "modules/create-market/saved-drafts";
@@ -18,8 +16,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
-  submitNewMarket: (data, history, cb) =>
-    dispatch(submitNewMarket(data, history, cb)),
+  submitNewMarket: (data, cb) =>
+    dispatch(submitNewMarket(data, cb)),
   addDraft: (key, data) => dispatch(addDraft(key, data)),
   updateDraft: (key, data) => dispatch(updateDraft(key, data)),
   removeDraft: (key) => dispatch(removeDraft(key)),
