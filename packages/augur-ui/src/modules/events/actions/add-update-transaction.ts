@@ -29,7 +29,7 @@ import {
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
-import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
+import { updateLiqTransactionParamHash, removeLiquidityOrder } from 'modules/orders/actions/liquidity-management';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -39,7 +39,17 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
     switch (methodCall) {
-      case PUBLICCREATEORDER:
+      case PUBLICCREATEORDER: {
+        const marketId = transaction.params[TX_MARKET_ID];
+        const { marketInfos } = getState();
+        const market = marketInfos[marketId];
+        const { transactionHash } = market;
+        // TODO: update liquidity to show pending indicator
+        if (eventName === TXEventName.Success) {
+          // dispatch(removeLiquidityOrder(transactionHash, ));
+        }
+        break;
+      }
       case PUBLICTRADE: {
         const tradeGroupId = transaction.params[TX_TRADE_GROUP_ID];
         const marketId = transaction.params[TX_MARKET_ID];

@@ -16,6 +16,7 @@ export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
 export const LOAD_PENDING_LIQUIDITY_ORDERS = 'LOAD_PENDING_LIQUIDITY_ORDERS';
 export const CLEAR_ALL_MARKET_ORDERS = 'CLEAR_ALL_MARKET_ORDERS';
 export const UPDATE_TX_PARAM_HASH_TX_HASH = 'UPDATE_TX_PARAM_HASH_TX_HASH';
+export const SET_LIQUIDITY_ORDER_PENDING = 'SET_LIQUIDITY_ORDER_PENDING';
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
