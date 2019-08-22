@@ -1,13 +1,13 @@
 import { addCanceledOrder, removeCanceledOrder } from 'modules/orders/actions/update-order-status';
-import { 
-  PUBLICTRADE, 
-  CANCELORDER, 
-  TX_ORDER_ID, 
-  TX_MARKET_ID, 
-  TX_TRADE_GROUP_ID, 
-  CREATEMARKET, 
-  CREATECATEGORICALMARKET, 
-  CREATESCALARMARKET, 
+import {
+  PUBLICTRADE,
+  CANCELORDER,
+  TX_ORDER_ID,
+  TX_MARKET_ID,
+  TX_TRADE_GROUP_ID,
+  CREATEMARKET,
+  CREATECATEGORICALMARKET,
+  CREATESCALARMARKET,
   CREATEYESNOMARKET,
   CREATE_MARKET,
   CATEGORICAL,
@@ -91,7 +91,7 @@ function createMarketData(params: TransactionMetadataParams, id: string, hash: s
     txParams: params,
     marketType: YES_NO,
   };
-  
+
   if (methodCall === CREATECATEGORICALMARKET) {
     data.marketType = CATEGORICAL;
   } else if (methodCall === CREATESCALARMARKET) {

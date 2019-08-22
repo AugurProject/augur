@@ -17,10 +17,11 @@ import {
 import {
   LinearPropertyLabelProps,
 } from "modules/common/labels";
-import { BID, CATEGORICAL } from "modules/common/constants";
+import { BID } from "modules/common/constants";
 import { formatShares, formatEther } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
+import { LiquidityOrder } from "modules/types";
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -45,17 +46,8 @@ interface UnsignedOrdersProps {
   openOrders: boolean;
 }
 
-interface Order {
-  outcomeName: string;
-  type: string;
-  quantity: string;
-  price: string;
-  orderEstimate: string;
-  index: number;
-}
-
-const orderRow = (order: Order, props: UnsignedOrdersProps) => {
-  const { outcomeName, type, quantity, price, orderEstimate, index } = order;
+const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
+  const { outcomeId, outcomeName, type, quantity, price, orderEstimate, index } = order;
   const {
     removeLiquidityOrder,
     sendLiquidityOrder,
@@ -66,9 +58,8 @@ const orderRow = (order: Order, props: UnsignedOrdersProps) => {
     minPrice,
     outcomes,
     bnAllowance,
-    loginAccount,
+    loginAccount
   } = props;
-  const outcomeId = marketType === CATEGORICAL ? outcomeName : 1;
   const buttons = [
     {
       text: "cancel",
@@ -135,7 +126,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
       {props.outcomes && (
         <section>
           {props.outcomes.map((outcome: string) =>
-            props.liquidity[outcome].map((order: Order) =>
+            props.liquidity[outcome].map((order: LiquidityOrder) =>
               orderRow(order, props)
             )
           )}

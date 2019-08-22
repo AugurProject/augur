@@ -5,15 +5,17 @@ import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { createBigNumber } from 'utils/create-big-number';
 
 import {
-  CATEGORICAL,
   MODAL_ACCOUNT_APPROVAL,
-  BID,
+  BUY,
 } from 'modules/common/constants';
 import { OrderBook, BaseAction } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
-import { placeTrade } from 'modules/contracts/actions/contractCalls';
+import {
+  placeTrade,
+  createLiquidityOrder,
+} from 'modules/contracts/actions/contractCalls';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -29,10 +31,7 @@ export const loadPendingLiquidityOrders = (
   data: { pendingLiquidityOrders },
 });
 
-export const addMarketLiquidityOrders = ({
-  liquidityOrders,
-  marketId,
-}: BaseAction) => ({
+export const addMarketLiquidityOrders = ({ liquidityOrders, marketId }) => ({
   type: ADD_MARKET_LIQUIDITY_ORDERS,
   data: {
     liquidityOrders,
@@ -50,7 +49,7 @@ export const updateLiquidityOrder = ({
   updates,
   marketId,
   outcomeId,
-}: BaseAction) => ({
+}) => ({
   type: UPDATE_LIQUIDITY_ORDER,
   data: {
     order,
@@ -70,43 +69,26 @@ export const removeLiquidityOrder = ({
 });
 
 export const sendLiquidityOrder = (options: any) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
+  dispatch: ThunkDispatch<void, any, Action>
 ) => {
   const {
     marketId,
-    marketType,
     order,
-    marketOutcomesArray,
     minPrice,
     maxPrice,
     numTicks,
-    orderId,
     bnAllowance,
-    loginAccount,
     orderCB,
     seriesCB,
-    outcome,
   } = options;
-  const orderType = order.type === BID ? 0 : 1;
-
+  const orderType = order.type === BUY ? 0 : 1;
+  const { orderEstimate } = order;
   const sendOrder = async () => {
-    const result = await placeTrade(
-      orderType,
-      marketId,
-      marketOutcomesArray.length,
-      outcome,
-      true,
-      null,
-      null,
-      false,
-      numTicks,
-      minPrice,
-      maxPrice,
-      order.quantity,
-      order.price,
-      '0'
-    );
+    try {
+      createLiquidityOrder({ ...order, orderType, minPrice, maxPrice, numTicks, marketId });
+    } catch (e) {
+      console.error('could not create order', e);
+    }
     orderCB();
     // TODO: handle update liquidity when pending tx has been added.
     /*
@@ -162,7 +144,7 @@ export const sendLiquidityOrder = (options: any) => (
     );
   };
 
-  if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(cost))) {
+  if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
     dispatch(
       checkAccountAllowance((err: any, allowance: string) => {
         if (allowance === '0') {

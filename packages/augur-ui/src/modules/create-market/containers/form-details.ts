@@ -1,13 +1,11 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
   addOrderToNewMarket,
   removeOrderFromNewMarket,
   updateNewMarket
 } from "modules/markets/actions/update-new-market";
 import FormDetails from "modules/create-market/components/form-details";
-import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 import getValue from "utils/get-value";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 

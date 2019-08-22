@@ -23,20 +23,21 @@ export const selectAuthorOwnedMarkets = createSelector(
     let filteredMarkets = allMarkets.filter(
       market => isSameAddress(market.author, authorId)
     );
-    const pendingMarkets = Object.keys(pendingQueue[CREATE_MARKET] || {}).map(key => {
-      let data = pendingQueue[CREATE_MARKET][key];
-      data = Object.assign(data, data.data)
+    const pendingMarkets = Object.keys(pendingQueue[CREATE_MARKET] || {}).map(pendingId => {
+      const pendingData = pendingQueue[CREATE_MARKET][pendingId];
+      const data = Object.assign(pendingData, pendingData.data)
+      data.id = pendingId;
       return data;
     });
     filteredMarkets = pendingMarkets.concat(filteredMarkets);
     return filteredMarkets.map(m => {
       const pendingOrderId = m.pending && generateTxParameterId(m.txParams);
-
+      const id = m.id || pendingOrderId;
       return {
         ...m,
-        hasPendingLiquidityOrders: !!pendingLiquidityOrders[m.id],
-        orderBook: pendingLiquidityOrders[m.id] || (pendingOrderId && pendingLiquidityOrders[pendingOrderId]),
-        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[m.id])
+        hasPendingLiquidityOrders: !!pendingLiquidityOrders[id],
+        orderBook: pendingLiquidityOrders[id],
+        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[id])
       }
     });
   }

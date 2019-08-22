@@ -31,6 +31,8 @@ export class Time extends c.Time<BigNumber> {
 }
 export class TimeControlled extends c.TimeControlled<BigNumber> {
 }
+export class ZeroXExchange extends c.ZeroXExchange<BigNumber> {
+}
 export class DisputeCrowdsourcerFactory extends c.DisputeCrowdsourcerFactory<BigNumber> {
 }
 export class DisputeWindowFactory extends c.DisputeWindowFactory<BigNumber> {
@@ -88,6 +90,8 @@ export class ShareToken extends c.ShareToken<BigNumber> {
 export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 }
 export class Trade extends c.Trade<BigNumber> {
+}
+export class ZeroXTradeToken extends c.ZeroXTradeToken<BigNumber> {
 }
 export class Formulas extends c.Formulas<BigNumber> {
 }

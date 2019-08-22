@@ -190,29 +190,6 @@ describe('State API :: Trading :: ', () => {
     await expect(order.sharesEscrowed).toEqual('0');
     await expect(order.orderState).toEqual(OrderState.FILLED);
 
-    // Change order Price
-    const newPrice = new BigNumber(25);
-    await john.setOrderPrice(
-      orderId,
-      newPrice,
-      stringTo32ByteHex(''),
-      stringTo32ByteHex('')
-    );
-
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-
-    // Get orders for the market
-    orders = await api.route('getOrders', {
-      marketId: market.address,
-      account: john.account.publicKey,
-      makerTaker: 'either',
-    });
-    await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
-    await expect(orders[market.address][0]['0'][orderId].price).toEqual('0.25');
-    await expect(
-      orders[market.address][0]['0'][orderId].tokensEscrowed
-    ).toEqual('0.000125');
-
     orders = await api.route('getOrders', {
       marketId: market.address,
       account: john.account.publicKey,
@@ -221,12 +198,6 @@ describe('State API :: Trading :: ', () => {
     await expect(Object.keys(orders[market.address][0]['0']).length).toEqual(1);
     await expect(orders[market.address][0]['0'][orderId]).not.toBeUndefined();
 
-    orders = await api.route('getOrders', {
-      marketId: market.address,
-      account: john.account.publicKey,
-      makerTaker: 'taker',
-    });
-    await expect(orders).toEqual({});
 
     // Cancel order
     await john.cancelOrder(orderId);
