@@ -5,7 +5,7 @@ import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { createBigNumber } from 'utils/create-big-number';
 
 import { MODAL_ACCOUNT_APPROVAL, BUY } from 'modules/common/constants';
-import { OrderBook, BaseAction } from 'modules/types';
+import { IndividualOrderBook, BaseAction } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
@@ -16,12 +16,13 @@ export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
 export const LOAD_PENDING_LIQUIDITY_ORDERS = 'LOAD_PENDING_LIQUIDITY_ORDERS';
 export const CLEAR_ALL_MARKET_ORDERS = 'CLEAR_ALL_MARKET_ORDERS';
 export const UPDATE_TX_PARAM_HASH_TX_HASH = 'UPDATE_TX_PARAM_HASH_TX_HASH';
-export const SET_LIQUIDITY_ORDER_PENDING = 'SET_LIQUIDITY_ORDER_PENDING';
+export const UPDATE_LIQUIDITY_ORDER_STATUS = 'UPDATE_LIQUIDITY_ORDER_STATUS';
+export const DELETE_SUCCESSFUL_LIQUIDITY_ORDER = 'DELETE_SUCCESSFUL_LIQUIDITY_ORDER';
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
 export const loadPendingLiquidityOrders = (
-  pendingLiquidityOrders: OrderBook
+  pendingLiquidityOrders: IndividualOrderBook
 ) => ({
   type: LOAD_PENDING_LIQUIDITY_ORDERS,
   data: { pendingLiquidityOrders },
@@ -47,6 +48,42 @@ export const clearMarketLiquidityOrders = (marketId: string) => ({
   type: CLEAR_ALL_MARKET_ORDERS,
   data: { txParamHash: marketId },
 });
+
+export const updateLiquidityOrderStatus = ({
+  txParamHash,
+  outcomeId,
+  type,
+  quantity,
+  eventName,
+  hash,
+}) => ({
+  type: UPDATE_LIQUIDITY_ORDER_STATUS,
+  data: {
+    txParamHash,
+    outcomeId,
+    type,
+    quantity,
+    eventName,
+    hash
+  }
+})
+
+export const deleteSuccessfulLiquidityOrder = ({
+  txParamHash,
+  outcomeId,
+  type,
+  quantity,
+}) => ({
+  type: DELETE_SUCCESSFUL_LIQUIDITY_ORDER,
+  data: {
+    txParamHash,
+    outcomeId,
+    type,
+    quantity,
+  }
+})
+
+
 
 export const updateLiquidityOrder = ({
   order,

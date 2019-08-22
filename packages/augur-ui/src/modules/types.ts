@@ -163,7 +163,7 @@ export interface ReportingWindowStats {
 }
 
 export interface CreateMarketData {
-  id: string;
+  id?: string;
   txParams: TransactionMetadataParams;
   endTime: DateFormattedObject;
   description: string;
@@ -255,7 +255,6 @@ export interface UIOrder {
   type: string;
   orderEstimate?: string;
   cumulativeShares?: number;
-  ignoreShares?: boolean;
   status?: string;
   hash?: string;
   numTicks: number;
@@ -278,6 +277,8 @@ export interface LiquidityOrder {
   orderEstimate: BigNumber;
   outcomeName: string;
   outcomeId: number;
+  status?: string;
+  hash?: string;
 }
 export interface NewMarketPropertiesValidations {
   description?: string;
