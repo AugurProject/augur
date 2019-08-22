@@ -35,7 +35,7 @@ export function submitNewMarket(
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
     const parameters = constructMarketParamsReturn(market);
     const txParamHash = generateTxParameterId(parameters);
-    console.log('create market txParamHash', txParamHash);
+
     if (hasOrders) {
       dispatch(
         addMarketLiquidityOrders({
@@ -82,7 +82,7 @@ export function retrySubmitMarket(
     const hasOrders = market.orderBook && Object.keys(market.orderBook).length;
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
     const txParamHash = generateTxParameterId(market.txParams);
-    console.log('create market txParamHash', txParamHash);
+
     if (hasOrders) {
       dispatch(
         addMarketLiquidityOrders({
