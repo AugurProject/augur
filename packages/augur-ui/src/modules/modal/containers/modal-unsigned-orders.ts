@@ -11,7 +11,6 @@ import {
 } from "modules/orders/actions/liquidity-management";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import {
-  CATEGORICAL,
   NEW_ORDER_GAS_ESTIMATE,
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
@@ -27,7 +26,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
     market,
-    liquidity: state.pendingLiquidityOrders[market.id],
+    liquidity: state.pendingLiquidityOrders[market.transactionHash],
     gasPrice: getGasPrice(state),
     loginAccount: state.loginAccount,
   };
@@ -68,6 +67,7 @@ const mergeProps = (sP, dP, oP) => {
     numTicks,
     minPrice,
     maxPrice,
+    transactionHash
   } = sP.market;
   return {
     title: "Unsigned Orders",
@@ -81,6 +81,7 @@ const mergeProps = (sP, dP, oP) => {
     numTicks,
     maxPrice,
     minPrice,
+    transactionHash,
     breakdown: [
       {
         label: "Estimated GAS",
@@ -116,7 +117,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         text: "Cancel All",
         action: () => {
-          dP.clearMarketLiquidityOrders(sP.market.id);
+          dP.clearMarketLiquidityOrders(sP.market.transactionHash);
           dP.closeModal();
         },
       },
