@@ -60,6 +60,13 @@
       flex: 1;
       line-height: @size-16;
       margin-right: @size-16;
+
+      > a {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
     }
 
     > span:nth-of-type(2) {
