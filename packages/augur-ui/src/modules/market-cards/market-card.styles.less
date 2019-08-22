@@ -39,6 +39,13 @@
 		padding-bottom: @size-16;
 		padding-top: @size-4;
 
+		> a {
+			display: -webkit-box;
+		  	-webkit-line-clamp: 3;
+		  	-webkit-box-orient: vertical;  
+		 	overflow: hidden;
+		}
+
 		&:hover {
     		text-decoration: underline;
     	}
