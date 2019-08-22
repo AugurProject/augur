@@ -12,7 +12,8 @@ import {
   CREATE_MARKET,
   CATEGORICAL,
   SCALAR,
-  YES_NO
+  YES_NO,
+  PUBLICCREATEORDER
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -28,6 +29,7 @@ import {
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
+import { updateTransactionParamHash } from 'modules/orders/actions/liquidity-management';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -37,12 +39,13 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
     switch (methodCall) {
+      case PUBLICCREATEORDER:
       case PUBLICTRADE: {
         const tradeGroupId = transaction.params[TX_TRADE_GROUP_ID];
         const marketId = transaction.params[TX_MARKET_ID];
+        const { marketInfos } = getState();
+        const market = marketInfos[marketId];
         if (!hash && eventName === TXEventName.AwaitingSigning) {
-          const { marketInfos } = getState();
-          const market = marketInfos[marketId];
           return addOrder(txStatus, market, dispatch);
         }
         dispatch(updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash));
@@ -59,6 +62,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         const { blockchain } = getState();
         const data = createMarketData(transaction.params, id, hash, blockchain.currentAugurTimestamp * 1000, methodCall);
         dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
+        if (hash) dispatch(updateTransactionParamHash({txParamHash: id, txHash: hash}))
         if (hash && eventName === TXEventName.Success) {
           dispatch(removePendingData(id, CREATE_MARKET));
         }

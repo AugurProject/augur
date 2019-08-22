@@ -11,7 +11,6 @@ import {
 } from "modules/orders/actions/liquidity-management";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import {
-  CATEGORICAL,
   NEW_ORDER_GAS_ESTIMATE,
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
@@ -21,13 +20,14 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { BaseAction } from "modules/types";
 import { Getters } from "@augurproject/sdk";
+import { generateTxParameterId } from "utils/generate-tx-parameter-id";
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
   return {
     modal: state.modal,
     market,
-    liquidity: state.pendingLiquidityOrders[market.id],
+    liquidity: state.pendingLiquidityOrders[market.transactionHash],
     gasPrice: getGasPrice(state),
     loginAccount: state.loginAccount,
   };
@@ -68,6 +68,7 @@ const mergeProps = (sP, dP, oP) => {
     numTicks,
     minPrice,
     maxPrice,
+    transactionHash
   } = sP.market;
   return {
     title: "Unsigned Orders",
@@ -81,6 +82,7 @@ const mergeProps = (sP, dP, oP) => {
     numTicks,
     maxPrice,
     minPrice,
+    transactionHash,
     breakdown: [
       {
         label: "Estimated GAS",
@@ -116,7 +118,8 @@ const mergeProps = (sP, dP, oP) => {
       {
         text: "Cancel All",
         action: () => {
-          dP.clearMarketLiquidityOrders(sP.market.id);
+          const txParamHash = generateTxParameterId(sP.market.txParams);
+          dP.clearMarketLiquidityOrders(txParamHash);
           dP.closeModal();
         },
       },
