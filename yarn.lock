@@ -21465,6 +21465,14 @@ specificity@^0.4.1:
   resolved "https://registry.yarnpkg.com/specificity/-/specificity-0.4.1.tgz#aab5e645012db08ba182e151165738d00887b019"
   integrity sha512-1klA3Gi5PD1Wv9Q0wUoOQN1IWAuPu0D1U03ThXTr0cJ20+/iq2tHSDnK7Kk/0LXJ1ztUB2/1Os0wKmfyNgUQfg==
 
+speedomatic@2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/speedomatic/-/speedomatic-2.1.5.tgz#61f0a1e348705d0d68ce977aef4ceb13f1861a1b"
+  integrity sha512-PK8036eX+8qfe3GB6iNiw1yFLTMZqIEDvNQiPGT+RavLf5gGIL+Sg1W6KpxZQzehfEqpc1WwNaevQxE+N8bRHg==
+  dependencies:
+    bignumber.js "6.0.0"
+    ethereumjs-abi "0.6.5"
+
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/split-string/-/split-string-3.1.0.tgz#7cb09dda3a86585705c64b39a6466038682e8fe2"
