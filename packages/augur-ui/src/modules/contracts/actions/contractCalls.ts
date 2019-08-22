@@ -212,7 +212,7 @@ export function getRep() {
 export async function getCreateMarketBreakdown() {
   const { contracts } = augurSdk.get();
   const vBond = await contracts.universe.getOrCacheValidityBond_();
-  const noShowBond = await contracts.universe.getOrCacheDesignatedReportNoShowBond_();
+  const noShowBond = await contracts.universe.getOrCacheMarketRepBond_();
   const validityBondFormatted = formatAttoDai(vBond);
   const noShowFormatted = formatAttoRep(noShowBond, {
     decimals: 4,
