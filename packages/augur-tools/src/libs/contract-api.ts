@@ -431,6 +431,8 @@ export class ContractAPI {
     const reputationToken = this.augur.contracts.getReputationToken();
     if (typeof reputationToken['faucet'] === 'function') {
       await reputationToken['faucet'](attoRep);
+    }else {
+      throw Error('Cannot faucet REP with non-test version of REP contract.');
     }
   }
 

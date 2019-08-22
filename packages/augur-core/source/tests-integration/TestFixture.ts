@@ -64,7 +64,20 @@ export class TestFixture {
         await this.cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
     }
 
-    public async createMarket(universe: Universe, outcomes: string[], endTime: BigNumber, feePerEthInWei: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string): Promise<Market> {
+    async faucet(attoCash: BigNumber): Promise<void> {
+      await this.cash.faucet(attoCash);
+    }
+
+    async repFaucet(attoRep: BigNumber): Promise<void> {
+      const reputationToken = this.getReputationToken();
+      if (typeof reputationToken['faucet'] === 'function') {
+        await reputationToken['faucet'](attoRep);
+      } else {
+        throw Error('Cannot faucet REP with non-test version of REP contract.');
+      }
+    }
+
+  public async createMarket(universe: Universe, outcomes: string[], endTime: BigNumber, feePerEthInWei: BigNumber, affiliateFeeDivisor: BigNumber, designatedReporter: string): Promise<Market> {
         const marketCreationFee = await universe.getOrCacheValidityBond_();
 
         console.log("Creating Market");
