@@ -43,7 +43,7 @@ import {
   deleteMultipleLiquidityOrders,
   setLiquidityOrderStatus,
   deleteLiquidityOrder,
-} from './liquidity-transactions';
+} from 'modules/events/actions/liquidity-transactions';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
