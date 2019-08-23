@@ -163,19 +163,17 @@ async function runSimulateTrade(
   }
 
   const orderType: 0 | 1 = newTradeDetails.side === BUY ? 0 : 1;
-  const ignoreShares = false; // TODO: get this from order form
-  const affiliateAddress = undefined; // TODO: get this from state
+    const affiliateAddress = undefined; // TODO: get this from state
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
-  const userShares = ignoreShares ? ZERO : createBigNumber(outcomeRawPosition);
+  const userShares = createBigNumber(outcomeRawPosition);
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(
     orderType,
     marketId,
     market.numOutcomes,
     outcomeId,
-    ignoreShares,
     affiliateAddress,
     kycToken,
     doNotCreateOrders,
@@ -192,7 +190,6 @@ async function runSimulateTrade(
     marketId,
     market.numOutcomes,
     outcomeId,
-    ignoreShares,
     affiliateAddress,
     kycToken,
     doNotCreateOrders,
