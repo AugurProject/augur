@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
+    "@0x/mesh-rpc-client": "3.0.1-beta",
     "@augurproject/artifacts": "10.0.0-alpha.1",
     "@augurproject/core": "10.0.0-alpha.1",
     "@augurproject/ethersjs-provider": "10.0.0-alpha.1",
