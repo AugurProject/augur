@@ -1,11 +1,10 @@
 # adding artifact caching: https://github.com/Microsoft/azure-pipelines-artifact-caching-tasks/blob/master/README.md
 variables:
-    SOLC_VERSION: v0.4.24
-    SOLC_MD5: dc791cd7db87b7df5e47975d222dc5fe
     DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
     CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
     CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
     PRIMARY_NODE_VERSION: 10.16.x
+    GETH_VERSION: v1.8.27
 
 trigger:
   batch: false
@@ -37,6 +36,11 @@ jobs:
               then
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
+              fi
+              if [[ $f =~ .*augur-tools/ethereum-nodes/geth-poa/.* ]]
+              then
+                echo "found a change in geth-poa: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_GETH_POA;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-ui.* ]]
               then
@@ -225,7 +229,11 @@ jobs:
       and
       (
         succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        or
+        (
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        )
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -344,15 +352,55 @@ jobs:
           fi
         displayName: integration tests
 
-  - job: Docker_populated_geth_images
+  - job: Docker_geth_dev
     dependsOn:
-    - Test_Augur_Core
     - PreFlightCheck
+    pool:
+      vmImage: 'Ubuntu 16.04'
     condition: |
       and
       (
         succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true')
+      )
+    steps:
+      - checkout: self
+      - task: Docker@1
+        displayName: docker login
+        inputs:
+          command: login
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+      - script: |
+          set -exuo pipefail
+          sudo modprobe -r overlay && sudo modprobe overlay redirect_dir=off && sudo systemctl restart docker
+          sudo systemctl status docker
+          cd packages/augur-tools/ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth:$(GETH_VERSION) .
+          docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
+          docker push augurproject/dev-node-geth:$(GETH_VERSION)
+          docker push augurproject/dev-node-geth:latest
+        displayName: 'build and push dev-node-geth image'
+      - task: Docker@1
+        displayName: docker logout
+        inputs:
+          command: logout
+          containerRegistryType: Container Registry
+          dockerRegistryEndpoint: dockerhub-augurproject
+
+  - job: Docker_populated_geth_images
+    dependsOn:
+    - Test_Augur_Core
+    - Docker_geth_dev
+    condition: |
+      and
+      (
+        in(dependencies.Test_Augur_Core.result, 'Succeeded'),
+        in(dependencies.Docker_geth_dev.result, 'Succeeded', 'Skipped'),
+        or
+        (
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true')
+        )
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -391,7 +439,8 @@ jobs:
           yarn
 
           # replaces @augurproject/tools docker:build
-          docker pull augurproject/dev-node-geth:latest
+          docker pull augurproject/dev-node-geth:$(GETH_VERSION)
+          docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
           MONO_ROOT=../../
           CONTRACT_SHA=$(cd packages/augur-tools/ && node scripts/get-contract-hashes.js)
           # Build and copy to merge with current address.json/upload-block-numbers.json
