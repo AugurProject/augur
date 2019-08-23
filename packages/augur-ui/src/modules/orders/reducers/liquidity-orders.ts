@@ -65,6 +65,9 @@ export default function(
       if (pendingLiquidityOrders[txParamHash][outcomeId].length == 0) {
         delete pendingLiquidityOrders[txParamHash][outcomeId];
       }
+      if (Object.keys(pendingLiquidityOrders[txParamHash]).length == 0) {
+        delete pendingLiquidityOrders[txParamHash];
+      }
       return pendingLiquidityOrders;
     }
     case UPDATE_TX_PARAM_HASH_TX_HASH: {
