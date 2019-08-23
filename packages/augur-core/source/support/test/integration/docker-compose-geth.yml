@@ -6,11 +6,7 @@ services:
       - "47624:8545"
       - "47625:8546"
   geth-integration-tests:
-    build:
-      context: ../../../../../../
-      dockerfile: packages/augur-core/source/support/Dockerfile
-      cache_from:
-        - augurproject/augur-core:monorepo
+    image: augurproject/augur-core:monorepo
     entrypoint: [ "yarn", "test:integration" ]
     # uncomment the following 3 lines to enable debugging the tests
     # command: [ "--", "--debug=0.0.0.0:9229", "--inspect-brk" ]
