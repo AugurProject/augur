@@ -1,7 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .InnerNav {
-  height: 100vh;
+  height: 100%;
+  overflow: auto;
   position: relative;
 }
 
@@ -115,6 +116,7 @@
     transition: left 0.2s ease-in-out;
     width: 12.5rem;
     z-index: @mask-above;
+    height: 100vh;
 
     &.mobileShow {
       left: 0;

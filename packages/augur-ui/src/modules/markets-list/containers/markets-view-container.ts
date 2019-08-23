@@ -12,6 +12,7 @@ import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
+import { setLoadMarketsPending, updateMarketsListMeta } from "../actions/update-markets-list";
 
 const mapStateToProps = (state: AppState, { location }) => {
   const markets = selectMarkets(state);
@@ -45,6 +46,8 @@ const mapStateToProps = (state: AppState, { location }) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => ({
   toggleFavorite: (marketId) => dispatch(toggleFavorite(marketId)),
+  setLoadMarketsPending: (isSearching) => dispatch(setLoadMarketsPending(isSearching)),
+  updateMarketsListMeta: (meta) => dispatch(updateMarketsListMeta(meta)),
   loadMarketsInfoIfNotLoaded: (marketIds) =>
     dispatch(loadMarketsInfoIfNotLoaded((marketIds))),
   loadMarketsByFilter: (filter: LoadMarketsFilterOptions, cb: NodeStyleCallback) =>

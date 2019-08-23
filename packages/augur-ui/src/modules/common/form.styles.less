@@ -1534,3 +1534,62 @@ div.error > div > div > div > div > input {
   flex-flow: column;
   position: relative;
 }
+
+
+.CategoryRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: capitalize;
+  margin: @size-8 0;
+  user-select: none;
+  cursor: pointer;
+
+  > span:first-of-type {
+    .text-14;
+
+    color: @color-alternate-info-text;
+  }
+
+  > span:last-of-type {
+    .text-10;
+
+    color: @color-alternate-info-text;
+    background: @color-tertiary-info-text;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 16px;
+    background: rgba(175, 167, 193, 0.15);
+  }
+
+  &.active span:first-of-type {
+    .text-14-bold;
+  }
+
+  &.active span:last-of-type {
+    .text-10-bold;
+  }
+
+  &.loading {
+    > span:last-of-type {
+      background: none;
+      animation: spin 2s linear infinite;
+    }
+  }
+
+  &.disabled {
+    cursor: default;
+  }
+}
+
+.CategoryRow:hover span:first-of-type {
+  color: @color-secondary-text;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
