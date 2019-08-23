@@ -943,6 +943,17 @@ CategoryTagTrail.propTypes = {
   ).isRequired
 };
 
+interface BulkTxLabelProps {
+  count: number;
+}
+export const BulkTxLabel = ({
+  count
+}: BulkTxLabelProps) => (
+  count > 1 ?
+  <span className={Styles.BulkTxLabel}>Submit All will take {count} transactions</span> :
+  null
+)
+
 export const ValueDenomination = ({
   className,
   prefix,

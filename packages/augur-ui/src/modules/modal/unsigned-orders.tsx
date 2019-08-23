@@ -15,7 +15,7 @@ import {
   Breakdown,
 } from "modules/modal/common";
 import {
-  LinearPropertyLabelProps, PendingLabel,
+  LinearPropertyLabelProps, PendingLabel, BulkTxLabel,
 } from "modules/common/labels";
 import { BUY } from "modules/common/constants";
 import { formatShares, formatEther } from "utils/format-number";
@@ -45,6 +45,7 @@ interface UnsignedOrdersProps {
   sendLiquidityOrder: Function;
   removeLiquidityOrder: Function;
   scalarDenomination: string;
+  submitAllTxCount: number;
   openOrders: boolean;
 }
 
@@ -143,5 +144,6 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
       {props.breakdown && <Breakdown rows={props.breakdown} short />}
     </main>
     <ButtonsRow buttons={props.buttons} />
+    <BulkTxLabel count={props.submitAllTxCount} />
   </div>
 );
