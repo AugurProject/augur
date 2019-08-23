@@ -28,6 +28,8 @@ interface MarketsViewProps {
   defaultFilter: string;
   defaultSort: string;
   defaultHasOrders: boolean;
+  setLoadMarketsPending: Function;
+  updateMarketsListMeta: Function;
 }
 
 interface MarketsViewState {
@@ -77,9 +79,11 @@ export default class MarketsView extends Component<
   }
 
   componentDidMount() {
-    const { isConnected } = this.props;
+    const { isConnected, setLoadMarketsPending, updateMarketsListMeta } = this.props;
     if (isConnected) {
+      setLoadMarketsPending(true);
       this.updateFilteredMarkets();
+      updateMarketsListMeta(null);
     }
   }
 
@@ -115,6 +119,7 @@ export default class MarketsView extends Component<
       includeInvalidMarkets,
     } = this.props;
     const { filter, sort, limit, offset } = this.state;
+    this.props.setLoadMarketsPending(true);
     this.setState({ isSearchingMarkets: true });
     this.loadMarketsByFilter(
       {
@@ -136,6 +141,8 @@ export default class MarketsView extends Component<
           const marketCount = result.meta.marketCount;
           const showPagination = marketCount > limit;
           this.setState({ isSearchingMarkets: false, filterSortedMarkets, marketCount, showPagination });
+          this.props.updateMarketsListMeta(result.meta);
+          this.props.setLoadMarketsPending(false);
         }
       }
     );
