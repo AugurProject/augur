@@ -1,7 +1,7 @@
 import {
   UPDATE_MARKETS_LIST_META,
-  UPDATE_MARKETS_LIST_SERACHING,
-} from 'modules/markets-list/actions/update-markets-list-searching';
+  SET_LOAD_MARKETS_PENDING,
+} from 'modules/markets-list/actions/update-markets-list';
 import { BaseAction, MarketsList } from 'modules/types';
 
 const DEFAULT_STATE: MarketsList = {
@@ -14,7 +14,7 @@ export default function(
   { type, data }: BaseAction
 ) {
   switch (type) {
-    case UPDATE_MARKETS_LIST_SERACHING:
+    case SET_LOAD_MARKETS_PENDING:
       return {
         meta: data.isSearching ? null : marketsList.meta,
         isSearching: data.isSearching,

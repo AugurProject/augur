@@ -1,8 +1,8 @@
-export const UPDATE_MARKETS_LIST_SERACHING = 'UPDATE_MARKETS_LIST_SERACHING';
+export const SET_LOAD_MARKETS_PENDING = 'SET_LOAD_MARKETS_PENDING';
 export const UPDATE_MARKETS_LIST_META = 'UPDATE_MARKETS_LIST_META';
 
-export const updateMarketsListSearching = ( isSearching: boolean) => ({
-  type: UPDATE_MARKETS_LIST_SERACHING,
+export const setLoadMarketsPending = ( isSearching: boolean) => ({
+  type: SET_LOAD_MARKETS_PENDING,
   data: { isSearching },
 });
 

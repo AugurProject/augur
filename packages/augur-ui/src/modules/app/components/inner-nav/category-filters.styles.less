@@ -15,7 +15,7 @@
 
     > div {
       margin: 0;
-      height: 14px;
+      height: @size-14;
     }
   }
 
@@ -62,8 +62,8 @@
 
   > svg {
     fill: @color-secondary-text;
-    height: 10px;
-    margin-right: 8px;
+    height: @size-10;
+    margin-right: @size-8;
   }
 }
 
@@ -77,23 +77,23 @@
 
   > svg {
     fill: @color-secondary-text;
-    height: 10px;
+    height: @size-10;
     margin-right: @size-8;
   }
 
-  > div:not(.SelectedCategory):not(.SelectedCategories_back) {
+  > div:not(.SelectedCategory):not(.SelectedCategories > div) {
     margin: @size-8 @size-40 0 4.25rem;
   }
 }
 
-.SelectedCategories_back {
+.SelectedCategories > div {
   margin: @size-8 @size-32;
   user-select: none;
   cursor: pointer;
 
   > svg {
     fill: @color-secondary-text;
-    height: 10px;
+    height: @size-10;
     margin-right: @size-8;
   }
 }

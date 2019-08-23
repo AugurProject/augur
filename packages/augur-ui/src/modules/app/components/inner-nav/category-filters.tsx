@@ -50,6 +50,9 @@ export default class CategoryFilters extends React.Component<
     if (nextProps.isSearching) {
       this.setState({
         showAllCategories: false,
+        currentCategories: null,
+        selectedCategory: null,
+        selectedCategories: [],
       });
     }
   }
@@ -120,7 +123,6 @@ export default class CategoryFilters extends React.Component<
             return (
               <div
                 key={idx}
-                className={Styles.SelectedCategories_back}
                 onClick={() => this.gotoCategory(category)}
               >
                 {MenuChevron} {category}
