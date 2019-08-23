@@ -21,6 +21,7 @@ import {
   Calendar,
   Clock,
   Arrow,
+  LoadingEllipse,
 } from 'modules/common/icons';
 import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
@@ -682,7 +683,7 @@ export const RadioBar = ({
           onChange={onTextChange}
           errorMessage={errorMessage}
         />
-        {onSecondTextChange && 
+        {onSecondTextChange &&
           <>
             <h5>{secondHeader}</h5>
             <TextInput
@@ -1772,3 +1773,26 @@ InputDropdown.defaultProps = {
   onKeyPress: null,
   className: null,
 };
+
+export interface CategoryRowProps {
+  hasChildren: boolean;
+  handleClick: Function;
+  active: boolean;
+  loading: boolean;
+  category: string;
+  count: number;
+}
+
+export const CategoryRow = ({ hasChildren = true, handleClick, active = false, loading = false, category, count}: CategoryRowProps) => (
+  <div
+    onClick={() => handleClick()}
+    className={classNames(Styles.CategoryRow, {
+      [Styles.active]: active,
+      [Styles.loading]: loading,
+      [Styles.disabled]: !hasChildren,
+  })}>
+    <span>{category}</span>
+    {loading && <span>{LoadingEllipse}</span>}
+    {!loading && <span>{count}</span>}
+  </div>
+);
