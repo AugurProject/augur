@@ -383,6 +383,14 @@ export interface Drafts {
   [uniqueId: string]: Draft;
 }
 
+export interface MarketsList {
+  isSearching: boolean;
+  meta: {
+    filteredOutCount: number;
+    marketCount: number;
+    categories: object;
+  };
+}
 
 export interface FilledOrders {
   [account: string]: Getters.Trading.Orders;

@@ -852,3 +852,5 @@ export const SCALAR_OUTCOMES = [
   },
 ];
 
+export const POPULAR_CATEGORIES = ['sports', 'politics', 'entertainment', 'finance', 'crypto'];
+export const CATEGORIES_MAX = 5;
