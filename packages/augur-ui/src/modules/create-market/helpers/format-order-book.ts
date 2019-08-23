@@ -23,8 +23,6 @@ export function formatOrderBook(outcomesOrderBook: LiquidityOrder[]): OutcomeOrd
   const orderBook: OutcomeOrderBook = {}
   orderBook[ASKS] = asks.sort((a, b) => createBigNumber(a.price).minus(createBigNumber(b.price)));
   orderBook[BIDS] = bids.sort((a, b) => createBigNumber(b.price).minus(createBigNumber(a.price)));
-  console.log(orderBook[ASKS]);
-  console.log(orderBook[BIDS])
   orderBook.spread = calcSpread(orderBook[ASKS], orderBook[BIDS]);
   return orderBook;
 }
