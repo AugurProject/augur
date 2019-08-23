@@ -4,9 +4,9 @@ import { formatAttoRep, formatAttoEth } from "utils/format-number";
 import { ReportingWindowStats, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: ReportingWindowStats = {
-  startTime: null,
-  endTime: null,
-  stake: null,
+  startTime: 0,
+  endTime: 0,
+  stake: 0,
   reportingFees: {
     unclaimedEth: formatAttoEth(0, { decimals: 4, zeroStyled: true }),
     unclaimedRep: formatAttoRep(0, { decimals: 4, zeroStyled: true }),
