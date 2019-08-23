@@ -5,6 +5,7 @@ import { MOBILE_MENU_STATES } from "modules/common/constants";
 import MenuItem from "modules/app/components/inner-nav/menu-item";
 import { XIcon, RotatableChevron } from "modules/common/icons";
 import MarketsListFilters from "modules/app/containers/markets-list-filters";
+import CategoryFilters from "modules/app/containers/category-filters";
 
 import Styles from "modules/app/components/inner-nav/inner-nav.styles.less";
 
@@ -21,7 +22,7 @@ interface BaseInnerNavPureProps {
   menuItems: MenuItemInterface[];
   submenuItems: MenuItemInterface[];
   updateMobileMenuState: Function;
-};
+}
 
 const BaseInnerNavPure = ({
   isMobile,
@@ -105,6 +106,7 @@ const BaseInnerNavPure = ({
           <DataToItem key={item.label} {...item} />
         ))}
 
+        <CategoryFilters />
         <MarketsListFilters />
       </ul>
     </aside>
