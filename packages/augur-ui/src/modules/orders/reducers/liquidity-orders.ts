@@ -127,7 +127,7 @@ export default function(
       if (pendingLiquidityOrders[txParamHash][outcomeId].length === 0)
         delete pendingLiquidityOrders[txParamHash][outcomeId];
       if (Object.keys(pendingLiquidityOrders[txParamHash]).length === 0)
-        delete pendingLiquidityOrders[txParamHash][outcomeId];
+        delete pendingLiquidityOrders[txParamHash];
       return { ...pendingLiquidityOrders };
     }
     default:
