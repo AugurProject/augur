@@ -70,6 +70,8 @@ const mergeProps = (sP, dP, oP) => {
     maxPrice,
     transactionHash
   } = sP.market;
+  // all orders have been created or removed.
+  if (numberOfTransactions === 0) dP.closeModal();
   return {
     title: "Unsigned Orders",
     description: [
