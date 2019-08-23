@@ -4,7 +4,11 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { createBigNumber } from 'utils/create-big-number';
 
-import { MODAL_ACCOUNT_APPROVAL, BUY } from 'modules/common/constants';
+import {
+  MODAL_ACCOUNT_APPROVAL,
+  BUY,
+  MAX_BULK_ORDER_COUNT,
+} from 'modules/common/constants';
 import { IndividualOrderBook, BaseAction, LiquidityOrder } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -53,7 +57,7 @@ export const loadPendingLiquidityOrders = (
         removeLiquidityOrder({
           transactionHash: o.txMarketHashId,
           outcomeId: o.outcomeId,
-          orderId: o.index
+          orderId: o.index,
         })
       );
   });
@@ -174,44 +178,6 @@ export const sendLiquidityOrder = (options: any) => (
       console.error('could not create order', e);
     }
     orderCB();
-    // TODO: handle update liquidity when pending tx has been added.
-    /*
-    augur.api.CreateOrder.publicCreateOrder({
-      meta: loginAccount.meta,
-      tx: { value: augur.utils.convertBigNumberToHexString(cost) },
-      _type: orderType,
-      _attoshares: augur.utils.convertBigNumberToHexString(onChainAmount),
-      _displayPrice: augur.utils.convertBigNumberToHexString(onChainPrice),
-      _market: marketId,
-      _outcome: outcomeIndex,
-      _tradeGroupId: augur.trading.generateTradeGroupId(),
-      onSent: (res: any) => {
-        dispatch(
-          updateLiquidityOrder({
-            marketId,
-            order,
-            outcomeId,
-            updates: {
-              onSent: true,
-              orderId: res.callReturn,
-              txhash: res.hash
-            }
-          })
-        );
-        orderCB();
-      },
-      onSuccess: (res: any) => {
-        dispatch(removeLiquidityOrder({ marketId, orderId, outcomeId }));
-      },
-      onFailed: (err: any) => {
-        console.error(
-          "ERROR creating order in initial market liquidity: ",
-          err
-        );
-        orderCB();
-      }
-    });
-    */
   };
 
   const promptApprovalandSend = () => {
@@ -254,10 +220,16 @@ export const startOrderSending = (options: any) => (
   const liquidity = pendingLiquidityOrders[market.transactionHash];
   Object.keys(liquidity).map(outcomeId => {
     orders = [...orders, ...liquidity[outcomeId]];
-  })
+  });
+  // MAX_BULK_ORDER_COUNT number of orders in each creation bulk group
+  let i = 0;
+  const groups = [];
+  for (i; i < orders.length; i += MAX_BULK_ORDER_COUNT) {
+    groups.push(orders.slice(i, i + MAX_BULK_ORDER_COUNT));
+  }
   try {
-    createLiquidityOrders(marketId, orders)
-  } catch(e) {
+    groups.map(group => createLiquidityOrders(market, group));
+  } catch (e) {
     console.error(e);
   }
 };

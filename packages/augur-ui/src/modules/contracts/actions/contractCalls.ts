@@ -33,6 +33,7 @@ import {
   SCALAR,
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
+  BUY,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, UIOrder, LiquidityOrder } from 'modules/types';
@@ -341,9 +342,27 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
   );
 }
 
-export async function createLiquidityOrders(marketId: string, orders: LiquidityOrder[]) {
+export async function createLiquidityOrders(market: Getters.Markets.MarketInfo, orders: LiquidityOrder[]) {
   const Augur = augurSdk.get();
-  // return Augur.contracts.createOrder.publicCreateOrders();
+  const {id, numTicks, minPrice, maxPrice} = market;
+  const marketId = id;
+  const kycToken = NULL_ADDRESS;
+  const tradeGroupId = generateTradeGroupId();
+  const outcomes = [];
+  const types = [];
+  const attoshareAmounts = [];
+  const prices = [];
+
+  orders.map(o => {
+    const properties = createOrderParameters(numTicks, o.quantity, o.price, minPrice, maxPrice);
+    const orderType = o.type === BUY ? 0 : 1;
+    outcomes.push(new BigNumber(o.outcomeId));
+    types.push(new BigNumber(orderType));
+    attoshareAmounts.push(new BigNumber(properties.attoShares));
+    prices.push(new BigNumber(properties.attoPrice));
+  })
+
+  return Augur.contracts.createOrder.publicCreateOrders(outcomes, types, attoshareAmounts, prices, marketId, tradeGroupId, kycToken);
 }
 
 function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice) {
