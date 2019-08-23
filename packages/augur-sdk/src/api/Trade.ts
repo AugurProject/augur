@@ -191,7 +191,7 @@ export class Trade {
           return new BigNumber(0);
         } else if (eventParams.eventType === 2) {// Fill
           const onChainAmountFilled = eventParams.uint256Data[OrderEventUint256Value.amountFilled];
-          amountRemaining = tradeOnChainAmountRemaining.minus(onChainAmountFilled);
+          amountRemaining = amountRemaining.minus(onChainAmountFilled);
         }
       }
     }
