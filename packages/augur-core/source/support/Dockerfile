@@ -47,4 +47,9 @@ COPY --from=augur-build /opt/ /opt/
 
 WORKDIR /augur/packages/augur-core
 
+# install local modules so we can run integration tests
+RUN yarn
+
+#RUN apk del .build-deps
+
 ENTRYPOINT ["yarn"]
