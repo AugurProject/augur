@@ -33,7 +33,6 @@ export const placeMarketTrade = ({
   const displayAmount = tradeInProgress.numShares;
   const orderType = tradeInProgress.side === BUY ? 0 : 1;
 
-  const ignoreShares = false; // TODO: get this from order form
   const affiliateAddress = undefined; // TODO: get this from state
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
 
@@ -42,7 +41,6 @@ export const placeMarketTrade = ({
     market.id,
     market.numOutcomes,
     parseInt(outcomeId, 10),
-    ignoreShares,
     affiliateAddress,
     kycToken,
     doNotCreateOrders,
