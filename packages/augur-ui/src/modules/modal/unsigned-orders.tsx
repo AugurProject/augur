@@ -18,7 +18,7 @@ import {
   LinearPropertyLabelProps, PendingLabel, BulkTxLabel,
 } from "modules/common/labels";
 import { BUY } from "modules/common/constants";
-import { formatShares, formatEther } from "utils/format-number";
+import { formatShares, formatDai } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
 import { LiquidityOrder } from "modules/types";
@@ -99,8 +99,8 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
       <span>{outcomeName}</span>
       <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>
       <span>{formatShares(quantity).formatted}</span>
-      <span>{formatEther(Number(price)).formatted}</span>
-      <span>{formatEther(Number(orderEstimate)).formatted}</span>
+      <span>{formatDai(Number(price)).formatted}</span>
+      <span>{formatDai(Number(orderEstimate)).formatted}</span>
       <span>{status && <PendingLabel status={status} />}</span>
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {

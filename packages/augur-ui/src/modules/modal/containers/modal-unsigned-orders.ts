@@ -14,7 +14,7 @@ import {
   NEW_ORDER_GAS_ESTIMATE, MAX_BULK_ORDER_COUNT,
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
-import { formatGasCostToEther, formatEther } from "utils/format-number";
+import { formatGasCostToEther, formatEther, formatDai } from "utils/format-number";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -93,7 +93,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         label: "Total Cost (DAI)",
         // @ts-ignore
-        value: formatEther(totalCost.toFixed()).full,
+        value: formatDai(totalCost.toFixed()).full,
         highlight: true,
       },
     ],

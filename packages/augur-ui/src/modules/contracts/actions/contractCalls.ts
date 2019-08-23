@@ -341,7 +341,7 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
   );
 }
 
-export async function createLiquidityOrders(orders: UIOrder[]) {
+export async function createLiquidityOrders(marketId: string, orders: LiquidityOrder[]) {
   const Augur = augurSdk.get();
   // return Augur.contracts.createOrder.publicCreateOrders();
 }

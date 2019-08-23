@@ -12,6 +12,7 @@ import { AppState } from 'store';
 import {
   createLiquidityOrder,
   isTransactionConfirmed,
+  createLiquidityOrders,
 } from 'modules/contracts/actions/contractCalls';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
@@ -249,61 +250,14 @@ export const startOrderSending = (options: any) => (
   const { loginAccount, marketInfos, pendingLiquidityOrders } = getState();
   const bnAllowance = createBigNumber(loginAccount.allowance, 10);
   const market = marketInfos[marketId];
-  const orderBook = Object.assign({}, pendingLiquidityOrders[marketId]);
-  // if market is undefined (marketsData not loaded yet), try again...
-  if (!market) {
-    return dispatch(
-      loadMarketsInfo([marketId], () =>
-        dispatch(startOrderSending({ marketId }))
-      )
-    );
+  let orders = [];
+  const liquidity = pendingLiquidityOrders[market.transactionHash];
+  Object.keys(liquidity).map(outcomeId => {
+    orders = [...orders, ...liquidity[outcomeId]];
+  })
+  try {
+    createLiquidityOrders(marketId, orders)
+  } catch(e) {
+    console.error(e);
   }
-  // create a marketOutcomesArray which is an array of descriptions to match categorical outcomes to their proper index
-  const marketOutcomesArray = market.outcomes.reduce(
-    (acc: any, outcome: any) => {
-      acc.push(outcome.description);
-      return acc;
-    },
-    []
-  );
-
-  eachOfSeries(
-    Object.keys(orderBook),
-    (outcome, index, seriesCB) => {
-      // Set the limit for simultaneous async calls to 1 so orders will have to be signed in order, one at a time.
-      // (This is done so the gas cost doesn't increase as orders are created, due to having to traverse the
-      // order book and insert each order in the appropriate spot.)
-      const { numTicks, marketType, minPrice, maxPrice } = market;
-      eachOfLimit(
-        orderBook[outcome],
-        1,
-        (order, orderId, orderCB) => {
-          dispatch(
-            sendLiquidityOrder({
-              marketId,
-              marketType,
-              order,
-              marketOutcomesArray,
-              minPrice,
-              maxPrice,
-              numTicks,
-              orderId,
-              bnAllowance,
-              loginAccount,
-              orderCB,
-              seriesCB,
-              outcome,
-            })
-          );
-        },
-        err => {
-          if (err !== null) console.error('ERROR: ', err);
-          seriesCB();
-        }
-      );
-    },
-    err => {
-      if (err !== null) console.error('ERROR: ', err);
-    }
-  );
 };
