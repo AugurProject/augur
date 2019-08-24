@@ -17,14 +17,7 @@ import {
   SCALAR,
   YES_NO,
   PUBLICCREATEORDER,
-  TX_OUTCOME_ID,
-  TX_NUM_SHARES,
-  TX_DIRECTION,
-  TX_ORDER_TYPE,
-  BUY,
-  SELL,
-  ZERO,
-  TX_PRICE,
+  PUBLICCREATEORDERS,
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -36,14 +29,7 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
-import {
-  Events,
-  Getters,
-  TXEventName,
-  QUINTILLION,
-  convertOnChainAmountToDisplayAmount,
-  convertOnChainPriceToDisplayPrice,
-} from '@augurproject/sdk';
+import { Events, Getters, TXEventName } from '@augurproject/sdk';
 import {
   addPendingData,
   removePendingData,
@@ -51,12 +37,13 @@ import {
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
+import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
 import {
-  updateLiqTransactionParamHash,
-  updateLiquidityOrderStatus,
-  deleteSuccessfulLiquidityOrder,
-} from 'modules/orders/actions/liquidity-management';
-import { createBigNumber } from 'utils/create-big-number';
+  setLiquidityMultipleOrdersStatus,
+  deleteMultipleLiquidityOrders,
+  setLiquidityOrderStatus,
+  deleteLiquidityOrder,
+} from 'modules/events/actions/liquidity-transactions';
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -66,6 +53,16 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
     switch (methodCall) {
+      case PUBLICCREATEORDERS: {
+        const { marketInfos } = getState();
+        const marketId = transaction.params[TX_MARKET_ID];
+        const market = marketInfos[marketId];
+        setLiquidityMultipleOrdersStatus(txStatus, market, dispatch);
+        if (eventName === TXEventName.Success) {
+          deleteMultipleLiquidityOrders(txStatus, market, dispatch);
+        }
+        break;
+      }
       case PUBLICCREATEORDER: {
         const { marketInfos } = getState();
         const marketId = transaction.params[TX_MARKET_ID];
@@ -181,52 +178,4 @@ function addOrder(
       `Could not process order to add pending order for market ${market.id}`
     );
   dispatch(addPendingOrder(order, market.id));
-}
-
-function deleteLiquidityOrder(
-  tx: Events.TXStatus,
-  market: Getters.Markets.MarketInfo,
-  dispatch
-) {
-  const properties = processLiquidityOrder(tx, market);
-  dispatch(
-    deleteSuccessfulLiquidityOrder({
-      txParamHash: properties.transactionHash,
-      ...properties,
-    })
-  );
-}
-
-function setLiquidityOrderStatus(
-  tx: Events.TXStatus,
-  market: Getters.Markets.MarketInfo,
-  dispatch
-) {
-  const properties = processLiquidityOrder(tx, market);
-  dispatch(
-    updateLiquidityOrderStatus({
-      txParamHash: properties.transactionHash,
-      ...properties,
-      eventName: tx.eventName,
-      hash: tx.hash,
-    })
-  );
-}
-
-function processLiquidityOrder(
-  tx: Events.TXStatus,
-  market: Getters.Markets.MarketInfo
-) {
-  const { transaction } = tx;
-  const { transactionHash, tickSize, minPrice } = market;
-  const outcomeId = transaction.params[TX_OUTCOME_ID];
-  const orderType = transaction.params[TX_ORDER_TYPE];
-  const onChainPrice = transaction.params[TX_PRICE];
-  const price = convertOnChainPriceToDisplayPrice(
-    createBigNumber(onChainPrice),
-    createBigNumber(minPrice),
-    createBigNumber(tickSize)
-  ).toString();
-  const type = orderType.eq(ZERO) ? BUY : SELL;
-  return { outcomeId, type, price, transactionHash };
 }
