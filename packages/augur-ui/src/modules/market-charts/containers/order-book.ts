@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   const maxPrice = createBigNumber(market.maxPriceBigNumber) || createBigNumber(0);
 
   if (ownProps.initialLiquidity) {
-    outcomeOrderBook = formatOrderBook(outcomeOrderBook, minPrice, maxPrice);
+    outcomeOrderBook = formatOrderBook(outcomeOrderBook);
   }
 
   const outcome =
