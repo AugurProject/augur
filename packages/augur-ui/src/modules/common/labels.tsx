@@ -639,7 +639,7 @@ interface PendingLabelProps {
 
 export const PendingLabel = (props: PendingLabelProps) => (
   <span className={classNames(Styles.PendingLabel, {[Styles.Failure]: props.status && props.status === TXEventName.Failure})} data-tip data-for={"processing"}>
-    {(!props.status || props.status === TXEventName.Pending) &&
+    {(!props.status || props.status === TXEventName.Pending || props.status === TXEventName.AwaitingSigning) &&
       <>
         <span>Processing <ClipLoader size={8} color="#ffffff" /></span>
         <ReactTooltip
@@ -655,7 +655,7 @@ export const PendingLabel = (props: PendingLabelProps) => (
         </ReactTooltip>
       </>
     }
-    {props.status && props.status === TXEventName.Failure && 
+    {props.status && props.status === TXEventName.Failure &&
       <span>Failed</span>
     }
   </span>
@@ -942,6 +942,17 @@ CategoryTagTrail.propTypes = {
     })
   ).isRequired
 };
+
+interface BulkTxLabelProps {
+  count: number;
+}
+export const BulkTxLabel = ({
+  count
+}: BulkTxLabelProps) => (
+  count > 1 ?
+  <span className={Styles.BulkTxLabel}>Submit All will take {count} transactions</span> :
+  null
+)
 
 export const ValueDenomination = ({
   className,

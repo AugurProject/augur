@@ -96,6 +96,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   }
 
   measure = () => {
+    if (!this.labelRef) return;
     const { clientWidth, scrollWidth } = this.labelRef;
 
     this.setState({

@@ -382,14 +382,20 @@ div.ButtonsRow:last-of-type {
       margin-top: 1rem;
     }
   }
+
+  > span:last-of-type {
+    display: flex;
+    flex-flow: row-reverse;
+    padding: 0 @size-24 @size-24;
+  }
 }
 
 .Subheader {
   display: flex;
   flex-direction: column;
-  
+
   > span:first-of-type {
-    .text-16-medium; 
+    .text-16-medium;
 
     color: @color-alternate-info-text;
   }
@@ -401,7 +407,7 @@ div.ButtonsRow:last-of-type {
 
   > span:not(:first-of-type),
   > ol > li {
-    .text-14; 
+    .text-14;
 
     color: @color-tertiary-info-text;
     line-height: @size-18;
