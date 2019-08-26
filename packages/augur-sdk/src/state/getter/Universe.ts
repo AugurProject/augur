@@ -27,7 +27,7 @@ export class Universe {
     universe: t.string,
   });
 
-  @Getter('getDisputeWindow')
+  @Getter('getDisputeWindowParams')
   static async getDisputeWindow(
     augur: Augur,
     db: DB,
