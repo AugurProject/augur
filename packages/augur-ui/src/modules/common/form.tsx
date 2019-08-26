@@ -35,6 +35,7 @@ import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
 import { getTimezones, getUserTimezone, Timezones, UTC_Default } from 'utils/get-timezones';
 import { Moment } from 'moment';
+import noop from 'utils/noop';
 
 interface CheckboxProps {
   id: string;
@@ -1775,15 +1776,15 @@ InputDropdown.defaultProps = {
 };
 
 export interface CategoryRowProps {
-  hasChildren: boolean;
-  handleClick: Function;
-  active: boolean;
-  loading: boolean;
+  hasChildren?: boolean;
+  handleClick?: Function;
+  active?: boolean;
+  loading?: boolean;
   category: string;
   count: number;
 }
 
-export const CategoryRow = ({ hasChildren = true, handleClick, active = false, loading = false, category, count}: CategoryRowProps) => (
+export const CategoryRow = ({ hasChildren = true, handleClick = noop, active = false, loading = false, category, count}: CategoryRowProps) => (
   <div
     onClick={() => handleClick()}
     className={classNames(Styles.CategoryRow, {

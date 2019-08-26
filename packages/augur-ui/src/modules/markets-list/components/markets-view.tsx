@@ -20,7 +20,6 @@ interface MarketsViewProps {
   isMobile: boolean;
   loadMarketsByFilter: Function;
   search?: string;
-  categories?: string;
   maxFee: string;
   maxLiquiditySpread: string;
   includeInvalidMarkets: string;
@@ -30,6 +29,7 @@ interface MarketsViewProps {
   defaultHasOrders: boolean;
   setLoadMarketsPending: Function;
   updateMarketsListMeta: Function;
+  selectedCategories: string[];
 }
 
 interface MarketsViewState {
@@ -50,7 +50,6 @@ export default class MarketsView extends Component<
 > {
   static defaultProps = {
     search: null,
-    categories: [],
     universe: null,
   };
   loadMarketsByFilter: any;
@@ -88,11 +87,11 @@ export default class MarketsView extends Component<
   }
 
   componentDidUpdate(prevProps) {
-    const { search, categories, maxFee, maxLiquiditySpread, includeInvalidMarkets, isConnected } = this.props;
+    const { search, selectedCategories, maxFee, maxLiquiditySpread, includeInvalidMarkets, isConnected } = this.props;
     if (
       isConnected !== prevProps.isConnected ||
       (search !== prevProps.search ||
-        categories !== prevProps.categories ||
+        selectedCategories !== prevProps.selectedCategories ||
         maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
         maxFee !== prevProps.maxFee ||
         includeInvalidMarkets !== prevProps.includeInvalidMarkets)
@@ -113,7 +112,7 @@ export default class MarketsView extends Component<
   updateFilteredMarkets() {
     const {
       search,
-      categories,
+      selectedCategories,
       maxFee,
       maxLiquiditySpread,
       includeInvalidMarkets,
@@ -123,7 +122,7 @@ export default class MarketsView extends Component<
     this.setState({ isSearchingMarkets: true });
     this.loadMarketsByFilter(
       {
-        categories,
+        categories: selectedCategories ? selectedCategories : [],
         search,
         filter,
         sort,
