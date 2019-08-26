@@ -2,7 +2,15 @@ import { MarketCreated } from "../../event-handlers";
 
 // because flexsearch is a UMD type lib
 const flexSearch = require('flexsearch');
-import { Index, SearchOptions, SearchResults } from 'flexsearch';
+import { Index, SearchOptions, Cursor } from 'flexsearch';
+
+// @TODO remove and replace with flexsearch type once they release
+// @BODY See: https://github.com/nextapps-de/flexsearch/blob/master/index.d.ts#L49
+interface SearchResults<T> {
+  page?: Cursor;
+  next?: Cursor;
+  result: T[];
+}
 
 export interface MarketCreatedDoc extends MarketCreated {
    _id: string;
@@ -56,12 +64,12 @@ export class SyncableFlexSearch {
     );
   }
 
-  async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
-    return this.flexSearchIndex.search(query, options);
+  async search(query: string, options?: SearchOptions): Promise<MarketFields[]> {
+    return this.flexSearchIndex.search(query, options) as unknown as Promise<MarketFields[]>;
   }
 
-  async where(whereObj: {[key: string]: string}): Promise<Array<SearchResults<MarketFields>>> {
-    return this.flexSearchIndex.where(whereObj);
+  async where(whereObj: {[key: string]: string}): Promise<MarketFields[]> {
+    return this.flexSearchIndex.where(whereObj) as unknown as Promise<MarketFields[]>;
   }
 
   async addMarketCreatedDocs(marketCreatedDocs: MarketCreatedDoc[]) {

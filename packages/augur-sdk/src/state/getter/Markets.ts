@@ -1355,7 +1355,7 @@ async function getMarketsSearchResults(
   universe: string,
   query: string,
   categories: string[]
-): Promise<Array<SearchResults<MarketFields>>> {
+) {
   const whereObj = { universe };
   for (let i = 0; i < categories.length; i++) {
     whereObj['category' + (i + 1)] = categories[i];
