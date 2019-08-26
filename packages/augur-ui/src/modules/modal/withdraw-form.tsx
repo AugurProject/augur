@@ -112,7 +112,7 @@ export class WithdrawForm extends Component<
       updatedErrors.amount = `Quantity isn't finite.`;
     }
 
-    if (bnNewAmount.gt(loginAccount[currency.toLowerCase()])) {
+    if (bnNewAmount.gt(createBigNumber(loginAccount.balances[currency.toLowerCase()]))) {
       updatedErrors.amount = `Quantity is greater than available funds.`;
     }
 
