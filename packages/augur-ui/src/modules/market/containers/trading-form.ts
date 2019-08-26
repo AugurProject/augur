@@ -22,6 +22,7 @@ import {
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import orderAndAssignCumulativeShares from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { LoginAccount } from 'modules/types';
 
 const mapStateToProps = (state, ownProps) => {
   const { authStatus, loginAccount } = state;
@@ -50,7 +51,7 @@ const mapStateToProps = (state, ownProps) => {
     hasFunds,
     orderBook: cumulativeOrderBook,
     isLogged: authStatus.isLogged,
-    allowanceAmount: loginAccount.allowanceFormatted,
+    allowanceBigNumber: loginAccount.allowance,
     isConnectionTrayOpen: authStatus.isConnectionTrayOpen,
     sortedOutcomes: selectSortedMarketOutcomes(
       ownProps.market.marketType,

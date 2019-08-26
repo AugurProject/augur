@@ -15,7 +15,7 @@ import Styles from 'modules/trading/components/wrapper/wrapper.styles.less';
 import { OrderButton } from 'modules/common/buttons';
 import { formatShares, formatGasCostToEther } from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData, OutcomeFormatted, FormattedNumber, OutcomeOrderBook } from 'modules/types';
+import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 import { calculateTotalOrderValue } from "modules/trades/helpers/calc-order-profit-loss-percents";
 import { formatDai } from "utils/format-number";
 
@@ -31,7 +31,7 @@ function pick(object, keys) {
 
 interface WrapperProps {
   orderBook: OutcomeOrderBook;
-  allowanceAmount: FormattedNumber;
+  allowanceBigNumber: BigNumber;
   market: MarketData;
   marketReviewTradeSeen: boolean;
   marketReviewTradeModal: Function;
@@ -367,7 +367,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
 
   render() {
     const {
-      allowanceAmount,
+      allowanceBigNumber,
       availableEth,
       availableDai,
       market,
@@ -483,7 +483,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           (s.trade.shareCost.value !== 0 ||
             s.trade.totalCost.value !== 0) && (
             <Confirm
-              allowanceAmount={allowanceAmount}
+              allowanceBigNumber={allowanceBigNumber}
               numOutcomes={market.numOutcomes}
               marketType={marketType}
               maxPrice={maxPriceBigNumber}

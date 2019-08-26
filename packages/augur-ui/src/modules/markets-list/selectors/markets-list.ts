@@ -9,10 +9,11 @@ export const selectPopularCategories = createSelector(
 
       const categories = Object.keys(marketLists.meta.categories).map(category => category.toLowerCase());
       const mapObject = (category) => {
+        const item = Object.keys(marketLists.meta.categories).find(c => c.toLowerCase() === category)
         return {
           category,
-          count: marketLists.meta.categories[category].count,
-          children: marketLists.meta.categories[category].children,
+          count: marketLists.meta.categories[item].count,
+          children: marketLists.meta.categories[item].children,
         };
       };
 

@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
 import {
   MODAL_CREATION_HELP
 } from "modules/common/constants";
 import Link from "modules/create-market/link";
 import { updateModal } from "modules/modal/actions/update-modal";
+import { NodeStyleCallback } from "modules/types";
 
 const mapStateToProps = state => ({});
 
@@ -13,11 +13,9 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateModal({ type: MODAL_CREATION_HELP, cb })),
 });
 
-const LinkContainer = withRouter(
-  connect(
+const LinkContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-  )(Link)
-);
+  )(Link);
 
 export default LinkContainer;
