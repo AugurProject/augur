@@ -6,6 +6,7 @@ import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from "ethers/utils";
 import { ContractAddresses } from '@augurproject/artifacts';
+import { TestNetReputationToken } from "@augurproject/core/build/libraries/ContractInterfaces";
 
 interface MarketCreatedEvent {
   name: 'MarketCreated';
@@ -72,13 +73,18 @@ test('Contract :: Cash', async () => {
 });
 
 test('Contract :: Universe :: Create Market', async () => {
-  const cash = contracts.cash;
   const universe = contracts.universe;
+
   const marketCreationCost = await universe.getOrCacheValidityBond_();
+  const cash = contracts.cash;
   await cash.faucet(marketCreationCost, { sender: ACCOUNTS[0].publicKey });
   await cash.approve(addresses.Augur, marketCreationCost, {
     sender: ACCOUNTS[0].publicKey,
   });
+
+  const reputationToken = contracts.getReputationToken() as TestNetReputationToken;
+  const repBond = await universe.getOrCacheMarketRepBond_();
+  await reputationToken.faucet(repBond);
 
   const endTime = new BigNumber(
     Math.round(new Date().getTime() / 1000) + 30 * 24 * 60 * 60
@@ -119,4 +125,4 @@ test('Contract :: Universe :: Create Market', async () => {
 
   const numticks = new BigNumber(100);
   await expect(await market.getNumTicks_()).toEqual(numticks);
-}, 15000);
+}, 30000);

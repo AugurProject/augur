@@ -95,11 +95,23 @@ export class FlashSession {
     return false;
   }
 
+  noAddresses() {
+    if (typeof this.contractAddresses === 'undefined') {
+      this.log(
+        'ERROR: Must first load contract addresses.'
+      );
+      return true;
+    }
+
+    return false;
+  }
+
   usingSdk = false;
   sdkReady = false;
   async ensureUser(
     network?: NetworkConfiguration,
-    wireUpSdk?: boolean
+    wireUpSdk = false,
+    approveCentralAuthority = true
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
@@ -122,7 +134,10 @@ export class FlashSession {
       await this.user.augur.connect(network.http, this.getAccount().publicKey);
       await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
     }
-    await this.user.approveCentralAuthority();
+
+    if (approveCentralAuthority) {
+      await this.user.approveCentralAuthority();
+    }
 
     return this.user;
   }
