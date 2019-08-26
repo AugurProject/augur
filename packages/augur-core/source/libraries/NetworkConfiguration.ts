@@ -17,7 +17,8 @@ export const NETWORKS = [
   'ropsten',
   'kovan',
   'thunder',
-  'testrpc'
+  'testrpc',
+  "mainnet",
 ] as const;
 
 export type NETWORKS = typeof NETWORKS[number];
@@ -39,7 +40,7 @@ const networks: NetworksToOptions = {
     },
     ropsten: {
         isProduction: false,
-        http: "http://ropsten.ethereum.nodes.augur.net",
+        http: "https://eth-ropsten.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
         privateKey: process.env.ROPSTEN_PRIVATE_KEY,
         gasPrice: new ethers.utils.BigNumber(20*1000000000)
     },
@@ -51,7 +52,7 @@ const networks: NetworksToOptions = {
     },
     rinkeby: {
         isProduction: false,
-        http: "https://rinkeby.augur.net/ethereum-http",
+        http: "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
         ws: "wss://rinkeby.augur.net/ethereum-ws",
         privateKey: process.env.RINKEBY_PRIVATE_KEY,
         gasPrice: new ethers.utils.BigNumber(31*1000000000)
@@ -80,8 +81,17 @@ const networks: NetworksToOptions = {
         http: "http://localhost:18545",
         gasPrice: new ethers.utils.BigNumber(1),
         privateKey: process.env.ETHEREUM_PRIVATE_KEY || "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a",
-    }
-}
+    },
+    mainnet: {
+        isProduction: true,
+        http: "https://eth-mainnet.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
+        privateKey: process.env.ETHEREUM_PRIVATE_KEY || "fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a",
+        gasPrice: (
+          (typeof process.env.ETHEREUM_GAS_PRICE_IN_NANOETH === "undefined")
+            ? new ethers.utils.BigNumber(20)
+            : new ethers.utils.BigNumber(process.env.ETHEREUM_GAS_PRICE_IN_NANOETH!)).mul(new ethers.utils.BigNumber(1e9)),
+    },
+};
 
 export class NetworkConfiguration {
     public readonly networkName: string;
