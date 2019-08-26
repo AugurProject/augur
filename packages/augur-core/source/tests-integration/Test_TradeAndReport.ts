@@ -16,8 +16,8 @@ describe('TradeAndReport', () => {
         fixture = await TestFixture.create();
     });
     it('#tradeAndReport', async () => {
-        await fixture.faucet(new BigNumber(1000).times(1e9));
-        await fixture.repFaucet(new BigNumber(11000000).times(1e9));
+        await fixture.faucet(new BigNumber(1000).times(1e18));
+        await fixture.repFaucet(new BigNumber(11000000).times(1e18));
         await fixture.approveCentralAuthority();
 
         let ethBalance = await fixture.getEthBalance();
