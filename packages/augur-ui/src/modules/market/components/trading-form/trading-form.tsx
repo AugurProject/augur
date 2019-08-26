@@ -7,14 +7,14 @@ import makePath from 'modules/routes/helpers/make-path';
 import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
 import { PrimaryButton } from 'modules/common/buttons';
-import { MarketData, OutcomeFormatted, FormattedNumber, OutcomeOrderBook } from 'modules/types';
+import { MarketData, OutcomeFormatted, OutcomeOrderBook } from 'modules/types';
 
 interface TradingFormProps {
   availableEth: BigNumber;
   availableDai: BigNumber;
   hasFunds: boolean;
   isLogged: boolean;
-  allowanceAmount: FormattedNumber;
+  allowanceBigNumber: BigNumber;
   isConnectionTrayOpen: boolean;
   market: MarketData;
   marketReviewTradeSeen: boolean;
@@ -80,7 +80,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
 
   render() {
     const {
-      allowanceAmount,
+      allowanceBigNumber,
       hasFunds,
       availableEth,
       availableDai,
@@ -126,7 +126,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       <section className={Styles.TradingForm}>
         <Wrapper
           market={market}
-          allowanceAmount={allowanceAmount}
+          allowanceBigNumber={allowanceBigNumber}
           selectedOutcome={s.selectedOutcome}
           selectedOrderProperties={selectedOrderProperties}
           sortedOutcomes={sortedOutcomes}

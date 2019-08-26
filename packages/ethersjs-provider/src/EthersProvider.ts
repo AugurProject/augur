@@ -5,7 +5,6 @@ import { EthersProvider as EProvider } from "contract-dependencies-ethers";
 import { ethers } from "ethers";
 import { Abi } from "ethereum";
 import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
 import { AsyncQueue, queue, retry } from "async";
 import {isInstanceOfBigNumber, isInstanceOfArray } from "./utils"
 
@@ -106,7 +105,7 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
   public parseLogValues(contractName: string, log: Log): LogValues {
     const contractInterface = this.getContractInterface(contractName);
     const parsedLog = contractInterface.parseLog(log);
-    let omittedValues = _.map(_.range(parsedLog.values.length), (n) => n.toString());
+    const omittedValues = _.map(_.range(parsedLog.values.length), (n) => n.toString());
     omittedValues.push('length');
     let logValues = _.omit(parsedLog.values, omittedValues);
     logValues = _.mapValues(logValues, (val) => {
@@ -119,10 +118,11 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
             return innerVal._hex;
           }
           return innerVal;
-        })
+        });
       }
       return val;
     });
+    logValues.name = parsedLog.name;
     return logValues;
   }
 
@@ -137,6 +137,7 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
   public async getLogs(filter: Filter): Promise<Array<Log>> {
     const logs = await super.getLogs(filter);
     return logs.map<Log>((log) => ({
+      name: "",
       transactionHash: "",
       blockNumber: 0,
       blockHash: "",
