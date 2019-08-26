@@ -25,7 +25,6 @@ import {
   NavReportingIcon
 } from 'modules/common/icons';
 import parsePath from 'modules/routes/helpers/parse-path';
-
 import {
   MARKETS,
   ACCOUNT_DEPOSIT,
@@ -36,7 +35,7 @@ import {
 } from 'modules/routes/constants/views';
 import {
   MODAL_NETWORK_CONNECT,
-  MOBILE_MENU_STATES,
+  MOBILE_MENU_STATES
 } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/app.styles.less';
@@ -70,19 +69,7 @@ interface AppProps {
   alerts: any;
 }
 
-interface MenuStateItem {
-  scalar?: number;
-  open?: boolean;
-  currentTween?: any | null;
-  locked?: boolean;
-}
-
-interface AppState {
-  mainMenu: MenuStateItem;
-  subMenu: MenuStateItem;
-}
-
-export default class AppView extends Component<AppProps, AppState> {
+export default class AppView extends Component<AppProps> {
   static propTypes = {
     blockchain: PropTypes.object.isRequired,
     env: PropTypes.object.isRequired,
@@ -117,11 +104,6 @@ export default class AppView extends Component<AppProps, AppState> {
     useWeb3Transport: false,
   };
 
-  state = {
-    mainMenu: { scalar: 0, open: false, currentTween: null },
-    subMenu: { scalar: 0, open: false, currentTween: null },
-  };
-
   sideNavMenuData = [
     {
       title: 'Markets',
@@ -133,7 +115,7 @@ export default class AppView extends Component<AppProps, AppState> {
       iconName: 'nav-account-icon',
       icon: NavAccountIcon,
       route: ACCOUNT_DEPOSIT,
-      requireLogin: true,
+      requireLogin: true
     },
     {
       title: 'Portfolio',
@@ -201,7 +183,7 @@ export default class AppView extends Component<AppProps, AppState> {
         if (err || (res && !res.ethereumNode) || (res)) {
           updateModal({
             type: MODAL_NETWORK_CONNECT,
-            isInitialConnection: true,
+            isInitialConnection: true
           });
         }
       }
@@ -276,7 +258,8 @@ export default class AppView extends Component<AppProps, AppState> {
   changeMenu(nextBasePath: string) {
     if (nextBasePath === MARKETS) {
       this.props.updateCurrentInnerNavType(MarketsInnerNavContainer);
-    } else {
+    }
+    else {
       this.props.updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
   }
@@ -327,11 +310,11 @@ export default class AppView extends Component<AppProps, AppState> {
     }
   }
 
-  renderMobileMenuButton() {
+  renderMobileMenuButton(unseenCount: number) {
     const { sidebarStatus } = this.props;
     const { mobileMenuState: menuState } = sidebarStatus;
 
-    let icon = null;
+    let icon: any = null;
     if (menuState === MOBILE_MENU_STATES.CLOSED) {
       icon = <MobileNavHamburgerIcon />;
     }
@@ -363,7 +346,9 @@ export default class AppView extends Component<AppProps, AppState> {
   render() {
     const {
       blockchain,
+      history,
       isLogged,
+      isMobile,
       location,
       modal,
       universe,
@@ -372,6 +357,7 @@ export default class AppView extends Component<AppProps, AppState> {
       alerts,
     } = this.props;
 
+    const { unseenCount } = alerts;
     const currentPath = parsePath(location.pathname)[0];
 
     return (
@@ -402,7 +388,7 @@ export default class AppView extends Component<AppProps, AppState> {
             onClick={e => this.mainSectionClickHandler(e, false)}
             role='presentation'
           >
-            {this.renderMobileMenuButton()}
+            {this.renderMobileMenuButton(unseenCount)}
 
             {/* HIDDEN ON DESKTOP */}
             <SideNav
@@ -441,10 +427,11 @@ export default class AppView extends Component<AppProps, AppState> {
                 [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
               })}
             >
-             { currentPath === MARKETS
-              ? <MarketsInnerNavContainer mobileMenuState={sidebarStatus.mobileMenuState} />
-              : <div className='no-nav-placehold' />
-            }
+             { currentPath === MARKETS ?  <MarketsInnerNavContainer
+                  location={location}
+                  history={history}
+                  mobileMenuState={sidebarStatus.mobileMenuState}
+             /> : <div className='no-nav-placehold' /> }
 
               <section
                 className={Styles.Main__content}

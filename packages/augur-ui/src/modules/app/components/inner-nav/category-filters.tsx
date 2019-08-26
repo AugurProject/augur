@@ -247,7 +247,6 @@ export default class CategoryFilters extends React.Component<
 
     this.removeCategoryQuery();
 
-    this.props.updateMarketsListMeta(null);
     this.props.updateSelectedCategories([]);
     this.setState({
       selectedCategories: [],
