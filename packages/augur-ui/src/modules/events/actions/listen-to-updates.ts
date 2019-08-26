@@ -1,4 +1,5 @@
 import {
+  handleApprovalLog,
   handleMarketCreatedLog,
   handleMarketMigratedLog,
   handleTokensTransferredLog,
