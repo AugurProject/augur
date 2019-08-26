@@ -1,4 +1,5 @@
 export interface Log {
+  name: string;
   blockNumber: number;
   blockHash: string;
   transactionIndex: number;
@@ -16,6 +17,7 @@ export interface LogValues {
 }
 
 export interface ParsedLog {
+  name: string;
   blockNumber: number;
   blockHash: string;
   transactionIndex: number;

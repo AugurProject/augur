@@ -29,6 +29,7 @@ export class Events {
     return logs.map((log) => {
       const logValues = this.provider.parseLogValues("Augur", log);
       return Object.assign(
+        { name: "" },
         logValues,
         {
           blockNumber: log.blockNumber,
