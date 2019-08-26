@@ -11,10 +11,10 @@ import {
 } from "modules/orders/actions/liquidity-management";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import {
-  NEW_ORDER_GAS_ESTIMATE,
+  NEW_ORDER_GAS_ESTIMATE, MAX_BULK_ORDER_COUNT,
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
-import { formatGasCostToEther, formatEther } from "utils/format-number";
+import { formatGasCostToEther, formatEther, formatDai } from "utils/format-number";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -50,7 +50,7 @@ const mergeProps = (sP, dP, oP) => {
       sP.liquidity[outcome.id] &&
       sP.liquidity[outcome.id].forEach((order: any, index: number) => {
         totalCost = totalCost.plus(order.orderEstimate);
-        numberOfTransactions += numberOfTransactions;
+        numberOfTransactions += 1;
       });
   });
   const gasCost = formatGasCostToEther(
@@ -59,6 +59,7 @@ const mergeProps = (sP, dP, oP) => {
     sP.gasPrice,
   );
   const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
+  const submitAllTxCount = Math.ceil(numberOfTransactions / MAX_BULK_ORDER_COUNT);
   const {
     marketType,
     scalarDenomination,
@@ -69,6 +70,8 @@ const mergeProps = (sP, dP, oP) => {
     maxPrice,
     transactionHash
   } = sP.market;
+  // all orders have been created or removed.
+  if (numberOfTransactions === 0) dP.closeModal();
   return {
     title: "Unsigned Orders",
     description: [
@@ -82,6 +85,7 @@ const mergeProps = (sP, dP, oP) => {
     maxPrice,
     minPrice,
     transactionHash,
+    submitAllTxCount,
     breakdown: [
       {
         label: "Estimated GAS",
@@ -91,7 +95,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         label: "Total Cost (DAI)",
         // @ts-ignore
-        value: formatEther(totalCost.toFixed()).full,
+        value: formatDai(totalCost.toFixed()).full,
         highlight: true,
       },
     ],
