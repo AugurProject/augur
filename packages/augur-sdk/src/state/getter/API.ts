@@ -8,6 +8,7 @@ import './Ping';
 import './Trading';
 import './Users';
 import './Accounts';
+import './Universe';
 import './status';
 
 export class API {
