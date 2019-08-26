@@ -1,15 +1,12 @@
-import { MODAL_ACCOUNT_APPROVAL, ZERO } from 'modules/common/constants';
+import { ZERO } from 'modules/common/constants';
 import noop from 'utils/noop';
-import { createBigNumber } from 'utils/create-big-number';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { sortOrders } from 'modules/orders/helpers/liquidity';
 import { addMarketLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { AppState } from 'store';
 import { NodeStyleCallback, NewMarket, CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { createMarket } from 'modules/contracts/actions/contractCalls';
-import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { createMarket, approveToTrade } from 'modules/contracts/actions/contractCalls';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { constructMarketParamsReturn } from 'modules/create-market/helpers/construct-market-params';
 import { createMarketRetry } from 'modules/contracts/actions/contractCalls';
@@ -35,6 +32,10 @@ export function submitNewMarket(
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
     const parameters = constructMarketParamsReturn(market);
     const txParamHash = generateTxParameterId(parameters);
+
+    if (loginAccount.allowance.lte(ZERO)) {
+      await approveToTrade();
+    }
 
     if (hasOrders) {
       dispatch(
@@ -99,30 +100,5 @@ export function retrySubmitMarket(
     }
 
     if (callback) callback(err);
-  };
-}
-
-function getHasApproval(hasOrders: Boolean, callback: NodeStyleCallback) {
-  return (
-    dispatch: ThunkDispatch<void, any, Action>,
-    getState: () => AppState
-  ) => {
-    const { loginAccount } = getState();
-    if (hasOrders && createBigNumber(loginAccount.allowance).lte(ZERO)) {
-      dispatch(checkAccountAllowance());
-      dispatch(
-        updateModal({
-          type: MODAL_ACCOUNT_APPROVAL,
-          continueDefault: true,
-          approveOnSent: noop,
-          approveCallback: (err: any, res: any) => {
-            if (err) return callback(err);
-            callback(null);
-          },
-        })
-      );
-    } else {
-      callback(null);
-    }
   };
 }

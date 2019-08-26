@@ -32,6 +32,7 @@ interface UnsignedOrdersProps {
   breakdown: Array<LinearPropertyLabelProps>;
   loginAccount: object;
   bnAllowance: object;
+  needsApproval: boolean;
   header: Array<string>;
   liquidity: object;
   marketTitle: string;
@@ -59,6 +60,7 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
     maxPrice,
     minPrice,
     outcomes,
+    needsApproval,
     bnAllowance,
     loginAccount,
     transactionHash,
@@ -144,6 +146,6 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
       {props.breakdown && <Breakdown rows={props.breakdown} short />}
     </main>
     <ButtonsRow buttons={props.buttons} />
-    <BulkTxLabel count={props.submitAllTxCount} />
+    <BulkTxLabel buttonName={"Submit All"} count={props.submitAllTxCount} needsApproval={props.needsApproval}/>
   </div>
 );
