@@ -134,14 +134,15 @@ export interface ProfitLossResult {
 
 export class Users {
   static getAccountTimeRangedStatsParams = t.intersection([
-  t.type({
-    universe: t.string,
-    account: t.string,
-  }),
-  t.partial({
-    endTime: t.number,
-    startTime: t.number,
-  })]);
+    t.type({
+      universe: t.string,
+      account: t.string,
+    }),
+    t.partial({
+      endTime: t.number,
+      startTime: t.number,
+    }),
+  ]);
 
   static getUserTradingPositionsParams = t.intersection([
     userTradingPositionsParams,
@@ -156,14 +157,15 @@ export class Users {
     db: DB,
     params: t.TypeOf<typeof Users.getAccountTimeRangedStatsParams>
   ): Promise<AccountTimeRangedStatsResult> {
-
     // guards
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
 
     const startTime = params.startTime ? params.startTime : 0;
-    const endTime = params.endTime ? params.endTime : await augur.contracts.augur.getTimestamp_();
+    const endTime = params.endTime
+      ? params.endTime
+      : await augur.contracts.augur.getTimestamp_();
 
     if (params.startTime > params.endTime) {
       throw new Error('startTime must be less than or equal to endTime');
@@ -216,10 +218,7 @@ export class Users {
 
     const orderFilledRequest = {
       selector: {
-        $or: [
-          { orderCeator: params.account },
-          { orderFiller: params.account },
-        ],
+        $or: [{ orderCeator: params.account }, { orderFiller: params.account }],
         $and: [
           { universe: params.universe },
           { timestamp: { $gte: `0x${startTime.toString(16)}` } },
@@ -243,47 +242,73 @@ export class Users {
     const marketsCreatedLog = await db.findMarketCreatedLogs(marketsRequest);
 
     const marketsCreated = marketsCreatedLog.length;
-    const initialReporterReedeemedLogs = await db.findInitialReporterRedeemedLogs(initialReporterRequest);
-    const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(disputeCrowdourcerRequest);
+    const initialReporterReedeemedLogs = await db.findInitialReporterRedeemedLogs(
+      initialReporterRequest
+    );
+    const disputeCrowdsourcerReedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(
+      disputeCrowdourcerRequest
+    );
 
-    const successfulDisputes = _.sum(await Promise.all((disputeCrowdsourcerReedeemedLogs as any as DisputeCrowdsourcerRedeemed[])
-      .map(async (log: DisputeCrowdsourcerRedeemed) => {
-        const marketFinalization = {
-          selector: {
-            $and: [
-              { market: log.market },
-              { universe: params.universe },
-              { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-              { timestamp: { $lte: `0x${endTime.toString(16)}` } },
-            ],
-          },
-        };
+    const successfulDisputes = _.sum(
+      await Promise.all(
+        ((disputeCrowdsourcerReedeemedLogs as any) as DisputeCrowdsourcerRedeemed[]).map(
+          async (log: DisputeCrowdsourcerRedeemed) => {
+            const marketFinalization = {
+              selector: {
+                $and: [
+                  { market: log.market },
+                  { universe: params.universe },
+                  { timestamp: { $gte: `0x${startTime.toString(16)}` } },
+                  { timestamp: { $lte: `0x${endTime.toString(16)}` } },
+                ],
+              },
+            };
 
-        const markets = (await db.findMarketFinalizedLogs(marketFinalization)) as any as MarketFinalized[];
+            const markets = ((await db.findMarketFinalizedLogs(
+              marketFinalization
+            )) as any) as MarketFinalized[];
 
-        if (markets.length) {
-          return compareArrays(markets[0].winningPayoutNumerators, log.payoutNumerators);
-        }
-        else {
-          return 0;
-        }
-      })));
+            if (markets.length) {
+              return compareArrays(
+                markets[0].winningPayoutNumerators,
+                log.payoutNumerators
+              );
+            } else {
+              return 0;
+            }
+          }
+        )
+      )
+    );
 
-    const redeemedPositions = initialReporterReedeemedLogs.length + successfulDisputes;
+    const redeemedPositions =
+      initialReporterReedeemedLogs.length + successfulDisputes;
 
     const orderFilledLogs = await db.findOrderFilledLogs(orderFilledRequest);
-    const numberOfTrades = _.uniqWith(orderFilledLogs as any as OrderEvent[], (a: OrderEvent, b: OrderEvent) => {
-      return a.tradeGroupId === b.tradeGroupId;
-    }).length;
+    const numberOfTrades = _.uniqWith(
+      (orderFilledLogs as any) as OrderEvent[],
+      (a: OrderEvent, b: OrderEvent) => {
+        return a.tradeGroupId === b.tradeGroupId;
+      }
+    ).length;
 
-    const marketsTraded = _.uniqWith(orderFilledLogs as any as OrderEvent[], (a: OrderEvent, b: OrderEvent) => {
-      return a.market === b.market;
-    }).length;
+    const marketsTraded = _.uniqWith(
+      (orderFilledLogs as any) as OrderEvent[],
+      (a: OrderEvent, b: OrderEvent) => {
+        return a.market === b.market;
+      }
+    ).length;
 
-    const profitLossChangedLogs = await db.findProfitLossChangedLogs(params.account, profitLossChangedRequest);
-    const positions = _.uniqWith(profitLossChangedLogs as any as ProfitLossChanged[], (a: ProfitLossChanged, b: ProfitLossChanged) => {
-      return a.market === b.market && a.outcome === b.outcome;
-    }).length;
+    const profitLossChangedLogs = await db.findProfitLossChangedLogs(
+      params.account,
+      profitLossChangedRequest
+    );
+    const positions = _.uniqWith(
+      (profitLossChangedLogs as any) as ProfitLossChanged[],
+      (a: ProfitLossChanged, b: ProfitLossChanged) => {
+        return a.market === b.market && a.outcome === b.outcome;
+      }
+    ).length;
 
     return {
       positions,
@@ -447,7 +472,7 @@ export class Users {
 
     const universe = params.universe
       ? params.universe
-      : await (augur.getMarket(params.marketId)).getUniverse_();
+      : await augur.getMarket(params.marketId).getUniverse_();
     const profitLossSummary = await Users.getProfitLossSummary(augur, db, {
       universe,
       account: params.account,
@@ -733,7 +758,7 @@ export function sumTradingPositions(
   summedTrade.totalPercent = totalCost.isZero()
     ? '0'
     : total.dividedBy(totalCost).toFixed();
-  summedTrade.currentValue = unrealized.minus(frozenFunds).toFixed();
+  summedTrade.currentValue = unrealized.toFixed();
 
   return summedTrade;
 }
@@ -905,6 +930,7 @@ function getTradingPositionFromProfitLossFrame(
     minPrice,
     tickSize
   );
+
   const unrealized = netPosition
     .abs()
     .multipliedBy(
@@ -912,6 +938,9 @@ function getTradingPositionFromProfitLossFrame(
         ? avgPrice.minus(lastTradePrice)
         : lastTradePrice.minus(avgPrice)
     );
+  const shortPrice = (maxPrice.dividedBy(10 ** 18)).minus(lastTradePrice);
+  const currentValue = netPosition.abs().multipliedBy(
+    onChainNetPosition.isNegative() ? shortPrice : lastTradePrice);
   const realizedPercent = realizedCost.isZero()
     ? new BigNumber(0)
     : realizedProfit.dividedBy(realizedCost);
@@ -937,6 +966,6 @@ function getTradingPositionFromProfitLossFrame(
     realizedPercent: realizedPercent.toFixed(),
     unrealizedPercent: unrealizedPercent.toFixed(),
     totalPercent: totalPercent.toFixed(),
-    currentValue: unrealized.minus(frozenFunds).toFixed(),
+    currentValue: currentValue.toFixed(),
   } as TradingPosition;
 }
