@@ -106,7 +106,7 @@ export class Trade {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
-    const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
+    const { loopLimit } = this.getTradeTransactionLimits(params);
 
     let result: Event[] = [];
 

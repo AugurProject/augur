@@ -5,9 +5,6 @@ import { AppState } from 'store';
 import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
-import { approveToTrade } from 'modules/contracts/actions/contractCalls';
-import { createBigNumber } from 'utils/create-big-number';
-import { TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/common/constants';
 import { formatDai } from 'utils/format-number';
 
 export function checkAccountAllowance(
@@ -30,15 +27,5 @@ export function checkAccountAllowance(
         allowanceFormatted: formatDai(allowance),
       })
     );
-  };
-}
-
-export function approveAccount() {
-  return (dispatch, getState) => {
-    // TODO: when we get design this number will come from modal
-    const allowance = createBigNumber(1000000).times(
-      TEN_TO_THE_EIGHTEENTH_POWER
-    );
-    approveToTrade(allowance);
   };
 }

@@ -1,13 +1,13 @@
 import { createBigNumber } from "utils/create-big-number";
 import {
-  BUY,
+  BUY, ZERO,
 } from "modules/common/constants";
 import logError from "utils/log-error";
 import noop from "utils/noop";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { placeTrade } from "modules/contracts/actions/contractCalls";
+import { placeTrade, approveToTrade } from "modules/contracts/actions/contractCalls";
 import { Getters } from "@augurproject/sdk";
 
 export const placeMarketTrade = ({
@@ -19,7 +19,7 @@ export const placeMarketTrade = ({
   onComplete = noop,
 }: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
-  const { marketInfos } = getState();
+  const { marketInfos, loginAccount } = getState();
   const market: Getters.Markets.MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
@@ -27,6 +27,8 @@ export const placeMarketTrade = ({
     );
   }
 
+  const needsApproval = createBigNumber(loginAccount.allowance).lt(tradeInProgress.totalCost.value);
+  if (needsApproval) await approveToTrade();
   const userShares = createBigNumber(tradeInProgress.sharesDepleted || 0, 10);
 
   const displayPrice = tradeInProgress.limitPrice;
