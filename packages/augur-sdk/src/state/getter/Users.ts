@@ -357,8 +357,19 @@ export class Users {
       },
     };
 
+    const allOrderFilledRequest = {
+      selector: {
+        universe: params.universe,
+        market: params.marketId
+      },
+    };
+
     const ordersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
       await getOrderFilledRecordsByMarketAndOutcome(db, orderFilledRequest)
+    );
+
+    const allOrdersFilledResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
+      await getOrderFilledRecordsByMarketAndOutcome(db, allOrderFilledRequest)
     );
 
     const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
@@ -414,7 +425,7 @@ export class Users {
               return null;
             }
             let outcomeValue = new BigNumber(
-              ordersFilledResultsByMarketAndOutcome[profitLossResult.market][
+              allOrdersFilledResultsByMarketAndOutcome[profitLossResult.market][
                 profitLossResult.outcome
               ]!.price
             );
