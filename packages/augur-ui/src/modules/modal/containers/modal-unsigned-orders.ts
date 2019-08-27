@@ -59,7 +59,7 @@ const mergeProps = (sP, dP, oP) => {
     sP.gasPrice,
   );
   const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
-  const needsApproval = bnAllowance.gt(ZERO);
+  const needsApproval = bnAllowance.lte(ZERO);
   const submitAllTxCount = Math.ceil(numberOfTransactions / MAX_BULK_ORDER_COUNT);
   const {
     marketType,
