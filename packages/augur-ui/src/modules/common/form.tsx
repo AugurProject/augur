@@ -28,6 +28,7 @@ import debounce from 'utils/debounce';
 import { CUSTOM } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { ReportingPercent } from 'modules/reporting/common';
+import { formatRep } from "utils/format-number";
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -691,7 +692,7 @@ export const ReportingRadioBar = ({
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
     <div>
-      <ReportingPercent firstPercent={20} firstPercent={40} firstPercent={30} />
+      <ReportingPercent firstPercent={formatRep(1)} secondPercent={formatRep(0.5)} thirdPercent={formatRep(0.30)} total={createBigNumber(4)} />
     </div>
   </div>
 );
