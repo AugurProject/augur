@@ -27,6 +27,7 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
+import { ReportingPercent } from 'modules/reporting/common';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -35,6 +36,7 @@ import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
 import { getTimezones, getUserTimezone, Timezones, UTC_Default } from 'utils/get-timezones';
 import { Moment } from 'moment';
+import { Getters } from "@augurproject/sdk";
 
 interface CheckboxProps {
   id: string;
@@ -249,6 +251,7 @@ interface ReportingRadioBarProps {
   expandable?: boolean;
   checked?: boolean;
   error?: boolean;
+  stake: Getters.Markets.StakeDetails|null
 }
 
 interface RadioTwoLineBarProps {
@@ -675,9 +678,10 @@ export const ReportingRadioBar = ({
   checked,
   value,
   error,
+  stake
 }: ReportingRadioBarProps) => (
   <div
-    className={classNames(Styles.RadioBar, {
+    className={classNames(Styles.ReportingRadioBar, {
       [Styles.RadioBarExpanded]: checked && expandable,
       [Styles.RadioBarError]: error,
     })}
@@ -686,7 +690,9 @@ export const ReportingRadioBar = ({
   >
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
-    reporting
+    <div>
+      <ReportingPercent firstPercent={20} firstPercent={40} firstPercent={30} />
+    </div>
   </div>
 );
 
