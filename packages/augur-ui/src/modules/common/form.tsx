@@ -27,7 +27,7 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
-import { ReportingPercent } from 'modules/reporting/common';
+import { ReportingPercent, Subheaders } from 'modules/reporting/common';
 import { formatRep } from "utils/format-number";
 
 import Styles from 'modules/common/form.styles.less';
@@ -692,7 +692,16 @@ export const ReportingRadioBar = ({
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
     <div>
-      <ReportingPercent firstPercent={formatRep(1)} secondPercent={formatRep(0.5)} thirdPercent={formatRep(0.30)} total={createBigNumber(4)} />
+      {!stake.tentativeWinning &&
+        <>
+          <ReportingPercent firstPercent={stake.preFilledStake} secondPercent={stake.bondSizeCurrent} thirdPercent={formatRep(0)} total={stake.bondSizeTotal} />
+        </>
+      }
+      {stake.tentativeWinning &&
+        <>
+          <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
+        </>
+      }
     </div>
   </div>
 );

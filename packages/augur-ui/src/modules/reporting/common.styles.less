@@ -28,6 +28,9 @@
 			  @color-primary-background @size-2,
 			  @color-primary-background @size-4
 			);			
+		}
+
+		&:last-of-type {
 			border-top-right-radius: 100px;
     		border-bottom-right-radius: 100px;
 		}
@@ -36,4 +39,25 @@
 	&.invalid {
 		background-color: fade(@color-invalid, 50);
 	}
+}
+
+.Subheaders {
+  display: flex;
+  flex-direction: column;
+
+  > h1 {
+    .mono-10;
+
+    color: @color-tertiary-info-text;
+    margin-bottom: @size-4;
+    text-transform: uppercase;
+  }
+
+  > p {
+    .mono-14;
+
+    color: @color-alternate-info-text;
+    line-height: @size-16;
+    margin: 0;
+  }
 }

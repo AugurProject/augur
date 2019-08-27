@@ -17,9 +17,9 @@ export interface ReportingPercentProps {
 }
 
 export const ReportingPercent = (props: ReportingPercentProps) => {
-	const firstPercent = calculatePosition(ZERO, props.total, props.firstPercent);
-	const secondPercent = calculatePosition(ZERO, props.total, props.secondPercent);
-	const thirdPercent = calculatePosition(ZERO, props.total, props.thirdPercent);
+	const firstPercent = calculatePosition(ZERO, createBigNumber(props.total.value), props.firstPercent);
+	const secondPercent = calculatePosition(ZERO, createBigNumber(props.total.value), props.secondPercent);
+	const thirdPercent = calculatePosition(ZERO, createBigNumber(props.total.value), props.thirdPercent);
 
 	return (
 	  <div className={Styles.ReportingPercent}>
@@ -43,3 +43,18 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
 	  </div>
 	);
 }
+
+
+export interface SubheadersProps {
+  header: string;
+  subheader: string;
+}
+
+export const Subheaders = (props: SubheadersProps) => (
+  <div className={Styles.Subheaders}>
+    <h1>{props.header}</h1>
+    <p>
+      <span>{props.subheader}</span>
+    </p>
+  </div>
+);
