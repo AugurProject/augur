@@ -31,6 +31,7 @@ import {
   TradingProceedsClaimedLog,
   UniverseForkedLog,
   MarketData,
+  GenericEventDBDescription
 } from "../logs/types";
 
 export interface DerivedDBConfiguration {
@@ -51,7 +52,7 @@ export class DB {
   private networkId: number;
   private blockstreamDelay: number;
   private trackedUsers: TrackedUsers;
-  private genericEventNames: string[];
+  private genericEventDBDescriptions: GenericEventDBDescription[];
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
   private marketDatabase: MarketDB;
@@ -110,7 +111,7 @@ export class DB {
     const dbController = new DB(pouchDBFactory);
 
     dbController.augur = augur;
-    dbController.genericEventNames = augur.genericEventNames;
+    dbController.genericEventDBDescriptions = augur.genericEventDBDescriptions;
 
     return dbController.initializeDB(networkId, blockstreamDelay, defaultStartSyncBlockNumber, trackedUsers, blockAndLogStreamerListener);
   }
@@ -135,8 +136,8 @@ export class DB {
     this.blockAndLogStreamerListener = blockAndLogStreamerListener;
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
-    for (const eventName of this.genericEventNames) {
-      new SyncableDB(this.augur, this, networkId, eventName, this.getDatabaseName(eventName), []);
+    for (const genericEventDBDescription of this.genericEventDBDescriptions) {
+      new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, this.getDatabaseName(genericEventDBDescription.EventName), [], genericEventDBDescription.indexes);
     }
 
     for (const derivedDBConfiguration of this.basicDerivedDBs) {
@@ -217,8 +218,8 @@ export class DB {
     }
 
     console.log(`Syncing generic log DBs`);
-    for (const genericEventName of this.genericEventNames) {
-      const dbName = this.getDatabaseName(genericEventName);
+    for (const genericEventDBDescription of this.genericEventDBDescriptions) {
+      const dbName = this.getDatabaseName(genericEventDBDescription.EventName);
       dbSyncPromises.push(
         this.syncableDatabases[dbName].sync(
           augur,
@@ -254,8 +255,8 @@ export class DB {
    */
   async getSyncStartingBlock(): Promise<number> {
     const highestSyncBlocks = [];
-    for (const eventName of this.genericEventNames) {
-      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(eventName)));
+    for (const genericEventDBDescription of this.genericEventDBDescriptions) {
+      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(this.getDatabaseName(genericEventDBDescription.EventName)));
     }
     for (const trackedUser of await this.trackedUsers.getUsers()) {
       for (const userSpecificEvent of this.userSpecificDBs) {
@@ -305,8 +306,8 @@ export class DB {
   rollback = async (blockNumber: number): Promise<void> => {
     const dbRollbackPromises = [];
     // Perform rollback on SyncableDBs & UserSyncableDBs
-    for (const eventName of this.genericEventNames) {
-      const dbName = this.getDatabaseName(eventName);
+    for (const genericEventDBDescription of this.genericEventDBDescriptions) {
+      const dbName = this.getDatabaseName(genericEventDBDescription.EventName);
       dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
     }
 
