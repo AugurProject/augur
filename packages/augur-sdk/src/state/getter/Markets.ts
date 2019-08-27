@@ -150,6 +150,7 @@ export interface MarketInfo {
 export interface DisputeInfo {
   disputeWindow: {
     address: Address;
+    disputeRound: string;
     startTime: Timestamp | null;
     endTime: Timestamp | null;
   };
@@ -161,9 +162,9 @@ export interface DisputeInfo {
 
 export interface StakeDetails {
   outcome: string;
-  isInvalid: boolean;
   bondSizeCurrent: string;
   bondSizeTotal: string;
+  preFilledStake: string;
   stakeCurrent: string;
   stakeRemaining: string;
   stakeCompleted: string;
@@ -1155,13 +1156,16 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
   const initialReportSubmittedLogs = await db.findInitialReportSubmittedLogs({
     selector: { market: marketId },
   });
+  const numParticipants = await market.getNumParticipants_();
   if (initialReportSubmittedLogs.length > 0) {
     const disputeCrowdsourcerCreatedLogs = await db.findDisputeCrowdsourcerCreatedLogs({
       selector: { market: marketId },
     });
+    const disputeCrowdsourcerCompletedLogs = await db.findDisputeCrowdsourcerCompletedLogs({
+      selector: { market: marketId },
+    });
     const stakeLogs: any[] = disputeCrowdsourcerCreatedLogs;
     if (initialReportSubmittedLogs[0]) stakeLogs.unshift(initialReportSubmittedLogs[0]);
-
     for (let i = 0; i < stakeLogs.length; i++) {
       let reportingParticipantId: Address;
       if (stakeLogs[i].hasOwnProperty("disputeCrowdsourcer")) {
@@ -1170,14 +1174,14 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
         reportingParticipantId = await market.getInitialReporter_();
       }
       const reportingParticipant = augur.contracts.getReportingParticipant(reportingParticipantId);
+      const reportingStakeSize = stakeLogs[i].hasOwnProperty("disputeCrowdsourcer") ? await reportingParticipant.getSize_() : new BigNumber(0);
+      const totalSupply = stakeLogs[i].hasOwnProperty("disputeCrowdsourcer") ? await reportingParticipant.totalSupply_() : new BigNumber(0);
       const payoutDistributionHash = await reportingParticipant.getPayoutDistributionHash_();
-
       const disputeCrowdsourcerCompletedLogs = await db.findDisputeCrowdsourcerCompletedLogs({
         selector: { disputeCrowdsourcer: reportingParticipantId },
       });
-
       const stakeCurrent = await reportingParticipant.getStake_();
-      const stakeRemaining = stakeLogs[i].hasOwnProperty("size") ? await reportingParticipant.getRemainingToFill_() : new BigNumber(0);
+      const stakeRemaining = stakeLogs[i].hasOwnProperty("size") && totalSupply <= reportingStakeSize ? await reportingParticipant.getRemainingToFill_() : new BigNumber(0);
       const winningReportingParticipantId = await market.getWinningReportingParticipant_();
       const winningReportingParticipant = augur.contracts.getReportingParticipant(winningReportingParticipantId);
       if (!stakeDetails[payoutDistributionHash]) {
@@ -1195,7 +1199,6 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
         stakeDetails[payoutDistributionHash] =
           {
             payout,
-            isInvalid: payout.length > 0 && payout[0].gt(0) ? true : false,
             bondSizeCurrent,
             bondSizeTotal: bondSizeCurrent,
             stakeCurrent,
@@ -1220,7 +1223,6 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
       }
     }
   }
-
   const disputeWindowAddress = await market.getDisputeWindow_();
   let disputeWindowStartTime: string | null = null;
   let disputeWindowEndTime: string | null = null;
@@ -1229,10 +1231,11 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
     disputeWindowStartTime = await disputeWindow.getStartTime_().toString();
     disputeWindowEndTime = await disputeWindow.getEndTime_().toString();
   }
-
+  
   return {
     disputeWindow: {
       address: disputeWindowAddress,
+      disputeRound: numParticipants.toString(),
       startTime: disputeWindowStartTime,
       endTime: disputeWindowEndTime,
     },
@@ -1271,10 +1274,10 @@ async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]
         marketType,
         stakeDetails[i].payout
       ),
-      isInvalid: stakeDetails[i].isInvalid,
       bondSizeCurrent: stakeDetails[i].bondSizeCurrent.toString(10),
       bondSizeTotal: stakeDetails[i].bondSizeTotal.toString(10),
       stakeCurrent: stakeDetails[i].stakeCurrent.toString(10),
+      preFilledStake: stakeDetails[i].tentativeWinning && !(stakeDetails[i].stakeCurrent.isEqualTo(stakeDetails[i].stakeCompleted)) ? stakeDetails[i].stakeCurrent.toString(10) : "0",
       stakeRemaining: stakeDetails[i].stakeRemaining.toString(10),
       stakeCompleted: stakeDetails[i].stakeCompleted.toString(10),
       tentativeWinning: stakeDetails[i].tentativeWinning,
