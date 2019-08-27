@@ -52,7 +52,7 @@ export interface SubheadersProps {
 
 export const Subheaders = (props: SubheadersProps) => (
   <div className={Styles.Subheaders}>
-    <h1>{props.header}</h1>
+    <span>{props.header}</span>
     <p>
       <span>{props.subheader}</span>
     </p>
