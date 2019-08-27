@@ -694,7 +694,25 @@ export const ReportingRadioBar = ({
     <div>
       {!stake.tentativeWinning &&
         <>
+          <div>
+            <span>
+              Make tentative winner
+            </span>
+            <span>
+              {stake.bondSizeCurrent.formatted}
+              <span>
+                / {stake.bondSizeTotal.formatted} REP
+              </span>
+            </span>
+          </div>
           <ReportingPercent firstPercent={stake.preFilledStake} secondPercent={stake.bondSizeCurrent} thirdPercent={formatRep(0)} total={stake.bondSizeTotal} />
+          <TextInput 
+            placeholder={"0.0000"}
+            value={null}
+            onChange={null}
+            errorMessage={null}
+            innerLabel="REP"
+          />
         </>
       }
       {stake.tentativeWinning &&
