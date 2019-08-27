@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { SearchResults } from "flexsearch";
+import { SearchResults } from 'flexsearch';
 import { DB } from '../db/DB';
 import { MarketFields } from '../db/SyncableFlexSearch';
 import { Getter } from './Router';
@@ -49,7 +49,7 @@ export enum GetMarketsSortBy {
   volume = 'volume',
   timestamp = 'timestamp',
   endTime = 'endTime',
-  lastTradedTimestamp = 'lastTradedTimestamp', // TODO: Implement
+  lastTradedTimestamp = 'lastTradedTimestamp',
   lastLiquidityDepleted = 'lastLiquidityDepleted', // TODO: Implement
 }
 
@@ -427,7 +427,7 @@ export class Markets {
 
     // Set params defaults
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
-    params.search = typeof params.search === 'undefined' ? "" : params.search;
+    params.search = typeof params.search === 'undefined' ? '' : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
     params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.marketOI : params.sortBy; // TODO: Make liquidity the default sort
     params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
@@ -568,8 +568,36 @@ export class Markets {
       }
     }
 
+    if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
+      // Create market ID => index mapping
+      const keyedMarkets = {};
+      for (let i = 0; i < marketsResults.length; i++) {
+        keyedMarkets[marketsResults[i].market] = i;
+      }
+      const orderFilledLogs = await db.findOrderFilledLogs({
+        selector: { market: { $in: marketsResults.map(marketsResult => marketsResult.market) } },
+        fields: ['market', 'timestamp'],
+      });
+      // Assign lastTradedTimestamp value to each market in marketsResults
+      for (let i = 0; i < orderFilledLogs.length; i++) {
+        const currentTimestamp = parseInt(orderFilledLogs[i].timestamp, 16);
+        if (
+          !marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] ||
+          currentTimestamp > marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp]
+        ) {
+          marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] = currentTimestamp;
+        }
+      }
+      // For any markets with no trading, set the lastTradedTimestamp to 0
+      for (let i = 0; i < marketsResults.length; i++) {
+        if (!marketsResults[i][GetMarketsSortBy.lastTradedTimestamp]) {
+          marketsResults[i][GetMarketsSortBy.lastTradedTimestamp] = 0;
+        }
+      }
+    }
+
     // Sort & limit markets
-    _.sortBy(marketsResults, [(market: any) => market[params.sortBy]]);
+    marketsResults = _.sortBy(marketsResults, [params.sortBy]);
     if (params.isSortDescending) {
       marketsResults = marketsResults.reverse();
     }
@@ -1168,7 +1196,7 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
     if (initialReportSubmittedLogs[0]) stakeLogs.unshift(initialReportSubmittedLogs[0]);
     for (let i = 0; i < stakeLogs.length; i++) {
       let reportingParticipantId: Address;
-      if (stakeLogs[i].hasOwnProperty("disputeCrowdsourcer")) {
+      if (stakeLogs[i].hasOwnProperty('disputeCrowdsourcer')) {
         reportingParticipantId = stakeLogs[i].disputeCrowdsourcer;
       } else {
         reportingParticipantId = await market.getInitialReporter_();
@@ -1189,7 +1217,7 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
         const payout = await reportingParticipant.getPayoutNumerators_();
         let bondSizeCurrent: BigNumber;
         let stakeCompleted: BigNumber;
-        if (stakeLogs[i].hasOwnProperty("amountStaked")) {
+        if (stakeLogs[i].hasOwnProperty('amountStaked')) {
           bondSizeCurrent = new BigNumber(stakeLogs[i].amountStaked);
           stakeCompleted = bondSizeCurrent;
         } else {
@@ -1231,7 +1259,7 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
     disputeWindowStartTime = await disputeWindow.getStartTime_().toString();
     disputeWindowEndTime = await disputeWindow.getEndTime_().toString();
   }
-  
+
   return {
     disputeWindow: {
       address: disputeWindowAddress,
@@ -1290,7 +1318,7 @@ function getMarketsMeta(
   marketsResults: any[],
   filteredOutCount: number
 ): MarketListMeta {
-  let categories = {};
+  const categories = {};
   for (let i = 0; i < marketsResults.length; i++) {
     const marketsResult = marketsResults[i];
     if (categories[marketsResult.category1]) {
