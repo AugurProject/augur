@@ -23,9 +23,9 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
 
 	return (
 	  <div className={Styles.ReportingPercent}>
-	  	<span style={{width: firstPercent + "%"}}/>
+	  	<span style={{width: `${firstPercent}%`}}/>
 	  	<span 
-	  		style={{width: secondPercent + "%", left: firstPercent + 'px'}}   
+	  		style={{width: `${secondPercent}%`}}   
 	  		data-tip
           	data-for='tooltip--existingStake'
         />
@@ -39,7 +39,7 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
          	My Existing Stake
           	<p>{props.firstPercent.formattedValue} REP</p>
         </ReactTooltip>
-	  	<span style={{width: thirdPercent + "%", left: firstPercent + thirdPercent + 'px'}}/>
+	  	{thirdPercent > 0 && <span style={{width: `${thirdPercent}%`}}/>}
 	  </div>
 	);
 }
