@@ -29,6 +29,8 @@ import { CUSTOM } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { ReportingPercent, Subheaders } from 'modules/reporting/common';
 import { formatRep } from "utils/format-number";
+import { CancelTextButton, PrimaryButton } from "modules/common/buttons";
+import { LinearPropertyLabel } from "modules/common/labels";
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -713,6 +715,23 @@ export const ReportingRadioBar = ({
             errorMessage={null}
             innerLabel="REP"
           />
+          <div>
+            <CancelTextButton noIcon action={null} text={"MIN"}/>
+            |
+            <CancelTextButton noIcon action={null} text={"FILL DISPUTE BOND"}/>
+          </div>
+          <span>Review</span>
+          <LinearPropertyLabel
+            key="disputeRoundStake"
+            label="Dispute Round Stake"
+            value={"0.0000 REP"}
+          />
+          <LinearPropertyLabel
+            key="estimatedGasFee"
+            label="Estimated Gas Fee"
+            value={"0.0000 ETH"}
+          />
+          <PrimaryButton text='Confirm' action={null} />
         </>
       }
       {stake.tentativeWinning &&

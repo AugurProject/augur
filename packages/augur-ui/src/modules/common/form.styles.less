@@ -251,8 +251,7 @@
   height: auto;
 
   > svg {
-    grid-row: 1 / span 20;
-    margin: 0 auto;
+    margin-top: @size-16;
   }
 
   > h5 {
@@ -286,13 +285,42 @@
 
         > span:first-of-type {
           color: @color-alternate-info-text;
-          margin-right: @size-4;
+          margin-left: @size-4;
         }
       }
     }
 
-    > div:nth-of-type(2) {
+    > div:nth-of-type(3) {
       max-width: 340px;
+      margin-top: @size-16;
+    }
+
+    > div:nth-of-type(4) {
+      color: fade(@color-tertiary-info-text, 30);
+      display: flex;
+      margin-top: @size-8;
+
+      > button:first-of-type {
+        margin-right: @size-10;
+      }
+
+      > button:last-of-type {
+        margin-left: @size-10;
+      }
+    }
+
+    > span:first-of-type {
+      .text-14-medium;
+
+      color: @color-alternate-info-text;
+      display: flex;
+      margin-bottom: @size-12;
+      margin-top: @size-16;
+    }
+
+    > button {
+      margin-top: @size-16;
+      margin-bottom: @size-4;
     }
   }
 }
@@ -631,6 +659,7 @@
   > div {
     align-items: center;
     display: flex;
+    position: relative;
 
     > input,
     > textarea {
@@ -726,7 +755,9 @@
     }
 
     > .Inner {
-      margin-left: -@size-24;
+      position: absolute;
+      margin-right: @size-10;
+      right: 0;
     }
 
     > span:nth-of-type(2) {

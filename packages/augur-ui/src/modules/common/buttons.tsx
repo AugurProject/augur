@@ -36,6 +36,7 @@ export interface DefaultButtonProps {
   title?: string;
   icon?: any;
   small?: boolean;
+  noIcon?: boolean;
 }
 
 export interface SortButtonProps {
@@ -176,7 +177,7 @@ export const CancelTextButton = (props: DefaultButtonProps) => (
     disabled={props.disabled}
     title={props.title}
   >
-    {XIcon}
+    {!props.noIcon && XIcon}
     {props.text}
   </button>
 );
