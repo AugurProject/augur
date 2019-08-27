@@ -90,6 +90,7 @@ contract SimulateTrade is Initializable {
         while (_simulationData.orderId != 0 && _simulationData.amount > 0 && gasleft() > GAS_BUFFER && isMatch(_simulationData)) {
             _simulationData.fillAmount = _simulationData.amount.min(_simulationData.orderAmount);
             _simulationData.sharesUsedInFill = _simulationData.fillAmount.min(_simulationData.availableShares);
+            _simulationData.availableShares = _simulationData.availableShares.sub(_simulationData.sharesUsedInFill);
 
             if (orders.getOrderCreator(_simulationData.orderId) != msg.sender) {
                 _sharesDepleted += _simulationData.sharesUsedInFill;
@@ -113,6 +114,9 @@ contract SimulateTrade is Initializable {
             _sharesDepleted += _sharesUsedInCreate;
             _tokensDepleted += (_simulationData.amount - _sharesUsedInCreate) * (_direction == Order.TradeDirections.Long ? _simulationData.price : _simulationData.numTicks - _simulationData.price);
         }
+
+        uint256 _shareSaleProfit = _sharesDepleted * (_direction == Order.TradeDirections.Short ? _simulationData.price : _simulationData.numTicks - _simulationData.price);
+        _tokensDepleted = _shareSaleProfit >= _tokensDepleted ? 0 : _tokensDepleted.sub(_shareSaleProfit);
     }
 
     function getSettlementFees(SimulationData memory _simulationData, uint256 _sharesUsedInFill) private view returns (uint256) {
