@@ -77,7 +77,6 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
   );
 }
 
-
 export interface ScalarOutcomeProps {
   scalarDenomination: string;
   min: BigNumber;
@@ -85,7 +84,7 @@ export interface ScalarOutcomeProps {
   lastPrice?: FormattedNumber;
 }
 
-function calculatePosition(min, max, lastPrice) {
+export function calculatePosition(min, max, lastPrice) {
   const range = max.minus(min);
 	const pricePercentage = createBigNumber(lastPrice ? lastPrice.value : 0)
 	  .minus(min)
