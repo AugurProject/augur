@@ -420,7 +420,7 @@ export function addScripts(flash: FlashSession) {
       let preEmptiveStake = '0';
       if (extraStake) {
         preEmptiveStake = new BigNumber(extraStake)
-          .dividedBy(QUINTILLION)
+          .multipliedBy(QUINTILLION)
           .toFixed();
       }
       if (!this.usingSdk)
