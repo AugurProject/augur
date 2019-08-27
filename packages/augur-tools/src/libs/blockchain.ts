@@ -26,12 +26,12 @@ export interface UsefulContractObjects {
   addresses: ContractAddresses;
 }
 
-export async function deployContracts(provider: EthersProvider,  accounts: Account[], compiledContracts: CompilerOutput, config: DeployerConfigurationOverwrite): Promise<UsefulContractObjects> {
+export async function deployContracts(provider: EthersProvider,  account: Account, compiledContracts: CompilerOutput, config: DeployerConfigurationOverwrite): Promise<UsefulContractObjects> {
   config = Object.assign({}, flashDeployerConfigurationDefaults, config);
   const deployerConfiguration = CreateDeployerConfiguration(config);
 
-  const signer = await makeSigner(accounts[0], provider);
-  const dependencies = makeDependencies(accounts[0], provider, signer);
+  const signer = await makeSigner(account, provider);
+  const dependencies = makeDependencies(account, provider, signer);
 
   const contractDeployer = new ContractDeployer(deployerConfiguration, dependencies, provider.provider, signer, compiledContracts);
   const addresses = await contractDeployer.deploy();
