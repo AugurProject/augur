@@ -30,6 +30,7 @@ import { addUpdateTransaction } from 'modules/events/actions/add-update-transact
 import { augurSdk } from 'services/augursdk';
 import { Augur } from '@augurproject/sdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
+import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 
 const handleAlertUpdate = (
   log: any,
@@ -111,7 +112,10 @@ export const handleNewBlockLog = (log: Events.NewBlock) => (
     })
   );
   // update assets each block
-  if (getState().authStatus.isLogged) dispatch(updateAssets());
+  if (getState().authStatus.isLogged) {
+    dispatch(updateAssets());
+    dispatch(checkAccountAllowance());
+  }
 };
 
 export const handleMarketCreatedLog = (log: any) => (

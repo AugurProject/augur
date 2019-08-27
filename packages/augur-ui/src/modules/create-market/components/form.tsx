@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
-import moment from 'moment';
 
 import { LocationDisplay, Error } from 'modules/common/form';
 import {
@@ -34,16 +32,11 @@ import {
 import {
   CATEGORICAL,
   SCALAR,
-  BID,
-  SELL,
-  BUY,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
   YES_NO_OUTCOMES,
   SCALAR_OUTCOMES,
-  NEW_ORDER_GAS_ESTIMATE,
   NON_EXISTENT,
-  ZERO
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
@@ -51,7 +44,7 @@ import {
   ExplainerBlock,
   ContentBlock,
 } from 'modules/create-market/components/common';
-import { NewMarket, Drafts, LiquidityOrder } from 'modules/types';
+import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
@@ -74,13 +67,13 @@ import {
   dateGreater,
   isValidFee
 } from 'modules/common/validations';
-import { formatDate, buildformattedDate } from 'utils/format-date';
-import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
+import { buildformattedDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
 
-import Styles from 'modules/create-market/components/form.styles';
+import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
+import { BulkTxLabel } from 'modules/common/labels';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -96,6 +89,7 @@ interface FormProps {
   template: boolean;
   openCreateMarketModal: Function;
   currentTimestamp: number;
+  needsApproval: boolean;
 }
 
 interface FormState {
@@ -515,7 +509,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       drafts,
       template,
       openCreateMarketModal,
-      history
+      history,
+      needsApproval
     } = this.props;
     const { contentPages } = this.state;
 
@@ -628,6 +623,9 @@ export default class Form extends React.Component<FormProps, FormState> {
                   )}
                 </div>
               </div>
+              {secondButton === CREATE && (
+                  <BulkTxLabel className={Styles.MultipleTransactions} buttonName={"Create"} count={1} needsApproval={needsApproval}/>
+              )}
             </ContentBlock>
           </>
         )}

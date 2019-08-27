@@ -288,10 +288,13 @@ export function createMarketRetry(market: CreateMarketData) {
   return createMarket(newMarket, true);
 }
 
-export async function approveToTrade(amount: BigNumber) {
+export async function approveToTrade() {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
-  return contracts.cash.approve(augurContract, amount);
+  const allowance = createBigNumber(99999999999999999999).times(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+  return contracts.cash.approve(augurContract, allowance);
 }
 
 export async function getAllowance(account: string): Promise<BigNumber> {

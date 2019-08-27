@@ -11,7 +11,7 @@ import {
 } from "modules/orders/actions/liquidity-management";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 import {
-  NEW_ORDER_GAS_ESTIMATE, MAX_BULK_ORDER_COUNT,
+  NEW_ORDER_GAS_ESTIMATE, MAX_BULK_ORDER_COUNT, ZERO,
 } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { formatGasCostToEther, formatEther, formatDai } from "utils/format-number";
@@ -59,6 +59,7 @@ const mergeProps = (sP, dP, oP) => {
     sP.gasPrice,
   );
   const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
+  const needsApproval = bnAllowance.lte(ZERO);
   const submitAllTxCount = Math.ceil(numberOfTransactions / MAX_BULK_ORDER_COUNT);
   const {
     marketType,
@@ -85,6 +86,7 @@ const mergeProps = (sP, dP, oP) => {
     maxPrice,
     minPrice,
     transactionHash,
+    needsApproval,
     submitAllTxCount,
     breakdown: [
       {
