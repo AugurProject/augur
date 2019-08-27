@@ -6,7 +6,6 @@ import { selectAuthorOwnedMarkets } from "modules/markets/selectors/user-markets
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { CREATE_MARKET } from 'modules/common/constants';
 import { collectMarketCreatorFees } from "modules/markets/actions/market-creator-fees-management";
-import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { retrySubmitMarket } from "modules/markets/actions/submit-new-market";
 
 const mapStateToProps = (state) => {
@@ -25,8 +24,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   removePendingMarket: (id) => dispatch(removePendingData(id, CREATE_MARKET)),
   retrySubmitMarket: (data) => dispatch(retrySubmitMarket(data)),
-  collectMarketCreatorFees: (getBalanceOnly, marketId, callback) =>
-    dispatch(collectMarketCreatorFees(getBalanceOnly, marketId, callback)),
+  collectMarketCreatorFees: (getBalanceOnly, marketId) =>
+    dispatch(collectMarketCreatorFees(getBalanceOnly, marketId)),
 });
 
 const MyMarketsContainer = withRouter(

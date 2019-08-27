@@ -3,7 +3,6 @@ import {
   selectLoginAccountAddress,
   selectMarketTradingHistoryState,
   selectPendingQueue,
-  selectCurrentTimestamp,
   selectPendingLiquidityOrders
 } from "store/select-state";
 import { CREATE_MARKET } from 'modules/common/constants';
@@ -31,13 +30,12 @@ export const selectAuthorOwnedMarkets = createSelector(
     });
     filteredMarkets = pendingMarkets.concat(filteredMarkets);
     return filteredMarkets.map(m => {
-      const pendingOrderId = m.pending && generateTxParameterId(m.txParams);
-      const id = m.id || pendingOrderId;
+      const pendingOrderId = m.transactionHash || generateTxParameterId(m.txParams);
       return {
         ...m,
-        hasPendingLiquidityOrders: !!pendingLiquidityOrders[id],
-        orderBook: pendingLiquidityOrders[id],
-        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[id])
+        hasPendingLiquidityOrders: !!pendingLiquidityOrders[pendingOrderId],
+        orderBook: pendingLiquidityOrders[pendingOrderId],
+        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[pendingOrderId])
       }
     });
   }

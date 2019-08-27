@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
     state.orderBooks[market.marketId][ownProps.selectedOutcomeId];
 
   if (ownProps.initialLiquidity) {
-    outcomeOrderBook = formatOrderBook(outcomeOrderBook, minPrice, maxPrice);
+    outcomeOrderBook = formatOrderBook(outcomeOrderBook);
   }
 
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcomeOrderBook);

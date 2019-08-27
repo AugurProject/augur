@@ -42,7 +42,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: "Confirm",
       action: () => {
         const { newMarket, address } = sP;
-        dP.submitNewMarket(newMarket, oP.history);
+        dP.submitNewMarket(newMarket);
         if (sP.modal.cb) {
           sP.modal.cb();
         }

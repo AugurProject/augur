@@ -13,25 +13,13 @@ import { helpIcon } from 'modules/common/icons';
 import { RadioBarGroup } from 'modules/common/form';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import parseQuery from "modules/routes/helpers/parse-query";
-import makeQuery from "modules/routes/helpers/make-query";
-
-interface MenuItem {
-  label: string;
-  value: string;
-  description?: string;
-}
+import parseQuery from 'modules/routes/helpers/parse-query';
+import makeQuery from 'modules/routes/helpers/make-query';
 
 interface MarketsListFiltersProps {
-  isMobile: boolean;
-  mobileMenuState: number;
-  subMenuScalar: number;
   maxFee: string;
   maxLiquiditySpread: string;
   showInvalid: string;
-  menuItems: MenuItem[];
-  submenuItems: MenuItem[];
-  updateMobileMenuState: Function;
   updateMaxFee: Function;
   updateMaxSpread: Function;
   updateShowInvalid: Function;
@@ -45,7 +33,10 @@ interface MarketsListFiltersState {
   showInvalidDefault: string;
 }
 
-export default class MarketsListFilters extends React.Component<MarketsListFiltersProps, MarketsListFiltersState> {
+export default class MarketsListFilters extends React.Component<
+  MarketsListFiltersProps,
+  MarketsListFiltersState
+> {
   constructor(props) {
     super(props);
 
@@ -57,13 +48,16 @@ export default class MarketsListFilters extends React.Component<MarketsListFilte
   }
 
   componentDidMount() {
-    const existingParams = parseQuery(window.location.hash.split("#!/markets")[1]);
+    const existingParams = parseQuery(
+      window.location.hash.split('#!/markets')[1]
+    );
 
     this.setState(
       {
         feeDefault: existingParams.maxFee || this.props.maxFee,
         spreadDefault: existingParams.spread || this.props.maxLiquiditySpread,
-        showInvalidDefault: existingParams.showInvalid || this.props.showInvalid,
+        showInvalidDefault:
+          existingParams.showInvalid || this.props.showInvalid,
       },
       () => {
         this.props.updateMaxFee(this.state.feeDefault);
@@ -78,49 +72,55 @@ export default class MarketsListFilters extends React.Component<MarketsListFilte
 
     return (
       <div className={Styles.Filters}>
-        <span>Filters</span>
+        <div className={Styles.FiltersGroup}>
+          <div>Filters</div>
 
-        <div className={Styles.Filter}>
-          <span>Fees</span>
-          {this.generateTooltip('...')}
+          <div className={Styles.Filter}>
+            <span>Fees</span>
+            {this.generateTooltip('...')}
+          </div>
+
+          <RadioBarGroup
+            radioButtons={feeFilters}
+            defaultSelected={this.state.feeDefault}
+            onChange={(value: string) => {
+              this.updateQuery(MAXFEE_PARAM_NAME, value, this.props.location);
+              this.props.updateMaxFee(value);
+            }}
+          />
+
+          <div className={Styles.Filter}>
+            <span>Liquidity Spread</span>
+            {this.generateTooltip('...')}
+          </div>
+
+          <RadioBarGroup
+            radioButtons={spreadFilters}
+            defaultSelected={this.state.spreadDefault}
+            onChange={(value: string) => {
+              this.updateQuery(SPREAD_PARAM_NAME, value, this.props.location);
+              this.props.updateMaxSpread(value);
+            }}
+          />
+
+          <div className={Styles.Filter}>
+            <span>Invalid Markets</span>
+            {this.generateTooltip('...')}
+          </div>
+
+          <RadioBarGroup
+            radioButtons={invalidFilters}
+            defaultSelected={this.state.showInvalidDefault}
+            onChange={(value: string) => {
+              this.updateQuery(
+                SHOW_INVALID_MARKETS_PARAM_NAME,
+                value,
+                this.props.location
+              );
+              this.props.updateShowInvalid(value);
+            }}
+          />
         </div>
-
-        <RadioBarGroup
-          radioButtons={feeFilters}
-          defaultSelected={this.state.feeDefault}
-          onChange={(value: string) => {
-            this.updateQuery(MAXFEE_PARAM_NAME, value, this.props.location);
-            this.props.updateMaxFee(value);
-          }}
-        />
-
-        <div className={Styles.Filter}>
-          <span>Liquidity Spread</span>
-          {this.generateTooltip('...')}
-        </div>
-
-        <RadioBarGroup
-          radioButtons={spreadFilters}
-          defaultSelected={this.state.spreadDefault}
-          onChange={(value: string) => {
-            this.updateQuery(SPREAD_PARAM_NAME, value, this.props.location);
-            this.props.updateMaxSpread(value);
-          }}
-        />
-
-        <div className={Styles.Filter}>
-          <span>Invalid Markets</span>
-          {this.generateTooltip('...')}
-        </div>
-
-        <RadioBarGroup
-          radioButtons={invalidFilters}
-          defaultSelected={this.state.showInvalidDefault}
-          onChange={(value: string) => {
-            this.updateQuery(SHOW_INVALID_MARKETS_PARAM_NAME, value, this.props.location);
-            this.props.updateShowInvalid(value);
-          }}
-        />
       </div>
     );
   }
@@ -128,7 +128,7 @@ export default class MarketsListFilters extends React.Component<MarketsListFilte
   updateQuery(filterType, value, location) {
     const { history } = this.props;
     let updatedSearch = parseQuery(location.search);
-    if (value === "") {
+    if (value === '') {
       delete updatedSearch[filterType];
     } else {
       updatedSearch[filterType] = value;
@@ -151,16 +151,16 @@ export default class MarketsListFilters extends React.Component<MarketsListFilte
             Styles.Filter_TooltipHint
           )}
           data-tip
-          data-for="tooltip--confirm"
+          data-for='tooltip--confirm'
         >
           {helpIcon}
         </label>
         <ReactTooltip
-          id="tooltip--confirm"
+          id='tooltip--confirm'
           className={TooltipStyles.Tooltip}
-          effect="solid"
-          place="top"
-          type="light"
+          effect='solid'
+          place='top'
+          type='light'
         >
           <p>{tipText}</p>
         </ReactTooltip>
@@ -168,4 +168,3 @@ export default class MarketsListFilters extends React.Component<MarketsListFilte
     );
   }
 }
-

@@ -511,8 +511,13 @@ export const TX_TRADE_GROUP_ID = '_tradeGroupId';
 export const TX_MARKET_ID = '_market';
 export const TX_AMOUNT = '_amount';
 export const TX_DIRECTION = '_direction';
+export const TX_ORDER_TYPE = '_type';
 export const TX_PRICE = '_price';
 export const TX_OUTCOME_ID = '_outcome';
+export const TX_NUM_SHARES = '_attoshares';
+export const TX_OUTCOMES = '_outcomes';
+export const TX_PRICES = '_prices';
+export const TX_TYPES = '_types';
 // # Alerts
 export const CRITICAL = 'CRITICAL';
 export const INFO = 'INFO';
@@ -522,6 +527,7 @@ export const WITHDRAWETHERTOIFPOSSIBLE = 'WITHDRAWETHERTOIFPOSSIBLE';
 export const CALCULATEREPORTINGFEE = 'CALCULATEREPORTINGFEE';
 export const CLAIMTRADINGPROCEEDS = 'CLAIMTRADINGPROCEEDS';
 export const PUBLICCREATEORDER = 'PUBLICCREATEORDER';
+export const PUBLICCREATEORDERS = 'PUBLICCREATEORDERS';
 export const BUYPARTICIPATIONTOKENS = 'BUYPARTICIPATIONTOKENS';
 export const PUBLICFILLBESTORDER = 'PUBLICFILLBESTORDER';
 export const PUBLICFILLBESTORDERWITHLIMIT = 'PUBLICFILLBESTORDERWITHLIMIT';
@@ -852,3 +858,5 @@ export const SCALAR_OUTCOMES = [
   },
 ];
 
+export const POPULAR_CATEGORIES = ['sports', 'politics', 'entertainment', 'finance', 'crypto'];
+export const CATEGORIES_MAX = 5;

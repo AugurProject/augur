@@ -137,8 +137,9 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
     if (block) {
       const blockNumber: number = parseInt(block.number, 10);
 
-      const logs: Log[] = extendedLogs.map((log) => ({
+      const logs: Log[] = extendedLogs.map((log: ExtendedLog) => ({
         ...log,
+        name: '',
         logIndex: parseInt(log.logIndex, 10),
         blockNumber: parseInt(log.blockNumber, 10),
       }));

@@ -106,7 +106,7 @@ export class Trade {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
-    const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
+    const { loopLimit } = this.getTradeTransactionLimits(params);
 
     let result: Event[] = [];
 
@@ -191,7 +191,7 @@ export class Trade {
           return new BigNumber(0);
         } else if (eventParams.eventType === 2) {// Fill
           const onChainAmountFilled = eventParams.uint256Data[OrderEventUint256Value.amountFilled];
-          amountRemaining = tradeOnChainAmountRemaining.minus(onChainAmountFilled);
+          amountRemaining = amountRemaining.minus(onChainAmountFilled);
         }
       }
     }

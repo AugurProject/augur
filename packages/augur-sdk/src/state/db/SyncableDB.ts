@@ -82,7 +82,7 @@ export class SyncableDB extends AbstractDB {
       const marketCreatedRawDocs = await this.allDocs();
       let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
       marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
-      Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
+      await Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
     }
 
     // TODO Make any other external calls as needed (such as pushing user's balance to UI)
@@ -186,7 +186,7 @@ export class SyncableDB extends AbstractDB {
       }
 
       if (Augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
-        Augur.syncableFlexSearch.removeMarketCreatedDocs(blocksToRemove.docs);
+        await Augur.syncableFlexSearch.removeMarketCreatedDocs(blocksToRemove.docs);
       }
 
       await this.syncStatus.setHighestSyncBlock(this.dbName, --blockNumber, this.syncing, true);

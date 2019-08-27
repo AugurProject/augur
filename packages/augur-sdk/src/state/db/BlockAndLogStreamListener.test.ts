@@ -61,7 +61,9 @@ describe("BlockstreamListener", () => {
       subscribeToOnLogsRemoved: jest.fn(),
     };
 
+
     const parseLogs = jest.fn().mockImplementation((logs:Log[]) => logs.map<ParsedLog>((log) => ({
+      name: '',
       blockHash: log.blockHash,
       blockNumber: log.blockNumber,
       transactionIndex: parseInt(log.transactionHash || "0", 10),
@@ -72,7 +74,7 @@ describe("BlockstreamListener", () => {
     })));
 
     deps = {
-      address: "0xSomeAddress",
+      address: '0xSomeAddress',
       blockAndLogStreamer,
       listenForNewBlocks: jest.fn(),
       getEventTopics: jest.fn(),
@@ -108,8 +110,8 @@ describe("BlockstreamListener", () => {
         blockAndLogStreamerListener.listenForEvent("SomeEvent", onNewLogCallback);
       });
 
-      test("should notify log listeners", () => {
-        blockAndLogStreamerListener.onNewBlock(nextBlock);
+      test("should notify log listeners", async () => {
+        await blockAndLogStreamerListener.onNewBlock(nextBlock);
         expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
       });
 
@@ -130,8 +132,8 @@ describe("BlockstreamListener", () => {
         blockAndLogStreamerListener.listenForEvent(["SomeEvent", "SomeOtherEvent", "SomeEventWithoutLogs"], onNewLogCallback);
       });
 
-      test("should notify log listeners", () => {
-        blockAndLogStreamerListener.onNewBlock(nextBlock);
+      test("should notify log listeners", async () => {
+        await blockAndLogStreamerListener.onNewBlock(nextBlock);
         expect(blockAndLogStreamer.reconcileNewBlock).toHaveBeenCalledWith(nextBlock);
       });
 

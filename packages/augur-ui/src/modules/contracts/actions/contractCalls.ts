@@ -33,6 +33,7 @@ import {
   SCALAR,
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
+  BUY,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, UIOrder, LiquidityOrder } from 'modules/types';
@@ -212,7 +213,7 @@ export function getRep() {
 export async function getCreateMarketBreakdown() {
   const { contracts } = augurSdk.get();
   const vBond = await contracts.universe.getOrCacheValidityBond_();
-  const noShowBond = await contracts.universe.getOrCacheDesignatedReportNoShowBond_();
+  const noShowBond = await contracts.universe.getOrCacheMarketRepBond_();
   const validityBondFormatted = formatAttoDai(vBond);
   const noShowFormatted = formatAttoRep(noShowBond, {
     decimals: 4,
@@ -287,10 +288,13 @@ export function createMarketRetry(market: CreateMarketData) {
   return createMarket(newMarket, true);
 }
 
-export async function approveToTrade(amount: BigNumber) {
+export async function approveToTrade() {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
-  return contracts.cash.approve(augurContract, amount);
+  const allowance = createBigNumber(99999999999999999999).times(
+    TEN_TO_THE_EIGHTEENTH_POWER
+  );
+  return contracts.cash.approve(augurContract, allowance);
 }
 
 export async function getAllowance(account: string): Promise<BigNumber> {
@@ -337,14 +341,31 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
     formatBytes32String(''),
     formatBytes32String(''),
     orderProperties.tradeGroupId,
-    false,
     NULL_ADDRESS
   );
 }
 
-export async function createLiquidityOrders(orders: UIOrder[]) {
+export async function createLiquidityOrders(market: Getters.Markets.MarketInfo, orders: LiquidityOrder[]) {
   const Augur = augurSdk.get();
-  // return Augur.contracts.createOrder.publicCreateOrders();
+  const {id, numTicks, minPrice, maxPrice} = market;
+  const marketId = id;
+  const kycToken = NULL_ADDRESS;
+  const tradeGroupId = generateTradeGroupId();
+  const outcomes = [];
+  const types = [];
+  const attoshareAmounts = [];
+  const prices = [];
+
+  orders.map(o => {
+    const properties = createOrderParameters(numTicks, o.quantity, o.price, minPrice, maxPrice);
+    const orderType = o.type === BUY ? 0 : 1;
+    outcomes.push(new BigNumber(o.outcomeId));
+    types.push(new BigNumber(orderType));
+    attoshareAmounts.push(new BigNumber(properties.attoShares));
+    prices.push(new BigNumber(properties.attoPrice));
+  })
+
+  return Augur.contracts.createOrder.publicCreateOrders(outcomes, types, attoshareAmounts, prices, marketId, tradeGroupId, kycToken);
 }
 
 function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice) {
@@ -372,7 +393,6 @@ export async function placeTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  ignoreShares: boolean,
   affiliateAddress: string = NULL_ADDRESS,
   kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
@@ -392,7 +412,6 @@ export async function placeTrade(
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
-    ignoreShares,
     affiliateAddress,
     kycToken,
     doNotCreateOrders,
@@ -410,7 +429,6 @@ export async function simulateTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  ignoreShares: boolean,
   affiliateAddress: string = NULL_ADDRESS,
   kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
@@ -430,7 +448,6 @@ export async function simulateTrade(
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
-    ignoreShares,
     affiliateAddress,
     kycToken,
     doNotCreateOrders,
@@ -449,7 +466,6 @@ export async function simulateTradeGasLimit(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  ignoreShares: boolean,
   affiliateAddress: string = NULL_ADDRESS,
   kycToken: string = NULL_ADDRESS,
   doNotCreateOrders: boolean,
@@ -469,7 +485,6 @@ export async function simulateTradeGasLimit(
     numOutcomes: numOutcomes as 3 | 4 | 5 | 6 | 7 | 8,
     outcome: outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
     tradeGroupId,
-    ignoreShares,
     affiliateAddress,
     kycToken,
     doNotCreateOrders,

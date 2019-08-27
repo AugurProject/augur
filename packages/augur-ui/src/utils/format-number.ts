@@ -226,7 +226,12 @@ export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    { blankZero: false, ...opts },
+    {  
+      decimals: 4,
+      decimalsRounded: 4,
+      blankZero: false,
+      ...opts 
+    },
   );
 }
 
@@ -242,7 +247,12 @@ export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    { blankZero: false, ...opts },
+    {  
+      decimals: ETHER_NUMBER_OF_DECIMALS,
+      decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
+      blankZero: false, 
+      ...opts 
+    },
   );
 }
 

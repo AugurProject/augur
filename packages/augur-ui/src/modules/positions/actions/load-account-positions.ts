@@ -69,7 +69,7 @@ export const loadAccountPositionsTotals = (
   });
   dispatch(
     updateLoginAccount({
-      totalFrozenFunds: positions[1].frozenFunds,
+      totalFrozenFunds: positions[30].frozenFunds,
       tradingPositionsTotal: { unrealizedRevenue24hChangePercent : positions[1].unrealizedPercent },
     })
   );
