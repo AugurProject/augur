@@ -1,15 +1,11 @@
-import { eachOfSeries, eachOfLimit } from 'async-es';
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { createBigNumber } from 'utils/create-big-number';
 
 import {
-  MODAL_ACCOUNT_APPROVAL,
   BUY,
   MAX_BULK_ORDER_COUNT,
+  ZERO,
 } from 'modules/common/constants';
-import { IndividualOrderBook, BaseAction, LiquidityOrder } from 'modules/types';
+import { IndividualOrderBook, LiquidityOrder } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
@@ -17,6 +13,7 @@ import {
   createLiquidityOrder,
   isTransactionConfirmed,
   createLiquidityOrders,
+  approveToTrade,
 } from 'modules/contracts/actions/contractCalls';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
@@ -149,7 +146,7 @@ export const removeLiquidityOrder = ({
   data: { txParamHash: transactionHash, outcomeId, orderId },
 });
 
-export const sendLiquidityOrder = (options: any) => (
+export const sendLiquidityOrder = (options: any) => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   const {
@@ -180,41 +177,21 @@ export const sendLiquidityOrder = (options: any) => (
     orderCB();
   };
 
-  const promptApprovalandSend = () => {
-    dispatch(
-      updateModal({
-        type: MODAL_ACCOUNT_APPROVAL,
-        approveOnSent: () => {
-          sendOrder();
-        },
-        approveCallback: (err: any, res: any) => {
-          if (err) return seriesCB(err);
-        },
-      })
-    );
-  };
-
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
-    dispatch(
-      checkAccountAllowance((err: any, allowance: string) => {
-        if (allowance === '0') {
-          promptApprovalandSend();
-        } else {
-          sendOrder();
-        }
-      })
-    );
-  } else {
+    await approveToTrade();
     sendOrder();
   }
 };
-export const startOrderSending = (options: any) => (
+
+export const startOrderSending = (options: any) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { marketId } = options;
   const { loginAccount, marketInfos, pendingLiquidityOrders } = getState();
-  const bnAllowance = createBigNumber(loginAccount.allowance, 10);
+
+  if (loginAccount.allowance.lte(ZERO)) await approveToTrade();
+
   const market = marketInfos[marketId];
   let orders = [];
   const liquidity = pendingLiquidityOrders[market.transactionHash];

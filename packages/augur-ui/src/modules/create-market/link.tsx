@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
-import Styles from 'modules/create-market/link.styles';
+import Styles from 'modules/create-market/link.styles.less';
+import { ButtonActionType } from 'modules/types';
 
 export interface LinkProps {
   href?: string;
   underline?: Boolean;
   ownLine?: Boolean;
+  updateModal: ButtonActionType;
 }
 
 const Link = (props: LinkProps) => (
@@ -15,7 +17,7 @@ const Link = (props: LinkProps) => (
     onClick={props.updateModal}
   >
     Learn more
-  </button>      
+  </button>
 );
 
 export default Link;

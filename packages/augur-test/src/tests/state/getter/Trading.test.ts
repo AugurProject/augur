@@ -73,15 +73,15 @@ describe('State API :: Trading :: ', () => {
     );
 
     // Take half the order using the same account
-    const cost = numShares.multipliedBy(78).div(2);
     const orderId1 = await john.getBestOrderId(bid, market1.address, outcome);
     const orderId2 = await john.getBestOrderId(bid, market2.address, outcome);
-    await john.fillOrder(orderId1, cost, numShares.div(2), '42');
-    await john.fillOrder(orderId2, cost, numShares.div(2), '42');
+    await john.fillOrder(orderId1, numShares.div(2), '42');
+    await john.fillOrder(orderId2, numShares.div(2), '42');
 
     // And the rest using another account
-    await mary.fillOrder(orderId1, cost, numShares.div(2), '43');
-    await mary.fillOrder(orderId2, cost, numShares.div(2), '43');
+    await mary.faucet(new BigNumber(1e18)); // faucet enough to cover fills
+    await mary.fillOrder(orderId1, numShares.div(2), '43');
+    await mary.fillOrder(orderId2, numShares.div(2), '43');
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 
@@ -162,7 +162,6 @@ describe('State API :: Trading :: ', () => {
     );
 
     // Take half the order using the same account
-    const cost = numShares.multipliedBy(78).div(2);
     const orderId = await john.getBestOrderId(bid, market.address, outcome);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -175,7 +174,7 @@ describe('State API :: Trading :: ', () => {
     let order = orders[market.address][0]['0'][orderId];
     await expect(order).not.toBeNull();
 
-    await john.fillOrder(orderId, cost, numShares.div(2), '42');
+    await john.fillOrder(orderId, numShares.div(2), '42');
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
 

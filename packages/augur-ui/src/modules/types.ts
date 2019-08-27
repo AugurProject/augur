@@ -584,7 +584,7 @@ export interface WindowApp extends Window {
   integrationHelpers: any;
 }
 
-type ButtonActionType = (
+export type ButtonActionType = (
   event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
 ) => void;
 
