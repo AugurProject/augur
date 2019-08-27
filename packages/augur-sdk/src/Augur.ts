@@ -24,6 +24,7 @@ import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./c
 import { Liquidity } from "./api/Liquidity";
 import { TransactionResponse } from "ethers/providers";
 import { SyncableFlexSearch } from "./state/db/SyncableFlexSearch";
+import { GenericEventDBDescription } from "./state/logs/types";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
@@ -45,32 +46,31 @@ export class Augur<TProvider extends Provider = Provider> {
   private txPendingCallback: TXStatusCallback;
   private txFailureCallback: TXStatusCallback;
 
-  // TODO Set genericEventNames using GenericContractInterfaces instead of hardcoding them
-  readonly genericEventNames: string[] = [
-    "CompleteSetsPurchased",
-    "CompleteSetsSold",
-    "DisputeCrowdsourcerCompleted",
-    "DisputeCrowdsourcerContribution",
-    "DisputeCrowdsourcerCreated",
-    "DisputeCrowdsourcerRedeemed",
-    "DisputeWindowCreated",
-    "InitialReporterRedeemed",
-    "InitialReportSubmitted",
-    "InitialReporterTransferred",
-    "MarketCreated",
-    "MarketFinalized",
-    "MarketMigrated",
-    "MarketParticipantsDisavowed",
-    "MarketTransferred",
-    "MarketVolumeChanged",
-    "MarketOIChanged",
-    "OrderEvent",
-    "ParticipationTokensRedeemed",
-    "ReportingParticipantDisavowed",
-    "TimestampSet",
-    "TradingProceedsClaimed",
-    "UniverseCreated",
-    "UniverseForked",
+  readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
+    { EventName: "CompleteSetsPurchased", indexes: []},
+    { EventName: "CompleteSetsSold", indexes: []},
+    { EventName: "DisputeCrowdsourcerCompleted", indexes: ["market"]},
+    { EventName: "DisputeCrowdsourcerContribution", indexes: []},
+    { EventName: "DisputeCrowdsourcerCreated", indexes: []},
+    { EventName: "DisputeCrowdsourcerRedeemed", indexes: []},
+    { EventName: "DisputeWindowCreated", indexes: []},
+    { EventName: "InitialReporterRedeemed", indexes: []},
+    { EventName: "InitialReportSubmitted", indexes: []},
+    { EventName: "InitialReporterTransferred", indexes: []},
+    { EventName: "MarketCreated", indexes: ["market"]},
+    { EventName: "MarketFinalized", indexes: ["market"]},
+    { EventName: "MarketMigrated", indexes: ["market"]},
+    { EventName: "MarketParticipantsDisavowed", indexes: []},
+    { EventName: "MarketTransferred", indexes: []},
+    { EventName: "MarketVolumeChanged", indexes: []},
+    { EventName: "MarketOIChanged", indexes: []},
+    { EventName: "OrderEvent", indexes: []},
+    { EventName: "ParticipationTokensRedeemed", indexes: []},
+    { EventName: "ReportingParticipantDisavowed", indexes: []},
+    { EventName: "TimestampSet", indexes: ["newTimestamp"]},
+    { EventName: "TradingProceedsClaimed", indexes: []},
+    { EventName: "UniverseCreated", indexes: []},
+    { EventName: "UniverseForked", indexes: ["universe"]},
   ];
 
   constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false) {

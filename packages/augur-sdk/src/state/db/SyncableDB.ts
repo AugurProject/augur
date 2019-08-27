@@ -28,25 +28,23 @@ export class SyncableDB extends AbstractDB {
     networkId: number,
     eventName: string,
     dbName: string = db.getDatabaseName(eventName),
-    idFields: string[] = []
+    idFields: string[] = [],
+    indexes: string[] = [],
   ) {
     super(networkId, dbName, db.pouchDBFactory);
     this.augur = augur;
     this.eventName = eventName;
     this.syncStatus = db.syncStatus;
     this.idFields = idFields;
-    this.db.createIndex({
-      index: {
-        fields: ['blockNumber'],
-      },
-    });
-    if (this.idFields.length > 0) {
+
+    for(const item of [...this.idFields, ...indexes, 'blockNumber']) {
       this.db.createIndex({
         index: {
-          fields: this.idFields,
+          fields: [item],
         },
       });
     }
+
     db.notifySyncableDBAdded(this);
     db.registerEventListener(this.eventName, this.addNewBlock);
 
@@ -87,6 +85,7 @@ export class SyncableDB extends AbstractDB {
 
     // TODO Make any other external calls as needed (such as pushing user's balance to UI)
   }
+
 
   private parseLogArrays(logs: ParsedLog[]): void {
     for (let i = 0; i < logs.length; i++) {
