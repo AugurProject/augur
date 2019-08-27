@@ -527,6 +527,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
             _uint256Data[8] = 0;
             _uint256Data[9] = 0;
             augur.logZeroXOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.contracts.market, _tradeGroupId, _orderType, _addressData, _uint256Data);
+            return true;
         }
         augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.creator.participantAddress, _tradeData.filler.participantAddress, _price, _fees, _amountFilled, _tradeData.order.orderId, _tradeGroupId);
         return true;

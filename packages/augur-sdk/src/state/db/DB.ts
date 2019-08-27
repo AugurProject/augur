@@ -33,6 +33,7 @@ import {
   MarketData,
   GenericEventDBDescription
 } from "../logs/types";
+import { ZeroXOrders, StoredOrder } from "./ZeroXOrders";
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -56,6 +57,7 @@ export class DB {
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
   private marketDatabase: MarketDB;
+  private zeroXOrders: ZeroXOrders;
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   readonly pouchDBFactory: PouchDBFactoryType;
@@ -146,6 +148,9 @@ export class DB {
 
     // Custom Derived DBs here
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
+
+    // Zero X Orders
+    this.zeroXOrders = new ZeroXOrders(this, networkId, this.augur);
 
     // add passed in tracked users to the tracked uses db
     for (const trackedUser of trackedUsers) {
@@ -241,6 +246,8 @@ export class DB {
     }
 
     await Promise.all(dbSyncPromises).then(() => undefined);
+
+    await this.zeroXOrders.sync();
 
     // The Market DB syncs last as it depends on a derived DB
     return this.marketDatabase.sync(highestAvailableBlockNumber);
@@ -660,6 +667,18 @@ export class DB {
     const results = await this.findInDerivedDB(this.getDatabaseName("CurrentOrders"), request);
     const logs = results.docs as unknown as ParsedOrderEventLog[];
     for (const log of logs) log.timestamp = log.timestamp;
+    return logs;
+  }
+
+  /**
+   * Queries the ZeroXOrders DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<StoredOrder>>}
+   */
+  async findZeroXOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<StoredOrder[]> {
+    const results = await this.zeroXOrders.find(request);
+    const logs = results.docs as unknown as StoredOrder[];
     return logs;
   }
 
