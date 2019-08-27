@@ -27,6 +27,7 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
+import { ReportingPercent } from 'modules/reporting/common';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -36,6 +37,7 @@ import { SquareDropdown } from 'modules/common/selection';
 import { getTimezones, getUserTimezone, Timezones, UTC_Default } from 'utils/get-timezones';
 import { Moment } from 'moment';
 import noop from 'utils/noop';
+import { Getters } from "@augurproject/sdk";
 
 interface CheckboxProps {
   id: string;
@@ -214,9 +216,11 @@ interface RadioGroupProps {
   radioButtons:
     | Array<RadioCardProps>
     | Array<RadioBarProps>
-    | Array<RadioTwoLineBarProps>;
+    | Array<RadioTwoLineBarProps>
+    | Array<ReportingRadioBarProps>;
   defaultSelected?: string | null;
   children?: Array<any>;
+  reporting?: Boolean;
 }
 
 interface RadioGroupState {
@@ -239,6 +243,16 @@ interface RadioBarProps {
   secondTextValue?: string;
   secondErrorMessage?: string;
   secondHeader?: string;
+}
+
+interface ReportingRadioBarProps {
+  header: string;
+  value: string;
+  onChange?: Function;
+  expandable?: boolean;
+  checked?: boolean;
+  error?: boolean;
+  stake: Getters.Markets.StakeDetails|null
 }
 
 interface RadioTwoLineBarProps {
@@ -628,13 +642,23 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   };
 
   render() {
-    const { radioButtons, onChange, errorMessage } = this.props;
+    const { radioButtons, onChange, errorMessage, reporting } = this.props;
     const { selected } = this.state;
 
     return (
       <div>
         {radioButtons.map(radio => (
-          <RadioBar
+          reporting ? 
+          <ReportingRadioBar 
+            key={radio.value}
+            {...radio}
+            checked={radio.value === selected}
+            onChange={selected => {
+              onChange(selected);
+              this.setState({ selected });
+            }}
+          />
+          : <RadioBar
             key={radio.value}
             {...radio}
             checked={radio.value === selected}
@@ -648,6 +672,30 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     );
   }
 }
+
+export const ReportingRadioBar = ({
+  header,
+  onChange,
+  checked,
+  value,
+  error,
+  stake
+}: ReportingRadioBarProps) => (
+  <div
+    className={classNames(Styles.ReportingRadioBar, {
+      [Styles.RadioBarExpanded]: checked && expandable,
+      [Styles.RadioBarError]: error,
+    })}
+    role="button"
+    onClick={e => onChange(value)}
+  >
+    {checked ? FilledRadio : EmptyRadio}
+    <h5>{header}</h5>
+    <div>
+      <ReportingPercent firstPercent={20} firstPercent={40} firstPercent={30} />
+    </div>
+  </div>
+);
 
 export const RadioBar = ({
   header,
@@ -664,7 +712,7 @@ export const RadioBar = ({
   secondPlaceholder,
   secondTextValue,
   secondErrorMessage,
-  secondHeader
+  secondHeader,
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
