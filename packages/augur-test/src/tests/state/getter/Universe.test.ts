@@ -45,10 +45,10 @@ describe('State API :: Universe :: ', () => {
     // Default dispute window until someone creates the current dispute window.
     expect(disputeWindow).toEqual({
       address: '',
-      startTime: '0',
-      endTime: '0',
-      purchased: 0,
-      fees: 0,
+      startTime: 0,
+      endTime: 0,
+      purchased: '0',
+      fees: '0',
     });
 
     // Create market, which also creates dispute windows.
@@ -81,8 +81,8 @@ describe('State API :: Universe :: ', () => {
     expect(disputeWindow.address).toEqual(disputeWindowFromContract.address);
     expect(Number(disputeWindow.startTime)).toBeLessThanOrEqual(now.toNumber());
     expect(Number(disputeWindow.endTime)).toBeGreaterThan(now.toNumber());
-    expect(disputeWindow.purchased).toEqual(0);
-    expect(disputeWindow.fees).toEqual(0);
+    expect(disputeWindow.purchased).toEqual('0');
+    expect(disputeWindow.fees).toEqual('0');
 
     // Participation tokens!
     const participationTokensBought = new BigNumber(1);
@@ -94,8 +94,8 @@ describe('State API :: Universe :: ', () => {
     expect(disputeWindow.address).toEqual(disputeWindowFromContract.address);
     expect(Number(disputeWindow.startTime)).toBeLessThanOrEqual(now.toNumber());
     expect(Number(disputeWindow.endTime)).toBeGreaterThan(now.toNumber());
-    expect(disputeWindow.purchased).toEqual(participationTokensBought.toNumber());
-    expect(disputeWindow.fees).toEqual(0);
+    expect(disputeWindow.purchased).toEqual(participationTokensBought.toString());
+    expect(disputeWindow.fees).toEqual('0');
 
     // Generate fees.
     const feesSent = new BigNumber(3004);
@@ -108,7 +108,7 @@ describe('State API :: Universe :: ', () => {
     expect(disputeWindow.address).toEqual(disputeWindowFromContract.address);
     expect(Number(disputeWindow.startTime)).toBeLessThanOrEqual(now.toNumber());
     expect(Number(disputeWindow.endTime)).toBeGreaterThan(now.toNumber());
-    expect(disputeWindow.purchased).toEqual(participationTokensBought.toNumber());
-    expect(disputeWindow.fees).toEqual(feesSent.toNumber());
+    expect(disputeWindow.purchased).toEqual(participationTokensBought.toString());
+    expect(disputeWindow.fees).toEqual(feesSent.toString());
   }, 120000);
 });

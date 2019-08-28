@@ -3,19 +3,15 @@ import { SearchResults } from 'flexsearch';
 import * as t from 'io-ts';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
-import {
-  Address,
-  Timestamp,
-  DisputeWindowCreatedLog,
-} from '../logs/types';
+import { Address, DisputeWindowCreatedLog } from '../logs/types';
 import { Augur } from '../../index';
 
 export interface DisputeWindow {
   address: Address;
-  startTime: Timestamp;
-  endTime: Timestamp;
-  purchased: number;
-  fees: number;
+  startTime: number;
+  endTime: number;
+  purchased: string;
+  fees: string;
 }
 
 export class Universe {
@@ -35,17 +31,17 @@ export class Universe {
     const fees = await getFees(augur, disputeWindow);
     return {
       address: disputeWindow,
-      startTime,
-      endTime,
-      purchased: purchased.toNumber(),
-      fees: fees.toNumber(),
+      startTime: Number(startTime),
+      endTime: Number(endTime),
+      purchased: purchased.toString(),
+      fees: fees.toString(),
     };
   }
 }
 
 async function predictDisputeWindow(augur: Augur, db: DB, universe: string): Promise<DisputeWindow> {
   const initial = false;
-  const disputeRoundDurationSeconds = await augur.contracts.universe.getDisputeRoundDurationInSeconds_(initial);
+  const disputeRoundDurationSeconds = (await augur.contracts.universe.getDisputeRoundDurationInSeconds_(initial)).toNumber();
   const currentTime = await augur.getTimestamp();
   const previousDisputeWindowTime = currentTime.minus(disputeRoundDurationSeconds);
   const previousDisputeWindow = await getDisputeWindow(db, universe, previousDisputeWindowTime.toNumber());
@@ -53,18 +49,18 @@ async function predictDisputeWindow(augur: Augur, db: DB, universe: string): Pro
   if (previousDisputeWindow !== null) { // Derive window from previous window
     return {
       address: '',
-      startTime: previousDisputeWindow.startTime + disputeRoundDurationSeconds,
-      endTime: previousDisputeWindow.endTime + disputeRoundDurationSeconds,
-      purchased: 0,
-      fees: 0,
+      startTime: Number(previousDisputeWindow.startTime) + disputeRoundDurationSeconds,
+      endTime: Number(previousDisputeWindow.endTime) + disputeRoundDurationSeconds,
+      purchased: '0',
+      fees: '0',
     };
   } else { // Use a default for the clients
     return {
       address: '',
-      startTime: '0',
-      endTime: '0',
-      purchased: 0,
-      fees: 0,
+      startTime: 0,
+      endTime: 0,
+      purchased: '0',
+      fees: '0',
     };
   }
 }
