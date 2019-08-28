@@ -293,8 +293,12 @@ jobs:
       and
       (
         succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
+        or
+        (
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        )
       )
     pool:
       vmImage: 'Ubuntu 16.04'
