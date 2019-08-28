@@ -86,6 +86,19 @@ export default class MarketsView extends Component<
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.selectedCategories.length > this.props.selectedCategories.length ||
+        nextProps.maxFee !== this.props.maxFee ||
+        nextProps.maxLiquiditySpread !== this.props.maxLiquiditySpread ||
+        nextProps.includeInvalidMarkets !== this.props.includeInvalidMarkets
+      ) {
+
+      this.setState({
+        offset: 1,
+      });
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const { search, selectedCategories, maxFee, maxLiquiditySpread, includeInvalidMarkets, isConnected } = this.props;
     if (
