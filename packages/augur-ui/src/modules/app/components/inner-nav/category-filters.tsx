@@ -161,6 +161,8 @@ export default class CategoryFilters extends React.Component<
             count={this.getCategoryCount(this.state.selectedCategory)}
             handleClick={() => null}
             active={true}
+            loading={this.props.isSearching}
+
           />
         </div>
         {this.state.selectedCategory &&
@@ -170,6 +172,7 @@ export default class CategoryFilters extends React.Component<
                 <CategoryRow
                   category={item.category}
                   count={item.count}
+                  loading={this.props.isSearching}
                   handleClick={() => this.getChildrenCategories(item.category, this.props.selectedCategories)}
                   hasChildren={this.hasChildren(item.category)}
                 />
