@@ -395,7 +395,7 @@ jobs:
       and
       (
         in(dependencies.Test_Augur_Core.result, 'Succeeded'),
-        in(dependencies.Docker_geth_dev.result, 'Succeeded', 'Skipped'),
+        in(dependencies.Docker_geth_dev.result, 'Succeeded', 'Skipped')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
