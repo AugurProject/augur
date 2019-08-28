@@ -18,7 +18,7 @@ import {
   Timestamp,
   UniverseForkedLog
 } from "../logs/types";
-import { NULL_ADDRESS,  sortOptions } from './types';
+import { NULL_ADDRESS, sortOptions } from './types';
 
 import {
   Augur,
@@ -85,11 +85,11 @@ export interface MarketListMetaCategories {
         children: {
           [key: string]: {
             count: number;
-          }
-        }
-      }
-    }
-  }
+          };
+        };
+      };
+    };
+  };
 }
 
 export interface MarketListMeta {
@@ -349,9 +349,7 @@ export class Markets {
 
                 const price =
                   tradeRow.orderType === OrderType.Bid
-                    ? maxPrice
-                        .dividedBy(QUINTILLION)
-                        .minus(displayPrice)
+                    ? maxPrice.dividedBy(QUINTILLION).minus(displayPrice)
                     : displayPrice;
 
                 return totalVolume.plus(amount.times(price));
@@ -417,77 +415,105 @@ export class Markets {
     params: t.TypeOf<typeof Markets.getMarketsParams>
   ): Promise<MarketList> {
     // Validate params
-    if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
-      throw new Error('Unknown universe: ' + params.universe);
-    }
     const validLiquiditySpreads = ['10', '15', '20', '100'];
-    if (params.maxLiquiditySpread && !validLiquiditySpreads.includes(params.maxLiquiditySpread)) {
+    if (
+      params.maxLiquiditySpread &&
+      !validLiquiditySpreads.includes(params.maxLiquiditySpread)
+    ) {
       throw new Error('Invalid maxLiquiditySpread');
     }
 
     // Set params defaults
-    params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
+    params.includeInvalidMarkets =
+      typeof params.includeInvalidMarkets === 'undefined'
+        ? true
+        : params.includeInvalidMarkets;
     params.search = typeof params.search === 'undefined' ? '' : params.search;
-    params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
-    params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.marketOI : params.sortBy; // TODO: Make liquidity the default sort
-    params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
+    params.categories =
+      typeof params.categories === 'undefined' ? [] : params.categories;
+    params.sortBy =
+      typeof params.sortBy === 'undefined'
+        ? GetMarketsSortBy.marketOI
+        : params.sortBy; // TODO: Make liquidity the default sort
+    params.isSortDescending =
+      typeof params.isSortDescending === 'undefined'
+        ? true
+        : params.isSortDescending;
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
 
-    // Get MarketCreated logs for all markets with the specified filters
-    const request = {
-      selector: {
-        universe: params.universe,
-        marketCreator: params.creator,
-        designatedReporter: params.designatedReporter,
-      },
+    const sortFn = key => {
+      return (a, b) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0);
     };
-    if (params.maxEndTime) {
-      request.selector = Object.assign(request.selector, {
-        endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
-      });
+
+    const universe = augur.getUniverse(params.universe);
+    const [
+      isKnownUniverse,
+      reportingFeeDivisorNumber,
+      unfilteredMarketCreatedLogs,
+      marketsResults,
+    ] = await Promise.all([
+      augur.contracts.augur.isKnownUniverse_(params.universe),
+      universe.getOrCacheReportingFeeDivisor_(),
+
+      // Get MarketCreated logs for all markets with the specified filters
+      db.findMarketCreatedLogs({
+        selector: {
+          universe: params.universe,
+          marketCreator: params.creator,
+          designatedReporter: params.designatedReporter,
+          ...(params.maxEndTime && {
+            endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
+          }),
+        },
+      }),
+
+      getMarketsSearchResults(params.universe, params.search, params.categories)
+        .then(result => result.sort(sortFn(params.sortBy)))
+        .then(result => (params.isSortDescending ? result.reverse() : result))
+        .then(result =>
+          result.slice(params.offset, params.offset + params.limit)
+        ),
+    ]);
+
+    if (!isKnownUniverse) {
+      throw new Error('Unknown universe: ' + params.universe);
     }
-    let marketCreatedLogs = await db.findMarketCreatedLogs(request);
 
     // Filter out MarketCreated logs with fees > params.maxFee and key them by market ID
     let marketCreatorFeeDivisor: BigNumber | undefined = undefined;
     if (params.maxFee) {
       const universe = augur.getUniverse(params.universe);
-      const reportingFeeDivisor = new BigNumber(
-        (await universe.getOrCacheReportingFeeDivisor_()).toNumber()
-      );
+      const reportingFeeDivisor = reportingFeeDivisorNumber;
       const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
       const marketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
       marketCreatorFeeDivisor = new BigNumber(10 ** 18).multipliedBy(
         marketCreatorFee
       );
     }
-    marketCreatedLogs = marketCreatedLogs.reduce(
-      (previousValue: any, currentValue: MarketData) => {
-        if (
-          params.maxFee &&
-          typeof marketCreatorFeeDivisor !== 'undefined' &&
-          new BigNumber(currentValue.feeDivisor).gt(marketCreatorFeeDivisor)
-        ) {
+
+    const marketCreatedLogs = unfilteredMarketCreatedLogs
+      .filter(
+        currentValue =>
+          !(
+            params.maxFee &&
+            typeof marketCreatorFeeDivisor !== 'undefined' &&
+            new BigNumber(currentValue.feeDivisor).gt(marketCreatorFeeDivisor)
+          )
+      )
+      .reduce((previousValue, currentValue) => {
+          previousValue[currentValue.market] = currentValue;
           return previousValue;
-        }
-        previousValue[currentValue.market] = currentValue;
-        return previousValue;
-      },
-      []
-    );
+      }, []);
 
-    // Sort search results by categories
-    let marketsResults: any[]  = _.sortBy(
-      await getMarketsSearchResults(params.universe, params.search, params.categories),
-      ['category1', 'category2', 'category3']
-    );
-
-
-    // Create intersection array of marketsResults & marketCreatedLogs
+    // Create intersection array of market-sResults & marketCreatedLogs
+    const results: Array<MarketCreatedLog & MarketFields> = [];
     for (let i = marketsResults.length - 1; i >= 0; i--) {
       if (marketCreatedLogs[marketsResults[i].market]) {
-        marketsResults[i] = Object.assign(marketsResults[i], marketCreatedLogs[marketsResults[i].market]);
+        results[i] = {
+          ...marketsResults[i],
+          ...marketCreatedLogs[marketsResults[i].market],
+        };
       } else {
         marketsResults.splice(i, 1);
       }
@@ -515,16 +541,13 @@ export class Markets {
         });
         const reportingState = await getMarketReportingState(
           db,
-          marketsResults[i],
+          results[i],
           marketFinalizedLogs
         );
         if (!params.reportingStates.includes(reportingState)) {
           includeMarket = false;
         }
       }
-
-      marketsResults[i]['timestamp'] = new BigNumber(marketsResults[i]['timestamp']).toString();
-      marketsResults[i]['endTime'] = new BigNumber(marketsResults[i]['endTime']).toString();
 
       let marketData: MarketData[];
       if (
@@ -545,12 +568,19 @@ export class Markets {
           params.sortBy === GetMarketsSortBy.marketOI ||
           params.sortBy === GetMarketsSortBy.volume
         ) {
-          marketsResults[i][params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
+          marketsResults[i][params.sortBy] = marketData[params.sortBy]
+            ? new BigNumber(marketData[params.sortBy]).toString()
+            : '0';
         }
         // @TODO Figure out why marketData is sometimes returning no results here
         if (
-          (params.maxLiquiditySpread && marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0') ||
-          (params.includeInvalidMarkets === false && marketData.length > 0 && marketData[0].invalidFilter === true)
+          (params.maxLiquiditySpread &&
+            marketData.length > 0 &&
+            marketData[0].liquidity &&
+            marketData[0].liquidity[params.maxLiquiditySpread] === '0') ||
+          (params.includeInvalidMarkets === false &&
+            marketData.length > 0 &&
+            marketData[0].invalidFilter === true)
         ) {
           includeMarket = false;
           filteredOutCount++;
@@ -569,17 +599,28 @@ export class Markets {
         keyedMarkets[marketsResults[i].market] = i;
       }
       const orderFilledLogs = await db.findOrderFilledLogs({
-        selector: { market: { $in: marketsResults.map(marketsResult => marketsResult.market) } },
+        selector: {
+          market: {
+            $in: marketsResults.map(marketsResult => marketsResult.market),
+          },
+        },
         fields: ['market', 'timestamp'],
       });
       // Assign lastTradedTimestamp value to each market in marketsResults
       for (let i = 0; i < orderFilledLogs.length; i++) {
         const currentTimestamp = parseInt(orderFilledLogs[i].timestamp, 16);
         if (
-          !marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] ||
-          currentTimestamp > marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp]
+          !marketsResults[keyedMarkets[orderFilledLogs[i].market]][
+            GetMarketsSortBy.lastTradedTimestamp
+          ] ||
+          currentTimestamp >
+            marketsResults[keyedMarkets[orderFilledLogs[i].market]][
+              GetMarketsSortBy.lastTradedTimestamp
+            ]
         ) {
-          marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] = currentTimestamp;
+          marketsResults[keyedMarkets[orderFilledLogs[i].market]][
+            GetMarketsSortBy.lastTradedTimestamp
+          ] = currentTimestamp;
         }
       }
       // For any markets with no trading, set the lastTradedTimestamp to 0
@@ -592,29 +633,20 @@ export class Markets {
 
     const meta = getMarketsMeta(marketsResults, filteredOutCount);
 
-    // Sort & limit markets
-    marketsResults = _.sortBy(marketsResults, [params.sortBy]);
-    if (params.isSortDescending) {
-      marketsResults = marketsResults.reverse();
-    }
-    marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
-
     // Get markets info to return
-    const marketsInfo = await Markets.getMarketsInfo(
-      augur,
-      db,
-      { marketIds: marketsResults.map(marketInfo => marketInfo.market) }
-    );
+    const marketsInfo = await Markets.getMarketsInfo(augur, db, {
+      marketIds: marketsResults.map(marketInfo => marketInfo.market),
+    });
     // Re-sort marketsInfo since Markets.getMarketsInfo doesn't always return the desired order
     const filteredMarketsDetailsOrder = {};
     for (let i = 0; i < marketsResults.length; i++) {
       filteredMarketsDetailsOrder[marketsResults[i].market] = i;
     }
-    marketsInfo.sort(
-      (a, b) => {
-        return filteredMarketsDetailsOrder[a.id] - filteredMarketsDetailsOrder[b.id];
-      }
-    );
+    marketsInfo.sort((a, b) => {
+      return (
+        filteredMarketsDetailsOrder[a.id] - filteredMarketsDetailsOrder[b.id]
+      );
+    });
 
     return {
       markets: marketsInfo,
@@ -691,10 +723,11 @@ export class Markets {
       };
     };
 
-    const bucketAndSortOrdersByPrice = (unsortedOrders: {
-      [orderId: string]: Order;
-    },
-    sortDescending = true
+    const bucketAndSortOrdersByPrice = (
+      unsortedOrders: {
+        [orderId: string]: Order;
+      },
+      sortDescending = true
     ) => {
       if (!unsortedOrders) return [];
       const bucketsByPrice = _.groupBy<Order>(
@@ -830,9 +863,7 @@ export class Markets {
         resolutionSource = extraInfo.resolutionSource
           ? extraInfo.resolutionSource
           : null;
-          backupSource = extraInfo.backupSource
-            ? extraInfo.backupSource
-            : null;
+          backupSource = extraInfo.backupSource ? extraInfo.backupSource : null;
         scalarDenomination = extraInfo._scalarDenomination
           ? extraInfo._scalarDenomination
           : null;
@@ -867,7 +898,8 @@ export class Markets {
             .dividedBy(QUINTILLION)
             .toString()
             : '0',
-          openInterest: marketOIChangedLogs.length > 0
+          openInterest:
+            marketOIChangedLogs.length > 0
             ? new BigNumber(marketOIChangedLogs[0].marketOI)
             .dividedBy(QUINTILLION)
             .toString()
@@ -897,7 +929,11 @@ export class Markets {
           tickSize,
           minPrice
         ),
-          disputeInfo: await getMarketDisputeInfo(augur, db, marketCreatedLog.market),
+          disputeInfo: await getMarketDisputeInfo(
+            augur,
+            db,
+            marketCreatedLog.market
+          ),
       });
     };
 
@@ -1094,7 +1130,7 @@ async function getMarketOutcomes(
 
 export async function getMarketReportingState(
   db: DB,
-  marketCreatedLog: MarketCreatedLog,
+  marketCreatedLog: Pick<MarketCreatedLog, 'endTime' | 'market' | 'universe'>,
   marketFinalizedLogs: MarketFinalizedLog[],
   universeForkedLogs?: UniverseForkedLog[],
 ): Promise<MarketReportingState> {
@@ -1111,9 +1147,9 @@ export async function getMarketReportingState(
       return MarketReportingState.Forking;
     } else {
       if (marketFinalizedLogs.length > 0) {
-        return  MarketReportingState.Finalized;
+        return MarketReportingState.Finalized;
       } else {
-        return  MarketReportingState.AwaitingForkMigration;
+        return MarketReportingState.AwaitingForkMigration;
       }
     }
   } else {
@@ -1135,7 +1171,7 @@ export async function getMarketReportingState(
       currentTimestamp = new BigNumber(Math.round(Date.now() / 1000));
     }
     if (new BigNumber(currentTimestamp).lt(marketCreatedLog.endTime)) {
-      return  MarketReportingState.PreReporting;
+      return MarketReportingState.PreReporting;
     } else {
       const initialReportSubmittedLogs = (await db.findInitialReportSubmittedLogs(
         { selector: { market: marketCreatedLog.market } }
@@ -1147,15 +1183,15 @@ export async function getMarketReportingState(
         initialReportSubmittedLogs.length === 0 &&
         currentTimestamp.lte(designatedReportingEndTime)
       ) {
-        return  MarketReportingState.DesignatedReporting;
+        return MarketReportingState.DesignatedReporting;
       } else if (
         initialReportSubmittedLogs.length === 0 &&
         currentTimestamp.gt(designatedReportingEndTime)
       ) {
-        return  MarketReportingState.OpenReporting;
+        return MarketReportingState.OpenReporting;
       } else {
         if (marketFinalizedLogs.length > 0) {
-          return  MarketReportingState.Finalized;
+          return MarketReportingState.Finalized;
         } else {
           const disputeCrowdsourcerCompletedLogs = (await db.findDisputeCrowdsourcerCompletedLogs(
             { selector: { market: marketCreatedLog.market } }
@@ -1167,9 +1203,9 @@ export async function getMarketReportingState(
               disputeCrowdsourcerCompletedLogs[0].nextWindowStartTime
             )
           ) {
-            return  MarketReportingState.AwaitingNextWindow;
+            return MarketReportingState.AwaitingNextWindow;
           }
-          return  MarketReportingState.CrowdsourcingDispute;
+          return MarketReportingState.CrowdsourcingDispute;
         }
       }
     }
@@ -1189,7 +1225,11 @@ function getPeriodStartTime(
   );
 }
 
-async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Promise<DisputeInfo> {
+async function getMarketDisputeInfo(
+  augur: Augur,
+  db: DB,
+  marketId: Address
+): Promise<DisputeInfo> {
   const stakeDetails = {};
 
   const market = augur.getMarket(marketId);
@@ -1198,16 +1238,19 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
   });
   const numParticipants = await market.getNumParticipants_();
   if (initialReportSubmittedLogs.length > 0) {
-    const disputeCrowdsourcerCreatedLogs = await db.findDisputeCrowdsourcerCreatedLogs({
-      selector: { market: marketId },
-    });
+    const disputeCrowdsourcerCreatedLogs = await db.findDisputeCrowdsourcerCreatedLogs(
+      {
+        selector: { market: marketId },
+      }
+    );
     const disputeCrowdsourcerCompletedLogs = await db.findDisputeCrowdsourcerCompletedLogs(
       {
         selector: { market: marketId },
       }
     );
     const stakeLogs: any[] = disputeCrowdsourcerCreatedLogs;
-    if (initialReportSubmittedLogs[0]) stakeLogs.unshift(initialReportSubmittedLogs[0]);
+    if (initialReportSubmittedLogs[0])
+      stakeLogs.unshift(initialReportSubmittedLogs[0]);
     for (let i = 0; i < stakeLogs.length; i++) {
       let reportingParticipantId: Address;
       if (stakeLogs[i].hasOwnProperty('disputeCrowdsourcer')) {
@@ -1215,7 +1258,9 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
       } else {
         reportingParticipantId = await market.getInitialReporter_();
       }
-      const reportingParticipant = augur.contracts.getReportingParticipant(reportingParticipantId);
+      const reportingParticipant = augur.contracts.getReportingParticipant(
+        reportingParticipantId
+      );
       const reportingStakeSize = stakeLogs[i].hasOwnProperty(
         'disputeCrowdsourcer'
       )
@@ -1225,17 +1270,20 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
         ? await reportingParticipant.totalSupply_()
         : new BigNumber(0);
       const payoutDistributionHash = await reportingParticipant.getPayoutDistributionHash_();
-      const disputeCrowdsourcerCompletedLogs = await db.findDisputeCrowdsourcerCompletedLogs({
-        selector: { disputeCrowdsourcer: reportingParticipantId },
+      const disputeCrowdsourcerCompletedLogs = await db.findDisputeCrowdsourcerCompletedLogs(
+        {
+          selector: { disputeCrowdsourcer: reportingParticipantId },
         }
       );
       const stakeCurrent = await reportingParticipant.getStake_();
       const stakeRemaining =
-        stakeLogs[i].hasOwnProperty("size") && totalSupply <= reportingStakeSize
+        stakeLogs[i].hasOwnProperty('size') && totalSupply <= reportingStakeSize
           ? await reportingParticipant.getRemainingToFill_()
           : new BigNumber(0);
       const winningReportingParticipantId = await market.getWinningReportingParticipant_();
-      const winningReportingParticipant = augur.contracts.getReportingParticipant(winningReportingParticipantId);
+      const winningReportingParticipant = augur.contracts.getReportingParticipant(
+        winningReportingParticipantId
+      );
       if (!stakeDetails[payoutDistributionHash]) {
         // Create new StakeDetails for Payout Set
         const payout = await reportingParticipant.getPayoutNumerators_();
@@ -1246,31 +1294,48 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
           stakeCompleted = bondSizeCurrent;
         } else {
           bondSizeCurrent = new BigNumber(stakeLogs[i].size);
-          stakeCompleted = disputeCrowdsourcerCompletedLogs[0] ? new BigNumber(stakeLogs[i].size) : new BigNumber(0);
+          stakeCompleted = disputeCrowdsourcerCompletedLogs[0]
+            ? new BigNumber(stakeLogs[i].size)
+            : new BigNumber(0);
         }
-        stakeDetails[payoutDistributionHash] =
-          {
-            payout,
-            bondSizeCurrent,
-            bondSizeTotal: bondSizeCurrent,
-            stakeCurrent,
-            stakeRemaining,
-            stakeCompleted,
-            tentativeWinning: await winningReportingParticipant.getPayoutDistributionHash_() === payoutDistributionHash ? true : false,
-          };
+        stakeDetails[payoutDistributionHash] = {
+          payout,
+          bondSizeCurrent,
+          bondSizeTotal: bondSizeCurrent,
+          stakeCurrent,
+          stakeRemaining,
+          stakeCompleted,
+          tentativeWinning:
+            (await winningReportingParticipant.getPayoutDistributionHash_()) ===
+            payoutDistributionHash
+              ? true
+              : false,
+        };
       } else {
         // Update existing StakeDetails for Payout Set
         if (disputeCrowdsourcerCompletedLogs[0]) {
-          stakeDetails[payoutDistributionHash].stakeCompleted = new BigNumber(stakeDetails[payoutDistributionHash].stakeCompleted).plus(stakeLogs[i].size);
+          stakeDetails[payoutDistributionHash].stakeCompleted = new BigNumber(
+            stakeDetails[payoutDistributionHash].stakeCompleted
+          ).plus(stakeLogs[i].size);
         } else {
-          stakeDetails[payoutDistributionHash].bondSizeCurrent = new BigNumber(stakeLogs[i].size);
+          stakeDetails[payoutDistributionHash].bondSizeCurrent = new BigNumber(
+            stakeLogs[i].size
+          );
           stakeDetails[payoutDistributionHash].stakeCurrent = stakeCurrent;
         }
-        if (new BigNumber(stakeLogs[i].size).gt(stakeDetails[payoutDistributionHash].bondSizeTotal)) {
-          stakeDetails[payoutDistributionHash].bondSizeTotal = stakeDetails[payoutDistributionHash].bondSizeTotal.plus(stakeLogs[i].size);
+        if (
+          new BigNumber(stakeLogs[i].size).gt(
+            stakeDetails[payoutDistributionHash].bondSizeTotal
+          )
+        ) {
+          stakeDetails[payoutDistributionHash].bondSizeTotal = stakeDetails[
+            payoutDistributionHash
+          ].bondSizeTotal.plus(stakeLogs[i].size);
         }
         if (stakeRemaining.gt(0)) {
-          stakeDetails[payoutDistributionHash].stakeRemaining = new BigNumber(stakeRemaining);
+          stakeDetails[payoutDistributionHash].stakeRemaining = new BigNumber(
+            stakeRemaining
+          );
         }
       }
     }
@@ -1279,7 +1344,9 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
   let disputeWindowStartTime: string | null = null;
   let disputeWindowEndTime: string | null = null;
   if (disputeWindowAddress !== NULL_ADDRESS) {
-    const disputeWindow = augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
+    const disputeWindow = augur.contracts.disputeWindowFromAddress(
+      disputeWindowAddress
+    );
     disputeWindowStartTime = await disputeWindow.getStartTime_().toString();
     disputeWindowEndTime = await disputeWindow.getEndTime_().toString();
   }
@@ -1293,12 +1360,18 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
     },
     disputePacingOn: await market.getDisputePacingOn_(),
     stakeCompletedTotal: (await market.getParticipantStake_()).toString(10),
-    bondSizeOfNewStake: (await market.getParticipantStake_()).times(2).toString(10),
+    bondSizeOfNewStake: (await market.getParticipantStake_())
+      .times(2)
+      .toString(10),
     stakes: await formatStakeDetails(db, marketId, Object.values(stakeDetails)),
   };
 }
 
-async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]): Promise<StakeDetails[]> {
+async function formatStakeDetails(
+  db: DB,
+  marketId: Address,
+  stakeDetails: any[]
+): Promise<StakeDetails[]> {
   const formattedStakeDetails: StakeDetails[] = [];
   const marketCreatedLogs = await db.findMarketCreatedLogs({
     selector: { market: { $eq: marketId } },
@@ -1320,8 +1393,16 @@ async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]
   for (let i = 0; i < stakeDetails.length; i++) {
     formattedStakeDetails[i] = {
       outcome: calculatePayoutNumeratorsValue(
-        convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
-        convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
+        convertOnChainPriceToDisplayPrice(
+          maxPrice,
+          minPrice,
+          tickSize
+        ).toString(),
+        convertOnChainPriceToDisplayPrice(
+          minPrice,
+          minPrice,
+          tickSize
+        ).toString(),
         numTicks.toString(),
         marketType,
         stakeDetails[i].payout
@@ -1343,7 +1424,7 @@ async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]
 }
 
 function getMarketsMeta(
-  marketsResults: any[],
+  marketsResults: MarketFields[],
   filteredOutCount: number
 ): MarketListMeta {
   const categories = {};
@@ -1353,22 +1434,30 @@ function getMarketsMeta(
       categories[marketsResult.category1]['count']++;
     } else {
       categories[marketsResult.category1] = {
-        'count': 1,
-        'children': {},
+        count: 1,
+        children: {},
       };
     }
     if (categories[marketsResult.category1].children[marketsResult.category2]) {
-      categories[marketsResult.category1].children[marketsResult.category2]['count']++;
+      categories[marketsResult.category1].children[marketsResult.category2][
+        'count'
+      ]++;
     } else {
       categories[marketsResult.category1].children[marketsResult.category2] = {
         count: 1,
         children: {},
       };
     }
-    if (categories[marketsResult.category1].children[marketsResult.category2].children[marketsResult.category3]) {
-      categories[marketsResult.category1].children[marketsResult.category2].children[marketsResult.category3]['count']++;
+    if (
+      categories[marketsResult.category1].children[marketsResult.category2]
+        .children[marketsResult.category3]
+    ) {
+      categories[marketsResult.category1].children[marketsResult.category2]
+        .children[marketsResult.category3]['count']++;
     } else {
-      categories[marketsResult.category1].children[marketsResult.category2].children[marketsResult.category3] = {
+      categories[marketsResult.category1].children[
+        marketsResult.category2
+      ].children[marketsResult.category3] = {
         count: 1,
       };
     }
