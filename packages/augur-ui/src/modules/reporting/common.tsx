@@ -14,7 +14,7 @@ export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
   secondPercent: FormattedNumber;
   thirdPercent: FormattedNumber;
-  total: BigNumber;
+  total: FormattedNumber;
 }
 
 export const ReportingPercent = (props: ReportingPercentProps) => {
