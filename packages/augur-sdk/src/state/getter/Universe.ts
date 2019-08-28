@@ -122,8 +122,4 @@ async function getParticipationTokens(augur: Augur, disputeWindow: Address): Pro
 
 async function getFees(augur: Augur, disputeWindow: Address): Promise<BigNumber> {
   return augur.contracts.cash.balanceOf_(disputeWindow);
-
-  // TODO must get fees from markets within this dispute window because the dispute window
-  //      will not have any cash at all until it's over... so all I'm finding here is how
-  //      much cash can be withdrawn
 }

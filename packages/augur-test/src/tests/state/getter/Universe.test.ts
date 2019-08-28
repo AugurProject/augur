@@ -56,7 +56,7 @@ describe('State API :: Universe :: ', () => {
     });
 
     // Create market, which also creates dispute windows.
-    const market = await john.createYesNoMarket({
+    await john.createYesNoMarket({
       endTime,
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
@@ -102,25 +102,9 @@ describe('State API :: Universe :: ', () => {
     expect(disputeWindow.fees).toEqual(new BigNumber(0));
 
     // Generate fees.
-    const order = await john.placeOrder(
-      market.address,
-      new BigNumber(0), // bid
-      new BigNumber(10000000000000),
-      new BigNumber(22),
-      new BigNumber(0), // outcome 0
-      stringTo32ByteHex(''),
-      stringTo32ByteHex(''),
-      stringTo32ByteHex('trade group id')
-    );
-    await mary.faucet(new BigNumber(1e18));
-    await mary.fillOrder(
-      order,
-      new BigNumber(10000000000000),
-      'trade group id'
-    );
-
-    console.log('yaguna', (await john.augur.contracts.cash.balanceOf_(market.address)).toString());
-
+    const feesSent = new BigNumber(3004);
+    await john.faucet(feesSent);
+    await john.augur.contracts.cash.transfer(disputeWindow.address, feesSent);
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     disputeWindow = await api.route('getDisputeWindow', {
       universe: universe.address,
@@ -129,7 +113,6 @@ describe('State API :: Universe :: ', () => {
     expect(Number(disputeWindow.startTime)).toBeLessThanOrEqual(now.toNumber());
     expect(Number(disputeWindow.endTime)).toBeGreaterThan(now.toNumber());
     expect(disputeWindow.purchased).toEqual(participationTokensBought);
-    // TODO Figure out how to generate fees
-    // expect(disputeWindow.fees).toEqual(new BigNumber(0));
+    expect(disputeWindow.fees).toEqual(feesSent);
   }, 120000);
 });
