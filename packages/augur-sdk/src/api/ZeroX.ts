@@ -8,7 +8,11 @@ import { PlaceTradeDisplayParams, PlaceTradeChainParams } from './Trade';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 import { OrderInfo, WSClient } from '@0x/mesh-rpc-client';
 
-export interface ZeroXPlaceTradeParams extends PlaceTradeDisplayParams {
+export interface ZeroXPlaceTradeDisplayParams extends PlaceTradeDisplayParams {
+  expirationTime: BigNumber;
+}
+
+export interface ZeroXPlaceTradeParams extends PlaceTradeChainParams {
   expirationTime: BigNumber;
 }
 
@@ -48,12 +52,12 @@ export class ZeroX {
     this.meshClient = meshClient;
   }
 
-  async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
+  async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     return this.placeOnChainTrade(onChainTradeParams);
   }
 
-  getOnChainTradeParams(params: PlaceTradeDisplayParams): PlaceTradeChainParams {
+  getOnChainTradeParams(params: ZeroXPlaceTradeDisplayParams): ZeroXPlaceTradeParams {
     const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
     const onChainAmount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
     const onChainPrice = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
@@ -65,21 +69,29 @@ export class ZeroX {
     });
   }
 
-  async placeOnChainTrade(params: PlaceTradeChainParams): Promise<void> {
+  async placeOnChainTrade(params: ZeroXPlaceTradeParams): Promise<void> {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
+
+    const orders = this.augur.getZeroXOrders({
+      marketId: params.market // TODO: also outcome and direction and price
+    });
+    if (_.size(orders) < 1 && !params.doNotCreateOrders) {
+      await this.placeOnChainOrder(params);
+      return;
+    }
+
+    // TODO Iterate through gas estimates for progressively more fills
+
     let result: Event[] = [];
 
-    const orders = this.augur.getZeroXOrders({});
-    // TODO
-    // Get matching orders
-    // If no matching orders & !params.doNotCreateOrders:
-    //   create order
-    //   this.meshClient.addOrderAsync
-    // Iterate through gas estimates for progressively more fills
-    // Send tx
-    // If response has amount remaining > 0 go again
+    result = await this.augur.contracts.zeroXTradeToken.trade(
+      params.amount,
+      params.affiliateAddress,
+      params.tradeGroupId,
+      orders, // TODO Likely needs massaging into the struct format
+      signatures);
 
     const amountRemaining = this.getTradeAmountRemaining(params.amount, result);
     if (amountRemaining.gt(0)) {
@@ -88,13 +100,17 @@ export class ZeroX {
     }
   }
 
-  async placeOrder(params: ZeroXPlaceTradeParams): Promise<string> {
+  async placeOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
+    return await this.placeOnChainOrder(onChainTradeParams);
+  }
+
+  async placeOnChainOrder(params: ZeroXPlaceTradeParams): Promise<string> {
     const salt = new BigNumber(Date.now());
     const result = await this.augur.contracts.zeroXTradeToken.createZeroXOrder_(
       new BigNumber(params.direction),
-      onChainTradeParams.amount,
-      onChainTradeParams.price,
+      params.amount,
+      params.price,
       params.market,
       new BigNumber(params.outcome),
       params.kycToken,
@@ -125,7 +141,7 @@ export class ZeroX {
     return orderHash;
   }
 
-  async simulateTrade(params: PlaceTradeDisplayParams): Promise<ZeroXSimulateTradeData> {
+  async simulateTrade(params: ZeroXPlaceTradeDisplayParams): Promise<ZeroXSimulateTradeData> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
     // TODO simulate 0x trade
@@ -144,7 +160,7 @@ export class ZeroX {
     };
   }
 
-  async checkIfTradeValid(params: PlaceTradeChainParams): Promise<string | null> {
+  async checkIfTradeValid(params: ZeroXPlaceTradeParams): Promise<string | null> {
     if (params.outcome >= params.numOutcomes) return `Invalid outcome given for trade: ${params.outcome.toString()}. Must be between 0 and ${params.numOutcomes.toString()}`;
     if (params.price.lte(0) || params.price.gte(params.numTicks)) return `Invalid price given for trade: ${params.price.toString()}. Must be between 0 and ${params.numTicks.toString()}`;
 

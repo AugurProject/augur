@@ -8,10 +8,9 @@ import { OrderInfo } from '@0x/mesh-rpc-client';
 import { getAddress } from "ethers/utils/address";
 import { SignedOrder } from '@0x/types';
 
-
-// Do Below in background. Use old orders DB until this is done
-// Store two DBs. One is the "syncing" DB, other is used. Once sync is done replace used with new and send event
-// On sync pull all orders
+// Save incremented id with logs
+// Do Below in background. Use old orders DB until this is done via old incremented id
+// On completion replace incremented id market and delete all not that incremented id
 // for blockstream start subscription
 
 export interface OrderData {
