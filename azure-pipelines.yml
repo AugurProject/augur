@@ -165,7 +165,15 @@ jobs:
     condition: |
       or
       (
-        and( succeeded(), eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')),
+        and
+        (
+          succeeded(),
+          or
+          (
+            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true')
+          ),
+        ),
         eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
@@ -395,7 +403,12 @@ jobs:
       and
       (
         in(dependencies.Test_Augur_Core.result, 'Succeeded'),
-        in(dependencies.Docker_geth_dev.result, 'Succeeded', 'Skipped')
+        in(dependencies.Docker_geth_dev.result, 'Succeeded', 'Skipped'),
+        or
+        (
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true')
+        )
       )
     pool:
       vmImage: 'Ubuntu 16.04'
