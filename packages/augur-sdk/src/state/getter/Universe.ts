@@ -48,20 +48,6 @@ export class Universe {
 }
 
 async function predictDisputeWindow(augur: Augur, db: DB, universe: string): Promise<DisputeWindow> {
-  // TODO predict better
-  // 1. It's a 7-day period so use the previous dispute window as an anchor
-  // 2. If there was no previous dispute window then maybe base off of augur deploy block time?
-  //    If this works at all then it might be better than doing #1 since it will work as well and under more circumstances.
-  //    Update: This doesn't look viable so I'm adding #3.
-  // 3. Lie. There having never been a dispute window happens only once and only briefly.
-  //    The user flow makes it unlikely someone will see the dispute page when there isn't a dispute window anyway
-  //    since you typically report before disputing and reporting creates a dispute window. Furthermore, it
-  //    creates the future dispute window so there should be a strong buffer.
-
-  // Plan:
-  // 1. Use the previous dispute window to calculate the upcoming dispute window.
-  // 2. Lie.
-
   const initial = false;
   const disputeRoundDurationSeconds = await augur.contracts.universe.getDisputeRoundDurationInSeconds_(initial);
   const currentTime = await augur.getTimestamp();
