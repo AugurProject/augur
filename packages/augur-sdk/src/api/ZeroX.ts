@@ -2,9 +2,10 @@ import { BigNumber } from "bignumber.js";
 import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, convertOnChainAmountToDisplayAmount, QUINTILLION, numTicksToTickSizeWithDisplayPrices } from '../utils';
 import * as _ from "lodash";
 import { NULL_ADDRESS } from '../constants';
+import * as constants from '../constants';
 import { Augur } from './../Augur';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
-import { PlaceTradeDisplayParams, PlaceTradeChainParams } from './Trade';
+import { PlaceTradeDisplayParams, PlaceTradeChainParams, TradeTransactionLimits } from './Trade';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 import { OrderInfo, WSClient } from '@0x/mesh-rpc-client';
 
@@ -43,6 +44,21 @@ export interface ZeroXSimulateTradeData {
   numFills: BigNumber;
 }
 
+export interface ZeroXTradeOrder {
+  makerAddress: string;
+  takerAddress: string;
+  feeRecipientAddress: string;
+  senderAddress: string;
+  makerAssetAmount: BigNumber;
+  takerAssetAmount: BigNumber;
+  makerFee: BigNumber;
+  takerFee: BigNumber;
+  expirationTimeSeconds: BigNumber;
+  salt: BigNumber;
+  makerAssetData: string;
+  takerAssetData: string;
+}
+
 export class ZeroX {
   private readonly augur: Augur;
   private readonly meshClient: WSClient;
@@ -73,16 +89,48 @@ export class ZeroX {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
-
-    const orders = this.augur.getZeroXOrders({
-      marketId: params.market // TODO: also outcome and direction and price
+    // TODO a more specific getter for this that does a lot of the processing below would likely be more appropriate
+    const orderType = params.direction == 0 ? "sell" : "buy";
+    let zeroXOrders = await this.augur.getZeroXOrders({
+      marketId: params.market,
+      outcome: params.outcome,
+      orderType,
+      matchPrice: `0x${params.price.toString(16)}`
     });
-    if (_.size(orders) < 1 && !params.doNotCreateOrders) {
+
+    if (_.size(zeroXOrders) < 1 && !params.doNotCreateOrders) {
+      console.log(`NO MATCHING ORDERS. PLACING ORDER`);
       await this.placeOnChainOrder(params);
       return;
     }
 
-    // TODO Iterate through gas estimates for progressively more fills
+    const ordersMap = zeroXOrders[params.market][params.outcome][orderType];
+    let sortedOrders = _.sortBy(_.values(ordersMap), (order) =>{ return order.price });
+
+    const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
+
+    const ordersData = params.direction == 0 ? _.take(sortedOrders, loopLimit.toNumber()) : _.takeRight(sortedOrders, loopLimit.toNumber());
+
+    const orders: ZeroXTradeOrder[] = _.map(ordersData, (orderData) => {
+      return {
+        makerAddress: orderData.owner,
+        takerAddress: NULL_ADDRESS,
+        feeRecipientAddress: NULL_ADDRESS,
+        senderAddress: NULL_ADDRESS,
+        makerAssetAmount: orderData.makerAssetAmount,
+        takerAssetAmount: orderData.takerAssetAmount,
+        makerFee: new BigNumber(0),
+        takerFee: new BigNumber(0),
+        expirationTimeSeconds: orderData.expirationTimeSeconds,
+        salt: orderData.salt,
+        makerAssetData: orderData.makerAssetData,
+        takerAssetData: orderData.takerAssetData,
+      };
+    })
+
+    const signatures = _.map(ordersData, (orderData) => {
+      return orderData.signature;
+    });
 
     let result: Event[] = [];
 
@@ -90,7 +138,7 @@ export class ZeroX {
       params.amount,
       params.affiliateAddress,
       params.tradeGroupId,
-      orders, // TODO Likely needs massaging into the struct format
+      orders,
       signatures);
 
     const amountRemaining = this.getTradeAmountRemaining(params.amount, result);
@@ -194,6 +242,22 @@ export class ZeroX {
       }
     }
     return amountRemaining;
+  }
+
+  getTradeTransactionLimits(params: PlaceTradeChainParams): TradeTransactionLimits {
+    let loopLimit = new BigNumber(1);
+    const placeOrderGas = params.shares.gt(0) ? constants.PLACE_ORDER_WITH_SHARES[params.numOutcomes] : constants.PLACE_ORDER_NO_SHARES[params.numOutcomes];
+    const orderCreationCost = params.doNotCreateOrders ? new BigNumber(0) : placeOrderGas;
+    let gasLimit = orderCreationCost.plus(constants.WORST_CASE_FILL[params.numOutcomes]);
+    while (gasLimit.plus(constants.WORST_CASE_FILL[params.numOutcomes]).lt(constants.MAX_GAS_LIMIT_FOR_TRADE) && loopLimit.lt(constants.MAX_FILLS_PER_TX)) {
+      loopLimit = loopLimit.plus(1);
+      gasLimit = gasLimit.plus(constants.WORST_CASE_FILL[params.numOutcomes]);
+    }
+    gasLimit = gasLimit.plus(constants.TRADE_GAS_BUFFER);
+    return {
+      loopLimit,
+      gasLimit,
+    };
   }
 
   async getOrders(): Promise<OrderInfo[]> {

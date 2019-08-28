@@ -16,6 +16,12 @@ import * as t from "io-ts";
 
 export interface ZeroXOrder extends Order {
   expirationTimeSeconds: BigNumber;
+  makerAssetAmount: BigNumber;
+  takerAssetAmount: BigNumber;
+  salt: BigNumber;
+  makerAssetData: string;
+  takerAssetData: string;
+  signature: string;
 }
 
 export interface ZeroXOrders {
@@ -28,8 +34,12 @@ export interface ZeroXOrders {
   };
 }
 
+export const ZeroXOrdersParams = t.partial({
+  matchPrice: t.string
+})
+
 export class ZeroXOrdersGetters {
-  static GetZeroXOrdersParams = t.intersection([sortOptions, OrdersParams]);
+  static GetZeroXOrdersParams = t.intersection([sortOptions, OrdersParams, ZeroXOrdersParams]);
 
   @Getter('GetZeroXOrdersParams')
   static async getZeroXOrders(
@@ -38,25 +48,29 @@ export class ZeroXOrdersGetters {
     params: t.TypeOf<typeof ZeroXOrdersGetters.GetZeroXOrdersParams>
   ): Promise<ZeroXOrders> {
     if (!params.marketId) {
-      throw new Error(
-        "'getOrders' requires 'marketId' param be provided"
-      );
-    }
-    if (!params.makerTaker) {
-      params.makerTaker = 'either';
+      throw new Error("'getOrders' requires 'marketId' param be provided");
     }
 
     const request = {
       selector: {
         market: params.marketId,
         outcome: params.outcome,
+        orderType: params.orderType
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
       limit: params.limit,
       skip: params.offset,
     };
 
-    const currentOrdersResponse = await db.findZeroXOrderLogs(request);
+    console.log(`GETTING ZEROX ORDERS LOGS`);
+    let currentOrdersResponse = await db.findZeroXOrderLogs(request);
+
+    if (params.matchPrice) {
+      if (!params.orderType) throw new Error("Cannot specify match price without order type");
+      currentOrdersResponse = _.filter((currentOrdersResponse), (storedOrder) => {
+        return params.orderType == "buy" ? storedOrder.price < params.matchPrice : storedOrder.price > params.matchPrice;
+      });
+    }
 
     const marketIds = _.map(currentOrdersResponse, 'market');
     const markets = await filterMarketsByReportingState(
@@ -107,6 +121,12 @@ export class ZeroXOrdersGetters {
           fullPrecisionPrice: price,
           fullPrecisionAmount: amount,
           originalFullPrecisionAmount: "0",
+          makerAssetAmount: order.signedOrder.makerAssetAmount,
+          takerAssetAmount: order.signedOrder.takerAssetAmount,
+          salt: order.signedOrder.salt,
+          makerAssetData: order.signedOrder.makerAssetData,
+          takerAssetData: order.signedOrder.takerAssetData,
+          signature: order.signedOrder.signature
         } as ZeroXOrder;
         return orders;
       },

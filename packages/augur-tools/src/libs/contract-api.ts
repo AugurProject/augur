@@ -7,7 +7,7 @@ import {
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
-  ZeroXPlaceTradeParams,
+ZeroXPlaceTradeDisplayParams,
 } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
@@ -21,11 +21,12 @@ import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { WSClient } from "@0x/mesh-rpc-client";
 
 
+
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
 
 export class ContractAPI {
-  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.SEOConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined, meshClient: WSClient = undefined) {
+  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.DirectConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined, meshClient: WSClient = undefined) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient);
@@ -185,9 +186,36 @@ export class ContractAPI {
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), NULL_ADDRESS);
   }
 
-  async placeZeroXOrder(params: ZeroXPlaceTradeParams): Promise<string> {
+  async placeZeroXOrder(params: ZeroXPlaceTradeDisplayParams): Promise<string> {
     const orderHash = await this.augur.zeroX.placeOrder(params);
     return orderHash;
+  }
+
+  async placeZeroXTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
+    const price = params.direction === 0 ? params.displayPrice : params.numTicks.minus(params.displayPrice);
+    const cost = params.displayAmount.multipliedBy(price).multipliedBy(10**18);
+    await this.faucet(cost);
+    await this.augur.zeroX.placeTrade(params);
+  }
+
+  async placeBasicYesNoZeroXTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber, expirationTime: BigNumber): Promise<void> {
+    await this.placeZeroXTrade({
+      direction,
+      market: market.address,
+      numTicks: await market.getNumTicks_(),
+      numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
+      outcome,
+      tradeGroupId: formatBytes32String("42"),
+      affiliateAddress: NULL_ADDRESS,
+      kycToken: NULL_ADDRESS,
+      doNotCreateOrders: false,
+      displayMinPrice: new BigNumber(0),
+      displayMaxPrice: new BigNumber(1),
+      displayAmount,
+      displayPrice,
+      displayShares,
+      expirationTime
+    });
   }
 
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {

@@ -2,13 +2,6 @@ import { makeDbMock, makeProvider } from "../../../libs";
 import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import {
-  MarketReportingState,
-} from '@augurproject/sdk/build/state/getter/Markets';
-import {
-  Orders,
-  OrderState,
-} from '@augurproject/sdk/build/state/getter/Trading';
 import { BigNumber } from 'bignumber.js';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { MockMeshServer, SERVER_PORT, stopServer } from '../../../libs/MockMeshServer';
