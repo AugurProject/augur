@@ -62,7 +62,7 @@ async function predictDisputeWindow(augur: Augur, db: DB, universe: string): Pro
     return {
       address: '',
       startTime: '0',
-      endTime: `0x${currentTime.toString(16)}`,
+      endTime: '0',
       purchased: 0,
       fees: 0,
     };

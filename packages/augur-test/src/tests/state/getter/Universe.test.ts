@@ -43,13 +43,10 @@ describe('State API :: Universe :: ', () => {
     });
 
     // Default dispute window until someone creates the current dispute window.
-    let now = await john.getTimestamp();
-    const nowHex = `0x${now.toString(16)}`;
-
     expect(disputeWindow).toEqual({
       address: '',
       startTime: '0',
-      endTime: nowHex,
+      endTime: '0',
       purchased: 0,
       fees: 0,
     });
@@ -71,7 +68,7 @@ describe('State API :: Universe :: ', () => {
 
     // Move timestamp to open reporting phase
     await john.setTimestamp(endTime.plus(1).plus(SECONDS_IN_A_DAY.times(7)));
-    now = await john.getTimestamp();
+    const now = await john.getTimestamp();
 
     // Create and get dispute window for the time you just set.
     const disputeWindowFromContract = john.augur.contracts.disputeWindowFromAddress(await john.getOrCreateCurrentDisputeWindow());
