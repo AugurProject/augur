@@ -26,12 +26,13 @@ const mapDispatchToProps = dispatch => ({
   updateShowInvalid: showInvalid =>
     dispatch(updateFilterSortOptions(MARKET_SHOW_INVALID, showInvalid)),
 });
-const MarketsListFiltersContainer = compose(
-  withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-)(MarketsListFilters);
+
+const MarketsListFiltersContainer = withRouter(
+  compose(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )
+)(MarketsListFilters));
 
 export default MarketsListFiltersContainer;
