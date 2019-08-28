@@ -7,13 +7,11 @@ import {
   numTicksToTickSize,
 } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import {
-  SECONDS_IN_A_DAY,
-} from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
 import { makeDbMock, makeProvider } from '../../../libs';
 import { stringTo32ByteHex } from '../../../libs/Utils';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
 const ZERO_BYTES = stringTo32ByteHex('');
 
@@ -267,6 +265,7 @@ describe('State API :: Users :: ', () => {
       new BigNumber(0),
       new BigNumber(100),
     ];
+    // implicitly creates dispute window
     await john.doInitialReport(johnYesNoMarket, noPayoutSet);
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);

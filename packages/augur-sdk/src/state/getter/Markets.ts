@@ -25,7 +25,8 @@ import {
   QUINTILLION,
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
-} from '../../index';
+  SECONDS_IN_A_DAY
+} from "../../index";
 import { calculatePayoutNumeratorsValue } from '../../utils';
 
 import * as _ from 'lodash';
@@ -73,8 +74,6 @@ const getMarketsParamsSpecific = t.intersection([
     sortBy: getMarketsSortBy,
   }),
 ]);
-
-export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 
 export interface MarketListMetaCategories {
   [key: string]: {

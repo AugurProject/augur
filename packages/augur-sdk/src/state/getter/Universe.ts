@@ -23,23 +23,20 @@ export interface DisputeWindow {
 }
 
 export class Universe {
-  static getDisputeWindowParams = t.type({
-    universe: t.string,
-  });
+  static getDisputeWindowParams = t.type({});
 
   @Getter('getDisputeWindowParams')
-  static async getDisputeWindow(
-    augur: Augur,
-    db: DB,
-    params: t.TypeOf<typeof Universe.getDisputeWindowParams>
-  ): Promise<DisputeWindow|null> {
-    const currentDisputeWindow = await getCurrentDisputeWindow(db, params.universe);
-    if (currentDisputeWindow === null) return null;
+  static async getDisputeWindow(augur: Augur, db: DB): Promise<DisputeWindow> {
+    const universe = augur.addresses.Universe;
+
+    const currentDisputeWindow = await getCurrentDisputeWindow(augur, db, universe);
+    if (currentDisputeWindow === null) {
+      return predictDisputeWindow(augur, db, universe);
+    }
+
     const { disputeWindow, startTime, endTime } = currentDisputeWindow;
-
-    const account = await augur.getAccount();
-    const { purchased, fees } = await getDisputeWindowTokenPurchasesAndFees(db, account, disputeWindow);
-
+    const purchased = await getParticipationTokens(augur, disputeWindow);
+    const fees = await getFees(augur, disputeWindow);
     return {
       address: disputeWindow,
       startTime,
@@ -50,14 +47,61 @@ export class Universe {
   }
 }
 
-async function getCurrentDisputeWindow(db: DB, universe: string): Promise<DisputeWindowCreatedLog|null> {
-  const now = new Date().getTime(); // ms
+async function predictDisputeWindow(augur: Augur, db: DB, universe: string): Promise<DisputeWindow> {
+  // TODO predict better
+  // 1. It's a 7-day period so use the previous dispute window as an anchor
+  // 2. If there was no previous dispute window then maybe base off of augur deploy block time?
+  //    If this works at all then it might be better than doing #1 since it will work as well and under more circumstances.
+  //    Update: This doesn't look viable so I'm adding #3.
+  // 3. Lie. There having never been a dispute window happens only once and only briefly.
+  //    The user flow makes it unlikely someone will see the dispute page when there isn't a dispute window anyway
+  //    since you typically report before disputing and reporting creates a dispute window. Furthermore, it
+  //    creates the future dispute window so there should be a strong buffer.
+
+  // Plan:
+  // 1. Use the previous dispute window to calculate the upcoming dispute window.
+  // 2. Lie.
+
+  const initial = false;
+  const disputeRoundDurationSeconds = await augur.contracts.universe.getDisputeRoundDurationInSeconds_(initial);
+  const currentTime = await augur.getTimestamp();
+  const previousDisputeWindowTime = currentTime.minus(disputeRoundDurationSeconds);
+  const previousDisputeWindow = await getDisputeWindow(db, universe, previousDisputeWindowTime.toNumber());
+
+  if (previousDisputeWindow !== null) { // Derive window from previous window
+    return {
+      address: '',
+      startTime: previousDisputeWindow.startTime + disputeRoundDurationSeconds,
+      endTime: previousDisputeWindow.endTime + disputeRoundDurationSeconds,
+      purchased: new BigNumber(0),
+      fees: new BigNumber(0),
+    };
+  } else { // Use a default for the clients
+    return {
+      address: '',
+      startTime: '0',
+      endTime: `0x${currentTime.toString(16)}`,
+      purchased: new BigNumber(0),
+      fees: new BigNumber(0),
+    };
+  }
+}
+
+async function getCurrentDisputeWindow(augur: Augur, db: DB, universe: string): Promise<DisputeWindowCreatedLog|null> {
+  const now = (await augur.getTimestamp()).toNumber();
+  return getDisputeWindow(db, universe, now);
+}
+
+async function getDisputeWindow(db: DB, universe: string, time: number): Promise<DisputeWindowCreatedLog|null> {
+  const hexTime = `0x${new BigNumber(time).toString(16)}`;
   const logs = await db.findDisputeWindowCreatedLogs({
     selector: {
       universe,
+      initial: false, // we only want standard (7-day) dispute windows for the getDisputeWindow getter
       $and: [
-        { startTime: { $lt: now} },
-        { endTime: { $gt: now} },
+        // dispute window starts at startTime and ends before endTime
+        { startTime: { $lte: hexTime} },
+        { endTime: { $gt: hexTime} },
       ],
     },
   });
@@ -71,17 +115,15 @@ async function getCurrentDisputeWindow(db: DB, universe: string): Promise<Disput
   }
 }
 
-async function getDisputeWindowTokenPurchasesAndFees(db: DB, account: string, disputeWindow: string) {
-  const participationTokenRedemptionLogs = await db.findParticipationTokensRedeemedLogs({
-    selector: {
-      account,
-      disputeWindow,
-    },
-  });
+async function getParticipationTokens(augur: Augur, disputeWindow: Address): Promise<BigNumber> {
+  const disputeWindowContract = augur.contracts.disputeWindowFromAddress(disputeWindow);
+  return disputeWindowContract.totalSupply_();
+}
 
-  return participationTokenRedemptionLogs.reduce((accumulator, log) => {
-    accumulator.purchased.plus(new BigNumber(log.attoParticipationTokens));
-    accumulator.fees.plus(new BigNumber(log.feePayoutShare));
-    return accumulator;
-  }, { purchased: new BigNumber(0), fees: new BigNumber(0) });
+async function getFees(augur: Augur, disputeWindow: Address): Promise<BigNumber> {
+  return augur.contracts.cash.balanceOf_(disputeWindow);
+
+  // TODO must get fees from markets within this dispute window because the dispute window
+  //      will not have any cash at all until it's over... so all I'm finding here is how
+  //      much cash can be withdrawn
 }
