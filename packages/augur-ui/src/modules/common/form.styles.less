@@ -323,6 +323,64 @@
       margin-bottom: @size-4;
     }
   }
+
+  &.Invalid {
+    color: @color-invalid;
+  }
+
+  &.Scalar {
+    > div {
+      > div:first-of-type {
+        max-width: 300px;
+      }
+      
+      > div:nth-of-type(2) {
+        max-width: 340px;
+        margin-top: @size-16;
+      }
+
+      > div:nth-of-type(3) {
+        color: fade(@color-tertiary-info-text, 30);
+        display: flex;
+        margin-top: @size-8;
+
+        > button:first-of-type {
+          margin-right: @size-10;
+        }
+
+        > button:last-of-type {
+          margin-left: @size-10;
+        }
+      }
+
+      > h2 {
+        .mono-11;
+
+        color: @color-alternate-info-text;
+        margin-top: @size-8;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile-mid {
+    > div {
+      > button {
+        width: 100%;
+      }
+
+      > div:first-of-type {
+        flex-direction: column;
+
+        > span {
+          margin-bottom: @size-2;
+        }
+      }
+
+      > div:nth-of-type(3) {
+        max-width: unset;
+      }
+    }
+  }
 }
 
 .RadioTwoLineBar {
