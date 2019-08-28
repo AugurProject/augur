@@ -505,6 +505,7 @@ export const MODAL_MARKET_REVIEW = 'MODAL_MARKET_REVIEW';
 export const MODAL_MARKET_REVIEW_TRADE = 'MODAL_MARKET_REVIEW_TRADE';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
 export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
+export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
 // transactions parameter names
 export const TX_ORDER_ID = '_orderId';
 export const TX_TRADE_GROUP_ID = '_tradeGroupId';
