@@ -1,10 +1,13 @@
-import React from "react";
+import React from 'react';
 
-import { Helmet } from "react-helmet";
-import PropTypes from "prop-types";
+import { Helmet } from 'react-helmet';
+import { ButtonActionType } from 'modules/types';
+import { ReportingModalButton } from 'modules/reporting/common';
 
-
-class ReportingReporting extends React.Component {
+interface ReportingReportingProps {
+  openReportingModal: ButtonActionType;
+}
+class ReportingReporting extends React.Component<ReportingReportingProps> {
   constructor(props) {
     super(props);
   }
@@ -15,6 +18,12 @@ class ReportingReporting extends React.Component {
         <Helmet>
           <title>Reporting: Markets</title>
         </Helmet>
+        <div>
+          <ReportingModalButton
+            text="Designated Reporting Quick Guide"
+            action={this.props.openReportingModal}
+          />
+        </div>
       </section>
     );
   }
