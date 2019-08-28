@@ -95,9 +95,10 @@ export class SyncableFlexSearch {
 
         if (info) {
           if (Array.isArray(info.categories)) {
-            category1 = info.categories[0] ? info.categories[0] : "";
-            category2 = info.categories[1] ? info.categories[1] : "";
-            category3 = info.categories[2] ? info.categories[2] : "";
+            // Normalize categories
+            category1 = (info.categories[0] ? info.categories[0] : "").toUpperCase();
+            category2 = (info.categories[1] ? info.categories[1] : "").toUpperCase();
+            category3 = (info.categories[2] ? info.categories[2] : "").toUpperCase();
           }
           description = info.description ? info.description : "";
           longDescription = info.longDescription ? info.longDescription : "";

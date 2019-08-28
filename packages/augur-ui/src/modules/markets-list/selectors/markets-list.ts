@@ -7,9 +7,9 @@ export const selectPopularCategories = createSelector(
   (marketLists) => {
     if (!marketLists.isSearching && marketLists.meta) {
 
-      const categories = Object.keys(marketLists.meta.categories).map(category => category.toLowerCase());
+      const categories = Object.keys(marketLists.meta.categories).map(category => category.toUpperCase());
       const mapObject = (category) => {
-        const item = Object.keys(marketLists.meta.categories).find(c => c.toLowerCase() === category)
+        const item = Object.keys(marketLists.meta.categories).find(c => c.toUpperCase() === category)
         return {
           category,
           count: marketLists.meta.categories[item].count,
@@ -55,7 +55,7 @@ export const selectAllOtherCategories = createSelector(
   (marketLists) => {
     if (!marketLists || !marketLists.meta) return null;
 
-    const categories = Object.keys(marketLists.meta.categories).map(category => category.toLowerCase());
+    const categories = Object.keys(marketLists.meta.categories).map(category => category.toUpperCase());
     const mapObject = (category) => {
       return {
         category,

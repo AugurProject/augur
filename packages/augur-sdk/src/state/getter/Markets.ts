@@ -482,12 +482,6 @@ export class Markets {
       ['category1', 'category2', 'category3']
     );
 
-    // Normalize categories
-    marketsResults.map(result => {
-      result.category1 = result.category1.toLowerCase();
-      result.category2 = result.category2.toLowerCase();
-      result.category3 = result.category3.toLowerCase();
-    });
 
     // Create intersection array of marketsResults & marketCreatedLogs
     for (let i = marketsResults.length - 1; i >= 0; i--) {
@@ -1358,7 +1352,7 @@ async function getMarketsSearchResults(
 ) {
   const whereObj = { universe };
   for (let i = 0; i < categories.length; i++) {
-    whereObj['category' + (i + 1)] = categories[i];
+    whereObj['category' + (i + 1)] = categories[i].toUpperCase();
   }
   if (query) {
     return Augur.syncableFlexSearch.search(query, { where: whereObj });
