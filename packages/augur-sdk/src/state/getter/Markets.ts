@@ -595,14 +595,14 @@ export class Markets {
       }
     }
 
+    const meta = getMarketsMeta(marketsResults, filteredOutCount);
+
     // Sort & limit markets
     marketsResults = _.sortBy(marketsResults, [params.sortBy]);
     if (params.isSortDescending) {
       marketsResults = marketsResults.reverse();
     }
     marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
-
-    const meta = getMarketsMeta(marketsResults, filteredOutCount);
 
     // Get markets info to return
     const marketsInfo = await Markets.getMarketsInfo(

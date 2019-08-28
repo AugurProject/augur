@@ -135,36 +135,13 @@
         z-index: @mask-above;
 
         > button {
-          height: @size-24;
-          width: @size-24;
-        }
-
-        > button > svg > path {
-          stroke: @color-secondary-text;
-        }
-
-        > button:first-of-type {
-          display: none;
-          height: @size-24;
-          width: @size-24;
-
-          > svg {
-            transform: rotate(180deg);
-          }
-        }
-
-        > button:last-of-type {
           height: @size-16;
           margin-left: auto;
           width: @size-16;
         }
 
-        &.SubMenuShow {
-          background: @color-primary-light;
-
-          > button:first-of-type {
-            display: block;
-          }
+        > button > svg > path {
+          stroke: @color-secondary-text;
         }
       }
     }
