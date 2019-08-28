@@ -107,11 +107,11 @@ export const loadMarketsByFilter = (
   let params = {
     universe: universe.id,
     categories: filterOptions.categories,
-    // search: filterOptions.search,
     maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
     limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
+    ...filterOptions.search && {search: filterOptions.search},
     reportingStates,
     ...sort,
   };
