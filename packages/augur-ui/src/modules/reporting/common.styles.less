@@ -1,5 +1,53 @@
 @import (reference) '~assets/styles/shared';
 
+.PreFilledStake {
+	background: @color-tertiary-background;
+	border-radius: @size-8;
+	border: 1px solid @color-primary-alternate-two;
+	display: flex;
+	padding: @size-20;
+	width: 574px;
+    flex-direction: column;
+
+	> span:first-of-type {
+		.text-14-medium;
+
+		color: @color-negative;
+		text-transform: capitalize;
+	}
+
+	> span:nth-of-type(2) {
+		.text-12;
+
+		color: @color-tertiary-info-text;
+		margin-bottom: @size-12;
+		margin-top: @size-8;
+	}
+
+	> button {
+		max-width: 180px;
+	}
+
+	> div:first-of-type {
+		margin-bottom: @size-8;
+		max-width: 340px;
+	}
+
+	> div:nth-of-type(2) {
+		display: flex;
+		max-width: 340px;
+    	justify-content: space-between;
+	}
+
+	> span:nth-of-type(3) {
+		.text-14-medium;
+
+		color: @color-alternate-info-text;
+		margin-bottom: @size-10;
+		margin-top: @size-16;
+	}
+}
+
 .ReportingPercent {
 	background: @color-primary-background;
 	height: @size-12;
