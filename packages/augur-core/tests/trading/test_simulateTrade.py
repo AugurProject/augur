@@ -165,6 +165,22 @@ def test_fees(contractsFixture, cash, market, universe):
     simulate_then_trade(contractsFixture, SHORT, market, outcome, amount, price, kycToken, fillOnly, sender=account1)
     simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, kycToken, fillOnly, expectedFees=expectedSettlementFees)
 
+def test_use_shares_multiple(contractsFixture, cash, market, universe):
+    outcome = YES
+    amount = fix(1)
+    price = 40
+    kycToken = nullAddress
+    fillOnly = False
+
+    account1 = contractsFixture.accounts[1]
+    account2 = contractsFixture.accounts[2]
+    
+    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, kycToken, False, sender=account1)
+    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount + fix(1), price, kycToken, True)
+
+    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, kycToken, False, sender=account2)
+    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount * 2, price, kycToken, False, sender=account1)
+
 def simulate_then_trade(contractsFixture, direction, market, outcome, amount, price, kycToken, fillOnly, sender=None, expectedFees=0):
     trade = contractsFixture.contracts["Trade"]
     simulateTrade = contractsFixture.contracts["SimulateTrade"]
