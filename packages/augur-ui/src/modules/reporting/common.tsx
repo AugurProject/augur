@@ -20,10 +20,10 @@ export const ReportingPercent = (props: ReportingPercentProps) => (
 );
 
 export interface ReportingModalButtonProps {
-  labelText: string;
+  text: string;
   action: ButtonActionType;
 }
 
 export const ReportingModalButton = (props: ReportingModalButtonProps) => (
-  <button className={Styles.ReportingModalButton} onClick={e => props.action(e)}>{props.labelText}</button>
+  <button className={Styles.ReportingModalButton} onClick={e => props.action(e)}>{props.text}</button>
 );

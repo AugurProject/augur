@@ -20,7 +20,7 @@ class ReportingReporting extends React.Component<ReportingReportingProps> {
         </Helmet>
         <div>
           <ReportingModalButton
-            labelText="Designated Reporting Quick Guide"
+            text="Designated Reporting Quick Guide"
             action={this.props.openReportingModal}
           />
         </div>
