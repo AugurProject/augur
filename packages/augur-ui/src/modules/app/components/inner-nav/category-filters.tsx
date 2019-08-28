@@ -3,7 +3,9 @@ import Styles from 'modules/app/components/inner-nav/category-filters.styles.les
 import { MenuChevron } from 'modules/common/icons';
 import { CategoryRow } from 'modules/common/form';
 import getValue from 'utils/get-value';
-import { CATEGORIES_MAX } from 'modules/common/constants';
+import { CATEGORIES_MAX, CATEGORY_PARAM_NAME } from 'modules/common/constants';
+import parseQuery from 'modules/routes/helpers/parse-query';
+import makeQuery from 'modules/routes/helpers/make-query';
 
 interface CategoryInterface {
   category: string;
@@ -22,12 +24,17 @@ interface CategoryFiltersProps {
   categoryMetaData: CategoryMetaDataInterface;
   popularCategories: CategoryInterface[];
   allOtherCategories: CategoryInterface[];
+  updateSelectedCategories: Function;
+  updateMarketsListMeta: Function;
+  selectedCategories: string[];
+  history: History;
+  location: Location;
 }
 
 interface CategoryFiltersState {
   showAllCategories: boolean;
-  selectedCategories: CategoryInterface[];
-  selectedCategory: CategoryInterface;
+  selectedCategories: string[];
+  selectedCategory: string;
   currentCategories: object;
 }
 
@@ -47,19 +54,36 @@ export default class CategoryFilters extends React.Component<
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.isSearching) {
-      this.setState({
-        showAllCategories: false,
-        currentCategories: null,
-        selectedCategory: null,
-        selectedCategories: [],
-      });
+    if (JSON.stringify(nextProps.categoryMetaData) !== JSON.stringify(this.props.categoryMetaData)) {
+      if (nextProps.categoryMetaData && nextProps.categoryMetaData.categories) {
+        const newCategory = this.lookupCategoryFromMeta(this.state.selectedCategory, nextProps.categoryMetaData.categories);
+        this.setState({
+          currentCategories: newCategory ? newCategory.children : null,
+        });
+      }
+    }
+
+    const selectedCategory = parseQuery(nextProps.location.search)[
+      CATEGORY_PARAM_NAME
+    ];
+    const oldSelectedCategory = parseQuery(this.props.location.search)[
+      CATEGORY_PARAM_NAME
+    ];
+
+    if ((!nextProps.isSearching && !this.state.selectedCategory && nextProps.categoryMetaData && selectedCategory) ||
+       (selectedCategory && selectedCategory !== oldSelectedCategory)) {
+      this.getChildrenCategories(selectedCategory, [], false);
     }
   }
 
+  componentWillUnmount() {
+    this.props.updateSelectedCategories([]);
+    this.props.updateMarketsListMeta(null);
+  }
+
   render() {
-    const hasSelectedCategories = this.state.selectedCategories && this.state.selectedCategories.length > 0;
-    const hasSelectedCategoriesCount = this.state.selectedCategories && this.state.selectedCategories.length;
+    const hasSelectedCategories = this.props.selectedCategories && this.props.selectedCategories.length > 0;
+    const hasSelectedCategoriesCount = this.props.selectedCategories && this.props.selectedCategories.length;
 
     const showAllCategoriesButton = (
       <div
@@ -89,7 +113,8 @@ export default class CategoryFilters extends React.Component<
           <div key={idx}>
             <CategoryRow
               category={item.category}
-              loading={true} />;
+              loading={true}
+              count={null} />;
           </div>
         );
       }
@@ -100,7 +125,7 @@ export default class CategoryFilters extends React.Component<
             category={item.category}
             count={item.count}
             hasChildren={item.count > 0}
-            handleClick={() => this.getChildrenCategories(item.category)}
+            handleClick={() => this.getChildrenCategories(item.category, this.props.selectedCategories)}
           />
         </div>
       );
@@ -117,13 +142,14 @@ export default class CategoryFilters extends React.Component<
   renderSelectedCategories() {
     return (
       <div className={Styles.SelectedCategories}>
-        {this.state.selectedCategories
+        {this.props.selectedCategories
           .filter(categories => categories !== this.state.selectedCategory)
           .map((category, idx) => {
             return (
               <div
                 key={idx}
                 onClick={() => this.gotoCategory(category)}
+                className={Styles.backToCategory}
               >
                 {MenuChevron} {category}
               </div>
@@ -135,6 +161,8 @@ export default class CategoryFilters extends React.Component<
             count={this.getCategoryCount(this.state.selectedCategory)}
             handleClick={() => null}
             active={true}
+            loading={this.props.isSearching}
+
           />
         </div>
         {this.state.selectedCategory &&
@@ -144,7 +172,8 @@ export default class CategoryFilters extends React.Component<
                 <CategoryRow
                   category={item.category}
                   count={item.count}
-                  handleClick={() => this.getChildrenCategories(item.category)}
+                  loading={this.props.isSearching}
+                  handleClick={() => this.getChildrenCategories(item.category, this.props.selectedCategories)}
                   hasChildren={this.hasChildren(item.category)}
                 />
               </div>
@@ -170,8 +199,9 @@ export default class CategoryFilters extends React.Component<
           <CategoryRow
             category={item.category}
             count={item.count}
+            loading={this.props.isSearching}
             hasChildren={item.count > 0}
-            handleClick={() => this.getChildrenCategories(item.category)}
+            handleClick={() => this.getChildrenCategories(item.category, this.props.selectedCategories)}
           />
         </div>
       );
@@ -201,7 +231,26 @@ export default class CategoryFilters extends React.Component<
     );
   }
 
+
+  removeCategoryQuery () {
+    const { history, location } = this.props;
+
+    let updatedSearch = parseQuery(location.search);
+    delete updatedSearch[CATEGORY_PARAM_NAME];
+    updatedSearch = makeQuery(updatedSearch);
+
+    history.push({
+      ...location,
+      search: updatedSearch,
+    });
+  }
+
   gotoAllCategories() {
+    if (this.props.isSearching) return null;
+
+    this.removeCategoryQuery();
+
+    this.props.updateSelectedCategories([]);
     this.setState({
       selectedCategories: [],
       selectedCategory: null,
@@ -210,10 +259,12 @@ export default class CategoryFilters extends React.Component<
   }
 
   gotoCategory(selectedCategory) {
-    const indexOfSelected = this.state.selectedCategories.indexOf(selectedCategory);
-    const selectedCategories = this.state.selectedCategories.slice(0, indexOfSelected + 1);
+    if (this.props.isSearching) return null;
+    const indexOfSelected = this.props.selectedCategories.indexOf(selectedCategory);
+    const selectedCategories = this.props.selectedCategories.slice(0, indexOfSelected + 1);
 
-    const newCategory = this.lookupCategoryFromMeta(selectedCategory);
+    const newCategory = this.lookupCategoryFromMeta(selectedCategory, this.props.categoryMetaData.categories);
+    this.props.updateSelectedCategories(selectedCategories);
     this.setState({
       selectedCategories,
       selectedCategory,
@@ -221,8 +272,8 @@ export default class CategoryFilters extends React.Component<
     });
   }
 
-  lookupCategoryFromMeta(selectedCategory) {
-    const indexOfSelected = this.state.selectedCategories.indexOf(selectedCategory);
+  lookupCategoryFromMeta(selectedCategory, categories) {
+    const indexOfSelected = this.props.selectedCategories.indexOf(selectedCategory);
 
     let pathString = '';
     // Used to walk the categories meta data object
@@ -231,11 +282,11 @@ export default class CategoryFilters extends React.Component<
     //     -> category
     //       -> ...
     for (let i = 0; i <= indexOfSelected; i++) {
-      const cat = this.state.selectedCategories[i];
+      const cat = this.props.selectedCategories[i];
       pathString = pathString + `${ i > 0 ? '.children.' : ''}${cat}`;
     }
 
-    return getValue(this.props.categoryMetaData.categories, pathString);
+    return getValue(categories, pathString);
   }
 
   hasChildren(selectedCategory) {
@@ -261,22 +312,24 @@ export default class CategoryFilters extends React.Component<
       );
     }
 
-    const categoryCount = this.lookupCategoryFromMeta(selectedCategory);
+    const categoryCount = this.lookupCategoryFromMeta(selectedCategory, this.props.categoryMetaData.categories);
 
     return categoryCount && categoryCount.count ? categoryCount.count : 0;
   }
 
-  getChildrenCategories(selectedCategory) {
-    const metaCategories = this.state.currentCategories || this.props.categoryMetaData.categories;
+  getChildrenCategories(selectedCategory, selectedCategories, hidden = true) {
+    if (this.props.isSearching && hidden) return null;
 
+    const metaCategories = this.state.currentCategories || this.props.categoryMetaData.categories;
     const childrenCategories = metaCategories[selectedCategory] && metaCategories[selectedCategory].children;
 
     const updateState = (currentCategories) => {
       this.setState({
-        selectedCategories: this.state.selectedCategories.concat(selectedCategory),
+        selectedCategories: selectedCategories.concat(selectedCategory),
         selectedCategory,
         currentCategories,
       });
+      this.props.updateSelectedCategories(selectedCategories.concat(selectedCategory));
     };
 
     if (childrenCategories) {

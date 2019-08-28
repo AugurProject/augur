@@ -102,6 +102,8 @@ export const loadMarketsByFilter = (
     }
   }
 
+  const paginationOffset = filterOptions.offset ? filterOptions.offset - 1 : 0;
+
   let params = {
     universe: universe.id,
     categories: filterOptions.categories,
@@ -109,7 +111,7 @@ export const loadMarketsByFilter = (
     maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
     limit: filterOptions.limit,
-    offset: filterOptions.offset ? filterOptions.offset -1 : 0,
+    offset: paginationOffset * filterOptions.limit,
     reportingStates,
     ...sort,
   };
