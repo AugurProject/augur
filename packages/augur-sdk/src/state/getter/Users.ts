@@ -586,7 +586,9 @@ export class Users {
               const latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
-              if (!latestOutcomePLValue) {
+              const outcomeValues =
+              ordersFilledResultsByMarketAndOutcome[marketId][outcome];
+              if (!latestOutcomePLValue || !outcomeValues) {
                 return {
                   timestamp: bucketTimestamp,
                   frozenFunds: '0',
@@ -603,8 +605,6 @@ export class Users {
                   currentValue: '0',
                 };
               }
-              const outcomeValues =
-                ordersFilledResultsByMarketAndOutcome[marketId][outcome];
               let outcomeValue = new BigNumber(
                 getLastDocBeforeTimestamp<ParsedOrderEventLog>(
                   outcomeValues,
