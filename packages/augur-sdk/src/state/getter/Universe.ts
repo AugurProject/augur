@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { SearchResults } from 'flexsearch';
+import * as t from 'io-ts';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import {
@@ -7,19 +8,14 @@ import {
   Timestamp,
   DisputeWindowCreatedLog,
 } from '../logs/types';
-
-import {
-  Augur,
-} from '../../index';
-
-import * as t from 'io-ts';
+import { Augur } from '../../index';
 
 export interface DisputeWindow {
   address: Address;
   startTime: Timestamp;
   endTime: Timestamp;
-  purchased: BigNumber;
-  fees: BigNumber;
+  purchased: number;
+  fees: number;
 }
 
 export class Universe {
@@ -41,8 +37,8 @@ export class Universe {
       address: disputeWindow,
       startTime,
       endTime,
-      purchased,
-      fees,
+      purchased: purchased.toNumber(),
+      fees: fees.toNumber(),
     };
   }
 }
@@ -59,16 +55,16 @@ async function predictDisputeWindow(augur: Augur, db: DB, universe: string): Pro
       address: '',
       startTime: previousDisputeWindow.startTime + disputeRoundDurationSeconds,
       endTime: previousDisputeWindow.endTime + disputeRoundDurationSeconds,
-      purchased: new BigNumber(0),
-      fees: new BigNumber(0),
+      purchased: 0,
+      fees: 0,
     };
   } else { // Use a default for the clients
     return {
       address: '',
       startTime: '0',
       endTime: `0x${currentTime.toString(16)}`,
-      purchased: new BigNumber(0),
-      fees: new BigNumber(0),
+      purchased: 0,
+      fees: 0,
     };
   }
 }

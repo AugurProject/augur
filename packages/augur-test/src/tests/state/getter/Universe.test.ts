@@ -7,7 +7,6 @@ import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/constants';
-import { stringTo32ByteHex } from "../../../libs/Utils";
 
 const mock = makeDbMock();
 
@@ -51,8 +50,8 @@ describe('State API :: Universe :: ', () => {
       address: '',
       startTime: '0',
       endTime: nowHex,
-      purchased: new BigNumber(0),
-      fees: new BigNumber(0),
+      purchased: 0,
+      fees: 0,
     });
 
     // Create market, which also creates dispute windows.
@@ -85,8 +84,8 @@ describe('State API :: Universe :: ', () => {
     expect(disputeWindow.address).toEqual(disputeWindowFromContract.address);
     expect(Number(disputeWindow.startTime)).toBeLessThanOrEqual(now.toNumber());
     expect(Number(disputeWindow.endTime)).toBeGreaterThan(now.toNumber());
-    expect(disputeWindow.purchased).toEqual(new BigNumber(0));
-    expect(disputeWindow.fees).toEqual(new BigNumber(0));
+    expect(disputeWindow.purchased).toEqual(0);
+    expect(disputeWindow.fees).toEqual(0);
 
     // Participation tokens!
     const participationTokensBought = new BigNumber(1);
@@ -98,8 +97,8 @@ describe('State API :: Universe :: ', () => {
     expect(disputeWindow.address).toEqual(disputeWindowFromContract.address);
     expect(Number(disputeWindow.startTime)).toBeLessThanOrEqual(now.toNumber());
     expect(Number(disputeWindow.endTime)).toBeGreaterThan(now.toNumber());
-    expect(disputeWindow.purchased).toEqual(participationTokensBought);
-    expect(disputeWindow.fees).toEqual(new BigNumber(0));
+    expect(disputeWindow.purchased).toEqual(participationTokensBought.toNumber());
+    expect(disputeWindow.fees).toEqual(0);
 
     // Generate fees.
     const feesSent = new BigNumber(3004);
@@ -112,7 +111,7 @@ describe('State API :: Universe :: ', () => {
     expect(disputeWindow.address).toEqual(disputeWindowFromContract.address);
     expect(Number(disputeWindow.startTime)).toBeLessThanOrEqual(now.toNumber());
     expect(Number(disputeWindow.endTime)).toBeGreaterThan(now.toNumber());
-    expect(disputeWindow.purchased).toEqual(participationTokensBought);
-    expect(disputeWindow.fees).toEqual(feesSent);
+    expect(disputeWindow.purchased).toEqual(participationTokensBought.toNumber());
+    expect(disputeWindow.fees).toEqual(feesSent.toNumber());
   }, 120000);
 });
