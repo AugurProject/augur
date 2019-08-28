@@ -3,6 +3,11 @@ export type Bytes32 = string;
 export type PayoutNumerators = string[];
 export type Timestamp = string;
 
+export interface GenericEventDBDescription {
+  EventName: string;
+  indexes: string[];
+}
+
 export interface Doc {
   _id: string;
   _rev: string;
