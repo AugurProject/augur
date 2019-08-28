@@ -30,6 +30,7 @@ import { PENDING, SUCCESS } from "modules/common/constants";
 export interface TitleProps {
   title: string;
   closeAction: Function;
+  bright?: boolean;
 }
 
 export interface DescriptionProps {
@@ -236,7 +237,7 @@ export const Examples = ({ header, previews }: ExamplesProps) => (
 );
 
 export const Title = (props: TitleProps) => (
-  <header className={Styles.TitleHeader}>
+  <header className={classNames(Styles.TitleHeader, {[Styles.Bright]: props.bright})}>
     <h1>{props.title}</h1>
     {props.closeAction && (
       <button onClick={() => props.closeAction()}>{XIcon}</button>
