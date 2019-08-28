@@ -10,13 +10,13 @@
     grid-template-columns: 111px auto;
 	padding: 0 @size-16;
 
-	> div:first-of-type, 
+	> div:first-of-type,
 	> div:nth-of-type(2) {
 		margin-top: @size-12;
 	}
 
 	> div:nth-of-type(2),
-	> div:last-of-type, 
+	> div:last-of-type,
 	> span,
 	> button:last-of-type {
 		border-left: 1px solid @color-primary-background;
@@ -26,7 +26,7 @@
 	> div:first-of-type {
 		display: flex;
 		grid-column: 1 / span 1;
-		
+
 		> div:not(:first-of-type) {
 			margin-left: @size-4;
 		}
@@ -115,6 +115,12 @@
 		}
 	}
 
+	@keyframes colorchange
+    {
+      0%   {background-color: fade(@color-primary-light, 80)}
+      100%   {background-color: fade(@color-primary-light, 100)}
+		}
+
 	&.Loading {
 		display: grid;
 		grid-template-columns: 82px auto 96px;
@@ -124,6 +130,9 @@
     	padding-bottom: @size-48;
 
 		> div {
+			animation: colorchange 0.5s infinite;
+			animation-direction: alternate-reverse;
+
 			background: @color-theme-primary;
 			height: @size-12;
 		}
@@ -163,14 +172,14 @@
     	padding: @size-16 @size-12 @size-12;
 
 		> div:nth-of-type(2),
-		> div:last-of-type, 
+		> div:last-of-type,
 		> span,
 		> button:last-of-type {
 			border: 0;
 			padding: 0;
 			grid-column: 1 / span 2;
 		}
-		
+
 		> div:last-of-type {
 			grid-column: 1 / span 2;
 			margin-bottom: @size-10;
