@@ -396,10 +396,6 @@ jobs:
       (
         in(dependencies.Test_Augur_Core.result, 'Succeeded'),
         in(dependencies.Docker_geth_dev.result, 'Succeeded', 'Skipped'),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-        )
       )
     pool:
       vmImage: 'Ubuntu 16.04'
