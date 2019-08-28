@@ -25,7 +25,7 @@ import {
 } from 'modules/common/icons';
 import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
-import { CUSTOM } from 'modules/common/constants';
+import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { ReportingPercent, Subheaders } from 'modules/reporting/common';
 import { formatRep } from "utils/format-number";
@@ -223,6 +223,10 @@ interface RadioGroupProps {
   defaultSelected?: string | null;
   children?: Array<any>;
   reporting?: Boolean;
+  marketType?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  scalarDenomination?: string;
 }
 
 interface RadioGroupState {
@@ -254,7 +258,12 @@ interface ReportingRadioBarProps {
   expandable?: boolean;
   checked?: boolean;
   error?: boolean;
-  stake: Getters.Markets.StakeDetails|null
+  stake: Getters.Markets.StakeDetails|null;
+  isInvalid?: boolean;
+  minPrice?: string;
+  maxPrice?: string;
+  scalarDenomination?: string;
+  scalar?: boolean;
 }
 
 interface RadioTwoLineBarProps {
@@ -644,15 +653,25 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   };
 
   render() {
-    const { radioButtons, onChange, errorMessage, reporting } = this.props;
+    const { radioButtons, onChange, errorMessage, reporting, marketType, minPrice, maxPrice, scalarDenomination } = this.props;
     const { selected } = this.state;
 
     return (
       <div>
-        {radioButtons.map(radio => (
+        {marketType === SCALAR && reporting &&
+          <ReportingRadioBar 
+            {...this.props}
+            scalar
+            onChange={selected => {
+              onChange(selected);
+              this.setState({ selected });
+            }}
+          />
+        }
+        {radioButtons.map((radio, index) => (
           reporting ? 
           <ReportingRadioBar 
-            key={radio.value}
+            key={index + radio.value}
             {...radio}
             checked={radio.value === selected}
             onChange={selected => {
@@ -675,73 +694,122 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   }
 }
 
-export const ReportingRadioBar = ({
-  header,
-  onChange,
-  checked,
-  value,
-  error,
-  stake
-}: ReportingRadioBarProps) => (
-  <div
-    className={classNames(Styles.ReportingRadioBar, {
-      [Styles.RadioBarExpanded]: checked && expandable,
-      [Styles.RadioBarError]: error,
-    })}
-    role="button"
-    onClick={e => onChange(value)}
-  >
-    {checked ? FilledRadio : EmptyRadio}
-    <h5>{header}</h5>
-    <div>
-      {!stake.tentativeWinning &&
-        <>
-          <div>
-            <span>
-              Make tentative winner
-            </span>
-            <span>
-              {stake.bondSizeCurrent.formatted}
-              <span>
-                / {stake.bondSizeTotal.formatted} REP
-              </span>
-            </span>
-          </div>
-          <ReportingPercent firstPercent={stake.preFilledStake} secondPercent={stake.bondSizeCurrent} thirdPercent={formatRep(0)} total={stake.bondSizeTotal} />
-          <TextInput 
-            placeholder={"0.0000"}
-            value={null}
-            onChange={null}
-            errorMessage={null}
-            innerLabel="REP"
-          />
-          <div>
-            <CancelTextButton noIcon action={null} text={"MIN"}/>
-            |
-            <CancelTextButton noIcon action={null} text={"FILL DISPUTE BOND"}/>
-          </div>
-          <span>Review</span>
-          <LinearPropertyLabel
-            key="disputeRoundStake"
-            label="Dispute Round Stake"
-            value={"0.0000 REP"}
-          />
-          <LinearPropertyLabel
-            key="estimatedGasFee"
-            label="Estimated Gas Fee"
-            value={"0.0000 ETH"}
-          />
-          <PrimaryButton text='Confirm' action={null} />
-        </>
-      }
-      {stake.tentativeWinning &&
-        <>
-          <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
-        </>
-      }
-    </div>
-  </div>
-);
+export class ReportingRadioBar extends Component<
+  ReportingRadioBarProps,
+  ReportingRadioBarState
+> {
+  state: ReportingRadioBarState = {
+    stakeValue: "",
+    rangeValue: "",
+  };
+
+  changeStake = (stakeValue) => {
+    this.setState({stakeValue});
+  }
+
+  changeRange = (rangeValue) => {
+    this.setState({rangeValue});
+  }
+
+  render() {
+    const {
+      header,
+      onChange,
+      checked,
+      value,
+      error,
+      stake,
+      isInvalid,
+      scalar,
+      minPrice,
+      maxPrice,
+      scalarDenomination
+    } = this.props;
+
+    const s = this.state;
+
+    const inputtedStake = s.stakeValue === "" || isNaN(s.stakeValue) ? 0 : s.stakeValue;
+    const fullBond = !scalar && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
+
+    return (
+      <div
+        className={classNames(Styles.ReportingRadioBar, {
+          [Styles.RadioBarExpanded]: checked && expandable,
+          [Styles.RadioBarError]: error,
+          [Styles.Invalid]: isInvalid,
+          [Styles.Scalar]: scalar,
+        })}
+        role="button"
+        onClick={e => onChange(value)}
+      >
+        {checked ? FilledRadio : EmptyRadio}
+        <h5>{scalar ? `Enter a range from ${minPrice} - ${maxPrice}` : header}</h5>
+        <div>
+          {(scalar || !stake.tentativeWinning) &&
+            <>
+              {!scalar &&
+                <>
+                  <div>
+                    <span>
+                      Make tentative winner
+                    </span>
+                    <span>
+                      {fullBond.formatted}
+                      <span>
+                        / {stake.bondSizeTotal.formatted} REP
+                      </span>
+                    </span>
+                  </div>
+                  <ReportingPercent firstPercent={stake.preFilledStake} secondPercent={stake.bondSizeCurrent} thirdPercent={formatRep(inputtedStake)} total={stake.bondSizeTotal} />
+                </>
+              }
+              {scalar &&
+                <>
+                  <TextInput 
+                    placeholder={"Enter a number"}
+                    value={s.rangeValue}
+                    onChange={(value) => this.changeRange(value)}
+                    errorMessage={null}
+                  />
+                  <h2>{scalarDenomination}</h2>
+                </>
+              }
+              <TextInput 
+                placeholder={"0.0000"}
+                value={s.stakeValue}
+                onChange={(value) => this.changeStake(value)}
+                errorMessage={null}
+                innerLabel="REP"
+              />
+              <div>
+                <CancelTextButton noIcon action={null} text={"MIN"}/>
+                |
+                <CancelTextButton noIcon action={null} text={"FILL DISPUTE BOND"}/>
+              </div>
+              <span>Review</span>
+              <LinearPropertyLabel
+                key="disputeRoundStake"
+                label="Dispute Round Stake"
+                value={"0.0000 REP"}
+              />
+              <LinearPropertyLabel
+                key="estimatedGasFee"
+                label="Estimated Gas Fee"
+                value={"0.0000 ETH"}
+              />
+              <PrimaryButton text='Confirm' action={null} />
+            </>
+          }
+          {!scalar && stake.tentativeWinning &&
+            <>
+              <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
+            </>
+          }
+        </div>
+      </div>
+    );
+  }
+}
 
 export const RadioBar = ({
   header,
