@@ -68,3 +68,30 @@ export interface ReportingModalButtonProps {
 export const ReportingModalButton = (props: ReportingModalButtonProps) => (
   <button className={Styles.ReportingModalButton} onClick={e => props.action(e)}>{props.text}</button>
 );
+
+interface PreFilledStakeProps {
+
+}
+
+interface PreFilledStakeState {
+  showInput: boolean;
+  stake: string;
+}
+
+export class PreFilledStake extends Component<
+  PreFilledStakeProps,
+  PreFilledStakeState
+> {
+  state: PreFilledStakeState = {
+    showInput: false,
+    stake: "",
+  };
+
+  render() {
+    return (
+      <div classNames={Styles.PreFilledStake}>
+        hi
+      </div>
+    );
+  }
+
