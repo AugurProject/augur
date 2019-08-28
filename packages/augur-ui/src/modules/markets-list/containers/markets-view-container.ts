@@ -17,13 +17,11 @@ import { setLoadMarketsPending, updateMarketsListMeta } from "../actions/update-
 const mapStateToProps = (state: AppState, { location }) => {
   const markets = selectMarkets(state);
   const {
-    selectedCategoryName,
     keywords,
     selectedTagNames,
   } = getSelectedTagsAndCategoriesFromLocation(location);
 
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
-
 
   return {
     isConnected: state.connection.isConnected && state.universe.id != null,
@@ -35,13 +33,12 @@ const mapStateToProps = (state: AppState, { location }) => {
     maxFee: state.filterSortOptions.maxFee,
     maxLiquiditySpread: state.filterSortOptions.maxLiquiditySpread,
     includeInvalidMarkets: state.filterSortOptions.includeInvalidMarkets,
-    category: selectedCategoryName,
+    selectedCategories: state.marketsList.selectedCategories,
     defaultFilter: state.filterSortOptions.marketFilter,
     defaultSort: state.filterSortOptions.marketSort,
     defaultHasOrders: state.filterSortOptions.hasOrders,
   };
 };
-
 
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => ({
@@ -57,8 +54,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => 
 const Markets = withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps,
-  )(MarketsView),
+    mapDispatchToProps
+  )(MarketsView)
 );
 
 export default Markets;

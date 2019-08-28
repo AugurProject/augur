@@ -391,6 +391,7 @@ export interface MarketsList {
     marketCount: number;
     categories: object;
   };
+  selectedCategories: string[];
 }
 
 export interface FilledOrders {
