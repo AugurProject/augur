@@ -27,7 +27,10 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
-import { ReportingPercent } from 'modules/reporting/common';
+import { ReportingPercent, Subheaders } from 'modules/reporting/common';
+import { formatRep } from "utils/format-number";
+import { CancelTextButton, PrimaryButton } from "modules/common/buttons";
+import { LinearPropertyLabel } from "modules/common/labels";
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -692,7 +695,51 @@ export const ReportingRadioBar = ({
     {checked ? FilledRadio : EmptyRadio}
     <h5>{header}</h5>
     <div>
-      <ReportingPercent firstPercent={20} firstPercent={40} firstPercent={30} />
+      {!stake.tentativeWinning &&
+        <>
+          <div>
+            <span>
+              Make tentative winner
+            </span>
+            <span>
+              {stake.bondSizeCurrent.formatted}
+              <span>
+                / {stake.bondSizeTotal.formatted} REP
+              </span>
+            </span>
+          </div>
+          <ReportingPercent firstPercent={stake.preFilledStake} secondPercent={stake.bondSizeCurrent} thirdPercent={formatRep(0)} total={stake.bondSizeTotal} />
+          <TextInput 
+            placeholder={"0.0000"}
+            value={null}
+            onChange={null}
+            errorMessage={null}
+            innerLabel="REP"
+          />
+          <div>
+            <CancelTextButton noIcon action={null} text={"MIN"}/>
+            |
+            <CancelTextButton noIcon action={null} text={"FILL DISPUTE BOND"}/>
+          </div>
+          <span>Review</span>
+          <LinearPropertyLabel
+            key="disputeRoundStake"
+            label="Dispute Round Stake"
+            value={"0.0000 REP"}
+          />
+          <LinearPropertyLabel
+            key="estimatedGasFee"
+            label="Estimated Gas Fee"
+            value={"0.0000 ETH"}
+          />
+          <PrimaryButton text='Confirm' action={null} />
+        </>
+      }
+      {stake.tentativeWinning &&
+        <>
+          <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
+        </>
+      }
     </div>
   </div>
 );
