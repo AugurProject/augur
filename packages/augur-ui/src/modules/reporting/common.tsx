@@ -5,10 +5,13 @@ import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from "modules/common/constants";
 import { FormattedNumber } from "modules/types";
 import ReactTooltip from 'react-tooltip';
+import { SecondaryButton, CancelTextButton } from "modules/common/buttons";
+import { TextInput } from 'modules/common/form';
+import { LinearPropertyLabel } from "modules/common/labels";
+import { ButtonActionType } from 'modules/types';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
-import { ButtonActionType } from 'modules/types';
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
@@ -45,7 +48,6 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
 	);
 }
 
-
 export interface SubheadersProps {
   header: string;
   subheader: string;
@@ -68,3 +70,71 @@ export interface ReportingModalButtonProps {
 export const ReportingModalButton = (props: ReportingModalButtonProps) => (
   <button className={Styles.ReportingModalButton} onClick={e => props.action(e)}>{props.text}</button>
 );
+
+interface PreFilledStakeProps {}
+
+interface PreFilledStakeState {
+  showInput: boolean;
+  stake: string;
+}
+
+export class PreFilledStake extends Component<
+  PreFilledStakeProps,
+  PreFilledStakeState
+> {
+  state: PreFilledStakeState = {
+    showInput: false,
+    stake: "",
+  };
+
+  changeStake = (stake) => {
+    this.setState({stake});
+  }
+
+  changeShowInput = () => {
+    this.setState({showInput: !this.state.showInput});
+  }
+
+  render() {
+    const s = this.state;
+
+    return (
+      <div className={Styles.PreFilledStake}>
+        <span>
+          add pre-filled stake?
+        </span>
+        <span>
+          Pre-fund future dispute rounds to accelerate market resolution. Any contributed REP will automatically go toward disputing in favor of [insert outcome user is staking on], if it is no longer the tentative winning outcome in future rounds 
+        </span>
+        {!s.showInput && <SecondaryButton text="Add Pre-Filled Stake" action={this.changeShowInput} /> }
+        {s.showInput && 
+          <>
+            <TextInput 
+              placeholder={"0.0000"}
+              value={s.stake}
+              onChange={(value) => this.changeStake(value)}
+              errorMessage={null}
+              innerLabel="REP"
+            />
+            <div>
+              <CancelTextButton noIcon action={null} text={"MAX (REP THRESHOLD)"} />
+              <CancelTextButton noIcon action={() => this.changeStake("")} text={"CLEAR"} />
+            </div>
+            <span>Review Pre-Filled Stake</span>
+            <LinearPropertyLabel
+              key="totalRep"
+              label="Total Rep"
+              value={"0.0000 REP"}
+            />
+            <LinearPropertyLabel
+              key="totalEstGas"
+              label="Total Estimated Gas Fee"
+              value={"0.0000 ETH"}
+            />
+          </>
+        }
+      </div>
+    );
+  }
+}
+
