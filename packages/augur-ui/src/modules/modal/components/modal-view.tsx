@@ -33,6 +33,7 @@ import ModalMarketLoading from "modules/modal/containers/modal-market-loading";
 import ModalContent from "modules/modal/containers/modal-content";
 import ModalCategories from "modules/modal/containers/modal-categories";
 import ModalMarketType from "modules/modal/containers/modal-market-type";
+import ModalDrQuickGuide from "modules/modal/containers/modal-dr-quick-guide";
 
 import * as TYPES from "modules/common/constants";
 
@@ -62,7 +63,7 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTransactions />;
     case TYPES.MODAL_REP_FAUCET:
       return <ModalRepFaucet />;
-    case TYPES.MODAL_CREATE_MARKET: 
+    case TYPES.MODAL_CREATE_MARKET:
       return <ModalCreateMarket />;
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
@@ -109,6 +110,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTradingOverlay {...modal} closeModal={closeModal} />;
     case TYPES.MODAL_MARKET_LOADING:
       return <ModalMarketLoading />;
+    case TYPES.MODAL_DR_QUICK_GUIDE:
+      return <ModalDrQuickGuide />;
     default:
       return <div />;
   }

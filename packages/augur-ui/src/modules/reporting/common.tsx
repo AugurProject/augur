@@ -8,6 +8,7 @@ import ReactTooltip from 'react-tooltip';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
+import { ButtonActionType } from 'modules/types';
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
@@ -57,4 +58,13 @@ export const Subheaders = (props: SubheadersProps) => (
       <span>{props.subheader}</span>
     </p>
   </div>
+);
+
+export interface ReportingModalButtonProps {
+  text: string;
+  action: ButtonActionType;
+}
+
+export const ReportingModalButton = (props: ReportingModalButtonProps) => (
+  <button className={Styles.ReportingModalButton} onClick={e => props.action(e)}>{props.text}</button>
 );
