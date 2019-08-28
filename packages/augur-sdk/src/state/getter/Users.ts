@@ -518,9 +518,9 @@ export class Users {
 
     const profitLossRequest = {
       selector: {
-        universe: params.universe,
-        account: params.account,
         $and: [
+          { universe: params.universe },
+          { account: params.account },
           { timestamp: { $lte: `0x${endTime.toString(16)}` } },
           { timestamp: { $gte: `0x${startTime.toString(16)}` } },
         ],
@@ -534,12 +534,12 @@ export class Users {
 
     const orderFilledRequest = {
       selector: {
-        universe: params.universe,
         $or: [
           { orderCreator: params.account },
           { orderFiller: params.account },
         ],
         $and: [
+          { universe: params.universe },
           { timestamp: { $lte: `0x${endTime.toString(16)}` } },
           { timestamp: { $gte: `0x${startTime.toString(16)}` } },
         ],
@@ -554,9 +554,9 @@ export class Users {
 
     const marketFinalizedRequest = {
       selector: {
-        universe: params.universe,
-        market: { $in: marketIds },
         $and: [
+          { universe: params.universe },
+          { market: { $in: marketIds } },
           { timestamp: { $lte: `0x${endTime.toString(16)}` } },
           { timestamp: { $gte: `0x${startTime.toString(16)}` } },
         ],
@@ -758,6 +758,7 @@ export function sumTradingPositions(
   const total = realized.plus(unrealized);
   const totalCost = realizedCost.plus(unrealizedCost);
 
+  summedTrade.frozenFunds = frozenFunds.toFixed();
   summedTrade.total = total.toFixed();
   summedTrade.totalCost = totalCost.toFixed();
   summedTrade.realizedPercent = realizedCost.isZero()
