@@ -14,7 +14,7 @@ COPY start.sh /start.sh
 RUN chmod +x /start.sh
 ENTRYPOINT [ "/start.sh" ]
 
-# start.sh uses ENV variables 
+# start.sh uses ENV variables
 #   NETWORK_ID to set chain id, default=12346
 #   PERIOD_TIME to set period, block time in seconds. Default=0, instant seal
 # docker image build --tag augurproject/geth-dev-node .
