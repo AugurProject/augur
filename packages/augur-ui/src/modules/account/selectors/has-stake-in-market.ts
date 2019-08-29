@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { Getters } from '@augurproject/sdk/build';
+import { Getters } from '@augurproject/sdk';
 import { selectLoginAccountReportingState } from 'store/select-state';
 
 export const hasStakeInMarket = (state, marketId: string) => {
