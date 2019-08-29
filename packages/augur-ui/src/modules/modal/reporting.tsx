@@ -55,8 +55,6 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       disputeInfo
     } = market;
 
-    console.log(market);
-
     const radioButtons = outcomesFormatted.map(outcome => {
       let stake = disputeInfo.stakes.find(stake => parseFloat(stake.outcome) === outcome.id);
       if (!stake) {
