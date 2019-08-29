@@ -111,7 +111,7 @@
     "chai-as-promised": "7.1.1",
     "child_process": "1.0.2",
     "cross-env": "5.2.0",
-    "jest": "23.6.0",
+    "jest": "24.9.0",
     "options-parser": "0.4.0",
     "solc": "0.5.10",
     "solium": "1.2.4",
