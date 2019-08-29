@@ -663,6 +663,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
           <ReportingRadioBar 
             {...this.props}
             scalar
+            expandable
             onChange={selected => {
               onChange(selected);
               this.setState({ selected });
@@ -673,6 +674,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
           reporting ? 
           <ReportingRadioBar 
             key={index + radio.value}
+            expandable
             {...radio}
             checked={radio.value === selected}
             onChange={selected => {
@@ -724,13 +726,14 @@ export class ReportingRadioBar extends Component<
       scalar,
       minPrice,
       maxPrice,
-      scalarDenomination
+      scalarDenomination,
+      expandable
     } = this.props;
 
     const s = this.state;
 
     const inputtedStake = s.stakeValue === "" || isNaN(s.stakeValue) ? 0 : s.stakeValue;
-    const fullBond = !scalar && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
+    const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
 
     return (
       <div
@@ -755,51 +758,55 @@ export class ReportingRadioBar extends Component<
                       Make tentative winner
                     </span>
                     <span>
-                      {fullBond.formatted}
+                      {fullBond && fullBond.formatted}
                       <span>
-                        / {stake.bondSizeTotal.formatted} REP
+                        / {stake && stake.bondSizeTotal.formatted} REP
                       </span>
                     </span>
                   </div>
                   <ReportingPercent firstPercent={stake.preFilledStake} secondPercent={stake.bondSizeCurrent} thirdPercent={formatRep(inputtedStake)} total={stake.bondSizeTotal} />
                 </>
               }
-              {scalar &&
+              {checked &&
                 <>
+                  {scalar &&
+                    <>
+                      <TextInput 
+                        placeholder={"Enter a number"}
+                        value={s.rangeValue}
+                        onChange={(value) => this.changeRange(value)}
+                        errorMessage={null}
+                      />
+                      <h2>{scalarDenomination}</h2>
+                    </>
+                  }
                   <TextInput 
-                    placeholder={"Enter a number"}
-                    value={s.rangeValue}
-                    onChange={(value) => this.changeRange(value)}
+                    placeholder={"0.0000"}
+                    value={s.stakeValue}
+                    onChange={(value) => this.changeStake(value)}
                     errorMessage={null}
+                    innerLabel="REP"
                   />
-                  <h2>{scalarDenomination}</h2>
+                  <div>
+                    <CancelTextButton noIcon action={null} text={"MIN"}/>
+                    |
+                    <CancelTextButton noIcon action={null} text={"FILL DISPUTE BOND"}/>
+                  </div>
+                  <span>Review</span>
+                  <LinearPropertyLabel
+                    key="disputeRoundStake"
+                    label="Dispute Round Stake"
+                    value={"0.0000 REP"}
+                  />
+                  <LinearPropertyLabel
+                    key="estimatedGasFee"
+                    label="Estimated Gas Fee"
+                    value={"0.0000 ETH"}
+                  />
+                  <PrimaryButton text='Confirm' action={null} />
                 </>
-              }
-              <TextInput 
-                placeholder={"0.0000"}
-                value={s.stakeValue}
-                onChange={(value) => this.changeStake(value)}
-                errorMessage={null}
-                innerLabel="REP"
-              />
-              <div>
-                <CancelTextButton noIcon action={null} text={"MIN"}/>
-                |
-                <CancelTextButton noIcon action={null} text={"FILL DISPUTE BOND"}/>
-              </div>
-              <span>Review</span>
-              <LinearPropertyLabel
-                key="disputeRoundStake"
-                label="Dispute Round Stake"
-                value={"0.0000 REP"}
-              />
-              <LinearPropertyLabel
-                key="estimatedGasFee"
-                label="Estimated Gas Fee"
-                value={"0.0000 ETH"}
-              />
-              <PrimaryButton text='Confirm' action={null} />
-            </>
+              </>
+            }
           }
           {!scalar && stake.tentativeWinning &&
             <>

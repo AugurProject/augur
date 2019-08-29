@@ -3,12 +3,19 @@ import classNames from "classnames";
 
 import { MarketData } from "modules/types";
 import { Title } from "modules/modal/common";
-import { MarketTypeLabel } from "modules/common/labels";
+import { SecondaryButton } from "modules/common/buttons";
+import { MarketTypeLabel, RepBalance } from "modules/common/labels";
+import { Subheaders } from 'modules/reporting/common';
+import { RadioBarGroup } from 'modules/common/form';
+import { formatAttoRep } from "utils/format-number";
+
 import Styles from "modules/modal/modal.styles.less";
 
 interface ModalReportingProps {
   closeModal: Function;
   market: MarketData;
+  rep: string;
+  isReporting: boolean;
 }
 
 interface ModalReportingState {
@@ -20,20 +27,91 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
     checked: null,
   };
 
+  updateChecked = (checked) => {
+    this.setState({checked});
+  }
+
   render() {
-    const { closeAction, title, market } = this.props;
+    const { 
+      closeAction, 
+      title, 
+      market, 
+      rep, 
+      isReporting 
+    } = this.props;
     const s = this.state;
     const {
       description,
-      marketType
+      marketType,
+      resolutionSource,
+      details,
+      creationTimeFormatted,
+      endTimeFormatted,
+      scalarDenomination,
+      minPrice,
+      maxPrice,
+      outcomesFormatted,
+      disputeInfo
     } = market;
+
+    console.log(market);
+
+    const radioButtons = outcomesFormatted.map(outcome => {
+      let stake = disputeInfo.stakes.find(stake => parseFloat(stake.outcome) === outcome.id);
+      if (!stake) {
+        stake = {
+          tentativeWinning: false,
+          bondSizeCurrent: 0,
+          bondSizeTotal: 0,
+          preFilledStake: 0
+        }
+      }
+      return {
+        header: outcome.description,
+        value: outcome.id,
+        checked: s.checked === outcome.id,
+        isInvalid: outcome.id === 0,
+        stake: {
+          ...stake,
+          bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
+          bondSizeTotal: formatAttoRep(stake.bondSizeTotal),
+        }
+      };
+    });
+
+    console.log(radioButtons);
 
     return (
       <div className={Styles.ModalReporting}>
         <Title title={title} closeAction={closeAction} bright />
         <main>
-          <MarketTypeLabel marketType={marketType} />
-          <span>{description}</span>
+          <div>
+            <MarketTypeLabel marketType={marketType} />
+            <span>{description}</span>
+            <Subheaders small header="Resolution Source" subheader={resolutionSource} />
+            <Subheaders small header="Resolution Details" subheader={details === null ? "N/A" : details} />
+            <div>
+              <Subheaders small header="Date Created" subheader={creationTimeFormatted.formattedUtc} />
+              <Subheaders small header="Reporting Started" subheader={endTimeFormatted.formattedUtc} />
+            </div>
+          </div>
+          {!isReporting &&
+            <div>
+              <RepBalance alternate rep={rep} />
+              <SecondaryButton text="Get REP" action={null} />
+            </div>
+          }
+          <div>
+            <RadioBarGroup
+              onChange={this.updateChecked}
+              reporting={true}
+              marketType={marketType}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              scalarDenomination={scalarDenomination}
+              radioButtons={radioButtons}
+            />
+          </div>
         </main>
       </div>
     );
