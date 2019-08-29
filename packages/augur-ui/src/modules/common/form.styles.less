@@ -439,6 +439,40 @@
   }
 }
 
+.ReportingRadioBarGroup {
+  > section > span,
+  > span {
+    display: flex;
+  }
+
+  > section > span:first-of-type,
+  > span:first-of-type {
+    .text-14-medium;
+
+    color: @color-secondary-text;
+    margin-bottom: @size-8;
+  }
+
+  > span:nth-of-type(2),
+  > span:nth-of-type(3),
+  > section > span:nth-of-type(2) {
+    .text-12;
+
+    color: @color-tertiary-info-text;
+    margin-bottom: @size-12;
+  }
+
+  > span:nth-of-type(3), {
+    margin-top: @size-16;
+  }
+
+  > section {
+    border-bottom: 1px solid @color-primary-alternate;
+    margin-bottom: @size-32;
+    padding-bottom: @size-32;
+  }
+}
+
 .RadioBarExpanded {
   grid-template-columns: 52px auto;
   grid-template-rows: auto;
