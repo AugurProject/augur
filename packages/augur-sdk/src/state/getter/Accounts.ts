@@ -54,6 +54,29 @@ const getAccountTransactionHistoryParamsSpecific = t.type({
   action: t.union([actionnDeserializer, t.null, t.undefined]),
 });
 
+const getAccountReportingHistoryParamsSpecific = t.type({
+  universe: t.string,
+  account: t.string,
+});
+
+interface ContractInfo {
+  address: string;
+  amount: string;
+  marketId: string;
+}
+
+interface ContractOverview {
+  totalAmount: string;
+  contracts: Array<ContractInfo>;
+}
+
+export interface AccountReportingHistory {
+  profitLoss: number;
+  reporting: ContractOverview | null;
+  disputing: ContractOverview | null;
+  pariticipationTokens: ContractOverview | null;
+}
+
 export interface AccountTransaction {
   action: string;
   coin: string;
@@ -78,6 +101,97 @@ export class Accounts<TBigNumber> {
     getAccountTransactionHistoryParamsSpecific,
     sortOptions,
   ]);
+
+  static getAccountReportingHistoryParams = t.intersection([
+    getAccountReportingHistoryParamsSpecific,
+    sortOptions,
+  ]);
+
+  @Getter('getAccountReportingHistoryParams')
+  static async getAccountReportingHistory<TBigNumber>(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Accounts.getAccountReportingHistoryParams>
+  ): Promise<AccountReportingHistory> {
+    let allFormattedLogs: any = [];
+    const participationTokensRedeemedLogs = await db.findParticipationTokensRedeemedLogs(
+      {
+        selector: {
+          universe: params.universe,
+          account: params.account,
+        },
+      }
+    );
+    allFormattedLogs = allFormattedLogs.concat(
+      formatParticipationTokensRedeemedLogs(participationTokensRedeemedLogs)
+    );
+    const initialReporterRedeemedLogs = await db.findInitialReporterRedeemedLogs(
+      {
+        selector: {
+          universe: params.universe,
+          reporter: params.account,
+        },
+      }
+    );
+    let marketInfo = await Accounts.getMarketCreatedInfo(
+      db,
+      initialReporterRedeemedLogs
+    );
+    
+    const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(
+      {
+        selector: {
+          universe: params.universe,
+          reporter: params.account
+        },
+      }
+    );
+    marketInfo = await Accounts.getMarketCreatedInfo(
+      db,
+      disputeCrowdsourcerRedeemedLogs
+    );
+    // console.log("allFormattedLogs", allFormattedLogs);
+    const DummyData: AccountReportingHistory = {
+      profitLoss: 1.25,
+      reporting: {
+        totalAmount: "100",
+        contracts: [{
+          address: "0xa",
+          amount: "75",
+          marketId: "0x1"
+        }, {
+          address: "0xb",
+          amount: "25",
+          marketId: "0x2"
+        }]
+      },
+      disputing: {
+        totalAmount: "50",
+        contracts: [{
+          address: "0xc",
+          amount: "15",
+          marketId: "0x3"
+        }, {
+          address: "0xd",
+          amount: "35",
+          marketId: "0x4"
+        }]
+      },
+      pariticipationTokens: {
+        totalAmount: "120",
+        contracts: [{
+          address: "0xe",
+          amount: "100",
+          marketId: "0x5"
+        }, {
+          address: "0xf",
+          amount: "20",
+          marketId: "0x6"
+        }]
+      }
+    };
+    return DummyData;
+  }
 
   @Getter('getAccountTransactionHistoryParams')
   static async getAccountTransactionHistory<TBigNumber>(
