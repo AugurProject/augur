@@ -235,12 +235,12 @@ export default class MarketsView extends Component<
         <FilterNotice
           color={'red'}
           show={this.props.includeInvalidMarkets === 'show'}
-          content={(<span>Invalid markets are no longer hidden. This puts you at risk of trading on invalid markets. <a href='' target='_blank'>Learn more</a></span>)}
+          content={(<span>Invalid markets are no longer hidden. This puts you at risk of trading on invalid markets. <a href='https://augur.net' target='_blank'>Learn more</a></span>)}
         />
 
         <FilterNotice
           show={!displayFee || !displayLiquiditySpread}
-          content={(<span>{feesLiquidityMessage} <a href='' target='_blank'>Learn more</a></span>)}
+          content={(<span>{feesLiquidityMessage} <a href='https://augur.net' target='_blank'>Learn more</a></span>)}
         />
 
         <MarketsList

@@ -126,7 +126,7 @@ export default class MarketsListFilters extends React.Component<
                 SHOW_INVALID_MARKETS_PARAM_NAME,
                 value,
                 this.props.location,
-                this.props.location
+                this.props.history
               );
               this.props.updateShowInvalid(value);
             }}
