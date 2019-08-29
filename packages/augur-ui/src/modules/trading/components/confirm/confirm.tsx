@@ -103,7 +103,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     );
 
     if (
-      createBigNumber(totalCost.value).gt(allowanceBigNumber)
+      allowanceBigNumber && createBigNumber(totalCost.value).gt(allowanceBigNumber)
     ) {
       needsApproval = true;
       messages = {
