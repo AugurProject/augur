@@ -103,7 +103,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
             <RadioBarGroup
               onChange={this.updateChecked}
               reporting={true}
-              isReporting={true}
+              isReporting={isReporting}
               marketType={marketType}
               minPrice={minPrice}
               maxPrice={maxPrice}
