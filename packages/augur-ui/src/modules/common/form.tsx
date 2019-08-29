@@ -738,10 +738,10 @@ export class ReportingRadioBar extends Component<
     return (
       <div
         className={classNames(Styles.ReportingRadioBar, {
-          [Styles.RadioBarExpanded]: checked && expandable,
           [Styles.RadioBarError]: error,
           [Styles.Invalid]: isInvalid,
           [Styles.Scalar]: scalar,
+          [Styles.Checked]: checked,
         })}
         role="button"
         onClick={e => onChange(value)}
@@ -805,8 +805,8 @@ export class ReportingRadioBar extends Component<
                   />
                   <PrimaryButton text='Confirm' action={null} />
                 </>
-              </>
-            }
+              }
+            </>
           }
           {!scalar && stake.tentativeWinning &&
             <>
