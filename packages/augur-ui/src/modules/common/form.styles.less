@@ -246,9 +246,20 @@
 .ReportingRadioBar {
   .RadioBar;
 
+  border-radius: @size-6;
   grid-template-columns: 52px auto;
   grid-template-rows: auto;
   height: auto;
+
+  &.Checked {
+    border: 1px solid @color-faded-bright;
+
+    > svg {
+      > circle:last-of-type {
+        fill: @color-faded-bright;
+      }
+    }
+  }
 
   > svg {
     margin-top: @size-16;

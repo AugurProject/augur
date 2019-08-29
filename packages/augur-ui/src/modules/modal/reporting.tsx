@@ -12,14 +12,15 @@ import { formatAttoRep } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 
 interface ModalReportingProps {
-  closeModal: Function;
+  closeAction: Function;
   market: MarketData;
   rep: string;
   isReporting: boolean;
+  title: string;
 }
 
 interface ModalReportingState {
-  checked: string;
+  checked: number;
 }
 
 export default class ModalReporting extends Component<ModalReportingProps, ModalReportingState> {
@@ -27,7 +28,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
     checked: null,
   };
 
-  updateChecked = (checked) => {
+  updateChecked = (checked: number) => {
     this.setState({checked});
   }
 
@@ -61,9 +62,9 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       if (!stake) {
         stake = {
           tentativeWinning: false,
-          bondSizeCurrent: 0,
-          bondSizeTotal: 0,
-          preFilledStake: 0
+          bondSizeCurrent: "0",
+          bondSizeTotal: "1",
+          preFilledStake: "0",
         }
       }
       return {
@@ -73,6 +74,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
         isInvalid: outcome.id === 0,
         stake: {
           ...stake,
+          preFilledStake: formatAttoRep(stake.preFilledStake),
           bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
           bondSizeTotal: formatAttoRep(stake.bondSizeTotal),
         }

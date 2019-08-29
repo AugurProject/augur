@@ -1264,14 +1264,14 @@ div.ButtonsRow:last-of-type {
   > main {
     display: flex;
     flex-direction: column;
-    padding: @size-16 0;
+    padding: @size-16 0 0;
 
     > div:first-of-type {
       border-bottom: 1px solid @color-primary-alternate;
       display: flex;
       flex-direction: column;
-      padding: 0 @size-24;
-
+      padding: 0 @size-40;
+      
       > span:nth-of-type(2) {
         .text-24-bold;
 
@@ -1299,11 +1299,15 @@ div.ButtonsRow:last-of-type {
     > div:nth-of-type(2) {
       border-bottom: 1px solid @color-primary-alternate;
       display: flex;
-      padding: @size-16 @size-24;
+      padding: @size-16 @size-40;
 
       > button {
         margin-left: @size-38;
       }
+    }
+
+    > div:last-of-type {
+      padding: @size-32 @size-40;
     }
   }
 }
