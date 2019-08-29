@@ -3,9 +3,14 @@ import { Helmet } from 'react-helmet';
 
 import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
-import { TYPE_TRADE } from 'modules/common/constants';
+import { TYPE_TRADE, MAX_FEE_100_PERCENT, MAX_SPREAD_ALL_SPREADS } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
+import Styles from 'modules/markets-list/components/markets-view.styles.less';
+import { FilterTags } from 'modules/common/filter-tags';
+import { FilterNotice } from 'modules/common/filter-notice';
+import parseQuery from 'modules/routes/helpers/parse-query';
+import makeQuery from 'modules/routes/helpers/make-query';
 
 const PAGINATION_COUNT = 10;
 
@@ -22,6 +27,7 @@ interface MarketsViewProps {
   search?: string;
   maxFee: string;
   maxLiquiditySpread: string;
+  isSearching: boolean;
   includeInvalidMarkets: string;
   universe?: string;
   defaultFilter: string;
@@ -30,6 +36,9 @@ interface MarketsViewProps {
   setLoadMarketsPending: Function;
   updateMarketsListMeta: Function;
   selectedCategories: string[];
+  removeLiquiditySpreadFilter: Function;
+  removeFeeFilter: Function;
+  filteredOutCount: number;
 }
 
 interface MarketsViewState {
@@ -130,6 +139,7 @@ export default class MarketsView extends Component<
       maxLiquiditySpread,
       includeInvalidMarkets,
     } = this.props;
+
     const { filter, sort, limit, offset } = this.state;
     this.props.setLoadMarketsPending(true);
     this.setState({ isSearchingMarkets: true });
@@ -160,6 +170,23 @@ export default class MarketsView extends Component<
     );
   }
 
+  updateQuery(filterType, value, location) {
+    const { history } = this.props;
+    let updatedSearch = parseQuery(location.search);
+    if (value === '') {
+      delete updatedSearch[filterType];
+    } else {
+      updatedSearch[filterType] = value;
+    }
+
+    updatedSearch = makeQuery(updatedSearch);
+
+    history.push({
+      ...location,
+      search: updatedSearch,
+    });
+  }
+
   render() {
     const {
       history,
@@ -179,10 +206,25 @@ export default class MarketsView extends Component<
       marketCount,
       limit,
       offset,
-      showPagination
+      showPagination,
+
     } = this.state;
+
+    const displayFee = this.props.maxFee !== MAX_FEE_100_PERCENT;
+    const displayLiquiditySpread = this.props.maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS;
+    let feesLiquidityMessage = '';
+
+
+    if (!displayFee && !displayLiquiditySpread) {
+      feesLiquidityMessage = '“Fee” and “Liquidity Spread” filters are set to “All”. This puts you at risk of trading on invalid markets.';
+    }
+    else if (!displayFee || !displayLiquiditySpread) {
+      feesLiquidityMessage = `The ${!displayFee ? '“Fee”' : '“Liquidity Spread”'} filter is set to “All”. This puts you at risk of trading on invalid markets.`;
+    }
+
     return (
       <section
+        className={Styles.marketsView}
         ref={componentWrapper => {
           this.componentWrapper = componentWrapper;
         }}
@@ -199,11 +241,31 @@ export default class MarketsView extends Component<
           updateFilter={this.updateFilter}
           history={history}
         />
+
+        <FilterTags
+          maxLiquiditySpread={this.props.maxLiquiditySpread}
+          maxFee={this.props.maxFee}
+          removeFeeFilter={this.props.removeFeeFilter}
+          removeLiquiditySpreadFilter={this.props.removeLiquiditySpreadFilter}
+          updateQuery={(param, value) => this.updateQuery(param, value, this.props.location)}
+        />
+
+        <FilterNotice
+          color={'red'}
+          show={this.props.includeInvalidMarkets === 'show'}
+          content={(<span>Invalid markets are no longer hidden. This puts you at risk of trading on invalid markets. <a href='' target='_blank'>Learn more</a></span>)}
+        />
+
+        <FilterNotice
+          show={!displayFee || !displayLiquiditySpread}
+          content={(<span>{feesLiquidityMessage} <a href='' target='_blank'>Learn more</a></span>)}
+        />
+
         <MarketsList
-          testid="markets"
+          testid='markets'
           isLogged={isLogged}
           markets={markets}
-          showPagination={showPagination}
+          showPagination={showPagination && !isSearchingMarkets}
           filteredMarkets={filterSortedMarkets}
           marketCount={marketCount}
           location={location}
@@ -216,6 +278,11 @@ export default class MarketsView extends Component<
           offset={offset}
           setOffset={this.setPageNumber}
           isSearchingMarkets={isSearchingMarkets}
+        />
+
+        <FilterNotice
+          show={!this.props.isSearching && this.props.filteredOutCount && this.props.filteredOutCount > 0}
+          content={(<span>There are {this.props.filteredOutCount} additional markets outside of the current filters applied. Edit filters to view all markets </span>)}
         />
       </section>
     );

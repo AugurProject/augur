@@ -644,6 +644,14 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     selected: this.props.defaultSelected || null,
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultSelected !== this.props.defaultSelected) {
+      this.setState({
+        selected: nextProps.defaultSelected,
+      });
+    }
+  }
+
   render() {
     const { radioButtons, onChange, errorMessage, reporting } = this.props;
     const { selected } = this.state;
@@ -1887,7 +1895,7 @@ export const CategoryRow = ({ hasChildren = true, handleClick = noop, active = f
       [Styles.loading]: loading,
       [Styles.disabled]: !hasChildren,
   })}>
-    <span>{category}</span>
+    <span>{category && category.length <= 3 ? category.toUpperCase() : category }</span>
     {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}
   </div>
