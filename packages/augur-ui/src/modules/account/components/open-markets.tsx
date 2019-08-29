@@ -56,7 +56,7 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
                   showBrackets
                   showIcon
                   showPlusMinus
-                  value={position.valueChange.formatted}
+                  value={position.unrealizedPercent.formatted}
                   size={SizeTypes.SMALL}
                 />
               </div>
