@@ -14,7 +14,7 @@ import { RadioBarGroup } from 'modules/common/form';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
-import makeQuery from 'modules/routes/helpers/make-query';
+import updateQuery from 'modules/routes/helpers/update-query';
 
 interface MarketsListFiltersProps {
   maxFee: string;
@@ -94,7 +94,7 @@ export default class MarketsListFilters extends React.Component<
             radioButtons={feeFilters}
             defaultSelected={this.state.selectedFee}
             onChange={(value: string) => {
-              this.updateQuery(MAXFEE_PARAM_NAME, value, this.props.location);
+              updateQuery(MAXFEE_PARAM_NAME, value, this.props.location, this.props.history);
               this.props.updateMaxFee(value);
             }}
           />
@@ -108,7 +108,7 @@ export default class MarketsListFilters extends React.Component<
             radioButtons={spreadFilters}
             defaultSelected={this.state.selectedSpread}
             onChange={(value: string) => {
-              this.updateQuery(SPREAD_PARAM_NAME, value, this.props.location);
+              updateQuery(SPREAD_PARAM_NAME, value, this.props.location, this.props.history);
               this.props.updateMaxSpread(value);
             }}
           />
@@ -122,9 +122,10 @@ export default class MarketsListFilters extends React.Component<
             radioButtons={invalidFilters}
             defaultSelected={this.state.showInvalidDefault}
             onChange={(value: string) => {
-              this.updateQuery(
+              updateQuery(
                 SHOW_INVALID_MARKETS_PARAM_NAME,
                 value,
+                this.props.location,
                 this.props.location
               );
               this.props.updateShowInvalid(value);
@@ -133,23 +134,6 @@ export default class MarketsListFilters extends React.Component<
         </div>
       </div>
     );
-  }
-
-  updateQuery(filterType, value, location) {
-    const { history } = this.props;
-    let updatedSearch = parseQuery(location.search);
-    if (value === '') {
-      delete updatedSearch[filterType];
-    } else {
-      updatedSearch[filterType] = value;
-    }
-
-    updatedSearch = makeQuery(updatedSearch);
-
-    history.push({
-      ...location,
-      search: updatedSearch,
-    });
   }
 
   generateTooltip(tipText: string) {

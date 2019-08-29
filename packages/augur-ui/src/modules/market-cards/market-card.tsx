@@ -20,7 +20,6 @@ import { MarketData } from "modules/types";
 import { formatAttoRep } from "utils/format-number";
 
 import Styles from "modules/market-cards/market-card.styles.less";
-import { taggedUnion } from "io-ts";
 
 interface MarketCardProps {
   market: MarketData;

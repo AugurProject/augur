@@ -9,8 +9,7 @@ import { Getters } from '@augurproject/sdk';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
 import { FilterTags } from 'modules/common/filter-tags';
 import { FilterNotice } from 'modules/common/filter-notice';
-import parseQuery from 'modules/routes/helpers/parse-query';
-import makeQuery from 'modules/routes/helpers/make-query';
+import updateQuery from 'modules/routes/helpers/update-query';
 
 const PAGINATION_COUNT = 10;
 
@@ -170,23 +169,6 @@ export default class MarketsView extends Component<
     );
   }
 
-  updateQuery(filterType, value, location) {
-    const { history } = this.props;
-    let updatedSearch = parseQuery(location.search);
-    if (value === '') {
-      delete updatedSearch[filterType];
-    } else {
-      updatedSearch[filterType] = value;
-    }
-
-    updatedSearch = makeQuery(updatedSearch);
-
-    history.push({
-      ...location,
-      search: updatedSearch,
-    });
-  }
-
   render() {
     const {
       history,
@@ -247,7 +229,7 @@ export default class MarketsView extends Component<
           maxFee={this.props.maxFee}
           removeFeeFilter={this.props.removeFeeFilter}
           removeLiquiditySpreadFilter={this.props.removeLiquiditySpreadFilter}
-          updateQuery={(param, value) => this.updateQuery(param, value, this.props.location)}
+          updateQuery={(param, value) => updateQuery(param, value, this.props.location, this.props.history)}
         />
 
         <FilterNotice

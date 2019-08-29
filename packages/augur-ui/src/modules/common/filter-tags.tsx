@@ -65,10 +65,7 @@ export const FilterTags = (props: FilterTagsProps) => {
           <span>Liquidity spread: {displayLiquiditySpread}</span>
           <span
             onClick={() => {
-              props.updateQuery(
-                SPREAD_PARAM_NAME,
-                MAX_SPREAD_ALL_SPREADS
-              );
+              props.updateQuery(SPREAD_PARAM_NAME, MAX_SPREAD_ALL_SPREADS);
               props.removeLiquiditySpreadFilter();
             }}
           >
