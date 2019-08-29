@@ -11,7 +11,12 @@ const DEFAULT_STATE: LoginAccount = {
     rep: 0,
     dai: 0,
   },
-  reporting: null
+  reporting: {
+    profitLoss: 0,
+    reporting: null,
+    disputing: null,
+    pariticipationTokens: null,
+  },
 };
 
 export default function(
