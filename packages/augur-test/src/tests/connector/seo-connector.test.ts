@@ -9,12 +9,12 @@ import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { BlockAndLogStreamerListener } from '@augurproject/sdk/build/state/db/BlockAndLogStreamerListener';
 import {
   Markets,
-  SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { SEOConnector } from '@augurproject/sdk/build/connector/seo-connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { NewBlock } from '@augurproject/sdk/build/events';
 import { MarketCreated } from "@augurproject/sdk/build/events";
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
 let connector: SEOConnector;
 let provider: EthersProvider;

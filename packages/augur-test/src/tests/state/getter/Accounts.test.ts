@@ -3,13 +3,13 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
 import {
   MarketReportingState,
-  SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { AllOrders } from '@augurproject/sdk/build/state/getter/Trading';
 import { makeDbMock, makeProvider } from '../../../libs';
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from "@augurproject/tools";
+import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
 const mock = makeDbMock();
 

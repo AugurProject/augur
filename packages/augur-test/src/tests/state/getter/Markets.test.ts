@@ -5,7 +5,6 @@ import {
   MarketList,
   MarketOrderBook,
   MarketReportingState,
-  SECONDS_IN_A_DAY,
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { makeDbMock, makeProvider } from '../../../libs';
@@ -14,6 +13,7 @@ import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ORDER_TYPES } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
 const mock = makeDbMock();
 
