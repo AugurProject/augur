@@ -1,5 +1,9 @@
-import { LoginAccount, NodeStyleCallback, AccountBalances } from 'modules/types';
-import { updateLoginAccount, updateLoginAccountBalances } from 'modules/account/actions/login-account';
+import {
+  NodeStyleCallback,
+} from 'modules/types';
+import {
+  updateLoginAccount,
+} from 'modules/account/actions/login-account';
 import logError from 'utils/log-error';
 import {
   getEthBalance,
@@ -34,7 +38,7 @@ function updateBalances(
     const rep = amounts[0];
     const dai = amounts[1];
     const eth = amounts[2];
-    dispatch(updateLoginAccountBalances({ rep, dai, eth }));
+    dispatch(updateLoginAccount({ balances: { rep, dai, eth } }));
     return callback(null, { rep, dai, eth });
   });
 }
