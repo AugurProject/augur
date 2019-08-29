@@ -79,8 +79,6 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       };
     });
 
-    console.log(radioButtons);
-
     return (
       <div className={Styles.ModalReporting}>
         <Title title={title} closeAction={closeAction} bright />
