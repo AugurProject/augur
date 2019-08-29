@@ -714,6 +714,13 @@ export class DB {
     return results.docs as unknown as UniverseForkedLog[];
   }
 
+  async allUniverseForkedLogs(): Promise<UniverseForkedLog[]> {
+    return this.syncableDatabases[this.getDatabaseName("UniverseForked")].allDocs({
+      startkey: 'design_\uffff',
+      endkey: '_design',
+    }).then((result) => result.rows ? result.rows.map(row => row.doc) : []) as unknown as UniverseForkedLog[];
+  }
+
   /**
    * Queries the CurrentOrders DB
    *

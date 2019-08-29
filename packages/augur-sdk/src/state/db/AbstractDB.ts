@@ -6,6 +6,7 @@ import Upsert from "pouchdb-upsert";
 import pouchdbDebug from 'pouchdb-debug';
 
 import * as _ from "lodash";
+import { AllDocsOptions } from "../getter/types";
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 
 PouchDB.plugin(Find);
@@ -33,8 +34,11 @@ export abstract class AbstractDB {
     this.db = dbFactory(dbName);
   }
 
-  async allDocs(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
-    return this.db.allDocs({ include_docs: true });
+  async allDocs(options:AllDocsOptions = {}) {
+    return this.db.allDocs({
+      include_docs: true,
+      ...options,
+    });
   }
 
   protected async getDocument<Document>(id: string): Promise<Document | undefined> {

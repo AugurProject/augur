@@ -1,3 +1,4 @@
+import PouchDB from "pouchdb";
 import * as t from 'io-ts';
 
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -33,3 +34,5 @@ export interface EndpointSettings {
   certificateFile?: string;
   certificateKeyFile?: string;
 }
+
+export type AllDocsOptions = PouchDB.Core.AllDocsWithKeyOptions | PouchDB.Core.AllDocsWithKeysOptions | PouchDB.Core.AllDocsWithinRangeOptions | PouchDB.Core.AllDocsOptions;

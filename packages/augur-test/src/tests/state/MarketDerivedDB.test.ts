@@ -115,7 +115,7 @@ test("Flexible Search", async () => {
       market: "0x1111111111111111111111111111111111111111",
       marketCreator: ACCOUNTS[0].publicKey,
       extraInfo: JSON.stringify({
-        categories: ["Market share"],
+        categories: ["MARKET SHARE"],
         description: "Foobar has 12% market share by 2041",
         longDescription: "lol",
         resolutionSource: "http://www.blah.com",
