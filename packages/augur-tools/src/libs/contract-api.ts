@@ -341,6 +341,12 @@ export class ContractAPI {
     return shareToken.balanceOf_(this.account.publicKey);
   }
 
+  async getOrCreateCurrentDisputeWindow(initial = false): Promise<string> {
+    // Must make 2 calls because the first call is necessary but doesn't always return the dispute window.
+    await this.augur.contracts.universe.getOrCreateCurrentDisputeWindow(initial);
+    return this.augur.contracts.universe.getOrCreateCurrentDisputeWindow_(initial);
+  }
+
   async getDisputeWindow(market: ContractInterfaces.Market): Promise<ContractInterfaces.DisputeWindow> {
     const disputeWindowAddress = await market.getDisputeWindow_();
     return this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
