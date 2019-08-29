@@ -9,15 +9,6 @@ export interface UpdateLoginAccountAction {
   data: Partial<LoginAccount>;
 }
 
-export function updateLoginAccountBalances(
-  data: AccountBalances
-) {
-  return {
-    type: UPDATE_LOGIN_ACCOUNT_BALANCES,
-    data,
-  };
-}
-
 export function updateLoginAccount(
   data: Partial<LoginAccount>
 ): UpdateLoginAccountAction {
