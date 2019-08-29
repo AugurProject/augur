@@ -51,7 +51,7 @@
     "pouchdb-adapter-memory": "7.1.1",
     "puppeteer": "1.20.0",
     "supertest": "4.0.2",
-    "ts-jest": "23.10.5",
+    "ts-jest": "24.0.2",
     "ts-node": "8.4.1",
     "tsconfig-paths": "3.9.0"
   },
