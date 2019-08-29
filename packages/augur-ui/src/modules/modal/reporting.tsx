@@ -57,7 +57,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
     } = market;
 
     // todo: need to add already staked outcomes for scalar markets for disputing
-    const radioButtons = outcomesFormatted.filter(outcome => marketType === SCALAR && outcome.id === 0).map(outcome => {
+    const radioButtons = outcomesFormatted.filter(outcome => marketType === SCALAR ? outcome.id === 0 : true).map(outcome => {
       let stake = disputeInfo.stakes.find(stake => parseFloat(stake.outcome) === outcome.id);
       if (!stake) {
         stake = {
@@ -80,8 +80,6 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
         }
       };
     });
-
-    console.log(radioButtons);
 
     return (
       <div className={Styles.ModalReporting}>

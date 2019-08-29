@@ -866,7 +866,7 @@ export class ReportingRadioBar extends Component<
         <div>
           {(scalar || !isReporting) &&
             <>
-              {!scalar &&
+              {!scalar && !stake.tentativeWinning &&
                 <>
                   <div>
                     <span>
@@ -880,6 +880,11 @@ export class ReportingRadioBar extends Component<
                     </span>
                   </div>
                   <ReportingPercent firstPercent={stake.preFilledStake} secondPercent={stake.bondSizeCurrent} thirdPercent={formatRep(inputtedStake)} total={stake.bondSizeTotal} />
+                </>
+              }
+              {!scalar && stake.tentativeWinning && !isReporting &&
+                <>
+                  <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
                 </>
               }
               {checked &&
@@ -921,11 +926,6 @@ export class ReportingRadioBar extends Component<
                   <PrimaryButton text='Confirm' action={null} />
                 </>
               }
-            </>
-          }
-          {!scalar && stake.tentativeWinning && !isReporting &&
-            <>
-              <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
             </>
           }
         </div>
