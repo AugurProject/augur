@@ -9,6 +9,7 @@ import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';
 import { AppState } from 'store';
+import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 
 export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -50,13 +51,13 @@ function loadTransactions(
       dispatch(loadCreateMarketHistory(options, resolve))
     )
   );
-/*
+
   promises.push(
     new Promise(resolve =>
-      dispatch(loadReportingHistory(options, null, resolve))
+      dispatch(loadAccountReportingHistory(resolve))
     )
   );
-*/
+
   Promise.all(promises).then((marketIds: string[][]) => {
     marketIds = [...marketIds, Object.keys(appState.pendingOrders)];
 
