@@ -571,6 +571,7 @@ export interface LoginAccount {
   allowanceFormatted?: FormattedNumber;
   allowance?: BigNumber;
   balances: AccountBalances;
+  reporting: Getters.Accounts.AccountReportingHistory;
 }
 
 export interface Web3 {
