@@ -58,7 +58,6 @@ jobs:
 
   - job: Augur_build_docker_image
     dependsOn:
-    - TestAndLint
     - PreFlightCheck
     condition: |
       or
@@ -128,7 +127,6 @@ jobs:
 
   - job: Build_Core_Docker
     dependsOn:
-    - TestAndLint
     - Augur_build_docker_image
     - PreFlightCheck
     condition: |
