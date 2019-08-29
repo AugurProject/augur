@@ -61,7 +61,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
         stake = {
           tentativeWinning: false,
           bondSizeCurrent: "0",
-          bondSizeTotal: "1",
+          bondSizeTotal: disputeInfo.bondSizeOfNewStake,
           preFilledStake: "0",
         }
       }
