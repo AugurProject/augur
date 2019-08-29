@@ -223,7 +223,7 @@ interface RadioGroupProps {
     | Array<ReportingRadioBarProps>;
   defaultSelected?: string | null;
   children?: Array<any>;
-  reporting?: noolean;
+  reporting?: boolean;
   marketType?: string;
   minPrice?: string;
   maxPrice?: string;
