@@ -8,6 +8,7 @@ import { MarketTypeLabel, RepBalance } from "modules/common/labels";
 import { Subheaders } from 'modules/reporting/common';
 import { RadioBarGroup } from 'modules/common/form';
 import { formatAttoRep } from "utils/format-number";
+import { SCALAR } from 'modules/common/constants';
 
 import Styles from "modules/modal/modal.styles.less";
 
@@ -55,7 +56,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       disputeInfo
     } = market;
 
-    const radioButtons = outcomesFormatted.map(outcome => {
+    // todo: need to add already staked outcomes for scalar markets for disputing
+    const radioButtons = outcomesFormatted.filter(outcome => marketType === SCALAR && outcome.id === 0).map(outcome => {
       let stake = disputeInfo.stakes.find(stake => parseFloat(stake.outcome) === outcome.id);
       if (!stake) {
         stake = {
@@ -78,6 +80,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
         }
       };
     });
+
+    console.log(radioButtons);
 
     return (
       <div className={Styles.ModalReporting}>
