@@ -671,7 +671,7 @@ export const ReportingRadioBarGroup = ({
   scalarDenomination,
   isReporting
 }: ReportingRadioGroupProps) => {
-  const invalid = radioButtons.find(radioButton => radioButton.stake.outcome === "0");
+  const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
   const tentativeWinning = radioButtons.find(radioButton => radioButton.stake.tentativeWinning);
 
   return (
@@ -683,7 +683,7 @@ export const ReportingRadioBarGroup = ({
           <ReportingRadioBar 
             expandable
             {...tentativeWinning}
-            isInvalid={!isReporting && tentativeWinning.value !== invalid.value}
+            isInvalid={tentativeWinning.isInvalid}
             isReporting={isReporting}
             checked={tentativeWinning.value === selected}
             onChange={selected => {
@@ -702,7 +702,8 @@ export const ReportingRadioBarGroup = ({
       {marketType === SCALAR &&
         <ReportingRadioBar
           header=""
-          value=""
+          value={1}
+          checked={1 === selected}
           stake={null}
           minPrice={minPrice}
           maxPrice={maxPrice}
@@ -715,7 +716,7 @@ export const ReportingRadioBarGroup = ({
           }}
         />
       }
-      {radioButtons.map((radio, index) => (radio.stake.outcome !== "0" && !radio.stake.tentativeWinning &&
+      {radioButtons.map((radio, index) => (!radio.isInvalid && !radio.stake.tentativeWinning &&
         <ReportingRadioBar 
           key={index + radio.value}
           expandable
@@ -776,7 +777,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     const { selected } = this.state;
 
     return (
-      <div>
+      <div className={Styles.RadioBarGroup}>
         {reporting &&
           <ReportingRadioBarGroup 
             marketType={marketType}
@@ -863,7 +864,7 @@ export class ReportingRadioBar extends Component<
         {checked ? FilledRadio : EmptyRadio}
         <h5>{scalar ? `Enter a range from ${minPrice} - ${maxPrice}` : header}</h5>
         <div>
-          {(scalar || !stake.tentativeWinning ) && !isReporting &&
+          {(scalar || !isReporting) &&
             <>
               {!scalar &&
                 <>
