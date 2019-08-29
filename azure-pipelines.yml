@@ -407,6 +407,7 @@ jobs:
     condition: |
       and
       (
+        in(dependencies.PreFlightCheck.result, 'Succeeded'),
         in(dependencies.Test_Augur_Core.result, 'Succeeded'),
         in(dependencies.Docker_geth_dev.result, 'Succeeded', 'Skipped'),
         or
