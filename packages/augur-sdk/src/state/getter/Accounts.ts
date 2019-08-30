@@ -72,6 +72,7 @@ interface ContractOverview {
 
 export interface AccountReportingHistory {
   profitLoss: number;
+  profitAmount: string;
   reporting: ContractOverview | null;
   disputing: ContractOverview | null;
   pariticipationTokens: ContractOverview | null;
@@ -153,6 +154,7 @@ export class Accounts<TBigNumber> {
     // console.log("allFormattedLogs", allFormattedLogs);
     const DummyData: AccountReportingHistory = {
       profitLoss: 1.25,
+      profitAmount: "65.25",
       reporting: {
         totalAmount: "100",
         contracts: [{
