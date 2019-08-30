@@ -5,12 +5,17 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { MockMeshServer, SERVER_PORT, stopServer } from '../../libs/MockMeshServer';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { Connectors } from '@augurproject/sdk';
+import { API } from '@augurproject/sdk/build/state/getter/API';
+import { stringTo32ByteHex } from '../../libs/Utils';
+import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
+import { sleep } from "@augurproject/core/build/libraries/HelperFunctions";
 
 describe('Augur API :: ZeroX :: ', () => {
   let john: ContractAPI;
   let mary: ContractAPI;
   let meshClient: WSClient;
   let db: DB;
+  let api: API;
   const mock = makeDbMock();
 
   afterAll(() => {
@@ -29,13 +34,64 @@ describe('Augur API :: ZeroX :: ', () => {
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, connector, undefined, meshClient);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses, connector, undefined, meshClient);
-    db = await mock.makeDB(john.augur, ACCOUNTS);
+    const dbPromise = mock.makeDB(john.augur, ACCOUNTS);
+    db = await dbPromise;
     connector.initialize(john.augur, db);
+    api = new API(john.augur, dbPromise);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
   }, 120000);
 
-  test('Trade :: placeTrade', async () => {
+  test('State API :: ZeroX :: getOrders', async () => {
+    await john.approveCentralAuthority();
+
+    // Create a market
+    const market = await john.createReasonableMarket([
+      stringTo32ByteHex('A'),
+      stringTo32ByteHex('B'),
+    ]);
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
+    // Place an order
+    const direction = 0;
+    const outcome = 0;
+    const displayPrice = new BigNumber(.22);
+    const kycToken = "0x000000000000000000000000000000000000000C";
+    const orderHash = await john.placeZeroXOrder({
+      direction,
+      market: market.address,
+      numTicks: await market.getNumTicks_(),
+      numOutcomes: 3,
+      outcome,
+      tradeGroupId: "42",
+      affiliateAddress: "0x000000000000000000000000000000000000000b",
+      kycToken,
+      doNotCreateOrders: false,
+      displayMinPrice: new BigNumber(0),
+      displayMaxPrice: new BigNumber(1),
+      displayAmount: new BigNumber(1),
+      displayPrice: displayPrice,
+      displayShares: new BigNumber(0),
+      expirationTime: new BigNumber(450),
+    });
+
+    // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
+    await sleep(300);
+
+    // Get orders for the market
+    let orders: ZeroXOrders = await api.route('getZeroXOrders', {
+      marketId: market.address,
+    });
+    let order = orders[market.address][0]['0'][orderHash];
+    await expect(order).not.toBeNull();
+    await expect(order.price).toEqual('0.22');
+    await expect(order.amount).toEqual('1');
+    await expect(order.kycToken).toEqual(kycToken);
+    await expect(order.expirationTimeSeconds).toEqual("450");
+  }, 60000);
+
+  test('ZeroX Trade :: placeTrade', async () => {
     const market1 = await john.createReasonableYesNoMarket();
 
     const outcome = 1;
