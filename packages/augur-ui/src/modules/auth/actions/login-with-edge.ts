@@ -16,7 +16,7 @@ export const loginWithEdgeEthereumWallet = (
 
   const loginAccount = {
     address: lowerCaseAddress,
-    displayAddress: mixedCaseAddress,
+    mixedCaseAddress: mixedCaseAddress,
     meta: {
       address: lowerCaseAddress,
       signer: edgeSigner,

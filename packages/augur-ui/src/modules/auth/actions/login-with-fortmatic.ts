@@ -45,7 +45,7 @@ export const loginWithFortmatic = (callback: NodeStyleCallback) => async (
       const account = accounts[0];
       const accountObject = {
         address: account,
-        displayAddress: toChecksumAddress(account),
+        mixedCaseAddress: toChecksumAddress(account),
         meta: {
           address: account,
           signer: provider.getSigner(),

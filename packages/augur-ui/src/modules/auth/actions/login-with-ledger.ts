@@ -15,7 +15,7 @@ export default function loginWithLedger(
 
     const loginAccount = {
       address,
-      displayAddress: toChecksumAddress(address),
+      mixedCaseAddress: toChecksumAddress(address),
       meta: {
         address,
         signer,

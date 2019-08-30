@@ -41,7 +41,7 @@ export const loginWithPortis = (callback: NodeStyleCallback) => async (
 
       const accountObject = {
         address: account,
-        displayAddress: toChecksumAddress(account),
+        mixedCaseAddress: toChecksumAddress(account),
         meta: {
           address: account,
           signer: provider.getSigner(),
