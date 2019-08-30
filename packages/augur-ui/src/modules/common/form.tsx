@@ -27,7 +27,7 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
-import { Subheaders, DisputingButtonView, DisputingBondsView } from 'modules/reporting/common';
+import { Subheaders, DisputingButtonView, DisputingBondsView, ReportingBondsView } from 'modules/reporting/common';
 import { formatRep } from "utils/format-number";
 
 import Styles from 'modules/common/form.styles.less';
@@ -868,12 +868,12 @@ export class ReportingRadioBar extends Component<
         {checked ? FilledRadio : EmptyRadio}
         <h5>{scalar ? `Enter a range from ${minPrice} - ${maxPrice}` : header}</h5>
         <div>
-          {(scalar || !isReporting) && // for disputing or for scalar
+          {!isReporting && // for disputing or for scalar
             <>
-              {!scalar && !stake.tentativeWinning &&
+              {!stake.tentativeWinning && // default view shown if they are not tentative winner
                 <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
               }
-              {!scalar && stake.tentativeWinning && !isReporting &&
+              {stake.tentativeWinning && !isReporting && // default view shown if they are tentative winner
                 <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
               }
               {checked && // if checked
@@ -887,6 +887,14 @@ export class ReportingRadioBar extends Component<
                 />
               }
             </>
+          }
+          {isReporting && checked &&
+            <ReportingBondsView 
+              scalar={scalar}
+              rangeValue={s.rangeValue}
+              changeRange={this.changeRange}
+              scalarDenomination={scalarDenomination}
+            />
           }
         </div>
       </div>
