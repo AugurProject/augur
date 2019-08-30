@@ -213,16 +213,18 @@ div.ReportingSubheaders {
 }
 
 .ReportingBondsView {
-
 	> span {
 		.text-14-medium;
 
 		color: @color-alternate-info-text;
 		margin-bottom: @size-12;
-		margin-top: @size-16;
+		display: flex;
 	}
 	
 	> div:last-of-type {
+		display: flex;
+    	flex-direction: column;
+
 		> span:first-of-type {
 			.text-14-medium;
 
@@ -241,5 +243,15 @@ div.ReportingSubheaders {
 
 	> button {
 		margin-top: @size-16;
+	}
+
+	&.Scalar {
+		> div:first-of-type {
+			margin-bottom: @size-20;
+		}
+
+		> div:nth-of-type(4) {
+			margin-bottom: @size-16;
+		}
 	}
 }
