@@ -866,17 +866,17 @@ export class ReportingRadioBar extends Component<
         onClick={e => onChange(value)}
       >
         {checked ? FilledRadio : EmptyRadio}
-        <h5>{scalar ? `Enter a range from ${minPrice} - ${maxPrice}` : header}</h5>
+        <h5>{scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}</h5>
         <div>
           {!isReporting && // for disputing or for scalar
             <>
-              {!stake.tentativeWinning && // default view shown if they are not tentative winner
+              {!stake.tentativeWinning && 
                 <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
               }
-              {stake.tentativeWinning && !isReporting && // default view shown if they are tentative winner
+              {stake.tentativeWinning && 
                 <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
               }
-              {checked && // if checked
+              {checked && 
                 <DisputingBondsView 
                   scalar={scalar}
                   rangeValue={s.rangeValue}
