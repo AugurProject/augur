@@ -13,6 +13,10 @@ export class SEOConnector extends BaseConnector {
     this.api = await Sync.start(ethNodeUrl, account, { adapter: "memory" }, true);
   }
 
+  async syncUserData(account: string): Promise<any> {
+    return;
+  }
+
   async disconnect(): Promise<any> {
   }
 

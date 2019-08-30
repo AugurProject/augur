@@ -1,5 +1,4 @@
-import { TransactionStatus, TransactionMetadata } from "contract-dependencies-ethers/build";
-import { Transaction } from "ethereumjs-blockstream";
+import { TransactionMetadata } from "contract-dependencies-ethers/build";
 import { TXEventName } from "./constants";
 
 type Address = string;

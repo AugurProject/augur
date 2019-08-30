@@ -71,8 +71,8 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     return this.worker;
   }
 
-  syncUserData(account: string) {
-    this.worker.postMessage({
+  async syncUserData(account: string): Promise<any> {
+    return this.worker.postMessage({
       id: iterator.next().value,
       method: 'syncUserData',
       params: [account],
@@ -80,7 +80,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     });
   }
 
-  messageReceived(message: any) {
+  messageReceived(message: any): void {
     if (message.result) {
       if (this.subscriptions[message.result.eventName]) {
         this.subscriptions[message.result.eventName].callback(message.result);
