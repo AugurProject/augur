@@ -96,7 +96,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
-    this.zeroX = new ZeroX(this, meshClient);
+    this.zeroX = meshClient ? new ZeroX(this, meshClient) : undefined;
     if (enableFlexSearch && !Augur.syncableFlexSearch) {
       Augur.syncableFlexSearch = new SyncableFlexSearch();
     }

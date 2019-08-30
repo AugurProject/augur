@@ -4,14 +4,13 @@ import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { augurEmitter } from '../../events';
-import { OrderInfo } from '@0x/mesh-rpc-client';
+import { OrderInfo, OrderEvent } from '@0x/mesh-rpc-client';
 import { getAddress } from "ethers/utils/address";
 import { SignedOrder } from '@0x/types';
 
-// Save incremented id with logs
-// Do Below in background. Use old orders DB until this is done via old incremented id
-// On completion replace incremented id market and delete all not that incremented id
-// for blockstream start subscription
+// This database clears its contents on every sync. The primary purposes for even storing this data are:
+// 1. To recalculate liquidity metrics. This can be stale so when the derived market DB is synced it should not wait for this to complete (it will already have recorded liquidity data from previous syncs)
+// 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load. We can do this on demand if the full sync above is too slow
 
 export interface OrderData {
   market: string;
@@ -23,6 +22,10 @@ export interface OrderData {
 
 export interface Document extends BaseDocument {
   blockNumber: number;
+}
+
+export interface SnapshotCounterDocument extends BaseDocument {
+  snapshotCounter: number;
 }
 
 export interface StoredOrder extends OrderData {
@@ -51,6 +54,39 @@ export class ZeroXOrders extends AbstractDB {
     // TODO: add indicies
   }
 
+  static async create(db: DB, networkId: number, augur: Augur): Promise<ZeroXOrders> {
+    const zeroXOrders = new ZeroXOrders(db, networkId, augur);
+    await zeroXOrders.deleteOld();
+    await zeroXOrders.subscribeToMeshEvents();
+    return zeroXOrders;
+  }
+
+  async subscribeToMeshEvents(): Promise<void> {
+    return await this.augur.zeroX.subscribeToMeshEvents(this.handleMeshEvent.bind(this));
+  }
+
+  async deleteOld(): Promise<void> {
+    const oldSnapshotRawDocs = await this.allDocs();
+    const oldSnapshotDocs = oldSnapshotRawDocs.rows ? oldSnapshotRawDocs.rows.map(row => Object.assign(row.doc, { _deleted: true})) : [];
+    if (oldSnapshotDocs.length > 0) {
+      await this.bulkUpsertUnorderedDocuments(oldSnapshotDocs);
+    }
+  }
+
+  // TODO: Investigate actual data returned to see if we need to handle the "KIND" field. If for example a "EXPIRED" kind does not also set the fillableTakerAssetAmount to 0 then we'll need to handle that
+  handleMeshEvent(orderEvents: OrderEvent[]): void {
+    const documents = _.map(orderEvents, this.processOrder.bind(this));
+    this.bulkUpsertUnorderedDocuments(
+      documents
+    ).then((success) => {
+      if (success) {
+        augurEmitter.emit("ZeroXOrders", documents);
+      } else {
+        throw new Error('Unable to handle mesh events for ZeroX Orders');
+      }
+    });
+  }
+
   async sync(): Promise<void> {
     const orders: Array<OrderInfo> = await this.augur.zeroX.getOrders();
     let success = true;
@@ -58,8 +94,7 @@ export class ZeroXOrders extends AbstractDB {
     if (orders.length > 0) {
       documents = _.map(orders, this.processOrder.bind(this));
 
-      success = await this.bulkUpsertOrderedDocuments(
-        documents[0]._id,
+      success = await this.bulkUpsertUnorderedDocuments(
         documents
       );
     }

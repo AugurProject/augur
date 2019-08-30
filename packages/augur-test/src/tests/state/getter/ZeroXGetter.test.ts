@@ -7,14 +7,16 @@ import { stringTo32ByteHex } from '../../../libs/Utils';
 import { MockMeshServer, SERVER_PORT, stopServer } from '../../../libs/MockMeshServer';
 import { WSClient } from '@0x/mesh-rpc-client';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
+import { sleep } from "@augurproject/core/build/libraries/HelperFunctions";
 
-const mock = makeDbMock();
-let meshClient: WSClient;
 
-describe('State API :: Trading :: ', () => {
+
+describe('State API :: ZeroX Getter :: ', () => {
   let db: Promise<DB>;
   let api: API;
   let john: ContractAPI;
+  const mock = makeDbMock();
+  let meshClient: WSClient;
 
   afterAll(() => {
     meshClient.destroy();
@@ -41,6 +43,8 @@ describe('State API :: Trading :: ', () => {
       stringTo32ByteHex('B'),
     ]);
 
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+
     // Place an order
     const direction = 0;
     const outcome = 0;
@@ -64,7 +68,8 @@ describe('State API :: Trading :: ', () => {
       expirationTime: new BigNumber(450),
     });
 
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    // Terrible, but not clear how else to wait on the mesh event propagating to the callback and it finishing updating the DB...
+    await sleep(300);
 
     // Get orders for the market
     let orders: ZeroXOrders = await api.route('getZeroXOrders', {

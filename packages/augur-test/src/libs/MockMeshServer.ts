@@ -23,6 +23,7 @@ export interface StoredOrder {
     fillableTakerAssetAmount: string,
 }
 
+// TODO: When there is a browser compatible Mesh Relay we should use that as this is not entirely accurate
 /**
  * Sets up a new test WS server
  * @return A WS server
@@ -85,7 +86,7 @@ export class MockMeshServer {
                 const jsonRpcRequest = JSON.parse(message.utf8Data);
                 let response = "";
                 if (jsonRpcRequest.method == "mesh_getOrders") response = self.getOrders(jsonRpcRequest.id, jsonRpcRequest.params);
-                else if (jsonRpcRequest.method == "mesh_addOrders") response = self.addOrders(jsonRpcRequest.id, jsonRpcRequest.params);
+                else if (jsonRpcRequest.method == "mesh_addOrders") response = self.addOrders(jsonRpcRequest.id, jsonRpcRequest.params, connection);
                 else if (jsonRpcRequest.method == "mesh_subscribe") response = self.subscribe(jsonRpcRequest.id);
                 else throw new Error(`Bad Request: ${jsonRpcRequest.method}`);
                 connection.sendUTF(response);
@@ -119,7 +120,7 @@ export class MockMeshServer {
         return JSON.stringify(response);
     }
 
-    addOrders(id: number, params: any[][]): string {
+    addOrders(id: number, params: any[][], connection: WebSocket.connection): string {
         const newOrders = params[0];
         const accepted = [];
         for (const order of newOrders) {
@@ -130,6 +131,7 @@ export class MockMeshServer {
             }
             this.orders[order.hash] = storedOrder;
             accepted.push(storedOrder);
+            this.notifySubscribersOrderAdded(storedOrder, connection);
         }
         return JSON.stringify({
             id,
@@ -139,5 +141,23 @@ export class MockMeshServer {
                 rejected: []
             }
         });
+    }
+
+    // We're just assuming we're subscribed since for our tests cases we always are. Passing around the connection like this normally isnt how itd be handled.
+    notifySubscribersOrderAdded(order: StoredOrder, connection: WebSocket.connection): void {
+        const response = {
+            jsonrpc: "2.0",
+            method: "mesh_subscription",
+            params: {
+                subscription: "0xab1a3e8af590364c09d0fa6a12103ada",
+                result: [
+                    Object.assign(order, {
+                        "kind": "ADDED",
+                        "txHash": "0x9e6830a7044b39e107f410e4f765995fd0d3d69d5c3b3582a1701b9d68167560"
+                    })
+                ]
+            }
+        }
+        connection.sendUTF(JSON.stringify(response));
     }
 }

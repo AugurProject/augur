@@ -7,7 +7,7 @@ import { Augur } from './../Augur';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { PlaceTradeDisplayParams, PlaceTradeChainParams, TradeTransactionLimits } from './Trade';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
-import { OrderInfo, WSClient } from '@0x/mesh-rpc-client';
+import { OrderInfo, WSClient, OrderEvent } from '@0x/mesh-rpc-client';
 import { signatureUtils } from '0x.js'
 import { Web3ProviderEngine } from '@0x/subproviders';
 import { SignerSubprovider } from "../zeroX/SignerSubprovider";
@@ -75,6 +75,10 @@ export class ZeroX {
     this.providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
     this.providerEngine.addProvider(new ProviderSubprovider(this.augur.provider));
     this.providerEngine.start();
+  }
+
+  async subscribeToMeshEvents(callback: (orderEvents: OrderEvent[]) => void): Promise<void> {
+    await this.meshClient.subscribeToOrdersAsync(callback);
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {

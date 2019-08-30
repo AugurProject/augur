@@ -9,7 +9,7 @@ import {
 } from "../../index";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { filterMarketsByReportingState, OutcomeParam, makerTakerValues, OrdersParams, OrderState, Order, Orders, OrderType, makerTaker } from "./Trading";
+import { filterMarketsByReportingState, OutcomeParam, OrderState, Order } from "./Trading";
 import { StoredOrder } from "../db/ZeroXOrders";
 
 import * as t from "io-ts";
@@ -35,14 +35,21 @@ export interface ZeroXOrders {
 }
 
 export const ZeroXOrdersParams = t.partial({
+  marketId: t.string,
+  outcome: t.number,
+  orderType: t.string,
+  account: t.string,
+  orderState: t.string,
+  ignoreReportingStates: t.array(t.string),
   matchPrice: t.string,
   ignoreOrders: t.array(t.string),
-})
+});
 
 export class ZeroXOrdersGetters {
-  static GetZeroXOrdersParams = t.intersection([sortOptions, OrdersParams, ZeroXOrdersParams]);
+  static GetZeroXOrdersParams = t.intersection([sortOptions, ZeroXOrdersParams]);
 
   // TODO: Split this into a getter for orderbooks and a getter to get matching orders
+  // TODO: When getting an orderbook for a specific market if the Database has not finished syncing we should just pull the orderbook from mesh directly
   @Getter('GetZeroXOrdersParams')
   static async getZeroXOrders(
     augur: Augur,

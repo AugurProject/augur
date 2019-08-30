@@ -149,8 +149,8 @@ export class DB {
     // Custom Derived DBs here
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
-    // Zero X Orders
-    this.zeroXOrders = new ZeroXOrders(this, networkId, this.augur);
+    // Zero X Orders. Only on if a mesh client has been provided
+    this.zeroXOrders = this.augur.zeroX ? await ZeroXOrders.create(this, networkId, this.augur): undefined;
 
     // add passed in tracked users to the tracked uses db
     for (const trackedUser of trackedUsers) {
@@ -247,7 +247,8 @@ export class DB {
 
     await Promise.all(dbSyncPromises).then(() => undefined);
 
-    await this.zeroXOrders.sync();
+    // If no meshCLient provided will not exists
+    if (this.zeroXOrders) await this.zeroXOrders.sync();
 
     // The Market DB syncs last as it depends on a derived DB
     return this.marketDatabase.sync(highestAvailableBlockNumber);
@@ -677,6 +678,7 @@ export class DB {
    * @returns {Promise<Array<StoredOrder>>}
    */
   async findZeroXOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<StoredOrder[]> {
+    if (!this.zeroXOrders) throw new Error("ZeroX orders not available as no mesh client was provided");
     const results = await this.zeroXOrders.find(request);
     const logs = results.docs as unknown as StoredOrder[];
     return logs;
