@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import classNames from "classnames";
 
 import ModalSignTransaction from "modules/modal/containers/modal-sign-transaction";
+import ModalReporting from "modules/modal/containers/modal-reporting";
 import ModalConfirm from "modules/modal/components/modal-confirm";
 import ModalReview from "modules/modal/components/modal-review";
 import ModalRepFaucet from "modules/modal/containers/modal-rep-faucet";
@@ -80,6 +81,8 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_LEDGER:
     case TYPES.MODAL_TREZOR:
       return <ModalSignTransaction {...modal} />;
+    case TYPES.MODAL_REPORTING:
+      return <ModalReporting {...modal} />;
     case TYPES.MODAL_PARTICIPATE:
       return <ModalParticipate />;
     case TYPES.MODAL_NETWORK_MISMATCH:

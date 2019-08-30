@@ -56,8 +56,111 @@ jobs:
         displayName: check git for changes
         name: setVars
 
+  - job: TestAndLint
+    dependsOn:
+    - PreFlightCheck
+    condition: |
+      and
+      (
+        succeeded(),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
+    variables:
+      JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
+      JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
+      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
+      USE_NORMAL_TIME: false
+      PRODUCTION: false
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    strategy:
+      matrix:
+        node_10_x:
+          node_version: $(PRIMARY_NODE_VERSION)
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/ui build
+        displayName: ui build
+      - bash: |
+          set -euo pipefail
+          yarn test --runInBand --ci --reporters=default --reporters=jest-junit
+        displayName: yarn test
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/sdk test
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testRunner: JUnit
+          testResultsFiles: '**/junit.xml'
+
+  - job: FeaturePeek
+    dependsOn:
+    - TestAndLint
+    condition: |
+      and
+      (
+        succeeded(),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/ui build:kovan
+        displayName: ui build
+      - bash: |
+          set -euo pipefail
+          bash <(curl -s https://peek.run/ci)
+        displayName: trigger FeaturePeek
+
   - job: Augur_build_docker_image
     dependsOn:
+    - TestAndLint
     - PreFlightCheck
     condition: |
       or
@@ -127,6 +230,7 @@ jobs:
 
   - job: Build_Core_Docker
     dependsOn:
+    - TestAndLint
     - Augur_build_docker_image
     - PreFlightCheck
     condition: |
@@ -180,6 +284,86 @@ jobs:
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
 
+  - job: Test_Augur_Core
+    dependsOn:
+    - TestAndLint
+    - Build_Core_Docker
+    - PreFlightCheck
+    condition: |
+      and
+      (
+        succeeded(),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
+        or
+        (
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        )
+      )
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    timeoutInMinutes: 120
+    strategy:
+      maxParallel: 5
+      matrix:
+        trading_and_libs:
+          TESTS: tests/test*.py tests/libraries tests/trading
+        reporting:
+          TESTS: tests/reporting
+        fuzzy:
+          TESTS: tests/fuzzy
+        unit:
+          TESTS: tests/unit
+#       trading_and_libs_subfork:
+#         TESTS: tests/test*.py tests/libraries tests/trading --subFork
+#       reporting_subfork:
+#         TESTS: tests/reporting --subFork
+#       fuzzy_subfork:
+#         TESTS: tests/fuzzy --subFork
+#       unit_subfork:
+#         TESTS: tests/unit --subFork
+        geth_integration:
+          TESTS: integration:geth
+        parity_integration:
+          TESTS: integration:parity
+        security_mithril:
+          TESTS: security:mythril
+    steps:
+      - checkout: self
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.x'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - bash: |
+          set -euo pipefail
+          which node
+          node --version
+          docker pull augurproject/augur-build:$(DOCKER_CI_BUILD_TAG)
+          docker tag augurproject/augur-build:$(DOCKER_CI_BUILD_TAG) augurproject/augur-build:latest
+          docker pull $CORE_IMAGE_BUILD
+          docker tag $CORE_IMAGE_BUILD $CORE_IMAGE_LATEST
+          docker images
+          echo "tests: $(TESTS)"
+          if [[ "$(TESTS)" == "integration:geth" ]]; then
+            yarn workspace @augurproject/core docker:run:test:integration:geth;
+          elif [[ "$(TESTS)" == "integration:parity" ]]; then
+            yarn workspace @augurproject/core docker:run:test:integration:parity;
+          elif [[ "$(TESTS)" == "security:mythril" ]]; then
+            yarn workspace @augurproject/core docker:run:test:security:mythril;
+            cat $(find . -name test-results.log)
+          elif [[ "$(TESTS)" == "security:maian" ]]; then
+            yarn workspace @augurproject/core docker:run:test:security:maian;
+          elif [[ "$(TESTS)" == "security:smt" ]]; then
+            yarn workspace @augurproject/core docker:run:test:security:smt;
+          elif [[ "$(TESTS)" == "security:oyente" ]]; then
+            yarn workspace @augurproject/core docker:run:test:security:oyente;
+          else
+            (cd packages/augur-core &&  yarn docker:run:test:unit -- $(TESTS))
+          fi
+        displayName: integration tests
+
   - job: Docker_geth_dev
     dependsOn:
     - PreFlightCheck
@@ -217,18 +401,13 @@ jobs:
 
   - job: Docker_populated_geth_images
     dependsOn:
-    - PreFlightCheck
+    - Test_Augur_Core
     - Docker_geth_dev
     condition: |
-      and
+      or
       (
-        in(dependencies.PreFlightCheck.result, 'Succeeded'),
-        in(dependencies.Docker_geth_dev.result, 'Succeeded', 'Skipped'),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true')
-        )
+        in(dependencies.Test_Augur_Core.result, 'Succeeded'),
+        in(dependencies.Docker_geth_dev.result, 'Succeeded')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
