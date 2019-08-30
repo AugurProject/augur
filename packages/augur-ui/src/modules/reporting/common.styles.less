@@ -75,7 +75,7 @@
 			  @color-faded-bright @size-1,
 			  @color-primary-background @size-2,
 			  @color-primary-background @size-4
-			);			
+			);
 		}
 
 		&:last-of-type {
@@ -121,4 +121,14 @@ div.ReportingSubheaders {
   line-height: @size-16;
   padding: 0.5rem;
   width: 100%;
+}
+
+.UserRepDisplay {
+
+  background-color: @color-secondary-action;
+  border: 1px solid #443B59;
+
+  &.loggedOut {
+    background: fade(@color-secondary-action, 80%);
+  }
 }
