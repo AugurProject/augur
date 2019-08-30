@@ -3,6 +3,7 @@ import { Events } from "./Events";
 import { NetworkId } from "@augurproject/artifacts";
 import { Filter, Log, LogValues, Provider } from "..";
 import { Abi } from "ethereum";
+import { JSONRPCRequestPayload } from "0x.js";
 
 function makeProviderMock(opts?: any): Provider {
   const networkId = opts.networkId || "4";
@@ -23,6 +24,7 @@ function makeProviderMock(opts?: any): Provider {
     encodeContractFunction: (contractName: string, functionName: string, funcParams: any[]): string => "0x0",
     parseLogValues: (contractName: string, log: Log): LogValues => logValues,
     getBalance: (address: string) => balance,
+    sendAsync: (payload: JSONRPCRequestPayload) => Promise.resolve(null)
   };
 }
 

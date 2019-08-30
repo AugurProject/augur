@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { Callback, TXStatusCallback } from "./events";
 import { BaseConnector } from "./connector/baseConnector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { TransactionStatusCallback, TransactionStatus } from "contract-dependencies-ethers";
+import { TransactionStatusCallback, TransactionStatus, EthersSigner } from "contract-dependencies-ethers";
 import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
 import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
 import { ContractInterfaces } from "@augurproject/core";
@@ -32,6 +32,7 @@ import { Arrayish } from "ethers/utils";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
+  readonly signer: EthersSigner;
   private readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
@@ -81,6 +82,7 @@ export class Augur<TProvider extends Provider = Provider> {
   constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined) {
     this.provider = provider;
     this.dependencies = dependencies;
+    this.signer = this.dependencies.signer;
     this.networkId = networkId;
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
@@ -126,6 +128,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async signMessage(message: Arrayish) {
     return this.dependencies.signer.signMessage(message);
+  }
+
+  async signDigest(message: Arrayish) {
+    return this.dependencies.signer.signDigest(message);
   }
 
   async getTimestamp() {

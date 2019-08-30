@@ -4,7 +4,7 @@ import { Callback } from "../events";
 import { BaseConnector } from "../connector/baseConnector";
 import { DB } from "../state/db/DB";
 
-class DirectConnector extends BaseConnector {
+export class DirectConnector extends BaseConnector {
     public augur: Augur;
     public db: DB;
 
@@ -22,9 +22,9 @@ class DirectConnector extends BaseConnector {
     }
 
     // bind API calls
-    public bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
+    public bindTo<R, P>(f: (augur: any, db: any, params: P) => Promise<R>): (params: P) => Promise<R> {
         return async (params: P): Promise<R> => {
-            return f(this.db, this.augur, params);
+            return f(this.augur, this.db, params);
         };
     }
 

@@ -1,6 +1,7 @@
 // Copyright (C) 2015 Forecast Foundation OU, full GPL notice in LICENSE
 
 pragma solidity 0.5.10;
+pragma experimental ABIEncoderV2;
 
 
 import 'ROOT/IAugur.sol';
@@ -74,7 +75,7 @@ contract SimulateTrade is Initializable {
             sharesUsedInFill: 0
         });
     }
-
+/*
     function createFromSignedOrders(IExchange.Order[] memory _orders, uint256 _amount) internal view returns (SimulationData memory) {
         Order.Types _type = Order.getOrderTradingTypeFromFillerDirection(_direction);
         bytes32 _orderId = orders.getBestOrderId(_type, _market, _outcome, _kycToken);
@@ -97,7 +98,7 @@ contract SimulateTrade is Initializable {
             sharesUsedInFill: 0
         });
     }
-
+*/
     /**
      * @notice Simulate performing a trade
      * @param _direction The trade direction of order. Either LONG==0, or SHORT==1
@@ -143,13 +144,7 @@ contract SimulateTrade is Initializable {
         _tokensDepleted = _shareSaleProfit >= _tokensDepleted ? 0 : _tokensDepleted.sub(_shareSaleProfit);
     }
 
-    /**
-     * @notice Simulate performing a trade with signed ZeroX orders
-     * @param _orders The signed orders to try and fill
-     * @param _amount The number of attoShares desired
-     * @param _fillOnly Boolean indicating whether to only fill existing orders or to also create an order if an amount remains
-     * @return uint256_sharesFilled: The amount taken from existing orders, uint256 _tokensDepleted: The amount of Cash tokens used, uint256 _sharesDepleted: The amount of Share tokens used, uint256 _settlementFees: The totals fees taken from settlement that occurred, _numFills: The number of orders filled/partially filled
-     */
+    /*
     function simulateZeroXTrade(IExchange.Order[] memory _orders, uint256 _amount, bool _fillOnly) public view returns (uint256 _sharesFilled, uint256 _tokensDepleted, uint256 _sharesDepleted, uint256 _settlementFees, uint256 _numFills) {
         SimulationData memory _simulationData = createFromSignedOrders(_orders, _amount);
         while (_simulationData.orderId != 0 && _simulationData.amount > 0 && gasleft() > GAS_BUFFER && isMatch(_simulationData)) {
@@ -179,6 +174,7 @@ contract SimulateTrade is Initializable {
             _tokensDepleted += (_simulationData.amount - _sharesUsedInCreate) * (_direction == Order.TradeDirections.Long ? _simulationData.price : _simulationData.numTicks - _simulationData.price);
         }
     }
+*/
 
     function getSettlementFees(SimulationData memory _simulationData, uint256 _sharesUsedInFill) private view returns (uint256) {
         uint256 _completeSetsSold = _sharesUsedInFill.min(_simulationData.orderShares);

@@ -4,12 +4,12 @@ import { makeDbMock, makeProvider } from "../../libs";
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { MockMeshServer, SERVER_PORT, stopServer } from '../../libs/MockMeshServer';
 import { WSClient } from '@0x/mesh-rpc-client';
-import { Augur, Connectors } from '@augurproject/sdk';
+import { Connectors } from '@augurproject/sdk';
 
 let john: ContractAPI;
 let mary: ContractAPI;
 let meshClient: WSClient;
-let db: Promise<DB>;
+let db: DB;
 const mock = makeDbMock();
 
 afterAll(() => {
@@ -28,8 +28,8 @@ beforeAll(async () => {
 
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, connector, undefined, meshClient);
   mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses, connector, undefined, meshClient);
-  db = mock.makeDB(john.augur, ACCOUNTS);
-  connector.initialize(db, john.augur);
+  db = await mock.makeDB(john.augur, ACCOUNTS);
+  connector.initialize(john.augur, db);
   await john.approveCentralAuthority();
   await mary.approveCentralAuthority();
 }, 120000);
@@ -49,7 +49,7 @@ test('Trade :: placeTrade', async () => {
     new BigNumber(1000000000000000)
   );
 
-  await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+  await db.sync(john.augur, mock.constants.chunkSize, 0);
 
   await mary.placeBasicYesNoZeroXTrade(
     1,
@@ -62,7 +62,7 @@ test('Trade :: placeTrade', async () => {
   );
 
   const johnShares = await john.getNumSharesInMarket(market1, new BigNumber(outcome));
-  const maryShares = await john.getNumSharesInMarket(market1, new BigNumber(0));
+  const maryShares = await mary.getNumSharesInMarket(market1, new BigNumber(0));
 
   await expect(johnShares.toNumber()).toEqual(10 ** 16 / 2);
   await expect(maryShares.toNumber()).toEqual(10 ** 16 / 2);

@@ -35,12 +35,14 @@ export interface ZeroXOrders {
 }
 
 export const ZeroXOrdersParams = t.partial({
-  matchPrice: t.string
+  matchPrice: t.string,
+  ignoreOrders: t.array(t.string),
 })
 
 export class ZeroXOrdersGetters {
   static GetZeroXOrdersParams = t.intersection([sortOptions, OrdersParams, ZeroXOrdersParams]);
 
+  // TODO: Split this into a getter for orderbooks and a getter to get matching orders
   @Getter('GetZeroXOrdersParams')
   static async getZeroXOrders(
     augur: Augur,
@@ -51,24 +53,28 @@ export class ZeroXOrdersGetters {
       throw new Error("'getOrders' requires 'marketId' param be provided");
     }
 
+    const outcome = params.outcome ? `0x000000000000000000000000000000000000000000000000000000000000000${params.outcome.toString()}` : undefined;
+    const orderType = params.orderType ? `0x000000000000000000000000000000000000000000000000000000000000000${params.orderType}` : undefined;
     const request = {
       selector: {
         market: params.marketId,
-        outcome: params.outcome,
-        orderType: params.orderType
+        outcome,
+        orderType,
       },
       sort: params.sortBy ? [params.sortBy] : undefined,
       limit: params.limit,
       skip: params.offset,
     };
 
-    console.log(`GETTING ZEROX ORDERS LOGS`);
     let currentOrdersResponse = await db.findZeroXOrderLogs(request);
 
     if (params.matchPrice) {
       if (!params.orderType) throw new Error("Cannot specify match price without order type");
+      const price = new BigNumber(params.matchPrice, 16);
       currentOrdersResponse = _.filter((currentOrdersResponse), (storedOrder) => {
-        return params.orderType == "buy" ? storedOrder.price < params.matchPrice : storedOrder.price > params.matchPrice;
+        // 0 == "buy"
+        const orderPrice = new BigNumber(storedOrder.price, 16);
+        return params.orderType == "0" ? orderPrice.lte(price) : orderPrice.gte(price);
       });
     }
 
@@ -83,6 +89,8 @@ export class ZeroXOrdersGetters {
       (orders: ZeroXOrders, order: StoredOrder) => {
         const marketDoc = markets[order.market];
         if (!marketDoc) return orders;
+        const orderId = order["_id"];
+        if (params.ignoreOrders && _.includes(params.ignoreOrders, orderId)) return orders;
         const minPrice = new BigNumber(marketDoc.prices[0]);
         const maxPrice = new BigNumber(marketDoc.prices[1]);
         const numTicks = new BigNumber(marketDoc.numTicks);
@@ -103,7 +111,6 @@ export class ZeroXOrdersGetters {
         const market = order.market;
         const outcome = new BigNumber(order.outcome).toNumber();
         const orderType = new BigNumber(order.orderType).toNumber();
-        const orderId = order["_id"];
         let orderState = OrderState.OPEN;
         if (!orders[market]) orders[market] = {};
         if (!orders[market][outcome]) orders[market][outcome] = {};
@@ -113,6 +120,7 @@ export class ZeroXOrdersGetters {
         orders[market][outcome][orderType][orderId] = {
           owner: order.signedOrder.makerAddress,
           orderState,
+          orderId,
           price,
           amount,
           kycToken: order.kycToken,

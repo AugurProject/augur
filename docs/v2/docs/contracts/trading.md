@@ -3227,40 +3227,6 @@ This function may revert to prevent the operation from being executed.
 
 
 
-### `SimulateTrade`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SimulateTrade.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#SimulateTrade.create(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,address,contract IERC20)"><code class="function-signature">create(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#SimulateTrade.simulateTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,contract IERC20,bool)"><code class="function-signature">simulateTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, contract IERC20 _kycToken, bool _fillOnly)</code></a></li><li><a href="#SimulateTrade.getNumberOfAvaialableShares(enum Order.TradeDirections,contract IMarket,uint256,address)"><code class="function-signature">getNumberOfAvaialableShares(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, address _sender)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.create(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,address,contract IERC20)"></a><code class="function-signature">create(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, contract IERC20 _kycToken) <span class="return-arrow">→</span> <span class="return-type">struct SimulateTrade.SimulationData</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.simulateTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,contract IERC20,bool)"></a><code class="function-signature">simulateTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, contract IERC20 _kycToken, bool _fillOnly) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256,uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.getNumberOfAvaialableShares(enum Order.TradeDirections,contract IMarket,uint256,address)"></a><code class="function-signature">getNumberOfAvaialableShares(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, address _sender) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
 ### `IExchange`
 
 
@@ -3296,6 +3262,40 @@ Fills an order with specified parameters and ECDSA signature.
  @param takerAssetFillAmount Desired amount of takerAsset to sell.
  @param signature Proof that order has been created by maker.
  @return Amounts filled and fees paid by maker and taker.
+
+
+
+
+
+### `SimulateTrade`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SimulateTrade.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#SimulateTrade.create(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,address,contract IERC20)"><code class="function-signature">create(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, contract IERC20 _kycToken)</code></a></li><li><a href="#SimulateTrade.simulateTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,contract IERC20,bool)"><code class="function-signature">simulateTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, contract IERC20 _kycToken, bool _fillOnly)</code></a></li><li><a href="#SimulateTrade.getNumberOfAvaialableShares(enum Order.TradeDirections,contract IMarket,uint256,address)"><code class="function-signature">getNumberOfAvaialableShares(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, address _sender)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.create(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,address,contract IERC20)"></a><code class="function-signature">create(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, contract IERC20 _kycToken) <span class="return-arrow">→</span> <span class="return-type">struct SimulateTrade.SimulationData</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.simulateTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,contract IERC20,bool)"></a><code class="function-signature">simulateTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, contract IERC20 _kycToken, bool _fillOnly) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256,uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SimulateTrade.getNumberOfAvaialableShares(enum Order.TradeDirections,contract IMarket,uint256,address)"></a><code class="function-signature">getNumberOfAvaialableShares(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, address _sender) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
 
 
 

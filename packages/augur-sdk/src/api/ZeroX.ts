@@ -8,6 +8,10 @@ import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { PlaceTradeDisplayParams, PlaceTradeChainParams, TradeTransactionLimits } from './Trade';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 import { OrderInfo, WSClient } from '@0x/mesh-rpc-client';
+import { signatureUtils } from '0x.js'
+import { Web3ProviderEngine } from '@0x/subproviders';
+import { SignerSubprovider } from "../zeroX/SignerSubprovider";
+import { ProviderSubprovider } from "../zeroX/ProviderSubprovider";
 
 export interface ZeroXPlaceTradeDisplayParams extends PlaceTradeDisplayParams {
   expirationTime: BigNumber;
@@ -62,10 +66,15 @@ export interface ZeroXTradeOrder {
 export class ZeroX {
   private readonly augur: Augur;
   private readonly meshClient: WSClient;
+  private readonly providerEngine: Web3ProviderEngine;
 
   constructor(augur: Augur, meshClient: WSClient) {
     this.augur = augur;
     this.meshClient = meshClient;
+    this.providerEngine = new Web3ProviderEngine();
+    this.providerEngine.addProvider(new SignerSubprovider(this.augur.signer));
+    this.providerEngine.addProvider(new ProviderSubprovider(this.augur.provider));
+    this.providerEngine.start();
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
@@ -85,31 +94,38 @@ export class ZeroX {
     });
   }
 
-  async placeOnChainTrade(params: ZeroXPlaceTradeParams): Promise<void> {
+  async placeOnChainTrade(params: ZeroXPlaceTradeParams, ignoreOrders?: string[]): Promise<void> {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
     // TODO a more specific getter for this that does a lot of the processing below would likely be more appropriate
-    const orderType = params.direction == 0 ? "sell" : "buy";
+    const orderType = params.direction == 0 ? "1" : "0";
+    const outcome = params.outcome.toString();
     let zeroXOrders = await this.augur.getZeroXOrders({
       marketId: params.market,
       outcome: params.outcome,
       orderType,
-      matchPrice: `0x${params.price.toString(16)}`
+      matchPrice: `0x${params.price.toString(16)}`,
+      ignoreOrders
     });
 
     if (_.size(zeroXOrders) < 1 && !params.doNotCreateOrders) {
-      console.log(`NO MATCHING ORDERS. PLACING ORDER`);
       await this.placeOnChainOrder(params);
       return;
     }
 
-    const ordersMap = zeroXOrders[params.market][params.outcome][orderType];
+    const ordersMap = zeroXOrders[params.market][outcome][orderType];
     let sortedOrders = _.sortBy(_.values(ordersMap), (order) =>{ return order.price });
 
     const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
 
     const ordersData = params.direction == 0 ? _.take(sortedOrders, loopLimit.toNumber()) : _.takeRight(sortedOrders, loopLimit.toNumber());
+    
+    // Update orders that have been used in this trade group
+    let orderIds = _.map(ordersData, (orderData) => {
+      return orderData.orderId;
+    });
+    orderIds = orderIds.concat(ignoreOrders);
 
     const orders: ZeroXTradeOrder[] = _.map(ordersData, (orderData) => {
       return {
@@ -144,7 +160,8 @@ export class ZeroX {
     const amountRemaining = this.getTradeAmountRemaining(params.amount, result);
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
-      return this.placeOnChainTrade(params);
+      // On successive iterations we specify previously taken signed orders since its possible we do another loop before the mesh has updated our view on the orderbook
+      return this.placeOnChainTrade(params, orderIds);
     }
   }
 
@@ -167,9 +184,10 @@ export class ZeroX {
     );
     const signedOrder: any[] = result[0];
     const orderHash: string = result[1];
-    const signature = await this.augur.signMessage(orderHash);
+    const makerAddress: string = signedOrder[0];
+    const signature = await this.signOrderHash(orderHash, makerAddress);
     const zeroXOrder = {
-      makerAddress: signedOrder[0],
+      makerAddress,
       takerAddress: signedOrder[1],
       feeRecipientAddress: signedOrder[2],
       senderAddress: signedOrder[3],
@@ -187,6 +205,11 @@ export class ZeroX {
     }
     await this.meshClient.addOrdersAsync([zeroXOrder]);
     return orderHash;
+  }
+
+  async signOrderHash(orderHash: string, maker: string): Promise<string> {
+    const signature = await signatureUtils.ecSignHashAsync(this.providerEngine, orderHash, maker);
+    return signature;
   }
 
   async simulateTrade(params: ZeroXPlaceTradeDisplayParams): Promise<ZeroXSimulateTradeData> {
