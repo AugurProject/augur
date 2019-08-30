@@ -240,34 +240,6 @@ export class DB {
     return this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
-  async addTrackedUser(account: string, chunkSize: number, blockstreamDelay: number): Promise<void> {
-    const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
-    if (!(await this.trackedUsers.getUsers()).includes(account)) {
-      this.trackedUsers.setUserTracked(account);
-      const dbSyncPromises = [];
-      for (const userSpecificEvent of this.userSpecificDBs) {
-        const dbName = this.getDatabaseName(userSpecificEvent.name, account);
-        if (!this.getSyncableDatabase(dbName)) {
-          // Create DB
-          new UserSyncableDB(this.augur, this, this.networkId, userSpecificEvent.name, account, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
-          dbSyncPromises.push(
-            this.syncableDatabases[dbName].sync(
-              this.augur,
-              chunkSize,
-              blockstreamDelay,
-              highestAvailableBlockNumber
-            )
-          );
-        }
-      }
-    }
-
-    augurEmitter.emit(SubscriptionEventName.UserDataSynced, {
-      eventName: SubscriptionEventName.UserDataSynced,
-      trackedUsers: this.trackedUsers,
-    });
-  }
-
   /**
    * Syncs all UserSyncableDBs. (If a user has been added to this.trackedUsers and
    * does not have a UserSyncableDB, the UserSyncableDB will be created.)
@@ -296,9 +268,39 @@ export class DB {
 
     await Promise.all(dbSyncPromises);
 
+    await this.emitUserDataSynced();
+  }
+
+  async addTrackedUser(account: string, chunkSize: number, blockstreamDelay: number): Promise<void> {
+    const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
+    if (!(await this.trackedUsers.getUsers()).includes(account)) {
+      this.trackedUsers.setUserTracked(account);
+      const dbSyncPromises = [];
+      for (const userSpecificEvent of this.userSpecificDBs) {
+        const dbName = this.getDatabaseName(userSpecificEvent.name, account);
+        if (!this.getSyncableDatabase(dbName)) {
+          // Create DB
+          new UserSyncableDB(this.augur, this, this.networkId, userSpecificEvent.name, account, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
+          dbSyncPromises.push(
+            this.syncableDatabases[dbName].sync(
+              this.augur,
+              chunkSize,
+              blockstreamDelay,
+              highestAvailableBlockNumber
+            )
+          );
+        }
+      }
+    }
+
+    await this.emitUserDataSynced();
+  }
+
+  async emitUserDataSynced(): Promise<void> {
+console.error(await this.trackedUsers.getUsers())
     augurEmitter.emit(SubscriptionEventName.UserDataSynced, {
       eventName: SubscriptionEventName.UserDataSynced,
-      trackedUsers: this.trackedUsers,
+      trackedUsers: await this.trackedUsers.getUsers(),
     });
   }
 
