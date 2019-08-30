@@ -27,10 +27,8 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
-import { ReportingPercent, Subheaders } from 'modules/reporting/common';
+import { Subheaders, DisputingButtonView, DisputingBondsView, ReportingBondsView } from 'modules/reporting/common';
 import { formatRep } from "utils/format-number";
-import { CancelTextButton, PrimaryButton } from "modules/common/buttons";
-import { LinearPropertyLabel } from "modules/common/labels";
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -676,7 +674,7 @@ export const ReportingRadioBarGroup = ({
 
   return (
     <div className={Styles.ReportingRadioBarGroup}>
-      {!isReporting &&
+      {!isReporting && tentativeWinning &&
         <section>
           <span>Tentative Outcome</span>
           <span>Add Pre-emptive stake to Support this outcome if you believe it to be correct.</span>
@@ -868,71 +866,35 @@ export class ReportingRadioBar extends Component<
         onClick={e => onChange(value)}
       >
         {checked ? FilledRadio : EmptyRadio}
-        <h5>{scalar ? `Enter a range from ${minPrice} - ${maxPrice}` : header}</h5>
+        <h5>{scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}</h5>
         <div>
-          {(scalar || !isReporting) &&
+          {!isReporting && // for disputing or for scalar
             <>
-              {!scalar && !stake.tentativeWinning &&
-                <>
-                  <div>
-                    <span>
-                      Make tentative winner
-                    </span>
-                    <span>
-                      {fullBond && fullBond.formatted}
-                      <span>
-                        / {stake && stake.bondSizeTotal.formatted} REP
-                      </span>
-                    </span>
-                  </div>
-                  <ReportingPercent firstPercent={stake.preFilledStake} secondPercent={stake.bondSizeCurrent} thirdPercent={formatRep(inputtedStake)} total={stake.bondSizeTotal} />
-                </>
+              {!stake.tentativeWinning && 
+                <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
               }
-              {!scalar && stake.tentativeWinning && !isReporting &&
-                <>
-                  <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
-                </>
+              {stake.tentativeWinning && 
+                <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
               }
-              {checked &&
-                <>
-                  {scalar &&
-                    <>
-                      <TextInput
-                        placeholder={"Enter a number"}
-                        value={s.rangeValue}
-                        onChange={(value) => this.changeRange(value)}
-                        errorMessage={null}
-                      />
-                      <h2>{scalarDenomination}</h2>
-                    </>
-                  }
-                  <TextInput
-                    placeholder={"0.0000"}
-                    value={s.stakeValue}
-                    onChange={(value) => this.changeStake(value)}
-                    errorMessage={null}
-                    innerLabel="REP"
-                  />
-                  <div>
-                    <CancelTextButton noIcon action={null} text={"MIN"}/>
-                    |
-                    <CancelTextButton noIcon action={null} text={"FILL DISPUTE BOND"}/>
-                  </div>
-                  <span>Review</span>
-                  <LinearPropertyLabel
-                    key="disputeRoundStake"
-                    label="Dispute Round Stake"
-                    value={"0.0000 REP"}
-                  />
-                  <LinearPropertyLabel
-                    key="estimatedGasFee"
-                    label="Estimated Gas Fee"
-                    value={"0.0000 ETH"}
-                  />
-                  <PrimaryButton text='Confirm' action={null} />
-                </>
+              {checked && 
+                <DisputingBondsView 
+                  scalar={scalar}
+                  rangeValue={s.rangeValue}
+                  changeRange={this.changeRange}
+                  scalarDenomination={scalarDenomination}
+                  stakeValue={s.stakeValue}
+                  changeStake={this.changeStake}
+                />
               }
             </>
+          }
+          {isReporting && checked &&
+            <ReportingBondsView 
+              scalar={scalar}
+              rangeValue={s.rangeValue}
+              changeRange={this.changeRange}
+              scalarDenomination={scalarDenomination}
+            />
           }
         </div>
       </div>
