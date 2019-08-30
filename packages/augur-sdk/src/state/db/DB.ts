@@ -241,9 +241,9 @@ export class DB {
   }
 
   async addTrackedUser(account: string): Promise<void> {
-    // if (!(await this.trackedUsers.getUsers()).includes(account)) {
+    if (!(await this.trackedUsers.getUsers()).includes(account)) {
       this.trackedUsers.setUserTracked(account);
-    // }
+    }
   }
 
   /**
