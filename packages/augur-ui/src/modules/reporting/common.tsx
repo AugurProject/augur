@@ -5,10 +5,11 @@ import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from "modules/common/constants";
 import { FormattedNumber } from "modules/types";
 import ReactTooltip from 'react-tooltip';
-import { SecondaryButton, CancelTextButton } from "modules/common/buttons";
+import { SecondaryButton, CancelTextButton, PrimaryButton } from "modules/common/buttons";
 import { TextInput } from 'modules/common/form';
 import { LinearPropertyLabel } from "modules/common/labels";
 import { ButtonActionType } from 'modules/types';
+import { formatRep } from "utils/format-number";
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
@@ -138,4 +139,78 @@ export class PreFilledStake extends Component<
     );
   }
 }
+
+export interface DisputingButtonViewProps {
+  fullBond: FormattedNumber;
+  stake: string;
+  inputtedStake: number;
+}
+
+export const DisputingButtonView = (props: DisputingButtonViewProps) => (
+  <div className={Styles.DisputingButtonView}>
+    <div>
+      <span>
+        Make tentative winner
+      </span>
+      <span>
+        {props.fullBond && props.fullBond.formatted}
+        <span>
+          / {props.stake && props.stake.bondSizeTotal.formatted} REP
+        </span>
+      </span>
+    </div>
+    <ReportingPercent firstPercent={props.stake.preFilledStake} secondPercent={props.stake.bondSizeCurrent} thirdPercent={formatRep(props.inputtedStake)} total={props.stake.bondSizeTotal} />
+  </div>
+);
+
+export interface DisputingBondsViewProps {
+  scalar?: boolean;
+  rangeValue: string;
+  changeRange: Function;
+  scalarDenomination: string;
+  stakeValue: string;
+  changeStake: Function;
+}
+
+export const DisputingBondsView = (props: DisputingBondsViewProps) => (
+  <div className={classNames(Styles.DisputingBondsView, {[Styles.Scalar]: props.scalar})}>
+    {props.scalar &&
+      <>
+        <TextInput
+          placeholder={"Enter a number"}
+          value={props.rangeValue}
+          onChange={(value) => props.changeRange(value)}
+          errorMessage={null}
+        />
+        <h2>{props.scalarDenomination}</h2>
+      </>
+    }
+    <TextInput
+      placeholder={"0.0000"}
+      value={props.stakeValue}
+      onChange={(value) => props.changeStake(value)}
+      errorMessage={null}
+      innerLabel="REP"
+    />
+    <section>
+      <CancelTextButton noIcon action={null} text={"MIN"}/>
+      |
+      <CancelTextButton noIcon action={null} text={"FILL DISPUTE BOND"}/>
+    </section>
+    <span>Review</span>
+    <LinearPropertyLabel
+      key="disputeRoundStake"
+      label="Dispute Round Stake"
+      value={"0.0000 REP"}
+    />
+    <LinearPropertyLabel
+      key="estimatedGasFee"
+      label="Estimated Gas Fee"
+      value={"0.0000 ETH"}
+    />
+    <PrimaryButton text='Confirm' action={null} />
+  </div>
+);
+
+
 
