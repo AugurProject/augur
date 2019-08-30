@@ -100,11 +100,16 @@ export const handleSDKReadyEvent = () =>  (
   dispatch(updateConnectionStatus(true));
 };
 
-export const handleUserDataSyncedEvent = (log: any) =>  (
-  dispatch: ThunkDispatch<void, any, Action>
+export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) =>  (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
-  dispatch(updateAuthStatus(IS_LOGGED, true));
-  dispatch(loadAccountData());
+  const { loginAccount } = getState();
+  const { address } = loginAccount;
+  if (address && log.trackedUsers.includes(address)) {
+    dispatch(updateAuthStatus(IS_LOGGED, true));
+    dispatch(loadAccountData());
+  }
 };
 
 export const handleNewBlockLog = (log: Events.NewBlock) => (
