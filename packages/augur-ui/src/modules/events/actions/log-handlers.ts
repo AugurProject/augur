@@ -91,7 +91,7 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleSDKReadyEvent = () =>  (
+export const handleSDKReadyEvent = () => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   // wire up events for sdk
@@ -100,13 +100,13 @@ export const handleSDKReadyEvent = () =>  (
   dispatch(updateConnectionStatus(true));
 };
 
-export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) =>  (
+export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { loginAccount } = getState();
-  const { address } = loginAccount;
-  if (address && log.trackedUsers.includes(address)) {
+  const { mixedCaseAddress } = loginAccount;
+  if (mixedCaseAddress && log.trackedUsers.includes(mixedCaseAddress)) {
     dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(loadAccountData());
   }
