@@ -297,7 +297,6 @@ export class DB {
   }
 
   async emitUserDataSynced(): Promise<void> {
-console.error(await this.trackedUsers.getUsers())
     augurEmitter.emit(SubscriptionEventName.UserDataSynced, {
       eventName: SubscriptionEventName.UserDataSynced,
       trackedUsers: await this.trackedUsers.getUsers(),
