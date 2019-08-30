@@ -5,14 +5,21 @@ import { TXEventName } from "./constants";
 type Address = string;
 type Bytes32 = string;
 
-export interface FormattedEventLog {
+export interface Event {
+  eventName: string;
+}
+
+export interface UserDataSynced extends Event {
+  trackedUsers: string[];
+}
+
+export interface FormattedEventLog extends Event {
   address: Address;
   blockNumber: number;
   logIndex: number;
   transactionHash: Bytes32;
   transactionIndex: number;
   contractName: string;
-  eventName: string;
   blockHash: Bytes32;
   removed: boolean;
 }
