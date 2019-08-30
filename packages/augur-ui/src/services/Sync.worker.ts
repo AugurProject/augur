@@ -10,6 +10,8 @@ import {
 } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/src/state/getter/API';
 
+const settings = require('@augurproject/sdk/src/state/settings');
+
 // this to be as typesafe as possible with self and addEventListener + postMessage
 const ctx: Worker = self as any;
 let api: API;
@@ -59,6 +61,20 @@ ctx.addEventListener('message', async (message: any) => {
       ctx.postMessage(
         MakeJsonRpcResponse(messageData.id, true)
       );
+    } else if (messageData.method === 'syncUserData') {
+      const account = messageData.params[0];
+      try {
+        const db = await api.db;
+        db.addTrackedUser(account);
+        await db.syncUserData(account, settings.chunkSize, settings.blockStreamDelay);
+        ctx.postMessage(
+          MakeJsonRpcResponse(messageData.id, { account })
+        );
+      } catch (err) {
+        ctx.postMessage(
+          MakeJsonRpcError(messageData.id, JsonRpcErrorCode.InvalidParams, err.message, { account })
+        );
+      }
     } else {
       try {
         const request = messageData as JsonRpcRequest;

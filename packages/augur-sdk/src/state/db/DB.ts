@@ -234,7 +234,7 @@ export class DB {
       eventName: SubscriptionEventName.SDKReady,
     });
 
-    await this.syncUserData(this.augur, chunkSize, blockstreamDelay, highestAvailableBlockNumber);
+    await this.syncUserData(chunkSize, blockstreamDelay, highestAvailableBlockNumber, augur);
 
     // The Market DB syncs last as it depends on a derived DB
     return this.marketDatabase.sync(highestAvailableBlockNumber);
@@ -255,7 +255,10 @@ export class DB {
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    * @param {number} highestAvailableBlockNumber Number of the highest available block
    */
-  async syncUserData(augur: Augur, chunkSize: number, blockstreamDelay: number, highestAvailableBlockNumber: number): Promise<void> {
+  async syncUserData(chunkSize: number, blockstreamDelay: number, highestAvailableBlockNumber: number, augur?: Augur): Promise<void> {
+    if (!augur) {
+      augur = this.augur;
+    }
     const dbSyncPromises = [];
     console.log('Syncing user-specific log DBs');
     for (const trackedUser of await this.trackedUsers.getUsers()) {

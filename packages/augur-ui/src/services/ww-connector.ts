@@ -71,6 +71,15 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     return this.worker;
   }
 
+  syncUserData(account: string) {
+    this.worker.postMessage({
+      id: iterator.next().value,
+      method: 'syncUserData',
+      params: [account],
+      jsonrpc: '2.0',
+    });
+  }
+
   messageReceived(message: any) {
     if (message.result) {
       if (this.subscriptions[message.result.eventName]) {
