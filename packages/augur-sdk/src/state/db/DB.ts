@@ -230,14 +230,14 @@ export class DB {
 
     await Promise.all(dbSyncPromises).then(() => undefined);
 
+    // The Market DB syncs after the derived DBs, as it depends on a derived DB
+    await this.marketDatabase.sync(highestAvailableBlockNumber);
+
     augurEmitter.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
 
-    await this.syncUserData(chunkSize, blockstreamDelay, highestAvailableBlockNumber, augur);
-
-    // The Market DB syncs last as it depends on a derived DB
-    return this.marketDatabase.sync(highestAvailableBlockNumber);
+    this.syncUserData(chunkSize, blockstreamDelay, highestAvailableBlockNumber, augur);
   }
 
   /**
