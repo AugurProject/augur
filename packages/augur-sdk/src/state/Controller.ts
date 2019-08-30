@@ -28,10 +28,6 @@ export class Controller {
       const db = await this.db;
       await db.sync(this.augur, settings.chunkSize, settings.blockstreamDelay);
 
-      augurEmitter.emit(SubscriptionEventName.SDKReady, {
-        eventName: SubscriptionEventName.SDKReady,
-      });
-
       this.blockAndLogStreamerListener.listenForBlockRemoved(
         db.rollback.bind(db)
       );

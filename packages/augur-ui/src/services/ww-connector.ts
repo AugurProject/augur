@@ -33,9 +33,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     this.worker.postMessage({
       id: iterator.next().value,
       method: 'start',
-      params: [],
-      ethNodeUrl,
-      account,
+      params: [ethNodeUrl, account],
       jsonrpc: '2.0',
     });
 

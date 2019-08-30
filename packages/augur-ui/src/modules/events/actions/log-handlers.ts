@@ -98,6 +98,12 @@ export const handleSDKReadyEvent = () =>  (
   dispatch(updateConnectionStatus(true));
 };
 
+export const handleUserDataSyncedEvent = () =>  (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  // TODO
+};
+
 export const handleNewBlockLog = (log: Events.NewBlock) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
