@@ -468,6 +468,7 @@ export const LOWER_FIXED_PRECISION_BOUND = 0;
 // # Modal Constants
 export const MODAL_LEDGER = 'MODAL_LEDGER';
 export const MODAL_TREZOR = 'MODAL_TREZOR';
+export const MODAL_REPORTING = 'MODAL_REPORTING';
 export const MODAL_CONTENT = 'MODAL_CONTENT';
 export const MODAL_CATEGORIES = 'MODAL_CATEGORIES';
 export const MODAL_MARKET_TYPE = 'MODAL_MARKET_TYPE';

@@ -51,10 +51,11 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
 export interface SubheadersProps {
   header: string;
   subheader: string;
+  small?: boolean;
 }
 
 export const Subheaders = (props: SubheadersProps) => (
-  <div className={Styles.ReportingSubheaders}>
+  <div className={classNames(Styles.ReportingSubheaders, {[Styles.Small]: props.small})}>
     <span>{props.header}</span>
     <p>
       <span>{props.subheader}</span>
