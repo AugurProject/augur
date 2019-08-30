@@ -1,21 +1,21 @@
-import logError from "utils/log-error";
-import { LoginAccount } from "modules/types";
-import { augurSdk } from "services/augursdk";
-import { JsonRpcProvider } from "ethers/providers";
-import { listenForStartUpEvents } from "modules/events/actions/listen-to-updates";
+import logError from 'utils/log-error';
+import { augurSdk } from 'services/augursdk';
+import { EthersSigner } from 'contract-dependencies-ethers/build';
+import { LoginAccount } from 'modules/types';
+import { clearLoginAccount, updateLoginAccount } from "modules/account/actions/login-account";
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 
-export function updateSdk(loginAccount: LoginAccount, networkId: string, injectedProvider: JsonRpcProvider | null) {
-  return async (dispatch) => {
-    const { address, meta }  = loginAccount;
-    if (!meta || !address) return;
+export const updateSdk = (loginAccount: Partial<LoginAccount>) => (dispatch: ThunkDispatch<void, any, Action>) => {
+  if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
 
-    if (!augurSdk.sdk) return;
+  if (!augurSdk.sdk) return;
 
-    try {
-      const Augur = augurSdk.get();
-      Augur.syncUserData(address);
-    } catch (error) {
-      logError(error);
-    }
-  };
+  try {
+    augurSdk.syncUserData(loginAccount.address, loginAccount.meta.signer as EthersSigner);
+    dispatch(clearLoginAccount());
+    dispatch(updateLoginAccount(loginAccount));
+  } catch (error) {
+    logError(error);
+  }
 }

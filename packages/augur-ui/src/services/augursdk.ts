@@ -58,9 +58,10 @@ export class SDK {
     );
   }
 
-  public async syncUserData(address: string) {
+  public async syncUserData(address: string, signer: EthersSigner) {
     const augur = this.get();
-    return augur.syncUserData(address);
+    augur.syncUserData(address);
+    augur.setSigner(signer);
   }
 
   public async destroy() {

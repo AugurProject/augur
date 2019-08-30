@@ -1,9 +1,4 @@
 import { EDGE_WALLET_TYPE, ACCOUNT_TYPES } from "modules/common/constants";
-import { loadAccountData } from "modules/auth/actions/load-account-data";
-import {
-  updateAuthStatus,
-  IS_LOGGED
-} from "modules/auth/actions/auth-status";
 import logError from "utils/log-error";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -32,10 +27,7 @@ export const loginWithEdgeEthereumWallet = (
     edgeUiAccount,
   };
 
-  await dispatch(updateSdk(loginAccount, undefined, null));
-
-  dispatch(loadAccountData(loginAccount));
-
+  dispatch(updateSdk(loginAccount));
 
 };
 
