@@ -283,6 +283,7 @@ export class DB {
 
     augurEmitter.emit(SubscriptionEventName.UserDataSynced, {
       eventName: SubscriptionEventName.UserDataSynced,
+      trackedUsers: this.trackedUsers,
     });
   }
 
