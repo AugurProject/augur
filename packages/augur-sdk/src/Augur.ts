@@ -249,11 +249,11 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Status.getSyncData)({});
   }
 
-  syncUserData(account: string): void {
+  syncUserData = (account: string): void => {
     Augur.connector.syncUserData(account);
   }
 
-  setUserSigner(signer: EthersSigner): void {
+  setSigner = (signer: EthersSigner): void => {
     this.dependencies.setSigner(signer);
   }
 

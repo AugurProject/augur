@@ -1,6 +1,5 @@
 import logError from 'utils/log-error';
 import { augurSdk } from 'services/augursdk';
-import { EthersSigner } from 'contract-dependencies-ethers/build';
 import { LoginAccount } from 'modules/types';
 import { clearLoginAccount, updateLoginAccount } from "modules/account/actions/login-account";
 import { ThunkDispatch } from 'redux-thunk';
