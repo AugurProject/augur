@@ -65,8 +65,7 @@ ctx.addEventListener('message', async (message: any) => {
       const account = messageData.params[0];
       try {
         const db = await api.db;
-        db.addTrackedUser(account);
-        await db.syncUserData(account, settings.chunkSize, settings.blockStreamDelay);
+        db.addTrackedUser(account, settings.chunkSize, settings.blockStreamDelay);
         ctx.postMessage(
           MakeJsonRpcResponse(messageData.id, { account })
         );

@@ -240,10 +240,32 @@ export class DB {
     return this.marketDatabase.sync(highestAvailableBlockNumber);
   }
 
-  async addTrackedUser(account: string): Promise<void> {
+  async addTrackedUser(account: string, chunkSize: number, blockstreamDelay: number): Promise<void> {
+    const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
     if (!(await this.trackedUsers.getUsers()).includes(account)) {
       this.trackedUsers.setUserTracked(account);
+      const dbSyncPromises = [];
+      for (const userSpecificEvent of this.userSpecificDBs) {
+        const dbName = this.getDatabaseName(userSpecificEvent.name, account);
+        if (!this.getSyncableDatabase(dbName)) {
+          // Create DB
+          new UserSyncableDB(this.augur, this, this.networkId, userSpecificEvent.name, account, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
+          dbSyncPromises.push(
+            this.syncableDatabases[dbName].sync(
+              this.augur,
+              chunkSize,
+              blockstreamDelay,
+              highestAvailableBlockNumber
+            )
+          );
+        }
+      }
     }
+
+    augurEmitter.emit(SubscriptionEventName.UserDataSynced, {
+      eventName: SubscriptionEventName.UserDataSynced,
+      trackedUsers: this.trackedUsers,
+    });
   }
 
   /**
@@ -255,19 +277,12 @@ export class DB {
    * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
    * @param {number} highestAvailableBlockNumber Number of the highest available block
    */
-  async syncUserData(chunkSize: number, blockstreamDelay: number, highestAvailableBlockNumber: number, augur?: Augur): Promise<void> {
-    if (!augur) {
-      augur = this.augur;
-    }
+  async syncUserData(chunkSize: number, blockstreamDelay: number, highestAvailableBlockNumber: number, augur: Augur): Promise<void> {
     const dbSyncPromises = [];
     console.log('Syncing user-specific log DBs');
     for (const trackedUser of await this.trackedUsers.getUsers()) {
       for (const userSpecificEvent of this.userSpecificDBs) {
         const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        if (!this.getSyncableDatabase(dbName)) {
-          // Create DB
-          new UserSyncableDB(this.augur, this, this.networkId, userSpecificEvent.name, trackedUser, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
-        }
         dbSyncPromises.push(
           this.syncableDatabases[dbName].sync(
             augur,
