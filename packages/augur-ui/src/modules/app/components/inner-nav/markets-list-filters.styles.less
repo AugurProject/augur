@@ -18,7 +18,7 @@
       grid-template-columns: 34px auto @size-16;
       border: none;
       height: auto;
-      margin: @size-12 0;
+      margin: 0 0 @size-12 0;
       cursor: pointer;
       background: @color-primary-background;
 
@@ -73,7 +73,6 @@
   }
 }
 
-
 .Filter_TooltipHint {
   > svg {
     height: @size-12;
@@ -89,4 +88,9 @@
 
 .Filter_TooltipContainer {
   margin: 0 0 0 @size-6;
+}
+
+.Searching {
+  pointer-events: none;
+  opacity: 0.5;
 }

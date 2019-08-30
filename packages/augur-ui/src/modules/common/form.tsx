@@ -666,8 +666,8 @@ export const ReportingRadioBarGroup = ({
   radioButtons,
   selected,
   onChange,
-  minPrice, 
-  maxPrice, 
+  minPrice,
+  maxPrice,
   scalarDenomination,
   isReporting
 }: ReportingRadioGroupProps) => {
@@ -680,7 +680,7 @@ export const ReportingRadioBarGroup = ({
         <section>
           <span>Tentative Outcome</span>
           <span>Add Pre-emptive stake to Support this outcome if you believe it to be correct.</span>
-          <ReportingRadioBar 
+          <ReportingRadioBar
             expandable
             {...tentativeWinning}
             isInvalid={tentativeWinning.isInvalid}
@@ -694,8 +694,8 @@ export const ReportingRadioBarGroup = ({
       }
       <span>{isReporting ? "Outcomes" : "Other Outcomes"}</span>
       <span>
-        {isReporting ? 
-          "Select which outcome occurred. If you select what is deemed an incorrect outcome, you will lose your stake." : 
+        {isReporting ?
+          "Select which outcome occurred. If you select what is deemed an incorrect outcome, you will lose your stake." :
           "If the Tentative Winning Outcome is incorrect, select the outcome you believe to be correct in order to stake in its favor. You will lose your entire stake if the outcome you select is disputed and does not end up as the winning outcome."
         }
       </span>
@@ -717,7 +717,7 @@ export const ReportingRadioBarGroup = ({
         />
       }
       {radioButtons.map((radio, index) => (!radio.isInvalid && !radio.stake.tentativeWinning &&
-        <ReportingRadioBar 
+        <ReportingRadioBar
           key={index + radio.value}
           expandable
           {...radio}
@@ -731,12 +731,12 @@ export const ReportingRadioBarGroup = ({
       {((!isReporting && tentativeWinning.value !== invalid.value) || isReporting) &&
         <>
           <span>
-            {isReporting ? 
-              "Select Invalid if you believe this market's outcome was ambiguous or unverifiable." : 
+            {isReporting ?
+              "Select Invalid if you believe this market's outcome was ambiguous or unverifiable." :
               "If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully."
             }
           </span>
-          <ReportingRadioBar 
+          <ReportingRadioBar
             expandable
             {...invalid}
             isInvalid
@@ -757,29 +757,35 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     selected: this.props.defaultSelected || null,
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultSelected !== this.props.defaultSelected) {
+      this.onChange(nextProps.defaultSelected);
+    }
+  }
+
   onChange = (selected) => {
     this.props.onChange(selected);
     this.setState({ selected });
   }
 
   render() {
-    const { 
-      radioButtons, 
-      onChange, 
-      errorMessage, 
-      reporting, 
-      marketType, 
-      minPrice, 
-      maxPrice, 
-      scalarDenomination, 
-      isReporting 
+    const {
+      radioButtons,
+      onChange,
+      errorMessage,
+      reporting,
+      marketType,
+      minPrice,
+      maxPrice,
+      scalarDenomination,
+      isReporting,
     } = this.props;
     const { selected } = this.state;
 
     return (
       <div className={Styles.RadioBarGroup}>
         {reporting &&
-          <ReportingRadioBarGroup 
+          <ReportingRadioBarGroup
             marketType={marketType}
             radioButtons={radioButtons}
             minPrice={minPrice}
@@ -891,7 +897,7 @@ export class ReportingRadioBar extends Component<
                 <>
                   {scalar &&
                     <>
-                      <TextInput 
+                      <TextInput
                         placeholder={"Enter a number"}
                         value={s.rangeValue}
                         onChange={(value) => this.changeRange(value)}
@@ -900,7 +906,7 @@ export class ReportingRadioBar extends Component<
                       <h2>{scalarDenomination}</h2>
                     </>
                   }
-                  <TextInput 
+                  <TextInput
                     placeholder={"0.0000"}
                     value={s.stakeValue}
                     onChange={(value) => this.changeStake(value)}
@@ -2077,7 +2083,7 @@ export const CategoryRow = ({ hasChildren = true, handleClick = noop, active = f
       [Styles.loading]: loading,
       [Styles.disabled]: !hasChildren,
   })}>
-    <span>{category}</span>
+    <span>{category && category.length <= 3 ? category.toUpperCase() : category }</span>
     {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}
   </div>

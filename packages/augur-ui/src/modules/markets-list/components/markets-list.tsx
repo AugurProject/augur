@@ -97,7 +97,7 @@ export default class MarketsList extends Component<
             />
           );
         }
-      })
+      });
     }
 
     return (

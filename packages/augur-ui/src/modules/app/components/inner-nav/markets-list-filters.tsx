@@ -14,12 +14,13 @@ import { RadioBarGroup } from 'modules/common/form';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
-import makeQuery from 'modules/routes/helpers/make-query';
+import updateQuery from 'modules/routes/helpers/update-query';
 
 interface MarketsListFiltersProps {
   maxFee: string;
   maxLiquiditySpread: string;
   showInvalid: string;
+  isSearching: boolean;
   updateMaxFee: Function;
   updateMaxSpread: Function;
   updateShowInvalid: Function;
@@ -28,8 +29,8 @@ interface MarketsListFiltersProps {
 }
 
 interface MarketsListFiltersState {
-  feeDefault: string;
-  spreadDefault: string;
+  selectedFee: string;
+  selectedSpread: string;
   showInvalidDefault: string;
 }
 
@@ -41,38 +42,47 @@ export default class MarketsListFilters extends React.Component<
     super(props);
 
     this.state = {
-      feeDefault: null,
-      spreadDefault: null,
+      selectedFee: null,
+      selectedSpread: null,
       showInvalidDefault: null,
     };
   }
 
   componentDidMount() {
-    const existingParams = parseQuery(
-      window.location.hash.split('#!/markets')[1]
-    );
-
+    const filterOptions = parseQuery(this.props.location.search);
     this.setState(
       {
-        feeDefault: existingParams.maxFee || this.props.maxFee,
-        spreadDefault: existingParams.spread || this.props.maxLiquiditySpread,
+        selectedFee: filterOptions.maxFee || this.props.maxFee,
+        selectedSpread: filterOptions.spread || this.props.maxLiquiditySpread,
         showInvalidDefault:
-          existingParams.showInvalid || this.props.showInvalid,
+          filterOptions.showInvalid || this.props.showInvalid,
       },
       () => {
-        this.props.updateMaxFee(this.state.feeDefault);
-        this.props.updateMaxSpread(this.state.spreadDefault);
+        this.props.updateMaxFee(this.state.selectedFee);
+        this.props.updateMaxSpread(this.state.selectedSpread);
         this.props.updateShowInvalid(this.state.showInvalidDefault);
       }
     );
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.location.search !== nextProps.location.search) {
+      const filterOptions = parseQuery(nextProps.location.search);
+      this.setState({
+        selectedFee:  filterOptions.maxFee ? filterOptions.maxFee : this.state.selectedFee,
+        selectedSpread: filterOptions.spread ? filterOptions.spread : this.state.selectedSpread,
+      });
+    }
+  }
+
   render() {
-    if (!this.state.feeDefault) return null;
+    if (!this.state.selectedFee) return null;
 
     return (
       <div className={Styles.Filters}>
-        <div className={Styles.FiltersGroup}>
+        <div className={classNames(Styles.FiltersGroup, {
+          [Styles.Searching]: this.props.isSearching,
+        })}>
           <div>Filters</div>
 
           <div className={Styles.Filter}>
@@ -82,9 +92,9 @@ export default class MarketsListFilters extends React.Component<
 
           <RadioBarGroup
             radioButtons={feeFilters}
-            defaultSelected={this.state.feeDefault}
+            defaultSelected={this.state.selectedFee}
             onChange={(value: string) => {
-              this.updateQuery(MAXFEE_PARAM_NAME, value, this.props.location);
+              updateQuery(MAXFEE_PARAM_NAME, value, this.props.location, this.props.history);
               this.props.updateMaxFee(value);
             }}
           />
@@ -96,9 +106,9 @@ export default class MarketsListFilters extends React.Component<
 
           <RadioBarGroup
             radioButtons={spreadFilters}
-            defaultSelected={this.state.spreadDefault}
+            defaultSelected={this.state.selectedSpread}
             onChange={(value: string) => {
-              this.updateQuery(SPREAD_PARAM_NAME, value, this.props.location);
+              updateQuery(SPREAD_PARAM_NAME, value, this.props.location, this.props.history);
               this.props.updateMaxSpread(value);
             }}
           />
@@ -112,10 +122,11 @@ export default class MarketsListFilters extends React.Component<
             radioButtons={invalidFilters}
             defaultSelected={this.state.showInvalidDefault}
             onChange={(value: string) => {
-              this.updateQuery(
+              updateQuery(
                 SHOW_INVALID_MARKETS_PARAM_NAME,
                 value,
-                this.props.location
+                this.props.location,
+                this.props.history
               );
               this.props.updateShowInvalid(value);
             }}
@@ -123,23 +134,6 @@ export default class MarketsListFilters extends React.Component<
         </div>
       </div>
     );
-  }
-
-  updateQuery(filterType, value, location) {
-    const { history } = this.props;
-    let updatedSearch = parseQuery(location.search);
-    if (value === '') {
-      delete updatedSearch[filterType];
-    } else {
-      updatedSearch[filterType] = value;
-    }
-
-    updatedSearch = makeQuery(updatedSearch);
-
-    history.push({
-      ...location,
-      search: updatedSearch,
-    });
   }
 
   generateTooltip(tipText: string) {

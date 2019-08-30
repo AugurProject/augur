@@ -124,15 +124,19 @@ export default class MarketCard extends React.Component<
       : { pathname: makePath(MARKETS) };
 
     const process = (...arr) =>
-      arr.filter(Boolean).map(label => ({
+      arr.filter(Boolean)
+      .map(label => label.toLowerCase())
+      .map(label => ({
         label,
         onClick: toggleCategory(label, path, history)
       }));
 
     const categoriesWithClick = process(categories[0]);
-    const tagsWithClick = tags.filter(Boolean).map(tag => ({
+    const tagsWithClick = tags.filter(Boolean)
+    .map(tag => tag.toLowerCase())
+    .map(tag => ({
       label: tag,
-      onClick: toggleTag(tag, path, history)
+      onClick: toggleTag(tag, path, history),
     }));
 
     const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
