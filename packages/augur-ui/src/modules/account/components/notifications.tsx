@@ -9,7 +9,7 @@ import makeQuery from "modules/routes/helpers/make-query";
 
 import { NotificationCard } from "modules/account/components/notification-card";
 import { PillLabel } from "modules/common/labels";
-import { MARKET, REPORT, DISPUTE } from "modules/routes/constants/views";
+import { MARKET, REPORTING, DISPUTING } from "modules/routes/constants/views";
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
@@ -22,7 +22,6 @@ import {
   ClaimReportingFeesTemplate,
   UnsignedOrdersTemplate,
   ProceedsToClaimTemplate,
-  ProceedsToClaimOnHoldTemplate,
 } from "modules/account/components/notifications-templates";
 
 import { Notification, DateFormattedObject, QueryEndpoints } from "modules/types";
@@ -84,7 +83,7 @@ class Notifications extends React.Component<
             [RETURN_PARAM_NAME]: location.hash,
           };
           history.push({
-            pathname: makePath(REPORT, null),
+            pathname: makePath(REPORTING, null),
             search: makeQuery(queryLink),
           });
         };
@@ -110,7 +109,7 @@ class Notifications extends React.Component<
             [RETURN_PARAM_NAME]: location.hash,
           };
           history.push({
-            pathname: makePath(DISPUTE, null),
+            pathname: makePath(DISPUTING, null),
             search: makeQuery(queryLink),
           });
         };

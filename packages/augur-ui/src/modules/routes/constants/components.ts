@@ -16,12 +16,8 @@ export {
 
 export {
   default as Reporting
-} from "modules/reporting/components/reporting-view/reporting-view";
-
-export {
-  default as Report
 } from "modules/reporting/containers/reporting";
 
 export {
-  default as Dispute
+  default as Disputing
 } from "modules/reporting/containers/disputing";
