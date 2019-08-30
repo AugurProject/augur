@@ -106,7 +106,7 @@ const actionOptions = [
   },
   {
     label: "Dispute",
-    value: "DISPUTING",
+    value: "DISPUTE",
   },
   {
     label: "Initial Report",
