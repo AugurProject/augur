@@ -14,7 +14,7 @@ export default function loginWithTrezor(
 
     const loginAccount = {
       address,
-      displayAddress: toChecksumAddress(address),
+      mixedCaseAddress: toChecksumAddress(address),
       meta: {
         address,
         signer,

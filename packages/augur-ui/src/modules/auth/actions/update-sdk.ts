@@ -11,7 +11,7 @@ export const updateSdk = (loginAccount: Partial<LoginAccount>) => (dispatch: Thu
   if (!augurSdk.sdk) return;
 
   try {
-    augurSdk.syncUserData(loginAccount.address, loginAccount.meta.signer);
+    augurSdk.syncUserData(loginAccount.mixedCaseAddress, loginAccount.meta.signer);
     dispatch(clearLoginAccount());
     dispatch(updateLoginAccount(loginAccount));
   } catch (error) {
