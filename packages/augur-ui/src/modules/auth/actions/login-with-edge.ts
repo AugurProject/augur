@@ -34,7 +34,6 @@ export const loginWithEdgeEthereumWallet = (
 
   await dispatch(updateSdk(loginAccount, undefined, null));
 
-  dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(loadAccountData(loginAccount));
 
 

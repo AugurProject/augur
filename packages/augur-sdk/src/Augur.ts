@@ -248,6 +248,10 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Status.getSyncData)({});
   }
 
+  syncUserData = (address: string) => {
+
+  }
+
   getTradingHistory = this.bindTo(Trading.getTradingHistory);
   getAllOrders = this.bindTo(Trading.getAllOrders);
   getTradingOrders = this.bindTo(Trading.getOrders);

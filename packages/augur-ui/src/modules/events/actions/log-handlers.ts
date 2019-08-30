@@ -31,6 +31,7 @@ import { augurSdk } from 'services/augursdk';
 import { Augur } from '@augurproject/sdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 
 const handleAlertUpdate = (
   log: any,
@@ -101,7 +102,7 @@ export const handleSDKReadyEvent = () =>  (
 export const handleUserDataSyncedEvent = () =>  (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  // TODO
+  dispatch(updateAuthStatus(IS_LOGGED, true));
 };
 
 export const handleNewBlockLog = (log: Events.NewBlock) => (

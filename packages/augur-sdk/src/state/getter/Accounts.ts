@@ -137,7 +137,7 @@ export class Accounts<TBigNumber> {
       db,
       initialReporterRedeemedLogs
     );
-    
+
     const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(
       {
         selector: {

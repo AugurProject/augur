@@ -11,26 +11,9 @@ export function updateSdk(loginAccount: LoginAccount, networkId: string, injecte
 
     if (!augurSdk.sdk) return;
 
-    let { provider } = augurSdk.sdk.dependencies;
-
-    if (injectedProvider) {
-      provider = injectedProvider;
-    }
-
     try {
-      const env = augurSdk.env;
-      await augurSdk.destroy();
-      await augurSdk.makeApi(
-        provider,
-        address,
-        meta.signer,
-        env,
-        networkId,
-        meta.isWeb3
-      );
       const Augur = augurSdk.get();
-      // wire up start up events for sdk
-      dispatch(listenForStartUpEvents(Augur));
+      Augur.syncUserData(address);
     } catch (error) {
       logError(error);
     }

@@ -58,6 +58,11 @@ export class SDK {
     );
   }
 
+  public async syncUserData(address: string) {
+    const augur = this.get();
+    return augur.syncUserData(address);
+  }
+
   public async destroy() {
     unListenToEvents(this.sdk);
     this.isSubscribed = false;
