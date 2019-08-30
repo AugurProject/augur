@@ -305,15 +305,7 @@ export default class CategoryFilters extends React.Component<
   }
 
   getCategoryCount(selectedCategory) {
-    if (this.getSelectedCategories().length > 0) {
-      return this.getSelectedCategories().reduce(
-        (counter, category) => counter + category.count,
-        0
-      );
-    }
-
     const categoryCount = this.lookupCategoryFromMeta(selectedCategory, this.props.categoryMetaData.categories);
-
     return categoryCount && categoryCount.count ? categoryCount.count : 0;
   }
 

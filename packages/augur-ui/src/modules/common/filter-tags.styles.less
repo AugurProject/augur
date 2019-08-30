@@ -1,0 +1,38 @@
+@import (reference) '~assets/styles/shared';
+
+.filterTags {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  margin: @size-4 @size-16 @size-24 @size-16;
+
+  > div {
+    align-items: center;
+    border: 1px solid @color-primary-light;
+    border-radius: @size-6;
+    display: flex;
+    justify-content: center;
+    padding: @size-4 @size-8;
+
+    > span:first-of-type {
+      .text-10;
+
+      color: @color-tertiary-info-text;
+    }
+
+    > span:nth-of-type(2) {
+      cursor: pointer;
+      margin-left: @size-8;
+
+      > svg {
+        height: @size-8;
+        stroke: @color-alternate-info-text;
+        width: @size-8;
+      }
+    }
+  }
+
+  > div:nth-of-type(2) {
+    margin-left: @size-12;
+  }
+}
