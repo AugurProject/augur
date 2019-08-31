@@ -54,7 +54,7 @@ export const loginWithFortmatic = (callback: NodeStyleCallback) => async (
         },
       };
 
-      await dispatch(updateSdk(accountObject));
+      await dispatch(updateSdk(accountObject, undefined));
 
       callback(null, account);
     }

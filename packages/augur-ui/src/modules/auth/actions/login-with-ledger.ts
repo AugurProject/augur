@@ -24,6 +24,6 @@ export default function loginWithLedger(
       },
     };
 
-    dispatch(updateSdk(loginAccount));
+    dispatch(updateSdk(loginAccount, undefined));
   };
 }

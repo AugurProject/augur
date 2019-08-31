@@ -71,5 +71,5 @@ const login = (account: string) => (
     },
   };
 
-  dispatch(updateSdk(accountObject));
+  dispatch(updateSdk(accountObject, networkId));
 };

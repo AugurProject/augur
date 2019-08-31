@@ -50,7 +50,7 @@ export const loginWithPortis = (callback: NodeStyleCallback) => async (
         },
       };
 
-      dispatch(updateSdk(accountObject));
+      dispatch(updateSdk(accountObject, undefined));
       callback(null, account);
 
     }

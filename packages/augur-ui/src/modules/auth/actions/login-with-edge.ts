@@ -27,7 +27,7 @@ export const loginWithEdgeEthereumWallet = (
     edgeUiAccount,
   };
 
-  dispatch(updateSdk(loginAccount));
+  dispatch(updateSdk(loginAccount, undefined));
 
 };
 

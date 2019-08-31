@@ -58,10 +58,11 @@ export class SDK {
     );
   }
 
-  public async syncUserData(address: string, signer: EthersSigner) {
+  public async syncUserData(address: string, signer: EthersSigner, signerNetworkId: string) {
     if (this.sdk) {
       this.sdk.syncUserData(address);
       if (signer) this.sdk.setSigner(signer);
+      this.signerNetworkId = signerNetworkId;
     }
   }
 

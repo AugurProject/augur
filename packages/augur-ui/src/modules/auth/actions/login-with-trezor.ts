@@ -23,7 +23,7 @@ export default function loginWithTrezor(
       },
     };
 
-    await dispatch(updateSdk(loginAccount));
+    await dispatch(updateSdk(loginAccount, undefined));
 
   };
 }
