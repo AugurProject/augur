@@ -237,7 +237,7 @@ export class DB {
       eventName: SubscriptionEventName.SDKReady,
     });
 
-    this.syncUserData(chunkSize, blockstreamDelay, highestAvailableBlockNumber, augur);
+    await this.syncUserData(chunkSize, blockstreamDelay, highestAvailableBlockNumber, augur);
   }
 
   /**
