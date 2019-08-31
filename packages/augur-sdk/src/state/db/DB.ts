@@ -274,7 +274,7 @@ export class DB {
   async addTrackedUser(account: string, chunkSize: number, blockstreamDelay: number): Promise<void> {
     const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
     if (!(await this.trackedUsers.getUsers()).includes(account)) {
-      this.trackedUsers.setUserTracked(account);
+      await this.trackedUsers.setUserTracked(account);
       const dbSyncPromises = [];
       for (const userSpecificEvent of this.userSpecificDBs) {
         const dbName = this.getDatabaseName(userSpecificEvent.name, account);
