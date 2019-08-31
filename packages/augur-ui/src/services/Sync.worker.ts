@@ -57,17 +57,25 @@ ctx.addEventListener('message', async (message: any) => {
         MakeJsonRpcResponse(messageData.id, true)
       );
     } else if (messageData.method === 'start') {
-      const createResult = await create(messageData.params[0], messageData.params[1], {}, true);
-      // Do not call Sync.create here, sinc we must initialize api before calling controller.run.
-      // This is to prevent a race condition where getMarkets is called before api is fully
-      // initialized during bulk sync, due to SDKReady being emitted before UserDataSynced.
-      api = createResult.api;
-      await createResult.controller.run();
+      try {
+        const createResult = await create(messageData.params[0], messageData.params[1], {}, true);
+        // Do not call Sync.create here, sinc we must initialize api before calling controller.run.
+        // This is to prevent a race condition where getMarkets is called before api is fully
+        // initialized during bulk sync, due to SDKReady being emitted before UserDataSynced.
+        if (!createResult.api) {
+          throw new Error('Unable to create API');
+        }
+        api = createResult.api;
+        await createResult.controller.run();
 
-
-      ctx.postMessage(
-        MakeJsonRpcResponse(messageData.id, true)
-      );
+        ctx.postMessage(
+          MakeJsonRpcResponse(messageData.id, true)
+        );
+      } catch (err) {
+        ctx.postMessage(
+          MakeJsonRpcError(messageData.id, JsonRpcErrorCode.InvalidParams, err.message, false)
+        );
+      }
     } else if (messageData.method === 'syncUserData') {
       const account = messageData.params[0];
       try {
