@@ -6,9 +6,9 @@ import {
   MakeJsonRpcError,
   MakeJsonRpcResponse,
   Subscriptions,
+  Sync,
 } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/src/state/getter/API';
-import { create } from '@augurproject/sdk/src/state/create-api';
 
 const settings = require('@augurproject/sdk/src/state/settings');
 
@@ -58,7 +58,7 @@ ctx.addEventListener('message', async (message: any) => {
       );
     } else if (messageData.method === 'start') {
       try {
-        const createResult = await create(messageData.params[0], messageData.params[1], {}, true);
+        const createResult = await Sync.createAPIAndController(messageData.params[0], messageData.params[1], {}, true);
         // Do not call Sync.create here, sinc we must initialize api before calling controller.run.
         // This is to prevent a race condition where getMarkets is called before api is fully
         // initialized during bulk sync, due to SDKReady being emitted before UserDataSynced.
