@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState) => {
     totalAccountValue,
   } = selectAccountFunds(state);
   const { reportingWindowStats } = state;
-  const { rep, realizedPLPercent } = loginAccount;
+  const { rep, tradingPositionsTotal } = loginAccount;
 
   return {
     repStaked:
@@ -29,7 +29,7 @@ const mapStateToProps = (state: AppState) => {
     totalAvailableTradingBalance: formatEther(totalAvailableTradingBalance)
       .formatted,
     totalAccountValue: formatEther(totalAccountValue).formatted,
-    realizedPLPercent: formatPercent(realizedPLPercent)
+    realizedPLPercent: formatPercent(tradingPositionsTotal.unrealizedRevenue24hChangePercent)
       .formattedValue,
   };
 };

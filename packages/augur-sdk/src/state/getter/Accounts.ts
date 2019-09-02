@@ -154,7 +154,7 @@ export class Accounts<TBigNumber> {
     // console.log("allFormattedLogs", allFormattedLogs);
     const DummyData: AccountReportingHistory = {
       profitLoss: 1.25,
-      profitAmount: "154400000000000000000",
+      profitAmount: "65.25",
       reporting: {
         totalAmount: "100",
         contracts: [{

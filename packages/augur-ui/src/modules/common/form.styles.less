@@ -246,9 +246,20 @@
 .ReportingRadioBar {
   .RadioBar;
 
+  border-radius: @size-6;
   grid-template-columns: 52px auto;
   grid-template-rows: auto;
   height: auto;
+
+  &.Checked {
+    border: 1px solid @color-faded-bright;
+
+    > svg {
+      > circle:last-of-type {
+        fill: @color-faded-bright;
+      }
+    }
+  }
 
   > svg {
     margin-top: @size-16;
@@ -325,7 +336,9 @@
   }
 
   &.Invalid {
-    color: @color-invalid;
+    > h5 {
+      color: @color-invalid;
+    }
   }
 
   &.Scalar {
@@ -425,6 +438,50 @@
       white-space: normal;
       width: 244px;
     }
+  }
+}
+
+.RadioBarGroup {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.ReportingRadioBarGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  > section > span,
+  > span {
+    display: flex;
+  }
+
+  > section > span:first-of-type,
+  > span:first-of-type {
+    .text-14-medium;
+
+    color: @color-secondary-text;
+    margin-bottom: @size-8;
+  }
+
+  > span:nth-of-type(2),
+  > span:nth-of-type(3),
+  > section > span:nth-of-type(2) {
+    .text-12;
+
+    color: @color-tertiary-info-text;
+    margin-bottom: @size-12;
+  }
+
+  > span:nth-of-type(3), {
+    margin-top: @size-16;
+  }
+
+  > section {
+    border-bottom: 1px solid @color-primary-alternate;
+    margin-bottom: @size-32;
+    padding-bottom: @size-32;
   }
 }
 

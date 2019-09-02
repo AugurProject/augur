@@ -15,6 +15,7 @@ const mapStateToProps = (state) => {
     maxFee,
     maxLiquiditySpread,
     showInvalid,
+    isSearching: state.marketsList.isSearching,
   };
 };
 

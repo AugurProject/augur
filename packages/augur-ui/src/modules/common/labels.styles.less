@@ -294,6 +294,26 @@ div.LinearPropertyViewTransaction {
   max-width: 175px;
   width: fit-content;
 
+  &.Alternate {
+    > span:first-of-type {
+      .mono-10;
+
+      color: @color-tertiary-info-text;
+    }
+
+    > span:nth-of-type(2) {
+      .mono-default;
+
+      color: @color-alternate-info-text;
+    }
+
+    > span:last-of-type {
+      .mono-default;
+
+      color: @color-tertiary-info-text;
+    }
+  }
+
   @media @breakpoint-mobile {
     max-width: 150px;
   }
@@ -340,11 +360,12 @@ div.LinearPropertyViewTransaction {
   .mono-9;
 
   background: fade(@color-tertiary-info-text, 30%);
-  border: 1px solid transparent;
   border-radius: @border-radius-default;
+  border: 1px solid transparent;
   color: @color-secondary-text;
-  padding: @size-2;
   line-height: @size-11;
+  max-width: @size-38;
+  padding: @size-2;
   text-transform: uppercase;
 }
 

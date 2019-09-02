@@ -145,6 +145,7 @@ export interface TextLabelState {
 
 export interface RepBalanceProps {
   rep: string;
+  alternate?: boolean;
 }
 
 interface ButtonObj {
@@ -788,7 +789,7 @@ export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
 );
 
 export const RepBalance = (props: RepBalanceProps) => (
-  <div className={Styles.RepBalance}>
+  <div className={classNames(Styles.RepBalance, {[Styles.Alternate]: props.alternate})}>
     <span>my rep balance</span>
     <span>{props.rep}</span>
     <span>rep</span>
