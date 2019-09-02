@@ -7,6 +7,10 @@ export class EmptyConnector extends BaseConnector {
     return;
   }
 
+  async syncUserData(account: string): Promise<any> {
+    return;
+  }
+
   async disconnect(): Promise<any> {
     return;
   }

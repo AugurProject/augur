@@ -45,6 +45,7 @@ export enum SubscriptionEventName {
   TradingProceedsClaimed = "TradingProceedsClaimed",
   UniverseCreated = "UniverseCreated",
   UniverseForked = "UniverseForked",
+  UserDataSynced = "UserDataSynced",
 }
 
 export enum TXEventName {
