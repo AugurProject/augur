@@ -11,25 +11,26 @@ import { ACCOUNT_TYPES } from 'modules/common/constants';
 import { LoginAccount, NodeStyleCallback, WindowApp } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { AppState } from 'store/';
 
 export const loadAccountData = (
-  account: LoginAccount,
   callback: NodeStyleCallback = logError
-) => async (dispatch: ThunkDispatch<void, any, Action>) => {
-  const address: string = getValue(account, 'address');
+) => async (dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState) => {
+  const { loginAccount } = getState();
+  const { address } = loginAccount;
   if (!address) return callback('account address required');
   const windowApp = windowRef as WindowApp;
   if (
     windowApp &&
     windowApp.localStorage.setItem &&
-    account &&
-    account.meta &&
-    account.meta.accountType === ACCOUNT_TYPES.METAMASK
+    loginAccount &&
+    loginAccount.meta &&
+    loginAccount.meta.accountType === ACCOUNT_TYPES.METAMASK
   ) {
     windowApp.localStorage.setItem('loggedInAccount', address);
   }
   dispatch(loadAccountDataFromLocalStorage(address));
-  dispatch(updateLoginAccount(account));
   dispatch(loadAccountHistory());
   dispatch(checkAccountAllowance());
   dispatch(updateAssets());

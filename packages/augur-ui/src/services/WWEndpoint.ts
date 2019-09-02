@@ -6,7 +6,7 @@ import {
   MakeJsonRpcError,
   MakeJsonRpcResponse,
   Subscriptions,
-  Sync,
+  Sync
 } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/src/state/getter/API';
 
@@ -18,6 +18,8 @@ let api: API;
 const subscriptions = new Subscriptions(Events.augurEmitter);
 
 ctx.addEventListener('message', async (message: any) => {
+console.log("IN EVENTLISTENER")
+console.log(message)
   const messageData = message.data;
 
   try {
@@ -33,7 +35,7 @@ ctx.addEventListener('message', async (message: any) => {
   try {
     if (messageData.method === 'subscribe') {
       try {
-        const eventName: string = messageData.params.shift();
+        const eventName: string = messageData.params[0];
         const subscription: string = subscriptions.subscribe(
           eventName,
           (data: {eventName: string}): void => {
@@ -51,36 +53,24 @@ ctx.addEventListener('message', async (message: any) => {
         );
       }
     } else if (messageData.method === 'unsubscribe') {
-      const subscription: string = messageData.params.shift();
+      const subscription: string = messageData.params[0];
       subscriptions.unsubscribe(subscription);
       ctx.postMessage(
         MakeJsonRpcResponse(messageData.id, true)
       );
     } else if (messageData.method === 'start') {
-      try {
-        const createResult = await Sync.createAPIAndController(messageData.params[0], messageData.params[1], {}, true);
-        // Do not call Sync.create here, sinc we must initialize api before calling controller.run.
-        // This is to prevent a race condition where getMarkets is called before api is fully
-        // initialized during bulk sync, due to SDKReady being emitted before UserDataSynced.
-        if (!createResult.api) {
-          throw new Error('Unable to create API');
-        }
-        api = createResult.api;
-        await createResult.controller.run();
-
-        ctx.postMessage(
-          MakeJsonRpcResponse(messageData.id, true)
-        );
-      } catch (err) {
-        ctx.postMessage(
-          MakeJsonRpcError(messageData.id, JsonRpcErrorCode.InvalidParams, err.message, false)
-        );
-      }
-    } else if (messageData.method === 'syncUserData') {
+      const ethNodeUrl = messageData.params[0];
+      const account = messageData.params[1];
+      api = await Sync.start(ethNodeUrl, account, {}, true);
+      ctx.postMessage(
+        MakeJsonRpcResponse(messageData.id, { account })
+      );
+    } else if (messageData.method === 'addTrackedUser') {
       const account = messageData.params[0];
       try {
         const db = await api.db;
-        db.addTrackedUser(account, settings.chunkSize, settings.blockStreamDelay);
+        db.addTrackedUser(account);
+        await db.syncUserData(account, settings.chunkSize, settings.blockStreamDelay);
         ctx.postMessage(
           MakeJsonRpcResponse(messageData.id, { account })
         );

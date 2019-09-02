@@ -6,7 +6,6 @@ import { NodeStyleCallback } from "modules/types";
 import { Web3Provider } from "ethers/providers";
 import Fortmatic from 'fortmatic';
 import Web3 from "web3";
-import { updateIsLoggedAndLoadAccountData } from "modules/auth/actions/update-is-logged-and-load-account-data";
 import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY } from "modules/common/constants";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
@@ -46,21 +45,16 @@ export const loginWithFortmatic = (callback: NodeStyleCallback) => async (
       const account = accounts[0];
       const accountObject = {
         address: account,
-        displayAddress: toChecksumAddress(account),
+        mixedCaseAddress: toChecksumAddress(account),
         meta: {
           address: account,
           signer: provider.getSigner(),
           accountType: ACCOUNT_TYPES.FORTMATIC,
-          isWeb3,
+          isWeb3: true,
         },
       };
 
-      await dispatch(updateSdk(accountObject, networkId, provider));
-
-      dispatch(updateIsLoggedAndLoadAccountData(
-        account,
-        ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
-      ));
+      await dispatch(updateSdk(accountObject, undefined));
 
       callback(null, account);
     }
