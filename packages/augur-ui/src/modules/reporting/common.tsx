@@ -199,17 +199,17 @@ export const UserRepDisplay = (props: UserRepDisplayProps) => (
       <LinearPropertyLabel
         key="Disputing"
         label="Disputing"
-        value={'0.0000 ETH'}
+        value={'0.0000 REP'}
       />
       <LinearPropertyLabel
         key="reporting"
         label="Reporting"
-        value={'0.0000 ETH'}
+        value={'0.0000 REP'}
       />
       <LinearPropertyLabel
         key="participation"
         label="Participation Tokens"
-        value={'0.0000 ETH'}
+        value={'0.0000 REP'}
       />
     </>
   </div>
