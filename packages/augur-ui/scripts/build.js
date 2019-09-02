@@ -71,7 +71,7 @@ const createBuildDir = new Promise((resolve, reject) => {
 });
 
 const buildAugur = new Promise((resolve, reject) => {
-  shell.exec("webpack --config webpack.config.js", code => {
+  shell.exec("node ./node_modules/webpack/bin/webpack.js --max-old-space-size=4096 --config webpack.config.js", code => {
     if (code !== 0) {
       reject(new Error());
       shell.exit(code);
