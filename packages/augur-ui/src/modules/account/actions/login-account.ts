@@ -1,4 +1,4 @@
-import { LoginAccount, AccountBalances } from "modules/types";
+import { LoginAccount, AccountBalances } from 'modules/types';
 
 export const UPDATE_LOGIN_ACCOUNT = 'UPDATE_LOGIN_ACCOUNT';
 export const UPDATE_LOGIN_ACCOUNT_BALANCES = 'UPDATE_LOGIN_ACCOUNT_BALANCES';
@@ -23,11 +23,9 @@ export interface ClearLoginAccountAction {
   data: Partial<LoginAccount>;
 }
 
-export function clearLoginAccount(
-  data: Partial<LoginAccount>
-): ClearLoginAccountAction {
+export function clearLoginAccount(): ClearLoginAccountAction {
   return {
     type: CLEAR_LOGIN_ACCOUNT,
-    data,
+    data: null,
   };
 }

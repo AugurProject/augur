@@ -6,7 +6,6 @@ import { NodeStyleCallback } from "modules/types";
 import { Web3Provider } from "ethers/providers";
 import Portis, { INetwork } from "@portis/web3";
 import Web3 from "web3";
-import { updateIsLoggedAndLoadAccountData } from "modules/auth/actions/update-is-logged-and-load-account-data";
 import { ACCOUNT_TYPES, PORTIS_API_KEY } from "modules/common/constants";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
@@ -42,7 +41,7 @@ export const loginWithPortis = (callback: NodeStyleCallback) => async (
 
       const accountObject = {
         address: account,
-        displayAddress: toChecksumAddress(account),
+        mixedCaseAddress: toChecksumAddress(account),
         meta: {
           address: account,
           signer: provider.getSigner(),
@@ -51,13 +50,7 @@ export const loginWithPortis = (callback: NodeStyleCallback) => async (
         },
       };
 
-      await dispatch(updateSdk(accountObject, networkId, provider));
-
-      dispatch(updateIsLoggedAndLoadAccountData(
-        account,
-        ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE
-      ));
-
+      dispatch(updateSdk(accountObject, undefined));
       callback(null, account);
 
     }

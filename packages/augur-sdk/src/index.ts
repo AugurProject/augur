@@ -18,6 +18,7 @@ export {
 };
 
 export { buildAPI, Getters, Logs, Sync } from "./state";
+export * from "./state/create-api";
 export { IsJsonRpcRequest } from './state/IsJsonRpcRequest';
 export { JsonRpcRequest, JsonRpcResponse } from './state/getter/types';
 export { MakeJsonRpcResponse } from './state/MakeJsonRpcResponse';

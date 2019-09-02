@@ -260,6 +260,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
+
   getSyncData = () => {
     return this.bindTo(Status.getSyncData)({});
   }
@@ -267,6 +268,14 @@ export class Augur<TProvider extends Provider = Provider> {
   getZeroXOrders = (params: Parameters<typeof ZeroXOrdersGetters.getZeroXOrders>[2]) => {
     delete params.sortBy;
     return this.bindTo(ZeroXOrdersGetters.getZeroXOrders)(params);
+  }
+
+  syncUserData = (account: string): void => {
+    Augur.connector.syncUserData(account);
+  }
+
+  setSigner = (signer: EthersSigner): void => {
+    this.dependencies.setSigner(signer);
   }
 
   getTradingHistory = this.bindTo(Trading.getTradingHistory);

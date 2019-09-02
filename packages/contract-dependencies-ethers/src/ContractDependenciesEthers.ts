@@ -44,7 +44,7 @@ export interface TransactionMetadata {
 
 export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   public readonly provider: EthersProvider;
-  public readonly signer?: EthersSigner;
+  public signer?: EthersSigner;
   public readonly address?: string;
 
   protected readonly abiCoder: ethers.utils.AbiCoder;
@@ -58,6 +58,10 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     this.signer = signer;
     this.address = address;
     this.abiCoder = new ethers.utils.AbiCoder();
+  }
+
+  public setSigner(signer: EthersSigner) {
+    this.signer = signer;
   }
 
   public transactionToEthersTransaction(transaction: Transaction<BigNumber>): Transaction<ethers.utils.BigNumber> {
@@ -135,7 +139,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     }
 
     if (this.address) return getAddress(this.address);
-    
+
     return undefined;
   }
 
