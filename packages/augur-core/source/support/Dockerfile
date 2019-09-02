@@ -15,6 +15,7 @@ RUN python3 -m venv /augur/venv && \
     source /augur/venv/bin/activate && \
     python -m pip install --no-cache-dir -r requirements.txt
 
+ENV PATH="${HOME}/.local/bin:${PATH}"
 
 RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
     curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/${SOLC_VERSION}/solc-static-linux && \
