@@ -7,7 +7,7 @@ import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-bo
 import { removeMarket } from 'modules/markets/actions/update-markets-data';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import makePath from 'modules/routes/helpers/make-path';
-import { MY_MARKETS, TRANSACTIONS } from 'modules/routes/constants/views';
+import { TRANSACTIONS } from 'modules/routes/constants/views';
 import loadCategories from 'modules/categories/actions/load-categories';
 import {
   loadMarketsInfo,
