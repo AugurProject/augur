@@ -1,8 +1,3 @@
-import {
-updateAuthStatus,
-IS_LOGGED,
-} from "modules/auth/actions/auth-status";
-import { loadAccountData } from "modules/auth/actions/load-account-data";
 import TrezorSigner from "modules/auth/helpers/trezor-signer";
 import { toChecksumAddress } from "ethereumjs-util";
 import { ACCOUNT_TYPES } from "modules/common/constants";
@@ -19,7 +14,7 @@ export default function loginWithTrezor(
 
     const loginAccount = {
       address,
-      displayAddress: toChecksumAddress(address),
+      mixedCaseAddress: toChecksumAddress(address),
       meta: {
         address,
         signer,
@@ -28,8 +23,7 @@ export default function loginWithTrezor(
       },
     };
 
-    await dispatch(updateSdk(loginAccount, undefined, null));
-    dispatch(updateAuthStatus(IS_LOGGED, true));
-    dispatch(loadAccountData(loginAccount));
+    await dispatch(updateSdk(loginAccount, undefined));
+
   };
 }
