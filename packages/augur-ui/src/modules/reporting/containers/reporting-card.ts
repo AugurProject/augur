@@ -13,12 +13,11 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	showReportingModal: (cb: NodeStyleCallback) =>
+	showReportingModal: () =>
     dispatch(
       updateModal({
         type: MODAL_REPORTING,
-        marketId: ownProps.marketId,
-        cb,
+        marketId: ownProps.marketId
       }),
     ),
 });
