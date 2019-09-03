@@ -5,7 +5,7 @@ import ReportingDispute from "modules/reporting/components/reporting-dispute/rep
 import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
 
 const mapStateToProps = state => ({
-  isConnected: state.auth.isConnected
+  isConnected: state.connection.isConnected
 });
 
 const mapDispatchToProps = dispatch => ({
