@@ -357,7 +357,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         <MarketLink id={id}>
           {description}
         </MarketLink>
-        {reportingState !=== REPORTING_STATE.OPEN_REPORTING &&
+        {reportingState !== REPORTING_STATE.OPEN_REPORTING &&
           <MarketProgress
             reportingState={reportingState}
             currentTime={currentAugurTimestamp}
