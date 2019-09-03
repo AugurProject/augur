@@ -160,6 +160,82 @@
   }
 }
 
+.DisputeWindowProgress {
+  background: @color-secondary-action;
+  border: 1px solid @color-primary-light;
+  border-radius: @border-radius-default;
+  height: 214px;
+  margin: auto;
+  padding: @size-24;
+  width: 340px;
+
+  > span {
+    border: 1px solid @color-primary-light;
+    height: @size-12;
+
+    > span:first-of-type {
+      background: @color-in-reporting;
+      height: @size-10;
+      position: relative;
+      top: 0;
+      width: var(--percent-done);
+    }
+  
+    > span:last-of-type {
+      background: transparent;
+      height: @size-10;
+      position: relative;
+      top: 0;
+      width: var(--percent-to-go);
+    }
+  
+    @media @breakpoint-mobile {
+      flex: 1;
+      flex-flow: row nowrap;
+      height: @size-12;
+      width: 100%;
+  
+      > span:first-of-type {
+        height: @size-10;
+        width: var(--percent-done);
+      }
+  
+      > span:last-of-type {
+        height: @size-10;
+        width: var(--percent-to-go);
+      }
+    }
+  }
+
+  > h4 {
+    .mono-10;
+
+    color: @color-tertiary-info-text;
+    text-align: center;
+    margin: auto;
+    text-transform: uppercase;
+  }
+
+  > h4:first-of-type {
+    color: @color-alternate-info-text;
+    text-align: left;
+  }
+
+  > p {
+    .mono-10;
+
+    color: @color-in-reporting;
+    text-align: center;
+  }
+
+  > p:first-of-type {
+    .text-12;
+    
+    color: @color-alternate-info-text;
+    text-align: left;
+  }
+}
+
 .open,
 .reported {
   .mono-10;
@@ -179,4 +255,3 @@
     color: @color-shadow-text;
   }
 }
-

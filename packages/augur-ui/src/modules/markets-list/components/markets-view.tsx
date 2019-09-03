@@ -10,6 +10,7 @@ import Styles from 'modules/markets-list/components/markets-view.styles.less';
 import { FilterTags } from 'modules/common/filter-tags';
 import { FilterNotice } from 'modules/common/filter-notice';
 import updateQuery from 'modules/routes/helpers/update-query';
+import { DisputeWindowProgress } from "modules/common/progress";
 
 const PAGINATION_COUNT = 10;
 
@@ -230,6 +231,12 @@ export default class MarketsView extends Component<
           removeFeeFilter={this.props.removeFeeFilter}
           removeLiquiditySpreadFilter={this.props.removeLiquiditySpreadFilter}
           updateQuery={(param, value) => updateQuery(param, value, this.props.location, this.props.history)}
+        />
+
+        <DisputeWindowProgress
+          startTime={Date.parse("September 1, 2019 05:33:00") / 1000}
+          endTime={Date.parse("September 8, 2019 05:33:00") / 1000}
+          currentTime={Date.now() / 1000}
         />
 
         <FilterNotice
