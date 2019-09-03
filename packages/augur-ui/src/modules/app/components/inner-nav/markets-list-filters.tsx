@@ -19,7 +19,7 @@ import updateQuery from 'modules/routes/helpers/update-query';
 interface MarketsListFiltersProps {
   maxFee: string;
   maxLiquiditySpread: string;
-  showInvalid: string;
+  includeInvalidMarkets: 'show' | 'hide';
   isSearching: boolean;
   updateMaxFee: Function;
   updateMaxSpread: Function;
@@ -55,7 +55,7 @@ export default class MarketsListFilters extends React.Component<
         selectedFee: filterOptions.maxFee || this.props.maxFee,
         selectedSpread: filterOptions.spread || this.props.maxLiquiditySpread,
         showInvalidDefault:
-          filterOptions.showInvalid || this.props.showInvalid,
+          filterOptions.showInvalid || this.props.includeInvalidMarkets,
       },
       () => {
         this.props.updateMaxFee(this.state.selectedFee);

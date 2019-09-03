@@ -425,7 +425,7 @@ export interface FilterSortOptions {
   marketSort: string;
   maxFee: string;
   maxLiquiditySpread: string;
-  includeInvalidMarkets: string;
+  includeInvalidMarkets: 'show' | 'hide';
   transactionPeriod: string;
   hasOrders: boolean;
 }
