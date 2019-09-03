@@ -11,7 +11,7 @@ import {
   TOTAL_FROZEN_FUNDS,
   REP_BALANCE,
   REP_STAKED,
-  TOTAL_ACCOUNT_VALUE_IN_ETH,
+  TOTAL_ACCOUNT_VALUE_IN_DAI,
 } from "modules/common/constants";
 import { SizeTypes } from "modules/types";
 
@@ -60,7 +60,7 @@ const Funds = (props: FundsProps) => {
 
   return (
     <section className={Styles.Funds}>
-      <div>{TOTAL_ACCOUNT_VALUE_IN_ETH}</div>
+      <div>{TOTAL_ACCOUNT_VALUE_IN_DAI}</div>
       <MovementLabel
         showColors
         size={SizeTypes.LARGE}

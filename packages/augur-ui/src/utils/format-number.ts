@@ -136,7 +136,7 @@ export function formatDai(num: NumStrBigNumber, opts: FormattedNumberOptions = {
 export function formatRep(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
   return formatNumber(num, {
     decimals: 4,
-    decimalsRounded: 0,
+    decimalsRounded: 4,
     denomination: " REP",
     positiveSign: false,
     zeroStyled: false,
@@ -226,11 +226,12 @@ export function formatAttoRep(num: NumStrBigNumber, opts: FormattedNumberOptions
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    {  
+    {
+      ...opts,
       decimals: 4,
       decimalsRounded: 4,
       blankZero: false,
-      ...opts 
+      denomination: " REP",
     },
   );
 }
@@ -247,11 +248,11 @@ export function formatAttoEth(num: NumStrBigNumber, opts: FormattedNumberOptions
     createBigNumber(num.toString())
       .dividedBy(ETHER)
       .toNumber(),
-    {  
+    {
       decimals: ETHER_NUMBER_OF_DECIMALS,
       decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
-      blankZero: false, 
-      ...opts 
+      blankZero: false,
+      ...opts
     },
   );
 }

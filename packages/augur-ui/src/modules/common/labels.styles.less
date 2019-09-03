@@ -16,10 +16,30 @@
     color: inherit;
     cursor: inherit;
     margin: 0;
+
+    > span {
+      color: @color-tertiary-info-text;
+    }
+  }
+}
+
+.SizableValueLabel {
+  &.Large {
+    .mono-14-bold
+  }
+
+  &.Small {
+    .mono-11
+  }
+
+  &.Highlight {
+    color: @color-alternate-info-text;
   }
 }
 
 .TextLabel {
+  &:extend(.caps--small);
+
   color: inherit;
   z-index: @default-z-index;
 
@@ -352,6 +372,13 @@ div.LinearPropertyViewTransaction {
 
     @media @breakpoint-mobile {
       .text-10;
+    }
+  }
+
+  &.Larger {
+    > span:nth-of-type(2) {
+      .mono-24;
+
     }
   }
 }

@@ -17,6 +17,9 @@ const DEFAULT_STATE: LoginAccount = {
     disputing: null,
     pariticipationTokens: null,
   },
+  tradingPositionsTotal: {
+    unrealizedRevenue24hChangePercent: "0",
+  }
 };
 
 export default function(

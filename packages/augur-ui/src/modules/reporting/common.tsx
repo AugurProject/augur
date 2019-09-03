@@ -2,12 +2,28 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { calculatePosition } from 'modules/market-cards/common';
 import { createBigNumber } from 'utils/create-big-number';
-import { ZERO } from 'modules/common/constants';
+import {
+  ZERO,
+  TOTAL_ACCOUNT_VALUE_IN_REP,
+  ALL_TIME_PROFIT_AND_LOSS_REP,
+  MY_TOTOL_REP_STAKED,
+} from 'modules/common/constants';
 import { FormattedNumber, SizeTypes } from 'modules/types';
 import ReactTooltip from 'react-tooltip';
-import { SecondaryButton, CancelTextButton } from 'modules/common/buttons';
+import {
+  SecondaryButton,
+  CancelTextButton,
+  PrimaryButton,
+} from 'modules/common/buttons';
 import { TextInput } from 'modules/common/form';
-import { LinearPropertyLabel, MovementLabel } from 'modules/common/labels';
+import {
+  LinearPropertyLabel,
+  MovementLabel,
+  TextLabel,
+  ValueLabel,
+  RepBalance,
+  SizableValueLabel,
+} from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -67,7 +83,11 @@ export interface SubheadersProps {
 }
 
 export const Subheaders = (props: SubheadersProps) => (
-  <div className={classNames(Styles.ReportingSubheaders, {[Styles.Small]: props.small})}>
+  <div
+    className={classNames(Styles.ReportingSubheaders, {
+      [Styles.Small]: props.small,
+    })}
+  >
     <span>{props.header}</span>
     <p>
       <span>{props.subheader}</span>
@@ -178,8 +198,38 @@ interface UserRepDisplayProps {
   disputingAmountFormatted: FormattedNumber;
   reportingAmountFormatted: FormattedNumber;
   participationAmountFormatted: FormattedNumber;
-  action: ButtonActionType;
+  repTotalAmountStakedFormatted: FormattedNumber;
+  openGetRepModal: Function;
 }
+
+interface AllTimeProfitLossProps {
+  repProfitAmountFormatted: FormattedNumber;
+  repProfitLossPercentageFormatted: FormattedNumber;
+}
+
+const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
+  <div className={Styles.AllTimeProfitLoss}>
+    {ALL_TIME_PROFIT_AND_LOSS_REP}
+    <div>
+      <SizableValueLabel
+        value={props.repProfitAmountFormatted}
+        showDenomination
+        showEmptyDash={false}
+        highlight
+        size={SizeTypes.SMALL}
+      />
+      <MovementLabel
+        showColors
+        size={SizeTypes.SMALL}
+        showPlusMinus
+        showPercent
+        showIcon
+        showBrackets={true}
+        value={Number(props.repProfitLossPercentageFormatted.roundedValue)}
+      />
+    </div>
+  </div>
+);
 
 export const UserRepDisplay = (props: UserRepDisplayProps) => (
   <div
@@ -188,30 +238,53 @@ export const UserRepDisplay = (props: UserRepDisplayProps) => (
     })}
   >
     <>
-      <MovementLabel
-        showColors
-        size={SizeTypes.LARGE}
-        showPlusMinus
-        showPercent
-        showIcon
-        showBrackets={true}
-        value={Number(props.repProfitLossPercentageFormatted.roundedValue)}
-      />
-      <LinearPropertyLabel
-        key="Disputing"
-        label="Disputing"
-        value={'0.0000 REP'}
-      />
-      <LinearPropertyLabel
-        key="reporting"
-        label="Reporting"
-        value={'0.0000 REP'}
-      />
-      <LinearPropertyLabel
-        key="participation"
-        label="Participation Tokens"
-        value={'0.0000 REP'}
-      />
+      <RepBalance alternate larger rep={props.repBalanceFormatted.formatted} />
+      <div>
+        <AllTimeProfitLoss
+          repProfitAmountFormatted={props.repProfitAmountFormatted}
+          repProfitLossPercentageFormatted={props.repProfitLossPercentageFormatted}
+        />
+        <PrimaryButton
+          action={props.openGetRepModal}
+          text={'Get REP'}
+          id="get-rep"
+        />
+      </div>
+      <div />
+      <div>
+        <span>{MY_TOTOL_REP_STAKED}</span>
+        <SizableValueLabel
+          value={props.repTotalAmountStakedFormatted}
+          keyId={'rep-staked'}
+          showDenomination
+          showEmptyDash={false}
+          highlight
+          size={SizeTypes.LARGE}
+        />
+      </div>
+      <div>
+        <LinearPropertyLabel
+          key="Disputing"
+          label="Disputing"
+          value={props.disputingAmountFormatted}
+          showDenomination
+          useValueLabel
+        />
+        <LinearPropertyLabel
+          key="reporting"
+          label="Reporting"
+          value={props.reportingAmountFormatted}
+          showDenomination
+          useValueLabel
+        />
+        <LinearPropertyLabel
+          key="participation"
+          label="Participation Tokens"
+          value={props.participationAmountFormatted}
+          showDenomination
+          useValueLabel
+        />
+      </div>
     </>
   </div>
 );

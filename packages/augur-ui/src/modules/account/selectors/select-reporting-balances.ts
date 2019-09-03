@@ -8,7 +8,7 @@ import { AccountBalances } from 'modules/types';
 import {
   formatAttoRep,
   formatPercent,
-  formatNumber,
+  formatRep
 } from 'utils/format-number';
 import { ZERO } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
@@ -27,25 +27,29 @@ export const selectReportingBalances = createSelector(
       profitAmount,
       profitLoss,
     } = accountReporting;
-    const repBalanceFormatted = formatAttoRep(accountBalances.rep);
+    const repBalanceFormatted = formatRep(accountBalances.rep);
     const repProfitLossPercentageFormatted = formatPercent(
       createBigNumber(profitLoss || ZERO).times(100),
       { decimalsRounded: 2 }
     );
     const repProfitAmountFormatted = formatAttoRep(profitAmount || ZERO);
-    let participationAmountFormatted = formatNumber(ZERO);
-    let reportingAmountFormatted = formatNumber(ZERO);
-    let disputingAmountFormatted = formatNumber(ZERO);
+    let participationAmountFormatted = formatAttoRep(ZERO);
+    let reportingAmountFormatted = formatAttoRep(ZERO);
+    let disputingAmountFormatted = formatAttoRep(ZERO);
 
     if (pariticipationTokens && pariticipationTokens.totalAmount)
-      participationAmountFormatted = formatNumber(
+      participationAmountFormatted = formatAttoRep(
         pariticipationTokens.totalAmount
       );
     if (reporting && reporting.totalAmount)
-      reportingAmountFormatted = formatNumber(reporting.totalAmount);
+      reportingAmountFormatted = formatAttoRep(reporting.totalAmount);
     if (disputing && disputing.totalAmount)
-      disputingAmountFormatted = formatNumber(disputing.totalAmount);
+      disputingAmountFormatted = formatAttoRep(disputing.totalAmount);
 
+    const repTotalAmountStaked = createBigNumber(participationAmountFormatted.value)
+      .plus(createBigNumber(reportingAmountFormatted.value))
+      .plus(createBigNumber(disputingAmountFormatted.value));
+    const repTotalAmountStakedFormatted = formatRep(repTotalAmountStaked);
     return {
       repBalanceFormatted,
       repProfitLossPercentageFormatted,
@@ -53,20 +57,22 @@ export const selectReportingBalances = createSelector(
       disputingAmountFormatted,
       reportingAmountFormatted,
       participationAmountFormatted,
+      repTotalAmountStakedFormatted
     };
   }
 );
 
 export const selectDefaultReportingBalances = () => {
-  const repBalanceFormatted = formatNumber(ZERO);
+  const repBalanceFormatted = formatAttoRep(ZERO);
   const repProfitLossPercentageFormatted = formatPercent(
     createBigNumber(ZERO),
     { decimalsRounded: 2 }
   );
-  const repProfitAmountFormatted = formatNumber(ZERO);
-  let participationAmountFormatted = formatNumber(ZERO);
-  let reportingAmountFormatted = formatNumber(ZERO);
-  let disputingAmountFormatted = formatNumber(ZERO);
+  const repProfitAmountFormatted = formatAttoRep(ZERO);
+  const participationAmountFormatted = formatAttoRep(ZERO);
+  const reportingAmountFormatted = formatAttoRep(ZERO);
+  const disputingAmountFormatted = formatAttoRep(ZERO);
+  const repTotalAmountStakedFormatted = formatAttoRep(ZERO);
 
   return {
     repBalanceFormatted,
@@ -75,5 +81,6 @@ export const selectDefaultReportingBalances = () => {
     disputingAmountFormatted,
     reportingAmountFormatted,
     participationAmountFormatted,
+    repTotalAmountStakedFormatted,
   };
 };

@@ -1,92 +1,92 @@
 @import (reference) '~assets/styles/shared';
 
 .PreFilledStake {
-	background: @color-tertiary-background;
-	border-radius: @size-8;
-	border: 1px solid @color-primary-alternate-two;
-	display: flex;
-	padding: @size-20;
-	width: 574px;
-    flex-direction: column;
+  background: @color-tertiary-background;
+  border-radius: @size-8;
+  border: 1px solid @color-primary-alternate-two;
+  display: flex;
+  padding: @size-20;
+  width: 574px;
+  flex-direction: column;
 
-	> span:first-of-type {
-		.text-14-medium;
+  > span:first-of-type {
+    .text-14-medium;
 
-		color: @color-negative;
-		text-transform: capitalize;
-	}
+    color: @color-negative;
+    text-transform: capitalize;
+  }
 
-	> span:nth-of-type(2) {
-		.text-12;
+  > span:nth-of-type(2) {
+    .text-12;
 
-		color: @color-tertiary-info-text;
-		margin-bottom: @size-12;
-		margin-top: @size-8;
-	}
+    color: @color-tertiary-info-text;
+    margin-bottom: @size-12;
+    margin-top: @size-8;
+  }
 
-	> button {
-		max-width: 180px;
-	}
+  > button {
+    max-width: 180px;
+  }
 
-	> div:first-of-type {
-		margin-bottom: @size-8;
-		max-width: 340px;
-	}
+  > div:first-of-type {
+    margin-bottom: @size-8;
+    max-width: 340px;
+  }
 
-	> div:nth-of-type(2) {
-		display: flex;
-		max-width: 340px;
-    	justify-content: space-between;
-	}
+  > div:nth-of-type(2) {
+    display: flex;
+    max-width: 340px;
+    justify-content: space-between;
+  }
 
-	> span:nth-of-type(3) {
-		.text-14-medium;
+  > span:nth-of-type(3) {
+    .text-14-medium;
 
-		color: @color-alternate-info-text;
-		margin-bottom: @size-10;
-		margin-top: @size-16;
-	}
+    color: @color-alternate-info-text;
+    margin-bottom: @size-10;
+    margin-top: @size-16;
+  }
 }
 
 .ReportingPercent {
-	background: @color-primary-background;
-	height: @size-12;
-	border: @size-1 solid @color-primary-alternate;
-	border-radius: 100px;
-	display: flex;
+  background: @color-primary-background;
+  height: @size-12;
+  border: @size-1 solid @color-primary-alternate;
+  border-radius: 100px;
+  display: flex;
 
-	> span {
-		height: @size-10;
+  > span {
+    height: @size-10;
 
-		&:first-of-type {
-			background: fade(@color-faded-bright, 50);
-			border-top-left-radius: 100px;
-    		border-bottom-left-radius: 100px;
-		}
+    &:first-of-type {
+      background: fade(@color-faded-bright, 50);
+      border-top-left-radius: 100px;
+      border-bottom-left-radius: 100px;
+    }
 
-		&:nth-of-type(2) {
-			background: @color-faded-bright;
-		}
+    &:nth-of-type(2) {
+      background: @color-faded-bright;
+    }
 
-		&:nth-of-type(3) {
-			background: repeating-linear-gradient(
-			  -45deg,
-			  @color-faded-bright,
-			  @color-faded-bright @size-1,
-			  @color-primary-background @size-2,
-			  @color-primary-background @size-4
-			);
-		}
+    &:nth-of-type(3) {
+      background: repeating-linear-gradient(
+        -45deg,
+        @color-faded-bright,
+        @color-faded-bright @size-1,
+        @color-primary-background @size-2,
+        @color-primary-background @size-4
+      );
+    }
 
-		&:last-of-type {
-			border-top-right-radius: 100px;
-    		border-bottom-right-radius: 100px;
-		}
-	}
+    &:last-of-type {
+      border-top-right-radius: 100px;
+      border-bottom-right-radius: 100px;
+    }
+  }
 
-	&.invalid {
-		background-color: fade(@color-invalid, 50);
-	}
+  &.invalid {
+    background-color: fade(@color-invalid, 50);
+  }
 }
 
 div.ReportingSubheaders {
@@ -110,9 +110,9 @@ div.ReportingSubheaders {
   }
 
   &.Small {
-  	> p > span {
-  		.text-12;
-  	}
+    > p > span {
+      .text-12;
+    }
   }
 }
 
@@ -130,11 +130,60 @@ div.ReportingSubheaders {
 }
 
 .UserRepDisplay {
+  .mono-10;
 
   background-color: @color-secondary-action;
-  border: 1px solid #443B59;
+  border: 1px solid @color-primary-light;
+  color: @color-tertiary-info-text;
+  display: flex;
+  flex-direction: column;
+  max-width: 440px;
+  padding: @size-32;
+  text-transform: uppercase;
+
+  @media @breakpoint-mobile {
+    max-width: unset;
+  }
 
   &.loggedOut {
     background: fade(@color-secondary-action, 80%);
+  }
+
+  > div {
+    &:not(:first-of-type) {
+      margin-top: @size-16;
+    }
+
+    &:nth-of-type(2) {
+      align-content: flex-end;
+      display: flex;
+      min-height: @size-24;
+      justify-content: space-between;
+    }
+
+    &:nth-of-type(3) {
+      border-bottom: 1px solid @color-primary-alternate;
+      left: 0;
+      width: @size-40;
+    }
+  }
+}
+
+.AllTimeProfitLoss {
+  .mono-10;
+
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+
+  > div:first-of-type {
+    display: flex;
+    padding: @size-4 0;
+
+    > span {
+      .mono-11;
+
+    }
   }
 }
