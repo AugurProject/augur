@@ -59,7 +59,6 @@ interface MarketsViewState {
   limit: number;
   offset: number;
   showPagination: boolean;
-  firstLoad: boolean;
 }
 
 export default class MarketsView extends Component<
@@ -87,7 +86,6 @@ export default class MarketsView extends Component<
       limit: PAGINATION_COUNT,
       offset: 1,
       showPagination: false,
-      firstLoad: true,
     };
 
     this.setPageNumber = this.setPageNumber.bind(this);
@@ -182,16 +180,13 @@ export default class MarketsView extends Component<
       maxFee,
       maxLiquiditySpread,
       includeInvalidMarkets,
-      isSearching,
       marketFilter,
     } = this.props;
 
-    const { firstLoad, sort, limit, offset } = this.state;
-
-    if (!firstLoad && isSearching) return null; // Search in Progress
+    const { sort, limit, offset } = this.state;
 
     this.props.setLoadMarketsPending(true);
-    this.setState({ firstLoad: false, isSearchingMarkets: true });
+    this.setState({ isSearchingMarkets: true });
     this.loadMarketsByFilter(
       {
         categories: selectedCategories ? selectedCategories : [],
