@@ -357,12 +357,14 @@ export const ReportingCard = (props: ReportingCardProps) => {
         <MarketLink id={id}>
           {description}
         </MarketLink>
-        <MarketProgress
-          reportingState={reportingState}
-          currentTime={currentAugurTimestamp}
-          endTimeFormatted={endTimeFormatted}
-          reportingWindowEndtime={reportingWindowStatsEndTime}
-        />
+        {reportingState !=== REPORTING_STATE.OPEN_REPORTING &&
+          <MarketProgress
+            reportingState={reportingState}
+            currentTime={currentAugurTimestamp}
+            endTimeFormatted={endTimeFormatted}
+            reportingWindowEndtime={reportingWindowStatsEndTime}
+          />
+        }
       </div>
       <div data-tip data-for='tooltip--preReporting'>
         <PrimaryButton text="Report" action={null} disabled={preReporting} />
