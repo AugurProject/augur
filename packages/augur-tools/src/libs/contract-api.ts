@@ -69,7 +69,7 @@ export class ContractAPI {
     const currentTimestamp = (await time.getTimestamp_()).toNumber();
 
     return this.createYesNoMarket({
-      endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
+      endTime: new BigNumber(currentTimestamp + 29 * 24 * 60 * 60),
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.publicKey,

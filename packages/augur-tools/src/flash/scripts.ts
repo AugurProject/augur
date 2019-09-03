@@ -637,7 +637,9 @@ export function addScripts(flash: FlashSession) {
 
       const DAY = 86400 * 1000;
       const MAX_DISPUTES = 20;
-      const SOME_REP = new BigNumber(1e5);
+      const SOME_REP = new BigNumber(1e15);
+      const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
+      const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
 
       await user.repFaucet(new BigNumber(1e16));
 
@@ -646,15 +648,14 @@ export function addScripts(flash: FlashSession) {
         market = user.augur.contracts.marketFromAddress(marketId);
       } else {
         market = await user.createReasonableYesNoMarket();
+        this.log(`Created market ${market.address}`);
       }
 
       const endTime = await market.getEndTime_();
-
       this.log(`Market End Time: ${endTime}`);
+
       // Go forward in time, to enter the dispute window.
-      await user.setTimestamp(new BigNumber(endTime.plus(DAY * 7)));
-      const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
-      const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
+      await user.setTimestamp(new BigNumber(endTime.plus(DAY)));
 
       await user.doInitialReport(market, payoutNumerators);
 
