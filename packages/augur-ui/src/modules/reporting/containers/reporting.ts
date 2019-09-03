@@ -1,26 +1,20 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
-import ReportingReport from "modules/reporting/components/reporting-report/reporting-report";
+import ReportingReportMarkets from "modules/reporting/components/reporting-report-markets/reporting-report-markets";
+import { updateModal } from "modules/modal/actions/update-modal";
+import { MODAL_DR_QUICK_GUIDE } from "modules/common/constants";
 
 const mapStateToProps = state => ({});
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  openReportingModal: () => dispatch(updateModal({ type: MODAL_DR_QUICK_GUIDE })),
+});
 
-const mergeProps = (sP, dP, oP) => {
-  return {
-    ...oP,
-    ...sP,
-    ...dP
-  };
-};
-
-const Reporting = withRouter(
+const ReportingReportingContainer = withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(ReportingReport)
+    mapDispatchToProps
+  )(ReportingReportMarkets)
 );
 
-export default Reporting;
+export default ReportingReportingContainer;

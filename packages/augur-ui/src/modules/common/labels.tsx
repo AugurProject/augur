@@ -128,6 +128,11 @@ export interface ValueLabelProps {
   showEmptyDash: boolean;
 }
 
+interface SizableValueLabelProps extends ValueLabelProps {
+  size: SizeTypes;
+  highlight?: boolean;
+}
+
 interface HoverValueLabelState {
   hover: boolean;
 }
@@ -146,6 +151,7 @@ export interface TextLabelState {
 export interface RepBalanceProps {
   rep: string;
   alternate?: boolean;
+  larger?: boolean;
 }
 
 interface ButtonObj {
@@ -246,6 +252,23 @@ export function formatExpandedValue(
   };
 }
 
+export const SizableValueLabel = (props: SizableValueLabelProps) => (
+  <span
+    className={classNames(Styles.SizableValueLabel, {
+      [Styles.Large]: props.size === SizeTypes.LARGE,
+      [Styles.Small]: props.size === SizeTypes.SMALL,
+      [Styles.Highlight]: props.highlight,
+    })}
+  >
+    <ValueLabel
+      value={props.value}
+      keyId={props.keyId}
+      showDenomination={props.showDenomination}
+      showEmptyDash={props.showEmptyDash}
+    />
+  </span>
+);
+
 export const ValueLabel = (props: ValueLabelProps) => {
   if (!props.value || props.value === null)
     return props.showEmptyDash ? <span>&#8213;</span> : <span />;
@@ -269,7 +292,8 @@ export const ValueLabel = (props: ValueLabelProps) => {
         data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
         data-iscapture="true"
       >
-        {`${frontFacingLabel}${postfix}${denominationLabel}`}
+        {`${frontFacingLabel}${postfix}`}
+        <span>{denominationLabel}</span>
       </label>
       {postfix.length !== 0 && (
         <ReactTooltip
@@ -542,7 +566,6 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
 export const InReportingLabel = (props: InReportingLabelProps) => {
   const {
     mini,
-    alternate,
     reportingState,
     disputeInfo,
     endTimeFormatted,
@@ -789,8 +812,13 @@ export const PillLabel = ({ label, hideOnMobile }: PillLabelProps) => (
 );
 
 export const RepBalance = (props: RepBalanceProps) => (
-  <div className={classNames(Styles.RepBalance, {[Styles.Alternate]: props.alternate})}>
-    <span>my rep balance</span>
+  <div
+    className={classNames(Styles.RepBalance, {
+      [Styles.Alternate]: props.alternate,
+      [Styles.Larger]: props.larger,
+    })}
+  >
+    <span>{constants.TOTAL_ACCOUNT_VALUE_IN_REP}</span>
     <span>{props.rep}</span>
     <span>rep</span>
   </div>
@@ -945,11 +973,16 @@ interface BulkTxLabelProps {
   buttonName: string;
   className?: string;
 }
-export const BulkTxLabel = ({ count, needsApproval, buttonName, className }: BulkTxLabelProps) =>
-  (count > 1 || needsApproval) ? (
+export const BulkTxLabel = ({
+  count,
+  needsApproval,
+  buttonName,
+  className,
+}: BulkTxLabelProps) =>
+  count > 1 || needsApproval ? (
     <span
       className={classNames(Styles.BulkTxLabel, className)}
-    >{`${buttonName} requires ${count} transaction${count > 1? `s` : ``}${
+    >{`${buttonName} requires ${count} transaction${count > 1 ? `s` : ``}${
       needsApproval ? `, and 1 approval` : ''
     }`}</span>
   ) : null;
