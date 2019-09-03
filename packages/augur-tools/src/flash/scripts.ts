@@ -652,7 +652,10 @@ export function addScripts(flash: FlashSession) {
       // Get past the market time, into when we accept reporting.
       await user.setTimestamp((await market.getEndTime_()).plus(1));
       // Do the initial report, creating the first dispute window.
+
+      console.log('D0', user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_()).address);
       await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
+      console.log('D1', user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_()).address);
 
       for (let i = 0; i < MAX_DISPUTES; i++) {
         if (await market.getForkingMarket_() !== NULL_ADDRESS) {
@@ -660,19 +663,28 @@ export function addScripts(flash: FlashSession) {
           break;
         }
 
-        const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
-        console.log(`num participants: ${await market.getNumParticipants_()}`);
-        console.log(new Date((await disputeWindow.getStartTime_()).times(1000).toNumber()));
-        console.log(`fork attempt ${i} on ${disputeWindow.address}`);
-        // const disputeWindowStartTime = await disputeWindow.getEndTime_();
-        // console.log(`dispute window "start" time: ${disputeWindowStartTime}`);
-        // await user.setTimestamp(disputeWindowStartTime.plus(1));
+        console.log('D2', user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_()).address);
 
         if (i % 2 === 0) {
+          console.log('contribute to conflict');
           await user.contribute(market, conflictNumerators, SOME_REP);
         } else {
+          console.log('contribute to original');
           await user.contribute(market, payoutNumerators, SOME_REP);
         }
+
+        console.log('D3', user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_()).address);
+
+        const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
+        console.log(`fork attempt ${i} on ${disputeWindow.address}`);
+        console.log(`num participants: ${await market.getNumParticipants_()}`);
+        console.log(`participants stake: ${await market.getParticipantStake_()}`);
+        console.log('dispute window start time:', new Date((await disputeWindow.getStartTime_()).times(1000).toNumber()));
+        console.log('dispute window end time:', new Date((await disputeWindow.getEndTime_()).times(1000).toNumber()));
+        console.log('current time:', new Date((await user.getTimestamp()).times(1000).toNumber()));
+        const disputeWindowEndTime = await disputeWindow.getEndTime_();
+        await user.setTimestamp(disputeWindowEndTime.plus(1));
+        // await user.augur.contracts.universe.getOrCreateCurrentDisputeWindow(false);
       }
     },
   });
