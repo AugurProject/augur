@@ -145,8 +145,8 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       gasEstimates = await this.estimateTransactionDirectly(tx);
     }
 
-    const safeTxGas = gasEstimates.safeTxGas;
-    const baseGas = gasEstimates.baseGas;
+    const safeTxGas = gasEstimates.safeTxGas.multipliedBy(2);
+    const baseGas = gasEstimates.baseGas.multipliedBy(2);
     const gasPrice = this.gasPrice;
     const gasToken = this.gasToken;
     const refundReceiver = NULL_ADDRESS;
