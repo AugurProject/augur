@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { calculatePosition } from "modules/market-cards/common";
 import { createBigNumber } from 'utils/create-big-number';
-import { ZERO } from "modules/common/constants";
-import { FormattedNumber } from "modules/types";
+import { ZERO, MY_TOTOL_REP_STAKED, ALL_TIME_PROFIT_AND_LOSS_REP } from "modules/common/constants";
+import { FormattedNumber, SizeTypes } from "modules/types";
 import ReactTooltip from 'react-tooltip';
 import { SecondaryButton, CancelTextButton, PrimaryButton } from "modules/common/buttons";
 import { TextInput } from 'modules/common/form';
-import { LinearPropertyLabel } from "modules/common/labels";
+import { LinearPropertyLabel, SizableValueLabel, RepBalance, MovementLabel } from "modules/common/labels";
 import { ButtonActionType } from 'modules/types';
 import { formatRep } from "utils/format-number";
 
@@ -29,8 +29,8 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
 	return (
 	  <div className={Styles.ReportingPercent}>
 	  	<span style={{width: `${firstPercent}%`}}/>
-	  	<span 
-	  		style={{width: `${secondPercent}%`}}   
+	  	<span
+	  		style={{width: `${secondPercent}%`}}
 	  		data-tip
           	data-for='tooltip--existingStake'
         />
@@ -110,9 +110,9 @@ export class PreFilledStake extends Component<
           Pre-fund future dispute rounds to accelerate market resolution. Any contributed REP will automatically go toward disputing in favor of [insert outcome user is staking on], if it is no longer the tentative winning outcome in future rounds 
         </span>
         {!this.props.showInput && <SecondaryButton text="Add Pre-Filled Stake" action={this.changeShowInput} /> }
-        {this.props.showInput && 
+        {this.props.showInput &&
           <>
-            <TextInput 
+            <TextInput
               placeholder={"0.0000"}
               value={s.stake}
               onChange={(value) => this.changeStake(value)}
@@ -194,7 +194,7 @@ export interface DisputingBondsViewProps {
 export const DisputingBondsView = (props: DisputingBondsViewProps) => (
   <div className={classNames(Styles.DisputingBondsView, {[Styles.Scalar]: props.scalar})}>
     {props.scalar &&
-      <ScalarOutcomeView 
+      <ScalarOutcomeView
         rangeValue={props.rangeValue}
         changeRange={props.changeRange}
         scalarDenomination={props.scalarDenomination}
@@ -263,7 +263,7 @@ export class ReportingBondsView extends Component<
     return (
       <div className={classNames(Styles.ReportingBondsView, {[Styles.Scalar]: scalar})}>
         {scalar &&
-          <ScalarOutcomeView 
+          <ScalarOutcomeView
             rangeValue={rangeValue}
             changeRange={changeRange}
             scalarDenomination={scalarDenomination}
@@ -303,6 +303,101 @@ export class ReportingBondsView extends Component<
   }
 }
 
+interface UserRepDisplayProps {
+  isLoggedIn: boolean;
+  repBalanceFormatted: FormattedNumber;
+  repProfitLossPercentageFormatted: FormattedNumber;
+  repProfitAmountFormatted: FormattedNumber;
+  disputingAmountFormatted: FormattedNumber;
+  reportingAmountFormatted: FormattedNumber;
+  participationAmountFormatted: FormattedNumber;
+  repTotalAmountStakedFormatted: FormattedNumber;
+  openGetRepModal: Function;
+}
 
+interface AllTimeProfitLossProps {
+  repProfitAmountFormatted: FormattedNumber;
+  repProfitLossPercentageFormatted: FormattedNumber;
+}
 
+const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
+  <div className={Styles.AllTimeProfitLoss}>
+    {ALL_TIME_PROFIT_AND_LOSS_REP}
+    <div>
+      <SizableValueLabel
+        value={props.repProfitAmountFormatted}
+        showDenomination
+        showEmptyDash={false}
+        highlight
+        size={SizeTypes.SMALL}
+      />
+      <MovementLabel
+        showColors
+        size={SizeTypes.SMALL}
+        showPlusMinus
+        showPercent
+        showIcon
+        showBrackets={true}
+        value={Number(props.repProfitLossPercentageFormatted.roundedValue)}
+      />
+    </div>
+  </div>
+);
 
+export const UserRepDisplay = (props: UserRepDisplayProps) => (
+  <div
+    className={classNames(Styles.UserRepDisplay, {
+      [Styles.loggedOut]: props.isLoggedIn,
+    })}
+  >
+    <>
+      <RepBalance alternate larger rep={props.repBalanceFormatted.formatted} />
+      <div>
+        <AllTimeProfitLoss
+          repProfitAmountFormatted={props.repProfitAmountFormatted}
+          repProfitLossPercentageFormatted={props.repProfitLossPercentageFormatted}
+        />
+        <PrimaryButton
+          action={props.openGetRepModal}
+          text={'Get REP'}
+          id="get-rep"
+        />
+      </div>
+      <div />
+      <div>
+        <span>{MY_TOTOL_REP_STAKED}</span>
+        <SizableValueLabel
+          value={props.repTotalAmountStakedFormatted}
+          keyId={'rep-staked'}
+          showDenomination
+          showEmptyDash={false}
+          highlight
+          size={SizeTypes.LARGE}
+        />
+      </div>
+      <div>
+        <LinearPropertyLabel
+          key="Disputing"
+          label="Disputing"
+          value={props.disputingAmountFormatted}
+          showDenomination
+          useValueLabel
+        />
+        <LinearPropertyLabel
+          key="reporting"
+          label="Reporting"
+          value={props.reportingAmountFormatted}
+          showDenomination
+          useValueLabel
+        />
+        <LinearPropertyLabel
+          key="participation"
+          label="Participation Tokens"
+          value={props.participationAmountFormatted}
+          showDenomination
+          useValueLabel
+        />
+      </div>
+    </>
+  </div>
+);

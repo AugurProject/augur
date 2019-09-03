@@ -1,12 +1,13 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import { selectMarket } from "modules/markets/selectors/market";
 import MarketCard from "modules/market-cards/market-card";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
+import { hasStakeInMarket } from "modules/account/selectors/has-stake-in-market";
 
 const mapStateToProps = (state, ownProps) => {
   const positions = state.accountPositions;
+  const hasStaked = hasStakeInMarket(state, ownProps.market.marketId);
 
   return {
     hasPosition: !!positions[ownProps.market.marketId],
@@ -17,6 +18,7 @@ const mapStateToProps = (state, ownProps) => {
     reportingWindowStatsEndTime: state.reportingWindowStats.endTime,
     address: state.loginAccount.address,
     isFavorite: !!state.favorites[ownProps.market.marketId],
+    hasStaked
   };
 };
 
