@@ -135,6 +135,7 @@ export default class MarketsView extends Component<
     const {
       search,
       marketFilter,
+      maxFee,
       selectedCategories,
       maxLiquiditySpread,
       includeInvalidMarkets,
@@ -146,6 +147,7 @@ export default class MarketsView extends Component<
         selectedCategories !== prevProps.selectedCategories ||
         maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
         marketFilter !== prevProps.marketFilter ||
+        maxFee !== prevProps.maxFee ||
         includeInvalidMarkets !== prevProps.includeInvalidMarkets)
     ) {
       this.updateFilteredMarkets();
