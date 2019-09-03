@@ -27,7 +27,6 @@ export class ContractAPI {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true);
-
     return new ContractAPI(augur, provider, dependencies, account);
   }
 
@@ -283,8 +282,13 @@ export class ContractAPI {
   }
 
   async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
-    await this.repFaucet(amount.times(1e9)); // make sure you have the REP you're trying to contribute
-    await market.contribute(payoutNumerators, amount, description);
+    try {
+      await this.repFaucet(amount.times(1e23)); // make sure you have the REP you're trying to contribute
+      // await this.repFaucet(amount.times(1e9)); // make sure you have the REP you're trying to contribute
+      await market.contribute(payoutNumerators, amount, description);
+    } catch(err) {
+      console.log('DAB', payoutNumerators, amount)
+    }
   }
 
   async contributeToTentative(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {

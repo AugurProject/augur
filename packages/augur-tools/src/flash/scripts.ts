@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH } from '../constants';
+import { _1_ETH, NULL_ADDRESS } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -21,6 +21,9 @@ import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
 } from '@augurproject/sdk';
+import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
+import _ from 'lodash';
+import { ContractAPI } from '..';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -30,29 +33,30 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'account',
         abbr: 'a',
-        description: `account address to connect with, if no address provided contract owner is used`,
+        description: 'account address to connect with, if no address provided contract owner is used',
       },
       {
         name: 'network',
         abbr: 'n',
-        description: `Which network to connect to. Defaults to "environment" aka local node.`,
+        description: 'Which network to connect to. Defaults to "environment" aka local node.',
       },
       {
         name: 'useSdk',
         abbr: 'u',
-        description: `a few scripts need sdk, -u to wire up sdk`,
+        description: 'a few scripts need sdk, -u to wire up sdk',
         flag: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
       const account = args.account as string;
+      const useSdk = args.useSdk as boolean;
       if (account) flash.account = account;
-      const networkConfiguration = NetworkConfiguration.create(network);
-      flash.provider = this.makeProvider(networkConfiguration);
+      this.network = NetworkConfiguration.create(network);
+      flash.provider = this.makeProvider(this.network);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = Addresses[networkId];
-      await flash.ensureUser(networkConfiguration, !!args.useSdk);
+      await flash.ensureUser(this.network, useSdk);
     },
   });
 
@@ -313,13 +317,13 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'timestamp',
         abbr: 't',
-        description: `Uses Moment's parser but also accepts millisecond unix epoch time. See https://momentjs.com/docs/#/parsing/string/`,
+        description: "Uses Moment's parser but also accepts millisecond unix epoch time. See https://momentjs.com/docs/#/parsing/string/",
         required: true,
       },
       {
         name: 'format',
         abbr: 'f',
-        description: `Lets you specify the format of --timestamp. See https://momentjs.com/docs/#/parsing/string-format/`,
+        description: 'Lets you specify the format of --timestamp. See https://momentjs.com/docs/#/parsing/string-format/',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -345,7 +349,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'count',
         abbr: 'c',
-        description: `Defaults to seconds. Use "y", "M", "w", "d", "h", or "m" for longer times. ex: "2w" is 2 weeks.`,
+        description: 'Defaults to seconds. Use "y", "M", "w", "d", "h", or "m" for longer times. ex: "2w" is 2 weeks.',
         required: true,
       },
     ],
@@ -423,8 +427,9 @@ export function addScripts(flash: FlashSession) {
           .multipliedBy(QUINTILLION)
           .toFixed();
       }
-      if (!this.usingSdk)
+      if (!this.usingSdk) {
         this.log('This script needs sdk, make sure to connect with -u flag');
+      }
       if (!this.sdkReady) this.log("SDK hasn't fully syncd, need to wait");
 
       const market: ContractInterfaces.Market = await user.getMarketContract(
@@ -493,12 +498,14 @@ export function addScripts(flash: FlashSession) {
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
-      if (!this.usingSdk)
+      if (!this.usingSdk) {
         return this.log(
           'This script needs sdk, make sure to connect with -u flag'
         );
-      if (!this.sdkReady)
+      }
+      if (!this.sdkReady) {
         return this.log("SDK hasn't fully syncd, need to wait");
+      }
 
       const market: ContractInterfaces.Market = await user.getMarketContract(
         marketId
@@ -562,12 +569,14 @@ export function addScripts(flash: FlashSession) {
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
-      if (!this.usingSdk)
+      if (!this.usingSdk) {
         return this.log(
           'This script needs sdk, make sure to connect with -u flag'
         );
-      if (!this.sdkReady)
+      }
+      if (!this.sdkReady) {
         return this.log("SDK hasn't fully syncd, need to wait");
+      }
 
       const market: ContractInterfaces.Market = await user.getMarketContract(
         marketId
@@ -611,4 +620,127 @@ export function addScripts(flash: FlashSession) {
       await user.finalizeMarket(market);
     },
   });
+
+  flash.addScript({
+    name: 'fork',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'yes/no market to fork. defaults to making one',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser(this.network, true);
+      const marketId = args.marketId as string;
+
+      const DAY = 86400 * 1000;
+      const MAX_DISPUTES = 20;
+      const SOME_REP = new BigNumber(1e5);
+
+      await user.repFaucet(new BigNumber(1e16));
+
+      let market: ContractInterfaces.Market;
+      if (marketId !== null) {
+        market = user.augur.contracts.marketFromAddress(marketId);
+      } else {
+        market = await user.createReasonableYesNoMarket();
+      }
+
+      const endTime = await market.getEndTime_();
+
+      this.log(`Market End Time: ${endTime}`);
+      // Go forward in time, to enter the dispute window.
+      await user.setTimestamp(new BigNumber(endTime.plus(DAY * 7)));
+      const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
+      const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
+
+      await user.doInitialReport(market, payoutNumerators);
+
+      for (let i = 0; i < MAX_DISPUTES; i++) {
+        if (await market.getForkingMarket_() !== NULL_ADDRESS) {
+          this.log('Successfully Forked');
+          break;
+        }
+        console.log(`fork attempt ${i}`);
+        const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
+        const disputeWindowStartTime = await disputeWindow.getStartTime_();
+        await user.setTimestamp(disputeWindowStartTime.plus(1));
+        await user.contribute(market, conflictNumerators, SOME_REP);
+      }
+
+      // await goToFork(user, marketId, makeConflictingPayoutNumerators(payoutNumerators), stopsBefore, 3);
+    },
+  });
 }
+//
+// function getPayoutNumerators(market: MarketInfo, selectedOutcome, asPrice) {
+//   if (selectedOutcome.toString().indexOf(',') !== -1) {
+//     const values = selectedOutcome.split(',').map((x) => new BigNumber(x));
+//     if (values.length !== market.numOutcomes){
+//       throw new Error(`numTicks array needs ${market.numOutcomes} values, you provides ${values.length}`);
+//     }
+//     return values;
+//   }
+//   const maxPrice = new BigNumber(market.maxPrice);
+//   const minPrice = new BigNumber(market.minPrice);
+//   const numTicks = new BigNumber(market.numTicks);
+//   const numOutcomes = market.numOutcomes;
+//
+//   if (!asPrice && (selectedOutcome >= numOutcomes || selectedOutcome < 0)){
+//     throw new Error('selected outcome not as value is not valid index');
+//   }
+//
+//   const payoutNumerators = _.range(numOutcomes).map(() => new BigNumber(0));
+//   const isScalar = market.marketType === 'scalar';
+//
+//   if (isScalar && asPrice) {
+//     // selectedOutcome must be a BN as string
+//     const priceRange = maxPrice.minus(minPrice);
+//     selectedOutcome = selectedOutcome.replace(/"/g, '');
+//     const reportNormalizedToZero = new BigNumber(selectedOutcome).minus(minPrice);
+//     const longPayout = reportNormalizedToZero.times(numTicks).dividedBy(priceRange);
+//     const shortPayout = numTicks.minus(longPayout);
+//     payoutNumerators[1] = shortPayout;
+//     payoutNumerators[2] = longPayout;
+//   } else {
+//     // for yesNo and categorical the selected outcome is outcome.id and must be a number
+//     payoutNumerators[selectedOutcome] = numTicks;
+//   }
+//
+//   return payoutNumerators;
+// }
+//
+// async function goToFork(user: ContractAPI, marketId: string, payoutNumerators: BigNumber[], stopsBefore: number, left: number) {
+//   // if (left < 0) return '';
+//   // const market = user.augur.contracts.marketFromAddress(marketId);
+//   // const forkingMarket = await market.getForkingMarket_();
+//   // if (forkingMarket !== NULL_ADDRESS) {
+//   //   console.log('SAVAGE', 1.1);
+//   //   return 'Successfully Forked';
+//   // }
+//   // const numParticipants = await market.getNumParticipants_().then((bn) => bn.toNumber());
+//   // if (stopsBefore && numParticipants === (20 - stopsBefore)) {
+//   //   console.log('SAVAGE', 3.1);
+//   //   return 'Successfully got to pre-forking state';
+//   // }
+//   // const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
+//   // const disputeWindowStartTime = await disputeWindow.getStartTime_();
+//   // // await user.setTimestamp(disputeWindowStartTime.plus(1));
+//   // console.log(disputeWindow.address);
+//   // console.log((await user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_())).address);
+//   // console.log(await disputeWindow.validityBondTotal_());
+//   // console.log(await disputeWindow.designatedReporterNoShowBondTotal_());
+//   // console.log(await disputeWindow.initialReportBondTotal_());
+//   // const SOME_REP = new BigNumber(60);
+//   // await user.contribute(market, payoutNumerators, SOME_REP);
+//   // return goToFork(user, marketId, payoutNumerators, stopsBefore, left - 1);
+// }
+//
+// function makeConflictingPayoutNumerators(payoutNumerators: BigNumber[]): BigNumber[] {
+//   const conflictPayouts = payoutNumerators.map((n) => new BigNumber(n.toString()));
+//   const payoutNumerator = conflictPayouts.shift();
+//   conflictPayouts.push(payoutNumerator);
+//   return conflictPayouts;
+// }
