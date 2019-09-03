@@ -1,20 +1,20 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import MarketsView from 'modules/markets-list/components/markets-view';
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
-import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
-import { selectMarkets } from 'modules/markets/selectors/markets-all';
-import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helpers/get-selected-tags-and-categories-from-location';
-import { loadMarketsByFilter, LoadMarketsFilterOptions } from 'modules/markets/actions/load-markets';
-import { buildSearchString } from 'modules/markets/selectors/build-search-string';
-import { AppState } from 'store';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { NodeStyleCallback } from 'modules/types';
-import { setLoadMarketsPending, updateMarketsListMeta } from 'modules/markets-list/actions/update-markets-list';
-import { updateFilterSortOptions, MARKET_MAX_FEES, MARKET_MAX_SPREAD } from 'modules/filter-sort/actions/update-filter-sort-options';
-import { MAX_SPREAD_ALL_SPREADS, MAX_FEE_100_PERCENT } from 'modules/common/constants';
+import MarketsView from "modules/markets-list/components/markets-view";
+import { toggleFavorite } from "modules/markets/actions/update-favorites";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
+import { selectMarkets } from "modules/markets/selectors/markets-all";
+import { getSelectedTagsAndCategoriesFromLocation } from "modules/markets/helpers/get-selected-tags-and-categories-from-location";
+import { loadMarketsByFilter, LoadMarketsFilterOptions } from "modules/markets/actions/load-markets";
+import { buildSearchString } from "modules/markets/selectors/build-search-string";
+import { AppState } from "store";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { NodeStyleCallback } from "modules/types";
+import { setLoadMarketsPending, updateMarketsListMeta } from "../actions/update-markets-list";
+import { MARKET_OPEN, MARKET_REPORTING, MAX_SPREAD_ALL_SPREADS, MAX_FEE_100_PERCENT  } from "modules/common/constants";
+import { updateFilterSortOptions, MARKET_FILTER, MARKET_MAX_FEES, MARKET_MAX_SPREAD } from "modules/filter-sort/actions/update-filter-sort-options";
 
 const mapStateToProps = (state: AppState, { location }) => {
   const markets = selectMarkets(state);
@@ -41,6 +41,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     defaultFilter: state.filterSortOptions.marketFilter,
     defaultSort: state.filterSortOptions.marketSort,
     defaultHasOrders: state.filterSortOptions.hasOrders,
+    marketFilter: state.filterSortOptions.marketFilter,
   };
 };
 
@@ -54,6 +55,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => 
     dispatch(loadMarketsByFilter(filter, cb)),
   removeFeeFilter: () => dispatch(updateFilterSortOptions(MARKET_MAX_FEES, MAX_FEE_100_PERCENT)),
   removeLiquiditySpreadFilter: () => dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, MAX_SPREAD_ALL_SPREADS)),
+  updateMarketsFilter: (filterOption) => dispatch(updateFilterSortOptions(MARKET_FILTER, filterOption)),
+
 });
 
 const Markets = withRouter(
