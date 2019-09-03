@@ -661,6 +661,8 @@ export function addScripts(flash: FlashSession) {
         }
 
         const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
+        console.log(`num participants: ${await market.getNumParticipants_()}`);
+        console.log(new Date((await disputeWindow.getStartTime_()).times(1000).toNumber()));
         console.log(`fork attempt ${i} on ${disputeWindow.address}`);
         // const disputeWindowStartTime = await disputeWindow.getEndTime_();
         // console.log(`dispute window "start" time: ${disputeWindowStartTime}`);
