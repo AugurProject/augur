@@ -21,9 +21,6 @@ import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
 } from '@augurproject/sdk';
-import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
-import _ from 'lodash';
-import { ContractAPI } from '..';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -635,13 +632,12 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true);
       const marketId = args.marketId as string;
 
-      const DAY = 86400 * 1000;
+      // const await user.augur.contracts.universe.getDisputeThresholdForDisputePacing_();
+
       const MAX_DISPUTES = 20;
-      const SOME_REP = new BigNumber(1e15);
+      const SOME_REP = new BigNumber(1e23).times(6e7);
       const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
       const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
-
-      await user.repFaucet(new BigNumber(1e16));
 
       let market: ContractInterfaces.Market;
       if (marketId !== null) {
@@ -651,27 +647,31 @@ export function addScripts(flash: FlashSession) {
         this.log(`Created market ${market.address}`);
       }
 
-      const endTime = await market.getEndTime_();
-      this.log(`Market End Time: ${endTime}`);
+      await user.repFaucet(SOME_REP);
 
-      // Go forward in time, to enter the dispute window.
-      await user.setTimestamp(new BigNumber(endTime.plus(DAY)));
-
-      await user.doInitialReport(market, payoutNumerators);
+      // Get past the market time, into when we accept reporting.
+      await user.setTimestamp((await market.getEndTime_()).plus(1));
+      // Do the initial report, creating the first dispute window.
+      await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
 
       for (let i = 0; i < MAX_DISPUTES; i++) {
         if (await market.getForkingMarket_() !== NULL_ADDRESS) {
           this.log('Successfully Forked');
           break;
         }
+
         const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
         console.log(`fork attempt ${i} on ${disputeWindow.address}`);
-        const disputeWindowStartTime = await disputeWindow.getStartTime_();
-        await user.setTimestamp(disputeWindowStartTime.plus(1));
-        await user.contribute(market, conflictNumerators, SOME_REP);
-      }
+        // const disputeWindowStartTime = await disputeWindow.getEndTime_();
+        // console.log(`dispute window "start" time: ${disputeWindowStartTime}`);
+        // await user.setTimestamp(disputeWindowStartTime.plus(1));
 
-      // await goToFork(user, marketId, makeConflictingPayoutNumerators(payoutNumerators), stopsBefore, 3);
+        if (i % 2 === 0) {
+          await user.contribute(market, conflictNumerators, SOME_REP);
+        } else {
+          await user.contribute(market, payoutNumerators, SOME_REP);
+        }
+      }
     },
   });
 }

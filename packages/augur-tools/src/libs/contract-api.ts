@@ -282,15 +282,11 @@ export class ContractAPI {
   }
 
   async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
-    try {
-      // const big = new BigNumber(10).exponentiatedBy(23);
-      // await this.repFaucet(amount.times(big)); // make sure you have the REP you're trying to contribute
-      // await this.repFaucet(amount.times(1e9)); // make sure you have the REP you're trying to contribute
-      await this.repFaucet(amount.times(1e23)); // make sure you have the REP you're trying to contribute
-      await market.contribute(payoutNumerators, amount, description);
-    } catch(err) {
-      console.log('DAB', payoutNumerators, amount)
-    }
+    // await this.repFaucet(amount.times(1e23)); // make sure you have the REP you're trying to contribute
+    await market.contribute(payoutNumerators, amount, description).catch((err) => {
+      console.log('DAB', payoutNumerators, amount, description);
+      throw err;
+    });
   }
 
   async contributeToTentative(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
