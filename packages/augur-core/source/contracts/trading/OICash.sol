@@ -4,6 +4,8 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/trading/IOICash.sol';
+import 'ROOT/trading/ICompleteSets.sol';
+
 
 
 /**
@@ -13,13 +15,18 @@ import 'ROOT/trading/IOICash.sol';
 contract OICash is VariableSupplyToken, Initializable, IOICash {
     using SafeMathUint256 for uint256;
 
+    IAugur public augur;
     IERC20 public cash;
     IUniverse public universe;
+    ICompleteSets public completeSets;
     uint256 public totalAmountFeesPaid;
+
 
     function initialize(IAugur _augur, IUniverse _universe, address _erc1820RegistryAddress) external beforeInitialized {
         endInitialization();
+        augur = _augur;
         cash = ICash(_augur.lookup("Cash"));
+        completeSets = ICompleteSets(_augur.lookup("CompleteSets"));
         universe = _universe;
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
@@ -67,6 +74,18 @@ contract OICash is VariableSupplyToken, Initializable, IOICash {
         totalAmountFeesPaid = totalAmountFeesPaid.add(_openInterestAmount);
         return true;
     }
+
+    function buyCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
+        require(universe.isContainerForMarket(_market), "Market does not belong to universe");
+        uint256 _cost = _amount.mul(_market.getNumTicks());
+        burn(msg.sender, _cost);
+        universe.withdraw(msg.sender, _cost, address(0));
+        completeSets.buyCompleteSets(msg.sender, _market, _amount);
+        augur.logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
+        _market.assertBalances();
+        return true;
+    }
+
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal {
     }

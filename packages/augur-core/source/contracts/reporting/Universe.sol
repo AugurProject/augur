@@ -431,6 +431,13 @@ contract Universe is IUniverse {
     }
 
     /**
+     * @return The OI Cash contract
+     */
+    function isOpenInterestCash(address _address) public view returns (bool) {
+        return _address == address(openInterestCash);
+    }
+
+    /**
      * @return The Market Cap of this Universe's REP
      */
     function getRepMarketCapInAttoCash() public view returns (uint256) {
