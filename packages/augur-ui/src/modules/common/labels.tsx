@@ -10,6 +10,7 @@ import {
   CheckCircleIcon,
   HintAlternate,
   DoubleArrows,
+  LoadingEllipse,
 } from 'modules/common/icons';
 import { MarketProgress } from 'modules/common/progress';
 import ReactTooltip from 'react-tooltip';
@@ -146,6 +147,14 @@ export interface TextLabelState {
 export interface RepBalanceProps {
   rep: string;
   alternate?: boolean;
+}
+
+export interface MarketStateLabelProps {
+  label: string;
+  count: number;
+  loading: boolean;
+  selected: boolean;
+  handleClick: Function;
 }
 
 interface ButtonObj {
@@ -1013,3 +1022,25 @@ ValueDenomination.defaultProps = {
   hidePostfix: false,
   hideDenomination: false,
 };
+
+export const MarketStateLabel = (
+  props: MarketStateLabelProps
+) => (
+  <div
+    onClick={() => props.handleClick()}
+    className={classNames(Styles.MarketLabel, {
+      [Styles.selected]: props.selected,
+      [Styles.loading]: props.loading,
+    })}
+  >
+    <div>{props.label}</div>
+    {props.selected && !props.loading && (
+      <div>{props.count}</div>
+    )}
+    {props.loading && props.selected && (
+      <div>
+        <span>{LoadingEllipse}</span>
+      </div>
+    )}
+  </div>
+);
