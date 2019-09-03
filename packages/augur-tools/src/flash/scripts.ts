@@ -663,8 +663,8 @@ export function addScripts(flash: FlashSession) {
           this.log('Successfully Forked');
           break;
         }
-        console.log(`fork attempt ${i}`);
         const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
+        console.log(`fork attempt ${i} on ${disputeWindow.address}`);
         const disputeWindowStartTime = await disputeWindow.getStartTime_();
         await user.setTimestamp(disputeWindowStartTime.plus(1));
         await user.contribute(market, conflictNumerators, SOME_REP);
