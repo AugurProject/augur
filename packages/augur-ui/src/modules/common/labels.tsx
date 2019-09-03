@@ -916,22 +916,14 @@ WordTrail.defaultProps = {
 
 export const CategoryTagTrail = ({
   categories,
-  tags,
 }: CategoryTagTrailProps) => (
   <div className={Styles.CategoryTagTrail}>
-    <WordTrail items={categories} typeLabel="Category" />
-    {!tags.length && <WordTrail items={tags} typeLabel="Tags" />}
+    <WordTrail items={categories} typeLabel='Category' />
   </div>
 );
 
 CategoryTagTrail.propTypes = {
   categories: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired,
-    })
-  ).isRequired,
-  tags: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       onClick: PropTypes.func.isRequired,
