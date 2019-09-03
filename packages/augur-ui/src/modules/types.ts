@@ -563,7 +563,7 @@ export interface AccountBalances {
 }
 export interface LoginAccount {
   address?: string;
-  displayAddress?: string;
+  mixedCaseAddress?: string;
   meta?: { accountType: string; address: string; signer: any | EthersSigner, isWeb3: boolean };
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;

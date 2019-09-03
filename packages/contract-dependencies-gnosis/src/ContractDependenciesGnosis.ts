@@ -42,6 +42,10 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
     return await super.getDefaultAddress();
   }
 
+  public setSigner(signer: EthersSigner) {
+    super.setSigner(signer);
+  }
+
   public setSafeAddress(safeAddress: string): void {
     this.safeAddress = safeAddress;
     this.gnosisSafe = new ethers.Contract(safeAddress, abi["GnosisSafe"], this.signer);

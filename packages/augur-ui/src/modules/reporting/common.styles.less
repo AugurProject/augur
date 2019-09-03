@@ -187,3 +187,145 @@ div.ReportingSubheaders {
     }
   }
 }
+
+.DisputingButtonView {
+	> div:first-of-type {
+	  display: flex;
+	  justify-content: space-between;
+	  margin-bottom: @size-8;
+
+	  > span:first-of-type {
+	    .mono-10;
+
+	    color: @color-tertiary-info-text;
+	    line-height: @size-12;
+	    text-transform: uppercase;
+	  }
+
+	  > span:nth-of-type(2) {
+	    .mono-12;
+
+	    color: @color-tertiary-info-text;
+	    line-height: @size-14;
+
+	    > span:first-of-type {
+	      color: @color-alternate-info-text;
+	      margin-left: @size-4;
+	    }
+	  }
+	}
+}
+
+.ScalarOutcomesView {
+	> h2 {
+	    .mono-11;
+
+	    color: @color-alternate-info-text;
+	    margin-top: @size-8;
+	}
+	> div:first-of-type {
+        margin-top: 0;
+        max-width: 300px;
+    }
+}
+
+.DisputingBondsView {
+   > span:first-of-type {
+      .text-14-medium;
+
+      color: @color-alternate-info-text;
+      display: flex;
+      margin-bottom: @size-12;
+      margin-top: @size-16;
+    }
+
+  	> div:first-of-type {
+	    max-width: 340px;
+	    margin-top: @size-16;
+	}
+
+    > section {
+    	color: fade(@color-tertiary-info-text, 30);
+        display: flex;
+        margin-top: @size-8;
+
+        > button:first-of-type {
+          margin-right: @size-10;
+        }
+
+        > button:last-of-type {
+          margin-left: @size-10;
+        }
+    }
+
+    > button {
+      margin-top: @size-16;
+      margin-bottom: @size-4;
+    }
+
+    &.Scalar {
+	    > div:nth-of-type(2) {
+	    	margin-top: @size-16;
+	    	max-width: 340px;
+	    }
+    }
+
+    @media @breakpoint-mobile-mid {
+    	> button {
+    		width: 100%;
+    	}
+	}
+}
+
+.ReportingBondsView {
+	> span {
+		.text-14-medium;
+
+		color: @color-alternate-info-text;
+		margin-bottom: @size-12;
+		display: flex;
+	}
+
+	> div:last-of-type {
+		display: flex;
+    	flex-direction: column;
+
+		> span:first-of-type {
+			.text-14-medium;
+
+			color: @color-alternate-info-text;
+			margin-bottom: @size-8;
+			margin-top: @size-16;
+		}
+
+		> span:last-of-type {
+			.text-12;
+
+			color: @color-tertiary-info-text;
+			margin-bottom: @size-12;
+		}
+	}
+
+	> div:nth-of-type(3) {
+		margin-top: @size-16;
+	}
+
+	> button {
+		margin-top: @size-16;
+	}
+
+	&.Scalar {
+		> div:first-of-type {
+			margin-bottom: @size-20;
+		}
+
+		> div:nth-of-type(3) {
+			margin-top: 0;
+		}
+
+		> div:nth-of-type(4) {
+			margin-top: @size-16;
+		}
+	}
+}
+

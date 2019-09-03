@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import Wrapper from 'modules/trading/components/wrapper/wrapper';
-import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views';
+import { ACCOUNT_SUMMARY } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import Styles from 'modules/market/components/trading-form/trading-form.styles.less';
 
@@ -158,7 +158,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
               />
             )}
             {!hasFunds && isLogged && (
-              <Link to={makePath(ACCOUNT_DEPOSIT)}>
+              <Link to={makePath(ACCOUNT_SUMMARY)}>
                 <PrimaryButton
                   id="add-funds"
                   action={() => {}}
