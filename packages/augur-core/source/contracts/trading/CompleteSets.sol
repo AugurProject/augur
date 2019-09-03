@@ -46,7 +46,7 @@ contract CompleteSets is Initializable, ReentrancyGuard, ICompleteSets {
 
     function buyCompleteSets(address _sender, IMarket _market, uint256 _amount) external nonReentrant returns (bool) {
         require(augur.isKnownMarket(_market));
-        require(msg.sender == fillOrder || msg.sender == address(this));
+        require(msg.sender == fillOrder || msg.sender == address(this) || _market.getUniverse().isOpenInterestCash(msg.sender));
         require(_sender != address(0));
 
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
