@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { calculatePosition } from "modules/market-cards/common";
 import { createBigNumber } from 'utils/create-big-number';
-import { ZERO } from "modules/common/constants";
+import { ZERO, REPORTING_STATE } from "modules/common/constants";
 import { FormattedNumber } from "modules/types";
 import ReactTooltip from 'react-tooltip';
 import { SecondaryButton, CancelTextButton, PrimaryButton } from "modules/common/buttons";
