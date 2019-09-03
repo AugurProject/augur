@@ -123,7 +123,7 @@ test('UserSynableDB.sync', async () => {
     _id: doc.id,
     _rev: doc.value.rev,
   });
-}, 30000);
+});
 
 // Constructor does some (private) processing, so verify that it works right.
 test('props', async () => {

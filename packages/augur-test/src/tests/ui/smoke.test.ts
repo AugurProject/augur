@@ -57,7 +57,7 @@ beforeAll(async () => {
     "create-reasonable-categorical-market",
     { "outcomes": "music,dance,poetry,oration,drama" });
   */
-}, 160000);
+});
 
 afterAll(async () => {
   await browser.close();

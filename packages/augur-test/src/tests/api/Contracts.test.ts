@@ -26,7 +26,7 @@ beforeAll(async () => {
   addresses = seed.addresses;
 
   contracts = new Contracts(addresses, dependencies);
-}, 120000);
+});
 
 test('Contract :: ReputationToken', async () => {
   expect(contracts.reputationToken).toBe(null);
@@ -125,4 +125,4 @@ test('Contract :: Universe :: Create Market', async () => {
 
   const numticks = new BigNumber(100);
   await expect(await market.getNumTicks_()).toEqual(numticks);
-}, 30000);
+});
