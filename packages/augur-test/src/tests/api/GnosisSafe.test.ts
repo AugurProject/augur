@@ -11,7 +11,7 @@ beforeAll(async () => {
 
   mockGnosisRelay = new MockGnosisRelayAPI();
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, undefined, mockGnosisRelay);
-}, 120000);
+});
 
 test('GnosisSafe :: Create and Use Gnosis Safe for Transactions', async () => {
 
@@ -56,4 +56,4 @@ test('GnosisSafe :: Create and Use Gnosis Safe for Transactions', async () => {
   const amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
   await expect(amountInOrder.toNumber()).toEqual(10 ** 16);
 
-}, 150000);
+});

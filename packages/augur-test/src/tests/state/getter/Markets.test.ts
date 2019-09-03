@@ -102,7 +102,7 @@ describe('State API :: Markets :: ', () => {
       extraInfo: '{"categories": ["scalar 2 primary", "scalar 2 secondary", "scalar 2 tertiary"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2"}',
     })).address;
 
-  }, 120000);
+  });
 
   beforeEach(async () => {
     const provider = await baseProvider.fork();
@@ -562,7 +562,7 @@ describe('State API :: Markets :: ', () => {
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
     // @TODO: Add tests for filtering markets maxLiquiditySpread = '0'
-  }, 200000);
+  });
 
   test(':getMarkets userPortfolioAddress', async () => {
     const universe = john.augur.contracts.universe;
@@ -643,7 +643,7 @@ describe('State API :: Markets :: ', () => {
     expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
     expect(marketList.markets[2].id).toEqual(yesNoMarket1.address);
     expect(marketList.markets[3].id).toEqual(yesNoMarket2.address);
-  }, 120000);
+  });
 
   test(':getMarketPriceHistory', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();
@@ -857,7 +857,7 @@ describe('State API :: Markets :: ', () => {
         }
       }
     }
-  }, 120000);
+  });
 
   test(':getMarketPriceCandlesticks', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();
@@ -1277,7 +1277,7 @@ describe('State API :: Markets :: ', () => {
         ).toBeInstanceOf(Number);
       }
     }
-  }, 120000);
+  });
 
   describe(':getMarketOrderBook', () => {
     const numShares = new BigNumber(10000000000000);
@@ -1376,7 +1376,7 @@ describe('State API :: Markets :: ', () => {
       ]);
 
       await (await db).sync(john.augur, CHUNK_SIZE, 0);
-    }, 120000);
+    });
 
     beforeEach(async () => {
       const provider = await blockProvider.fork();
@@ -1407,7 +1407,7 @@ describe('State API :: Markets :: ', () => {
             0: expect.objectContaining({}),
           })
         );
-      }, 100000);
+      });
 
       test('can be an array', async () => {
         const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
@@ -1423,7 +1423,7 @@ describe('State API :: Markets :: ', () => {
             1: expect.objectContaining({}),
           })
         );
-      }, 100000);
+      });
 
       test('can be omitted', async () => {
         const yesNoMarket = john.augur.contracts.marketFromAddress(markets['yesNoMarket']);
@@ -1569,7 +1569,7 @@ describe('State API :: Markets :: ', () => {
           },
         },
       });
-    }, 100000);
+    });
   });
 
   test(':getMarketsInfo', async () => {
@@ -1910,7 +1910,7 @@ describe('State API :: Markets :: ', () => {
     expect(markets[0]).toHaveProperty('id');
     expect(markets[1]).toHaveProperty('id');
     expect(markets[2]).toHaveProperty('id');
-  }, 180000);
+  });
 
   test(':getMarketsInfo disputeinfo.stakes outcome valid/invalid', async () => {
     const market = await john.createReasonableYesNoMarket();
@@ -1945,7 +1945,7 @@ describe('State API :: Markets :: ', () => {
         isMalformedOutcome: false,
       },
     ]);
-  }, 180000);
+  });
 
   test(':getCategories', async () => {
     await (await db).sync(john.augur, CHUNK_SIZE, 0);
@@ -1972,5 +1972,5 @@ describe('State API :: Markets :: ', () => {
       'scalar 2 secondary',
       'scalar 2 tertiary',
     ]);
-  }, 120000);
+  });
 });

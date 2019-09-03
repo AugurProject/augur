@@ -30,7 +30,7 @@ describe('State API :: Trading :: ', () => {
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
-  }, 120000);
+  });
 
   test(':getTradingHistory', async () => {
     await john.approveCentralAuthority();
@@ -133,7 +133,7 @@ describe('State API :: Trading :: ', () => {
 
     await expect(trades[market1.address]).toBeUndefined();
     await expect(trades[market2.address]).toHaveLength(2);
-  }, 60000);
+  });
 
   test('State API :: Trading :: getOrders', async () => {
     await john.approveCentralAuthority();
@@ -279,7 +279,7 @@ describe('State API :: Trading :: ', () => {
       ignoreReportingStates: [MarketReportingState.PreReporting],
     });
     await expect(orders).toMatchObject({});
-  }, 60000);
+  });
 
   test(':getBetterWorseOrders', async () => {
     await john.approveCentralAuthority();
@@ -353,5 +353,5 @@ describe('State API :: Trading :: ', () => {
 
     await expect(betterWorseOrders.betterOrderId).toEqual(lowOrderId);
     await expect(betterWorseOrders.worseOrderId).toEqual(null);
-  }, 60000);
+  });
 });

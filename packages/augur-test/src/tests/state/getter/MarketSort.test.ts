@@ -16,7 +16,7 @@ describe('State API :: Market Sorts', () => {
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
-  }, 120000);
+  });
 
   test(':invalidFilter', async () => {
     await john.approveCentralAuthority();
@@ -54,7 +54,7 @@ describe('State API :: Market Sorts', () => {
     // The Invalid filter is now hit because this Bid would be profitable for a filler assuming the market were actually Valid
     await expect(marketData[0].invalidFilter).toEqual(true);
 
-  }, 60000);
+  });
   test(': horizontal liquidity', async () => {
     await john.approveCentralAuthority();
 
@@ -84,7 +84,7 @@ describe('State API :: Market Sorts', () => {
 
     await expect(marketData[0].liquidity[10]).toEqual("102000000000000000000");
 
-  }, 60000);
+  });
 
   test(':vertical liquidity', async () => {
     await john.approveCentralAuthority();
@@ -116,5 +116,5 @@ describe('State API :: Market Sorts', () => {
 
     await expect(marketData[0].liquidity[10]).toEqual("1470000000000000000000");
 
-  }, 60000);
+  });
 });
