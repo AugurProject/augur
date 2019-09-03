@@ -13,6 +13,14 @@ export class HTTPConnector extends BaseConnector {
     return Promise.resolve();
   }
 
+  async syncUserData(account: string): Promise<any> {
+    return fetch(this.endpoint, {
+      method: "POST",
+      body: JSON.stringify({ id: 42, method: 'syncUserData', params: [account], jsonrpc: "2.0" }),
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   async disconnect(): Promise<any> {
     return Promise.resolve();
   }

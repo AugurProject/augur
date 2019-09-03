@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import classNames from "classnames";
 
 import { CategoryTagTrail, MarketTypeLabel, InReportingLabel } from "modules/common/labels";
@@ -23,22 +22,23 @@ import Styles from "modules/market-cards/market-card.styles.less";
 
 interface MarketCardProps {
   market: MarketData;
-  isLogged?: Boolean;
+  isLogged?: boolean;
   history: object;
   location: object;
   toggleFavorite: Function;
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
-  condensed?: Boolean;
-  expandedView?: Boolean;
+  condensed?: boolean;
+  expandedView?: boolean;
   address: string;
-  loading?: Boolean;
-  isFavorite?: Boolean;
-  hasPosition?: Boolean;
+  loading?: boolean;
+  isFavorite?: boolean;
+  hasPosition?: boolean;
+  hasStaked?: boolean;
 }
 
 interface MarketCardState {
-  expanded: Boolean;
+  expanded: boolean;
 }
 
 export default class MarketCard extends React.Component<
@@ -72,7 +72,8 @@ export default class MarketCard extends React.Component<
       expandedView,
       loading,
       isFavorite,
-      hasPosition
+      hasPosition,
+      hasStaked
     } = this.props;
 
     const s = this.state;
@@ -159,11 +160,13 @@ export default class MarketCard extends React.Component<
                   hoverText="Position"
                 />
               }
-              <HoverIcon
-                label="dispute"
-                icon={DisputeStake}
-                hoverText="Dispute Stake"
-              />
+              {hasStaked &&
+                <HoverIcon
+                  label="dispute"
+                  icon={DisputeStake}
+                  hoverText="Dispute Stake"
+                />
+              }
             </div>
             <div>
               <InReportingLabel

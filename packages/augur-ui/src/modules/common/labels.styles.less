@@ -16,10 +16,30 @@
     color: inherit;
     cursor: inherit;
     margin: 0;
+
+    > span {
+      color: @color-tertiary-info-text;
+    }
+  }
+}
+
+.SizableValueLabel {
+  &.Large {
+    .mono-14-bold
+  }
+
+  &.Small {
+    .mono-11
+  }
+
+  &.Highlight {
+    color: @color-alternate-info-text;
   }
 }
 
 .TextLabel {
+  &:extend(.caps--small);
+
   color: inherit;
   z-index: @default-z-index;
 
@@ -354,6 +374,13 @@ div.LinearPropertyViewTransaction {
       .text-10;
     }
   }
+
+  &.Larger {
+    > span:nth-of-type(2) {
+      .mono-24;
+
+    }
+  }
 }
 
 .MarketTypeLabel {
@@ -364,7 +391,7 @@ div.LinearPropertyViewTransaction {
   border: 1px solid transparent;
   color: @color-secondary-text;
   line-height: @size-11;
-  max-width: @size-38;
+  max-width: fit-content;
   padding: @size-2;
   text-transform: uppercase;
 }

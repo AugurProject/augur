@@ -414,7 +414,7 @@ contract Augur is IAugur {
     }
 
     function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool) {
-        require(msg.sender == registry["CompleteSets"]);
+        require(msg.sender == registry["CompleteSets"] || (isKnownUniverse(_universe) && _universe.isOpenInterestCash(msg.sender)));
         emit CompleteSetsPurchased(address(_universe), address(_market), _account, _numCompleteSets, getTimestamp());
         return true;
     }

@@ -13,7 +13,7 @@ import { augurSdk } from 'services/augursdk';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
-  address: state.loginAccount.displayAddress,
+  address: state.loginAccount.mixedCaseAddress,
   networkId: getNetworkId(),
 });
 

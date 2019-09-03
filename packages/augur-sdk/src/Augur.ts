@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { Callback, TXStatusCallback } from "./events";
 import { BaseConnector } from "./connector/baseConnector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { TransactionStatusCallback, TransactionStatus } from "contract-dependencies-ethers";
+import { TransactionStatusCallback, TransactionStatus, EthersSigner } from "contract-dependencies-ethers";
 import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
 import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
 import { ContractInterfaces } from "@augurproject/core";
@@ -244,8 +244,17 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
+
   getSyncData = () => {
     return this.bindTo(Status.getSyncData)({});
+  }
+
+  syncUserData = (account: string): void => {
+    Augur.connector.syncUserData(account);
+  }
+
+  setSigner = (signer: EthersSigner): void => {
+    this.dependencies.setSigner(signer);
   }
 
   getTradingHistory = this.bindTo(Trading.getTradingHistory);
