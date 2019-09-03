@@ -635,7 +635,7 @@ export function addScripts(flash: FlashSession) {
       // const await user.augur.contracts.universe.getDisputeThresholdForDisputePacing_();
 
       const MAX_DISPUTES = 20;
-      const SOME_REP = new BigNumber(1e23).times(6e7);
+      const SOME_REP = new BigNumber(1e18).times(6e7);
       const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
       const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
 
