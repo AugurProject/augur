@@ -663,17 +663,11 @@ export function addScripts(flash: FlashSession) {
       await user.setTimestamp((await market.getEndTime_()).plus(1));
       // Do the initial report, creating the first dispute window.
 
-      await debugDW('before all', user, market);
-
-      // await user.setTimestamp((await user.getTimestamp()).plus(86400 * 7));
-      // await debugDW('after going forward a week', user, market);
-
       await user.doInitialReport(market, payoutNumerators, '', SOME_REP.div(2).toString());
 
-      await debugDW('after initial report', user, market);
-
       for (let i = 0; i < MAX_DISPUTES; i++) {
-        if (await market.getForkingMarket_() !== NULL_ADDRESS) {
+        console.log(await market.getForkingMarket_());
+        if ((await market.getForkingMarket_()) !== NULL_ADDRESS) {
           this.log('Successfully Forked');
           break;
         }
@@ -681,23 +675,15 @@ export function addScripts(flash: FlashSession) {
         const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
         console.log(`#####\n##### fork attempt ${i} on ${disputeWindow.address}\n#####`);
 
-        await debugDW('D0', user, market);
-
         await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
 
-        await debugDW('D1', user, market);
-
-        if (i % 2 === 0) {
+        if (i % 2 === 1 || i === 0 || i === 1) {
           console.log('contribute to conflict');
-          const maryMarket = await user.getMarketContract(market.address);
-          await mary.contribute(maryMarket, conflictNumerators, SOME_REP);
-          await mary.contribute(maryMarket, conflictNumerators, SOME_REP);
+          await user.contribute(market, conflictNumerators, SOME_REP);
         } else {
           console.log('contribute to original');
           await user.contribute(market, payoutNumerators, SOME_REP);
         }
-
-        await debugDW('D2', user, market);
 
         const disputeWindowEndTime = await disputeWindow.getEndTime_();
         await user.setTimestamp(disputeWindowEndTime.plus(1));
@@ -706,123 +692,3 @@ export function addScripts(flash: FlashSession) {
     },
   });
 }
-
-async function debugDW(tag: string, user: ContractAPI, market: ContractInterfaces.Market) {
-  const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
-  console.log(`dispute window ${tag} @ ${disputeWindow.address}`);
-
-  if (disputeWindow.address === NULL_ADDRESS) return;
-
-  const startTime = await disputeWindow.getStartTime_();
-  const endTime = await disputeWindow.getEndTime_();
-  const currentTime = await user.getTimestamp();
-
-  console.log(`\tstart: ${startTime}`);
-  console.log(`\tend: ${endTime}`);
-  console.log(`\tcurrent time: ${currentTime}`);
-  console.log(`\twithin dw: ${startTime < currentTime && currentTime < endTime}`);
-  console.log(`\tis over: ${await disputeWindow.isOver_()}`);
-  console.log(`\t# participants: ${(await market.getNumParticipants_()).toString()}`);
-  console.log(`\t$ participants: ${(await market.getParticipantStake_()).toString()}`);
-  console.log(`\tdispute pacing on?: ${await market.getDisputePacingOn_()}`);
-
-  const winning = await Promise.all([0, 1, 2].map(async (n) => (await market.getWinningPayoutNumerator_(new BigNumber(n))).toString()));
-  console.log(`\twinning: ${winning.join(' ')}`);
-
-  const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
-  const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
-  const otherNumerators = [0, 0, 100].map((n) => new BigNumber(n));
-
-  const remaining = await user.getRemainingToFill(market, payoutNumerators);
-  const disputeRemaining = await user.getRemainingToFill(market, conflictNumerators);
-  const otherRemaining = await user.getRemainingToFill(market, otherNumerators);
-  console.log(`\tremains: ${remaining.toString()} ${disputeRemaining.toString()} ${otherRemaining.toString()}`);
-
-  const payoutHash = await market.derivePayoutDistributionHash_(payoutNumerators);
-  const disputeHash = await market.derivePayoutDistributionHash_(conflictNumerators);
-  const otherHash = await market.derivePayoutDistributionHash_(otherNumerators);
-
-  console.log(`\tpayout hash: ${payoutHash}`);
-  console.log(`\tdispute hash: ${disputeHash}`);
-  console.log(`\tother hash: ${otherHash}`);
-
-  const payoutCrowdsourcer = await market.getCrowdsourcer_(payoutHash);
-  const conflictCrowdsourcer = await market.getCrowdsourcer_(disputeHash);
-  const otherCrowdsourcer = await market.getCrowdsourcer_(otherHash);
-
-  console.log(`\tpayout crowdsourcer: ${payoutCrowdsourcer}`);
-  console.log(`\tconflict crowdsourcer: ${conflictCrowdsourcer}`);
-  console.log(`\tother crowdsourcer: ${otherCrowdsourcer}`);
-
-}
-
-//
-// function getPayoutNumerators(market: MarketInfo, selectedOutcome, asPrice) {
-//   if (selectedOutcome.toString().indexOf(',') !== -1) {
-//     const values = selectedOutcome.split(',').map((x) => new BigNumber(x));
-//     if (values.length !== market.numOutcomes){
-//       throw new Error(`numTicks array needs ${market.numOutcomes} values, you provides ${values.length}`);
-//     }
-//     return values;
-//   }
-//   const maxPrice = new BigNumber(market.maxPrice);
-//   const minPrice = new BigNumber(market.minPrice);
-//   const numTicks = new BigNumber(market.numTicks);
-//   const numOutcomes = market.numOutcomes;
-//
-//   if (!asPrice && (selectedOutcome >= numOutcomes || selectedOutcome < 0)){
-//     throw new Error('selected outcome not as value is not valid index');
-//   }
-//
-//   const payoutNumerators = _.range(numOutcomes).map(() => new BigNumber(0));
-//   const isScalar = market.marketType === 'scalar';
-//
-//   if (isScalar && asPrice) {
-//     // selectedOutcome must be a BN as string
-//     const priceRange = maxPrice.minus(minPrice);
-//     selectedOutcome = selectedOutcome.replace(/"/g, '');
-//     const reportNormalizedToZero = new BigNumber(selectedOutcome).minus(minPrice);
-//     const longPayout = reportNormalizedToZero.times(numTicks).dividedBy(priceRange);
-//     const shortPayout = numTicks.minus(longPayout);
-//     payoutNumerators[1] = shortPayout;
-//     payoutNumerators[2] = longPayout;
-//   } else {
-//     // for yesNo and categorical the selected outcome is outcome.id and must be a number
-//     payoutNumerators[selectedOutcome] = numTicks;
-//   }
-//
-//   return payoutNumerators;
-// }
-//
-// async function goToFork(user: ContractAPI, marketId: string, payoutNumerators: BigNumber[], stopsBefore: number, left: number) {
-//   // if (left < 0) return '';
-//   // const market = user.augur.contracts.marketFromAddress(marketId);
-//   // const forkingMarket = await market.getForkingMarket_();
-//   // if (forkingMarket !== NULL_ADDRESS) {
-//   //   console.log('SAVAGE', 1.1);
-//   //   return 'Successfully Forked';
-//   // }
-//   // const numParticipants = await market.getNumParticipants_().then((bn) => bn.toNumber());
-//   // if (stopsBefore && numParticipants === (20 - stopsBefore)) {
-//   //   console.log('SAVAGE', 3.1);
-//   //   return 'Successfully got to pre-forking state';
-//   // }
-//   // const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
-//   // const disputeWindowStartTime = await disputeWindow.getStartTime_();
-//   // // await user.setTimestamp(disputeWindowStartTime.plus(1));
-//   // console.log(disputeWindow.address);
-//   // console.log((await user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_())).address);
-//   // console.log(await disputeWindow.validityBondTotal_());
-//   // console.log(await disputeWindow.designatedReporterNoShowBondTotal_());
-//   // console.log(await disputeWindow.initialReportBondTotal_());
-//   // const SOME_REP = new BigNumber(60);
-//   // await user.contribute(market, payoutNumerators, SOME_REP);
-//   // return goToFork(user, marketId, payoutNumerators, stopsBefore, left - 1);
-// }
-//
-// function makeConflictingPayoutNumerators(payoutNumerators: BigNumber[]): BigNumber[] {
-//   const conflictPayouts = payoutNumerators.map((n) => new BigNumber(n.toString()));
-//   const payoutNumerator = conflictPayouts.shift();
-//   conflictPayouts.push(payoutNumerator);
-//   return conflictPayouts;
-// }
