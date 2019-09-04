@@ -31,7 +31,7 @@ interface TradingFormProps {
   toggleConnectionTray: Function;
   onSubmitPlaceTrade: Function;
   updateLiquidity?: Function;
-  initialLiquidity?: Boolean;
+  initialLiquidity?: boolean;
   orderBook: OutcomeOrderBook;
 }
 
@@ -100,7 +100,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       sortedOutcomes,
       updateLiquidity,
       initialLiquidity,
-      orderBook
+      orderBook,
     } = this.props;
     const s = this.state;
 
@@ -152,17 +152,17 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
             {initialMessage && <p>{initialMessage}</p>}
             {!isLogged && (
               <PrimaryButton
-                id="login-button"
+                id='login-button'
                 action={() => toggleConnectionTray(!isConnectionTrayOpen)}
-                text="Connect a Wallet"
+                text='Connect a Wallet'
               />
             )}
             {!hasFunds && isLogged && (
               <Link to={makePath(ACCOUNT_SUMMARY)}>
                 <PrimaryButton
-                  id="add-funds"
+                  id='add-funds'
                   action={() => {}}
-                  text="Add Funds"
+                  text='Add Funds'
                 />
               </Link>
             )}

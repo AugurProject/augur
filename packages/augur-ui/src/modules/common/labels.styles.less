@@ -684,3 +684,51 @@ div.LinearPropertyViewTransaction {
 
   color: @color-tertiary-info-text;
 }
+
+.MarketLabel {
+  .text-14;
+
+  align-items: center;
+  color: @color-shadow-text;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  padding-bottom: @size-12;
+
+  > div:nth-child(even) {
+    margin: 0 0 0 @size-4;
+  }
+
+  &.loading {
+    pointer-events: none;
+
+    > div:last-of-type {
+      > span svg {
+        animation: spin 2s linear infinite;
+
+        path {
+          stroke: @color-shadow-text;
+        }
+      }
+    }
+  }
+
+  &.selected {
+    color: @color-alternate-info-text;
+    border-bottom: 1px solid @color-alternate-info-text;
+
+    > div:nth-child(even) {
+      margin: 0 0 0 @size-8;
+    }
+
+    > div:last-of-type {
+      > span svg path {
+        stroke: @color-alternate-info-text;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
