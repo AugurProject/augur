@@ -488,6 +488,9 @@ export interface ParticipationTokensViewProps {
   openModal: Function;
   disputeWindowFees: FormattedNumber;
   purchasedParticipationTokens: FormattedNumber;
+  disputeWindow: string;
+  pariticipationTokens: object;
+  tokensOwned: FormattedNumber;
 }
 
 export const ParticipationTokensView = (props: ParticipationTokensViewProps) => {
@@ -495,7 +498,8 @@ export const ParticipationTokensView = (props: ParticipationTokensViewProps) => 
   const {
     openModal,
     disputeWindowFees,
-    purchasedParticipationTokens
+    purchasedParticipationTokens,
+    tokensOwned
   } = props;
 
   return (
@@ -509,7 +513,7 @@ export const ParticipationTokensView = (props: ParticipationTokensViewProps) => 
       
       <Subheaders large info header='Total Reporting Fees' subheader={disputeWindowFees.formatted} secondSubheader='DAI' />
       <Subheaders large info header='Total Participation Tokens Purchased' subheader={purchasedParticipationTokens.formatted} />
-      <Subheaders info header='Participation Tokens I OWN in Current Dispute Window' subheader='0.0000' secondSubheader='(3.0724% of Total Fees)' />
+      <Subheaders info header='Participation Tokens I OWN in Current Dispute Window' subheader={tokensOwned.formatted} secondSubheader='(3.0724% of Total Fees)' />
 
       <PrimaryButton text='Get Participation Tokens' action={openModal} />
 

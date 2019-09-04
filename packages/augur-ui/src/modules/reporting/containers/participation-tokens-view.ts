@@ -5,10 +5,13 @@ import { MODAL_PARTICIPATE } from 'modules/common/constants';
 import { formatNumber, formatDai } from "utils/format-number";
 
 const mapStateToProps = state => {
+  const disputeWindow = state.universe.disputeWindow && state.universe.disputeWindow.address;
+  const pariticipationTokens = state.loginAccount && state.loginAccount.pariticipationTokens;
   return {
     disputeWindowFees: formatDai(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.fees : 0),
     purchasedParticipationTokens: formatNumber(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.purchased : 0),
-    reporting: state.loginAccount.reporting,
+    tokensOwned: formatNumber(pariticipationTokens ? pariticipationTokens.contracts.find(contract => contract.address === disputeWindow).amount : 0),
+    pariticipationTokens: pariticipationTokens,
   };
 };
 
