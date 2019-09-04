@@ -13386,6 +13386,25 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "isOpenInterestCash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -15775,6 +15794,29 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "buyCompleteSets",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "universe",
@@ -15891,6 +15933,20 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "totalAmountFeesPaid",
 			"outputs": [
 				{
@@ -15920,6 +15976,20 @@
 			"constant": true,
 			"inputs": [],
 			"name": "cash",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "completeSets",
 			"outputs": [
 				{
 					"name": "",
