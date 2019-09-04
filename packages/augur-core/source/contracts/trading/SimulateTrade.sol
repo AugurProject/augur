@@ -1,6 +1,7 @@
 // Copyright (C) 2015 Forecast Foundation OU, full GPL notice in LICENSE
 
 pragma solidity 0.5.10;
+pragma experimental ABIEncoderV2;
 
 
 import 'ROOT/IAugur.sol';
@@ -12,6 +13,7 @@ import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/IFillOrder.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC20.sol';
+import "ROOT/external/IExchange.sol";
 
 
 /**
@@ -73,7 +75,30 @@ contract SimulateTrade is Initializable {
             sharesUsedInFill: 0
         });
     }
+/*
+    function createFromSignedOrders(IExchange.Order[] memory _orders, uint256 _amount) internal view returns (SimulationData memory) {
+        Order.Types _type = Order.getOrderTradingTypeFromFillerDirection(_direction);
+        bytes32 _orderId = orders.getBestOrderId(_type, _market, _outcome, _kycToken);
 
+        return SimulationData({
+            orderType: _type,
+            direction: _direction,
+            market: _market,
+            kycToken: _kycToken,
+            outcome: _outcome,
+            amount: _amount,
+            price: _price,
+            numTicks: _market.getNumTicks(),
+            availableShares: getNumberOfAvaialableShares(_direction, _market, _outcome, _sender),
+            orderId: _orderId,
+            orderAmount: orders.getAmount(_orderId),
+            orderPrice: orders.getPrice(_orderId),
+            orderShares: orders.getOrderSharesEscrowed(_orderId),
+            fillAmount: 0,
+            sharesUsedInFill: 0
+        });
+    }
+*/
     /**
      * @notice Simulate performing a trade
      * @param _direction The trade direction of order. Either LONG==0, or SHORT==1
@@ -118,6 +143,38 @@ contract SimulateTrade is Initializable {
         uint256 _shareSaleProfit = _sharesDepleted * (_direction == Order.TradeDirections.Short ? _simulationData.price : _simulationData.numTicks - _simulationData.price);
         _tokensDepleted = _shareSaleProfit >= _tokensDepleted ? 0 : _tokensDepleted.sub(_shareSaleProfit);
     }
+
+    /*
+    function simulateZeroXTrade(IExchange.Order[] memory _orders, uint256 _amount, bool _fillOnly) public view returns (uint256 _sharesFilled, uint256 _tokensDepleted, uint256 _sharesDepleted, uint256 _settlementFees, uint256 _numFills) {
+        SimulationData memory _simulationData = createFromSignedOrders(_orders, _amount);
+        while (_simulationData.orderId != 0 && _simulationData.amount > 0 && gasleft() > GAS_BUFFER && isMatch(_simulationData)) {
+            _simulationData.fillAmount = _simulationData.amount.min(_simulationData.orderAmount);
+            _simulationData.sharesUsedInFill = _simulationData.fillAmount.min(_simulationData.availableShares);
+
+            if (orders.getOrderCreator(_simulationData.orderId) != msg.sender) {
+                _sharesDepleted += _simulationData.sharesUsedInFill;
+                _tokensDepleted += (_simulationData.fillAmount - _simulationData.sharesUsedInFill) * (_direction == Order.TradeDirections.Long ? _simulationData.orderPrice : _simulationData.numTicks - _simulationData.orderPrice);
+            }
+
+            _sharesFilled += _simulationData.fillAmount;
+            _settlementFees += getSettlementFees(_simulationData, _simulationData.sharesUsedInFill);
+
+            _simulationData.amount -= _simulationData.fillAmount;
+
+            _simulationData.orderId = orders.getWorseOrderId(_simulationData.orderId);
+            _simulationData.orderAmount = orders.getAmount(_simulationData.orderId);
+            _simulationData.orderPrice = orders.getPrice(_simulationData.orderId);
+            _simulationData.orderShares = orders.getOrderSharesEscrowed(_simulationData.orderId);
+            _numFills += 1;
+        }
+
+        if (_simulationData.amount > 0 && !_fillOnly) {
+            uint256 _sharesUsedInCreate = _simulationData.amount.min(_simulationData.availableShares);
+            _sharesDepleted += _sharesUsedInCreate;
+            _tokensDepleted += (_simulationData.amount - _sharesUsedInCreate) * (_direction == Order.TradeDirections.Long ? _simulationData.price : _simulationData.numTicks - _simulationData.price);
+        }
+    }
+*/
 
     function getSettlementFees(SimulationData memory _simulationData, uint256 _sharesUsedInFill) private view returns (uint256) {
         uint256 _completeSetsSold = _sharesUsedInFill.min(_simulationData.orderShares);
