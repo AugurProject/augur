@@ -17,7 +17,7 @@ import { setAddresses, NetworkId } from "@augurproject/artifacts";
 import * as fs from "async-file";
 import { LogReplayer } from "./replay-logs";
 import { LogReplayerV1 } from "./replay-logs-v1";
-import { NetworkConfiguration } from "@augurproject/core/build";
+import { NetworkConfiguration } from "@augurproject/core";
 
 export const defaultSeedPath = `/tmp/seed.json`;
 

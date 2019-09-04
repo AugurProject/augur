@@ -21,8 +21,6 @@ import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
 } from '@augurproject/sdk';
-import { ContractAPI } from '..';
-import { EmptyConnector } from "@augurproject/sdk/build";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
