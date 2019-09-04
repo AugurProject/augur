@@ -17748,6 +17748,33 @@
 						"type": "function"
 					},
 					{
+						"constant": false,
+						"inputs": [
+							{
+								"name": "_market",
+								"type": "address"
+							},
+							{
+								"name": "_account",
+								"type": "address"
+							},
+							{
+								"name": "_outcomeFees",
+								"type": "uint256[]"
+							}
+						],
+						"name": "recordClaim",
+						"outputs": [
+							{
+								"name": "",
+								"type": "bool"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
+					},
+					{
 						"constant": true,
 						"inputs": [],
 						"name": "orders",
@@ -17759,6 +17786,37 @@
 						],
 						"payable": false,
 						"stateMutability": "view",
+						"type": "function"
+					},
+					{
+						"constant": false,
+						"inputs": [
+							{
+								"name": "_market",
+								"type": "address"
+							},
+							{
+								"name": "_trader",
+								"type": "address"
+							},
+							{
+								"name": "_outcome",
+								"type": "uint256"
+							},
+							{
+								"name": "_fees",
+								"type": "uint256"
+							}
+						],
+						"name": "adjustTraderProfitForFees",
+						"outputs": [
+							{
+								"name": "",
+								"type": "bool"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
 						"type": "function"
 					},
 					{
@@ -17800,29 +17858,6 @@
 						],
 						"payable": false,
 						"stateMutability": "view",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
-								"name": "_market",
-								"type": "address"
-							},
-							{
-								"name": "_account",
-								"type": "address"
-							}
-						],
-						"name": "recordClaim",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
 						"type": "function"
 					},
 					{
