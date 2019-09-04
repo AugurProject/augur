@@ -321,13 +321,15 @@ export interface ReportingCardProps {
   market: MarketData;
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
+  showReportingModal: Function;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
   const {
     market, 
     currentAugurTimestamp,
-    reportingWindowStatsEndTime 
+    reportingWindowStatsEndTime,
+    showReportingModal 
   } = props;
 
   if (!market) return null;
@@ -367,7 +369,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         }
       </div>
       <div data-tip data-for='tooltip--preReporting'>
-        <PrimaryButton text="Report" action={null} disabled={preReporting} />
+        <PrimaryButton text="Report" action={showReportingModal} disabled={preReporting} />
         {preReporting &&
           <ReactTooltip
             id='tooltip--preReporting'

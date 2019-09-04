@@ -108,6 +108,7 @@ export interface Universe {
   winningChildUniverse?: string;
   openInterest?: BigNumber | string;
   forkThreshold?: BigNumber;
+  disputeWindow: Getters.Universe.DisputeWindow;
 }
 
 export interface Versions {
