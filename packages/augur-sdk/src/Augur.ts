@@ -13,6 +13,7 @@ import { Gnosis } from "./api/Gnosis";
 import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
+import { Universe } from "./state/getter/Universe";
 import { ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
 import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
@@ -43,6 +44,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly market: Market;
   readonly gnosis: Gnosis;
   readonly zeroX: ZeroX;
+  readonly universe: Universe;
   static syncableFlexSearch: SyncableFlexSearch;
   static connector: BaseConnector;
   readonly liquidity: Liquidity;
