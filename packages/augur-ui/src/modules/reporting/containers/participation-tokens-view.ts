@@ -6,8 +6,8 @@ import { formatNumber, formatDai } from "utils/format-number";
 
 const mapStateToProps = state => {
   return {
-    disputeWindowFees: formatDai(state.universe.disputeWindow.fees),
-    purchasedParticipationTokens: formatNumber(state.universe.disputeWindow.purchased),
+    disputeWindowFees: formatDai(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.fees : 0),
+    purchasedParticipationTokens: formatNumber(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.purchased : 0),
     reporting: state.loginAccount.reporting,
   };
 };

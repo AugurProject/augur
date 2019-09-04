@@ -460,4 +460,22 @@ div.ReportingSubheaders {
   > div:nth-of-type(4) {
     margin-bottom: @size-16;
   }
+
+  @media @breakpoint-mobile {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+
+    > button {
+      width: 100%;
+    }
+
+    > span {
+      text-align: center;
+    }
+
+    > div {
+      align-items: center;
+    }
+  }
 }
