@@ -14,6 +14,7 @@ import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
 import { ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
+import { Universe } from "./state/getter/Universe";
 import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
 import { TXStatus } from "./event-handlers";
@@ -42,6 +43,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
+
   readonly zeroX: ZeroX;
   static syncableFlexSearch: SyncableFlexSearch;
   static connector: BaseConnector;
@@ -95,6 +97,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
+    this.universe = new Universe();
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
     this.zeroX = meshClient ? new ZeroX(this, meshClient) : undefined;
     if (enableFlexSearch && !Augur.syncableFlexSearch) {
@@ -290,6 +293,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
   getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
   getAccountReportingHistory = this.bindTo(Accounts.getAccountReportingHistory);
+  getDisputeWindow = this.bindTo(Universe.getDisputeWindow);
 
   async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);

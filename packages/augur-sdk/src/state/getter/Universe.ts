@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import { SearchResults } from 'flexsearch';
 import * as t from 'io-ts';
 import { DB } from '../db/DB';
 import { Getter } from './Router';

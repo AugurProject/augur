@@ -6,7 +6,6 @@ import {
   selectFilledOrders,
 } from 'store/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { keyArrayBy } from 'utils/key-by';
 import getUserFilledOrders from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import getMarketsPositionsRecentlyTraded from 'modules/portfolio/selectors/select-markets-positions-recently-traded';
