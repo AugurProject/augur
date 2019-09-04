@@ -17,11 +17,12 @@ import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
+import { INVALID_OPTIONS } from 'modules/types';
 
 interface MarketsListFiltersProps {
   maxFee: string;
   maxLiquiditySpread: string;
-  includeInvalidMarkets: typeof INVALID_SHOW | typeof INVALID_HIDE;
+  includeInvalidMarkets: INVALID_OPTIONS;
   isSearching: boolean;
   updateMaxFee: Function;
   updateMaxSpread: Function;

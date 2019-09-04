@@ -406,6 +406,7 @@ export interface OpenOrders {
 export interface MarketTradingHistoryState extends Getters.Trading.MarketTradingHistory {
 
 }
+
 export interface MarketsInReporting {
   designated?: Array<string>;
   open?: Array<string>;
@@ -414,6 +415,7 @@ export interface MarketsInReporting {
   dispute?: Array<string>;
   resolved?: Array<string>;
 }
+
 export interface GasPriceInfo {
   average: number;
   fast: number;
@@ -421,15 +423,22 @@ export interface GasPriceInfo {
   userDefinedGasPrice: string;
   blockNumber: string;
 }
+
+export enum INVALID_OPTIONS {
+  Show = 'Show',
+  Hide = 'Hide',
+}
+
 export interface FilterSortOptions {
   marketFilter: string;
   marketSort: string;
   maxFee: string;
   maxLiquiditySpread: string;
-  includeInvalidMarkets: typeof INVALID_SHOW | typeof INVALID_HIDE;
+  includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
   hasOrders: boolean;
 }
+
 export interface Favorite {
   [marketId: string]: number;
 }
