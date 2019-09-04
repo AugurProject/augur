@@ -49,6 +49,7 @@ py==1.8.0                 # via pytest
 pycparser==2.19           # via cffi
 pycryptodome==3.8.1       # via eth-hash, eth-keyfile
 pyethash==0.1.27          # via py-evm
+pysha3==1.0.2
 pytest-ethereum==0.1.3a6  # via web3
 pytest-profiling==1.2.11
 pytest==4.5.0             # via pytest-profiling
