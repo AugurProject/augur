@@ -1,5 +1,5 @@
 import { ReactNode, MouseEvent } from "react";
-import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from "modules/common/constants";
+import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME, INVALID_SHOW, INVALID_HIDE } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
@@ -426,7 +426,7 @@ export interface FilterSortOptions {
   marketSort: string;
   maxFee: string;
   maxLiquiditySpread: string;
-  includeInvalidMarkets: 'show' | 'hide';
+  includeInvalidMarkets: typeof INVALID_SHOW | typeof INVALID_HIDE;
   transactionPeriod: string;
   hasOrders: boolean;
 }
