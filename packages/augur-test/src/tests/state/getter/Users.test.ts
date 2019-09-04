@@ -281,6 +281,9 @@ describe('State API :: Users :: ', () => {
     // Purchase participation tokens
     await john.buyParticipationTokens(disputeWindow.address, new BigNumber(1));
 
+    await john.repFaucet(new BigNumber(1e25));
+    await mary.repFaucet(new BigNumber(1e25));
+
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
@@ -705,7 +708,7 @@ describe('State API :: Users :: ', () => {
       redeemedPositions: 4,
       successfulDisputes: 2,
     });
-  }, 200000);
+  }, 300000);
 
   test(':getProfitLoss & getProfitLossSummary ', async () => {
     const market1 = await john.createReasonableYesNoMarket();
