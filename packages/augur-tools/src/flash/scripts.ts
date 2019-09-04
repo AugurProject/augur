@@ -653,8 +653,8 @@ export function addScripts(flash: FlashSession) {
       await user.setTimestamp((await market.getEndTime_()).plus(1));
 
       // Do the initial report, creating the first dispute window.
-      await user.doInitialReport(market, payoutNumerators, '', SOME_REP.div(2).toString());
-      // First contribute (dispute) to overcome additional stake in initial report.
+      await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
+      // First contribution (dispute) to overcome additional stake in initial report.
       await user.contribute(market, conflictNumerators, SOME_REP);
 
       for (let i = 0; i < MAX_DISPUTES; i++) {
@@ -664,20 +664,17 @@ export function addScripts(flash: FlashSession) {
         }
 
         const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
-        // console.log(`fork attempt ${i} on ${disputeWindow.address}`);
-        //
-        // await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
+        console.log(`fork attempt ${i}`);
 
+        // Enter the dispute window.
+        await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
+
+        // Contribute aka dispute. Opposing sides to keep raising the stakes.
         if (i % 2 === 0) {
-          console.log('contribute to conflict');
           await user.contribute(market, conflictNumerators, SOME_REP);
         } else {
-          console.log('contribute to original');
           await user.contribute(market, payoutNumerators, SOME_REP);
         }
-
-        const disputeWindowEndTime = await disputeWindow.getEndTime_();
-        await user.setTimestamp(disputeWindowEndTime.plus(1));
       }
     },
   });
