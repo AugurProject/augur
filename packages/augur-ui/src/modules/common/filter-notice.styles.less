@@ -1,0 +1,55 @@
+@import (reference) '~assets/styles/shared';
+
+.filterNotice {
+  margin: @size-4 @size-16 @size-24 @size-16;
+
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    border: 1px solid @color-primary-light;
+    border-radius: @size-6;
+    padding: @size-12 @size-16;
+    width: 100%;
+
+    > span:first-of-type {
+      display: flex;
+      margin: 0 @size-16 0 0;
+    }
+
+    > span:last-of-type {
+      .text-12;
+
+      color: @color-tertiary-info-text;
+
+      > a {
+        color: @color-primary-action;
+      }
+    }
+  }
+}
+
+.red {
+  svg {
+    height: @size-19;
+    width: @size-19;
+    fill: @color-invalid-primary;
+  }
+
+  rect, path {
+    fill: @color-primary-text;
+  }
+}
+
+.grey {
+  svg {
+    height: @size-19;
+    width: @size-19;
+    fill: @color-highlight-fade;
+  }
+
+  rect, path {
+    fill: @color-primary-text;
+  }
+}

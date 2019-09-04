@@ -165,7 +165,15 @@ jobs:
     condition: |
       or
       (
-        and( succeeded(), eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')),
+        and
+        (
+          succeeded(),
+          or
+          (
+            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
+            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+          )
+        ),
         eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
@@ -285,8 +293,12 @@ jobs:
       and
       (
         succeeded(),
-        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
+        or
+        (
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
+          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+        )
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -392,15 +404,10 @@ jobs:
     - Test_Augur_Core
     - Docker_geth_dev
     condition: |
-      and
+      or
       (
         in(dependencies.Test_Augur_Core.result, 'Succeeded'),
-        in(dependencies.Docker_geth_dev.result, 'Succeeded', 'Skipped'),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true')
-        )
+        in(dependencies.Docker_geth_dev.result, 'Succeeded')
       )
     pool:
       vmImage: 'Ubuntu 16.04'

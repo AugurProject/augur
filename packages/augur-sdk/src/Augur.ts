@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { Callback, TXStatusCallback } from "./events";
 import { BaseConnector } from "./connector/baseConnector";
 import { ContractAddresses, NetworkId } from "@augurproject/artifacts";
-import { TransactionStatusCallback, TransactionStatus } from "contract-dependencies-ethers";
+import { TransactionStatusCallback, TransactionStatus, EthersSigner } from "contract-dependencies-ethers";
 import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
 import { IGnosisRelayAPI } from "@augurproject/gnosis-relay-api";
 import { ContractInterfaces } from "@augurproject/core";
@@ -13,6 +13,7 @@ import { Gnosis } from "./api/Gnosis";
 import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
+import { Universe } from "./state/getter/Universe";
 import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
 import { TXStatus } from "./event-handlers";
@@ -37,6 +38,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
+  readonly universe: Universe;
   static syncableFlexSearch: SyncableFlexSearch;
   static connector: BaseConnector;
   readonly liquidity: Liquidity;
@@ -88,6 +90,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.events = new Events(this.provider, this.addresses.Augur);
+    this.universe = new Universe();
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
     if (enableFlexSearch && !Augur.syncableFlexSearch) {
       Augur.syncableFlexSearch = new SyncableFlexSearch();
@@ -242,8 +245,17 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   getMarketsInfo = this.bindTo(Markets.getMarketsInfo);
+
   getSyncData = () => {
     return this.bindTo(Status.getSyncData)({});
+  }
+
+  syncUserData = (account: string): void => {
+    Augur.connector.syncUserData(account);
+  }
+
+  setSigner = (signer: EthersSigner): void => {
+    this.dependencies.setSigner(signer);
   }
 
   getTradingHistory = this.bindTo(Trading.getTradingHistory);
@@ -257,6 +269,8 @@ export class Augur<TProvider extends Provider = Provider> {
   getProfitLoss = this.bindTo(Users.getProfitLoss);
   getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
   getAccountTransactionHistory = this.bindTo(Accounts.getAccountTransactionHistory);
+  getAccountReportingHistory = this.bindTo(Accounts.getAccountReportingHistory);
+  getDisputeWindow = this.bindTo(Universe.getDisputeWindow);
 
   async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);

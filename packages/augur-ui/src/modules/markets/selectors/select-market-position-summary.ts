@@ -30,7 +30,7 @@ export const selectMarketPositionsSummary = createSelector(
     );
     const valueChange = formatPercent(
       createBigNumber(
-        marketPositions.unrealizedRevenue24hChangePercent || ZERO
+        marketPositions.unrealizedPercent || ZERO
       ).times(100),
       { decimalsRounded: 2 }
     );

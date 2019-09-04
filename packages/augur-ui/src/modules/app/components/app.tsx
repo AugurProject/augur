@@ -27,11 +27,11 @@ import {
 import parsePath from 'modules/routes/helpers/parse-path';
 import {
   MARKETS,
-  ACCOUNT_DEPOSIT,
+  ACCOUNT_SUMMARY,
   MY_POSITIONS,
   CREATE_MARKET,
-  REPORTING_DISPUTE_MARKETS,
-  REPORTING_REPORT_MARKETS,
+  DISPUTING,
+  REPORTING,
 } from 'modules/routes/constants/views';
 import {
   MODAL_NETWORK_CONNECT,
@@ -114,7 +114,7 @@ export default class AppView extends Component<AppProps> {
       title: 'Account Summary',
       iconName: 'nav-account-icon',
       icon: NavAccountIcon,
-      route: ACCOUNT_DEPOSIT,
+      route: ACCOUNT_SUMMARY,
       requireLogin: true
     },
     {
@@ -130,7 +130,7 @@ export default class AppView extends Component<AppProps> {
       icon: NavReportingIcon,
       mobileClick: () =>
         this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
-      route: REPORTING_DISPUTE_MARKETS,
+      route: DISPUTING,
     },
     {
       title: 'Reporting',
@@ -138,7 +138,7 @@ export default class AppView extends Component<AppProps> {
       icon: NavReportingIcon,
       mobileClick: () =>
         this.props.updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN),
-      route: REPORTING_REPORT_MARKETS,
+      route: REPORTING,
     },
     {
       title: 'Create',
@@ -153,7 +153,7 @@ export default class AppView extends Component<AppProps> {
       iconName: 'nav-logout-icon',
       icon: LogoutIcon,
       mobileClick: () => this.props.logout(),
-      route: ACCOUNT_DEPOSIT,
+      route: MARKETS,
       requireLogin: true,
       onlyForMobile: true,
     },

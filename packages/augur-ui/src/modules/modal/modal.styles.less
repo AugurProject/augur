@@ -61,6 +61,12 @@
   justify-content: space-between;
   padding: @size-24;
 
+  &.Bright {
+    > h1 {
+      color: @color-in-reporting;
+    }
+  }
+
   @media @breakpoint-mobile {
     margin: 0 0 @size-16;
     padding: @size-8 @size-16 @size-16;
@@ -1248,5 +1254,78 @@ div.ButtonsRow:last-of-type {
   &:active,
   &:focus {
     outline: none;
+  }
+}
+
+
+.ModalReporting {
+  .Message;
+
+  max-width: 750px;
+
+  > main {
+    display: flex;
+    flex-direction: column;
+    padding: @size-16 0 0;
+
+    > div:first-of-type {
+      border-bottom: 1px solid @color-primary-alternate;
+      display: flex;
+      flex-direction: column;
+      padding: 0 @size-40;
+
+      > span:nth-of-type(2) {
+        .text-24-bold;
+
+        color: @color-alternate-info-text;
+        margin-top: @size-14;
+        margin-bottom: @size-16;
+      }
+
+      > div:nth-of-type(1),
+      > div:nth-of-type(2) {
+        margin-bottom: @size-16;
+      }
+
+
+      > div:nth-of-type(3) {
+        display: flex;
+        margin-bottom: @size-32;
+
+        > div:first-of-type {
+          width: 250px;
+        }
+      }
+    }
+
+    > div:nth-of-type(2) {
+      border-bottom: 1px solid @color-primary-alternate;
+      display: flex;
+      padding: @size-16 @size-40;
+
+      > button {
+        margin-left: @size-38;
+      }
+    }
+
+    > div:last-of-type {
+      padding: @size-32 @size-40;
+    }
+  }
+
+  @media @breakpoint-mobile-mid {
+    > main {
+      > div:first-of-type {
+        padding: 0 @size-16;
+      }
+
+      > div:nth-of-type(2) {
+      padding: @size-16;
+      }
+
+      > div:last-of-type {
+        padding: @size-16;
+      }
+    }
   }
 }

@@ -7,7 +7,7 @@ import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-bo
 import { removeMarket } from 'modules/markets/actions/update-markets-data';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import makePath from 'modules/routes/helpers/make-path';
-import { MY_MARKETS, TRANSACTIONS } from 'modules/routes/constants/views';
+import { TRANSACTIONS } from 'modules/routes/constants/views';
 import loadCategories from 'modules/categories/actions/load-categories';
 import {
   loadMarketsInfo,
@@ -31,6 +31,8 @@ import { augurSdk } from 'services/augursdk';
 import { Augur } from '@augurproject/sdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
 
 const handleAlertUpdate = (
   log: any,
@@ -89,13 +91,25 @@ export const handleTxFailure = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
 };
 
-export const handleSDKReadyEvent = () =>  (
+export const handleSDKReadyEvent = () => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   // wire up events for sdk
   augurSdk.subscribe(dispatch);
   // app is connected when subscribed to sdk
   dispatch(updateConnectionStatus(true));
+};
+
+export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  const { loginAccount } = getState();
+  const { mixedCaseAddress } = loginAccount;
+  if (mixedCaseAddress && log.trackedUsers.includes(mixedCaseAddress)) {
+    dispatch(updateAuthStatus(IS_LOGGED, true));
+    dispatch(loadAccountData());
+  }
 };
 
 export const handleNewBlockLog = (log: Events.NewBlock) => (

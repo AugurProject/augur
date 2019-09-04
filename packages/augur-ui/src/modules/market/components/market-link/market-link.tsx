@@ -12,8 +12,8 @@ import {
 } from "modules/common/constants";
 import {
   MARKET,
-  REPORT,
-  DISPUTE,
+  REPORTING,
+  DISPUTING,
   MIGRATE_REP,
 } from "modules/routes/constants/views";
 import {
@@ -26,10 +26,10 @@ const MarketLink = ({ linkType, className, id, children }) => {
 
   switch (linkType) {
     case TYPE_REPORT:
-      path = makePath(REPORT);
+      path = makePath(REPORTING);
       break;
     case TYPE_DISPUTE:
-      path = makePath(DISPUTE);
+      path = makePath(DISPUTING);
       break;
     case TYPE_MIGRATE_REP:
       path = makePath(MIGRATE_REP);

@@ -1,26 +1,28 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import Reporting from "modules/reporting/reporting";
+import { updateModal } from "modules/modal/actions/update-modal";
+import { MODAL_DR_QUICK_GUIDE, REPORTING_STATE } from "modules/common/constants";
 
-import ReportingReport from "modules/reporting/components/reporting-report/reporting-report";
-
-const mapStateToProps = state => ({});
-
-const mapDispatchToProps = dispatch => ({});
-
-const mergeProps = (sP, dP, oP) => {
+const mapStateToProps = (state: AppState) => {
+  const loginAccount = state.loginAccount;
+	
   return {
-    ...oP,
-    ...sP,
-    ...dP
+  	upcomingMarkets: Object.values(state.marketInfos || {}).filter(market => market.designatedReporter.toLowerCase() === loginAccount.address && market.reportingState === REPORTING_STATE.PRE_REPORTING),
+  	openMarkets: Object.values(state.marketInfos || {}).filter(market => market.reportingState === REPORTING_STATE.OPEN_REPORTING),
+    designatedReporterMarkets: Object.values(state.marketInfos || {}).filter(market => market.designatedReporter.toLowerCase() === loginAccount.address && market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING)
   };
 };
 
-const Reporting = withRouter(
+const mapDispatchToProps = dispatch => ({
+  openReportingModal: () => dispatch(updateModal({ type: MODAL_DR_QUICK_GUIDE })),
+});
+
+const ReportingContainer = withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(ReportingReport)
+    mapDispatchToProps
+  )(Reporting)
 );
 
-export default Reporting;
+export default ReportingContainer;

@@ -2,10 +2,15 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import ReportingDispute from "modules/reporting/components/reporting-dispute/reporting-dispute";
+import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  isConnected: state.connection.isConnected
+});
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  loadDisputeWindow: () => dispatch(loadDisputeWindow()),
+});
 
 const mergeProps = (sP, dP, oP) => {
   return {

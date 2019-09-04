@@ -468,6 +468,7 @@ export const LOWER_FIXED_PRECISION_BOUND = 0;
 // # Modal Constants
 export const MODAL_LEDGER = 'MODAL_LEDGER';
 export const MODAL_TREZOR = 'MODAL_TREZOR';
+export const MODAL_REPORTING = 'MODAL_REPORTING';
 export const MODAL_CONTENT = 'MODAL_CONTENT';
 export const MODAL_CATEGORIES = 'MODAL_CATEGORIES';
 export const MODAL_MARKET_TYPE = 'MODAL_MARKET_TYPE';
@@ -722,7 +723,10 @@ export const AVAILABLE_TRADING_BALANCE = 'Available Trading Balance';
 export const TOTAL_FROZEN_FUNDS = 'Total Frozen Funds';
 export const REP_BALANCE = 'REP Balance';
 export const REP_STAKED = 'REP Staked';
-export const TOTAL_ACCOUNT_VALUE_IN_ETH = 'Total Account Value (DAI)';
+export const TOTAL_ACCOUNT_VALUE_IN_DAI = 'Total Account Value (DAI)';
+export const TOTAL_ACCOUNT_VALUE_IN_REP = 'My Available REP Balance ';
+export const ALL_TIME_PROFIT_AND_LOSS_REP = 'All Time Profit and Loss';
+export const MY_TOTOL_REP_STAKED = 'My Total REP Staked';
 
 // Account Summary - Augur Status
 export const AUGUR_STATUS_TITLE = 'Augur Status';

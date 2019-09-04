@@ -27,10 +27,8 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
-import { ReportingPercent, Subheaders } from 'modules/reporting/common';
+import { Subheaders, DisputingButtonView, DisputingBondsView, ReportingBondsView } from 'modules/reporting/common';
 import { formatRep } from "utils/format-number";
-import { CancelTextButton, PrimaryButton } from "modules/common/buttons";
-import { LinearPropertyLabel } from "modules/common/labels";
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -223,11 +221,12 @@ interface RadioGroupProps {
     | Array<ReportingRadioBarProps>;
   defaultSelected?: string | null;
   children?: Array<any>;
-  reporting?: Boolean;
+  reporting?: boolean;
   marketType?: string;
   minPrice?: string;
   maxPrice?: string;
   scalarDenomination?: string;
+  isReporting?: boolean;
 }
 
 interface RadioGroupState {
@@ -265,6 +264,7 @@ interface ReportingRadioBarProps {
   maxPrice?: string;
   scalarDenomination?: string;
   scalar?: boolean;
+  isReporting?: boolean;
 }
 
 interface RadioTwoLineBarProps {
@@ -648,39 +648,154 @@ export const CheckboxBar = ({
   </div>
 );
 
+interface ReportingRadioGroupProps {
+  marketType: string;
+  radioButtons: Array<ReportingRadioBarProps>
+  selected: string|null;
+  onChange: Function;
+  minPrice?: string;
+  maxPrice?: string;
+  scalarDenomination?: string;
+  isReporting?: boolean;
+}
+
+export const ReportingRadioBarGroup = ({
+  marketType,
+  radioButtons,
+  selected,
+  onChange,
+  minPrice,
+  maxPrice,
+  scalarDenomination,
+  isReporting
+}: ReportingRadioGroupProps) => {
+  const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
+  const tentativeWinning = radioButtons.find(radioButton => radioButton.stake.tentativeWinning);
+
+  return (
+    <div className={Styles.ReportingRadioBarGroup}>
+      {!isReporting && tentativeWinning &&
+        <section>
+          <span>Tentative Outcome</span>
+          <span>Add Pre-emptive stake to Support this outcome if you believe it to be correct.</span>
+          <ReportingRadioBar
+            expandable
+            {...tentativeWinning}
+            isInvalid={tentativeWinning.isInvalid}
+            isReporting={isReporting}
+            checked={tentativeWinning.value === selected}
+            onChange={selected => {
+              onChange(selected);
+            }}
+          />
+        </section>
+      }
+      <span>{isReporting ? "Outcomes" : "Other Outcomes"}</span>
+      <span>
+        {isReporting ?
+          "Select which outcome occurred. If you select what is deemed an incorrect outcome, you will lose your stake." :
+          "If the Tentative Winning Outcome is incorrect, select the outcome you believe to be correct in order to stake in its favor. You will lose your entire stake if the outcome you select is disputed and does not end up as the winning outcome."
+        }
+      </span>
+      {marketType === SCALAR &&
+        <ReportingRadioBar
+          header=""
+          value={1}
+          checked={1 === selected}
+          stake={null}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          scalarDenomination={scalarDenomination}
+          scalar
+          expandable
+          isReporting={isReporting}
+          onChange={selected => {
+            onChange(selected);
+          }}
+        />
+      }
+      {radioButtons.map((radio, index) => (!radio.isInvalid && !radio.stake.tentativeWinning &&
+        <ReportingRadioBar
+          key={index + radio.value}
+          expandable
+          {...radio}
+          checked={radio.value === selected}
+          isReporting={isReporting}
+          onChange={selected => {
+            onChange(selected);
+          }}
+        />
+      ))}
+      {((!isReporting && tentativeWinning.value !== invalid.value) || isReporting) &&
+        <>
+          <span>
+            {isReporting ?
+              "Select Invalid if you believe this market's outcome was ambiguous or unverifiable." :
+              "If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully."
+            }
+          </span>
+          <ReportingRadioBar
+            expandable
+            {...invalid}
+            isInvalid
+            isReporting={isReporting}
+            checked={invalid.value === selected}
+            onChange={selected => {
+              onChange(selected);
+            }}
+          />
+        </>
+      }
+    </div>
+  );
+}
+
 export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   state: RadioGroupState = {
     selected: this.props.defaultSelected || null,
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultSelected !== this.props.defaultSelected) {
+      this.onChange(nextProps.defaultSelected);
+    }
+  }
+
+  onChange = (selected) => {
+    this.props.onChange(selected);
+    this.setState({ selected });
+  }
+
   render() {
-    const { radioButtons, onChange, errorMessage, reporting, marketType, minPrice, maxPrice, scalarDenomination } = this.props;
+    const {
+      radioButtons,
+      onChange,
+      errorMessage,
+      reporting,
+      marketType,
+      minPrice,
+      maxPrice,
+      scalarDenomination,
+      isReporting,
+    } = this.props;
     const { selected } = this.state;
 
     return (
-      <div>
-        {marketType === SCALAR && reporting &&
-          <ReportingRadioBar 
-            {...this.props}
-            scalar
-            onChange={selected => {
-              onChange(selected);
-              this.setState({ selected });
-            }}
+      <div className={Styles.RadioBarGroup}>
+        {reporting &&
+          <ReportingRadioBarGroup
+            marketType={marketType}
+            radioButtons={radioButtons}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            scalarDenomination={scalarDenomination}
+            selected={selected}
+            onChange={this.onChange}
+            isReporting={isReporting}
           />
         }
-        {radioButtons.map((radio, index) => (
-          reporting ? 
-          <ReportingRadioBar 
-            key={index + radio.value}
-            {...radio}
-            checked={radio.value === selected}
-            onChange={selected => {
-              onChange(selected);
-              this.setState({ selected });
-            }}
-          />
-          : <RadioBar
+        {!reporting && radioButtons.map((radio, index) => (
+          <RadioBar
             key={radio.value}
             {...radio}
             checked={radio.value === selected}
@@ -693,6 +808,11 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       </div>
     );
   }
+}
+
+interface ReportingRadioBarState {
+  stakeValue: string;
+  rangeValue: string;
 }
 
 export class ReportingRadioBar extends Component<
@@ -724,87 +844,57 @@ export class ReportingRadioBar extends Component<
       scalar,
       minPrice,
       maxPrice,
-      scalarDenomination
+      scalarDenomination,
+      expandable,
+      isReporting
     } = this.props;
 
     const s = this.state;
 
     const inputtedStake = s.stakeValue === "" || isNaN(s.stakeValue) ? 0 : s.stakeValue;
-    const fullBond = !scalar && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
+    const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
 
     return (
       <div
         className={classNames(Styles.ReportingRadioBar, {
-          [Styles.RadioBarExpanded]: checked && expandable,
           [Styles.RadioBarError]: error,
           [Styles.Invalid]: isInvalid,
           [Styles.Scalar]: scalar,
+          [Styles.Checked]: checked,
         })}
         role="button"
         onClick={e => onChange(value)}
       >
         {checked ? FilledRadio : EmptyRadio}
-        <h5>{scalar ? `Enter a range from ${minPrice} - ${maxPrice}` : header}</h5>
+        <h5>{scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}</h5>
         <div>
-          {(scalar || !stake.tentativeWinning) &&
+          {!isReporting && // for disputing or for scalar
             <>
-              {!scalar &&
-                <>
-                  <div>
-                    <span>
-                      Make tentative winner
-                    </span>
-                    <span>
-                      {fullBond.formatted}
-                      <span>
-                        / {stake.bondSizeTotal.formatted} REP
-                      </span>
-                    </span>
-                  </div>
-                  <ReportingPercent firstPercent={stake.preFilledStake} secondPercent={stake.bondSizeCurrent} thirdPercent={formatRep(inputtedStake)} total={stake.bondSizeTotal} />
-                </>
+              {!stake.tentativeWinning && 
+                <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
               }
-              {scalar &&
-                <>
-                  <TextInput 
-                    placeholder={"Enter a number"}
-                    value={s.rangeValue}
-                    onChange={(value) => this.changeRange(value)}
-                    errorMessage={null}
-                  />
-                  <h2>{scalarDenomination}</h2>
-                </>
+              {stake.tentativeWinning && 
+                <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
               }
-              <TextInput 
-                placeholder={"0.0000"}
-                value={s.stakeValue}
-                onChange={(value) => this.changeStake(value)}
-                errorMessage={null}
-                innerLabel="REP"
-              />
-              <div>
-                <CancelTextButton noIcon action={null} text={"MIN"}/>
-                |
-                <CancelTextButton noIcon action={null} text={"FILL DISPUTE BOND"}/>
-              </div>
-              <span>Review</span>
-              <LinearPropertyLabel
-                key="disputeRoundStake"
-                label="Dispute Round Stake"
-                value={"0.0000 REP"}
-              />
-              <LinearPropertyLabel
-                key="estimatedGasFee"
-                label="Estimated Gas Fee"
-                value={"0.0000 ETH"}
-              />
-              <PrimaryButton text='Confirm' action={null} />
+              {checked && 
+                <DisputingBondsView 
+                  scalar={scalar}
+                  rangeValue={s.rangeValue}
+                  changeRange={this.changeRange}
+                  scalarDenomination={scalarDenomination}
+                  stakeValue={s.stakeValue}
+                  changeStake={this.changeStake}
+                />
+              }
             </>
           }
-          {!scalar && stake.tentativeWinning &&
-            <>
-              <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
-            </>
+          {isReporting && checked &&
+            <ReportingBondsView 
+              scalar={scalar}
+              rangeValue={s.rangeValue}
+              changeRange={this.changeRange}
+              scalarDenomination={scalarDenomination}
+            />
           }
         </div>
       </div>
@@ -1955,7 +2045,7 @@ export const CategoryRow = ({ hasChildren = true, handleClick = noop, active = f
       [Styles.loading]: loading,
       [Styles.disabled]: !hasChildren,
   })}>
-    <span>{category}</span>
+    <span>{category && category.length <= 3 ? category.toUpperCase() : category }</span>
     {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}
   </div>

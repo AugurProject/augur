@@ -246,9 +246,20 @@
 .ReportingRadioBar {
   .RadioBar;
 
+  border-radius: @size-6;
   grid-template-columns: 52px auto;
   grid-template-rows: auto;
   height: auto;
+
+  &.Checked {
+    border: 1px solid @color-faded-bright;
+
+    > svg {
+      > circle:last-of-type {
+        fill: @color-faded-bright;
+      }
+    }
+  }
 
   > svg {
     margin-top: @size-16;
@@ -264,51 +275,6 @@
     margin-bottom: @size-12;
     margin-right: @size-48;
 
-    > div:first-of-type {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: @size-8;
-
-      > span:first-of-type {
-        .mono-10;
-
-        color: @color-tertiary-info-text;
-        line-height: @size-12;
-        text-transform: uppercase;
-      }
-
-      > span:nth-of-type(2) {
-        .mono-12;
-
-        color: @color-tertiary-info-text;
-        line-height: @size-14;
-
-        > span:first-of-type {
-          color: @color-alternate-info-text;
-          margin-left: @size-4;
-        }
-      }
-    }
-
-    > div:nth-of-type(3) {
-      max-width: 340px;
-      margin-top: @size-16;
-    }
-
-    > div:nth-of-type(4) {
-      color: fade(@color-tertiary-info-text, 30);
-      display: flex;
-      margin-top: @size-8;
-
-      > button:first-of-type {
-        margin-right: @size-10;
-      }
-
-      > button:last-of-type {
-        margin-left: @size-10;
-      }
-    }
-
     > span:first-of-type {
       .text-14-medium;
 
@@ -317,53 +283,20 @@
       margin-bottom: @size-12;
       margin-top: @size-16;
     }
-
-    > button {
-      margin-top: @size-16;
-      margin-bottom: @size-4;
-    }
   }
 
   &.Invalid {
-    color: @color-invalid;
-  }
-
-  &.Scalar {
-    > div {
-      > div:first-of-type {
-        max-width: 300px;
-      }
-      
-      > div:nth-of-type(2) {
-        max-width: 340px;
-        margin-top: @size-16;
-      }
-
-      > div:nth-of-type(3) {
-        color: fade(@color-tertiary-info-text, 30);
-        display: flex;
-        margin-top: @size-8;
-
-        > button:first-of-type {
-          margin-right: @size-10;
-        }
-
-        > button:last-of-type {
-          margin-left: @size-10;
-        }
-      }
-
-      > h2 {
-        .mono-11;
-
-        color: @color-alternate-info-text;
-        margin-top: @size-8;
-      }
+    > h5 {
+      color: @color-invalid;
     }
   }
 
   @media @breakpoint-mobile-mid {
     > div {
+      grid-column: 1 / span 3;
+      margin-left: @size-16;
+      margin-right: @size-16;
+      
       > button {
         width: 100%;
       }
@@ -425,6 +358,50 @@
       white-space: normal;
       width: 244px;
     }
+  }
+}
+
+.RadioBarGroup {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.ReportingRadioBarGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  > section > span,
+  > span {
+    display: flex;
+  }
+
+  > section > span:first-of-type,
+  > span:first-of-type {
+    .text-14-medium;
+
+    color: @color-secondary-text;
+    margin-bottom: @size-8;
+  }
+
+  > span:nth-of-type(2),
+  > span:nth-of-type(3),
+  > section > span:nth-of-type(2) {
+    .text-12;
+
+    color: @color-tertiary-info-text;
+    margin-bottom: @size-12;
+  }
+
+  > span:nth-of-type(3), {
+    margin-top: @size-16;
+  }
+
+  > section {
+    border-bottom: 1px solid @color-primary-alternate;
+    margin-bottom: @size-32;
+    padding-bottom: @size-32;
   }
 }
 

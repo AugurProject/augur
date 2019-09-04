@@ -22,7 +22,7 @@ const mapStateToProps = (state, ownProps) => {
     isForking: state.universe.isForking,
     market,
     isFavorite: !!state.favorites[ownProps.marketId],
-    currentAugurTimestamp: state.blockchain.currentAugurTimestamp
+    currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
   };
 };
 
