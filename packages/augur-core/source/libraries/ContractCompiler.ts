@@ -100,6 +100,7 @@ export class ContractCompiler {
                 // FIXME: https://github.com/ethereum/solidity/issues/3273
                 if (error.message.includes("instruction is only available after the Metropolis hard fork")) continue;
                 if (error.message.includes("Experimental features are turned on. Do not use experimental features on live deployments")) continue;
+                if (error.message.includes("This declaration shadows an existing declaration")) continue;
                 errors += error.formattedMessage + "\n";
             }
 
@@ -140,7 +141,7 @@ export class ContractCompiler {
         });
         // The flattener removes the pragma experimental line from output so we add it back here
         let result = await this.getCommandOutputFromInput(childProcess, "");
-        if (['IExchange', 'FillOrder', 'ZeroXTradeToken', 'ZeroXExchange'].includes(path.parse(filePath).base.replace(".sol", ""))) {
+        if (['IExchange', 'FillOrder', 'ZeroXTradeToken', 'ZeroXExchange', 'SimulateTrade'].includes(path.parse(filePath).base.replace(".sol", ""))) {
             result = "pragma experimental ABIEncoderV2;\n" + result;
         }
         return result;

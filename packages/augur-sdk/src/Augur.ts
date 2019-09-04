@@ -14,6 +14,7 @@ import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
 import { Universe } from "./state/getter/Universe";
+import { ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
 import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
 import { TXStatus } from "./event-handlers";
@@ -26,9 +27,13 @@ import { Liquidity } from "./api/Liquidity";
 import { TransactionResponse } from "ethers/providers";
 import { SyncableFlexSearch } from "./state/db/SyncableFlexSearch";
 import { GenericEventDBDescription } from "./state/logs/types";
+import { ZeroX } from "./api/ZeroX";
+import { WSClient } from '@0x/mesh-rpc-client';
+import { Arrayish } from "ethers/utils";
 
 export class Augur<TProvider extends Provider = Provider> {
   readonly provider: TProvider;
+  readonly signer: EthersSigner;
   private readonly dependencies: ContractDependenciesGnosis;
 
   readonly networkId: NetworkId;
@@ -38,6 +43,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
+  readonly zeroX: ZeroX;
   readonly universe: Universe;
   static syncableFlexSearch: SyncableFlexSearch;
   static connector: BaseConnector;
@@ -75,9 +81,10 @@ export class Augur<TProvider extends Provider = Provider> {
     { EventName: "UniverseForked", indexes: ["universe"]},
   ];
 
-  constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false) {
+  constructor(provider: TProvider, dependencies: ContractDependenciesGnosis, networkId: NetworkId, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined) {
     this.provider = provider;
     this.dependencies = dependencies;
+    this.signer = this.dependencies.signer;
     this.networkId = networkId;
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
@@ -92,20 +99,22 @@ export class Augur<TProvider extends Provider = Provider> {
     this.events = new Events(this.provider, this.addresses.Augur);
     this.universe = new Universe();
     this.gnosis = new Gnosis(this.provider, gnosisRelay, this);
+    this.zeroX = meshClient ? new ZeroX(this, meshClient) : undefined;
     if (enableFlexSearch && !Augur.syncableFlexSearch) {
       Augur.syncableFlexSearch = new SyncableFlexSearch();
     }
     this.registerTransactionStatusEvents();
   }
 
-  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesGnosis, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false): Promise<Augur> {
+  static async create<TProvider extends Provider = Provider>(provider: TProvider, dependencies: ContractDependenciesGnosis, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, enableFlexSearch = false, meshClient: WSClient = undefined): Promise<Augur> {
     // has to be static because of the way we instantiate boundTo methods
     if (!Augur.connector || connector.constructor.name !== "EmptyConnector") {
       Augur.connector = connector;
     }
 
     const networkId = await provider.getNetworkId();
-    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay, enableFlexSearch);
+    const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay, enableFlexSearch, meshClient);
+
     await augur.contracts.setReputationToken(networkId);
     return augur;
   }
@@ -117,6 +126,14 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async listAccounts() {
     return this.dependencies.provider.listAccounts();
+  }
+
+  async signMessage(message: Arrayish) {
+    return this.dependencies.signer.signMessage(message);
+  }
+
+  async signDigest(message: Arrayish) {
+    return this.dependencies.signer.signDigest(message);
   }
 
   async getTimestamp() {
@@ -248,6 +265,11 @@ export class Augur<TProvider extends Provider = Provider> {
 
   getSyncData = () => {
     return this.bindTo(Status.getSyncData)({});
+  }
+
+  getZeroXOrders = (params: Parameters<typeof ZeroXOrdersGetters.getZeroXOrders>[2]) => {
+    delete params.sortBy;
+    return this.bindTo(ZeroXOrdersGetters.getZeroXOrders)(params);
   }
 
   syncUserData = (account: string): void => {
