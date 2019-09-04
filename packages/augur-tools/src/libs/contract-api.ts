@@ -284,7 +284,7 @@ export class ContractAPI {
   async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
     // await this.repFaucet(amount.times(1e23)); // make sure you have the REP you're trying to contribute
     await market.contribute(payoutNumerators, amount, description).catch((err) => {
-      console.log('DAB', payoutNumerators, amount, description);
+      console.log('DAB', payoutNumerators.map((bn) => bn.toNumber()), amount.toString(), description);
       throw err;
     });
   }
@@ -297,6 +297,9 @@ export class ContractAPI {
   async getRemainingToFill(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<BigNumber> {
     const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
     const crowdsourcerAddress = await market.getCrowdsourcer_(payoutDistributionHash);
+    if (crowdsourcerAddress === NULL_ADDRESS) {
+      return new BigNumber(-1);
+    }
     const crowdsourcer = this.augur.contracts.getReportingParticipant(crowdsourcerAddress);
     return crowdsourcer.getRemainingToFill_();
   }

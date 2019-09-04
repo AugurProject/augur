@@ -21,6 +21,8 @@ import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
 } from '@augurproject/sdk';
+import { ContractAPI } from '..';
+import { EmptyConnector } from "@augurproject/sdk/build";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -632,12 +634,19 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true);
       const marketId = args.marketId as string;
 
-      // const await user.augur.contracts.universe.getDisputeThresholdForDisputePacing_();
+      console.log('rep threshold d p', (await user.augur.contracts.universe.getDisputeThresholdForDisputePacing_()).toString());
 
       const MAX_DISPUTES = 20;
       const SOME_REP = new BigNumber(1e18).times(6e7);
       const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
       const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
+
+      const mary = await ContractAPI.userWrapper(
+        this.accounts[1],
+        this.provider,
+        this.contractAddresses,
+        undefined
+      );
 
       let market: ContractInterfaces.Market;
       if (marketId !== null) {
@@ -648,14 +657,20 @@ export function addScripts(flash: FlashSession) {
       }
 
       await user.repFaucet(SOME_REP);
+      await mary.repFaucet(SOME_REP);
 
-      // Get past the market time, into when we accept reporting.
+      // Get past the market time, into when we can accept the initial report.
       await user.setTimestamp((await market.getEndTime_()).plus(1));
       // Do the initial report, creating the first dispute window.
 
-      console.log('D0', user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_()).address);
-      await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
-      console.log('D1', user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_()).address);
+      await debugDW('before all', user, market);
+
+      // await user.setTimestamp((await user.getTimestamp()).plus(86400 * 7));
+      // await debugDW('after going forward a week', user, market);
+
+      await user.doInitialReport(market, payoutNumerators, '', SOME_REP.div(2).toString());
+
+      await debugDW('after initial report', user, market);
 
       for (let i = 0; i < MAX_DISPUTES; i++) {
         if (await market.getForkingMarket_() !== NULL_ADDRESS) {
@@ -663,25 +678,26 @@ export function addScripts(flash: FlashSession) {
           break;
         }
 
-        console.log('D2', user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_()).address);
+        const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
+        console.log(`#####\n##### fork attempt ${i} on ${disputeWindow.address}\n#####`);
+
+        await debugDW('D0', user, market);
+
+        await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
+
+        await debugDW('D1', user, market);
 
         if (i % 2 === 0) {
           console.log('contribute to conflict');
-          await user.contribute(market, conflictNumerators, SOME_REP);
+          const maryMarket = await user.getMarketContract(market.address);
+          await mary.contribute(maryMarket, conflictNumerators, SOME_REP);
         } else {
           console.log('contribute to original');
           await user.contribute(market, payoutNumerators, SOME_REP);
         }
 
-        console.log('D3', user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_()).address);
+        await debugDW('D2', user, market);
 
-        const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
-        console.log(`fork attempt ${i} on ${disputeWindow.address}`);
-        console.log(`num participants: ${await market.getNumParticipants_()}`);
-        console.log(`participants stake: ${await market.getParticipantStake_()}`);
-        console.log('dispute window start time:', new Date((await disputeWindow.getStartTime_()).times(1000).toNumber()));
-        console.log('dispute window end time:', new Date((await disputeWindow.getEndTime_()).times(1000).toNumber()));
-        console.log('current time:', new Date((await user.getTimestamp()).times(1000).toNumber()));
         const disputeWindowEndTime = await disputeWindow.getEndTime_();
         await user.setTimestamp(disputeWindowEndTime.plus(1));
         // await user.augur.contracts.universe.getOrCreateCurrentDisputeWindow(false);
@@ -689,6 +705,56 @@ export function addScripts(flash: FlashSession) {
     },
   });
 }
+
+async function debugDW(tag: string, user: ContractAPI, market: ContractInterfaces.Market) {
+  const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
+  console.log(`dispute window ${tag} @ ${disputeWindow.address}`);
+
+  if (disputeWindow.address === NULL_ADDRESS) return;
+
+  const startTime = await disputeWindow.getStartTime_();
+  const endTime = await disputeWindow.getEndTime_();
+  const currentTime = await user.getTimestamp();
+
+  console.log(`\tstart: ${startTime}`);
+  console.log(`\tend: ${endTime}`);
+  console.log(`\tcurrent time: ${currentTime}`);
+  console.log(`\twithin dw: ${startTime < currentTime && currentTime < endTime}`);
+  console.log(`\tis over: ${await disputeWindow.isOver_()}`);
+  console.log(`\t# participants: ${(await market.getNumParticipants_()).toString()}`);
+  console.log(`\t$ participants: ${(await market.getParticipantStake_()).toString()}`);
+  console.log(`\tdispute pacing on?: ${await market.getDisputePacingOn_()}`);
+
+  const winning = await Promise.all([0, 1, 2].map(async (n) => (await market.getWinningPayoutNumerator_(new BigNumber(n))).toString()));
+  console.log(`\twinning: ${winning.join(' ')}`);
+
+  const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
+  const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
+  const otherNumerators = [0, 0, 100].map((n) => new BigNumber(n));
+
+  const remaining = await user.getRemainingToFill(market, payoutNumerators);
+  const disputeRemaining = await user.getRemainingToFill(market, conflictNumerators);
+  const otherRemaining = await user.getRemainingToFill(market, otherNumerators);
+  console.log(`\tremains: ${remaining.toString()} ${disputeRemaining.toString()} ${otherRemaining.toString()}`);
+
+  const payoutHash = await market.derivePayoutDistributionHash_(payoutNumerators);
+  const disputeHash = await market.derivePayoutDistributionHash_(conflictNumerators);
+  const otherHash = await market.derivePayoutDistributionHash_(otherNumerators);
+
+  console.log(`\tpayout hash: ${payoutHash}`);
+  console.log(`\tdispute hash: ${disputeHash}`);
+  console.log(`\tother hash: ${otherHash}`);
+
+  const payoutCrowdsourcer = await market.getCrowdsourcer_(payoutHash);
+  const conflictCrowdsourcer = await market.getCrowdsourcer_(disputeHash);
+  const otherCrowdsourcer = await market.getCrowdsourcer_(otherHash);
+
+  console.log(`\tpayout crowdsourcer: ${payoutCrowdsourcer}`);
+  console.log(`\tconflict crowdsourcer: ${conflictCrowdsourcer}`);
+  console.log(`\tother crowdsourcer: ${otherCrowdsourcer}`);
+
+}
+
 //
 // function getPayoutNumerators(market: MarketInfo, selectedOutcome, asPrice) {
 //   if (selectedOutcome.toString().indexOf(',') !== -1) {
