@@ -14,7 +14,6 @@ import { EmptyConnector } from "./connector/empty-connector";
 import { Events } from "./api/Events";
 import { Markets } from "./state/getter/Markets";
 import { ZeroXOrdersGetters } from "./state/getter/ZeroXOrdersGetters";
-import { Universe } from "./state/getter/Universe";
 import { Provider } from "./ethereum/Provider";
 import { Status } from "./state/getter/status";
 import { TXStatus } from "./event-handlers";
@@ -43,7 +42,6 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly gnosis: Gnosis;
-
   readonly zeroX: ZeroX;
   static syncableFlexSearch: SyncableFlexSearch;
   static connector: BaseConnector;
