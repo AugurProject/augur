@@ -634,19 +634,10 @@ export function addScripts(flash: FlashSession) {
       const user = await this.ensureUser(this.network, true);
       const marketId = args.marketId as string;
 
-      console.log('rep threshold d p', (await user.augur.contracts.universe.getDisputeThresholdForDisputePacing_()).toString());
-
       const MAX_DISPUTES = 20;
       const SOME_REP = new BigNumber(1e18).times(6e7);
       const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
       const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
-
-      const mary = await ContractAPI.userWrapper(
-        this.accounts[1],
-        this.provider,
-        this.contractAddresses,
-        undefined
-      );
 
       let market: ContractInterfaces.Market;
       if (marketId !== null) {
@@ -657,27 +648,27 @@ export function addScripts(flash: FlashSession) {
       }
 
       await user.repFaucet(SOME_REP);
-      await mary.repFaucet(SOME_REP);
 
       // Get past the market time, into when we can accept the initial report.
       await user.setTimestamp((await market.getEndTime_()).plus(1));
-      // Do the initial report, creating the first dispute window.
 
+      // Do the initial report, creating the first dispute window.
       await user.doInitialReport(market, payoutNumerators, '', SOME_REP.div(2).toString());
+      // First contribute (dispute) to overcome additional stake in initial report.
+      await user.contribute(market, conflictNumerators, SOME_REP);
 
       for (let i = 0; i < MAX_DISPUTES; i++) {
-        console.log(await market.getForkingMarket_());
         if ((await market.getForkingMarket_()) !== NULL_ADDRESS) {
           this.log('Successfully Forked');
           break;
         }
 
         const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
-        console.log(`#####\n##### fork attempt ${i} on ${disputeWindow.address}\n#####`);
+        console.log(`fork attempt ${i} on ${disputeWindow.address}`);
 
         await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
 
-        if (i % 2 === 1 || i === 0 || i === 1) {
+        if (i % 2 === 0) {
           console.log('contribute to conflict');
           await user.contribute(market, conflictNumerators, SOME_REP);
         } else {
@@ -687,7 +678,6 @@ export function addScripts(flash: FlashSession) {
 
         const disputeWindowEndTime = await disputeWindow.getEndTime_();
         await user.setTimestamp(disputeWindowEndTime.plus(1));
-        // await user.augur.contracts.universe.getOrCreateCurrentDisputeWindow(false);
       }
     },
   });
