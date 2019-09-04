@@ -664,9 +664,9 @@ export function addScripts(flash: FlashSession) {
         }
 
         const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
-        console.log(`fork attempt ${i} on ${disputeWindow.address}`);
-
-        await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
+        // console.log(`fork attempt ${i} on ${disputeWindow.address}`);
+        //
+        // await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
 
         if (i % 2 === 0) {
           console.log('contribute to conflict');
