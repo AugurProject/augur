@@ -54,10 +54,7 @@ const determineProgress = (
   const formattedStartTime: DateFormattedObject = formatTime(startTime);
   const formattedEndTime: DateFormattedObject = formatTime(endTime);
   const formattedCurrentTime: DateFormattedObject = formatTime(currentTime);
-  // const totalDays = format.getDaysRemaining(
-  //   formattedEndTime.timestamp,
-  //   formattedStartTime.timestamp
-  // );
+
   const daysRemaining = format.getDaysRemaining(
     formattedEndTime.timestamp,
     formattedCurrentTime.timestamp
@@ -74,18 +71,10 @@ const determineProgress = (
     formattedEndTime.timestamp,
     formattedCurrentTime.timestamp
   );
-  // const totalMinutes = format.getMinutesRemaining(
-  //   formattedEndTime.timestamp,
-  //   formattedStartTime.timestamp
-  // );
   const minutesRemaining = format.getMinutesMinusHoursRemaining(
     formattedEndTime.timestamp,
     formattedCurrentTime.timestamp
   );
-  // const totalSeconds = format.getSecondsRemaining(
-  //   formattedEndTime.timestamp,
-  //   formattedStartTime.timestamp
-  // );
   const secondsRemaining = format.getSecondsMinusMinutesRemaining(
     formattedEndTime.timestamp,
     formattedCurrentTime.timestamp
@@ -102,13 +91,10 @@ const determineProgress = (
     formattedCurrentTime,
     percentageToGo,
     percentageDone,
-    // totalDays,
     daysRemaining,
     totalHours,
     hoursRemaining,
-    // totalMinutes,
     minutesRemaining,
-    // totalSeconds,
     secondsRemaining,
   };
 };
@@ -326,19 +312,44 @@ export const MarketTimeline = (props: TimeProgressBarProps) => {
   );
 };
 
-const getDisputeWindowLabels = (start: DateFormattedObject, end: DateFormattedObject) => {
-  const startLabel = `${start.formattedUtcShortDate.substring(0, start.formattedUtcShortDate.indexOf(','))} ${start.formattedShortTime} (UTC)`;
-  const endLabel = `${end.formattedUtcShortDate.substring(0, end.formattedUtcShortDate.indexOf(','))} ${end.formattedShortTime} (UTC)`;
+const getWindowLabels = (
+  start: DateFormattedObject,
+  end: DateFormattedObject
+) => {
+  const startLabel = `${start.formattedUtcShortDate.substring(
+    0,
+    start.formattedUtcShortDate.indexOf(',')
+  )} ${start.formattedShortTime} (UTC)`;
+  const endLabel = `${end.formattedUtcShortDate.substring(
+    0,
+    end.formattedUtcShortDate.indexOf(',')
+  )} ${end.formattedShortTime} (UTC)`;
   const dayLabels = format.getFullDaysBetween(start.timestamp, end.timestamp);
   return {
     startLabel,
     endLabel,
-    dayLabels
+    dayLabels,
   };
+};
+
+export interface WindowProgressProps {
+  startTime: DateFormattedObject | number;
+  endTime: DateFormattedObject | number;
+  currentTime: DateFormattedObject | number;
+  title: string;
+  description: string;
+  countdownLabel: string;
 }
 
-export const DisputeWindowProgress = (props: TimeProgressBarProps) => {
-  const { startTime, endTime, currentTime } = props;
+export const WindowProgress = (props: WindowProgressProps) => {
+  const {
+    startTime,
+    endTime,
+    currentTime,
+    title,
+    description,
+    countdownLabel
+  } = props;
   const {
     formattedStartTime,
     formattedEndTime,
@@ -347,28 +358,31 @@ export const DisputeWindowProgress = (props: TimeProgressBarProps) => {
     minutesRemaining,
     secondsRemaining,
   } = determineProgress(startTime, endTime, currentTime);
-  const {
-    startLabel,
-    endLabel,
-    dayLabels
-  } = getDisputeWindowLabels(formattedStartTime, formattedEndTime);
+  const { startLabel, endLabel, dayLabels } = getWindowLabels(
+    formattedStartTime,
+    formattedEndTime
+  );
   return (
-    <div className={Styles.DisputeWindowProgress}>
-      <h4>current dispute window</h4>
-      <p>Few lines explaining the purpose of the Dispute Window</p>
+    <div className={Styles.WindowProgress}>
+      <h4>{title}</h4>
+      <p>{description}</p>
       <TimeProgressBar {...props} />
       <ul>
         <li>{startLabel}</li>
-        {dayLabels.map(label => (<li key={label}>{label}</li>))}
+        {dayLabels.map(label => (
+          <li key={label}>{label}</li>
+        ))}
         <li>{endLabel}</li>
       </ul>
-      <h4>time remaining in window</h4>
+      <h4>{countdownLabel}</h4>
       <p>
         {`${'0' + daysRemaining}d ${
           hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
         }h ${
           minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
-        }m ${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}s`}
+        }m ${
+          secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining
+        }s`}
       </p>
     </div>
   );

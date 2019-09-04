@@ -17,7 +17,6 @@ import {
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { MarketStateLabel }  from 'modules/common/labels';
-import { DisputeWindowProgress } from "modules/common/progress";
 
 const PAGINATION_COUNT = 10;
 
@@ -303,12 +302,6 @@ export default class MarketsView extends Component<
           updateQuery={(param, value) =>
             updateQuery(param, value, this.props.location, this.props.history)
           }
-        />
-
-        <DisputeWindowProgress
-          startTime={Date.parse("September 1, 2019 05:33:00") / 1000}
-          endTime={Date.parse("September 8, 2019 05:33:00") / 1000}
-          currentTime={Date.now() / 1000}
         />
 
         <FilterNotice

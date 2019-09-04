@@ -320,7 +320,7 @@ export function getFullDaysBetween(
   const daysBetween: Array<string> = [];
   for (let i = 1; i < getDays; i++) {
     const date = moment(startUnixTimestamp * 1000).utc().startOf('day').add(i, "days");
-    daysBetween.push(date.utc().format("MMM DD"));
+    daysBetween.push(`${shortMonths[date.utc().month()]} ${date.utc().format("DD")}`);
   }
 
   return daysBetween;

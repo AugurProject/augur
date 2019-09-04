@@ -77,3 +77,9 @@
 
 // TODO remove when side nav is removed
 @breakpoint-temp: ~"(min-width: 1281px) and (max-width: 1420px)";
+
+// new breakpoints
+@desktop-min: 1200px;
+
+@breakpoint-max-desktop-min: ~"all and (max-width: @{desktop-min})";
+@breakpoint-min-desktop-min: ~"all and (min-width: @{desktop-min})";
