@@ -691,6 +691,7 @@ export function addScripts(flash: FlashSession) {
           console.log('contribute to conflict');
           const maryMarket = await user.getMarketContract(market.address);
           await mary.contribute(maryMarket, conflictNumerators, SOME_REP);
+          await mary.contribute(maryMarket, conflictNumerators, SOME_REP);
         } else {
           console.log('contribute to original');
           await user.contribute(market, payoutNumerators, SOME_REP);
