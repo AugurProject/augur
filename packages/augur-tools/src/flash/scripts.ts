@@ -654,7 +654,8 @@ export function addScripts(flash: FlashSession) {
 
       // Do the initial report, creating the first dispute window.
       await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
-      // First contribution (dispute) to overcome additional stake in initial report.
+      // Contribution (dispute) fulfills the first dispute bond,
+      // pushing into next dispute round that takes additional stake into account.
       await user.contribute(market, conflictNumerators, SOME_REP);
 
       for (let i = 0; i < MAX_DISPUTES; i++) {
