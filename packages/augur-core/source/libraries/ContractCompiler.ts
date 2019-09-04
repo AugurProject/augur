@@ -51,6 +51,23 @@ export class ContractCompiler {
         return JSON.parse(compilerOutputJson);
     }
 
+
+
+    private async getCompilerVersion() {
+      const childProcess = spawn("solc", ["--version"]);
+      /*
+        Example output:
+          solc, the solidity compiler commandline interface
+          Version: 0.5.10+commit.5a6ea5b1.Darwin.appleclang
+     */
+      const output = await this.getCommandOutputFromInput(childProcess, "");
+      try {
+        return output.split("\n")[1].replace("Version: ", "").split(".").slice(0,4).join(".");
+      } catch {
+        return "Unable to retrieve solc version. Please ensure version format has not changed.";
+      }
+    }
+
     public async compileContracts(): Promise<CompilerOutput> {
         // Check if all contracts are cached (and thus do not need to be compiled)
         try {
@@ -73,6 +90,7 @@ export class ContractCompiler {
 
         // Compile all contracts in the specified input directory
         const compilerInputJson = await this.generateCompilerInput();
+        const compilerVersion = await this.getCompilerVersion();
         const compilerOutput = await this.compileCustomWrapper(compilerInputJson);
 
         if (compilerOutput.errors) {
@@ -94,11 +112,17 @@ export class ContractCompiler {
         await fs.mkdirp(path.dirname(this.configuration.contractOutputPath));
 
         // Output all contract data to single file (used for generating documentation markdown files)
-        await fs.writeFile(this.configuration.fullContractOutputPath, JSON.stringify(compilerOutput, null, '\t'));
+        await fs.writeFile(this.configuration.fullContractOutputPath, JSON.stringify({
+          compilerVersion,
+          ...compilerOutput,
+        }, null, '\t'));
 
         // Output filtered contract data to single file
         const filteredCompilerOutput = this.filterCompilerOutput(compilerOutput);
-        await fs.writeFile(this.configuration.contractOutputPath, JSON.stringify(filteredCompilerOutput, null, '\t'));
+        await fs.writeFile(this.configuration.contractOutputPath, JSON.stringify({
+          compilerVersion,
+          ...filteredCompilerOutput,
+        }, null, '\t'));
 
         // Output abi data to a single file
         const abiOutput = this.generateAbiOutput(filteredCompilerOutput);
