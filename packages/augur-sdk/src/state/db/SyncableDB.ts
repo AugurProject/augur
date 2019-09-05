@@ -1,11 +1,11 @@
-import * as _ from "lodash";
-import { AbstractDB, BaseDocument } from "./AbstractDB";
-import { Augur } from "../../Augur";
-import { DB } from "./DB";
-import { Log, ParsedLog } from "@augurproject/types";
-import { SyncStatus } from "./SyncStatus";
-import { augurEmitter } from "../../events";
-import { SubscriptionEventName } from "../../constants";
+import * as _ from 'lodash';
+import { AbstractDB, BaseDocument } from './AbstractDB';
+import { Augur } from '../../Augur';
+import { DB } from './DB';
+import { Log, ParsedLog } from '@augurproject/types';
+import { SyncStatus } from './SyncStatus';
+import { augurEmitter } from '../../events';
+import { SubscriptionEventName } from '../../constants';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -29,7 +29,7 @@ export class SyncableDB extends AbstractDB {
     eventName: string,
     dbName: string = db.getDatabaseName(eventName),
     idFields: string[] = [],
-    indexes: string[] = [],
+    indexes: string[] = []
   ) {
     super(networkId, dbName, db.pouchDBFactory);
     this.augur = augur;

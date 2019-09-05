@@ -1,9 +1,9 @@
-import * as _ from "lodash";
-import { Augur } from "../../Augur";
-import { DerivedDB } from "./DerivedDB";
-import { DB } from "./DB";
-import { Subscriptions } from "../../subscriptions";
-import { augurEmitter } from "../../events";
+import * as _ from 'lodash';
+import { Augur } from '../../Augur';
+import { DerivedDB } from './DerivedDB';
+import { DB } from './DB';
+import { Subscriptions } from '../../subscriptions';
+import { augurEmitter } from '../../events';
 import {
   CLAIM_GAS_COST,
   DEFAULT_GAS_PRICE_IN_GWEI,
@@ -11,14 +11,14 @@ import {
   INVALID_OUTCOME,
   MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
   MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI,
-  SECONDS_IN_YEAR,
+  SECONDS_IN_A_YEAR,
   WORST_CASE_FILL,
-} from "../../constants";
-import { MarketData, MarketType, OrderType } from "../logs/types";
-import { BigNumber } from "bignumber.js";
-import { Orderbook } from "../../api/Liquidity";
+} from '../../constants';
+import { MarketData, MarketType, OrderType } from '../logs/types';
+import { BigNumber } from 'bignumber.js';
+import { OrderBook } from '../../api/Liquidity';
 
-interface MarketOrderbookData {
+interface MarketOrderBookData {
   _id: string;
   invalidFilter: boolean;
   liquidity: LiquidityResults;
@@ -37,7 +37,7 @@ export class MarketDB extends DerivedDB {
   readonly liquiditySpreads = [10, 15, 20, 100];
 
   constructor(db: DB, networkId: number, augur: Augur) {
-    super(db, networkId, "Markets", ["MarketCreated", "MarketVolumeChanged", "MarketOIChanged"], ["market"]);
+    super(db, networkId, 'Markets', ['MarketCreated', 'MarketVolumeChanged', 'MarketOIChanged'], ['market']);
 
     this.augur = augur;
 
@@ -59,26 +59,26 @@ export class MarketDB extends DerivedDB {
       },
     };
 
-    const result = await this.stateDB.findInDerivedDB(this.stateDB.getDatabaseName("CurrentOrders"), request);
+    const result = await this.stateDB.findInDerivedDB(this.stateDB.getDatabaseName('CurrentOrders'), request);
 
     if (result.docs.length < 1) return;
 
-    const marketIds: string[] = _.uniq(_.map(result.docs, "market")) as string[];
-    const highestBlockNumber: number = _.max(_.map(result.docs, "blockNumber")) as number;
+    const marketIds: string[] = _.uniq(_.map(result.docs, 'market')) as string[];
+    const highestBlockNumber: number = _.max(_.map(result.docs, 'blockNumber')) as number;
     const marketsData = await this.stateDB.findMarkets({
       selector: {
         market: { $in: marketIds },
       },
     });
 
-    const marketDataById = _.keyBy(marketsData, "market");
+    const marketDataById = _.keyBy(marketsData, 'market');
 
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
     // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
     const ETHInAttoDAI = new BigNumber(200).multipliedBy(10**18);
 
     for (const marketId of marketIds) {
-      documents.push(await this.getOrderbookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI));
+      documents.push(await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI));
     }
 
     success = await this.bulkUpsertUnorderedDocuments(documents);
@@ -88,11 +88,11 @@ export class MarketDB extends DerivedDB {
         await this.syncStatus.setHighestSyncBlock(this.dbName, highestBlockNumber, false);
       }
     } else {
-      throw new Error(`Syncing market orderbook liquidity stats failed`);
+      throw new Error('Syncing market orderbook liquidity stats failed');
     }
   }
 
-  async getOrderbookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderbookData> {
+  async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber): Promise<MarketOrderBookData> {
     const numOutcomes = marketData.marketType === MarketType.Categorical ? marketData.outcomes.length + 1 : 3;
     const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
@@ -103,19 +103,19 @@ export class MarketDB extends DerivedDB {
 
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(marketFeeDivisor));
 
-    const orderbook = await this.getOrderbook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
+    const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
 
-    const invalidFilter = await this.recalcInvalidFilter(orderbook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
+    const invalidFilter = await this.recalcInvalidFilter(orderBook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
 
-    const marketOrderbookData = {
+    const marketOrderBookData = {
       _id: marketId,
       invalidFilter,
       liquidity: {},
     };
 
     for (const spread of this.liquiditySpreads) {
-      marketOrderbookData.liquidity[spread] = (await this.augur.liquidity.getLiquidityForSpread({
-        orderbook,
+      marketOrderBookData.liquidity[spread] = (await this.augur.liquidity.getLiquidityForSpread({
+        orderBook,
         numTicks,
         marketType: marketData.marketType,
         reportingFeeDivisor,
@@ -125,10 +125,10 @@ export class MarketDB extends DerivedDB {
       })).toFixed();
     }
 
-    return marketOrderbookData;
+    return marketOrderBookData;
   }
 
-  async getOrderbook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<Orderbook> {
+  async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
     const currentOrdersResponse = await this.stateDB.findCurrentOrderLogs({
       selector : {
         amount: { $gt: '0x00' },
@@ -148,10 +148,10 @@ export class MarketDB extends DerivedDB {
         return maxGasCost.gte(estimatedTradeGasCostInAttoDai);
       });
 
-      const groupedByOrderType = _.groupBy(sufficientlyLargeOrders, "orderType");
+      const groupedByOrderType = _.groupBy(sufficientlyLargeOrders, 'orderType');
 
-      const bids = _.reverse(_.sortBy(groupedByOrderType[OrderType.Bid], "price"));
-      const asks = _.sortBy(groupedByOrderType[OrderType.Ask], "price");
+      const bids = _.reverse(_.sortBy(groupedByOrderType[OrderType.Bid], 'price'));
+      const asks = _.sortBy(groupedByOrderType[OrderType.Ask], 'price');
 
       return {
         bids,
@@ -162,7 +162,7 @@ export class MarketDB extends DerivedDB {
   }
 
   // A Market is marked as True in the invalidFilter if the best bid for Invalid on the book would not be profitable to take were the market Valid
-  async recalcInvalidFilter(orderbook: Orderbook, marketData: MarketData, feeMultiplier: BigNumber, estimatedTradeGasCostInAttoDai: BigNumber, estimatedClaimGasCostInAttoDai: BigNumber): Promise<boolean> {
+  async recalcInvalidFilter(orderbook: OrderBook, marketData: MarketData, feeMultiplier: BigNumber, estimatedTradeGasCostInAttoDai: BigNumber, estimatedClaimGasCostInAttoDai: BigNumber): Promise<boolean> {
     if (orderbook[INVALID_OUTCOME].bids.length < 1) return false;
 
     const bestBid = orderbook[INVALID_OUTCOME].bids[0];
@@ -173,7 +173,7 @@ export class MarketDB extends DerivedDB {
 
     let timeTillMarketFinalizesInSeconds = new BigNumber(marketData.endTime).minus((new Date).getTime()/1000);
     if (timeTillMarketFinalizesInSeconds.lt(0)) timeTillMarketFinalizesInSeconds = new BigNumber(0);
-    const timeTillMarketFinalizesInYears = timeTillMarketFinalizesInSeconds.div(SECONDS_IN_YEAR);
+    const timeTillMarketFinalizesInYears = timeTillMarketFinalizesInSeconds.div(SECONDS_IN_A_YEAR);
 
     let validRevenue = bestBidAmount.multipliedBy(numTicks);
     validRevenue = validRevenue.multipliedBy(feeMultiplier);

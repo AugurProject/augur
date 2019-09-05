@@ -18,7 +18,6 @@ import {
   Timestamp,
 } from '../logs/types';
 import { NULL_ADDRESS,  sortOptions } from './types';
-
 import {
   Augur,
   numTicksToTickSize,
@@ -26,11 +25,13 @@ import {
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
   SECONDS_IN_A_DAY
-} from "../../index";
+} from '../../index';
 import { calculatePayoutNumeratorsValue } from '../../utils';
+import { OrderBook } from '../../api/Liquidity';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
+import { number } from 'prop-types';
 
 export enum MarketReportingState {
   PreReporting = 'PreReporting',
@@ -88,7 +89,7 @@ export interface MarketListMetaCategories {
         }
       }
     }
-  }
+  };
 }
 
 export interface MarketListMeta {
@@ -195,7 +196,7 @@ export interface MarketPriceHistory {
   [outcome: string]: TimestampedPriceAmount[];
 }
 
-export interface OrderBook {
+export interface MarketOrderBookOrder {
   price: string;
   shares: string;
   cumulativeShares: string;
@@ -207,10 +208,15 @@ export interface MarketOrderBook {
   orderBook: {
     [outcome: number]: {
       spread: string | null;
-      bids: OrderBook[];
-      asks: OrderBook[];
+      bids: MarketOrderBookOrder[];
+      asks: MarketOrderBookOrder[];
     };
   };
+}
+
+export interface LiquidityOrderBookInfo {
+  lowestSpread: number | undefined;
+  orderBook: OrderBook;
 }
 
 const outcomeIdType = t.union([OutcomeParam, t.number, t.null, t.undefined]);
@@ -644,9 +650,9 @@ export class Markets {
         [orderId: string]: Order;
       },
       isbids = false
-    ): OrderBook[] => {
+    ): MarketOrderBookOrder[] => {
       const sortedBuckets = bucketAndSortOrdersByPrice(unsortedOrders, isbids);
-      const result: OrderBook[] = [];
+      const result: MarketOrderBookOrder[] = [];
 
       return Object.values(sortedBuckets).reduce((acc, bucket, index) => {
         const shares = bucket.reduce((v, order, index) => {
@@ -1201,14 +1207,14 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
         reportingParticipantId = await market.getInitialReporter_();
       }
       const reportingParticipant = augur.contracts.getReportingParticipant(reportingParticipantId);
-      const reportingStakeSize = stakeLogs[i].hasOwnProperty("disputeCrowdsourcer") ? await reportingParticipant.getSize_() : new BigNumber(0);
-      const totalSupply = stakeLogs[i].hasOwnProperty("disputeCrowdsourcer") ? await reportingParticipant.totalSupply_() : new BigNumber(0);
+      const reportingStakeSize = stakeLogs[i].hasOwnProperty('disputeCrowdsourcer') ? await reportingParticipant.getSize_() : new BigNumber(0);
+      const totalSupply = stakeLogs[i].hasOwnProperty('disputeCrowdsourcer') ? await reportingParticipant.totalSupply_() : new BigNumber(0);
       const payoutDistributionHash = await reportingParticipant.getPayoutDistributionHash_();
       const disputeCrowdsourcerCompletedLogs = await db.findDisputeCrowdsourcerCompletedLogs({
         selector: { disputeCrowdsourcer: reportingParticipantId },
       });
       const stakeCurrent = await reportingParticipant.getStake_();
-      const stakeRemaining = stakeLogs[i].hasOwnProperty("size") && totalSupply <= reportingStakeSize ? await reportingParticipant.getRemainingToFill_() : new BigNumber(0);
+      const stakeRemaining = stakeLogs[i].hasOwnProperty('size') && totalSupply <= reportingStakeSize ? await reportingParticipant.getRemainingToFill_() : new BigNumber(0);
       const winningReportingParticipantId = await market.getWinningReportingParticipant_();
       const winningReportingParticipant = augur.contracts.getReportingParticipant(winningReportingParticipantId);
       if (!stakeDetails[payoutDistributionHash]) {
@@ -1364,4 +1370,44 @@ async function getMarketsSearchResults(
     return Augur.syncableFlexSearch.search(query, { where: whereObj });
   }
   return Augur.syncableFlexSearch.where(whereObj);
+}
+
+/**
+ * Gets the MarketOrderBook for a market and converts it to a LiquidityOrderBookInfo object.
+ *
+ * @param {Augur} augur Augur object to use for getting MarketOrderBook
+ * @param {DB} db DB to use for getting MarketOrderBook
+ * @param {string} marketId Market address for which to get order book info
+ */
+export async function getLiquidityOrderBookInfo(augur: Augur, db: DB, marketId: string): Promise<LiquidityOrderBookInfo> {
+  const marketOrderBook = await Markets.getMarketOrderBook(augur, db, { marketId });
+  const orderBook: any = marketOrderBook.orderBook;
+
+  let lowestSpread = undefined;
+
+  for (const outcome in orderBook) {
+    if (orderBook.hasOwnProperty(outcome)) {
+      if (!lowestSpread || orderBook[outcome].spread < lowestSpread) {
+        lowestSpread = new BigNumber(orderBook[outcome].spread).toNumber();
+      }
+      delete orderBook[outcome].spread;
+      for (let i = 0; i < orderBook[outcome].bids.length; i++) {
+        delete orderBook[outcome].bids[i].cumulativeShares;
+        delete orderBook[outcome].bids[i].mySize;
+        orderBook[outcome].bids[i].amount = orderBook[outcome].bids[i].shares;
+        delete orderBook[outcome].bids[i].shares;
+      }
+      for (let i = 0; i < orderBook[outcome].asks.length; i++) {
+        delete orderBook[outcome].asks[i].cumulativeShares;
+        delete orderBook[outcome].asks[i].mySize;
+        orderBook[outcome].asks[i].amount = orderBook[outcome].asks[i].shares;
+        delete orderBook[outcome].asks[i].shares;
+      }
+    }
+  }
+
+  return {
+    lowestSpread,
+    orderBook,
+  };
 }
