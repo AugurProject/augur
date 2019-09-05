@@ -116,7 +116,6 @@ export class Augur<TProvider extends Provider = Provider> {
     const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay, enableFlexSearch, meshClient);
 
     await augur.contracts.setReputationToken(networkId);
-
     return augur;
   }
 

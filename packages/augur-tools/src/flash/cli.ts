@@ -124,16 +124,14 @@ if (require.main === module) {
     const vorpal = makeVorpalCLI(flash);
     flash.setLogger(vorpal.log.bind(vorpal));
     vorpal.show();
+  } else if (args.network === "none") {
+    flash.call(args.command, args).catch(console.error);
   } else {
-    if (args.network === "none") {
-      flash.call(args.command, args).catch(console.error);
-    } else {
-      const networkConfiguration = NetworkConfiguration.create(args.network);
-      flash.provider = flash.makeProvider(networkConfiguration);
-      flash.getNetworkId(flash.provider).then((networkId) => {
-        flash.contractAddresses = Addresses[networkId];
-        return flash.call(args.command, args);
-      }).catch(console.error);
-    }
+    flash.network = NetworkConfiguration.create(args.network);
+    flash.provider = flash.makeProvider(flash.network);
+    flash.getNetworkId(flash.provider).then((networkId) => {
+      flash.contractAddresses = Addresses[networkId];
+      return flash.call(args.command, args);
+    }).catch(console.error);
   }
 }
