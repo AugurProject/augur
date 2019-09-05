@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import classNames from 'classnames';
+import React from 'react';
 import ReportingCardContainer from 'modules/reporting/containers/reporting-card';
 
 import Styles from 'modules/reporting/common.styles.less';
+import { MarketData } from 'modules/types';
+
 
 export interface ReportingListProps {
   markets: Array<MarketData>;
@@ -14,8 +15,8 @@ export const ReportingList = (props: ReportingListProps) => {
     <div className={Styles.ReportingList}>
       <span>{props.title}</span>
       <div>
-        {props.markets.map(market => 
-          <ReportingCardContainer marketId={market.id} />
+        {props.markets.map(market =>
+          <ReportingCardContainer marketId={market.id} key={market.id}/>
         )}
       </div>
     </div>

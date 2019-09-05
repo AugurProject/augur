@@ -12,6 +12,7 @@ interface ReportingProps {
   upcomingMarkets: Array<MarketData>;
   openMarkets: Array<MarketData>;
   designatedReporterMarkets: Array<MarketData>;
+  openReportingModal: ButtonActionType;
 }
 
 export default class Reporting extends React.Component<ReportingProps> {
@@ -29,15 +30,15 @@ export default class Reporting extends React.Component<ReportingProps> {
           <title>Reporting</title>
         </Helmet>
         <div>
-          <ReportingList 
+          <ReportingList
             markets={designatedReporterMarkets}
             title={"Designated Reporting"}
           />
-          <ReportingList 
+          <ReportingList
             markets={upcomingMarkets}
             title={"Upcoming Designated Reporting"}
           />
-          <ReportingList 
+          <ReportingList
             markets={openMarkets}
             title={"Open Reporting"}
           />

@@ -1,5 +1,4 @@
 import { augurSdk } from 'services/augursdk';
-import logError from 'utils/log-error';
 import {
   MARKET_SORT_PARAMS,
   MARKET_REPORTING,
@@ -11,6 +10,7 @@ import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
 import { Getters } from '@augurproject/sdk';
 import { UpdateMarketsAction, updateMarketsData } from './update-markets-data';
+import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 
 interface SortOptions {
   sortBy?: Getters.Markets.GetMarketsSortBy;
@@ -133,4 +133,83 @@ export const loadMarketsByFilter = (
   );
   dispatch(updateMarketsData(marketInfos));
   cb(null, markets);
+};
+
+export interface LoadReportingMarketsOptions {
+  designatedReporter: string;
+  limit: number;
+  offset: number;
+}
+
+export const loadOpenReportingMarkets = () => (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const params = {
+    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
+    reportingStates: [Getters.Markets.MarketReportingState.OpenReporting],
+    ...filterOptions,
+  };
+  loadReportingMarkets(params, cb);
+};
+
+export const loadUpcomingDesignatedReportingMarkets = (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const { blockchain, loginAccount } = getState();
+  const maxEndTime = getOneWeekInFutureTimestamp(
+    blockchain.currentAugurTimestamp
+  );
+  const designatedReporter = loginAccount.address;
+  const params = {
+    reportingStates: [Getters.Markets.MarketReportingState.PreReporting],
+    designatedReporter,
+    maxEndTime,
+    ...filterOptions,
+  };
+  loadReportingMarkets(params, cb);
+};
+
+export const loadDesignatedReportingMarkets = (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const { loginAccount } = getState();
+  const designatedReporter = loginAccount.address;
+  const params = {
+    reportingStates: [Getters.Markets.MarketReportingState.DesignatedReporting],
+    designatedReporter,
+    ...filterOptions,
+  };
+  loadReportingMarkets(params, cb);
+};
+
+export const loadReportingMarkets = (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const { universe, connection } = getState();
+  if (!connection.isConnected) return cb(null, {});
+  if (!(universe && universe.id)) return cb(null, {});
+  const params = {
+    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
+    universe: universe.id,
+    ...filterOptions,
+  };
+  const augur = augurSdk.get();
+  const markets = await augur.getMarkets({ ...params });
+  if (cb) cb(null, markets);
 };

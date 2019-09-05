@@ -141,12 +141,13 @@ async function runSimulateTrade(
   let sharesFilledAvgPrice = '';
   let reversal = null;
   let outcomeRawPosition = ZERO;
+  let isReversal = true; // meaning user has not shares
   const positions = (accountPositions[marketId] || {}).tradingPositions;
   if (positions && positions[outcomeId]) {
     const position = positions[outcomeId];
     sharesFilledAvgPrice = position.averagePrice;
-    outcomeRawPosition = createBigNumber(position.rawPosition || 0);
-    const isReversal =
+    outcomeRawPosition = createBigNumber(position.netPosition || 0).abs();
+    isReversal =
       newTradeDetails.side === BUY
         ? createBigNumber(position.netPosition).lt(ZERO)
         : createBigNumber(position.netPosition).gt(ZERO);
@@ -167,7 +168,7 @@ async function runSimulateTrade(
   const kycToken = undefined; // TODO: figure out how kyc tokens are going to be handled
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
-  const userShares = createBigNumber(outcomeRawPosition);
+  const userShares = createBigNumber(isReversal ? ZERO : outcomeRawPosition);
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(
     orderType,
