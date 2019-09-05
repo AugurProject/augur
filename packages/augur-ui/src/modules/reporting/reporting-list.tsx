@@ -7,6 +7,10 @@ import Styles from 'modules/reporting/common.styles.less';
 export interface ReportingListProps {
   markets: Array<MarketData>;
   title: string;
+  showLoggedOut?: boolean;
+  loggedOutMessage?: string;
+  emptyHeadeer: string;
+  emptySubheader: string;
 }
 
 export const ReportingList = (props: ReportingListProps) => {
@@ -17,6 +21,15 @@ export const ReportingList = (props: ReportingListProps) => {
         {props.markets.map(market => 
           <ReportingCardContainer marketId={market.id} />
         )}
+        {props.showLoggedOut &&
+          <span>{props.loggedOutMessage}</span>
+        }
+        {props.markets.length === 0 && !props.showLoggedOut &&
+          <>
+            <span>{props.emptyHeader}</span>
+            <span>{props.emptySubheader}</span>
+          </>
+        }
       </div>
     </div>
   );
