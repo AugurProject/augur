@@ -136,12 +136,11 @@ export const loadMarketsByFilter = (
 };
 
 export interface LoadReportingMarketsOptions {
-  designatedReporter: string;
   limit: number;
   offset: number;
 }
 
-export const loadOpenReportingMarkets = () => (
+export const loadOpenReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
 ): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
@@ -153,7 +152,7 @@ export const loadOpenReportingMarkets = () => (
     reportingStates: [Getters.Markets.MarketReportingState.OpenReporting],
     ...filterOptions,
   };
-  loadReportingMarkets(params, cb);
+  dispatch(loadReportingMarkets(params, cb));
 };
 
 export const loadUpcomingDesignatedReportingMarkets = (
@@ -168,13 +167,16 @@ export const loadUpcomingDesignatedReportingMarkets = (
     blockchain.currentAugurTimestamp
   );
   const designatedReporter = loginAccount.address;
+  if (!designatedReporter)
+    return cb(null, { markets: [], meta: { marketCount: 0 } });
+
   const params = {
     reportingStates: [Getters.Markets.MarketReportingState.PreReporting],
     designatedReporter,
     maxEndTime,
     ...filterOptions,
   };
-  loadReportingMarkets(params, cb);
+  dispatch(loadReportingMarkets(params, cb));
 };
 
 export const loadDesignatedReportingMarkets = (
@@ -186,12 +188,15 @@ export const loadDesignatedReportingMarkets = (
 ) => {
   const { loginAccount } = getState();
   const designatedReporter = loginAccount.address;
+  if (!designatedReporter)
+    return cb(null, { markets: [], meta: { marketCount: 0 } });
+
   const params = {
     reportingStates: [Getters.Markets.MarketReportingState.DesignatedReporting],
     designatedReporter,
     ...filterOptions,
   };
-  loadReportingMarkets(params, cb);
+  dispatch(loadReportingMarkets(params, cb));
 };
 
 export const loadReportingMarkets = (
@@ -202,13 +207,20 @@ export const loadReportingMarkets = (
   getState
 ) => {
   const { universe, connection } = getState();
-  if (!connection.isConnected) return cb(null, {});
-  if (!(universe && universe.id)) return cb(null, {});
+  if (!connection.isConnected) return cb(null, []);
+  if (!(universe && universe.id)) return cb(null, []);
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     universe: universe.id,
     ...filterOptions,
   };
+  // format offset to getters expectations
+  if (filterOptions.offset) {
+    const paginationOffset = filterOptions.offset
+      ? filterOptions.offset - 1
+      : 0;
+    params.offset = paginationOffset * filterOptions.limit;
+  }
   const augur = augurSdk.get();
   const markets = await augur.getMarkets({ ...params });
   if (cb) cb(null, markets);
