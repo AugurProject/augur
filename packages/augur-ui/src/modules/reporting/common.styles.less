@@ -391,7 +391,7 @@ div.ReportingSubheaders {
   }
 }
 
-.ReportingList {
+.ReportingList {  
   > span {
     .text-16-medium;
 
@@ -401,9 +401,22 @@ div.ReportingSubheaders {
   }
 
   > div {
+    display: flex;
+    flex-direction: column;
+    
     > div {
       margin-bottom: @size-4;
     }
+
+    > span {
+      .text-12;
+
+      color: @color-shadow-text;
+    }
+  }
+
+  &:not(:last-of-type) {
+    margin-bottom: 65px;
   }
 }
 

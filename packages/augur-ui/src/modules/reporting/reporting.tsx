@@ -12,6 +12,7 @@ interface ReportingProps {
   upcomingMarkets: Array<MarketData>;
   openMarkets: Array<MarketData>;
   designatedReporterMarkets: Array<MarketData>;
+  isLogged: boolean;
 }
 
 export default class Reporting extends React.Component<ReportingProps> {
@@ -20,7 +21,8 @@ export default class Reporting extends React.Component<ReportingProps> {
     const {
       designatedReporterMarkets,
       openMarkets,
-      upcomingMarkets
+      upcomingMarkets,
+      isLogged
     } = this.props;
 
     return (
@@ -32,14 +34,24 @@ export default class Reporting extends React.Component<ReportingProps> {
           <ReportingList 
             markets={designatedReporterMarkets}
             title={"Designated Reporting"}
+            loggedOutMessage="Connect a wallet to see your markets that are ready for Reporting."
+            showLoggedOut={!isLogged}
+            emptyHeader="There are no markets available for you to Report on." 
+            emptySubheader=" Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on."
           />
           <ReportingList 
             markets={upcomingMarkets}
             title={"Upcoming Designated Reporting"}
+            loggedOutMessage="Connect a wallet to see your markets that will soon be ready to Report on."
+            showLoggedOut={!isLogged}
+            emptyHeader="There are no markets coming up in the next week for you to Report on. "
+            emptySubheader="Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on."
           />
           <ReportingList 
             markets={openMarkets}
             title={"Open Reporting"}
+            emptyHeader="There are currently no markets in Open Reporting. "
+            emptySubheader=" Markets appear here once if a Designated Reporter fails to show up."
           />
         </div>
         <div>
