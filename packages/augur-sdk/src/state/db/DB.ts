@@ -35,6 +35,7 @@ import {
   MarketData,
   GenericEventDBDescription
 } from "../logs/types";
+import { ZeroXOrders, StoredOrder } from "./ZeroXOrders";
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -58,6 +59,7 @@ export class DB {
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
   private marketDatabase: MarketDB;
+  private zeroXOrders: ZeroXOrders;
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   readonly pouchDBFactory: PouchDBFactoryType;
@@ -149,6 +151,9 @@ export class DB {
     // Custom Derived DBs here
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
+    // Zero X Orders. Only on if a mesh client has been provided
+    this.zeroXOrders = this.augur.zeroX ? await ZeroXOrders.create(this, networkId, this.augur): undefined;
+
     // add passed in tracked users to the tracked uses db
     for (const trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
@@ -229,6 +234,9 @@ export class DB {
     }
 
     await Promise.all(dbSyncPromises).then(() => undefined);
+
+    // If no meshCLient provided will not exists
+    if (this.zeroXOrders) await this.zeroXOrders.sync();
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
     await this.marketDatabase.sync(highestAvailableBlockNumber);
@@ -716,6 +724,19 @@ export class DB {
     const results = await this.findInDerivedDB(this.getDatabaseName("CurrentOrders"), request);
     const logs = results.docs as unknown as ParsedOrderEventLog[];
     for (const log of logs) log.timestamp = log.timestamp;
+    return logs;
+  }
+
+  /**
+   * Queries the ZeroXOrders DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<StoredOrder>>}
+   */
+  async findZeroXOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<StoredOrder[]> {
+    if (!this.zeroXOrders) throw new Error("ZeroX orders not available as no mesh client was provided");
+    const results = await this.zeroXOrders.find(request);
+    const logs = results.docs as unknown as StoredOrder[];
     return logs;
   }
 

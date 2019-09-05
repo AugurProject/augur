@@ -14,6 +14,12 @@ export class EthersFastSubmitWallet extends ethers.Wallet {
         this.nonce = nonce;
     }
 
+    // If we ever have a use case for a different kind of message signing split this into `signMessage` (new) and `signBinaryMessage` (below)
+    signMessage(message: ethers.utils.Arrayish | string): Promise<string> {
+        const hashmessage = ethers.utils.arrayify(message);
+        return Promise.resolve(super.signMessage(hashmessage));
+    }
+
     signDigest(message: ethers.utils.Arrayish | string): Promise<ethers.utils.Signature> {
         const signingKey = new ethers.utils.SigningKey(this.privateKey);
         return Promise.resolve(signingKey.signDigest(message));
