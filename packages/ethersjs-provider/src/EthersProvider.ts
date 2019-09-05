@@ -7,6 +7,7 @@ import { Abi } from "ethereum";
 import * as _ from "lodash";
 import { AsyncQueue, queue, retry } from "async";
 import {isInstanceOfBigNumber, isInstanceOfArray } from "./utils"
+import { JSONRPCRequestPayload } from "0x.js";
 
 interface ContractMapping {
   [contractName: string]: ethers.utils.Interface;
@@ -147,6 +148,11 @@ export class EthersProvider extends ethers.providers.BaseProvider implements EPr
       removed: false,
       ...log,
     }))
+  }
+
+  // This is to support the 0x Provider Engine requirements
+  public async sendAsync(payload: JSONRPCRequestPayload): Promise<any> {
+    return await this.provider.send(payload.method, payload.params);
   }
 
   public async perform(message: any, params: any): Promise<any> {
