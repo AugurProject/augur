@@ -95,7 +95,15 @@ const tasks = new Listr(
             task: () => createBuildDir
           }
         ])
-    },
+    }
+  ],
+  {
+    renderer: "verbose"
+  }
+);
+
+const mainTask = new Listr(
+  [
     {
       title: "Build Augur",
       task: () => buildAugur
@@ -106,4 +114,6 @@ const tasks = new Listr(
   }
 );
 
-tasks.run().catch(err => {});
+tasks.run().catch(err => {}).then(() => {
+  mainTask.run().catch(err => {});
+});
