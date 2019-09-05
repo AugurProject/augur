@@ -370,28 +370,43 @@ div.ReportingSubheaders {
   border-radius: @size-3;
   border: 1px solid @color-primary-light;
   display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
   padding: @size-12 @size-24;
 
-  > div:first-of-type {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  > span:first-of-type {
+    width: fit-content;
+    margin-bottom: @size-16;
+  }
 
-    > span:first-of-type {
-      width: fit-content;
-      margin-bottom: @size-16;
-    }
+  > span:nth-of-type(2) {
+    .text-16-medium;
 
-    > span:nth-of-type(2) {
-      .text-16-medium;
+    color: @color-alternate-info-text;
+  }
 
-      color: @color-alternate-info-text;
-      margin-bottom: @size-12;
-    }
+  > span:nth-of-type(3) {
+    margin-top: @size-12;
+  }
+
+  > div {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    margin-left: auto;
   }
 
   @media @breakpoint-smallish-desktop {
     flex-direction: column;
+    padding: @size-12 @size-18;
+    grid-template-rows: auto auto @size-40;
+
+    > span:first-of-type {
+      margin-bottom: @size-10;
+    }
+
+    > span:nth-of-type(2) {
+      margin-top: 0;
+    }
 
     > div:last-of-type {
       align-self: flex-end;
