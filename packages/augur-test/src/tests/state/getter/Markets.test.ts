@@ -99,6 +99,8 @@ describe('State API :: Markets :: ', () => {
     const actualDB = await db;
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
 
+    await expect(actualDB.getSyncableDatabase(actualDB.getDatabaseName("MarketCreated")).allDocs()).toHaveLength(6);
+
     let marketList: MarketList;
 
     // Test invalid universe address

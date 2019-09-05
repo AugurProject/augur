@@ -67,7 +67,7 @@ export class ZeroXOrders extends AbstractDB {
 
   async deleteOld(): Promise<void> {
     const oldSnapshotRawDocs = await this.allDocs();
-    const oldSnapshotDocs = oldSnapshotRawDocs.rows ? oldSnapshotRawDocs.rows.map(row => Object.assign(row.doc, { _deleted: true})) : [];
+    const oldSnapshotDocs = oldSnapshotRawDocs.map(row => Object.assign(row, { _deleted: true}));
     if (oldSnapshotDocs.length > 0) {
       await this.bulkUpsertUnorderedDocuments(oldSnapshotDocs);
     }

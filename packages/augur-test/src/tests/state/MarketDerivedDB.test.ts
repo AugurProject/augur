@@ -1,4 +1,5 @@
 import { Augur } from "@augurproject/sdk";
+import { MarketDB } from "@augurproject/sdk/build/state/db/MarketDB";
 import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 import { makeDbMock, makeTestAugur } from "../../libs";
 import { stringTo32ByteHex } from "../../libs/Utils";
@@ -46,17 +47,16 @@ test("Bulksync Doc merge update", async () => {
 
   await db.syncStatus.setHighestSyncBlock(marketDBName, 1, true);
 
-  const marketsDB = await db.getDerivedDatabase(marketDBName);
+  const marketsDB = await db.getDerivedDatabase(marketDBName) as MarketDB;
 
   await marketsDB.handleMergeEvent(2, blockLogs as unknown[] as ParsedLog[], true);
 
   const docs = await marketsDB.allDocs();
-  expect(docs.total_rows).toEqual(2);
-  const doc = docs.rows[0];
-  expect(doc.id).toEqual("0x1111111111111111111111111111111111111111");
-  const values = doc.doc;
-  expect(values["marketOI"]).toEqual("0x2");
-  expect(values['extraInfo']).toEqual(extraInfo);
+  expect(docs).toHaveLength(2);
+  const doc = docs[0] ;
+  expect(doc._id).toEqual("0x1111111111111111111111111111111111111111");
+  expect(doc["marketOI"]).toEqual("0x2");
+  expect(doc['extraInfo']).toEqual(extraInfo);
 });
 
 test("Blockstream Doc merge update", async () => {
@@ -97,11 +97,10 @@ test("Blockstream Doc merge update", async () => {
 
   const marketsDB = await db.getDerivedDatabase(mock.constants.networkId + "-Markets");
   const docs = await marketsDB.allDocs();
-  expect(docs.total_rows).toEqual(2);
-  const doc = docs.rows[0];
-  expect(doc.id).toEqual("0x1111111111111111111111111111111111111111");
-  const values = doc.doc;
-  expect(values["marketOI"]).toEqual("0x2");
+  expect(docs).toHaveLength(2);
+  const doc = docs[0];
+  expect(doc._id).toEqual("0x1111111111111111111111111111111111111111");
+  expect(doc["marketOI"]).toEqual("0x2");
 });
 
 test("Flexible Search", async () => {

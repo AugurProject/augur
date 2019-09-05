@@ -38,6 +38,10 @@ export abstract class AbstractDB {
     return this.db.allDocs({
       include_docs: true,
       ...options,
+    }).then((docs) => {
+      return docs.rows
+        .filter((doc) => !/^_design/.test(doc.id))
+        .map((doc) => doc.doc);
     });
   }
 

@@ -715,10 +715,7 @@ export class DB {
   }
 
   async allUniverseForkedLogs(): Promise<UniverseForkedLog[]> {
-    return this.syncableDatabases[this.getDatabaseName("UniverseForked")].allDocs({
-      startkey: 'design_\uffff',
-      endkey: '_design',
-    }).then((result) => result.rows ? result.rows.map(row => row.doc) : []) as unknown as UniverseForkedLog[];
+    return this.syncableDatabases[this.getDatabaseName("UniverseForked")].allDocs() as unknown as UniverseForkedLog[];
   }
 
   /**

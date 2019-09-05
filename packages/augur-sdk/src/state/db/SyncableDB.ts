@@ -1,10 +1,12 @@
 import * as _ from "lodash";
+import { MarketCreatedLog, UniverseForkedLog } from "../logs/types";
 import { AbstractDB, BaseDocument } from "./AbstractDB";
 import { Augur } from "../../Augur";
 import { DB } from "./DB";
 import { Log, ParsedLog } from "@augurproject/types";
+import { MarketCreatedDoc } from "./SyncableFlexSearch";
 import { SyncStatus } from "./SyncStatus";
-import { augurEmitter } from "../../events";
+import { augurEmitter, MarketCreated } from "../../events";
 import { SubscriptionEventName } from "../../constants";
 
 export interface Document extends BaseDocument {
@@ -77,9 +79,7 @@ export class SyncableDB extends AbstractDB {
     await this.syncStatus.updateSyncingToFalse(this.dbName);
 
     if (Augur.syncableFlexSearch && this.eventName === SubscriptionEventName.MarketCreated) {
-      const marketCreatedRawDocs = await this.allDocs();
-      let marketCreatedDocs: any[] = marketCreatedRawDocs.rows ? marketCreatedRawDocs.rows.map(row => row.doc) : [];
-      marketCreatedDocs = marketCreatedDocs.slice(0, marketCreatedDocs.length - 1);
+      const marketCreatedDocs  = await this.allDocs()  as unknown as MarketCreatedDoc[];
       await Augur.syncableFlexSearch.addMarketCreatedDocs(marketCreatedDocs);
     }
 
