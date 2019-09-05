@@ -13,8 +13,25 @@ export interface DisputeWindow {
   fees: string;
 }
 
+export interface NonForkingMigrationTotals {}
+export interface MigrationTotals {
+  marketId: string;
+  outcomes: Outcome[];
+}
+
+interface Outcome {
+  outcomeName: string;
+  outcome: string; // non-scalar markets this is outcome id.
+  amount: string;
+  isMalformed: boolean;
+  payoutNumerators: string[]; // not needed by UI, but 3rd parties might want it
+}
+
 export class Universe {
   static getDisputeWindowParams = t.type({});
+  static getForkMigrationTotalsParams = t.type({
+    universe: t.string,
+  });
 
   @Getter('getDisputeWindowParams')
   static async getDisputeWindow(augur: Augur, db: DB): Promise<DisputeWindow> {
@@ -35,6 +52,34 @@ export class Universe {
       purchased: purchased.toString(),
       fees: fees.toString(),
     };
+  }
+
+  @Getter('getForkMigrationTotalsParams')
+  static async getForkMigrationTotals(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Universe.getForkMigrationTotalsParams>
+  ): Promise<MigrationTotals | NonForkingMigrationTotals> {
+    const universe = augur.contracts.universeFromAddress(params.universe);
+
+    if (!(await universe.isForking_())) {
+      return {};
+    }
+
+    const market = augur.contracts.marketFromAddress(await universe.getForkingMarket_());
+
+    const logs = await db.findMarketCreatedLogs({
+      selector: {},
+    });
+    console.log(JSON.stringify(logs, null, 2));
+
+    // TODO populate outcomes
+
+    return {
+      marketId: market.address,
+      outcomes: [],
+    };
+
   }
 }
 

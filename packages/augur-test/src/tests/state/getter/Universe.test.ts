@@ -111,4 +111,26 @@ describe('State API :: Universe :: ', () => {
     expect(disputeWindow.purchased).toEqual(participationTokensBought.toString());
     expect(disputeWindow.fees).toEqual(feesSent.toString());
   }, 120000);
+
+  test('getForkMigrationTotals', async () => {
+    const universe = john.augur.contracts.universe;
+
+    const actualDB = await db;
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+
+    let migrationTotals = await api.route('getForkMigrationTotals', {
+      universe: universe.address,
+    });
+
+    expect(migrationTotals).toEqual({});
+
+    // TODO fork
+
+    migrationTotals = await api.route('getForkMigrationTotals', {
+      universe: universe.address,
+    });
+
+    // TODO verify output
+
+  }, 120000);
 });
