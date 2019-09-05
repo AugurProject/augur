@@ -47,6 +47,10 @@ Run the following 4 commands, each in a separate terminal session from the root 
 
 `yarn; yarn build:watch`
 
+or alternatively using docker-compose:
+
+`docker-compose -f support/gitstart/gitstart.yml up`
+
 ### docker images available
  * `yarn workspace @augurproject/tools docker:geth:pop-15`
    - 15 second block times, real time, has contracts and canned market data
