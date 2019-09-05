@@ -425,8 +425,8 @@ export interface GasPriceInfo {
 }
 
 export enum INVALID_OPTIONS {
-  Show = 'Show',
-  Hide = 'Hide',
+  Show = 'show',
+  Hide = 'hide',
 }
 
 export interface FilterSortOptions {

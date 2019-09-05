@@ -32,10 +32,11 @@ export const Percent = (props: PercentProps) => (
 export interface OutcomeProps {
   description: string;
   lastPricePercent?: FormattedNumber;
-  invalid?: Boolean;
+  invalid?: boolean;
   index: number;
   min: BigNumber;
   max: BigNumber;
+  isScalar: boolean;
 }
 
 export const Outcome = (props: OutcomeProps) => {
@@ -44,7 +45,7 @@ export const Outcome = (props: OutcomeProps) => {
       <div className={classNames(Styles.Outcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
     	<div>
       	<span>{props.description}</span>
-      	<span>{formatDai(percent).formatted}%</span>
+        <span>{percent === 0 ? `-${props.isScalar ? '' : '%'}` : `${formatDai(percent).formatted}%`}</span>
       </div>
       <Percent percent={percent} />
     </div>
@@ -149,12 +150,13 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             index={0}
             min={props.min}
             max={props.max}
+            isScalar={props.marketType === SCALAR}
           />
         </>
   		}
 	  	{(props.marketType !== SCALAR || inDispute) && outcomesShow.map((outcome: OutcomeFormatted, index: number) =>
 	  		(!props.expanded && index < 3 || (props.expanded || props.marketType === YES_NO)) && (
-          inDispute ? 
+          inDispute ?
              <DisputeOutcome
                key={outcome.id}
                description={outcome.description}
@@ -170,6 +172,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
     	  			index={index > 2 ? index : index + 1}
               min={props.min}
               max={props.max}
+              isScalar={props.marketType === SCALAR}
     	  		/>
         )
 	  	)}

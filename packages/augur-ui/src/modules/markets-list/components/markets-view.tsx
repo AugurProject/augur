@@ -38,7 +38,6 @@ interface MarketsViewProps {
   universe?: string;
   defaultFilter: string;
   defaultSort: string;
-  defaultHasOrders: boolean;
   setLoadMarketsPending: Function;
   updateMarketsListMeta: Function;
   selectedCategories: string[];
@@ -52,7 +51,6 @@ interface MarketsViewProps {
 interface MarketsViewState {
   filter: string;
   sort: string;
-  hasOrders: boolean;
   filterSortedMarkets: Array<string>;
   isSearchingMarkets: boolean;
   marketCount: number;
@@ -79,7 +77,6 @@ export default class MarketsView extends Component<
     this.state = {
       filter: props.defaultFilter,
       sort: props.defaultSort,
-      hasOrders: props.defaultHasOrders,
       filterSortedMarkets: [],
       isSearchingMarkets: true,
       marketCount: 0,
@@ -121,7 +118,8 @@ export default class MarketsView extends Component<
       nextProps.maxFee !== this.props.maxFee ||
       nextProps.maxLiquiditySpread !== this.props.maxLiquiditySpread ||
       nextProps.includeInvalidMarkets !== this.props.includeInvalidMarkets ||
-      nextProps.marketFilter !== this.props.marketFilter
+      nextProps.marketFilter !== this.props.marketFilter ||
+      nextProps.search !== this.props.search
     ) {
       this.setState({
         offset: 1,
@@ -235,7 +233,6 @@ export default class MarketsView extends Component<
     const {
       filter,
       sort,
-      hasOrders,
       filterSortedMarkets,
       isSearchingMarkets,
       marketCount,
@@ -285,9 +282,10 @@ export default class MarketsView extends Component<
           isSearchingMarkets={isSearchingMarkets}
           filter={filter}
           sort={sort}
-          hasOrders={hasOrders}
           updateFilter={this.updateFilter}
           history={history}
+          selectedCategory={this.props.selectedCategories}
+          search={this.props.search}
         />
 
         <div className={Styles.MarketLabelGroup}>
@@ -311,7 +309,7 @@ export default class MarketsView extends Component<
             <span>
               Invalid markets are no longer hidden. This puts you at risk of
               trading on invalid markets.{' '}
-              <a href="https://augur.net" target="_blank">
+              <a href='https://augur.net' target='_blank'>
                 Learn more
               </a>
             </span>

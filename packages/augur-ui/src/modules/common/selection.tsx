@@ -70,14 +70,6 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     window.addEventListener("click", this.handleWindowOnClick);
   }
 
-  componentWillUpdate(nextProps: DropdownProps) {
-    if (nextProps.defaultValue !== this.props.defaultValue) {
-      this.dropdownSelect(
-        this.props.options.find(o => o.value === nextProps.defaultValue)
-      );
-    }
-  }
-
   componentWillUnmount() {
     window.removeEventListener("click", this.handleWindowOnClick);
   }
@@ -167,7 +159,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         data-tip
         data-for={"dropdown-"+id+staticLabel}
       >
-        <button 
+        <button
           className={classNames(Styles.label, {
             [Styles.SelectedLabel]: selected
           })}
@@ -228,7 +220,7 @@ export class StaticLabelDropdown extends Dropdown {
   componentDidMount() {
     if (this.props.defaultValue) {
       this.setState({
-        selected: this.props.options.find(o => o.value === this.props.defaultValue)
+        selected: this.props.options.find(o => o.value === this.props.defaultValue),
       });
     }
   }
@@ -236,7 +228,6 @@ export class StaticLabelDropdown extends Dropdown {
   render() {
     const { sortByStyles, options, large, staticLabel, highlight, defaultValue } = this.props;
     const { selected, showList } = this.state;
-
     if (!selected) {
       return null;
     }
