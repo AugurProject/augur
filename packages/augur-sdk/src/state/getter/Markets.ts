@@ -122,7 +122,6 @@ export interface MarketInfo {
   designatedReporter: string;
   creationBlock: number;
   creationTime: number;
-  category: string;
   volume: string;
   openInterest: string;
   reportingState: string;
