@@ -389,6 +389,14 @@ div.ReportingSubheaders {
       margin-bottom: @size-12;
     }
   }
+
+  @media @breakpoint-smallish-desktop {
+    flex-direction: column;
+
+    > div:last-of-type {
+      align-self: flex-end;
+    }
+  }
 }
 
 .ReportingList {  
