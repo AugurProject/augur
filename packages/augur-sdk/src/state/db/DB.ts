@@ -249,16 +249,15 @@ export class DB {
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
     await this.marketDatabase.sync(highestAvailableBlockNumber);
 
+    // Update LiquidityDatabase and set it to update whenever there's a new block
+    await this.liquidityDatabase.recalculateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
+    augurEmitter.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.recalculateLiquidity(this.augur, this, args.timestamp));
+
     augurEmitter.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
 
     await this.syncUserData(chunkSize, blockstreamDelay, highestAvailableBlockNumber, augur);
-
-    // Update LiquidityDatabase and set it to update whenever there's a new block
-    await this.liquidityDatabase.recalculateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
-    // augurEmitter.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.recalculateLiquidity(this.augur, this, args.timestamp));
-
   }
 
   /**
