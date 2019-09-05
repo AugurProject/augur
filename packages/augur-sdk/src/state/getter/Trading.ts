@@ -11,7 +11,12 @@ import {
 import { getMarketReportingState } from "./Markets";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
-import { Address, OrderEventType, ParsedOrderEventLog } from "../logs/types";
+import {
+  Address,
+  OrderEventType,
+  ParsedOrderEventLog,
+  Timestamp
+} from "../logs/types";
 
 import * as t from "io-ts";
 
@@ -196,7 +201,8 @@ export class Trading {
     const markets = await filterMarketsByReportingState(
       marketIds,
       db,
-      params.ignoreReportingStates
+      params.ignoreReportingStates,
+      await augur.getTimestamp(),
     );
 
     return orderFilledResponse.reduce(
@@ -298,7 +304,8 @@ export class Trading {
     const markets = await filterMarketsByReportingState(
       marketIds,
       db,
-      params.ignoreReportingStates
+      params.ignoreReportingStates,
+      await augur.getTimestamp(),
     );
 
     return currentOrdersResponse.reduce(
@@ -422,7 +429,8 @@ export class Trading {
     const markets = await filterMarketsByReportingState(
       marketIds,
       db,
-      params.ignoreReportingStates
+      params.ignoreReportingStates,
+      await augur.getTimestamp(),
     );
 
     return currentOrdersResponse.reduce(
@@ -581,7 +589,8 @@ export class Trading {
 export async function filterMarketsByReportingState(
   marketIds: string[],
   db: DB,
-  ignoreReportingStates: string[]
+  ignoreReportingStates: string[],
+  currentTimestamp: BigNumber,
 ) {
   const marketsResponse = await db.findMarketCreatedLogs({
     selector: { market: { $in: marketIds } },
@@ -597,7 +606,8 @@ export async function filterMarketsByReportingState(
       const reportingState = await getMarketReportingState(
         db,
         marketCreatedLog,
-        marketFinalizedLogs
+        marketFinalizedLogs,
+        currentTimestamp,
       );
       if (ignoreReportingStates.includes(reportingState)) {
         delete markets[marketCreatedLog.market];

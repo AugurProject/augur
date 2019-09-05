@@ -1,8 +1,10 @@
+import { BigNumber } from 'bignumber.js';
 import { MarketCreated } from "../../event-handlers";
 
 // because flexsearch is a UMD type lib
 const flexSearch = require('flexsearch');
 import { Index, SearchOptions, Cursor } from 'flexsearch';
+import { BaseDocument } from "./AbstractDB";
 
 // @TODO remove and replace with flexsearch type once they release
 // @BODY See: https://github.com/nextapps-de/flexsearch/blob/master/index.d.ts#L49
@@ -12,10 +14,7 @@ interface SearchResults<T> {
   result: T[];
 }
 
-export interface MarketCreatedDoc extends MarketCreated {
-   _id: string;
-   _rev?: string;
-}
+export interface MarketCreatedDoc extends MarketCreated, BaseDocument {}
 
 export interface MarketFields {
   id: string;
@@ -30,9 +29,8 @@ export interface MarketFields {
   resolutionSource: string;
   backupSource: string;
   _scalarDenomination: string;
-  start: Date;
-  end: Date;
 }
+
 export class SyncableFlexSearch {
   private flexSearchIndex: Index<MarketFields>;
   constructor() {
@@ -44,8 +42,6 @@ export class SyncableFlexSearch {
         doc:
         {
           id: "id",
-          start: "start",
-          end: "end",
           field: [
             "market",
             "universe",
@@ -121,16 +117,15 @@ export class SyncableFlexSearch {
         resolutionSource,
         backupSource,
         _scalarDenomination,
-        start: new Date(),
-        end: new Date(),
       });
     }
   }
 
-  async removeMarketCreatedDocs(marketCreatedDocs: any[]) {
+  async removeMarketCreatedDocs(marketCreatedDocs: BaseDocument[]) {
     for (const marketCreatedDoc of marketCreatedDocs) {
       if (marketCreatedDoc._id) {
-        await this.flexSearchIndex.remove(marketCreatedDoc._id);
+        // tslint:disable-next-line:ban
+        await this.flexSearchIndex.remove(parseInt(marketCreatedDoc._id, 10));
       }
     }
   }
