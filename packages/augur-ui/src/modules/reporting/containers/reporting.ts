@@ -8,6 +8,7 @@ const mapStateToProps = (state: AppState) => {
   const loginAccount = state.loginAccount;
 	
   return {
+    isLogged: state.authStatus.isLogged,
   	upcomingMarkets: Object.values(state.marketInfos || {}).filter(market => market.designatedReporter.toLowerCase() === loginAccount.address && market.reportingState === REPORTING_STATE.PRE_REPORTING),
   	openMarkets: Object.values(state.marketInfos || {}).filter(market => market.reportingState === REPORTING_STATE.OPEN_REPORTING),
     designatedReporterMarkets: Object.values(state.marketInfos || {}).filter(market => market.designatedReporter.toLowerCase() === loginAccount.address && market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING)

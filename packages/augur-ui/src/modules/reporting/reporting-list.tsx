@@ -8,6 +8,10 @@ import { MarketData } from 'modules/types';
 export interface ReportingListProps {
   markets: Array<MarketData>;
   title: string;
+  showLoggedOut?: boolean;
+  loggedOutMessage?: string;
+  emptyHeader: string;
+  emptySubheader: string;
 }
 
 export const ReportingList = (props: ReportingListProps) => {
@@ -18,6 +22,15 @@ export const ReportingList = (props: ReportingListProps) => {
         {props.markets.map(market =>
           <ReportingCardContainer marketId={market.id} key={market.id}/>
         )}
+        {props.showLoggedOut &&
+          <span>{props.loggedOutMessage}</span>
+        }
+        {props.markets.length === 0 && !props.showLoggedOut &&
+          <>
+            <span>{props.emptyHeader}</span>
+            <span>{props.emptySubheader}</span>
+          </>
+        }
       </div>
     </div>
   );
