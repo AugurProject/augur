@@ -36,7 +36,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     maxLiquiditySpread: state.filterSortOptions.maxLiquiditySpread,
     isSearching: state.marketsList.isSearching,
     filteredOutCount: state.marketsList.meta ? state.marketsList.meta.filteredOutCount : 0,
-    includeInvalidMarkets: state.filterSortOptions.showInvalid,
+    includeInvalidMarkets: state.filterSortOptions.includeInvalidMarkets,
     selectedCategories: state.marketsList.selectedCategories,
     defaultFilter: state.filterSortOptions.marketFilter,
     defaultSort: state.filterSortOptions.marketSort,
