@@ -478,6 +478,13 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         }
         logOrderFilled(_tradeData, _tradeData.order.sharePriceLong, _marketCreatorFees.add(_reporterFees), _amountFilled, _tradeGroupId);
         logAndUpdateVolume(_tradeData);
+        uint256 _totalFees = _marketCreatorFees.add(_reporterFees);
+        if (_totalFees > 0) {
+            uint256 _longFees = _totalFees.mul(_tradeData.order.sharePriceLong).div(_tradeData.contracts.market.getNumTicks());
+            uint256 _shortFees = _totalFees.sub(_longFees);
+            profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.order.outcome, _longFees);
+            profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, _shortFees);
+        }
         updateProfitLoss(_tradeData, _amountFilled);
         if (_tradeData.creator.participantAddress == _tradeData.filler.participantAddress) {
             profitLoss.recordFrozenFundChange(_tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
@@ -527,6 +534,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
             _uint256Data[8] = 0;
             _uint256Data[9] = 0;
             augur.logZeroXOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.contracts.market, _tradeGroupId, _orderType, _addressData, _uint256Data);
+            return true;
         }
         augur.logOrderFilled(_tradeData.contracts.market.getUniverse(), _tradeData.creator.participantAddress, _tradeData.filler.participantAddress, _price, _fees, _amountFilled, _tradeData.order.orderId, _tradeGroupId);
         return true;

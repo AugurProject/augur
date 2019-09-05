@@ -90,7 +90,7 @@ contract ZeroXTradeToken is Initializable {
     }
 
     // ERC20
-    // TODO make other interface members error?
+    // TODO support other ERC20 interfaces needed to do exchange validation of orders. This lets relayers prune bad orders
 
     function transferFrom(address, address, uint256) public view returns (bool) {
         require(transferFromAllowed);

@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { calculatePosition } from "modules/market-cards/common";
 import { createBigNumber } from 'utils/create-big-number';
-import { ZERO, MY_TOTOL_REP_STAKED, ALL_TIME_PROFIT_AND_LOSS_REP } from "modules/common/constants";
+import { ZERO, MY_TOTOL_REP_STAKED, ALL_TIME_PROFIT_AND_LOSS_REP, REPORTING_STATE } from "modules/common/constants";
 import { FormattedNumber, SizeTypes } from "modules/types";
 import ReactTooltip from 'react-tooltip';
 import { SecondaryButton, CancelTextButton, PrimaryButton } from "modules/common/buttons";
 import { TextInput } from 'modules/common/form';
-import { LinearPropertyLabel, SizableValueLabel, RepBalance, MovementLabel } from "modules/common/labels";
+import { LinearPropertyLabel, SizableValueLabel, RepBalance, MovementLabel, InReportingLabel } from "modules/common/labels";
 import { ButtonActionType } from 'modules/types';
 import { formatRep } from "utils/format-number";
+import MarketLink from "modules/market/components/market-link/market-link";
+import { MarketProgress } from "modules/common/progress";
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
@@ -313,6 +315,75 @@ interface UserRepDisplayProps {
   participationAmountFormatted: FormattedNumber;
   repTotalAmountStakedFormatted: FormattedNumber;
   openGetRepModal: Function;
+}
+
+export interface ReportingCardProps {
+  market: MarketData;
+  currentAugurTimestamp: number;
+  reportingWindowStatsEndTime: number;
+  showReportingModal: Function;
+}
+
+export const ReportingCard = (props: ReportingCardProps) => {
+  const {
+    market, 
+    currentAugurTimestamp,
+    reportingWindowStatsEndTime,
+    showReportingModal 
+  } = props;
+
+  if (!market) return null;
+
+  const {
+    id,
+    description,
+    marketStatus,
+    reportingState,
+    disputeInfo,
+    endTimeFormatted
+  } = market;
+
+  const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;
+
+  return (
+    <div className={Styles.ReportingCard}>
+      <div>
+        <InReportingLabel
+          marketStatus={marketStatus}
+          reportingState={reportingState}
+          disputeInfo={disputeInfo}
+          endTimeFormatted={endTimeFormatted}
+          currentAugurTimestamp={currentAugurTimestamp}
+          reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+        />
+        <MarketLink id={id}>
+          {description}
+        </MarketLink>
+        {reportingState !== REPORTING_STATE.OPEN_REPORTING &&
+          <MarketProgress
+            reportingState={reportingState}
+            currentTime={currentAugurTimestamp}
+            endTimeFormatted={endTimeFormatted}
+            reportingWindowEndtime={reportingWindowStatsEndTime}
+          />
+        }
+      </div>
+      <div data-tip data-for='tooltip--preReporting'>
+        <PrimaryButton text="Report" action={showReportingModal} disabled={preReporting} />
+        {preReporting &&
+          <ReactTooltip
+            id='tooltip--preReporting'
+            className={TooltipStyles.Tooltip}
+            effect='solid'
+            place='top'
+            type='light'
+          >
+            <p>Please wait until the Maket is ready to Report on</p>
+          </ReactTooltip>
+        }
+      </div>
+    </div>
+  );
 }
 
 interface AllTimeProfitLossProps {

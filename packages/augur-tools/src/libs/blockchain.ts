@@ -1,6 +1,6 @@
 import * as path from "path";
 import { CompilerOutput } from "solc";
-
+import { BigNumber } from "bignumber.js";
 import { EthersProvider } from "@augurproject/ethersjs-provider";
 import { DeployerConfigurationOverwrite, CreateDeployerConfiguration, EthersFastSubmitWallet } from "@augurproject/core";
 import { ContractAddresses } from "@augurproject/artifacts";

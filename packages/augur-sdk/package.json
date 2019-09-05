@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
+    "@0x/mesh-rpc-client": "3.0.1-beta",
     "@augurproject/artifacts": "10.0.0-alpha.1",
     "@augurproject/core": "10.0.0-alpha.1",
     "@augurproject/ethersjs-provider": "10.0.0-alpha.1",
@@ -48,6 +49,7 @@
     "@types/node-fetch": "2.3.4",
     "@types/pouchdb-upsert": "^2.2.6",
     "@types/web3": "1.0.19",
+    "0x.js": "7.0.0",
     "async": "3.1.0",
     "contract-dependencies-gnosis": "10.0.0-alpha.1",
     "cors": "2.8.5",

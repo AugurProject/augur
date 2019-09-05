@@ -92,7 +92,6 @@ export default class MarketCard extends React.Component<
       reportingState,
       openInterestFormatted,
       volumeFormatted,
-      tags,
       disputeInfo,
       endTimeFormatted,
       designatedReporter
@@ -128,17 +127,10 @@ export default class MarketCard extends React.Component<
       .map(label => label.toLowerCase())
       .map(label => ({
         label,
-        onClick: toggleCategory(label, path, history)
+        onClick: toggleCategory(label, path, history),
       }));
 
     const categoriesWithClick = process(categories[0]);
-    const tagsWithClick = tags.filter(Boolean)
-    .map(tag => tag.toLowerCase())
-    .map(tag => ({
-      label: tag,
-      onClick: toggleTag(tag, path, history),
-    }));
-
     const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
 
     return (
@@ -188,7 +180,6 @@ export default class MarketCard extends React.Component<
               <MarketTypeLabel marketType={marketType} />
               <CategoryTagTrail
                 categories={categoriesWithClick}
-                tags={tagsWithClick}
               />
               <MarketProgress
                 reportingState={reportingState}
