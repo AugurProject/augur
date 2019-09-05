@@ -31,7 +31,6 @@ import { OrderBook } from '../../api/Liquidity';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
-import { number } from 'prop-types';
 
 export enum MarketReportingState {
   PreReporting = 'PreReporting',

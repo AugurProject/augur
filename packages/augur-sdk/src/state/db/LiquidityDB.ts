@@ -59,7 +59,7 @@ export class LiquidityDB extends AbstractDB {
               _id: market + '_' + mostRecentOnTheHourTimestamp.toString(),
               market,
               liquidity: marketLiquidity.toString(),
-              timestamp: mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY).toNumber(),// mostRecentOnTheHourTimestamp.toNumber(),
+              timestamp: mostRecentOnTheHourTimestamp.toNumber(),
             });
           }
         }
