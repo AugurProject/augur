@@ -9285,11 +9285,49 @@ export class ProfitLoss<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public recordClaim = async (market: string, account: string, outcomeFees: Array<TBigNumber>, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_account","type":"address"},{"name":"_outcomeFees","type":"uint256[]"}],"name":"recordClaim","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [market, account, outcomeFees], 'recordClaim', options.sender)
+	}
+	
+	public recordClaim_estimateGas = async (market: string, account: string, outcomeFees: Array<TBigNumber>, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_account","type":"address"},{"name":"_outcomeFees","type":"uint256[]"}],"name":"recordClaim","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [market, account, outcomeFees], 'recordClaim', options.sender)
+	}
+
+	public recordClaim_ = async (market: string, account: string, outcomeFees: Array<TBigNumber>, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_account","type":"address"},{"name":"_outcomeFees","type":"uint256[]"}],"name":"recordClaim","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [market, account, outcomeFees], options.sender)
+		return <boolean>result[0]
+	}
+
 	public orders_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"orders","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
+	}
+
+	public adjustTraderProfitForFees = async (market: string, trader: string, outcome: TBigNumber, fees: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_trader","type":"address"},{"name":"_outcome","type":"uint256"},{"name":"_fees","type":"uint256"}],"name":"adjustTraderProfitForFees","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [market, trader, outcome, fees], 'adjustTraderProfitForFees', options.sender)
+	}
+	
+	public adjustTraderProfitForFees_estimateGas = async (market: string, trader: string, outcome: TBigNumber, fees: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_trader","type":"address"},{"name":"_outcome","type":"uint256"},{"name":"_fees","type":"uint256"}],"name":"adjustTraderProfitForFees","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [market, trader, outcome, fees], 'adjustTraderProfitForFees', options.sender)
+	}
+
+	public adjustTraderProfitForFees_ = async (market: string, trader: string, outcome: TBigNumber, fees: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_trader","type":"address"},{"name":"_outcome","type":"uint256"},{"name":"_fees","type":"uint256"}],"name":"adjustTraderProfitForFees","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [market, trader, outcome, fees], options.sender)
+		return <boolean>result[0]
 	}
 
 	public fillOrder_ = async (options?: { sender?: string }): Promise<string> => {
@@ -9304,25 +9342,6 @@ export class ProfitLoss<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_market","type":"address"},{"name":"_account","type":"address"},{"name":"_outcome","type":"uint256"}],"name":"getAvgPrice","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [market, account, outcome], options.sender)
 		return <TBigNumber>result[0]
-	}
-
-	public recordClaim = async (market: string, account: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_account","type":"address"}],"name":"recordClaim","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [market, account], 'recordClaim', options.sender)
-	}
-	
-	public recordClaim_estimateGas = async (market: string, account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_account","type":"address"}],"name":"recordClaim","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [market, account], 'recordClaim', options.sender)
-	}
-
-	public recordClaim_ = async (market: string, account: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_market","type":"address"},{"name":"_account","type":"address"}],"name":"recordClaim","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [market, account], options.sender)
-		return <boolean>result[0]
 	}
 
 	public createOrder_ = async (options?: { sender?: string }): Promise<string> => {

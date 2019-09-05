@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
+
 interface ReportingDisputeProps {
   isConnected: boolean;
   loadDisputeWindow: Function;
@@ -28,6 +30,10 @@ export default class ReportingDispute extends Component<ReportingDisputeProps> {
   }
 
   render() {
-    return <section>Dispute</section>;
+    return (
+      <section>  
+        <ParticipationTokensView />
+      </section>
+    );
   }
 }

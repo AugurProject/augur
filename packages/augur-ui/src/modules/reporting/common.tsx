@@ -12,6 +12,7 @@ import { ButtonActionType } from 'modules/types';
 import { formatRep } from "utils/format-number";
 import MarketLink from "modules/market/components/market-link/market-link";
 import { MarketProgress } from "modules/common/progress";
+import { InfoIcon } from 'modules/common/icons';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/reporting/common.styles.less';
@@ -55,13 +56,22 @@ export interface SubheadersProps {
   header: string;
   subheader: string;
   small?: boolean;
+  info?: boolean;
+  large?: boolean;
+  secondSubheader?: string;
 }
 
 export const Subheaders = (props: SubheadersProps) => (
-  <div className={classNames(Styles.ReportingSubheaders, {[Styles.Small]: props.small})}>
-    <span>{props.header}</span>
+  <div className={classNames(Styles.ReportingSubheaders, {[Styles.Small]: props.small, [Styles.Large]: props.large})}>
+    <span>
+      {props.header}
+      {props.info && InfoIcon}
+    </span>
     <p>
-      <span>{props.subheader}</span>
+      <span>
+        {props.subheader}
+        {props.secondSubheader && <span>{props.secondSubheader}</span>}
+      </span>
     </p>
   </div>
 );
@@ -472,3 +482,49 @@ export const UserRepDisplay = (props: UserRepDisplayProps) => (
     </>
   </div>
 );
+
+
+export interface ParticipationTokensViewProps {
+  openModal: Function;
+  disputeWindowFees: FormattedNumber;
+  purchasedParticipationTokens: FormattedNumber;
+  disputeWindow: string;
+  pariticipationTokens: object;
+  tokensOwned: FormattedNumber;
+}
+
+export const ParticipationTokensView = (props: ParticipationTokensViewProps) => {
+
+  const {
+    openModal,
+    disputeWindowFees,
+    purchasedParticipationTokens,
+    tokensOwned
+  } = props;
+
+  return (
+    <div className={Styles.ParticipationTokensView}>
+      <h1>Participation Tokens</h1>
+      <span>
+        <span>Don’t see any reports that need disputing? </span> 
+        You can earn a proportional share of the  profits from this dispute window. 
+        <span>Learn more</span>
+      </span>
+      
+      <Subheaders large info header='Total Reporting Fees' subheader={disputeWindowFees.formatted} secondSubheader='DAI' />
+      <Subheaders large info header='Total Participation Tokens Purchased' subheader={purchasedParticipationTokens.formatted} />
+      <Subheaders info header='Participation Tokens I OWN in Current Dispute Window' subheader={tokensOwned.formatted} secondSubheader='(3.0724% of Total Fees)' />
+
+      <PrimaryButton text='Get Participation Tokens' action={openModal} />
+
+      <section />
+      
+      <h1>Redeem Past Participation Tokens</h1>
+      <span>Redeem your past Participation Tokens and any returns from your share of the Reporting Fees. All tokens and fees that are ready to be claimed are shown below.</span>
+      <Subheaders info header='Participation Tokens Purchased' subheader='0.0000' />
+      <Subheaders info header='My Portion of Reporting Fees' subheader='0.0000'  secondSubheader='DAI' />
+      
+      <PrimaryButton text='Redeem Past Participation Tokens' action={null} />
+    </div>
+  );
+}

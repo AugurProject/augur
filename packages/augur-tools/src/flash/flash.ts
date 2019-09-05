@@ -34,6 +34,7 @@ export class FlashSession {
   user?: ContractAPI;
   readonly scripts: { [name: string]: FlashScript } = {};
   log: Logger = console.log;
+  network?: NetworkConfiguration;
 
   // Node miscellanea
   provider?: EthersProvider;
@@ -117,7 +118,10 @@ export class FlashSession {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
-    if (this.user) return this.user;
+    if (wireUpSdk === this.usingSdk && this.user) {
+      return this.user;
+    }
+
     if (wireUpSdk) this.usingSdk = true;
 
     let connector = null;
@@ -131,6 +135,7 @@ export class FlashSession {
     );
 
     if (wireUpSdk) {
+      network = network || this.network;
       await this.user.augur.connect(network.http, this.getAccount().publicKey);
       await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
     }

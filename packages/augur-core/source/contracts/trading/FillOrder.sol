@@ -478,6 +478,13 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         }
         logOrderFilled(_tradeData, _tradeData.order.sharePriceLong, _marketCreatorFees.add(_reporterFees), _amountFilled, _tradeGroupId);
         logAndUpdateVolume(_tradeData);
+        uint256 _totalFees = _marketCreatorFees.add(_reporterFees);
+        if (_totalFees > 0) {
+            uint256 _longFees = _totalFees.mul(_tradeData.order.sharePriceLong).div(_tradeData.contracts.market.getNumTicks());
+            uint256 _shortFees = _totalFees.sub(_longFees);
+            profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getLongShareBuyerDestination(), _tradeData.order.outcome, _longFees);
+            profitLoss.adjustTraderProfitForFees(_tradeData.contracts.market, _tradeData.getShortShareBuyerDestination(), _tradeData.order.outcome, _shortFees);
+        }
         updateProfitLoss(_tradeData, _amountFilled);
         if (_tradeData.creator.participantAddress == _tradeData.filler.participantAddress) {
             profitLoss.recordFrozenFundChange(_tradeData.contracts.market, _tradeData.creator.participantAddress, _tradeData.order.outcome, -int256(_tokensRefunded));
