@@ -1,5 +1,13 @@
 @import (reference) '~assets/styles/shared';
 
-.marketsView > article {
-  margin: 0 0 @size-24 0;
+.MarketLabelGroup {
+  display: flex;
+
+  > div {
+    margin: 0 0 @size-32 @size-24;
+  }
+
+  > div:first-of-type {
+    margin-left: @size-16;
+  }
 }

@@ -1,4 +1,6 @@
 import { Augur } from "../../Augur";
+import { augurEmitter } from "../../events";
+import { SubscriptionEventName } from "../../constants";
 import { PouchDBFactoryType } from "./AbstractDB";
 import { SyncableDB } from "./SyncableDB";
 import { SyncStatus } from "./SyncStatus";
@@ -33,6 +35,7 @@ import {
   MarketData,
   GenericEventDBDescription
 } from "../logs/types";
+import { ZeroXOrders, StoredOrder } from "./ZeroXOrders";
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -56,6 +59,7 @@ export class DB {
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
   private marketDatabase: MarketDB;
+  private zeroXOrders: ZeroXOrders;
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   readonly pouchDBFactory: PouchDBFactoryType;
@@ -147,6 +151,9 @@ export class DB {
     // Custom Derived DBs here
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
+    // Zero X Orders. Only on if a mesh client has been provided
+    this.zeroXOrders = this.augur.zeroX ? await ZeroXOrders.create(this, networkId, this.augur): undefined;
+
     // add passed in tracked users to the tracked uses db
     for (const trackedUser of trackedUsers) {
       await this.trackedUsers.setUserTracked(trackedUser);
@@ -203,21 +210,7 @@ export class DB {
     let dbSyncPromises = [];
     const highestAvailableBlockNumber = await augur.provider.getBlockNumber();
 
-    for (const trackedUser of await this.trackedUsers.getUsers()) {
-      for (const userSpecificEvent of this.userSpecificDBs) {
-        const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
-        dbSyncPromises.push(
-          this.syncableDatabases[dbName].sync(
-            augur,
-            chunkSize,
-            blockstreamDelay,
-            highestAvailableBlockNumber
-          )
-        );
-      }
-    }
-
-    console.log(`Syncing generic log DBs`);
+    console.log('Syncing generic log DBs');
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
       const dbName = this.getDatabaseName(genericEventDBDescription.EventName);
       dbSyncPromises.push(
@@ -233,7 +226,7 @@ export class DB {
     await Promise.all(dbSyncPromises);
 
     // Derived DBs are synced after generic log DBs complete
-    console.log(`Syncing derived DBs`);
+    console.log('Syncing derived DBs');
     dbSyncPromises = [];
     for (const derivedDBConfiguration of this.basicDerivedDBs) {
       const dbName = this.getDatabaseName(derivedDBConfiguration.name);
@@ -242,14 +235,85 @@ export class DB {
 
     await Promise.all(dbSyncPromises).then(() => undefined);
 
-    // The Market DB syncs last as it depends on a derived DB
-    return this.marketDatabase.sync(highestAvailableBlockNumber);
+    // If no meshCLient provided will not exists
+    if (this.zeroXOrders) await this.zeroXOrders.sync();
+
+    // The Market DB syncs after the derived DBs, as it depends on a derived DB
+    await this.marketDatabase.sync(highestAvailableBlockNumber);
+
+    augurEmitter.emit(SubscriptionEventName.SDKReady, {
+      eventName: SubscriptionEventName.SDKReady,
+    });
+
+    await this.syncUserData(chunkSize, blockstreamDelay, highestAvailableBlockNumber, augur);
+  }
+
+  /**
+   * Syncs all UserSyncableDBs. (If a user has been added to this.trackedUsers and
+   * does not have a UserSyncableDB, the UserSyncableDB will be created.)
+   *
+   * @param {Augur} augur Augur object with which to sync
+   * @param {number} chunkSize Number of blocks to retrieve at a time when syncing logs
+   * @param {number} blockstreamDelay Number of blocks by which blockstream is behind the blockchain
+   * @param {number} highestAvailableBlockNumber Number of the highest available block
+   */
+  async syncUserData(chunkSize: number, blockstreamDelay: number, highestAvailableBlockNumber: number, augur: Augur): Promise<void> {
+    const dbSyncPromises = [];
+    console.log('Syncing user-specific log DBs');
+    for (const trackedUser of await this.trackedUsers.getUsers()) {
+      for (const userSpecificEvent of this.userSpecificDBs) {
+        const dbName = this.getDatabaseName(userSpecificEvent.name, trackedUser);
+        dbSyncPromises.push(
+          this.syncableDatabases[dbName].sync(
+            augur,
+            chunkSize,
+            blockstreamDelay,
+            highestAvailableBlockNumber
+          )
+        );
+      }
+    }
+
+    await Promise.all(dbSyncPromises);
+
+    await this.emitUserDataSynced();
+  }
+
+  async addTrackedUser(account: string, chunkSize: number, blockstreamDelay: number): Promise<void> {
+    const highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
+    if (!(await this.trackedUsers.getUsers()).includes(account)) {
+      await this.trackedUsers.setUserTracked(account);
+      const dbSyncPromises = [];
+      for (const userSpecificEvent of this.userSpecificDBs) {
+        const dbName = this.getDatabaseName(userSpecificEvent.name, account);
+        if (!this.getSyncableDatabase(dbName)) {
+          // Create DB
+          new UserSyncableDB(this.augur, this, this.networkId, userSpecificEvent.name, account, userSpecificEvent.numAdditionalTopics, userSpecificEvent.userTopicIndicies, userSpecificEvent.idFields);
+          dbSyncPromises.push(
+            this.syncableDatabases[dbName].sync(
+              this.augur,
+              chunkSize,
+              blockstreamDelay,
+              highestAvailableBlockNumber
+            )
+          );
+        }
+      }
+    }
+
+    await this.emitUserDataSynced();
+  }
+
+  async emitUserDataSynced(): Promise<void> {
+    augurEmitter.emit(SubscriptionEventName.UserDataSynced, {
+      eventName: SubscriptionEventName.UserDataSynced,
+      trackedUsers: await this.trackedUsers.getUsers(),
+    });
   }
 
   /**
    * Gets the block number at which to begin syncing. (That is, the lowest last-synced
    * block across all event log databases or the upload block number for this network.)
-   *
    *
    * @returns {Promise<number>} Promise to the block number at which to begin syncing.
    */
@@ -581,7 +645,7 @@ export class DB {
     return logs;
   }
 
-  /*
+  /**
    * Queries the ParticipationTokensRedeemed DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
@@ -592,7 +656,7 @@ export class DB {
     return results.docs as unknown as ParticipationTokensRedeemedLog[];
   }
 
-  /*
+  /**
    * Queries the ProfitLossChanged DB
    *
    * @param {string} the user whose logs are being retreived
@@ -615,7 +679,7 @@ export class DB {
     return results.docs as unknown as TimestampSetLog[];
   }
 
-  /*
+  /**
    * Queries the TokenBalanceChanged DB
    *
    * @param {string} the user whose logs are being retreived
@@ -660,6 +724,19 @@ export class DB {
     const results = await this.findInDerivedDB(this.getDatabaseName("CurrentOrders"), request);
     const logs = results.docs as unknown as ParsedOrderEventLog[];
     for (const log of logs) log.timestamp = log.timestamp;
+    return logs;
+  }
+
+  /**
+   * Queries the ZeroXOrders DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<StoredOrder>>}
+   */
+  async findZeroXOrderLogs(request: PouchDB.Find.FindRequest<{}>): Promise<StoredOrder[]> {
+    if (!this.zeroXOrders) throw new Error("ZeroX orders not available as no mesh client was provided");
+    const results = await this.zeroXOrders.find(request);
+    const logs = results.docs as unknown as StoredOrder[];
     return logs;
   }
 

@@ -6,9 +6,11 @@ import {
   MakeJsonRpcError,
   MakeJsonRpcResponse,
   Subscriptions,
-  Sync
+  Sync,
 } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/src/state/getter/API';
+
+const settings = require('@augurproject/sdk/src/state/settings');
 
 // this to be as typesafe as possible with self and addEventListener + postMessage
 const ctx: Worker = self as any;
@@ -55,10 +57,38 @@ ctx.addEventListener('message', async (message: any) => {
         MakeJsonRpcResponse(messageData.id, true)
       );
     } else if (messageData.method === 'start') {
-      api = await Sync.start(messageData.ethNodeUrl, messageData.account, {}, true);
-      ctx.postMessage(
-        MakeJsonRpcResponse(messageData.id, true)
-      );
+      try {
+        const createResult = await Sync.createAPIAndController(messageData.params[0], messageData.params[1], {}, true);
+        // Do not call Sync.create here, sinc we must initialize api before calling controller.run.
+        // This is to prevent a race condition where getMarkets is called before api is fully
+        // initialized during bulk sync, due to SDKReady being emitted before UserDataSynced.
+        if (!createResult.api) {
+          throw new Error('Unable to create API');
+        }
+        api = createResult.api;
+        await createResult.controller.run();
+
+        ctx.postMessage(
+          MakeJsonRpcResponse(messageData.id, true)
+        );
+      } catch (err) {
+        ctx.postMessage(
+          MakeJsonRpcError(messageData.id, JsonRpcErrorCode.InvalidParams, err.message, false)
+        );
+      }
+    } else if (messageData.method === 'syncUserData') {
+      const account = messageData.params[0];
+      try {
+        const db = await api.db;
+        db.addTrackedUser(account, settings.chunkSize, settings.blockStreamDelay);
+        ctx.postMessage(
+          MakeJsonRpcResponse(messageData.id, { account })
+        );
+      } catch (err) {
+        ctx.postMessage(
+          MakeJsonRpcError(messageData.id, JsonRpcErrorCode.InvalidParams, err.message, { account })
+        );
+      }
     } else {
       try {
         const request = messageData as JsonRpcRequest;

@@ -138,7 +138,7 @@ export class Accounts<TBigNumber> {
       db,
       initialReporterRedeemedLogs
     );
-    
+
     const disputeCrowdsourcerRedeemedLogs = await db.findDisputeCrowdsourcerRedeemedLogs(
       {
         selector: {
@@ -154,40 +154,40 @@ export class Accounts<TBigNumber> {
     // console.log("allFormattedLogs", allFormattedLogs);
     const DummyData: AccountReportingHistory = {
       profitLoss: 1.25,
-      profitAmount: "65.25",
+      profitAmount: "65250000000000000000",
       reporting: {
-        totalAmount: "100",
+        totalAmount: "100000000000000000000",
         contracts: [{
           address: "0xa",
-          amount: "75",
+          amount: "75000000000000000000",
           marketId: "0x1"
         }, {
           address: "0xb",
-          amount: "25",
+          amount: "25000000000000000000",
           marketId: "0x2"
         }]
       },
       disputing: {
-        totalAmount: "50",
+        totalAmount: "50000000000000000000",
         contracts: [{
           address: "0xc",
-          amount: "15",
+          amount: "15000000000000000000",
           marketId: "0x3"
         }, {
           address: "0xd",
-          amount: "35",
+          amount: "35000000000000000000",
           marketId: "0x4"
         }]
       },
       pariticipationTokens: {
-        totalAmount: "120",
+        totalAmount: "1200000000000000000000",
         contracts: [{
           address: "0xe",
-          amount: "100",
+          amount: "100000000000000000000",
           marketId: "0x5"
         }, {
           address: "0xf",
-          amount: "20",
+          amount: "20000000000000000000",
           marketId: "0x6"
         }]
       }

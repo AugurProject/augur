@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import {
   MARKET_SORT_PARAMS,
-  MARKET_OPEN,
-  MARKET_REPORTING,
   MOBILE_MENU_STATES,
 } from "modules/common/constants";
-import { Checkbox } from "modules/common/form";
 import Styles from "modules/filter-sort/components/filter-dropdowns.styles.less";
 import parseQuery from "modules/routes/helpers/parse-query";
 import makeQuery from "modules/routes/helpers/make-query";
@@ -20,11 +17,6 @@ const sortOptions = [
   { value: MARKET_SORT_PARAMS.VOLUME, label: "Volume" },
   { value: MARKET_SORT_PARAMS.CREATOR_FEE_RATE, label: "Settlement Fee" },
   { value: MARKET_SORT_PARAMS.OPEN_INTEREST, label: "Open Interest" },
-];
-
-const filterOptions = [
-  { value: MARKET_OPEN, label: "Open" },
-  { value: MARKET_REPORTING, label: "In Reporting" },
 ];
 
 interface FilterSearchProps {
@@ -46,9 +38,7 @@ export default class FilterSearch extends Component<FilterSearchProps> {
   constructor(props) {
     super(props);
     this.changeSortDropdown = this.changeSortDropdown.bind(this);
-    this.changeFilterDropdown = this.changeFilterDropdown.bind(this);
     this.goToPageOne = this.goToPageOne.bind(this);
-    this.changeHasOrders = this.changeHasOrders.bind(this);
   }
 
   goToPageOne() {
@@ -76,61 +66,22 @@ export default class FilterSearch extends Component<FilterSearchProps> {
     updateFilter({ filter, sort: value });
   }
 
-  changeFilterDropdown(value) {
-    const {
-      sort,
-      updateFilterOption,
-      updateFilter,
-    } = this.props;
-
-    this.goToPageOne();
-    updateFilterOption(value);
-    updateFilter({ filter: value, sort });
-  }
-
-  changeHasOrders(event) {
-    const {
-      filter,
-      sort,
-      updateFilter,
-    } = this.props;
-    updateFilter({
-      filter,
-      sort
-    });
-  }
-
   render() {
     const {
-      defaultFilter,
       defaultSort,
-      hasOrders,
       updateMobileMenuState,
     } = this.props;
 
     return (
       <div className={Styles.FilterDropdowns}>
         <SquareDropdown
-          defaultValue={defaultFilter}
-          onChange={this.changeFilterDropdown}
-          options={filterOptions}
-        />
-        <SquareDropdown
           defaultValue={defaultSort}
-          onChange={this.changeSortDropdown}
           options={sortOptions}
+          onChange={this.changeSortDropdown}
+          stretchOutOnMobile
         />
-        <FilterButton
-          action={() =>
-            updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)
-          }
-        />
-        <Checkbox
-          id="has-orders"
-          isChecked={hasOrders}
-          onClick={this.changeHasOrders}
-        />
-        <label htmlFor="has-orders">has open orders</label>
+
+        <FilterButton action={() => updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)}/>
       </div>
     );
   }

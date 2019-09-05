@@ -7,6 +7,8 @@ import {
   MAXFEE_PARAM_NAME,
   SPREAD_PARAM_NAME,
   SHOW_INVALID_MARKETS_PARAM_NAME,
+  INVALID_HIDE,
+  INVALID_SHOW,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-filters.styles.less';
 import { helpIcon } from 'modules/common/icons';
@@ -15,11 +17,12 @@ import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
+import { INVALID_OPTIONS } from 'modules/types';
 
 interface MarketsListFiltersProps {
   maxFee: string;
   maxLiquiditySpread: string;
-  showInvalid: string;
+  includeInvalidMarkets: INVALID_OPTIONS;
   isSearching: boolean;
   updateMaxFee: Function;
   updateMaxSpread: Function;
@@ -49,13 +52,13 @@ export default class MarketsListFilters extends React.Component<
   }
 
   componentDidMount() {
-    const filterOptions = parseQuery(this.props.location.search);
+    const filterOptionsFromQuery = parseQuery(this.props.location.search);
     this.setState(
       {
-        selectedFee: filterOptions.maxFee || this.props.maxFee,
-        selectedSpread: filterOptions.spread || this.props.maxLiquiditySpread,
+        selectedFee: filterOptionsFromQuery.maxFee || this.props.maxFee,
+        selectedSpread: filterOptionsFromQuery.spread || this.props.maxLiquiditySpread,
         showInvalidDefault:
-          filterOptions.showInvalid || this.props.showInvalid,
+          filterOptionsFromQuery.showInvalid || this.props.includeInvalidMarkets,
       },
       () => {
         this.props.updateMaxFee(this.state.selectedFee);
@@ -67,10 +70,10 @@ export default class MarketsListFilters extends React.Component<
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location.search !== nextProps.location.search) {
-      const filterOptions = parseQuery(nextProps.location.search);
+      const filterOptionsFromQuery = parseQuery(nextProps.location.search);
       this.setState({
-        selectedFee:  filterOptions.maxFee ? filterOptions.maxFee : this.state.selectedFee,
-        selectedSpread: filterOptions.spread ? filterOptions.spread : this.state.selectedSpread,
+        selectedFee:  filterOptionsFromQuery.maxFee ? filterOptionsFromQuery.maxFee : this.state.selectedFee,
+        selectedSpread: filterOptionsFromQuery.spread ? filterOptionsFromQuery.spread : this.state.selectedSpread,
       });
     }
   }

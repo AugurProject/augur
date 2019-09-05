@@ -1,5 +1,5 @@
 import { ReactNode, MouseEvent } from "react";
-import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME } from "modules/common/constants";
+import { BUY, SELL, CATEGORY_PARAM_NAME, TAGS_PARAM_NAME, INVALID_SHOW, INVALID_HIDE } from "modules/common/constants";
 import { MARKET_ID_PARAM_NAME, RETURN_PARAM_NAME } from "./routes/constants/param-names";
 import { AnyAction } from "redux";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
@@ -108,6 +108,7 @@ export interface Universe {
   winningChildUniverse?: string;
   openInterest?: BigNumber | string;
   forkThreshold?: BigNumber;
+  disputeWindow: Getters.Universe.DisputeWindow;
 }
 
 export interface Versions {
@@ -405,6 +406,7 @@ export interface OpenOrders {
 export interface MarketTradingHistoryState extends Getters.Trading.MarketTradingHistory {
 
 }
+
 export interface MarketsInReporting {
   designated?: Array<string>;
   open?: Array<string>;
@@ -413,6 +415,7 @@ export interface MarketsInReporting {
   dispute?: Array<string>;
   resolved?: Array<string>;
 }
+
 export interface GasPriceInfo {
   average: number;
   fast: number;
@@ -420,15 +423,22 @@ export interface GasPriceInfo {
   userDefinedGasPrice: string;
   blockNumber: string;
 }
+
+export enum INVALID_OPTIONS {
+  Show = 'Show',
+  Hide = 'Hide',
+}
+
 export interface FilterSortOptions {
   marketFilter: string;
   marketSort: string;
   maxFee: string;
   maxLiquiditySpread: string;
-  includeInvalidMarkets: string;
+  includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
   hasOrders: boolean;
 }
+
 export interface Favorite {
   [marketId: string]: number;
 }
@@ -563,7 +573,7 @@ export interface AccountBalances {
 }
 export interface LoginAccount {
   address?: string;
-  displayAddress?: string;
+  mixedCaseAddress?: string;
   meta?: { accountType: string; address: string; signer: any | EthersSigner, isWeb3: boolean };
   totalFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;

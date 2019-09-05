@@ -44,7 +44,7 @@ export const makerTakerValues = {
   'taker': 'taker',
 };
 
-const makerTaker = t.keyof(makerTakerValues);
+export const makerTaker = t.keyof(makerTakerValues);
 
 export const OrdersParams = t.partial({
   universe: t.string,
@@ -108,6 +108,7 @@ export interface Order {
   amountFilled: string;
   fullPrecisionPrice: string;
   fullPrecisionAmount: string;
+  kycToken?: string;
   tokensEscrowed: string; // TODO add to log
   sharesEscrowed: string; // TODO add to log
   canceledBlockNumber?: string;
@@ -577,7 +578,7 @@ export class Trading {
   }
 }
 
-async function filterMarketsByReportingState(
+export async function filterMarketsByReportingState(
   marketIds: string[],
   db: DB,
   ignoreReportingStates: string[]

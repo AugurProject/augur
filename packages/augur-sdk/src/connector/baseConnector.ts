@@ -6,6 +6,7 @@ export abstract class BaseConnector {
 
   // Lifecyle of the connector
   abstract async connect(ethNodeUrl: string, account?: string): Promise<any>;
+  abstract async syncUserData(account: string): Promise<any>;
   abstract async disconnect(): Promise<any>;
 
   // bind API calls

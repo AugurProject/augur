@@ -33,9 +33,7 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     this.worker.postMessage({
       id: iterator.next().value,
       method: 'start',
-      params: [],
-      ethNodeUrl,
-      account,
+      params: [ethNodeUrl, account],
       jsonrpc: '2.0',
     });
 
@@ -73,7 +71,16 @@ export class WebWorkerConnector extends Connectors.BaseConnector {
     return this.worker;
   }
 
-  messageReceived(message: any) {
+  async syncUserData(account: string): Promise<any> {
+    return this.worker.postMessage({
+      id: iterator.next().value,
+      method: 'syncUserData',
+      params: [account],
+      jsonrpc: '2.0',
+    });
+  }
+
+  messageReceived(message: any): void {
     if (message.result) {
       if (this.subscriptions[message.result.eventName]) {
         this.subscriptions[message.result.eventName].callback(message.result);

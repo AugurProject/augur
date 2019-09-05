@@ -3,7 +3,7 @@ export const MARKET_FILTER = "marketFilter";
 export const MARKET_SORT = "marketSort";
 export const MARKET_MAX_FEES = "maxFee";
 export const MARKET_MAX_SPREAD = "maxLiquiditySpread";
-export const MARKET_SHOW_INVALID = "showInvalid";
+export const MARKET_SHOW_INVALID = "includeInvalidMarkets";
 export const TRANSACTION_PERIOD = "transactionPeriod";
 export const HAS_OPEN_ORDERS = "hasOrders";
 
