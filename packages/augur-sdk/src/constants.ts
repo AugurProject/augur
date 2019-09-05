@@ -144,3 +144,5 @@ export const MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI = new BigNumber(10).multipl
 export const SECONDS_IN_AN_HOUR = new BigNumber(3600, 10);
 
 export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
+
+export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(365);
