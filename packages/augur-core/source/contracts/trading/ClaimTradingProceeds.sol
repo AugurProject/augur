@@ -56,6 +56,7 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
         if (!_market.isFinalized()) {
             _market.finalize();
         }
+        uint256[] memory _outcomeFees = new uint256[](8);
         for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
             IShareToken _shareToken = _market.getShareToken(_outcome);
             uint256 _numberOfShares = _shareToken.balanceOf(_shareHolder);
@@ -75,10 +76,11 @@ contract ClaimTradingProceeds is Initializable, ReentrancyGuard, IClaimTradingPr
                     _market.getUniverse().withdraw(address(this), _shareHolderShare.add(_reporterShare), address(_market));
                     distributeProceeds(_market, _shareHolder, _shareHolderShare, _creatorShare, _reporterShare, _affiliateAddress);
                 }
+                _outcomeFees[_outcome] = _creatorShare.add(_reporterShare);
             }
         }
 
-        profitLoss.recordClaim(_market, _shareHolder);
+        profitLoss.recordClaim(_market, _shareHolder, _outcomeFees);
 
         _market.assertBalances();
 

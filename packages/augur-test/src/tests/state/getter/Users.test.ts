@@ -754,7 +754,7 @@ describe('State API :: Users :: ', () => {
         outcome: YES,
         quantity: 5,
         price: 0.4,
-        realizedPL: 0.5,
+        realizedPL: 0.4697,
         market: market2,
         timestamp: startTime.plus(32 * day).toNumber(),
         unrealizedPL: -1.5,
@@ -795,11 +795,11 @@ describe('State API :: Users :: ', () => {
     const oneDayPLSummary = profitLossSummary['1'];
     const thirtyDayPLSummary = profitLossSummary['30'];
 
-    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(0.5);
+    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(0.4697);
     await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(1.5);
 
-    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(0.5);
+    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(0.4697);
     await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
       9.5
@@ -828,7 +828,7 @@ describe('State API :: Users :: ', () => {
         price: 0.58,
         position: -7,
         avgPrice: 0.65,
-        realizedPL: 0.21,
+        realizedPL: 0.192426,
         frozenFunds: 2.45,
       },
       {
@@ -838,7 +838,7 @@ describe('State API :: Users :: ', () => {
         price: 0.62,
         position: -20,
         avgPrice: 0.63,
-        realizedPL: 0.21,
+        realizedPL: 0.192426,
         frozenFunds: 7.39,
       },
       {
@@ -848,7 +848,7 @@ describe('State API :: Users :: ', () => {
         price: 0.5,
         position: -10,
         avgPrice: 0.63,
-        realizedPL: 1.51,
+        realizedPL: 1.441926,
         frozenFunds: 3.69,
       },
       {
@@ -858,7 +858,7 @@ describe('State API :: Users :: ', () => {
         price: 0.15,
         position: -3,
         avgPrice: 0.63,
-        realizedPL: 4.87,
+        realizedPL: 4.791321,
         frozenFunds: 1.1,
       },
     ];
@@ -964,7 +964,7 @@ describe('State API :: Users :: ', () => {
         price: 0.1,
         position: -2,
         avgPrice: 0.3,
-        realizedPL: 1.6,
+        realizedPL: 1.59495,
         frozenFunds: -0.6,
       },
     ];
@@ -1017,7 +1017,7 @@ describe('State API :: Users :: ', () => {
         price: 0.6,
         position: 5,
         avgPrice: 0.6,
-        realizedPL: 0,
+        realizedPL: -0.0303,
         frozenFunds: -2,
       },
       {
@@ -1027,7 +1027,7 @@ describe('State API :: Users :: ', () => {
         price: 0.2,
         position: 12,
         avgPrice: 0.1,
-        realizedPL: 1.3,
+        realizedPL: 1.19496,
         frozenFunds: 1.2,
       },
       {
@@ -1037,7 +1037,7 @@ describe('State API :: Users :: ', () => {
         price: 0.8,
         position: 2,
         avgPrice: 0.6,
-        realizedPL: 0.6,
+        realizedPL: 0.5697,
         frozenFunds: -0.8,
       },
       {
@@ -1047,7 +1047,7 @@ describe('State API :: Users :: ', () => {
         price: 0.1,
         position: 0,
         avgPrice: 0,
-        realizedPL: -0.5,
+        realizedPL: -.5,
         frozenFunds: 2,
       },
     ];
@@ -1086,7 +1086,7 @@ describe('State API :: Users :: ', () => {
         price: 202,
         position: 1,
         avgPrice: 188,
-        realizedPL: 56,
+        realizedPL: 54.0608,
         frozenFunds: 138,
       },
       {
@@ -1096,7 +1096,7 @@ describe('State API :: Users :: ', () => {
         price: 205,
         position: -10,
         avgPrice: 205,
-        realizedPL: 73,
+        realizedPL: 70.6063,
         frozenFunds: 450,
       },
       {
@@ -1106,7 +1106,7 @@ describe('State API :: Users :: ', () => {
         price: 150,
         position: -3,
         avgPrice: 205,
-        realizedPL: 458,
+        realizedPL: 448.5363,
         frozenFunds: 135,
       },
     ];
