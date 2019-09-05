@@ -5,6 +5,7 @@ const Listr = require("listr");
 const colors = require("./common/colors");
 
 const BUILD_DIRECTORY = path.resolve(__dirname, "../build");
+const NODE_MODULES = path.resolve(__dirname, "../node_modules");
 
 const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(
   arg => arg.indexOf("--") !== -1
@@ -70,7 +71,7 @@ const createBuildDir = new Promise((resolve, reject) => {
 });
 
 const buildAugur = new Promise((resolve, reject) => {
-  shell.exec("node --max-old-space-size=6144 ./node_modules/webpack/bin/webpack.js --config webpack.config.js", code => {
+  shell.exec("webpack --config webpack.config.js", code => {
     if (code !== 0) {
       reject(new Error());
       shell.exit(code);
@@ -95,15 +96,7 @@ const tasks = new Listr(
             task: () => createBuildDir
           }
         ])
-    }
-  ],
-  {
-    renderer: "verbose"
-  }
-);
-
-const mainTask = new Listr(
-  [
+    },
     {
       title: "Build Augur",
       task: () => buildAugur
@@ -114,6 +107,4 @@ const mainTask = new Listr(
   }
 );
 
-tasks.run().catch(err => {}).then(() => {
-  mainTask.run().catch(err => {});
-});
+tasks.run().catch(err => {});
