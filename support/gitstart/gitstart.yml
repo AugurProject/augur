@@ -1,0 +1,21 @@
+version: "3.2"
+services:
+  dev-pop-normtime-geth-v2:
+    image: augurproject/dev-pop-normtime-geth-v2:latest
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+  augur:
+    build:
+      context: ../../
+      dockerfile: support/gitstart/Dockerfile-gitstart
+    volumes:
+      - ../../:/augur
+    entrypoint: ["supervisord", "-c", "/augur/support/gitstart/supervisord.conf", "--pidfile=/tmp/supervisord.pid"]
+    environment:
+      - ETHEREUM_HTTP=http://dev-pop-normtime-geth-v2:8545
+      - ETHEREUM_GAS_PRICE_IN_NANOETH=1
+    links:
+      - dev-pop-normtime-geth-v2
+    ports:
+      - "8080:8080"
