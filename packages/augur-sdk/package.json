@@ -84,7 +84,8 @@
     "@types/node": "10.12.29",
     "jest": "22.4.4",
     "ts-jest": "23.10.5",
-    "ts-node": "8.0.3",
+    "ts-node": "8.1.1",
+    "typescript": "3.6.2",
     "typedoc": "0.14.2",
     "typedoc-plugin-markdown": "1.2.1",
     "webpack-dev-server": "3.2.1"

@@ -52,7 +52,8 @@
     "puppeteer": "1.18.1",
     "supertest": "4.0.2",
     "ts-jest": "23.10.5",
-    "ts-node": "8.0.3",
+    "ts-node": "8.1.1",
+    "typescript": "3.6.2",
     "tsconfig-paths": "3.7.0"
   },
   "resolutions": {
