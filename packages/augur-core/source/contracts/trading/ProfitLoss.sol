@@ -58,6 +58,11 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
+    function adjustTraderProfitForFees(IMarket _market, address _trader, uint256 _outcome, uint256 _fees) public returns (bool) {
+        profitLossData[_trader][address(_market)][_outcome].realizedProfit -= int256(_fees);
+        return true;
+    }
+
     function recordTrade(IMarket _market, address _longAddress, address _shortAddress, uint256 _outcome, int256 _amount, int256 _price, uint256 _numLongTokens, uint256 _numShortTokens, uint256 _numLongShares, uint256 _numShortShares) public returns (bool) {
         require(msg.sender == fillOrder || msg.sender == address(this));
         int256 _numTicks = int256(_market.getNumTicks());
@@ -103,7 +108,7 @@ contract ProfitLoss is Initializable {
         return true;
     }
 
-    function recordClaim(IMarket _market, address _account) public returns (bool) {
+    function recordClaim(IMarket _market, address _account, uint256[] memory _outcomeFees) public returns (bool) {
         require(msg.sender == claimTradingProceeds);
         uint256 _numOutcomes = _market.getNumberOfOutcomes();
         for (uint256 _outcome = 0; _outcome < _numOutcomes; _outcome++) {
@@ -114,6 +119,7 @@ contract ProfitLoss is Initializable {
             int256 _salePrice = int256(_market.getWinningPayoutNumerator(_outcome));
             int256 _amount = _outcomeData.netPosition.abs();
             _outcomeData.realizedProfit += (_outcomeData.netPosition < 0 ? _outcomeData.avgPrice.sub(_salePrice) : _salePrice.sub(_outcomeData.avgPrice)).mul(_amount);
+            _outcomeData.realizedProfit -= int256(_outcomeFees[_outcome]);
             _outcomeData.realizedCost += (_outcomeData.netPosition < 0 ? int256(_market.getNumTicks()).sub(_outcomeData.avgPrice) : _outcomeData.avgPrice).mul(_amount);
             _outcomeData.avgPrice = 0;
             _outcomeData.frozenFunds = 0;
