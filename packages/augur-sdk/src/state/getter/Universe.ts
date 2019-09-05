@@ -66,12 +66,27 @@ export class Universe {
       return {};
     }
 
-    const market = augur.contracts.marketFromAddress(await universe.getForkingMarket_());
-
-    const logs = await db.findMarketCreatedLogs({
-      selector: {},
+    const universeForkedLogs = await db.findUniverseForkedLogs({
+      selector: {
+        universe: universe.address,
+      },
     });
-    console.log(JSON.stringify(logs, null, 2));
+    console.log(universeForkedLogs);
+    const market = augur.contracts.marketFromAddress(universeForkedLogs[0].forkingMarket);
+
+    const marketLogs = await db.findMarkets({
+      selector: {
+        market: market.address,
+      },
+    });
+    console.log(JSON.stringify(marketLogs, null, 2));
+
+    // const logs = await db.findMarketCreatedLogs({
+    //   selector: {
+    //     market: market.address,
+    //   },
+    // });
+    // console.log(JSON.stringify(logs, null, 2));
 
     // TODO populate outcomes
 
@@ -79,7 +94,6 @@ export class Universe {
       marketId: market.address,
       outcomes: [],
     };
-
   }
 }
 

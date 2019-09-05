@@ -7,6 +7,9 @@ import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/constants';
+import { fork } from "@augurproject/tools";
+import { stringTo32ByteHex } from "../../../libs/Utils";
+import { ORDER_TYPES } from '@augurproject/sdk';
 
 const mock = makeDbMock();
 
@@ -116,16 +119,44 @@ describe('State API :: Universe :: ', () => {
     const universe = john.augur.contracts.universe;
 
     const actualDB = await db;
-    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
 
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     let migrationTotals = await api.route('getForkMigrationTotals', {
       universe: universe.address,
     });
 
     expect(migrationTotals).toEqual({});
 
-    // TODO fork
+    const market = await john.createReasonableYesNoMarket();
 
+    const outcome0 = new BigNumber(0);
+    const outcome1 = new BigNumber(1);
+
+    await john.placeOrder(
+      market.address,
+      ORDER_TYPES.BID,
+      new BigNumber(10000000000000),
+      new BigNumber(22),
+      outcome0,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+
+    await mary.placeOrder(
+      market.address,
+      ORDER_TYPES.ASK,
+      new BigNumber(10000000000000),
+      new BigNumber(22),
+      outcome0,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+
+    await fork(john, market);
+
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     migrationTotals = await api.route('getForkMigrationTotals', {
       universe: universe.address,
     });
