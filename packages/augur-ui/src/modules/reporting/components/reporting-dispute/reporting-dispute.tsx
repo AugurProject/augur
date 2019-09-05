@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import MarketsInDispute from "modules/reporting/containers/markets-in-dispute";
 
 interface ReportingDisputeProps {
   isConnected: boolean;
   loadDisputeWindow: Function;
 }
 export default class ReportingDispute extends Component<ReportingDisputeProps> {
-  static propTypes = {};
-
   constructor(props) {
     super(props);
   }
@@ -28,6 +25,10 @@ export default class ReportingDispute extends Component<ReportingDisputeProps> {
   }
 
   render() {
-    return <section>Dispute</section>;
+    return (
+      <section>
+        <MarketsInDispute />
+      </section>
+    );
   }
 }
