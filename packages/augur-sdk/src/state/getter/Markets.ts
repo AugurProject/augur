@@ -558,7 +558,7 @@ export class Markets {
         ) {
           // Set marketOI. (This is also used as a secondary sorting parameter when sorting by liquidity.)
           marketsResults[i][GetMarketsSortBy.marketOI] = marketData[GetMarketsSortBy.marketOI] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
-        } else {
+        } else if (params.sortBy === GetMarketsSortBy.volume) {
           marketsResults[i][params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
         // @TODO Figure out why marketData is sometimes returning no results here
@@ -594,15 +594,12 @@ export class Markets {
           : result;
         }
       );
-    }
-    // @TODO This should fix sorting by marketOI/volume. I just need to test it.
-    // else if (params.sortBy === GetMarketsSortBy.marketOI || params.sortBy === GetMarketsSortBy.volume) {
-    //   marketsResults.sort((x, y) => {
-    //     return compareStringsAsBigNumbers(x.liquidity, y.liquidity);
-    //     }
-    //   );
-    // }
-    else {
+    } else if (params.sortBy === GetMarketsSortBy.marketOI || params.sortBy === GetMarketsSortBy.volume) {
+      marketsResults.sort((x, y) => {
+        return compareStringsAsBigNumbers(x.liquidity, y.liquidity, orderBy);
+        }
+      );
+    } else {
       marketsResults = _.orderBy(marketsResults, [params.sortBy], [orderBy]);
     }
     marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
@@ -1477,22 +1474,26 @@ export async function getLiquidityOrderBookInfo(augur: Augur, db: DB, marketId: 
   let lowestSpread = undefined;
 
   for (const outcome in orderBook) {
-    if (orderBook.hasOwnProperty(outcome)) {
+    if (orderBook[outcome]) {
       if (!lowestSpread || orderBook[outcome].spread < lowestSpread) {
         lowestSpread = new BigNumber(orderBook[outcome].spread).toNumber();
       }
       delete orderBook[outcome].spread;
-      for (let i = 0; i < orderBook[outcome].bids.length; i++) {
-        delete orderBook[outcome].bids[i].cumulativeShares;
-        delete orderBook[outcome].bids[i].mySize;
-        orderBook[outcome].bids[i].amount = orderBook[outcome].bids[i].shares;
-        delete orderBook[outcome].bids[i].shares;
+      if (orderBook[outcome].bids) {
+        for (let i = 0; i < orderBook[outcome].bids.length; i++) {
+          delete orderBook[outcome].bids[i].cumulativeShares;
+          delete orderBook[outcome].bids[i].mySize;
+          orderBook[outcome].bids[i].amount = orderBook[outcome].bids[i].shares;
+          delete orderBook[outcome].bids[i].shares;
+        }
       }
-      for (let i = 0; i < orderBook[outcome].asks.length; i++) {
-        delete orderBook[outcome].asks[i].cumulativeShares;
-        delete orderBook[outcome].asks[i].mySize;
-        orderBook[outcome].asks[i].amount = orderBook[outcome].asks[i].shares;
-        delete orderBook[outcome].asks[i].shares;
+      if (orderBook[outcome].asks) {
+        for (let i = 0; i < orderBook[outcome].asks.length; i++) {
+          delete orderBook[outcome].asks[i].cumulativeShares;
+          delete orderBook[outcome].asks[i].mySize;
+          orderBook[outcome].asks[i].amount = orderBook[outcome].asks[i].shares;
+          delete orderBook[outcome].asks[i].shares;
+        }
       }
     }
   }
