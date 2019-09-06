@@ -4,7 +4,7 @@ import Media from "react-media";
 import { Helmet } from 'react-helmet';
 import { ButtonActionType, MarketData } from 'modules/types';
 import { ReportingModalButton } from 'modules/reporting/common';
-import { ReportingList } from 'modules/reporting/reporting-list';
+import ReportingList from 'modules/reporting/containers/reporting-list';
 import UserRepDisplay from 'modules/reporting/containers/user-rep-display';
 import { TEMP_TABLET, REPORTING_STATE } from "modules/common/constants";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
@@ -13,21 +13,13 @@ import ModulePane from "modules/market/components/common/module-tabs/module-pane
 import Styles from 'modules/reporting/reporting.styles.less';
 
 interface ReportingProps {
-  upcomingMarkets: Array<MarketData>;
-  openMarkets: Array<MarketData>;
-  designatedReporterMarkets: Array<MarketData>;
-  isLogged: boolean;
+  showLoggedOut: boolean;
+  openReportingModal: ButtonActionType;
 }
 
 export default class Reporting extends React.Component<ReportingProps> {
-
   render() {
-    const {
-      designatedReporterMarkets,
-      openMarkets,
-      upcomingMarkets,
-      isLogged
-    } = this.props;
+    const { openReportingModal, showLoggedOut } = this.props;
 
     return (
       <section className={Styles.Reporting}>

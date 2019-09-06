@@ -2,6 +2,7 @@ import {
   UPDATE_MARKETS_LIST_META,
   SET_LOAD_MARKETS_PENDING,
   UPDATE_SELECTED_CATEGORIES,
+  UPDATE_CARD_FORMAT,
 } from 'modules/markets-list/actions/update-markets-list';
 import { BaseAction, MarketsList } from 'modules/types';
 
@@ -9,6 +10,7 @@ const DEFAULT_STATE: MarketsList = {
   isSearching: true,
   meta: null,
   selectedCategories: [],
+  marketCardFormat: 'classic',
 };
 
 export default function(
@@ -31,6 +33,11 @@ export default function(
         ...marketsList,
         selectedCategories: data.categories,
       };
+      case UPDATE_CARD_FORMAT:
+        return {
+          ...marketsList,
+          marketCardFormat: data.format,
+        };
     default:
       return marketsList;
   }
