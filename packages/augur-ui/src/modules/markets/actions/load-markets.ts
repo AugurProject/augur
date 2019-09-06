@@ -60,6 +60,24 @@ export const loadMarketsByFilter = (
       sort.isSortDescending = false;
       break;
     }
+    case MARKET_SORT_PARAMS.VOLUME: {
+      // Highest volume
+      sort.sortBy = Getters.Markets.GetMarketsSortBy.volume;
+      sort.isSortDescending = true;
+      break;
+    }
+    case MARKET_SORT_PARAMS.LIQUIDITY: {
+      // Highest liquidity
+      sort.sortBy = Getters.Markets.GetMarketsSortBy.liquidity;
+      sort.isSortDescending = true;
+      break;
+    }
+    case MARKET_SORT_PARAMS.LAST_LIQUIDITY_DEPLETED: {
+      // Recently depleted liquidity
+      sort.sortBy = Getters.Markets.GetMarketsSortBy.lastLiquidityDepleted;
+      sort.isSortDescending = true;
+      break;
+    }
     case MARKET_SORT_PARAMS.CREATION_TIME: {
       // Sort By Creation Date (most recent first):
       sort.sortBy = Getters.Markets.GetMarketsSortBy.timestamp;
@@ -72,7 +90,8 @@ export const loadMarketsByFilter = (
       break;
     }
     default: {
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.volume;
+      // Sort By Recently Traded
+      sort.sortBy = Getters.Markets.GetMarketsSortBy.lastTradedTimestamp;
       sort.isSortDescending = true;
       break;
     }
@@ -107,10 +126,10 @@ export const loadMarketsByFilter = (
   let params = {
     universe: universe.id,
     categories: filterOptions.categories,
-    // search: filterOptions.search,
+    search: filterOptions.search ? filterOptions.search : '',
     maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
-    limit: filterOptions.limit,
+    limit: filterOptions.limit === 1 ? 0 : filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
     ...sort,

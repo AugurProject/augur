@@ -8,21 +8,44 @@
   @media @breakpoint-mobile {
     flex-flow: row wrap;
     justify-content: space-between;
+    margin-bottom: @size-16;
   }
 
   > div {
-    margin-right: @size-16;
-  }
+    margin-bottom: @size-24;
+    min-width: 250px;
+    height: 44px;
+    background: @color-secondary-action;
+    border-color: @color-primary-light;
 
-  > div:first-of-type {
-    min-width: 6rem;
-  }
+    > button {
+      .text-14-bold;
 
-  > div:nth-of-type(2) {
-    min-width: 7.125rem;
+      color: @color-alternate-info-text;
+      background: @color-secondary-action;
 
-    @media @breakpoint-mobile {
-      min-width: 6.625rem;
+      @media @breakpoint-mobile {
+        padding: 0 @size-16;
+      }
+
+      > span {
+        font-weight: bold;
+      }
+
+      > span::before {
+        content: 'Sort By:';
+        font-weight: normal;
+        padding-right: @size-4;
+      }
+
+      > svg {
+        height: @size-12;
+        width: @size-12;
+
+        > path {
+          stroke: @color-secondary-text;
+        }
+      }
     }
   }
 
