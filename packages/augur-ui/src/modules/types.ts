@@ -393,6 +393,7 @@ export interface MarketsList {
     categories: object;
   };
   selectedCategories: string[];
+  marketCardFormat: sring;
 }
 
 export interface FilledOrders {
