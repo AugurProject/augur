@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadDisputeWindow: () => dispatch(loadDisputeWindow()),
+  // loadDisputeWindow: () => dispatch(loadDisputeWindow()),
 });
 
 const mergeProps = (sP, dP, oP) => {

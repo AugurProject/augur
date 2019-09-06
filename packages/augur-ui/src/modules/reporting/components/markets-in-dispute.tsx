@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import QuadBox from "modules/portfolio/components/common/quad-box";
-import EmptyDisplay from "modules/portfolio/components/common/empty-display";
-import { SwitchLabelsGroup } from "modules/common/switch-labels-group";
+import QuadBox from 'modules/portfolio/components/common/quad-box';
+import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
+import { Market, Tab } from 'modules/portfolio/types';
+import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
+import { REPORTING_STATE } from 'modules/common/constants';
+import MarketCard from 'modules/market-cards/containers/market-card';
+import { convertMarketInfoToMarketData } from 'utils/convert-marketinfo-marketData';
 
 interface MarketsInDisputeProps {
-  markets: any;
-  sortByOptions: any;
+  markets: Object;
+  sortByOptions: Object;
 }
 
 interface MarketsInDisputeState {
@@ -13,7 +17,7 @@ interface MarketsInDisputeState {
   // sortBy: string;
   selectedTab: string;
   tabs: Array<Tab>;
-  // filteredData: Array<Market>;
+  filteredData: Array<Market>;
 }
 
 function filterComp(input, market) {
@@ -21,41 +25,78 @@ function filterComp(input, market) {
   return true;
 }
 
-export default class MarketsInDispute extends Component<MarketsInDisputeProps, MarketsInDisputeState> {
+const { CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW } = REPORTING_STATE;
+
+export default class MarketsInDispute extends Component<
+  MarketsInDisputeProps,
+  MarketsInDisputeState
+> {
   constructor(props) {
     super(props);
+    // default to current
+    const current = this.filterDisputingMarkets(props.markets, true);
+    const awaiting = this.filterDisputingMarkets(props.markets);
     this.state = {
-      selectedTab: "dispute",
+      search: 'Currently Disputing',
+      selectedTab: 'current',
       tabs: [
         {
-          key: "dispute",
-          label: "dispute",
-          num: 0,
+          key: 'current',
+          label: 'Currently Disputing',
+          num: current.length,
         },
         {
-          key: "disputeSoon",
-          label: "dispute soon",
-          num: 1,
-        }
+          key: 'awaiting',
+          label: 'Awaiting Next Dispute',
+          num: awaiting.length,
+        },
       ],
-      search: "dispute"
-    }
+      filteredData: current,
+    };
   }
 
-  selectTab = (tab: string) => {
-    this.setState({ selectedTab: tab });
-    // const { data } = this.props;
-    // let dataFiltered = this.applySearch(data, this.state.search, data[tab]);
-    // dataFiltered = this.applySortBy(this.state.sortBy, dataFiltered);
+  filterDisputingMarkets = (markets: Object, onlySlow = false) => {
+    const filteredData = [];
+    for (let [key, value] of Object.entries(markets)) {
+      if (
+        (value.reportingState === CROWDSOURCING_DISPUTE && onlySlow) ||
+        value.reportingState === AWAITING_NEXT_WINDOW
+      ) {
+        filteredData.push(convertMarketInfoToMarketData(value));
+      }
+    }
+    return filteredData;
+  };
+
+  selectTab = (selectedTab: string) => {
+    this.setState({ selectedTab });
+    const { markets } = this.props;
+    // let filteredData = this.applySearch(data, this.state.search, data[tab]);
+    // filteredData = this.applySortBy(this.state.sortBy, dataFiltered);
+    const filteredData = this.filterDisputingMarkets(
+      markets,
+      selectedTab === "current"
+    );
 
     // @ts-ignore
-    // this.setState({ tab });
+    this.setState({ filteredData });
+  };
+
+  onSearchChange = (input: string) => {
+    this.setState({ search: input });
+
+    const { markets } = this.props;
+    const { selectedTab } = this.state;
+    const filteredData = this.filterDisputingMarkets(markets, selectedTab === "current");
+    // const tabData = data[selectedTab];
+    // const filteredData = this.applySearch(data, input, tabData);
+
+    this.setState({ filteredData });
   };
 
   render() {
-    const { selectedTab, tabs, search } = this.state;
-    const { markets, sortByOptions } = this.props;
-    
+    const { selectedTab, tabs, search, filteredData } = this.state;
+    const { sortByOptions } = this.props;
     return (
       <QuadBox
         title="Markets In Dispute"
@@ -73,11 +114,17 @@ export default class MarketsInDispute extends Component<MarketsInDisputeProps, M
         }
         content={
           <>
-            <EmptyDisplay
-              selectedTab="disputes tab"
-              filterLabel={"hello world"}
-              search={search}
-            />
+            {filteredData.length === 0 && (
+              <EmptyDisplay
+                selectedTab="Currently Disputing"
+                filterLabel={''}
+                search={search}
+              />
+            )}
+            {filteredData.length > 0 &&
+              filteredData.map(market => (
+                <MarketCard key={market.id} market={market} />
+              ))}
           </>
         }
       />
