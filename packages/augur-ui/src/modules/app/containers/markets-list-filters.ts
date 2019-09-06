@@ -10,11 +10,11 @@ import {
 import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 
 const mapStateToProps = (state) => {
-  const { maxFee, maxLiquiditySpread, showInvalid } = state.filterSortOptions;
+  const { maxFee, maxLiquiditySpread, includeInvalidMarkets } = state.filterSortOptions;
   return {
     maxFee,
     maxLiquiditySpread,
-    showInvalid,
+    includeInvalidMarkets,
     isSearching: state.marketsList.isSearching,
   };
 };

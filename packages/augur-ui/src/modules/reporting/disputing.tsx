@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import MarketsInDispute from "modules/reporting/containers/markets-in-dispute";
 
-interface ReportingDisputeProps {
+import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
+
+interface DisputingProps {
   isConnected: boolean;
   loadDisputeWindow: Function;
 }
-export default class ReportingDispute extends Component<ReportingDisputeProps> {
+
+export default class Disputing extends Component<DisputingProps> {
   constructor(props) {
     super(props);
   }
@@ -27,6 +30,7 @@ export default class ReportingDispute extends Component<ReportingDisputeProps> {
   render() {
     return (
       <section>
+        <ParticipationTokensView />
         <MarketsInDispute />
       </section>
     );

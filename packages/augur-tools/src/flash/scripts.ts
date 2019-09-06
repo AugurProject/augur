@@ -1,7 +1,7 @@
 import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarketsAndOrders } from './create-canned-markets-and-orders';
-import { _1_ETH } from '../constants';
+import { _1_ETH, NULL_ADDRESS } from '../constants';
 import {
   Contracts as compilerOutput,
   Addresses,
@@ -30,29 +30,30 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'account',
         abbr: 'a',
-        description: `account address to connect with, if no address provided contract owner is used`,
+        description: 'account address to connect with, if no address provided contract owner is used',
       },
       {
         name: 'network',
         abbr: 'n',
-        description: `Which network to connect to. Defaults to "environment" aka local node.`,
+        description: 'Which network to connect to. Defaults to "environment" aka local node.',
       },
       {
         name: 'useSdk',
         abbr: 'u',
-        description: `a few scripts need sdk, -u to wire up sdk`,
+        description: 'a few scripts need sdk, -u to wire up sdk',
         flag: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const network = (args.network as NETWORKS) || 'environment';
       const account = args.account as string;
+      const useSdk = args.useSdk as boolean;
       if (account) flash.account = account;
-      const networkConfiguration = NetworkConfiguration.create(network);
-      flash.provider = this.makeProvider(networkConfiguration);
+      this.network = NetworkConfiguration.create(network);
+      flash.provider = this.makeProvider(this.network);
       const networkId = await this.getNetworkId(flash.provider);
       flash.contractAddresses = Addresses[networkId];
-      await flash.ensureUser(networkConfiguration, !!args.useSdk);
+      await flash.ensureUser(this.network, useSdk);
     },
   });
 
@@ -313,13 +314,13 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'timestamp',
         abbr: 't',
-        description: `Uses Moment's parser but also accepts millisecond unix epoch time. See https://momentjs.com/docs/#/parsing/string/`,
+        description: "Uses Moment's parser but also accepts millisecond unix epoch time. See https://momentjs.com/docs/#/parsing/string/",
         required: true,
       },
       {
         name: 'format',
         abbr: 'f',
-        description: `Lets you specify the format of --timestamp. See https://momentjs.com/docs/#/parsing/string-format/`,
+        description: 'Lets you specify the format of --timestamp. See https://momentjs.com/docs/#/parsing/string-format/',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -345,7 +346,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'count',
         abbr: 'c',
-        description: `Defaults to seconds. Use "y", "M", "w", "d", "h", or "m" for longer times. ex: "2w" is 2 weeks.`,
+        description: 'Defaults to seconds. Use "y", "M", "w", "d", "h", or "m" for longer times. ex: "2w" is 2 weeks.',
         required: true,
       },
     ],
@@ -423,8 +424,9 @@ export function addScripts(flash: FlashSession) {
           .multipliedBy(QUINTILLION)
           .toFixed();
       }
-      if (!this.usingSdk)
+      if (!this.usingSdk) {
         this.log('This script needs sdk, make sure to connect with -u flag');
+      }
       if (!this.sdkReady) this.log("SDK hasn't fully syncd, need to wait");
 
       const market: ContractInterfaces.Market = await user.getMarketContract(
@@ -493,12 +495,14 @@ export function addScripts(flash: FlashSession) {
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
-      if (!this.usingSdk)
+      if (!this.usingSdk) {
         return this.log(
           'This script needs sdk, make sure to connect with -u flag'
         );
-      if (!this.sdkReady)
+      }
+      if (!this.sdkReady) {
         return this.log("SDK hasn't fully syncd, need to wait");
+      }
 
       const market: ContractInterfaces.Market = await user.getMarketContract(
         marketId
@@ -562,12 +566,14 @@ export function addScripts(flash: FlashSession) {
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
-      if (!this.usingSdk)
+      if (!this.usingSdk) {
         return this.log(
           'This script needs sdk, make sure to connect with -u flag'
         );
-      if (!this.sdkReady)
+      }
+      if (!this.sdkReady) {
         return this.log("SDK hasn't fully syncd, need to wait");
+      }
 
       const market: ContractInterfaces.Market = await user.getMarketContract(
         marketId
@@ -609,6 +615,66 @@ export function addScripts(flash: FlashSession) {
         marketId
       );
       await user.finalizeMarket(market);
+    },
+  });
+
+  flash.addScript({
+    name: 'fork',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'yes/no market to fork. defaults to making one',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.ensureUser(this.network, true);
+      const marketId = args.marketId as string;
+
+      const MAX_DISPUTES = 20;
+      const SOME_REP = new BigNumber(1e18).times(6e7);
+      const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
+      const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
+
+      let market: ContractInterfaces.Market;
+      if (marketId !== null) {
+        market = user.augur.contracts.marketFromAddress(marketId);
+      } else {
+        market = await user.createReasonableYesNoMarket();
+        this.log(`Created market ${market.address}`);
+      }
+
+      await user.repFaucet(SOME_REP);
+
+      // Get past the market time, into when we can accept the initial report.
+      await user.setTimestamp((await market.getEndTime_()).plus(1));
+
+      // Do the initial report, creating the first dispute window.
+      await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
+      // Contribution (dispute) fulfills the first dispute bond,
+      // pushing into next dispute round that takes additional stake into account.
+      await user.contribute(market, conflictNumerators, SOME_REP);
+
+      for (let i = 0; i < MAX_DISPUTES; i++) {
+        if ((await market.getForkingMarket_()) !== NULL_ADDRESS) {
+          this.log('Successfully Forked');
+          break;
+        }
+
+        const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
+        console.log(`fork attempt ${i}`);
+
+        // Enter the dispute window.
+        await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
+
+        // Contribute aka dispute. Opposing sides to keep raising the stakes.
+        if (i % 2 === 0) {
+          await user.contribute(market, conflictNumerators, SOME_REP);
+        } else {
+          await user.contribute(market, payoutNumerators, SOME_REP);
+        }
+      }
     },
   });
 }

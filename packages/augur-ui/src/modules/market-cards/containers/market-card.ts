@@ -18,7 +18,7 @@ const mapStateToProps = (state, ownProps) => {
     reportingWindowStatsEndTime: state.reportingWindowStats.endTime,
     address: state.loginAccount.address,
     isFavorite: !!state.favorites[ownProps.market.marketId],
-    hasStaked
+    hasStaked,
   };
 };
 

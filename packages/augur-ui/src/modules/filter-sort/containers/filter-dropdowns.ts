@@ -1,14 +1,13 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import FilterDropdown from "modules/filter-sort/components/filter-dropdowns";
+import FilterDropdown from 'modules/filter-sort/components/filter-dropdowns';
 import {
   updateFilterSortOptions,
   MARKET_FILTER,
   MARKET_SORT,
-  HAS_OPEN_ORDERS,
-} from "modules/filter-sort/actions/update-filter-sort-options";
-import { updateMobileMenuState } from "modules/app/actions/update-sidebar-status";
+} from 'modules/filter-sort/actions/update-filter-sort-options';
+import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 
 const mapStateToProps = state => ({
   defaultFilter: state.filterSortOptions.marketFilter,
@@ -20,8 +19,6 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateFilterSortOptions(MARKET_FILTER, filterOption)),
   updateSortOption: sortOption =>
     dispatch(updateFilterSortOptions(MARKET_SORT, sortOption)),
-  updateHasOpenOrders: hasOpenOrders =>
-    dispatch(updateFilterSortOptions(HAS_OPEN_ORDERS, hasOpenOrders)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
 });
 
