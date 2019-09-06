@@ -5,16 +5,47 @@
   flex-direction: column;
   padding: @size-48 @size-16 0 @size-16;
 
-  > div {
+  > div > button {
+    display: none;
+  }
+
+  @media @breakpoint-mobile {
+    padding: @size-20 @size-16 0 @size-16;
+
+    > div > button {
+      display: flex;
+      margin-left: @size-16;
+    }
+  }
+
+
+  > div > div > div > div {
+    display: flex;
+  }
+
+  > div > div > div > div {
+    @media @breakpoint-mobile {
+      display: none;
+    }
+  }
+
+  > div:first-of-type {
+    @media @breakpoint-mobile {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  > div:nth-of-type(2) {
+    align-items: flex-start;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: @size-28;
 
     @media @breakpoint-mobile {
-      align-items: flex-start;
-      flex-direction: column;
-      margin-bottom: @size-16;
+      align-items: center;
+      flex-direction: row;
+      margin-bottom: 0;
+      margin-top: @size-4;
     }
 
     > h1 {
@@ -40,26 +71,28 @@
     }
   }
 
-  > article {
+  > div > article {
     flex: 1;
     margin-bottom: @size-28;
 
     @media @breakpoint-mobile {
       margin-bottom: @size-16;
       order: 0;
+      height: @size-40;
     }
   }
 }
 
 .DisableFilters {
-  > article {
+  button,
+  button > div {
     pointer-events: none;
     opacity: 0.5;
   }
 
-  > div > div {
+  article {
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 1;
   }
 }
 
@@ -71,7 +104,7 @@
   margin: 0 @size-24 @size-16 0;
 
   @media @breakpoint-mobile {
-    margin: 0 @size-24 @size-16 @size-24;
+    margin: 0;
     width: 100%;
   }
 
@@ -84,7 +117,7 @@
     margin: 0 @size-4 0 @size-12;
   }
 
-  > span:nth-of-type(2) {
+  > span:nth-of-type(1) {
       @media @breakpoint-mobile {
         display: none;
       }

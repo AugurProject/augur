@@ -8,6 +8,8 @@ html,
 
 body {
   background: @color-primary-background;
+  top: 0px !important;
+  position: initial !important;
 
   @media @breakpoint-mobile {
     --is-mobile: true;
@@ -51,7 +53,7 @@ h6 {
 
 .Main__wrap {
   display: grid;
-  overflow: hidden;
+  overflow: auto;
 
   @media @breakpoint-mobile {
     grid-template-columns: none;

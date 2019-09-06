@@ -10,6 +10,7 @@ import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { SquareDropdown } from 'modules/common/selection';
 import { FilterButton } from 'modules/common/buttons';
 
+// TODO move to ocnstants
 const sortOptions = [
   { value: MARKET_SORT_PARAMS.LIQUIDITY, label: 'Highest liquidity' },
   { value: MARKET_SORT_PARAMS.OPEN_INTEREST, label: 'Highest open interest' },
@@ -24,14 +25,8 @@ const sortOptions = [
 ];
 
 interface FilterSearchProps {
-  filter: string;
-  sort: string;
-  updateFilter: Function;
-  defaultFilter: string;
   defaultSort: string;
-  updateFilterOption: Function;
   updateSortOption: Function;
-  updateMobileMenuState: Function;
   history: History;
   location: Location;
 }
@@ -57,15 +52,14 @@ export default class FilterSearch extends Component<FilterSearchProps> {
   }
 
   changeSortDropdown(value) {
-    const { filter, updateSortOption, updateFilter } = this.props;
+    const { updateSortOption } = this.props;
 
     this.goToPageOne();
     updateSortOption(value);
-    updateFilter({ filter, sort: value });
   }
 
   render() {
-    const { defaultSort, updateMobileMenuState } = this.props;
+    const { defaultSort } = this.props;
 
     return (
       <div className={Styles.FilterDropdowns}>
@@ -74,13 +68,6 @@ export default class FilterSearch extends Component<FilterSearchProps> {
           options={sortOptions}
           onChange={this.changeSortDropdown}
           stretchOutOnMobile
-        />
-
-        {/* MOBILE FILTERS TOGGLE */}
-        <FilterButton
-          action={() =>
-            updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)
-          }
         />
       </div>
     );
