@@ -28,6 +28,7 @@ import {
 } from '../../index';
 import { calculatePayoutNumeratorsValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
+import { MaxLiquiditySpread } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -51,7 +52,6 @@ export enum GetMarketsSortBy {
   timestamp = 'timestamp',
   endTime = 'endTime',
   lastTradedTimestamp = 'lastTradedTimestamp',
-  lastLiquidityDepleted = 'lastLiquidityDepleted',
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
@@ -420,16 +420,14 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketsParams>
   ): Promise<MarketList> {
-    // Validate params
+    // Validate params & set defaults
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
-    const validLiquiditySpreads = ['10', '15', '20', '100'];
-    if (params.maxLiquiditySpread && !validLiquiditySpreads.includes(params.maxLiquiditySpread)) {
+    params.maxLiquiditySpread = typeof params.maxLiquiditySpread === 'undefined' ? MaxLiquiditySpread.OneHundredPercent : params.maxLiquiditySpread;
+    if (!Object.values(MaxLiquiditySpread).includes(params.maxLiquiditySpread)) {
       throw new Error('Invalid maxLiquiditySpread');
     }
-
-    // Set params defaults
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
     params.search = typeof params.search === 'undefined' ? '' : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
@@ -538,7 +536,7 @@ export class Markets {
 
       let marketData: MarketData[];
       if (
-        params.maxLiquiditySpread ||
+        params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent ||
         params.includeInvalidMarkets ||
         params.sortBy === GetMarketsSortBy.liquidity ||
         params.sortBy === GetMarketsSortBy.marketOI ||
@@ -559,9 +557,13 @@ export class Markets {
         } else if (params.sortBy === GetMarketsSortBy.volume) {
           marketsResults[i][params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
+
+        if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
+          // @TODO
+        }
         // @TODO Figure out why marketData is sometimes returning no results here
-        if (
-          (params.maxLiquiditySpread && marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0') ||
+        else if (
+          (marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0') ||
           (params.includeInvalidMarkets === false && marketData.length > 0 && marketData[0].invalidFilter === true)
         ) {
           includeMarket = false;
