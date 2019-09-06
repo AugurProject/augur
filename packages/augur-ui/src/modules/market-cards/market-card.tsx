@@ -233,6 +233,13 @@ export default class MarketCard extends React.Component<
                   value={formatAttoRep(disputeInfo.stakeCompletedTotal).formatted}
                 />
               }
+              <MarketProgress
+                reportingState={reportingState}
+                currentTime={currentAugurTimestamp}
+                endTimeFormatted={endTimeFormatted}
+                reportingWindowEndtime={reportingWindowStatsEndTime}
+                alignRight
+              />
             </div>
 
             <MarketLink id={id}>
