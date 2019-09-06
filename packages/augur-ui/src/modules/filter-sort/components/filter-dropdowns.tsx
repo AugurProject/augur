@@ -1,28 +1,19 @@
 import React, { Component } from 'react';
 import {
-  MARKET_SORT_PARAMS,
-  MOBILE_MENU_STATES,
+  SORT_OPTIONS,
 } from 'modules/common/constants';
 import Styles from 'modules/filter-sort/components/filter-dropdowns.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { SquareDropdown } from 'modules/common/selection';
-import { FilterButton } from 'modules/common/buttons';
 
-// TODO move to ocnstants
-const sortOptions = [
-  { value: MARKET_SORT_PARAMS.LIQUIDITY, label: 'Highest liquidity' },
-  { value: MARKET_SORT_PARAMS.OPEN_INTEREST, label: 'Highest open interest' },
-  { value: MARKET_SORT_PARAMS.VOLUME, label: 'Highest volume' },
-  { value: MARKET_SORT_PARAMS.CREATION_TIME, label: 'Recently created' },
-  { value: MARKET_SORT_PARAMS.END_DATE, label: 'Ending soon ' },
-  { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, label: 'Recently Traded' },
-  {
-    value: MARKET_SORT_PARAMS.LAST_LIQUIDITY_DEPLETED,
-    label: 'Recently depleted liquidity',
-  },
-];
+const sortOptions = SORT_OPTIONS.map(option => {
+  return {
+    value: option.value,
+    label: option.header,
+  };
+});
 
 interface FilterSearchProps {
   defaultSort: string;
