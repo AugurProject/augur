@@ -74,6 +74,12 @@
   > span:first-of-type {
     margin: 0 @size-4 0 @size-12;
   }
+
+  > span:nth-of-type(2) {
+      @media @breakpoint-mobile {
+        display: none;
+      }
+  }
 }
 
 .ViewSwitcher {
