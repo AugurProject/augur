@@ -89,6 +89,7 @@ export default class MarketsView extends Component<
 
     this.setPageNumber = this.setPageNumber.bind(this);
     this.updateLimit = this.updateLimit.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
     this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
     this.loadMarketsByFilter = props.loadMarketsByFilter.bind(this);
   }
