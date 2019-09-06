@@ -232,6 +232,12 @@ export enum MARKET_SORT_PARAMS {
   LAST_LIQUIDITY_DEPLETED = 'lastLiquidityDepleted',
 }
 
+export enum MARKET_CARD_FORMATS {
+  COMPACT = 'compact',
+  CLASSIC = 'classic',
+  EXPANDED = 'expanded',
+}
+
 // The user should be able to sort by:
 
 // Volume

@@ -51,6 +51,7 @@ export enum GetMarketsSortBy {
   timestamp = 'timestamp',
   endTime = 'endTime',
   lastTradedTimestamp = 'lastTradedTimestamp',
+  lastLiquidityDepleted = 'lastLiquidityDepleted',
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
@@ -69,7 +70,6 @@ const getMarketsParamsSpecific = t.intersection([
     maxEndTime: t.number,
     maxLiquiditySpread: t.string,
     includeInvalidMarkets: t.boolean,
-    includeMarketsWithRecentLiquidity: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
   }),
@@ -431,8 +431,6 @@ export class Markets {
 
     // Set params defaults
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
-    // @TODO: Implement includeMarketsWithRecentLiquidity filter
-    params.includeMarketsWithRecentLiquidity = typeof params.includeMarketsWithRecentLiquidity === 'undefined' ? true : params.includeMarketsWithRecentLiquidity;
     params.search = typeof params.search === 'undefined' ? '' : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
     params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.liquidity : params.sortBy;
