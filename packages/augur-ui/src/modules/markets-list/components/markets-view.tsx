@@ -169,11 +169,6 @@ export default class MarketsView extends Component<
     this.updateFilteredMarkets();
   }
 
-  updateFilter(params) {
-    const { filter, sort } = params;
-    this.setState({ filter, sort }, this.updateFilteredMarkets);
-  }
-
   updateFilteredMarkets() {
     const {
       search,
