@@ -33,6 +33,7 @@ interface MarketsListProps {
   limit: number;
   offset: number;
   setOffset: Function;
+  updateLimit: Function;
   isSearchingMarkets: boolean;
   marketCardFormat: string;
 }
@@ -72,15 +73,17 @@ export default class MarketsList extends Component<
       offset,
       setOffset,
       isSearchingMarkets,
+      updateLimit,
       marketCardFormat,
     } = this.props;
     let marketCards = [];
 
+    const loadingLimit = limit === 1 ? 10 : limit;
     if (isSearchingMarkets) {
-      new Array(limit).fill(null).map((prop, index) => (
+      new Array(loadingLimit).fill(null).map((prop, index) => (
         marketCards.push(
           <LoadingMarketCard
-            key={index + "loading"}
+            key={index + 'loading'}
           />)
       ));
     } else {
@@ -122,7 +125,9 @@ export default class MarketsList extends Component<
               page={offset}
               itemCount={marketCount}
               itemsPerPage={limit}
+              updateLimit={updateLimit}
               action={setOffset}
+              showLimitChanger
             />
           </div>
         )}

@@ -872,3 +872,10 @@ export const SCALAR_OUTCOMES = [
 
 export const POPULAR_CATEGORIES = ['sports', 'politics', 'entertainment', 'finance', 'crypto'];
 export const CATEGORIES_MAX = 5;
+
+export enum PAGINATION_VIEW_OPTIONS {
+  ALL = 'All',
+  TEN = '10',
+  FIFTY = '50',
+  HUNDRED = '100',
+}
