@@ -1,7 +1,7 @@
 import { AbstractDB } from './AbstractDB';
 import { SyncStatus } from './SyncStatus';
 import { DB } from './DB';
-import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR } from '../../constants';
+import { MaxLiquiditySpread, SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR } from '../../constants';
 import { GetLiquidityParams, Liquidity } from '../../api/Liquidity';
 import { Augur } from '../../Augur';
 import { BigNumber } from 'bignumber.js';
@@ -75,13 +75,18 @@ export class LiquidityDB extends AbstractDB {
         const marketsLiquidityParams = await this.getMarketsLiquidityParams(db, augur);
         for (const market in marketsLiquidityParams) {
           if (marketsLiquidityParams.hasOwnProperty(market) && marketsLiquidityParams[market].spread) {
-            const marketLiquidity = await liquidity.getLiquidityForSpread(marketsLiquidityParams[market]);
-            marketsLiquidityDocs.push({
-              _id: market + '_' + mostRecentOnTheHourTimestamp.toString(),
-              market,
-              liquidity: marketLiquidity.toString(),
-              timestamp: mostRecentOnTheHourTimestamp.toNumber(),
-            });
+            // Store liquidity for each spread percent
+            for (const spread of Object.values(MaxLiquiditySpread)) {
+              marketsLiquidityParams[market].spread = new BigNumber(spread).toNumber();
+              const marketLiquidity = await liquidity.getLiquidityForSpread(marketsLiquidityParams[market]);
+              marketsLiquidityDocs.push({
+                _id: market + '_' + marketsLiquidityParams[market].spread + '_' + mostRecentOnTheHourTimestamp.toString(),
+                market,
+                spread: marketsLiquidityParams[market].spread,
+                liquidity: marketLiquidity.toString(),
+                timestamp: mostRecentOnTheHourTimestamp.toNumber(),
+              });
+            }
           }
         }
         await liquidityDB.bulkUpsertUnorderedDocuments(marketsLiquidityDocs);
