@@ -554,9 +554,11 @@ export class Markets {
         marketData = await db.findMarkets(request);
         if (
           params.sortBy === GetMarketsSortBy.liquidity ||
-          params.sortBy === GetMarketsSortBy.marketOI ||
-          params.sortBy === GetMarketsSortBy.volume
+          params.sortBy === GetMarketsSortBy.marketOI
         ) {
+          // Set marketOI. (This is also used as a secondary sorting parameter when sorting by liquidity.)
+          marketsResults[i][GetMarketsSortBy.marketOI] = marketData[GetMarketsSortBy.marketOI] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
+        } else {
           marketsResults[i][params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
         // @TODO Figure out why marketData is sometimes returning no results here
@@ -574,26 +576,34 @@ export class Markets {
       }
     }
 
-    if (params.sortBy === GetMarketsSortBy.liquidity || params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
-      // Create market ID => index mapping
-      const keyedMarkets = {};
-      for (let i = 0; i < marketsResults.length; i++) {
-        keyedMarkets[marketsResults[i].market] = i;
-      }
-
-      if (params.sortBy === GetMarketsSortBy.liquidity) {
-        marketsResults = await setLiquidity(db, keyedMarkets, marketsResults);
-      } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
-        marketsResults = await setLastTradedTimestamp(db, keyedMarkets, marketsResults);
-      }
+    if (params.sortBy === GetMarketsSortBy.liquidity) {
+      marketsResults = await setLiquidity(db, marketsResults);
+    } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
+      marketsResults = await setLastTradedTimestamp(db, marketsResults);
     }
 
     const meta = getMarketsMeta(marketsResults, filteredOutCount);
 
     // Sort & limit markets
-    marketsResults = _.sortBy(marketsResults, [params.sortBy]);
-    if (params.isSortDescending) {
-      marketsResults = marketsResults.reverse();
+    const orderBy = params.isSortDescending ? 'desc' : 'asc';
+    if (params.sortBy === GetMarketsSortBy.liquidity) {
+      marketsResults.sort((x, y) => {
+        const result = compareStringsAsBigNumbers(x.liquidity, y.liquidity, orderBy);
+        return result === 0
+          ? compareStringsAsBigNumbers(x.marketOI, y.marketOI, orderBy)
+          : result;
+        }
+      );
+    }
+    // @TODO This should fix sorting by marketOI/volume. I just need to test it.
+    // else if (params.sortBy === GetMarketsSortBy.marketOI || params.sortBy === GetMarketsSortBy.volume) {
+    //   marketsResults.sort((x, y) => {
+    //     return compareStringsAsBigNumbers(x.liquidity, y.liquidity);
+    //     }
+    //   );
+    // }
+    else {
+      marketsResults = _.orderBy(marketsResults, [params.sortBy], [orderBy]);
     }
     marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
 
@@ -947,6 +957,18 @@ function filterOrderFilledLogs(
     );
   }
   return filteredOrderFilledLogs;
+}
+
+function compareStringsAsBigNumbers(string1: string, string2: string, orderBy: string): number {
+  if (orderBy === 'asc') {
+    return (new BigNumber(string1).gt(string2))
+      ? 1
+      : (new BigNumber(string1).lt(string2) ? -1 : 0);
+  } else {
+    return (new BigNumber(string1).lt(string2))
+      ? 1
+      : (new BigNumber(string1).gt(string2) ? -1 : 0);
+  }
 }
 
 async function getMarketOutcomes(
@@ -1363,10 +1385,15 @@ async function getMarketsSearchResults(
  * Sets the `lastTradedTimestamp` property for all markets in `marketsResults`.
  *
  * @param {DB} db Database object to use for getting `lastTradedTimestamp` info
- * @param {{[marketId: string]: number}} keyedMarkets Object of marketIds corresponding to an index in `marketsResults`
  * @param {any[]} marketsResults Array of market objects to add `lastTradedTimestamp` to
  */
-async function setLastTradedTimestamp(db: DB, keyedMarkets: {[marketId: string]: number}, marketsResults: any[]): Promise<Array<{}>>  {
+async function setLastTradedTimestamp(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
+  // Create market ID => marketsResults index mapping
+  const keyedMarkets = {};
+  for (let i = 0; i < marketsResults.length; i++) {
+    keyedMarkets[marketsResults[i].market] = i;
+  }
+
   const orderFilledLogs = await db.findOrderFilledLogs({
     selector: { market: { $in: marketsResults.map(marketsResult => marketsResult.market) } },
     fields: ['market', 'timestamp'],
@@ -1393,13 +1420,18 @@ async function setLastTradedTimestamp(db: DB, keyedMarkets: {[marketId: string]:
 }
 
 /**
- * Sets the `liquidity` property for all markets in `marketsResults` with liquidity in the last 24 hours.
+ * Sets the `liquidity` property for the last 24 hours of liquidity for all markets in `marketsResults`.
  *
  * @param {DB} db Database object to use for getting `liquidity` info
- * @param {{[marketId: string]: number}} keyedMarkets Object of marketIds corresponding to an index in `marketsResults`
  * @param {Array<Object>} marketsResults Array of market objects to add `liquidity` to
  */
-async function setLiquidity(db: DB, keyedMarkets: {[marketId: string]: number}, marketsResults: any[]): Promise<Array<{}>>  {
+async function setLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
+  // Create market ID => marketsResults index mapping
+  const keyedMarkets = {};
+  for (let i = 0; i < marketsResults.length; i++) {
+    keyedMarkets[marketsResults[i].market] = i;
+  }
+
   const marketIds = Object.keys(keyedMarkets);
   const liquidityDB = db.getLiquidityDatabase();
   const marketsLiquidityDocs = await liquidityDB.getMarketsLiquidity(marketIds);
@@ -1418,10 +1450,13 @@ async function setLiquidity(db: DB, keyedMarkets: {[marketId: string]: number}, 
     }
   }
 
-  // Set liquidity value for each market (if it has liquidity in the last 24 hours)
-  for (const market in marketsLiquidityInfo) {
-    if (marketsLiquidityInfo.hasOwnProperty(market)) {
-      marketsResults[keyedMarkets[market]].liquidity = marketsLiquidityInfo[market].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[market].hoursWithLiquidity).toString();
+  // Set liquidity value for each market
+  for (let i = 0; i < marketsResults.length; i++) {
+    const marketResult = marketsResults[i];
+    if (marketsLiquidityInfo.hasOwnProperty(marketResult.market)) {
+      marketResult.liquidity = marketsLiquidityInfo[marketResult.market].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[marketResult.market].hoursWithLiquidity).toString();
+    } else {
+      marketResult.liquidity = '0';
     }
   }
 
