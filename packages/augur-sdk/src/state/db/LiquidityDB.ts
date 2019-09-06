@@ -68,7 +68,7 @@ export class LiquidityDB extends AbstractDB {
       const currentTimestamp = new BigNumber(timestamp);
       const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
       const mostRecentOnTheHourTimestamp = currentTimestamp.minus(currentTimestamp.mod(secondsPerHour));
-      if (!lastUpdated || mostRecentOnTheHourTimestamp.gte(lastUpdated.timestamp)) {
+      if (!lastUpdated || mostRecentOnTheHourTimestamp.gt(lastUpdated.timestamp)) {
         await this.deleteOldLiquidityData(liquidityDB, mostRecentOnTheHourTimestamp);
         const marketsLiquidityDocs = [];
         const liquidity = new Liquidity(augur);
@@ -84,10 +84,11 @@ export class LiquidityDB extends AbstractDB {
             });
           }
         }
-        await liquidityDB.bulkUpsertUnorderedDocuments(marketsLiquidityDocs);
-        liquidityDB.upsertDocument('lastUpdated', {
+        marketsLiquidityDocs.push({
+          _id: 'lastUpdated',
           timestamp: mostRecentOnTheHourTimestamp.toNumber(),
         });
+        await liquidityDB.bulkUpsertUnorderedDocuments(marketsLiquidityDocs);
       }
     } catch (err) {
       console.log(err);
