@@ -73,7 +73,7 @@ export default class MarketCard extends React.Component<
       loading,
       isFavorite,
       hasPosition,
-      hasStaked
+      hasStaked,
     } = this.props;
 
     const s = this.state;

@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import { Input } from "modules/common/form";
-import classNames from "classnames";
-import parseQuery from "modules/routes/helpers/parse-query";
-import makeQuery from "modules/routes/helpers/make-query";
+import React, { Component } from 'react';
+import { Input } from 'modules/common/form';
+import classNames from 'classnames';
+import parseQuery from 'modules/routes/helpers/parse-query';
+import makeQuery from 'modules/routes/helpers/make-query';
 
-import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import { FILTER_SEARCH_PARAM } from "modules/common/constants";
-import { Hint } from "modules/common/icons";
-import Styles from "modules/filter-sort/components/filter-search.styles.less";
-import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/tooltip.styles.less";
+import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { FILTER_SEARCH_PARAM } from 'modules/common/constants';
+import { Hint } from 'modules/common/icons';
+import Styles from 'modules/filter-sort/components/filter-search.styles.less';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
 
 interface FilterSearchProps {
   location: Location;
@@ -22,20 +22,23 @@ interface FilterSearchState {
   placeholder: string;
 }
 
-export default class FilterSearch extends Component<FilterSearchProps, FilterSearchState> {
+export default class FilterSearch extends Component<
+  FilterSearchProps,
+  FilterSearchState
+> {
   static defaultProps = {
     isSearchingMarkets: false,
   };
 
-  public timeout;
-  public parent;
+  timeout;
+  parent;
 
   constructor(props) {
     super(props);
 
     this.state = {
-      search: "",
-      placeholder: "Search",
+      search: '',
+      placeholder: 'Search',
     };
 
     this.updateQuery = this.updateQuery.bind(this);
@@ -66,11 +69,11 @@ export default class FilterSearch extends Component<FilterSearchProps, FilterSea
   }
 
   onFocus() {
-    this.setState({ placeholder: "" });
+    this.setState({ placeholder: '' });
   }
 
   onBlur() {
-    this.setState({ placeholder: "Search" });
+    this.setState({ placeholder: 'Search' });
   }
 
   onChange(search) {
@@ -84,14 +87,14 @@ export default class FilterSearch extends Component<FilterSearchProps, FilterSea
   }
 
   resetSearch() {
-    this.setState({ search: "", placeholder: "Search" });
+    this.setState({ search: '', placeholder: 'Search' });
   }
 
   updateQuery(search, location) {
     const { history } = this.props;
     let updatedSearch = parseQuery(location.search);
 
-    if (search === "") {
+    if (search === '') {
       delete updatedSearch[FILTER_SEARCH_PARAM];
     } else {
       delete updatedSearch[PAGINATION_PARAM_NAME];
@@ -113,7 +116,7 @@ export default class FilterSearch extends Component<FilterSearchProps, FilterSea
     return (
       <article
         className={Styles.FilterSearch}
-        ref={(parent) => {
+        ref={parent => {
           this.parent = parent;
         }}
       >
@@ -127,52 +130,8 @@ export default class FilterSearch extends Component<FilterSearchProps, FilterSea
           onChange={this.onChange}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
-          isLoading={Boolean(isSearchingMarkets && search && search !== "")}
+          isLoading={Boolean(isSearchingMarkets && search && search !== '')}
         />
-        <label
-          className={classNames(TooltipStyles.TooltipHint, Styles.Tooltip)}
-          data-tip
-          data-for="tooltip--search-input"
-        >
-          {Hint}
-        </label>
-        <ReactTooltip
-          id="tooltip--search-input"
-          className={TooltipStyles.Tooltip}
-          effect="solid"
-          place="bottom"
-          type="light"
-        >
-          <h4>Search Syntax</h4>
-          <u>Specific field search:</u> prepend the field name:
-          <b> category</b>, <b>title</b>, <b>details</b>, <b>source</b>,{" "}
-          <b>tags</b>
-          <p style={{ color: "#372e4b" }} />
-          <p>
-            Example: <b>title: ethereum</b>, returns markets with ethereum in
-            market title.
-          </p>
-          <p>
-            <u>Exact match:</u> Use a <b>double quoted string</b> to search
-            exact phrase.
-          </p>
-          <p>
-            Example: <b>&#34;price of bitcoin&#34;</b>
-          </p>
-          <p>
-            <u>Either/Or:</u> Use capitalized <b>OR</b> between word(s) and/or
-            phrase(s) to get matches for either word(s) or phrase(s)
-          </p>
-          <p>
-            Example: <b>bitcoin OR ethereum OR litecoin</b>
-          </p>
-          <p>
-            <u>All words:</u> Markets will contain all word(s) and phrase(s)
-          </p>
-          <p>
-            Example: <b>bitcoin ethereum litecoin</b>
-          </p>
-        </ReactTooltip>
       </article>
     );
   }
