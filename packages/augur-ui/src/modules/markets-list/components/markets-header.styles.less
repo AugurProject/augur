@@ -33,6 +33,10 @@
     > div {
       display: flex;
       align-items: center;
+
+      @media @breakpoint-mobile {
+        flex-direction: column;
+      }
     }
   }
 
@@ -65,6 +69,11 @@
   color: @color-alternate-info-text;
   display: flex;
   margin: 0 @size-24 @size-16 0;
+
+  @media @breakpoint-mobile {
+    margin: 0 @size-24 @size-16 @size-24;
+    width: 100%;
+  }
 
   > span {
     margin: 0 @size-4;
