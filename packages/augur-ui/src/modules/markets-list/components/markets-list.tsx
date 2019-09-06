@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
 import { Pagination } from "modules/common/pagination";
 import NullStateMessage from "modules/common/null-state-message";
-import { TYPE_TRADE } from "modules/common/constants";
+import { TYPE_TRADE, MARKET_CARD_FORMATS } from "modules/common/constants";
 import MarketCard from "modules/market-cards/containers/market-card";
 import { MarketData } from "modules/types";
 import Styles from "modules/markets-list/components/markets-list.sytles.less";
@@ -91,8 +91,8 @@ export default class MarketsList extends Component<
           marketCards.push(
             <MarketCard
               market={market}
-              condensed={marketCardFormat === 'compact'}
-              expandedView={marketCardFormat === 'expanded'}
+              condensed={marketCardFormat === MARKET_CARD_FORMATS.COMPACT}
+              expandedView={marketCardFormat === MARKET_CARD_FORMATS.EXPANDED}
               location={location}
               history={history}
               key={`${market.id} - ${market.outcomes}`}

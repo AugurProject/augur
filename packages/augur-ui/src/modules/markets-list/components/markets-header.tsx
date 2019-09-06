@@ -3,7 +3,7 @@ import FilterSearch from 'modules/filter-sort/containers/filter-search';
 import FilterDropDowns from 'modules/filter-sort/containers/filter-dropdowns';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKETS } from 'modules/routes/constants/views';
-import { CATEGORY_PARAM_NAME } from 'modules/common/constants';
+import { CATEGORY_PARAM_NAME, MOBILE_MENU_STATES, MARKET_CARD_FORMATS } from 'modules/common/constants';
 import Styles from 'modules/markets-list/components/markets-header.styles.less';
 import classNames from 'classnames';
 import { Compact, Classic, Expanded } from 'modules/common/icons';
@@ -119,20 +119,20 @@ export default class MarketsHeader extends Component<
             <div className={Styles.MarketCardsFormat}>
               View
               <ViewSwitcher
-                handleClick={() => updateMarketsListCardFormat('classic')}
-                type={Classic}
-                selected={marketCardFormat === 'classic'}
+                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.EXPANDED)}
+                type={Expanded}
+                selected={marketCardFormat === MARKET_CARD_FORMATS.EXPANDED}
               />
               <ViewSwitcher
-                handleClick={() => updateMarketsListCardFormat('expanded')}
-                type={Expanded}
-                selected={marketCardFormat === 'expanded'}
+                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.CLASSIC)}
+                type={Classic}
+                selected={marketCardFormat === MARKET_CARD_FORMATS.CLASSIC}
               />
 
               <ViewSwitcher
-                handleClick={() => updateMarketsListCardFormat('compact')}
+                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.COMPACT)}
                 type={Compact}
-                selected={marketCardFormat === 'compact'}
+                selected={marketCardFormat === MARKET_CARD_FORMATS.COMPACT}
               />
             </div>
 
