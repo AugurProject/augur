@@ -20,8 +20,6 @@ import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { WSClient } from "@0x/mesh-rpc-client";
 
-
-
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
 

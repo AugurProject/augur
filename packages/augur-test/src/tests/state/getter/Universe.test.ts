@@ -7,10 +7,8 @@ import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/constants';
-import { fork } from "@augurproject/tools";
-import { stringTo32ByteHex } from "../../../libs/Utils";
-import { ORDER_TYPES } from '@augurproject/sdk';
-import { formatBytes32String } from "ethers/utils";
+import { fork } from '@augurproject/tools';
+import { formatBytes32String } from 'ethers/utils';
 
 const mock = makeDbMock();
 
@@ -173,9 +171,47 @@ describe('State API :: Universe :: ', () => {
       ['foo', 'bar', 'happiness', 'smile'].map(formatBytes32String)
     );
 
-    console.log('GOTYOU', 0);
     await fork(john, market);
-    console.log('GOTYOU', 1);
+
+    const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
+    const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
+
+    const invalidNumerators = [100, 0, 0, 0, 0].map((n) => new BigNumber(n));
+    const fooNumerators = [0, 100, 0, 0, 0].map((n) => new BigNumber(n));
+    const barNumerators = [0, 0, 100, 0, 0].map((n) => new BigNumber(n));
+
+    await john.repFaucet(new BigNumber(1e21));
+    await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
+
+    await john.repFaucet(new BigNumber(1e21));
+    await repToken.migrateOutByPayout(fooNumerators, new BigNumber(1e21));
+
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+    migrationTotals = await api.route('getForkMigrationTotals', {
+      universe: universe.address,
+    });
+
+    console.log(JSON.stringify(migrationTotals, null, 2));
+
+    // TODO verify output
+
+  }, 120000);
+
+  test('getForkMigrationTotals : Scalar', async () => {
+    const universe = john.augur.contracts.universe;
+
+    const actualDB = await db;
+
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+    let migrationTotals = await api.route('getForkMigrationTotals', {
+      universe: universe.address,
+    });
+
+    expect(migrationTotals).toEqual({});
+
+    const market = await john.createReasonableScalarMarket();
+
+    await fork(john, market);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
