@@ -320,6 +320,12 @@ export interface UniverseForkedLog extends Log, Doc {
   forkingMarket: Address;
 }
 
+export interface UniverseCreatedLog extends Log, Doc {
+  parentUniverse: Address;
+  childUniverse: Address;
+  payoutNumerators: string[];
+}
+
 export interface LiquidityData {
   [spread: number]: number;
 }

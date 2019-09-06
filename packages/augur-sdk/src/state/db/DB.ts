@@ -32,6 +32,7 @@ import {
   TokenBalanceChangedLog,
   TradingProceedsClaimedLog,
   UniverseForkedLog,
+  UniverseCreatedLog,
   MarketData,
   GenericEventDBDescription
 } from "../logs/types";
@@ -705,6 +706,17 @@ export class DB {
 
   /**
    * Queries the UniverseForked DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<UniverseForkedLog>>}
+   */
+  async findUniverseCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<UniverseCreatedLog[]> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseCreated"), request);
+    return results.docs as unknown as UniverseCreatedLog[];
+  }
+
+  /**
+   * Queries the UniverseCreated DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<Array<UniverseForkedLog>>}

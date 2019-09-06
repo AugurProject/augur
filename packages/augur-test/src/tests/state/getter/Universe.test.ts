@@ -129,37 +129,27 @@ describe('State API :: Universe :: ', () => {
 
     const market = await john.createReasonableYesNoMarket();
 
-    const outcome0 = new BigNumber(0);
-    const outcome1 = new BigNumber(1);
-
-    await john.placeOrder(
-      market.address,
-      ORDER_TYPES.BID,
-      new BigNumber(10000000000000),
-      new BigNumber(22),
-      outcome0,
-      stringTo32ByteHex(''),
-      stringTo32ByteHex(''),
-      stringTo32ByteHex('42')
-    );
-
-    await mary.placeOrder(
-      market.address,
-      ORDER_TYPES.ASK,
-      new BigNumber(10000000000000),
-      new BigNumber(22),
-      outcome0,
-      stringTo32ByteHex(''),
-      stringTo32ByteHex(''),
-      stringTo32ByteHex('42')
-    );
-
     await fork(john, market);
+
+    const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
+    const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
+
+    const invalidNumerators = [100, 0, 0].map((n) => new BigNumber(n));
+    const noNumerators = [0, 100, 0].map((n) => new BigNumber(n));
+    const yesNumerators = [0, 0, 100].map((n) => new BigNumber(n));
+
+    await john.repFaucet(new BigNumber(1e21));
+    await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
+
+    await john.repFaucet(new BigNumber(1e21));
+    await repToken.migrateOutByPayout(noNumerators, new BigNumber(1e21));
 
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     migrationTotals = await api.route('getForkMigrationTotals', {
       universe: universe.address,
     });
+
+    console.log(JSON.stringify(migrationTotals, null, 2));
 
     // TODO verify output
 

@@ -13,12 +13,14 @@ import {
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
   OrderType,
-  MarketType,
 } from '../logs/types';
 import { sortOptions } from './types';
-import { Augur } from '../../index';
+import {
+  Augur,
+  getOutcomeDescriptionFromOutcome,
+  getOutcomeFromPayoutNumerators
+} from '../../index';
 import { compareObjects } from '../../utils';
-import { toAscii } from '../utils/utils';
 
 import * as t from 'io-ts';
 
@@ -548,41 +550,6 @@ export class Accounts<TBigNumber> {
     }
     return marketCreatedInfo;
   }
-}
-
-function getOutcomeDescriptionFromOutcome(
-  outcome: number,
-  market: MarketCreatedLog
-): string {
-  if (market.marketType === MarketType.YesNo) {
-    if (outcome === 0) {
-      return 'Invalid';
-    } else if (outcome === 1) {
-      return 'No';
-    } else {
-      return 'Yes';
-    }
-  } else if (market.marketType === MarketType.Scalar) {
-    if (outcome === 0) {
-      return 'Invalid';
-    } else if (outcome === 1) {
-      return new BigNumber(market.prices[0]).toString(10);
-    } else {
-      return new BigNumber(market.prices[1]).toString(10);
-    }
-  } else {
-    return toAscii(market.outcomes[new BigNumber(outcome).toNumber()]);
-  }
-}
-
-function getOutcomeFromPayoutNumerators(payoutNumerators: BigNumber[]): number {
-  let outcome = 0;
-  for (; outcome < payoutNumerators.length; outcome++) {
-    if (payoutNumerators[outcome].toNumber() > 0) {
-      break;
-    }
-  }
-  return outcome;
 }
 
 function formatOrderFilledLogs(

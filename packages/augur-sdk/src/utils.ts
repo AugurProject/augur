@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { MALFORMED_OUTCOME } from './constants';
-import { MarketTypeName } from './state/logs/types';
+import { MarketCreatedLog, MarketType, MarketTypeName } from "./state/logs/types";
+import { toAscii } from "./state/utils/utils";
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
@@ -164,4 +165,53 @@ export function calculatePayoutNumeratorsArray(
     payoutNumerators[outcome] = new BigNumber(numTicks);
   }
   return payoutNumerators;
+}
+
+export function getOutcomeDescriptionFromOutcome(
+  outcome: number,
+  market: MarketCreatedLog
+): string {
+  if (market.marketType === MarketType.YesNo) {
+    if (outcome === 0) {
+      return 'Invalid';
+    } else if (outcome === 1) {
+      return 'No';
+    } else {
+      return 'Yes';
+    }
+  } else if (market.marketType === MarketType.Scalar) {
+    if (outcome === 0) {
+      return 'Invalid';
+    } else if (outcome === 1) {
+      return new BigNumber(market.prices[0]).toString(10);
+    } else {
+      return new BigNumber(market.prices[1]).toString(10);
+    }
+  } else {
+    return toAscii(market.outcomes[new BigNumber(outcome).toNumber()]);
+  }
+}
+
+export function getOutcomeFromPayoutNumerators(payoutNumerators: BigNumber[]): number {
+  let outcome = 0;
+  for (; outcome < payoutNumerators.length; outcome++) {
+    if (payoutNumerators[outcome].toNumber() > 0) {
+      break;
+    }
+  }
+  return outcome;
+}
+
+
+export function marketTypeToName(marketType: MarketType): MarketTypeName {
+  switch(marketType) {
+    case MarketType.YesNo:
+      return MarketTypeName.YesNo;
+    case MarketType.Categorical:
+      return MarketTypeName.Categorical;
+    case MarketType.Scalar:
+      return MarketTypeName.Scalar;
+    default:
+      throw Error(`Invalid market type "${marketType}"`);
+  }
 }
