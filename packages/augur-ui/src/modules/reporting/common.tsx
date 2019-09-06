@@ -362,27 +362,25 @@ export const ReportingCard = (props: ReportingCardProps) => {
 
   return (
     <div className={Styles.ReportingCard}>
-      <div>
-        <InReportingLabel
-          marketStatus={marketStatus}
+      <InReportingLabel
+        marketStatus={marketStatus}
+        reportingState={reportingState}
+        disputeInfo={disputeInfo}
+        endTimeFormatted={endTimeFormatted}
+        currentAugurTimestamp={currentAugurTimestamp}
+        reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+      />
+      <MarketLink id={id}>
+        {description}
+      </MarketLink>
+      {reportingState !== REPORTING_STATE.OPEN_REPORTING &&
+        <MarketProgress
           reportingState={reportingState}
-          disputeInfo={disputeInfo}
+          currentTime={currentAugurTimestamp}
           endTimeFormatted={endTimeFormatted}
-          currentAugurTimestamp={currentAugurTimestamp}
-          reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+          reportingWindowEndtime={reportingWindowStatsEndTime}
         />
-        <MarketLink id={id}>
-          {description}
-        </MarketLink>
-        {reportingState !== REPORTING_STATE.OPEN_REPORTING &&
-          <MarketProgress
-            reportingState={reportingState}
-            currentTime={currentAugurTimestamp}
-            endTimeFormatted={endTimeFormatted}
-            reportingWindowEndtime={reportingWindowStatsEndTime}
-          />
-        }
-      </div>
+      }
       <div data-tip data-for='tooltip--preReporting'>
         <PrimaryButton text="Report" action={showReportingModal} disabled={preReporting} />
         {preReporting &&
