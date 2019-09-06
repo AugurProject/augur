@@ -7,7 +7,8 @@ import {
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
-ZeroXPlaceTradeDisplayParams,
+  ZeroXPlaceTradeDisplayParams,
+  ZeroXSimulateTradeData
 } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
@@ -244,6 +245,10 @@ export class ContractAPI {
     return this.augur.trade.simulateTrade(params);
   }
 
+  async simulateZeroXTrade(params: ZeroXPlaceTradeDisplayParams): Promise<ZeroXSimulateTradeData> {
+    return this.augur.zeroX.simulateTrade(params);
+  }
+
   async placeBasicYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber): Promise<void> {
     await this.placeTrade({
       direction,
@@ -274,6 +279,26 @@ export class ContractAPI {
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
+      displayMinPrice: new BigNumber(0),
+      displayMaxPrice: new BigNumber(1),
+      displayAmount,
+      displayPrice,
+      displayShares,
+    });
+  }
+
+  async simulateBasicZeroXYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber, doNotCreateOrders: boolean = false): Promise<ZeroXSimulateTradeData> {
+    return this.simulateZeroXTrade({
+      direction,
+      market: market.address,
+      numTicks: await market.getNumTicks_(),
+      numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
+      outcome,
+      tradeGroupId: formatBytes32String('42'),
+      expirationTime: new BigNumber(Date.now() + 10000000),
+      affiliateAddress: NULL_ADDRESS,
+      kycToken: NULL_ADDRESS,
+      doNotCreateOrders,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
       displayAmount,
