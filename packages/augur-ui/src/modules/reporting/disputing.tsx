@@ -4,11 +4,11 @@ import classNames from 'classnames';
 
 import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
 
-interface ReportingDisputeProps {
+interface DisputingProps {
   isConnected: boolean;
   loadDisputeWindow: Function;
 }
-export default class ReportingDispute extends Component<ReportingDisputeProps> {
+export default class Disputing extends Component<DisputingProps> {
   static propTypes = {};
 
   constructor(props) {
