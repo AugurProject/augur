@@ -201,7 +201,69 @@ div.ReportingSubheaders {
       left: 0;
       width: @size-40;
     }
+
+    &:first-of-type {
+      > span {
+        display: none;
+      }
+    }
   }
+
+  @media @breakpoint-smallish-desktop {
+    padding: @size-16;
+
+    > div:first-of-type {
+      display: flex; 
+
+      > div {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        max-width: unset;
+        text-align: center;
+        width: 100%;
+      }
+
+      > span {
+        display: flex;
+      }
+    }
+
+    > div:not(:first-of-type) {
+      display: none;
+    }
+
+    &.HideForMobile {
+      > div {
+        display: flex;
+        flex-direction: column;
+      }
+
+      > div:first-of-type {
+        flex-direction: row;
+      }
+
+      > div:nth-of-type(2) {
+        flex-direction: column;
+
+        > div {
+          align-self: center;
+          align-items: center;
+          margin-bottom: @size-16;
+        }
+      }
+
+      > div:nth-of-type(3) {
+        align-self: center;
+      }
+
+      > div:nth-of-type(4) {
+        text-align: center;
+      }
+    }
+  }
+
 }
 
 .AllTimeProfitLoss {
