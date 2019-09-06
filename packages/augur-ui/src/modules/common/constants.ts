@@ -239,10 +239,6 @@ export const SORT_OPTIONS = [
   { value: MARKET_SORT_PARAMS.CREATION_TIME, header: 'Recently created' },
   { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon ' },
   { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, header: 'Recently Traded' },
-  {
-    value: MARKET_SORT_PARAMS.LAST_LIQUIDITY_DEPLETED,
-    header: 'Recently depleted liquidity',
-  },
 ];
 
 export enum MARKET_CARD_FORMATS {

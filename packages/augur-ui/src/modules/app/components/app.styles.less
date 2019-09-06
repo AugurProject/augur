@@ -8,6 +8,7 @@ html,
 
 body {
   background: @color-primary-background;
+  // See Issue #3504
   top: 0px !important;
   position: initial !important;
 
@@ -65,7 +66,7 @@ h6 {
 }
 
 .Main__wrapMarkets {
-  grid-template-columns: 350px auto;
+  grid-template-columns: minmax(auto, 250px) auto;
 
   @media @breakpoint-mobile {
     grid-template-columns: none;
