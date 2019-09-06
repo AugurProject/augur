@@ -6,8 +6,11 @@ import { ContractAPI } from '..';
 export async function fork(user: ContractAPI, market: ContractInterfaces.Market): Promise<boolean> {
     const MAX_DISPUTES = 20;
     const SOME_REP = new BigNumber(1e18).times(6e7);
-    const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
-    const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
+
+    const numberOfOutcomes = await market.getNumberOfOutcomes_();
+
+    const payoutNumerators = createPayoutNumerators(numberOfOutcomes, 0, new BigNumber(100));
+    const conflictNumerators = createPayoutNumerators(numberOfOutcomes, 1, new BigNumber(100));
 
     await user.repFaucet(SOME_REP);
 
@@ -37,4 +40,13 @@ export async function fork(user: ContractAPI, market: ContractInterfaces.Market)
     }
 
     return false; // failed to fork
+}
+
+function createPayoutNumerators(length: BigNumber, index: number, numTicks: BigNumber): BigNumber[] {
+  const numerators: BigNumber[] = [];
+  for (let i = 0; i < length.toNumber(); i++) {
+    numerators.push(new BigNumber(0));
+  }
+  numerators[index] = numTicks;
+  return numerators;
 }
