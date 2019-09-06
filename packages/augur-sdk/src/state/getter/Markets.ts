@@ -51,7 +51,6 @@ export enum GetMarketsSortBy {
   timestamp = 'timestamp',
   endTime = 'endTime',
   lastTradedTimestamp = 'lastTradedTimestamp',
-  lastLiquidityDepleted = 'lastLiquidityDepleted', // TODO: Implement
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
@@ -70,6 +69,7 @@ const getMarketsParamsSpecific = t.intersection([
     maxEndTime: t.number,
     maxLiquiditySpread: t.string,
     includeInvalidMarkets: t.boolean,
+    includeMarketsWithRecentLiquidity: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
   }),
@@ -431,9 +431,11 @@ export class Markets {
 
     // Set params defaults
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
+    // @TODO: Implement includeMarketsWithRecentLiquidity filter
+    params.includeMarketsWithRecentLiquidity = typeof params.includeMarketsWithRecentLiquidity === 'undefined' ? true : params.includeMarketsWithRecentLiquidity;
     params.search = typeof params.search === 'undefined' ? '' : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
-    params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.marketOI : params.sortBy; // TODO: Make liquidity the default sort
+    params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.liquidity : params.sortBy;
     params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
@@ -572,31 +574,17 @@ export class Markets {
       }
     }
 
-    if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
+    if (params.sortBy === GetMarketsSortBy.liquidity || params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
       // Create market ID => index mapping
       const keyedMarkets = {};
       for (let i = 0; i < marketsResults.length; i++) {
         keyedMarkets[marketsResults[i].market] = i;
       }
-      const orderFilledLogs = await db.findOrderFilledLogs({
-        selector: { market: { $in: marketsResults.map(marketsResult => marketsResult.market) } },
-        fields: ['market', 'timestamp'],
-      });
-      // Assign lastTradedTimestamp value to each market in marketsResults
-      for (let i = 0; i < orderFilledLogs.length; i++) {
-        const currentTimestamp = parseInt(orderFilledLogs[i].timestamp, 16);
-        if (
-          !marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] ||
-          currentTimestamp > marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp]
-        ) {
-          marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] = currentTimestamp;
-        }
-      }
-      // For any markets with no trading, set the lastTradedTimestamp to 0
-      for (let i = 0; i < marketsResults.length; i++) {
-        if (!marketsResults[i][GetMarketsSortBy.lastTradedTimestamp]) {
-          marketsResults[i][GetMarketsSortBy.lastTradedTimestamp] = 0;
-        }
+
+      if (params.sortBy === GetMarketsSortBy.liquidity) {
+        marketsResults = await setLiquidity(db, keyedMarkets, marketsResults);
+      } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
+        marketsResults = await setLastTradedTimestamp(db, keyedMarkets, marketsResults);
       }
     }
 
@@ -1369,6 +1357,75 @@ async function getMarketsSearchResults(
     return Augur.syncableFlexSearch.search(query, { where: whereObj });
   }
   return Augur.syncableFlexSearch.where(whereObj);
+}
+
+/**
+ * Sets the `lastTradedTimestamp` property for all markets in `marketsResults`.
+ *
+ * @param {DB} db Database object to use for getting `lastTradedTimestamp` info
+ * @param {{[marketId: string]: number}} keyedMarkets Object of marketIds corresponding to an index in `marketsResults`
+ * @param {any[]} marketsResults Array of market objects to add `lastTradedTimestamp` to
+ */
+async function setLastTradedTimestamp(db: DB, keyedMarkets: {[marketId: string]: number}, marketsResults: any[]): Promise<Array<{}>>  {
+  const orderFilledLogs = await db.findOrderFilledLogs({
+    selector: { market: { $in: marketsResults.map(marketsResult => marketsResult.market) } },
+    fields: ['market', 'timestamp'],
+  });
+
+  // Assign lastTradedTimestamp value to each market in marketsResults
+  for (let i = 0; i < orderFilledLogs.length; i++) {
+    const currentTimestamp = parseInt(orderFilledLogs[i].timestamp, 16);
+    if (
+      !marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] ||
+      currentTimestamp > marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp]
+    ) {
+      marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] = currentTimestamp;
+    }
+  }
+
+  // For any markets with no trading, set the lastTradedTimestamp to 0
+  for (let i = 0; i < marketsResults.length; i++) {
+    if (!marketsResults[i][GetMarketsSortBy.lastTradedTimestamp]) {
+      marketsResults[i][GetMarketsSortBy.lastTradedTimestamp] = 0;
+    }
+  }
+  return marketsResults;
+}
+
+/**
+ * Sets the `liquidity` property for all markets in `marketsResults` with liquidity in the last 24 hours.
+ *
+ * @param {DB} db Database object to use for getting `liquidity` info
+ * @param {{[marketId: string]: number}} keyedMarkets Object of marketIds corresponding to an index in `marketsResults`
+ * @param {Array<Object>} marketsResults Array of market objects to add `liquidity` to
+ */
+async function setLiquidity(db: DB, keyedMarkets: {[marketId: string]: number}, marketsResults: any[]): Promise<Array<{}>>  {
+  const marketIds = Object.keys(keyedMarkets);
+  const liquidityDB = db.getLiquidityDatabase();
+  const marketsLiquidityDocs = await liquidityDB.getMarketsLiquidity(marketIds);
+  const marketsLiquidityInfo = {};
+
+  // Save liquidity info for each market to an object
+  for (let i = 0; i < marketsLiquidityDocs.length; i++) {
+    if (!marketsLiquidityInfo[marketsLiquidityDocs[i].market]) {
+      marketsLiquidityInfo[marketsLiquidityDocs[i].market] = {
+        hourlyLiquiditySum: new BigNumber(marketsLiquidityDocs[i].liquidity),
+        hoursWithLiquidity: 1,
+      };
+    } else {
+      marketsLiquidityInfo[marketsLiquidityDocs[i].market].hourlyLiquiditySum.plus(marketsLiquidityDocs[i].liquidity);
+      marketsLiquidityInfo[marketsLiquidityDocs[i].market].hoursWithLiquidity++;
+    }
+  }
+
+  // Set liquidity value for each market (if it has liquidity in the last 24 hours)
+  for (const market in marketsLiquidityInfo) {
+    if (marketsLiquidityInfo.hasOwnProperty(market)) {
+      marketsResults[keyedMarkets[market]].liquidity = marketsLiquidityInfo[market].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[market].hoursWithLiquidity).toString();
+    }
+  }
+
+  return marketsResults;
 }
 
 /**

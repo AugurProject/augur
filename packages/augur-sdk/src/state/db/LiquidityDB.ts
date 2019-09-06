@@ -39,15 +39,36 @@ export class LiquidityDB extends AbstractDB {
     });
   }
 
+  async getMarketsLiquidity(marketIds?: string[]): Promise<any[]> {
+    const currentTimestamp = new BigNumber(Math.floor(Date.now() / 1000));
+    const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
+    const mostRecentOnTheHourTimestamp = currentTimestamp.minus(currentTimestamp.mod(secondsPerHour));
+    const selectorConditions: any[] = [
+      { _id: { $ne: 'lastUpdated' } },
+      { timestamp: { $gte: mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY).toNumber() } },
+    ];
+    if (marketIds) {
+      selectorConditions.push(
+        { market: { $in: marketIds } }
+      );
+    }
+    const marketsLiquidity = await this.db.find({
+      selector: {
+        $and: selectorConditions,
+      },
+    });
+    return marketsLiquidity.docs;
+  }
+
   async recalculateLiquidity(augur: Augur, db: DB, timestamp: number): Promise<void> {
     // @TODO: Need to factor in blockStreamDelay?
     try {
       const liquidityDB = db.getLiquidityDatabase();
-      const lastUpdated = await liquidityDB.getDocument('lastUpdated');
+      const lastUpdated: any = await liquidityDB.getDocument('lastUpdated');
       const currentTimestamp = new BigNumber(timestamp);
       const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
       const mostRecentOnTheHourTimestamp = currentTimestamp.minus(currentTimestamp.mod(secondsPerHour));
-      if (!lastUpdated || mostRecentOnTheHourTimestamp >= lastUpdated) {
+      if (!lastUpdated || mostRecentOnTheHourTimestamp.gte(lastUpdated.timestamp)) {
         await this.deleteOldLiquidityData(liquidityDB, mostRecentOnTheHourTimestamp);
         const marketsLiquidityDocs = [];
         const liquidity = new Liquidity(augur);
@@ -75,7 +96,10 @@ export class LiquidityDB extends AbstractDB {
 
   private async deleteOldLiquidityData(liquidityDB: LiquidityDB, mostRecentOnTheHourTimestamp: BigNumber): Promise<void> {
     const oldLiquidityDocs = await liquidityDB.find({
-      selector: { timestamp: { $lte: mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY).toNumber() } },
+      selector: {
+        _id: { $ne: 'lastUpdated' },
+        timestamp: { $lte: mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY).toNumber() },
+      },
     });
     const docs: any = oldLiquidityDocs.docs;
     for (let i = 0; i < docs.length; i++) {
