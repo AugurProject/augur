@@ -315,6 +315,7 @@ export function roundTimestampToPastDayMidnight(unixTimestamp: number): number {
 
 export function getOneWeekInFutureTimestamp(currentUnixTimestamp) {
   return moment.unix(currentUnixTimestamp).add(1, 'week').unix();
+}
 
 export function getFullDaysBetween(
   startUnixTimestamp: number,
