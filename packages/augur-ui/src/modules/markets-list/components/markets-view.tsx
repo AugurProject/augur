@@ -46,6 +46,8 @@ interface MarketsViewProps {
   filteredOutCount: number;
   marketFilter: string;
   updateMarketsFilter: Function;
+  updateMarketsListCardFormat: Function;
+  marketCardFormat: string;
 }
 
 interface MarketsViewState {
@@ -229,6 +231,10 @@ export default class MarketsView extends Component<
       location,
       markets,
       toggleFavorite,
+      marketCardFormat,
+      selectedCategories,
+      updateMarketsListCardFormat,
+      search,
     } = this.props;
     const {
       filter,
@@ -284,8 +290,10 @@ export default class MarketsView extends Component<
           sort={sort}
           updateFilter={this.updateFilter}
           history={history}
-          selectedCategory={this.props.selectedCategories}
-          search={this.props.search}
+          selectedCategory={selectedCategories}
+          search={search}
+          updateMarketsListCardFormat={updateMarketsListCardFormat}
+          marketCardFormat={marketCardFormat}
         />
 
         <div className={Styles.MarketLabelGroup}>
@@ -346,6 +354,7 @@ export default class MarketsView extends Component<
           offset={offset}
           setOffset={this.setPageNumber}
           isSearchingMarkets={isSearchingMarkets}
+          marketCardFormat={marketCardFormat}
         />
 
         <FilterNotice
