@@ -312,7 +312,6 @@ export function roundTimestampToPastDayMidnight(unixTimestamp: number): number {
   return actual.unix();
 }
 
-
 export function getOneWeekInFutureTimestamp(currentUnixTimestamp) {
   return moment.unix(currentUnixTimestamp).add(1, 'week').unix();
 }
