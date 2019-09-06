@@ -6,8 +6,9 @@ import NullStateMessage from "modules/common/null-state-message";
 import { TYPE_TRADE, MARKET_CARD_FORMATS } from "modules/common/constants";
 import MarketCard from "modules/market-cards/containers/market-card";
 import { MarketData } from "modules/types";
-import Styles from "modules/markets-list/components/markets-list.sytles.less";
+import PaginationStyles from "modules/common/pagination.styles.less";
 import { LoadingMarketCard } from "modules/market-cards/common";
+
 
 interface MarketsListProps {
   testid?: string;
@@ -116,7 +117,7 @@ export default class MarketsList extends Component<
           />
         )}
         {showPagination && (
-          <div className={Styles.Pagination}>
+          <div className={PaginationStyles.PaginationContainer}>
             <Pagination
               page={offset}
               itemCount={marketCount}
