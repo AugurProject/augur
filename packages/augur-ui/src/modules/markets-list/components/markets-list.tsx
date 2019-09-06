@@ -33,6 +33,7 @@ interface MarketsListProps {
   offset: number;
   setOffset: Function;
   isSearchingMarkets: boolean;
+  marketCardFormat: string;
 }
 
 interface MarketsListState {
@@ -47,12 +48,12 @@ export default class MarketsList extends Component<
     testid: null,
     linkType: TYPE_TRADE,
     paginationPageParam: PAGINATION_PARAM_NAME,
-    nullMessage: "No Markets Available",
+    nullMessage: 'No Markets Available',
     pendingLiquidityOrders: {},
     addNullPadding: false,
     showDisputingCard: false,
     outcomes: null,
-    showOutstandingReturns: false
+    showOutstandingReturns: false,
   };
 
   render() {
@@ -70,6 +71,7 @@ export default class MarketsList extends Component<
       offset,
       setOffset,
       isSearchingMarkets,
+      marketCardFormat,
     } = this.props;
     let marketCards = [];
 
@@ -89,7 +91,8 @@ export default class MarketsList extends Component<
           marketCards.push(
             <MarketCard
               market={market}
-              condensed={false}
+              condensed={marketCardFormat === 'compact'}
+              expandedView={marketCardFormat === 'expanded'}
               location={location}
               history={history}
               key={`${market.id} - ${market.outcomes}`}

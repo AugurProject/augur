@@ -17,6 +17,8 @@ interface MarketsHeaderProps {
   isSearchingMarkets: boolean;
   selectedCategory: string[];
   search: string;
+  updateMarketsListCardFormat: Function;
+  marketCardFormat: string;
 }
 
 interface MarketsHeaderState {
@@ -88,8 +90,20 @@ export default class MarketsHeader extends Component<
       updateFilter,
       history,
       isSearchingMarkets,
+      updateMarketsListCardFormat,
+      marketCardFormat,
     } = this.props;
     const { headerTitle } = this.state;
+
+    const ViewSwitcher = ({ handleClick, type, selected = false }) => (
+      <span
+        className={classNames(Styles.ViewSwitcher, {
+          [Styles.selected]: selected,
+        })}
+        onClick={handleClick}>
+        {type}
+      </span>
+    );
 
     return (
       <article
@@ -101,13 +115,35 @@ export default class MarketsHeader extends Component<
         <div>
           <h1>{headerTitle}</h1>
 
-          <FilterDropDowns
-            filter={filter}
-            sort={sort}
-            updateFilter={updateFilter}
-            history={history}
-            location={location}
-          />
+          <div>
+            <div className={Styles.MarketCardsFormat}>
+              View
+              <ViewSwitcher
+                handleClick={() => updateMarketsListCardFormat('classic')}
+                type={Classic}
+                selected={marketCardFormat === 'classic'}
+              />
+              <ViewSwitcher
+                handleClick={() => updateMarketsListCardFormat('expanded')}
+                type={Expanded}
+                selected={marketCardFormat === 'expanded'}
+              />
+
+              <ViewSwitcher
+                handleClick={() => updateMarketsListCardFormat('compact')}
+                type={Compact}
+                selected={marketCardFormat === 'compact'}
+              />
+            </div>
+
+            <FilterDropDowns
+              filter={filter}
+              sort={sort}
+              updateFilter={updateFilter}
+              history={history}
+              location={location}
+            />
+          </div>
         </div>
       </article>
     );

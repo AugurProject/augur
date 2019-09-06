@@ -5,33 +5,34 @@
   flex-direction: column;
   padding: @size-48 @size-16 0 @size-16;
 
-  > div > h1 {
-    .text-30-bold;
-
-    color: @color-alternate-info-text;
-    letter-spacing: 0.125rem;
-    margin-bottom: @size-24;
-    text-transform: capitalize;
-
-    @media @breakpoint-mobile {
-      order: 0;
-    }
-  }
-
-  > div > h4 {
-    .text-18-bold;
-
-    color: @color-secondary-text;
-  }
-
   > div {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    margin-bottom: @size-28;
 
     @media @breakpoint-mobile {
       align-items: flex-start;
       flex-direction: column;
+      margin-bottom: @size-16;
+    }
+
+    > h1 {
+      .text-30-bold;
+
+      color: @color-alternate-info-text;
+      letter-spacing: 0.125rem;
+      margin-bottom: @size-24;
+      text-transform: capitalize;
+
+      @media @breakpoint-mobile {
+        order: 0;
+      }
+    }
+
+    > div {
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -55,5 +56,36 @@
   > div > div {
     pointer-events: none;
     opacity: 0.5;
+  }
+}
+
+.MarketCardsFormat {
+  .text-14;
+
+  color: @color-alternate-info-text;
+  display: flex;
+  margin: 0 @size-24 @size-16 0;
+
+  > span {
+    margin: 0 @size-4;
+    cursor: pointer;
+  }
+
+  > span:first-of-type {
+    margin: 0 @size-4 0 @size-12;
+  }
+}
+
+.ViewSwitcher {
+  > svg rect,
+  > svg path {
+    fill: @color-primary-light;
+  }
+
+  &.selected {
+    > svg rect,
+    > svg path {
+      fill: @color-alternate-info-text;
+    }
   }
 }
