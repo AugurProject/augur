@@ -41,7 +41,7 @@ export const ReportingList = (props: ReportingListProps) => {
 
 interface PaginatorProps extends ReportingListProps {
   isConnected: boolean;
-  showLoggedOut: boolean;
+  isLogged: boolean;
   loadMarkets: Function;
   reportingType: string;
 }
@@ -75,12 +75,12 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
       isConnected,
       loadMarkets,
       reportingType,
-      showLoggedOut,
+      isLogged,
     } = this.props;
     const { offset, limit } = this.state;
     if (
       nextProps.isConnected !== isConnected ||
-      nextProps.showLoggedOut !== showLoggedOut
+      nextProps.isLogged !== isLogged
     ) {
       loadMarkets(offset, limit, reportingType, this.processMarkets);
     }

@@ -10,12 +10,13 @@ import Styles from 'modules/reporting/reporting.styles.less';
 import { REPORTING_STATE } from 'modules/common/constants';
 
 interface ReportingProps {
+  showLoggedOut: boolean;
   openReportingModal: ButtonActionType;
 }
 
 export default class Reporting extends React.Component<ReportingProps> {
   render() {
-    const { openReportingModal } = this.props;
+    const { openReportingModal, showLoggedOut } = this.props;
 
     return (
       <section className={Styles.Reporting}>
@@ -26,6 +27,7 @@ export default class Reporting extends React.Component<ReportingProps> {
           <ReportingList
             reportingType={REPORTING_STATE.DESIGNATED_REPORTING}
             title={'Designated Reporting'}
+            showLoggedOut={showLoggedOut}
             loggedOutMessage="Connect a wallet to see your markets that are ready for Reporting."
             emptyHeader="There are no markets available for you to Report on."
             emptySubheader=" Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on."
@@ -33,6 +35,7 @@ export default class Reporting extends React.Component<ReportingProps> {
           <ReportingList
             reportingType={REPORTING_STATE.PRE_REPORTING}
             title={'Upcoming Designated Reporting'}
+            showLoggedOut={showLoggedOut}
             loggedOutMessage="Connect a wallet to see your markets that will soon be ready to Report on."
             emptyHeader="There are no markets coming up in the next week for you to Report on. "
             emptySubheader="Check your Upcoming Designated Reporting to see Markets that will soon be availble to Report on."

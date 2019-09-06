@@ -5,7 +5,9 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_DR_QUICK_GUIDE } from "modules/common/constants";
 import { AppState } from "./store";
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState) => ({
+  showLoggedOut: !state.authStatus.isLogged,
+});
 
 const mapDispatchToProps = dispatch => ({
   openReportingModal: () => dispatch(updateModal({ type: MODAL_DR_QUICK_GUIDE })),

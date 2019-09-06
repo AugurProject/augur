@@ -9,7 +9,7 @@ import {
 import { REPORTING_STATE } from 'modules/common/constants';
 
 const mapStateToProps = (state, ownProps) => ({
-  showLoggedOut: !state.authStatus.isLogged,
+  isLogged: state.authStatus.isLogged,
   isConnected: state.connection.isConnected
 });
 
