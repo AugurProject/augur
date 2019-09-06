@@ -53,12 +53,14 @@ h6 {
 
 .Main__wrap {
   display: grid;
-  overflow: auto;
+  overflow: hidden;
 
   @media @breakpoint-mobile {
     grid-template-columns: none;
     grid-template-rows: 0 auto;
+    height: fit-content;
     margin-left: 0;
+    overflow: auto;
   }
 }
 
