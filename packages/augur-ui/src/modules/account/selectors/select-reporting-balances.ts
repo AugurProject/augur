@@ -27,6 +27,7 @@ export const selectReportingBalances = createSelector(
       profitAmount,
       profitLoss,
     } = accountReporting;
+    const isBalanceEmpty = createBigNumber(accountBalances.rep).eq(ZERO);
     const repBalanceFormatted = formatRep(accountBalances.rep);
     const repProfitLossPercentageFormatted = formatPercent(
       createBigNumber(profitLoss || ZERO).times(100),
@@ -57,7 +58,8 @@ export const selectReportingBalances = createSelector(
       disputingAmountFormatted,
       reportingAmountFormatted,
       participationAmountFormatted,
-      repTotalAmountStakedFormatted
+      repTotalAmountStakedFormatted,
+      isBalanceEmpty
     };
   }
 );
