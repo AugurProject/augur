@@ -36,10 +36,10 @@ export const ReportingList = (props: ReportingListProps) => {
       content.push(<span key={"loggedOut"}>{props.loggedOutMessage}</span>);
     if (props.markets.length === 0 && !props.showLoggedOut) {
       content.push(
-        <div key={'empty'}>
+        <React.Fragment key={"empty"}>
           <span>{props.emptyHeader}</span>
           <span>{props.emptySubheader}</span>
-        </div>
+        </React.Fragment>
       );
     }
   }
