@@ -1,0 +1,60 @@
+@import (reference) '~assets/styles/shared';
+
+.Filters {
+  display: flex;
+  flex-direction: column;
+  display: none;
+
+  @media @breakpoint-mobile {
+    display: flex;
+  }
+}
+
+.FiltersGroup {
+  border-top: 1px solid @color-primary-light;
+
+  > div {
+    margin: 0 @size-40;
+
+    @media @breakpoint-mobile {
+      margin: 0 @size-16;
+    }
+
+    > div {
+      grid-template-columns: 34px auto @size-16;
+      border: none;
+      height: auto;
+      margin: 0 0 @size-12 0;
+      cursor: pointer;
+      background: @color-primary-background;
+
+      > h5 {
+        text-transform: capitalize;
+      }
+
+      > svg {
+        margin: 0
+      }
+
+      &:hover {
+        border: none;
+      }
+    }
+  }
+
+  > div:first-of-type {
+    .text-14-bold;
+
+    text-transform: uppercase;
+    color: @color-tertiary-info-text;
+
+    @media @breakpoint-mobile {
+      margin: @size-24 @size-16 @size-16 @size-16;
+    }
+  }
+}
+
+.Searching {
+  pointer-events: none;
+  opacity: 0.5;
+}

@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { MOBILE_MENU_STATES } from 'modules/common/constants';
 import { XIcon } from 'modules/common/icons';
 import MarketsListFilters from 'modules/app/containers/markets-list-filters';
+import MarketsListSortBy from 'modules/app/containers/markets-list-sortBy';
 import CategoryFilters from 'modules/app/containers/category-filters';
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles.less';
@@ -40,6 +41,7 @@ const BaseInnerNavPure = ({
         )}
       >
         <CategoryFilters />
+        <MarketsListSortBy /> {/* MOBILE ONLY */}
         <MarketsListFilters />
       </ul>
     </aside>

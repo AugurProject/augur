@@ -1,0 +1,38 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketsList {
+  > article {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 128px 0;
+
+    > span:first-of-type {
+      align-items: center;
+      background: @color-theme-primary;
+      border-radius: 50%;
+      display: flex;
+      height: 64px;
+      justify-content: center;
+      width: 64px;
+
+      > svg path {
+        fill: @color-tertiary-info-text;
+      }
+    }
+
+    > span:nth-of-type(2) {
+      .text-18-bold;
+
+      color: @color-secondary-text;
+      margin: @size-16 0 @size-4 0;
+    }
+
+    > span:last-of-type {
+      .text-14;
+
+      color: @color-tertiary-info-text;
+    }
+  }
+}
