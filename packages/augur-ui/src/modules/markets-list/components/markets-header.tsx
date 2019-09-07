@@ -125,9 +125,9 @@ export default class MarketsHeader extends Component<
             <div className={Styles.MarketCardsFormat}>
               View
               <ViewSwitcher
-                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.EXPANDED)}
-                type={Expanded}
-                selected={marketCardFormat === MARKET_CARD_FORMATS.EXPANDED}
+                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.COMPACT)}
+                type={Compact}
+                selected={marketCardFormat === MARKET_CARD_FORMATS.COMPACT}
               />
               <ViewSwitcher
                 handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.CLASSIC)}
@@ -136,9 +136,9 @@ export default class MarketsHeader extends Component<
               />
 
               <ViewSwitcher
-                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.COMPACT)}
-                type={Compact}
-                selected={marketCardFormat === MARKET_CARD_FORMATS.COMPACT}
+                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.EXPANDED)}
+                type={Expanded}
+                selected={marketCardFormat === MARKET_CARD_FORMATS.EXPANDED}
               />
             </div>
 

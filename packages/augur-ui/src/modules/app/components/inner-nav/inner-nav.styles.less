@@ -132,10 +132,8 @@
         flex-flow: row nowrap;
         height: 50px;
         padding: @size-16;
-        position: fixed;
-        top: 70px;
         width: 100%;
-        z-index: @mask-modal;
+        z-index: @mask-above;
 
         > button {
           height: @size-16;
@@ -184,7 +182,6 @@
   .InnerNav__menu--main,
   .InnerNav__menu--submenu {
     overflow: scroll;
-    padding-top: 2.5rem;
     width: 100%;
     z-index: @above-all-content;
   }
