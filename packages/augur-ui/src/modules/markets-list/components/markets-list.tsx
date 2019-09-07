@@ -1,21 +1,23 @@
 import React, { Component } from "react";
 
-import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import { Pagination } from "modules/common/pagination";
-import NullStateMessage from "modules/common/null-state-message";
-import { TYPE_TRADE, MARKET_CARD_FORMATS } from "modules/common/constants";
-import MarketCard from "modules/market-cards/containers/market-card";
-import { MarketData } from "modules/types";
-import PaginationStyles from "modules/common/pagination.styles.less";
-import { LoadingMarketCard } from "modules/market-cards/common";
+import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { Pagination } from 'modules/common/pagination';
+import NullStateMessage from 'modules/common/null-state-message';
+import { TYPE_TRADE, MARKET_CARD_FORMATS } from 'modules/common/constants';
+import MarketCard from 'modules/market-cards/containers/market-card';
+import { MarketData } from 'modules/types';
+import { LoadingMarketCard } from 'modules/market-cards/common';
+import { MagnifyingGlass } from 'modules/common/icons';
+import PaginationStyles from 'modules/common/pagination.styles.less';
+import Styles from 'modules/markets-list/components/markets-list-styles.less';
 
 
 interface MarketsListProps {
   testid?: string;
   history: object;
   isLogged: boolean;
-  markets: Array<MarketData>;
-  filteredMarkets: Array<string>;
+  markets: MarketData[];
+  filteredMarkets: string[];
   location: object;
   toggleFavorite: Function;
   loadMarketsInfoIfNotLoaded: Function;
@@ -23,8 +25,6 @@ interface MarketsListProps {
   linkType?: string;
   isMobile: boolean;
   pendingLiquidityOrders?: object;
-  nullMessage?: string;
-  addNullPadding?: boolean;
   showDisputingCard?: boolean;
   outcomes?: object;
   showOutstandingReturns?: boolean;
@@ -50,9 +50,7 @@ export default class MarketsList extends Component<
     testid: null,
     linkType: TYPE_TRADE,
     paginationPageParam: PAGINATION_PARAM_NAME,
-    nullMessage: 'No Markets Available',
     pendingLiquidityOrders: {},
-    addNullPadding: false,
     showDisputingCard: false,
     outcomes: null,
     showOutstandingReturns: false,
@@ -65,8 +63,6 @@ export default class MarketsList extends Component<
       location,
       markets,
       testid,
-      nullMessage,
-      addNullPadding,
       marketCount,
       showPagination,
       limit,
@@ -108,16 +104,18 @@ export default class MarketsList extends Component<
     }
 
     return (
-      <article data-testid={testid}>
+      <article className={Styles.MarketsList} data-testid={testid}>
         {marketCards.length > 0 ? (
           <>
           {marketCards}
           </>
         ) : (
           <NullStateMessage
-            addNullPadding={addNullPadding}
-            message={nullMessage}
+            icon={MagnifyingGlass}
+            message={'No markets found'}
+            subMessage={'Try a different category or filter'}
           />
+
         )}
         {showPagination && (
           <div className={PaginationStyles.PaginationContainer}>
@@ -126,6 +124,7 @@ export default class MarketsList extends Component<
               itemCount={marketCount}
               itemsPerPage={limit}
               updateLimit={updateLimit}
+              maxLimit={marketCount}
               action={setOffset}
               showLimitChanger
             />

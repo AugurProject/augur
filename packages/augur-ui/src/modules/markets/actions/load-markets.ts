@@ -129,7 +129,7 @@ export const loadMarketsByFilter = (
     search: filterOptions.search ? filterOptions.search : '',
     maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
-    limit: filterOptions.limit === 1 ? 0 : filterOptions.limit,
+    limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
     ...sort,
