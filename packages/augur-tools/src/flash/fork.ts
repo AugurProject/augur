@@ -2,14 +2,34 @@ import { NULL_ADDRESS } from '../constants';
 import { ContractInterfaces } from '@augurproject/core';
 import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
-import { makeDbMock } from '@augurproject/test';
+import { DB } from "@augurproject/sdk/build/state/db/DB";
+import { PouchDBFactory } from "@augurproject/sdk/build/state/db/AbstractDB";
+import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { API } from "@augurproject/sdk/build/state/getter/API";
 
 export async function fork(user: ContractAPI, market: ContractInterfaces.Market): Promise<boolean> {
-  const db = await makeDbMock().makeDB(user.augur, [user.account]);
+  const listener = {
+    listenForBlockRemoved: () => {},
+    listenForBlockAdded: () => {},
+    listenForEvent: () => {},
+    startBlockStreamListener: () => {},
+  } as unknown as IBlockAndLogStreamerListener;
+
+  const db = await DB.createAndInitializeDB(
+    Number(user.augur.networkId),
+    0,
+    0,
+    [user.account.publicKey],
+    user.augur,
+    PouchDBFactory({adapter: 'memory'}),
+    listener
+  );
+
   await db.sync(user.augur, 100000, 0);
 
-  const marketInfos = await user.getMarketInfo(market.address);
-  console.log('TAMIKA', 1);
+  const api = new API(user.augur, Promise.resolve(db));
+  const marketInfos = await api.route('getMarketsInfo', {marketIds: [market.address]});
+  // const marketInfos = await user.getMarketInfo(market.address);
   console.log(JSON.stringify(marketInfos));
 
   const MAX_DISPUTES = 20;

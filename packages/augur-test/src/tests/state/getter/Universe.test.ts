@@ -211,6 +211,9 @@ describe('State API :: Universe :: ', () => {
 
     const market = await john.createReasonableScalarMarket();
 
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+    // console.log(await api.route('getMarketsInfo', { marketIds: [market.address]}));
+
     await fork(john, market);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
