@@ -150,7 +150,7 @@ export class Liquidity {
         };
       }
 
-      // BIDS
+      // BIDS (`outcome` starts at 1 because the Invalid outcome is 0 and is not included in liquidity calculations)
       for (let outcome = 1; outcome < numOutcomes; outcome++) {
         if (orderBook[outcome].bids.length < 1) {
           bid_sum = new BigNumber(0);
@@ -187,7 +187,7 @@ export class Liquidity {
         }
       }
 
-      // ASKS
+      // ASKS (`outcome` starts at 1 because the Invalid outcome is 0 and is not included in liquidity calculations)
       for (let outcome = 1; outcome < numOutcomes; outcome++) {
         if (orderBook[outcome].asks.length < 1) {
           ask_sum = new BigNumber(0);
