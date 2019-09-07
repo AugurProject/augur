@@ -97,8 +97,26 @@ div.ReportingSubheaders {
     .mono-10;
 
     color: @color-tertiary-info-text;
+    display: flex;
     margin-bottom: @size-4;
     text-transform: uppercase;
+
+    > svg {
+      fill: none;
+      height: @size-12;
+      margin-left: @size-4;
+      width: @size-12;
+
+      > circle {
+        fill: @color-theme-primary;
+        stroke: @color-highlight;
+        stroke-width: 1.5;
+      }
+
+      > path {
+        fill: @color-neutral;
+      }
+    }
   }
 
   > p {
@@ -107,11 +125,28 @@ div.ReportingSubheaders {
     color: @color-alternate-info-text;
     line-height: @size-16;
     margin: 0;
+
+    > span > span {
+      color: @color-tertiary-info-text;
+      margin-left: @size-4; 
+    }
   }
 
   &.Small {
     > p > span {
       .text-12;
+    }
+  }
+
+  &.Large {
+    > p > span {
+      .mono-24;
+
+      line-height: @size-28;
+
+      > span {
+        .mono-14;
+      }
     }
   }
 }
@@ -166,7 +201,69 @@ div.ReportingSubheaders {
       left: 0;
       width: @size-40;
     }
+
+    &:first-of-type {
+      > span {
+        display: none;
+      }
+    }
   }
+
+  @media @breakpoint-smallish-desktop {
+    padding: @size-16;
+
+    > div:first-of-type {
+      display: flex; 
+
+      > div {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        max-width: unset;
+        text-align: center;
+        width: 100%;
+      }
+
+      > span {
+        display: flex;
+      }
+    }
+
+    > div:not(:first-of-type) {
+      display: none;
+    }
+
+    &.HideForMobile {
+      > div {
+        display: flex;
+        flex-direction: column;
+      }
+
+      > div:first-of-type {
+        flex-direction: row;
+      }
+
+      > div:nth-of-type(2) {
+        flex-direction: column;
+
+        > div {
+          align-self: center;
+          align-items: center;
+          margin-bottom: @size-16;
+        }
+      }
+
+      > div:nth-of-type(3) {
+        align-self: center;
+      }
+
+      > div:nth-of-type(4) {
+        text-align: center;
+      }
+    }
+  }
+
 }
 
 .AllTimeProfitLoss {
@@ -335,23 +432,46 @@ div.ReportingSubheaders {
   border-radius: @size-3;
   border: 1px solid @color-primary-light;
   display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
   padding: @size-12 @size-24;
 
-  > div:first-of-type {
-    display: flex;
+  > span:first-of-type {
+    width: fit-content;
+    margin-bottom: @size-16;
+  }
+
+  > span:nth-of-type(2) {
+    .text-16-medium;
+
+    color: @color-alternate-info-text;
+  }
+
+  > span:nth-of-type(3) {
+    margin-top: @size-12;
+  }
+
+  > div {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    margin-left: auto;
+  }
+
+  @media @breakpoint-smallish-desktop {
     flex-direction: column;
-    flex: 1;
+    padding: @size-12 @size-18;
+    grid-template-rows: auto auto @size-40;
 
     > span:first-of-type {
-      width: fit-content;
-      margin-bottom: @size-16;
+      margin-bottom: @size-10;
     }
 
     > span:nth-of-type(2) {
-      .text-16-medium;
+      margin-top: 0;
+    }
 
-      color: @color-alternate-info-text;
-      margin-bottom: @size-12;
+    > div:last-of-type {
+      align-self: flex-end;
     }
   }
 }
@@ -382,5 +502,78 @@ div.ReportingSubheaders {
 
   &:not(:last-of-type) {
     margin-bottom: 65px;
+  }
+}
+
+.ParticipationTokensView {
+  background: @color-secondary-action;
+  border: 1px solid @color-primary-light;
+  border-radius: @size-3;
+  max-width: 482px;
+  padding: @size-32 @size-24;
+
+  > h1 {
+    .mono-10;
+
+    color: @color-alternate-info-text;
+    margin-bottom: @size-12;
+    text-transform: uppercase;
+  }
+
+  > section {
+    background-color: @color-primary-alternate;
+    height: 1px;
+    margin: @size-24 0;
+    width: @size-40;
+  }
+
+  > span {
+    .text-12;
+
+    color: @color-tertiary-info-text;
+    display: block;
+    line-height: 140%;
+    margin-bottom: @size-20;
+
+    > span:first-of-type {
+      .text-12-bold;
+    }
+
+    > span:last-of-type {
+      white-space: nowrap;
+      color: @color-primary-action;
+      margin-left: @size-4;
+    }
+  }
+
+  > span:last-of-type {
+    margin-bottom: @size-16;
+  }
+
+  > div {
+    margin-bottom: @size-24;
+  }
+
+  > div:first-of-type, 
+  > div:nth-of-type(4) {
+    margin-bottom: @size-16;
+  }
+
+  @media @breakpoint-mobile {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+
+    > button {
+      width: 100%;
+    }
+
+    > span {
+      text-align: center;
+    }
+
+    > div {
+      align-items: center;
+    }
   }
 }

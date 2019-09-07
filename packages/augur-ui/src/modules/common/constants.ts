@@ -227,8 +227,24 @@ export enum MARKET_SORT_PARAMS {
   CREATION_TIME = 'creationTime',
   END_DATE = 'endTime',
   RECENTLY_TRADED = 'recentlyTraded',
-  CREATOR_FEE_RATE = 'marketCreatorFeeRate',
   OPEN_INTEREST = 'openInterest',
+  LIQUIDITY = 'liquidity',
+  LAST_LIQUIDITY_DEPLETED = 'lastLiquidityDepleted',
+}
+
+export const SORT_OPTIONS = [
+  { value: MARKET_SORT_PARAMS.LIQUIDITY, header: 'Highest liquidity' },
+  { value: MARKET_SORT_PARAMS.OPEN_INTEREST, header: 'Highest open interest' },
+  { value: MARKET_SORT_PARAMS.VOLUME, header: 'Highest volume' },
+  { value: MARKET_SORT_PARAMS.CREATION_TIME, header: 'Recently created' },
+  { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon ' },
+  { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, header: 'Recently Traded' },
+];
+
+export enum MARKET_CARD_FORMATS {
+  COMPACT = 'compact',
+  CLASSIC = 'classic',
+  EXPANDED = 'expanded',
 }
 
 // The user should be able to sort by:
@@ -865,3 +881,10 @@ export const SCALAR_OUTCOMES = [
 
 export const POPULAR_CATEGORIES = ['sports', 'politics', 'entertainment', 'finance', 'crypto'];
 export const CATEGORIES_MAX = 5;
+
+export enum PAGINATION_VIEW_OPTIONS {
+  ALL = 'All',
+  TEN = '10',
+  FIFTY = '50',
+  HUNDRED = '100',
+}

@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-interface ReportingDisputeProps {
+import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
+
+interface DisputingProps {
   isConnected: boolean;
   loadDisputeWindow: Function;
 }
-export default class ReportingDispute extends Component<ReportingDisputeProps> {
+export default class Disputing extends Component<DisputingProps> {
   static propTypes = {};
 
   constructor(props) {
@@ -28,6 +30,10 @@ export default class ReportingDispute extends Component<ReportingDisputeProps> {
   }
 
   render() {
-    return <section>Dispute</section>;
+    return (
+      <section>  
+        <ParticipationTokensView />
+      </section>
+    );
   }
 }

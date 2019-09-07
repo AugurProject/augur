@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import ReportingDispute from "modules/reporting/components/reporting-dispute/reporting-dispute";
+import Disputing from "modules/reporting/disputing";
 import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
 
 const mapStateToProps = state => ({
@@ -20,12 +20,12 @@ const mergeProps = (sP, dP, oP) => {
   };
 };
 
-const Reporting = withRouter(
+const DisputeContainer = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
-  )(ReportingDispute)
+  )(Disputing)
 );
 
-export default Reporting;
+export default DisputeContainer;

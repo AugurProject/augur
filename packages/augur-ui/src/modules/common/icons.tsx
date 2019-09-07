@@ -1204,3 +1204,27 @@ export const LoadingEllipse = (
     </defs>
   </svg>
 );
+
+export const Expanded = (
+  <svg  width="16" height="16" viewBox="0 0 16 16">
+    <rect y="13.1001" width="16" height="2.9"/>
+    <rect y="8.7998" width="16" height="2.9"/>
+    <rect y="4.3999" width="16" height="2.9"/>
+    <path d="M0 0H16V2.9H0V0Z"/>
+  </svg>
+);
+
+export const Classic = (
+  <svg  width="16" height="16" viewBox="0 0 16 16">
+    <rect y="12.2002" width="16" height="3.8" />
+    <rect y="6" width="16" height="4.2" />
+    <rect width="16" height="4" />
+  </svg>
+);
+
+export const Compact = (
+  <svg  width="16" height="16" viewBox="0 0 16 16">
+    <rect y="9" width="16" height="7" />
+    <rect width="16" height="7" />
+  </svg>
+);

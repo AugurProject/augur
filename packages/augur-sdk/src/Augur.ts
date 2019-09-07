@@ -116,7 +116,6 @@ export class Augur<TProvider extends Provider = Provider> {
     const augur = new Augur<TProvider>(provider, dependencies, networkId, addresses, connector, gnosisRelay, enableFlexSearch, meshClient);
 
     await augur.contracts.setReputationToken(networkId);
-
     return augur;
   }
 
@@ -257,8 +256,6 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   getMarkets = (params: Parameters<typeof Markets.getMarkets>[2]) => {
-    // sortBy param broken. See #2437.
-    delete params.sortBy;
     return this.bindTo(Markets.getMarkets)(params);
   }
 

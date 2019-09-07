@@ -17,6 +17,7 @@ import { setAddresses, NetworkId } from "@augurproject/artifacts";
 import * as fs from "async-file";
 import { LogReplayer } from "./replay-logs";
 import { LogReplayerV1 } from "./replay-logs-v1";
+import { NetworkConfiguration } from "@augurproject/core";
 
 export const defaultSeedPath = `/tmp/seed.json`;
 
@@ -60,6 +61,7 @@ export function addGanacheScripts(flash: FlashSession) {
         this.ganacheServer = await makeGanacheServer(this.ganacheDb, this.accounts);
         this.ganacheProvider = new ethers.providers.Web3Provider(this.ganacheServer.ganacheProvider);
         this.ganacheServer.listen(this.ganachePort, () => null);
+        this.network = NetworkConfiguration.create('environment');
         this.log(`Server started on port ${this.ganachePort}`);
       }
 

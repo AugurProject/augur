@@ -343,7 +343,6 @@ export class ContractAPI {
   }
 
   async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
-    await this.repFaucet(amount.times(1e9)); // make sure you have the REP you're trying to contribute
     await market.contribute(payoutNumerators, amount, description);
   }
 
@@ -351,10 +350,12 @@ export class ContractAPI {
     await market.contributeToTentative(payoutNumerators, amount, description);
   }
 
-  // TODO Update this to handle case where crowdsourcer is 0 address (hasn't gotten any contributions)
   async getRemainingToFill(market: ContractInterfaces.Market, payoutNumerators: BigNumber[]): Promise<BigNumber> {
     const payoutDistributionHash = await this.derivePayoutDistributionHash(market, payoutNumerators);
     const crowdsourcerAddress = await market.getCrowdsourcer_(payoutDistributionHash);
+    if (crowdsourcerAddress === NULL_ADDRESS) {
+      return new BigNumber(-1);
+    }
     const crowdsourcer = this.augur.contracts.getReportingParticipant(crowdsourcerAddress);
     return crowdsourcer.getRemainingToFill_();
   }
