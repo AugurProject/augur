@@ -123,19 +123,22 @@ export const Pagination = (props: PaginationProps) => {
 
   return (
     <div className={Styles.Pagination}>
-      <DirectionButton
-        action={() => action(page - 1)}
-        left
-        disabled={page === 1}
-      />
-      {renderPageButtons(createPagesArray(page, totalPages), action)}
-      <span>
-        {page} of {totalPages}
-      </span>
-      <DirectionButton
-        action={() => action(page + 1)}
-        disabled={page === totalPages || totalPages === 0}
-      />
+      <section>
+        <DirectionButton
+          action={() => action(page - 1)}
+          left
+          disabled={page === 1}
+        />
+        {renderPageButtons(createPagesArray(page, totalPages), action)}
+        <span>
+          {page} of {totalPages}
+        </span>
+        <DirectionButton
+          action={() => action(page + 1)}
+          disabled={page === totalPages || totalPages === 0}
+        />
+      </section>
+
       { showLimitChanger &&
         <SquareDropdown
           defaultValue={itemsPerPage}
