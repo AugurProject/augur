@@ -501,6 +501,12 @@ export class Markets {
       }
     }
 
+    if (params.sortBy === GetMarketsSortBy.liquidity) {
+      marketsResults = await setRecentLiquidity(db, marketsResults);
+    } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
+      marketsResults = await setLastTradedTimestamp(db, marketsResults);
+    }
+
     // TODO: Break this section into a separate function
     let filteredOutCount = 0; // Markets excluded by maxLiquiditySpread & includeInvalidMarkets filters
     for (let i = marketsResults.length - 1; i >= 0; i--) {
@@ -559,7 +565,12 @@ export class Markets {
         }
 
         if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
-          // @TODO
+          // Filter out markets that had liquidity in last hour or didn't but had liquidity over a 15% spread in the last 24 hours
+          if ((marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0')) {
+
+          }
+          includeMarket = false;
+          filteredOutCount++;
         }
         // @TODO Figure out why marketData is sometimes returning no results here
         else if (
@@ -574,12 +585,6 @@ export class Markets {
       if (!includeMarket) {
         marketsResults.splice(i, 1);
       }
-    }
-
-    if (params.sortBy === GetMarketsSortBy.liquidity) {
-      marketsResults = await setLiquidity(db, marketsResults);
-    } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
-      marketsResults = await setLastTradedTimestamp(db, marketsResults);
     }
 
     const meta = getMarketsMeta(marketsResults, filteredOutCount);
@@ -1417,12 +1422,12 @@ async function setLastTradedTimestamp(db: DB, marketsResults: any[]): Promise<Ar
 }
 
 /**
- * Sets the `liquidity` property for the last 24 hours of liquidity for all markets in `marketsResults`.
+ * Sets the `recentLiquidity` property for the last 24 hours of liquidity for all markets in `marketsResults`.
  *
- * @param {DB} db Database object to use for getting `liquidity` info
- * @param {Array<Object>} marketsResults Array of market objects to add `liquidity` to
+ * @param {DB} db Database object to use for getting `recentLiquidity` info
+ * @param {Array<Object>} marketsResults Array of market objects to add `recentLiquidity` to
  */
-async function setLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
+async function setRecentLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
   // Create market ID => marketsResults index mapping
   const keyedMarkets = {};
   for (let i = 0; i < marketsResults.length; i++) {
@@ -1436,24 +1441,37 @@ async function setLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  
 
   // Save liquidity info for each market to an object
   for (let i = 0; i < marketsLiquidityDocs.length; i++) {
-    if (!marketsLiquidityInfo[marketsLiquidityDocs[i].market]) {
-      marketsLiquidityInfo[marketsLiquidityDocs[i].market] = {
-        hourlyLiquiditySum: new BigNumber(marketsLiquidityDocs[i].liquidity),
+    const marketLiquidityDoc = marketsLiquidityDocs[i];
+    if (!marketsLiquidityInfo[marketLiquidityDoc.market]) {
+      marketsLiquidityInfo[marketLiquidityDoc.market] = {};
+    }
+    if (!marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread]) {
+      marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread] = {
+        hourlyLiquiditySum: new BigNumber(marketLiquidityDoc.liquidity),
         hoursWithLiquidity: 1,
       };
     } else {
-      marketsLiquidityInfo[marketsLiquidityDocs[i].market].hourlyLiquiditySum.plus(marketsLiquidityDocs[i].liquidity);
-      marketsLiquidityInfo[marketsLiquidityDocs[i].market].hoursWithLiquidity++;
+      marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hourlyLiquiditySum.plus(marketLiquidityDoc.liquidity);
+      marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hoursWithLiquidity++;
     }
   }
 
-  // Set liquidity value for each market
+  // Set recentLiquidity value for each market
   for (let i = 0; i < marketsResults.length; i++) {
     const marketResult = marketsResults[i];
+    marketResult.recentLiquidity = {};
     if (marketsLiquidityInfo.hasOwnProperty(marketResult.market)) {
-      marketResult.liquidity = marketsLiquidityInfo[marketResult.market].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[marketResult.market].hoursWithLiquidity).toString();
+      for (const spread of Object.values(MaxLiquiditySpread)) {
+        if (marketsLiquidityInfo[marketResult.market][spread]) {
+          marketResult.recentLiquidity[spread] = marketsLiquidityInfo[marketResult.market][spread].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[marketResult.market][spread].hoursWithLiquidity).toString();
+        } else {
+          marketResult.recentLiquidity[spread] = '0';
+        }
+      }
     } else {
-      marketResult.liquidity = '0';
+      for (const spread of Object.values(MaxLiquiditySpread)) {
+        marketResult.recentLiquidity[spread] = '0';
+      }
     }
   }
 
