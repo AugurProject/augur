@@ -44,11 +44,11 @@ h6 {
   /* topbar height */
   grid-template-rows: @top-bar-height auto;
   height: 100vh;
+  overflow: hidden;
 
   @media @breakpoint-mobile {
     /* topbar mobile height */
     grid-template-rows: @top-bar-height-mobile auto;
-    overflow: visible;
   }
 }
 
@@ -110,7 +110,7 @@ h6 {
   padding: 1rem;
   position: absolute;
   width: 3.125rem;
-  z-index: @mask-above;
+  z-index: @mask-modal;
 
   svg {
     height: 100%;
@@ -156,5 +156,9 @@ svg.SideBar__mobile-bars-unseen {
 
   @media @breakpoint-mobile {
     border-bottom: 1px solid @color-primary-light;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: @mask-modal;
   }
 }

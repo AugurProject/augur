@@ -12,6 +12,7 @@ interface PaginationProps {
   action: Function;
   updateLimit: Function;
   showLimitChanger?: boolean;
+  maxLimit?: number;
 }
 interface PagesArrayObject {
   page: number | null;
@@ -91,9 +92,9 @@ const renderPageButtons = (
   </>
 );
 
-const getLimitOptions = (itemCount: number) => {
+const getLimitOptions = (itemCount: number, maxLimit: number) => {
   let paginationOptions = [
-    { value: 1, label: PAGINATION_VIEW_OPTIONS.ALL },
+    { value: maxLimit, label: PAGINATION_VIEW_OPTIONS.ALL },
     { value: 10, label: PAGINATION_VIEW_OPTIONS.TEN },
   ];
 
@@ -116,6 +117,7 @@ export const Pagination = (props: PaginationProps) => {
     itemsPerPage,
     updateLimit,
     showLimitChanger,
+    maxLimit,
   } = props;
   const totalPages = itemsPerPage === 1 ? 1 : Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
 
@@ -137,7 +139,7 @@ export const Pagination = (props: PaginationProps) => {
       { showLimitChanger &&
         <SquareDropdown
           defaultValue={itemsPerPage}
-          options={getLimitOptions(itemCount)}
+          options={getLimitOptions(itemCount, maxLimit)}
           onChange={updateLimit}
         />
       }
