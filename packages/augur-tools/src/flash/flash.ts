@@ -6,6 +6,10 @@ import { ContractAPI } from "../libs/contract-api";
 import { Account } from "../constants";
 import { providers } from "ethers";
 import { Connectors, Events, SubscriptionEventName } from "@augurproject/sdk";
+import { API } from "@augurproject/sdk/build/state/getter/API";
+import { PouchDBFactory } from "@augurproject/sdk/build/state/db/AbstractDB";
+import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
+import { DB } from "@augurproject/sdk/build/state/db/DB";
 
 export interface FlashOption {
   name: string;
@@ -32,6 +36,7 @@ export class FlashSession {
   // Configuration
   accounts: Account[];
   user?: ContractAPI;
+  api?: API;
   readonly scripts: { [name: string]: FlashScript } = {};
   log: Logger = console.log;
   network?: NetworkConfiguration;
@@ -138,6 +143,7 @@ export class FlashSession {
       network = network || this.network;
       await this.user.augur.connect(network.http, this.getAccount().publicKey);
       await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
+      this.api = new API(this.user.augur, this.makeDB());
     }
 
     if (approveCentralAuthority) {
@@ -185,5 +191,25 @@ export class FlashSession {
 
   async getNetworkId(provider: EthersProvider): Promise<string> {
     return (await provider.getNetwork()).chainId.toString();
+  }
+
+
+  async makeDB(): Promise<DB> {
+    const listener = {
+      listenForBlockRemoved: () => {},
+      listenForBlockAdded: () => {},
+      listenForEvent: () => {},
+      startBlockStreamListener: () => {},
+    } as unknown as IBlockAndLogStreamerListener;
+
+    return DB.createAndInitializeDB(
+      Number(this.user.augur.networkId),
+      0,
+      0,
+      [this.user.account.publicKey],
+      this.user.augur,
+      PouchDBFactory({adapter: 'memory'}),
+      listener
+    );
   }
 }

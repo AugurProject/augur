@@ -631,17 +631,19 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser(this.network, true);
-      const marketId = args.marketId as string;
+      let marketId = args.marketId as string;
 
-      let market: ContractInterfaces.Market;
-      if (marketId !== null) {
-        market = user.augur.contracts.marketFromAddress(marketId);
-      } else {
-        market = await user.createReasonableYesNoMarket();
-        this.log(`Created market ${market.address}`);
+      if (marketId === null) {
+        const market = await user.createReasonableYesNoMarket();
+        marketId = market.address;
+        this.log(`Created market ${marketId}`);
       }
 
-      if (await fork(user, market)) {
+      const marketInfo = (await this.api.route('getMarketsInfo', {
+        marketIds: [marketId],
+      }))[0];
+
+      if (await fork(user, marketInfo)) {
         this.log('Fork successful!');
       } else {
         this.log('ERROR: forking failed.');

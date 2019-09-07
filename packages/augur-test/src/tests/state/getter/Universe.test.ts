@@ -18,7 +18,9 @@ describe('State API :: Universe :: ', () => {
   let john: ContractAPI;
   let mary: ContractAPI;
 
-  beforeAll(async () => {
+  // Normally these calls are in beforeAll but these tests affect the same state,
+  // on-chain and in-middleware, so both need to be rebuilt between each test.
+  beforeEach(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
 
@@ -127,8 +129,10 @@ describe('State API :: Universe :: ', () => {
     expect(migrationTotals).toEqual({});
 
     const market = await john.createReasonableYesNoMarket();
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+    const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
 
-    await fork(john, market);
+    await fork(john, marketInfo);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
@@ -148,9 +152,33 @@ describe('State API :: Universe :: ', () => {
       universe: universe.address,
     });
 
-    console.log(JSON.stringify(migrationTotals, null, 2));
-
-    // TODO verify output
+    expect(migrationTotals).toMatchObject({
+      marketId: market.address,
+      outcomes: [
+        {
+          outcomeName: 'Invalid',
+          outcome: '0',
+          amount: '60000000349680582682291668',
+          isMalformed: false,
+          payoutNumerators: [
+            '100',
+            '0',
+            '0',
+          ],
+        },
+        {
+          outcomeName: 'No',
+          outcome: '1',
+          amount: '60000000349680582682291668',
+          isMalformed: false,
+          payoutNumerators: [
+            '0',
+            '100',
+            '0',
+          ],
+        },
+      ],
+    });
 
   }, 120000);
 
@@ -170,8 +198,10 @@ describe('State API :: Universe :: ', () => {
     const market = await john.createReasonableMarket(
       ['foo', 'bar', 'happiness', 'smile'].map(formatBytes32String)
     );
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+    const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
 
-    await fork(john, market);
+    await fork(john, marketInfo);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
@@ -191,9 +221,33 @@ describe('State API :: Universe :: ', () => {
       universe: universe.address,
     });
 
-    console.log(JSON.stringify(migrationTotals, null, 2));
-
-    // TODO verify output
+    expect(migrationTotals).toMatchObject({
+      marketId: market.address,
+      outcomes: [
+        {
+          outcomeName: '250000000000000000000',
+          outcome: '50000000000000000000',
+          amount: '60000000349680582682291668',
+          isMalformed: false,
+          payoutNumerators: [
+            '0',
+            '0',
+            '20000',
+          ],
+        },
+        {
+          outcomeName: '250000000000000000000',
+          outcome: '250000000000000000000',
+          amount: '60000000349680582682291668',
+          isMalformed: false,
+          payoutNumerators: [
+            '0',
+            '20000',
+            '0',
+          ],
+        },
+      ],
+    });
 
   }, 120000);
 
@@ -210,18 +264,16 @@ describe('State API :: Universe :: ', () => {
     expect(migrationTotals).toEqual({});
 
     const market = await john.createReasonableScalarMarket();
-
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
-    // console.log(await api.route('getMarketsInfo', { marketIds: [market.address]}));
+    const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
 
-    await fork(john, market);
+    await fork(john, marketInfo);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
 
-    const invalidNumerators = [100, 0, 0, 0, 0].map((n) => new BigNumber(n));
-    const fooNumerators = [0, 100, 0, 0, 0].map((n) => new BigNumber(n));
-    const barNumerators = [0, 0, 100, 0, 0].map((n) => new BigNumber(n));
+    const invalidNumerators = [0, 0, 20000].map((n) => new BigNumber(n));
+    const fooNumerators = [0, 20000, 0].map((n) => new BigNumber(n));
 
     await john.repFaucet(new BigNumber(1e21));
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
@@ -234,11 +286,33 @@ describe('State API :: Universe :: ', () => {
       universe: universe.address,
     });
 
-    console.log(JSON.stringify(migrationTotals, null, 2));
-
-    // TODO verify output
-
+    expect(migrationTotals).toMatchObject({
+      marketId: market.address,
+      outcomes: [
+        {
+          outcomeName: '250000000000000000000',
+          outcome: '50000000000000000000',
+          amount: '60000000349680582682291668',
+          isMalformed: false,
+          payoutNumerators: [
+            '0',
+            '0',
+            '20000',
+          ],
+        },
+        {
+          outcomeName: '250000000000000000000',
+          outcome: '250000000000000000000',
+          amount: '60000000349680582682291668',
+          isMalformed: false,
+          payoutNumerators: [
+            '0',
+            '20000',
+            '0',
+          ],
+        },
+      ],
+    });
   }, 120000);
-
 
 });

@@ -2,13 +2,13 @@ import { BigNumber } from 'bignumber.js';
 import * as t from 'io-ts';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
-import { Address, DisputeWindowCreatedLog, MarketTypeName } from "../logs/types";
+import { Address, DisputeWindowCreatedLog} from '../logs/types';
 import {
   Augur,
   calculatePayoutNumeratorsValue, getOutcomeDescriptionFromOutcome,
   MALFORMED_OUTCOME,
   marketTypeToName
-} from "../../index";
+} from '../../index';
 
 export interface DisputeWindow {
   address: Address;
@@ -70,7 +70,6 @@ export class Universe {
         universe: params.universe,
       },
     });
-    console.log(universeForkedLogs);
 
     if (universeForkedLogs.length === 0) {
       return {};
@@ -83,8 +82,6 @@ export class Universe {
         market: universe.forkingMarket,
       },
     }))[0];
-    console.log(JSON.stringify(forkingMarket, null, 2));
-
     const marketTypeName = marketTypeToName(forkingMarket.marketType);
     const numTicks = Number(forkingMarket.numTicks).toString(10);
     const minPrice = Number(forkingMarket.prices[0]).toString(10);
@@ -95,7 +92,6 @@ export class Universe {
         parentUniverse: params.universe,
       },
     });
-    console.log(JSON.stringify(children, null, 2));
 
     const outcomes: Outcome[] = await Promise.all(children.map(async (child): Promise<Outcome> => {
       const payoutNumerators = child.payoutNumerators.map((hex) => Number(hex).toString(10));
@@ -104,59 +100,17 @@ export class Universe {
       const outcome = calculatePayoutNumeratorsValue(maxPrice, minPrice, numTicks, marketTypeName, payoutNumerators);
       const isMalformed = outcome === MALFORMED_OUTCOME;
 
-      // Only one outcome may be chosen in a child universe.
-      // const isMalformed = payoutNumerators.filter((num) => Number(num) > 0).length === 1;
-
       const repTokenAddress = await (await augur.contracts.universeFromAddress(params.universe)).getReputationToken_();
       const repToken = augur.contracts.reputationTokenFromAddress(repTokenAddress, augur.networkId);
-      const amount = String(await repToken.totalSupply_());
-
-      // let outcome: string;
-      // for (let i = 0; i < payoutNumerators.length; i++) {
-      //   if (Number(payoutNumerators[i]) > 0) {
-      //     outcome = String(i);
-      //     break;
-      //   }
-      // }
-
-      const outcomeName = isMalformed ? 'malformed' : getOutcomeDescriptionFromOutcome(Number(outcome), forkingMarket);
 
       return {
-        outcomeName,
+        outcomeName: isMalformed ? 'malformed' : getOutcomeDescriptionFromOutcome(Number(outcome), forkingMarket),
         outcome,
-        amount,
+        amount: String(await repToken.totalSupply_()),
         isMalformed,
         payoutNumerators,
       };
     }));
-
-
-    // get all of the payout numertors
-    // get child universes for those
-    // get rep supplies for those universes
-
-    // outcome name is based on payout numerators? aaron made something for this
-
-    // const marketLogs = await db.findMarkets({
-    //   selector: {
-    //     market: market.address,
-    //   },
-    // });
-    // console.log(JSON.stringify(marketLogs, null, 2));
-
-    // each universe has a rep token supply
-    // when migrating, migrate out by payout (payout is numerators)
-    // create
-    // await augur.contracts.getReputationToken().migrateOutByPayout
-
-    // const logs = await db.findMarketCreatedLogs({
-    //   selector: {
-    //     market: market.address,
-    //   },
-    // });
-    // console.log(JSON.stringify(logs, null, 2));
-
-    // TODO populate outcomes
 
     return {
       marketId: universe.forkingMarket,
