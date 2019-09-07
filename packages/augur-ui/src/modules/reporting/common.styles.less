@@ -172,13 +172,13 @@ div.ReportingSubheaders {
   color: @color-tertiary-info-text;
   display: flex;
   flex-direction: column;
-  max-width: 440px;
+  width: 440px;
   padding: @size-32;
   position: relative;
   text-transform: uppercase;
 
   @media @breakpoint-mobile {
-    max-width: unset;
+    width: unset;
   }
 
   > p {
@@ -190,7 +190,7 @@ div.ReportingSubheaders {
     height: 90%;
     margin: @size-4;
     position: absolute;
-    padding: @size-32;
+    padding: 4rem;
     text-align: center;
     text-transform: capitalize;
     top: 0;
@@ -198,7 +198,9 @@ div.ReportingSubheaders {
     z-index: @default-z-index;
 
     @media @breakpoint-mobile {
-      .text-16
+      .text-16;
+
+      padding: @size-32;
     }
   }
 
@@ -291,7 +293,6 @@ div.ReportingSubheaders {
   align-self: flex-end;
   display: flex;
   flex-direction: column;
-  min-width: 200px;
   text-transform: uppercase;
 
   > div:first-of-type {
