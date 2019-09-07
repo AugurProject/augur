@@ -482,6 +482,7 @@ export class Markets {
     );
 
     // Sort search results by categories
+    // @TODO Use actual type instead of any[] below
     let marketsResults: any[]  = _.sortBy(
       await getMarketsSearchResults(params.universe, params.search, params.categories),
       ['category1', 'category2', 'category3']
@@ -1361,6 +1362,7 @@ function getMarketsMeta(
   };
 }
 
+// @TODO Fix the return type. For some reason, FlexSearch is returning a different type than Array<SearchResults<MarketFields>>
 async function getMarketsSearchResults(
   universe: string,
   query: string,
