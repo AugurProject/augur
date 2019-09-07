@@ -7,8 +7,6 @@ import {
   MAXFEE_PARAM_NAME,
   SPREAD_PARAM_NAME,
   SHOW_INVALID_MARKETS_PARAM_NAME,
-  INVALID_HIDE,
-  INVALID_SHOW,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-filters.styles.less';
 import { helpIcon } from 'modules/common/icons';
