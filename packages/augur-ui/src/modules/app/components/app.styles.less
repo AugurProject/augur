@@ -44,11 +44,11 @@ h6 {
   /* topbar height */
   grid-template-rows: @top-bar-height auto;
   height: 100vh;
+  overflow: hidden;
 
   @media @breakpoint-mobile {
     /* topbar mobile height */
     grid-template-rows: @top-bar-height-mobile auto;
-    overflow: visible;
   }
 }
 
