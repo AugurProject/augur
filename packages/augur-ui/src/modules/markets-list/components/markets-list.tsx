@@ -124,6 +124,7 @@ export default class MarketsList extends Component<
               itemCount={marketCount}
               itemsPerPage={limit}
               updateLimit={updateLimit}
+              maxLimit={marketCount}
               action={setOffset}
               showLimitChanger
             />
