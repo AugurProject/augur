@@ -374,18 +374,6 @@ export class ReportingBondsView extends Component<
   }
 }
 
-interface UserRepDisplayProps {
-  isLoggedIn: boolean;
-  repBalanceFormatted: FormattedNumber;
-  repProfitLossPercentageFormatted: FormattedNumber;
-  repProfitAmountFormatted: FormattedNumber;
-  disputingAmountFormatted: FormattedNumber;
-  reportingAmountFormatted: FormattedNumber;
-  participationAmountFormatted: FormattedNumber;
-  repTotalAmountStakedFormatted: FormattedNumber;
-  openGetRepModal: Function;
-}
-
 interface UserRepDisplayState {
   toggle: boolean;
 }
@@ -488,6 +476,19 @@ const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
   </div>
 );
 
+interface UserRepDisplayProps {
+  isLoggedIn: boolean;
+  repBalanceFormatted: FormattedNumber;
+  repProfitLossPercentageFormatted: FormattedNumber;
+  repProfitAmountFormatted: FormattedNumber;
+  disputingAmountFormatted: FormattedNumber;
+  reportingAmountFormatted: FormattedNumber;
+  participationAmountFormatted: FormattedNumber;
+  repTotalAmountStakedFormatted: FormattedNumber;
+  openGetRepModal: Function;
+  hasStakedRep: boolean;
+}
+
 export class UserRepDisplay extends Component<
   UserRepDisplayProps,
   UserRepDisplayState
@@ -511,6 +512,7 @@ export class UserRepDisplay extends Component<
       disputingAmountFormatted,
       reportingAmountFormatted,
       participationAmountFormatted,
+      hasStakedRep
     } = this.props;
     const s = this.state;
 
@@ -544,7 +546,7 @@ export class UserRepDisplay extends Component<
             />
           </div>
           {!isLoggedIn && <p>Connect a wallet to see your Available REP Balance</p>}
-          {isLoggedIn && (
+          {isLoggedIn && hasStakedRep && (
             <>
               <div />
               <div>

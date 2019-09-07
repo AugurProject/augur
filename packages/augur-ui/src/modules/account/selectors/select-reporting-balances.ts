@@ -27,7 +27,7 @@ export const selectReportingBalances = createSelector(
       profitAmount,
       profitLoss,
     } = accountReporting;
-    const isBalanceEmpty = createBigNumber(accountBalances.rep).eq(ZERO);
+    let hasStakedRep = false;
     const repBalanceFormatted = formatRep(accountBalances.rep);
     const repProfitLossPercentageFormatted = formatPercent(
       createBigNumber(profitLoss || ZERO).times(100),
@@ -38,19 +38,26 @@ export const selectReportingBalances = createSelector(
     let reportingAmountFormatted = formatAttoRep(ZERO);
     let disputingAmountFormatted = formatAttoRep(ZERO);
 
-    if (pariticipationTokens && pariticipationTokens.totalAmount)
+    if (pariticipationTokens && pariticipationTokens.totalAmount) {
       participationAmountFormatted = formatAttoRep(
         pariticipationTokens.totalAmount
       );
-    if (reporting && reporting.totalAmount)
+      if (!hasStakedRep) hasStakedRep = true;
+    }
+    if (reporting && reporting.totalAmount) {
       reportingAmountFormatted = formatAttoRep(reporting.totalAmount);
-    if (disputing && disputing.totalAmount)
+      if (!hasStakedRep) hasStakedRep = true;
+    }
+    if (disputing && disputing.totalAmount) {
       disputingAmountFormatted = formatAttoRep(disputing.totalAmount);
+      if (!hasStakedRep) hasStakedRep = true;
+    }
 
     const repTotalAmountStaked = createBigNumber(participationAmountFormatted.value)
       .plus(createBigNumber(reportingAmountFormatted.value))
       .plus(createBigNumber(disputingAmountFormatted.value));
     const repTotalAmountStakedFormatted = formatRep(repTotalAmountStaked);
+
     return {
       repBalanceFormatted,
       repProfitLossPercentageFormatted,
@@ -59,7 +66,7 @@ export const selectReportingBalances = createSelector(
       reportingAmountFormatted,
       participationAmountFormatted,
       repTotalAmountStakedFormatted,
-      isBalanceEmpty
+      hasStakedRep
     };
   }
 );
