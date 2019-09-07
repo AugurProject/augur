@@ -1205,7 +1205,7 @@ export const LoadingEllipse = (
   </svg>
 );
 
-export const Classic = (
+export const Expanded = (
   <svg  width="16" height="16" viewBox="0 0 16 16">
     <rect y="13.1001" width="16" height="2.9"/>
     <rect y="8.7998" width="16" height="2.9"/>
@@ -1214,7 +1214,7 @@ export const Classic = (
   </svg>
 );
 
-export const Expanded = (
+export const Classic = (
   <svg  width="16" height="16" viewBox="0 0 16 16">
     <rect y="12.2002" width="16" height="3.8" />
     <rect y="6" width="16" height="4.2" />
