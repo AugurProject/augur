@@ -111,16 +111,17 @@
 
 @media @breakpoint-mobile {
   .InnerNav {
-    left: -12.5rem;
+    height: fit-content;
+    left: -100%;
+    margin-bottom: 1rem;
     overflow-x: hidden;
     transition: left 0.2s ease-in-out;
-    width: 12.5rem;
+    width: 100%;
     z-index: @mask-above;
-    height: 100vh;
 
     &.mobileShow {
       left: 0;
-      position: sticky;
+      width: 100%;
 
       > div {
         align-items: center;
@@ -131,12 +132,13 @@
         flex-flow: row nowrap;
         height: 50px;
         padding: @size-16;
-        width: 200px;
+        width: 100%;
         z-index: @mask-above;
 
         > button {
           height: @size-16;
           margin-left: auto;
+          margin-right: @size-16;
           width: @size-16;
         }
 
@@ -179,13 +181,13 @@
 
   .InnerNav__menu--main,
   .InnerNav__menu--submenu {
+    overflow: scroll;
     width: 100%;
     z-index: @above-all-content;
-    overflow: scroll;
   }
 
   .InnerNav__menu--submenu {
-    left: 12.5rem;
+    left: 100%;
     transition: left 0.2s ease-in-out;
     z-index: @mask;
   }

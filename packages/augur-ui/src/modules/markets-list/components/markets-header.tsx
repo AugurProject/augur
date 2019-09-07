@@ -7,18 +7,19 @@ import { CATEGORY_PARAM_NAME, MOBILE_MENU_STATES, MARKET_CARD_FORMATS } from 'mo
 import Styles from 'modules/markets-list/components/markets-header.styles.less';
 import classNames from 'classnames';
 import { Compact, Classic, Expanded } from 'modules/common/icons';
+import { FilterButton } from 'modules/common/buttons';
 
 interface MarketsHeaderProps {
   location: object;
   filter: string;
   sort: string;
-  updateFilter: Function;
   history: object;
   isSearchingMarkets: boolean;
   selectedCategory: string[];
   search: string;
   updateMarketsListCardFormat: Function;
   marketCardFormat: string;
+  updateMobileMenuState: Function;
 }
 
 interface MarketsHeaderState {
@@ -85,13 +86,10 @@ export default class MarketsHeader extends Component<
 
   render() {
     const {
-      filter,
-      sort,
-      updateFilter,
-      history,
       isSearchingMarkets,
       updateMarketsListCardFormat,
       marketCardFormat,
+      updateMobileMenuState,
     } = this.props;
     const { headerTitle } = this.state;
 
@@ -111,7 +109,15 @@ export default class MarketsHeader extends Component<
           [Styles.DisableFilters]: isSearchingMarkets,
         })}
       >
-        <FilterSearch isSearchingMarkets={isSearchingMarkets} />
+        <div>
+          <FilterSearch isSearchingMarkets={isSearchingMarkets} />
+          {/* MOBILE FILTERS TOGGLE */}
+          <FilterButton
+            action={() =>
+              updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)
+            }
+          />
+        </div>
         <div>
           <h1>{headerTitle}</h1>
 
@@ -119,9 +125,9 @@ export default class MarketsHeader extends Component<
             <div className={Styles.MarketCardsFormat}>
               View
               <ViewSwitcher
-                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.EXPANDED)}
-                type={Expanded}
-                selected={marketCardFormat === MARKET_CARD_FORMATS.EXPANDED}
+                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.COMPACT)}
+                type={Compact}
+                selected={marketCardFormat === MARKET_CARD_FORMATS.COMPACT}
               />
               <ViewSwitcher
                 handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.CLASSIC)}
@@ -130,19 +136,13 @@ export default class MarketsHeader extends Component<
               />
 
               <ViewSwitcher
-                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.COMPACT)}
-                type={Compact}
-                selected={marketCardFormat === MARKET_CARD_FORMATS.COMPACT}
+                handleClick={() => updateMarketsListCardFormat(MARKET_CARD_FORMATS.EXPANDED)}
+                type={Expanded}
+                selected={marketCardFormat === MARKET_CARD_FORMATS.EXPANDED}
               />
             </div>
 
-            <FilterDropDowns
-              filter={filter}
-              sort={sort}
-              updateFilter={updateFilter}
-              history={history}
-              location={location}
-            />
+            <FilterDropDowns />
           </div>
         </div>
       </article>

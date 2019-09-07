@@ -15,6 +15,7 @@ import { NodeStyleCallback } from 'modules/types';
 import { setLoadMarketsPending, updateMarketsListMeta, updateMarketsListCardFormat } from '../actions/update-markets-list';
 import { MAX_SPREAD_ALL_SPREADS, MAX_FEE_100_PERCENT  } from 'modules/common/constants';
 import { updateFilterSortOptions, MARKET_FILTER, MARKET_MAX_FEES, MARKET_MAX_SPREAD } from 'modules/filter-sort/actions/update-filter-sort-options';
+import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 
 const mapStateToProps = (state: AppState, { location }) => {
   const markets = selectMarkets(state);
@@ -38,8 +39,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     filteredOutCount: state.marketsList.meta ? state.marketsList.meta.filteredOutCount : 0,
     includeInvalidMarkets: state.filterSortOptions.includeInvalidMarkets,
     selectedCategories: state.marketsList.selectedCategories,
-    defaultFilter: state.filterSortOptions.marketFilter,
-    defaultSort: state.filterSortOptions.marketSort,
+    marketSort: state.filterSortOptions.marketSort,
     marketFilter: state.filterSortOptions.marketFilter,
     marketCardFormat: state.marketsList.marketCardFormat,
   };
@@ -57,6 +57,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, AppState, Action>) => 
   removeLiquiditySpreadFilter: () => dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, MAX_SPREAD_ALL_SPREADS)),
   updateMarketsFilter: (filterOption) => dispatch(updateFilterSortOptions(MARKET_FILTER, filterOption)),
   updateMarketsListCardFormat: (format) => dispatch(updateMarketsListCardFormat(format)),
+  updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
 });
 
 const Markets = withRouter(

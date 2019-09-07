@@ -130,7 +130,7 @@ export default class FilterSearch extends Component<
           onChange={this.onChange}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
-          isLoading={Boolean(isSearchingMarkets && search && search !== '')}
+          isLoading={Boolean(isSearchingMarkets || (isSearchingMarkets && search && search !== ''))}
         />
       </article>
     );
