@@ -59,12 +59,12 @@ export class MarketDB extends DerivedDB {
       },
     };
 
-    const result = await this.stateDB.findInDerivedDB(this.stateDB.getDatabaseName('CurrentOrders'), request);
+    const currentOrderLogs = await this.stateDB.findCurrentOrderLogs(request);
 
-    if (result.docs.length < 1) return;
+    if (currentOrderLogs.length < 1) return;
 
-    const marketIds: string[] = _.uniq(_.map(result.docs, 'market')) as string[];
-    const highestBlockNumber: number = _.max(_.map(result.docs, 'blockNumber')) as number;
+    const marketIds: string[] = _.uniq(_.map(currentOrderLogs, 'market')) as string[];
+    const highestBlockNumber: number = _.max(_.map(currentOrderLogs, 'blockNumber')) as number;
     const marketsData = await this.stateDB.findMarkets({
       selector: {
         market: { $in: marketIds },
