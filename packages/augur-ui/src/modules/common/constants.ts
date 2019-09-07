@@ -195,16 +195,18 @@ export const feeFilters = [
 
 
 // # Valid Market Liquidity Spreads
-export const MAX_SPREAD_ALL_SPREADS = 'all';
+export const MAX_SPREAD_ALL_SPREADS = '100';
 export const MAX_SPREAD_20_PERCENT = '20';
 export const MAX_SPREAD_15_PERCENT = '15';
 export const MAX_SPREAD_10_PERCENT = '10';
+export const MAX_SPREAD_RECENTLY_DEPLETED = '0';
 
 export const spreadFilters = [
   { header: 'All', value: MAX_SPREAD_ALL_SPREADS },
   { header: 'Less than 10%', value: MAX_SPREAD_10_PERCENT },
   { header: 'Less than 15%', value: MAX_SPREAD_15_PERCENT },
   { header: 'Less than 20%', value: MAX_SPREAD_20_PERCENT },
+  { header: 'Recently Depleted Liquidity', value: MAX_SPREAD_RECENTLY_DEPLETED },
 ];
 
 // # Market Invalid Show/Hide
