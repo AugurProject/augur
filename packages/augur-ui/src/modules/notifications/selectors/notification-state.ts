@@ -1,16 +1,17 @@
-import { createSelector } from "reselect";
-import { selectMarkets } from "modules/markets/selectors/markets-all";
+import { createSelector } from 'reselect';
+import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import {
   selectLoginAccountAddress,
-  selectReportingWindowStats,
+  selectDisputeWindowStats,
   selectPendingLiquidityOrders,
   selectCurrentTimestampInSeconds,
   selectReadNotificationState,
-  selectAccountPositionsState
-} from "store/select-state";
+  selectAccountPositionsState,
+  selectLoginAccountReportingState,
+} from 'store/select-state';
 
-import { createBigNumber } from "utils/create-big-number";
-import canClaimProceeds from "utils/can-claim-proceeds";
+import { createBigNumber } from 'utils/create-big-number';
+import canClaimProceeds from 'utils/can-claim-proceeds';
 import {
   NOTIFICATION_TYPES,
   TYPE_DISPUTE,
@@ -26,8 +27,11 @@ import {
   MARKET_CLOSED,
   REPORTING_STATE,
   CONTRACT_INTERVAL,
-} from "modules/common/constants";
-import userOpenOrders from "modules/orders/selectors/user-open-orders";
+  ZERO,
+} from 'modules/common/constants';
+import userOpenOrders from 'modules/orders/selectors/user-open-orders';
+import { selectReportingBalances } from 'modules/account/selectors/select-reporting-balances';
+import { formatDai, formatRep, formatAttoDai, formatAttoRep } from 'utils/format-number';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -52,8 +56,7 @@ export const selectReportOnMarkets = createSelector(
       return markets
         .filter(
           market =>
-            market.reportingState ===
-            REPORTING_STATE.DESIGNATED_REPORTING
+            market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING
         )
         .filter(market => market.designatedReporter === address)
         .map(getRequiredMarketData);
@@ -72,7 +75,9 @@ export const selectFinalizeMarkets = createSelector(
       const positionsMarkets = Object.keys(positions);
       return markets
         .filter(
-          market => positionsMarkets.indexOf(market.id) > -1 || address === market.author
+          market =>
+            positionsMarkets.indexOf(market.id) > -1 ||
+            address === market.author
         )
         .map(getRequiredMarketData);
     }
@@ -91,12 +96,11 @@ export const selectMarketsInDispute = createSelector(
       return markets
         .filter(
           market =>
-            market.reportingState ===
-            REPORTING_STATE.CROWDSOURCING_DISPUTE
+            market.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
         )
         .filter(
           market =>
-          positionsMarkets.indexOf(market.id) > -1 ||
+            positionsMarkets.indexOf(market.id) > -1 ||
             market.designatedReporter === address
         )
         .map(getRequiredMarketData);
@@ -111,10 +115,7 @@ export const selectAllProceedsToClaim = createSelector(
   markets => {
     if (markets && markets.length > 0) {
       return markets
-        .filter(
-          market =>
-            market.reportingState === REPORTING_STATE.FINALIZED
-        )
+        .filter(market => market.reportingState === REPORTING_STATE.FINALIZED)
         .filter(market => market.outstandingReturns);
     }
     return [];
@@ -144,7 +145,7 @@ export const selectProceedsToClaim = createSelector(
 // Get all markets where the user has outstanding returns
 export const selectProceedsToClaimOnHold = createSelector(
   selectAllProceedsToClaim,
-  (markets) => {
+  markets => {
     if (markets.length > 0) {
       return markets
         .filter(
@@ -157,7 +158,7 @@ export const selectProceedsToClaimOnHold = createSelector(
         .map(getRequiredMarketData)
         .map(market => {
           return {
-            ...market
+            ...market,
           };
         });
     }
@@ -167,18 +168,32 @@ export const selectProceedsToClaimOnHold = createSelector(
 
 // Get reportingFees for signed in user
 export const selectUsersReportingFees = createSelector(
-  selectReportingWindowStats,
-  reportingWindowStats => {
-    if (reportingWindowStats && reportingWindowStats.reportingFees) {
-      const { unclaimedEth, unclaimedRep } = reportingWindowStats.reportingFees;
-      if (
-        (unclaimedEth && unclaimedEth.value > 0) ||
-        (unclaimedRep && unclaimedRep.value > 0)
-      ) {
-        return reportingWindowStats.reportingFees;
-      }
+  selectDisputeWindowStats,
+  selectLoginAccountReportingState,
+  (currentDisputeWindow, userReportingStats) => {
+    let unclaimed = { unclaimedDai: formatDai(ZERO), unclaimedRep: formatRep(ZERO) };
+    if (
+      userReportingStats &&
+      userReportingStats.pariticipationTokens &&
+      userReportingStats.pariticipationTokens.contracts.length > 0
+    ) {
+      const calcUnclaimed = userReportingStats.pariticipationTokens.contracts.reduce(
+        (p, c) => {
+          // filter out current dispute window rep staking
+          if (c.address === currentDisputeWindow.address) return p;
+          return {
+            dai: p.dai.plus(c.fees),
+            rep: p.rep.plus(createBigNumber(c.amount)),
+          };
+        },
+        { dai: ZERO, rep: ZERO }
+      );
+      unclaimed = {
+        unclaimedDai: formatAttoDai(calcUnclaimed.dai),
+        unclaimedRep: formatAttoRep(calcUnclaimed.rep),
+      };
     }
-    return {};
+    return unclaimed;
   }
 );
 
@@ -258,7 +273,7 @@ export const selectNotifications = createSelector(
     // Add unquie notifications
     if (
       claimReportingFees &&
-      (claimReportingFees.unclaimedEth && claimReportingFees.unclaimedRep)
+      (claimReportingFees.unclaimedDai && claimReportingFees.unclaimedRep)
     ) {
       notifications = notifications.concat({
         type: NOTIFICATION_TYPES.claimReportingFees,
@@ -268,7 +283,7 @@ export const selectNotifications = createSelector(
         buttonLabel: TYPE_VIEW_DETAILS,
         market: null,
         claimReportingFees,
-        id: NOTIFICATION_TYPES.claimReportingFees
+        id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }
 
@@ -292,7 +307,7 @@ export const selectNotifications = createSelector(
           market: null,
           marketes: marketIds,
           totalProceeds: totalEth.toNumber(),
-          id: NOTIFICATION_TYPES.proceedsToClaim
+          id: NOTIFICATION_TYPES.proceedsToClaim,
         });
       }
     }
@@ -324,7 +339,7 @@ const getRequiredMarketData = market => ({
   disputeInfo: market.disputeInfo || {},
   myPositionsSummary: market.myPositionsSummary || {},
   outstandingReturns: market.outstandingReturns || null,
-  finalizationTime: market.finalizationTime
+  finalizationTime: market.finalizationTime,
 });
 
 // Build notification objects and include market data
@@ -337,7 +352,7 @@ const generateCards = (markets, type) => {
       isImportant: false,
       isNew: true,
       title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
-      buttonLabel: TYPE_VIEW_ORDERS
+      buttonLabel: TYPE_VIEW_ORDERS,
     };
   } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
     defaults = {
@@ -345,7 +360,7 @@ const generateCards = (markets, type) => {
       isImportant: true,
       isNew: true,
       title: REPORTING_ENDS_SOON_TITLE,
-      buttonLabel: TYPE_VIEW_DETAILS
+      buttonLabel: TYPE_VIEW_DETAILS,
     };
   } else if (type === NOTIFICATION_TYPES.finalizeMarkets) {
     defaults = {
@@ -353,7 +368,7 @@ const generateCards = (markets, type) => {
       isImportant: false,
       isNew: true,
       title: FINALIZE_MARKET_TITLE,
-      buttonLabel: TYPE_VIEW_DETAILS
+      buttonLabel: TYPE_VIEW_DETAILS,
     };
   } else if (type === NOTIFICATION_TYPES.marketsInDispute) {
     defaults = {
@@ -361,7 +376,7 @@ const generateCards = (markets, type) => {
       isImportant: false,
       isNew: true,
       title: TYPE_DISPUTE,
-      buttonLabel: TYPE_DISPUTE
+      buttonLabel: TYPE_DISPUTE,
     };
   } else if (type === NOTIFICATION_TYPES.unsignedOrders) {
     defaults = {
@@ -369,7 +384,7 @@ const generateCards = (markets, type) => {
       isImportant: false,
       isNew: true,
       title: UNSIGNED_ORDERS_TITLE,
-      buttonLabel: TYPE_VIEW_ORDERS
+      buttonLabel: TYPE_VIEW_ORDERS,
     };
   } else if (type === NOTIFICATION_TYPES.proceedsToClaimOnHold) {
     defaults = {
@@ -377,13 +392,13 @@ const generateCards = (markets, type) => {
       isImportant: false,
       isNew: true,
       title: PROCEEDS_TO_CLAIM_TITLE,
-      buttonLabel: TYPE_VIEW_DETAILS
+      buttonLabel: TYPE_VIEW_DETAILS,
     };
   }
 
   return markets.map(market => ({
     market,
     ...defaults,
-    id: `${type}-${market.id}`
+    id: `${type}-${market.id}`,
   }));
 };
