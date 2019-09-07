@@ -7,8 +7,11 @@ import { Getters } from '@augurproject/sdk';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
+import { LoadingMarketCard } from 'modules/market-cards/common';
+import { constIdentity } from 'fp-ts/lib/function';
 
 const ITEMS_PER_SECTION = 5;
+const NUM_LOADING_CARDS = 2;
 export interface ReportingListProps {
   markets: Array<MarketData>;
   title: string;
@@ -17,23 +20,43 @@ export interface ReportingListProps {
   emptyHeader: string;
   emptySubheader: string;
   reportingType: string;
+  isLoadingMarkets: boolean;
 }
 
 export const ReportingList = (props: ReportingListProps) => {
+  const content = [];
+
+  if (!props.isLoadingMarkets) {
+    content.push(
+      props.markets.map(market => (
+        <ReportingCardContainer market={market} key={market.id} />
+      ))
+    );
+    if (props.showLoggedOut)
+      content.push(<span key={"loggedOut"}>{props.loggedOutMessage}</span>);
+    if (props.markets.length === 0 && !props.showLoggedOut) {
+      content.push(
+        <div key={'empty'}>
+          <span>{props.emptyHeader}</span>
+          <span>{props.emptySubheader}</span>
+        </div>
+      );
+    }
+  }
+
   return (
     <div className={Styles.ReportingList}>
       <span>{props.title}</span>
-      <div>
-        {props.markets.map(market => (
-          <ReportingCardContainer market={market} key={market.id} />
-        ))}
-        {props.showLoggedOut && <span>{props.loggedOutMessage}</span>}
-        {props.markets.length === 0 && !props.showLoggedOut && (
-          <>
-            <span>{props.emptyHeader}</span>
-            <span>{props.emptySubheader}</span>
-          </>
-        )}
+      <div key={props.reportingType}>
+        {props.isLoadingMarkets &&
+          new Array(NUM_LOADING_CARDS)
+            .fill(null)
+            .map((prop, index) => (
+              <LoadingMarketCard
+                key={`${index}-${props.reportingType}-loading`}
+              />
+            ))}
+        {!props.isLoadingMarkets && content}
       </div>
     </div>
   );
@@ -52,7 +75,9 @@ interface PaginatorState {
   markets: MarketData[];
   showPagination: boolean;
   marketCount: number;
+  isLoadingMarkets: boolean;
 }
+
 export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
   state: PaginatorState = {
     offset: 1,
@@ -60,6 +85,7 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
     markets: [],
     showPagination: false,
     marketCount: 0,
+    isLoadingMarkets: true,
   };
 
   componentWillMount() {
@@ -71,43 +97,65 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
   }
 
   componentWillUpdate(nextProps) {
-    const {
-      isConnected,
-      loadMarkets,
-      reportingType,
-      isLogged,
-    } = this.props;
+    const { isConnected, reportingType, isLogged } = this.props;
     const { offset, limit } = this.state;
     if (
       nextProps.isConnected !== isConnected ||
       nextProps.isLogged !== isLogged
     ) {
-      loadMarkets(offset, limit, reportingType, this.processMarkets);
+      this.isLoadingMarkets(offset, limit, reportingType);
     }
   }
 
+  isLoadingMarkets = (offset, limit, reportingType) => {
+    const { loadMarkets } = this.props;
+    this.setState(
+      { isLoadingMarkets: true },
+      loadMarkets(offset, limit, reportingType, this.processMarkets)
+    );
+  };
   processMarkets = (err, results: Getters.Markets.MarketList) => {
-    if (err) return console.log('error', err);
-    const { limit } = this.state;
-    const { markets: marketInfos, meta } = results;
-    const markets = marketInfos.map(m => convertMarketInfoToMarketData(m));
-    const showPagination = meta.marketCount > limit;
-    this.setState({ markets, showPagination, marketCount: meta.marketCount });
+    const isLoadingMarkets = false;
+    this.setState({ isLoadingMarkets }, () => {
+      if (err) return console.log('error', err);
+      const { limit } = this.state;
+      const { markets: marketInfos, meta } = results;
+      const markets = marketInfos.map(m => convertMarketInfoToMarketData(m));
+      const showPagination = meta.marketCount > limit;
+      this.setState({
+        markets,
+        showPagination,
+        marketCount: meta.marketCount,
+        isLoadingMarkets,
+      });
+    });
   };
 
-  setOffset = (offset) => {
-    const { loadMarkets, reportingType } = this.props;
+  setOffset = offset => {
+    const { reportingType } = this.props;
     const { limit } = this.state;
     this.setState({ offset }, () => {
-      loadMarkets(offset, limit, reportingType, this.processMarkets);
+      this.isLoadingMarkets(offset, limit, reportingType);
     });
-  }
+  };
 
   render() {
-    const { markets, showPagination, offset, limit, marketCount } = this.state;
+    const {
+      isLoadingMarkets,
+      markets,
+      showPagination,
+      offset,
+      limit,
+      marketCount,
+    } = this.state;
+
     return (
       <>
-        <ReportingList markets={markets} {...this.props} />
+        <ReportingList
+          markets={markets}
+          {...this.props}
+          isLoadingMarkets={isLoadingMarkets}
+        />
         {showPagination && (
           <div className={PaginationStyles.PaginationContainer}>
             <Pagination
