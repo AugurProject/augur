@@ -125,67 +125,74 @@ describe('Augur API :: ZeroX :: ', () => {
     await expect(maryShares.toNumber()).toEqual(10 ** 16 / 2);
   }, 150000);
 
-  /*
   test('Trade :: simulateTrade', async () => {
     const market1 = await john.createReasonableYesNoMarket();
 
-    const orderAmount = new BigNumber(1);
-    const orderPrice = new BigNumber(0.4);
-    await john.placeBasicYesNoTrade(
+    const outcome = 1;
+    const price = new BigNumber(0.4);
+    const amount = new BigNumber(1);
+    const zero = new BigNumber(0);
+
+    // No orders and a do not create orders param means nothing happens
+    let simulationData = await john.simulateBasicZeroXYesNoTrade(
       0,
       market1,
-      1,
-      orderAmount,
-      orderPrice,
-      new BigNumber(0)
+      outcome,
+      amount,
+      price,
+      new BigNumber(0),
+      true
     );
+
+    await expect(simulationData.tokensDepleted).toEqual(zero);
+    await expect(simulationData.sharesDepleted).toEqual(zero);
+    await expect(simulationData.sharesFilled).toEqual(zero);
+    await expect(simulationData.numFills).toEqual(zero);
+
+    // Simulate making an order
+    simulationData = await john.simulateBasicZeroXYesNoTrade(
+      0,
+      market1,
+      outcome,
+      amount,
+      price,
+      new BigNumber(0),
+      false
+    );
+
+    await expect(simulationData.tokensDepleted).toEqual(amount.multipliedBy(price));
+    await expect(simulationData.sharesDepleted).toEqual(zero);
+    await expect(simulationData.sharesFilled).toEqual(zero);
+    await expect(simulationData.numFills).toEqual(zero);
+
+    await john.placeBasicYesNoZeroXTrade(
+      0,
+      market1,
+      outcome,
+      amount,
+      price,
+      new BigNumber(0),
+      new BigNumber(1000000000000000)
+    );
+
+    await db.sync(john.augur, mock.constants.chunkSize, 0);
 
     const fillAmount = new BigNumber(0.5);
     const fillPrice = new BigNumber(0.6);
-    let simulationData = await mary.simulateBasicYesNoTrade(
+
+    simulationData = await mary.simulateBasicZeroXYesNoTrade(
       1,
       market1,
-      1,
+      outcome,
       fillAmount,
-      orderPrice,
-      new BigNumber(0)
+      price,
+      new BigNumber(0),
+      true
     );
 
-    await expect(simulationData.tokensDepleted).toEqual(
-      fillAmount.multipliedBy(fillPrice)
-    );
+    await expect(simulationData.tokensDepleted).toEqual(fillAmount.multipliedBy(fillPrice));
     await expect(simulationData.sharesFilled).toEqual(fillAmount);
-
-    await mary.placeBasicYesNoTrade(
-      1,
-      market1,
-      1,
-      orderAmount,
-      orderPrice,
-      new BigNumber(0)
-    );
-    await john.placeBasicYesNoTrade(
-      1,
-      market1,
-      1,
-      orderAmount,
-      orderPrice,
-      new BigNumber(0)
-    );
-
-    simulationData = await mary.simulateBasicYesNoTrade(
-      0,
-      market1,
-      1,
-      orderAmount,
-      orderPrice,
-      new BigNumber(0)
-    );
-
-    const expectedFees = orderAmount.multipliedBy(fillPrice).dividedBy(50); // 2% combined market & reporter fees
-    await expect(simulationData.sharesDepleted).toEqual(orderAmount);
-    await expect(simulationData.sharesFilled).toEqual(orderAmount);
-    await expect(simulationData.settlementFees).toEqual(expectedFees);
+    await expect(simulationData.numFills).toEqual(new BigNumber(1));
   }, 150000);
-  */
+
 });

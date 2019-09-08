@@ -6,7 +6,7 @@ import { MODAL_REPORTING } from "modules/common/constants";
 const mapStateToProps = (state, ownProps) => {
   return {
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    reportingWindowStatsEndTime: state.reportingWindowStats.endTime,
+    reportingWindowStatsEndTime: state.disputeWindowStats.endTime,
   };
 };
 

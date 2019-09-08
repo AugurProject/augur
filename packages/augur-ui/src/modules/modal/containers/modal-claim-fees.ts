@@ -34,9 +34,9 @@ const mapStateToProps = (state: AppState) => ({
     getGasPrice(state),
   ),
   pendingQueue: state.pendingQueue || [],
-  reportingFees: state.reportingWindowStats.reportingFees,
-  feeWindows: state.reportingWindowStats.reportingFees.feeWindows,
-  nonforkedMarkets: state.reportingWindowStats.reportingFees.nonforkedMarkets,
+  reportingFees: state.disputeWindowStats.reportingFees,
+  feeWindows: state.disputeWindowStats.reportingFees.feeWindows,
+  nonforkedMarkets: state.disputeWindowStats.reportingFees.nonforkedMarkets,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
