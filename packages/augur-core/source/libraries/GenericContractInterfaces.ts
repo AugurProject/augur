@@ -9904,6 +9904,13 @@ export class SimulateTrade<TBigNumber> extends Contract<TBigNumber> {
 		super(dependencies, address)
 	}
 
+	public simulateZeroXTrade_ = async (orders: Array<{ makerAddress: string, takerAddress: string, feeRecipientAddress: string, senderAddress: string, makerAssetAmount: TBigNumber, takerAssetAmount: TBigNumber, makerFee: TBigNumber, takerFee: TBigNumber, expirationTimeSeconds: TBigNumber, salt: TBigNumber, makerAssetData: string, takerAssetData: string }>, amount: TBigNumber, fillOnly: boolean, options?: { sender?: string }): Promise<{_sharesFilled: TBigNumber, _tokensDepleted: TBigNumber, _sharesDepleted: TBigNumber, _settlementFees: TBigNumber, _numFills: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"}],"name":"_orders","type":"tuple[]"},{"name":"_amount","type":"uint256"},{"name":"_fillOnly","type":"bool"}],"name":"simulateZeroXTrade","outputs":[{"name":"_sharesFilled","type":"uint256"},{"name":"_tokensDepleted","type":"uint256"},{"name":"_sharesDepleted","type":"uint256"},{"name":"_settlementFees","type":"uint256"},{"name":"_numFills","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [orders, amount, fillOnly], options.sender)
+		return <{_sharesFilled: TBigNumber, _tokensDepleted: TBigNumber, _sharesDepleted: TBigNumber, _settlementFees: TBigNumber, _numFills: TBigNumber}>result
+	}
+
 	public getNumberOfAvaialableShares_ = async (direction: TBigNumber, market: string, outcome: TBigNumber, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"name":"_direction","type":"uint8"},{"name":"_market","type":"address"},{"name":"_outcome","type":"uint256"},{"name":"_sender","type":"address"}],"name":"getNumberOfAvaialableShares","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
