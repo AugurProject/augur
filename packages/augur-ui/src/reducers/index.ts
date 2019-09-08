@@ -18,7 +18,7 @@ import alerts from "modules/alerts/reducers/alerts";
 import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
-import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
+import disputeWindowStats from "modules/reports/reducers/reporting-window-stats";
 import universe from "modules/universe/reducers/universe";
 import versions from "modules/app/reducers/versions";
 import pendingOrders from "modules/orders/reducers/pending-orders";
@@ -84,7 +84,7 @@ export function createReducer() {
     pendingOrders,
     pendingQueue,
     filledOrders,
-    reportingWindowStats,
+    disputeWindowStats,
     sidebarStatus,
     universe,
     versions,
@@ -120,7 +120,7 @@ export interface AppStateInterface {
   pendingOrders: PendingOrders;
   pendingQueue: PendingQueue;
   filledOrders: FilledOrders;
-  reportingWindowStats: ReportingWindowStats;
+  disputeWindowStats: ReportingWindowStats;
   sidebarStatus: any;
   universe: Universe;
   versions: Versions;

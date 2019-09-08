@@ -129,21 +129,12 @@ export const loadMarketsByFilter = (
     search: filterOptions.search ? filterOptions.search : '',
     maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
-    limit: filterOptions.limit === 1 ? 0 : filterOptions.limit,
+    limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
+    maxLiquiditySpread: filterOptions.maxLiquiditySpread,
     ...sort,
   };
-
-  if (
-    filterOptions.maxLiquiditySpread &&
-    filterOptions.maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS
-  ) {
-    params = Object.assign(params, {
-      ...params,
-      maxLiquiditySpread: filterOptions.maxLiquiditySpread,
-    });
-  }
 
   const markets = await augur.getMarkets({ ...params });
   const marketInfos = markets.markets.reduce(

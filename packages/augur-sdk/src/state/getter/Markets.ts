@@ -18,7 +18,6 @@ import {
   Timestamp,
 } from '../logs/types';
 import { NULL_ADDRESS,  sortOptions } from './types';
-
 import {
   Augur,
   numTicksToTickSize,
@@ -26,8 +25,9 @@ import {
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
   SECONDS_IN_A_DAY
-} from "../../index";
+} from '../../index';
 import { calculatePayoutNumeratorsValue } from '../../utils';
+import { OrderBook } from '../../api/Liquidity';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -51,7 +51,7 @@ export enum GetMarketsSortBy {
   timestamp = 'timestamp',
   endTime = 'endTime',
   lastTradedTimestamp = 'lastTradedTimestamp',
-  lastLiquidityDepleted = 'lastLiquidityDepleted', // TODO: Implement
+  lastLiquidityDepleted = 'lastLiquidityDepleted',
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
@@ -88,7 +88,7 @@ export interface MarketListMetaCategories {
         }
       }
     }
-  }
+  };
 }
 
 export interface MarketListMeta {
@@ -195,7 +195,7 @@ export interface MarketPriceHistory {
   [outcome: string]: TimestampedPriceAmount[];
 }
 
-export interface OrderBook {
+export interface MarketOrderBookOrder {
   price: string;
   shares: string;
   cumulativeShares: string;
@@ -207,10 +207,15 @@ export interface MarketOrderBook {
   orderBook: {
     [outcome: number]: {
       spread: string | null;
-      bids: OrderBook[];
-      asks: OrderBook[];
+      bids: MarketOrderBookOrder[];
+      asks: MarketOrderBookOrder[];
     };
   };
+}
+
+export interface LiquidityOrderBookInfo {
+  lowestSpread: number | undefined;
+  orderBook: OrderBook;
 }
 
 const outcomeIdType = t.union([OutcomeParam, t.number, t.null, t.undefined]);
@@ -428,7 +433,7 @@ export class Markets {
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
     params.search = typeof params.search === 'undefined' ? '' : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
-    params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.marketOI : params.sortBy; // TODO: Make liquidity the default sort
+    params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.liquidity : params.sortBy;
     params.isSortDescending = typeof params.isSortDescending === 'undefined' ? true : params.isSortDescending;
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
@@ -477,6 +482,7 @@ export class Markets {
     );
 
     // Sort search results by categories
+    // @TODO Use actual type instead of any[] below
     let marketsResults: any[]  = _.sortBy(
       await getMarketsSearchResults(params.universe, params.search, params.categories),
       ['category1', 'category2', 'category3']
@@ -547,9 +553,11 @@ export class Markets {
         marketData = await db.findMarkets(request);
         if (
           params.sortBy === GetMarketsSortBy.liquidity ||
-          params.sortBy === GetMarketsSortBy.marketOI ||
-          params.sortBy === GetMarketsSortBy.volume
+          params.sortBy === GetMarketsSortBy.marketOI
         ) {
+          // Set marketOI. (This is also used as a secondary sorting parameter when sorting by liquidity.)
+          marketsResults[i][GetMarketsSortBy.marketOI] = marketData[GetMarketsSortBy.marketOI] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
+        } else if (params.sortBy === GetMarketsSortBy.volume) {
           marketsResults[i][params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
         // @TODO Figure out why marketData is sometimes returning no results here
@@ -567,40 +575,31 @@ export class Markets {
       }
     }
 
-    if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
-      // Create market ID => index mapping
-      const keyedMarkets = {};
-      for (let i = 0; i < marketsResults.length; i++) {
-        keyedMarkets[marketsResults[i].market] = i;
-      }
-      const orderFilledLogs = await db.findOrderFilledLogs({
-        selector: { market: { $in: marketsResults.map(marketsResult => marketsResult.market) } },
-        fields: ['market', 'timestamp'],
-      });
-      // Assign lastTradedTimestamp value to each market in marketsResults
-      for (let i = 0; i < orderFilledLogs.length; i++) {
-        const currentTimestamp = parseInt(orderFilledLogs[i].timestamp, 16);
-        if (
-          !marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] ||
-          currentTimestamp > marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp]
-        ) {
-          marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] = currentTimestamp;
-        }
-      }
-      // For any markets with no trading, set the lastTradedTimestamp to 0
-      for (let i = 0; i < marketsResults.length; i++) {
-        if (!marketsResults[i][GetMarketsSortBy.lastTradedTimestamp]) {
-          marketsResults[i][GetMarketsSortBy.lastTradedTimestamp] = 0;
-        }
-      }
+    if (params.sortBy === GetMarketsSortBy.liquidity) {
+      marketsResults = await setLiquidity(db, marketsResults);
+    } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
+      marketsResults = await setLastTradedTimestamp(db, marketsResults);
     }
 
     const meta = getMarketsMeta(marketsResults, filteredOutCount);
 
     // Sort & limit markets
-    marketsResults = _.sortBy(marketsResults, [params.sortBy]);
-    if (params.isSortDescending) {
-      marketsResults = marketsResults.reverse();
+    const orderBy = params.isSortDescending ? 'desc' : 'asc';
+    if (params.sortBy === GetMarketsSortBy.liquidity) {
+      marketsResults.sort((x, y) => {
+        const result = compareStringsAsBigNumbers(x.liquidity, y.liquidity, orderBy);
+        return result === 0
+          ? compareStringsAsBigNumbers(x.marketOI, y.marketOI, orderBy)
+          : result;
+        }
+      );
+    } else if (params.sortBy === GetMarketsSortBy.marketOI || params.sortBy === GetMarketsSortBy.volume) {
+      marketsResults.sort((x, y) => {
+        return compareStringsAsBigNumbers(x.liquidity, y.liquidity, orderBy);
+        }
+      );
+    } else {
+      marketsResults = _.orderBy(marketsResults, [params.sortBy], [orderBy]);
     }
     marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
 
@@ -644,9 +643,9 @@ export class Markets {
         [orderId: string]: Order;
       },
       isbids = false
-    ): OrderBook[] => {
+    ): MarketOrderBookOrder[] => {
       const sortedBuckets = bucketAndSortOrdersByPrice(unsortedOrders, isbids);
-      const result: OrderBook[] = [];
+      const result: MarketOrderBookOrder[] = [];
 
       return Object.values(sortedBuckets).reduce((acc, bucket, index) => {
         const shares = bucket.reduce((v, order, index) => {
@@ -956,6 +955,18 @@ function filterOrderFilledLogs(
   return filteredOrderFilledLogs;
 }
 
+function compareStringsAsBigNumbers(string1: string, string2: string, orderBy: string): number {
+  if (orderBy === 'asc') {
+    return (new BigNumber(string1).gt(string2))
+      ? 1
+      : (new BigNumber(string1).lt(string2) ? -1 : 0);
+  } else {
+    return (new BigNumber(string1).lt(string2))
+      ? 1
+      : (new BigNumber(string1).gt(string2) ? -1 : 0);
+  }
+}
+
 async function getMarketOutcomes(
   db: DB,
   marketCreatedLog: MarketCreatedLog,
@@ -1201,14 +1212,14 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
         reportingParticipantId = await market.getInitialReporter_();
       }
       const reportingParticipant = augur.contracts.getReportingParticipant(reportingParticipantId);
-      const reportingStakeSize = stakeLogs[i].hasOwnProperty("disputeCrowdsourcer") ? await reportingParticipant.getSize_() : new BigNumber(0);
-      const totalSupply = stakeLogs[i].hasOwnProperty("disputeCrowdsourcer") ? await reportingParticipant.totalSupply_() : new BigNumber(0);
+      const reportingStakeSize = stakeLogs[i].hasOwnProperty('disputeCrowdsourcer') ? await reportingParticipant.getSize_() : new BigNumber(0);
+      const totalSupply = stakeLogs[i].hasOwnProperty('disputeCrowdsourcer') ? await reportingParticipant.totalSupply_() : new BigNumber(0);
       const payoutDistributionHash = await reportingParticipant.getPayoutDistributionHash_();
       const disputeCrowdsourcerCompletedLogs = await db.findDisputeCrowdsourcerCompletedLogs({
         selector: { disputeCrowdsourcer: reportingParticipantId },
       });
       const stakeCurrent = await reportingParticipant.getStake_();
-      const stakeRemaining = stakeLogs[i].hasOwnProperty("size") && totalSupply <= reportingStakeSize ? await reportingParticipant.getRemainingToFill_() : new BigNumber(0);
+      const stakeRemaining = stakeLogs[i].hasOwnProperty('size') && totalSupply <= reportingStakeSize ? await reportingParticipant.getRemainingToFill_() : new BigNumber(0);
       const winningReportingParticipantId = await market.getWinningReportingParticipant_();
       const winningReportingParticipant = augur.contracts.getReportingParticipant(winningReportingParticipantId);
       if (!stakeDetails[payoutDistributionHash]) {
@@ -1351,6 +1362,7 @@ function getMarketsMeta(
   };
 }
 
+// @TODO Fix the return type. For some reason, FlexSearch is returning a different type than Array<SearchResults<MarketFields>>
 async function getMarketsSearchResults(
   universe: string,
   query: string,
@@ -1364,4 +1376,130 @@ async function getMarketsSearchResults(
     return Augur.syncableFlexSearch.search(query, { where: whereObj });
   }
   return Augur.syncableFlexSearch.where(whereObj);
+}
+
+/**
+ * Sets the `lastTradedTimestamp` property for all markets in `marketsResults`.
+ *
+ * @param {DB} db Database object to use for getting `lastTradedTimestamp` info
+ * @param {any[]} marketsResults Array of market objects to add `lastTradedTimestamp` to
+ */
+async function setLastTradedTimestamp(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
+  // Create market ID => marketsResults index mapping
+  const keyedMarkets = {};
+  for (let i = 0; i < marketsResults.length; i++) {
+    keyedMarkets[marketsResults[i].market] = i;
+  }
+
+  const orderFilledLogs = await db.findOrderFilledLogs({
+    selector: { market: { $in: marketsResults.map(marketsResult => marketsResult.market) } },
+    fields: ['market', 'timestamp'],
+  });
+
+  // Assign lastTradedTimestamp value to each market in marketsResults
+  for (let i = 0; i < orderFilledLogs.length; i++) {
+    const currentTimestamp = parseInt(orderFilledLogs[i].timestamp, 16);
+    if (
+      !marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] ||
+      currentTimestamp > marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp]
+    ) {
+      marketsResults[keyedMarkets[orderFilledLogs[i].market]][GetMarketsSortBy.lastTradedTimestamp] = currentTimestamp;
+    }
+  }
+
+  // For any markets with no trading, set the lastTradedTimestamp to 0
+  for (let i = 0; i < marketsResults.length; i++) {
+    if (!marketsResults[i][GetMarketsSortBy.lastTradedTimestamp]) {
+      marketsResults[i][GetMarketsSortBy.lastTradedTimestamp] = 0;
+    }
+  }
+  return marketsResults;
+}
+
+/**
+ * Sets the `liquidity` property for the last 24 hours of liquidity for all markets in `marketsResults`.
+ *
+ * @param {DB} db Database object to use for getting `liquidity` info
+ * @param {Array<Object>} marketsResults Array of market objects to add `liquidity` to
+ */
+async function setLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
+  // Create market ID => marketsResults index mapping
+  const keyedMarkets = {};
+  for (let i = 0; i < marketsResults.length; i++) {
+    keyedMarkets[marketsResults[i].market] = i;
+  }
+
+  const marketIds = Object.keys(keyedMarkets);
+  const liquidityDB = db.getLiquidityDatabase();
+  const marketsLiquidityDocs = await liquidityDB.getMarketsLiquidity(marketIds);
+  const marketsLiquidityInfo = {};
+
+  // Save liquidity info for each market to an object
+  for (let i = 0; i < marketsLiquidityDocs.length; i++) {
+    if (!marketsLiquidityInfo[marketsLiquidityDocs[i].market]) {
+      marketsLiquidityInfo[marketsLiquidityDocs[i].market] = {
+        hourlyLiquiditySum: new BigNumber(marketsLiquidityDocs[i].liquidity),
+        hoursWithLiquidity: 1,
+      };
+    } else {
+      marketsLiquidityInfo[marketsLiquidityDocs[i].market].hourlyLiquiditySum.plus(marketsLiquidityDocs[i].liquidity);
+      marketsLiquidityInfo[marketsLiquidityDocs[i].market].hoursWithLiquidity++;
+    }
+  }
+
+  // Set liquidity value for each market
+  for (let i = 0; i < marketsResults.length; i++) {
+    const marketResult = marketsResults[i];
+    if (marketsLiquidityInfo.hasOwnProperty(marketResult.market)) {
+      marketResult.liquidity = marketsLiquidityInfo[marketResult.market].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[marketResult.market].hoursWithLiquidity).toString();
+    } else {
+      marketResult.liquidity = '0';
+    }
+  }
+
+  return marketsResults;
+}
+
+/**
+ * Gets the MarketOrderBook for a market and converts it to a LiquidityOrderBookInfo object.
+ *
+ * @param {Augur} augur Augur object to use for getting MarketOrderBook
+ * @param {DB} db DB to use for getting MarketOrderBook
+ * @param {string} marketId Market address for which to get order book info
+ */
+export async function getLiquidityOrderBookInfo(augur: Augur, db: DB, marketId: string): Promise<LiquidityOrderBookInfo> {
+  const marketOrderBook = await Markets.getMarketOrderBook(augur, db, { marketId });
+  const orderBook: any = marketOrderBook.orderBook;
+
+  let lowestSpread = undefined;
+
+  for (const outcome in orderBook) {
+    if (orderBook[outcome]) {
+      if (!lowestSpread || orderBook[outcome].spread < lowestSpread) {
+        lowestSpread = new BigNumber(orderBook[outcome].spread).toNumber();
+      }
+      delete orderBook[outcome].spread;
+      if (orderBook[outcome].bids) {
+        for (let i = 0; i < orderBook[outcome].bids.length; i++) {
+          delete orderBook[outcome].bids[i].cumulativeShares;
+          delete orderBook[outcome].bids[i].mySize;
+          orderBook[outcome].bids[i].amount = orderBook[outcome].bids[i].shares;
+          delete orderBook[outcome].bids[i].shares;
+        }
+      }
+      if (orderBook[outcome].asks) {
+        for (let i = 0; i < orderBook[outcome].asks.length; i++) {
+          delete orderBook[outcome].asks[i].cumulativeShares;
+          delete orderBook[outcome].asks[i].mySize;
+          orderBook[outcome].asks[i].amount = orderBook[outcome].asks[i].shares;
+          delete orderBook[outcome].asks[i].shares;
+        }
+      }
+    }
+  }
+
+  return {
+    lowestSpread,
+    orderBook,
+  };
 }
