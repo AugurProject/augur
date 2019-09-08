@@ -28,7 +28,7 @@ import {
 } from '../../index';
 import { calculatePayoutNumeratorsValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
-import { MaxLiquiditySpread } from '../../constants';
+import { MaxLiquiditySpread, SECONDS_IN_AN_HOUR } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -1446,7 +1446,10 @@ async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): P
       };
     }
 
-    if (marketLiquidityDoc.timestamp === liquidityLastUpdatedTimestamp) {
+    if (
+      marketLiquidityDoc.timestamp >= (liquidityLastUpdatedTimestamp - SECONDS_IN_AN_HOUR.toNumber()) &&
+      marketLiquidityDoc.timestamp < liquidityLastUpdatedTimestamp
+    ) {
       marketsLiquidityInfo[marketLiquidityDoc.market].hasLiquidityInLastHour = true;
     }
     if (marketLiquidityDoc.spread.toString() === MaxLiquiditySpread.FifteenPercent) {
@@ -1489,29 +1492,33 @@ async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): P
  * @param {string} marketId Market address for which to get order book info
  */
 export async function getLiquidityOrderBook(augur: Augur, db: DB, marketId: string): Promise<OrderBook> {
-  const marketOrderBook = (await Markets.getMarketOrderBook(augur, db, { marketId })).orderBook;
+  // TODO Remove any below by making Markets.getMarketOrderBook return a consistent type when the order book is empty
+  const marketOrderBook: any = await Markets.getMarketOrderBook(augur, db, { marketId });
   const orderBook: OrderBook = {};
 
-  for (const outcome in marketOrderBook) {
-    if (marketOrderBook[outcome]) {
-      orderBook[outcome] = {
-        bids: [],
-        asks: [],
-      };
-      if (marketOrderBook[outcome].bids) {
-        for (let i = 0; i < marketOrderBook[outcome].bids.length; i++) {
-          orderBook[outcome].bids[i] = {
-            amount: marketOrderBook[outcome].bids[i].shares,
-            price: marketOrderBook[outcome].bids[i].price,
-          };
+  // `marketOrderBook.orderBook.spread` will be set to null if order book is empty
+  if (typeof marketOrderBook.orderBook.spread === 'undefined') {
+    for (const outcome in marketOrderBook.orderBook) {
+      if (marketOrderBook.orderBook[outcome]) {
+        orderBook[outcome] = {
+          bids: [],
+          asks: [],
+        };
+        if (marketOrderBook.orderBook[outcome].bids) {
+          for (let i = 0; i < marketOrderBook.orderBook[outcome].bids.length; i++) {
+            orderBook[outcome].bids[i] = {
+              amount: marketOrderBook.orderBook[outcome].bids[i].shares,
+              price: marketOrderBook.orderBook[outcome].bids[i].price,
+            };
+          }
         }
-      }
-      if (marketOrderBook[outcome].asks) {
-        for (let i = 0; i < marketOrderBook[outcome].asks.length; i++) {
-          orderBook[outcome].asks[i] = {
-            amount: marketOrderBook[outcome].asks[i].shares,
-            price: marketOrderBook[outcome].asks[i].price,
-          };
+        if (marketOrderBook.orderBook[outcome].asks) {
+          for (let i = 0; i < marketOrderBook.orderBook[outcome].asks.length; i++) {
+            orderBook[outcome].asks[i] = {
+              amount: marketOrderBook.orderBook[outcome].asks[i].shares,
+              price: marketOrderBook.orderBook[outcome].asks[i].price,
+            };
+          }
         }
       }
     }

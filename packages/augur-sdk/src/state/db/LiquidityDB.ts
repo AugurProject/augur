@@ -7,6 +7,7 @@ import { Augur } from '../../Augur';
 import { BigNumber } from 'bignumber.js';
 import { getLiquidityOrderBook } from '../../state/getter/Markets';
 import { Doc, MarketType, OrderEventType } from '../logs/types';
+import * as _ from 'lodash';
 
 export interface LiquidityLastUpdated {
   _doc_id_rev: string;
@@ -52,7 +53,6 @@ export class LiquidityDB extends AbstractDB {
   }
 
   async recalculateLiquidity(augur: Augur, db: DB, currentTimestamp: number): Promise<void> {
-  console.log('currentTimestamp', currentTimestamp);
     // @TODO: Need to factor in blockStreamDelay?
     try {
       const liquidityDB = db.getLiquidityDatabase();
@@ -60,7 +60,7 @@ export class LiquidityDB extends AbstractDB {
       const currentTimestampBN = new BigNumber(currentTimestamp);
       const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
       const mostRecentOnTheHourTimestamp = currentTimestampBN.minus(currentTimestampBN.mod(secondsPerHour));
-console.log('mostRecentOnTheHourTimestamp', mostRecentOnTheHourTimestamp.toNumber());
+
       // TODO Optimize saving hourly liquidity so that existing data isn't recalculated
       if (!lastUpdatedTimestamp || mostRecentOnTheHourTimestamp.gt(lastUpdatedTimestamp)) {
         await this.deleteOldLiquidityData(liquidityDB, mostRecentOnTheHourTimestamp);
@@ -149,16 +149,18 @@ console.log('mostRecentOnTheHourTimestamp', mostRecentOnTheHourTimestamp.toNumbe
       for (let i = 0; i < marketCreatedLogs.length; i++) {
         const marketCreatedLog = marketCreatedLogs[i];
         const liquidityOrderBook = await getLiquidityOrderBook(augur, db, marketCreatedLog.market);
-        const market = augur.getMarket(marketCreatedLog.market);
-        const marketFeeDivisor = await market.getMarketCreatorSettlementFeeDivisor_();
-        liquidityParams[marketCreatedLog.market] = {
-          orderBook: liquidityOrderBook,
-          numTicks: new BigNumber(marketCreatedLog.numTicks),
-          marketType: marketCreatedLog.marketType,
-          reportingFeeDivisor,
-          marketFeeDivisor,
-          numOutcomes: marketCreatedLog.marketType === MarketType.Categorical ? marketCreatedLog.outcomes.length : 3,
-        };
+        if (!_.isEmpty(liquidityOrderBook)) {
+          const market = augur.getMarket(marketCreatedLog.market);
+          const marketFeeDivisor = await market.getMarketCreatorSettlementFeeDivisor_();
+          liquidityParams[marketCreatedLog.market] = {
+            orderBook: liquidityOrderBook,
+            numTicks: new BigNumber(marketCreatedLog.numTicks),
+            marketType: marketCreatedLog.marketType,
+            reportingFeeDivisor,
+            marketFeeDivisor,
+            numOutcomes: marketCreatedLog.marketType === MarketType.Categorical ? marketCreatedLog.outcomes.length : 3,
+          };
+        }
       }
     }
 
