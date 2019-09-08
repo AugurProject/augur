@@ -136,20 +136,19 @@ export class LiquidityDB extends AbstractDB {
       const reportingFeeDivisor = await augur.contracts.universe.getReportingFeeDivisor_();
       for (let i = 0; i < marketCreatedLogs.length; i++) {
         const marketCreatedLog = marketCreatedLogs[i];
-        const liquidityOrderBookInfo = await getLiquidityOrderBookInfo(augur, db, marketCreatedLog.market);
+        const liquidityOrderBook = await getLiquidityOrderBookInfo(augur, db, marketCreatedLog.market);
         const market = augur.getMarket(marketCreatedLog.market);
         const marketFeeDivisor = await market.getMarketCreatorSettlementFeeDivisor_();
         liquidityParams[marketCreatedLog.market] = {
-          orderBook: liquidityOrderBookInfo.orderBook,
+          orderBook: liquidityOrderBook,
           numTicks: new BigNumber(marketCreatedLog.numTicks),
           marketType: marketCreatedLog.marketType,
           reportingFeeDivisor,
           marketFeeDivisor,
           numOutcomes: marketCreatedLog.marketType === MarketType.Categorical ? marketCreatedLog.outcomes.length : 3,
-          spread: liquidityOrderBookInfo.lowestSpread,
         };
       }
-     }
+    }
 
     return liquidityParams;
   }

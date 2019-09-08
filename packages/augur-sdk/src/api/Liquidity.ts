@@ -43,7 +43,7 @@ export interface GetLiquidityParams {
   reportingFeeDivisor: BigNumber;
   marketFeeDivisor: BigNumber;
   numOutcomes: number;
-  spread: number;
+  spread?: number;
 }
 
 export class Liquidity {

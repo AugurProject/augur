@@ -202,20 +202,17 @@ export interface MarketOrderBookOrder {
   mySize: string;
 }
 
-export interface MarketOrderBook {
-  marketId: string;
-  orderBook: {
-    [outcome: number]: {
-      spread: string | null;
-      bids: MarketOrderBookOrder[];
-      asks: MarketOrderBookOrder[];
-    };
+export interface MarketOrderBookOrderBook {
+  [outcome: number]: {
+    spread: string | null;
+    bids: MarketOrderBookOrder[];
+    asks: MarketOrderBookOrder[];
   };
 }
 
-export interface LiquidityOrderBookInfo {
-  lowestSpread: number | undefined;
-  orderBook: OrderBook;
+export interface MarketOrderBook {
+  marketId: string;
+  orderBook: MarketOrderBookOrderBook;
 }
 
 const outcomeIdType = t.union([OutcomeParam, t.number, t.null, t.undefined]);
@@ -501,8 +498,8 @@ export class Markets {
       }
     }
 
-    if (params.sortBy === GetMarketsSortBy.liquidity) {
-      marketsResults = await setRecentLiquidity(db, marketsResults);
+    if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
+      marketsResults = await setRecentLiquidityInfo(db, marketsResults);
     } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
       marketsResults = await setLastTradedTimestamp(db, marketsResults);
     }
@@ -566,11 +563,10 @@ export class Markets {
 
         if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
           // Filter out markets that had liquidity in last hour or didn't but had liquidity over a 15% spread in the last 24 hours
-          if ((marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0')) {
-
-          }
-          includeMarket = false;
-          filteredOutCount++;
+          // if ((marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0')) {
+          //   includeMarket = false;
+          //   filteredOutCount++;
+          // }
         }
         // @TODO Figure out why marketData is sometimes returning no results here
         else if (
@@ -1427,7 +1423,7 @@ async function setLastTradedTimestamp(db: DB, marketsResults: any[]): Promise<Ar
  * @param {DB} db Database object to use for getting `recentLiquidity` info
  * @param {Array<Object>} marketsResults Array of market objects to add `recentLiquidity` to
  */
-async function setRecentLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
+async function setRecentLiquidityInfo(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
   // Create market ID => marketsResults index mapping
   const keyedMarkets = {};
   for (let i = 0; i < marketsResults.length; i++) {
@@ -1453,24 +1449,28 @@ async function setRecentLiquidity(db: DB, marketsResults: any[]): Promise<Array<
     } else {
       marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hourlyLiquiditySum.plus(marketLiquidityDoc.liquidity);
       marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hoursWithLiquidity++;
+      // marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hourlyLiquidity.push(marketLiquidityDoc.liquidity);
     }
+    marketsResults[i].hourlyLiquidity = marketLiquidityDoc.liquidity;
   }
 
   // Set recentLiquidity value for each market
   for (let i = 0; i < marketsResults.length; i++) {
-    const marketResult = marketsResults[i];
-    marketResult.recentLiquidity = {};
-    if (marketsLiquidityInfo.hasOwnProperty(marketResult.market)) {
+    marketsResults[i].recentLiquidity = {};
+    // if (!marketsResults[i].hourlyLiquidity) {
+    //   marketsResults[i].hourlyLiquidity = [];
+    // }
+    if (marketsLiquidityInfo.hasOwnProperty(marketsResults[i].market)) {
       for (const spread of Object.values(MaxLiquiditySpread)) {
-        if (marketsLiquidityInfo[marketResult.market][spread]) {
-          marketResult.recentLiquidity[spread] = marketsLiquidityInfo[marketResult.market][spread].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[marketResult.market][spread].hoursWithLiquidity).toString();
+        if (marketsLiquidityInfo[marketsResults[i].market][spread]) {
+          marketsResults[i].recentLiquidity[spread] = marketsLiquidityInfo[marketsResults[i].market][spread].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[marketsResults[i].market][spread].hoursWithLiquidity).toString();
         } else {
-          marketResult.recentLiquidity[spread] = '0';
+          marketsResults[i].recentLiquidity[spread] = '0';
         }
       }
     } else {
       for (const spread of Object.values(MaxLiquiditySpread)) {
-        marketResult.recentLiquidity[spread] = '0';
+        marketsResults[i].recentLiquidity[spread] = '0';
       }
     }
   }
@@ -1479,45 +1479,40 @@ async function setRecentLiquidity(db: DB, marketsResults: any[]): Promise<Array<
 }
 
 /**
- * Gets the MarketOrderBook for a market and converts it to a LiquidityOrderBookInfo object.
+ * Converts the MarketOrderBook for a market to a LiquidityOrderBookInfo object.
  *
  * @param {Augur} augur Augur object to use for getting MarketOrderBook
  * @param {DB} db DB to use for getting MarketOrderBook
  * @param {string} marketId Market address for which to get order book info
  */
-export async function getLiquidityOrderBookInfo(augur: Augur, db: DB, marketId: string): Promise<LiquidityOrderBookInfo> {
-  const marketOrderBook = await Markets.getMarketOrderBook(augur, db, { marketId });
-  const orderBook: any = marketOrderBook.orderBook;
+export async function getLiquidityOrderBookInfo(augur: Augur, db: DB, marketId: string): Promise<OrderBook> {
+  const marketOrderBook = (await Markets.getMarketOrderBook(augur, db, { marketId })).orderBook;
+  const orderBook: OrderBook = {};
 
-  let lowestSpread = undefined;
-
-  for (const outcome in orderBook) {
-    if (orderBook[outcome]) {
-      if (!lowestSpread || orderBook[outcome].spread < lowestSpread) {
-        lowestSpread = new BigNumber(orderBook[outcome].spread).toNumber();
-      }
-      delete orderBook[outcome].spread;
-      if (orderBook[outcome].bids) {
-        for (let i = 0; i < orderBook[outcome].bids.length; i++) {
-          delete orderBook[outcome].bids[i].cumulativeShares;
-          delete orderBook[outcome].bids[i].mySize;
-          orderBook[outcome].bids[i].amount = orderBook[outcome].bids[i].shares;
-          delete orderBook[outcome].bids[i].shares;
+  for (const outcome in marketOrderBook) {
+    if (marketOrderBook[outcome]) {
+      orderBook[outcome] = {
+        bids: [],
+        asks: [],
+      };
+      if (marketOrderBook[outcome].bids) {
+        for (let i = 0; i < marketOrderBook[outcome].bids.length; i++) {
+          orderBook[outcome].bids[i] = {
+            amount: marketOrderBook[outcome].bids[i].shares,
+            price: marketOrderBook[outcome].bids[i].price,
+          };
         }
       }
-      if (orderBook[outcome].asks) {
-        for (let i = 0; i < orderBook[outcome].asks.length; i++) {
-          delete orderBook[outcome].asks[i].cumulativeShares;
-          delete orderBook[outcome].asks[i].mySize;
-          orderBook[outcome].asks[i].amount = orderBook[outcome].asks[i].shares;
-          delete orderBook[outcome].asks[i].shares;
+      if (marketOrderBook[outcome].asks) {
+        for (let i = 0; i < marketOrderBook[outcome].asks.length; i++) {
+          orderBook[outcome].asks[i] = {
+            amount: marketOrderBook[outcome].asks[i].shares,
+            price: marketOrderBook[outcome].asks[i].price,
+          };
         }
       }
     }
   }
 
-  return {
-    lowestSpread,
-    orderBook,
-  };
+  return orderBook;
 }
