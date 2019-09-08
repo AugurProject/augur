@@ -70,12 +70,24 @@ interface ContractOverview {
   contracts: Array<ContractInfo>;
 }
 
+interface ParticipationContract {
+  address: string;
+  amount: string;
+  fees: string;
+}
+
+interface ParticipationOverview {
+  totalAmount: string;
+  totalFees: string;
+  contracts: ParticipationContract[];
+}
+
 export interface AccountReportingHistory {
   profitLoss: number;
   profitAmount: string;
   reporting: ContractOverview | null;
   disputing: ContractOverview | null;
-  pariticipationTokens: ContractOverview | null;
+  pariticipationTokens: ParticipationOverview | null;
 }
 
 export interface AccountTransaction {
@@ -181,14 +193,15 @@ export class Accounts<TBigNumber> {
       },
       pariticipationTokens: {
         totalAmount: "1200000000000000000000",
+        totalFees: "20000000000000000",
         contracts: [{
           address: "0xe",
           amount: "100000000000000000000",
-          marketId: "0x5"
+          fees: "10000000000000000"
         }, {
           address: "0xf",
           amount: "20000000000000000000",
-          marketId: "0x6"
+          fees: "10000000000000000"
         }]
       }
     };

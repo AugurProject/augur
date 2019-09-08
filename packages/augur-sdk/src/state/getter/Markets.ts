@@ -215,6 +215,11 @@ export interface MarketOrderBook {
   orderBook: MarketOrderBookOrderBook;
 }
 
+export interface LiquidityOrderBookInfo {
+  lowestSpread: number | undefined;
+  orderBook: OrderBook;
+}
+
 const outcomeIdType = t.union([OutcomeParam, t.number, t.null, t.undefined]);
 
 export class Markets {
@@ -477,6 +482,7 @@ export class Markets {
     );
 
     // Sort search results by categories
+    // @TODO Use actual type instead of any[] below
     let marketsResults: any[]  = _.sortBy(
       await getMarketsSearchResults(params.universe, params.search, params.categories),
       ['category1', 'category2', 'category3']
@@ -1364,6 +1370,7 @@ function getMarketsMeta(
   };
 }
 
+// @TODO Fix the return type. For some reason, FlexSearch is returning a different type than Array<SearchResults<MarketFields>>
 async function getMarketsSearchResults(
   universe: string,
   query: string,
@@ -1479,13 +1486,13 @@ async function setRecentLiquidityInfo(db: DB, marketsResults: any[]): Promise<Ar
 }
 
 /**
- * Converts the MarketOrderBook for a market to a LiquidityOrderBookInfo object.
+ * Gets a MarketOrderBook for a market and converts it to an OrderBook object.
  *
  * @param {Augur} augur Augur object to use for getting MarketOrderBook
  * @param {DB} db DB to use for getting MarketOrderBook
  * @param {string} marketId Market address for which to get order book info
  */
-export async function getLiquidityOrderBookInfo(augur: Augur, db: DB, marketId: string): Promise<OrderBook> {
+export async function getLiquidityOrderBook(augur: Augur, db: DB, marketId: string): Promise<OrderBook> {
   const marketOrderBook = (await Markets.getMarketOrderBook(augur, db, { marketId })).orderBook;
   const orderBook: OrderBook = {};
 

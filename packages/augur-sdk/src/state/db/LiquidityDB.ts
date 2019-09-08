@@ -5,7 +5,7 @@ import { MaxLiquiditySpread, SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR } from '../../
 import { GetLiquidityParams, Liquidity } from '../../api/Liquidity';
 import { Augur } from '../../Augur';
 import { BigNumber } from 'bignumber.js';
-import { getLiquidityOrderBookInfo } from '../../state/getter/Markets';
+import { getLiquidityOrderBook } from '../../state/getter/Markets';
 import { MarketType } from '../logs/types';
 
 interface MarketsLiquidityParams {
@@ -136,7 +136,7 @@ export class LiquidityDB extends AbstractDB {
       const reportingFeeDivisor = await augur.contracts.universe.getReportingFeeDivisor_();
       for (let i = 0; i < marketCreatedLogs.length; i++) {
         const marketCreatedLog = marketCreatedLogs[i];
-        const liquidityOrderBook = await getLiquidityOrderBookInfo(augur, db, marketCreatedLog.market);
+        const liquidityOrderBook = await getLiquidityOrderBook(augur, db, marketCreatedLog.market);
         const market = augur.getMarket(marketCreatedLog.market);
         const marketFeeDivisor = await market.getMarketCreatorSettlementFeeDivisor_();
         liquidityParams[marketCreatedLog.market] = {
