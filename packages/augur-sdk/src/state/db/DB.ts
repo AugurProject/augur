@@ -1,13 +1,13 @@
 import { Augur } from '../../Augur';
 import { augurEmitter } from '../../events';
-import { SubscriptionEventName } from '../../constants';
+import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR, SubscriptionEventName } from '../../constants';
 import { PouchDBFactoryType } from './AbstractDB';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
 import { TrackedUsers } from './TrackedUsers';
 import { UserSyncableDB } from './UserSyncableDB';
 import { DerivedDB } from './DerivedDB';
-import { LiquidityDB } from './LiquidityDB';
+import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
 import { MarketDB } from './MarketDB';
 import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
 import {
@@ -37,6 +37,7 @@ import {
   UniverseForkedLog,
 } from '../logs/types';
 import { ZeroXOrders, StoredOrder } from './ZeroXOrders';
+import { BigNumber } from 'bignumber.js';
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -767,5 +768,51 @@ export class DB {
   async findMarkets(request: PouchDB.Find.FindRequest<{}>): Promise<MarketData[]> {
     const results = await this.findInDerivedDB(this.getDatabaseName('Markets'), request);
     return results.docs as unknown as MarketData[];
+  }
+
+  /**
+   * Queries the Liquidity DB for hourly liquidity of markets
+   *
+   * @param {string?} marketIds Array of market IDs to filter by
+   * @returns {Promise<MarketHourlyLiquidity[]>}
+   */
+  async findMarketsLiquidityDocs(marketIds?: string[]): Promise<MarketHourlyLiquidity[]> {
+    const currentTimestamp = new BigNumber(Math.floor(Date.now() / 1000));
+    const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
+    const mostRecentOnTheHourTimestamp = currentTimestamp.minus(currentTimestamp.mod(secondsPerHour));
+    const selectorConditions: any[] = [
+      { _id: { $ne: 'lastUpdated' } },
+      { timestamp: { $gte: mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY).toNumber() } },
+    ];
+    if (marketIds) {
+      selectorConditions.push(
+        { market: { $in: marketIds } }
+      );
+    }
+    const marketsLiquidity = await this.liquidityDatabase.find({
+      selector: {
+        $and: selectorConditions,
+      },
+    });
+
+    return marketsLiquidity.docs as unknown as MarketHourlyLiquidity[];
+  }
+
+  /**
+   * Queries the Liquidity DB for hourly liquidity of all markets
+   *
+   * @returns {Promise<number|undefined>}
+   */
+  async findLiquidityLastUpdatedTimestamp(): Promise<number|undefined> {
+    const lastUpdatedResults = await this.liquidityDatabase.find({
+      selector: {
+        _id: { $eq: 'lastUpdated' },
+      },
+    });
+    const lastUpdatedDocs = lastUpdatedResults.docs as unknown as LiquidityLastUpdated[];
+    if (lastUpdatedDocs.length > 0) {
+      return lastUpdatedDocs[0].timestamp;
+    }
+    return undefined;
   }
 }

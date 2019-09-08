@@ -88,7 +88,7 @@ export enum ControlMessageType {
 export enum MaxLiquiditySpread {
   OneHundredPercent = '100', // all liquidity spreads
   TwentyPercent = '20',
-  FifteenPercennt = '15',
+  FifteenPercent = '15',
   TenPercent = '10',
   ZeroPercent = '0', // only markets with depleted liquidity
 }

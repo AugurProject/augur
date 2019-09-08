@@ -505,7 +505,7 @@ export class Markets {
     }
 
     if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
-      marketsResults = await setRecentLiquidityInfo(db, marketsResults);
+      marketsResults = await setHasRecentlyDepletedLiquidity(db, marketsResults);
     } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
       marketsResults = await setLastTradedTimestamp(db, marketsResults);
     }
@@ -567,16 +567,10 @@ export class Markets {
           marketsResults[i][params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
 
-        if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
-          // Filter out markets that had liquidity in last hour or didn't but had liquidity over a 15% spread in the last 24 hours
-          // if ((marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0')) {
-          //   includeMarket = false;
-          //   filteredOutCount++;
-          // }
-        }
         // @TODO Figure out why marketData is sometimes returning no results here
-        else if (
-          (marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0') ||
+        if (
+          (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent && marketsResults[i].hasLiquidityDepleted) ||
+          (marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === MaxLiquiditySpread.ZeroPercent) ||
           (params.includeInvalidMarkets === false && marketData.length > 0 && marketData[0].invalidFilter === true)
         ) {
           includeMarket = false;
@@ -1425,12 +1419,12 @@ async function setLastTradedTimestamp(db: DB, marketsResults: any[]): Promise<Ar
 }
 
 /**
- * Sets the `recentLiquidity` property for the last 24 hours of liquidity for all markets in `marketsResults`.
+ * Sets the `hasRecentlyDepletedLiquidity` property for all markets in `marketsResults`.
  *
- * @param {DB} db Database object to use for getting `recentLiquidity` info
- * @param {Array<Object>} marketsResults Array of market objects to add `recentLiquidity` to
+ * @param {DB} db Database object to use for setting `hasRecentlyDepletedLiquidity`
+ * @param {Array<Object>} marketsResults Array of market objects to add `hasRecentlyDepletedLiquidity` to
  */
-async function setRecentLiquidityInfo(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
+async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
   // Create market ID => marketsResults index mapping
   const keyedMarkets = {};
   for (let i = 0; i < marketsResults.length; i++) {
@@ -1438,16 +1432,27 @@ async function setRecentLiquidityInfo(db: DB, marketsResults: any[]): Promise<Ar
   }
 
   const marketIds = Object.keys(keyedMarkets);
-  const liquidityDB = db.getLiquidityDatabase();
-  const marketsLiquidityDocs = await liquidityDB.getMarketsLiquidity(marketIds);
+  const liquidityLastUpdatedTimestamp = await db.findLiquidityLastUpdatedTimestamp();
+  const marketsLiquidityDocs = await db.findMarketsLiquidityDocs(marketIds);
   const marketsLiquidityInfo = {};
 
   // Save liquidity info for each market to an object
   for (let i = 0; i < marketsLiquidityDocs.length; i++) {
     const marketLiquidityDoc = marketsLiquidityDocs[i];
     if (!marketsLiquidityInfo[marketLiquidityDoc.market]) {
-      marketsLiquidityInfo[marketLiquidityDoc.market] = {};
+      marketsLiquidityInfo[marketLiquidityDoc.market] = {
+        hasLiquidityInLastHour: false,
+        hasLiquidityUnderFifteenPercentSpread: false,
+      };
     }
+
+    if (marketLiquidityDoc.timestamp === liquidityLastUpdatedTimestamp) {
+      marketsLiquidityInfo[marketLiquidityDoc.market].hasLiquidityInLastHour = true;
+    }
+    if (marketLiquidityDoc.spread.toString() === MaxLiquiditySpread.FifteenPercent) {
+      marketsLiquidityInfo[marketLiquidityDoc.market].hasLiquidityUnderFifteenPercentSpread = true;
+    }
+
     if (!marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread]) {
       marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread] = {
         hourlyLiquiditySum: new BigNumber(marketLiquidityDoc.liquidity),
@@ -1456,29 +1461,20 @@ async function setRecentLiquidityInfo(db: DB, marketsResults: any[]): Promise<Ar
     } else {
       marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hourlyLiquiditySum.plus(marketLiquidityDoc.liquidity);
       marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hoursWithLiquidity++;
-      // marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hourlyLiquidity.push(marketLiquidityDoc.liquidity);
     }
-    marketsResults[i].hourlyLiquidity = marketLiquidityDoc.liquidity;
   }
 
-  // Set recentLiquidity value for each market
   for (let i = 0; i < marketsResults.length; i++) {
-    marketsResults[i].recentLiquidity = {};
-    // if (!marketsResults[i].hourlyLiquidity) {
-    //   marketsResults[i].hourlyLiquidity = [];
-    // }
-    if (marketsLiquidityInfo.hasOwnProperty(marketsResults[i].market)) {
-      for (const spread of Object.values(MaxLiquiditySpread)) {
-        if (marketsLiquidityInfo[marketsResults[i].market][spread]) {
-          marketsResults[i].recentLiquidity[spread] = marketsLiquidityInfo[marketsResults[i].market][spread].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[marketsResults[i].market][spread].hoursWithLiquidity).toString();
-        } else {
-          marketsResults[i].recentLiquidity[spread] = '0';
-        }
-      }
-    } else {
-      for (const spread of Object.values(MaxLiquiditySpread)) {
-        marketsResults[i].recentLiquidity[spread] = '0';
-      }
+    const marketResult = marketsResults[i];
+    marketResult.hasRecentlyDepletedLiquidity = false;
+    // A market's liquidity is considered recently depleted if it had liquidity under
+    // a 15% spread in the last 24 hours, but doesn't currently have liquidity
+    if (
+      marketsLiquidityInfo[marketResult.market] &&
+      marketsLiquidityInfo[marketResult.market].hasLiquidityUnderFifteenPercentSpread &&
+      !marketsLiquidityInfo[marketResult.market].hasLiquidityInLastHour
+    ) {
+      marketResult.hasRecentlyDepletedLiquidity = true;
     }
   }
 
