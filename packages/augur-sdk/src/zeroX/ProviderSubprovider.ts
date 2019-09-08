@@ -1,9 +1,6 @@
 import { marshaller, Web3Wrapper } from '@0xproject/web3-wrapper';
 import { JSONRPCRequestPayload } from 'ethereum-types';
-
-import { Callback, ErrorCallback } from '0x.js';
-
-import { Subprovider } from '@0x/subproviders';
+import { Subprovider, Callback, ErrorCallback } from '@0x/subproviders';
 import { Provider } from '../ethereum/Provider';
 
 // NOTE: this only support signing messages at the moment. More logic would be required to fulfil the whole range of API possibilities (sending transactions for example)
