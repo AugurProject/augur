@@ -80,9 +80,8 @@ console.log('mostRecentOnTheHourTimestamp', mostRecentOnTheHourTimestamp.toNumbe
                   // Only save liquidity if it's > 0
                   if (new BigNumber(marketLiquidity).gt(0)) {
                     marketsLiquidityDocs.push({
-                      _id: /*universe + '_' +*/ market + '_' + marketsLiquidityParams[market].spread + '_' + mostRecentOnTheHourTimestamp.toString(),
+                      _id: market + '_' + marketsLiquidityParams[market].spread + '_' + mostRecentOnTheHourTimestamp.toString(),
                       market,
-                      // universe,
                       spread: marketsLiquidityParams[market].spread,
                       liquidity: marketLiquidity.toString(),
                       timestamp: mostRecentOnTheHourTimestamp.toNumber(),
@@ -114,7 +113,7 @@ console.log('mostRecentOnTheHourTimestamp', mostRecentOnTheHourTimestamp.toNumbe
     const oldLiquidityDocs = await liquidityDB.find({
       selector: {
         _id: { $ne: 'lastUpdated' },
-        timestamp: { $lte: mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY).toNumber() },
+        timestamp: { $lt: mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY).toNumber() },
       },
     });
     const docs: any = oldLiquidityDocs.docs;
