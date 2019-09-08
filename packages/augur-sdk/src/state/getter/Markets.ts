@@ -569,7 +569,7 @@ export class Markets {
 
         // @TODO Figure out why marketData is sometimes returning no results here
         if (
-          (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent && marketsResults[i].hasLiquidityDepleted) ||
+          (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent && marketsResults[i].hasRecentlyDepletedLiquidity) ||
           (marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === MaxLiquiditySpread.ZeroPercent) ||
           (params.includeInvalidMarkets === false && marketData.length > 0 && marketData[0].invalidFilter === true)
         ) {

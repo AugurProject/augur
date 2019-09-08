@@ -67,7 +67,7 @@ console.log('mostRecentOnTheHourTimestamp', mostRecentOnTheHourTimestamp.toNumbe
         const marketsLiquidityDocs = [];
         const liquidity = new Liquidity(augur);
         let hourlyLiquidityStartTime = mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY);
-        while (!hourlyLiquidityStartTime.eq(mostRecentOnTheHourTimestamp)) {
+        while (hourlyLiquidityStartTime.lt(mostRecentOnTheHourTimestamp)) {
           const marketsLiquidityParams = await this.getMarketsLiquidityParams(db, augur, hourlyLiquidityStartTime.toNumber(), hourlyLiquidityStartTime.plus(SECONDS_IN_AN_HOUR).toNumber());
           for (const market in marketsLiquidityParams) {
             if (marketsLiquidityParams.hasOwnProperty(market)) {
@@ -128,16 +128,15 @@ console.log('mostRecentOnTheHourTimestamp', mostRecentOnTheHourTimestamp.toNumbe
 
   private async getMarketsLiquidityParams(db: DB, augur: Augur, startTime: number, endTime: number): Promise<MarketsLiquidityParams> {
     const liquidityParams = {};
-    const orderFilledRequest = {
+    const currentOrdersLogs = await db.findCurrentOrderLogs({
       selector: {
         $and: [
-          { orderType: OrderEventType.Fill },
+          { eventType: { $eq: OrderEventType.Fill } },
           { timestamp: { $gte: `0x${startTime.toString(16)}` } },
           { timestamp: { $lt: `0x${endTime.toString(16)}` } },
         ],
       },
-    };
-    const currentOrdersLogs = await db.findCurrentOrderLogs(orderFilledRequest);
+    });
     if (currentOrdersLogs) {
       // @TODO: Filter out finalized markets
       for (let i = 0; i < currentOrdersLogs.length; i++) {
