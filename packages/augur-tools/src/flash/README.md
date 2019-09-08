@@ -24,6 +24,8 @@ you can type
 
 # Flash Session on local node
 
+ * yarn docker:geth:pop
+
 To use flash for a session to push time report or dispute. use interactive mode
 
 ## Connect
