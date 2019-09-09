@@ -19,6 +19,7 @@ interface ModalReportingProps {
   isReporting: boolean;
   title: string;
   selectedOutcome?: number;
+  reportAction: Function;
 }
 
 interface ModalReportingState {
@@ -46,7 +47,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       title,
       market,
       rep,
-      isReporting
+      isReporting,
+      reportAction
     } = this.props;
     const s = this.state;
     const {
@@ -122,6 +124,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
               scalarDenomination={scalarDenomination}
               radioButtons={radioButtons}
               defaultSelected={s.checked && s.checked.toString()}
+              reportAction={reportAction}
             />
           </div>
         </main>

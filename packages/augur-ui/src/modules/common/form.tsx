@@ -227,6 +227,7 @@ interface RadioGroupProps {
   maxPrice?: string;
   scalarDenomination?: string;
   isReporting?: boolean;
+  reportAction: Function;
 }
 
 interface RadioGroupState {
@@ -267,6 +268,7 @@ interface ReportingRadioBarProps {
   isReporting?: boolean;
   preFilledStake?: number;
   updatePreFilledStake?: Function;
+  reportAction: Function;
 }
 
 interface RadioTwoLineBarProps {
@@ -659,6 +661,7 @@ interface ReportingRadioGroupProps {
   maxPrice?: string;
   scalarDenomination?: string;
   isReporting?: boolean;
+  reportAction: Function;
 }
 
 export const ReportingRadioBarGroup = ({
@@ -669,7 +672,8 @@ export const ReportingRadioBarGroup = ({
   minPrice,
   maxPrice,
   scalarDenomination,
-  isReporting
+  isReporting,
+  reportAction
 }: ReportingRadioGroupProps) => {
   const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
   const tentativeWinning = radioButtons.find(radioButton => radioButton.stake.tentativeWinning);
@@ -726,6 +730,7 @@ export const ReportingRadioBarGroup = ({
           onChange={selected => {
             onChange(selected);
           }}
+          reportAction={reportAction}
         />
       ))}
       {((!isReporting && tentativeWinning.value !== invalid.value) || isReporting) &&
@@ -779,6 +784,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       maxPrice,
       scalarDenomination,
       isReporting,
+      reportAction,
     } = this.props;
     const { selected } = this.state;
 
@@ -794,6 +800,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
             selected={selected}
             onChange={this.onChange}
             isReporting={isReporting}
+            reportAction={reportAction}
           />
         }
         {!reporting && radioButtons.map((radio, index) => (
@@ -850,11 +857,11 @@ export class ReportingRadioBar extends Component<
       expandable,
       isReporting,
       preFilledStake,
-      updatePreFilledStake
+      updatePreFilledStake,
+      reportAction
     } = this.props;
 
     const initialReporterStake = formatNumber("100");
-    const reportAction = () => {console.log("confirm report")};
     const { stakeValue, rangeValue } = this.state;
 
     const inputtedStake = stakeValue === "" || isNaN(stakeValue) ? 0 : stakeValue;
