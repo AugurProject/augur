@@ -182,7 +182,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
 
 export interface LabelValueProps {
   label: string;
-  value: number | string;
+  value: number;
   condensed?: Boolean;
 }
 
