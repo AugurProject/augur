@@ -268,6 +268,8 @@ interface ReportingRadioBarProps {
   isReporting?: boolean;
   preFilledStake?: number;
   updatePreFilledStake?: Function;
+  disputeStake?: number;
+  updateDisputeStake?: Function;
   reportAction: Function;
 }
 
@@ -820,7 +822,6 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
 }
 
 interface ReportingRadioBarState {
-  stakeValue: string;
   rangeValue: string;
 }
 
@@ -829,13 +830,8 @@ export class ReportingRadioBar extends Component<
   ReportingRadioBarState
 > {
   state: ReportingRadioBarState = {
-    stakeValue: "",
     rangeValue: "",
   };
-
-  changeStake = (stakeValue) => {
-    this.setState({stakeValue});
-  }
 
   changeRange = (rangeValue) => {
     this.setState({rangeValue});
@@ -858,7 +854,9 @@ export class ReportingRadioBar extends Component<
       isReporting,
       preFilledStake,
       updatePreFilledStake,
-      reportAction
+      disputeStake,
+      updateDisputeStake,
+      reportAction,
     } = this.props;
 
     const initialReporterStake = formatNumber("100");
@@ -895,8 +893,8 @@ export class ReportingRadioBar extends Component<
                   rangeValue={rangeValue}
                   changeRange={this.changeRange}
                   scalarDenomination={scalarDenomination}
-                  stakeValue={stakeValue}
-                  changeStake={this.changeStake}
+                  stakeValue={disputeStake}
+                  changeStake={updateDisputeStake}
                 />
               }
             </>

@@ -244,6 +244,8 @@ export interface DisputingBondsViewProps {
   scalarDenomination: string;
   stakeValue: string;
   changeStake: Function;
+  disputeStake: string;
+  updateDisputeStake: string;
 }
 
 export const DisputingBondsView = (props: DisputingBondsViewProps) => (
