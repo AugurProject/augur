@@ -547,7 +547,7 @@ describe('State API :: Markets :: ', () => {
     expect(marketList.markets[4].id).toEqual(yesNoMarket2.address);
     expect(marketList.markets[5].id).toEqual(scalarMarket2.address);
 
-    // @TODO: Add tests for marketOI & lastLiquidityDepleted filter
+    // @TODO: Add tests for marketOI sorting & filtering markets maxLiquiditySpread = '0'
   }, 120000);
 
   test(':getMarketPriceHistory', async () => {

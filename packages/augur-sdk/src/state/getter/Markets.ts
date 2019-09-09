@@ -28,6 +28,7 @@ import {
 } from '../../index';
 import { calculatePayoutNumeratorsValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
+import { SECONDS_IN_AN_HOUR } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -51,7 +52,15 @@ export enum GetMarketsSortBy {
   timestamp = 'timestamp',
   endTime = 'endTime',
   lastTradedTimestamp = 'lastTradedTimestamp',
-  lastLiquidityDepleted = 'lastLiquidityDepleted',
+}
+
+// Valid market liquidity spreads
+export enum MaxLiquiditySpread {
+  OneHundredPercent = '100', // all liquidity spreads
+  TwentyPercent = '20',
+  FifteenPercent = '15',
+  TenPercent = '10',
+  ZeroPercent = '0', // only markets with depleted liquidity
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
@@ -202,15 +211,17 @@ export interface MarketOrderBookOrder {
   mySize: string;
 }
 
+export interface OutcomeOrderBook {
+  [outcome: number]: {
+    spread: string | null;
+    bids: MarketOrderBookOrder[];
+    asks: MarketOrderBookOrder[];
+  };
+}
+
 export interface MarketOrderBook {
   marketId: string;
-  orderBook: {
-    [outcome: number]: {
-      spread: string | null;
-      bids: MarketOrderBookOrder[];
-      asks: MarketOrderBookOrder[];
-    };
-  };
+  orderBook: OutcomeOrderBook;
 }
 
 export interface LiquidityOrderBookInfo {
@@ -221,6 +232,8 @@ export interface LiquidityOrderBookInfo {
 const outcomeIdType = t.union([OutcomeParam, t.number, t.null, t.undefined]);
 
 export class Markets {
+  static readonly MaxLiquiditySpread = MaxLiquiditySpread;
+
   static getMarketPriceCandlestickParams = t.type({
     marketId: t.string,
     outcome: outcomeIdType,
@@ -420,16 +433,14 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketsParams>
   ): Promise<MarketList> {
-    // Validate params
+    // Validate params & set defaults
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
-    const validLiquiditySpreads = ['10', '15', '20', '100'];
-    if (params.maxLiquiditySpread && !validLiquiditySpreads.includes(params.maxLiquiditySpread)) {
-      throw new Error('Invalid maxLiquiditySpread');
+    params.maxLiquiditySpread = typeof params.maxLiquiditySpread === 'undefined' ? MaxLiquiditySpread.OneHundredPercent : params.maxLiquiditySpread;
+    if (!Object.values(MaxLiquiditySpread).includes(params.maxLiquiditySpread)) {
+      throw new Error('Invalid maxLiquiditySpread: ' + params.maxLiquiditySpread);
     }
-
-    // Set params defaults
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
     params.search = typeof params.search === 'undefined' ? '' : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
@@ -504,6 +515,12 @@ export class Markets {
       }
     }
 
+    if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
+      marketsResults = await setHasRecentlyDepletedLiquidity(db, marketsResults);
+    } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
+      marketsResults = await setLastTradedTimestamp(db, marketsResults);
+    }
+
     // TODO: Break this section into a separate function
     let filteredOutCount = 0; // Markets excluded by maxLiquiditySpread & includeInvalidMarkets filters
     for (let i = marketsResults.length - 1; i >= 0; i--) {
@@ -539,7 +556,7 @@ export class Markets {
 
       let marketData: MarketData[];
       if (
-        params.maxLiquiditySpread ||
+        params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent ||
         params.includeInvalidMarkets ||
         params.sortBy === GetMarketsSortBy.liquidity ||
         params.sortBy === GetMarketsSortBy.marketOI ||
@@ -560,9 +577,11 @@ export class Markets {
         } else if (params.sortBy === GetMarketsSortBy.volume) {
           marketsResults[i][params.sortBy] = marketData[params.sortBy] ? new BigNumber(marketData[params.sortBy]).toString() : '0';
         }
+
         // @TODO Figure out why marketData is sometimes returning no results here
         if (
-          (params.maxLiquiditySpread && marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === '0') ||
+          (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent && !marketsResults[i].hasRecentlyDepletedLiquidity) ||
+          (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent && marketData.length > 0 && marketData[0].liquidity && marketData[0].liquidity[params.maxLiquiditySpread] === MaxLiquiditySpread.ZeroPercent) ||
           (params.includeInvalidMarkets === false && marketData.length > 0 && marketData[0].invalidFilter === true)
         ) {
           includeMarket = false;
@@ -573,12 +592,6 @@ export class Markets {
       if (!includeMarket) {
         marketsResults.splice(i, 1);
       }
-    }
-
-    if (params.sortBy === GetMarketsSortBy.liquidity) {
-      marketsResults = await setLiquidity(db, marketsResults);
-    } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
-      marketsResults = await setLastTradedTimestamp(db, marketsResults);
     }
 
     const meta = getMarketsMeta(marketsResults, filteredOutCount);
@@ -1417,12 +1430,12 @@ async function setLastTradedTimestamp(db: DB, marketsResults: any[]): Promise<Ar
 }
 
 /**
- * Sets the `liquidity` property for the last 24 hours of liquidity for all markets in `marketsResults`.
+ * Sets the `hasRecentlyDepletedLiquidity` property for all markets in `marketsResults`.
  *
- * @param {DB} db Database object to use for getting `liquidity` info
- * @param {Array<Object>} marketsResults Array of market objects to add `liquidity` to
+ * @param {DB} db Database object to use for setting `hasRecentlyDepletedLiquidity`
+ * @param {Array<Object>} marketsResults Array of market objects to add `hasRecentlyDepletedLiquidity` to
  */
-async function setLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
+async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
   // Create market ID => marketsResults index mapping
   const keyedMarkets = {};
   for (let i = 0; i < marketsResults.length; i++) {
@@ -1430,30 +1443,52 @@ async function setLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  
   }
 
   const marketIds = Object.keys(keyedMarkets);
-  const liquidityDB = db.getLiquidityDatabase();
-  const marketsLiquidityDocs = await liquidityDB.getMarketsLiquidity(marketIds);
+  const currentTimestamp = await db.getCurrentTime();
+  const marketsLiquidityDocs = await db.findRecentMarketsLiquidityDocs(currentTimestamp, marketIds);
   const marketsLiquidityInfo = {};
 
   // Save liquidity info for each market to an object
   for (let i = 0; i < marketsLiquidityDocs.length; i++) {
-    if (!marketsLiquidityInfo[marketsLiquidityDocs[i].market]) {
-      marketsLiquidityInfo[marketsLiquidityDocs[i].market] = {
-        hourlyLiquiditySum: new BigNumber(marketsLiquidityDocs[i].liquidity),
+    const marketLiquidityDoc = marketsLiquidityDocs[i];
+    if (!marketsLiquidityInfo[marketLiquidityDoc.market]) {
+      marketsLiquidityInfo[marketLiquidityDoc.market] = {
+        hasLiquidityInLastHour: false,
+        hasLiquidityUnderFifteenPercentSpread: false,
+      };
+    }
+
+    if (
+      marketLiquidityDoc.timestamp >= (currentTimestamp - SECONDS_IN_AN_HOUR.toNumber()) &&
+      marketLiquidityDoc.timestamp < currentTimestamp
+    ) {
+      marketsLiquidityInfo[marketLiquidityDoc.market].hasLiquidityInLastHour = true;
+    }
+    if (marketLiquidityDoc.spread.toString() === MaxLiquiditySpread.FifteenPercent) {
+      marketsLiquidityInfo[marketLiquidityDoc.market].hasLiquidityUnderFifteenPercentSpread = true;
+    }
+
+    if (!marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread]) {
+      marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread] = {
+        hourlyLiquiditySum: new BigNumber(marketLiquidityDoc.liquidity),
         hoursWithLiquidity: 1,
       };
     } else {
-      marketsLiquidityInfo[marketsLiquidityDocs[i].market].hourlyLiquiditySum.plus(marketsLiquidityDocs[i].liquidity);
-      marketsLiquidityInfo[marketsLiquidityDocs[i].market].hoursWithLiquidity++;
+      marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hourlyLiquiditySum.plus(marketLiquidityDoc.liquidity);
+      marketsLiquidityInfo[marketLiquidityDoc.market][marketLiquidityDoc.spread].hoursWithLiquidity++;
     }
   }
 
-  // Set liquidity value for each market
   for (let i = 0; i < marketsResults.length; i++) {
     const marketResult = marketsResults[i];
-    if (marketsLiquidityInfo.hasOwnProperty(marketResult.market)) {
-      marketResult.liquidity = marketsLiquidityInfo[marketResult.market].hourlyLiquiditySum.dividedBy(marketsLiquidityInfo[marketResult.market].hoursWithLiquidity).toString();
-    } else {
-      marketResult.liquidity = '0';
+    marketResult.hasRecentlyDepletedLiquidity = false;
+    // A market's liquidity is considered recently depleted if it had liquidity under
+    // a 15% spread in the last 24 hours, but doesn't currently have liquidity
+    if (
+      marketsLiquidityInfo[marketResult.market] &&
+      marketsLiquidityInfo[marketResult.market].hasLiquidityUnderFifteenPercentSpread &&
+      !marketsLiquidityInfo[marketResult.market].hasLiquidityInLastHour
+    ) {
+      marketResult.hasRecentlyDepletedLiquidity = true;
     }
   }
 
@@ -1461,45 +1496,44 @@ async function setLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  
 }
 
 /**
- * Gets the MarketOrderBook for a market and converts it to a LiquidityOrderBookInfo object.
+ * Gets a MarketOrderBook for a market and converts it to an OrderBook object.
  *
  * @param {Augur} augur Augur object to use for getting MarketOrderBook
  * @param {DB} db DB to use for getting MarketOrderBook
  * @param {string} marketId Market address for which to get order book info
  */
-export async function getLiquidityOrderBookInfo(augur: Augur, db: DB, marketId: string): Promise<LiquidityOrderBookInfo> {
-  const marketOrderBook = await Markets.getMarketOrderBook(augur, db, { marketId });
-  const orderBook: any = marketOrderBook.orderBook;
+export async function getLiquidityOrderBook(augur: Augur, db: DB, marketId: string): Promise<OrderBook> {
+  // TODO Remove any below by making Markets.getMarketOrderBook return a consistent type when the order book is empty
+  const marketOrderBook: any = await Markets.getMarketOrderBook(augur, db, { marketId });
+  const orderBook: OrderBook = {};
 
-  let lowestSpread = undefined;
-
-  for (const outcome in orderBook) {
-    if (orderBook[outcome]) {
-      if (!lowestSpread || orderBook[outcome].spread < lowestSpread) {
-        lowestSpread = new BigNumber(orderBook[outcome].spread).toNumber();
-      }
-      delete orderBook[outcome].spread;
-      if (orderBook[outcome].bids) {
-        for (let i = 0; i < orderBook[outcome].bids.length; i++) {
-          delete orderBook[outcome].bids[i].cumulativeShares;
-          delete orderBook[outcome].bids[i].mySize;
-          orderBook[outcome].bids[i].amount = orderBook[outcome].bids[i].shares;
-          delete orderBook[outcome].bids[i].shares;
+  // `marketOrderBook.orderBook.spread` will be set to null if order book is empty
+  if (typeof marketOrderBook.orderBook.spread === 'undefined') {
+    for (const outcome in marketOrderBook.orderBook) {
+      if (marketOrderBook.orderBook[outcome]) {
+        orderBook[outcome] = {
+          bids: [],
+          asks: [],
+        };
+        if (marketOrderBook.orderBook[outcome].bids) {
+          for (let i = 0; i < marketOrderBook.orderBook[outcome].bids.length; i++) {
+            orderBook[outcome].bids[i] = {
+              amount: marketOrderBook.orderBook[outcome].bids[i].shares,
+              price: marketOrderBook.orderBook[outcome].bids[i].price,
+            };
+          }
         }
-      }
-      if (orderBook[outcome].asks) {
-        for (let i = 0; i < orderBook[outcome].asks.length; i++) {
-          delete orderBook[outcome].asks[i].cumulativeShares;
-          delete orderBook[outcome].asks[i].mySize;
-          orderBook[outcome].asks[i].amount = orderBook[outcome].asks[i].shares;
-          delete orderBook[outcome].asks[i].shares;
+        if (marketOrderBook.orderBook[outcome].asks) {
+          for (let i = 0; i < marketOrderBook.orderBook[outcome].asks.length; i++) {
+            orderBook[outcome].asks[i] = {
+              amount: marketOrderBook.orderBook[outcome].asks[i].shares,
+              price: marketOrderBook.orderBook[outcome].asks[i].price,
+            };
+          }
         }
       }
     }
   }
 
-  return {
-    lowestSpread,
-    orderBook,
-  };
+  return orderBook;
 }
