@@ -9,6 +9,7 @@ import { Subheaders } from 'modules/reporting/common';
 import { RadioBarGroup } from 'modules/common/form';
 import { formatAttoRep } from "utils/format-number";
 import { SCALAR } from 'modules/common/constants';
+import { doInitialReport, contribute } from "modules/contracts/actions/contractCalls";
 
 import Styles from "modules/modal/modal.styles.less";
 
@@ -41,14 +42,17 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
     this.setState({preFilledStake});
   }
 
+  reportingAction = () => {
+    console.log("report")
+  }
+
   render() {
     const {
       closeAction,
       title,
       market,
       rep,
-      isReporting,
-      reportAction
+      isReporting
     } = this.props;
     const s = this.state;
     const {
@@ -126,7 +130,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
               scalarDenomination={scalarDenomination}
               radioButtons={radioButtons}
               defaultSelected={s.checked}
-              reportAction={reportAction}
+              reportAction={this.reportingAction}
             />
           </div>
         </main>
