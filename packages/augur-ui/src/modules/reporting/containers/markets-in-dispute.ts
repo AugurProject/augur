@@ -6,6 +6,7 @@ import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
 
 const mapStateToProps = state => ({
   isConnected: state.connection.isConnected,
+  isLogged: state.connection.isLogged,
   markets: state.marketInfos,
 });
 
@@ -14,28 +15,10 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-  const sortByOptions = [
-    {
-      label: "Amount REP Staked",
-      value: "repStaked",
-      comp(marketA, marketB) {
-        return marketB.repStaked - marketA.repStaked;
-      }
-    },
-    {
-      label: "Dispute Round",
-      value: "disputeRound",
-      comp(marketA, marketB) {
-        return marketB.disputeRound - marketA.disputeRound;
-      }
-    }
-  ];
-
   return {
     ...oP,
     ...sP,
     ...dP,
-    sortByOptions
   };
 };
 

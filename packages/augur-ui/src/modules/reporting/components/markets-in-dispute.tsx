@@ -9,23 +9,37 @@ import { convertMarketInfoToMarketData } from 'utils/convert-marketinfo-marketDa
 
 interface MarketsInDisputeProps {
   markets: Object;
-  sortByOptions: Object;
+  isLogged: boolean;
 }
 
 interface MarketsInDisputeState {
   search: string;
-  // sortBy: string;
+  onlyMyMarkets: boolean;
   selectedTab: string;
   tabs: Array<Tab>;
   filteredData: Array<Market>;
+  didCheck: boolean;
+  sortBy: string;
 }
 
-function filterComp(input, market) {
-  if (!market) return false;
-  return true;
-}
+const sortByOptions = [
+  {
+    label: "Amount REP Staked",
+    value: "repStaked",
+    comp(marketA, marketB) {
+      return parseFloat(marketB.disputeInfo.stakeCompletedTotal) - parseFloat(marketA.disputeInfo.stakeCompletedTotal);
+    }
+  },
+  {
+    label: "Dispute Round",
+    value: "disputeRound",
+    comp(marketA, marketB) {
+      return marketB.disputeInfo.disputeWindow.disputeRound - marketA.disputeInfo.disputeWindow.disputeRound;
+    }
+  }
+];
 
-const { CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW } = REPORTING_STATE;
+const { CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW, OPEN_REPORTING } = REPORTING_STATE;
 
 export default class MarketsInDispute extends Component<
   MarketsInDisputeProps,
@@ -39,6 +53,8 @@ export default class MarketsInDispute extends Component<
     this.state = {
       search: 'Currently Disputing',
       selectedTab: 'current',
+      onlyMyMarkets: false,
+      sortBy: sortByOptions[0].value,
       tabs: [
         {
           key: 'current',
@@ -52,6 +68,7 @@ export default class MarketsInDispute extends Component<
         },
       ],
       filteredData: current,
+      didCheck: false,
     };
   }
 
@@ -60,56 +77,99 @@ export default class MarketsInDispute extends Component<
     for (let [key, value] of Object.entries(markets)) {
       if (
         (value.reportingState === CROWDSOURCING_DISPUTE && onlySlow) ||
-        value.reportingState === AWAITING_NEXT_WINDOW
+        value.reportingState === AWAITING_NEXT_WINDOW || value.reportingState === OPEN_REPORTING
       ) {
         filteredData.push(convertMarketInfoToMarketData(value));
       }
     }
+    console.log("filterDisputingMarkets");
     return filteredData;
   };
 
-  selectTab = (selectedTab: string) => {
-    this.setState({ selectedTab });
+  updateFilter = (input: string) => {
+    const sortByObj = sortByOptions.find(opt => opt.value === input);
+    console.log(sortByObj);
     const { markets } = this.props;
+    const { selectedTab } = this.state;
+    const filteredData = this.filterDisputingMarkets(
+      markets,
+      selectedTab === 'current'
+    );
+
+    console.log(filteredData.sort(sortByObj.comp));
+  }
+
+  applySort = (filteredData: Array<Market>) => {
+    const { sortBy } = this.state;
+    // filterData
+  }
+
+  selectTab = (selectedTab: string) => {
+    const { markets } = this.props;
+    const { tabs } = this.state;
     // let filteredData = this.applySearch(data, this.state.search, data[tab]);
     // filteredData = this.applySortBy(this.state.sortBy, dataFiltered);
     const filteredData = this.filterDisputingMarkets(
       markets,
-      selectedTab === "current"
+      selectedTab === 'current'
     );
-
+    const updatedTabs = tabs;
+    if (selectedTab === 'current') {
+      updatedTabs[0].num = filteredData.length;
+    } else {
+      updatedTabs[1].num = filteredData.length;
+    }
     // @ts-ignore
-    this.setState({ filteredData });
+    this.setState({ selectedTab, filteredData, tabs: updatedTabs });
   };
 
   onSearchChange = (input: string) => {
-    this.setState({ search: input });
-
     const { markets } = this.props;
     const { selectedTab } = this.state;
-    const filteredData = this.filterDisputingMarkets(markets, selectedTab === "current");
+    const filteredData = this.filterDisputingMarkets(
+      markets,
+      selectedTab === 'current'
+    );
     // const tabData = data[selectedTab];
     // const filteredData = this.applySearch(data, input, tabData);
-
-    this.setState({ filteredData });
+    this.setState({ filteredData, search: input });
   };
 
+  toggleOnlyMyPortfolio = () => {
+    const { didCheck, selectedTab } = this.state;
+    const { markets } = this.props;
+    let filteredData;
+
+    if (didCheck) {
+      filteredData = this.filterDisputingMarkets(markets, selectedTab === 'current');
+    }
+    this.setState({ didCheck: !didCheck, filteredData })
+  }
+
   render() {
-    const { selectedTab, tabs, search, filteredData } = this.state;
-    const { sortByOptions } = this.props;
+    const { selectedTab, tabs, search, filteredData, didCheck } = this.state;
+    const { isLogged } = this.props;
+    const checkBox = {
+      label: 'Only Markets In My Portfolio',
+      action: v => {
+        this.setState({ didCheck: !didCheck });
+      },
+      didCheck,
+    };
     return (
       <QuadBox
         title="Markets In Dispute"
         switchHeaders={true}
         showFilterSearch={true}
-        onSearchChange={filterComp}
+        onSearchChange={(search) => console.log(search)}
         sortByOptions={sortByOptions}
-        updateDropdown={filterComp}
+        updateDropdown={this.updateFilter}
         bottomBarContent={
           <SwitchLabelsGroup
             tabs={tabs}
             selectedTab={selectedTab}
             selectTab={this.selectTab}
+            checkBox={isLogged && checkBox}
           />
         }
         content={
