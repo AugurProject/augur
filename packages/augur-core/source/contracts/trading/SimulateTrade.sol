@@ -14,6 +14,7 @@ import 'ROOT/trading/IFillOrder.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 import "ROOT/external/IExchange.sol";
+import "ROOT/trading/IZeroXTradeToken.sol";
 
 
 /**
@@ -37,12 +38,14 @@ contract SimulateTrade is Initializable {
         uint256 orderAmount;
         uint256 orderPrice;
         uint256 orderShares;
+        address orderCreator;
         uint256 fillAmount;
         uint256 sharesUsedInFill;
     }
 
     IAugur public augur;
     IOrders public orders;
+    IZeroXTradeToken zeroXTradeToken;
 
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant GAS_BUFFER = 50000;
@@ -51,6 +54,7 @@ contract SimulateTrade is Initializable {
         endInitialization();
         augur = _augur;
         orders = IOrders(augur.lookup("Orders"));
+        zeroXTradeToken = IZeroXTradeToken(augur.lookup("ZeroXTradeToken"));
     }
 
     function create(Order.TradeDirections _direction, IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, address _sender, IERC20 _kycToken) internal view returns (SimulationData memory) {
@@ -71,34 +75,38 @@ contract SimulateTrade is Initializable {
             orderAmount: orders.getAmount(_orderId),
             orderPrice: orders.getPrice(_orderId),
             orderShares: orders.getOrderSharesEscrowed(_orderId),
+            orderCreator: orders.getOrderCreator(_orderId),
             fillAmount: 0,
             sharesUsedInFill: 0
         });
     }
-/*
-    function createFromSignedOrders(IExchange.Order[] memory _orders, uint256 _amount) internal view returns (SimulationData memory) {
-        Order.Types _type = Order.getOrderTradingTypeFromFillerDirection(_direction);
-        bytes32 _orderId = orders.getBestOrderId(_type, _market, _outcome, _kycToken);
+
+    function createFromSignedOrders(IExchange.Order memory _order, uint256 _amount, address _sender) internal view returns (SimulationData memory) {
+        IZeroXTradeToken.AugurOrderData memory _augurOrderData = zeroXTradeToken.parseAssetData(_order.takerAssetData);
+        Order.Types _type = Order.Types(_augurOrderData.orderType);
+        Order.TradeDirections _direction = _type == Order.Types.Bid ? Order.TradeDirections.Short : Order.TradeDirections.Long;
+        IMarket _market = IMarket(_augurOrderData.marketAddress);
 
         return SimulationData({
             orderType: _type,
             direction: _direction,
             market: _market,
-            kycToken: _kycToken,
-            outcome: _outcome,
+            kycToken: IERC20(_augurOrderData.kycToken),
+            outcome: _augurOrderData.outcome,
             amount: _amount,
-            price: _price,
+            price: _augurOrderData.price,
             numTicks: _market.getNumTicks(),
-            availableShares: getNumberOfAvaialableShares(_direction, _market, _outcome, _sender),
-            orderId: _orderId,
-            orderAmount: orders.getAmount(_orderId),
-            orderPrice: orders.getPrice(_orderId),
-            orderShares: orders.getOrderSharesEscrowed(_orderId),
+            availableShares: getNumberOfAvaialableShares(_direction, _market, _augurOrderData.outcome, _sender),
+            orderId: bytes32(0),
+            orderAmount: _order.makerAssetAmount,
+            orderPrice: _augurOrderData.price,
+            orderShares: getNumberOfAvaialableShares(_direction == Order.TradeDirections.Long ? Order.TradeDirections.Short : Order.TradeDirections.Long, _market, _augurOrderData.outcome, _order.makerAddress),
+            orderCreator: _order.makerAddress,
             fillAmount: 0,
             sharesUsedInFill: 0
         });
     }
-*/
+
     /**
      * @notice Simulate performing a trade
      * @param _direction The trade direction of order. Either LONG==0, or SHORT==1
@@ -117,7 +125,7 @@ contract SimulateTrade is Initializable {
             _simulationData.sharesUsedInFill = _simulationData.fillAmount.min(_simulationData.availableShares);
             _simulationData.availableShares = _simulationData.availableShares.sub(_simulationData.sharesUsedInFill);
 
-            if (orders.getOrderCreator(_simulationData.orderId) != msg.sender) {
+            if (_simulationData.orderCreator != msg.sender) {
                 _sharesDepleted += _simulationData.sharesUsedInFill;
                 _tokensDepleted += (_simulationData.fillAmount - _simulationData.sharesUsedInFill) * (_direction == Order.TradeDirections.Long ? _simulationData.orderPrice : _simulationData.numTicks - _simulationData.orderPrice);
             }
@@ -131,6 +139,7 @@ contract SimulateTrade is Initializable {
             _simulationData.orderAmount = orders.getAmount(_simulationData.orderId);
             _simulationData.orderPrice = orders.getPrice(_simulationData.orderId);
             _simulationData.orderShares = orders.getOrderSharesEscrowed(_simulationData.orderId);
+            _simulationData.orderCreator = orders.getOrderCreator(_simulationData.orderId);
             _numFills += 1;
         }
 
@@ -144,37 +153,46 @@ contract SimulateTrade is Initializable {
         _tokensDepleted = _shareSaleProfit >= _tokensDepleted ? 0 : _tokensDepleted.sub(_shareSaleProfit);
     }
 
-    /*
     function simulateZeroXTrade(IExchange.Order[] memory _orders, uint256 _amount, bool _fillOnly) public view returns (uint256 _sharesFilled, uint256 _tokensDepleted, uint256 _sharesDepleted, uint256 _settlementFees, uint256 _numFills) {
-        SimulationData memory _simulationData = createFromSignedOrders(_orders, _amount);
-        while (_simulationData.orderId != 0 && _simulationData.amount > 0 && gasleft() > GAS_BUFFER && isMatch(_simulationData)) {
-            _simulationData.fillAmount = _simulationData.amount.min(_simulationData.orderAmount);
-            _simulationData.sharesUsedInFill = _simulationData.fillAmount.min(_simulationData.availableShares);
+        require(_orders.length > 0, "Must provide orders to simulate zeroX trade");
+        SimulationData memory _simulationData = createFromSignedOrders(_orders[0], _amount, msg.sender);
+        uint256 _orderIndex = 0;
+        while (_orderIndex < _orders.length && _simulationData.amount > 0 && gasleft() > GAS_BUFFER) {
+            if (_simulationData.orderCreator != msg.sender) {
+                _simulationData.fillAmount = _simulationData.amount.min(_simulationData.orderAmount);
+                _simulationData.sharesUsedInFill = _simulationData.fillAmount.min(_simulationData.availableShares);
+                _simulationData.availableShares = _simulationData.availableShares.sub(_simulationData.sharesUsedInFill);
 
-            if (orders.getOrderCreator(_simulationData.orderId) != msg.sender) {
                 _sharesDepleted += _simulationData.sharesUsedInFill;
-                _tokensDepleted += (_simulationData.fillAmount - _simulationData.sharesUsedInFill) * (_direction == Order.TradeDirections.Long ? _simulationData.orderPrice : _simulationData.numTicks - _simulationData.orderPrice);
+                _tokensDepleted += (_simulationData.fillAmount - _simulationData.sharesUsedInFill) * (_simulationData.direction == Order.TradeDirections.Long ? _simulationData.orderPrice : _simulationData.numTicks - _simulationData.orderPrice);
+
+                _sharesFilled += _simulationData.fillAmount;
+                _settlementFees += getSettlementFees(_simulationData, _simulationData.sharesUsedInFill);
+
+                _simulationData.amount -= _simulationData.fillAmount;
+                _numFills += 1;
             }
 
-            _sharesFilled += _simulationData.fillAmount;
-            _settlementFees += getSettlementFees(_simulationData, _simulationData.sharesUsedInFill);
-
-            _simulationData.amount -= _simulationData.fillAmount;
-
-            _simulationData.orderId = orders.getWorseOrderId(_simulationData.orderId);
-            _simulationData.orderAmount = orders.getAmount(_simulationData.orderId);
-            _simulationData.orderPrice = orders.getPrice(_simulationData.orderId);
-            _simulationData.orderShares = orders.getOrderSharesEscrowed(_simulationData.orderId);
-            _numFills += 1;
+            _orderIndex += 1;
+            if (_orderIndex >= _orders.length) {
+                break;
+            }
+            IZeroXTradeToken.AugurOrderData memory _augurOrderData = zeroXTradeToken.parseAssetData(_orders[_orderIndex].takerAssetData);
+            _simulationData.orderAmount = _orders[_orderIndex].makerAssetAmount;
+            _simulationData.orderPrice = _augurOrderData.price;
+            _simulationData.orderCreator = _orders[_orderIndex].makerAddress;
+            _simulationData.orderShares = getNumberOfAvaialableShares(_simulationData.direction == Order.TradeDirections.Long ? Order.TradeDirections.Short : Order.TradeDirections.Long, _simulationData.market, _simulationData.outcome, _simulationData.orderCreator);
         }
 
         if (_simulationData.amount > 0 && !_fillOnly) {
             uint256 _sharesUsedInCreate = _simulationData.amount.min(_simulationData.availableShares);
             _sharesDepleted += _sharesUsedInCreate;
-            _tokensDepleted += (_simulationData.amount - _sharesUsedInCreate) * (_direction == Order.TradeDirections.Long ? _simulationData.price : _simulationData.numTicks - _simulationData.price);
+            _tokensDepleted += (_simulationData.amount - _sharesUsedInCreate) * (_simulationData.direction == Order.TradeDirections.Long ? _simulationData.price : _simulationData.numTicks - _simulationData.price);
         }
+
+        uint256 _shareSaleProfit = _sharesDepleted * (_simulationData.direction == Order.TradeDirections.Short ? _simulationData.price : _simulationData.numTicks - _simulationData.price);
+        _tokensDepleted = _shareSaleProfit >= _tokensDepleted ? 0 : _tokensDepleted.sub(_shareSaleProfit);
     }
-*/
 
     function getSettlementFees(SimulationData memory _simulationData, uint256 _sharesUsedInFill) private view returns (uint256) {
         uint256 _completeSetsSold = _sharesUsedInFill.min(_simulationData.orderShares);

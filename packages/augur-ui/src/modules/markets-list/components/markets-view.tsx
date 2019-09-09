@@ -36,8 +36,7 @@ interface MarketsViewProps {
   isSearching: boolean;
   includeInvalidMarkets: string;
   universe?: string;
-  defaultFilter: string;
-  defaultSort: string;
+  marketSort: string;
   setLoadMarketsPending: Function;
   updateMarketsListMeta: Function;
   selectedCategories: string[];
@@ -46,12 +45,13 @@ interface MarketsViewProps {
   filteredOutCount: number;
   marketFilter: string;
   updateMarketsFilter: Function;
+  updateMarketsListCardFormat: Function;
+  marketCardFormat: string;
+  updateMobileMenuState: Function;
 }
 
 interface MarketsViewState {
-  filter: string;
-  sort: string;
-  filterSortedMarkets: Array<string>;
+  filterSortedMarkets: string[];
   isSearchingMarkets: boolean;
   marketCount: number;
   limit: number;
@@ -75,8 +75,6 @@ export default class MarketsView extends Component<
     super(props);
 
     this.state = {
-      filter: props.defaultFilter,
-      sort: props.defaultSort,
       filterSortedMarkets: [],
       isSearchingMarkets: true,
       marketCount: 0,
@@ -86,7 +84,7 @@ export default class MarketsView extends Component<
     };
 
     this.setPageNumber = this.setPageNumber.bind(this);
-    this.updateFilter = this.updateFilter.bind(this);
+    this.updateLimit = this.updateLimit.bind(this);
     this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
     this.loadMarketsByFilter = props.loadMarketsByFilter.bind(this);
   }
@@ -119,6 +117,7 @@ export default class MarketsView extends Component<
       nextProps.maxLiquiditySpread !== this.props.maxLiquiditySpread ||
       nextProps.includeInvalidMarkets !== this.props.includeInvalidMarkets ||
       nextProps.marketFilter !== this.props.marketFilter ||
+      nextProps.marketSort !== this.props.marketSort ||
       nextProps.search !== this.props.search
     ) {
       this.setState({
@@ -131,6 +130,7 @@ export default class MarketsView extends Component<
     const {
       search,
       marketFilter,
+      marketSort,
       maxFee,
       selectedCategories,
       maxLiquiditySpread,
@@ -143,6 +143,7 @@ export default class MarketsView extends Component<
         selectedCategories !== prevProps.selectedCategories ||
         maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
         marketFilter !== prevProps.marketFilter ||
+        marketSort !== prevProps.marketSort ||
         maxFee !== prevProps.maxFee ||
         includeInvalidMarkets !== prevProps.includeInvalidMarkets)
     ) {
@@ -163,12 +164,8 @@ export default class MarketsView extends Component<
   }
 
   setPageNumber(offset) {
-    this.updateFilter(Object.assign(this.state, { offset }));
-  }
-
-  updateFilter(params) {
-    const { filter, sort } = params;
-    this.setState({ filter, sort }, this.updateFilteredMarkets);
+    this.setState({ offset });
+    this.updateFilteredMarkets();
   }
 
   updateFilteredMarkets() {
@@ -179,9 +176,10 @@ export default class MarketsView extends Component<
       maxLiquiditySpread,
       includeInvalidMarkets,
       marketFilter,
+      marketSort,
     } = this.props;
 
-    const { sort, limit, offset } = this.state;
+    const { limit, offset } = this.state;
 
     this.props.setLoadMarketsPending(true);
     this.setState({ isSearchingMarkets: true });
@@ -190,7 +188,7 @@ export default class MarketsView extends Component<
         categories: selectedCategories ? selectedCategories : [],
         search,
         filter: marketFilter,
-        sort,
+        sort: marketSort,
         maxFee,
         limit,
         offset,
@@ -229,10 +227,16 @@ export default class MarketsView extends Component<
       location,
       markets,
       toggleFavorite,
+      marketCardFormat,
+      selectedCategories,
+      updateMarketsListCardFormat,
+      search,
+      updateMobileMenuState,
+      updateMarketsFilter,
+      marketFilter,
+      marketSort,
     } = this.props;
     const {
-      filter,
-      sort,
       filterSortedMarkets,
       isSearchingMarkets,
       marketCount,
@@ -258,8 +262,8 @@ export default class MarketsView extends Component<
       return (
         <MarketStateLabel
           key={idx}
-          handleClick={() => this.props.updateMarketsFilter(marketState.value)}
-          selected={this.props.marketFilter === marketState.value}
+          handleClick={() => updateMarketsFilter(marketState.value)}
+          selected={marketFilter === marketState.value}
           loading={isSearchingMarkets}
           count={this.state.marketCount}
           label={marketState.label}
@@ -280,12 +284,14 @@ export default class MarketsView extends Component<
         <MarketsHeader
           location={location}
           isSearchingMarkets={isSearchingMarkets}
-          filter={filter}
-          sort={sort}
-          updateFilter={this.updateFilter}
+          filter={marketFilter}
+          sort={marketSort}
           history={history}
-          selectedCategory={this.props.selectedCategories}
-          search={this.props.search}
+          selectedCategory={selectedCategories}
+          search={search}
+          updateMarketsListCardFormat={updateMarketsListCardFormat}
+          marketCardFormat={marketCardFormat}
+          updateMobileMenuState={updateMobileMenuState}
         />
 
         <div className={Styles.MarketLabelGroup}>
@@ -342,10 +348,11 @@ export default class MarketsView extends Component<
           linkType={TYPE_TRADE}
           isMobile={isMobile}
           limit={limit}
-          updateLimit={limit => this.updateLimit(limit)}
+          updateLimit={this.updateLimit}
           offset={offset}
           setOffset={this.setPageNumber}
           isSearchingMarkets={isSearchingMarkets}
+          marketCardFormat={marketCardFormat}
         />
 
         <FilterNotice
