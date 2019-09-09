@@ -84,15 +84,6 @@ export enum ControlMessageType {
   WebsocketError = "WebsocketError",
 }
 
-// Valid market liquidity spreads
-export enum MaxLiquiditySpread {
-  OneHundredPercent = '100', // all liquidity spreads
-  TwentyPercent = '20',
-  FifteenPercent = '15',
-  TenPercent = '10',
-  ZeroPercent = '0', // only markets with depleted liquidity
-}
-
 export const ETHER = new ethersUtils.BigNumber(10).pow(18);
 
 export const TRADE_GAS_BUFFER = new BigNumber("100000", 10);

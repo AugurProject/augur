@@ -28,7 +28,7 @@ import {
 } from '../../index';
 import { calculatePayoutNumeratorsValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
-import { MaxLiquiditySpread, SECONDS_IN_AN_HOUR } from '../../constants';
+import { SECONDS_IN_AN_HOUR } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -52,6 +52,15 @@ export enum GetMarketsSortBy {
   timestamp = 'timestamp',
   endTime = 'endTime',
   lastTradedTimestamp = 'lastTradedTimestamp',
+}
+
+// Valid market liquidity spreads
+export enum MaxLiquiditySpread {
+  OneHundredPercent = '100', // all liquidity spreads
+  TwentyPercent = '20',
+  FifteenPercent = '15',
+  TenPercent = '10',
+  ZeroPercent = '0', // only markets with depleted liquidity
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
@@ -223,6 +232,8 @@ export interface LiquidityOrderBookInfo {
 const outcomeIdType = t.union([OutcomeParam, t.number, t.null, t.undefined]);
 
 export class Markets {
+  static readonly MaxLiquiditySpread = MaxLiquiditySpread;
+
   static getMarketPriceCandlestickParams = t.type({
     marketId: t.string,
     outcome: outcomeIdType,

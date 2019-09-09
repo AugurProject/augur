@@ -1,11 +1,11 @@
 import { AbstractDB } from './AbstractDB';
 import { SyncStatus } from './SyncStatus';
 import { DB } from './DB';
-import { MaxLiquiditySpread, SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR } from '../../constants';
+import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR } from '../../constants';
 import { GetLiquidityParams, Liquidity } from '../../api/Liquidity';
 import { Augur } from '../../Augur';
 import { BigNumber } from 'bignumber.js';
-import { getLiquidityOrderBook } from '../../state/getter/Markets';
+import { MaxLiquiditySpread, getLiquidityOrderBook } from '../../state/getter/Markets';
 import { Doc, MarketType, OrderEventType } from '../logs/types';
 import * as _ from 'lodash';
 
