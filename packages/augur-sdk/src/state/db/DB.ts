@@ -777,7 +777,8 @@ export class DB {
    * @returns {Promise<MarketHourlyLiquidity[]>}
    */
   async findMarketsLiquidityDocs(marketIds?: string[]): Promise<MarketHourlyLiquidity[]> {
-    const currentTimestamp = new BigNumber(Math.floor(Date.now() / 1000));
+    const highestBlock = await this.augur.provider.getBlock(await this.syncStatus.getLowestSyncingBlockForAllDBs());
+    const currentTimestamp = new BigNumber(highestBlock.timestamp);
     const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
     const mostRecentOnTheHourTimestamp = currentTimestamp.minus(currentTimestamp.mod(secondsPerHour));
     const selectorConditions: any[] = [

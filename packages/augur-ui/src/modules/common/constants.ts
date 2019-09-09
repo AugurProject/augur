@@ -198,7 +198,7 @@ export const MAX_SPREAD_ALL_SPREADS = Getters.Markets.MaxLiquiditySpread.OneHund
 export const MAX_SPREAD_20_PERCENT = Getters.Markets.MaxLiquiditySpread.TwentyPercent;
 export const MAX_SPREAD_15_PERCENT = Getters.Markets.MaxLiquiditySpread.FifteenPercent;
 export const MAX_SPREAD_10_PERCENT = Getters.Markets.MaxLiquiditySpread.TenPercent;
-export const MAX_SPREAD_RECENTLY_DEPLETED = Getters.Markets.MaxLiquiditySpread.ZeroPercennt;
+export const MAX_SPREAD_RECENTLY_DEPLETED = Getters.Markets.MaxLiquiditySpread.ZeroPercent;
 
 export const spreadFilters = [
   { header: 'All', value: MAX_SPREAD_ALL_SPREADS },
