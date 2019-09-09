@@ -280,6 +280,9 @@ export interface LiquidityOrder {
   outcomeId: number;
   status?: string;
   hash?: string;
+  mySize?: string;
+  cumulativeShares?: string;
+  shares: string;
 }
 export interface NewMarketPropertiesValidations {
   description?: string;
