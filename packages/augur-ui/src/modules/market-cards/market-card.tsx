@@ -216,12 +216,12 @@ export default class MarketCard extends React.Component<
                 <>
                   <LabelValue
                     label="VOL"
-                    value={volumeFormatted.formatted}
+                    value={volumeFormatted.roundedFormatted}
                   />
                   {!condensed &&
                     <LabelValue
                       label="OI"
-                      value={openInterestFormatted.formatted}
+                      value={openInterestFormatted.roundedFormatted}
                     />
                   }
                 </>
