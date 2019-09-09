@@ -1,19 +1,44 @@
 @import (reference) '~assets/styles/shared';
 
 .Pagination {
-  align-content: center;
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  max-width: 365px;
-  width: fit-content;
 
-  @media @breakpoint-mobile {
-    flex-flow: row wrap;
-    justify-content: center;
+  > div {
+    margin-bottom: @size-48;
+    margin-left: @size-16;
+
+    @media @breakpoint-mobile {
+      margin: @size-16 0 @size-48 0;
+    }
   }
 
-  > span {
+  button > span::before {
+    content: 'Show:';
+
+    font-weight: normal;
+    padding-right: @size-4;
+    margin-bottom: @size-40;
+  }
+
+  @media @breakpoint-mobile {
+    align-items: center;
+    flex-direction: column;
+  }
+
+  section {
+    align-content: center;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    max-width: 365px;
+    width: fit-content;
+
+    @media @breakpoint-mobile {
+      flex-flow: row wrap;
+      justify-content: center;
+    }
+  }
+  section > span {
     .mono-14;
 
     color: @color-tertiary-text;
@@ -21,15 +46,7 @@
     margin: auto;
     white-space: nowrap;
   }
-
-  button > span::before {
-    content: 'Show:';
-    font-weight: normal;
-    padding-right: @size-4;
-    margin-bottom: @size-40;
-  }
-
-  > button {
+  section > button {
     .mono-14;
 
     color: @color-tertiary-text;
@@ -38,35 +55,34 @@
     width: @size-32;
   }
 
-  > button:last-of-type {
+  section > button:last-of-type {
     margin: 0;
   }
 
-  > div:last-of-type {
+  section > div:last-of-type {
     margin: 0 0 @size-48 @size-24;
 
     @media @breakpoint-mobile {
       flex-basis: 100%;
       margin: @size-16 0 0 0;
-      width: 0;
     }
   }
 
   @media @breakpoint-mobile {
-    > button {
+    section > button {
       display: none;
       margin: 0;
     }
 
-    > button:first-of-type,
-    > button:last-of-type {
+    section > button:first-of-type,
+    section > button:last-of-type {
       display: block;
       width: calc(@size-32 * 3);
     }
 
-    > span {
+    section > span {
       display: block;
-      padding: 0 @size-4;
+      padding: 0 @size-16;
     }
   }
 }

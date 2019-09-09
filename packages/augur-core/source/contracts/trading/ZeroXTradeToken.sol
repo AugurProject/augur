@@ -9,20 +9,13 @@ import "ROOT/trading/ICreateOrder.sol";
 import "ROOT/trading/IFillOrder.sol";
 import "ROOT/trading/ICash.sol";
 import "ROOT/trading/Order.sol";
+import "ROOT/trading/IZeroXTradeToken.sol";
 import 'ROOT/libraries/Initializable.sol';
 import "ROOT/IAugur.sol";
 
 
-contract ZeroXTradeToken is Initializable {
+contract ZeroXTradeToken is Initializable, IZeroXTradeToken {
     using SafeMathUint256 for uint256;
-
-    struct AugurOrderData {
-        address marketAddress;                  // Market Address
-        uint256 price;                          // Price
-        uint8 outcome;                          // Outcome
-        uint8 orderType;                        // Order Type
-        address kycToken;                       // KYC Token
-    }
 
     bool transferFromAllowed = false;
 

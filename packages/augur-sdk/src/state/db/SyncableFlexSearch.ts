@@ -1,4 +1,4 @@
-import { MarketCreated } from "../../event-handlers";
+import { MarketCreated } from '../../event-handlers';
 
 // because flexsearch is a UMD type lib
 const flexSearch = require('flexsearch');

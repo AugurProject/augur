@@ -5,7 +5,6 @@ import {
   MARKET_SORT,
   MARKET_MAX_FEES,
   TRANSACTION_PERIOD,
-  HAS_OPEN_ORDERS,
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
@@ -25,7 +24,6 @@ const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_MAX_SPREAD]: MAX_SPREAD_10_PERCENT,
   [MARKET_SHOW_INVALID]: INVALID_OPTIONS.Hide,
   [TRANSACTION_PERIOD]: DAY,
-  [HAS_OPEN_ORDERS]: false,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);

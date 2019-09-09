@@ -72,12 +72,6 @@ export const loadMarketsByFilter = (
       sort.isSortDescending = true;
       break;
     }
-    case MARKET_SORT_PARAMS.LAST_LIQUIDITY_DEPLETED: {
-      // Recently depleted liquidity
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.lastLiquidityDepleted;
-      sort.isSortDescending = true;
-      break;
-    }
     case MARKET_SORT_PARAMS.CREATION_TIME: {
       // Sort By Creation Date (most recent first):
       sort.sortBy = Getters.Markets.GetMarketsSortBy.timestamp;
@@ -132,18 +126,9 @@ export const loadMarketsByFilter = (
     limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
+    maxLiquiditySpread: filterOptions.maxLiquiditySpread,
     ...sort,
   };
-
-  if (
-    filterOptions.maxLiquiditySpread &&
-    filterOptions.maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS
-  ) {
-    params = Object.assign(params, {
-      ...params,
-      maxLiquiditySpread: filterOptions.maxLiquiditySpread,
-    });
-  }
 
   const markets = await augur.getMarkets({ ...params });
   const marketInfos = markets.markets.reduce(

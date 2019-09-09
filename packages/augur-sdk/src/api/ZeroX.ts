@@ -63,6 +63,12 @@ export interface ZeroXTradeOrder {
   takerAssetData: string;
 }
 
+export interface MatchingOrders {
+  orders: ZeroXTradeOrder[];
+  signatures: string[];
+  orderIds: string[];
+}
+
 export class ZeroX {
   private readonly augur: Augur;
   private readonly meshClient: WSClient;
@@ -102,55 +108,15 @@ export class ZeroX {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
-    // TODO a more specific getter for this that does a lot of the processing below would likely be more appropriate
-    const orderType = params.direction == 0 ? "1" : "0";
-    const outcome = params.outcome.toString();
-    let zeroXOrders = await this.augur.getZeroXOrders({
-      marketId: params.market,
-      outcome: params.outcome,
-      orderType,
-      matchPrice: `0x${params.price.toString(16)}`,
-      ignoreOrders
-    });
+    const { orders, signatures, orderIds } = await this.getMatchingOrders(params, ignoreOrders);
 
-    if (_.size(zeroXOrders) < 1 && !params.doNotCreateOrders) {
+    if (_.size(orders) < 1 && !params.doNotCreateOrders) {
       await this.placeOnChainOrder(params);
       return;
     }
 
-    const ordersMap = zeroXOrders[params.market][outcome][orderType];
-    let sortedOrders = _.sortBy(_.values(ordersMap), (order) =>{ return order.price });
-
-    const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
-
-    const ordersData = params.direction == 0 ? _.take(sortedOrders, loopLimit.toNumber()) : _.takeRight(sortedOrders, loopLimit.toNumber());
-    
-    // Update orders that have been used in this trade group
-    let orderIds = _.map(ordersData, (orderData) => {
-      return orderData.orderId;
-    });
-    orderIds = orderIds.concat(ignoreOrders);
-
-    const orders: ZeroXTradeOrder[] = _.map(ordersData, (orderData) => {
-      return {
-        makerAddress: orderData.owner,
-        takerAddress: NULL_ADDRESS,
-        feeRecipientAddress: NULL_ADDRESS,
-        senderAddress: NULL_ADDRESS,
-        makerAssetAmount: orderData.makerAssetAmount,
-        takerAssetAmount: orderData.takerAssetAmount,
-        makerFee: new BigNumber(0),
-        takerFee: new BigNumber(0),
-        expirationTimeSeconds: orderData.expirationTimeSeconds,
-        salt: orderData.salt,
-        makerAssetData: orderData.makerAssetData,
-        takerAssetData: orderData.takerAssetData,
-      };
-    })
-
-    const signatures = _.map(ordersData, (orderData) => {
-      return orderData.signature;
-    });
+    // Update list of used order ids
+    ignoreOrders = orderIds.concat(ignoreOrders || []);
 
     let result: Event[] = [];
 
@@ -218,9 +184,22 @@ export class ZeroX {
 
   async simulateTrade(params: ZeroXPlaceTradeDisplayParams): Promise<ZeroXSimulateTradeData> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
+    const { orders, signatures, orderIds } = await this.getMatchingOrders(onChainTradeParams, []);
+    let simulationData: BigNumber[];
+    if (orders.length < 1 && !params.doNotCreateOrders) {
+      simulationData = await this.simulateMakeOrder(onChainTradeParams);
+    } else if (orders.length < 1) {
+      return {
+        sharesFilled: new BigNumber(0),
+        tokensDepleted: new BigNumber(0),
+        sharesDepleted: new BigNumber(0),
+        settlementFees: new BigNumber(0),
+        numFills: new BigNumber(0),
+      }
+    } else {
+      simulationData = await this.augur.contracts.simulateTrade.simulateZeroXTrade_(orders, onChainTradeParams.amount, params.doNotCreateOrders) as unknown as BigNumber[];
+    }
     const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
-    // TODO simulate 0x trade
-    const simulationData: BigNumber[] = await this.augur.contracts.simulateTrade.simulateTrade_(new BigNumber(params.direction), params.market, new BigNumber(params.outcome), onChainTradeParams.amount, onChainTradeParams.price, params.kycToken, params.doNotCreateOrders) as unknown as BigNumber[];
     const displaySharesFilled = convertOnChainAmountToDisplayAmount(simulationData[0], tickSize);
     const displaySharesDepleted = convertOnChainAmountToDisplayAmount(simulationData[2], tickSize);
     const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
@@ -233,6 +212,70 @@ export class ZeroX {
       settlementFees: displaySettlementFees,
       numFills,
     };
+  }
+
+  simulateMakeOrder(params: ZeroXPlaceTradeParams): BigNumber[] {
+    const sharesDepleted = BigNumber.min(params.shares, params.amount);
+    const price = params.direction == 0 ? params.price : params.numTicks.minus(params.price);
+    const tokensDepleted = params.amount.minus(sharesDepleted).multipliedBy(price);
+    return [
+      new BigNumber(0),
+      tokensDepleted,
+      sharesDepleted,
+      new BigNumber(0),
+      new BigNumber(0),
+    ]
+  }
+
+  // TODO a more specific getter for this that does a lot of the processing below would likely be more appropriate
+  async getMatchingOrders(params: ZeroXPlaceTradeParams, ignoreOrders?: string[]): Promise<MatchingOrders> {
+    const orderType = params.direction == 0 ? "1" : "0";
+    const outcome = params.outcome.toString();
+    let zeroXOrders = await this.augur.getZeroXOrders({
+      marketId: params.market,
+      outcome: params.outcome,
+      orderType,
+      matchPrice: `0x${params.price.toString(16)}`,
+      ignoreOrders
+    });
+
+    if (_.size(zeroXOrders) < 1) {
+      return { orders: [], signatures: [], orderIds: []};
+    }
+
+    const ordersMap = zeroXOrders[params.market][outcome][orderType];
+    let sortedOrders = _.sortBy(_.values(ordersMap), (order) =>{ return order.price });
+
+    const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
+
+    const ordersData = params.direction == 0 ? _.take(sortedOrders, loopLimit.toNumber()) : _.takeRight(sortedOrders, loopLimit.toNumber());
+
+    let orderIds = _.map(ordersData, (orderData) => {
+      return orderData.orderId;
+    });
+
+    const orders: ZeroXTradeOrder[] = _.map(ordersData, (orderData) => {
+      return {
+        makerAddress: orderData.owner,
+        takerAddress: NULL_ADDRESS,
+        feeRecipientAddress: NULL_ADDRESS,
+        senderAddress: NULL_ADDRESS,
+        makerAssetAmount: orderData.makerAssetAmount,
+        takerAssetAmount: orderData.takerAssetAmount,
+        makerFee: new BigNumber(0),
+        takerFee: new BigNumber(0),
+        expirationTimeSeconds: orderData.expirationTimeSeconds,
+        salt: orderData.salt,
+        makerAssetData: orderData.makerAssetData,
+        takerAssetData: orderData.takerAssetData,
+      };
+    })
+
+    const signatures = _.map(ordersData, (orderData) => {
+      return orderData.signature;
+    });
+
+    return { orders, signatures, orderIds };
   }
 
   async checkIfTradeValid(params: ZeroXPlaceTradeParams): Promise<string | null> {
