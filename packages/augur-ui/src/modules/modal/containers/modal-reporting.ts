@@ -4,9 +4,9 @@ import ModalReporting from "modules/modal/reporting";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { selectMarket } from "modules/markets/selectors/market";
 import { REPORTING_STATE } from 'modules/common/constants';
 import { formatAttoRep } from "utils/format-number";
+import { doInitialReport } from "modules/contracts/actions/contractCalls";
 
 const mapStateToProps = (state, ownProps) => ({
   modal: state.modal,
@@ -19,7 +19,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
+  const formAction = doInitialReport;
   const isReporting = sP.market.reportingState === REPORTING_STATE.OPEN_REPORTING || sP.market.reportingState === REPORTING_STATE.DESIGNATED_REPORTING;
+  if (isReporting) {
+
+  }
   return {
     isReporting: isReporting,
     title: isReporting ? "Report on this market" : "Dispute or Support this market’s tenatative winning Outcome",

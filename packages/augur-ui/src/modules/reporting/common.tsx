@@ -349,11 +349,6 @@ export class ReportingBondsView extends Component<
           label="initial reporter stake"
           value={initialReporterStake}
         />
-        <LinearPropertyLabel
-          key="estimatedGasFee"
-          label="Estimated Gas Fee"
-          value={reportingGasFee}
-        />
         <PreFilledStake
           showInput={showInput}
           toggleInput={this.toggleInput}

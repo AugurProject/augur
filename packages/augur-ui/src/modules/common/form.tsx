@@ -850,7 +850,6 @@ export class ReportingRadioBar extends Component<
     } = this.props;
 
     const initialReporterStake = formatNumber("100");
-    const reportingGasFee = formatNumber("900");
     const reportAction = () => {console.log("confirm report")};
     const { stakeValue, rangeValue } = this.state;
 
@@ -898,7 +897,6 @@ export class ReportingRadioBar extends Component<
               changeRange={this.changeRange}
               scalarDenomination={scalarDenomination}
               initialReporterStake={initialReporterStake}
-              reportingGasFee={reportingGasFee}
               reportAction={reportAction}
             />
           }
