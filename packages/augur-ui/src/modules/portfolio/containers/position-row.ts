@@ -7,7 +7,7 @@ import { Properties } from "modules/common/row-column";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
-const { COLUMN_TYPES } = constants;
+const { COLUMN_TYPES, SHORT, BUY, SELL } = constants;
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -20,6 +20,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     extendedView,
     isFirst,
     showExpandedToggleOnMobile,
+    updateSelectedOrderProperties
   } = oP;
 
   const columnProperties: Array<Properties> = [
@@ -39,6 +40,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.VALUE,
       value: position.quantity,
       keyId: "position-quantity-" + position.id,
+      action: () => {
+        console.log(position.quantity);
+        updateSelectedOrderProperties({orderQuantity: position.quantity.value, selectedNav: position.type === SHORT ? SELL : BUY});
+      }
     },
     {
       key: "orderQuantity",

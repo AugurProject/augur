@@ -62,7 +62,14 @@ function selectColumn(columnType: string, properties: Properties) {
                 location={properties.location}
               />
             }
-            <ValueLabel value={properties.value} keyId={properties.keyId} showEmptyDash={properties.showEmptyDash} />
+            {properties.action && 
+              <button onClick={properties.action}>
+                <ValueLabel value={properties.value} keyId={properties.keyId} showEmptyDash={properties.showEmptyDash} />
+              </button>
+            }
+            {!properties.action && 
+              <ValueLabel value={properties.value} keyId={properties.keyId} showEmptyDash={properties.showEmptyDash} />
+            }
           </>
         )
       );

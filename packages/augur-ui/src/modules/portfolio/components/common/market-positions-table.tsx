@@ -12,6 +12,7 @@ export interface MarketPositionsTableProps {
   positions: Array<PositionData>;
   extendedView: boolean;
   marketId: string;
+  updateSelectedOrderProperties: Function;
 }
 
 export interface MarketPositionsTableState {
@@ -35,6 +36,7 @@ export class MarketPositionsTable extends React.Component<
       positions,
       marketId,
       extendedView,
+      updateSelectedOrderProperties
     } = this.props;
     const { showPercent } = this.state;
 
@@ -61,6 +63,7 @@ export class MarketPositionsTable extends React.Component<
               isSingle={extendedView}
               showExpandedToggleOnMobile
               isFirst={index === 0}
+              updateSelectedOrderProperties={updateSelectedOrderProperties}
             />
           ))}
         </div>
