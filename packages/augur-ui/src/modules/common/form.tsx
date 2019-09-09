@@ -28,7 +28,7 @@ import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView, DisputingBondsView, ReportingBondsView } from 'modules/reporting/common';
-import { formatRep } from "utils/format-number";
+import { formatRep, formatNumber } from "utils/format-number";
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -849,9 +849,12 @@ export class ReportingRadioBar extends Component<
       isReporting
     } = this.props;
 
-    const s = this.state;
+    const initialReporterStake = formatNumber("100");
+    const reportingGasFee = formatNumber("900");
+    const reportAction = () => {console.log("confirm report")};
+    const { stakeValue, rangeValue } = this.state;
 
-    const inputtedStake = s.stakeValue === "" || isNaN(s.stakeValue) ? 0 : s.stakeValue;
+    const inputtedStake = stakeValue === "" || isNaN(stakeValue) ? 0 : stakeValue;
     const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
 
     return (
@@ -870,30 +873,33 @@ export class ReportingRadioBar extends Component<
         <div>
           {!isReporting && // for disputing or for scalar
             <>
-              {!stake.tentativeWinning && 
+              {!stake.tentativeWinning &&
                 <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
               }
-              {stake.tentativeWinning && 
+              {stake.tentativeWinning &&
                 <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
               }
-              {checked && 
-                <DisputingBondsView 
+              {checked &&
+                <DisputingBondsView
                   scalar={scalar}
-                  rangeValue={s.rangeValue}
+                  rangeValue={rangeValue}
                   changeRange={this.changeRange}
                   scalarDenomination={scalarDenomination}
-                  stakeValue={s.stakeValue}
+                  stakeValue={stakeValue}
                   changeStake={this.changeStake}
                 />
               }
             </>
           }
           {isReporting && checked &&
-            <ReportingBondsView 
+            <ReportingBondsView
               scalar={scalar}
-              rangeValue={s.rangeValue}
+              rangeValue={rangeValue}
               changeRange={this.changeRange}
               scalarDenomination={scalarDenomination}
+              initialReporterStake={initialReporterStake}
+              reportingGasFee={reportingGasFee}
+              reportAction={reportAction}
             />
           }
         </div>

@@ -5,6 +5,7 @@ import { AnyAction } from "redux";
 import { EthersSigner } from "contract-dependencies-ethers/build/ContractDependenciesEthers";
 import { Getters } from "@augurproject/sdk";
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
+import { BigNumber } from "utils/create-big-number";
 
 export enum SizeTypes {
   SMALL = "small",
@@ -79,6 +80,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   defaultSelectedOutcomeId: number;
   minPriceBigNumber: BigNumber;
   maxPriceBigNumber: BigNumber;
+  noShowBondAmountFormatted: FormattedNumber,
   creationTimeFormatted: DateFormattedObject;
   endTimeFormatted: DateFormattedObject;
   reportingFeeRatePercent: FormattedNumber;
@@ -393,7 +395,7 @@ export interface MarketsList {
     categories: object;
   };
   selectedCategories: string[];
-  marketCardFormat: sring;
+  marketCardFormat: string;
 }
 
 export interface FilledOrders {

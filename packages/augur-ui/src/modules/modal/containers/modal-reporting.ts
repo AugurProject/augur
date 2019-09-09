@@ -10,7 +10,7 @@ import { formatAttoRep } from "utils/format-number";
 
 const mapStateToProps = (state, ownProps) => ({
   modal: state.modal,
-  market: selectMarket(ownProps.marketId),
+  market: ownProps.market,
   rep: formatAttoRep(state.loginAccount.balances.rep).formatted
 });
 

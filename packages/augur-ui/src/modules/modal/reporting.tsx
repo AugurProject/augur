@@ -34,12 +34,12 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
   }
 
   render() {
-    const { 
-      closeAction, 
-      title, 
-      market, 
-      rep, 
-      isReporting 
+    const {
+      closeAction,
+      title,
+      market,
+      rep,
+      isReporting
     } = this.props;
     const s = this.state;
     const {
@@ -53,7 +53,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       minPrice,
       maxPrice,
       outcomesFormatted,
-      disputeInfo
+      disputeInfo,
+      noShowBondAmountFormatted
     } = market;
 
     // todo: need to add already staked outcomes for scalar markets for disputing
