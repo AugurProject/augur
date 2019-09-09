@@ -43,6 +43,7 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
           updateDropdown={props.updateDropdown}
           sortByStyles={props.sortByStyles}
           onChange={props.onSearchChange}
+          checkBox={props.leftContent}
         />
       )) ||
       props.rightContent

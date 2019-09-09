@@ -23,7 +23,6 @@ const BoxHeader = (props: BoxHeaderProps) => (
     <div className={Styles.ShowOnMobile}>
       <div className={Styles.RightContent}>
         {props.rightContent}
-        {props.leftContent}
       </div>
       <div
         className={classNames(Styles.Middle, {
