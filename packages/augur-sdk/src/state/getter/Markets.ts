@@ -29,7 +29,6 @@ import {
 import { calculatePayoutNumeratorsValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
 import { SECONDS_IN_AN_HOUR } from '../../constants';
-import { Liquidity } from '../../api/Liquidity';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -1486,20 +1485,18 @@ async function setHasRecentlyDepletedLiquidity(db: DB, augur: Augur, marketsResu
   // Set `hasRecentlyDepletedLiquidity` property for each market
   for (let i = 0; i < marketsResults.length; i++) {
     const marketResult = marketsResults[i];
-    marketResult.hasRecentlyDepletedLiquidity = false;
 
     // A market's liquidity is considered recently depleted if it had liquidity under
     // a 15% spread in the last 24 hours, but doesn't currently have liquidity
     if (
       marketsLiquidityInfo[marketResult.market] &&
       marketsLiquidityInfo[marketResult.market].hasLiquidityUnderFifteenPercentSpread &&
-      !marketsLiquidityInfo[marketResult.market].hasLiquidityInLastHour
+      !marketsLiquidityInfo[marketResult.market].hasLiquidityInLastHour &&
+      !marketsLiquidityParams[marketResult.market]
     ) {
-      // If market also has had no liquidity since mostRecentOnTheHourTimestamp (i.e., since the last value stored in liquidityDB),
-      // set `hasRecentlyDepletedLiquidity` to true
-      if (!marketsLiquidityParams[marketResult.market]) {
-        marketResult.hasRecentlyDepletedLiquidity = true;
-      }
+      marketResult.hasRecentlyDepletedLiquidity = true;
+    } else {
+      marketResult.hasRecentlyDepletedLiquidity = false;
     }
   }
 

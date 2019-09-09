@@ -71,8 +71,15 @@ export function addScripts(flash: FlashSession) {
         name: 'time-controlled',
         description: 'Use the TimeControlled contract for testing environments. Set to "true" or "false".',
       },
+      {
+        name: 'useSdk',
+        abbr: 'u',
+        description: 'a few scripts need sdk, -u to wire up sdk',
+        flag: true,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const useSdk = args.useSdk as boolean;
       if (this.noProvider()) return;
 
       const config = {
@@ -86,6 +93,10 @@ export function addScripts(flash: FlashSession) {
 
       const { addresses } = await deployContracts(this.provider, this.accounts[0], compilerOutput, config);
       flash.contractAddresses = addresses;
+
+      if (useSdk) {
+        await flash.ensureUser(this.network, useSdk);
+      }
     },
   });
 

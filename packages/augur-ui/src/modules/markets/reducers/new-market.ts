@@ -99,6 +99,9 @@ export default function(newMarket: NewMarket = DEFAULT_STATE, { type, data }: Ba
           orderInfo.orderEstimate = createBigNumber(order.orderEstimate).plus(
             createBigNumber(orderEstimate)
           ),
+          orderInfo.shares = orderInfo.quantity;
+          orderInfo.mySize = orderInfo.quantity;
+          orderInfo.cumulativeShares = orderInfo.quantity;
           orderAdded = true;
           return orderInfo;
         }

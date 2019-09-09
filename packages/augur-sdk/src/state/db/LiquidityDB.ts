@@ -63,7 +63,7 @@ export class LiquidityDB extends AbstractDB {
 
       // TODO Optimize saving hourly liquidity so that existing data isn't recalculated
       if (!lastUpdatedTimestamp || mostRecentOnTheHourTimestamp.gt(lastUpdatedTimestamp)) {
-        // await this.deleteOldLiquidityData(liquidityDB, mostRecentOnTheHourTimestamp);
+        await this.deleteOldLiquidityData(liquidityDB, mostRecentOnTheHourTimestamp);
         const marketsLiquidityDocs = [];
         const liquidity = new Liquidity(augur);
         let hourlyLiquidityStartTime = mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY);
@@ -134,12 +134,6 @@ export class LiquidityDB extends AbstractDB {
    * @param {number} endTime Unix timestamp end time to use for looking up orders
    */
   async getMarketsLiquidityParams(db: DB, augur: Augur, startTime: number, endTime: number): Promise<MarketsLiquidityParams> {
-// console.log("Getting params for " + startTime + " to " + endTime);
-console.log(await db.findCurrentOrderLogs({
-  selector: {
-    eventType: { $eq: OrderEventType.Fill },
-  },
-}));
     const liquidityParams = {};
     const currentOrdersLogs = await db.findCurrentOrderLogs({
       selector: {
@@ -150,9 +144,7 @@ console.log(await db.findCurrentOrderLogs({
         ],
       },
     });
-// if (currentOrdersLogs.length > 0) {
-  console.log(currentOrdersLogs);
-// }
+
     if (currentOrdersLogs) {
       // @TODO: Filter out finalized markets
       for (let i = 0; i < currentOrdersLogs.length; i++) {
