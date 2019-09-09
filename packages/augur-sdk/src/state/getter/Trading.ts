@@ -1,19 +1,19 @@
-import { sortOptions } from "./types";
-import { DB } from "../db/DB";
-import * as _ from "lodash";
+import { sortOptions } from './types';
+import { DB } from '../db/DB';
+import * as _ from 'lodash';
 import {
   Augur,
   convertDisplayPriceToOnChainPrice,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   numTicksToTickSize,
-} from "../../index";
-import { getMarketReportingState } from "./Markets";
-import { BigNumber } from "bignumber.js";
-import { Getter } from "./Router";
-import { Address, OrderEventType, ParsedOrderEventLog } from "../logs/types";
+} from '../../index';
+import { getMarketReportingState } from './Markets';
+import { BigNumber } from 'bignumber.js';
+import { Getter } from './Router';
+import { Address, OrderEventType, ParsedOrderEventLog } from '../logs/types';
 
-import * as t from "io-ts";
+import * as t from 'io-ts';
 
 const ZERO = new BigNumber(0);
 

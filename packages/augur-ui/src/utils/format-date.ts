@@ -311,3 +311,21 @@ export function roundTimestampToPastDayMidnight(unixTimestamp: number): number {
     .startOf('day');
   return actual.unix();
 }
+
+export function getOneWeekInFutureTimestamp(currentUnixTimestamp) {
+  return moment.unix(currentUnixTimestamp).add(1, 'week').unix();
+}
+
+export function getFullDaysBetween(
+  startUnixTimestamp: number,
+  endUnixTimestamp: number,
+): Array<string> {
+  const getDays = getDaysRemaining(endUnixTimestamp, startUnixTimestamp);
+  const daysBetween: Array<string> = [];
+  for (let i = 1; i < getDays; i++) {
+    const date = moment(startUnixTimestamp * 1000).utc().startOf('day').add(i, "days");
+    daysBetween.push(`${shortMonths[date.utc().month()]} ${date.utc().format("DD")}`);
+  }
+
+  return daysBetween;
+}

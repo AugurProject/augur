@@ -51,7 +51,7 @@ const ChevronFlip = ({
   quick,
   stroke,
   hover,
-  containerClassName
+  containerClassName,
 }) => (
   <span className={containerClassName}>
     {filledInIcon

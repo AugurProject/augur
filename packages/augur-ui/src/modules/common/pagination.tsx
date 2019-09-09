@@ -1,14 +1,18 @@
-import React from "react";
-import classNames from "classnames";
-import { DirectionButton } from "modules/common/buttons";
-
-import Styles from "modules/common/pagination.styles.less";
+import React from 'react';
+import classNames from 'classnames';
+import { DirectionButton } from 'modules/common/buttons';
+import { SquareDropdown } from 'modules/common/selection';
+import { PAGINATION_VIEW_OPTIONS } from 'modules/common/constants';
+import Styles from 'modules/common/pagination.styles.less';
 
 interface PaginationProps {
   page: number;
   itemsPerPage: number;
   itemCount: number;
   action: Function;
+  updateLimit: Function;
+  showLimitChanger?: boolean;
+  maxLimit?: number;
 }
 interface PagesArrayObject {
   page: number | null;
@@ -22,8 +26,8 @@ export const createPagesArray = (page: number, totalPages: number) => {
     return [
       {
         page: 1,
-        active: true
-      }
+        active: true,
+      },
     ];
   }
   let ArrayToShow: Array<PagesArrayObject> = [];
@@ -34,16 +38,18 @@ export const createPagesArray = (page: number, totalPages: number) => {
   for (let i = 1; i <= totalPages; i++) {
     PagesArray.push({
       page: i,
-      active: page === i
+      active: page === i,
     });
   }
   for (let b = -8; b < -1; b++) {
-    if (PagesArray[page + b] && PagesArray[page + b].page !== 1)
+    if (PagesArray[page + b] && PagesArray[page + b].page !== 1) {
       SevenBefore.push(PagesArray[page + b]);
+    }
   }
   for (let a = 0; a <= 6; a++) {
-    if (PagesArray[page + a] && PagesArray[page + a].page !== totalPages)
+    if (PagesArray[page + a] && PagesArray[page + a].page !== totalPages) {
       SevenAfter.push(PagesArray[page + a]);
+    }
   }
   const beforeLen = SevenBefore.length;
   const afterLen = SevenAfter.length;
@@ -62,13 +68,14 @@ export const createPagesArray = (page: number, totalPages: number) => {
   const finalLen = ArrayToShow.length;
   // add Nulls as needed:
   if (ArrayToShow[1].page !== 2) ArrayToShow[1] = NullPage;
-  if (ArrayToShow[finalLen - 2].page !== totalPages - 1)
+  if (ArrayToShow[finalLen - 2].page !== totalPages - 1) {
     ArrayToShow[finalLen - 2] = NullPage;
+  }
   return ArrayToShow;
 };
 
 const renderPageButtons = (
-  pagesArray: Array<PagesArrayObject>,
+  pagesArray: PagesArrayObject[],
   action: Function
 ) => (
   <>
@@ -85,24 +92,60 @@ const renderPageButtons = (
   </>
 );
 
+const getLimitOptions = (itemCount: number, maxLimit: number) => {
+  let paginationOptions = [
+    { value: maxLimit, label: PAGINATION_VIEW_OPTIONS.ALL },
+    { value: 10, label: PAGINATION_VIEW_OPTIONS.TEN },
+  ];
+
+  if (itemCount >= 50) {
+    paginationOptions = paginationOptions.concat({ value: 50, label: PAGINATION_VIEW_OPTIONS.FIFTY });
+  }
+
+  if (itemCount >= 100) {
+    paginationOptions = paginationOptions.concat({ value: 100, label: PAGINATION_VIEW_OPTIONS.HUNDRED });
+  }
+
+  return paginationOptions;
+};
+
 export const Pagination = (props: PaginationProps) => {
-  const { page, action, itemCount, itemsPerPage } = props;
-  const totalPages = Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
+  const {
+    page,
+    action,
+    itemCount,
+    itemsPerPage,
+    updateLimit,
+    showLimitChanger,
+    maxLimit,
+  } = props;
+  const totalPages = itemsPerPage === 1 ? 1 : Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
+
   return (
     <div className={Styles.Pagination}>
-      <DirectionButton
-        action={() => action(page - 1)}
-        left
-        disabled={page === 1}
-      />
-      {renderPageButtons(createPagesArray(page, totalPages), action)}
-      <span>
-        {page} of {totalPages}
-      </span>
-      <DirectionButton
-        action={() => action(page + 1)}
-        disabled={page === totalPages || totalPages === 0}
-      />
+      <section>
+        <DirectionButton
+          action={() => action(page - 1)}
+          left
+          disabled={page === 1}
+        />
+        {renderPageButtons(createPagesArray(page, totalPages), action)}
+        <span>
+          {page} of {totalPages}
+        </span>
+        <DirectionButton
+          action={() => action(page + 1)}
+          disabled={page === totalPages || totalPages === 0}
+        />
+      </section>
+
+      { showLimitChanger &&
+        <SquareDropdown
+          defaultValue={itemsPerPage}
+          options={getLimitOptions(itemCount, maxLimit)}
+          onChange={updateLimit}
+        />
+      }
     </div>
   );
 };

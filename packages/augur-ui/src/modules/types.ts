@@ -280,6 +280,9 @@ export interface LiquidityOrder {
   outcomeId: number;
   status?: string;
   hash?: string;
+  mySize?: string;
+  cumulativeShares?: string;
+  shares: string;
 }
 export interface NewMarketPropertiesValidations {
   description?: string;
@@ -393,6 +396,7 @@ export interface MarketsList {
     categories: object;
   };
   selectedCategories: string[];
+  marketCardFormat: sring;
 }
 
 export interface FilledOrders {
@@ -425,8 +429,8 @@ export interface GasPriceInfo {
 }
 
 export enum INVALID_OPTIONS {
-  Show = 'Show',
-  Hide = 'Hide',
+  Show = 'show',
+  Hide = 'hide',
 }
 
 export interface FilterSortOptions {

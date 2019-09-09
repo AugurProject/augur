@@ -193,18 +193,19 @@ export const feeFilters = [
   { header: '0-10%', value: MAX_FEE_10_PERCENT },
 ];
 
-
 // # Valid Market Liquidity Spreads
-export const MAX_SPREAD_ALL_SPREADS = 'all';
-export const MAX_SPREAD_20_PERCENT = '20';
-export const MAX_SPREAD_15_PERCENT = '15';
-export const MAX_SPREAD_10_PERCENT = '10';
+export const MAX_SPREAD_ALL_SPREADS = Getters.Markets.MaxLiquiditySpread.OneHundredPercent;
+export const MAX_SPREAD_20_PERCENT = Getters.Markets.MaxLiquiditySpread.TwentyPercent;
+export const MAX_SPREAD_15_PERCENT = Getters.Markets.MaxLiquiditySpread.FifteenPercent;
+export const MAX_SPREAD_10_PERCENT = Getters.Markets.MaxLiquiditySpread.TenPercent;
+export const MAX_SPREAD_RECENTLY_DEPLETED = Getters.Markets.MaxLiquiditySpread.ZeroPercent;
 
 export const spreadFilters = [
   { header: 'All', value: MAX_SPREAD_ALL_SPREADS },
   { header: 'Less than 10%', value: MAX_SPREAD_10_PERCENT },
   { header: 'Less than 15%', value: MAX_SPREAD_15_PERCENT },
   { header: 'Less than 20%', value: MAX_SPREAD_20_PERCENT },
+  { header: 'Recently Depleted Liquidity', value: MAX_SPREAD_RECENTLY_DEPLETED },
 ];
 
 // # Market Invalid Show/Hide
@@ -227,8 +228,24 @@ export enum MARKET_SORT_PARAMS {
   CREATION_TIME = 'creationTime',
   END_DATE = 'endTime',
   RECENTLY_TRADED = 'recentlyTraded',
-  CREATOR_FEE_RATE = 'marketCreatorFeeRate',
   OPEN_INTEREST = 'openInterest',
+  LIQUIDITY = 'liquidity',
+  LAST_LIQUIDITY_DEPLETED = 'lastLiquidityDepleted',
+}
+
+export const SORT_OPTIONS = [
+  { value: MARKET_SORT_PARAMS.LIQUIDITY, header: 'Highest liquidity' },
+  { value: MARKET_SORT_PARAMS.OPEN_INTEREST, header: 'Highest open interest' },
+  { value: MARKET_SORT_PARAMS.VOLUME, header: 'Highest volume' },
+  { value: MARKET_SORT_PARAMS.CREATION_TIME, header: 'Recently created' },
+  { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon ' },
+  { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, header: 'Recently Traded' },
+];
+
+export enum MARKET_CARD_FORMATS {
+  COMPACT = 'compact',
+  CLASSIC = 'classic',
+  EXPANDED = 'expanded',
 }
 
 // The user should be able to sort by:
@@ -865,3 +882,10 @@ export const SCALAR_OUTCOMES = [
 
 export const POPULAR_CATEGORIES = ['sports', 'politics', 'entertainment', 'finance', 'crypto'];
 export const CATEGORIES_MAX = 5;
+
+export enum PAGINATION_VIEW_OPTIONS {
+  ALL = 'All',
+  TEN = '10',
+  FIFTY = '50',
+  HUNDRED = '100',
+}

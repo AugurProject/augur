@@ -72,12 +72,12 @@ export default function(
     }
     case UPDATE_TX_PARAM_HASH_TX_HASH: {
       const { txParamHash, txHash } = data;
-      const orderbook = pendingLiquidityOrders[txParamHash];
-      if (!orderbook) return pendingLiquidityOrders;
+      const orderBook = pendingLiquidityOrders[txParamHash];
+      if (!orderBook) return pendingLiquidityOrders;
       delete pendingLiquidityOrders[txParamHash];
       return {
         ...pendingLiquidityOrders,
-        [txHash]: orderbook,
+        [txHash]: orderBook,
       };
     }
     case CLEAR_ALL_MARKET_ORDERS: {

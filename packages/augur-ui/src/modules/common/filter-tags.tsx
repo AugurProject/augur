@@ -44,6 +44,10 @@ export const FilterTags = (props: FilterTagsProps) => {
     displayLiquiditySpread = 'Less than 20%';
   }
 
+  if (!displayFee && !displayLiquiditySpread) {
+    return null;
+  }
+
   return (
     <div className={Styles.filterTags}>
       {displayFee && (

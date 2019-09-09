@@ -7,7 +7,7 @@ import {
   formatTime,
 } from "modules/common/progress";
 import { SubmitTextButton } from "modules/common/buttons";
-import { DateFormattedObject, MarketData } from "modules/types";
+import { DateFormattedObject, MarketData, FormattedNumber } from "modules/types";
 
 import Styles from "modules/account/components/notification.styles.less";
 
@@ -50,7 +50,10 @@ interface DisputeTemplateProps extends BaseProps {
 
 interface ClaimReportingFeesTemplateTemplateProps extends BaseProps {
   market: MarketData;
-  claimReportingFees: any;
+  claimReportingFees: {
+    unclaimedDai: FormattedNumber;
+    unclaimedRep: FormattedNumber;
+  };
 }
 
 interface ProceedsToClaimTemplateProps extends BaseProps {
@@ -223,11 +226,11 @@ export const DisputeTemplate = (props: DisputeTemplateProps) => {
 export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemplateProps) => {
   const { claimReportingFees } = props;
   const unclaimedREP = claimReportingFees.unclaimedRep.formattedValue || 0;
-  const unclaimedETH = claimReportingFees.unclaimedEth.formattedValue || 0;
+  const unclaimedDai = claimReportingFees.unclaimedDai.formattedValue || 0;
 
   return (
     <Template
-      message={`You have ${unclaimedREP} REP available to be claimed from your reporting stake and ${unclaimedETH} ETH of reporting fees to collect.`}
+      message={`You have ${unclaimedREP} REP available to be claimed from your reporting stake and ${unclaimedDai} DAI of reporting fees to collect.`}
       {...props}
     />
   );
@@ -238,7 +241,7 @@ export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => 
 
   return (
     <Template
-      message={`You have ${totalProceeds} ETH available to be claimed from multiple markets.`}
+      message={`You have ${totalProceeds} DAI available to be claimed from multiple markets.`}
       {...props}
     />
   );

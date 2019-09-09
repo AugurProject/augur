@@ -1,5 +1,4 @@
 import { augurSdk } from 'services/augursdk';
-import logError from 'utils/log-error';
 import {
   MARKET_SORT_PARAMS,
   MARKET_REPORTING,
@@ -11,6 +10,7 @@ import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
 import { Getters } from '@augurproject/sdk';
 import { UpdateMarketsAction, updateMarketsData } from './update-markets-data';
+import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 
 interface SortOptions {
   sortBy?: Getters.Markets.GetMarketsSortBy;
@@ -60,6 +60,18 @@ export const loadMarketsByFilter = (
       sort.isSortDescending = false;
       break;
     }
+    case MARKET_SORT_PARAMS.VOLUME: {
+      // Highest volume
+      sort.sortBy = Getters.Markets.GetMarketsSortBy.volume;
+      sort.isSortDescending = true;
+      break;
+    }
+    case MARKET_SORT_PARAMS.LIQUIDITY: {
+      // Highest liquidity
+      sort.sortBy = Getters.Markets.GetMarketsSortBy.liquidity;
+      sort.isSortDescending = true;
+      break;
+    }
     case MARKET_SORT_PARAMS.CREATION_TIME: {
       // Sort By Creation Date (most recent first):
       sort.sortBy = Getters.Markets.GetMarketsSortBy.timestamp;
@@ -72,7 +84,8 @@ export const loadMarketsByFilter = (
       break;
     }
     default: {
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.volume;
+      // Sort By Recently Traded
+      sort.sortBy = Getters.Markets.GetMarketsSortBy.lastTradedTimestamp;
       sort.isSortDescending = true;
       break;
     }
@@ -107,24 +120,15 @@ export const loadMarketsByFilter = (
   let params = {
     universe: universe.id,
     categories: filterOptions.categories,
-    // search: filterOptions.search,
+    search: filterOptions.search ? filterOptions.search : '',
     maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
     limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
+    maxLiquiditySpread: filterOptions.maxLiquiditySpread,
     ...sort,
   };
-
-  if (
-    filterOptions.maxLiquiditySpread &&
-    filterOptions.maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS
-  ) {
-    params = Object.assign(params, {
-      ...params,
-      maxLiquiditySpread: filterOptions.maxLiquiditySpread,
-    });
-  }
 
   const markets = await augur.getMarkets({ ...params });
   const marketInfos = markets.markets.reduce(
@@ -133,4 +137,95 @@ export const loadMarketsByFilter = (
   );
   dispatch(updateMarketsData(marketInfos));
   cb(null, markets);
+};
+
+export interface LoadReportingMarketsOptions {
+  limit: number;
+  offset: number;
+}
+
+export const loadOpenReportingMarkets = (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const params = {
+    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
+    reportingStates: [Getters.Markets.MarketReportingState.OpenReporting],
+    ...filterOptions,
+  };
+  dispatch(loadReportingMarkets(params, cb));
+};
+
+export const loadUpcomingDesignatedReportingMarkets = (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const { blockchain, loginAccount } = getState();
+  const maxEndTime = getOneWeekInFutureTimestamp(
+    blockchain.currentAugurTimestamp
+  );
+  const designatedReporter = loginAccount.address;
+  if (!designatedReporter)
+    return cb(null, { markets: [], meta: { marketCount: 0 } });
+
+  const params = {
+    reportingStates: [Getters.Markets.MarketReportingState.PreReporting],
+    designatedReporter,
+    maxEndTime,
+    ...filterOptions,
+  };
+  dispatch(loadReportingMarkets(params, cb));
+};
+
+export const loadDesignatedReportingMarkets = (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const { loginAccount } = getState();
+  const designatedReporter = loginAccount.address;
+  if (!designatedReporter)
+    return cb(null, { markets: [], meta: { marketCount: 0 } });
+
+  const params = {
+    reportingStates: [Getters.Markets.MarketReportingState.DesignatedReporting],
+    designatedReporter,
+    ...filterOptions,
+  };
+  dispatch(loadReportingMarkets(params, cb));
+};
+
+export const loadReportingMarkets = (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const { universe, connection } = getState();
+  if (!connection.isConnected) return cb(null, []);
+  if (!(universe && universe.id)) return cb(null, []);
+  const params = {
+    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
+    universe: universe.id,
+    ...filterOptions,
+  };
+  // format offset to getters expectations
+  if (filterOptions.offset) {
+    const paginationOffset = filterOptions.offset
+      ? filterOptions.offset - 1
+      : 0;
+    params.offset = paginationOffset * filterOptions.limit;
+  }
+  const augur = augurSdk.get();
+  const markets = await augur.getMarkets({ ...params });
+  if (cb) cb(null, markets);
 };

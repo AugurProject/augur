@@ -21,20 +21,20 @@ const DEFAULT_STATE: ReportingWindowStats = {
 };
 
 export default function(
-  reportingWindowStats: ReportingWindowStats = DEFAULT_STATE,
+  disputeWindowStats: ReportingWindowStats = DEFAULT_STATE,
   { type, data }: BaseAction,
 ): ReportingWindowStats {
   switch (type) {
     case UPDATE_REPORTING_WINDOW_STATS: {
       const { windowStats } = data;
       return {
-        ...reportingWindowStats,
+        ...disputeWindowStats,
         ...windowStats
       };
     }
     case RESET_STATE:
       return DEFAULT_STATE;
     default:
-      return reportingWindowStats;
+      return disputeWindowStats;
   }
 }

@@ -1,35 +1,23 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
-  MARKET_SORT_PARAMS,
-  MOBILE_MENU_STATES,
-} from "modules/common/constants";
-import Styles from "modules/filter-sort/components/filter-dropdowns.styles.less";
-import parseQuery from "modules/routes/helpers/parse-query";
-import makeQuery from "modules/routes/helpers/make-query";
-import { PAGINATION_PARAM_NAME } from "modules/routes/constants/param-names";
-import { SquareDropdown } from "modules/common/selection";
-import { FilterButton } from "modules/common/buttons";
+  SORT_OPTIONS,
+} from 'modules/common/constants';
+import Styles from 'modules/filter-sort/components/filter-dropdowns.styles.less';
+import parseQuery from 'modules/routes/helpers/parse-query';
+import makeQuery from 'modules/routes/helpers/make-query';
+import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { SquareDropdown } from 'modules/common/selection';
 
-const sortOptions = [
-  { value: MARKET_SORT_PARAMS.CREATION_TIME, label: "Creation Time" },
-  { value: MARKET_SORT_PARAMS.END_DATE, label: "End Time" },
-  { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, label: "Recently Traded" },
-  { value: MARKET_SORT_PARAMS.VOLUME, label: "Volume" },
-  { value: MARKET_SORT_PARAMS.CREATOR_FEE_RATE, label: "Settlement Fee" },
-  { value: MARKET_SORT_PARAMS.OPEN_INTEREST, label: "Open Interest" },
-];
+const sortOptions = SORT_OPTIONS.map(option => {
+  return {
+    value: option.value,
+    label: option.header,
+  };
+});
 
 interface FilterSearchProps {
-  filter: string;
-  sort: string;
-  updateFilter: Function;
-  defaultFilter: string;
   defaultSort: string;
-  hasOrders: boolean;
-  updateFilterOption: Function;
   updateSortOption: Function;
-  updateHasOpenOrders: Function;
-  updateMobileMenuState: Function;
   history: History;
   location: Location;
 }
@@ -55,22 +43,14 @@ export default class FilterSearch extends Component<FilterSearchProps> {
   }
 
   changeSortDropdown(value) {
-    const {
-      filter,
-      updateSortOption,
-      updateFilter,
-    } = this.props;
+    const { updateSortOption } = this.props;
 
     this.goToPageOne();
     updateSortOption(value);
-    updateFilter({ filter, sort: value });
   }
 
   render() {
-    const {
-      defaultSort,
-      updateMobileMenuState,
-    } = this.props;
+    const { defaultSort } = this.props;
 
     return (
       <div className={Styles.FilterDropdowns}>
@@ -80,8 +60,6 @@ export default class FilterSearch extends Component<FilterSearchProps> {
           onChange={this.changeSortDropdown}
           stretchOutOnMobile
         />
-
-        <FilterButton action={() => updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)}/>
       </div>
     );
   }

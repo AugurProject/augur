@@ -10,6 +10,8 @@ import { API } from "@augurproject/sdk/build/state/getter/API";
 import { PouchDBFactory } from "@augurproject/sdk/build/state/db/AbstractDB";
 import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import { DB } from "@augurproject/sdk/build/state/db/DB";
+import { EmptyConnector } from "@augurproject/sdk";
+import { BaseConnector } from "@augurproject/sdk/build/connector";
 
 export interface FlashOption {
   name: string;
@@ -116,21 +118,20 @@ export class FlashSession {
   sdkReady = false;
   async ensureUser(
     network?: NetworkConfiguration,
-    wireUpSdk = false,
+    wireUpSdk = null,
     approveCentralAuthority = true
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
-    if (wireUpSdk === this.usingSdk && this.user) {
+    if (this.user && (wireUpSdk === null || wireUpSdk === this.usingSdk)) {
       return this.user;
     }
 
     if (wireUpSdk) this.usingSdk = true;
 
-    let connector = null;
-    if (wireUpSdk) connector = new Connectors.SEOConnector();
+    const connector: BaseConnector = wireUpSdk ? new Connectors.SEOConnector() : new EmptyConnector();
 
     this.user = await ContractAPI.userWrapper(
       this.getAccount(),
@@ -141,6 +142,7 @@ export class FlashSession {
 
     if (wireUpSdk) {
       network = network || this.network;
+      if (!network) throw Error('Cannot wire up sdk if network is not set.');
       await this.user.augur.connect(network.http, this.getAccount().publicKey);
       await this.user.augur.on(SubscriptionEventName.NewBlock, this.sdkNewBlock);
       this.api = new API(this.user.augur, this.makeDB());

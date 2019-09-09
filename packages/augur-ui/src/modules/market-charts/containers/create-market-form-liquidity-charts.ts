@@ -15,7 +15,7 @@ const mapStateToProps = (state, ownProps) => {
   const { newMarket, loginAccount } = state;
 
   const selectedOutcome = ownProps.selectedOutcome.toString();
-  const orderBook = formatOrderbook(newMarket.orderBook[selectedOutcome] || []);
+  const orderBook = formatOrderBook(newMarket.orderBook[selectedOutcome] || []);
   const cumulativeOrderBook = orderAndAssignCumulativeShares(
     orderBook,
     null,
@@ -59,8 +59,8 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps)(MarketOutcomeCharts);
 
-function formatOrderbook(rawOrderbook = []) {
-  return rawOrderbook.reduce(
+function formatOrderBook(rawOrderBook = []) {
+  return rawOrderBook.reduce(
     (p, order) => ({
       ...p,
       [order.type === BID ? BIDS : ASKS]: [
