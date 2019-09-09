@@ -1443,8 +1443,9 @@ async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): P
   }
 
   const marketIds = Object.keys(keyedMarkets);
-  const liquidityLastUpdatedTimestamp = await db.findLiquidityLastUpdatedTimestamp();
-  const marketsLiquidityDocs = await db.findMarketsLiquidityDocs(marketIds);
+  const highestSyncedBlock = await db.getBlock(await db.syncStatus.getLowestSyncingBlockForAllDBs());
+  const currentTimestamp = highestSyncedBlock.timestamp;
+  const marketsLiquidityDocs = await db.findRecentMarketsLiquidityDocs(currentTimestamp, marketIds);
   const marketsLiquidityInfo = {};
 
   // Save liquidity info for each market to an object
@@ -1458,8 +1459,8 @@ async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): P
     }
 
     if (
-      marketLiquidityDoc.timestamp >= (liquidityLastUpdatedTimestamp - SECONDS_IN_AN_HOUR.toNumber()) &&
-      marketLiquidityDoc.timestamp < liquidityLastUpdatedTimestamp
+      marketLiquidityDoc.timestamp >= (currentTimestamp - SECONDS_IN_AN_HOUR.toNumber()) &&
+      marketLiquidityDoc.timestamp < currentTimestamp
     ) {
       marketsLiquidityInfo[marketLiquidityDoc.market].hasLiquidityInLastHour = true;
     }

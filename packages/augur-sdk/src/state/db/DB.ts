@@ -10,6 +10,7 @@ import { DerivedDB } from './DerivedDB';
 import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
 import { MarketDB } from './MarketDB';
 import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
+import { Block } from 'ethers/providers';
 import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
@@ -37,7 +38,6 @@ import {
   UniverseForkedLog,
 } from '../logs/types';
 import { ZeroXOrders, StoredOrder } from './ZeroXOrders';
-import { BigNumber } from 'bignumber.js';
 
 export interface DerivedDBConfiguration {
   name: string;
@@ -771,19 +771,26 @@ export class DB {
   }
 
   /**
+   * Return the specified block
+   * @param blockNumber Block number to return
+   */
+  async getBlock(blockNumber: number): Promise<Block>  {
+    return this.augur.provider.getBlock(blockNumber);
+  }
+
+  /**
    * Queries the Liquidity DB for hourly liquidity of markets
    *
+   * @param {number} currentTimestamp Timestamp of the latest block
    * @param {string?} marketIds Array of market IDs to filter by
    * @returns {Promise<MarketHourlyLiquidity[]>}
    */
-  async findMarketsLiquidityDocs(marketIds?: string[]): Promise<MarketHourlyLiquidity[]> {
-    const highestBlock = await this.augur.provider.getBlock(await this.syncStatus.getLowestSyncingBlockForAllDBs());
-    const currentTimestamp = new BigNumber(highestBlock.timestamp);
+  async findRecentMarketsLiquidityDocs(currentTimestamp: number, marketIds?: string[]): Promise<MarketHourlyLiquidity[]> {
     const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
-    const mostRecentOnTheHourTimestamp = currentTimestamp.minus(currentTimestamp.mod(secondsPerHour));
+    const mostRecentOnTheHourTimestamp = currentTimestamp - (currentTimestamp % secondsPerHour);
     const selectorConditions: any[] = [
       { _id: { $ne: 'lastUpdated' } },
-      { timestamp: { $gte: mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY).toNumber() } },
+      { timestamp: { $gte: mostRecentOnTheHourTimestamp - (SECONDS_IN_A_DAY).toNumber() } },
     ];
     if (marketIds) {
       selectorConditions.push(
