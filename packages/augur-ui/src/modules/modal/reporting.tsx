@@ -29,7 +29,7 @@ interface ModalReportingState {
 
 export default class ModalReporting extends Component<ModalReportingProps, ModalReportingState> {
   state: ModalReportingState = {
-    checked: this.props.selectedOutcome.toString(),
+    checked: this.props.selectedOutcome ? this.props.selectedOutcome.toString() : '',
     preFilledStake: '',
   };
 
