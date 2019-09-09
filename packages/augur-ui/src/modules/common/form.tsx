@@ -232,6 +232,8 @@ interface RadioGroupProps {
   updatePreFilledStake?: Function;
   disputeStake?: string;
   updateDisputeStake?: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 interface RadioGroupState {
@@ -275,6 +277,8 @@ interface ReportingRadioBarProps {
   disputeStake?: number;
   updateDisputeStake?: Function;
   reportAction: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 interface RadioTwoLineBarProps {
@@ -672,6 +676,8 @@ interface ReportingRadioGroupProps {
   updatePreFilledStake?: Function;
   disputeStake?: number;
   updateDisputeStake?: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 export const ReportingRadioBarGroup = ({
@@ -688,6 +694,8 @@ export const ReportingRadioBarGroup = ({
   updatePreFilledStake,
   disputeStake,
   updateDisputeStake,
+  scalarOutcome,
+  updateScalarOutcome
 }: ReportingRadioGroupProps) => {
   const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
   const tentativeWinning = radioButtons.find(radioButton => radioButton.stake.tentativeWinning);
@@ -737,6 +745,8 @@ export const ReportingRadioBarGroup = ({
           disputeStake={disputeStake}
           updateDisputeStake={updateDisputeStake}
           isReporting={isReporting}
+          scalarOutcome={scalarOutcome}
+          updateScalarOutcome={updateScalarOutcome}
           onChange={selected => {
             onChange(selected.toString());
           }}
@@ -819,6 +829,8 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       updatePreFilledStake,
       disputeStake,
       updateDisputeStake,
+      updateScalarOutcome,
+      scalarOutcome
     } = this.props;
     const { selected } = this.state;
 
@@ -839,6 +851,8 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
             updatePreFilledStake={updatePreFilledStake}
             disputeStake={disputeStake}
             updateDisputeStake={updateDisputeStake}
+            updateScalarOutcome={updateScalarOutcome}
+            scalarOutcome={scalarOutcome}
           />
         }
         {!reporting && radioButtons.map((radio, index) => (
@@ -857,21 +871,10 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   }
 }
 
-interface ReportingRadioBarState {
-  rangeValue: string;
-}
-
 export class ReportingRadioBar extends Component<
   ReportingRadioBarProps,
-  ReportingRadioBarState
+  {}
 > {
-  state: ReportingRadioBarState = {
-    rangeValue: "",
-  };
-
-  changeRange = (rangeValue) => {
-    this.setState({rangeValue});
-  }
 
   render() {
     const {
@@ -893,11 +896,11 @@ export class ReportingRadioBar extends Component<
       disputeStake,
       updateDisputeStake,
       reportAction,
+      scalarOutcome,
+      updateScalarOutcome
     } = this.props;
 
     const initialReporterStake = formatNumber("100");
-    const { rangeValue } = this.state;
-
     const inputtedStake = !checked || disputeStake === "" || isNaN(disputeStake) ? 0 : disputeStake;
     const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
 
@@ -926,8 +929,8 @@ export class ReportingRadioBar extends Component<
               {checked &&
                 <DisputingBondsView
                   scalar={scalar}
-                  rangeValue={rangeValue}
-                  changeRange={this.changeRange}
+                  rangeValue={scalarOutcome}
+                  changeRange={updateScalarOutcome}
                   scalarDenomination={scalarDenomination}
                   stakeValue={disputeStake}
                   changeStake={updateDisputeStake}
@@ -938,13 +941,15 @@ export class ReportingRadioBar extends Component<
           {isReporting && checked &&
             <ReportingBondsView
               scalar={scalar}
-              rangeValue={rangeValue}
-              changeRange={this.changeRange}
+              rangeValue={scalarOutcome}
+              changeRange={updateScalarOutcome}
               scalarDenomination={scalarDenomination}
               initialReporterStake={initialReporterStake}
               reportAction={reportAction}
               preFilledStake={preFilledStake}
               updatePreFilledStake={updatePreFilledStake}
+              updateScalarOutcome={updateScalarOutcome}
+              scalarOutcome={scalarOutcome}
             />
           }
         </div>

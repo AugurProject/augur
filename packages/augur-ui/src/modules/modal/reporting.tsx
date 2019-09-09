@@ -27,6 +27,7 @@ interface ModalReportingState {
   checked: string;
   preFilledStake: string;
   disputeStake: string;
+  scalarOutcome: string;
 }
 
 export default class ModalReporting extends Component<ModalReportingProps, ModalReportingState> {
@@ -34,6 +35,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
     checked: this.props.selectedOutcome ? this.props.selectedOutcome.toString() : '',
     preFilledStake: '',
     disputeStake: '',
+    scalarOutcome: '',
   };
 
   updateChecked = (checked: string) => {
@@ -44,13 +46,16 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
     this.setState({preFilledStake});
   }
 
-
   reportingAction = () => {
     console.log("report")
   }
 
   updateDisputeStake = (disputeStake: string) => {
     this.setState({disputeStake});
+  }
+
+  updateScalarOutcome = (scalarOutcome: string) => {
+    this.setState({scalarOutcome});
   }
 
   render() {
@@ -103,7 +108,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       };
     });
 
-    console.log(s.disputeStake);
+    console.log(s.scalarOutcome);
 
     return (
       <div className={Styles.ModalReporting}>
@@ -141,6 +146,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
               updateDisputeStake={this.updateDisputeStake}
               disputeStake={s.disputeStake}
               reportAction={this.reportingAction}
+              updateScalarOutcome={this.updateScalarOutcome}
+              scalarOutcome={s.scalarOutcome}
             />
           </div>
         </main>

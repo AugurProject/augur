@@ -244,6 +244,8 @@ export interface DisputingBondsViewProps {
   scalarDenomination: string;
   stakeValue: string;
   changeStake: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 export const DisputingBondsView = (props: DisputingBondsViewProps) => (
@@ -296,6 +298,8 @@ export interface ReportingBondsViewProps {
   reportAction: Function;
   preFilledStake?: number;
   updatePreFilledStake?: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 interface ReportingBondsViewState {
