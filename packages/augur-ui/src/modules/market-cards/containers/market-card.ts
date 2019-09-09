@@ -26,7 +26,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  dispute: (selectedOutcome: number) =>
+  dispute: (selectedOutcome: string) =>
     dispatch(
       updateModal({
         type: MODAL_REPORTING,

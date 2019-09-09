@@ -74,7 +74,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
           <span>{props.stake && props.stake.tentativeWinning ? "pre-filled stake" : "make tentative winner"}</span>
           <span>{props.stake ? bondSizeCurrent.formatted : 0}<span>/ {props.stake ? bondSizeTotal.formatted : 0} REP</span></span>
         </div>
-        <SecondaryButton small text={props.stake && props.stake.tentativeWinning ? "Support Tentative Winner" : "Dispute Tentative Winner"} action={() => props.dispute(props.id)} />
+        <SecondaryButton small text={props.stake && props.stake.tentativeWinning ? "Support Tentative Winner" : "Dispute Tentative Winner"} action={() => props.dispute(props.id.toString())} />
       </div>
     </div>
   );

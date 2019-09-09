@@ -125,7 +125,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
               maxPrice={maxPrice}
               scalarDenomination={scalarDenomination}
               radioButtons={radioButtons}
-              defaultSelected={s.checked && s.checked.toString()}
+              defaultSelected={s.checked}
               reportAction={reportAction}
             />
           </div>

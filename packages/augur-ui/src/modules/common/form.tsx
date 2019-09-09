@@ -689,9 +689,9 @@ export const ReportingRadioBarGroup = ({
             {...tentativeWinning}
             isInvalid={tentativeWinning.isInvalid}
             isReporting={isReporting}
-            checked={selected && tentativeWinning.value.toString() === selected.toString()}
+            checked={tentativeWinning.value.toString() === selected}
             onChange={selected => {
-              onChange(selected);
+              onChange(selected.toString());
             }}
           />
         </section>
@@ -707,7 +707,7 @@ export const ReportingRadioBarGroup = ({
         <ReportingRadioBar
           header=""
           value={1}
-          checked={selected && "1" === selected.toString()}
+          checked={"1" === selected}
           stake={null}
           minPrice={minPrice}
           maxPrice={maxPrice}
@@ -716,7 +716,7 @@ export const ReportingRadioBarGroup = ({
           expandable
           isReporting={isReporting}
           onChange={selected => {
-            onChange(selected);
+            onChange(selected.toString());
           }}
         />
       }
@@ -725,10 +725,10 @@ export const ReportingRadioBarGroup = ({
           key={index + radio.value}
           expandable
           {...radio}
-          checked={selected && radio.value.toString() === selected.toString()}
+          checked={radio.value.toString() === selected}
           isReporting={isReporting}
           onChange={selected => {
-            onChange(selected);
+            onChange(selected.toString());
           }}
           reportAction={reportAction}
         />
@@ -746,9 +746,9 @@ export const ReportingRadioBarGroup = ({
             {...invalid}
             isInvalid
             isReporting={isReporting}
-            checked={selected && invalid.value.toString() === selected.toString()}
+            checked={invalid.value.toString() === selected}
             onChange={selected => {
-              onChange(selected);
+              onChange(selected.toString());
             }}
           />
         </>
