@@ -221,28 +221,32 @@ describe('State API :: Universe :: ', () => {
       universe: universe.address,
     });
 
-    expect(migrationTotals).toMatchObject({
+    expect(migrationTotals).toEqual({
       marketId: market.address,
       outcomes: [
         {
-          outcomeName: '250000000000000000000',
-          outcome: '50000000000000000000',
+          outcomeName: 'foo'.padEnd(32, '\0'),
+          outcome: '0',
           amount: '60000000349680582682291668',
           isMalformed: false,
           payoutNumerators: [
+            '100',
             '0',
             '0',
-            '20000',
+            '0',
+            '0',
           ],
         },
         {
-          outcomeName: '250000000000000000000',
-          outcome: '250000000000000000000',
+          outcomeName: 'bar'.padEnd(32, '\0'),
+          outcome: '1',
           amount: '60000000349680582682291668',
           isMalformed: false,
           payoutNumerators: [
             '0',
-            '20000',
+            '100',
+            '0',
+            '0',
             '0',
           ],
         },
