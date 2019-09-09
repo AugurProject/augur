@@ -228,9 +228,9 @@ interface RadioGroupProps {
   scalarDenomination?: string;
   isReporting?: boolean;
   reportAction: Function;
-  preFilledStake?: number;
+  preFilledStake?: string;
   updatePreFilledStake?: Function;
-  disputeStake?: number;
+  disputeStake?: string;
   updateDisputeStake?: Function;
 }
 
@@ -896,9 +896,9 @@ export class ReportingRadioBar extends Component<
     } = this.props;
 
     const initialReporterStake = formatNumber("100");
-    const { stakeValue, rangeValue } = this.state;
+    const { rangeValue } = this.state;
 
-    const inputtedStake = stakeValue === "" || isNaN(stakeValue) ? 0 : stakeValue;
+    const inputtedStake = !checked || disputeStake === "" || isNaN(disputeStake) ? 0 : disputeStake;
     const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
 
     return (

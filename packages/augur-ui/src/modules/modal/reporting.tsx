@@ -103,6 +103,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       };
     });
 
+    console.log(s.disputeStake);
+
     return (
       <div className={Styles.ModalReporting}>
         <Title title={title} closeAction={closeAction} bright />
