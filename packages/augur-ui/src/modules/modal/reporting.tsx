@@ -18,19 +18,26 @@ interface ModalReportingProps {
   rep: string;
   isReporting: boolean;
   title: string;
+  selectedOutcome?: number;
 }
 
 interface ModalReportingState {
   checked: number;
+  preFilledStake: string;
 }
 
 export default class ModalReporting extends Component<ModalReportingProps, ModalReportingState> {
   state: ModalReportingState = {
-    checked: null,
+    checked: this.props.selectedOutcome,
+    preFilledStake: '',
   };
 
   updateChecked = (checked: number) => {
     this.setState({checked});
+  }
+
+  updatePreFilledStake = (preFilledStake: string) => {
+    this.setState({preFilledStake});
   }
 
   render() {
@@ -73,6 +80,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
         value: outcome.id,
         checked: s.checked === outcome.id,
         isInvalid: outcome.id === 0,
+        updatePreFilledStake: this.updatePreFilledStake,
+        preFilledStake: s.preFilledStake,
         stake: {
           ...stake,
           preFilledStake: formatAttoRep(stake.preFilledStake),
@@ -112,6 +121,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
               maxPrice={maxPrice}
               scalarDenomination={scalarDenomination}
               radioButtons={radioButtons}
+              defaultSelected={s.checked && s.checked.toString()}
             />
           </div>
         </main>

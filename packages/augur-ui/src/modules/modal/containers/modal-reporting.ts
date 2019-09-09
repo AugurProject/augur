@@ -33,6 +33,7 @@ const mergeProps = (sP, dP, oP) => {
       }
       dP.closeModal();
     },
+    ...oP,
     ...sP
   };
 };

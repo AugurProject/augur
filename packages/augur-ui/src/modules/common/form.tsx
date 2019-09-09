@@ -265,6 +265,8 @@ interface ReportingRadioBarProps {
   scalarDenomination?: string;
   scalar?: boolean;
   isReporting?: boolean;
+  preFilledStake?: number;
+  updatePreFilledStake?: Function;
 }
 
 interface RadioTwoLineBarProps {
@@ -683,7 +685,7 @@ export const ReportingRadioBarGroup = ({
             {...tentativeWinning}
             isInvalid={tentativeWinning.isInvalid}
             isReporting={isReporting}
-            checked={tentativeWinning.value === selected}
+            checked={selected && tentativeWinning.value.toString() === selected.toString()}
             onChange={selected => {
               onChange(selected);
             }}
@@ -701,7 +703,7 @@ export const ReportingRadioBarGroup = ({
         <ReportingRadioBar
           header=""
           value={1}
-          checked={1 === selected}
+          checked={selected && "1" === selected.toString()}
           stake={null}
           minPrice={minPrice}
           maxPrice={maxPrice}
@@ -719,7 +721,7 @@ export const ReportingRadioBarGroup = ({
           key={index + radio.value}
           expandable
           {...radio}
-          checked={radio.value === selected}
+          checked={selected && radio.value.toString() === selected.toString()}
           isReporting={isReporting}
           onChange={selected => {
             onChange(selected);
@@ -739,7 +741,7 @@ export const ReportingRadioBarGroup = ({
             {...invalid}
             isInvalid
             isReporting={isReporting}
-            checked={invalid.value === selected}
+            checked={selected && invalid.value.toString() === selected.toString()}
             onChange={selected => {
               onChange(selected);
             }}
@@ -846,7 +848,9 @@ export class ReportingRadioBar extends Component<
       maxPrice,
       scalarDenomination,
       expandable,
-      isReporting
+      isReporting,
+      preFilledStake,
+      updatePreFilledStake
     } = this.props;
 
     const initialReporterStake = formatNumber("100");
@@ -898,6 +902,8 @@ export class ReportingRadioBar extends Component<
               scalarDenomination={scalarDenomination}
               initialReporterStake={initialReporterStake}
               reportAction={reportAction}
+              preFilledStake={preFilledStake}
+              updatePreFilledStake={updatePreFilledStake}
             />
           }
         </div>

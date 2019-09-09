@@ -26,11 +26,12 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  dispute: () =>
+  dispute: (selectedOutcome: number) =>
     dispatch(
       updateModal({
         type: MODAL_REPORTING,
-        market: ownProps.market
+        market: ownProps.market,
+        selectedOutcome: selectedOutcome
       }),
     ),
 });

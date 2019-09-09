@@ -58,6 +58,7 @@ export interface DisputeOutcomeProps {
   index: number;
   stake: Getters.Markets.StakeDetails|null;
   dispute: Function;
+  id: number;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
@@ -73,7 +74,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
           <span>{props.stake && props.stake.tentativeWinning ? "pre-filled stake" : "make tentative winner"}</span>
           <span>{props.stake ? bondSizeCurrent.formatted : 0}<span>/ {props.stake ? bondSizeTotal.formatted : 0} REP</span></span>
         </div>
-        <SecondaryButton small text={props.stake && props.stake.tentativeWinning ? "Support Tentative Winner" : "Dispute Tentative Winner"} action={props.dispute} />
+        <SecondaryButton small text={props.stake && props.stake.tentativeWinning ? "Support Tentative Winner" : "Dispute Tentative Winner"} action={() => props.dispute(props.id)} />
       </div>
     </div>
   );
@@ -166,6 +167,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                index={index > 2 ? index : index + 1}
                stake={props.stakes.find(stake => parseFloat(stake.outcome) === outcome.id)}
                dispute={props.dispute}
+               id={outcome.id}
              />
           : <Outcome
               key={outcome.id}

@@ -126,22 +126,17 @@ export const ReportingModalButton = (props: ReportingModalButtonProps) => (
 interface PreFilledStakeProps {
   showInput: boolean;
   toggleInput: Function;
-}
-
-interface PreFilledStakeState {
-  stake: string;
+  preFilledStake?: string;
+  updatePreFilledStake: Function;
 }
 
 export class PreFilledStake extends Component<
   PreFilledStakeProps,
-  PreFilledStakeState
+  {}
 > {
-  state: PreFilledStakeState = {
-    stake: '',
-  };
 
   changeStake = stake => {
-    this.setState({ stake });
+    this.props.updatePreFilledStake(stake);
   };
 
   changeShowInput = () => {
@@ -170,7 +165,7 @@ export class PreFilledStake extends Component<
           <>
             <TextInput
               placeholder={'0.0000'}
-              value={s.stake}
+              value={this.props.preFilledStake}
               onChange={value => this.changeStake(value)}
               errorMessage={null}
               innerLabel="REP"
@@ -191,7 +186,7 @@ export class PreFilledStake extends Component<
             <LinearPropertyLabel
               key="totalRep"
               label="Total Rep"
-              value={'0.0000 REP'}
+              value={this.props.preFilledStake + ' REP'}
             />
           </>
         )}
@@ -299,6 +294,8 @@ export interface ReportingBondsViewProps {
   initialReporterStake: FormattedNumber;
   reportingGasFee: FormattedNumber;
   reportAction: Function;
+  preFilledStake?: number;
+  updatePreFilledStake?: Function;
 }
 
 interface ReportingBondsViewState {
@@ -326,6 +323,8 @@ export class ReportingBondsView extends Component<
       initialReporterStake,
       reportingGasFee,
       reportAction,
+      preFilledStake,
+      updatePreFilledStake
     } = this.props;
 
     const { showInput } = this.state;
@@ -352,6 +351,8 @@ export class ReportingBondsView extends Component<
         <PreFilledStake
           showInput={showInput}
           toggleInput={this.toggleInput}
+          updatePrefilledStake={updatePreFilledStake}
+          preFilledStake={preFilledStake}
         />
         {showInput && (
           <div>
