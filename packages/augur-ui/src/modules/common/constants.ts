@@ -193,13 +193,12 @@ export const feeFilters = [
   { header: '0-10%', value: MAX_FEE_10_PERCENT },
 ];
 
-
 // # Valid Market Liquidity Spreads
-export const MAX_SPREAD_ALL_SPREADS = '100';
-export const MAX_SPREAD_20_PERCENT = '20';
-export const MAX_SPREAD_15_PERCENT = '15';
-export const MAX_SPREAD_10_PERCENT = '10';
-export const MAX_SPREAD_RECENTLY_DEPLETED = '0';
+export const MAX_SPREAD_ALL_SPREADS = Getters.Markets.MaxLiquiditySpread.OneHundredPercent;
+export const MAX_SPREAD_20_PERCENT = Getters.Markets.MaxLiquiditySpread.TwentyPercent;
+export const MAX_SPREAD_15_PERCENT = Getters.Markets.MaxLiquiditySpread.FifteenPercent;
+export const MAX_SPREAD_10_PERCENT = Getters.Markets.MaxLiquiditySpread.TenPercent;
+export const MAX_SPREAD_RECENTLY_DEPLETED = Getters.Markets.MaxLiquiditySpread.ZeroPercent;
 
 export const spreadFilters = [
   { header: 'All', value: MAX_SPREAD_ALL_SPREADS },

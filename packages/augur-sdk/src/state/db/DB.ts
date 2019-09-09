@@ -1,15 +1,16 @@
 import { Augur } from '../../Augur';
 import { augurEmitter } from '../../events';
-import { SubscriptionEventName } from '../../constants';
+import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR, SubscriptionEventName } from '../../constants';
 import { PouchDBFactoryType } from './AbstractDB';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
 import { TrackedUsers } from './TrackedUsers';
 import { UserSyncableDB } from './UserSyncableDB';
 import { DerivedDB } from './DerivedDB';
-import { LiquidityDB } from './LiquidityDB';
+import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
 import { MarketDB } from './MarketDB';
 import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
+import { Block } from 'ethers/providers';
 import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
@@ -767,5 +768,64 @@ export class DB {
   async findMarkets(request: PouchDB.Find.FindRequest<{}>): Promise<MarketData[]> {
     const results = await this.findInDerivedDB(this.getDatabaseName('Markets'), request);
     return results.docs as unknown as MarketData[];
+  }
+
+  /**
+   * Returns the current time, either using the Time contract, or by using the latest block timestamp.
+   */
+  async getCurrentTime(): Promise<number>  {
+    const time = this.augur.contracts.getTime();
+
+    if (this.augur.contracts.isTimeControlled(time)) {
+      return (await time.getTimestamp_()).toNumber();
+    } else {
+      return (await this.augur.provider.getBlock(await this.augur.provider.getBlockNumber())).timestamp;
+    }
+  }
+
+  /**
+   * Queries the Liquidity DB for hourly liquidity of markets
+   *
+   * @param {number} currentTimestamp Timestamp of the latest block
+   * @param {string?} marketIds Array of market IDs to filter by
+   * @returns {Promise<MarketHourlyLiquidity[]>}
+   */
+  async findRecentMarketsLiquidityDocs(currentTimestamp: number, marketIds?: string[]): Promise<MarketHourlyLiquidity[]> {
+    const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
+    const mostRecentOnTheHourTimestamp = currentTimestamp - (currentTimestamp % secondsPerHour);
+    const selectorConditions: any[] = [
+      { _id: { $ne: 'lastUpdated' } },
+      { timestamp: { $gte: mostRecentOnTheHourTimestamp - (SECONDS_IN_A_DAY).toNumber() } },
+    ];
+    if (marketIds) {
+      selectorConditions.push(
+        { market: { $in: marketIds } }
+      );
+    }
+    const marketsLiquidity = await this.liquidityDatabase.find({
+      selector: {
+        $and: selectorConditions,
+      },
+    });
+
+    return marketsLiquidity.docs as unknown as MarketHourlyLiquidity[];
+  }
+
+  /**
+   * Queries the Liquidity DB for hourly liquidity of all markets
+   *
+   * @returns {Promise<number|undefined>}
+   */
+  async findLiquidityLastUpdatedTimestamp(): Promise<number|undefined> {
+    const lastUpdatedResults = await this.liquidityDatabase.find({
+      selector: {
+        _id: { $eq: 'lastUpdated' },
+      },
+    });
+    const lastUpdatedDocs = lastUpdatedResults.docs as unknown as LiquidityLastUpdated[];
+    if (lastUpdatedDocs.length > 0) {
+      return lastUpdatedDocs[0].timestamp;
+    }
+    return undefined;
   }
 }
