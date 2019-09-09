@@ -6,7 +6,8 @@ import { GetLiquidityParams, Liquidity } from '../../api/Liquidity';
 import { Augur } from '../../Augur';
 import { BigNumber } from 'bignumber.js';
 import { MaxLiquiditySpread, getLiquidityOrderBook } from '../../state/getter/Markets';
-import { Doc, MarketType, OrderEventType } from '../logs/types';
+import { Doc, MarketType } from '../logs/types';
+import { OrderState, Trading } from '../getter/Trading';
 import * as _ from 'lodash';
 
 export interface LiquidityLastUpdated {
@@ -52,7 +53,7 @@ export class LiquidityDB extends AbstractDB {
     });
   }
 
-  async recalculateLiquidity(augur: Augur, db: DB, currentTimestamp: number): Promise<void> {
+  async updateLiquidity(augur: Augur, db: DB, currentTimestamp: number): Promise<void> {
     // @TODO: Need to factor in blockStreamDelay?
     try {
       const liquidityDB = db.getLiquidityDatabase();
@@ -61,37 +62,32 @@ export class LiquidityDB extends AbstractDB {
       const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
       const mostRecentOnTheHourTimestamp = currentTimestampBN.minus(currentTimestampBN.mod(secondsPerHour));
 
-      // TODO Optimize saving hourly liquidity so that existing data isn't recalculated
       if (!lastUpdatedTimestamp || mostRecentOnTheHourTimestamp.gt(lastUpdatedTimestamp)) {
         await this.deleteOldLiquidityData(liquidityDB, mostRecentOnTheHourTimestamp);
         const marketsLiquidityDocs = [];
         const liquidity = new Liquidity(augur);
-        let hourlyLiquidityStartTime = mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY);
-        while (hourlyLiquidityStartTime.lt(mostRecentOnTheHourTimestamp)) {
-          const marketsLiquidityParams = await this.getMarketsLiquidityParams(db, augur, hourlyLiquidityStartTime.toNumber(), hourlyLiquidityStartTime.plus(SECONDS_IN_AN_HOUR).toNumber());
-          for (const market in marketsLiquidityParams) {
-            if (marketsLiquidityParams.hasOwnProperty(market)) {
-              // Store liquidity for each spread percent
-              for (const spread of Object.values(MaxLiquiditySpread)) {
-                // Do not save liquidity for spread of 0, as it's not necessary
-                if (spread !== MaxLiquiditySpread.ZeroPercent) {
-                  marketsLiquidityParams[market].spread = new BigNumber(spread).toNumber();
-                  const marketLiquidity = await liquidity.getLiquidityForSpread(marketsLiquidityParams[market]);
-                  // Only save liquidity if it's > 0
-                  if (new BigNumber(marketLiquidity).gt(0)) {
-                    marketsLiquidityDocs.push({
-                      _id: market + '_' + marketsLiquidityParams[market].spread + '_' + mostRecentOnTheHourTimestamp.toString(),
-                      market,
-                      spread: marketsLiquidityParams[market].spread,
-                      liquidity: marketLiquidity.toString(),
-                      timestamp: mostRecentOnTheHourTimestamp.toNumber(),
-                    });
-                  }
+        const marketsLiquidityParams = await this.getMarketsLiquidityParams(db, augur);
+        for (const market in marketsLiquidityParams) {
+          if (marketsLiquidityParams.hasOwnProperty(market)) {
+            // Store liquidity for each spread percent
+            for (const spread of Object.values(MaxLiquiditySpread)) {
+              // Do not save liquidity for spread of 0, as it's not necessary
+              if (spread !== MaxLiquiditySpread.ZeroPercent) {
+                marketsLiquidityParams[market].spread = new BigNumber(spread).toNumber();
+                const marketLiquidity = await liquidity.getLiquidityForSpread(marketsLiquidityParams[market]);
+                // Only save liquidity if it's > 0
+                if (new BigNumber(marketLiquidity).gt(0)) {
+                  marketsLiquidityDocs.push({
+                    _id: market + '_' + marketsLiquidityParams[market].spread + '_' + mostRecentOnTheHourTimestamp.toString(),
+                    market,
+                    spread: marketsLiquidityParams[market].spread,
+                    liquidity: marketLiquidity.toString(),
+                    timestamp: mostRecentOnTheHourTimestamp.toNumber(),
+                  });
                 }
               }
             }
           }
-          hourlyLiquidityStartTime = hourlyLiquidityStartTime.plus(SECONDS_IN_AN_HOUR);
         }
         marketsLiquidityDocs.push({
           _id: 'lastUpdated',
@@ -105,7 +101,8 @@ export class LiquidityDB extends AbstractDB {
   }
 
   /**
-   * Deletes hourly liquidity data older than 24 hours
+   * Deletes hourly liquidity data older than 24 hours.
+   *
    * @param liquidityDB
    * @param mostRecentOnTheHourTimestamp
    */
@@ -130,46 +127,38 @@ export class LiquidityDB extends AbstractDB {
    *
    * @param {DB} db Database object to use for fetching MarketsLiquidityParams
    * @param {Augur} augur Augur object to use for fetching MarketsLiquidityParams
-   * @param {number} startTime Unix timestamp start time to use for looking up orders
-   * @param {number} endTime Unix timestamp end time to use for looking up orders
    */
-  async getMarketsLiquidityParams(db: DB, augur: Augur, startTime: number, endTime: number): Promise<MarketsLiquidityParams> {
+  async getMarketsLiquidityParams(db: DB, augur: Augur): Promise<MarketsLiquidityParams> {
     const liquidityParams = {};
-    const currentOrdersLogs = await db.findCurrentOrderLogs({
-      selector: {
-        $and: [
-          { eventType: { $eq: OrderEventType.Fill } },
-          { timestamp: { $gte: `0x${startTime.toString(16)}` } },
-          { timestamp: { $lt: `0x${endTime.toString(16)}` } },
-        ],
-      },
-    });
-
-    if (currentOrdersLogs) {
-      // @TODO: Filter out finalized markets
-      for (let i = 0; i < currentOrdersLogs.length; i++) {
-        liquidityParams[currentOrdersLogs[i].market] = {};
+    // TODO Filter markets with open order better by filtering by market reporting state
+    const marketsWithOpenOrders = await Trading.getOrders(
+      augur,
+      db,
+      {
+        universe: augur.contracts.universe.address,
+        orderState: OrderState.OPEN,
       }
-      const marketIds = Object.keys(liquidityParams);
-      const marketCreatedLogs = await db.findMarketCreatedLogs({
-        selector: { market: { $in: marketIds } },
-      });
-      const reportingFeeDivisor = await augur.contracts.universe.getReportingFeeDivisor_();
-      for (let i = 0; i < marketCreatedLogs.length; i++) {
-        const marketCreatedLog = marketCreatedLogs[i];
-        const liquidityOrderBook = await getLiquidityOrderBook(augur, db, marketCreatedLog.market);
-        if (!_.isEmpty(liquidityOrderBook)) {
-          const market = augur.getMarket(marketCreatedLog.market);
-          const marketFeeDivisor = await market.getMarketCreatorSettlementFeeDivisor_();
-          liquidityParams[marketCreatedLog.market] = {
-            orderBook: liquidityOrderBook,
-            numTicks: new BigNumber(marketCreatedLog.numTicks),
-            marketType: marketCreatedLog.marketType,
-            reportingFeeDivisor,
-            marketFeeDivisor,
-            numOutcomes: marketCreatedLog.marketType === MarketType.Categorical ? marketCreatedLog.outcomes.length : 3,
-          };
-        }
+    );
+
+    const marketIds = Object.keys(marketsWithOpenOrders);
+    const marketCreatedLogs = await db.findMarketCreatedLogs({
+      selector: { market: { $in: marketIds } },
+    });
+    const reportingFeeDivisor = await augur.contracts.universe.getReportingFeeDivisor_();
+    for (let i = 0; i < marketCreatedLogs.length; i++) {
+      const marketCreatedLog = marketCreatedLogs[i];
+      const liquidityOrderBook = await getLiquidityOrderBook(augur, db, marketCreatedLog.market);
+      if (!_.isEmpty(liquidityOrderBook)) {
+        const market = augur.getMarket(marketCreatedLog.market);
+        const marketFeeDivisor = await market.getMarketCreatorSettlementFeeDivisor_();
+        liquidityParams[marketCreatedLog.market] = {
+          orderBook: liquidityOrderBook,
+          numTicks: new BigNumber(marketCreatedLog.numTicks),
+          marketType: marketCreatedLog.marketType,
+          reportingFeeDivisor,
+          marketFeeDivisor,
+          numOutcomes: marketCreatedLog.marketType === MarketType.Categorical ? marketCreatedLog.outcomes.length : 3,
+        };
       }
     }
 

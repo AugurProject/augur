@@ -1480,7 +1480,7 @@ async function setHasRecentlyDepletedLiquidity(db: DB, augur: Augur, marketsResu
   }
 
   const liquidityDB = await db.getLiquidityDatabase();
-  const marketsLiquidityParams = await liquidityDB.getMarketsLiquidityParams(db, augur, mostRecentOnTheHourTimestamp, currentTimestamp);
+  const marketsLiquidityParams = await liquidityDB.getMarketsLiquidityParams(db, augur);
 
   // Set `hasRecentlyDepletedLiquidity` property for each market
   for (let i = 0; i < marketsResults.length; i++) {
