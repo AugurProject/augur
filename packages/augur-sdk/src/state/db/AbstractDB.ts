@@ -1,11 +1,11 @@
-import fs from "fs";
-import Find from "pouchdb-find";
-import Memory from "pouchdb-adapter-memory";
-import PouchDB from "pouchdb";
-import Upsert from "pouchdb-upsert";
+import fs from 'fs';
+import Find from 'pouchdb-find';
+import Memory from 'pouchdb-adapter-memory';
+import PouchDB from 'pouchdb';
+import Upsert from 'pouchdb-upsert';
 import pouchdbDebug from 'pouchdb-debug';
 
-import * as _ from "lodash";
+import * as _ from 'lodash';
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
 
 PouchDB.plugin(Find);
@@ -111,7 +111,7 @@ export abstract class AbstractDB {
 export type PouchDBFactoryType = (dbName: string) => PouchDB.Database;
 
 export function PouchDBFactory(dbArgs: DatabaseConfiguration) {
-  const dbDir = "db";
+  const dbDir = 'db';
 
   if (fs && fs.existsSync && !fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir);
