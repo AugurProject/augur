@@ -10,7 +10,6 @@ import { DerivedDB } from './DerivedDB';
 import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
 import { MarketDB } from './MarketDB';
 import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
-import { Block } from 'ethers/providers';
 import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
@@ -37,8 +36,6 @@ import {
   TradingProceedsClaimedLog,
   UniverseForkedLog,
   UniverseCreatedLog,
-  MarketData,
-  GenericEventDBDescription
 } from '../logs/types';
 import { ZeroXOrders, StoredOrder } from './ZeroXOrders';
 
