@@ -17,6 +17,7 @@ export interface QuadBoxProps {
   content?: ReactNode;
   bottomBarContent?: ReactNode;
   bottomRightBarContent?: ReactNode;
+  leftContent?: ReactNode;
   rightContent?: ReactNode;
   sortByStyles?: object;
   switchHeaders?: boolean;
@@ -34,6 +35,7 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
     normalOnMobile={props.normalOnMobile}
     switchHeaders={props.switchHeaders}
     noBorders={props.noBorders}
+    leftContent={props.leftContent}
     rightContent={
       (props.showFilterSearch && (
         <SearchSort

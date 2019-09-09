@@ -6,7 +6,7 @@ import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
 
 const mapStateToProps = state => ({
   isConnected: state.connection.isConnected,
-  isLogged: state.connection.isLogged,
+  address: state.loginAccount.address,
   markets: state.marketInfos,
 });
 

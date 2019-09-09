@@ -10,10 +10,15 @@
   }
 
   > label {
+    .text-12;
     align-items: center;
     margin-left: auto;
     display: flex;
     flex-flow: row nowrap;
+    
+    @media @breakpoint-mobile {
+      display: none;
+    }
 
     > div {
       margin-right: @size-32;
