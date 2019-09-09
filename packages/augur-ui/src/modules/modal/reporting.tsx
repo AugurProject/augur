@@ -18,6 +18,7 @@ interface ModalReportingProps {
   rep: string;
   isReporting: boolean;
   title: string;
+  reportAction: Function;
 }
 
 interface ModalReportingState {
@@ -39,7 +40,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       title,
       market,
       rep,
-      isReporting
+      isReporting,
+      reportAction
     } = this.props;
     const s = this.state;
     const {
@@ -112,6 +114,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
               maxPrice={maxPrice}
               scalarDenomination={scalarDenomination}
               radioButtons={radioButtons}
+              reportAction={reportAction}
             />
           </div>
         </main>
