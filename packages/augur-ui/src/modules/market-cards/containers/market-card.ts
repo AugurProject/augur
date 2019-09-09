@@ -4,6 +4,8 @@ import { withRouter } from "react-router-dom";
 import MarketCard from "modules/market-cards/market-card";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { hasStakeInMarket } from "modules/account/selectors/has-stake-in-market";
+import { MODAL_REPORTING } from "modules/common/constants";
+import { updateModal } from "modules/modal/actions/update-modal";
 
 const mapStateToProps = (state, ownProps) => {
   const positions = state.accountPositions;
@@ -22,8 +24,15 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId))
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+  dispute: () =>
+    dispatch(
+      updateModal({
+        type: MODAL_REPORTING,
+        market: ownProps.market
+      }),
+    ),
 });
 
 const MarketCardContainer = withRouter(
