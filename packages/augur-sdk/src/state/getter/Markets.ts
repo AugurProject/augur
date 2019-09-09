@@ -202,7 +202,7 @@ export interface MarketOrderBookOrder {
   mySize: string;
 }
 
-export interface MarketOrderBookOrderBook {
+export interface OutcomeOrderBook {
   [outcome: number]: {
     spread: string | null;
     bids: MarketOrderBookOrder[];
@@ -212,7 +212,7 @@ export interface MarketOrderBookOrderBook {
 
 export interface MarketOrderBook {
   marketId: string;
-  orderBook: MarketOrderBookOrderBook;
+  orderBook: OutcomeOrderBook;
 }
 
 export interface LiquidityOrderBookInfo {
