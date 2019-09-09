@@ -771,11 +771,16 @@ export class DB {
   }
 
   /**
-   * Return the specified block
-   * @param blockNumber Block number to return
+   * Return the current time, either using the Time contract, or by using the latest block timestamp.
    */
-  async getBlock(blockNumber: number): Promise<Block>  {
-    return this.augur.provider.getBlock(blockNumber);
+  async getCurrentTime(): Promise<number>  {
+    const time = this.augur.contracts.getTime();
+
+    if (this.augur.contracts.isTimeControlled(time)) {
+      return (await time.getTimestamp_()).toNumber();
+    } else {
+      return (await this.augur.provider.getBlock(await this.augur.provider.getBlockNumber())).timestamp;
+    }
   }
 
   /**

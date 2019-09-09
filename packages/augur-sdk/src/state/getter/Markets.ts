@@ -1443,8 +1443,7 @@ async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): P
   }
 
   const marketIds = Object.keys(keyedMarkets);
-  const highestSyncedBlock = await db.getBlock(await db.syncStatus.getLowestSyncingBlockForAllDBs());
-  const currentTimestamp = highestSyncedBlock.timestamp;
+  const currentTimestamp = await db.getCurrentTime();
   const marketsLiquidityDocs = await db.findRecentMarketsLiquidityDocs(currentTimestamp, marketIds);
   const marketsLiquidityInfo = {};
 
