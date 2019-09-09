@@ -43,7 +43,7 @@ export interface GetLiquidityParams {
   reportingFeeDivisor: BigNumber;
   marketFeeDivisor: BigNumber;
   numOutcomes: number;
-  spread: number;
+  spread?: number;
 }
 
 export class Liquidity {
@@ -152,7 +152,7 @@ export class Liquidity {
 
       // BIDS (`outcome` starts at 1 because the Invalid outcome is 0 and is not included in liquidity calculations)
       for (let outcome = 1; outcome < numOutcomes; outcome++) {
-        if (orderBook[outcome].bids.length < 1) {
+        if (!orderBook[outcome] || orderBook[outcome].bids.length < 1) {
           bid_sum = new BigNumber(0);
           break;
         }
@@ -189,7 +189,7 @@ export class Liquidity {
 
       // ASKS (`outcome` starts at 1 because the Invalid outcome is 0 and is not included in liquidity calculations)
       for (let outcome = 1; outcome < numOutcomes; outcome++) {
-        if (orderBook[outcome].asks.length < 1) {
+        if (!orderBook[outcome] || orderBook[outcome].asks.length < 1) {
           ask_sum = new BigNumber(0);
           break;
         }
