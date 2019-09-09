@@ -72,12 +72,6 @@ export const loadMarketsByFilter = (
       sort.isSortDescending = true;
       break;
     }
-    case MARKET_SORT_PARAMS.LAST_LIQUIDITY_DEPLETED: {
-      // Recently depleted liquidity
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.liquidity; // Change from lastLiquidityDepleted to liquidity for now
-      sort.isSortDescending = true;
-      break;
-    }
     case MARKET_SORT_PARAMS.CREATION_TIME: {
       // Sort By Creation Date (most recent first):
       sort.sortBy = Getters.Markets.GetMarketsSortBy.timestamp;

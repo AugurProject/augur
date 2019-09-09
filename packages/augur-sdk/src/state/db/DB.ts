@@ -771,7 +771,7 @@ export class DB {
   }
 
   /**
-   * Return the current time, either using the Time contract, or by using the latest block timestamp.
+   * Returns the current time, either using the Time contract, or by using the latest block timestamp.
    */
   async getCurrentTime(): Promise<number>  {
     const time = this.augur.contracts.getTime();
