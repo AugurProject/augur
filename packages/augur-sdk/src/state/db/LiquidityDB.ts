@@ -53,8 +53,6 @@ export class LiquidityDB extends AbstractDB {
   }
 
   async recalculateLiquidity(augur: Augur, db: DB, currentTimestamp: number): Promise<void> {
-console.log('');
-console.log('currentTimestamp', currentTimestamp);
     // @TODO: Need to factor in blockStreamDelay?
     try {
       const liquidityDB = db.getLiquidityDatabase();
@@ -62,7 +60,7 @@ console.log('currentTimestamp', currentTimestamp);
       const currentTimestampBN = new BigNumber(currentTimestamp);
       const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
       const mostRecentOnTheHourTimestamp = currentTimestampBN.minus(currentTimestampBN.mod(secondsPerHour));
-console.log('mostRecentOnTheHourTimestamp', mostRecentOnTheHourTimestamp.toNumber());
+
       // TODO Optimize saving hourly liquidity so that existing data isn't recalculated
       if (!lastUpdatedTimestamp || mostRecentOnTheHourTimestamp.gt(lastUpdatedTimestamp)) {
         // await this.deleteOldLiquidityData(liquidityDB, mostRecentOnTheHourTimestamp);
@@ -70,33 +68,17 @@ console.log('mostRecentOnTheHourTimestamp', mostRecentOnTheHourTimestamp.toNumbe
         const liquidity = new Liquidity(augur);
         let hourlyLiquidityStartTime = mostRecentOnTheHourTimestamp.minus(SECONDS_IN_A_DAY);
         while (hourlyLiquidityStartTime.lt(mostRecentOnTheHourTimestamp)) {
-console.log("IN WHILE")
           const marketsLiquidityParams = await this.getMarketsLiquidityParams(db, augur, hourlyLiquidityStartTime.toNumber(), hourlyLiquidityStartTime.plus(SECONDS_IN_AN_HOUR).toNumber());
-console.log('marketsLiquidityParams');
-console.log(marketsLiquidityParams);
           for (const market in marketsLiquidityParams) {
             if (marketsLiquidityParams.hasOwnProperty(market)) {
-console.log("IN IF")
               // Store liquidity for each spread percent
               for (const spread of Object.values(MaxLiquiditySpread)) {
-console.log("IN FOR, spread: ", spread);
-console.log(marketsLiquidityParams);
                 // Do not save liquidity for spread of 0, as it's not necessary
                 if (spread !== MaxLiquiditySpread.ZeroPercent) {
                   marketsLiquidityParams[market].spread = new BigNumber(spread).toNumber();
-console.log('wtf', marketsLiquidityParams[market].spread);
                   const marketLiquidity = await liquidity.getLiquidityForSpread(marketsLiquidityParams[market]);
-console.log("MarketLIQUIDITY", marketLiquidity.toNumber());
                   // Only save liquidity if it's > 0
                   if (new BigNumber(marketLiquidity).gt(0)) {
-console.error("Pushing ");
-console.log({
-  _id: market + '_' + marketsLiquidityParams[market].spread + '_' + mostRecentOnTheHourTimestamp.toString(),
-  market,
-  spread: marketsLiquidityParams[market].spread,
-  liquidity: marketLiquidity.toString(),
-  timestamp: mostRecentOnTheHourTimestamp.toNumber(),
-});
                     marketsLiquidityDocs.push({
                       _id: market + '_' + marketsLiquidityParams[market].spread + '_' + mostRecentOnTheHourTimestamp.toString(),
                       market,
@@ -143,11 +125,19 @@ console.log({
     await liquidityDB.bulkUpsertUnorderedDocuments(oldLiquidityDocs.docs);
   }
 
-  private async getMarketsLiquidityParams(db: DB, augur: Augur, startTime: number, endTime: number): Promise<MarketsLiquidityParams> {
+  /**
+   * Returns the MarketsLiquidityParams for all markets with orders in the CurrentOrders DB.
+   *
+   * @param {DB} db Database object to use for fetching MarketsLiquidityParams
+   * @param {Augur} augur Augur object to use for fetching MarketsLiquidityParams
+   * @param {number} startTime Unix timestamp start time to use for looking up orders
+   * @param {number} endTime Unix timestamp end time to use for looking up orders
+   */
+  async getMarketsLiquidityParams(db: DB, augur: Augur, startTime: number, endTime: number): Promise<MarketsLiquidityParams> {
 // console.log("Getting params for " + startTime + " to " + endTime);
 console.log(await db.findCurrentOrderLogs({
   selector: {
-    eventType: { $eq: OrderEventType.Fill }
+    eventType: { $eq: OrderEventType.Fill },
   },
 }));
     const liquidityParams = {};
@@ -176,8 +166,6 @@ console.log(await db.findCurrentOrderLogs({
       for (let i = 0; i < marketCreatedLogs.length; i++) {
         const marketCreatedLog = marketCreatedLogs[i];
         const liquidityOrderBook = await getLiquidityOrderBook(augur, db, marketCreatedLog.market);
-console.log('liquidityOrderBook');
-console.log(liquidityOrderBook);
         if (!_.isEmpty(liquidityOrderBook)) {
           const market = augur.getMarket(marketCreatedLog.market);
           const marketFeeDivisor = await market.getMarketCreatorSettlementFeeDivisor_();
