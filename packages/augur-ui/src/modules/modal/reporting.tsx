@@ -87,12 +87,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
       return {
         header: outcome.description,
         value: outcome.id,
-        checked: s.checked === outcome.id,
+        checked: s.checked === outcome.id.toString(),
         isInvalid: outcome.id === 0,
-        updatePreFilledStake: this.updatePreFilledStake,
-        preFilledStake: s.preFilledStake,
-        updateDisputeStake: this.updateDisputeStake,
-        disputeStake: s.disputeStake,
         stake: {
           ...stake,
           preFilledStake: formatAttoRep(stake.preFilledStake),
@@ -134,6 +130,10 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
               radioButtons={radioButtons}
               defaultSelected={s.checked}
               reportAction={reportAction}
+              updatePreFilledStake={this.updatePreFilledStake}
+              preFilledStake={s.preFilledStake}
+              updateDisputeStake={this.updateDisputeStake}
+              disputeStake={s.disputeStake}
             />
           </div>
         </main>

@@ -228,6 +228,10 @@ interface RadioGroupProps {
   scalarDenomination?: string;
   isReporting?: boolean;
   reportAction: Function;
+  preFilledStake?: number;
+  updatePreFilledStake?: Function;
+  disputeStake?: number;
+  updateDisputeStake?: Function;
 }
 
 interface RadioGroupState {
@@ -664,6 +668,10 @@ interface ReportingRadioGroupProps {
   scalarDenomination?: string;
   isReporting?: boolean;
   reportAction: Function;
+  preFilledStake?: number;
+  updatePreFilledStake?: Function;
+  disputeStake?: number;
+  updateDisputeStake?: Function;
 }
 
 export const ReportingRadioBarGroup = ({
@@ -675,7 +683,11 @@ export const ReportingRadioBarGroup = ({
   maxPrice,
   scalarDenomination,
   isReporting,
-  reportAction
+  reportAction,
+  preFilledStake,
+  updatePreFilledStake,
+  disputeStake,
+  updateDisputeStake,
 }: ReportingRadioGroupProps) => {
   const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
   const tentativeWinning = radioButtons.find(radioButton => radioButton.stake.tentativeWinning);
@@ -689,6 +701,10 @@ export const ReportingRadioBarGroup = ({
           <ReportingRadioBar
             expandable
             {...tentativeWinning}
+            preFilledStake={preFilledStake}
+            updatePreFilledStake={updatePreFilledStake}
+            disputeStake={disputeStake}
+            updateDisputeStake={updateDisputeStake}
             isInvalid={tentativeWinning.isInvalid}
             isReporting={isReporting}
             checked={tentativeWinning.value.toString() === selected}
@@ -716,6 +732,10 @@ export const ReportingRadioBarGroup = ({
           scalarDenomination={scalarDenomination}
           scalar
           expandable
+          preFilledStake={preFilledStake}
+          updatePreFilledStake={updatePreFilledStake}
+          disputeStake={disputeStake}
+          updateDisputeStake={updateDisputeStake}
           isReporting={isReporting}
           onChange={selected => {
             onChange(selected.toString());
@@ -733,6 +753,10 @@ export const ReportingRadioBarGroup = ({
             onChange(selected.toString());
           }}
           reportAction={reportAction}
+          preFilledStake={preFilledStake}
+          updatePreFilledStake={updatePreFilledStake}
+          disputeStake={disputeStake}
+          updateDisputeStake={updateDisputeStake}
         />
       ))}
       {((!isReporting && tentativeWinning.value !== invalid.value) || isReporting) &&
@@ -747,6 +771,10 @@ export const ReportingRadioBarGroup = ({
             expandable
             {...invalid}
             isInvalid
+            preFilledStake={preFilledStake}
+            updatePreFilledStake={updatePreFilledStake}
+            disputeStake={disputeStake}
+            updateDisputeStake={updateDisputeStake}
             isReporting={isReporting}
             checked={invalid.value.toString() === selected}
             onChange={selected => {
@@ -787,6 +815,10 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       scalarDenomination,
       isReporting,
       reportAction,
+      preFilledStake,
+      updatePreFilledStake,
+      disputeStake,
+      updateDisputeStake,
     } = this.props;
     const { selected } = this.state;
 
@@ -803,6 +835,10 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
             onChange={this.onChange}
             isReporting={isReporting}
             reportAction={reportAction}
+            preFilledStake={preFilledStake}
+            updatePreFilledStake={updatePreFilledStake}
+            disputeStake={disputeStake}
+            updateDisputeStake={updateDisputeStake}
           />
         }
         {!reporting && radioButtons.map((radio, index) => (
