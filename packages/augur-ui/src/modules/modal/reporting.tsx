@@ -25,12 +25,14 @@ interface ModalReportingProps {
 interface ModalReportingState {
   checked: string;
   preFilledStake: string;
+  disputeStake: string;
 }
 
 export default class ModalReporting extends Component<ModalReportingProps, ModalReportingState> {
   state: ModalReportingState = {
     checked: this.props.selectedOutcome ? this.props.selectedOutcome.toString() : '',
     preFilledStake: '',
+    disputeStake: '',
   };
 
   updateChecked = (checked: string) => {
@@ -39,6 +41,10 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
 
   updatePreFilledStake = (preFilledStake: string) => {
     this.setState({preFilledStake});
+  }
+
+  updateDisputeStake = (disputeStake: string) => {
+    this.setState({disputeStake});
   }
 
   render() {
@@ -67,6 +73,7 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
     } = market;
 
     // todo: need to add already staked outcomes for scalar markets for disputing
+
     const radioButtons = outcomesFormatted.filter(outcome => marketType === SCALAR ? outcome.id === 0 : true).map(outcome => {
       let stake = disputeInfo.stakes.find(stake => parseFloat(stake.outcome) === outcome.id);
       if (!stake) {
@@ -84,6 +91,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
         isInvalid: outcome.id === 0,
         updatePreFilledStake: this.updatePreFilledStake,
         preFilledStake: s.preFilledStake,
+        updateDisputeStake: this.updateDisputeStake,
+        disputeStake: s.disputeStake,
         stake: {
           ...stake,
           preFilledStake: formatAttoRep(stake.preFilledStake),
@@ -92,8 +101,6 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
         }
       };
     });
-
-    console.log(s.preFilledStake);
 
     return (
       <div className={Styles.ModalReporting}>
