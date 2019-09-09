@@ -1,16 +1,17 @@
-import * as Sync from "../state/Sync";
-import { API } from "../state/getter/API";
-import { BaseConnector } from "./baseConnector";
-import { SubscriptionEventName } from "../constants";
-import { Subscriptions } from "../subscriptions";
-import { Callback, augurEmitter, SubscriptionType } from "../events";
+import { PouchDBFactory } from '../state/db/AbstractDB';
+import * as Sync from '../state/Sync';
+import { API } from '../state/getter/API';
+import { BaseConnector } from './baseConnector';
+import { SubscriptionEventName } from '../constants';
+import { Subscriptions } from '../subscriptions';
+import { Callback, augurEmitter, SubscriptionType } from '../events';
 
 export class SEOConnector extends BaseConnector {
   private api: API;
   private events = new Subscriptions(augurEmitter);
 
   async connect(ethNodeUrl: string, account?: string): Promise<any> {
-    this.api = await Sync.start(ethNodeUrl, account, { adapter: "memory" }, true);
+    this.api = await Sync.start(ethNodeUrl, account, true, PouchDBFactory({ adapter: 'memory' }));
   }
 
   async syncUserData(account: string): Promise<any> {
