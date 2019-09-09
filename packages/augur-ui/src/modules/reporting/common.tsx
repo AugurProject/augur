@@ -186,7 +186,7 @@ export class PreFilledStake extends Component<
             <LinearPropertyLabel
               key="totalRep"
               label="Total Rep"
-              value={this.props.preFilledStake + ' REP'}
+              value={formatRep(this.props.preFilledStake).formatted + ' REP'}
             />
           </>
         )}
@@ -351,7 +351,7 @@ export class ReportingBondsView extends Component<
         <PreFilledStake
           showInput={showInput}
           toggleInput={this.toggleInput}
-          updatePrefilledStake={updatePreFilledStake}
+          updatePreFilledStake={updatePreFilledStake}
           preFilledStake={preFilledStake}
         />
         {showInput && (

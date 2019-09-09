@@ -23,17 +23,17 @@ interface ModalReportingProps {
 }
 
 interface ModalReportingState {
-  checked: number;
+  checked: string;
   preFilledStake: string;
 }
 
 export default class ModalReporting extends Component<ModalReportingProps, ModalReportingState> {
   state: ModalReportingState = {
-    checked: this.props.selectedOutcome,
+    checked: this.props.selectedOutcome.toString(),
     preFilledStake: '',
   };
 
-  updateChecked = (checked: number) => {
+  updateChecked = (checked: string) => {
     this.setState({checked});
   }
 
@@ -92,6 +92,8 @@ export default class ModalReporting extends Component<ModalReportingProps, Modal
         }
       };
     });
+
+    console.log(s.preFilledStake);
 
     return (
       <div className={Styles.ModalReporting}>
