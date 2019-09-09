@@ -111,14 +111,14 @@ export class FlashSession {
   sdkReady = false;
   async ensureUser(
     network?: NetworkConfiguration,
-    wireUpSdk = false,
+    wireUpSdk = null,
     approveCentralAuthority = true
   ): Promise<ContractAPI> {
     if (typeof this.contractAddresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
-    if (wireUpSdk === this.usingSdk && this.user) {
+    if (this.user && (wireUpSdk === null || wireUpSdk === this.usingSdk)) {
       return this.user;
     }
 
