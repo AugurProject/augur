@@ -16,7 +16,8 @@ const MarketOrdersPositionsTable = ({
   market,
   openOrders,
   filledOrders,
-  cancelAllOpenOrders
+  cancelAllOpenOrders,
+  updateSelectedOrderProperties
 }) => (
   <ModuleTabs
     className={Styles.Tabs}
@@ -46,7 +47,7 @@ const MarketOrdersPositionsTable = ({
       />
     </ModulePane>
     <ModulePane label="Positions">
-      <PositionsTable marketId={marketId} extendedView />
+      <PositionsTable marketId={marketId} extendedView updateSelectedOrderProperties={updateSelectedOrderProperties} />
     </ModulePane>
   </ModuleTabs>
 );

@@ -8,7 +8,6 @@ import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketDa
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
-import { constIdentity } from 'fp-ts/lib/function';
 
 const ITEMS_PER_SECTION = 5;
 const NUM_LOADING_CARDS = 2;
@@ -114,6 +113,7 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
       loadMarkets(offset, limit, reportingType, this.processMarkets)
     );
   };
+
   processMarkets = (err, results: Getters.Markets.MarketList) => {
     const isLoadingMarkets = false;
     this.setState({ isLoadingMarkets }, () => {
