@@ -58,7 +58,7 @@ const PositionsHeader = (props: PositionsHeaderProps) => (
         </span>
         <DaiPercentButton
           showEth={props.showPercent}
-          title="eth/percent"
+          title="dai/percent"
           action={props.updateShowPercent}
         />
       </li>
