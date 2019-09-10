@@ -269,7 +269,7 @@ DisputingBondsViewProps,
   DisputingBondsViewState
 > {
   state: DisputingBondsViewState = {
-    disabled: this.props.scalar ? true : false,
+    disabled: true,
     scalarError: "",
     stakeError: "",
   };
@@ -278,7 +278,8 @@ DisputingBondsViewProps,
     const {
       minPrice,
       maxPrice,
-      changeRange
+      changeRange,
+      stakeValue
     } = this.props;
 
     if (createBigNumber(range).lt(createBigNumber(minPrice)) || createBigNumber(range).gt(createBigNumber(maxPrice))) {
@@ -287,7 +288,7 @@ DisputingBondsViewProps,
       this.setState({scalarError: "Enter a valid number", disabled: true});
     } else {
       this.setState({scalarError: ""});
-      if (this.state.stakeError === "") {
+      if (this.state.stakeError === "" && stakeValue !== "") {
         this.setState({disabled: false});
       }
     }
@@ -302,7 +303,7 @@ DisputingBondsViewProps,
       rep
     } = this.props;
 
-    if (isNaN(stake)) {
+    if (isNaN(stake) || stake === "") {
       this.setState({stakeError: "Enter a valid number", disabled: true});
     } else if (createBigNumber(rep).lt(createBigNumber(stake))) {
       this.setState({stakeError: "Value is bigger than REP balance", disabled: true});
