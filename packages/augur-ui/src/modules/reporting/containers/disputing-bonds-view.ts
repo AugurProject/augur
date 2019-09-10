@@ -3,7 +3,7 @@ import { DisputingBondsView } from 'modules/reporting/common';
 
 const mapStateToProps = state => {
   return {
-    rep: state.loginAccount.balances && state.loginAccount.balances.rep,
+    userAvailableRep: state.loginAccount.balances && state.loginAccount.balances.rep,
   };
 };
 

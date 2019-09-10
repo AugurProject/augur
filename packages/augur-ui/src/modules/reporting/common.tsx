@@ -257,7 +257,7 @@ export interface DisputingBondsViewProps {
   scalarOutcome?: string;
   minPrice?: string;
   maxPrice?: string;
-  rep: number;
+  userAvailableRep: number;
   stakeRemaining?: number;
   tentativeWinning?: boolean;
 }
@@ -304,13 +304,13 @@ DisputingBondsViewProps,
       changeStake,
       scalar,
       rangeValue,
-      rep,
+      userAvailableRep,
       stakeRemaining
     } = this.props;
 
     if (isNaN(stake) || stake === "") {
       this.setState({stakeError: "Enter a valid number", disabled: true});
-    } else if (createBigNumber(rep).lt(createBigNumber(stake))) {
+    } else if (createBigNumber(userAvailableRep).lt(createBigNumber(stake))) {
       this.setState({stakeError: "Value is bigger than REP balance", disabled: true});
     } else if (stakeRemaining && createBigNumber(stakeRemaining).lt(createBigNumber(stake))) {
       this.setState({stakeError: "Value is bigger than needed stake", disabled: true});
@@ -329,7 +329,7 @@ DisputingBondsViewProps,
       rangeValue,
       scalarDenomination,
       stakeValue,
-      rep,
+      userAvailableRep,
       stakeRemaining,
       tentativeWinning
     } = this.props;
@@ -395,7 +395,7 @@ export interface ReportingBondsViewProps {
   scalarOutcome?: string;
   minPrice?: string;
   maxPrice?: string;
-  rep: number;
+  userAvailableRep: number;
 }
 
 interface ReportingBondsViewState {
@@ -445,12 +445,12 @@ export class ReportingBondsView extends Component<
       updatePreFilledStake,
       scalar,
       rangeValue,
-      rep
+      userAvailableRep
     } = this.props;
 
     if (isNaN(stake)) {
       this.setState({stakeError: "Enter a valid number", disabled: true});
-    } else if (createBigNumber(rep).lt(createBigNumber(stake))) {
+    } else if (createBigNumber(userAvailableRep).lt(createBigNumber(stake))) {
       this.setState({stakeError: "Value is bigger than REP balance", disabled: true});
     } else {
       this.setState({stakeError: ""});
@@ -472,7 +472,7 @@ export class ReportingBondsView extends Component<
       reportAction,
       preFilledStake,
       updatePreFilledStake,
-      rep
+      userAvailableRep
     } = this.props;
 
     const { showInput, disabled, scalarError, stakeError } = this.state;
@@ -505,7 +505,7 @@ export class ReportingBondsView extends Component<
           updatePreFilledStake={this.updatePreFilledStake}
           preFilledStake={preFilledStake}
           stakeError={stakeError}
-          threshold={rep}
+          threshold={userAvailableRep}
         />
         {showInput && (
           <div>
