@@ -129,6 +129,7 @@ interface PreFilledStakeProps {
   preFilledStake?: string;
   updatePreFilledStake: Function;
   stakeError?: string;
+  threshold: number;
 }
 
 export class PreFilledStake extends Component<
@@ -149,7 +150,8 @@ export class PreFilledStake extends Component<
 
     const {
       preFilledStake,
-      stakeError
+      stakeError,
+      threshold
     } = this.props;
 
     return (
@@ -179,7 +181,7 @@ export class PreFilledStake extends Component<
             <div>
               <CancelTextButton
                 noIcon
-                action={null}
+                action={() => this.changeStake(threshold.toString())}
                 text={'MAX (REP THRESHOLD)'}
               />
               <CancelTextButton
@@ -257,6 +259,7 @@ export interface DisputingBondsViewProps {
   maxPrice?: string;
   rep: number;
   stakeRemaining?: number;
+  tentativeWinning?: boolean;
 }
 
 interface DisputingBondsViewState {
@@ -326,6 +329,9 @@ DisputingBondsViewProps,
       rangeValue,
       scalarDenomination,
       stakeValue,
+      rep,
+      stakeRemaining,
+      tentativeWinning
     } = this.props;
 
     const { disabled, scalarError, stakeError } = this.state;
@@ -351,11 +357,13 @@ DisputingBondsViewProps,
           errorMessage={stakeError}
           innerLabel="REP"
         />
-        <section>
-          <CancelTextButton noIcon action={null} text={'MIN'} />
-          |
-          <CancelTextButton noIcon action={null} text={'FILL DISPUTE BOND'} />
-        </section>
+        {!tentativeWinning && 
+          <section>
+            <CancelTextButton noIcon action={() => this.changeStake(stakeRemaining.toString())} text={'MIN'} />
+            |
+            <CancelTextButton noIcon action={() => this.changeStake(stakeRemaining.toString())} text={'FILL DISPUTE BOND'} />
+          </section>
+        }
         <span>Review</span>
         <LinearPropertyLabel
           key="disputeRoundStake"
@@ -463,7 +471,8 @@ export class ReportingBondsView extends Component<
       reportingGasFee,
       reportAction,
       preFilledStake,
-      updatePreFilledStake
+      updatePreFilledStake,
+      rep
     } = this.props;
 
     const { showInput, disabled, scalarError, stakeError } = this.state;
@@ -496,6 +505,7 @@ export class ReportingBondsView extends Component<
           updatePreFilledStake={this.updatePreFilledStake}
           preFilledStake={preFilledStake}
           stakeError={stakeError}
+          threshold={rep}
         />
         {showInput && (
           <div>

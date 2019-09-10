@@ -951,6 +951,7 @@ export class ReportingRadioBar extends Component<
                   minPrice={minPrice}
                   maxPrice={maxPrice}
                   stakeRemaining={stake && stake.bondSizeTotal.value}
+                  tentativeWinning={stake && stake.tentativeWinning}
                 />
               }
             </>
