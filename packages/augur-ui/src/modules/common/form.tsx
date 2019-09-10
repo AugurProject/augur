@@ -934,7 +934,7 @@ export class ReportingRadioBar extends Component<
         <div onClick={e => e.stopPropagation()}>
           {!isReporting && // for disputing or for scalar
             <>
-              {((stake && !stake.tentativeWinning) || !stake) &&
+              {(stake && !stake.tentativeWinning) &&
                 <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
               }
               {stake && stake.tentativeWinning &&
