@@ -915,7 +915,7 @@ export class ReportingRadioBar extends Component<
 
     const initialReporterStake = formatNumber("100");
     const reportingGasFee = formatNumber("100");
-    const inputtedStake = !checked || disputeStake === "" || isNaN(parseInt(disputeStake, 10)) ? "0" : disputeStake;
+    const inputtedStake = !checked || disputeStake === "" || isNaN(parseFloat(disputeStake)) ? "0" : disputeStake;
     const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
 
     return (
@@ -934,7 +934,7 @@ export class ReportingRadioBar extends Component<
         <div onClick={e => e.stopPropagation()}>
           {!isReporting && // for disputing or for scalar
             <>
-              {((stake && !stake.tentativeWinning) || stake) &&
+              {((stake && !stake.tentativeWinning) || !stake) &&
                 <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
               }
               {stake && stake.tentativeWinning &&

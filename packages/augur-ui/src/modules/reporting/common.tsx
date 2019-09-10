@@ -305,14 +305,15 @@ DisputingBondsViewProps,
       scalar,
       rangeValue,
       userAvailableRep,
-      stakeRemaining
+      stakeRemaining,
+      tentativeWinning
     } = this.props;
 
     if (isNaN(stake) || stake === "") {
       this.setState({stakeError: "Enter a valid number", disabled: true});
     } else if (createBigNumber(userAvailableRep).lt(createBigNumber(stake))) {
       this.setState({stakeError: "Value is bigger than REP balance", disabled: true});
-    } else if (stakeRemaining && createBigNumber(stakeRemaining).lt(createBigNumber(stake))) {
+    } else if (!tentativeWinning && stakeRemaining && createBigNumber(stakeRemaining).lt(createBigNumber(stake))) {
       this.setState({stakeError: "Value is bigger than needed stake", disabled: true});
     } else {
       this.setState({stakeError: ""});
