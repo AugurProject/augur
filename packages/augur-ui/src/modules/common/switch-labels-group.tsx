@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import Styles from "modules/common/switch-labels-group.styles";
+import { Checkbox } from "modules/common/form";
 
 import {
   MARKET_OPEN,
@@ -14,10 +15,17 @@ export interface KeyValuePair {
   num: number;
 }
 
+export interface checkBox {
+  label: string;
+  action: Function;
+  didCheck: boolean;
+}
+
 export interface SwitchLabelsGroupProps {
   tabs: Array<KeyValuePair>;
   selectedTab: string;
   selectTab: Function;
+  checkBox?: checkBox;
 }
 
 export const SwitchLabelsGroup = (props: SwitchLabelsGroupProps) => (
@@ -40,5 +48,19 @@ export const SwitchLabelsGroup = (props: SwitchLabelsGroupProps) => (
         </span>
       </button>
     ))}
+    {props.checkBox && (
+      <label htmlFor="checkbox">
+        <Checkbox
+          id="checkbox"
+          value={props.checkBox.didCheck}
+          isChecked={props.checkBox.didCheck}
+          onClick={(e: React.SyntheticEvent) => { 
+            e.preventDefault(); 
+            props.checkBox.action(e);
+          }}
+        />
+        {props.checkBox.label}
+      </label>
+    )}
   </div>
 );

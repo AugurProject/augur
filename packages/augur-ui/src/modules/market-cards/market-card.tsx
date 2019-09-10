@@ -259,7 +259,7 @@ export default class MarketCard extends React.Component<
                   stakes={disputeInfo.stakes}
                   dispute={dispute}
                 />
-                {marketType === CATEGORICAL && outcomesFormatted.length > 3 && !expandedView &&
+                {marketType === CATEGORICAL && outcomesFormatted && outcomesFormatted.length > 3 && !expandedView &&
                   <button onClick={this.expand}>
                     <ChevronFlip
                       stroke="#fff"

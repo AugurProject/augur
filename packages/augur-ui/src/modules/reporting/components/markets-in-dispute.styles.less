@@ -1,0 +1,19 @@
+@import (reference) "~assets/styles/shared";
+
+.OnlyPortfolio {
+  .text-12;
+
+  align-items: center;
+  margin-left: auto;
+  display: flex;
+  flex-flow: row nowrap;
+  
+  @media @breakpoint-mobile {
+    margin-top: @size-8;
+    margin-left: 0;
+  }
+
+  > div {
+    margin-right: @size-32;
+  }
+}
