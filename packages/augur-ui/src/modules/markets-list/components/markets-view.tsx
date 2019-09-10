@@ -164,8 +164,10 @@ export default class MarketsView extends Component<
   }
 
   setPageNumber(offset) {
-    this.setState({ offset });
-    this.updateFilteredMarkets();
+    this.setState({ offset }, () => {
+      this.updateFilteredMarkets();
+    });
+
   }
 
   updateFilteredMarkets() {

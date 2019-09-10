@@ -176,7 +176,6 @@ interface WordTrailProps {
 
 interface CategoryTagTrailProps {
   categories: Array<ButtonObj>;
-  tags: Array<ButtonObj>;
 }
 
 interface ValueDenominationProps {
