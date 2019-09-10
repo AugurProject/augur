@@ -364,7 +364,7 @@ export class ReportingBondsView extends Component<
       rep
     } = this.props;
 
-    if (isNaN(stake) || stake === "") {
+    if (isNaN(stake)) {
       this.setState({stakeError: "Enter a valid number", disabled: true});
     } else if (createBigNumber(rep).lt(createBigNumber(stake))) {
       this.setState({stakeError: "Value is bigger than REP balance", disabled: true});

@@ -930,7 +930,7 @@ export class ReportingRadioBar extends Component<
       >
         {checked ? FilledRadio : EmptyRadio}
         <h5>{scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}</h5>
-        <div>
+        <div onClick={e => e.stopPropagation()}>
           {!isReporting && // for disputing or for scalar
             <>
               {!stake.tentativeWinning &&
