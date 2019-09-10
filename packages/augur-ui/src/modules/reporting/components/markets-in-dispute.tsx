@@ -5,7 +5,8 @@ import { Market, Tab } from 'modules/portfolio/types';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
 import { REPORTING_STATE } from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/containers/market-card';
-import { convertMarketInfoToMarketData } from 'utils/convert-marketinfo-marketData';
+import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
+import { createBigNumber } from 'utils/create-big-number';
 import { Checkbox } from 'modules/common/form';
 
 import Styles from 'modules/reporting/components/markets-in-dispute.styles.less';
@@ -31,8 +32,8 @@ const sortByOptions = [
     value: 'repStaked',
     comp(marketA, marketB) {
       return (
-        parseFloat(marketB.disputeInfo.stakeCompletedTotal) -
-        parseFloat(marketA.disputeInfo.stakeCompletedTotal)
+        createBigNumber(marketB.disputeInfo.stakeCompletedTotal).minus(
+        createBigNumber(marketA.disputeInfo.stakeCompletedTotal))
       );
     },
   },
@@ -41,8 +42,7 @@ const sortByOptions = [
     value: 'disputeRound',
     comp(marketA, marketB) {
       return (
-        marketB.disputeInfo.disputeWindow.disputeRound -
-        marketA.disputeInfo.disputeWindow.disputeRound
+        createBigNumber(marketB.disputeInfo.disputeWindow.disputeRound).minus(createBigNumber(marketA.disputeInfo.disputeWindow.disputeRound))
       );
     },
   },
