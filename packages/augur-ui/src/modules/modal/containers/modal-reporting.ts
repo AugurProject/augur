@@ -4,13 +4,12 @@ import ModalReporting from "modules/modal/reporting";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { selectMarket } from "modules/markets/selectors/market";
 import { REPORTING_STATE } from 'modules/common/constants';
 import { formatAttoRep } from "utils/format-number";
 
 const mapStateToProps = (state, ownProps) => ({
   modal: state.modal,
-  market: selectMarket(ownProps.marketId),
+  market: ownProps.market,
   rep: formatAttoRep(state.loginAccount.balances.rep).formatted
 });
 
@@ -29,6 +28,7 @@ const mergeProps = (sP, dP, oP) => {
       }
       dP.closeModal();
     },
+    ...oP,
     ...sP
   };
 };
