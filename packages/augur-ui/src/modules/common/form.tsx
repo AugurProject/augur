@@ -779,7 +779,7 @@ export const ReportingRadioBarGroup = ({
           updateDisputeStake={updateDisputeStake}
         />
       ))}
-      {((!isReporting && tentativeWinning.value !== invalid.value) || isReporting) &&
+      {((!isReporting && tentativeWinning && tentativeWinning.value !== invalid.value) || isReporting) &&
         <>
           <span>
             {isReporting ?
@@ -932,7 +932,7 @@ export class ReportingRadioBar extends Component<
         {checked ? FilledRadio : EmptyRadio}
         <h5>{scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}</h5>
         <div onClick={e => e.stopPropagation()}>
-          {!isReporting && // for disputing or for scalar
+          {!isReporting && stake && // for disputing or for scalar
             <>
               {!stake.tentativeWinning &&
                 <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
