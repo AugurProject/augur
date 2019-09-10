@@ -6,7 +6,7 @@ import { MarketTypeLabel, RepBalance } from 'modules/common/labels';
 import { Subheaders } from 'modules/reporting/common';
 import { RadioBarGroup } from 'modules/common/form';
 import { formatAttoRep } from 'utils/format-number';
-import { SCALAR } from 'modules/common/constants';
+import { SCALAR, INVALID_OUTCOME_ID } from 'modules/common/constants';
 import {
   doInitialReport,
   contribute,
@@ -77,7 +77,7 @@ export default class ModalReporting extends Component<
         description: '',
         amount: this.state.preFilledStake,
         outcomeId,
-        isInvalid: this.state.checked === "0",
+        isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
       });
       // wait a moment before closing the form.
       // need to either give user wait indicator in form
