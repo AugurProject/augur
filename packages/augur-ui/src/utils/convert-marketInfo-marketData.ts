@@ -11,7 +11,7 @@ import {
   CATEGORICAL,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate } from './format-date';
-import { formatPercent, formatDai, formatNone, formatNumber } from './format-number';
+import { formatPercent, formatDai, formatNone, formatNumber, formatAttoRep } from './format-number';
 import { createBigNumber } from './create-big-number';
 
 export function convertMarketInfoToMarketData(marketInfo: Getters.Markets.MarketInfo) {
@@ -36,6 +36,7 @@ export function convertMarketInfoToMarketData(marketInfo: Getters.Markets.Market
       decimals: 4,
       decimalsRounded: 4,
     }),
+    noShowBondAmountFormatted: formatAttoRep(marketInfo.noShowBondAmount),
     marketCreatorFeeRatePercent: formatPercent(creatorFee * 100, {
       positiveSign: false,
       decimals: 4,

@@ -33,7 +33,7 @@ import {
   DisputingBondsView,
   ReportingBondsView,
 } from 'modules/reporting/common';
-import { formatRep } from 'utils/format-number';
+import { formatRep, formatNumber } from 'utils/format-number';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -238,6 +238,13 @@ interface RadioGroupProps {
   maxPrice?: string;
   scalarDenomination?: string;
   isReporting?: boolean;
+  reportAction: Function;
+  preFilledStake?: string;
+  updatePreFilledStake?: Function;
+  disputeStake?: string;
+  updateDisputeStake?: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 interface RadioGroupState {
@@ -276,6 +283,13 @@ interface ReportingRadioBarProps {
   scalarDenomination?: string;
   scalar?: boolean;
   isReporting?: boolean;
+  preFilledStake?: string;
+  updatePreFilledStake?: Function;
+  disputeStake?: string;
+  updateDisputeStake?: Function;
+  reportAction: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 interface RadioTwoLineBarProps {
@@ -668,6 +682,13 @@ interface ReportingRadioGroupProps {
   maxPrice?: string;
   scalarDenomination?: string;
   isReporting?: boolean;
+  reportAction: Function;
+  preFilledStake?: string;
+  updatePreFilledStake?: Function;
+  disputeStake?: string;
+  updateDisputeStake?: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 export const ReportingRadioBarGroup = ({
@@ -679,6 +700,13 @@ export const ReportingRadioBarGroup = ({
   maxPrice,
   scalarDenomination,
   isReporting,
+  reportAction,
+  preFilledStake,
+  updatePreFilledStake,
+  disputeStake,
+  updateDisputeStake,
+  scalarOutcome,
+  updateScalarOutcome,
 }: ReportingRadioGroupProps) => {
   const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
   const tentativeWinning = radioButtons.find(
@@ -697,11 +725,15 @@ export const ReportingRadioBarGroup = ({
           <ReportingRadioBar
             expandable
             {...tentativeWinning}
+            preFilledStake={preFilledStake}
+            updatePreFilledStake={updatePreFilledStake}
+            disputeStake={disputeStake}
+            updateDisputeStake={updateDisputeStake}
             isInvalid={tentativeWinning.isInvalid}
             isReporting={isReporting}
-            checked={tentativeWinning.value === selected}
+            checked={tentativeWinning.value.toString() === selected}
             onChange={selected => {
-              onChange(selected);
+              onChange(selected.toString());
             }}
           />
         </section>
@@ -715,18 +747,25 @@ export const ReportingRadioBarGroup = ({
       {marketType === SCALAR && (
         <ReportingRadioBar
           header=""
-          value={1}
-          checked={1 === selected}
+          value={'1'}
+          checked={'1' === selected}
           stake={null}
           minPrice={minPrice}
           maxPrice={maxPrice}
           scalarDenomination={scalarDenomination}
           scalar
           expandable
+          preFilledStake={preFilledStake}
+          updatePreFilledStake={updatePreFilledStake}
+          disputeStake={disputeStake}
+          updateDisputeStake={updateDisputeStake}
           isReporting={isReporting}
+          scalarOutcome={scalarOutcome}
+          updateScalarOutcome={updateScalarOutcome}
           onChange={selected => {
-            onChange(selected);
+            onChange(selected.toString());
           }}
+          reportAction={reportAction}
         />
       )}
       {radioButtons.map(
@@ -737,11 +776,16 @@ export const ReportingRadioBarGroup = ({
               key={index + radio.value}
               expandable
               {...radio}
-              checked={radio.value === selected}
+              checked={radio.value.toString() === selected}
               isReporting={isReporting}
               onChange={selected => {
-                onChange(selected);
+                onChange(selected.toString());
               }}
+              reportAction={reportAction}
+              preFilledStake={preFilledStake}
+              updatePreFilledStake={updatePreFilledStake}
+              disputeStake={disputeStake}
+              updateDisputeStake={updateDisputeStake}
             />
           )
       )}
@@ -757,10 +801,15 @@ export const ReportingRadioBarGroup = ({
             expandable
             {...invalid}
             isInvalid
+            preFilledStake={preFilledStake}
+            updatePreFilledStake={updatePreFilledStake}
+            disputeStake={disputeStake}
+            updateDisputeStake={updateDisputeStake}
             isReporting={isReporting}
-            checked={invalid.value === selected}
+            checked={invalid.value.toString() === selected}
+            reportAction={reportAction}
             onChange={selected => {
-              onChange(selected);
+              onChange(selected.toString());
             }}
           />
         </>
@@ -796,6 +845,13 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       maxPrice,
       scalarDenomination,
       isReporting,
+      reportAction,
+      preFilledStake,
+      updatePreFilledStake,
+      disputeStake,
+      updateDisputeStake,
+      updateScalarOutcome,
+      scalarOutcome,
     } = this.props;
     const { selected } = this.state;
 
@@ -811,6 +867,13 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
             selected={selected}
             onChange={this.onChange}
             isReporting={isReporting}
+            reportAction={reportAction}
+            preFilledStake={preFilledStake}
+            updatePreFilledStake={updatePreFilledStake}
+            disputeStake={disputeStake}
+            updateDisputeStake={updateDisputeStake}
+            updateScalarOutcome={updateScalarOutcome}
+            scalarOutcome={scalarOutcome}
           />
         )}
         {!reporting &&
@@ -830,28 +893,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   }
 }
 
-interface ReportingRadioBarState {
-  stakeValue: string;
-  rangeValue: string;
-}
-
-export class ReportingRadioBar extends Component<
-  ReportingRadioBarProps,
-  ReportingRadioBarState
-> {
-  state: ReportingRadioBarState = {
-    stakeValue: '',
-    rangeValue: '',
-  };
-
-  changeStake = stakeValue => {
-    this.setState({ stakeValue });
-  };
-
-  changeRange = rangeValue => {
-    this.setState({ rangeValue });
-  };
-
+export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
   render() {
     const {
       header,
@@ -867,12 +909,21 @@ export class ReportingRadioBar extends Component<
       scalarDenomination,
       expandable,
       isReporting,
+      preFilledStake,
+      updatePreFilledStake,
+      disputeStake,
+      updateDisputeStake,
+      reportAction,
+      scalarOutcome,
+      updateScalarOutcome,
     } = this.props;
 
-    const s = this.state;
-
+    const initialReporterStake = formatNumber('100');
+    const reportingGasFee = formatNumber('100');
     const inputtedStake =
-      s.stakeValue === '' || isNaN(s.stakeValue) ? 0 : s.stakeValue;
+      !checked || disputeStake === '' || isNaN(parseInt(disputeStake, 10))
+        ? '0'
+        : disputeStake;
     const fullBond =
       !scalar &&
       stake &&
@@ -916,11 +967,11 @@ export class ReportingRadioBar extends Component<
               {checked && (
                 <DisputingBondsView
                   scalar={scalar}
-                  rangeValue={s.rangeValue}
-                  changeRange={this.changeRange}
+                  rangeValue={scalarOutcome}
+                  changeRange={updateScalarOutcome}
                   scalarDenomination={scalarDenomination}
-                  stakeValue={s.stakeValue}
-                  changeStake={this.changeStake}
+                  stakeValue={disputeStake}
+                  changeStake={updateDisputeStake}
                 />
               )}
             </>
@@ -928,9 +979,16 @@ export class ReportingRadioBar extends Component<
           {isReporting && checked && (
             <ReportingBondsView
               scalar={scalar}
-              rangeValue={s.rangeValue}
-              changeRange={this.changeRange}
+              rangeValue={scalarOutcome}
+              changeRange={updateScalarOutcome}
               scalarDenomination={scalarDenomination}
+              initialReporterStake={initialReporterStake}
+              reportAction={reportAction}
+              preFilledStake={preFilledStake}
+              updatePreFilledStake={updatePreFilledStake}
+              updateScalarOutcome={updateScalarOutcome}
+              scalarOutcome={scalarOutcome}
+              reportingGasFee={reportingGasFee}
             />
           )}
         </div>

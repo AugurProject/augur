@@ -1,15 +1,15 @@
-import React from "react";
-import * as constants from "modules/common/constants";
+import React from 'react';
+import * as constants from 'modules/common/constants';
 import {
   LinearPropertyLabel,
   PendingLabel,
   PositionTypeLabel,
   ValueLabel,
   TextLabel,
-  MovementLabel
-} from "modules/common/labels";
-import { CancelTextButton } from "modules/common/buttons";
-import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
+  MovementLabel,
+} from 'modules/common/labels';
+import { CancelTextButton } from 'modules/common/buttons';
+import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
 
 const { COLUMN_TYPES } = constants;
 
@@ -40,9 +40,7 @@ function selectColumn(columnType: string, properties: Properties) {
       return (
         <>
           <TextLabel text={properties.text} keyId={properties.keyId} />
-          {properties.showExtraNumber &&
-            <span>{properties.value}</span>
-          }
+          {properties.showExtraNumber && <span>{properties.value}</span>}
         </>
       );
     case COLUMN_TYPES.POSITION_TYPE:
@@ -56,21 +54,36 @@ function selectColumn(columnType: string, properties: Properties) {
       return (
         (properties.value || properties.showEmptyDash) && (
           <>
-            {properties.addIndicator &&
+            {properties.addIndicator && (
               <MarketOutcomeTradingIndicator
                 outcome={properties.outcome}
                 location={properties.location}
               />
-            }
-            <ValueLabel value={properties.value} keyId={properties.keyId} showEmptyDash={properties.showEmptyDash} />
+            )}
+            {properties.action && (
+              <button onClick={properties.action}>
+                <ValueLabel
+                  value={properties.value}
+                  keyId={properties.keyId}
+                  showEmptyDash={properties.showEmptyDash}
+                />
+              </button>
+            )}
+            {!properties.action && (
+              <ValueLabel
+                value={properties.value}
+                keyId={properties.keyId}
+                showEmptyDash={properties.showEmptyDash}
+              />
+            )}
           </>
         )
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
       return properties.pending ? (
         <span>
-          {" "}
-          <PendingLabel />{" "}
+          {' '}
+          <PendingLabel />{' '}
         </span>
       ) : (
         <CancelTextButton

@@ -153,6 +153,7 @@ export interface MarketInfo {
   reportingFeeRate: string;
   disputeInfo: DisputeInfo;
   categories: string[];
+  noShowBondAmount: string;
 }
 
 export interface DisputeInfo {
@@ -516,7 +517,7 @@ export class Markets {
     }
 
     if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
-      marketsResults = await setHasRecentlyDepletedLiquidity(db, marketsResults);
+      marketsResults = await setHasRecentlyDepletedLiquidity(db, augur, marketsResults);
     } else if (params.sortBy === GetMarketsSortBy.lastTradedTimestamp) {
       marketsResults = await setLastTradedTimestamp(db, marketsResults);
     }
@@ -852,6 +853,8 @@ export class Markets {
           await augur.contracts.universe.getOrCacheReportingFeeDivisor_()
         ).dividedBy(QUINTILLION);
         const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
+        // TODO: find this value from logs.
+        const noShowBondAmount = "999999000000000000000";
 
         return Object.assign({
           id: marketCreatedLog.market,
@@ -890,6 +893,7 @@ export class Markets {
           marketCreatorFeeRate: marketCreatorFeeRate.toString(10),
           settlementFee: settlementFee.toString(10),
           reportingFeeRate: reportingFeeRate.toString(10),
+          noShowBondAmount,
           details,
           resolutionSource,
           backupSource,
@@ -1433,21 +1437,25 @@ async function setLastTradedTimestamp(db: DB, marketsResults: any[]): Promise<Ar
  * Sets the `hasRecentlyDepletedLiquidity` property for all markets in `marketsResults`.
  *
  * @param {DB} db Database object to use for setting `hasRecentlyDepletedLiquidity`
+ * @param {Augur} augur Augur object to use for setting `hasRecentlyDepletedLiquidity`
  * @param {Array<Object>} marketsResults Array of market objects to add `hasRecentlyDepletedLiquidity` to
  */
-async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): Promise<Array<{}>>  {
+async function setHasRecentlyDepletedLiquidity(db: DB, augur: Augur, marketsResults: any[]): Promise<Array<{}>>  {
   // Create market ID => marketsResults index mapping
   const keyedMarkets = {};
   for (let i = 0; i < marketsResults.length; i++) {
     keyedMarkets[marketsResults[i].market] = i;
   }
-
   const marketIds = Object.keys(keyedMarkets);
+
   const currentTimestamp = await db.getCurrentTime();
-  const marketsLiquidityDocs = await db.findRecentMarketsLiquidityDocs(currentTimestamp, marketIds);
-  const marketsLiquidityInfo = {};
+  const secondsPerHour = SECONDS_IN_AN_HOUR.toNumber();
+  const mostRecentOnTheHourTimestamp = currentTimestamp - (currentTimestamp % secondsPerHour);
+  const lastUpdatedTimestamp = await db.findLiquidityLastUpdatedTimestamp();
 
   // Save liquidity info for each market to an object
+  const marketsLiquidityDocs = await db.findRecentMarketsLiquidityDocs(currentTimestamp, marketIds);
+  const marketsLiquidityInfo = {};
   for (let i = 0; i < marketsLiquidityDocs.length; i++) {
     const marketLiquidityDoc = marketsLiquidityDocs[i];
     if (!marketsLiquidityInfo[marketLiquidityDoc.market]) {
@@ -1457,10 +1465,7 @@ async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): P
       };
     }
 
-    if (
-      marketLiquidityDoc.timestamp >= (currentTimestamp - SECONDS_IN_AN_HOUR.toNumber()) &&
-      marketLiquidityDoc.timestamp < currentTimestamp
-    ) {
+    if (marketLiquidityDoc.timestamp === lastUpdatedTimestamp) {
       marketsLiquidityInfo[marketLiquidityDoc.market].hasLiquidityInLastHour = true;
     }
     if (marketLiquidityDoc.spread.toString() === MaxLiquiditySpread.FifteenPercent) {
@@ -1478,17 +1483,24 @@ async function setHasRecentlyDepletedLiquidity(db: DB, marketsResults: any[]): P
     }
   }
 
+  const liquidityDB = await db.getLiquidityDatabase();
+  const marketsLiquidityParams = await liquidityDB.getMarketsLiquidityParams(db, augur);
+
+  // Set `hasRecentlyDepletedLiquidity` property for each market
   for (let i = 0; i < marketsResults.length; i++) {
     const marketResult = marketsResults[i];
-    marketResult.hasRecentlyDepletedLiquidity = false;
+
     // A market's liquidity is considered recently depleted if it had liquidity under
     // a 15% spread in the last 24 hours, but doesn't currently have liquidity
     if (
       marketsLiquidityInfo[marketResult.market] &&
       marketsLiquidityInfo[marketResult.market].hasLiquidityUnderFifteenPercentSpread &&
-      !marketsLiquidityInfo[marketResult.market].hasLiquidityInLastHour
+      !marketsLiquidityInfo[marketResult.market].hasLiquidityInLastHour &&
+      !marketsLiquidityParams[marketResult.market]
     ) {
       marketResult.hasRecentlyDepletedLiquidity = true;
+    } else {
+      marketResult.hasRecentlyDepletedLiquidity = false;
     }
   }
 
