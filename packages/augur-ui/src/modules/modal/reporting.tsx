@@ -64,7 +64,8 @@ export default class ModalReporting extends Component<
       } = this.props.market;
       let outcomeId = parseInt(this.state.checked, 10);
       if (marketType === SCALAR) {
-        outcomeId = parseFloat(this.state.scalarOutcome);
+        // checked might be invalid outcome
+        outcomeId = parseFloat(this.state.scalarOutcome || this.state.checked);
       }
       doInitialReport({
         marketId,
@@ -76,6 +77,7 @@ export default class ModalReporting extends Component<
         description: '',
         amount: this.state.preFilledStake,
         outcomeId,
+        isInvalid: this.state.checked === "0",
       });
       // wait a moment before closing the form.
       // need to either give user wait indicator in form
@@ -141,8 +143,6 @@ export default class ModalReporting extends Component<
           },
         };
       });
-
-    console.log(s.scalarOutcome);
 
     return (
       <div className={Styles.ModalReporting}>
