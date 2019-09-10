@@ -75,8 +75,8 @@ export function convertPayoutNumeratorsToStrings(
 }
 
 export function convertDisplayValuetoAttoValue(
-  displayValue: BigNumber,
-) {
+  displayValue: BigNumber
+): BigNumber {
   return displayValue.multipliedBy(QUINTILLION);
 }
 
@@ -144,15 +144,22 @@ export function calculatePayoutNumeratorsValue(
 }
 
 export function calculatePayoutNumeratorsArray(
-  displayMaxPrice,
-  displayMinPrice,
-  numTicks,
-  numOutcomes,
-  marketType,
-  outcome
-): BigNumber [] {
+  displayMaxPrice: string,
+  displayMinPrice: string,
+  numTicks: string,
+  numOutcomes: number,
+  marketType: string,
+  outcome: number,
+  isInvalid: boolean = false,
+): BigNumber[] {
   const payoutNumerators = Array(numOutcomes).fill(new BigNumber(0));
   const isScalar = marketType === MarketTypeName.Scalar;
+  const numTicksBN = new BigNumber(numTicks);
+
+  if (isInvalid) {
+    payoutNumerators[0] = numTicksBN;
+    return payoutNumerators;
+  }
 
   if (isScalar) {
     const priceRange = new BigNumber(displayMaxPrice).minus(
@@ -162,13 +169,13 @@ export function calculatePayoutNumeratorsArray(
       new BigNumber(displayMinPrice)
     );
     const longPayout = reportNormalizedToZero
-      .times(numTicks)
+      .times(numTicksBN)
       .dividedBy(priceRange);
-    const shortPayout = new BigNumber(numTicks).minus(longPayout);
-    payoutNumerators[0] = shortPayout;
-    payoutNumerators[1] = longPayout;
+    const shortPayout = numTicksBN.minus(longPayout);
+    payoutNumerators[1] = shortPayout;
+    payoutNumerators[2] = longPayout;
   } else {
-    payoutNumerators[outcome] = new BigNumber(numTicks);
+    payoutNumerators[outcome] = numTicksBN;
   }
   return payoutNumerators;
 }
