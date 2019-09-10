@@ -509,6 +509,7 @@ export interface AuthStatus {
 }
 
 export interface PositionsTotal {
+  currentValue: string;
   frozenFunds: string;
   realized: string;
   realizedCost: string;
