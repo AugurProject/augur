@@ -255,47 +255,118 @@ export interface DisputingBondsViewProps {
   scalarOutcome?: string;
   minPrice?: string;
   maxPrice?: string;
+  rep: number;
 }
 
-export const DisputingBondsView = (props: DisputingBondsViewProps) => (
-  <div
-    className={classNames(Styles.DisputingBondsView, {
-      [Styles.Scalar]: props.scalar,
-    })}
-  >
-    {props.scalar && (
-      <ScalarOutcomeView
-        rangeValue={props.rangeValue}
-        changeRange={props.changeRange}
-        scalarDenomination={props.scalarDenomination}
-      />
-    )}
-    <TextInput
-      placeholder={'0.0000'}
-      value={props.stakeValue}
-      onChange={value => props.changeStake(value)}
-      errorMessage={null}
-      innerLabel="REP"
-    />
-    <section>
-      <CancelTextButton noIcon action={null} text={'MIN'} />
-      |
-      <CancelTextButton noIcon action={null} text={'FILL DISPUTE BOND'} />
-    </section>
-    <span>Review</span>
-    <LinearPropertyLabel
-      key="disputeRoundStake"
-      label="Dispute Round Stake"
-      value={'0.0000 REP'}
-    />
-    <LinearPropertyLabel
-      key="estimatedGasFee"
-      label="Estimated Gas Fee"
-      value={'0.0000 ETH'}
-    />
-    <PrimaryButton text="Confirm" action={null} />
-  </div>
-);
+interface DisputingBondsViewState {
+  disabled: boolean;
+  scalarError: string;
+  stakeError: string;
+}
+
+export class DisputingBondsView extends Component<
+DisputingBondsViewProps,
+  DisputingBondsViewState
+> {
+  state: DisputingBondsViewState = {
+    disabled: this.props.scalar ? true : false,
+    scalarError: "",
+    stakeError: "",
+  };
+
+  changeRange = (range: string) => {
+    const {
+      minPrice,
+      maxPrice,
+      changeRange
+    } = this.props;
+
+    if (createBigNumber(range).lt(createBigNumber(minPrice)) || createBigNumber(range).gt(createBigNumber(maxPrice))) {
+      this.setState({scalarError: "Input value not between scalar market range", disabled: true});
+    } else if (isNaN(range) || range === "") {
+      this.setState({scalarError: "Enter a valid number", disabled: true});
+    } else {
+      this.setState({scalarError: ""});
+      if (this.state.stakeError === "") {
+        this.setState({disabled: false});
+      }
+    }
+    changeRange(range);
+  }
+
+  changeStake = (stake: string) => {
+    const {
+      changeStake,
+      scalar,
+      rangeValue,
+      rep
+    } = this.props;
+
+    if (isNaN(stake)) {
+      this.setState({stakeError: "Enter a valid number", disabled: true});
+    } else if (createBigNumber(rep).lt(createBigNumber(stake))) {
+      this.setState({stakeError: "Value is bigger than REP balance", disabled: true});
+    } else {
+      this.setState({stakeError: ""});
+      if (this.state.scalarError === "" && ((scalar && rangeValue !== "") || !scalar)) {
+        this.setState({disabled: false});
+      }
+    }
+    changeStake(stake);
+  }
+
+  render() {
+    const {
+      scalar,
+      rangeValue,
+      scalarDenomination,
+      stakeValue,
+    } = this.props;
+
+    const { disabled, scalarError, stakeError } = this.state;
+
+    return (
+      <div
+        className={classNames(Styles.DisputingBondsView, {
+          [Styles.Scalar]: scalar,
+        })}
+      >
+        {scalar && (
+          <ScalarOutcomeView
+            rangeValue={rangeValue}
+            changeRange={this.changeRange}
+            scalarDenomination={scalarDenomination}
+            scalarError={scalarError}
+          />
+        )}
+        <TextInput
+          placeholder={'0.0000'}
+          value={stakeValue}
+          onChange={value => this.changeStake(value)}
+          errorMessage={stakeError}
+          innerLabel="REP"
+        />
+        <section>
+          <CancelTextButton noIcon action={null} text={'MIN'} />
+          |
+          <CancelTextButton noIcon action={null} text={'FILL DISPUTE BOND'} />
+        </section>
+        <span>Review</span>
+        <LinearPropertyLabel
+          key="disputeRoundStake"
+          label="Dispute Round Stake"
+          value={formatRep(stakeValue).formatted + ' REP'}
+        />
+        <LinearPropertyLabel
+          key="estimatedGasFee"
+          label="Estimated Gas Fee"
+          value={'0.0000 ETH'}
+        />
+        <PrimaryButton text="Confirm" action={null} disabled={disabled} />
+      </div>
+    );
+  }
+}
 
 export interface ReportingBondsViewProps {
   scalar?: boolean;

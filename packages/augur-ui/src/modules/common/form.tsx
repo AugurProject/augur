@@ -27,9 +27,10 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
-import { Subheaders, DisputingButtonView, DisputingBondsView } from 'modules/reporting/common';
+import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
 import { formatRep, formatNumber } from "utils/format-number";
 import ReportingBondsView from 'modules/reporting/containers/reporting-bonds-view';
+import DisputingBondsView from 'modules/reporting/containers/disputing-bonds-view';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
