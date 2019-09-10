@@ -73,6 +73,12 @@ export function convertPayoutNumeratorsToStrings(
   return payoutNumerators;
 }
 
+export function convertDisplayValuetoAttoValue(
+  displayValue: BigNumber,
+) {
+  return displayValue.multipliedBy(QUINTILLION);
+}
+
 export function compareObjects(key: string, order: string) {
   return function(a: any, b: any) {
     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {

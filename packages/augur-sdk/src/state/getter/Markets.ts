@@ -153,6 +153,7 @@ export interface MarketInfo {
   reportingFeeRate: string;
   disputeInfo: DisputeInfo;
   categories: string[];
+  noShowBondAmount: string;
 }
 
 export interface DisputeInfo {
@@ -852,6 +853,8 @@ export class Markets {
           await augur.contracts.universe.getOrCacheReportingFeeDivisor_()
         ).dividedBy(QUINTILLION);
         const settlementFee = marketCreatorFeeRate.plus(reportingFeeRate);
+        // TODO: find this value from logs.
+        const noShowBondAmount = "999999000000000000000";
 
         return Object.assign({
           id: marketCreatedLog.market,
@@ -890,6 +893,7 @@ export class Markets {
           marketCreatorFeeRate: marketCreatorFeeRate.toString(10),
           settlementFee: settlementFee.toString(10),
           reportingFeeRate: reportingFeeRate.toString(10),
+          noShowBondAmount,
           details,
           resolutionSource,
           backupSource,
