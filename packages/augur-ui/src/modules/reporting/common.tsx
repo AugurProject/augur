@@ -8,7 +8,7 @@ import {
   ALL_TIME_PROFIT_AND_LOSS_REP,
   REPORTING_STATE,
 } from 'modules/common/constants';
-import { FormattedNumber, SizeTypes } from 'modules/types';
+import { FormattedNumber, SizeTypes, MarketData } from 'modules/types';
 import ReactTooltip from 'react-tooltip';
 import {
   SecondaryButton,
@@ -296,7 +296,7 @@ export interface ReportingBondsViewProps {
   initialReporterStake: FormattedNumber;
   reportingGasFee: FormattedNumber;
   reportAction: Function;
-  preFilledStake?: number;
+  preFilledStake?: string;
   updatePreFilledStake?: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
@@ -333,6 +333,8 @@ export class ReportingBondsView extends Component<
 
     const { showInput } = this.state;
 
+    const preFilled = formatRep(preFilledStake || "0");
+
     return (
       <div
         className={classNames(Styles.ReportingBondsView, {
@@ -365,7 +367,7 @@ export class ReportingBondsView extends Component<
             <LinearPropertyLabel
               key="totalRep"
               label="Total rep"
-              value={'0.0000 REP'}
+              value={preFilled}
             />
             <LinearPropertyLabel
               key="totalEstimatedGasFee"
@@ -374,7 +376,7 @@ export class ReportingBondsView extends Component<
             />
           </div>
         )}
-        <PrimaryButton text="Confirm" action={reportAction} />
+        <PrimaryButton text="Confirm" action={ () => reportAction()} />
       </div>
     );
   }
@@ -401,6 +403,7 @@ export interface ReportingCardProps {
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
   showReportingModal: Function;
+  callback: Function;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {

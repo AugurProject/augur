@@ -272,9 +272,9 @@ interface ReportingRadioBarProps {
   scalarDenomination?: string;
   scalar?: boolean;
   isReporting?: boolean;
-  preFilledStake?: number;
+  preFilledStake?: string;
   updatePreFilledStake?: Function;
-  disputeStake?: number;
+  disputeStake?: string;
   updateDisputeStake?: Function;
   reportAction: Function;
   updateScalarOutcome?: Function;
@@ -672,9 +672,9 @@ interface ReportingRadioGroupProps {
   scalarDenomination?: string;
   isReporting?: boolean;
   reportAction: Function;
-  preFilledStake?: number;
+  preFilledStake?: string;
   updatePreFilledStake?: Function;
-  disputeStake?: number;
+  disputeStake?: string;
   updateDisputeStake?: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
@@ -732,7 +732,7 @@ export const ReportingRadioBarGroup = ({
       {marketType === SCALAR &&
         <ReportingRadioBar
           header=""
-          value={1}
+          value={"1"}
           checked={"1" === selected}
           stake={null}
           minPrice={minPrice}
@@ -750,6 +750,7 @@ export const ReportingRadioBarGroup = ({
           onChange={selected => {
             onChange(selected.toString());
           }}
+          reportAction={reportAction}
         />
       }
       {radioButtons.map((radio, index) => (!radio.isInvalid && !radio.stake.tentativeWinning &&
@@ -787,6 +788,7 @@ export const ReportingRadioBarGroup = ({
             updateDisputeStake={updateDisputeStake}
             isReporting={isReporting}
             checked={invalid.value.toString() === selected}
+            reportAction={reportAction}
             onChange={selected => {
               onChange(selected.toString());
             }}
@@ -901,7 +903,8 @@ export class ReportingRadioBar extends Component<
     } = this.props;
 
     const initialReporterStake = formatNumber("100");
-    const inputtedStake = !checked || disputeStake === "" || isNaN(disputeStake) ? 0 : disputeStake;
+    const reportingGasFee = formatNumber("100");
+    const inputtedStake = !checked || disputeStake === "" || isNaN(parseInt(disputeStake, 10)) ? "0" : disputeStake;
     const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
 
     return (
@@ -950,6 +953,7 @@ export class ReportingRadioBar extends Component<
               updatePreFilledStake={updatePreFilledStake}
               updateScalarOutcome={updateScalarOutcome}
               scalarOutcome={scalarOutcome}
+              reportingGasFee={reportingGasFee}
             />
           }
         </div>

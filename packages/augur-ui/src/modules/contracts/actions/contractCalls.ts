@@ -232,52 +232,39 @@ export interface doReportDisputeAddStake {
   amount: string;
 }
 
-export async function doInitialReport(
-  report: doReportDisputeAddStake
-): Promise<boolean> {
+export async function doInitialReport(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(report);
   const description = stringTo32ByteHex(report.description);
-  const amount = convertDisplayValuetoAttoValue(new BigNumber(report.amount || "0"));
-  const status = await market.doInitialReport_(
-    payoutNumerators,
-    description,
-    amount
+  const amount = convertDisplayValuetoAttoValue(
+    new BigNumber(report.amount || '0')
   );
-  return status;
+  return await market.doInitialReport(payoutNumerators, description, amount);
 }
 
 export async function addRepToTentativeWinningOutcome(
   addStake: doReportDisputeAddStake
-): Promise<boolean> {
+) {
   const market = getMarket(addStake.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(addStake);
   const description = stringTo32ByteHex(addStake.description);
   const amount = convertDisplayValuetoAttoValue(new BigNumber(addStake.amount));
-  const status = await market.contributeToTentative_(
+  return await market.contributeToTentative(
     payoutNumerators,
-    description,
-    amount
+    amount,
+    description
   );
-  return status;
 }
 
-export async function contribute(
-  dispute: doReportDisputeAddStake
-): Promise<boolean> {
+export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(dispute);
   const description = stringTo32ByteHex(dispute.description);
   const amount = convertDisplayValuetoAttoValue(new BigNumber(dispute.amount));
-  const status = await market.contribute_(
-    payoutNumerators,
-    description,
-    amount
-  );
-  return status;
+  return await market.contribute(payoutNumerators, amount, description);
 }
 
 function getMarket(marketId) {
@@ -287,6 +274,7 @@ function getMarket(marketId) {
     console.log('could not find ', marketId);
     return null;
   }
+  return market;
 }
 
 function getPayoutNumerators(inputs: doReportDisputeAddStake) {
