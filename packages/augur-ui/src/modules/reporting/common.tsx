@@ -404,6 +404,7 @@ export interface ReportingCardProps {
   reportingWindowStatsEndTime: number;
   showReportingModal: Function;
   callback: Function;
+  isLogged: boolean;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
@@ -412,6 +413,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
     currentAugurTimestamp,
     reportingWindowStatsEndTime,
     showReportingModal,
+    isLogged
   } = props;
 
   if (!market) return null;
@@ -450,9 +452,9 @@ export const ReportingCard = (props: ReportingCardProps) => {
         <PrimaryButton
           text="Report"
           action={showReportingModal}
-          disabled={preReporting}
+          disabled={preReporting || !isLogged}
         />
-        {preReporting && (
+        {(preReporting || !isLogged) && (
           <ReactTooltip
             id="tooltip--preReporting"
             className={TooltipStyles.Tooltip}
@@ -460,7 +462,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
             place="top"
             type="light"
           >
-            <p>Please wait until the Maket is ready to Report on</p>
+            <p>{preReporting ? "Please wait until the Maket is ready to Report on" : "Please connect a wallet to Report on this Market"} </p>
           </ReactTooltip>
         )}
       </div>
