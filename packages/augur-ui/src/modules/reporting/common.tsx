@@ -128,6 +128,7 @@ interface PreFilledStakeProps {
   toggleInput: Function;
   preFilledStake?: string;
   updatePreFilledStake: Function;
+  stakeError?: string;
 }
 
 export class PreFilledStake extends Component<
@@ -145,6 +146,11 @@ export class PreFilledStake extends Component<
 
   render() {
     const s = this.state;
+
+    const {
+      preFilledStake,
+      stakeError
+    } = this.props;
 
     return (
       <div className={Styles.PreFilledStake}>
@@ -165,9 +171,9 @@ export class PreFilledStake extends Component<
           <>
             <TextInput
               placeholder={'0.0000'}
-              value={this.props.preFilledStake}
+              value={preFilledStake}
               onChange={value => this.changeStake(value)}
-              errorMessage={null}
+              errorMessage={stakeError}
               innerLabel="REP"
             />
             <div>
@@ -186,7 +192,7 @@ export class PreFilledStake extends Component<
             <LinearPropertyLabel
               key="totalRep"
               label="Total Rep"
-              value={formatRep(this.props.preFilledStake).formatted + ' REP'}
+              value={formatRep(preFilledStake).formatted + ' REP'}
             />
           </>
         )}
@@ -223,6 +229,7 @@ export interface ScalarOutcomeViewProps {
   rangeValue: string;
   changeRange: Function;
   scalarDenomination: string;
+  scalarError?: string;
 }
 
 export const ScalarOutcomeView = (props: ScalarOutcomeViewProps) => (
@@ -231,7 +238,7 @@ export const ScalarOutcomeView = (props: ScalarOutcomeViewProps) => (
       placeholder={'Enter a number'}
       value={props.rangeValue}
       onChange={value => props.changeRange(value)}
-      errorMessage={null}
+      errorMessage={props.scalarError}
     />
     <h2>{props.scalarDenomination}</h2>
   </div>
@@ -246,6 +253,8 @@ export interface DisputingBondsViewProps {
   changeStake: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
+  minPrice?: string;
+  maxPrice?: string;
 }
 
 export const DisputingBondsView = (props: DisputingBondsViewProps) => (
@@ -300,10 +309,16 @@ export interface ReportingBondsViewProps {
   updatePreFilledStake?: Function;
   updateScalarOutcome?: Function;
   scalarOutcome?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  rep: number;
 }
 
 interface ReportingBondsViewState {
   showInput: boolean;
+  disabled: boolean;
+  scalarError: string;
+  stakeError: string;
 }
 
 export class ReportingBondsView extends Component<
@@ -312,11 +327,55 @@ export class ReportingBondsView extends Component<
 > {
   state: ReportingBondsViewState = {
     showInput: false,
+    disabled: this.props.scalar ? true : false,
+    scalarError: "",
+    stakeError: "",
   };
 
   toggleInput = () => {
     this.setState({ showInput: !this.state.showInput });
-  };
+  }
+
+  changeRange = (range: string) => {
+    const {
+      minPrice,
+      maxPrice,
+      changeRange
+    } = this.props;
+
+    if (createBigNumber(range).lt(createBigNumber(minPrice)) || createBigNumber(range).gt(createBigNumber(maxPrice))) {
+      this.setState({scalarError: "Input value not between scalar market range", disabled: true});
+    } else if (isNaN(range) || range === "") {
+      this.setState({scalarError: "Enter a valid number", disabled: true});
+    } else {
+      this.setState({scalarError: ""});
+      if (this.state.stakeError === "") {
+        this.setState({disabled: false});
+      }
+    }
+    changeRange(range);
+  }
+
+  updatePreFilledStake = (stake: string) => {
+    const {
+      updatePreFilledStake,
+      scalar,
+      rangeValue,
+      rep
+    } = this.props;
+
+    if (isNaN(stake) || stake === "") {
+      this.setState({stakeError: "Enter a valid number", disabled: true});
+    } else if (createBigNumber(rep).lt(createBigNumber(stake))) {
+      this.setState({stakeError: "Value is bigger than REP balance", disabled: true});
+    } else {
+      this.setState({stakeError: ""});
+      if (this.state.scalarError === "" && ((scalar && rangeValue !== "") || !scalar)) {
+        this.setState({disabled: false});
+      }
+    }
+    updatePreFilledStake(stake);
+  }
 
   render() {
     const {
@@ -331,7 +390,7 @@ export class ReportingBondsView extends Component<
       updatePreFilledStake
     } = this.props;
 
-    const { showInput } = this.state;
+    const { showInput, disabled, scalarError, stakeError } = this.state;
 
     const preFilled = formatRep(preFilledStake || "0");
 
@@ -344,8 +403,9 @@ export class ReportingBondsView extends Component<
         {scalar && (
           <ScalarOutcomeView
             rangeValue={rangeValue}
-            changeRange={changeRange}
+            changeRange={this.changeRange}
             scalarDenomination={scalarDenomination}
+            scalarError={scalarError}
           />
         )}
         <span>Review Initial Reporting Stake</span>
@@ -357,17 +417,18 @@ export class ReportingBondsView extends Component<
         <PreFilledStake
           showInput={showInput}
           toggleInput={this.toggleInput}
-          updatePreFilledStake={updatePreFilledStake}
+          updatePreFilledStake={this.updatePreFilledStake}
           preFilledStake={preFilledStake}
+          stakeError={stakeError}
         />
         {showInput && (
           <div>
             <span>Totals</span>
-            <span>Sum total of Dispute Stake and Pre-Filled Stake</span>
+            <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
             <LinearPropertyLabel
               key="totalRep"
               label="Total rep"
-              value={preFilled}
+              value={formatRep(createBigNumber(preFilled).plus(createBigNumber(initialReporterStake))).formatted}
             />
             <LinearPropertyLabel
               key="totalEstimatedGasFee"
@@ -376,7 +437,7 @@ export class ReportingBondsView extends Component<
             />
           </div>
         )}
-        <PrimaryButton text="Confirm" action={ () => reportAction()} />
+        <PrimaryButton text="Confirm" disabled={disabled} action={ () => reportAction()} />
       </div>
     );
   }

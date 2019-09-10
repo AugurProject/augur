@@ -27,8 +27,9 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
-import { Subheaders, DisputingButtonView, DisputingBondsView, ReportingBondsView } from 'modules/reporting/common';
+import { Subheaders, DisputingButtonView, DisputingBondsView } from 'modules/reporting/common';
 import { formatRep, formatNumber } from "utils/format-number";
+import ReportingBondsView from 'modules/reporting/containers/reporting-bonds-view';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -717,6 +718,8 @@ export const ReportingRadioBarGroup = ({
             isReporting={isReporting}
             checked={tentativeWinning.value.toString() === selected}
             onChange={selected => {
+              updateDisputeStake("");
+              updatePreFilledStake("");
               onChange(selected.toString());
             }}
           />
@@ -748,6 +751,9 @@ export const ReportingRadioBarGroup = ({
           scalarOutcome={scalarOutcome}
           updateScalarOutcome={updateScalarOutcome}
           onChange={selected => {
+            updateDisputeStake("");
+            updatePreFilledStake("");
+            updateScalarOutcome("");
             onChange(selected.toString());
           }}
           reportAction={reportAction}
@@ -761,6 +767,8 @@ export const ReportingRadioBarGroup = ({
           checked={radio.value.toString() === selected}
           isReporting={isReporting}
           onChange={selected => {
+            updateDisputeStake("");
+            updatePreFilledStake("");
             onChange(selected.toString());
           }}
           reportAction={reportAction}
@@ -790,6 +798,8 @@ export const ReportingRadioBarGroup = ({
             checked={invalid.value.toString() === selected}
             reportAction={reportAction}
             onChange={selected => {
+              updateDisputeStake("");
+              updatePreFilledStake("");
               onChange(selected.toString());
             }}
           />
@@ -937,6 +947,8 @@ export class ReportingRadioBar extends Component<
                   scalarDenomination={scalarDenomination}
                   stakeValue={disputeStake}
                   changeStake={updateDisputeStake}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
                 />
               }
             </>
@@ -944,6 +956,8 @@ export class ReportingRadioBar extends Component<
           {isReporting && checked &&
             <ReportingBondsView
               scalar={scalar}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
               rangeValue={scalarOutcome}
               changeRange={updateScalarOutcome}
               scalarDenomination={scalarDenomination}
