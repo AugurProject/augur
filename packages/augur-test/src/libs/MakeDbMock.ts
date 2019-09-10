@@ -5,12 +5,13 @@ import { Augur } from "@augurproject/sdk";
 import { Account } from "@augurproject/tools";
 import { IBlockAndLogStreamerListener } from "@augurproject/sdk/build/state/db/BlockAndLogStreamerListener";
 import * as _ from "lodash";
+import uuid = require("uuid");
 
 interface Databases {
   [dbName: string]: PouchDB.Database;
 }
 
-export function makeDbMock() {
+export function makeDbMock(prefix:string = uuid.v4()) {
   const mockState = {
     dbs: {} as Databases,
     failCountdown: -1,  // default state never fails
@@ -57,9 +58,13 @@ export function makeDbMock() {
     }
   }
 
-  function makeFactory(): PouchDBFactoryType {
+  function getDBName(dbNamespace:string, dbName:string) {
+    return `${dbNamespace}/db/${dbName}`;
+  }
+
+  function makeFactory(dbNamespace:string = uuid.v4()): PouchDBFactoryType {
     return (dbName: string) => {
-      const fullDbName = `db/${dbName}`;
+      const fullDbName = getDBName(dbNamespace, dbName);
       const db = new MockPouchDB(fullDbName, { adapter: "memory" });
       mockState.dbs[fullDbName] = db;
       return db;
@@ -94,7 +99,7 @@ export function makeDbMock() {
     makeFactory,
     wipeDB,
     constants,
-    getDatabases: () => mockState.dbs,
+    getDatabaseByName: (dbName:string) => mockState.dbs[getDBName(prefix, dbName)],
     failNext: () => mockState.failCountdown = 1,
     failInN: (n: number) => mockState.failCountdown = n,
     failForever: () => mockState.alwaysFail = true,
@@ -108,7 +113,7 @@ export function makeDbMock() {
       constants.defaultStartSyncBlockNumber,
       _.map(accounts, "publicKey"),
       augur,
-      makeFactory(),
+      makeFactory(prefix),
       makeBlockAndLogStreamerListener(),
     ),
   };

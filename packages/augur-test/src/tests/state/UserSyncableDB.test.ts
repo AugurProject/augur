@@ -81,7 +81,7 @@ test('UserSynableDB.sync', async () => {
     highestAvailableBlockNumber
   );
 
-  const tokensTransferredDB = mock.getDatabases()[`db/${db.dbName}`];
+  const tokensTransferredDB = mock.getDatabaseByName(db.dbName);
   const docs = await tokensTransferredDB.allDocs();
 
   expect(docs.total_rows).toEqual(2);
