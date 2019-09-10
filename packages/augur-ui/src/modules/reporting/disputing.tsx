@@ -30,7 +30,7 @@ export default class Disputing extends Component<DisputingProps> {
   render() {
     return (
       <section>
-        {/* <ParticipationTokensView /> */}
+        <ParticipationTokensView />
         <MarketsInDispute />
       </section>
     );

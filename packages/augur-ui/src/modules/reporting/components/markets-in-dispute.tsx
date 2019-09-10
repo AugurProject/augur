@@ -80,7 +80,7 @@ export default class MarketsInDispute extends Component<
           num: updatedData.awaiting.length,
         },
       ],
-      filteredData: current,
+      filteredData: updatedData.current,
       didCheck: false,
     };
   }
@@ -148,8 +148,8 @@ export default class MarketsInDispute extends Component<
       sortBy
     );
     if (didCheck) {
-      current = this.applyOnlyMyMarkets(filteredData);
-      awaiting = this.applyOnlyMyMarkets(filteredData);
+      current = this.applyOnlyMyMarkets(current);
+      awaiting = this.applyOnlyMyMarkets(awaiting);
     }
     return { current, awaiting };
   };
@@ -197,7 +197,7 @@ export default class MarketsInDispute extends Component<
   toggleOnlyMyPortfolio = () => {
     const { didCheck, selectedTab, sortBy, search, tabs } = this.state;
     const { markets } = this.props;
-    const updatedData = this.getFilteredData(markets, sortBy, input, !didCheck);
+    const updatedData = this.getFilteredData(markets, sortBy, search, !didCheck);
     const updatedTabs = this.getUpdatedTabs(
       updatedData.current.length,
       updatedData.awaiting.length,
