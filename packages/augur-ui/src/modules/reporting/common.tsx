@@ -448,7 +448,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
           reportingWindowEndtime={reportingWindowStatsEndTime}
         />
       )}
-      <div data-tip data-for="tooltip--preReporting">
+      <div data-tip data-for={"tooltip--preReporting"+id}>
         <PrimaryButton
           text="Report"
           action={showReportingModal}
@@ -456,7 +456,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         />
         {(preReporting || !isLogged) && (
           <ReactTooltip
-            id="tooltip--preReporting"
+            id={"tooltip--preReporting"+id}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
