@@ -19,15 +19,15 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
-import { WSClient } from "@0x/mesh-rpc-client";
-
-
+import { WSClient } from '@0x/mesh-rpc-client';
+import { BaseConnector } from '@augurproject/sdk/build/connector';
+import { EmptyConnector } from '@augurproject/sdk';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
 
 export class ContractAPI {
-  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: Connectors.DirectConnector = undefined, gnosisRelay: IGnosisRelayAPI = undefined, meshClient: WSClient = undefined) {
+  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, meshClient: WSClient = undefined) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient);
@@ -206,7 +206,7 @@ export class ContractAPI {
       numTicks: await market.getNumTicks_(),
       numOutcomes: await market.getNumberOfOutcomes_() as unknown as 3 | 4 | 5 | 6 | 7 | 8,
       outcome,
-      tradeGroupId: formatBytes32String("42"),
+      tradeGroupId: formatBytes32String('42'),
       affiliateAddress: NULL_ADDRESS,
       kycToken: NULL_ADDRESS,
       doNotCreateOrders: false,
@@ -215,7 +215,7 @@ export class ContractAPI {
       displayAmount,
       displayPrice,
       displayShares,
-      expirationTime
+      expirationTime,
     });
   }
 
@@ -287,7 +287,7 @@ export class ContractAPI {
     });
   }
 
-  async simulateBasicZeroXYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber, doNotCreateOrders: boolean = false): Promise<ZeroXSimulateTradeData> {
+  async simulateBasicZeroXYesNoTrade(direction: 0 | 1, market: ContractInterfaces.Market, outcome: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, displayAmount: BigNumber, displayPrice: BigNumber, displayShares: BigNumber, doNotCreateOrders = false): Promise<ZeroXSimulateTradeData> {
     return this.simulateZeroXTrade({
       direction,
       market: market.address,
