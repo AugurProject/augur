@@ -15,7 +15,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(
       updateModal({
         type: MODAL_REPORTING,
-        marketId: ownProps.marketId
+        market: ownProps.market
       }),
     ),
 });

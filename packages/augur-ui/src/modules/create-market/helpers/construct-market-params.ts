@@ -1,13 +1,12 @@
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { NewMarket } from 'modules/types';
-import { createBigNumber } from 'utils/create-big-number';
 import {
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
   stringTo32ByteHex,
-  QUINTILLION,
   tickSizeToNumTickWithDisplayPrices,
+  convertDisplayValuetoAttoValue,
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -53,8 +52,8 @@ export function constructMarketParams(
       const prices = isRetry
         ? [new BigNumber(newMarket.minPrice), new BigNumber(newMarket.maxPrice)]
         : [
-            new BigNumber(newMarket.minPrice).multipliedBy(QUINTILLION),
-            new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
+            convertDisplayValuetoAttoValue(new BigNumber(newMarket.minPrice)),
+            convertDisplayValuetoAttoValue(new BigNumber(newMarket.maxPrice)),
           ];
       const numTicks = newMarket.numTicks
         ? new BigNumber(newMarket.numTicks)
@@ -113,8 +112,8 @@ export function constructMarketParamsReturn(
 
   if (newMarket.marketType === SCALAR) {
     const prices = [
-      new BigNumber(newMarket.minPrice).multipliedBy(QUINTILLION),
-      new BigNumber(newMarket.maxPrice).multipliedBy(QUINTILLION),
+      convertDisplayValuetoAttoValue(new BigNumber(newMarket.minPrice)),
+      convertDisplayValuetoAttoValue(new BigNumber(newMarket.maxPrice)),
     ];
     const numTicks = tickSizeToNumTickWithDisplayPrices(
       new BigNumber(newMarket.tickSize),
