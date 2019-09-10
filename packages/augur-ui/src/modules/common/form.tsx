@@ -27,18 +27,28 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
-import { Subheaders, DisputingButtonView, DisputingBondsView, ReportingBondsView } from 'modules/reporting/common';
-import { formatRep, formatNumber } from "utils/format-number";
+import {
+  Subheaders,
+  DisputingButtonView,
+  DisputingBondsView,
+  ReportingBondsView,
+} from 'modules/reporting/common';
+import { formatRep, formatNumber } from 'utils/format-number';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
 import { SquareDropdown } from 'modules/common/selection';
-import { getTimezones, getUserTimezone, Timezones, UTC_Default } from 'utils/get-timezones';
+import {
+  getTimezones,
+  getUserTimezone,
+  Timezones,
+  UTC_Default,
+} from 'utils/get-timezones';
 import { Moment } from 'moment';
 import noop from 'utils/noop';
-import { Getters } from "@augurproject/sdk";
+import { Getters } from '@augurproject/sdk';
 
 interface CheckboxProps {
   id: string;
@@ -167,11 +177,8 @@ export class TimezoneDropdown extends Component<
     });
   };
 
-
   render() {
-    const timezones: Timezones = getTimezones(
-      this.props.timestamp
-    );
+    const timezones: Timezones = getTimezones(this.props.timestamp);
 
     return (
       <section className={Styles.Timezones}>
@@ -194,7 +201,11 @@ interface ErrorProps {
 }
 
 export const Error = (props: ErrorProps) => (
-  <section className={classNames(Styles.ErrorLabel, {[Styles.Alternate]: props.alternate})}>
+  <section
+    className={classNames(Styles.ErrorLabel, {
+      [Styles.Alternate]: props.alternate,
+    })}
+  >
     {!props.alternate && ExclamationCircle}
     <div>
       <span>{props.header}</span>
@@ -265,7 +276,7 @@ interface ReportingRadioBarProps {
   expandable?: boolean;
   checked?: boolean;
   error?: boolean;
-  stake: Getters.Markets.StakeDetails|null;
+  stake: Getters.Markets.StakeDetails | null;
   isInvalid?: boolean;
   minPrice?: string;
   maxPrice?: string;
@@ -664,8 +675,8 @@ export const CheckboxBar = ({
 
 interface ReportingRadioGroupProps {
   marketType: string;
-  radioButtons: Array<ReportingRadioBarProps>
-  selected: string|null;
+  radioButtons: Array<ReportingRadioBarProps>;
+  selected: string | null;
   onChange: Function;
   minPrice?: string;
   maxPrice?: string;
@@ -695,17 +706,22 @@ export const ReportingRadioBarGroup = ({
   disputeStake,
   updateDisputeStake,
   scalarOutcome,
-  updateScalarOutcome
+  updateScalarOutcome,
 }: ReportingRadioGroupProps) => {
   const invalid = radioButtons.find(radioButton => radioButton.isInvalid);
-  const tentativeWinning = radioButtons.find(radioButton => radioButton.stake.tentativeWinning);
+  const tentativeWinning = radioButtons.find(
+    radioButton => radioButton.stake.tentativeWinning
+  );
 
   return (
     <div className={Styles.ReportingRadioBarGroup}>
-      {!isReporting && tentativeWinning &&
+      {!isReporting && tentativeWinning && (
         <section>
           <span>Tentative Outcome</span>
-          <span>Add Pre-emptive stake to Support this outcome if you believe it to be correct.</span>
+          <span>
+            Add Pre-emptive stake to Support this outcome if you believe it to
+            be correct.
+          </span>
           <ReportingRadioBar
             expandable
             {...tentativeWinning}
@@ -721,19 +737,18 @@ export const ReportingRadioBarGroup = ({
             }}
           />
         </section>
-      }
-      <span>{isReporting ? "Outcomes" : "Other Outcomes"}</span>
+      )}
+      <span>{isReporting ? 'Outcomes' : 'Other Outcomes'}</span>
       <span>
-        {isReporting ?
-          "Select which outcome occurred. If you select what is deemed an incorrect outcome, you will lose your stake." :
-          "If the Tentative Winning Outcome is incorrect, select the outcome you believe to be correct in order to stake in its favor. You will lose your entire stake if the outcome you select is disputed and does not end up as the winning outcome."
-        }
+        {isReporting
+          ? 'Select which outcome occurred. If you select what is deemed an incorrect outcome, you will lose your stake.'
+          : 'If the Tentative Winning Outcome is incorrect, select the outcome you believe to be correct in order to stake in its favor. You will lose your entire stake if the outcome you select is disputed and does not end up as the winning outcome.'}
       </span>
-      {marketType === SCALAR &&
+      {marketType === SCALAR && (
         <ReportingRadioBar
           header=""
-          value={"1"}
-          checked={"1" === selected}
+          value={'1'}
+          checked={'1' === selected}
           stake={null}
           minPrice={minPrice}
           maxPrice={maxPrice}
@@ -752,31 +767,35 @@ export const ReportingRadioBarGroup = ({
           }}
           reportAction={reportAction}
         />
-      }
-      {radioButtons.map((radio, index) => (!radio.isInvalid && !radio.stake.tentativeWinning &&
-        <ReportingRadioBar
-          key={index + radio.value}
-          expandable
-          {...radio}
-          checked={radio.value.toString() === selected}
-          isReporting={isReporting}
-          onChange={selected => {
-            onChange(selected.toString());
-          }}
-          reportAction={reportAction}
-          preFilledStake={preFilledStake}
-          updatePreFilledStake={updatePreFilledStake}
-          disputeStake={disputeStake}
-          updateDisputeStake={updateDisputeStake}
-        />
-      ))}
-      {((!isReporting && tentativeWinning.value !== invalid.value) || isReporting) &&
+      )}
+      {radioButtons.map(
+        (radio, index) =>
+          !radio.isInvalid &&
+          !radio.stake.tentativeWinning && (
+            <ReportingRadioBar
+              key={index + radio.value}
+              expandable
+              {...radio}
+              checked={radio.value.toString() === selected}
+              isReporting={isReporting}
+              onChange={selected => {
+                onChange(selected.toString());
+              }}
+              reportAction={reportAction}
+              preFilledStake={preFilledStake}
+              updatePreFilledStake={updatePreFilledStake}
+              disputeStake={disputeStake}
+              updateDisputeStake={updateDisputeStake}
+            />
+          )
+      )}
+      {((!isReporting && tentativeWinning.value !== invalid.value) ||
+        isReporting) && (
         <>
           <span>
-            {isReporting ?
-              "Select Invalid if you believe this market's outcome was ambiguous or unverifiable." :
-              "If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully."
-            }
+            {isReporting
+              ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
+              : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
           </span>
           <ReportingRadioBar
             expandable
@@ -794,10 +813,10 @@ export const ReportingRadioBarGroup = ({
             }}
           />
         </>
-      }
+      )}
     </div>
   );
-}
+};
 
 export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   state: RadioGroupState = {
@@ -810,10 +829,10 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     }
   }
 
-  onChange = (selected) => {
+  onChange = selected => {
     this.props.onChange(selected);
     this.setState({ selected });
-  }
+  };
 
   render() {
     const {
@@ -832,13 +851,13 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
       disputeStake,
       updateDisputeStake,
       updateScalarOutcome,
-      scalarOutcome
+      scalarOutcome,
     } = this.props;
     const { selected } = this.state;
 
     return (
       <div className={Styles.RadioBarGroup}>
-        {reporting &&
+        {reporting && (
           <ReportingRadioBarGroup
             marketType={marketType}
             radioButtons={radioButtons}
@@ -856,28 +875,25 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
             updateScalarOutcome={updateScalarOutcome}
             scalarOutcome={scalarOutcome}
           />
-        }
-        {!reporting && radioButtons.map((radio, index) => (
-          <RadioBar
-            key={radio.value}
-            {...radio}
-            checked={radio.value === selected}
-            onChange={selected => {
-              onChange(selected);
-              this.setState({ selected });
-            }}
-          />
-        ))}
+        )}
+        {!reporting &&
+          radioButtons.map((radio, index) => (
+            <RadioBar
+              key={radio.value}
+              {...radio}
+              checked={radio.value === selected}
+              onChange={selected => {
+                onChange(selected);
+                this.setState({ selected });
+              }}
+            />
+          ))}
       </div>
     );
   }
 }
 
-export class ReportingRadioBar extends Component<
-  ReportingRadioBarProps,
-  {}
-> {
-
+export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
   render() {
     const {
       header,
@@ -899,13 +915,23 @@ export class ReportingRadioBar extends Component<
       updateDisputeStake,
       reportAction,
       scalarOutcome,
-      updateScalarOutcome
+      updateScalarOutcome,
     } = this.props;
 
-    const initialReporterStake = formatNumber("100");
-    const reportingGasFee = formatNumber("100");
-    const inputtedStake = !checked || disputeStake === "" || isNaN(parseInt(disputeStake, 10)) ? "0" : disputeStake;
-    const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
+    const initialReporterStake = formatNumber('100');
+    const reportingGasFee = formatNumber('100');
+    const inputtedStake =
+      !checked || disputeStake === '' || isNaN(parseInt(disputeStake, 10))
+        ? '0'
+        : disputeStake;
+    const fullBond =
+      !scalar &&
+      stake &&
+      formatRep(
+        createBigNumber(stake.bondSizeCurrent.value).plus(
+          createBigNumber(inputtedStake)
+        )
+      );
 
     return (
       <div
@@ -919,17 +945,26 @@ export class ReportingRadioBar extends Component<
         onClick={e => onChange(value)}
       >
         {checked ? FilledRadio : EmptyRadio}
-        <h5>{scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}</h5>
+        <h5>
+          {scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}
+        </h5>
         <div>
-          {!isReporting && // for disputing or for scalar
+          {!isReporting && ( // for disputing or for scalar
             <>
-              {!stake.tentativeWinning &&
-                <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
-              }
-              {stake.tentativeWinning &&
-                <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
-              }
-              {checked &&
+              {!stake.tentativeWinning && (
+                <DisputingButtonView
+                  stake={stake}
+                  inputtedStake={inputtedStake}
+                  fullBond={fullBond}
+                />
+              )}
+              {stake.tentativeWinning && (
+                <Subheaders
+                  header="pre-filled stake"
+                  subheader={stake.preFilledStake.formatted}
+                />
+              )}
+              {checked && (
                 <DisputingBondsView
                   scalar={scalar}
                   rangeValue={scalarOutcome}
@@ -938,10 +973,10 @@ export class ReportingRadioBar extends Component<
                   stakeValue={disputeStake}
                   changeStake={updateDisputeStake}
                 />
-              }
+              )}
             </>
-          }
-          {isReporting && checked &&
+          )}
+          {isReporting && checked && (
             <ReportingBondsView
               scalar={scalar}
               rangeValue={scalarOutcome}
@@ -955,7 +990,7 @@ export class ReportingRadioBar extends Component<
               scalarOutcome={scalarOutcome}
               reportingGasFee={reportingGasFee}
             />
-          }
+          )}
         </div>
       </div>
     );
@@ -997,7 +1032,7 @@ export const RadioBar = ({
           onChange={onTextChange}
           errorMessage={errorMessage}
         />
-        {onSecondTextChange &&
+        {onSecondTextChange && (
           <>
             <h5>{secondHeader}</h5>
             <TextInput
@@ -1007,7 +1042,7 @@ export const RadioBar = ({
               errorMessage={secondErrorMessage}
             />
           </>
-        }
+        )}
       </>
     ) : null}
   </div>
@@ -1147,7 +1182,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   refDropdown: any = null;
 
   componentDidMount() {
-    window.addEventListener("click", this.handleWindowOnClick);
+    window.addEventListener('click', this.handleWindowOnClick);
   }
 
   componentWillReceiveProps(nextProps: TextInputProps) {
@@ -1158,12 +1193,12 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("click", this.handleWindowOnClick);
+    window.removeEventListener('click', this.handleWindowOnClick);
   }
 
   handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
     if (this.refDropdown && !this.refDropdown.contains(event.target)) {
-        this.setState({ showList: false });
+      this.setState({ showList: false });
     }
   };
 
@@ -1200,7 +1235,9 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     const { showList } = this.state;
 
     const filteredList = autoCompleteList.filter(item =>
-      item.label.toLowerCase().includes(this.state.value.toLowerCase()) ? item : null
+      item.label.toLowerCase().includes(this.state.value.toLowerCase())
+        ? item
+        : null
     );
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1210,7 +1247,8 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
         <div
           ref={dropdown => {
             this.refDropdown = dropdown;
-          }}>
+          }}
+        >
           {type !== 'textarea' ? (
             <>
               <input
@@ -1481,18 +1519,23 @@ export const Checkbox = ({
     className={classNames(Styles.Checkbox, {
       [Styles.CheckboxSmall]: smallOnDesktop,
     })}
+    role="button"
+    onClick={e => {
+      e.preventDefault();
+      onClick(e);
+    }}
   >
     <input
       id={id}
       type="checkbox"
       checked={isChecked}
       disabled={disabled}
-      onChange={e => onClick(e)}
+      onChange={e => {}}
     />
     <span
       role="button"
       tabIndex={0}
-      onClick={e => onClick(e)}
+      onClick={e => {}}
       className={classNames({
         [Styles.CheckmarkSmall]: smallOnDesktop,
       })}
@@ -2097,15 +2140,25 @@ export interface CategoryRowProps {
   count: number;
 }
 
-export const CategoryRow = ({ hasChildren = true, handleClick = noop, active = false, loading = false, category, count}: CategoryRowProps) => (
+export const CategoryRow = ({
+  hasChildren = true,
+  handleClick = noop,
+  active = false,
+  loading = false,
+  category,
+  count,
+}: CategoryRowProps) => (
   <div
     onClick={() => handleClick()}
     className={classNames(Styles.CategoryRow, {
       [Styles.active]: active,
       [Styles.loading]: loading,
       [Styles.disabled]: !hasChildren,
-  })}>
-    <span>{category && category.length <= 3 ? category.toUpperCase() : category }</span>
+    })}
+  >
+    <span>
+      {category && category.length <= 3 ? category.toUpperCase() : category}
+    </span>
     {loading && <span>{LoadingEllipse}</span>}
     {!loading && <span>{count}</span>}
   </div>
