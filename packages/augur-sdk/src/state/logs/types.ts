@@ -96,6 +96,7 @@ export interface InitialReporterRedeemedLog extends Log, Doc, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
+  initialReport: Address;
   amountRedeemed: string;
   repReceived: string;
   payoutNumerators: PayoutNumerators;
