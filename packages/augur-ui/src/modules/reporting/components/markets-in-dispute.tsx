@@ -6,9 +6,9 @@ import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
 import { REPORTING_STATE } from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/containers/market-card';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketinfo-marketData';
-import { Checkbox } from 'modules/common/form';
+import { Checkbox } from "modules/common/form";
 
-import Styles from 'modules/reporting/components/markets-in-dispute.styles.less';
+import Styles from "modules/reporting/components/markets-in-dispute.styles.less";
 
 interface MarketsInDisputeProps {
   markets: Object;
@@ -48,7 +48,11 @@ const sortByOptions = [
   },
 ];
 
-const { CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW } = REPORTING_STATE;
+const {
+  CROWDSOURCING_DISPUTE,
+  AWAITING_NEXT_WINDOW,
+  OPEN_REPORTING,
+} = REPORTING_STATE;
 
 export default class MarketsInDispute extends Component<
   MarketsInDisputeProps,
@@ -57,12 +61,8 @@ export default class MarketsInDispute extends Component<
   constructor(props) {
     super(props);
     // default to current
-    const updatedData = this.getFilteredData(
-      props.markets,
-      sortByOptions[0].value,
-      '',
-      false
-    );
+    const current = this.getFilteredData(props.markets, "current", sortByOptions[0].value, "", false);
+    const awaiting = this.getFilteredData(props.markets, "awaiting", sortByOptions[0].value, "", false);
     this.state = {
       search: '',
       selectedTab: 'current',
@@ -72,12 +72,12 @@ export default class MarketsInDispute extends Component<
         {
           key: 'current',
           label: 'Currently Disputing',
-          num: updatedData.current.length,
+          num: current.length,
         },
         {
           key: 'awaiting',
           label: 'Awaiting Next Dispute',
-          num: updatedData.awaiting.length,
+          num: awaiting.length,
         },
       ],
       filteredData: current,
@@ -90,7 +90,8 @@ export default class MarketsInDispute extends Component<
     for (let [key, value] of Object.entries(markets)) {
       if (
         (value.reportingState === CROWDSOURCING_DISPUTE && onlySlow) ||
-        value.reportingState === AWAITING_NEXT_WINDOW
+        value.reportingState === AWAITING_NEXT_WINDOW ||
+        value.reportingState === OPEN_REPORTING
       ) {
         filteredData.push(convertMarketInfoToMarketData(value));
       }
@@ -100,18 +101,9 @@ export default class MarketsInDispute extends Component<
 
   updateFilter = (input: string) => {
     const { markets } = this.props;
-    const { selectedTab, sortBy, search, didCheck, tabs } = this.state;
-    const updatedData = this.getFilteredData(markets, sortBy, search, didCheck);
-    const updatedTabs = this.getUpdatedTabs(
-      updatedData.current.length,
-      updatedData.awaiting.length,
-      tabs
-    );
-    this.setState({
-      filteredData: updatedData[selectedTab],
-      sortBy: input,
-      tabs: updatedTabs,
-    });
+    const { selectedTab, sortBy, search, didCheck } = this.state;
+    const filteredData = this.getFilteredData(markets, selectedTab, sortBy, search, didCheck);
+    this.setState({ filteredData, sortBy: input });
   };
 
   applyOnlyMyMarkets = (filteredData: Array<Market>) => {
@@ -122,8 +114,8 @@ export default class MarketsInDispute extends Component<
       } else {
         return false;
       }
-    });
-  };
+    })
+  }
 
   applySort = (filteredData: Array<Market>, sortBy) => {
     const sortByObj = sortByOptions.find(opt => opt.value === sortBy);
@@ -132,78 +124,63 @@ export default class MarketsInDispute extends Component<
 
   applySearch = (filteredData: Array<Market>, search: string) => {
     if (search.length > 0)
-      return filteredData.filter(item =>
-        item.description.toLowerCase().includes(search.toLowerCase())
-      );
+      return filteredData.filter(item => item.description.includes(search));
     return filteredData;
   };
 
-  getFilteredData = (markets, sortBy, search, didCheck) => {
-    let current = this.applySort(
-      this.applySearch(this.filterDisputingMarkets(markets, true), search),
-      sortBy
-    );
-    let awaiting = this.applySort(
-      this.applySearch(this.filterDisputingMarkets(markets), search),
+  getFilteredData = (markets, selectedTab, sortBy, search, didCheck) => {
+    let filteredData = this.applySort(
+      this.applySearch(
+        this.filterDisputingMarkets(markets, selectedTab === 'current'),
+        search
+      ),
       sortBy
     );
     if (didCheck) {
-      current = this.applyOnlyMyMarkets(filteredData);
-      awaiting = this.applyOnlyMyMarkets(filteredData);
+      filteredData = this.applyOnlyMyMarkets(filteredData);
     }
-    return { current, awaiting };
+    return filteredData;
   };
 
   selectTab = (selectedTab: string) => {
     const { markets } = this.props;
     const { tabs, sortBy, search, didCheck } = this.state;
-    const updatedData = this.getFilteredData(markets, sortBy, search, didCheck);
+    const filteredData = this.getFilteredData(markets, selectedTab, sortBy, search, didCheck);
     const updatedTabs = this.getUpdatedTabs(
-      updatedData.current.length,
-      updatedData.awaiting.length,
+      filteredData.length,
+      selectedTab,
       tabs
     );
     // @ts-ignore
-    this.setState({
-      selectedTab,
-      filteredData: updatedData[selectedTab],
-      tabs: updatedTabs,
-    });
+    this.setState({ selectedTab, filteredData, tabs: updatedTabs });
   };
 
-  getUpdatedTabs = (currentLength, awaitingLength, tabs) => {
+  getUpdatedTabs = (marketsLength, selectedTab, tabs) => {
     const updatedTabs = tabs;
-    updatedTabs[0].num = currentLength;
-    updatedTabs[1].num = awaitingLength;
+    if (selectedTab === 'current') {
+      updatedTabs[0].num = marketsLength;
+    } else {
+      updatedTabs[1].num = marketsLength;
+    }
     return updatedTabs;
   };
 
   onSearchChange = (input: string) => {
     const { markets } = this.props;
     const { tabs, selectedTab, sortBy, didCheck } = this.state;
-    const updatedData = this.getFilteredData(markets, sortBy, input, didCheck);
+    const filteredData = this.getFilteredData(markets, selectedTab, sortBy, input, didCheck);
     const updatedTabs = this.getUpdatedTabs(
-      updatedData.current.length,
-      updatedData.awaiting.length,
+      filteredData.length,
+      selectedTab,
       tabs
     );
-    this.setState({
-      filteredData: updatedData[selectedTab],
-      search: input,
-      tabs: updatedTabs,
-    });
+    this.setState({ filteredData, search: input, tabs: updatedTabs });
   };
 
   toggleOnlyMyPortfolio = () => {
     const { didCheck, selectedTab, sortBy, search, tabs } = this.state;
     const { markets } = this.props;
-    const filteredData = this.getFilteredData(
-      markets,
-      selectedTab,
-      sortBy,
-      search,
-      !didCheck
-    );
+    const filteredData = this.getFilteredData(markets, selectedTab, sortBy, search, !didCheck);
     const updatedTabs = this.getUpdatedTabs(
       filteredData.length,
       selectedTab,
@@ -237,21 +214,19 @@ export default class MarketsInDispute extends Component<
             checkBox={address && checkBox}
           />
         }
-        leftContent={
-          address && (
-            <label className={Styles.OnlyPortfolio} htmlFor="checkbox">
-              <Checkbox
-                id="checkbox"
-                value={checkBox.didCheck}
-                isChecked={checkBox.didCheck}
-                onClick={(e: React.SyntheticEvent) => {
-                  e.preventDefault();
-                  checkBox.action();
-                }}
-              />
-              {checkBox.label}
-            </label>
-          )
+        leftContent={address && 
+        <label className={Styles.OnlyPortfolio} htmlFor="checkbox">
+          <Checkbox
+            id="checkbox"
+            value={checkBox.didCheck}
+            isChecked={checkBox.didCheck}
+            onClick={(e: React.SyntheticEvent) => { 
+              e.preventDefault(); 
+              checkBox.action(e);
+            }}
+          />
+          {checkBox.label}
+        </label>
         }
         content={
           <>
