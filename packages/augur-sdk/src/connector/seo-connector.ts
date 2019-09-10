@@ -4,10 +4,10 @@ import { API } from '../state/getter/API';
 import { BaseConnector } from './baseConnector';
 import { SubscriptionEventName } from '../constants';
 import { Subscriptions } from '../subscriptions';
-import { Callback, augurEmitter, SubscriptionType } from '../events';
+import { Callback, augurEmitter } from '../events';
 
 export class SEOConnector extends BaseConnector {
-  private api: API;
+  protected api: API;
   private events = new Subscriptions(augurEmitter);
 
   async connect(ethNodeUrl: string, account?: string): Promise<any> {
