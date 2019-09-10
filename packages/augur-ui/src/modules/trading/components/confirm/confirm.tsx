@@ -20,7 +20,6 @@ import { formatGasCostToEther, formatShares } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
 
 interface Message {
   header: string;
@@ -35,7 +34,7 @@ interface ConfirmProps {
   gasLimit: number;
   availableEth: BigNumber;
   availableDai: BigNumber;
-  selectedOutcome: Getters.Markets.MarketInfoOutcome;
+  outcomeName: string;
   marketType: string;
   maxPrice: BigNumber;
   minPrice: BigNumber;
@@ -65,9 +64,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   componentWillReceiveProps(nextProps) {
     const { trade, gasPrice, availableEth } = this.props;
     if (
-      trade !== nextProps.trade ||
+      (JSON.stringify(trade) !== JSON.stringify(nextProps.trade)) ||
       gasPrice !== nextProps.gasPrice ||
-      availableEth !== nextProps.availableEth
+      !createBigNumber(availableEth).eq(createBigNumber(nextProps.availableEth))
     ) {
       this.setState({
         messages: this.constructMessages(nextProps),
@@ -164,7 +163,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   render() {
     const {
       trade,
-      selectedOutcome,
+      outcomeName,
       marketType,
       maxPrice,
       minPrice,
@@ -185,7 +184,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     const { messages } = this.state;
 
-    const outcomeName = selectedOutcome.description;
     const greaterLess = side === BUY ? 'greater' : 'less';
     const higherLower = side === BUY ? 'higher' : 'lower';
 
