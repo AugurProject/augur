@@ -149,7 +149,7 @@ export function calculatePayoutNumeratorsArray(
   numOutcomes: number,
   marketType: string,
   outcome: number,
-  isInvalid: boolean
+  isInvalid: boolean = false,
 ): BigNumber[] {
   const payoutNumerators = Array(numOutcomes).fill(new BigNumber(0));
   const isScalar = marketType === MarketTypeName.Scalar;
