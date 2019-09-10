@@ -950,6 +950,7 @@ export class ReportingRadioBar extends Component<
                   changeStake={updateDisputeStake}
                   minPrice={minPrice}
                   maxPrice={maxPrice}
+                  stakeRemaining={stake && stake.bondSizeTotal.value}
                 />
               }
             </>

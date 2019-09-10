@@ -256,6 +256,7 @@ export interface DisputingBondsViewProps {
   minPrice?: string;
   maxPrice?: string;
   rep: number;
+  stakeRemaining?: number;
 }
 
 interface DisputingBondsViewState {
@@ -300,13 +301,16 @@ DisputingBondsViewProps,
       changeStake,
       scalar,
       rangeValue,
-      rep
+      rep,
+      stakeRemaining
     } = this.props;
 
     if (isNaN(stake) || stake === "") {
       this.setState({stakeError: "Enter a valid number", disabled: true});
     } else if (createBigNumber(rep).lt(createBigNumber(stake))) {
       this.setState({stakeError: "Value is bigger than REP balance", disabled: true});
+    } else if (stakeRemaining && createBigNumber(stakeRemaining).lt(createBigNumber(stake))) {
+      this.setState({stakeError: "Value is bigger than needed stake", disabled: true});
     } else {
       this.setState({stakeError: ""});
       if (this.state.scalarError === "" && ((scalar && rangeValue !== "") || !scalar)) {
