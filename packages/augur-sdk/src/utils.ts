@@ -173,31 +173,42 @@ export function calculatePayoutNumeratorsArray(
   return payoutNumerators;
 }
 
+export enum YesNoOutcomes {
+  Invalid = 'Invalid',
+  No = 'No',
+  Yes = 'Yes',
+}
+
+export enum ScalarOutcomes {
+  Invalid = 'Invalid',
+}
+
 export function getOutcomeDescriptionFromOutcome(
   outcome: number,
   market: MarketCreatedLog
 ): string {
   if (market.marketType === MarketType.YesNo) {
     if (outcome === 0) {
-      return 'Invalid';
+      return YesNoOutcomes.Invalid;
     } else if (outcome === 1) {
-      return 'No';
+      return YesNoOutcomes.No;
     } else {
-      return 'Yes';
+      return YesNoOutcomes.Yes;
     }
   } else if (market.marketType === MarketType.Scalar) {
     if (outcome === 0) {
-      return 'Invalid';
+      return ScalarOutcomes.Invalid;
     } else if (outcome === 1) {
       return new BigNumber(market.prices[0]).toString(10);
     } else {
       return new BigNumber(market.prices[1]).toString(10);
     }
-  } else {
+  } else { // Categorical
     return toAscii(market.outcomes[new BigNumber(outcome).toNumber()]);
   }
 }
 
+// TODO replace calls to this with calls to calculatePayoutNumeratorsValue
 export function getOutcomeFromPayoutNumerators(payoutNumerators: BigNumber[]): number {
   let outcome = 0;
   for (; outcome < payoutNumerators.length; outcome++) {
@@ -207,7 +218,6 @@ export function getOutcomeFromPayoutNumerators(payoutNumerators: BigNumber[]): n
   }
   return outcome;
 }
-
 
 export function marketTypeToName(marketType: MarketType): MarketTypeName {
   switch(marketType) {

@@ -87,6 +87,10 @@ export class Universe {
     const minPrice = Number(forkingMarket.prices[0]).toString(10);
     const maxPrice = Number(forkingMarket.prices[forkingMarket.prices.length - 1]).toString(10);
 
+    const repTokenAddress = await (await augur.contracts.universeFromAddress(params.universe)).getReputationToken_();
+    const repToken = augur.contracts.reputationTokenFromAddress(repTokenAddress, augur.networkId);
+    const amount = (await repToken.totalSupply_()).toString();
+
     const children = await db.findUniverseCreatedLogs({
       selector: {
         parentUniverse: params.universe,
@@ -100,13 +104,10 @@ export class Universe {
       const outcome = calculatePayoutNumeratorsValue(maxPrice, minPrice, numTicks, marketTypeName, payoutNumerators);
       const isMalformed = outcome === MALFORMED_OUTCOME;
 
-      const repTokenAddress = await (await augur.contracts.universeFromAddress(params.universe)).getReputationToken_();
-      const repToken = augur.contracts.reputationTokenFromAddress(repTokenAddress, augur.networkId);
-
       return {
-        outcomeName: isMalformed ? 'malformed' : getOutcomeDescriptionFromOutcome(Number(outcome), forkingMarket),
+        outcomeName: isMalformed ? MALFORMED_OUTCOME : getOutcomeDescriptionFromOutcome(Number(outcome), forkingMarket),
         outcome,
-        amount: String(await repToken.totalSupply_()),
+        amount,
         isMalformed,
         payoutNumerators,
       };

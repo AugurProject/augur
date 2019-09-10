@@ -2,14 +2,14 @@ import { NULL_ADDRESS } from '../constants';
 import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
 import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
-import { MarketTypeName } from '@augurproject/sdk/build/state/logs/types';
+import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
 
 export async function fork(user: ContractAPI, market: MarketInfo): Promise<boolean> {
   const MAX_DISPUTES = 20;
   const SOME_REP = new BigNumber(1e18).times(6e7);
 
-  const payoutNumerators = getPayoutNumerators(market, new BigNumber(0));
-  const conflictNumerators = getPayoutNumerators(market, new BigNumber(1));
+  const payoutNumerators = getPayoutNumerators(market, 0);
+  const conflictNumerators = getPayoutNumerators(market, 1);
 
   await user.repFaucet(SOME_REP);
 
@@ -43,32 +43,13 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
   return false; // failed to fork
 }
 
-function getPayoutNumerators(market: MarketInfo, outcome: BigNumber): BigNumber[] {
-  const { marketType, numOutcomes } = market;
-  const numTicks = new BigNumber(market.numTicks);
-
-  // tslint:disable-next-line:ban
-  const numerators: BigNumber[] = Array(numOutcomes).fill(new BigNumber(0));
-
-  if (marketType === MarketTypeName.Scalar) {
-    const maxPrice = new BigNumber(market.maxPrice);
-    const minPrice = new BigNumber(market.minPrice);
-    const priceRange = maxPrice.minus(minPrice);
-    const longPayout = priceRange.times(numTicks).dividedBy(priceRange);
-    const shortPayout = numTicks.minus(longPayout);
-    // This is arbitrary since outcomes for scalar markets aren't quite like
-    // yes/no and categorical market outcomes.
-    if (outcome.eq(0)) {
-      numerators[1] = shortPayout;
-      numerators[2] = longPayout;
-    } else {
-      numerators[2] = shortPayout;
-      numerators[1] = longPayout;
-    }
-
-  } else {
-    numerators[outcome.toNumber()] = new BigNumber(numTicks);
-  }
-
-  return numerators;
+function getPayoutNumerators(market: MarketInfo, outcome: number): BigNumber[] {
+  return calculatePayoutNumeratorsArray(
+    market.maxPrice,
+    market.minPrice,
+    market.numTicks,
+    market.numOutcomes,
+    market.marketType,
+    outcome
+  );
 }
