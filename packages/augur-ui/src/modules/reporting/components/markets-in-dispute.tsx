@@ -197,19 +197,17 @@ export default class MarketsInDispute extends Component<
   toggleOnlyMyPortfolio = () => {
     const { didCheck, selectedTab, sortBy, search, tabs } = this.state;
     const { markets } = this.props;
-    const filteredData = this.getFilteredData(
-      markets,
-      selectedTab,
-      sortBy,
-      search,
-      !didCheck
-    );
+    const updatedData = this.getFilteredData(markets, sortBy, input, !didCheck);
     const updatedTabs = this.getUpdatedTabs(
-      filteredData.length,
-      selectedTab,
+      updatedData.current.length,
+      updatedData.awaiting.length,
       tabs
     );
-    this.setState({ didCheck: !didCheck, filteredData, tabs: updatedTabs });
+    this.setState({
+      didCheck: !didCheck,
+      filteredData: updatedData[selectedTab],
+      tabs: updatedTabs,
+    });
   };
 
   render() {
