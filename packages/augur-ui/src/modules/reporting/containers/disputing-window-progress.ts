@@ -1,35 +1,35 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
-import Disputing from "modules/reporting/disputing";
-import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
+import { WindowProgress } from 'modules/common/progress';
 
 const mapStateToProps = state => ({
-  account: state.loginAccount,
-  isLogged: state.authStatus.isLogged,
-  isConnected: state.connection.isConnected,
   disputeWindow: state.disputeWindowStats,
   currentTime: state.blockchain.currentAugurTimestamp
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadDisputeWindow: () => dispatch(loadDisputeWindow()),
 });
 
 const mergeProps = (sP, dP, oP) => {
+  const { startTime, endTime } = sP.disputeWindow;
   return {
     ...oP,
     ...sP,
     ...dP,
+    startTime,
+    endTime,
+    title:"Current Dispute Window",
+    description:"A few lines of information explaing the purpose of the Dispute Window",
+    countdownLabel:"Time Remaining in Window",
   };
 };
 
-const DisputeContainer = withRouter(
+const DisputeWindowProgressContainer = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
-  )(Disputing)
+  )(WindowProgress)
 );
 
-export default DisputeContainer;
+export default DisputeWindowProgressContainer;

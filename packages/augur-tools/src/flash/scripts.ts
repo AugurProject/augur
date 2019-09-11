@@ -21,6 +21,7 @@ import {
   calculatePayoutNumeratorsArray,
   QUINTILLION,
 } from '@augurproject/sdk';
+import { fork } from "./fork";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -668,50 +669,22 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser(this.network, true);
-      const marketId = args.marketId as string;
+      let marketId = args.marketId as string;
 
-      const MAX_DISPUTES = 20;
-      const SOME_REP = new BigNumber(1e18).times(6e7);
-      const payoutNumerators = [100, 0, 0].map((n) => new BigNumber(n));
-      const conflictNumerators = [0, 100, 0].map((n) => new BigNumber(n));
-
-      let market: ContractInterfaces.Market;
-      if (marketId !== null) {
-        market = user.augur.contracts.marketFromAddress(marketId);
-      } else {
-        market = await user.createReasonableYesNoMarket();
-        this.log(`Created market ${market.address}`);
+      if (marketId === null) {
+        const market = await user.createReasonableYesNoMarket();
+        marketId = market.address;
+        this.log(`Created market ${marketId}`);
       }
 
-      await user.repFaucet(SOME_REP);
+      const marketInfo = (await this.api.route('getMarketsInfo', {
+        marketIds: [marketId],
+      }))[0];
 
-      // Get past the market time, into when we can accept the initial report.
-      await user.setTimestamp((await market.getEndTime_()).plus(1));
-
-      // Do the initial report, creating the first dispute window.
-      await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
-      // Contribution (dispute) fulfills the first dispute bond,
-      // pushing into next dispute round that takes additional stake into account.
-      await user.contribute(market, conflictNumerators, SOME_REP);
-
-      for (let i = 0; i < MAX_DISPUTES; i++) {
-        if ((await market.getForkingMarket_()) !== NULL_ADDRESS) {
-          this.log('Successfully Forked');
-          break;
-        }
-
-        const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
-        console.log(`fork attempt ${i}`);
-
-        // Enter the dispute window.
-        await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
-
-        // Contribute aka dispute. Opposing sides to keep raising the stakes.
-        if (i % 2 === 0) {
-          await user.contribute(market, conflictNumerators, SOME_REP);
-        } else {
-          await user.contribute(market, payoutNumerators, SOME_REP);
-        }
+      if (await fork(user, marketInfo)) {
+        this.log('Fork successful!');
+      } else {
+        this.log('ERROR: forking failed.');
       }
     },
   });
