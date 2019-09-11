@@ -27,7 +27,14 @@ const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
 
 export class ContractAPI {
-  static async userWrapper(account: Account, provider: EthersProvider, addresses: ContractAddresses, connector: BaseConnector = new EmptyConnector(), gnosisRelay: IGnosisRelayAPI = undefined, meshClient: WSClient = undefined) {
+  static async userWrapper(
+    account: Account,
+    provider: EthersProvider,
+    addresses: ContractAddresses,
+    connector: BaseConnector = new EmptyConnector(),
+    gnosisRelay: IGnosisRelayAPI = undefined,
+    meshClient: WSClient = undefined
+  ) {
     const signer = await makeSigner(account, provider);
     const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, NULL_ADDRESS, new BigNumber(0), null, account.publicKey);
     const augur = await Augur.create(provider, dependencies, addresses, connector, gnosisRelay, true, meshClient);
