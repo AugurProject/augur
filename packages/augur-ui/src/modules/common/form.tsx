@@ -734,6 +734,7 @@ export const ReportingRadioBarGroup = ({
               updatePreFilledStake("");
               onChange(selected.toString());
             }}
+            reportAction={reportAction}
           />
         </section>
       )}
@@ -969,6 +970,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   maxPrice={maxPrice}
                   stakeRemaining={stake && stake.bondSizeTotal.value}
                   tentativeWinning={stake && stake.tentativeWinning}
+                  reportAction={reportAction}
                 />
               }
             </>
