@@ -15,7 +15,6 @@ import {
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
-  Timestamp,
 } from '../logs/types';
 import { NULL_ADDRESS,  sortOptions } from './types';
 import {
@@ -159,8 +158,8 @@ export interface DisputeInfo {
   disputeWindow: {
     address: Address;
     disputeRound: string;
-    startTime: Timestamp | null;
-    endTime: Timestamp | null;
+    startTime: number | null;
+    endTime: number | null;
   };
   disputePacingOn: boolean;
   stakeCompletedTotal: string;
@@ -1281,12 +1280,12 @@ async function getMarketDisputeInfo(augur: Augur, db: DB, marketId: Address): Pr
     }
   }
   const disputeWindowAddress = await market.getDisputeWindow_();
-  let disputeWindowStartTime: string | null = null;
-  let disputeWindowEndTime: string | null = null;
+  let disputeWindowStartTime: number | null = null;
+  let disputeWindowEndTime: number | null = null;
   if (disputeWindowAddress !== NULL_ADDRESS) {
     const disputeWindow = augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
-    disputeWindowStartTime = await disputeWindow.getStartTime_().toString();
-    disputeWindowEndTime = await disputeWindow.getEndTime_().toString();
+    disputeWindowStartTime = (await disputeWindow.getStartTime_()).toNumber();
+    disputeWindowEndTime = (await disputeWindow.getEndTime_()).toNumber();
   }
 
   return {

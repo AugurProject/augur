@@ -304,7 +304,6 @@ DisputingBondsViewProps,
       userAvailableRep,
       stakeRemaining,
       tentativeWinning,
-      reportAction
     } = this.props;
 
     if (isNaN(stake) || stake === "") {
