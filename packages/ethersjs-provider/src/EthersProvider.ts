@@ -7,7 +7,7 @@ import { Abi } from "ethereum";
 import * as _ from "lodash";
 import { AsyncQueue, queue, retry } from "async";
 import {isInstanceOfBigNumber, isInstanceOfArray } from "./utils"
-import { JSONRPCRequestPayload } from "0x.js";
+import { JSONRPCRequestPayload } from "ethereum-types";
 
 interface ContractMapping {
   [contractName: string]: ethers.utils.Interface;

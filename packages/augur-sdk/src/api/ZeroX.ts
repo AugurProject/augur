@@ -8,7 +8,7 @@ import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { PlaceTradeDisplayParams, PlaceTradeChainParams, TradeTransactionLimits } from './Trade';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 import { OrderInfo, WSClient, OrderEvent } from '@0x/mesh-rpc-client';
-import { signatureUtils } from '0x.js'
+import { signatureUtils } from '@0x/order-utils';
 import { Web3ProviderEngine } from '@0x/subproviders';
 import { SignerSubprovider } from "../zeroX/SignerSubprovider";
 import { ProviderSubprovider } from "../zeroX/ProviderSubprovider";
