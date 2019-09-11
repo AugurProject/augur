@@ -330,7 +330,8 @@ DisputingBondsViewProps,
       stakeValue,
       userAvailableRep,
       stakeRemaining,
-      tentativeWinning
+      tentativeWinning,
+      reportAction
     } = this.props;
 
     const { disabled, scalarError, stakeError } = this.state;
