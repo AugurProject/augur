@@ -4,7 +4,11 @@
   align-items: center;
   display: flex;
   justify-content: flex-start;
-  margin: @size-16;
+  margin: @size-16 @size-64;
+
+  @media @breakpoint-mobile {
+    margin: @size-16;
+  }
 
   > div {
     align-items: center;

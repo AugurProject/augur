@@ -70,9 +70,15 @@ export default class CategoryFilters extends React.Component<
       CATEGORY_PARAM_NAME
     ];
 
+    if (!selectedCategory) return;
+    const selected = selectedCategory.split(',');
+
+    const toSelect = selected[selected.length - 1];
+    const allOthers = selected.length === 1 ? [] : selected.slice(0, selected.length - 1);
+
     if ((!nextProps.isSearching && !this.state.selectedCategory && nextProps.categoryMetaData && selectedCategory) ||
        (selectedCategory && selectedCategory !== oldSelectedCategory)) {
-      this.getChildrenCategories(selectedCategory, [], false);
+      this.getChildrenCategories(toSelect, allOthers, false);
     }
   }
 
@@ -312,7 +318,8 @@ export default class CategoryFilters extends React.Component<
   getChildrenCategories(selectedCategory, selectedCategories, hidden = true) {
     if (this.props.isSearching && hidden) return null;
 
-    const metaCategories = this.state.currentCategories || this.props.categoryMetaData.categories;
+
+    const metaCategories = this.props.categoryMetaData.categories;
     const childrenCategories = metaCategories[selectedCategory] && metaCategories[selectedCategory].children;
 
     const updateState = (currentCategories) => {
