@@ -385,10 +385,10 @@ export const determineVisible = (
   const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
   const customPrimary = selected[0] === CUSTOM;
   const customSecondary =
-    selected[1] === CUSTOM ||
-    (!showSecondaryDropdown && customPrimary && values[0] !== '');
+    selected[1] === CUSTOM || (selected[1] && !secondaryOptions.map(option => option.value).includes(selected[1]));
+
   const customTertiary =
-    selected[2] === CUSTOM || (!showTertiaryDropdown && values[1] !== '');
+    selected[2] === CUSTOM || (selected[2] && !tertiaryOptions.map(option => option.value).includes(selected[2]));
   return {
     showSecondaryDropdown,
     showTertiaryDropdown,
@@ -464,7 +464,7 @@ export const DropdownInputGroup = ({
     {showIcon && RightAngle}
     {showDropdown && (
       <FormDropdown
-        defaultValue={defaultValue}
+        defaultValue={showText ? 'Custom' : defaultValue}
         staticLabel={staticLabel}
         onChange={onChangeDropdown}
         options={options}
