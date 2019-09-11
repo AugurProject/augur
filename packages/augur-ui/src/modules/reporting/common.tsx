@@ -378,6 +378,7 @@ DisputingBondsViewProps,
   }
 }
 
+
 export interface ReportingBondsViewProps {
   scalar?: boolean;
   rangeValue: string;
