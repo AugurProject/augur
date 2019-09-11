@@ -255,7 +255,7 @@ describe('State API :: Universe :: ', () => {
 
   }, 200000);
 
-  test('getForkMigrationTotals : Scalar', async () => {
+  test.skip('getForkMigrationTotals : Scalar', async () => {
     const universe = john.augur.contracts.universe;
 
     const actualDB = await db;
