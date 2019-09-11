@@ -30,6 +30,7 @@ interface Outcome {
   amount: string; // atto-rep given to this outcome
   isMalformed: boolean;
   payoutNumerators: string[]; // not needed by UI, but 3rd parties might want it
+  isInvalid: boolean; // for scalar markets
 }
 
 export class Universe {
@@ -109,6 +110,7 @@ export class Universe {
         amount,
         isMalformed,
         payoutNumerators,
+        isInvalid: (!isMalformed) && Number(payoutNumerators[0]) > 0,
       };
     }));
 

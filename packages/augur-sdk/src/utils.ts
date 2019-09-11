@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js';
 import { MALFORMED_OUTCOME } from './constants';
 import { MarketCreatedLog, MarketType, MarketTypeName } from "./state/logs/types";
 import { toAscii } from "./state/utils/utils";
-import { INVALID_OUTCOME } from "@augurproject/ui/modules/create-market/constants";
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
@@ -122,7 +121,12 @@ export function calculatePayoutNumeratorsValue(
   if (!payout) return null;
   if (payout.length === 0) return null;
 
+
   if (isScalar) {
+    if (isInvalidScalar(payout)) {
+      return MALFORMED_OUTCOME;
+    }
+
     const longPayout = new BigNumber(payout[1], 10);
     const priceRange = new BigNumber(displayMaxPrice, 10).minus(
       new BigNumber(displayMinPrice, 10)
@@ -133,15 +137,23 @@ export function calculatePayoutNumeratorsValue(
       .dividedBy(new BigNumber(numTicks, 10))
       .plus(new BigNumber(displayMinPrice, 10))
       .toString();
-  }
-  // test if stake payout is malformed
-  if (
-    payout.reduce((p, ticks) => (parseInt(ticks, 10) > 0 ? p + 1 : p), 0) > 1
-  ) {
-    return MALFORMED_OUTCOME;
-  }
+  } else {
+    if (isInvalidCategorical(payout)) { // or yes/no
+      return MALFORMED_OUTCOME;
+    }
 
-  return payout.findIndex((item: string) => parseInt(item, 10) > 0).toString();
+    return payout.findIndex((item: string) => Number(item) > 0).toString();
+  }
+}
+
+function isInvalidCategorical(payout: string[]): boolean {
+  // test if stake payout is malformed (has ticks in more than one outcome)
+  return payout.reduce((p, ticks) => (Number(ticks) > 0 ? p + 1 : p), 0) > 1;
+}
+
+function isInvalidScalar(payout: string[]): boolean {
+  // test if stake payout is malformed (has ticks in invalid _and_ another outcome)
+  return Number(payout[0]) > 0 && isInvalidCategorical(payout.slice(1));
 }
 
 export function calculatePayoutNumeratorsArray(
@@ -214,17 +226,6 @@ export function getOutcomeDescriptionFromOutcome(
   } else { // Categorical
     return toAscii(market.outcomes[new BigNumber(outcome).toNumber()]);
   }
-}
-
-// TODO replace calls to this with calls to calculatePayoutNumeratorsValue
-export function getOutcomeFromPayoutNumerators(payoutNumerators: BigNumber[]): number {
-  let outcome = 0;
-  for (; outcome < payoutNumerators.length; outcome++) {
-    if (payoutNumerators[outcome].toNumber() > 0) {
-      break;
-    }
-  }
-  return outcome;
 }
 
 export function marketTypeToName(marketType: MarketType): MarketTypeName {

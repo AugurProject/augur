@@ -255,7 +255,7 @@ describe('State API :: Universe :: ', () => {
 
   }, 120000);
 
-  test.skip('getForkMigrationTotals : Scalar', async () => {
+  test('getForkMigrationTotals : Scalar', async () => {
     const universe = john.augur.contracts.universe;
 
     const actualDB = await db;
@@ -271,7 +271,7 @@ describe('State API :: Universe :: ', () => {
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
     const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
 
-    const invalidNumerators = getPayoutNumerators(marketInfo, 0);
+    const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
     const fooOutcome = makeValidScalarOutcome(marketInfo);
     const fooNumerators = getPayoutNumerators(marketInfo, fooOutcome);
 
@@ -281,6 +281,7 @@ describe('State API :: Universe :: ', () => {
     const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
 
     await john.repFaucet(new BigNumber(1e21));
+
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
     await john.repFaucet(new BigNumber(1e21));
     await repToken.migrateOutByPayout(fooNumerators, new BigNumber(1e21));
@@ -297,6 +298,7 @@ describe('State API :: Universe :: ', () => {
           outcome:     '50000000000000000000',
           amount: '60000000349680582682291668',
           isMalformed: false,
+          isInvalid: true,
           payoutNumerators: [
             '20000',
             '0',
@@ -305,13 +307,14 @@ describe('State API :: Universe :: ', () => {
         },
         {
           outcomeName: '250000000000000000000',
-          outcome:     '150000000000000000000',
+          outcome:     '184000000000000000000',
           amount: '60000000349680582682291668',
           isMalformed: false,
+          isInvalid: false,
           payoutNumerators: [
             '0',
-            '10000',
-            '10000',
+            '13400',
+            '6600',
           ],
         },
       ],
