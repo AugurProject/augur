@@ -100,7 +100,6 @@ export class Universe {
     const outcomes: Outcome[] = await Promise.all(children.map(async (child): Promise<Outcome> => {
       const payoutNumerators = child.payoutNumerators.map((hex) => Number(hex).toString(10));
 
-      // TODO min and max prices probably need to be translated into display prices
       const outcome = calculatePayoutNumeratorsValue(maxPrice, minPrice, numTicks, marketTypeName, payoutNumerators);
       const isMalformed = outcome === MALFORMED_OUTCOME;
 

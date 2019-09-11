@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { MALFORMED_OUTCOME } from './constants';
 import { MarketCreatedLog, MarketType, MarketTypeName } from "./state/logs/types";
 import { toAscii } from "./state/utils/utils";
+import { INVALID_OUTCOME } from "@augurproject/ui/modules/create-market/constants";
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
