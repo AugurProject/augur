@@ -8,7 +8,7 @@ import PositionsTable from "modules/market/containers/positions-table";
 import { END_TIME } from "modules/common/constants";
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
-import { MarketData } from "modules/types";
+import { MarketData, SizeTypes } from "modules/types";
 
 const sortByOptions = [
   {
@@ -94,7 +94,7 @@ export default class Positions extends Component<PositionsProps, PositionsState>
           showPercent
           showPlusMinus
           showColors
-          size="small"
+          size={SizeTypes.SMALL}
           value={market.myPositionsSummary && market.myPositionsSummary.totalPercent.formatted}
         />
       </div>

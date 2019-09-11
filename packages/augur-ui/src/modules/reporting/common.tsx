@@ -8,7 +8,7 @@ import {
   ALL_TIME_PROFIT_AND_LOSS_REP,
   REPORTING_STATE,
 } from 'modules/common/constants';
-import { FormattedNumber, SizeTypes } from 'modules/types';
+import { FormattedNumber, SizeTypes, MarketData } from 'modules/types';
 import ReactTooltip from 'react-tooltip';
 import {
   SecondaryButton,
@@ -126,22 +126,13 @@ export const ReportingModalButton = (props: ReportingModalButtonProps) => (
 interface PreFilledStakeProps {
   showInput: boolean;
   toggleInput: Function;
+  preFilledStake?: string;
+  updatePreFilledStake: Function;
 }
 
-interface PreFilledStakeState {
-  stake: string;
-}
-
-export class PreFilledStake extends Component<
-  PreFilledStakeProps,
-  PreFilledStakeState
-> {
-  state: PreFilledStakeState = {
-    stake: '',
-  };
-
+export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
   changeStake = stake => {
-    this.setState({ stake });
+    this.props.updatePreFilledStake(stake);
   };
 
   changeShowInput = () => {
@@ -170,7 +161,7 @@ export class PreFilledStake extends Component<
           <>
             <TextInput
               placeholder={'0.0000'}
-              value={s.stake}
+              value={this.props.preFilledStake}
               onChange={value => this.changeStake(value)}
               errorMessage={null}
               innerLabel="REP"
@@ -191,12 +182,7 @@ export class PreFilledStake extends Component<
             <LinearPropertyLabel
               key="totalRep"
               label="Total Rep"
-              value={'0.0000 REP'}
-            />
-            <LinearPropertyLabel
-              key="totalEstGas"
-              label="Total Estimated Gas Fee"
-              value={'0.0000 ETH'}
+              value={formatRep(this.props.preFilledStake).formatted + ' REP'}
             />
           </>
         )}
@@ -254,6 +240,8 @@ export interface DisputingBondsViewProps {
   scalarDenomination: string;
   stakeValue: string;
   changeStake: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 export const DisputingBondsView = (props: DisputingBondsViewProps) => (
@@ -301,6 +289,13 @@ export interface ReportingBondsViewProps {
   rangeValue: string;
   changeRange: Function;
   scalarDenomination: string;
+  initialReporterStake: FormattedNumber;
+  reportingGasFee: FormattedNumber;
+  reportAction: Function;
+  preFilledStake?: string;
+  updatePreFilledStake?: Function;
+  updateScalarOutcome?: Function;
+  scalarOutcome?: string;
 }
 
 interface ReportingBondsViewState {
@@ -320,9 +315,21 @@ export class ReportingBondsView extends Component<
   };
 
   render() {
-    const { scalar, rangeValue, changeRange, scalarDenomination } = this.props;
+    const {
+      scalar,
+      rangeValue,
+      changeRange,
+      scalarDenomination,
+      initialReporterStake,
+      reportingGasFee,
+      reportAction,
+      preFilledStake,
+      updatePreFilledStake,
+    } = this.props;
 
-    const s = this.state;
+    const { showInput } = this.state;
+
+    const preFilled = formatRep(preFilledStake || '0');
 
     return (
       <div
@@ -341,34 +348,31 @@ export class ReportingBondsView extends Component<
         <LinearPropertyLabel
           key="initial"
           label="initial reporter stake"
-          value={'0.0000 REP'}
-        />
-        <LinearPropertyLabel
-          key="estimatedGasFee"
-          label="Estimated Gas Fee"
-          value={'0.0000 ETH'}
+          value={initialReporterStake}
         />
         <PreFilledStake
-          showInput={s.showInput}
+          showInput={showInput}
           toggleInput={this.toggleInput}
+          updatePreFilledStake={updatePreFilledStake}
+          preFilledStake={preFilledStake}
         />
-        {s.showInput && (
+        {showInput && (
           <div>
             <span>Totals</span>
             <span>Sum total of Dispute Stake and Pre-Filled Stake</span>
             <LinearPropertyLabel
               key="totalRep"
               label="Total rep"
-              value={'0.0000 REP'}
+              value={preFilled}
             />
             <LinearPropertyLabel
               key="totalEstimatedGasFee"
               label="Total Estimated Gas Fee"
-              value={'0.0000 ETH'}
+              value={reportingGasFee}
             />
           </div>
         )}
-        <PrimaryButton text="Confirm" action={null} />
+        <PrimaryButton text="Confirm" action={() => reportAction()} />
       </div>
     );
   }
@@ -383,6 +387,8 @@ export interface ReportingCardProps {
   currentAugurTimestamp: number;
   reportingWindowStatsEndTime: number;
   showReportingModal: Function;
+  callback: Function;
+  isLogged: boolean;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
@@ -391,6 +397,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
     currentAugurTimestamp,
     reportingWindowStatsEndTime,
     showReportingModal,
+    isLogged,
   } = props;
 
   if (!market) return null;
@@ -425,21 +432,25 @@ export const ReportingCard = (props: ReportingCardProps) => {
           reportingWindowEndtime={reportingWindowStatsEndTime}
         />
       )}
-      <div data-tip data-for="tooltip--preReporting">
+      <div data-tip data-for={'tooltip--preReporting' + id}>
         <PrimaryButton
           text="Report"
           action={showReportingModal}
-          disabled={preReporting}
+          disabled={preReporting || !isLogged}
         />
-        {preReporting && (
+        {(preReporting || !isLogged) && (
           <ReactTooltip
-            id="tooltip--preReporting"
+            id={'tooltip--preReporting' + id}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
             type="light"
           >
-            <p>Please wait until the Maket is ready to Report on</p>
+            <p>
+              {preReporting
+                ? 'Please wait until the Maket is ready to Report on'
+                : 'Please connect a wallet to Report on this Market'}{' '}
+            </p>
           </ReactTooltip>
         )}
       </div>
@@ -512,13 +523,14 @@ export class UserRepDisplay extends Component<
       disputingAmountFormatted,
       reportingAmountFormatted,
       participationAmountFormatted,
-      hasStakedRep
+      hasStakedRep,
     } = this.props;
     const s = this.state;
 
     return (
       <div
         className={classNames(Styles.UserRepDisplay, {
+          [Styles.loggedOut]: isLoggedIn,
           [Styles.HideForMobile]: s.toggle,
         })}
       >
@@ -545,7 +557,9 @@ export class UserRepDisplay extends Component<
               id="get-rep"
             />
           </div>
-          {!isLoggedIn && <p>Connect a wallet to see your Available REP Balance</p>}
+          {!isLoggedIn && (
+            <p>Connect a wallet to see your Available REP Balance</p>
+          )}
           {isLoggedIn && hasStakedRep && (
             <>
               <div />
