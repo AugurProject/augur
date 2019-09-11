@@ -128,7 +128,7 @@ div.ReportingSubheaders {
 
     > span > span {
       color: @color-tertiary-info-text;
-      margin-left: @size-4; 
+      margin-left: @size-4;
     }
   }
 
@@ -172,19 +172,40 @@ div.ReportingSubheaders {
   color: @color-tertiary-info-text;
   display: flex;
   flex-direction: column;
-  max-width: 440px;
+  width: 440px;
   padding: @size-32;
+  position: relative;
   text-transform: uppercase;
 
   @media @breakpoint-mobile {
-    max-width: unset;
+    width: unset;
   }
 
-  &.loggedOut {
+  > p {
+    .text-18;
+
     background: fade(@color-secondary-action, 80%);
+    bottom: 0;
+    color: @color-secondary-text;
+    left: 0;
+    margin: @size-4;
+    position: absolute;
+    padding: 4rem;
+    right: 0;
+    text-align: center;
+    text-transform: capitalize;
+    top: 0;
+    z-index: @default-z-index;
+
+    @media @breakpoint-mobile {
+      .text-16;
+
+      padding: @size-32;
+    }
   }
 
   > div {
+
     &:not(:first-of-type) {
       margin-top: @size-16;
     }
@@ -213,7 +234,7 @@ div.ReportingSubheaders {
     padding: @size-16;
 
     > div:first-of-type {
-      display: flex; 
+      display: flex;
 
       > div {
         align-items: center;
@@ -476,7 +497,7 @@ div.ReportingSubheaders {
   }
 }
 
-.ReportingList {  
+.ReportingList {
   > span {
     .text-16-medium;
 
@@ -488,7 +509,7 @@ div.ReportingSubheaders {
   > div {
     display: flex;
     flex-direction: column;
-    
+
     > div {
       margin-bottom: @size-4;
     }
@@ -554,7 +575,7 @@ div.ReportingSubheaders {
     margin-bottom: @size-24;
   }
 
-  > div:first-of-type, 
+  > div:first-of-type,
   > div:nth-of-type(4) {
     margin-bottom: @size-16;
   }
