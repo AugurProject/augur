@@ -181,7 +181,7 @@ describe('State API :: Universe :: ', () => {
       ],
     });
 
-  }, 120000);
+  }, 200000);
 
 
   test.skip('getForkMigrationTotals : Categorical', async () => {
@@ -253,7 +253,7 @@ describe('State API :: Universe :: ', () => {
       ],
     });
 
-  }, 120000);
+  }, 200000);
 
   test('getForkMigrationTotals : Scalar', async () => {
     const universe = john.augur.contracts.universe;
@@ -319,6 +319,6 @@ describe('State API :: Universe :: ', () => {
         },
       ],
     });
-  }, 120000);
+  }, 200000);
 
 });
