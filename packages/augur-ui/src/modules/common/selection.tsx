@@ -47,7 +47,7 @@ interface PillSelectionState {
 }
 
 interface DotSelectionProps {
-  children: React.StatelessComponent;
+  children: JSX.Element[] | JSX.Element;
 }
 
 interface DotSelectionState {
