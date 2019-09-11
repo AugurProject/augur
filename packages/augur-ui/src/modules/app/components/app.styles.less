@@ -78,11 +78,10 @@ h6 {
 
 .Main__content {
   height: calc(~"100vh - @{top-bar-height}");
-  -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
+  padding-bottom: @size-64;
 
-  padding-bottom: 4rem;
   @media @breakpoint-mobile {
     height: calc(~"100vh - @{top-bar-height-mobile}");
     width: 100vw;
