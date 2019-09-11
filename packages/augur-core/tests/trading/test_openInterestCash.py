@@ -102,7 +102,10 @@ def test_completeSets(contractsFixture, augur, universe, cash, market):
 
     # Now that OI Cash has been deposited we can choose to use it to buy complete sets rather than taking the money out and paying fees
     numCompleteSets = 10**14
+    initialFeesPaid = openInterestCash.totalAmountFeesPaid()
     assert openInterestCash.buyCompleteSets(market.address, numCompleteSets)
 
     for i in range(0, 3):
         assert contractsFixture.applySignature("ShareToken", market.getShareToken(i)).balanceOf(account1) == numCompleteSets
+
+    assert openInterestCash.totalAmountFeesPaid() == initialFeesPaid + (numCompleteSets * market.getNumTicks())
