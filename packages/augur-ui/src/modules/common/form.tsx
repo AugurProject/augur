@@ -39,7 +39,7 @@ import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { SingleDatePicker } from 'react-dates';
-import { SquareDropdown } from 'modules/common/selection';
+import { SquareDropdown, NameValuePair } from 'modules/common/selection';
 import {
   getTimezones,
   getUserTimezone,
@@ -310,17 +310,17 @@ interface CheckboxBarProps {
 }
 
 interface CategoryMultiSelectProps {
-  sortedGroup: Array<SortedGroup>;
-  initialSelected?: Array<string>;
-  initialValues?: Array<string>;
+  sortedGroup: SortedGroup[];
+  initialSelected?: string[];
+  initialValues?: string[];
   updateSelection: Function;
-  errorMessage?: Array<string>;
+  errorMessage?: string[];
 }
 
 interface CategoryMultiSelectState {
-  groups: Array<SortedGroup>;
-  selected: Array<string>;
-  values: Array<string>;
+  groups: SortedGroup[];
+  selected: string[];
+  values: string[];
 }
 
 interface DropdownInputGroupProps {
@@ -376,19 +376,25 @@ export const createGroups = (
 };
 
 export const determineVisible = (
-  values: Array<string>,
-  secondaryOptions: Array<NameValuePair>,
-  tertiaryOptions: Array<NameValuePair>,
-  selected: Array<string>
+  values: string[],
+  primaryOptions: NameValuePair[],
+  secondaryOptions: NameValuePair[],
+  tertiaryOptions: NameValuePair[],
+  selected: string[]
 ) => {
   const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 0;
   const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
-  const customPrimary = selected[0] === CUSTOM;
+  const customPrimary =
+    selected[0] === CUSTOM ||
+    (selected[0] && !primaryOptions.map(option => option.value).includes(selected[0]));
   const customSecondary =
-    selected[1] === CUSTOM || (selected[1] && !secondaryOptions.map(option => option.value).includes(selected[1]));
-
+    selected[1] === CUSTOM ||
+    (selected[1] && !secondaryOptions.map(option => option.value).includes(selected[1])) ||
+    (!showSecondaryDropdown && customPrimary && values[0] !== '');
   const customTertiary =
-    selected[2] === CUSTOM || (selected[2] && !tertiaryOptions.map(option => option.value).includes(selected[2]));
+    selected[2] === CUSTOM ||
+    (selected[2] && !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
+    (!showTertiaryDropdown && values[1] !== '');
   return {
     showSecondaryDropdown,
     showTertiaryDropdown,
@@ -464,7 +470,7 @@ export const DropdownInputGroup = ({
     {showIcon && RightAngle}
     {showDropdown && (
       <FormDropdown
-        defaultValue={showText ? 'Custom' : defaultValue}
+        defaultValue={showText ? CUSTOM : defaultValue}
         staticLabel={staticLabel}
         onChange={onChangeDropdown}
         options={options}
@@ -567,8 +573,21 @@ export class CategoryMultiSelect extends Component<
   onChangeDropdown(choice, position) {
     let value = choice;
     if (choice === CUSTOM) value = '';
-    const selected = getNewSelected(choice, position, this.state.selected);
-    const values = getNewValues(value, position, this.state.values);
+
+    // Reset children categories when parents is changed
+    const clearAllChildren = (category, idx) => {
+      if (idx > position) {
+        return '';
+      }
+      return category;
+    };
+
+    const selected = getNewSelected(choice, position, this.state.selected).map(
+      clearAllChildren
+    );
+    const values = getNewValues(value, position, this.state.values).map(
+      clearAllChildren
+    );
     this.handleUpdate(selected, values);
   }
 
@@ -593,18 +612,18 @@ export class CategoryMultiSelect extends Component<
       customPrimary,
       customSecondary,
       customTertiary,
-    } = determineVisible(values, secondaryOptions, tertiaryOptions, selected);
+    } = determineVisible(values, primaryOptions, secondaryOptions, tertiaryOptions, selected);
 
     return (
       <ul className={Styles.CategoryMultiSelect}>
         <DropdownInputGroup
           defaultValue={selected[0]}
-          staticLabel="Primary Category"
+          staticLabel='Primary Category'
           onChangeDropdown={choice => this.onChangeDropdown(choice, 0)}
           options={primaryOptions}
           errorMessage={errorMessage[0]}
           value={values[0]}
-          placeholder="Custom Primary Category"
+          placeholder='Custom Primary Category'
           onChangeInput={v =>
             this.handleUpdate(selected, getNewValues(v, 0, values))
           }
@@ -615,12 +634,12 @@ export class CategoryMultiSelect extends Component<
         {(showSecondaryDropdown || customSecondary) && (
           <DropdownInputGroup
             defaultValue={selected[1]}
-            staticLabel="Secondary Category"
+            staticLabel='Secondary Category'
             onChangeDropdown={choice => this.onChangeDropdown(choice, 1)}
             options={secondaryOptions}
             errorMessage={errorMessage[1]}
             value={values[1]}
-            placeholder="Custom Secondary Category"
+            placeholder='Custom Secondary Category'
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 1, values))
             }
@@ -633,12 +652,12 @@ export class CategoryMultiSelect extends Component<
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
             defaultValue={selected[2]}
-            staticLabel="Tertiary Category"
+            staticLabel='Tertiary Category'
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
             errorMessage={errorMessage[2]}
             value={values[2]}
-            placeholder="Custom Tertiary Category"
+            placeholder='Custom Tertiary Category'
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 2, values))
             }
