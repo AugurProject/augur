@@ -896,7 +896,6 @@ export class ReportingRadioBar extends Component<
       checked,
       value,
       error,
-      stake,
       isInvalid,
       scalar,
       minPrice,
@@ -912,6 +911,16 @@ export class ReportingRadioBar extends Component<
       scalarOutcome,
       updateScalarOutcome
     } = this.props;
+
+    let { stake } = this.props;
+
+    if (scalar) {
+      stake = {
+        preFilledStake: formatRep("0"),
+        bondSizeCurrent: formatRep("1"),
+        bondSizeTotal: formatRep("1"),
+      }
+    }
 
     const initialReporterStake = formatNumber("100");
     const reportingGasFee = formatNumber("100");
@@ -934,7 +943,7 @@ export class ReportingRadioBar extends Component<
         <div onClick={e => e.stopPropagation()}>
           {!isReporting && // for disputing or for scalar
             <>
-              {(stake && !stake.tentativeWinning) &&
+              {((stake && !stake.tentativeWinning) || scalar) &&
                 <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
               }
               {stake && stake.tentativeWinning &&
