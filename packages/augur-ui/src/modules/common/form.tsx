@@ -27,13 +27,10 @@ import { SortedGroup } from 'modules/categories/set-categories';
 import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
-import {
-  Subheaders,
-  DisputingButtonView,
-  DisputingBondsView,
-  ReportingBondsView,
-} from 'modules/reporting/common';
-import { formatRep, formatNumber } from 'utils/format-number';
+import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
+import { formatRep, formatNumber } from "utils/format-number";
+import ReportingBondsView from 'modules/reporting/containers/reporting-bonds-view';
+import DisputingBondsView from 'modules/reporting/containers/disputing-bonds-view';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
@@ -768,29 +765,24 @@ export const ReportingRadioBarGroup = ({
           reportAction={reportAction}
         />
       )}
-      {radioButtons.map(
-        (radio, index) =>
-          !radio.isInvalid &&
-          !radio.stake.tentativeWinning && (
-            <ReportingRadioBar
-              key={index + radio.value}
-              expandable
-              {...radio}
-              checked={radio.value.toString() === selected}
-              isReporting={isReporting}
-              onChange={selected => {
-                onChange(selected.toString());
-              }}
-              reportAction={reportAction}
-              preFilledStake={preFilledStake}
-              updatePreFilledStake={updatePreFilledStake}
-              disputeStake={disputeStake}
-              updateDisputeStake={updateDisputeStake}
-            />
-          )
-      )}
-      {((!isReporting && tentativeWinning.value !== invalid.value) ||
-        isReporting) && (
+      {radioButtons.map((radio, index) => (!radio.isInvalid && !radio.stake.tentativeWinning &&
+        <ReportingRadioBar
+          key={index + radio.value}
+          expandable
+          {...radio}
+          checked={radio.value.toString() === selected}
+          isReporting={isReporting}
+          onChange={selected => {
+            onChange(selected.toString());
+          }}
+          reportAction={reportAction}
+          preFilledStake={preFilledStake}
+          updatePreFilledStake={updatePreFilledStake}
+          disputeStake={disputeStake}
+          updateDisputeStake={updateDisputeStake}
+        />
+      ))}
+      {((!isReporting && tentativeWinning && tentativeWinning.value !== invalid.value) || isReporting) &&
         <>
           <span>
             {isReporting
@@ -813,7 +805,7 @@ export const ReportingRadioBarGroup = ({
             }}
           />
         </>
-      )}
+      }
     </div>
   );
 };
@@ -901,7 +893,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       checked,
       value,
       error,
-      stake,
       isInvalid,
       scalar,
       minPrice,
@@ -918,20 +909,21 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       updateScalarOutcome,
     } = this.props;
 
-    const initialReporterStake = formatNumber('100');
-    const reportingGasFee = formatNumber('100');
-    const inputtedStake =
-      !checked || disputeStake === '' || isNaN(parseInt(disputeStake, 10))
-        ? '0'
-        : disputeStake;
-    const fullBond =
-      !scalar &&
-      stake &&
-      formatRep(
-        createBigNumber(stake.bondSizeCurrent.value).plus(
-          createBigNumber(inputtedStake)
-        )
-      );
+    let { stake } = this.props;
+
+    if (scalar) {
+      stake = {
+        preFilledStake: formatRep("0"),
+        bondSizeCurrent: formatRep("1"),
+        bondSizeTotal: formatRep("1"),
+      }
+    }
+
+    const initialReporterStake = formatNumber("100");
+    const reportingGasFee = formatNumber("100");
+    const inputtedStake = !checked || disputeStake === "" || isNaN(parseFloat(disputeStake)) ? "0" : disputeStake;
+    const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
+
 
     return (
       <div
@@ -945,26 +937,18 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         onClick={e => onChange(value)}
       >
         {checked ? FilledRadio : EmptyRadio}
-        <h5>
-          {scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}
-        </h5>
-        <div>
-          {!isReporting && ( // for disputing or for scalar
+        <h5>{scalar ? `Enter a range from ${minPrice} to ${maxPrice}` : header}</h5>
+        <div onClick={e => e.stopPropagation()}>
+          {!isReporting && // for disputing or for scalar
             <>
-              {!stake.tentativeWinning && (
-                <DisputingButtonView
-                  stake={stake}
-                  inputtedStake={inputtedStake}
-                  fullBond={fullBond}
-                />
-              )}
-              {stake.tentativeWinning && (
-                <Subheaders
-                  header="pre-filled stake"
-                  subheader={stake.preFilledStake.formatted}
-                />
-              )}
-              {checked && (
+              {((stake && !stake.tentativeWinning) || scalar) &&
+                <DisputingButtonView stake={stake} inputtedStake={inputtedStake} fullBond={fullBond}/>
+              }
+              {stake && stake.tentativeWinning &&
+                <Subheaders header="pre-filled stake" subheader={stake.preFilledStake.formatted}/>
+              }
+              {checked &&
+
                 <DisputingBondsView
                   scalar={scalar}
                   rangeValue={scalarOutcome}
@@ -972,13 +956,19 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   scalarDenomination={scalarDenomination}
                   stakeValue={disputeStake}
                   changeStake={updateDisputeStake}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
+                  stakeRemaining={stake && stake.bondSizeTotal.value}
+                  tentativeWinning={stake && stake.tentativeWinning}
                 />
-              )}
+              }
             </>
-          )}
+          }
           {isReporting && checked && (
             <ReportingBondsView
               scalar={scalar}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
               rangeValue={scalarOutcome}
               changeRange={updateScalarOutcome}
               scalarDenomination={scalarDenomination}
