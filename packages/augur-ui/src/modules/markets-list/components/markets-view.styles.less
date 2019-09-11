@@ -9,6 +9,10 @@
   }
 
   > div:first-of-type {
-    margin-left: @size-16;
+    margin-left: @size-64;
+
+    @media @breakpoint-mobile {
+      margin: 0 0 0 @size-16;
+    }
   }
 }
