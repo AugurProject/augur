@@ -47,6 +47,11 @@ export default class ModalReporting extends Component<
   };
 
   updateChecked = (checked: string) => {
+
+    this.updateDisputeStake("");
+    this.updatePreFilledStake("");
+    this.updateScalarOutcome("");
+
     this.setState({ checked });
   };
 
@@ -191,15 +196,16 @@ export default class ModalReporting extends Component<
           header: stake.outcome,
           value: stake.outcome,
           checked: s.checked === stake.outcome.toString(),
-          isInvalid: stake.outcome === '0',
+          isInvalid: stake.outcome === "0",
+
           stake: {
             ...stake,
             preFilledStake: formatAttoRep(stake.preFilledStake),
             bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
             bondSizeTotal: formatAttoRep(stake.bondSizeTotal),
           },
-        });
-      });
+        })
+      })
     }
 
     return (

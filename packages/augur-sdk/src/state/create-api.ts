@@ -1,18 +1,17 @@
-import { Augur } from "../Augur";
-import { BlockAndLogStreamerListener } from "./db/BlockAndLogStreamerListener";
-import { ContractDependenciesGnosis } from "contract-dependencies-gnosis";
-import { Controller } from "./Controller";
-import { EthersProvider } from "@augurproject/ethersjs-provider";
-import { JsonRpcProvider } from "ethers/providers";
-import { PouchDBFactory, PouchDBFactoryType } from "./db/AbstractDB";
-import { EmptyConnector } from "../connector/empty-connector";
-import { Addresses, UploadBlockNumbers } from "@augurproject/artifacts";
-import { API } from "./getter/API";
-import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
-import { DB } from "./db/DB";
-import { GnosisRelayAPI } from "@augurproject/gnosis-relay-api";
+import { Augur } from '../Augur';
+import { BlockAndLogStreamerListener } from './db/BlockAndLogStreamerListener';
+import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { Controller } from './Controller';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { JsonRpcProvider } from 'ethers/providers';
+import { PouchDBFactory, PouchDBFactoryType } from './db/AbstractDB';
+import { EmptyConnector } from '../connector/empty-connector';
+import { Addresses, UploadBlockNumbers } from '@augurproject/artifacts';
+import { API } from './getter/API';
+import { DB } from './db/DB';
+import { GnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 
-const settings = require("./settings.json");
+const settings = require('./settings.json');
 
 async function buildDeps(ethNodeUrl: string, account?: string, enableFlexSearch = false,  pouchDBFactory:PouchDBFactoryType = PouchDBFactory({})) {
   const ethersProvider = new EthersProvider(new JsonRpcProvider(ethNodeUrl), 10, 0, 40);

@@ -13,12 +13,16 @@ import {
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
   OrderType,
-  MarketType,
 } from '../logs/types';
 import { sortOptions } from './types';
-import { Augur } from '../../index';
+import {
+  Augur,
+  calculatePayoutNumeratorsValue,
+  convertOnChainAmountToDisplayAmount,
+  getOutcomeDescriptionFromOutcome,
+  marketTypeToName
+} from '../../index';
 import { compareObjects } from '../../utils';
-import { toAscii } from '../utils/utils';
 
 import * as t from 'io-ts';
 
@@ -563,41 +567,6 @@ export class Accounts<TBigNumber> {
   }
 }
 
-function getOutcomeDescriptionFromOutcome(
-  outcome: number,
-  market: MarketCreatedLog
-): string {
-  if (market.marketType === MarketType.YesNo) {
-    if (outcome === 0) {
-      return 'Invalid';
-    } else if (outcome === 1) {
-      return 'No';
-    } else {
-      return 'Yes';
-    }
-  } else if (market.marketType === MarketType.Scalar) {
-    if (outcome === 0) {
-      return 'Invalid';
-    } else if (outcome === 1) {
-      return new BigNumber(market.prices[0]).toString(10);
-    } else {
-      return new BigNumber(market.prices[1]).toString(10);
-    }
-  } else {
-    return toAscii(market.outcomes[new BigNumber(outcome).toNumber()]);
-  }
-}
-
-function getOutcomeFromPayoutNumerators(payoutNumerators: BigNumber[]): number {
-  let outcome = 0;
-  for (; outcome < payoutNumerators.length; outcome++) {
-    if (payoutNumerators[outcome].toNumber() > 0) {
-      break;
-    }
-  }
-  return outcome;
-}
-
 function formatOrderFilledLogs(
   transactionLogs: ParsedOrderEventLog[],
   marketInfo: MarketCreatedInfo,
@@ -792,6 +761,8 @@ async function formatCrowdsourcerRedeemedLogs(
 ): Promise<AccountTransaction[]> {
   const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
+    const market = marketInfo[transactionLogs[i].market];
+
     const payoutNumerators: BigNumber[] = [];
     for (
       let numeratorIndex = 0;
@@ -802,10 +773,10 @@ async function formatCrowdsourcerRedeemedLogs(
         new BigNumber(transactionLogs[i].payoutNumerators[numeratorIndex])
       );
     }
-    const outcome = getOutcomeFromPayoutNumerators(payoutNumerators);
+    const outcome = outcomeFromMarketLog(market, payoutNumerators);
     const outcomeDescription = getOutcomeDescriptionFromOutcome(
       outcome,
-      marketInfo[transactionLogs[i].market]
+      market
     );
     if (params.coin === 'ETH' || params.coin === 'ALL') {
       formattedLogs.push({
@@ -814,10 +785,10 @@ async function formatCrowdsourcerRedeemedLogs(
         details: 'Claimed reporting fees from crowdsourcers',
         fee: '0',
         marketDescription:
-          marketInfo[transactionLogs[i].market].extraInfo &&
-          JSON.parse(marketInfo[transactionLogs[i].market].extraInfo)
+          market.extraInfo &&
+          JSON.parse(market.extraInfo)
             .description
-            ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo)
+            ? JSON.parse(market.extraInfo)
                 .description
             : '',
         outcome,
@@ -836,10 +807,10 @@ async function formatCrowdsourcerRedeemedLogs(
         details: 'Claimed REP fees from crowdsourcers',
         fee: '0',
         marketDescription:
-          marketInfo[transactionLogs[i].market].extraInfo &&
-          JSON.parse(marketInfo[transactionLogs[i].market].extraInfo)
+          market.extraInfo &&
+          JSON.parse(market.extraInfo)
             .description
-            ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo)
+            ? JSON.parse(market.extraInfo)
                 .description
             : '',
         outcome,
@@ -889,15 +860,14 @@ async function formatDisputeCrowdsourcerContributionLogs(
 ): Promise<AccountTransaction[]> {
   const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
+    const market = marketInfo[transactionLogs[i].market];
     const reportingParticipant = augur.contracts.getReportingParticipant(
       transactionLogs[i].disputeCrowdsourcer
     );
-    const outcome = getOutcomeFromPayoutNumerators(
-      await reportingParticipant.getPayoutNumerators_()
-    );
+    const outcome = outcomeFromMarketLog(market, await reportingParticipant.getPayoutNumerators_());
     const outcomeDescription = getOutcomeDescriptionFromOutcome(
       outcome,
-      marketInfo[transactionLogs[i].market]
+      market
     );
     formattedLogs.push({
       action: Action.DISPUTE,
@@ -905,9 +875,9 @@ async function formatDisputeCrowdsourcerContributionLogs(
       details: 'REP staked in dispute crowdsourcers',
       fee: '0',
       marketDescription:
-        marketInfo[transactionLogs[i].market].extraInfo &&
-        JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description
-          ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo)
+        market.extraInfo &&
+        JSON.parse(market.extraInfo).description
+          ? JSON.parse(market.extraInfo)
               .description
           : '',
       outcome,
@@ -929,18 +899,17 @@ async function formatInitialReportSubmittedLogs(
 ): Promise<AccountTransaction[]> {
   const formattedLogs: AccountTransaction[] = [];
   for (let i = 0; i < transactionLogs.length; i++) {
+    const market = marketInfo[transactionLogs[i].market];
     const reportingParticipantAddress = await augur.contracts
       .marketFromAddress(transactionLogs[i].market)
       .getInitialReporter_();
     const reportingParticipant = augur.contracts.getReportingParticipant(
       reportingParticipantAddress
     );
-    const outcome = getOutcomeFromPayoutNumerators(
-      await reportingParticipant.getPayoutNumerators_()
-    );
+    const outcome = outcomeFromMarketLog(market, await reportingParticipant.getPayoutNumerators_());
     const outcomeDescription = getOutcomeDescriptionFromOutcome(
       outcome,
-      marketInfo[transactionLogs[i].market]
+      market
     );
     formattedLogs.push({
       action: Action.INITIAL_REPORT,
@@ -948,9 +917,9 @@ async function formatInitialReportSubmittedLogs(
       details: 'REP staked in initial reports',
       fee: '0',
       marketDescription:
-        marketInfo[transactionLogs[i].market].extraInfo &&
-        JSON.parse(marketInfo[transactionLogs[i].market].extraInfo).description
-          ? JSON.parse(marketInfo[transactionLogs[i].market].extraInfo)
+        market.extraInfo &&
+        JSON.parse(market.extraInfo).description
+          ? JSON.parse(market.extraInfo)
               .description
           : '',
       outcome,
@@ -1025,4 +994,13 @@ function formatCompleteSetsSoldLogs(
     });
   }
   return formattedLogs;
+}
+
+function outcomeFromMarketLog(market: MarketCreatedLog, payoutNumerators: BigNumber[]): number {
+  return Number(calculatePayoutNumeratorsValue(
+    convertOnChainAmountToDisplayAmount(new BigNumber(market.prices[1]), new BigNumber(market.numTicks)).toString(),
+    convertOnChainAmountToDisplayAmount(new BigNumber(market.prices[0]), new BigNumber(market.numTicks)).toString(),
+    new BigNumber(market.numTicks).toString(),
+    marketTypeToName(market.marketType),
+    payoutNumerators.map((bn) => bn.toString())));
 }
