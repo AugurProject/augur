@@ -1,0 +1,23 @@
+@import (reference) '~assets/styles/shared';
+
+.Disputing {
+  display: grid;
+  grid-template-columns: minmax(767px, 900px) minmax(340px, 440px);
+  grid-gap: 1rem;
+  grid-template-rows: auto;
+  padding: 2.5rem 2rem;
+
+  > div {
+    grid-column: 2;
+
+    > button:first-child {
+      height: 40px;
+      margin-bottom: 1rem;
+    }
+  }
+
+  > div:first-of-type {
+    grid-column: 1;
+    grid-row: span 4;
+  }
+}

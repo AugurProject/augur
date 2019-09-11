@@ -10,7 +10,6 @@ import { DerivedDB } from './DerivedDB';
 import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
 import { MarketDB } from './MarketDB';
 import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
-import { Block } from 'ethers/providers';
 import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
@@ -36,6 +35,7 @@ import {
   TokenBalanceChangedLog,
   TradingProceedsClaimedLog,
   UniverseForkedLog,
+  UniverseCreatedLog,
 } from '../logs/types';
 import { ZeroXOrders, StoredOrder } from './ZeroXOrders';
 
@@ -724,6 +724,17 @@ export class DB {
 
   /**
    * Queries the UniverseForked DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<UniverseForkedLog>>}
+   */
+  async findUniverseCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<UniverseCreatedLog[]> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseCreated"), request);
+    return results.docs as unknown as UniverseCreatedLog[];
+  }
+
+  /**
+   * Queries the UniverseCreated DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<Array<UniverseForkedLog>>}

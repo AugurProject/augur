@@ -1009,6 +1009,7 @@ function compareStringsAsBigNumbers(string1: string, string2: string, orderBy: s
   }
 }
 
+// TODO use getOutcomeDescriptionFromOutcome for Markets.getMarketOutcomes
 async function getMarketOutcomes(
   db: DB,
   marketCreatedLog: MarketCreatedLog,
