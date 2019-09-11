@@ -11,6 +11,7 @@ import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
+import { ContractInterfaces } from '@augurproject/core';
 import { ORDER_TYPES } from '@augurproject/sdk';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
