@@ -159,6 +159,16 @@ export enum MarketTypeName {
   Scalar = 'scalar',
 }
 
+export enum YesNoOutcomes {
+  Invalid = 'Invalid',
+  No = 'No',
+  Yes = 'Yes',
+}
+
+export enum ScalarOutcomes {
+  Invalid = 'Invalid',
+}
+
 export interface MarketVolumeChangedLog extends Log, Doc {
   universe: Address;
   market: Address;
@@ -318,6 +328,12 @@ export interface TradingProceedsClaimedLog extends Log, Doc, Timestamped {
 export interface UniverseForkedLog extends Log, Doc {
   universe: Address;
   forkingMarket: Address;
+}
+
+export interface UniverseCreatedLog extends Log, Doc {
+  parentUniverse: Address;
+  childUniverse: Address;
+  payoutNumerators: string[];
 }
 
 export interface LiquidityData {
