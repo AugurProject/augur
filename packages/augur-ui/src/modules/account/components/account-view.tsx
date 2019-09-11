@@ -31,27 +31,21 @@ const AccountView = (props: AccountViewProps) => (
       {(matches) =>
         matches ? (
           <ModuleTabs selected={0} fillWidth noBorder>
-            // @ts-ignore
             <ModulePane label={YOUR_OVERVIEW_TITLE}>
               <Overview />
             </ModulePane>
-            // @ts-ignore
             <ModulePane label="Notifications" isNew={props.newNotifications}>
               <Notifications />
             </ModulePane>
-            // @ts-ignore
             <ModulePane label="Watchlist">
               <Favorites />
             </ModulePane>
-            // @ts-ignore
             <ModulePane label="My Active Markets">
               <OpenMarkets />
             </ModulePane>
-            // @ts-ignore
             <ModulePane label={AUGUR_STATUS_TITLE}>
               <AugurStatus />
             </ModulePane>
-            // @ts-ignore
             <ModulePane label="Transactions">
               <Transactions />
             </ModulePane>
