@@ -130,11 +130,7 @@ interface PreFilledStakeProps {
   updatePreFilledStake: Function;
 }
 
-export class PreFilledStake extends Component<
-  PreFilledStakeProps,
-  {}
-> {
-
+export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
   changeStake = stake => {
     this.props.updatePreFilledStake(stake);
   };
@@ -328,12 +324,12 @@ export class ReportingBondsView extends Component<
       reportingGasFee,
       reportAction,
       preFilledStake,
-      updatePreFilledStake
+      updatePreFilledStake,
     } = this.props;
 
     const { showInput } = this.state;
 
-    const preFilled = formatRep(preFilledStake || "0");
+    const preFilled = formatRep(preFilledStake || '0');
 
     return (
       <div
@@ -376,22 +372,10 @@ export class ReportingBondsView extends Component<
             />
           </div>
         )}
-        <PrimaryButton text="Confirm" action={ () => reportAction()} />
+        <PrimaryButton text="Confirm" action={() => reportAction()} />
       </div>
     );
   }
-}
-
-interface UserRepDisplayProps {
-  isLoggedIn: boolean;
-  repBalanceFormatted: FormattedNumber;
-  repProfitLossPercentageFormatted: FormattedNumber;
-  repProfitAmountFormatted: FormattedNumber;
-  disputingAmountFormatted: FormattedNumber;
-  reportingAmountFormatted: FormattedNumber;
-  participationAmountFormatted: FormattedNumber;
-  repTotalAmountStakedFormatted: FormattedNumber;
-  openGetRepModal: Function;
 }
 
 interface UserRepDisplayState {
@@ -413,7 +397,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
     currentAugurTimestamp,
     reportingWindowStatsEndTime,
     showReportingModal,
-    isLogged
+    isLogged,
   } = props;
 
   if (!market) return null;
@@ -448,7 +432,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
           reportingWindowEndtime={reportingWindowStatsEndTime}
         />
       )}
-      <div data-tip data-for={"tooltip--preReporting"+id}>
+      <div data-tip data-for={'tooltip--preReporting' + id}>
         <PrimaryButton
           text="Report"
           action={showReportingModal}
@@ -456,13 +440,17 @@ export const ReportingCard = (props: ReportingCardProps) => {
         />
         {(preReporting || !isLogged) && (
           <ReactTooltip
-            id={"tooltip--preReporting"+id}
+            id={'tooltip--preReporting' + id}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
             type="light"
           >
-            <p>{preReporting ? "Please wait until the Maket is ready to Report on" : "Please connect a wallet to Report on this Market"} </p>
+            <p>
+              {preReporting
+                ? 'Please wait until the Maket is ready to Report on'
+                : 'Please connect a wallet to Report on this Market'}{' '}
+            </p>
           </ReactTooltip>
         )}
       </div>
@@ -499,6 +487,19 @@ const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
   </div>
 );
 
+interface UserRepDisplayProps {
+  isLoggedIn: boolean;
+  repBalanceFormatted: FormattedNumber;
+  repProfitLossPercentageFormatted: FormattedNumber;
+  repProfitAmountFormatted: FormattedNumber;
+  disputingAmountFormatted: FormattedNumber;
+  reportingAmountFormatted: FormattedNumber;
+  participationAmountFormatted: FormattedNumber;
+  repTotalAmountStakedFormatted: FormattedNumber;
+  openGetRepModal: Function;
+  hasStakedRep: boolean;
+}
+
 export class UserRepDisplay extends Component<
   UserRepDisplayProps,
   UserRepDisplayState
@@ -522,6 +523,7 @@ export class UserRepDisplay extends Component<
       disputingAmountFormatted,
       reportingAmountFormatted,
       participationAmountFormatted,
+      hasStakedRep,
     } = this.props;
     const s = this.state;
 
@@ -555,41 +557,48 @@ export class UserRepDisplay extends Component<
               id="get-rep"
             />
           </div>
-          <div />
-          <div>
-            <span>{MY_TOTOL_REP_STAKED}</span>
-            <SizableValueLabel
-              value={repTotalAmountStakedFormatted}
-              keyId={'rep-staked'}
-              showDenomination
-              showEmptyDash={false}
-              highlight
-              size={SizeTypes.LARGE}
-            />
-          </div>
-          <div>
-            <LinearPropertyLabel
-              key="Disputing"
-              label="Disputing"
-              value={disputingAmountFormatted}
-              showDenomination
-              useValueLabel
-            />
-            <LinearPropertyLabel
-              key="reporting"
-              label="Reporting"
-              value={reportingAmountFormatted}
-              showDenomination
-              useValueLabel
-            />
-            <LinearPropertyLabel
-              key="participation"
-              label="Participation Tokens"
-              value={participationAmountFormatted}
-              showDenomination
-              useValueLabel
-            />
-          </div>
+          {!isLoggedIn && (
+            <p>Connect a wallet to see your Available REP Balance</p>
+          )}
+          {isLoggedIn && hasStakedRep && (
+            <>
+              <div />
+              <div>
+                <span>{MY_TOTOL_REP_STAKED}</span>
+                <SizableValueLabel
+                  value={repTotalAmountStakedFormatted}
+                  keyId={'rep-staked'}
+                  showDenomination
+                  showEmptyDash={false}
+                  highlight
+                  size={SizeTypes.LARGE}
+                />
+              </div>
+              <div>
+                <LinearPropertyLabel
+                  key="Disputing"
+                  label="Disputing"
+                  value={disputingAmountFormatted}
+                  showDenomination
+                  useValueLabel
+                />
+                <LinearPropertyLabel
+                  key="reporting"
+                  label="Reporting"
+                  value={reportingAmountFormatted}
+                  showDenomination
+                  useValueLabel
+                />
+                <LinearPropertyLabel
+                  key="participation"
+                  label="Participation Tokens"
+                  value={participationAmountFormatted}
+                  showDenomination
+                  useValueLabel
+                />
+              </div>
+            </>
+          )}
         </>
       </div>
     );

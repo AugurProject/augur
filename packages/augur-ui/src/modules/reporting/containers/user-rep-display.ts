@@ -6,12 +6,13 @@ import {
 import { UserRepDisplay } from 'modules/reporting/common';
 
 const mapStateToProps = state => {
-  const isLogged = state.authStatus.isLogged;
-  const repBalances = isLogged
+  const isLoggedIn = state.authStatus.isLogged
+  const repBalances = isLoggedIn
     ? selectReportingBalances(state)
     : selectDefaultReportingBalances();
   return {
     ...repBalances,
+    isLoggedIn
   };
 };
 
