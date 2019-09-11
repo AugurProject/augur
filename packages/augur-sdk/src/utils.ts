@@ -123,7 +123,7 @@ export function calculatePayoutNumeratorsValue(
 
 
   if (isScalar) {
-    if (isInvalidScalar(payout)) {
+    if (isMalformedScalar(payout)) {
       return MALFORMED_OUTCOME;
     }
 
@@ -138,7 +138,7 @@ export function calculatePayoutNumeratorsValue(
       .plus(new BigNumber(displayMinPrice, 10))
       .toString();
   } else {
-    if (isInvalidCategorical(payout)) { // or yes/no
+    if (isMalformedCategorical(payout)) { // or yes/no
       return MALFORMED_OUTCOME;
     }
 
@@ -146,14 +146,14 @@ export function calculatePayoutNumeratorsValue(
   }
 }
 
-function isInvalidCategorical(payout: string[]): boolean {
+function isMalformedCategorical(payout: string[]): boolean {
   // test if stake payout is malformed (has ticks in more than one outcome)
   return payout.reduce((p, ticks) => (Number(ticks) > 0 ? p + 1 : p), 0) > 1;
 }
 
-function isInvalidScalar(payout: string[]): boolean {
+function isMalformedScalar(payout: string[]): boolean {
   // test if stake payout is malformed (has ticks in invalid _and_ another outcome)
-  return Number(payout[0]) > 0 && isInvalidCategorical(payout.slice(1));
+  return Number(payout[0]) > 0 && isMalformedCategorical(payout.slice(1));
 }
 
 export function calculatePayoutNumeratorsArray(
