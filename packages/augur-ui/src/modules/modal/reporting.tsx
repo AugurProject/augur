@@ -85,6 +85,9 @@ export default class ModalReporting extends Component<
       // or in the market card, depending where they triggered the form modal
       setTimeout(() => this.props.closeAction(), 1000);
 
+    } else {
+      // disputing
+
     }
   };
 
