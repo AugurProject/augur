@@ -33,6 +33,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   BUY,
 } from 'modules/common/constants';
+import { ContractInterfaces } from '@augurproject/core';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, LiquidityOrder } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
@@ -578,4 +579,32 @@ export async function simulateTradeGasLimit(
   };
 
   return Augur.simulateTradeGasLimit(params);
+}
+
+export async function claimTradingProceeds(
+  market: string,
+  shareHolder: string,
+  affiliateAddress: string
+): Promise<ContractInterfaces.Event[]> {
+  const Augur = augurSdk.get();
+
+  return Augur.contracts.claimTradingProceeds.claimTradingProceeds(
+    market,
+    shareHolder,
+    affiliateAddress
+  );
+}
+
+export async function claimMarketsProceeds(
+  markets: string[],
+  shareHolder: string,
+  affiliateAddress: string
+): Promise<ContractInterfaces.Event[]> {
+  const Augur = augurSdk.get();
+
+  return Augur.contracts.claimTradingProceeds.claimMarketsProceeds(
+    markets,
+    shareHolder,
+    affiliateAddress
+  );
 }
