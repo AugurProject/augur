@@ -1,7 +1,6 @@
-import { PouchDBFactory, PouchDBFactoryType } from "./db/AbstractDB";
-import { API } from "./getter/API";
-import { create } from "./create-api";
-import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
+import { PouchDBFactory, PouchDBFactoryType } from './db/AbstractDB';
+import { API } from './getter/API';
+import { create } from './create-api';
 
 // @TODO This function is currently a hack. Need to come up with a better solution
 export async function createAPIAndController(ethNodeUrl: string, account?: string, enableFlexSearch = false, pouchDBFactory:PouchDBFactoryType = PouchDBFactory({})) {
