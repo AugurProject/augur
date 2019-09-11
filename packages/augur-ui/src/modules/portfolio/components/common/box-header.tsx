@@ -5,6 +5,7 @@ import Styles from "modules/portfolio/components/common/box-header.styles.less";
 
 export interface BoxHeaderProps {
   title: string;
+  leftContent?: ReactNode;
   rightContent?: ReactNode;
   rows?: ReactNode;
   bottomBarContent?: ReactNode;
@@ -25,7 +26,7 @@ const BoxHeader = (props: BoxHeaderProps) => (
       </div>
       <div
         className={classNames(Styles.Middle, {
-          [Styles.isSwitched]: props.switchHeadersx
+          [Styles.isSwitched]: props.switchHeaders
         })}
       >
         {props.bottomBarContent && (
