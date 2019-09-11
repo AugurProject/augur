@@ -187,8 +187,8 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
 
 export interface LabelValueProps {
   label: string;
-  value: number;
-  condensed?: Boolean;
+  value: number | string;
+  condensed?: boolean;
 }
 
 export const LabelValue = (props: LabelValueProps) => (
@@ -199,7 +199,7 @@ export const LabelValue = (props: LabelValueProps) => (
 );
 
 export interface HoverIconProps {
-  icon: string;
+  icon: JSX.Element;
   hoverText: string;
   label: string;
 }

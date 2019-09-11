@@ -493,7 +493,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               gasLimit={s.trade.gasLimit}
               availableEth={availableEth}
               availableDai={availableDai}
-              selectedOutcome={selectedOutcome}
+              outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
             />
           )}
