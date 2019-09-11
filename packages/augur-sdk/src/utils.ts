@@ -1,7 +1,13 @@
 import { BigNumber } from 'bignumber.js';
 import { MALFORMED_OUTCOME } from './constants';
-import { MarketCreatedLog, MarketType, MarketTypeName } from "./state/logs/types";
-import { toAscii } from "./state/utils/utils";
+import {
+  MarketCreatedLog,
+  MarketType,
+  MarketTypeName,
+  ScalarOutcomes,
+  YesNoOutcomes
+} from './state/logs/types';
+import { toAscii } from './state/utils/utils';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
@@ -208,16 +214,6 @@ export function calculatePayoutNumeratorsArray(
     payoutNumerators[outcome] = numTicksBN;
   }
   return payoutNumerators;
-}
-
-export enum YesNoOutcomes {
-  Invalid = 'Invalid',
-  No = 'No',
-  Yes = 'Yes',
-}
-
-export enum ScalarOutcomes {
-  Invalid = 'Invalid',
 }
 
 export function getOutcomeDescriptionFromOutcome(
