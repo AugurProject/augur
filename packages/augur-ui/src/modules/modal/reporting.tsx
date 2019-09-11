@@ -45,6 +45,11 @@ export default class ModalReporting extends Component<
   };
 
   updateChecked = (checked: string) => {
+
+    this.updateDisputeStake("");
+    this.updatePreFilledStake("");
+    this.updateScalarOutcome("");
+
     this.setState({ checked });
   };
 

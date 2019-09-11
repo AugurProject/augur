@@ -730,8 +730,6 @@ export const ReportingRadioBarGroup = ({
             isReporting={isReporting}
             checked={tentativeWinning.value.toString() === selected}
             onChange={selected => {
-              updateDisputeStake("");
-              updatePreFilledStake("");
               onChange(selected.toString());
             }}
           />
@@ -762,9 +760,6 @@ export const ReportingRadioBarGroup = ({
           scalarOutcome={scalarOutcome}
           updateScalarOutcome={updateScalarOutcome}
           onChange={selected => {
-            updateDisputeStake("");
-            updatePreFilledStake("");
-            updateScalarOutcome("");
             onChange(selected.toString());
           }}
           reportAction={reportAction}
@@ -778,8 +773,6 @@ export const ReportingRadioBarGroup = ({
           checked={radio.value.toString() === selected}
           isReporting={isReporting}
           onChange={selected => {
-            updateDisputeStake("");
-            updatePreFilledStake("");
             onChange(selected.toString());
           }}
           reportAction={reportAction}
@@ -808,8 +801,6 @@ export const ReportingRadioBarGroup = ({
             checked={invalid.value.toString() === selected}
             reportAction={reportAction}
             onChange={selected => {
-              updateDisputeStake("");
-              updatePreFilledStake("");
               onChange(selected.toString());
             }}
           />
