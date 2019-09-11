@@ -9,6 +9,8 @@ import './Trading';
 import './Users';
 import './Accounts';
 import './Universe';
+import './Liquidity';
+import './ZeroXOrdersGetters';
 import './status';
 
 export class API {
