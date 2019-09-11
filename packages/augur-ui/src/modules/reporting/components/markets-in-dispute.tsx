@@ -252,7 +252,7 @@ export default class MarketsInDispute extends Component<
           )
         }
         content={
-          <>
+          <div className={Styles.MarketCards}>
             {filteredData.length === 0 && (
               <EmptyDisplay
                 selectedTab={label}
@@ -264,7 +264,7 @@ export default class MarketsInDispute extends Component<
               filteredData.map(market => (
                 <MarketCard key={market.id} market={market} />
               ))}
-          </>
+          </div>
         }
       />
     );

@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
-import MarketsInDispute from "modules/reporting/containers/markets-in-dispute";
-import { WindowProgress } from "modules/common/progress";
-import UserRepDisplay from "modules/reporting/containers/user-rep-display";
+import { Helmet } from 'react-helmet';
+import Media from "react-media";
 
+import MarketsInDispute from 'modules/reporting/containers/markets-in-dispute';
+import DisputeWindowProgress from 'modules/reporting/containers/disputing-window-progress';
+import UserRepDisplay from 'modules/reporting/containers/user-rep-display';
+import { ReportingModalButton } from 'modules/reporting/common';
 import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
+import { TEMP_TABLET } from "modules/common/constants";
+import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
+import ModulePane from "modules/market/components/common/module-tabs/module-pane";
+
+import Styles from 'modules/reporting/disputing.styles';
 
 interface DisputingProps {
   account: object;
@@ -13,8 +21,7 @@ interface DisputingProps {
   disputeWindow: object;
   currentTime: number;
 }
-// TODO: containerize the WindowProgress for disputing.
-// TODO: fix fitlers dispute Markets List
+
 export default class Disputing extends Component<DisputingProps> {
   constructor(props) {
     super(props);
@@ -35,22 +42,44 @@ export default class Disputing extends Component<DisputingProps> {
   }
 
   render() {
-    const { disputeWindow, currentTime, isLogged, account } = this.props;
-    const { startTime, endTime } = disputeWindow;
-
     return (
-      <section>
-        <UserRepDisplay />
-        <WindowProgress 
-          startTime={startTime}
-          endTime={endTime}
-          currentTime={currentTime}
-          title="Current Dispute Window"
-          description="A few lines of information explaing the purpose of the Dispute Window"
-          countdownLabel="Time Remaining in Window"
-        />
-        <ParticipationTokensView />
-        <MarketsInDispute />
+      <section className={Styles.Disputing}>
+        <Helmet>
+          <title>Disputing</title>
+        </Helmet>
+        <Media query={TEMP_TABLET}>
+          {(matches) =>
+            matches ? (
+              <ModuleTabs selected={0} fillWidth noBorder>
+                <ModulePane label="disputing overview">
+                  <UserRepDisplay />
+                  <ParticipationTokensView />
+                  <DisputeWindowProgress />
+                  <ReportingModalButton
+                    text="Need Help? Disputing Quick Guide"
+                    action={() => console.log('TODO add popup')}
+                  />
+                </ModulePane>
+                <ModulePane label="markets in dispute">
+                  <MarketsInDispute />
+                </ModulePane>
+              </ModuleTabs>
+            ) : (
+            <>
+              <MarketsInDispute />
+              <div>
+                <ReportingModalButton
+                  text="Need Help? Disputing Quick Guide"
+                  action={() => console.log('TODO add popup')}
+                />
+                <UserRepDisplay />
+              </div>
+              <DisputeWindowProgress />
+              <ParticipationTokensView />
+            </>
+          )
+        }
+      </Media>
       </section>
     );
   }
