@@ -53,6 +53,19 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
+    const { blockchain } = getState();
+
+    dispatch(addAlert({
+      id: hash,
+      params: transaction.params,
+      status,
+      timestamp: blockchain.currentAugurTimestamp * 1000,
+      title: transaction.name,
+      description: "",
+      linkPath: "",
+      to: "",
+    }));
+    
     switch (methodCall) {
       case PUBLICCREATEORDERS: {
         const { marketInfos } = getState();
@@ -79,24 +92,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case PUBLICTRADE: {
         const tradeGroupId = transaction.params[TX_TRADE_GROUP_ID];
         const marketId = transaction.params[TX_MARKET_ID];
-        const { marketInfos, blockchain } = getState();
+        const { marketInfos } = getState();
         const market = marketInfos[marketId];
         if (!hash && eventName === TXEventName.AwaitingSigning) {
           return addOrder(txStatus, market, dispatch);
         }
-
-
-        dispatch(addAlert({
-          id: hash,
-          params: transaction.params,
-          status,
-          timestamp: blockchain.currentAugurTimestamp * 1000,
-          title: transaction.name,
-          description: "",
-          linkPath: "",
-          to: "",
-        }));
-
         dispatch(
           updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash)
         );
@@ -110,7 +110,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET: {
         const id = generateTxParameterId(transaction.params);
-        const { blockchain } = getState();
         const data = createMarketData(
           transaction.params,
           id,

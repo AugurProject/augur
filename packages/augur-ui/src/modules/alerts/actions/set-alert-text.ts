@@ -97,7 +97,7 @@ export default function setAlertText(alert: any, callback: any) {
       throw new Error("Callback function is not set");
     }
 
-    if (!alert.params || (alert.title && alert.description)) {
+    if (!alert.params || !alert.title) {
       return dispatch(callback(alert));
     }
 
@@ -152,7 +152,7 @@ export default function setAlertText(alert: any, callback: any) {
               const marketInfo = selectMarket(alert.params._market);
               const outcomeDescription = getOutcomeName(
                 marketInfo,
-                { id: alert.log.outcome },
+                { id: alert.params._outcome.toString() },
               );
               alert.description = `Create ${alert.log.orderType} order for ${
                 formatShares(alert.log.amount).formatted
