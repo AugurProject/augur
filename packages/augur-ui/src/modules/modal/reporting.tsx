@@ -45,6 +45,11 @@ export default class ModalReporting extends Component<
   };
 
   updateChecked = (checked: string) => {
+
+    this.updateDisputeStake("");
+    this.updatePreFilledStake("");
+    this.updateScalarOutcome("");
+
     this.setState({ checked });
   };
 
@@ -116,7 +121,7 @@ export default class ModalReporting extends Component<
 
     // todo: need to add already staked outcomes for scalar markets for disputing
 
-    const radioButtons = outcomesFormatted
+    let radioButtons = outcomesFormatted
       .filter(outcome => (marketType === SCALAR ? outcome.id === 0 : true))
       .map(outcome => {
         let stake = disputeInfo.stakes.find(
@@ -143,6 +148,23 @@ export default class ModalReporting extends Component<
           },
         };
       });
+
+    if (marketType === SCALAR) {
+      disputeInfo.stakes.forEach(stake => {
+        radioButtons.push({
+          header: stake.outcome,
+          value: stake.outcome,
+          checked: s.checked === stake.outcome.toString(),
+          isInvalid: stake.outcome === "0",
+          stake: {
+            ...stake,
+            preFilledStake: formatAttoRep(stake.preFilledStake),
+            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
+            bondSizeTotal: formatAttoRep(stake.bondSizeTotal),
+          },
+        })
+      })
+    }
 
     return (
       <div className={Styles.ModalReporting}>
