@@ -123,7 +123,7 @@ export function calculatePayoutNumeratorsValue(
 
 
   if (isScalar) {
-    if (isMalformedScalar(payout)) {
+    if (!isWellFormedScalar(payout)) {
       return MALFORMED_OUTCOME;
     }
 
@@ -138,7 +138,7 @@ export function calculatePayoutNumeratorsValue(
       .plus(new BigNumber(displayMinPrice, 10))
       .toString();
   } else {
-    if (isMalformedCategorical(payout)) { // or yes/no
+    if (!isWellFormedCategorical(payout)) { // or yes/no
       return MALFORMED_OUTCOME;
     }
 
@@ -146,14 +146,31 @@ export function calculatePayoutNumeratorsValue(
   }
 }
 
-function isMalformedCategorical(payout: string[]): boolean {
-  // test if stake payout is malformed (has ticks in more than one outcome)
-  return payout.reduce((p, ticks) => (Number(ticks) > 0 ? p + 1 : p), 0) > 1;
+function isWellFormedCategorical(payout: string[]): boolean {
+  // A categorical or Yes/No payout is well-formed if:
+  // 1. Exactly one of its payouts is non-zero.
+  return countNonZeroes(payout) === 1;
 }
 
-function isMalformedScalar(payout: string[]): boolean {
-  // test if stake payout is malformed (has ticks in invalid _and_ another outcome)
-  return Number(payout[0]) > 0 && isMalformedCategorical(payout.slice(1));
+function isWellFormedScalar(payout: string[]): boolean {
+  // A scalar payout is well-formed if:
+  // 1. Its invalid payout is >0 and its short and long payouts are 0.
+  // 2. Its invalid payout is 0 and at least one of its short or long payouts is non-0.
+  if (Number(payout[0]) > 0) { // invalid payout
+    return countNonZeroes(payout) === 0;
+  } else { // some valid payout
+    return countNonZeroes(payout.slice(1)) > 1;
+  }
+}
+
+function countNonZeroes(numbers: string[]): number {
+  let count = 0;
+  for (let i = 0; i < numbers.length; i++) {
+    if (Number(numbers[i]) !== 0) {
+      count++;
+    }
+  }
+  return count;
 }
 
 export function calculatePayoutNumeratorsArray(
