@@ -5,6 +5,7 @@ import { MODAL_REPORTING } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    isLogged: state.authStatus.isLogged,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     reportingWindowStatsEndTime: state.disputeWindowStats.endTime,
   };
@@ -15,7 +16,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(
       updateModal({
         type: MODAL_REPORTING,
-        marketId: ownProps.marketId
+        market: ownProps.market
       }),
     ),
 });

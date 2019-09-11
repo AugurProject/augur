@@ -71,8 +71,15 @@ export function addScripts(flash: FlashSession) {
         name: 'time-controlled',
         description: 'Use the TimeControlled contract for testing environments. Set to "true" or "false".',
       },
+      {
+        name: 'useSdk',
+        abbr: 'u',
+        description: 'a few scripts need sdk, -u to wire up sdk',
+        flag: true,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const useSdk = args.useSdk as boolean;
       if (this.noProvider()) return;
 
       const config = {
@@ -86,6 +93,10 @@ export function addScripts(flash: FlashSession) {
 
       const { addresses } = await deployContracts(this.provider, this.accounts[0], compilerOutput, config);
       flash.contractAddresses = addresses;
+
+      if (useSdk) {
+        await flash.ensureUser(this.network, useSdk);
+      }
     },
   });
 
@@ -410,6 +421,13 @@ export function addScripts(flash: FlashSession) {
           'description to be added to contracts for initial report (optional)',
         required: false,
       },
+      {
+        name: 'isInvalid',
+        abbr: 'i',
+        description:
+          'isInvalid flag is used only for scalar markets (optional)',
+        required: false,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
@@ -418,6 +436,7 @@ export function addScripts(flash: FlashSession) {
       const outcome = Number(args.outcome);
       const extraStake = args.extraStake as string;
       const desc = args.description as string;
+      const isInvalid = args.isInvalid as boolean;
       let preEmptiveStake = '0';
       if (extraStake) {
         preEmptiveStake = new BigNumber(extraStake)
@@ -443,7 +462,8 @@ export function addScripts(flash: FlashSession) {
         marketInfo.numTicks,
         marketInfo.numOutcomes,
         marketInfo.marketType,
-        outcome
+        outcome,
+        isInvalid
       );
 
       await user.doInitialReport(
@@ -484,6 +504,13 @@ export function addScripts(flash: FlashSession) {
           'description to be added to contracts for dispute (optional)',
         required: false,
       },
+      {
+        name: 'isInvalid',
+        abbr: 'i',
+        description:
+          'isInvalid flag is used only for scalar markets (optional)',
+        required: false,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
@@ -492,6 +519,7 @@ export function addScripts(flash: FlashSession) {
       const outcome = Number(args.outcome);
       const amount = args.amount as string;
       const desc = args.description as string;
+      const isInvalid = args.isInvalid as boolean;
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
@@ -518,7 +546,8 @@ export function addScripts(flash: FlashSession) {
         marketInfo.numTicks,
         marketInfo.numOutcomes,
         marketInfo.marketType,
-        outcome
+        outcome,
+        isInvalid,
       );
 
       await user.contribute(market, payoutNumerators, stake, desc);
@@ -555,6 +584,13 @@ export function addScripts(flash: FlashSession) {
           'description to be added to contracts for contribution (optional)',
         required: false,
       },
+      {
+        name: 'isInvalid',
+        abbr: 'i',
+        description:
+          'isInvalid flag is used only for scalar markets (optional)',
+        required: false,
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
@@ -563,6 +599,7 @@ export function addScripts(flash: FlashSession) {
       const outcome = Number(args.outcome);
       const amount = args.amount as string;
       const desc = args.description as string;
+      const isInvalid = args.isInvalid as boolean;
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
@@ -589,7 +626,8 @@ export function addScripts(flash: FlashSession) {
         marketInfo.numTicks,
         marketInfo.numOutcomes,
         marketInfo.marketType,
-        outcome
+        outcome,
+        isInvalid,
       );
 
       await user.contributeToTentative(market, payoutNumerators, stake, desc);
