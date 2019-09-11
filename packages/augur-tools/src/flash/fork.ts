@@ -3,13 +3,15 @@ import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
 import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
+import { MarketTypeName } from "@augurproject/sdk/build/state/logs/types";
 
 export async function fork(user: ContractAPI, market: MarketInfo): Promise<boolean> {
   const MAX_DISPUTES = 20;
   const SOME_REP = new BigNumber(1e18).times(6e7);
 
-  const payoutNumerators = getPayoutNumerators(market, 0);
-  const conflictNumerators = getPayoutNumerators(market, 1);
+  const payoutNumerators = getPayoutNumerators(market, 0); // invalid
+  const conflictOutcome = market.marketType === MarketTypeName.Scalar ? makeValidScalarOutcome(market) : 1;
+  const conflictNumerators = getPayoutNumerators(market, conflictOutcome);
 
   await user.repFaucet(SOME_REP);
 
@@ -43,13 +45,21 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
   return false; // failed to fork
 }
 
-function getPayoutNumerators(market: MarketInfo, outcome: number): BigNumber[] {
+export function getPayoutNumerators(market: MarketInfo, outcome: number): BigNumber[] {
   return calculatePayoutNumeratorsArray(
     market.maxPrice,
     market.minPrice,
     market.numTicks,
     market.numOutcomes,
     market.marketType,
-    outcome
+    outcome,
+    outcome === 0
   );
+}
+
+export function makeValidScalarOutcome(market: MarketInfo): number {
+  return new BigNumber(market.maxPrice)
+    .minus(market.minPrice)
+    .dividedBy(2)
+    .plus(market.minPrice).toNumber();
 }
