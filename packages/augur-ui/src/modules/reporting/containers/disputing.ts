@@ -5,11 +5,7 @@ import Disputing from "modules/reporting/disputing";
 import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
 
 const mapStateToProps = state => ({
-  account: state.loginAccount,
-  isLogged: state.authStatus.isLogged,
-  isConnected: state.connection.isConnected,
-  disputeWindow: state.disputeWindowStats,
-  currentTime: state.blockchain.currentAugurTimestamp
+  isConnected: state.connection.isConnected
 });
 
 const mapDispatchToProps = dispatch => ({
