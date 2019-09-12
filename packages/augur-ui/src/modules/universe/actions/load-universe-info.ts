@@ -239,7 +239,6 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
 
   if (universeData.isInvalid) return 'Invalid';
 
-  // @ts-ignore
   const outcomeId = calculatePayoutNumeratorsValue(
     parentUniverseData.market.maxPrice,
     parentUniverseData.market.minPrice,

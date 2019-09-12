@@ -261,7 +261,7 @@ export default function setAlertText(alert: any, callback: any) {
                 alert.params._payoutNumerators
               );
               const outcomeDescription =
-                outcome === null
+                outcome === MALFORMED_OUTCOME
                   ? "Market Is Invalid"
                   : getOutcomeName(marketInfo, { id: outcome }, false);
               alert.description = `Place ${
@@ -293,7 +293,7 @@ export default function setAlertText(alert: any, callback: any) {
                 alert.params._payoutNumerators
               );
               const outcomeDescription =
-                outcome === null
+                outcome === MALFORMED_OUTCOME
                   ? "Market Is Invalid"
                   : getOutcomeName(marketInfo, { id: outcome }, false);
               alert.description = `Report "${outcomeDescription}" on "${
