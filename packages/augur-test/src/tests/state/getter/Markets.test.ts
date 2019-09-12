@@ -11,9 +11,11 @@ import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, ACCOUNTS, loadSeedFile, defaultSeedPath } from '@augurproject/tools';
 import { NULL_ADDRESS, stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { ORDER_TYPES } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
+import { ORDER_TYPES } from '@augurproject/sdk';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { getAddress } from "ethers/utils/address";
+
 
 const mock = makeDbMock();
 
@@ -24,6 +26,7 @@ describe('State API :: Markets :: ', () => {
   let api: API;
   let john: ContractAPI;
   let mary: ContractAPI;
+  let bob: ContractAPI;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
@@ -31,10 +34,12 @@ describe('State API :: Markets :: ', () => {
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
+    bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, seed.addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
+    await bob.approveCentralAuthority();
   }, 120000);
 
   // NOTE: Full-text searching is also tested in MarketDerivedDB.test.ts
@@ -572,6 +577,126 @@ describe('State API :: Markets :: ', () => {
     expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
 
     // @TODO: Add tests for filtering markets maxLiquiditySpread = '0'
+  }, 120000);
+
+  test(':getMarkets userPortfolioAddress', async () => {
+    const universe = john.augur.contracts.universe;
+    let endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
+    const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
+    const affiliateFeeDivisor = new BigNumber(0);
+    const designatedReporter = john.account.publicKey;
+    const yesNoMarket1 = await bob.createYesNoMarket({
+      endTime,
+      feePerCashInAttoCash: lowFeePerCashInAttoCash,
+      affiliateFeeDivisor,
+      designatedReporter,
+      extraInfo: '{"categories": ["yesNo 1 primary", "yesNo 1 secondary", "yesNo 1 tertiary"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "resolutionSource": "http://www.blah.com", "backupSource": "http://www.blah2.com"}',
+    });
+    const yesNoMarket2 = await john.createYesNoMarket({
+      endTime,
+      feePerCashInAttoCash: lowFeePerCashInAttoCash,
+      affiliateFeeDivisor,
+      designatedReporter,
+      extraInfo: '{"categories": ["yesNo 2 primary", "yesNo 2 secondary", "yesNo 2 tertiary"], "description": "yesNo description 2", "longDescription": "yesNo longDescription 2"}',
+    });
+    const categoricalMarket1 = await john.createCategoricalMarket({
+      endTime,
+      feePerCashInAttoCash: lowFeePerCashInAttoCash,
+      affiliateFeeDivisor,
+      designatedReporter,
+      outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
+      extraInfo: '{"categories": ["categorical 1 primary", "categorical 1 secondary", "categorical 1 tertiary"], "description": "categorical description 1", "longDescription": "categorical longDescription 1"}',
+    });
+    const categoricalMarket2 = await john.createCategoricalMarket({
+      endTime,
+      feePerCashInAttoCash: lowFeePerCashInAttoCash,
+      affiliateFeeDivisor,
+      designatedReporter,
+      outcomes: [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')],
+      extraInfo: '{"categories": ["categorical 2 primary", "categorical 2 secondary", "categorical 2 tertiary"], "description": "categorical description 2", "longDescription": "categorical longDescription 2"}',
+    });
+    const scalarMarket1 = await john.createScalarMarket({
+      endTime,
+      feePerCashInAttoCash: lowFeePerCashInAttoCash,
+      affiliateFeeDivisor,
+      designatedReporter,
+      prices: [new BigNumber(0), new BigNumber(100)],
+      numTicks: new BigNumber(100),
+      extraInfo: '{"categories": ["scalar 1 primary", "scalar 1 secondary", "scalar 1 tertiary"], "description": "scalar description 1", "longDescription": "scalar longDescription 1", "_scalarDenomination": "scalar denom 1"}',
+    });
+    endTime = endTime.plus(1);
+    const scalarMarket2 = await john.createScalarMarket({
+      endTime,
+      feePerCashInAttoCash: lowFeePerCashInAttoCash,
+      affiliateFeeDivisor,
+      designatedReporter,
+      prices: [new BigNumber(0), new BigNumber(100)],
+      numTicks: new BigNumber(100),
+      extraInfo: '{"categories": ["scalar 2 primary", "scalar 2 secondary", "scalar 2 tertiary"], "description": "scalar description 2", "longDescription": "scalar longDescription 2", "_scalarDenomination": "scalar denom 2"}',
+    });
+    endTime = endTime.minus(1);
+
+    // Report on a market with Bob
+    await john.setTimestamp(endTime.plus(24 * 60 * 60 * 2));
+
+    let payoutSet = [
+      new BigNumber(0),
+      new BigNumber(100),
+      new BigNumber(0),
+    ];
+    await bob.doInitialReport(yesNoMarket2, payoutSet);
+
+    payoutSet = [
+      new BigNumber(0),
+      new BigNumber(100),
+      new BigNumber(0),
+      new BigNumber(0),
+    ];
+    // Report on a market with John then dispute that market with Bob
+    await john.doInitialReport(categoricalMarket1, payoutSet);
+
+    payoutSet = [
+      new BigNumber(0),
+      new BigNumber(0),
+      new BigNumber(100),
+      new BigNumber(0),
+    ];
+    await bob.repFaucet(new BigNumber(1));
+    await bob.contribute(categoricalMarket1, payoutSet, new BigNumber(1));
+
+    // Trade on a market with Bob
+    const bid = new BigNumber(0);
+    const outcome = new BigNumber(0);
+    const numShares = new BigNumber(10000000000000);
+    const price = new BigNumber(22);
+    await bob.placeOrder(
+      categoricalMarket2.address,
+      bid,
+      numShares,
+      price,
+      outcome,
+      stringTo32ByteHex(''),
+      stringTo32ByteHex(''),
+      stringTo32ByteHex('42')
+    );
+
+
+    const actualDB = await db;
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+
+    let marketList: MarketList;
+
+    // Test user portfolio filter
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      userPortfolioAddress: getAddress(ACCOUNTS[2].publicKey),
+      isSortDescending: false,
+    });
+    expect(marketList.markets.length).toEqual(4);
+    expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
+    expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
+    expect(marketList.markets[2].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[3].id).toEqual(yesNoMarket2.address);
   }, 120000);
 
   test(':getMarketPriceHistory', async () => {
