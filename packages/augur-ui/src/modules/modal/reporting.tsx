@@ -174,6 +174,7 @@ export default class ModalReporting extends Component<
             bondSizeCurrent: '0',
             bondSizeTotal: disputeInfo.bondSizeOfNewStake,
             preFilledStake: '0',
+            stakeCurrent: '0',
           };
         }
         return {
@@ -183,6 +184,7 @@ export default class ModalReporting extends Component<
           isInvalid: outcome.id === 0,
           stake: {
             ...stake,
+            stakeCurrent: formatAttoRep(stake.stakeCurrent),
             preFilledStake: formatAttoRep(stake.preFilledStake),
             bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
             bondSizeTotal: formatAttoRep(stake.bondSizeTotal),
