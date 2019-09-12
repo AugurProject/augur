@@ -3,7 +3,7 @@ import { Block, BlockTag } from "ethers/providers";
 import { Filter, Log, LogValues } from "@augurproject/types";
 import { NetworkId } from "@augurproject/artifacts";
 import { ethers } from "ethers";
-import { JSONRPCRequestPayload } from "0x.js";
+import { JSONRPCRequestPayload } from "ethereum-types";
 
 export interface Provider {
   getNetworkId(): Promise<NetworkId>;

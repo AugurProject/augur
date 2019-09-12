@@ -37,7 +37,7 @@ const DEFAULT_STATE: Array<Alert> = [];
  * @returns {Alert[]}
  *
  */
-export default function(alerts = DEFAULT_STATE, { data, type }: BaseAction): Array<Alert> {
+export default function alert(alerts = DEFAULT_STATE, { data, type }: BaseAction): Array<Alert> {
   switch (type) {
     case ADD_ALERT: {
       const isDuplicate =

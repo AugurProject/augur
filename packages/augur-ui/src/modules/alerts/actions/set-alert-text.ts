@@ -101,7 +101,7 @@ export default function setAlertText(alert: any, callback: any) {
       return dispatch(callback(alert));
     }
 
-    switch (alert.params.type.toUpperCase()) {
+    switch (alert.title.toUpperCase()) {
       // Augur
       case CREATEGENESISUNIVERSE:
         alert.title = "Create genesis universe";
@@ -110,18 +110,18 @@ export default function setAlertText(alert: any, callback: any) {
       // CancelOrder
       case CANCELORDER: {
         alert.title = "Cancel order";
-        if (!alert.description && alert.log) {
+        if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.log.marketId], () => {
-              const marketInfo = selectMarket(alert.log.marketId);
+            loadMarketsInfoIfNotLoaded([alert.params._market], () => {
+              const marketInfo = selectMarket(alert.params._market);
               const outcomeDescription = getOutcomeName(
                 marketInfo,
-                { id: alert.log.outcome },
+                { id: alert.params._outcome.toNumber() },
               );
               alert.description = `Cancel order for ${formatShares(
-                alert.log.quantity,
+                alert.params._amount.toNumber(),
               ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
-                formatEther(alert.log.price).formatted
+                formatEther(alert.params._price.toNumber()).formatted
               } ETH`;
               return dispatch(callback(alert));
             }),
@@ -388,23 +388,23 @@ export default function setAlertText(alert: any, callback: any) {
       case PUBLICTRADE:
       case PUBLICTRADEWITHLIMIT: {
         alert.title = "Place trade";
-        if (!alert.description && alert.log) {
+        if (!alert.description) {
           dispatch(
             loadMarketsInfoIfNotLoaded([alert.params._market], () => {
               const marketInfo = selectMarket(alert.params._market);
               const orderType = alert.params._direction === "0x0" ? BUY : SELL;
               const outcome =
-                alert.log.outcome !== undefined &&
+                alert.params._outcome !== undefined &&
                 marketInfo.outcomes.find(
-                  (o: any) => o.id === alert.log.outcome,
+                  (o: any) => o.id === alert.params._outcome.toString(),
                 );
               const outcomeDescription = getOutcomeName(marketInfo, outcome);
               alert.description = `Place ${orderType} order for ${
-                formatShares(alert.amount || alert.log.amount).formatted
+                formatShares(alert.amount || alert.params._amount.toString()).formatted
               } ${formatShares(
-                alert.log.amount,
+                alert.params._amount.toString(),
               ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
-                formatEther(alert.log.price).formatted
+                formatEther(alert.params._price.toString()).formatted
               } ETH`;
               return dispatch(callback(alert));
             })

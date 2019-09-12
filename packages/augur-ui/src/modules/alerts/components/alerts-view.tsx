@@ -105,7 +105,7 @@ export default class AlertsView extends Component<AlertsViewProps> {
                 role="button"
                 tabIndex={0}
               >
-                Dismiss All
+                Clear All
               </button>
             </div>
           ) : null}
