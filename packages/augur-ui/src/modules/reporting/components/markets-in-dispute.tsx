@@ -16,7 +16,7 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
 
-const ITEMS_PER_SECTION = 2;
+const ITEMS_PER_SECTION = 10;
 const NUM_LOADING_CARDS = 5;
 const DEFAULT_PAGE = 1;
 const TAB_CURRENT = 'current';
@@ -290,7 +290,7 @@ export default class MarketsInDispute extends Component<
               new Array(NUM_LOADING_CARDS)
                 .fill(null)
                 .map((prop, index) => (
-                  <LoadingMarketCard key={`${index}-loading`} inReporting/>
+                  <LoadingMarketCard key={`${index}-loading`} />
                 ))}
             {filteredData.length > 0 &&
               filteredData.map(market => (
