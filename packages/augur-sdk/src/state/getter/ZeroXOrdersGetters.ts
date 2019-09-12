@@ -89,7 +89,8 @@ export class ZeroXOrdersGetters {
     const markets = await filterMarketsByReportingState(
       marketIds,
       db,
-      params.ignoreReportingStates
+      params.ignoreReportingStates,
+      await augur.getTimestamp()
     );
 
     return currentOrdersResponse.reduce(
