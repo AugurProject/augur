@@ -3,21 +3,32 @@ import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { Tab } from 'modules/portfolio/types';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
-import { REPORTING_STATE } from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/containers/market-card';
-import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { createBigNumber } from 'utils/create-big-number';
 import { Checkbox } from 'modules/common/form';
 
+import PaginationStyles from 'modules/common/pagination.styles.less';
 import Styles from 'modules/reporting/components/markets-in-dispute.styles.less';
+
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk/src';
 import { selectMarket } from 'modules/markets/selectors/market';
+import { LoadingMarketCard } from 'modules/market-cards/common';
+import { Pagination } from 'modules/common/pagination';
 
-const ITEMS_PER_SECTION = 10;
-const NUM_LOADING_CARDS = 3;
+const ITEMS_PER_SECTION = 2;
+const NUM_LOADING_CARDS = 5;
+const DEFAULT_PAGE = 1;
 const TAB_CURRENT = 'current';
 const TAB_AWAITING = 'awaiting';
+const SORT_REP_STAKED = 'repStaked';
+const SORT_DISPUTE_ROUND = 'disputeRound';
+const DEFAULT_PAGINATION = {
+  limit: ITEMS_PER_SECTION,
+  offset: DEFAULT_PAGE,
+  isLoadingMarkets: true,
+  filteredData: [],
+};
 
 interface MarketsInDisputeProps {
   isConnected: boolean;
@@ -45,21 +56,11 @@ interface MarketsInDisputeState {
 const sortByOptions = [
   {
     label: 'Amount REP Staked',
-    value: 'repStaked',
-    comp(marketA, marketB) {
-      return createBigNumber(marketB.disputeInfo.stakeCompletedTotal).minus(
-        createBigNumber(marketA.disputeInfo.stakeCompletedTotal)
-      );
-    },
+    value: SORT_REP_STAKED,
   },
   {
     label: 'Dispute Round',
-    value: 'disputeRound',
-    comp(marketA, marketB) {
-      return createBigNumber(
-        marketB.disputeInfo.disputeWindow.disputeRound
-      ).minus(createBigNumber(marketA.disputeInfo.disputeWindow.disputeRound));
-    },
+    value: SORT_DISPUTE_ROUND,
   },
 ];
 
@@ -86,10 +87,10 @@ export default class MarketsInDispute extends Component<
         },
       ],
       filteredData: [],
-      isLoadingMarkets: false,
+      isLoadingMarkets: true,
       marketCount: 0,
       showPagination: false,
-      offset: 1,
+      offset: DEFAULT_PAGE,
       limit: ITEMS_PER_SECTION,
       sortByDisputeRounds: false,
       sortByRepAmount: true,
@@ -101,17 +102,21 @@ export default class MarketsInDispute extends Component<
     prevProps: MarketsInDisputeProps,
     prevState: MarketsInDisputeState
   ) {
+    const { isConnected } = this.props;
     const {
       filterByMyPortfolio,
       sortByRepAmount,
       sortByDisputeRounds,
       search,
+      offset,
     } = this.state;
     if (
+      isConnected !== prevProps.isConnected ||
       filterByMyPortfolio !== prevState.filterByMyPortfolio ||
       sortByRepAmount !== prevState.sortByRepAmount ||
       sortByDisputeRounds !== prevState.sortByDisputeRounds ||
-      search !== prevState.search
+      search !== prevState.search ||
+      offset !== prevState.offset
     ) {
       this.loadMarkets();
     }
@@ -124,7 +129,6 @@ export default class MarketsInDispute extends Component<
 
   loadMarkets = () => {
     const { limit, selectedTab, tabs } = this.state;
-    this.setState({ isLoadingMarkets: true });
     let loadDisputeMarkets = this.getLoadMarketsMethod();
     const filterOptions = this.getLoadMarketsFiltersOptions();
     loadDisputeMarkets(
@@ -134,18 +138,16 @@ export default class MarketsInDispute extends Component<
         const filteredData = marketResults.markets.map(m => selectMarket(m.id));
         const marketCount = marketResults.meta.marketCount;
         const showPagination = marketCount > limit;
-        const updatedTabs = this.getUpdatedTabs(
-          selectedTab === TAB_CURRENT ? marketCount : 0,
-          selectedTab === TAB_AWAITING ? marketCount : 0,
-          tabs
-        );
-        this.setState({
-          filteredData,
-          showPagination,
-          marketCount,
-          isLoadingMarkets: false,
-          tabs: updatedTabs,
-        });
+
+        (tabs[0].num = selectedTab === TAB_CURRENT ? marketCount : 0),
+          (tabs[1].num = selectedTab === TAB_AWAITING ? marketCount : 0),
+          this.setState({
+            filteredData,
+            showPagination,
+            marketCount,
+            isLoadingMarkets: false,
+            tabs,
+          });
       }
     );
   };
@@ -189,29 +191,28 @@ export default class MarketsInDispute extends Component<
   };
 
   updateDropdown = sortBy => {
-    console.log('sortBy', sortBy);
+    this.setState({ sortBy, ...DEFAULT_PAGINATION });
+  };
+
+  setOffset = offset => {
+    this.setState({ offset, isLoadingMarkets: true, filteredData: [] });
   };
 
   selectTab = (selectedTab: string) => {
     this.setState({
       selectedTab,
+      ...DEFAULT_PAGINATION,
     });
-  };
-
-  getUpdatedTabs = (currentLength, awaitingLength, tabs) => {
-    const updatedTabs = tabs;
-    updatedTabs[0].num = currentLength;
-    updatedTabs[1].num = awaitingLength;
-    return updatedTabs;
   };
 
   onSearchChange = (input: string) => {
     this.setState({
       search: input,
+      ...DEFAULT_PAGINATION,
     });
   };
 
-  toggleOnlyMyPortfolio = value => {
+  toggleOnlyMyPortfolio = () => {
     const { filterByMyPortfolio } = this.state;
     this.setState({
       filterByMyPortfolio: !filterByMyPortfolio,
@@ -225,6 +226,11 @@ export default class MarketsInDispute extends Component<
       search,
       filteredData,
       filterByMyPortfolio,
+      isLoadingMarkets,
+      showPagination,
+      offset,
+      limit,
+      marketCount,
     } = this.state;
     const { label } = tabs.find(tab => tab.key === selectedTab);
     const { userAddress } = this.props;
@@ -267,17 +273,35 @@ export default class MarketsInDispute extends Component<
         }
         content={
           <div className={Styles.MarketCards}>
-            {filteredData.length === 0 && (
+            {!isLoadingMarkets && filteredData.length === 0 && (
               <EmptyDisplay
                 selectedTab={label}
                 filterLabel={''}
                 search={search}
               />
             )}
+            {isLoadingMarkets &&
+              filteredData.length === 0 &&
+              new Array(NUM_LOADING_CARDS)
+                .fill(null)
+                .map((prop, index) => (
+                  <LoadingMarketCard key={`${index}-loading`} />
+                ))}
             {filteredData.length > 0 &&
               filteredData.map(market => (
                 <MarketCard key={market.id} market={market} />
               ))}
+            {showPagination && (
+              <div className={PaginationStyles.PaginationContainer}>
+                <Pagination
+                  page={offset}
+                  itemCount={marketCount}
+                  itemsPerPage={limit}
+                  action={this.setOffset}
+                  updateLimit={null}
+                />
+              </div>
+            )}
           </div>
         }
       />

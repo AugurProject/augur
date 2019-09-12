@@ -4,7 +4,6 @@ import ReportingCardContainer from 'modules/reporting/containers/reporting-card'
 import Styles from 'modules/reporting/common.styles.less';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
-import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
@@ -96,7 +95,7 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
     }
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(nextProps) {
     const { isConnected, reportingType, isLogged } = this.props;
     const { offset, limit } = this.state;
     if (
