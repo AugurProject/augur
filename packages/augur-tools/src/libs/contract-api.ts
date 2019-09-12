@@ -350,6 +350,8 @@ export class ContractAPI {
   }
 
   async contribute(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], amount: BigNumber, description = ''): Promise<void> {
+    // Below is to ensure the signer is the account we're using in this instance
+    market = this.augur.contracts.marketFromAddress(market.address);
     await market.contribute(payoutNumerators, amount, description);
   }
 
@@ -466,6 +468,8 @@ export class ContractAPI {
   }
 
   async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], description = '', extraStake = '0'): Promise<void> {
+    // Below is to ensure the signer is the account we're using in this instance
+    market = this.augur.contracts.marketFromAddress(market.address);
     await market.doInitialReport(payoutNumerators, description, new BigNumber(extraStake));
   }
 
