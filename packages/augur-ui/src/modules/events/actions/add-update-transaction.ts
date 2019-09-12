@@ -56,10 +56,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     const methodCall = transaction.name.toUpperCase();
     const { blockchain } = getState();
 
-    if (eventName === TXEventName.Success) {
-      console.log(txStatus);
-    }
-
     if (hash && eventName === TXEventName.Failure) {
       dispatch(addAlert({
         id: hash,
