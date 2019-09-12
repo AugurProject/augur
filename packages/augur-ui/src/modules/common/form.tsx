@@ -923,7 +923,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
     const initialReporterStake = formatNumber("100");
     const reportingGasFee = formatNumber("100");
     const inputtedStake = !checked || disputeStake === "" || isNaN(parseFloat(disputeStake)) ? "0" : disputeStake;
-    const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
+    const fullBond = !scalar && stake && formatRep(createBigNumber(stake.stakeCurrent.value).plus(createBigNumber(inputtedStake)));
 
 
     return (
