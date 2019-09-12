@@ -44,6 +44,7 @@ import {
   setLiquidityOrderStatus,
   deleteLiquidityOrder,
 } from 'modules/events/actions/liquidity-transactions';
+import { addAlert } from "modules/alerts/actions/alerts";
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -58,6 +59,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         const marketId = transaction.params[TX_MARKET_ID];
         const market = marketInfos[marketId];
         setLiquidityMultipleOrdersStatus(txStatus, market, dispatch);
+        
         if (eventName === TXEventName.Success) {
           deleteMultipleLiquidityOrders(txStatus, market, dispatch);
         }
@@ -68,6 +70,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         const marketId = transaction.params[TX_MARKET_ID];
         const market = marketInfos[marketId];
         setLiquidityOrderStatus(txStatus, market, dispatch);
+
         if (eventName === TXEventName.Success) {
           deleteLiquidityOrder(txStatus, market, dispatch);
         }
@@ -76,11 +79,24 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
       case PUBLICTRADE: {
         const tradeGroupId = transaction.params[TX_TRADE_GROUP_ID];
         const marketId = transaction.params[TX_MARKET_ID];
-        const { marketInfos } = getState();
+        const { marketInfos, blockchain } = getState();
         const market = marketInfos[marketId];
         if (!hash && eventName === TXEventName.AwaitingSigning) {
           return addOrder(txStatus, market, dispatch);
         }
+
+
+        dispatch(addAlert({
+          id: hash,
+          params: transaction.params,
+          status,
+          timestamp: blockchain.currentAugurTimestamp * 1000,
+          title: transaction.name,
+          description: "",
+          linkPath: "",
+          to: "",
+        }));
+
         dispatch(
           updatePendingOrderStatus(tradeGroupId, marketId, eventName, hash)
         );
