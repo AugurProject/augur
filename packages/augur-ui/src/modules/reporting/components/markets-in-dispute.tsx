@@ -107,6 +107,7 @@ export default class MarketsInDispute extends Component<
       filterByMyPortfolio,
       sortByRepAmount,
       sortByDisputeRounds,
+      selectedTab,
       search,
       offset,
     } = this.state;
@@ -116,7 +117,8 @@ export default class MarketsInDispute extends Component<
       sortByRepAmount !== prevState.sortByRepAmount ||
       sortByDisputeRounds !== prevState.sortByDisputeRounds ||
       search !== prevState.search ||
-      offset !== prevState.offset
+      offset !== prevState.offset ||
+      selectedTab !== prevState.selectedTab
     ) {
       this.loadMarkets();
     }
@@ -129,8 +131,9 @@ export default class MarketsInDispute extends Component<
 
   loadMarkets = () => {
     const { limit, selectedTab, tabs } = this.state;
-    let loadDisputeMarkets = this.getLoadMarketsMethod();
+    let loadDisputeMarkets = this.getLoadMarketsMethod(selectedTab);
     const filterOptions = this.getLoadMarketsFiltersOptions();
+
     loadDisputeMarkets(
       filterOptions,
       (err, marketResults: Getters.Markets.MarketList) => {
@@ -138,22 +141,24 @@ export default class MarketsInDispute extends Component<
         const filteredData = marketResults.markets.map(m => selectMarket(m.id));
         const marketCount = marketResults.meta.marketCount;
         const showPagination = marketCount > limit;
-
-        (tabs[0].num = selectedTab === TAB_CURRENT ? marketCount : 0),
-          (tabs[1].num = selectedTab === TAB_AWAITING ? marketCount : 0),
-          this.setState({
-            filteredData,
-            showPagination,
-            marketCount,
-            isLoadingMarkets: false,
-            tabs,
-          });
+        this.setState({
+          filteredData,
+          showPagination,
+          marketCount,
+          isLoadingMarkets: false,
+          tabs: this.setTabCounts(tabs, selectedTab, marketCount),
+        });
       }
     );
   };
 
-  getLoadMarketsMethod = () => {
-    const { selectedTab } = this.state;
+  setTabCounts = (tabs, selectedTab, marketCount) => {
+    tabs[0].num = selectedTab === TAB_CURRENT ? marketCount : 0;
+    tabs[1].num = selectedTab === TAB_AWAITING ? marketCount : 0;
+    return tabs;
+  };
+
+  getLoadMarketsMethod = selectedTab => {
     const {
       loadCurrentlyDisputingMarkets,
       loadNextWindowDisputingMarkets,
