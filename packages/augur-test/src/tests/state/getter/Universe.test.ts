@@ -6,8 +6,9 @@ import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/constants';
 import { fork } from '@augurproject/tools';
 import { formatBytes32String } from 'ethers/utils';
-import { DisputeWindow } from '@augurproject/sdk/build/state/getter/Universe';
+import { DisputeWindow, UniverseDetails } from '@augurproject/sdk/build/state/getter/Universe';
 import { getPayoutNumerators, makeValidScalarOutcome } from '@augurproject/tools/build/flash/fork';
+import { NULL_ADDRESS } from '../../../libs/Utils';
 
 const mock = makeDbMock();
 
@@ -322,15 +323,76 @@ describe('State API :: Universe :: ', () => {
 
   test('getUniverseChildren : Genesis', async () => {
     const universe = john.augur.contracts.universe;
-
     const actualDB = await db;
 
     await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
-    const universeChildren = await api.route('getUniverseChildren', {
+    let universeChildren: UniverseDetails = await api.route('getUniverseChildren', {
       universe: universe.address,
     });
 
-    expect(universeChildren).toEqual({});
+    expect(universeChildren).toMatchObject({
+      address: universe.address,
+      outcomeName: 'Genesis',
+      totalRepSupply: '1', // we faucet 1 attoREP for john during deployment
+      totalOpenInterest: '0',
+      numberOfMarkets: 0,
+      children: [],
+    });
+    expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
+
+    // Now create a market to see how that affects numberOfMarkets.
+
+    const repBond = await universe.getOrCacheMarketRepBond_();
+    const market = await john.createReasonableScalarMarket();
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+    universeChildren = await api.route('getUniverseChildren', {
+      universe: universe.address,
+    });
+    expect(universeChildren).toMatchObject({
+      address: universe.address,
+      outcomeName: 'Genesis',
+      totalRepSupply: repBond.plus(1).toString(),
+      totalOpenInterest: '0',
+      numberOfMarkets: 1,
+      children: [],
+    });
+    expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
+
+    // Now fork to see how that affects the children.
+
+    const marketInfo = (await api.route('getMarketsInfo', {marketIds: [market.address]}))[0];
+    await fork(john, marketInfo);
+
+    const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
+    const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
+    const repToken = john.augur.contracts.reputationTokenFromAddress(repTokenAddress, john.augur.networkId);
+    await john.repFaucet(new BigNumber(1e21));
+    await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
+
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+    universeChildren = await api.route('getUniverseChildren', {
+      universe: universe.address,
+    });
+
+    expect(universeChildren).toMatchObject({
+      address: universe.address,
+      outcomeName: 'Genesis',
+      totalRepSupply: repBond.plus(1).plus(6e25).toString(),
+      totalOpenInterest: '0',
+      numberOfMarkets: 1,
+      children: [
+        {
+          outcomeName: 'malformed outcome',
+          totalRepSupply: '1000000000000000000000',
+          totalOpenInterest: '0',
+          numberOfMarkets: 0,
+          children: [],
+        },
+      ],
+    });
+    expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
+    expect(universeChildren.children[0].creationTimestamp).toBeGreaterThan(0);
+    expect(universeChildren.children[0].address).not.toEqual(NULL_ADDRESS);
   }, 200000);
 
 });

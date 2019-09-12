@@ -13,12 +13,12 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
   const conflictOutcome = market.marketType === MarketTypeName.Scalar ? makeValidScalarOutcome(market) : 1;
   const conflictNumerators = getPayoutNumerators(market, conflictOutcome);
 
+  const marketContract = user.augur.contracts.marketFromAddress(market.id);
+
   await user.repFaucet(SOME_REP);
 
   // Get past the market time, into when we can accept the initial report.
   await user.setTimestamp(new BigNumber(market.endTime + 1));
-
-  const marketContract = user.augur.contracts.marketFromAddress(market.id);
 
   // Do the initial report, creating the first dispute window.
   await user.doInitialReport(marketContract, payoutNumerators, '', SOME_REP.toString());
@@ -33,10 +33,9 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
     }
 
     const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await marketContract.getDisputeWindow_());
-
     // Enter the dispute window.
-    await user.setTimestamp((await disputeWindow.getStartTime_()).plus(1));
-
+    const disputeWindowStartTime = await disputeWindow.getStartTime_();
+    await user.setTimestamp(disputeWindowStartTime.plus(1));
     // Contribute aka dispute. Opposing sides to keep raising the stakes.
     const numerators = i % 2 === 0 ? conflictNumerators : payoutNumerators;
     await user.contribute(marketContract, numerators, SOME_REP);

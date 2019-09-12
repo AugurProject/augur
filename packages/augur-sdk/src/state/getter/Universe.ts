@@ -31,7 +31,7 @@ export interface MigrationTotals {
   outcomes: Outcome[];
 }
 
-interface Outcome {
+export interface Outcome {
   outcomeName: string;
   outcome: string; // non-scalar markets this is outcome id.
   amount: string; // atto-rep given to this outcome
@@ -40,7 +40,7 @@ interface Outcome {
   isInvalid: boolean; // for scalar markets
 }
 
-interface UniverseDetails {
+export interface UniverseDetails {
   address: string;
   creationTimestamp: number;
   outcomeName: string;
@@ -92,12 +92,13 @@ export class Universe {
       return {};
     }
 
-    const forkingMarketLog = await getMarket(db, universeForkedLog.forkingMarket);
+    const marketId = universeForkedLog.forkingMarket;
+    const forkingMarketLog = await getMarket(db, marketId);
     const children = await getUniverseChildrenCreationLogs(db, address);
     const outcomes = await getOutcomes(augur, forkingMarketLog, children);
 
     return {
-      marketId: universeForkedLog.forkingMarket,
+      marketId,
       outcomes,
     };
   }
@@ -133,7 +134,7 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string): Promis
   } else {
     // TODO this is the forking log of this universe...
     // but we need its parent's forking info
-    const universeForkedLog = await getUniverseForkedLog(db, address);
+    const universeForkedLog = await getUniverseForkedLog(db, universeCreationLog.parentUniverse);
     const forkingMarketLog = await getMarket(db, universeForkedLog.forkingMarket); // the market that created this universe
     outcomeName = getOutcomeName(universeCreationLog, universeForkedLog, forkingMarketLog);
   }
