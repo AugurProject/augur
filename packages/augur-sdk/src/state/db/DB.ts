@@ -1,7 +1,7 @@
 import { Augur } from '../../Augur';
 import { augurEmitter } from '../../events';
 import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR, SubscriptionEventName } from '../../constants';
-import { PouchDBFactoryType } from './AbstractDB';
+import { PouchDBFactoryType, AbstractDB } from './AbstractDB';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
 import { TrackedUsers } from './TrackedUsers';
@@ -10,7 +10,6 @@ import { DerivedDB } from './DerivedDB';
 import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
 import { MarketDB } from './MarketDB';
 import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
-import { Block } from 'ethers/providers';
 import {
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
@@ -36,6 +35,7 @@ import {
   TokenBalanceChangedLog,
   TradingProceedsClaimedLog,
   UniverseForkedLog,
+  UniverseCreatedLog,
 } from '../logs/types';
 import { ZeroXOrders, StoredOrder } from './ZeroXOrders';
 
@@ -251,8 +251,8 @@ export class DB {
     await this.marketDatabase.sync(highestAvailableBlockNumber);
 
     // Update LiquidityDatabase and set it to update whenever there's a new block
-    await this.liquidityDatabase.recalculateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
-    augurEmitter.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.recalculateLiquidity(this.augur, this, args.timestamp));
+    await this.liquidityDatabase.updateLiquidity(augur, this, (await augur.getTimestamp()).toNumber());
+    augurEmitter.on(SubscriptionEventName.NewBlock, (args) => this.liquidityDatabase.updateLiquidity(this.augur, this, args.timestamp));
 
     augurEmitter.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
@@ -467,6 +467,27 @@ export class DB {
    */
   async findInDerivedDB(dbName: string, request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {
     return this.derivedDatabases[dbName].find(request);
+  }
+
+  /**
+   * Queries a DB to get a row count.
+   *
+   * @param {string} dbName Name of the DB to query
+   * @param {boolean} derived Boolean indicating if this is a derived DB
+   * @param {PouchDB.Find.FindRequest<{}>} Optional request Query object to narrow results
+   * @returns {Promise<number>} Promise to a number of rows
+   */
+  async getNumRowsFromDB(dbName: string, derived: boolean, request?: PouchDB.Find.FindRequest<{}>): Promise<number> {
+    const fullDBName = this.getDatabaseName(dbName);
+    const db: AbstractDB = derived ? this.derivedDatabases[fullDBName] : this.syncableDatabases[fullDBName];
+
+    if (request) {
+      const results = await db.find(request);
+      return results.docs.length;
+    }
+    
+    const info = await db.info();
+    return info.doc_count;
   }
 
   /**
@@ -724,6 +745,17 @@ export class DB {
 
   /**
    * Queries the UniverseForked DB
+   *
+   * @param {PouchDB.Find.FindRequest<{}>} request Query object
+   * @returns {Promise<Array<UniverseForkedLog>>}
+   */
+  async findUniverseCreatedLogs(request: PouchDB.Find.FindRequest<{}>): Promise<UniverseCreatedLog[]> {
+    const results = await this.findInSyncableDB(this.getDatabaseName("UniverseCreated"), request);
+    return results.docs as unknown as UniverseCreatedLog[];
+  }
+
+  /**
+   * Queries the UniverseCreated DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
    * @returns {Promise<Array<UniverseForkedLog>>}

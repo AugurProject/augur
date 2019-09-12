@@ -62,17 +62,17 @@ export interface DisputeOutcomeProps {
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
-  const bondSizeCurrent = props.stake && formatAttoRep(props.stake.bondSizeCurrent);
+  const stakeCurrent = props.stake && formatAttoRep(props.stake.stakeCurrent);
   const bondSizeTotal = props.stake && formatAttoRep(props.stake.bondSizeTotal);
 
   return (
     <div className={classNames(Styles.DisputeOutcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
       <span>{props.description}</span>
-      {props.stake && props.stake.tentativeWinning ? <span>tentative winner</span> : <Percent percent={props.stake ? calculatePosition(createBigNumber(0), createBigNumber(bondSizeTotal.value), bondSizeCurrent) : 0} />}
+      {props.stake && props.stake.tentativeWinning ? <span>tentative winner</span> : <Percent percent={props.stake ? calculatePosition(createBigNumber(0), createBigNumber(bondSizeTotal.value), stakeCurrent) : 0} />}
       <div>
         <div>
           <span>{props.stake && props.stake.tentativeWinning ? "pre-filled stake" : "make tentative winner"}</span>
-          <span>{props.stake ? bondSizeCurrent.formatted : 0}<span>/ {props.stake ? bondSizeTotal.formatted : 0} REP</span></span>
+          <span>{props.stake ? stakeCurrent.formatted : 0}<span>/ {props.stake ? bondSizeTotal.formatted : 0} REP</span></span>
         </div>
         <SecondaryButton small text={props.stake && props.stake.tentativeWinning ? "Support Tentative Winner" : "Dispute Tentative Winner"} action={() => props.dispute(props.id.toString())} />
       </div>
@@ -187,8 +187,8 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
 
 export interface LabelValueProps {
   label: string;
-  value: number;
-  condensed?: Boolean;
+  value: number | string;
+  condensed?: boolean;
 }
 
 export const LabelValue = (props: LabelValueProps) => (
@@ -199,7 +199,7 @@ export const LabelValue = (props: LabelValueProps) => (
 );
 
 export interface HoverIconProps {
-  icon: string;
+  icon: JSX.Element;
   hoverText: string;
   label: string;
 }

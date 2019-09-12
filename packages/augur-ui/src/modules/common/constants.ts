@@ -346,6 +346,7 @@ export const MARKET_FULLY_LOADING = 'MARKET_FULLY_LOADING';
 export const MARKET_FULLY_LOADED = 'MARKET_FULLY_LOADED';
 
 // # Market Outcome Constants
+export const INVALID_OUTCOME_ID = 0;
 export const YES_NO_NO_ID = 1;
 export const YES_NO_NO_OUTCOME_NAME = 'No';
 export const YES_NO_YES_ID = 2;
@@ -821,6 +822,7 @@ export const DESKTOP = '(min-width:1281px) and (max-width: 2000px)';
 export const LARGE_DESKTOP = '(min-width: 2001px)';
 // temp tablet breakpoint until trading pg additional breakpoints are implemented
 export const TEMP_TABLET = '(max-width: 1280px)';
+export const TABLET_MAX = '(max-width: 1200px)';
 
 // Sort variables
 export const END_TIME = 'endTime';

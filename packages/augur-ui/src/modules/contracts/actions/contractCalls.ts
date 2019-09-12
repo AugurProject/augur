@@ -21,7 +21,6 @@ import {
   Getters,
   numTicksToTickSizeWithDisplayPrices,
   calculatePayoutNumeratorsArray,
-  stringTo32ByteHex,
   convertDisplayValuetoAttoValue,
 } from '@augurproject/sdk';
 
@@ -230,17 +229,17 @@ export interface doReportDisputeAddStake {
   outcomeId: number;
   description: string;
   amount: string;
+  isInvalid: boolean;
 }
 
 export async function doInitialReport(report: doReportDisputeAddStake) {
   const market = getMarket(report.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(report);
-  const description = stringTo32ByteHex(report.description);
   const amount = convertDisplayValuetoAttoValue(
     new BigNumber(report.amount || '0')
   );
-  return await market.doInitialReport(payoutNumerators, description, amount);
+  return await market.doInitialReport(payoutNumerators, report.description, amount);
 }
 
 export async function addRepToTentativeWinningOutcome(
@@ -249,12 +248,11 @@ export async function addRepToTentativeWinningOutcome(
   const market = getMarket(addStake.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(addStake);
-  const description = stringTo32ByteHex(addStake.description);
   const amount = convertDisplayValuetoAttoValue(new BigNumber(addStake.amount));
   return await market.contributeToTentative(
     payoutNumerators,
     amount,
-    description
+    addStake.description
   );
 }
 
@@ -262,9 +260,8 @@ export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = getPayoutNumerators(dispute);
-  const description = stringTo32ByteHex(dispute.description);
   const amount = convertDisplayValuetoAttoValue(new BigNumber(dispute.amount));
-  return await market.contribute(payoutNumerators, amount, description);
+  return await market.contribute(payoutNumerators, amount, dispute.description);
 }
 
 function getMarket(marketId) {
@@ -284,7 +281,8 @@ function getPayoutNumerators(inputs: doReportDisputeAddStake) {
     inputs.numTicks,
     inputs.numOutcomes,
     inputs.marketType,
-    inputs.outcomeId
+    inputs.outcomeId,
+    inputs.isInvalid,
   );
 }
 

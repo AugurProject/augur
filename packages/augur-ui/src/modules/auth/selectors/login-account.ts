@@ -27,15 +27,15 @@ export const selectLoginAccount = createSelector(
       ...genAccountProperties,
       rep: formatRep(loginAccount.balances.rep, {
         zeroStyled: false,
-        decimalsRounded: 4
+        decimalsRounded: 4,
       }),
       dai: formatDai(loginAccount.balances.dai, {
         zeroStyled: false,
-        decimalsRounded: 4
+        decimalsRounded: 2,
       }),
       eth: formatEther(loginAccount.balances.eth, {
         zeroStyled: false,
-        decimalsRounded: 4
+        decimalsRounded: 4,
       })
     };
   }

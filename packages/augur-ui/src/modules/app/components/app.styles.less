@@ -61,9 +61,7 @@ h6 {
   @media @breakpoint-mobile {
     grid-template-columns: none;
     grid-template-rows: 0 auto;
-    height: fit-content;
     margin-left: 0;
-    overflow: auto;
   }
 }
 
@@ -83,11 +81,19 @@ h6 {
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
+  padding-bottom: @size-64;
 
-  padding-bottom: 4rem;
   @media @breakpoint-mobile {
     height: calc(~"100vh - @{top-bar-height-mobile}");
     width: 100vw;
+  }
+
+  > section {
+    margin: 0 @size-64;
+
+    @media @breakpoint-mobile {
+      margin: 0 @size-16;
+    }
   }
 }
 

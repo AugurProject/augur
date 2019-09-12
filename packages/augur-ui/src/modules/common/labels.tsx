@@ -12,7 +12,6 @@ import {
   DoubleArrows,
   LoadingEllipse,
 } from 'modules/common/icons';
-import { MarketProgress } from 'modules/common/progress';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
@@ -176,7 +175,6 @@ interface WordTrailProps {
 
 interface CategoryTagTrailProps {
   categories: Array<ButtonObj>;
-  tags: Array<ButtonObj>;
 }
 
 interface ValueDenominationProps {
@@ -574,7 +572,6 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
 
 export const InReportingLabel = (props: InReportingLabelProps) => {
   const {
-    mini,
     reportingState,
     disputeInfo,
     endTimeFormatted,
@@ -593,20 +590,17 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     return <MarketStatusLabel {...props} />;
   }
 
-  let reportingCountdown: boolean = false;
   let reportingExtraText: string | null;
   const text: string = constants.IN_REPORTING;
   let customLabel: string | null = null;
 
   if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
     reportingExtraText = constants.WAITING_ON_REPORTER;
-    reportingCountdown = true;
     customLabel = constants.REPORTING_ENDS;
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
   } else if (reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW) {
     reportingExtraText = constants.AWAITING_NEXT_DISPUTE;
-    reportingCountdown = true;
   } else if (
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
     reportingState === REPORTING_STATE.AWAITING_FORK_MIGRATION
@@ -615,42 +609,26 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
       disputeInfo && disputeInfo.disputeRound
         ? `${constants.DISPUTE_ROUND} ${disputeInfo.disputeRound}`
         : constants.DISPUTE_ROUND;
-    reportingCountdown = true;
     customLabel = constants.DISPUTE_ENDS;
   } else {
     reportingExtraText = null;
   }
 
   return (
-    <>
-      <span
-        className={classNames(
-          Styles.MarketStatus,
-          Styles.MarketStatus_reporting
-        )}
-      >
-        {text}
-        {reportingExtraText && (
-          <span className={Styles.InReporting_reportingDetails}>
-            {DoubleArrows}
-            {reportingExtraText}
-          </span>
-        )}
-      </span>
-      {reportingCountdown && (
-        <span className={classNames({ [Styles.MarketStatus_mini]: mini })}>
-          <span className={Styles.InReporting_reportingDetails__countdown}>
-            <MarketProgress
-              currentTime={currentAugurTimestamp}
-              reportingState={reportingState}
-              endTimeFormatted={endTimeFormatted}
-              reportingWindowEndtime={reportingWindowStatsEndTime}
-              customLabel={customLabel}
-            />
-          </span>
+    <span
+      className={classNames(
+        Styles.MarketStatus,
+        Styles.MarketStatus_reporting
+      )}
+    >
+      {text}
+      {reportingExtraText && (
+        <span className={Styles.InReporting_reportingDetails}>
+          {DoubleArrows}
+          {reportingExtraText}
         </span>
       )}
-    </>
+    </span>
   );
 };
 

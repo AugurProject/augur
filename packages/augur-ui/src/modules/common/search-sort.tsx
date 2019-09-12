@@ -14,10 +14,12 @@ export interface SearchSortProps {
   bottomRightBarContent?: ReactNode;
   rightContent?: ReactNode;
   sortByStyles?: Object;
+  checkBox?: ReactNode;
 }
 
 export interface SearchSortState {
   showSortByOptions: Boolean;
+  showCheckbox: boolean;
 }
 
 export class SearchSort extends React.Component<
@@ -25,11 +27,12 @@ export class SearchSort extends React.Component<
   SearchSortState
 > {
   state: SearchSortState = {
-    showSortByOptions: true
+    showSortByOptions: true,
+    showCheckbox: true
   };
 
   onFocus = (hide: Boolean) => {
-    this.setState({ showSortByOptions: hide });
+    this.setState({ showSortByOptions: hide, showCheckbox: hide });
   };
 
   render() {
@@ -37,15 +40,17 @@ export class SearchSort extends React.Component<
       sortByOptions,
       updateDropdown,
       sortByStyles,
-      onChange
+      onChange,
+      checkBox
     } = this.props;
 
-    const { showSortByOptions } = this.state;
+    const { showSortByOptions, showCheckbox } = this.state;
 
     return (
       <>
         <div className={classNames(Styles.SearchSort, Styles.ShowOnMobile)}>
-          <SearchBar onChange={onChange} />
+          {showCheckbox && checkBox}
+          <SearchBar onFocus={this.onFocus} onChange={onChange} />
           {sortByOptions && (
             <div className={Styles.Dropdown}>
               <SquareDropdown
