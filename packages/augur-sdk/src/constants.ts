@@ -146,3 +146,5 @@ export const SECONDS_IN_AN_HOUR = new BigNumber(3600, 10);
 export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 
 export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(365);
+
+export const GENESIS = 'Genesis';

@@ -324,6 +324,7 @@ export interface UniverseCreatedLog extends Log, Doc {
   parentUniverse: Address;
   childUniverse: Address;
   payoutNumerators: string[];
+  creationTimestamp: string;
 }
 
 export interface LiquidityData {

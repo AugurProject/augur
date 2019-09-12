@@ -6,8 +6,8 @@ import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk/build/constants';
 import { fork } from '@augurproject/tools';
 import { formatBytes32String } from 'ethers/utils';
-import { DisputeWindow } from "@augurproject/sdk/build/state/getter/Universe";
-import { getPayoutNumerators, makeValidScalarOutcome } from "@augurproject/tools/build/flash/fork";
+import { DisputeWindow } from '@augurproject/sdk/build/state/getter/Universe';
+import { getPayoutNumerators, makeValidScalarOutcome } from '@augurproject/tools/build/flash/fork';
 
 const mock = makeDbMock();
 
@@ -33,7 +33,7 @@ describe('State API :: Universe :: ', () => {
     await mary.approveCentralAuthority();
   }, 120000);
 
-  test('getDisputeWindow', async () => {
+  test.skip('getDisputeWindow', async () => {
     const universe = john.augur.contracts.universe;
     const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
     const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
@@ -183,7 +183,6 @@ describe('State API :: Universe :: ', () => {
 
   }, 200000);
 
-
   test.skip('getForkMigrationTotals : Categorical', async () => {
     const universe = john.augur.contracts.universe;
 
@@ -319,6 +318,19 @@ describe('State API :: Universe :: ', () => {
         },
       ],
     });
+  }, 200000);
+
+  test('getUniverseChildren : Genesis', async () => {
+    const universe = john.augur.contracts.universe;
+
+    const actualDB = await db;
+
+    await actualDB.sync(john.augur, mock.constants.chunkSize, 0);
+    const universeChildren = await api.route('getUniverseChildren', {
+      universe: universe.address,
+    });
+
+    expect(universeChildren).toEqual({});
   }, 200000);
 
 });

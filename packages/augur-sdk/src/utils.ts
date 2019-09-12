@@ -115,12 +115,11 @@ export function calculatePayoutNumeratorsValue(
   numTicks: string,
   marketType: string,
   payout: string[]
-): string | null {
+): string {
   const isScalar = marketType === MarketTypeName.Scalar;
 
-  if (!payout) return null;
-  if (payout.length === 0) return null;
-
+  if (!payout) return MALFORMED_OUTCOME;
+  if (payout.length === 0) return MALFORMED_OUTCOME;
 
   if (isScalar) {
     if (!isWellFormedScalar(payout)) {

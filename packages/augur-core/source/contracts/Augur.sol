@@ -55,7 +55,7 @@ contract Augur is IAugur {
     event MarketFinalized(address indexed universe, address indexed market, uint256 timestamp, uint256[] winningPayoutNumerators);
     event MarketMigrated(address indexed market, address indexed originalUniverse, address indexed newUniverse);
     event UniverseForked(address indexed universe, IMarket forkingMarket);
-    event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators);
+    event UniverseCreated(address indexed parentUniverse, address indexed childUniverse, uint256[] payoutNumerators, uint256 creationTimestamp);
 
     //  addressData
     //  0:  kycToken
@@ -170,7 +170,7 @@ contract Augur is IAugur {
         IUniverse _newUniverse = _universeFactory.createUniverse(_parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
         universes[address(_newUniverse)] = true;
         trustedSender[address(_newUniverse)] = true;
-        emit UniverseCreated(address(_parentUniverse), address(_newUniverse), _parentPayoutNumerators);
+        emit UniverseCreated(address(_parentUniverse), address(_newUniverse), _parentPayoutNumerators, getTimestamp());
         return _newUniverse;
     }
 
