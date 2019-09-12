@@ -138,6 +138,10 @@ export const loadMarketsByFilter = (
 export interface LoadReportingMarketsOptions {
   limit: number;
   offset: number;
+  userPortfolioAddress?: string;
+  sortByRepAmount?: boolean;
+  sortByDisputeRounds?: boolean;
+  search?: string;
 }
 
 export const loadNextWindowDisputingMarkets = (

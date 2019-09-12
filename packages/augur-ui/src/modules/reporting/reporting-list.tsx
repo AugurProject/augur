@@ -88,7 +88,7 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
     isLoadingMarkets: true,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { loadMarkets, reportingType, isConnected } = this.props;
     const { offset, limit } = this.state;
     if (isConnected) {
