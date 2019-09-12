@@ -485,7 +485,7 @@ export class DB {
       const results = await db.find(request);
       return results.docs.length;
     }
-    
+
     const info = await db.info();
     return info.doc_count;
   }
@@ -718,6 +718,15 @@ export class DB {
   async findTimestampSetLogs(request: PouchDB.Find.FindRequest<{}>): Promise<TimestampSetLog[]> {
     const results = await this.findInSyncableDB(this.getDatabaseName('TimestampSet'), request);
     return results.docs as unknown as TimestampSetLog[];
+  }
+
+  async allUniverseForkedLogs(): Promise<UniverseForkedLog[]> {
+    return this.syncableDatabases[this.getDatabaseName("UniverseForked")].allDocs()
+    .then((docs) => {
+      return docs.rows
+      .filter((doc) => !/^_design/.test(doc.id))
+      .map((doc) => doc.doc);
+    }) as unknown as UniverseForkedLog[];
   }
 
   /**
