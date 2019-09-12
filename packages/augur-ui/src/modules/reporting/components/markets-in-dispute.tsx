@@ -24,12 +24,10 @@ interface MarketsInDisputeProps {
   userAddress: string;
   loadCurrentlyDisputingMarkets: Function;
   loadNextWindowDisputingMarkets: Function;
-  markets: MarketData[];
 }
 
 interface MarketsInDisputeState {
   search: string;
-  onlyMyMarkets: boolean;
   selectedTab: string;
   tabs: Tab[];
   filteredData: MarketData[];
@@ -65,8 +63,6 @@ const sortByOptions = [
   },
 ];
 
-const { CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW } = REPORTING_STATE;
-
 export default class MarketsInDispute extends Component<
   MarketsInDisputeProps,
   MarketsInDisputeState
@@ -76,7 +72,6 @@ export default class MarketsInDispute extends Component<
     this.state = {
       search: '',
       selectedTab: TAB_CURRENT,
-      onlyMyMarkets: false,
       sortBy: sortByOptions[0].value,
       tabs: [
         {
@@ -102,17 +97,10 @@ export default class MarketsInDispute extends Component<
     };
   }
 
-  componentDidMount() {
-    const { isConnected } = this.props;
-    if (isConnected) this.loadMarkets();
-  }
-
-  componentWillUpdate(
-    nextProps: MarketsInDisputeProps,
-    nextState: MarketsInDisputeState
+  componentDidUpdate(
+    prevProps: MarketsInDisputeProps,
+    prevState: MarketsInDisputeState
   ) {
-    const { isConnected } = this.props;
-    if (isConnected !== nextProps.isConnected) this.loadMarkets();
     const {
       filterByMyPortfolio,
       sortByRepAmount,
@@ -120,13 +108,18 @@ export default class MarketsInDispute extends Component<
       search,
     } = this.state;
     if (
-      filterByMyPortfolio !== nextState.filterByMyPortfolio ||
-      sortByRepAmount !== nextState.sortByRepAmount ||
-      sortByDisputeRounds !== nextState.sortByDisputeRounds ||
-      search !== nextState.search
+      filterByMyPortfolio !== prevState.filterByMyPortfolio ||
+      sortByRepAmount !== prevState.sortByRepAmount ||
+      sortByDisputeRounds !== prevState.sortByDisputeRounds ||
+      search !== prevState.search
     ) {
       this.loadMarkets();
     }
+  }
+
+  componentDidMount() {
+    const { isConnected } = this.props;
+    if (isConnected) this.loadMarkets();
   }
 
   loadMarkets = () => {
@@ -195,8 +188,8 @@ export default class MarketsInDispute extends Component<
     return filterOptions;
   };
 
-  updateDropdown = (sortBy) => {
-    console.log("sortBy", sortBy);
+  updateDropdown = sortBy => {
+    console.log('sortBy', sortBy);
   };
 
   selectTab = (selectedTab: string) => {
@@ -218,7 +211,7 @@ export default class MarketsInDispute extends Component<
     });
   };
 
-  toggleOnlyMyPortfolio = () => {
+  toggleOnlyMyPortfolio = value => {
     const { filterByMyPortfolio } = this.state;
     this.setState({
       filterByMyPortfolio: !filterByMyPortfolio,
