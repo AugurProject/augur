@@ -1,17 +1,23 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import MarketsInDispute from "modules/reporting/components/markets-in-dispute";
-import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
+import MarketsInDispute from 'modules/reporting/components/markets-in-dispute';
+import { loadCurrentlyDisputingMarkets } from 'modules/markets/actions/load-markets';
+import { disputingMarkets } from 'modules/markets/selectors/select-disputing-markets';
 
-const mapStateToProps = state => ({
-  isConnected: state.connection.isConnected,
-  address: state.loginAccount.mixedCaseAddress,
-  markets: state.marketInfos,
-});
+const mapStateToProps = state => {
+  const markets = disputingMarkets(state);
+
+  return {
+    isConnected: state.connection.isConnected,
+    address: state.loginAccount.mixedCaseAddress,
+    markets,
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
-  // loadDisputeWindow: () => dispatch(loadDisputeWindow()),
+  loadCurrentlyDisputingMarkets: (params, cb) =>
+    dispatch(loadCurrentlyDisputingMarkets(params, cb)),
 });
 
 const mergeProps = (sP, dP, oP) => {

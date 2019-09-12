@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
-import { Market, Tab } from 'modules/portfolio/types';
+import { Tab } from 'modules/portfolio/types';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
 import { REPORTING_STATE } from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/containers/market-card';
@@ -10,10 +10,17 @@ import { createBigNumber } from 'utils/create-big-number';
 import { Checkbox } from 'modules/common/form';
 
 import Styles from 'modules/reporting/components/markets-in-dispute.styles.less';
+import { MarketData } from 'modules/types';
+import { Getters } from '@augurproject/sdk/src';
+
+const ITEMS_PER_SECTION = 10;
+const NUM_LOADING_CARDS = 5;
 
 interface MarketsInDisputeProps {
-  markets: Object;
+  isConnected: boolean;
   address: string;
+  loadCurrentlyDisputingMarkets: Function;
+  markets: MarketData[];
 }
 
 interface MarketsInDisputeState {
@@ -21,9 +28,15 @@ interface MarketsInDisputeState {
   onlyMyMarkets: boolean;
   selectedTab: string;
   tabs: Array<Tab>;
-  filteredData: Array<Market>;
+  filteredData: Array<MarketData>;
   didCheck: boolean;
   sortBy: string;
+  offset: number;
+  limit: number;
+  showPagination: boolean;
+  marketCount: number;
+  isLoadingMarkets: boolean;
+  marketIds: string[];
 }
 
 const sortByOptions = [
@@ -31,9 +44,8 @@ const sortByOptions = [
     label: 'Amount REP Staked',
     value: 'repStaked',
     comp(marketA, marketB) {
-      return (
-        createBigNumber(marketB.disputeInfo.stakeCompletedTotal).minus(
-        createBigNumber(marketA.disputeInfo.stakeCompletedTotal))
+      return createBigNumber(marketB.disputeInfo.stakeCompletedTotal).minus(
+        createBigNumber(marketA.disputeInfo.stakeCompletedTotal)
       );
     },
   },
@@ -41,9 +53,9 @@ const sortByOptions = [
     label: 'Dispute Round',
     value: 'disputeRound',
     comp(marketA, marketB) {
-      return (
-        createBigNumber(marketB.disputeInfo.disputeWindow.disputeRound).minus(createBigNumber(marketA.disputeInfo.disputeWindow.disputeRound))
-      );
+      return createBigNumber(
+        marketB.disputeInfo.disputeWindow.disputeRound
+      ).minus(createBigNumber(marketA.disputeInfo.disputeWindow.disputeRound));
     },
   },
 ];
@@ -82,10 +94,46 @@ export default class MarketsInDispute extends Component<
       ],
       filteredData: updatedData.current,
       didCheck: false,
+      isLoadingMarkets: false,
+      marketCount: 0,
+      showPagination: false,
+      offset: 1,
+      marketIds: [],
+      limit: ITEMS_PER_SECTION,
     };
   }
 
-  filterDisputingMarkets = (markets: Object, onlySlow = false) => {
+  componentWillMount() {
+    const { isConnected } = this.props;
+    if (isConnected) this.loadMarkets();
+  }
+
+  componentWillUpdate(nextProps) {
+    const { isConnected } = this.props;
+    if (isConnected !== nextProps.isConnected) this.loadMarkets();
+  }
+
+  loadMarkets = () => {
+    const { loadCurrentlyDisputingMarkets } = this.props;
+    const { limit, offset } = this.state;
+    this.setState({ isLoadingMarkets: true });
+    loadCurrentlyDisputingMarkets(
+      { limit, offset },
+      (err, marketResults: Getters.Markets.MarketList) => {
+        if (err) return console.log('error', err);
+        const marketIds: string[] = marketResults.markets.map(m => m.id);
+        const showPagination = marketResults.meta.marketCount > limit;
+        this.setState({
+          marketIds,
+          showPagination,
+          marketCount: marketResults.meta.marketCount,
+          isLoadingMarkets: false,
+        });
+      }
+    );
+  };
+
+  filterDisputingMarkets = (markets: MarketData[], onlySlow = false) => {
     const filteredData = [];
     for (let [key, value] of Object.entries(markets)) {
       if (
@@ -114,7 +162,7 @@ export default class MarketsInDispute extends Component<
     });
   };
 
-  applyOnlyMyMarkets = (filteredData: Array<Market>) => {
+  applyOnlyMyMarkets = (filteredData: Array<MarketData>) => {
     const { address } = this.props;
     return filteredData.filter(market => {
       if (market.author === address || market.designatedReporter === address) {
@@ -125,12 +173,12 @@ export default class MarketsInDispute extends Component<
     });
   };
 
-  applySort = (filteredData: Array<Market>, sortBy) => {
+  applySort = (filteredData: Array<MarketData>, sortBy) => {
     const sortByObj = sortByOptions.find(opt => opt.value === sortBy);
     return filteredData.sort(sortByObj.comp);
   };
 
-  applySearch = (filteredData: Array<Market>, search: string) => {
+  applySearch = (filteredData: Array<MarketData>, search: string) => {
     if (search.length > 0)
       return filteredData.filter(item =>
         item.description.toLowerCase().includes(search.toLowerCase())
@@ -197,7 +245,12 @@ export default class MarketsInDispute extends Component<
   toggleOnlyMyPortfolio = () => {
     const { didCheck, selectedTab, sortBy, search, tabs } = this.state;
     const { markets } = this.props;
-    const updatedData = this.getFilteredData(markets, sortBy, search, !didCheck);
+    const updatedData = this.getFilteredData(
+      markets,
+      sortBy,
+      search,
+      !didCheck
+    );
     const updatedTabs = this.getUpdatedTabs(
       updatedData.current.length,
       updatedData.awaiting.length,
