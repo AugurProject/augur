@@ -120,6 +120,7 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
       if (err) return console.log('error', err);
       const { limit } = this.state;
       const { markets: marketInfos, meta } = results;
+      if (!marketInfos || !meta) return;
       const markets = marketInfos.map(m => convertMarketInfoToMarketData(m));
       const showPagination = meta.marketCount > limit;
       this.setState({
