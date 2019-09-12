@@ -256,6 +256,7 @@ export interface DisputingBondsViewProps {
   userAvailableRep: number;
   stakeRemaining?: number;
   tentativeWinning?: boolean;
+  reportAction: Function;
 }
 
 interface DisputingBondsViewState {
@@ -302,7 +303,7 @@ DisputingBondsViewProps,
       rangeValue,
       userAvailableRep,
       stakeRemaining,
-      tentativeWinning
+      tentativeWinning,
     } = this.props;
 
     if (isNaN(stake) || stake === "") {
@@ -328,7 +329,8 @@ DisputingBondsViewProps,
       stakeValue,
       userAvailableRep,
       stakeRemaining,
-      tentativeWinning
+      tentativeWinning,
+      reportAction
     } = this.props;
 
     const { disabled, scalarError, stakeError } = this.state;
@@ -372,7 +374,7 @@ DisputingBondsViewProps,
           label="Estimated Gas Fee"
           value={'0.0000 ETH'}
         />
-        <PrimaryButton text="Confirm" action={null} disabled={disabled} />
+        <PrimaryButton text="Confirm" action={reportAction} disabled={disabled} />
       </div>
     );
   }
