@@ -823,6 +823,7 @@ export const DESKTOP = '(min-width:1281px) and (max-width: 2000px)';
 export const LARGE_DESKTOP = '(min-width: 2001px)';
 // temp tablet breakpoint until trading pg additional breakpoints are implemented
 export const TEMP_TABLET = '(max-width: 1280px)';
+export const TABLET_MAX = '(max-width: 1200px)';
 
 // Sort variables
 export const END_TIME = 'endTime';

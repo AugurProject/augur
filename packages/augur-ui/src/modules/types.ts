@@ -176,7 +176,7 @@ export interface CreateMarketData {
   creationTime: DateFormattedObject;
   marketType: string;
   pendingId: string;
-  orderBook?: IndividualOrderBook;
+  orderBook?: Getters.Markets.OutcomeOrderBook;
 }
 
 export interface PendingQueue {
@@ -194,22 +194,13 @@ export interface PendingOrders {
 }
 
 export interface OrderBooks {
-  [marketId: string]: IndividualOrderBook;
+  [marketId: string]: Getters.Markets.OutcomeOrderBook;
 }
 
 export interface OutcomeOrderBook {
   spread: string | null;
-  bids: Getters.Markets.OrderBook[];
-  asks: Getters.Markets.OrderBook[];
-}
-export interface IndividualOrderBook {
-    [outcome: number]: {
-      bids: Getters.Markets.OrderBook[];
-      asks: Getters.Markets.OrderBook[];
-    };
-}
-export interface DisputeInfo {
-  disputeRound: number;
+  bids: Getters.Markets.MarketOrderBookOrder[];
+  asks: Getters.Markets.MarketOrderBookOrder[];
 }
 
 export interface MyPositionsSummary {

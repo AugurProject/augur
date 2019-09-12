@@ -1,7 +1,7 @@
 import { Augur } from '../../Augur';
 import { augurEmitter } from '../../events';
 import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR, SubscriptionEventName } from '../../constants';
-import { PouchDBFactoryType } from './AbstractDB';
+import { PouchDBFactoryType, AbstractDB } from './AbstractDB';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
 import { TrackedUsers } from './TrackedUsers';
@@ -470,6 +470,27 @@ export class DB {
   }
 
   /**
+   * Queries a DB to get a row count.
+   *
+   * @param {string} dbName Name of the DB to query
+   * @param {boolean} derived Boolean indicating if this is a derived DB
+   * @param {PouchDB.Find.FindRequest<{}>} Optional request Query object to narrow results
+   * @returns {Promise<number>} Promise to a number of rows
+   */
+  async getNumRowsFromDB(dbName: string, derived: boolean, request?: PouchDB.Find.FindRequest<{}>): Promise<number> {
+    const fullDBName = this.getDatabaseName(dbName);
+    const db: AbstractDB = derived ? this.derivedDatabases[fullDBName] : this.syncableDatabases[fullDBName];
+
+    if (request) {
+      const results = await db.find(request);
+      return results.docs.length;
+    }
+
+    const info = await db.info();
+    return info.doc_count;
+  }
+
+  /**
    * Queries the CompleteSetsPurchased DB
    *
    * @param {PouchDB.Find.FindRequest<{}>} request Query object
@@ -697,6 +718,15 @@ export class DB {
   async findTimestampSetLogs(request: PouchDB.Find.FindRequest<{}>): Promise<TimestampSetLog[]> {
     const results = await this.findInSyncableDB(this.getDatabaseName('TimestampSet'), request);
     return results.docs as unknown as TimestampSetLog[];
+  }
+
+  async allUniverseForkedLogs(): Promise<UniverseForkedLog[]> {
+    return this.syncableDatabases[this.getDatabaseName("UniverseForked")].allDocs()
+    .then((docs) => {
+      return docs.rows
+      .filter((doc) => !/^_design/.test(doc.id))
+      .map((doc) => doc.doc);
+    }) as unknown as UniverseForkedLog[];
   }
 
   /**

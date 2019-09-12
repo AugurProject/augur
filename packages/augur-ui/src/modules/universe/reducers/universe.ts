@@ -3,6 +3,7 @@ import { RESET_STATE } from 'modules/app/actions/reset-state';
 import { Universe, BaseAction } from 'modules/types';
 
 const DEFAULT_STATE: Universe = {
+  id: null,
   disputeWindow: {
     address: null,
     startTime: 0,
