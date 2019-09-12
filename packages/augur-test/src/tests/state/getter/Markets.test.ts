@@ -14,6 +14,8 @@ import { BigNumber } from 'bignumber.js';
 import { ContractInterfaces } from '@augurproject/core';
 import { ORDER_TYPES } from '@augurproject/sdk';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { getAddress } from "ethers/utils/address";
+
 
 const mock = makeDbMock();
 
@@ -24,6 +26,7 @@ describe('State API :: Markets :: ', () => {
   let api: API;
   let john: ContractAPI;
   let mary: ContractAPI;
+  let bob: ContractAPI;
 
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
@@ -31,10 +34,12 @@ describe('State API :: Markets :: ', () => {
 
     john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
     mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, seed.addresses);
+    bob = await ContractAPI.userWrapper(ACCOUNTS[2], provider, seed.addresses);
     db = mock.makeDB(john.augur, ACCOUNTS);
     api = new API(john.augur, db);
     await john.approveCentralAuthority();
     await mary.approveCentralAuthority();
+    await bob.approveCentralAuthority();
   }, 120000);
 
   // NOTE: Full-text searching is also tested in MarketDerivedDB.test.ts
@@ -580,7 +585,7 @@ describe('State API :: Markets :: ', () => {
     const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
     const affiliateFeeDivisor = new BigNumber(0);
     const designatedReporter = john.account.publicKey;
-    const yesNoMarket1 = await mary.createYesNoMarket({
+    const yesNoMarket1 = await bob.createYesNoMarket({
       endTime,
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
       affiliateFeeDivisor,
@@ -631,7 +636,7 @@ describe('State API :: Markets :: ', () => {
     });
     endTime = endTime.minus(1);
 
-    // Report on a market with Mary
+    // Report on a market with Bob
     await john.setTimestamp(endTime.plus(24 * 60 * 60 * 2));
 
     let payoutSet = [
@@ -639,7 +644,7 @@ describe('State API :: Markets :: ', () => {
       new BigNumber(100),
       new BigNumber(0),
     ];
-    await mary.doInitialReport(yesNoMarket2, payoutSet);
+    await bob.doInitialReport(yesNoMarket2, payoutSet);
 
     payoutSet = [
       new BigNumber(0),
@@ -647,7 +652,7 @@ describe('State API :: Markets :: ', () => {
       new BigNumber(0),
       new BigNumber(0),
     ];
-    // Report on a market with John then dispute that market with Mary
+    // Report on a market with John then dispute that market with Bob
     await john.doInitialReport(categoricalMarket1, payoutSet);
 
     payoutSet = [
@@ -656,14 +661,15 @@ describe('State API :: Markets :: ', () => {
       new BigNumber(100),
       new BigNumber(0),
     ];
-    await mary.contribute(categoricalMarket1, payoutSet, new BigNumber(1));
+    await bob.repFaucet(new BigNumber(1));
+    await bob.contribute(categoricalMarket1, payoutSet, new BigNumber(1));
 
-    // Trade on a market with Mary
+    // Trade on a market with Bob
     const bid = new BigNumber(0);
     const outcome = new BigNumber(0);
     const numShares = new BigNumber(10000000000000);
     const price = new BigNumber(22);
-    await mary.placeOrder(
+    await bob.placeOrder(
       categoricalMarket2.address,
       bid,
       numShares,
@@ -683,14 +689,14 @@ describe('State API :: Markets :: ', () => {
     // Test user portfolio filter
     marketList = await api.route('getMarkets', {
       universe: universe.address,
-      userPortfolioAddress: ACCOUNTS[1].publicKey,
+      userPortfolioAddress: getAddress(ACCOUNTS[2].publicKey),
       isSortDescending: false,
     });
     expect(marketList.markets.length).toEqual(4);
     expect(marketList.markets[0].id).toEqual(categoricalMarket1.address);
     expect(marketList.markets[1].id).toEqual(categoricalMarket2.address);
-    expect(marketList.markets[4].id).toEqual(yesNoMarket1.address);
-    expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
+    expect(marketList.markets[2].id).toEqual(yesNoMarket1.address);
+    expect(marketList.markets[3].id).toEqual(yesNoMarket2.address);
   }, 120000);
 
   test(':getMarketPriceHistory', async () => {
