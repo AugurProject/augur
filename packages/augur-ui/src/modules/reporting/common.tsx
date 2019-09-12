@@ -58,10 +58,10 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
   );
 
   return (
-    <div className={Styles.ReportingPercent}>
-      <span style={{ width: `${firstPercent}%` }} />
+    <div className={classNames(Styles.ReportingPercent, {[Styles.Round]: firstPercent === 0 && secondPercent === 0, [Styles.RoundSecond]: firstPercent === 0})}>
+      <span style={{ width: `${firstPercent > 100 ? 100 : firstPercent}%` }} />
       <span
-        style={{ width: `${secondPercent}%` }}
+        style={{ width: `${secondPercent > 100 ? 100 : secondPercent}%` }}
         data-tip
         data-for="tooltip--existingStake"
       />
@@ -75,7 +75,7 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         My Existing Stake
         <p>{props.firstPercent.formattedValue} REP</p>
       </ReactTooltip>
-      {thirdPercent > 0 && <span style={{ width: `${thirdPercent}%` }} />}
+      {thirdPercent > 100 ? 100 : thirdPercent > 0 && <span style={{ width: `${thirdPercent}%` }} />}
     </div>
   );
 };
@@ -216,7 +216,7 @@ export const DisputingButtonView = (props: DisputingButtonViewProps) => (
     </div>
     <ReportingPercent
       firstPercent={props.stake.preFilledStake}
-      secondPercent={props.stake.bondSizeCurrent}
+      secondPercent={props.stake.stakeCurrent}
       thirdPercent={formatRep(props.inputtedStake)}
       total={props.stake.bondSizeTotal}
     />
@@ -256,6 +256,7 @@ export interface DisputingBondsViewProps {
   userAvailableRep: number;
   stakeRemaining?: number;
   tentativeWinning?: boolean;
+  reportAction: Function;
 }
 
 interface DisputingBondsViewState {
@@ -302,7 +303,7 @@ DisputingBondsViewProps,
       rangeValue,
       userAvailableRep,
       stakeRemaining,
-      tentativeWinning
+      tentativeWinning,
     } = this.props;
 
     if (isNaN(stake) || stake === "") {
@@ -328,7 +329,8 @@ DisputingBondsViewProps,
       stakeValue,
       userAvailableRep,
       stakeRemaining,
-      tentativeWinning
+      tentativeWinning,
+      reportAction
     } = this.props;
 
     const { disabled, scalarError, stakeError } = this.state;
@@ -372,7 +374,7 @@ DisputingBondsViewProps,
           label="Estimated Gas Fee"
           value={'0.0000 ETH'}
         />
-        <PrimaryButton text="Confirm" action={null} disabled={disabled} />
+        <PrimaryButton text="Confirm" action={reportAction} disabled={disabled} />
       </div>
     );
   }

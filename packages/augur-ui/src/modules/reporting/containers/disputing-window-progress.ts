@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { WindowProgress } from 'modules/common/progress';
 
 const mapStateToProps = state => ({
-  disputeWindow: state.disputeWindowStats,
+  disputeWindow: state.universe.disputeWindow,
   currentTime: state.blockchain.currentAugurTimestamp
 });
 

@@ -7,19 +7,15 @@ import DisputeWindowProgress from 'modules/reporting/containers/disputing-window
 import UserRepDisplay from 'modules/reporting/containers/user-rep-display';
 import { ReportingModalButton } from 'modules/reporting/common';
 import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
-import { TEMP_TABLET } from "modules/common/constants";
+import { TABLET_MAX } from "modules/common/constants";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 
-import Styles from 'modules/reporting/disputing.styles';
+import Styles from 'modules/reporting/disputing.styles.less';
 
 interface DisputingProps {
-  account: object;
-  isLogged: boolean;
   isConnected: boolean;
   loadDisputeWindow: Function;
-  disputeWindow: object;
-  currentTime: number;
 }
 
 export default class Disputing extends Component<DisputingProps> {
@@ -47,7 +43,7 @@ export default class Disputing extends Component<DisputingProps> {
         <Helmet>
           <title>Disputing</title>
         </Helmet>
-        <Media query={TEMP_TABLET}>
+        <Media query={TABLET_MAX}>
           {(matches) =>
             matches ? (
               <ModuleTabs selected={0} fillWidth noBorder>
@@ -62,6 +58,10 @@ export default class Disputing extends Component<DisputingProps> {
                 </ModulePane>
                 <ModulePane label="markets in dispute">
                   <MarketsInDispute />
+                  <ReportingModalButton
+                    text="Need Help? Disputing Quick Guide"
+                    action={() => console.log('TODO add popup')}
+                  />
                 </ModulePane>
               </ModuleTabs>
             ) : (
