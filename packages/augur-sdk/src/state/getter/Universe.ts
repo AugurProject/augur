@@ -29,10 +29,10 @@ export interface DisputeWindow {
 export interface NonForkingMigrationTotals {}
 export interface MigrationTotals {
   marketId: string;
-  outcomes: Outcome[];
+  outcomes: MigrationOutcome[];
 }
 
-export interface Outcome {
+export interface MigrationOutcome {
   outcomeName: string;
   outcome: string; // non-scalar markets this is outcome id.
   amount: string; // atto-rep given to this outcome
@@ -182,13 +182,13 @@ async function getOutcomes(
   augur: Augur,
   forkingMarket: MarketCreatedLog,
   children: UniverseCreatedLog[]
-): Promise<Outcome[]> {
+): Promise<MigrationOutcome[]> {
   const marketTypeName = marketTypeToName(forkingMarket.marketType);
   const numTicks = Number(forkingMarket.numTicks).toString(10);
   const minPrice = Number(forkingMarket.prices[0]).toString(10);
   const maxPrice = Number(forkingMarket.prices[forkingMarket.prices.length - 1]).toString(10);
 
-  return Promise.all(children.map(async (child): Promise<Outcome> => {
+  return Promise.all(children.map(async (child): Promise<MigrationOutcome> => {
     const payoutNumerators = child.payoutNumerators.map((hex) => Number(hex).toString(10));
 
     const outcome = calculatePayoutNumeratorsValue(maxPrice, minPrice, numTicks, marketTypeName, payoutNumerators);
