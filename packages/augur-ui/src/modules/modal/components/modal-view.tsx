@@ -27,7 +27,7 @@ import ModalNetworkConnect from "modules/modal/containers/modal-network-connect"
 import ModalDisclaimer from "modules/modal/containers/modal-disclaimer";
 import ModalGasPrice from "modules/modal/containers/modal-gas-price";
 // import ModalClaimTradingProceeds from "modules/modal/containers/modal-claim-trading-proceeds";
-import ModalClaimMarketsTradingProceeds from "modules/modal/containers/modal-claim-markets-trading-proceeds";
+import ModalClaimMarketsProceeds from "modules/modal/containers/modal-claim-markets-trading-proceeds";
 import ModalTradingOverlay from "modules/modal/components/modal-trading-overlay";
 import ModalOpenOrders from "modules/modal/containers/modal-open-orders";
 import ModalMarketLoading from "modules/modal/containers/modal-market-loading";
@@ -51,7 +51,7 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_CONTENT:
       return <ModalContent {...props} />;
     case TYPES.MODAL_CLAIM_MARKETS_TRADING_PROCEEDS:
-      return <ModalClaimMarketsTradingProceeds {...props} />;
+      return <ModalClaimMarketsProceeds {...props} />;
     // case TYPES.MODAL_CLAIM_TRADING_PROCEEDS:
     //   return <ModalClaimTradingProceeds {...props} />;
     case TYPES.MODAL_GAS_PRICE:

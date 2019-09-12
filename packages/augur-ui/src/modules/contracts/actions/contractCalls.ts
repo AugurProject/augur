@@ -581,28 +581,14 @@ export async function simulateTradeGasLimit(
   return Augur.simulateTradeGasLimit(params);
 }
 
-export async function claimTradingProceeds(
-  market: string,
-  shareHolder: string,
-  affiliateAddress: string
-): Promise<ContractInterfaces.Event[]> {
-  const Augur = augurSdk.get();
-
-  return Augur.contracts.claimTradingProceeds.claimTradingProceeds(
-    market,
-    shareHolder,
-    affiliateAddress
-  );
-}
-
 export async function claimMarketsProceeds(
   markets: string[],
   shareHolder: string,
   affiliateAddress: string
 ): Promise<ContractInterfaces.Event[]> {
-  const Augur = augurSdk.get();
+  const augur = augurSdk.get();
 
-  return Augur.contracts.claimTradingProceeds.claimMarketsProceeds(
+  return augur.contracts.claimTradingProceeds.claimMarketsProceeds(
     markets,
     shareHolder,
     affiliateAddress

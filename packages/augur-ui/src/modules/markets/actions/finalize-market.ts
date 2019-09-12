@@ -5,7 +5,6 @@ import { NodeStyleCallback } from "modules/types";
 import { Action } from "redux";
 import { AppState } from "store";
 import { augurSdk } from "services/augursdk";
-import { claimMarketsProceeds } from 'modules/contracts/actions/contractCalls';
 
 export const sendFinalizeMarket = (marketId, callback: NodeStyleCallback = logError) => async (
   dispatch: ThunkDispatch<void, any, Action>,
