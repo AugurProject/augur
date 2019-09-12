@@ -3,7 +3,7 @@ import { Events } from "./Events";
 import { NetworkId } from "@augurproject/artifacts";
 import { Filter, Log, LogValues, Provider } from "..";
 import { Abi } from "ethereum";
-import { JSONRPCRequestPayload } from "0x.js";
+import { JSONRPCRequestPayload } from "ethereum-types";
 
 function makeProviderMock(opts?: any): Provider {
   const networkId = opts.networkId || "4";
