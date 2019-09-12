@@ -38,7 +38,7 @@ test('database failure during trackedUsers.getUsers() call', async () => {
   await expect(err.message).toMatch('invalid address (arg="address", value="mock", version=4.0.24)');
   mock.failNext();
     await expect(trackedUsers.getUsers()).rejects.toThrow();
-});
+}, 60000);
 
 test('database failure during sync, followed by another sync', async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
@@ -56,7 +56,7 @@ test('database failure during sync, followed by another sync', async () => {
     mock.constants.chunkSize,
     mock.constants.blockstreamDelay
   );
-});
+}, 60000);
 
 test('syncing: succeed then fail then succeed again', async () => {
   const db = await mock.makeDB(augur, ACCOUNTS);
@@ -81,4 +81,4 @@ test('syncing: succeed then fail then succeed again', async () => {
     mock.constants.chunkSize,
     mock.constants.blockstreamDelay
   );
-});
+}, 60000);
