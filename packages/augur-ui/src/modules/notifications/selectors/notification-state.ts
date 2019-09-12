@@ -286,7 +286,18 @@ export const selectNotifications = createSelector(
         id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }
-
+console.log("IN notification-state");
+proceedsToClaim = [{
+  id: '0x0000000000000000000000000000000000000000',
+  description: '',
+  endTime: '',
+  reportingState: '',
+  marketStatus: '',
+  disputeInfo: '',
+  myPositionsSummary: '',
+  outstandingReturns: 10,
+  finalizationTime: '',
+}];
     if (proceedsToClaim && proceedsToClaim.length > 0) {
       let totalEth = createBigNumber(0);
 
@@ -305,7 +316,7 @@ export const selectNotifications = createSelector(
           title: PROCEEDS_TO_CLAIM_TITLE,
           buttonLabel: TYPE_VIEW_DETAILS,
           market: null,
-          marketes: marketIds,
+          markets: marketIds,
           totalProceeds: totalEth.toNumber(),
           id: NOTIFICATION_TYPES.proceedsToClaim,
         });

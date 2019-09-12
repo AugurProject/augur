@@ -26,6 +26,7 @@ PARTICIPATION_TOKEN_REDEMPTION =    93162
 CREATE_ORDER =      481755
 FILL_ORDER =        808067
 CLAIM_PROCEEDS =    667419
+CLAIM_PROCEEDS_CATEGORICAL_MARKET = 700000 # TODO: Get actual gas cost
 
 # Other
 UNIVERSE_CREATE =   7752505
@@ -120,6 +121,15 @@ def test_winningShareRedmption(localFixture, cash, market):
     finalizeMarket(localFixture, market, [0, 0, market.getNumTicks()])
 
     with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds", CLAIM_PROCEEDS):
+        claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
+
+def test_winningShareRedmptionCategoricalMarket(localFixture, cash, categoricalmarket):
+    claimTradingProceeds = localFixture.contracts['ClaimTradingProceeds']
+
+    acquireLongShares(localFixture, cash, market, 7, 1, claimTradingProceeds.address, sender = localFixture.accounts[1])
+    finalizeMarket(localFixture, market, [0, 0, 0, 0, 0, 0, 0, 0, market.getNumTicks()])
+
+    with PrintGasUsed(localFixture, "ClaimTradingProceeds:claimTradingProceeds categorical market", CLAIM_PROCEEDS):
         claimTradingProceeds.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
 
 def test_initial_report(localFixture, universe, cash, market):

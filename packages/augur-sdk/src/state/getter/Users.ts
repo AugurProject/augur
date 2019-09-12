@@ -360,7 +360,7 @@ export class Users {
     const allOrderFilledRequest = {
       selector: {
         universe: params.universe,
-        market: params.marketId
+        market: params.marketId,
       },
     };
 
@@ -373,6 +373,8 @@ export class Users {
     );
 
     const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
+// console.log('marketIds');
+// console.log(marketIds);
     const marketsResponse = await db.findMarketCreatedLogs({
       selector: { market: { $in: marketIds } },
     });
@@ -468,7 +470,7 @@ export class Users {
       }
     );
 
-    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total fronzen funds
+    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
     const allProfitLossResults = _.flatten(
       _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
     );
@@ -488,6 +490,44 @@ export class Users {
       universe,
       account: params.account,
     });
+
+console.error('marketTradingPositions');
+console.error(marketTradingPositions);
+
+console.error('marketFinalizedByMarket');
+console.error(marketFinalizedByMarket);
+
+    const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
+
+console.log('reportingFeeDivisor');
+console.log(reportingFeeDivisor);
+
+console.log('shareTokenBalancesByMarketandOutcome');
+console.log(shareTokenBalancesByMarketandOutcome);
+
+    const unclaimedMarketProceeds = {};
+    for (const marketId of marketIds) {
+      // TODO: if marketIds[i] reportingState is FINALIZED or finalizable {
+        // TODO: Get tentative outcome
+        const tentativeOutcome = '0x02';
+console.log(shareTokenBalancesByMarketandOutcome[marketId][tentativeOutcome]);
+        const numberOfShares = new BigNumber(shareTokenBalancesByMarketandOutcome[marketId][tentativeOutcome].balance);
+console.error('numberOfShares');
+console.error(numberOfShares.toNumber());
+        const reportingFee = numberOfShares.div(reportingFeeDivisor);
+        const contracts = augur.contracts;
+        const totalUnclaimed = (await contracts.claimTradingProceeds.calculateProceeds_(marketId, new BigNumber(tentativeOutcome), numberOfShares))
+            .minus(await contracts.claimTradingProceeds.calculateCreatorFee_(marketId, numberOfShares))
+            .minus(reportingFee);
+        const cost = new BigNumber(1); // TODO: Get cost
+        unclaimedMarketProceeds[marketId] = {
+          totalUnclaimed,
+          totalProfit: totalUnclaimed.minus(cost),
+        };
+      // }
+    }
+
+    // TODO: Add above to tradingPositions & tradingPositionsPerMarket
 
     return {
       tradingPositions,

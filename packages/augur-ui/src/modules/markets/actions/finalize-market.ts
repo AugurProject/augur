@@ -12,11 +12,6 @@ export const sendFinalizeMarket = (marketId, callback: NodeStyleCallback = logEr
   getState: () => AppState,
 ) => {
   console.log("finalize market called");
-  await claimMarketsProceeds(
-    ['0x46b65A442EF149e046428589C8552744bC861A8d'],
-    '0xbd355A7e5a7ADb23b51F54027E624BfE0e238DF6',
-    '0x0000000000000000000000000000000000000000'
-  );
 
   // TODO call contract to finalize market
   /*

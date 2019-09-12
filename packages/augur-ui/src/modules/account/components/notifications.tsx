@@ -34,7 +34,7 @@ import {
 } from "modules/common/constants";
 
 export interface NotificationsProps extends RouteComponentProps {
-  notifications: Array<Notification>;
+  notifications: Notification[];
   updateReadNotifications: Function;
   getReportingFees: Function;
   currentAugurTimestamp: DateFormattedObject;
@@ -69,7 +69,7 @@ class Notifications extends React.Component<
           this.disableNotification(notification.id, true);
           if (notification.market) {
             this.props.openOrdersModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false),
+              this.disableNotification(notification.id, false)
             );
           }
         };
@@ -95,7 +95,7 @@ class Notifications extends React.Component<
           this.disableNotification(notification.id, true);
           if (notification.market) {
             this.props.finalizeMarketModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false),
+              this.disableNotification(notification.id, false)
             );
           }
         };
@@ -121,7 +121,7 @@ class Notifications extends React.Component<
           this.disableNotification(notification.id, true);
           if (notification.market) {
             this.props.unsignedOrdersModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false),
+              this.disableNotification(notification.id, false)
             );
           }
         };
@@ -132,17 +132,19 @@ class Notifications extends React.Component<
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
           this.props.claimReportingFees(notification.claimReportingFees, () =>
-            this.disableNotification(notification.id, false),
+            this.disableNotification(notification.id, false)
           );
         };
         break;
 
       case NOTIFICATION_TYPES.proceedsToClaim:
+console.error('notification');
+console.error(notification);
         buttonAction = () => {
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
-          this.props.claimTradingProceeds(() =>
-            this.disableNotification(notification.id, false),
+          this.props.claimTradingProceeds(notification.markets, () =>
+            this.disableNotification(notification.id, false)
           );
         };
         break;
