@@ -210,9 +210,9 @@ export default class MarketsInDispute extends Component<
     });
   };
 
-  onSearchChange = (input: string) => {
+  onSearchChange = (search: string) => {
     this.setState({
-      search: input,
+      search,
       ...DEFAULT_PAGINATION,
     });
   };
@@ -290,7 +290,7 @@ export default class MarketsInDispute extends Component<
               new Array(NUM_LOADING_CARDS)
                 .fill(null)
                 .map((prop, index) => (
-                  <LoadingMarketCard key={`${index}-loading`} />
+                  <LoadingMarketCard key={`${index}-loading`} inReporting/>
                 ))}
             {filteredData.length > 0 &&
               filteredData.map(market => (

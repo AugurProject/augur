@@ -163,6 +163,7 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
               itemCount={marketCount}
               itemsPerPage={limit}
               action={this.setOffset}
+              updateLimit={null}
             />
           </div>
         )}
