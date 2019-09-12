@@ -11,9 +11,11 @@ import {
 } from '../logs/types';
 import {
   Augur,
-  calculatePayoutNumeratorsValue, GENESIS, getOutcomeDescriptionFromOutcome,
+  calculatePayoutNumeratorsValue,
+  getOutcomeDescriptionFromOutcome,
+  marketTypeToName,
+  GENESIS,
   MALFORMED_OUTCOME,
-  marketTypeToName
 } from '../../index';
 import { NULL_ADDRESS } from './types';
 import { ContractInterfaces } from '@augurproject/core';
@@ -96,7 +98,7 @@ export class Universe {
     const marketId = universeForkedLog.forkingMarket;
     const forkingMarketLog = await getMarket(db, marketId);
     const children = await getUniverseChildrenCreationLogs(db, address);
-    const outcomes = await getOutcomes(augur, forkingMarketLog, children);
+    const outcomes = await getMigrationOutcomes(augur, forkingMarketLog, children);
 
     return {
       marketId,
@@ -178,7 +180,7 @@ function getOutcomeName(
   }
 }
 
-async function getOutcomes(
+async function getMigrationOutcomes(
   augur: Augur,
   forkingMarket: MarketCreatedLog,
   children: UniverseCreatedLog[]
