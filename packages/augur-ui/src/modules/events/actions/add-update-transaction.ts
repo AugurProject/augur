@@ -55,16 +55,15 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     const methodCall = transaction.name.toUpperCase();
     const { blockchain } = getState();
 
-    dispatch(addAlert({
-      id: hash,
-      params: transaction.params,
-      status,
-      timestamp: blockchain.currentAugurTimestamp * 1000,
-      title: transaction.name,
-      description: "",
-      linkPath: "",
-      to: "",
-    }));
+    if (hash && eventName === TXEventName.Failure) {
+      dispatch(addAlert({
+        id: hash,
+        params: transaction.params,
+        status: TXEventName.Failure,
+        timestamp: blockchain.currentAugurTimestamp * 1000,
+        name: transaction.name,
+      }));
+    }
     
     switch (methodCall) {
       case PUBLICCREATEORDERS: {
