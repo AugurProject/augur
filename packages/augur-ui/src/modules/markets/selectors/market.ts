@@ -52,11 +52,7 @@ export const selectSortedMarketOutcomes = (marketType, outcomes) => {
   if (marketType === YES_NO) {
     return (
       sortedOutcomes
-        // Only keep Invalid [0] / Yes [2]
-        .filter(outcome => outcome.id !== 1)
-        // Only tradable
         .filter(outcome => outcome.isTradable)
-        // Move invalid to the end
         .reverse()
     );
   } else {
@@ -64,7 +60,6 @@ export const selectSortedMarketOutcomes = (marketType, outcomes) => {
     sortedOutcomes.push(sortedOutcomes.shift());
     return (
       sortedOutcomes
-        // Only tradable
         .filter(outcome => outcome.isTradable)
     );
   }

@@ -1,57 +1,58 @@
 @import (reference) '~assets/styles/shared';
 
 .Alert {
-  background-color: @color-primary-light;
+  background-color: fade(@color-contrast-background-theme, 90%);
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  padding: @size-16 @size-24;
+  padding: @size-6 @size-8;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-bottom: @size-4;
+  border: 1px solid #3C3B43;
+  border-radius: @size-3;
 
   &:last-of-type {
     border-bottom: 0;
   }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+
+    &:first-of-type {
+      flex: 1;
+    }
+
+    &:last-of-type {
+      justify-content: center;
+    }
+  }
 }
 
 .Seen {
-  background-color: @color-tertiary-background;
+  background-color: fade(@color-alternate-contrast, 90%);
 }
 
 .Row {
   display: flex;
 }
 
-.Column {
-  display: flex;
-  flex-direction: column;
-}
-
 .Title {
-  color: @color-secondary-text;
-  flex: 0 1 auto;
-  font-size: @font-size-medium;
-  font-weight: bold;
-  height: @size-16;
-  margin: 0 @size-10 @size-4 0;
+  .text-10;
+
+  color: @color-contrast-dark;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: flex 1000ms ease-in;
   white-space: nowrap;
-  width: 17.188rem;
-}
-
-.Title::first-letter {
-  text-transform: capitalize;
+  margin: @size-2 0;
 }
 
 .Status {
-  color: @color-secondary-text;
-  font-size: @font-size-extra-small;
-  font-weight: @weight-medium;
-  height: @size-11;
-  margin-bottom: @size-4;
+  .mono-9-bold;
+
+  color: @color-contrast-dark;
   text-transform: uppercase;
 }
 
@@ -83,23 +84,23 @@
 .Close {
   align-self: baseline;
   margin-left: auto;
-  width: @size-12;
 
-  > svg > g > g {
-    stroke: #F6F6F8;
+  > svg {
+    width: @size-8;
+    height: size-8;
+    > path {
+      fill: @color-dark-alternate;
+    }
   }
 }
 
 .Description {
-  flex: 1 0 100%;
-  font-size: @font-size-small;
-  height: @size-14;
-  margin-bottom: @size-4;
+  .text-9;
+
+  color: @color-dark-alternate;
   overflow: hidden;
-  padding-right: @size-20;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 17.188rem;
 
   @media @breakpoint-mobile {
     flex: 1 0 100%;

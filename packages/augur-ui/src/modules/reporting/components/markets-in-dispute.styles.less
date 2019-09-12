@@ -17,3 +17,15 @@
     margin-right: @size-32;
   }
 }
+
+.MarketCards {
+  display: grid;
+  grid-gap: @size-12;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  padding: @size-12;
+
+  > div[class*="MarketCard"] {
+    margin: 0;
+  }
+}

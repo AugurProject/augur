@@ -10,9 +10,11 @@ import { SCALAR, INVALID_OUTCOME_ID } from 'modules/common/constants';
 import {
   doInitialReport,
   contribute,
+  addRepToTentativeWinningOutcome,
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
+import { Getters } from '@augurproject/sdk';
 
 interface ModalReportingProps {
   closeAction: Function;
@@ -45,6 +47,11 @@ export default class ModalReporting extends Component<
   };
 
   updateChecked = (checked: string) => {
+
+    this.updateDisputeStake("");
+    this.updatePreFilledStake("");
+    this.updateScalarOutcome("");
+
     this.setState({ checked });
   };
 
@@ -53,20 +60,22 @@ export default class ModalReporting extends Component<
   };
 
   reportingAction = () => {
+    const {
+      marketId,
+      maxPrice,
+      minPrice,
+      numTicks,
+      numOutcomes,
+      marketType,
+      disputeInfo,
+    } = this.props.market;
+    let outcomeId = parseInt(this.state.checked, 10);
+    if (marketType === SCALAR) {
+      // checked might be invalid outcome
+      outcomeId = parseFloat(this.state.scalarOutcome || this.state.checked);
+    }
+
     if (this.props.isReporting) {
-      const {
-        marketId,
-        maxPrice,
-        minPrice,
-        numTicks,
-        numOutcomes,
-        marketType,
-      } = this.props.market;
-      let outcomeId = parseInt(this.state.checked, 10);
-      if (marketType === SCALAR) {
-        // checked might be invalid outcome
-        outcomeId = parseFloat(this.state.scalarOutcome || this.state.checked);
-      }
       doInitialReport({
         marketId,
         maxPrice,
@@ -84,7 +93,44 @@ export default class ModalReporting extends Component<
       // or in the Reporting page
       // or in the market card, depending where they triggered the form modal
       setTimeout(() => this.props.closeAction(), 1000);
+    } else {
+      // disputing
+      const tentativeWinningStake = disputeInfo.stakes.find(
+        s => s.tentativeWinning
+      );
+      let tentativeOutcomeId = parseInt(tentativeWinningStake.outcome, 10);
+      if (marketType === SCALAR) {
+        tentativeOutcomeId = parseFloat(tentativeWinningStake.outcome);
+      }
+      if (tentativeOutcomeId && tentativeOutcomeId === outcomeId) {
+        addRepToTentativeWinningOutcome({
+          marketId,
+          maxPrice,
+          minPrice,
+          numTicks,
+          numOutcomes,
+          marketType,
+          description: '',
+          amount: this.state.disputeStake,
+          outcomeId,
+          isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
+        });
+      } else {
+        contribute({
+          marketId,
+          maxPrice,
+          minPrice,
+          numTicks,
+          numOutcomes,
+          marketType,
+          description: '',
+          amount: this.state.disputeStake,
+          outcomeId,
+          isInvalid: this.state.checked === INVALID_OUTCOME_ID.toString(),
+        });
+      }
 
+      setTimeout(() => this.props.closeAction(), 1000);
     }
   };
 
@@ -116,7 +162,7 @@ export default class ModalReporting extends Component<
 
     // todo: need to add already staked outcomes for scalar markets for disputing
 
-    const radioButtons = outcomesFormatted
+    let radioButtons = outcomesFormatted
       .filter(outcome => (marketType === SCALAR ? outcome.id === 0 : true))
       .map(outcome => {
         let stake = disputeInfo.stakes.find(
@@ -128,6 +174,7 @@ export default class ModalReporting extends Component<
             bondSizeCurrent: '0',
             bondSizeTotal: disputeInfo.bondSizeOfNewStake,
             preFilledStake: '0',
+            stakeCurrent: '0',
           };
         }
         return {
@@ -137,12 +184,31 @@ export default class ModalReporting extends Component<
           isInvalid: outcome.id === 0,
           stake: {
             ...stake,
+            stakeCurrent: formatAttoRep(stake.stakeCurrent),
             preFilledStake: formatAttoRep(stake.preFilledStake),
             bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
             bondSizeTotal: formatAttoRep(stake.bondSizeTotal),
           },
         };
       });
+
+    if (marketType === SCALAR) {
+      disputeInfo.stakes.forEach(stake => {
+        radioButtons.push({
+          header: stake.outcome,
+          value: stake.outcome,
+          checked: s.checked === stake.outcome.toString(),
+          isInvalid: stake.outcome === "0",
+
+          stake: {
+            ...stake,
+            preFilledStake: formatAttoRep(stake.preFilledStake),
+            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
+            bondSizeTotal: formatAttoRep(stake.bondSizeTotal),
+          },
+        })
+      })
+    }
 
     return (
       <div className={Styles.ModalReporting}>

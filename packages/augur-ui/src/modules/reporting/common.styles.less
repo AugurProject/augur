@@ -87,6 +87,20 @@
   &.invalid {
     background-color: fade(@color-invalid, 50);
   }
+
+  &.Round {
+    > span:last-of-type {
+      border-top-left-radius: 100px;
+      border-bottom-left-radius: 100px;
+    }
+  }
+
+  &.RoundSecond {
+    > span:nth-of-type(2) {
+      border-top-left-radius: 100px;
+      border-bottom-left-radius: 100px;
+    }
+  }
 }
 
 div.ReportingSubheaders {
@@ -172,7 +186,7 @@ div.ReportingSubheaders {
   color: @color-tertiary-info-text;
   display: flex;
   flex-direction: column;
-  width: 440px;
+  max-width: 480px;
   padding: @size-32;
   position: relative;
   text-transform: uppercase;
