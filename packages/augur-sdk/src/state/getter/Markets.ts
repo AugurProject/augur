@@ -75,7 +75,13 @@ const getMarketsParamsSpecific = t.intersection([
     designatedReporter: t.string,
     maxFee: t.string,
     maxEndTime: t.number,
-    maxLiquiditySpread: t.string,
+    maxLiquiditySpread: t.keyof({
+      '100': null,
+      '20': null,
+      '15': null,
+      '10': null,
+      '0': null,
+    }),
     includeInvalidMarkets: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
@@ -437,9 +443,7 @@ export class Markets {
       throw new Error('Unknown universe: ' + params.universe);
     }
     params.maxLiquiditySpread = typeof params.maxLiquiditySpread === 'undefined' ? MaxLiquiditySpread.OneHundredPercent : params.maxLiquiditySpread;
-    if (!Object.values(MaxLiquiditySpread).includes(params.maxLiquiditySpread)) {
-      throw new Error('Invalid maxLiquiditySpread: ' + params.maxLiquiditySpread);
-    }
+
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
     params.search = typeof params.search === 'undefined' ? '' : params.search;
     params.categories = typeof params.categories === 'undefined' ? [] : params.categories;
