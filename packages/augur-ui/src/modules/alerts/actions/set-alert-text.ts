@@ -68,7 +68,6 @@ export default function setAlertText(alert: any, callback: any) {
       return dispatch(callback(alert));
     }
 
-    console.log(alert.name);
     switch (alert.name.toUpperCase()) {
       // CancelOrder
       case CANCELORDER: {
@@ -96,31 +95,6 @@ export default function setAlertText(alert: any, callback: any) {
       case CLAIMTRADINGPROCEEDS:
         alert.title = "Claim trading proceeds";
         break;
-
-      // // CreateOrder
-      // case PUBLICCREATEORDER: {
-      //   alert.title = "Create order";
-      //   if (!alert.description && alert.log) {
-      //     dispatch(
-      //       loadMarketsInfoIfNotLoaded([alert.params._market], () => {
-      //         const marketInfo = selectMarket(alert.params._market);
-      //         const outcomeDescription = getOutcomeName(
-      //           marketInfo,
-      //           { id: alert.params._outcome.toString() },
-      //         );
-      //         alert.description = `Create ${alert.log.orderType} order for ${
-      //           formatShares(alert.params._amount).formatted
-      //         } ${
-      //           formatShares(alert.params._amount).denomination
-      //         } of "${outcomeDescription}" at ${
-      //           formatEther(alert.params._pricee).formatted
-      //         } ETH`;
-      //         return dispatch(callback(alert));
-      //       })
-      //     );
-      //   }
-      //   break;
-      // }
 
       // FeeWindow & Universe
       case BUY:
@@ -169,26 +143,27 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = "Market Disputed";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.to], () => {
-              const marketInfo = selectMarket(alert.to);
+            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
+              const marketInfo = selectMarket(alert.params.market);
               const outcome = calculatePayoutNumeratorsValue(
                 marketInfo.maxPrice,
                 marketInfo.minPrice,
                 marketInfo.numTicks,
                 marketInfo.marketType,
-                alert.params._payoutNumerators
+                alert.params.payoutNumerators
               );
               const outcomeDescription =
                 outcome === null
                   ? "Market Is Invalid"
                   : getOutcomeName(marketInfo, { id: outcome }, false);
-              alert.description = `Place ${
+              alert.description = marketInfo.description;
+              alert.details = `${
                 formatRep(
                   createBigNumber(alert.params._amount).dividedBy(
                     TEN_TO_THE_EIGHTEENTH_POWER
                   )
                 ).formatted
-              } REP on "${outcomeDescription}"`;
+              } REP added to "${outcomeDescription}"`;
               return dispatch(callback(alert));
             })
           );
@@ -198,22 +173,21 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = "Market Reported";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.to], () => {
-              const marketInfo = selectMarket(alert.to);
+            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
+              const marketInfo = selectMarket(alert.params.market);
               const outcome = calculatePayoutNumeratorsValue(
                 marketInfo.maxPrice,
                 marketInfo.minPrice,
                 marketInfo.numTicks,
                 marketInfo.marketType,
-                alert.params._payoutNumerators
+                alert.params.payoutNumerators
               );
               const outcomeDescription =
                 outcome === null
                   ? "Market Is Invalid"
                   : getOutcomeName(marketInfo, { id: outcome }, false);
-              alert.description = `Report "${outcomeDescription}" on "${
-                marketInfo.description
-              }"`;
+              alert.description = marketInfo.description;
+              alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
               return dispatch(callback(alert));
             })
           );
@@ -221,14 +195,6 @@ export default function setAlertText(alert: any, callback: any) {
         break;
 
       // Trade
-      case PUBLICBUY:
-      case PUBLICBUYWITHLIMIT:
-        alert.title = "Buy share(s)";
-        break;
-      case PUBLICSELL:
-      case PUBLICSELLWITHLIMIT:
-        alert.title = "Sell share(s)";
-        break;
       case PUBLICTRADE:
       case PUBLICTRADEWITHLIMIT: {
         alert.title = "Order placed";
@@ -245,7 +211,7 @@ export default function setAlertText(alert: any, callback: any) {
               } = getInfo(alert.params, marketInfo);
               alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
               alert.toast = true;
-              
+
               return dispatch(callback(alert));
             })
           );
@@ -258,15 +224,17 @@ export default function setAlertText(alert: any, callback: any) {
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET:
-        alert.title = "Create new market";
+        alert.title = "Market created";
         if (!alert.description) {
-          alert.description = `Create market "${alert.params._description}"`;
+          alert.description = JSON.parse(alert.params.extraInfo).description;
         }
         break;
 
       // These transaction names are overloaded across multiple contracts
       case APPROVE:
-        alert.title = "Approve spending";
+        alert.title = "Dai approval";
+        alert.description = "You are approved to use Dai on Augur"
+        alert.details = `Transaction cost ${formatDai(alert.params._amount.toNumber()).formatted}`
         break;
       
       default: {

@@ -18,6 +18,7 @@ import {
   YES_NO,
   PUBLICCREATEORDER,
   PUBLICCREATEORDERS,
+  APPROVE
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -55,17 +56,33 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     const methodCall = transaction.name.toUpperCase();
     const { blockchain } = getState();
 
+    if (eventName === TXEventName.Success) {
+      console.log(txStatus);
+    }
+
     if (hash && eventName === TXEventName.Failure) {
       dispatch(addAlert({
         id: hash,
         params: transaction.params,
-        status: TXEventName.Failure,
+        status: eventName,
         timestamp: blockchain.currentAugurTimestamp * 1000,
         name: transaction.name,
       }));
     }
     
     switch (methodCall) {
+      case APPROVE: {
+        if (eventName === TXEventName.Success) {
+          dispatch(addAlert({
+            id: hash,
+            params: transaction.params,
+            status: eventName,
+            timestamp: blockchain.currentAugurTimestamp * 1000,
+            name: transaction.name,
+          }));
+        }
+        break;
+      }
       case PUBLICCREATEORDERS: {
         const { marketInfos } = getState();
         const marketId = transaction.params[TX_MARKET_ID];

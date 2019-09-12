@@ -10,7 +10,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-bottom: @size-4;
-  border: 1px solid #3C3B43;
+  border: 1px solid @color-contrast-dark-alternate;
   border-radius: @size-3;
 
   &:last-of-type {
@@ -33,6 +33,13 @@
 
 .Seen {
   background-color: fade(@color-alternate-contrast, 90%);
+
+  > div {
+    > div:first-of-type > div,
+    > div:nth-of-type(2) > div {
+      color: @color-dark-alternate;
+    }
+  }
 }
 
 .Row {

@@ -392,7 +392,7 @@ export const handleDisputeCrowdsourcerContributionLog = (
   log: Logs.DisputeCrowdsourcerContributionLog
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
-  if (log.reporter === getState().loginAccount.address) {
+  if (log.reporter.toUpperCase() === getState().loginAccount.address.toUpperCase()) {
     // dispatch(loadReportingWindowBounds());
     handleAlert(log, CONTRIBUTE, dispatch, getState);
   }
