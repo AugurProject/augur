@@ -1,30 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import moment from 'moment';
+import React from 'react';
 import { setCategories } from 'modules/categories/set-categories';
 import {
-  LocationDisplay,
   CategorySingleSelect,
   createGroups,
-  determineVisible,
 } from 'modules/common/form';
-import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
-  LargeHeader,
-  ExplainerBlock,
-  ContentBlock,
   LargeSubheaders,
-  XLargeSubheaders,
   SmallHeaderLink,
 } from 'modules/create-market/components/common';
-import { MARKET_SUB_TEMPLATES, TEMPLATE_CONTENT_PAGES } from 'modules/create-market/constants';
+import { MARKET_SUB_TEMPLATES } from 'modules/create-market/constants';
 import { RadioCardGroup } from 'modules/common/form';
-import Styles from "modules/create-market/components/sub-categories.styles";
+import Styles from 'modules/create-market/components/sub-categories.styles.less';
+import { CUSTOM } from 'modules/common/constants';
 
 export const SubCategories = ({
     newMarket,
-    updateNewMarket
+    updateNewMarket,
   }) => {
   const { categories } = newMarket;
   const {
@@ -32,17 +23,24 @@ export const SubCategories = ({
     tertiaryAutoComplete,
   } = createGroups(setCategories, categories, categories);
 
+  const isCustomSelected = categories[2] && !tertiaryOptions
+    .map(options => options.value)
+    .includes(categories[2]);
+
+  const customOption = { label: CUSTOM, value: CUSTOM };
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders
-        header="Choose a sub-category"
-        subheader="Sub-categories help users find your market."
+        header='Choose a sub-category'
+        subheader='Sub-categories help users find your market.'
       />
       <section>
         <RadioCardGroup
+          defaultSelected={categories[1] ? categories[1] : null}
           onChange={(value: string) => {
             const updatedNewMarket = { ...newMarket };
             updatedNewMarket.categories[1] = value;
+            updatedNewMarket.categories[2] = '';
             updateNewMarket(updatedNewMarket);
           }}
           radioButtons={MARKET_SUB_TEMPLATES[newMarket.categories[0]]}
@@ -52,16 +50,16 @@ export const SubCategories = ({
       </section>
       <section>
         <LargeSubheaders
-          header="Choose a further sub-category"
-          subheader="Optionally select another sub-category to help users find your market."
+          header='Choose a further sub-category'
+          subheader='Optionally select another sub-category to help users find your market.'
         />
         <CategorySingleSelect
-          options={tertiaryOptions}
+          options={tertiaryOptions.length > 0 ? tertiaryOptions : [customOption] }
           autoCompleteList={tertiaryAutoComplete}
-          initialSelected={categories[2]}
+          initialSelected={isCustomSelected ? CUSTOM : categories[2]}
           initialValue={categories[2]}
-          staticLabel="Tertiary Category (optional)"
-          placeholder="Custom Tertiary Category"
+          staticLabel='Tertiary Category (optional)'
+          placeholder='Custom Tertiary Category'
           updateSelection={(value: string) => {
             const updatedNewMarket = { ...newMarket };
             updatedNewMarket.categories[2] = value;
