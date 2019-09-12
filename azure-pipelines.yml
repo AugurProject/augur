@@ -105,6 +105,7 @@ jobs:
         displayName: ui build
       - bash: |
           set -euo pipefail
+          export NODE_OPTIONS="--max-old-space-size=6144"
           yarn test --runInBand --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
       - bash: |

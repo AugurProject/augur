@@ -5,7 +5,7 @@ import {
   MAX_BULK_ORDER_COUNT,
   ZERO,
 } from 'modules/common/constants';
-import { IndividualOrderBook, LiquidityOrder } from 'modules/types';
+import { LiquidityOrder } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
@@ -15,6 +15,7 @@ import {
   createLiquidityOrders,
   approveToTrade,
 } from 'modules/contracts/actions/contractCalls';
+import { Getters } from '@augurproject/sdk';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -28,7 +29,7 @@ export const DELETE_SUCCESSFUL_LIQUIDITY_ORDER =
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
 export const loadPendingLiquidityOrders = (
-  pendingLiquidityOrders: IndividualOrderBook
+  pendingLiquidityOrders: Getters.Markets.OutcomeOrderBook
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   const ordersWithHashes = [];
   Object.keys(pendingLiquidityOrders).map((txMarketHashId: string) => {
@@ -61,7 +62,7 @@ export const loadPendingLiquidityOrders = (
 };
 
 export const loadBulkPendingLiquidityOrders = (
-  pendingLiquidityOrders: IndividualOrderBook
+  pendingLiquidityOrders: Getters.Markets.OutcomeOrderBook
 ) => ({
   type: LOAD_PENDING_LIQUIDITY_ORDERS,
   data: { pendingLiquidityOrders },

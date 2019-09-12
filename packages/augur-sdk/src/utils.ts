@@ -127,6 +127,7 @@ export function calculatePayoutNumeratorsValue(
   if (!payout) return MALFORMED_OUTCOME;
   if (payout.length === 0) return MALFORMED_OUTCOME;
 
+
   if (isScalar) {
     if (!isWellFormedScalar(payout)) {
       return MALFORMED_OUTCOME;

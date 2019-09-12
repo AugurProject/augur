@@ -37,6 +37,10 @@ export abstract class AbstractDB {
     return this.db.allDocs({ include_docs: true });
   }
 
+  async info(): Promise<PouchDB.Core.DatabaseInfo> {
+    return await this.db.info();
+  }
+
   protected async getDocument<Document>(id: string): Promise<Document | undefined> {
     try {
       return await this.db.get<Document>(id);
@@ -91,10 +95,6 @@ export abstract class AbstractDB {
       console.error(`ERROR in bulk upsert: ${JSON.stringify(err)}`);
       return false;
     }
-  }
-
-  async getInfo(): Promise<PouchDB.Core.DatabaseInfo> {
-    return this.db.info();
   }
 
   async find(request: PouchDB.Find.FindRequest<{}>): Promise<PouchDB.Find.FindResponse<{}>> {

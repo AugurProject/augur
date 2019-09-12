@@ -572,7 +572,7 @@ describe('State API :: Markets :: ', () => {
     expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
 
     // @TODO: Add tests for filtering markets maxLiquiditySpread = '0'
-  }, 120000);
+  }, 200000);
 
   test(':getMarketPriceHistory', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();

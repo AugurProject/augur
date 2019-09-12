@@ -11,7 +11,7 @@ import { TEMP_TABLET } from "modules/common/constants";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 
-import Styles from 'modules/reporting/disputing.styles';
+import Styles from 'modules/reporting/disputing.styles.less';
 
 interface DisputingProps {
   account: object;

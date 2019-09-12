@@ -1,10 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .AlertsView {
-  background-color: @color-theme-primary;
-  border: 1px solid @color-primary-alternate;
+  background-color: transparent;
   border-top: 0;
-  box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
   color: @color-secondary-text;
   display: flex;
   flex-direction: column;
@@ -92,23 +90,32 @@
 
 .dismissContainer {
   align-items: flex-end;
-  background-color: @color-theme-primary;
+
+  background: @color-contrast-background-theme;
+  border-radius: @size-3;
+  justify-content: center;
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
-  min-height: 27px;
-  padding: @size-8 @size-16;
+  justify-content: center;
+  padding: @size-3;
 
   > button {
+    .mono-9; 
+
     align-self: flex-end;
-    border-bottom: dotted 0.5px @color-lightergray;
-    color: @color-lightergray;
+    color: @color-tertiary-info-text;
     cursor: pointer;
     display: inline;
-    font-size: @size-12;
+    text-transform: uppercase;
+    background: @color-tertiary-background-theme;
+    display: flex;
+    flex: 1;
+    padding: @size-4;
+    border-radius: @size-3;
+    justify-content: center;
 
     &:hover {
-      border-bottom: dotted 0.5px @color-secondary-text;
       color: @color-secondary-text;
     }
 

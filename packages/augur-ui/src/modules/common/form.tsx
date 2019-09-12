@@ -732,6 +732,7 @@ export const ReportingRadioBarGroup = ({
             onChange={selected => {
               onChange(selected.toString());
             }}
+            reportAction={reportAction}
           />
         </section>
       )}
@@ -922,7 +923,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
     const initialReporterStake = formatNumber("100");
     const reportingGasFee = formatNumber("100");
     const inputtedStake = !checked || disputeStake === "" || isNaN(parseFloat(disputeStake)) ? "0" : disputeStake;
-    const fullBond = !scalar && stake && formatRep(createBigNumber(stake.bondSizeCurrent.value).plus(createBigNumber(inputtedStake)));
+    const fullBond = !scalar && stake && formatRep(createBigNumber(stake.stakeCurrent.value).plus(createBigNumber(inputtedStake)));
 
 
     return (
@@ -960,6 +961,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   maxPrice={maxPrice}
                   stakeRemaining={stake && stake.bondSizeTotal.value}
                   tentativeWinning={stake && stake.tentativeWinning}
+                  reportAction={reportAction}
                 />
               }
             </>

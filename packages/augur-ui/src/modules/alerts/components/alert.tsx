@@ -66,7 +66,7 @@ export default class Alert extends Component<AlertProps> {
           [Styles.Seen]: seen
         })}
       >
-        <div className={Styles.Column} style={{ flex: "1" }}>
+        <div>
           <Link
             to={linkPath || ""}
             onClick={e => {
@@ -76,7 +76,7 @@ export default class Alert extends Component<AlertProps> {
             }}
           >
             <div className={Styles.Row}>
-              <div className={Styles.Status}>{status}</div>
+              <div className={Styles.Status}>{status || "Pending"}</div>
             </div>
             <div className={Styles.Row}>
               <span className={Styles.Title}>{title}</span>
@@ -94,15 +94,9 @@ export default class Alert extends Component<AlertProps> {
             <span className={Styles.EtherLink}>
               <EtherscanLink txhash={id} label="etherscan tx" />
             </span>
-            <span className={Styles.Time}>
-              &nbsp;— {moment.unix(timestamp).fromNow()}
-            </span>
           </div>
         </div>
-        <div
-          className={Styles.Column}
-          style={{ justifyContent: "center" }}
-        >
+        <div>
           <div className={Styles.Row}>
             <button
               className={Styles.Close}

@@ -4,7 +4,8 @@ import { DB } from '../db/DB';
 import { Getter } from './Router';
 import {
   Address,
-  DisputeWindowCreatedLog, MarketCreatedLog,
+  DisputeWindowCreatedLog,
+  MarketCreatedLog,
   UniverseCreatedLog,
   UniverseForkedLog
 } from '../logs/types';

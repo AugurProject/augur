@@ -36,6 +36,7 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
     // Enter the dispute window.
     const disputeWindowStartTime = await disputeWindow.getStartTime_();
     await user.setTimestamp(disputeWindowStartTime.plus(1));
+
     // Contribute aka dispute. Opposing sides to keep raising the stakes.
     const numerators = i % 2 === 0 ? conflictNumerators : payoutNumerators;
     await user.contribute(marketContract, numerators, SOME_REP);
