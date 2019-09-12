@@ -13,7 +13,7 @@ beforeAll(async () => {
   john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses, undefined, mockGnosisRelay);
 }, 120000);
 
-test.skip('GnosisSafe :: Create and Use Gnosis Safe for Transactions', async () => {
+test('GnosisSafe :: Create and Use Gnosis Safe for Transactions', async () => {
 
   // Compute the address
   const estimatedGnosisSafeAddress = await john.getGnosisSafeAddress('0x0000000000000000000000000000000000000000', new BigNumber(0));
