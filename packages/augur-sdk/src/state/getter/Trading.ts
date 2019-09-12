@@ -1,19 +1,24 @@
-import { sortOptions } from './types';
-import { DB } from '../db/DB';
-import * as _ from 'lodash';
+import { sortOptions } from "./types";
+import { DB } from "../db/DB";
+import * as _ from "lodash";
 import {
   Augur,
   convertDisplayPriceToOnChainPrice,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   numTicksToTickSize,
-} from '../../index';
-import { getMarketReportingState } from './Markets';
-import { BigNumber } from 'bignumber.js';
-import { Getter } from './Router';
-import { Address, OrderEventType, ParsedOrderEventLog } from '../logs/types';
+} from "../../index";
+import { getMarketReportingState } from "./Markets";
+import { BigNumber } from "bignumber.js";
+import { Getter } from "./Router";
+import {
+  Address,
+  OrderEventType,
+  ParsedOrderEventLog,
+  Timestamp
+} from "../logs/types";
 
-import * as t from 'io-ts';
+import * as t from "io-ts";
 
 const ZERO = new BigNumber(0);
 
@@ -196,7 +201,8 @@ export class Trading {
     const markets = await filterMarketsByReportingState(
       marketIds,
       db,
-      params.ignoreReportingStates
+      params.ignoreReportingStates,
+      await augur.getTimestamp(),
     );
 
     return orderFilledResponse.reduce(
@@ -298,7 +304,8 @@ export class Trading {
     const markets = await filterMarketsByReportingState(
       marketIds,
       db,
-      params.ignoreReportingStates
+      params.ignoreReportingStates,
+      await augur.getTimestamp(),
     );
 
     return currentOrdersResponse.reduce(
@@ -316,8 +323,8 @@ export class Trading {
           tickSize
         ).toString(10);
         const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16)
-          .dividedBy(10 ** 18)
-          .toString(10);
+        .dividedBy(10 ** 18)
+        .toString(10);
         orders[orderId] = {
           orderId,
           tokensEscrowed,
@@ -422,7 +429,8 @@ export class Trading {
     const markets = await filterMarketsByReportingState(
       marketIds,
       db,
-      params.ignoreReportingStates
+      params.ignoreReportingStates,
+      await augur.getTimestamp(),
     );
 
     return currentOrdersResponse.reduce(
@@ -456,8 +464,8 @@ export class Trading {
           tickSize
         ).toString(10);
         const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16)
-          .dividedBy(10 ** 18)
-          .toString(10);
+        .dividedBy(10 ** 18)
+        .toString(10);
         let orderState = OrderState.OPEN;
         if (orderEventDoc.eventType === OrderEventType.Fill) {
           orderState = OrderState.FILLED;
@@ -500,9 +508,9 @@ export class Trading {
               : 0,
             originalFullPrecisionAmount: originalOrderDoc
               ? convertOnChainAmountToDisplayAmount(
-                  new BigNumber(originalOrderDoc.amount, 16),
-                  tickSize
-                ).toString(10)
+                new BigNumber(originalOrderDoc.amount, 16),
+                tickSize
+              ).toString(10)
               : 0,
           }
         ) as Order;
@@ -581,7 +589,8 @@ export class Trading {
 export async function filterMarketsByReportingState(
   marketIds: string[],
   db: DB,
-  ignoreReportingStates: string[]
+  ignoreReportingStates: string[],
+  currentTimestamp: BigNumber,
 ) {
   const marketsResponse = await db.findMarketCreatedLogs({
     selector: { market: { $in: marketIds } },
@@ -597,7 +606,8 @@ export async function filterMarketsByReportingState(
       const reportingState = await getMarketReportingState(
         db,
         marketCreatedLog,
-        marketFinalizedLogs
+        marketFinalizedLogs,
+        currentTimestamp,
       );
       if (ignoreReportingStates.includes(reportingState)) {
         delete markets[marketCreatedLog.market];
