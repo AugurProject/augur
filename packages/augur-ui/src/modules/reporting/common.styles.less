@@ -87,6 +87,20 @@
   &.invalid {
     background-color: fade(@color-invalid, 50);
   }
+
+  &.Round {
+    > span:last-of-type {
+      border-top-left-radius: 100px;
+      border-bottom-left-radius: 100px;
+    }
+  }
+
+  &.RoundSecond {
+    > span:nth-of-type(2) {
+      border-top-left-radius: 100px;
+      border-bottom-left-radius: 100px;
+    }
+  }
 }
 
 div.ReportingSubheaders {
