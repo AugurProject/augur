@@ -237,12 +237,8 @@ export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemp
 };
 
 export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => {
-console.log("IN notifications-templates.tsx");
-// console.log(props);
   const { totalProceeds } = props;
 
-// TODO: just give the total. not a good place for that on the object from the position getter. Create a simple selector to do the math.
-// there are a lot of examples using craeteSelect
   let messageText = `You have ${totalProceeds} DAI available to be claimed from one market.`;
   if (props.markets.length > 1) {
     messageText = `You have ${totalProceeds} DAI available to be claimed from multiple markets.`;
