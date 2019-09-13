@@ -226,9 +226,7 @@ export const selectNotifications = createSelector(
     }
 
     const { accountPositions } = store.getState();
-    let totalDai = createBigNumber(0);
-    const marketIds = [];
-    for (const marketId in accountPositions) {
+    const claimableMarketInfo = Object.keys(accountPositions).reduce((claimableMarketInfo, marketId) => {
       if (
         accountPositions[marketId] &&
         createBigNumber(
@@ -236,17 +234,18 @@ export const selectNotifications = createSelector(
             .totalUnclaimedProceeds
         ).gt(0)
       ) {
-        totalDai = totalDai.plus(
+        claimableMarketInfo.totalDai = claimableMarketInfo.totalDai.plus(
           createBigNumber(
             accountPositions[marketId].tradingPositionsPerMarket
               .totalUnclaimedProceeds
           )
         );
-        marketIds.push(marketId);
+        claimableMarketInfo.marketIds.push(marketId);
       }
-    }
+      return claimableMarketInfo;
+    }, {marketIds: [], totalDai: ZERO});
 
-    if (totalDai.toNumber() > 0 && marketIds.length > 0) {
+    if (createBigNumber(claimableMarketInfo.totalDai).gt(ZERO) && claimableMarketInfo.marketIds.length > 0) {
       notifications = notifications.concat({
         type: NOTIFICATION_TYPES.proceedsToClaim,
         isImportant: false,
@@ -254,8 +253,8 @@ export const selectNotifications = createSelector(
         title: PROCEEDS_TO_CLAIM_TITLE,
         buttonLabel: TYPE_VIEW_DETAILS,
         market: null,
-        markets: marketIds,
-        totalProceeds: totalDai.toNumber(),
+        markets: claimableMarketInfo.marketIds,
+        totalProceeds: claimableMarketInfo.totalDai.toString(),
         id: NOTIFICATION_TYPES.proceedsToClaim,
       });
     }
