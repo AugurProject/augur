@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import { Input } from 'modules/common/form';
-import classNames from 'classnames';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 
 import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
-import { FILTER_SEARCH_PARAM } from 'modules/common/constants';
-import { Hint } from 'modules/common/icons';
+import { FILTER_SEARCH_PARAM, SEARCH_FILTER_PLACHOLDER } from 'modules/common/constants';
 import Styles from 'modules/filter-sort/components/filter-search.styles.less';
-import ReactTooltip from 'react-tooltip';
-import TooltipStyles from 'modules/common/tooltip.styles.less';
 
 interface FilterSearchProps {
   location: Location;
@@ -38,7 +34,7 @@ export default class FilterSearch extends Component<
 
     this.state = {
       search: '',
-      placeholder: 'Search',
+      placeholder: SEARCH_FILTER_PLACHOLDER,
     };
 
     this.updateQuery = this.updateQuery.bind(this);
@@ -73,7 +69,7 @@ export default class FilterSearch extends Component<
   }
 
   onBlur() {
-    this.setState({ placeholder: 'Search' });
+    this.setState({ placeholder: SEARCH_FILTER_PLACHOLDER });
   }
 
   onChange(search) {
@@ -87,7 +83,7 @@ export default class FilterSearch extends Component<
   }
 
   resetSearch() {
-    this.setState({ search: '', placeholder: 'Search' });
+    this.setState({ search: '', placeholder: SEARCH_FILTER_PLACHOLDER });
   }
 
   updateQuery(search, location) {

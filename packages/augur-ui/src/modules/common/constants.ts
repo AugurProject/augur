@@ -248,6 +248,8 @@ export enum MARKET_CARD_FORMATS {
   EXPANDED = 'expanded',
 }
 
+export const SEARCH_FILTER_PLACHOLDER = 'Search markets and categories';
+
 // The user should be able to sort by:
 
 // Volume

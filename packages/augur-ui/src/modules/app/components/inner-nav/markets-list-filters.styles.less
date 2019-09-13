@@ -3,7 +3,7 @@
 .Filters {
   display: flex;
   flex-direction: column;
-  margin: @size-40 0 0 0;
+  margin: @size-16 0 0 0;
   overflow: auto;
   min-height: 100%;
 
@@ -20,7 +20,7 @@
   }
 
   > div {
-    margin: 0 @size-40;
+    margin: 0 @size-32;
 
     > div {
       grid-template-columns: 34px auto @size-16;
@@ -53,7 +53,7 @@
 
     text-transform: uppercase;
     color: @color-tertiary-info-text;
-    margin: @size-32 @size-40 0 @size-40;
+    margin: @size-24 @size-32 0 @size-32;
 
     @media @breakpoint-mobile {
       margin: @size-24 @size-16 0 @size-16;
@@ -69,14 +69,18 @@
 
     text-transform: uppercase;
     color:@color-tertiary-info-text;
-    margin: @size-28 0 @size-6 0;
+    margin: @size-16 0 @size-16 0;
   }
 
   > span:last-of-type {
-    margin: @size-28 0 @size-6 @size-6;
+    margin: @size-12 0 @size-16 @size-6;
+
+    > label {
+      margin: 0;
+    }
 
     @media @breakpoint-mobile {
-      margin-top: @size-24;
+      margin-top: @size-12;
     }
   }
 }
