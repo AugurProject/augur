@@ -77,18 +77,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
     }
     
     switch (methodCall) {
-      case APPROVE: {
-        if (eventName === TXEventName.Success) {
-          dispatch(addAlert({
-            id: hash,
-            params: transaction.params,
-            status: eventName,
-            timestamp: blockchain.currentAugurTimestamp * 1000,
-            name: transaction.name,
-          }));
-        }
-        break;
-      }
       case PUBLICCREATEORDERS: {
         const { marketInfos } = getState();
         const marketId = transaction.params[TX_MARKET_ID];

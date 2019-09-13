@@ -36,7 +36,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { createBigNumber } from "utils/create-big-number";
 import { updateAlert } from "./alerts";
 
-function toUpperCase(label) {
+function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1)
 }
 function getInfo(params, status, marketInfo) {
@@ -58,7 +58,7 @@ function getInfo(params, status, marketInfo) {
   return {
     price,
     amount,
-    orderType: orderType.toUpperCase(),
+    orderType: orderType.toCapitalizeCase(),
     outcomeDescription
   }
 }
@@ -92,7 +92,7 @@ export default function setAlertText(alert: any, callback: any) {
             const outcomeDescription = alert.params.outcomeId === null
                 ? "Market Is Invalid"
                 : getOutcomeName(marketInfo, { id: alert.params.outcomeId }, false);
-            alert.details = `${orderType.toUpperCase()}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
+            alert.details = `${orderType.toCapitalizeCase()}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
           })
         );
         break;
@@ -144,7 +144,6 @@ export default function setAlertText(alert: any, callback: any) {
       // Market
       case CONTRIBUTE:
         alert.title = alert.params.preFilled ? "Prefilled Stake" : "Market Disputed";
-        console.log(alert);
         if (alert.params.preFilled && (alert.params._additionalStake.lte(ZERO) || !alert.params._additionalStake)) {
           break;
         }

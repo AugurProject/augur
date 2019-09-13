@@ -83,6 +83,8 @@ export interface FavoritesButtonProps {
 
 export interface ViewTransactionDetailsButtonProps {
   transactionHash: string;
+  label?: string;
+  dark?: boolean;
 }
 
 export interface ExternalLinkButtonProps {
@@ -292,9 +294,9 @@ export const DirectionButton = (props: DirectionButtonProps) => (
 export const ViewTransactionDetailsButton = (
   props: ViewTransactionDetailsButtonProps
 ) => (
-  <div className={Styles.ViewTransactionDetailsButton}>
+  <div className={classNames(Styles.ViewTransactionDetailsButton, {[Styles.Dark]: props.dark})}>
     {ViewIcon}
-    <EtherscanLink showNonLink txhash={props.transactionHash} label="View" />
+    <EtherscanLink showNonLink txhash={props.transactionHash} label={props.label ? props.label : "View"} />
   </div>
 );
 

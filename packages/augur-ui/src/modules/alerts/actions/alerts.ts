@@ -77,7 +77,7 @@ export function updateAlert(id: string, alert: any) {
           name: CONTRIBUTE
         }));
       }
-      const foundAlert = alerts.find(findAlert => findAlert.id === id && findAlert.name === alert.name);
+      const foundAlert = alerts.find(findAlert => findAlert.id === id && findAlert.name.toUpperCase() === alert.name.toUpperCase());
       if (foundAlert) {
         dispatch(removeAlert(id));
         dispatch(addAlert({

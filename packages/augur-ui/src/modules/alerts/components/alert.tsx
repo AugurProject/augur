@@ -6,7 +6,7 @@ import classNames from "classnames";
 
 import { Close } from "modules/common/icons";
 import Styles from "modules/alerts/components/alert.styles.less";
-import { EtherscanLink } from "modules/common/buttons";
+import { ViewTransactionDetailsButton } from "modules/common/buttons";
 
 interface AlertProps {
   id: string;
@@ -63,7 +63,7 @@ export default class Alert extends Component<AlertProps, {}> {
               )}
           <div className={Styles.Row}>
             <span className={Styles.EtherLink}>
-              <EtherscanLink txhash={id} label="view etherscan" />
+              <ViewTransactionDetailsButton dark transactionHash={id} label="view etherscan" />
             </span>
           </div>
         </div>
