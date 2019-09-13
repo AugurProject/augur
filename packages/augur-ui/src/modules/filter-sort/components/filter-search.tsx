@@ -73,7 +73,7 @@ export default class FilterSearch extends Component<
   }
 
   onBlur() {
-    this.setState({ placeholder: 'Search' });
+    this.setState({ placeholder: 'Search markets and categories' });
   }
 
   onChange(search) {
