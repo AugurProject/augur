@@ -9,7 +9,6 @@
     display: none;
   }
 
-
   > ul {
     display: flex;
     align-items: center;
@@ -18,15 +17,9 @@
     border-right: none;
     border-top: none;
 
-    > li:first-of-type {
-      margin: 0 @size-24 0 @size-40;
-    }
-
     > li {
       width: auto;
-      margin: 0 @size-24;
-
-      border-bottom: @size-1 solid @color-tertiary-background;
+      margin: 0 @size-16;
     }
 
     > li:hover {
@@ -39,19 +32,26 @@
 
     > li a {
       display: flex;
-      padding: @size-16 0 @size-16;
-      margin: @size-4 0;
+      margin: @size-13 0;
 
       > span {
-        .text-14;
+        .text-9-bold;
 
         color: @color-tertiary-info-text;
-        text-transform: capitalize;
+        text-transform: uppercase;
       }
     }
 
     .Selected {
-      border-bottom: @size-1 solid @color-secondary-text;
+      > a {
+        border-bottom-width: @size-1;
+        border-bottom-style: solid;
+        color: @color-primary-action;
+        margin-bottom: @size-6;
+        margin-top: @size-9;
+        padding-bottom: @size-3;
+        text-decoration: none;
+      }
 
       > a > span {
         color: @color-secondary-text;
@@ -59,11 +59,15 @@
     }
 
     .CreatetButton {
-      margin-left: @size-24;
       border-bottom: none;
+      margin-left: @size-24;
+      text-transform: uppercase;
 
       button {
-        padding: @size-9 @size-16;
+        .text-9-bold;
+
+        padding: @size-4 @size-8;
+        text-transform: uppercase;
       }
     }
   }
