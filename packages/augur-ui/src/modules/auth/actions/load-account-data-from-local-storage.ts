@@ -64,6 +64,7 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         );
       }
       if (alerts) {
+        console.log(alerts);
         alerts.map(n => dispatch(addAlert(n)));
       }
       if (
