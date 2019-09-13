@@ -20,24 +20,11 @@ interface AlertProps {
   timestamp: number;
   status: string;
   toggleAlerts: Function;
-  toastView?: boolean;
+  noShow?: boolean;
 }
 
-interface AlertState {
-  show: boolean;
-}
+export default class Alert extends Component<AlertProps, {}> {
 
-export default class Alert extends Component<AlertProps, AlertState> {
-  state: AlertState = {
-    show: true
-  };
-
-  componentDidMount() {
-    this.timeout = setInterval(() => this.props.toastView && this.setState({ show: false}), 2000);
-  }
-  componentWillUnmount() {
-    clearInterval(this.timeout);
-  }
   render() {
     const {
       id,
@@ -47,10 +34,10 @@ export default class Alert extends Component<AlertProps, AlertState> {
       seen,
       timestamp,
       title,
-      toastView
+      noShow
     } = this.props;
 
-    if (toastView && !this.state.show) return null;
+    if (noShow) return null;
     return (
       <article
         className={classNames(Styles.Alert, {

@@ -14,15 +14,22 @@ interface ToastsViewProps {
   toasts: Array<any>;
   removeAlert: Function;
   toggleAlerts: Function;
+  updateAlert: Function;
 }
 
-interface ToastsViewState {
-    toastsToShow: Array<any>
-}
+export default class ToastsView extends Component<ToastsViewProps, {}> {
 
-export default class ToastsView extends Component<ToastsViewProps, ToastsViewState> {
+  componentDidMount() {
+    this.timeout = setInterval(() => {
+      if (this.props.toasts.length > 0) {
+        this.props.updateAlert(this.props.toasts[0].id, {...this.props.toasts[0], toast: false});
+      }
+    }, 2000);
+  }
 
-
+  componentWillUnmount() {
+    clearInterval(this.timeout);
+  }
   render() {
     const {
       removeAlert,
@@ -33,14 +40,14 @@ export default class ToastsView extends Component<ToastsViewProps, ToastsViewSta
     return (
         <div className={Styles.ToastsView}>
           {toasts.map((toast, i) => (
-                    <Alert
-                        key={`${toast.id}-${toast.title}`}
-                        removeAlert={() => removeAlert(toast.id)}
-                        toggleAlerts={toggleAlerts}
-                        toastView={true}
-                        {...toast}
-                    />
-            ))}
+              <Alert
+                  key={`${toast.id}-${toast.title}`}
+                  removeAlert={() => removeAlert(toast.id)}
+                  toggleAlerts={toggleAlerts}
+                  noShow={i !== 0}
+                  {...toast}
+              />
+          ))}
         </div>
     );
   }
