@@ -114,6 +114,8 @@ export const selectMarketsInDispute = createSelector(
 export const selectAllProceedsToClaim = createSelector(
   selectAccountPositionsState,
   positions => {
+console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!positions')
+console.log(positions)
     if (positions && Object.keys(positions).length > 0) {
      return  Object.keys(positions).reduce(
         (p, marketId) =>
@@ -305,6 +307,7 @@ export const selectNotifications = createSelector(
       });
     }
 console.log("IN notification-state");
+console.log(proceedsToClaim);
 proceedsToClaim = [{
   id: '0x0000000000000000000000000000000000000000',
   description: '',

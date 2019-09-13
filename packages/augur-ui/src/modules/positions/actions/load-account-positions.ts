@@ -92,6 +92,8 @@ const loadAccountPositionsInternal = (
   };
   const Augur = augurSdk.get();
   const positions = await Augur.getUserTradingPositions(params);
+console.log("@@@@@@@@@@@@@")
+console.log(positions)
   if (positions == null || positions.tradingPositions == null) {
     return callback(null, {});
   }

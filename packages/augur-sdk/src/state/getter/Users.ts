@@ -536,8 +536,25 @@ console.error(numberOfShares.toNumber());
     // TODO: Add above to tradingPositions & tradingPositionsPerMarket
 
     // TODO: Remove hard-coding below
-    //marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'].totalUnclaimedProceeds = '10';
-    //marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'].totalUnclaimedProfit = '8';
+    // marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'].totalUnclaimedProceeds = '10';
+    // marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'].totalUnclaimedProfit = '8';
+    // marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'] = {
+    //   currentValue: "3.1031",
+    //   frozenFunds: "3.1031",
+    //   marketId: "0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5",
+    //   realized: "0",
+    //   realizedCost: "0",
+    //   realizedPercent: "0",
+    //   timestamp: 1568215292,
+    //   total: "0",
+    //   totalCost: "3.1031",
+    //   totalPercent: "0",
+    //   unrealized: "0",
+    //   unrealizedCost: "3.1031",
+    //   unrealizedPercent: "0",
+    //   totalUnclaimedProceeds: "10",
+    //   totalUnclaimedProfit: "8",
+    // };
     // marketTradingPositions['0xa45bD3Fc355edf141B2F8edB34521128C5CBD38E'] = {
     //   currentValue: "3.1031",
     //   frozenFunds: "3.1031",
@@ -555,8 +572,40 @@ console.error(numberOfShares.toNumber());
     //   totalUnclaimedProceeds: "5",
     //   totalUnclaimedProfit: "2",
     // };
-    tradingPositions[0].totalUnclaimedProceeds = '15';
-    tradingPositions[0].totalUnclaimedProfit = '10';
+    // tradingPositions[0] = {
+    //   currentValue: "3.1031",
+    //   frozenFunds: "3.1031",
+    //   marketId: "0xa45bD3Fc355edf141B2F8edB34521128C5CBD38E",
+    //   realized: "0",
+    //   realizedCost: "0",
+    //   realizedPercent: "0",
+    //   timestamp: 1568215292,
+    //   total: "0",
+    //   totalCost: "3.1031",
+    //   totalPercent: "0",
+    //   unrealized: "0",
+    //   unrealizedCost: "3.1031",
+    //   unrealizedPercent: "0",
+    //   totalUnclaimedProceeds: "10",
+    //   totalUnclaimedProfit: "8",
+    // };
+    // tradingPositions[1] = {
+    //   currentValue: "3.1031",
+    //   frozenFunds: "3.1031",
+    //   marketId: "0xa45bD3Fc355edf141B2F8edB34521128C5CBD38E",
+    //   realized: "0",
+    //   realizedCost: "0",
+    //   realizedPercent: "0",
+    //   timestamp: 1568215292,
+    //   total: "0",
+    //   totalCost: "3.1031",
+    //   totalPercent: "0",
+    //   unrealized: "0",
+    //   unrealizedCost: "3.1031",
+    //   unrealizedPercent: "0",
+    //   totalUnclaimedProceeds: "5",
+    //   totalUnclaimedProfit: "2",
+    // };
 
     return {
       tradingPositions,
@@ -819,8 +868,8 @@ export function sumTradingPositions(
       unrealizedPercent: '0',
       totalPercent: '0',
       currentValue: '0',
-      totalUnclaimedProceeds: '15',
-      totalUnclaimedProfit: '10',
+      // totalUnclaimedProceeds: '15',
+      // totalUnclaimedProfit: '10',
     } as MarketTradingPosition
   );
 

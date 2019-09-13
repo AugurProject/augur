@@ -7,7 +7,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'store';
 import {
   MODAL_FINALIZE_MARKET,
-  MODAL_CLAIM_PROCEEDS,
+  MODAL_CLAIM_MARKETS_PROCEEDS,
   MODAL_CLAIM_FEES,
   MODAL_UNSIGNED_ORDERS,
   MODAL_OPEN_ORDERS,
@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   finalizeMarketModal: (marketId: string, cb: NodeStyleCallback) =>
     dispatch(updateModal({ type: MODAL_FINALIZE_MARKET, marketId, cb })),
   claimTradingProceeds: (marketIds: string[], cb: NodeStyleCallback) =>
-    dispatch(updateModal({ type: MODAL_CLAIM_PROCEEDS, marketIds, cb })),
+    dispatch(updateModal({ type: MODAL_CLAIM_MARKETS_PROCEEDS, marketIds, cb })),
   claimReportingFees: (reportingFees: any, cb: NodeStyleCallback) =>
     dispatch(
       updateModal({

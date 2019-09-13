@@ -18,8 +18,6 @@ import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
 
 const mapStateToProps = (state: AppState) => {
-console.log('state');
-console.log(state);
   return {
     modal: state.modal,
     // pendingQueue: state.pendingQueue || [],
