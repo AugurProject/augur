@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { DefaultButtonProps } from "modules/common/buttons";
+import { DefaultButtonProps } from 'modules/common/buttons';
 import {
   Title,
   ButtonsRow,
@@ -9,21 +9,21 @@ import {
   ActionRowsProps,
   ActionRows,
   Breakdown,
-} from "modules/modal/common";
+} from 'modules/modal/common';
 import {
   BulkTxLabel,
   LinearPropertyLabelProps,
-} from "modules/common/labels";
+} from 'modules/common/labels';
 
-import Styles from "modules/modal/modal.styles.less";
+import Styles from 'modules/modal/modal.styles.less';
 
 interface ProceedsProps {
   closeAction: Function;
   title: string;
-  buttons: Array<DefaultButtonProps>;
+  buttons: DefaultButtonProps[];
   rows: ActionRowsProps;
   submitAllTxCount: number;
-  breakdown?: Array<LinearPropertyLabelProps>;
+  breakdown?: LinearPropertyLabelProps[];
   descriptionMessage?: DescriptionMessageProps;
 }
 
@@ -41,6 +41,6 @@ export const Proceeds = (props: ProceedsProps) => (
       {props.breakdown && <Breakdown short rows={props.breakdown} />}
     </main>
     <ButtonsRow buttons={props.buttons} />
-    <BulkTxLabel buttonName={"Claim All"} count={props.submitAllTxCount} needsApproval={false} />
+    <BulkTxLabel buttonName={'Claim All'} count={props.submitAllTxCount} needsApproval={false} />
   </div>
 );
