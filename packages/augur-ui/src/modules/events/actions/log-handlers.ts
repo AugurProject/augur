@@ -233,7 +233,8 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   if (isStoredTransaction) {
     // TODO: do we need to remove stuff based on events?
     // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
-    handleAlert(log, CANCELORDER, dispatch, getState);
+    //handleAlert(log, CANCELORDER, dispatch, getState);
+    dispatch(updateAlert(log.orderId, {name: CANCELORDER, params: {...log, stats: TXEventName.Success}}));
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }

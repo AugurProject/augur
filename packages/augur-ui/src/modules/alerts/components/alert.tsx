@@ -37,6 +37,8 @@ export default class Alert extends Component<AlertProps, {}> {
       noShow
     } = this.props;
 
+    if (!title || title === "") return null;
+
     if (noShow) return null;
     return (
       <article

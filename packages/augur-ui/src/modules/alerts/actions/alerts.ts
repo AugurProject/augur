@@ -12,7 +12,7 @@ import { PREFILLEDSTAKE, DOINITIALREPORT, CONTRIBUTE } from "modules/common/cons
 
 export const ADD_ALERT = "ADD_ALERT";
 export const REMOVE_ALERT = "REMOVE_ALERT";
-export const UPDATE_ALERT = "UPDATE_ALERT";
+export const UPDATE_EXISTING_ALERT = "UPDATE_EXISTING_ALERT";
 export const CLEAR_ALERTS = "CLEAR_ALERTS";
 
 function packageAlertInfo(id: string, timestamp: number, transaction: any) {
@@ -247,6 +247,7 @@ export function addAlert(alert: any) {
             },
           },
         };
+        console.log(fullAlert)
         return fullAlert;
       };
       dispatch(setAlertText(alert, callback));
@@ -263,37 +264,20 @@ export function removeAlert(id: string) {
 
 export function updateAlert(id: string, alert: any) {
   return (dispatch: ThunkDispatch<void, any, Action>): void => {
-    const callback = (alert: any) => {
-      const fullAlert = {
-        type: UPDATE_ALERT,
-        data: {
-          id,
-          alert,
-        },
-      };
-      return fullAlert;
-    };
-
-    // Set alert.params if it is not already set.
-    // (This occurs the first time the alert is updated.)
     alert.id = id;
     if (alert) {
       const { alerts } = store.getState() as AppState;
-      console.log(alert);
       if (alert.name === DOINITIALREPORT) {
-        dispatch(updateAlert(
-          id, {
-            ...alert, 
-            params: {
-                ...alert.params, 
-                preFilled: true
-              }, 
-            name: CONTRIBUTE
-          }
-        ));
+        dispatch(updateAlert(id, {
+          ...alert, 
+          params: {
+            ...alert.params, 
+            preFilled: true
+          }, 
+          name: CONTRIBUTE
+        }));
       }
       const foundAlert = alerts.find(findAlert => findAlert.id === id && findAlert.name === alert.name);
-      console.log(foundAlert);
       if (foundAlert) {
         dispatch(removeAlert(id));
         dispatch(addAlert({
@@ -309,7 +293,6 @@ export function updateAlert(id: string, alert: any) {
         dispatch(addAlert(alert));
       }
     }
-    return dispatch(setAlertText(alert, callback));
   };
 }
 // We clear by 'alert level'.

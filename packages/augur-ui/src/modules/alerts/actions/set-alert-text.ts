@@ -160,7 +160,7 @@ export default function setAlertText(alert: any, callback: any) {
 
       // Market
       case CONTRIBUTE:
-        alert.title = "Market Disputed";
+        alert.title = alert.params.preFilled ? "Prefilled Stake" : "Market Disputed";
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
