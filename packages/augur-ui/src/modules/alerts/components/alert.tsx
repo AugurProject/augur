@@ -22,6 +22,7 @@ interface AlertProps {
   status: string;
   toggleAlerts: Function;
   noShow?: boolean;
+  toast?: boolean;
 }
 
 export default class Alert extends Component<AlertProps, {}> {
@@ -35,7 +36,8 @@ export default class Alert extends Component<AlertProps, {}> {
       seen,
       timestamp,
       title,
-      noShow
+      noShow,
+      toast
     } = this.props;
 
     if (!title || title === "") return null;
@@ -63,12 +65,16 @@ export default class Alert extends Component<AlertProps, {}> {
                 </div>
               )}
           <div className={Styles.Row}>
-            <span className={Styles.EtherLink}>
-              <ViewTransactionDetailsButton dark transactionHash={id} label="view etherscan" />
-            </span>
-            <span className={Styles.Timestamp}>
-                {convertUnixToFormattedDate(timestamp / 1000).formattedLocalShortTime}
-            </span>
+            {!toast &&
+              <>
+                <span className={Styles.EtherLink}>
+                  <ViewTransactionDetailsButton dark transactionHash={id} label="view etherscan" />
+                </span>
+                <span className={Styles.Timestamp}>
+                    {convertUnixToFormattedDate(timestamp / 1000).formattedLocalShortTime}
+                </span>
+              </>
+            }
           </div>
         </div>
         <div>

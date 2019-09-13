@@ -58,7 +58,7 @@ function getInfo(params, status, marketInfo) {
   return {
     price,
     amount,
-    orderType: orderType.toCapitalizeCase(),
+    orderType: toCapitalizeCase(orderType),
     outcomeDescription
   }
 }
@@ -92,7 +92,7 @@ export default function setAlertText(alert: any, callback: any) {
             const outcomeDescription = alert.params.outcomeId === null
                 ? "Market Is Invalid"
                 : getOutcomeName(marketInfo, { id: alert.params.outcomeId }, false);
-            alert.details = `${orderType.toCapitalizeCase()}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
+            alert.details = `${toCapitalizeCase(orderType)}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
           })
         );
         break;

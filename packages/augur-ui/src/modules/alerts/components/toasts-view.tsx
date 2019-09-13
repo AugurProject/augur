@@ -46,6 +46,7 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
                   removeAlert={() => removeAlert(toast.id)}
                   toggleAlerts={toggleAlerts}
                   noShow={i !== 0}
+                  toast={true}
                   {...toast}
               />
           ))}
