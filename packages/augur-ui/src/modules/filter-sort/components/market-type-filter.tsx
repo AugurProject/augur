@@ -34,6 +34,7 @@ export const MarketTypeFilter = (
         loading={isSearchingMarkets}
         count={marketCount}
         label={marketState.label}
+        marketType={marketState.value}
       />
     );
   });

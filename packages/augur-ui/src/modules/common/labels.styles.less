@@ -717,7 +717,20 @@ div.LinearPropertyViewTransaction {
     color: @color-alternate-info-text;
     border-bottom: 1px solid @color-alternate-info-text;
 
+    &.open {
+      border-color: @color-open;
+    }
+
+    &.inReporting {
+      border-color: @color-in-reporting;
+    }
+
+    &.resolved {
+      border-color: @color-resolved;
+    }
+
     > div:nth-child(even) {
+      font-weight: bold;
       margin: 0 0 0 @size-8;
     }
 

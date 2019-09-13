@@ -87,7 +87,7 @@ export default class FilterSearch extends Component<
   }
 
   resetSearch() {
-    this.setState({ search: '', placeholder: 'Search' });
+    this.setState({ search: '', placeholder: 'Search markets and categories' });
   }
 
   updateQuery(search, location) {
