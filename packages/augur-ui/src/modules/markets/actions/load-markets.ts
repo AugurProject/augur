@@ -9,8 +9,12 @@ import {
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
 import { Getters } from '@augurproject/sdk';
-import { UpdateMarketsAction, addUpdateMarketInfos } from 'modules/markets/actions//update-markets-data';
+import {
+  UpdateMarketsAction,
+  addUpdateMarketInfos,
+} from 'modules/markets/actions//update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
+import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
 
 interface SortOptions {
   sortBy?: Getters.Markets.GetMarketsSortBy;
@@ -142,6 +146,7 @@ export interface LoadReportingMarketsOptions {
   sortByRepAmount?: boolean;
   sortByDisputeRounds?: boolean;
   search?: string;
+  reportingStates?: string[];
 }
 
 export const loadNextWindowDisputingMarkets = (
@@ -235,7 +240,7 @@ export const loadDesignatedReportingMarkets = (
   dispatch(loadReportingMarkets(params, cb));
 };
 
-export const loadReportingMarkets = (
+const loadReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
 ): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
@@ -245,6 +250,11 @@ export const loadReportingMarkets = (
   const { universe, connection } = getState();
   if (!connection.isConnected) return cb(null, []);
   if (!(universe && universe.id)) return cb(null, []);
+  let reportingState = null;
+  if (filterOptions.reportingStates.length === 1) {
+    reportingState = filterOptions.reportingStates[0];
+    dispatch(updateReportingList(reportingState, []));
+  }
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
     universe: universe.id,
@@ -257,8 +267,15 @@ export const loadReportingMarkets = (
       : 0;
     params.offset = paginationOffset * filterOptions.limit;
   }
+
   const augur = augurSdk.get();
-  const marketList: Getters.Markets.MarketList = await augur.getMarkets({ ...params });
+  const marketList: Getters.Markets.MarketList = await augur.getMarkets({
+    ...params,
+  });
   dispatch(addUpdateMarketInfos(marketList.markets));
+  if (reportingState) {
+    const marketIds = marketList.markets.map(m => m.id);
+    dispatch(updateReportingList(reportingState, marketIds));
+  }
   if (cb) cb(null, marketList);
 };

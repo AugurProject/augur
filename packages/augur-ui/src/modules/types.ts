@@ -147,23 +147,6 @@ export interface FormattedNumberOptions {
   blankZero?: boolean;
   bigUnitPostfix?: boolean;
 }
-export interface ReportingWindowStats {
-  startTime?: string;
-  endTime?: string;
-  stake?: string;
-  reportingFees: {
-    unclaimedEth: FormattedNumber;
-    unclaimedRep: FormattedNumber;
-    unclaimedForkEth: FormattedNumber;
-    unclaimedForkRepStaked: FormattedNumber;
-    unclaimedParticipationTokenEthFees: FormattedNumber;
-    participationTokenRepStaked: FormattedNumber;
-    feeWindows: Array<string>;
-    forkedMarket: string | null;
-    nonforkedMarkets: Array<string>;
-    gasCosts: string;
-  };
-}
 
 export interface CreateMarketData {
   id?: string;
@@ -392,6 +375,9 @@ export interface MarketsList {
   marketCardFormat: string;
 }
 
+export interface ReportingList {
+  [reportingState: string]: []
+}
 export interface FilledOrders {
   [account: string]: Getters.Trading.Orders;
 }
