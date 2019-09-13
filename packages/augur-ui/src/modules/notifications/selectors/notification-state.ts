@@ -11,7 +11,7 @@ import {
 } from 'store/select-state';
 
 import { createBigNumber } from 'utils/create-big-number';
-import canClaimProceeds from 'utils/can-claim-proceeds';
+// import canClaimProceeds from 'utils/can-claim-proceeds';
 import {
   NOTIFICATION_TYPES,
   TYPE_DISPUTE,
@@ -111,60 +111,76 @@ export const selectMarketsInDispute = createSelector(
 
 // Get all markets where the user has outstanding returns
 export const selectAllProceedsToClaim = createSelector(
-  selectMarkets,
-  markets => {
-    if (markets && markets.length > 0) {
-      return markets
-        .filter(market => market.reportingState === REPORTING_STATE.FINALIZED)
-        .filter(market => market.outstandingReturns);
+  selectAccountPositionsState,
+  positions => {
+    if (positions && Object.keys(positions).length > 0) {
+     return  Object.keys(positions).reduce(
+        (p, marketId) =>
+          positions[marketId].tradingPositionsPerMarket.totalUnclaimedProceeds
+            ? [...p, selectMarkets(marketId)]
+            : p,
+        []
+      );
     }
     return [];
   }
 );
 
-// Get all markets where the user has outstanding returns and doesn't have to wait CLAIM_PROCEEDS_WAIT_TIME
-export const selectProceedsToClaim = createSelector(
-  selectAllProceedsToClaim,
-  selectCurrentTimestampInSeconds,
-  (markets, currentTimestamp) => {
-    if (markets.length > 0 && currentTimestamp) {
-      return markets
-        .filter(market =>
-          canClaimProceeds(
-            market.finalizationTime,
-            market.outstandingReturns,
-            currentTimestamp
-          )
-        )
-        .map(getRequiredMarketData);
-    }
-    return [];
-  }
-);
+// export const selectAllProceedsToClaim = createSelector(
+//   selectMarkets,
+//   markets => {
+//     if (markets && markets.length > 0) {
+//       return markets
+//         .filter(market => market.reportingState === REPORTING_STATE.FINALIZED)
+//         .filter(market => market.outstandingReturns);
+//     }
+//     return [];
+//   }
+// );
 
-// Get all markets where the user has outstanding returns
-export const selectProceedsToClaimOnHold = createSelector(
-  selectAllProceedsToClaim,
-  markets => {
-    if (markets.length > 0) {
-      return markets
-        .filter(
-          market =>
-            !canClaimProceeds(
-              market.finalizationTime,
-              market.outstandingReturns
-            )
-        )
-        .map(getRequiredMarketData)
-        .map(market => {
-          return {
-            ...market,
-          };
-        });
-    }
-    return [];
-  }
-);
+// // Get all markets where the user has outstanding returns and doesn't have to wait CLAIM_PROCEEDS_WAIT_TIME
+// export const selectProceedsToClaim = createSelector(
+//   selectAllProceedsToClaim,
+//   selectCurrentTimestampInSeconds,
+//   (markets, currentTimestamp) => {
+//     if (markets.length > 0 && currentTimestamp) {
+//       return markets
+//         .filter(market =>
+//           canClaimProceeds(
+//             market.finalizationTime,
+//             market.outstandingReturns,
+//             currentTimestamp
+//           )
+//         )
+//         .map(getRequiredMarketData);
+//     }
+//     return [];
+//   }
+// );
+
+// // Get all markets where the user has outstanding returns
+// export const selectProceedsToClaimOnHold = createSelector(
+//   selectAllProceedsToClaim,
+//   markets => {
+//     if (markets.length > 0) {
+//       return markets
+//         .filter(
+//           market =>
+//             !canClaimProceeds(
+//               market.finalizationTime,
+//               market.outstandingReturns
+//             )
+//         )
+//         .map(getRequiredMarketData)
+//         .map(market => {
+//           return {
+//             ...market,
+//           };
+//         });
+//     }
+//     return [];
+//   }
+// );
 
 // Get reportingFees for signed in user
 export const selectUsersReportingFees = createSelector(
@@ -220,8 +236,9 @@ export const selectNotifications = createSelector(
   selectMarketsInDispute,
   selectUsersReportingFees,
   selectUnsignedOrders,
-  selectProceedsToClaim,
-  selectProceedsToClaimOnHold,
+  selectAllProceedsToClaim,
+  // selectProceedsToClaim,
+  // selectProceedsToClaimOnHold,
   selectReadNotificationState,
   (
     reportOnMarkets,
@@ -231,7 +248,7 @@ export const selectNotifications = createSelector(
     claimReportingFees,
     unsignedOrders,
     proceedsToClaim,
-    proceedsToClaimOnHold,
+    // proceedsToClaimOnHold,
     readNotifications
   ) => {
     // Generate non-unquie notifications
@@ -255,10 +272,10 @@ export const selectNotifications = createSelector(
       unsignedOrders,
       NOTIFICATION_TYPES.unsignedOrders
     );
-    const proceedsToClaimOnHoldNotifications = generateCards(
-      proceedsToClaimOnHold,
-      NOTIFICATION_TYPES.proceedsToClaimOnHold
-    );
+    // const proceedsToClaimOnHoldNotifications = generateCards(
+    //   proceedsToClaimOnHold,
+    //   NOTIFICATION_TYPES.proceedsToClaimOnHold
+    // );
 
     // Add non unquie notifications
     let notifications = [
@@ -267,7 +284,7 @@ export const selectNotifications = createSelector(
       ...finalizeMarketsNotifications,
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
-      ...proceedsToClaimOnHoldNotifications,
+      // ...proceedsToClaimOnHoldNotifications,
     ];
 
     // Add unquie notifications
