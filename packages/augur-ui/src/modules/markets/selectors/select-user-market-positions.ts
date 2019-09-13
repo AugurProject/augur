@@ -3,7 +3,6 @@ import {
   selectAccountPositionsState,
   selectMarketInfosState
 } from "store/select-state";
-import { PositionData } from "modules/types";
 import { positionSummary } from "modules/positions/selectors/positions-summary";
 import { Getters } from "@augurproject/sdk";
 
@@ -24,7 +23,7 @@ export const selectUserMarketPositions = createSelector(
       const userPositions = Object.values(
         marketAccountPositions.tradingPositions || []
       ).map((value) => {
-        const position = value as PositionData;
+        const position = value as Getters.Users.TradingPosition;
         const outcome = marketInfo.outcomes[position.outcome];
         return {
           ...positionSummary(position, outcome),

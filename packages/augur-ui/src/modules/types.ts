@@ -400,10 +400,6 @@ export interface OpenOrders {
   [account: string]: Getters.Trading.Orders;
 }
 
-export interface MarketTradingHistoryState extends Getters.Trading.MarketTradingHistory {
-
-}
-
 export interface MarketsInReporting {
   designated?: Array<string>;
   open?: Array<string>;
@@ -499,44 +495,6 @@ export interface AuthStatus {
   isConnectionTrayOpen?: boolean;
 }
 
-export interface PositionsTotal {
-  currentValue: string;
-  frozenFunds: string;
-  realized: string;
-  realizedCost: string;
-  realizedPercent: string;
-  total: string;
-  totalCost: string;
-  totalPercent: string;
-  unrealized: string;
-  unrealizedCost: string;
-  unrealizedPercent: string;
-  unrealizedRevenue: string;
-  unrealizedRevenue24hAgo: string;
-  unrealizedRevenue24hChangePercent: string;
-}
-
-export interface MarketPositionsTotal extends PositionsTotal {
-  marketId: string;
-}
-export interface PositionData extends PositionsTotal {
-  averagePrice: string;
-  frozenFunds: string;
-  lastTradePrice: string;
-  lastTradePrice24hAgo: string;
-  lastTradePrice24hChangePercent: string;
-  marketId: string;
-  netPosition: string;
-  outcome: number;
-  outcomeId: string;
-  position: string;
-  timestamp: number;
-}
-
-export interface TradingPositionsPerMarket {
-  [marketId: string]: PositionsTotal;
-}
-
 export interface AccountPositionAction {
   marketId: string;
   positionData: AccountPosition;
@@ -544,9 +502,9 @@ export interface AccountPositionAction {
 
 export interface AccountPosition {
   [market: string]: {
-    tradingPositionsPerMarket?: MarketPositionsTotal;
+    tradingPositionsPerMarket?: Getters.Users.MarketTradingPosition;
     tradingPositions: {
-      [outcomeId: number]: PositionData;
+      [outcomeId: number]: Getters.Users.TradingPosition;
     };
   };
 }

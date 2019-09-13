@@ -54,10 +54,10 @@ import {
   Universe,
   Versions,
   OpenOrders,
-  MarketTradingHistoryState,
   Drafts,
   MarketsList,
 } from "modules/types";
+import { Getters } from "@augurproject/sdk";
 
 export function createReducer() {
   return {
@@ -109,7 +109,7 @@ export interface AppStateInterface {
   filterSortOptions: FilterSortOptions;
   gasPriceInfo: GasPriceInfo;
   loginAccount: LoginAccount;
-  marketTradingHistory: MarketTradingHistoryState;
+  marketTradingHistory: Getters.Trading.MarketTradingHistory;
   marketInfos: MarketInfos;
   modal: any;
   newMarket: NewMarket;
