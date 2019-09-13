@@ -90,6 +90,8 @@ export interface MarketTradingPosition {
   unrealizedPercent: string; // unrealized profit percent (ie. profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
+  totalUnclaimedProceeds?: string;
+  totalUnclaimedProfit?: string;
 }
 
 export interface TradingPosition {
@@ -110,6 +112,8 @@ export interface TradingPosition {
   unrealizedPercent: string; // unrealized profit percent (ie. profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
+  totalUnclaimedProceeds?: string;
+  totalUnclaimedProfit?: string;
 }
 
 export interface UserTradingPositions {
@@ -460,6 +464,9 @@ export class Users {
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
     ).filter(t => t !== null);
 
+console.log('tradingPositions');
+console.log(tradingPositions);
+
     const marketTradingPositions = _.mapValues(
       tradingPositionsByMarketAndOutcome,
       tradingPositionsByOutcome => {
@@ -469,6 +476,8 @@ export class Users {
         return sumTradingPositions(tradingPositions);
       }
     );
+console.error('marketTradingPositions');
+console.error(marketTradingPositions);
 
     // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
     const allProfitLossResults = _.flatten(
@@ -491,20 +500,17 @@ export class Users {
       account: params.account,
     });
 
-console.error('marketTradingPositions');
-console.error(marketTradingPositions);
+    const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
 console.error('marketFinalizedByMarket');
 console.error(marketFinalizedByMarket);
-
-    const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
 console.log('reportingFeeDivisor');
 console.log(reportingFeeDivisor);
 
 console.log('shareTokenBalancesByMarketandOutcome');
 console.log(shareTokenBalancesByMarketandOutcome);
-
+/*
     const unclaimedMarketProceeds = {};
     for (const marketId of marketIds) {
       // TODO: if marketIds[i] reportingState is FINALIZED or finalizable {
@@ -516,18 +522,41 @@ console.error('numberOfShares');
 console.error(numberOfShares.toNumber());
         const reportingFee = numberOfShares.div(reportingFeeDivisor);
         const contracts = augur.contracts;
-        const totalUnclaimed = (await contracts.claimTradingProceeds.calculateProceeds_(marketId, new BigNumber(tentativeOutcome), numberOfShares))
+        const totalUnclaimedProceeds = (await contracts.claimTradingProceeds.calculateProceeds_(marketId, new BigNumber(tentativeOutcome), numberOfShares))
             .minus(await contracts.claimTradingProceeds.calculateCreatorFee_(marketId, numberOfShares))
             .minus(reportingFee);
         const cost = new BigNumber(1); // TODO: Get cost
         unclaimedMarketProceeds[marketId] = {
-          totalUnclaimed,
-          totalProfit: totalUnclaimed.minus(cost),
+          totalUnclaimedProceeds,
+          totalUnclaimedProfit: totalUnclaimedProceeds.minus(cost),
         };
       // }
     }
-
+*/
     // TODO: Add above to tradingPositions & tradingPositionsPerMarket
+
+    // TODO: Remove hard-coding below
+    marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'].totalUnclaimedProceeds = '10';
+    marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'].totalUnclaimedProfit = '8';
+    // marketTradingPositions['0xa45bD3Fc355edf141B2F8edB34521128C5CBD38E'] = {
+    //   currentValue: "3.1031",
+    //   frozenFunds: "3.1031",
+    //   marketId: "0xa45bD3Fc355edf141B2F8edB34521128C5CBD38E",
+    //   realized: "0",
+    //   realizedCost: "0",
+    //   realizedPercent: "0",
+    //   timestamp: 1568215292,
+    //   total: "0",
+    //   totalCost: "3.1031",
+    //   totalPercent: "0",
+    //   unrealized: "0",
+    //   unrealizedCost: "3.1031",
+    //   unrealizedPercent: "0",
+    //   totalUnclaimedProceeds: "5",
+    //   totalUnclaimedProfit: "2",
+    // };
+    tradingPositions[0].totalUnclaimedProceeds = '15';
+    tradingPositions[0].totalUnclaimedProfit = '10';
 
     return {
       tradingPositions,

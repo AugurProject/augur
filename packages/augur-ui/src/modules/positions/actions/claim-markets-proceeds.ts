@@ -7,12 +7,13 @@ import {
   removePendingData,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { CLAIM_PROCEEDS, CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,  PENDING, SUCCESS } from 'modules/common/constants';
+import { claimMarketsProceeds } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'store';
 import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 
-// export const CLAIM_SHARES_GAS_COST = 3000000;
+export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = 3000000;
 
 // export const claimTradingProceeds = (marketId, callback: NodeStyleCallback = logError) => async (
 //   dispatch: ThunkDispatch<void, any, Action>,
@@ -43,13 +44,27 @@ import { Action } from 'redux';
 //   */
 // };
 
-export const claimMarketsProceeds = (
+export const startClaimingMarketsProceeds = (
   marketIds: string[],
   callback: NodeStyleCallback = logError
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { loginAccount } = getState();
   if (!loginAccount.address || !marketIds || !marketIds.length)
     return callback(null);
+
+  MAX_CLAIM_MARKETS_PROCEEDS_COUNT = CLAIM_SHARES_GAS_COST
+  let i = 0;
+  const groups = [];
+  for (i; i < orders.length; i += MAX_CLAIM_MARKETS_PROCEEDS_COUNT) {
+    groups.push(orders.slice(i, i + MAX_BULK_ORDER_COUNT));
+  }
+  try {
+    // TODO: Pass affiliate address to claimMarketsProceeds
+    groups.map(group => claimMarketsProceeds(group, loginAccount.address, ''));
+  } catch (e) {
+    console.error(e);
+  }
+
   // TODO: allow user to claim multiple winnings
   /*
   eachOfLimit(
@@ -79,4 +94,4 @@ export const claimMarketsProceeds = (
   */
 };
 
-export default claimTradingProceeds;
+export default claimMarketsProceeds;

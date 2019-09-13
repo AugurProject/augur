@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { selectMarket } from "modules/markets/selectors/market";
-import { claimMarketsProceeds } from "modules/positions/actions/claim-markets-trading-proceeds";
+import { startClaimingMarketsProceeds } from "modules/positions/actions/claim-markets-proceeds";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { createBigNumber } from "utils/create-big-number";
 import canClaimProceeds from "utils/can-claim-proceeds";
@@ -20,7 +20,6 @@ import { NodeStyleCallback } from "modules/types";
 const mapStateToProps = (state: AppState) => {
 console.log('state');
 console.log(state);
-// How to get marketIds
   return {
     modal: state.modal,
     // pendingQueue: state.pendingQueue || [],
@@ -36,31 +35,22 @@ console.log(state);
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  claimTradingProceeds: (marketId: string, callback: NodeStyleCallback) =>
-    dispatch(claimTradingProceeds(marketId, callback)),
-  claimMultipleTradingProceeds: (
+  // claimMarketsProceeds: (marketId: string, callback: NodeStyleCallback) =>
+  //   dispatch(claimMarketsProceeds(marketId, callback)),
+  claimMarketsProceeds: (
     marketIds: string[],
     callback: NodeStyleCallback
-  ) => dispatch(claimMarketsProceeds(marketIds, callback)),
+  ) => dispatch(startClaimingMarketsProceeds(marketIds, callback)),
 });
-
-// const mapStateToProps = (state: AppState) => {
-//   const market = selectMarket(state.modal.marketId);
-
-//   return {
-//     modal: state.modal,
-//     marketDescription: market.description,
-//   };
-// };
 
 const mergeProps = async (sP: any, dP: any, oP: any) => {
 console.log('!!!!! in mergeProps');
 console.log(sP);
-await claimMarketsProceeds(
-  ['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'],
-  '0xbd355A7e5a7ADb23b51F54027E624BfE0e238DF6',
-  '0x0000000000000000000000000000000000000000'
-);
+// await claimMarketsProceeds(
+//   ['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'],
+//   '0xbd355A7e5a7ADb23b51F54027E624BfE0e238DF6',
+//   '0x0000000000000000000000000000000000000000'
+// );
   const marketIdsToTest = []; Object.keys(sP.modal.accountShareBalances);
   const markets: ActionRowsProps[] = [];
   const marketIds: string[] = [];
@@ -141,11 +131,7 @@ await claimMarketsProceeds(
         disabled: markets.find((market) => market.status === "pending"),
         action: () => {
           dP.closeModal();
-          if (multiMarket) {
-            dP.claimMultipleTradingProceeds(marketIds, sP.modal.cb);
-          } else {
-            dP.claimTradingProceeds(marketIds[0], sP.modal.cb);
-          }
+          dP.startClaimingMarketsProceeds(marketIds, sP.modal.cb);
         },
       },
     ],

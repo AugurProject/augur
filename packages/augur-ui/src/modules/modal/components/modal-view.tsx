@@ -27,7 +27,7 @@ import ModalNetworkConnect from "modules/modal/containers/modal-network-connect"
 import ModalDisclaimer from "modules/modal/containers/modal-disclaimer";
 import ModalGasPrice from "modules/modal/containers/modal-gas-price";
 // import ModalClaimTradingProceeds from "modules/modal/containers/modal-claim-trading-proceeds";
-import ModalClaimMarketsProceeds from "modules/modal/containers/modal-claim-markets-trading-proceeds";
+import ModalClaimMarketsProceeds from "modules/modal/containers/modal-claim-markets-proceeds";
 import ModalTradingOverlay from "modules/modal/components/modal-trading-overlay";
 import ModalOpenOrders from "modules/modal/containers/modal-open-orders";
 import ModalMarketLoading from "modules/modal/containers/modal-market-loading";
