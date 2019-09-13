@@ -25,7 +25,7 @@ import { Action } from 'redux';
 import { AppState } from 'store';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
-import { Events, Logs } from '@augurproject/sdk';
+import { Events, Logs, TXEventName } from '@augurproject/sdk';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { Augur } from '@augurproject/sdk';
@@ -33,21 +33,21 @@ import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { CANCELORDER, PUBLICTRADE, CLAIMTRADINGPROCEEDS, DOINITIALREPORT, CREATEMARKET, PUBLICFILLORDER, CONTRIBUTE } from 'modules/common/constants';
 
-const handleAlertUpdate = (
+const handleAlert = (
   log: any,
+  name: string,
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(
-    updateAlert(log.transactionHash, {
+  const { blockchain } = getState();
+  dispatch(addAlert({
       id: log.transactionHash,
-      timestamp: selectCurrentTimestampInSeconds(getState()),
-      blockNumber: log.blockNumber,
-      log,
-      status: 'Confirmed',
-      linkPath: makePath(TRANSACTIONS),
-      seen: false, // Manually set to false to ensure alert
+      params: log,
+      status: TXEventName.Success,
+      timestamp: blockchain.currentAugurTimestamp * 1000,
+      name: name,
     })
   );
 };
@@ -146,6 +146,7 @@ export const handleMarketCreatedLog = (log: any) => (
     dispatch(loadMarketsInfo([log.market]));
   }
   if (isStoredTransaction) {
+    handleAlert(log, CREATEMARKET, dispatch, getState);
     // TODO: could tell that logged in user can create liquidity orders
     // My Market? start kicking off liquidity orders
     // if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
@@ -212,6 +213,8 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     getState().loginAccount.address
   );
   if (isStoredTransaction) {
+    handleAlert(log, PUBLICTRADE, dispatch, getState);
+
     dispatch(loadMarketsInfoIfNotLoaded([marketId]));
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
@@ -231,6 +234,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   if (isStoredTransaction) {
     // TODO: do we need to remove stuff based on events?
     // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
+    handleAlert(log, CANCELORDER, dispatch, getState);
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
@@ -247,6 +251,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     isSameAddress(log.orderCreator, address) ||
     isSameAddress(log.orderFiller, address);
   if (isStoredTransaction) {
+    handleAlert(log, PUBLICFILLORDER, dispatch, getState);
     dispatch(loadMarketsInfo([marketId]));
     dispatch(loadUserFilledOrders({ marketId }));
     dispatch(loadAccountOpenOrders({ marketId }));
@@ -262,6 +267,8 @@ export const handleTradingProceedsClaimedLog = (
     log.sender,
     getState().loginAccount.address
   );
+  if (isStoredTransaction) handleAlert(log, CLAIMTRADINGPROCEEDS, dispatch, getState);
+
   if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
 };
 
@@ -275,6 +282,7 @@ export const handleInitialReportSubmittedLog = (
     getState().loginAccount.address
   );
   if (isStoredTransaction) {
+    handleAlert(log, DOINITIALREPORT, dispatch, getState);
     // dispatch(loadDisputing());
   }
 };
@@ -384,8 +392,9 @@ export const handleDisputeCrowdsourcerContributionLog = (
   log: Logs.DisputeCrowdsourcerContributionLog
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
-  if (log.reporter === getState().loginAccount.address) {
+  if (log.reporter.toUpperCase() === getState().loginAccount.address.toUpperCase()) {
     // dispatch(loadReportingWindowBounds());
+    handleAlert(log, CONTRIBUTE, dispatch, getState);
   }
 };
 
