@@ -67,7 +67,7 @@ export default class Alert extends Component<AlertProps, {}> {
               <ViewTransactionDetailsButton dark transactionHash={id} label="view etherscan" />
             </span>
             <span className={Styles.Timestamp}>
-                {convertUnixToFormattedDate(timestamp).formattedUtc}
+                {convertUnixToFormattedDate(timestamp / 1000).formattedLocalShortTime}
             </span>
           </div>
         </div>
