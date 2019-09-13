@@ -8,6 +8,7 @@ import { TrackedUsers } from './TrackedUsers';
 import { UserSyncableDB } from './UserSyncableDB';
 import { DerivedDB } from './DerivedDB';
 import { LiquidityDB, LiquidityLastUpdated, MarketHourlyLiquidity } from './LiquidityDB';
+import { CurrentOrdersDatabase } from './CurrentOrdersDB';
 import { MarketDB } from './MarketDB';
 import { IBlockAndLogStreamerListener, LogCallbackType } from './BlockAndLogStreamerListener';
 import {
@@ -62,20 +63,13 @@ export class DB {
   private syncableDatabases: { [dbName: string]: SyncableDB } = {};
   private derivedDatabases: { [dbName: string]: DerivedDB } = {};
   private liquidityDatabase: LiquidityDB;
+  private currentOrdersDatabase: CurrentOrdersDatabase;
   private marketDatabase: MarketDB;
   private zeroXOrders: ZeroXOrders;
   private blockAndLogStreamerListener: IBlockAndLogStreamerListener;
   private augur: Augur;
   readonly pouchDBFactory: PouchDBFactoryType;
   syncStatus: SyncStatus;
-
-  readonly basicDerivedDBs: DerivedDBConfiguration[] = [
-    {
-      'name': 'CurrentOrders',
-      'eventNames': ['OrderEvent'],
-      'idFields': ['orderId'],
-    },
-  ];
 
   // TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
   readonly userSpecificDBs: UserSpecificDBConfiguration[] = [
@@ -153,13 +147,10 @@ export class DB {
       new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, this.getDatabaseName(genericEventDBDescription.EventName), [], genericEventDBDescription.indexes);
     }
 
-    for (const derivedDBConfiguration of this.basicDerivedDBs) {
-      new DerivedDB(this, networkId, derivedDBConfiguration.name, derivedDBConfiguration.eventNames, derivedDBConfiguration.idFields);
-    }
-
     this.liquidityDatabase = new LiquidityDB(this.augur, this, networkId, 'Liquidity');
 
     // Custom Derived DBs here
+    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId'])
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
     // Zero X Orders. Only on if a mesh client has been provided
@@ -242,16 +233,11 @@ export class DB {
 
     // Derived DBs are synced after generic log DBs complete
     console.log('Syncing derived DBs');
-    dbSyncPromises = [];
-    for (const derivedDBConfiguration of this.basicDerivedDBs) {
-      const dbName = this.getDatabaseName(derivedDBConfiguration.name);
-      dbSyncPromises.push(this.derivedDatabases[dbName].sync(highestAvailableBlockNumber));
-    }
-
-    await Promise.all(dbSyncPromises).then(() => undefined);
 
     // If no meshCLient provided will not exists
     if (this.zeroXOrders) await this.zeroXOrders.sync();
+
+    await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
     await this.marketDatabase.sync(highestAvailableBlockNumber);
@@ -410,11 +396,7 @@ export class DB {
     }
 
     // Perform rollback on derived DBs
-    for (const derivedDBConfiguration of this.basicDerivedDBs) {
-      const dbName = this.getDatabaseName(derivedDBConfiguration.name);
-      dbRollbackPromises.push(this.derivedDatabases[dbName].rollback(blockNumber));
-    }
-
+    dbRollbackPromises.push(this.currentOrdersDatabase.rollback(blockNumber));
     dbRollbackPromises.push(this.marketDatabase.rollback(blockNumber));
 
     // TODO Figure out a way to handle concurrent request limit of 40

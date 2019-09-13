@@ -140,7 +140,9 @@ export class DerivedDB extends AbstractDB {
             documents[0]
           );
         });
-        return _.assign({}, ...mostRecentTopics);
+        const processedMostRecentTopics = _.map(mostRecentTopics, this.processDocument.bind(this));
+        // TODO do the additional processing of documents here. no need to do processing on old logs we ignore
+        return _.assign({}, ...processedMostRecentTopics);
       }) as any[];
 
       success = await this.bulkUpsertUnorderedDocuments(documentsByIdByTopic);
@@ -175,25 +177,11 @@ export class DerivedDB extends AbstractDB {
     for (const fieldName of this.idFields) {
       _id += _.get(log, fieldName);
     }
-    if (log['addressData']) {
-      log['kycToken'] = log['addressData'][0];
-      log['orderCreator'] = log['addressData'][1];
-      log['orderFiller'] = log['addressData'][2];
-      delete log['addressData'];
-    }
-    if (log['uint256Data']) {
-      log['price'] = log['uint256Data'][0];
-      log['amount'] = log['uint256Data'][1];
-      log['outcome'] = log['uint256Data'][2];
-      log['tokenRefund'] = log['uint256Data'][3];
-      log['sharesRefund'] = log['uint256Data'][4];
-      log['fees'] = log['uint256Data'][5];
-      log['amountFilled'] = log['uint256Data'][6];
-      log['timestamp'] = log['uint256Data'][7];
-      log['sharesEscrowed'] = log['uint256Data'][8];
-      log['tokensEscrowed'] = log['uint256Data'][9];
-      delete log['uint256Data'];
-    }
     return Object.assign({ _id }, log);
+  }
+
+  // By default this is a no op. Subclasses may implement log specific processing here
+  protected processDocument(doc: BaseDocument): BaseDocument {
+    return doc;
   }
 }
