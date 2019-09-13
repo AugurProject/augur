@@ -32,6 +32,7 @@ import {
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { selectReportingBalances } from 'modules/account/selectors/select-reporting-balances';
 import { formatDai, formatRep, formatAttoDai, formatAttoRep } from 'utils/format-number';
+import { selectMarket } from 'modules/markets/selectors/market';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -117,7 +118,7 @@ export const selectAllProceedsToClaim = createSelector(
      return  Object.keys(positions).reduce(
         (p, marketId) =>
           positions[marketId].tradingPositionsPerMarket.totalUnclaimedProceeds
-            ? [...p, selectMarkets(marketId)]
+            ? [...p, selectMarket(marketId)]
             : p,
         []
       );

@@ -514,6 +514,7 @@ export interface PositionsTotal {
   unrealizedRevenue: string;
   unrealizedRevenue24hAgo: string;
   unrealizedRevenue24hChangePercent: string;
+  totalUnclaimedProceeds: string;
 }
 
 export interface MarketPositionsTotal extends PositionsTotal {
