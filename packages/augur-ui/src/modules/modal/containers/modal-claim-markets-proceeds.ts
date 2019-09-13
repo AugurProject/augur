@@ -40,8 +40,6 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  // claimMarketsProceeds: (marketId: string, callback: NodeStyleCallback) =>
-  //   dispatch(claimMarketsProceeds(marketId, callback)),
   startClaimingMarketsProceeds: (
     marketIds: string[],
     callback: NodeStyleCallback

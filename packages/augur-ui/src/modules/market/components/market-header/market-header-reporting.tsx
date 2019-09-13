@@ -7,39 +7,33 @@ import MarketLink from "modules/market/components/market-link/market-link";
 import {
   TYPE_DISPUTE,
   TYPE_REPORT,
-  MARKET_STATUS_MESSAGES,
   REPORTING_STATE,
 } from "modules/common/constants";
-import {
-  CountdownProgress,
-  formatTime
-} from "modules/common/progress";
 import { PrimaryButton } from "modules/common/buttons";
-
-import canClaimProceeds from "utils/can-claim-proceeds";
+import { createBigNumber } from "utils/create-big-number";
+import { ZERO } from 'modules/common/constants';
 
 export default class MarketHeaderReporting extends Component {
   static propTypes = {
-    currentTimestamp: PropTypes.number.isRequired,
     market: PropTypes.object.isRequired,
     isDesignatedReporter: PropTypes.bool,
-    finalizeMarket: PropTypes.func.isRequired,
-    claimTradingProceeds: PropTypes.func.isRequired,
+    claimMarketsProceeds: PropTypes.func.isRequired,
     tentativeWinner: PropTypes.object,
     isLogged: PropTypes.bool,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    accountPositions: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
     isDesignatedReporter: false,
     tentativeWinner: {},
-    isLogged: false
+    isLogged: false,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      disableFinalize: false
+      disableFinalize: false,
     };
   }
 
@@ -47,26 +41,29 @@ export default class MarketHeaderReporting extends Component {
     const {
       market,
       isDesignatedReporter,
-      finalizeMarket,
-      claimTradingProceeds,
+      claimMarketsProceeds,
       tentativeWinner,
       isLogged,
-      currentTimestamp,
-      location
+      location,
+      accountPositions
     } = this.props;
     const {
       reportingState,
       id,
       consensus,
-      outstandingReturns,
-      finalizationTime
+      finalizationTime,
     } = market;
 
-    const canClaim = canClaimProceeds(
-      finalizationTime,
-      outstandingReturns,
-      currentTimestamp
-    );
+    let canClaim = false;
+    if (
+      accountPositions[id] &&
+      accountPositions[id].tradingPositionsPerMarket &&
+      createBigNumber(
+        accountPositions[id].tradingPositionsPerMarket.totalUnclaimedProceeds
+      ).gt(ZERO)
+    ) {
+      canClaim = true;
+    }
 
     let content = null;
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
@@ -84,15 +81,14 @@ export default class MarketHeaderReporting extends Component {
             <span>
               {consensus.isInvalid
                 ? "Invalid"
-                : consensus.outcomeName || consensus.winningOutcome}
+                : consensus.outcomeName || consensus.winningOutcome}}
             </span>
           </div>
-          {outstandingReturns &&
-            reportingState === REPORTING_STATE.FINALIZED && (
+          {canClaim && (
               <PrimaryButton
                 id="button"
                 action={() => {
-                  claimTradingProceeds(id);
+                  claimMarketsProceeds([id]);
                 }}
                 text="Claim Proceeds"
                 disabled={!isLogged || !canClaim}

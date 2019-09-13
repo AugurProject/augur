@@ -1,31 +1,26 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import MarketOrdersPositionsTable from "modules/market/components/market-orders-positions-table/market-orders-positions-table";
-import { selectMarket } from "modules/markets/selectors/market";
-import {
-  MODAL_CLAIM_TRADING_PROCEEDS
-} from "modules/common/constants";
-import { selectCurrentTimestamp } from "store/select-state";
-import { CONTRACT_INTERVAL } from "modules/common/constants";
-import { updateModal } from "modules/modal/actions/update-modal";
-import { createBigNumber } from "utils/create-big-number";
-import { cancelAllOpenOrders } from "modules/orders/actions/cancel-order";
-import { selectUserFilledOrders } from "modules/orders/selectors/filled-orders";
-import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
+import MarketOrdersPositionsTable from 'modules/market/components/market-orders-positions-table/market-orders-positions-table';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { createBigNumber } from 'utils/create-big-number';
+import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
+import { selectUserFilledOrders } from 'modules/orders/selectors/filled-orders';
+import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
+import { ZERO } from 'modules/common/constants';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   let openOrders = getUserOpenOrders(market.id) || [];
 
   let canClaim = false;
-  if (market.finalizationTime) {
-    const endTimestamp = createBigNumber(market.finalizationTime).plus(
-      createBigNumber(CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
-    );
-    const currentTimestamp = selectCurrentTimestamp(state);
-    const timeHasPassed = createBigNumber(currentTimestamp).minus(endTimestamp);
-    canClaim = timeHasPassed.toNumber() > 0;
+  if (
+    state.accountPositions[ownProps.marketId] &&
+    createBigNumber(
+      state.accountPositions[ownProps.marketId].totalUnclaimedProceeds
+    ).gt(ZERO)
+  ) {
+    canClaim = true;
   }
 
   const filledOrders = market.id
@@ -37,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
     openOrders = [];
     Object.values(market.orderBook).map(outcome => {
       openOrders = openOrders.concat(outcome);
-    })
+    });
   }
 
   return {
@@ -47,14 +42,13 @@ const mapStateToProps = (state, ownProps) => {
     outcomes: market.outcomes || [],
     openOrders,
     market,
-    filledOrders
+    filledOrders,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  claimTradingProceeds: (marketId, cb) =>
-    dispatch(updateModal({ type: MODAL_CLAIM_TRADING_PROCEEDS, marketId, cb })),
-  cancelAllOpenOrders: (orders, cb) => dispatch(cancelAllOpenOrders(orders, cb))
+  cancelAllOpenOrders: (orders, cb) =>
+    dispatch(cancelAllOpenOrders(orders, cb)),
 });
 
 const MarketOrdersPositionsTableContainer = withRouter(
