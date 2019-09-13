@@ -158,6 +158,7 @@ export default class MarketCard extends React.Component<
 
     const categoriesLowerCased = categories.map(item => item.toLowerCase());
     const categoriesWithClick = categoriesLowerCased
+      .filter(Boolean)
       .map((label, idx) => ({
         label,
         onClick: toggleCategory(categoriesLowerCased.slice(0, idx + 1).toString(), path, history),
