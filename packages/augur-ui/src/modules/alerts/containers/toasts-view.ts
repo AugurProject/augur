@@ -18,6 +18,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   removeAlert: (id: string) => dispatch(removeAlert(id)),
+  updateAlert: (id: string, alert: any) => dispatch(updateAlert(id, alert)),
 });
 
 const ToastsContainer = connect(
