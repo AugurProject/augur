@@ -9,7 +9,7 @@ import {
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
 import { Getters } from '@augurproject/sdk';
-import { UpdateMarketsAction, updateMarketsData } from './update-markets-data';
+import { UpdateMarketsAction, addUpdateMarketInfos } from 'modules/markets/actions//update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 
 interface SortOptions {
@@ -130,19 +130,51 @@ export const loadMarketsByFilter = (
     ...sort,
   };
 
-  const markets = await augur.getMarkets({ ...params });
-  const marketInfos = markets.markets.reduce(
-    (p, m) => ({ ...p, [m.id]: m }),
-    {}
-  );
-  dispatch(updateMarketsData(marketInfos));
-  cb(null, markets);
+  const marketList = await augur.getMarkets({ ...params });
+  dispatch(addUpdateMarketInfos(marketList.markets));
+  cb(null, marketList);
 };
 
 export interface LoadReportingMarketsOptions {
   limit: number;
   offset: number;
+  userPortfolioAddress?: string;
+  sortByRepAmount?: boolean;
+  sortByDisputeRounds?: boolean;
+  search?: string;
 }
+
+export const loadNextWindowDisputingMarkets = (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const params = {
+    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
+    reportingStates: [Getters.Markets.MarketReportingState.AwaitingNextWindow],
+    ...filterOptions,
+  };
+  dispatch(loadReportingMarkets(params, cb));
+};
+
+export const loadCurrentlyDisputingMarkets = (
+  filterOptions: LoadReportingMarketsOptions,
+  cb: Function = () => {}
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
+  dispatch,
+  getState
+) => {
+  const params = {
+    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
+    reportingStates: [
+      Getters.Markets.MarketReportingState.CrowdsourcingDispute,
+    ],
+    ...filterOptions,
+  };
+  dispatch(loadReportingMarkets(params, cb));
+};
 
 export const loadOpenReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
@@ -226,6 +258,7 @@ export const loadReportingMarkets = (
     params.offset = paginationOffset * filterOptions.limit;
   }
   const augur = augurSdk.get();
-  const markets = await augur.getMarkets({ ...params });
-  if (cb) cb(null, markets);
+  const marketList: Getters.Markets.MarketList = await augur.getMarkets({ ...params });
+  dispatch(addUpdateMarketInfos(marketList.markets));
+  if (cb) cb(null, marketList);
 };
