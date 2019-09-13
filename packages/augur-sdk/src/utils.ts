@@ -11,6 +11,12 @@ import { toAscii } from './state/utils/utils';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
+export function marketNameToType(
+  marketName: string
+): number {
+  return MarketType[marketName];
+}
+
 export function numTicksToTickSize(
   numTicks: BigNumber,
   minPrice: BigNumber,

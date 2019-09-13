@@ -4,4 +4,18 @@
 	> div:not(:first-of-type) {
 		margin-top: @size-24;
 	}
+
+	> div:nth-of-type(2) {
+		> span {
+			color: @color-negative;
+		}
+	}
+}
+
+.Passing {
+	> div:nth-of-type(2) {
+		> span {
+			color: @color-positive;
+		}
+	}
 }

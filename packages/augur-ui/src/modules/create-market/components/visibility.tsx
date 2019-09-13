@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import { augurSdk } from 'services/augursdk';
+import classNames from 'classNames';
 import Styles from 'modules/create-market/components/visibility.styles';
 import {
   LargeSubheaders,
@@ -9,7 +10,12 @@ import {
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
 import { getMarketLiquidityRanking } from 'modules/create-market/actions/get-market-liquidity-ranking';
-import { CATEGORICAL, SCALAR } from 'modules/common/constants';
+import {
+  CATEGORICAL,
+  SCALAR,
+	MAX_SPREAD_10_PERCENT,
+	BUY
+} from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -17,13 +23,10 @@ import {
   constructMarketParams,
 } from 'modules/create-market/helpers/construct-market-params';
 import {
-  CreateYesNoMarketParams,
-  CreateCategoricalMarketParams,
-  CreateScalarMarketParams,
-  stringTo32ByteHex,
   tickSizeToNumTickWithDisplayPrices,
   convertDisplayValuetoAttoValue,
   convertDisplayPriceToOnChainPrice,
+  marketNameToType,
 } from '@augurproject/sdk';
 
 export interface VisibilityProps {
@@ -47,7 +50,7 @@ export default class Visibility extends Component<
       marketRank: 0,
       totalMarkets: 0,
       hasLiquidity: props.newMarket.initialLiquidityDai.toString() !== '0',
-		};
+    };
   }
 
   calculateParams(newMarket) {
@@ -66,24 +69,13 @@ export default class Visibility extends Component<
       minPriceBigNumber,
       maxPriceBigNumber
     );
-    let marketTypeNumber = 0;
-    switch (marketType) {
-      case CATEGORICAL:
-        marketTypeNumber = 1;
-        break;
-      case SCALAR:
-        marketTypeNumber = 2;
-        break;
-      default:
-        break;
-    }
-    const formattedOrderBook = {};
-
+    // backend uses YesNo, ui uses yesNo, this ensures capital Y if that's the case.
+    const marketName = marketType.charAt(0).toUpperCase() + marketType.slice(1);
+    const marketTypeNumber = marketNameToType(marketName);
+    let formattedOrderBook = {};
     Object.entries(orderBook).forEach(([outcome, orders]) => {
-      formattedOrderBook[outcome] = {
-        bids: [],
-        asks: [],
-      };
+      const numOutcome = parseInt(outcome);
+      formattedOrderBook[numOutcome] = { bids: [], asks: [] };
       orders.forEach(order => {
         const formattedOrder = {
           price: convertDisplayPriceToOnChainPrice(
@@ -91,40 +83,50 @@ export default class Visibility extends Component<
             minPriceBigNumber,
             tickSizeBigNumber
           ).toFixed(),
-          quantity: convertDisplayValuetoAttoValue(
+          amount: convertDisplayValuetoAttoValue(
             createBigNumber(order.quantity)
           ).toFixed(),
         };
-        if (order.type === 'buy') {
-          formattedOrderBook[outcome].bids.push(formattedOrder);
+        if (order.type === BUY) {
+          formattedOrderBook[numOutcome].bids.push(formattedOrder);
         } else {
-          formattedOrderBook[outcome].asks.push(formattedOrder);
+          formattedOrderBook[numOutcome].asks.push(formattedOrder);
         }
       });
     });
-		const params = {
-			orderBook: formattedOrderBook,
+    const params = {
+      orderBook: formattedOrderBook,
       numTicks: numTicks.toFixed(),
       numOutcomes: outcomesFormatted.length,
       marketType: marketTypeNumber,
       marketFeeDivisor: `${settlementFee}`,
       reportingFeeDivisor: '0',
-			spread: 10,
+      spread: parseFloat(MAX_SPREAD_10_PERCENT),
     };
     return params;
   }
 
+  getMarketLiquidityRanking = async (
+    params,
+    callback: NodeStyleCallback = logError
+  ) => {
+    const Augur = augurSdk.get();
+    const MarketLiquidityRanking = await Augur.getMarketLiquidityRanking(
+      params
+    );
+    callback(null, MarketLiquidityRanking);
+  };
+
   getRanking() {
     const { newMarket } = this.props;
-		const params = this.calculateParams(newMarket);
-    getMarketLiquidityRanking(params, (err, updates) => {
-			if (err) return null;
-      this.setState({ ...updates });
-    });
+    const params = this.calculateParams(newMarket);
+    this.getMarketLiquidityRanking(params, (err, updates) =>
+      this.setState({ ...updates })
+    );
   }
 
   componentDidUpdate(prevProps) {
-		const { newMarket } = this.props;
+    const { newMarket } = this.props;
     if (
       prevProps.newMarket.initialLiquidityDai.comparedTo(
         newMarket.initialLiquidityDai
@@ -140,11 +142,15 @@ export default class Visibility extends Component<
   }
 
   render() {
-    const { marketRank, totalMarkets } = this.state;
+    const { marketRank, totalMarkets, hasLiquidity } = this.state;
 
     return (
       <ContentBlock dark>
-        <div className={Styles.Visibility}>
+        <div
+          className={classNames(Styles.Visibility, {
+            [Styles.Passing]: hasLiquidity,
+          })}
+        >
           <LargeSubheaders
             link
             header="Market visibility"
@@ -152,14 +158,16 @@ export default class Visibility extends Component<
           />
           <SmallSubheadersTooltip
             header="default Spread filter check"
-            subheader="Fail"
+            subheader={hasLiquidity ? 'Pass' : 'Fail'}
             text="Info text"
           />
 
-          <SmallSubheaders
-            header="How to pass spread filter check"
-            subheader="New suggestion: Tighten spread to less than 15% on [Outcome: X] to pass spread filter check"
-          />
+          {!hasLiquidity && (
+            <SmallSubheaders
+              header="How to pass spread filter check"
+              subheader="New suggestion: Tighten spread to less than 15% on [Outcome: X] to pass spread filter check"
+            />
+          )}
 
           <SmallSubheadersTooltip
             header="Market ranking"
