@@ -509,9 +509,19 @@ export class CategorySingleSelect extends Component<
 > {
   state: CategorySingleSelectState = {
     selected: this.props.initialSelected || '',
-    value: this.props.initialValue || this.props.initialSelected || '',
+    value: this.props.initialValue || (this.props.initialSelected === CUSTOM ? '' : this.props.initialSelected || ''),
     showText: this.props.initialSelected === CUSTOM,
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.initialSelected !== this.props.initialSelected) {
+      this.setState({
+        selected: nextProps.initialSelected,
+        value: nextProps.initialValue,
+        showText: nextProps.initialSelected === CUSTOM,
+      });
+    }
+  }
 
   onChangeDropdown(choice) {
     let value = choice;

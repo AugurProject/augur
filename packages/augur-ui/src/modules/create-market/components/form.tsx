@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { LocationDisplay, Error } from 'modules/common/form';
+import { LocationDisplay, Error, RadioCardGroup } from 'modules/common/form';
 import {
   BACK,
   NEXT,
@@ -28,9 +28,11 @@ import {
   AFFILIATE_FEE,
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
+  MARKET_TYPE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
+  YES_NO,
   SCALAR,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
@@ -43,6 +45,9 @@ import {
   LargeHeader,
   ExplainerBlock,
   ContentBlock,
+  Header,
+  Subheaders,
+  LargeSubheaders,
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
@@ -74,6 +79,7 @@ import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
+import { Popcorn } from 'modules/common/icons';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -507,14 +513,15 @@ export default class Form extends React.Component<FormProps, FormState> {
     const {
       newMarket,
       drafts,
-      template,
+      updateNewMarket,
       openCreateMarketModal,
       history,
-      needsApproval
+      needsApproval,
+      template,
     } = this.props;
     const { contentPages } = this.state;
 
-    const { currentStep, validations, uniqueId } = newMarket;
+    const { currentStep, validations, uniqueId, marketType } = newMarket;
 
     const {
       mainContent,
@@ -585,6 +592,44 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === SUB_CATEGORIES && <SubCategories />}
+              {mainContent === MARKET_TYPE &&
+                <section>
+                  <LargeSubheaders
+                    link
+                    underline
+                    header='Choose a market type'
+                    subheader='Market types vary based on the amount of possible outcomes.'
+                  />
+
+                  <RadioCardGroup
+                    onChange={(value) => updateNewMarket({ marketType: value })}
+                    defaultSelected={marketType}
+                    radioButtons={[
+                      {
+                        value: YES_NO,
+                        header: 'Yes / No',
+                        description: 'There are two possible outcomes: “Yes” or “No”',
+                        icon: Popcorn,
+                        iconColors: true,
+                      },
+                      {
+                        value: CATEGORICAL,
+                        header: 'Multiple Choice',
+                        description: 'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
+                        icon: Popcorn,
+                        iconColors: true,
+                      },
+                      {
+                        value: SCALAR,
+                        header: 'Scalar',
+                        description: 'A range of numeric outcomes: “USD range” between “1” and “100”.',
+                        icon: Popcorn,
+                        iconColors: true,
+                      },
+                    ]}
+                  />
+                </section>
+              }
               {saveDraftError && (
                 <Error
                   header="Unable to save draft"
@@ -602,11 +647,11 @@ export default class Form extends React.Component<FormProps, FormState> {
                   <SecondaryButton text="Back" action={this.prevPage} />
                 )}
                 <div>
-                  <SecondaryButton
+                  {!template && <SecondaryButton
                     text={disabledSave ? 'Saved' : 'Save draft'}
                     disabled={disabledSave}
                     action={this.saveDraft}
-                  />
+                  />}
                   {secondButton === NEXT && (
                     <PrimaryButton text="Next" action={this.nextPage} />
                   )}

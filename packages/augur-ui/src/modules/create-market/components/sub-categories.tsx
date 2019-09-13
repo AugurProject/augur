@@ -23,10 +23,9 @@ export const SubCategories = ({
     tertiaryAutoComplete,
   } = createGroups(setCategories, categories, categories);
 
-  const isCustomSelected = categories[2] && !tertiaryOptions
-    .map(options => options.value)
-    .includes(categories[2]);
-
+  const tertiarySelected = categories[2].length > 0;
+  const categorySelected = tertiaryOptions.map(options => options.value).includes(categories[2]);
+  const isCustomSelected = tertiaryOptions.length === 0 || !categorySelected && tertiaryOptions.length > 0 && tertiarySelected ;
   const customOption = { label: CUSTOM, value: CUSTOM };
   return (
     <section className={Styles.SubCategories}>
@@ -57,7 +56,7 @@ export const SubCategories = ({
           options={tertiaryOptions.length > 0 ? tertiaryOptions : [customOption] }
           autoCompleteList={tertiaryAutoComplete}
           initialSelected={isCustomSelected ? CUSTOM : categories[2]}
-          initialValue={categories[2]}
+          initialValue={isCustomSelected ? tertiarySelected ? categories[2] : '' : categories[2]}
           staticLabel='Tertiary Category (optional)'
           placeholder='Custom Tertiary Category'
           updateSelection={(value: string) => {
