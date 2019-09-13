@@ -49,15 +49,19 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-  const marketIdsToTest = Object.keys(sP.accountPositions);
   const markets: ActionRowsProps[] = [];
-  const marketIds: string[] = [];
-  let totalProceeds: any = createBigNumber(0); // BigNumber @type required
-  marketIdsToTest.forEach(marketId => {
+  const marketIds = Object.keys(sP.accountPositions);
+  let totalUnclaimedProceeds: any = createBigNumber(0); // BigNumber @type required
+  let totalUnclaimedProfit: any = createBigNumber(0);
+  marketIds.forEach(marketId => {
     const market = selectMarket(marketId);
-    const winningOutcomeShares = formatDai(
+    const unclaimedProceeds = formatDai(
       sP.accountPositions[market.marketId].tradingPositionsPerMarket
         .totalUnclaimedProceeds
+    );
+    const unclaimedProfit = formatDai(
+      sP.accountPositions[market.marketId].tradingPositionsPerMarket
+        .totalUnclaimedProfit
     );
 
     const pending =
@@ -70,21 +74,26 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       properties: [
         {
           label: 'Proceeds',
-          value: winningOutcomeShares.full,
+          value: unclaimedProceeds.full,
+        },
+        {
+          label: 'Profit',
+          value: unclaimedProfit.full,
         },
       ],
       text: 'Claim Proceeds',
       action: () => dP.startClaimingMarketsProceeds([marketId], () => {}),
     });
-    marketIds.push(marketId);
-    totalProceeds = totalProceeds.plus(winningOutcomeShares.formatted);
+    totalUnclaimedProceeds = totalUnclaimedProceeds.plus(unclaimedProceeds.formatted);
+    totalUnclaimedProfit = totalUnclaimedProfit.plus(unclaimedProfit.formatted);
   });
   const totalGas = formatEther(
     // @ts-ignore
     createBigNumber(sP.gasCost).times(markets.length)
   );
   const multiMarket = markets.length > 1 ? 's' : '';
-  totalProceeds = formatDai(totalProceeds);
+  totalUnclaimedProceeds = formatDai(totalUnclaimedProceeds);
+  totalUnclaimedProfit = formatDai(totalUnclaimedProfit);
 
   const submitAllTxCount = Math.ceil(
     markets.length / MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT
@@ -95,7 +104,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     descriptionMessage: [
       {
         preText: 'You currently have a total of',
-        boldText: totalProceeds.full,
+        boldText: totalUnclaimedProceeds.full,
         postText: `to be claimed in the following market${multiMarket}:`,
       },
     ],
@@ -109,7 +118,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
       {
         label: 'Total Proceeds',
-        value: totalProceeds.full,
+        value: totalUnclaimedProceeds.full,
+      },
+      {
+        label: 'Total Profit',
+        value: totalUnclaimedProfit.full,
       },
     ],
     closeAction: () => {
