@@ -182,9 +182,11 @@
   .InnerNav__menu--main,
   .InnerNav__menu--submenu {
     height: 100vh;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
     width: 100%;
     z-index: @above-all-content;
+    -webkit-overflow-scrolling: touch;
   }
 
   .InnerNav__menu--submenu {
