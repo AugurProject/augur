@@ -6,12 +6,12 @@ import { Action } from "redux";
 import { AppState } from "store";
 import { augurSdk } from "services/augursdk";
 
-export const sendFinalizeMarket = (marketId, callback: NodeStyleCallback = logError) => async (
+export const sendFinalizeMarket = (marketId, callback: NodeStyleCallback = logError) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
   console.log("finalize market called");
-
+  const { contracts } = augurSdk.get();
   // TODO call contract to finalize market
   /*
   const { loginAccount } = getState();

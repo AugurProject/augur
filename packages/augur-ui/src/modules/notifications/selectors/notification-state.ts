@@ -206,7 +206,6 @@ export const selectNotifications = createSelector(
       ...finalizeMarketsNotifications,
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
-      // ...proceedsToClaimOnHoldNotifications,
     ];
 
     // Add unquie notifications

@@ -61,10 +61,6 @@ interface ProceedsToClaimTemplateProps extends BaseProps {
   totalProceeds: number | undefined;
 }
 
-// interface ProceedsToClaimOnHoldTemplateProps extends BaseProps {
-//   market: MarketData;
-// }
-
 interface TemplateProps extends BaseProps {
   message: string;
 }

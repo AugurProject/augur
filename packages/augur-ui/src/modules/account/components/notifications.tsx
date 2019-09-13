@@ -138,10 +138,6 @@ class Notifications extends React.Component<
         break;
 
       case NOTIFICATION_TYPES.proceedsToClaim:
-// console.error('notification');
-// console.error(notification);
-// console.error('this.props');
-// console.error(this.props);
         buttonAction = () => {
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
@@ -150,20 +146,6 @@ class Notifications extends React.Component<
           );
         };
         break;
-
-      // case NOTIFICATION_TYPES.proceedsToClaimOnHold:
-      //   buttonAction = () => {
-      //     this.markAsRead(notification);
-      //     const queryLink = {
-      //       [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
-      //       [RETURN_PARAM_NAME]: location.hash,
-      //     };
-      //     history.push({
-      //       pathname: makePath(MARKET, null),
-      //       search: makeQuery(queryLink),
-      //     });
-      //   };
-      //   break;
 
       default:
         buttonAction = () => {
@@ -286,12 +268,6 @@ class Notifications extends React.Component<
               {...templateProps}
             />
           ) as any : null}
-          {/* {type === NOTIFICATION_TYPES.proceedsToClaimOnHold ? (
-            <ProceedsToClaimOnHoldTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null} */}
           {type === NOTIFICATION_TYPES.proceedsToClaim ? (
             <ProceedsToClaimTemplate
               isDisabled={isDisabled}

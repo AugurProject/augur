@@ -26,7 +26,6 @@ import ModalParticipate from "modules/modal/containers/modal-participate";
 import ModalNetworkConnect from "modules/modal/containers/modal-network-connect";
 import ModalDisclaimer from "modules/modal/containers/modal-disclaimer";
 import ModalGasPrice from "modules/modal/containers/modal-gas-price";
-// import ModalClaimTradingProceeds from "modules/modal/containers/modal-claim-trading-proceeds";
 import ModalClaimMarketsProceeds from "modules/modal/containers/modal-claim-markets-proceeds";
 import ModalTradingOverlay from "modules/modal/components/modal-trading-overlay";
 import ModalOpenOrders from "modules/modal/containers/modal-open-orders";
@@ -52,8 +51,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalContent {...props} />;
     case TYPES.MODAL_CLAIM_MARKETS_PROCEEDS:
       return <ModalClaimMarketsProceeds {...props} />;
-    // case TYPES.MODAL_CLAIM_TRADING_PROCEEDS:
-    //   return <ModalClaimTradingProceeds {...props} />;
     case TYPES.MODAL_GAS_PRICE:
       return <ModalGasPrice {...props} />;
     case TYPES.MODAL_UNSIGNED_ORDERS:
@@ -161,9 +158,7 @@ export default class ModalView extends Component<ModalViewProps> {
 
   render() {
     const { closeModal, modal } = this.props;
-console.log("IN modal-view.tsx.render")
-console.log(modal);
-console.log(this.props);
+
     const Modal = selectModal(modal.type, this.props, closeModal, modal);
 
     return (
