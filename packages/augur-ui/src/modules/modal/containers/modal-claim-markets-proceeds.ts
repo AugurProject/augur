@@ -4,14 +4,20 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { createBigNumber } from 'utils/create-big-number';
-// import canClaimProceeds from 'utils/can-claim-proceeds';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
-import { formatGasCostToEther, formatDai, formatEther } from 'utils/format-number';
+import {
+  formatGasCostToEther,
+  formatDai,
+  formatEther,
+} from 'utils/format-number';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';
-import { REPORTING_STATE, CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE, MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT } from 'modules/common/constants';
+import {
+  CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,
+  MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
+} from 'modules/common/constants';
 import { ActionRowsProps } from 'modules/modal/common';
-import { /*CLAIM_PROCEEDS*/ CLAIM_MARKETS_PROCEEDS } from 'modules/common/constants';
+import { CLAIM_MARKETS_PROCEEDS } from 'modules/common/constants';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -25,7 +31,7 @@ const mapStateToProps = (state: AppState) => {
       // @ts-ignore
       CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,
       { decimalsRounded: 4 },
-      getGasPrice(state),
+      getGasPrice(state)
     ),
     accountPositions: state.accountPositions,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
@@ -36,42 +42,27 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   // claimMarketsProceeds: (marketId: string, callback: NodeStyleCallback) =>
   //   dispatch(claimMarketsProceeds(marketId, callback)),
-  startClaimingMarketsProceeds: (marketIds: string[], callback: NodeStyleCallback) =>
-    dispatch(startClaimingMarketsProceeds(marketIds, callback)),
+  startClaimingMarketsProceeds: (
+    marketIds: string[],
+    callback: NodeStyleCallback
+  ) => dispatch(startClaimingMarketsProceeds(marketIds, callback)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-  console.log('!!!!! in mergeProps');
-  console.log(sP);
-  console.log(dP);
   const marketIdsToTest = Object.keys(sP.accountPositions);
   const markets: ActionRowsProps[] = [];
   const marketIds: string[] = [];
   let totalProceeds: any = createBigNumber(0); // BigNumber @type required
   marketIdsToTest.forEach(marketId => {
     const market = selectMarket(marketId);
-    console.log('MARKET');
-    console.log(market);
-    // if (
-    //   market &&
-    //   market.reportingState === REPORTING_STATE.FINALIZED
-    // ) {
     const winningOutcomeShares = formatDai(
       sP.accountPositions[market.marketId].tradingPositionsPerMarket
         .totalUnclaimedProceeds
     );
 
-    // if (
-    //   canClaimProceeds(
-    //     market.finalizationTime,
-    //     market.outstandingReturns,
-    //     sP.currentTimestamp,
-    //   ) &&
-    //   winningOutcomeShares.value > 0
-    // ) {
-      const pending =
-        sP.pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
-        sP.pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
+    const pending =
+      sP.pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
+      sP.pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
     markets.push({
       // @ts-ignore
       title: market.description,
@@ -87,8 +78,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     });
     marketIds.push(marketId);
     totalProceeds = totalProceeds.plus(winningOutcomeShares.formatted);
-    // }
-    // }
   });
   const totalGas = formatEther(
     // @ts-ignore

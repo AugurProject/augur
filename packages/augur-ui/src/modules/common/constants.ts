@@ -651,7 +651,8 @@ export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.00000001');
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
-export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(700000); // Estimate for categorical market (worst-case gas cost)// TODO: Get actual gas cost
+// TODO: Get actual gas cost from augur-core
+export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1000000); // Estimate for categorical market (worst-case gas cost)
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
 export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT).div(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE).toNumber());
 export const MAX_BULK_ORDER_COUNT = 5;

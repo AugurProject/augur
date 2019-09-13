@@ -4,19 +4,16 @@ import {
   selectLoginAccountAddress,
   selectDisputeWindowStats,
   selectPendingLiquidityOrders,
-  selectCurrentTimestampInSeconds,
   selectReadNotificationState,
   selectAccountPositionsState,
   selectLoginAccountReportingState,
 } from 'store/select-state';
 
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
-// import canClaimProceeds from 'utils/can-claim-proceeds';
+import { createBigNumber } from 'utils/create-big-number';
 import {
   NOTIFICATION_TYPES,
   TYPE_DISPUTE,
   TYPE_VIEW_ORDERS,
-  TYPE_VIEW_SETS,
   TYPE_VIEW_DETAILS,
   RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
   REPORTING_ENDS_SOON_TITLE,
@@ -26,13 +23,16 @@ import {
   PROCEEDS_TO_CLAIM_TITLE,
   MARKET_CLOSED,
   REPORTING_STATE,
-  CONTRACT_INTERVAL,
   ZERO,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
-import { selectReportingBalances } from 'modules/account/selectors/select-reporting-balances';
-import { formatDai, formatRep, formatAttoDai, formatAttoRep } from 'utils/format-number';
-import { selectMarket } from 'modules/markets/selectors/market';
+import {
+  formatDai,
+  formatRep,
+  formatAttoDai,
+  formatAttoRep,
+} from 'utils/format-number';
+import store from 'store';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -110,92 +110,15 @@ export const selectMarketsInDispute = createSelector(
   }
 );
 
-// Get all markets where the user has outstanding returns
-export const selectAllProceedsToClaim = createSelector(
-  selectAccountPositionsState,
-  positions => {
-    if (positions && Object.keys(positions).length > 0) {
-      // TODO: Remove hard-coding of totalUnclaimedProceeds below
-      const markets = Object.keys(positions).reduce(
-        (p, marketId) => {
-          if (positions[marketId].tradingPositionsPerMarket.totalUnclaimedProceeds) {
-            const market: any = selectMarket(marketId);
-            market.totalUnclaimedProceeds = positions[marketId].tradingPositionsPerMarket.totalUnclaimedProceeds;
-            return [...p, market];
-          } else {
-            return p;
-          }
-        },
-        []
-      );
-      return markets;
-    }
-    return [];
-  }
-);
-
-// export const selectAllProceedsToClaim = createSelector(
-//   selectMarkets,
-//   markets => {
-//     if (markets && markets.length > 0) {
-//       return markets
-//         .filter(market => market.reportingState === REPORTING_STATE.FINALIZED)
-//         .filter(market => market.outstandingReturns);
-//     }
-//     return [];
-//   }
-// );
-
-// // Get all markets where the user has outstanding returns and doesn't have to wait CLAIM_PROCEEDS_WAIT_TIME
-// export const selectProceedsToClaim = createSelector(
-//   selectAllProceedsToClaim,
-//   selectCurrentTimestampInSeconds,
-//   (markets, currentTimestamp) => {
-//     if (markets.length > 0 && currentTimestamp) {
-//       return markets
-//         .filter(market =>
-//           canClaimProceeds(
-//             market.finalizationTime,
-//             market.outstandingReturns,
-//             currentTimestamp
-//           )
-//         )
-//         .map(getRequiredMarketData);
-//     }
-//     return [];
-//   }
-// );
-
-// // Get all markets where the user has outstanding returns
-// export const selectProceedsToClaimOnHold = createSelector(
-//   selectAllProceedsToClaim,
-//   markets => {
-//     if (markets.length > 0) {
-//       return markets
-//         .filter(
-//           market =>
-//             !canClaimProceeds(
-//               market.finalizationTime,
-//               market.outstandingReturns
-//             )
-//         )
-//         .map(getRequiredMarketData)
-//         .map(market => {
-//           return {
-//             ...market,
-//           };
-//         });
-//     }
-//     return [];
-//   }
-// );
-
 // Get reportingFees for signed in user
 export const selectUsersReportingFees = createSelector(
   selectDisputeWindowStats,
   selectLoginAccountReportingState,
   (currentDisputeWindow, userReportingStats) => {
-    let unclaimed = { unclaimedDai: formatDai(ZERO), unclaimedRep: formatRep(ZERO) };
+    let unclaimed = {
+      unclaimedDai: formatDai(ZERO),
+      unclaimedRep: formatRep(ZERO),
+    };
     if (
       userReportingStats &&
       userReportingStats.pariticipationTokens &&
@@ -244,9 +167,6 @@ export const selectNotifications = createSelector(
   selectMarketsInDispute,
   selectUsersReportingFees,
   selectUnsignedOrders,
-  selectAllProceedsToClaim,
-  // selectProceedsToClaim,
-  // selectProceedsToClaimOnHold,
   selectReadNotificationState,
   (
     reportOnMarkets,
@@ -255,8 +175,6 @@ export const selectNotifications = createSelector(
     marketsInDispute,
     claimReportingFees,
     unsignedOrders,
-    proceedsToClaim,
-    // proceedsToClaimOnHold,
     readNotifications
   ) => {
     // Generate non-unquie notifications
@@ -280,10 +198,6 @@ export const selectNotifications = createSelector(
       unsignedOrders,
       NOTIFICATION_TYPES.unsignedOrders
     );
-    // const proceedsToClaimOnHoldNotifications = generateCards(
-    //   proceedsToClaimOnHold,
-    //   NOTIFICATION_TYPES.proceedsToClaimOnHold
-    // );
 
     // Add non unquie notifications
     let notifications = [
@@ -311,33 +225,40 @@ export const selectNotifications = createSelector(
         id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }
-// console.log("proceedsToClaim");
-// console.log(proceedsToClaim);
-    if (proceedsToClaim && proceedsToClaim.length > 0) {
-      let totalDai = createBigNumber(0);
 
-      const marketIds = proceedsToClaim.map(market => market.id);
-      proceedsToClaim.forEach(market => {
+    const { accountPositions } = store.getState();
+    let totalDai = createBigNumber(0);
+    const marketIds = [];
+    for (const marketId in accountPositions) {
+      if (
+        accountPositions[marketId] &&
+        createBigNumber(
+          accountPositions[marketId].tradingPositionsPerMarket
+            .totalUnclaimedProceeds
+        ).gt(0)
+      ) {
         totalDai = totalDai.plus(
-          createBigNumber(Number(market.totalUnclaimedProceeds || 0))
+          createBigNumber(
+            accountPositions[marketId].tradingPositionsPerMarket
+              .totalUnclaimedProceeds
+          )
         );
-      });
-
-// console.log(totalDai.toNumber());
-// console.log(marketIds);
-      if (totalDai.toNumber() > 0 && marketIds.length > 0) {
-        notifications = notifications.concat({
-          type: NOTIFICATION_TYPES.proceedsToClaim,
-          isImportant: false,
-          isNew: true,
-          title: PROCEEDS_TO_CLAIM_TITLE,
-          buttonLabel: TYPE_VIEW_DETAILS,
-          market: null,
-          markets: marketIds,
-          totalProceeds: totalDai.toNumber(),
-          id: NOTIFICATION_TYPES.proceedsToClaim,
-        });
+        marketIds.push(marketId);
       }
+    }
+
+    if (totalDai.toNumber() > 0 && marketIds.length > 0) {
+      notifications = notifications.concat({
+        type: NOTIFICATION_TYPES.proceedsToClaim,
+        isImportant: false,
+        isNew: true,
+        title: PROCEEDS_TO_CLAIM_TITLE,
+        buttonLabel: TYPE_VIEW_DETAILS,
+        market: null,
+        markets: marketIds,
+        totalProceeds: totalDai.toNumber(),
+        id: NOTIFICATION_TYPES.proceedsToClaim,
+      });
     }
 
     // Update isNew status based on data stored on local state

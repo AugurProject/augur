@@ -18,7 +18,6 @@ import { NodeStyleCallback } from 'modules/types';
 
 // TODO create state Interface
 const mapStateToProps = (state: AppState) => {
-console.log("IN notifications.ts");
   const notifications = selectNotifications(state);
 
   return {
@@ -34,7 +33,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   finalizeMarketModal: (marketId: string, cb: NodeStyleCallback) =>
     dispatch(updateModal({ type: MODAL_FINALIZE_MARKET, marketId, cb })),
   claimMarketsProceeds: (marketIds: string[], cb: NodeStyleCallback) =>
-    dispatch(updateModal({ type: MODAL_CLAIM_MARKETS_PROCEEDS, marketIds, cb })),
+    dispatch(
+      updateModal({ type: MODAL_CLAIM_MARKETS_PROCEEDS, marketIds, cb })
+    ),
   claimReportingFees: (reportingFees: any, cb: NodeStyleCallback) =>
     dispatch(
       updateModal({
