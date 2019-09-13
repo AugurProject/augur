@@ -8,7 +8,6 @@ import { removeMarket } from 'modules/markets/actions/update-markets-data';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import makePath from 'modules/routes/helpers/make-path';
 import { TRANSACTIONS } from 'modules/routes/constants/views';
-import loadCategories from 'modules/categories/actions/load-categories';
 import {
   loadMarketsInfo,
   loadMarketsInfoIfNotLoaded,
@@ -174,7 +173,6 @@ export const handleMarketMigratedLog = (log: any) => (
   } else {
     dispatch(loadMarketsInfo([log.market]));
   }
-  dispatch(loadCategories());
 };
 
 export const handleTokensTransferredLog = (log: any) => (

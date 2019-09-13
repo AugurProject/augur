@@ -151,12 +151,6 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
       }));
 
     const categoriesWithClick = process(market.category) || [];
-    const tagsWithClick = market.id && market.tags.filter(Boolean).map(tag => ({
-      label: tag,
-      onClick: () => {
-        this.gotoFilter("tag", tag);
-      }
-    })) || [];
 
     return (
       <section
@@ -173,7 +167,7 @@ export default class MarketHeader extends Component<MarketHeaderProps, MarketHea
       >
         <h1>{description}</h1>
         <div>
-          <WordTrail items={[...categoriesWithClick, ...tagsWithClick]}>
+          <WordTrail items={[...categoriesWithClick]}>
             <button
               className={Styles.BackButton}
               onClick={() => history.goBack()}
