@@ -261,21 +261,21 @@ export function removeAlert(id: string) {
   };
 }
 
-// export function updateExistingAlert(id, alert) {
-//   return (dispatch, getState) => {
-//     const callback = alert => {
-//       const fullAlert = {
-//         type: UPDATE_EXISTING_ALERT,
-//         data: {
-//           id,
-//           alert
-//         }
-//       };
-//       return fullAlert;
-//     };
-//     return dispatch(setAlertText(alert, callback));
-//   };
-// }
+export function updateExistingAlert(id, alert) {
+  return (dispatch, getState) => {
+    const callback = alert => {
+      const fullAlert = {
+        type: UPDATE_EXISTING_ALERT,
+        data: {
+          id,
+          alert
+        }
+      };
+      return fullAlert;
+    };
+    return dispatch(setAlertText(alert, callback));
+  };
+}
 
 export function updateAlert(id: string, alert: any) {
   return (dispatch: ThunkDispatch<void, any, Action>): void => {
