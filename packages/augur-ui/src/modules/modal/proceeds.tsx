@@ -11,6 +11,7 @@ import {
   Breakdown,
 } from "modules/modal/common";
 import {
+  BulkTxLabel,
   LinearPropertyLabelProps,
 } from "modules/common/labels";
 
@@ -21,6 +22,8 @@ interface ProceedsProps {
   title: string;
   buttons: Array<DefaultButtonProps>;
   rows: ActionRowsProps;
+  needsApproval: boolean;
+  submitAllTxCount: number;
   breakdown?: Array<LinearPropertyLabelProps>;
   descriptionMessage?: DescriptionMessageProps;
 }
@@ -39,5 +42,6 @@ export const Proceeds = (props: ProceedsProps) => (
       {props.breakdown && <Breakdown short rows={props.breakdown} />}
     </main>
     <ButtonsRow buttons={props.buttons} />
+    <BulkTxLabel buttonName={"Claim All"} count={props.submitAllTxCount} needsApproval={props.needsApproval} />
   </div>
 );

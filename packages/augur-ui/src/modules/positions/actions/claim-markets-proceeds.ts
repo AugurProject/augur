@@ -6,7 +6,8 @@ import {
   addPendingData,
   removePendingData,
 } from 'modules/pending-queue/actions/pending-queue-management';
-import { CLAIM_PROCEEDS, CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,  PENDING, SUCCESS } from 'modules/common/constants';
+import { /*CLAIM_PROCEEDS,*/ MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,  PENDING, SUCCESS } from 'modules/common/constants';
+import { createBigNumber } from 'utils/create-big-number';
 import { claimMarketsProceeds } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'store';
 import { NodeStyleCallback } from 'modules/types';
@@ -52,12 +53,13 @@ export const startClaimingMarketsProceeds = (
   if (!loginAccount.address || !marketIds || !marketIds.length)
     return callback(null);
 
-  MAX_CLAIM_MARKETS_PROCEEDS_COUNT = CLAIM_SHARES_GAS_COST
   let i = 0;
   const groups = [];
-  for (i; i < orders.length; i += MAX_CLAIM_MARKETS_PROCEEDS_COUNT) {
-    groups.push(orders.slice(i, i + MAX_BULK_ORDER_COUNT));
+  for (i; i < marketIds.length; i += MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT) {
+    groups.push(marketIds.slice(i, i + MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT));
   }
+console.log("GROUPS!!!!");
+console.log(groups);
   try {
     // TODO: Pass affiliate address to claimMarketsProceeds
     groups.map(group => claimMarketsProceeds(group, loginAccount.address, ''));
