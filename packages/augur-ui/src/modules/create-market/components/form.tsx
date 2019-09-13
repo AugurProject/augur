@@ -610,21 +610,21 @@ export default class Form extends React.Component<FormProps, FormState> {
                         header: 'Yes / No',
                         description: 'There are two possible outcomes: “Yes” or “No”',
                         icon: Popcorn,
-                        iconColors: true,
+                        useIconColors: true,
                       },
                       {
                         value: CATEGORICAL,
                         header: 'Multiple Choice',
                         description: 'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
                         icon: Popcorn,
-                        iconColors: true,
+                        useIconColors: true,
                       },
                       {
                         value: SCALAR,
                         header: 'Scalar',
                         description: 'A range of numeric outcomes: “USD range” between “1” and “100”.',
                         icon: Popcorn,
-                        iconColors: true,
+                        useIconColors: true,
                       },
                     ]}
                   />

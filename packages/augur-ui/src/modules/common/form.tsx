@@ -217,7 +217,8 @@ interface RadioCardProps {
   description: string;
   checked?: boolean;
   onChange?: Function;
-  icon?: SVGElement;
+  icon?: JSX.Element;
+  useIconColors?: boolean;
 }
 
 interface RadioGroupProps {
@@ -1156,11 +1157,12 @@ const RadioCard = ({
   onChange,
   checked,
   icon,
+  useIconColors = false,
 }: RadioCardProps) => (
   <div
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
-      [Styles.CustomIcon]: icon,
+      [Styles.CustomIcon]: icon && !useIconColors,
     })}
     role="button"
     onClick={e => onChange(value)}
