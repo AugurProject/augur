@@ -266,10 +266,4 @@ export const LoadingMarketCard = () =>
   <MarketCard
     loading={true}
     market={{} as MarketData}
-    history={{}}
-    location={{}}
-    toggleFavorite={() => {}}
-    currentAugurTimestamp={0}
-    reportingWindowStatsEndTime={0}
-    address=""
   />

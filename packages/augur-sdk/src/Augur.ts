@@ -24,6 +24,7 @@ import { Users } from "./state/getter/Users";
 import { getAddress } from "ethers/utils/address";
 import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from "./constants";
 import { Liquidity } from "./api/Liquidity";
+import { Liquidity as LiquidityGetter } from "./state/getter/Liquidity";
 import { TransactionResponse } from "ethers/providers";
 import { SyncableFlexSearch } from "./state/db/SyncableFlexSearch";
 import { GenericEventDBDescription } from "./state/logs/types";
@@ -284,7 +285,7 @@ export class Augur<TProvider extends Provider = Provider> {
   getMarketOrderBook = this.bindTo(Markets.getMarketOrderBook);
 
   getMarketPriceCandlesticks = this.bindTo(Markets.getMarketPriceCandlesticks);
-
+  getMarketLiquidityRanking = this.bindTo(LiquidityGetter.getMarketLiquidityRanking);
   getUserTradingPositions = this.bindTo(Users.getUserTradingPositions);
   getProfitLoss = this.bindTo(Users.getProfitLoss);
   getProfitLossSummary = this.bindTo(Users.getProfitLossSummary);
