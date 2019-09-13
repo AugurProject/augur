@@ -5,24 +5,24 @@ import MarketsList from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
 import { FilterTags } from 'modules/common/filter-tags';
 import { FilterNotice } from 'modules/common/filter-notice';
+import FilterDropDowns from 'modules/filter-sort/containers/filter-dropdowns';
+import MarketTypeFilter from 'modules/filter-sort/components/market-type-filter';
+import MarketCardFormatSwitcher from 'modules/filter-sort/components/market-card-format-switcher';
 import updateQuery from 'modules/routes/helpers/update-query';
 import {
   TYPE_TRADE,
-  MARKET_OPEN,
-  MARKET_REPORTING,
-  MARKET_CLOSED,
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
-import { MarketStateLabel }  from 'modules/common/labels';
+import classNames from 'classnames';
 
 const PAGINATION_COUNT = 10;
 
 interface MarketsViewProps {
   isLogged: boolean;
-  markets: Array<MarketData>;
+  markets: MarketData[];
   location: object;
   history: object;
   isConnected: boolean;
@@ -256,26 +256,10 @@ export default class MarketsView extends Component<
     } else if (!displayFee || !displayLiquiditySpread) {
       feesLiquidityMessage = `The ${!displayFee ? '“Fee”' : '“Liquidity Spread”'} filter is set to “All”. This puts you at risk of trading on invalid markets.`;
     }
-    const marketStatesOptions = [
-      { value: MARKET_OPEN, label: 'Open' },
-      { value: MARKET_REPORTING, label: 'In-reporting' },
-      { value: MARKET_CLOSED, label: 'Resolved' },
-    ].map((marketState, idx) => {
-      return (
-        <MarketStateLabel
-          key={idx}
-          handleClick={() => updateMarketsFilter(marketState.value)}
-          selected={marketFilter === marketState.value}
-          loading={isSearchingMarkets}
-          count={this.state.marketCount}
-          label={marketState.label}
-        />
-      );
-    });
-
 
     return (
       <section
+        className={Styles.MarketsView}
         ref={componentWrapper => {
           this.componentWrapper = componentWrapper;
         }}
@@ -291,13 +275,25 @@ export default class MarketsView extends Component<
           history={history}
           selectedCategory={selectedCategories}
           search={search}
-          updateMarketsListCardFormat={updateMarketsListCardFormat}
-          marketCardFormat={marketCardFormat}
           updateMobileMenuState={updateMobileMenuState}
         />
 
-        <div className={Styles.MarketLabelGroup}>
-          {marketStatesOptions}
+        <div className={classNames({
+          [Styles.Disabled]: isSearchingMarkets,
+        })}>
+          <MarketTypeFilter
+            isSearchingMarkets={isSearchingMarkets}
+            marketCount={this.state.marketCount}
+            updateMarketsFilter={updateMarketsFilter}
+            marketFilter={marketFilter}
+          />
+
+          <MarketCardFormatSwitcher
+            marketCardFormat={marketCardFormat}
+            updateMarketsListCardFormat={updateMarketsListCardFormat}
+          />
+
+          <FilterDropDowns />
         </div>
 
         <FilterTags

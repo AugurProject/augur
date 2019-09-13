@@ -2,16 +2,16 @@ import { connect } from 'react-redux';
 import { ParticipationTokensView } from 'modules/reporting/common';
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_PARTICIPATE } from 'modules/common/constants';
-import { formatNumber, formatDai } from "utils/format-number";
+import { formatAttoDai, formatAttoRep } from "utils/format-number";
 
 const mapStateToProps = state => {
   const disputeWindow = state.universe.disputeWindow && state.universe.disputeWindow.address;
   const pariticipationTokens = state.loginAccount && state.loginAccount.reporting.pariticipationTokens;
   const tokenAmount = disputeWindow && pariticipationTokens ? (pariticipationTokens.contracts.find(contract => contract.address === disputeWindow) || {}).amount || 0 : 0;
   return {
-    disputeWindowFees: formatDai(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.fees : 0),
-    purchasedParticipationTokens: formatNumber(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.purchased : 0),
-    tokensOwned: formatNumber(tokenAmount),
+    disputeWindowFees: formatAttoDai(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.fees : 0),
+    purchasedParticipationTokens: formatAttoRep(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.purchased : 0),
+    tokensOwned: formatAttoRep(tokenAmount),
     pariticipationTokens: pariticipationTokens,
   };
 };
