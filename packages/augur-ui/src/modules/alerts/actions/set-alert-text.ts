@@ -36,6 +36,9 @@ import { ThunkDispatch } from "redux-thunk";
 import { createBigNumber } from "utils/create-big-number";
 import { updateAlert } from "./alerts";
 
+function toUpperCase(label) {
+  return label.charAt(0).toUpperCase() + label.slice(1)
+}
 function getInfo(params, status, marketInfo) {
   const outcome = params.outcome || params._outcome;
 
@@ -55,7 +58,7 @@ function getInfo(params, status, marketInfo) {
   return {
     price,
     amount,
-    orderType: orderType.charAt(0).toUpperCase() + orderType.slice(1),
+    orderType: orderType.toUpperCase(),
     outcomeDescription
   }
 }
@@ -99,19 +102,20 @@ export default function setAlertText(alert: any, callback: any) {
       // CancelOrder
       case CANCELORDER: {
         alert.title = "Order Cancelled";
-        dispatch(
-          loadMarketsInfoIfNotLoaded([marketId], () => {
-            const marketInfo = selectMarket(marketId);
-            alert.description = marketInfo.description;
-            const {
-              orderType,
-              amount,
-              price,
-              outcomeDescription
-            } = getInfo(alert.params, alert.status, marketInfo);
-            alert.details = `${orderType}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
-          }),
-        );
+        // dispatch(
+        //   loadMarketsInfoIfNotLoaded([marketId], () => {
+        //     const marketInfo = selectMarket(marketId);
+        //     alert.description = marketInfo.description;
+        //     const amount = alert.params.order.amount;
+        //     const price = alert.params.order.price;
+        //     const orderType = alert.params.order.orderTypeLabel;
+        //     const outcomeDescription =
+        //       alert.params.outcomeId === null
+        //         ? "Market Is Invalid"
+        //         : getOutcomeName(marketInfo, { id: alert.params.outcomeId }, false);
+        //     alert.details = `${orderType.toUpperCase()}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
+        //   }),
+        // );
         break;
       }
 

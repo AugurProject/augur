@@ -46,6 +46,18 @@ export default function alert(alerts = DEFAULT_STATE, { data, type }: BaseAction
       return [...alerts, data.alert];
     }
 
+    // case UPDATE_EXISTING_ALERT:
+    //   return alerts.map((alert, i) => {
+    //     if (alert.id !== data.id) {
+    //       return alert;
+    //     }
+
+    //     return {
+    //       ...alert,
+    //       ...data.alert
+    //     };
+    //   });
+
     case REMOVE_ALERT:
       let newAlerts = alerts;
       newAlerts = newAlerts.filter((alert, i) => alert.id !== data.id)

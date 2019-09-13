@@ -68,7 +68,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         name: methodCall,
       }));
     } else if (hash && eventName === TXEventName.Success && methodCall && methodCall !== "" && methodCall !== CANCELORDER) {
-      //const alert = alerts.find(alert => alert.id === hash);
       dispatch(updateAlert(hash, {
         params: transaction.params,
         status: TXEventName.Success,

@@ -7,7 +7,6 @@ import getUserOpenOrder from 'modules/orders/selectors/select-user-open-order';
 import { cancelOpenOrders, cancelOpenOrder } from 'modules/contracts/actions/contractCalls';
 import { addAlert } from "modules/alerts/actions/alerts";
 import { CANCELORDER } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk/src';
 
 export const cancelAllOpenOrders = (orders: any, cb: NodeStyleCallback) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -35,10 +34,9 @@ export const cancelOrder = (
     dispatch(addAlert({
       id: orderId,
       name: CANCELORDER,
-      status: TXEventName.Pending,
       params: {
         marketId: marketId,
-        outcome: outcome,
+        outcomeId: outcome,
         orderTypeLabel: orderTypeLabel,
         order: order
       }

@@ -22,7 +22,7 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
   componentDidMount() {
     this.timeout = setInterval(() => {
       if (this.props.toasts.length > 0) {
-        this.props.updateAlert(this.props.toasts[0].id, {...this.props.toasts[0], toast: false});
+       // this.props.updateAlert(this.props.toasts[0].id, {...this.props.toasts[0], toast: false});
       }
     }, 3000);
   }
