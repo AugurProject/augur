@@ -1,54 +1,68 @@
 import React, { Component } from 'react';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
-import { Market, Tab } from 'modules/portfolio/types';
+import { Tab } from 'modules/portfolio/types';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
-import { REPORTING_STATE } from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/containers/market-card';
-import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { createBigNumber } from 'utils/create-big-number';
 import { Checkbox } from 'modules/common/form';
 
+import PaginationStyles from 'modules/common/pagination.styles.less';
 import Styles from 'modules/reporting/components/markets-in-dispute.styles.less';
 
+import { MarketData } from 'modules/types';
+import { Getters } from '@augurproject/sdk/src';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { LoadingMarketCard } from 'modules/market-cards/common';
+import { Pagination } from 'modules/common/pagination';
+
+const ITEMS_PER_SECTION = 10;
+const NUM_LOADING_CARDS = 5;
+const DEFAULT_PAGE = 1;
+const TAB_CURRENT = 'current';
+const TAB_AWAITING = 'awaiting';
+const SORT_REP_STAKED = 'repStaked';
+const SORT_DISPUTE_ROUND = 'disputeRound';
+const DEFAULT_PAGINATION = {
+  limit: ITEMS_PER_SECTION,
+  offset: DEFAULT_PAGE,
+  isLoadingMarkets: true,
+  filteredData: [],
+};
+
 interface MarketsInDisputeProps {
-  markets: Object;
-  address: string;
+  isConnected: boolean;
+  userAddress: string;
+  loadCurrentlyDisputingMarkets: Function;
+  loadNextWindowDisputingMarkets: Function;
 }
 
 interface MarketsInDisputeState {
   search: string;
-  onlyMyMarkets: boolean;
   selectedTab: string;
-  tabs: Array<Tab>;
-  filteredData: Array<Market>;
-  didCheck: boolean;
+  tabs: Tab[];
+  filteredData: MarketData[];
   sortBy: string;
+  offset: number;
+  limit: number;
+  showPagination: boolean;
+  marketCount: number;
+  isLoadingMarkets: boolean;
+  sortByDisputeRounds: boolean;
+  sortByRepAmount: boolean;
+  filterByMyPortfolio: boolean;
 }
 
 const sortByOptions = [
   {
     label: 'Amount REP Staked',
-    value: 'repStaked',
-    comp(marketA, marketB) {
-      return (
-        createBigNumber(marketB.disputeInfo.stakeCompletedTotal).minus(
-        createBigNumber(marketA.disputeInfo.stakeCompletedTotal))
-      );
-    },
+    value: SORT_REP_STAKED,
   },
   {
     label: 'Dispute Round',
-    value: 'disputeRound',
-    comp(marketA, marketB) {
-      return (
-        createBigNumber(marketB.disputeInfo.disputeWindow.disputeRound).minus(createBigNumber(marketA.disputeInfo.disputeWindow.disputeRound))
-      );
-    },
+    value: SORT_DISPUTE_ROUND,
   },
 ];
-
-const { CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW } = REPORTING_STATE;
 
 export default class MarketsInDispute extends Component<
   MarketsInDisputeProps,
@@ -56,168 +70,179 @@ export default class MarketsInDispute extends Component<
 > {
   constructor(props) {
     super(props);
-    // default to current
-    const updatedData = this.getFilteredData(
-      props.markets,
-      sortByOptions[0].value,
-      '',
-      false
-    );
     this.state = {
       search: '',
-      selectedTab: 'current',
-      onlyMyMarkets: false,
+      selectedTab: TAB_CURRENT,
       sortBy: sortByOptions[0].value,
       tabs: [
         {
-          key: 'current',
+          key: TAB_CURRENT,
           label: 'Currently Disputing',
-          num: updatedData.current.length,
+          num: 0,
         },
         {
-          key: 'awaiting',
+          key: TAB_AWAITING,
           label: 'Awaiting Next Dispute',
-          num: updatedData.awaiting.length,
+          num: 0,
         },
       ],
-      filteredData: updatedData.current,
-      didCheck: false,
+      filteredData: [],
+      isLoadingMarkets: true,
+      marketCount: 0,
+      showPagination: false,
+      offset: DEFAULT_PAGE,
+      limit: ITEMS_PER_SECTION,
+      sortByDisputeRounds: false,
+      sortByRepAmount: true,
+      filterByMyPortfolio: false,
     };
   }
 
-  filterDisputingMarkets = (markets: Object, onlySlow = false) => {
-    const filteredData = [];
-    for (let [key, value] of Object.entries(markets)) {
-      if (
-        (value.reportingState === CROWDSOURCING_DISPUTE && onlySlow) ||
-        value.reportingState === AWAITING_NEXT_WINDOW
-      ) {
-        filteredData.push(convertMarketInfoToMarketData(value));
-      }
+  componentDidUpdate(
+    prevProps: MarketsInDisputeProps,
+    prevState: MarketsInDisputeState
+  ) {
+    const { isConnected } = this.props;
+    const {
+      filterByMyPortfolio,
+      sortByRepAmount,
+      sortByDisputeRounds,
+      selectedTab,
+      search,
+      offset,
+    } = this.state;
+    if (
+      isConnected !== prevProps.isConnected ||
+      filterByMyPortfolio !== prevState.filterByMyPortfolio ||
+      sortByRepAmount !== prevState.sortByRepAmount ||
+      sortByDisputeRounds !== prevState.sortByDisputeRounds ||
+      search !== prevState.search ||
+      offset !== prevState.offset ||
+      selectedTab !== prevState.selectedTab
+    ) {
+      this.loadMarkets();
     }
-    return filteredData;
-  };
+  }
 
-  updateFilter = (input: string) => {
-    const { markets } = this.props;
-    const { selectedTab, sortBy, search, didCheck, tabs } = this.state;
-    const updatedData = this.getFilteredData(markets, sortBy, search, didCheck);
-    const updatedTabs = this.getUpdatedTabs(
-      updatedData.current.length,
-      updatedData.awaiting.length,
-      tabs
-    );
-    this.setState({
-      filteredData: updatedData[selectedTab],
-      sortBy: input,
-      tabs: updatedTabs,
-    });
-  };
+  componentDidMount() {
+    const { isConnected } = this.props;
+    if (isConnected) this.loadMarkets();
+  }
 
-  applyOnlyMyMarkets = (filteredData: Array<Market>) => {
-    const { address } = this.props;
-    return filteredData.filter(market => {
-      if (market.author === address || market.designatedReporter === address) {
-        return true;
-      } else {
-        return false;
+  loadMarkets = () => {
+    const { limit, selectedTab, tabs } = this.state;
+    let loadDisputeMarkets = this.getLoadMarketsMethod(selectedTab);
+    const filterOptions = this.getLoadMarketsFiltersOptions();
+
+    loadDisputeMarkets(
+      filterOptions,
+      (err, marketResults: Getters.Markets.MarketList) => {
+        if (err) return console.log('error', err);
+        const filteredData = marketResults.markets.map(m => selectMarket(m.id));
+        const marketCount = marketResults.meta.marketCount;
+        const showPagination = marketCount > limit;
+        this.setState({
+          filteredData,
+          showPagination,
+          marketCount,
+          isLoadingMarkets: false,
+          tabs: this.setTabCounts(tabs, selectedTab, marketCount),
+        });
       }
-    });
-  };
-
-  applySort = (filteredData: Array<Market>, sortBy) => {
-    const sortByObj = sortByOptions.find(opt => opt.value === sortBy);
-    return filteredData.sort(sortByObj.comp);
-  };
-
-  applySearch = (filteredData: Array<Market>, search: string) => {
-    if (search.length > 0)
-      return filteredData.filter(item =>
-        item.description.toLowerCase().includes(search.toLowerCase())
-      );
-    return filteredData;
-  };
-
-  getFilteredData = (markets, sortBy, search, didCheck) => {
-    let current = this.applySort(
-      this.applySearch(this.filterDisputingMarkets(markets, true), search),
-      sortBy
     );
-    let awaiting = this.applySort(
-      this.applySearch(this.filterDisputingMarkets(markets), search),
-      sortBy
-    );
-    if (didCheck) {
-      current = this.applyOnlyMyMarkets(current);
-      awaiting = this.applyOnlyMyMarkets(awaiting);
+  };
+
+  setTabCounts = (tabs, selectedTab, marketCount) => {
+    tabs[0].num = selectedTab === TAB_CURRENT ? marketCount : 0;
+    tabs[1].num = selectedTab === TAB_AWAITING ? marketCount : 0;
+    return tabs;
+  };
+
+  getLoadMarketsMethod = selectedTab => {
+    const {
+      loadCurrentlyDisputingMarkets,
+      loadNextWindowDisputingMarkets,
+    } = this.props;
+    let loadDisputeMarkets = loadCurrentlyDisputingMarkets;
+    if (selectedTab === TAB_AWAITING)
+      loadDisputeMarkets = loadNextWindowDisputingMarkets;
+    return loadDisputeMarkets;
+  };
+
+  getLoadMarketsFiltersOptions = () => {
+    const { userAddress } = this.props;
+    const {
+      limit,
+      offset,
+      filterByMyPortfolio,
+      sortByRepAmount,
+      sortByDisputeRounds,
+      search,
+    } = this.state;
+
+    let filterOptions = {
+      limit,
+      offset,
+      sortByRepAmount,
+      sortByDisputeRounds,
+      search,
+    };
+    if (filterByMyPortfolio) {
+      filterOptions = Object.assign(filterOptions, {
+        userPortfolioAddress: userAddress,
+      });
     }
-    return { current, awaiting };
+    return filterOptions;
+  };
+
+  updateDropdown = sortBy => {
+    this.setState({ sortBy, ...DEFAULT_PAGINATION });
+  };
+
+  setOffset = offset => {
+    this.setState({ offset, isLoadingMarkets: true, filteredData: [] });
   };
 
   selectTab = (selectedTab: string) => {
-    const { markets } = this.props;
-    const { tabs, sortBy, search, didCheck } = this.state;
-    const updatedData = this.getFilteredData(markets, sortBy, search, didCheck);
-    const updatedTabs = this.getUpdatedTabs(
-      updatedData.current.length,
-      updatedData.awaiting.length,
-      tabs
-    );
-    // @ts-ignore
     this.setState({
       selectedTab,
-      filteredData: updatedData[selectedTab],
-      tabs: updatedTabs,
+      ...DEFAULT_PAGINATION,
     });
   };
 
-  getUpdatedTabs = (currentLength, awaitingLength, tabs) => {
-    const updatedTabs = tabs;
-    updatedTabs[0].num = currentLength;
-    updatedTabs[1].num = awaitingLength;
-    return updatedTabs;
-  };
-
-  onSearchChange = (input: string) => {
-    const { markets } = this.props;
-    const { tabs, selectedTab, sortBy, didCheck } = this.state;
-    const updatedData = this.getFilteredData(markets, sortBy, input, didCheck);
-    const updatedTabs = this.getUpdatedTabs(
-      updatedData.current.length,
-      updatedData.awaiting.length,
-      tabs
-    );
+  onSearchChange = (search: string) => {
     this.setState({
-      filteredData: updatedData[selectedTab],
-      search: input,
-      tabs: updatedTabs,
+      search,
+      ...DEFAULT_PAGINATION,
     });
   };
 
   toggleOnlyMyPortfolio = () => {
-    const { didCheck, selectedTab, sortBy, search, tabs } = this.state;
-    const { markets } = this.props;
-    const updatedData = this.getFilteredData(markets, sortBy, search, !didCheck);
-    const updatedTabs = this.getUpdatedTabs(
-      updatedData.current.length,
-      updatedData.awaiting.length,
-      tabs
-    );
+    const { filterByMyPortfolio } = this.state;
     this.setState({
-      didCheck: !didCheck,
-      filteredData: updatedData[selectedTab],
-      tabs: updatedTabs,
+      filterByMyPortfolio: !filterByMyPortfolio,
     });
   };
 
   render() {
-    const { selectedTab, tabs, search, filteredData, didCheck } = this.state;
+    const {
+      selectedTab,
+      tabs,
+      search,
+      filteredData,
+      filterByMyPortfolio,
+      isLoadingMarkets,
+      showPagination,
+      offset,
+      limit,
+      marketCount,
+    } = this.state;
     const { label } = tabs.find(tab => tab.key === selectedTab);
-    const { address } = this.props;
+    const { userAddress } = this.props;
     const checkBox = {
       label: 'Only Markets In My Portfolio',
       action: this.toggleOnlyMyPortfolio,
-      didCheck,
+      didCheck: filterByMyPortfolio,
     };
     return (
       <QuadBox
@@ -226,17 +251,17 @@ export default class MarketsInDispute extends Component<
         showFilterSearch={true}
         onSearchChange={this.onSearchChange}
         sortByOptions={sortByOptions}
-        updateDropdown={this.updateFilter}
+        updateDropdown={this.updateDropdown}
         bottomBarContent={
           <SwitchLabelsGroup
             tabs={tabs}
             selectedTab={selectedTab}
             selectTab={this.selectTab}
-            checkBox={address && checkBox}
+            checkBox={userAddress && checkBox}
           />
         }
         leftContent={
-          address && (
+          userAddress && (
             <label className={Styles.OnlyPortfolio} htmlFor="checkbox">
               <Checkbox
                 id="checkbox"
@@ -253,17 +278,35 @@ export default class MarketsInDispute extends Component<
         }
         content={
           <div className={Styles.MarketCards}>
-            {filteredData.length === 0 && (
+            {!isLoadingMarkets && filteredData.length === 0 && (
               <EmptyDisplay
                 selectedTab={label}
                 filterLabel={''}
                 search={search}
               />
             )}
+            {isLoadingMarkets &&
+              filteredData.length === 0 &&
+              new Array(NUM_LOADING_CARDS)
+                .fill(null)
+                .map((prop, index) => (
+                  <LoadingMarketCard key={`${index}-loading`} />
+                ))}
             {filteredData.length > 0 &&
               filteredData.map(market => (
                 <MarketCard key={market.id} market={market} />
               ))}
+            {showPagination && (
+              <div className={PaginationStyles.PaginationContainer}>
+                <Pagination
+                  page={offset}
+                  itemCount={marketCount}
+                  itemsPerPage={limit}
+                  action={this.setOffset}
+                  updateLimit={null}
+                />
+              </div>
+            )}
           </div>
         }
       />
