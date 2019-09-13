@@ -65,7 +65,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         params: transaction.params,
         status: eventName,
         timestamp: blockchain.currentAugurTimestamp * 1000,
-        name: transaction.name,
+        name: methodCall,
       }));
     } else if (hash && eventName === TXEventName.Success) {
       //const alert = alerts.find(alert => alert.id === hash);
@@ -73,7 +73,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
         params: transaction.params,
         status: TXEventName.Success,
         timestamp: blockchain.currentAugurTimestamp * 1000,
-        name: name,
+        name: methodCall,
       }))
     }
     

@@ -24,7 +24,7 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
       if (this.props.toasts.length > 0) {
         this.props.updateAlert(this.props.toasts[0].id, {...this.props.toasts[0], toast: false});
       }
-    }, 2000);
+    }, 3000);
   }
 
   componentWillUnmount() {

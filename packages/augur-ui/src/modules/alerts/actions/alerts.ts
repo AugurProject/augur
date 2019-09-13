@@ -8,6 +8,7 @@ import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { PREFILLEDSTAKE, DOINITIALREPORT, CONTRIBUTE } from "modules/common/constants";
 
 export const ADD_ALERT = "ADD_ALERT";
 export const REMOVE_ALERT = "REMOVE_ALERT";
@@ -278,7 +279,21 @@ export function updateAlert(id: string, alert: any) {
     alert.id = id;
     if (alert) {
       const { alerts } = store.getState() as AppState;
-      const foundAlert = alerts.find(findAlert => findAlert.id === id);
+      console.log(alert);
+      if (alert.name === DOINITIALREPORT) {
+        dispatch(updateAlert(
+          id, {
+            ...alert, 
+            params: {
+                ...alert.params, 
+                preFilled: true
+              }, 
+            name: CONTRIBUTE
+          }
+        ));
+      }
+      const foundAlert = alerts.find(findAlert => findAlert.id === id && findAlert.name === alert.name);
+      console.log(foundAlert);
       if (foundAlert) {
         dispatch(removeAlert(id));
         dispatch(addAlert({

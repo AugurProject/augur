@@ -26,7 +26,8 @@ import {
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
   APPROVE,
-  PREFILLEDSTAKE
+  PREFILLEDSTAKE,
+  ZERO
 } from "modules/common/constants";
 import { Outcomes } from "modules/types";
 import { AppState } from "store";
@@ -76,20 +77,23 @@ export default function setAlertText(alert: any, callback: any) {
 
     switch (alert.name.toUpperCase()) {
       case PREFILLEDSTAKE: {
-        alert.title = 'Pre-Filled Stake Added';
-        dispatch(
-          loadMarketsInfoIfNotLoaded([marketId], () => {
-            const marketInfo = selectMarket(marketId);
-            alert.description = marketInfo.description;
-            const {
-              orderType,
-              amount,
-              price,
-              outcomeDescription
-            } = getInfo(alert.params, alert.status, marketInfo);
-            alert.details = `${orderType}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
-          }),
-        );
+        console.log(alert);
+        if (marketId && alert.params.preFilledStake.gt(ZERO)) {
+          alert.title = 'Pre-Filled Stake Added';
+          dispatch(
+            loadMarketsInfoIfNotLoaded([marketId], () => {
+              const marketInfo = selectMarket(marketId);
+              alert.description = marketInfo.description;
+              // const {
+              //   orderType,
+              //   amount,
+              //   price,
+              //   outcomeDescription
+              // } = getInfo(alert.params, alert.status, marketInfo);
+              // alert.details = `${orderType}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
+            }),
+          );
+        }
         break;
       }
       // CancelOrder
