@@ -19,9 +19,11 @@ const DEFAULT_STATE: Array<Alert> = [];
 
 /**
  * @typedef {Object} Alert
- * @property {string} id - unique identifier
- * @property {string} title - action that occurred, truncated in UI
+ * @property {string} id - hash identifier
+ * @property {string} name - action that occurred, truncated in UI
+ * @property {string} title - title to display, truncated in UI
  * @property {string} description - additional details, truncated in UI
+ * @property {string} details - additional details, truncated in UI
  * @property {Object} timestamp - UTC epoch
  * @property {enum} level - alert level
  * @property {string} [href] - link to more context

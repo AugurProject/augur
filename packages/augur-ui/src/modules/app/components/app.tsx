@@ -12,6 +12,7 @@ import SideNav from 'modules/app/components/side-nav/side-nav';
 import TopNav from 'modules/app/components/top-nav/top-nav';
 import Routes from 'modules/routes/components/routes/routes';
 import AlertsContainer from 'modules/alerts/containers/alerts-view';
+import ToastsContainer from 'modules/alerts/containers/toasts-view';
 
 import {
   MobileNavHamburgerIcon,
@@ -415,6 +416,7 @@ export default class AppView extends Component<AppProps> {
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
             />
+            <ToastsContainer />
             {universe.forkEndTime &&
               universe.forkEndTime !== '0' &&
               blockchain &&

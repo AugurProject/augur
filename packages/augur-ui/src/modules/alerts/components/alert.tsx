@@ -10,89 +10,58 @@ import { EtherscanLink } from "modules/common/buttons";
 
 interface AlertProps {
   id: string;
+  title: string;
   description?: string;
+  details?: string;
   linkPath?: string | any;
   onClick?: Function;
   removeAlert: Function;
   seen: boolean;
   timestamp: number;
-  title: string;
   status: string;
   toggleAlerts: Function;
+  noShow?: boolean;
 }
 
-export default class Alert extends Component<AlertProps> {
-  static propTypes = {
-    description: PropTypes.string,
-    id: PropTypes.string.isRequired,
-    linkPath: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    onClick: PropTypes.func,
-    removeAlert: PropTypes.func.isRequired,
-    seen: PropTypes.bool.isRequired,
-    timestamp: PropTypes.number,
-    title: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    toggleAlerts: PropTypes.func.isRequired
-  };
-
-  alert: any = null;
-
-  static defaultProps = {
-    description: "",
-    linkPath: null,
-    onClick: null,
-    timestamp: 0,
-  };
+export default class Alert extends Component<AlertProps, {}> {
 
   render() {
     const {
       id,
+      details,
       description,
-      linkPath,
-      onClick,
       removeAlert,
       seen,
       timestamp,
       title,
-      toggleAlerts,
-      status
+      noShow
     } = this.props;
+
+    if (noShow) return null;
     return (
       <article
-        ref={alert => {
-          this.alert = alert;
-        }}
         className={classNames(Styles.Alert, {
           [Styles.Seen]: seen
         })}
       >
         <div>
-          <Link
-            to={linkPath || ""}
-            onClick={e => {
-              e.stopPropagation();
-              if (!linkPath) e.preventDefault();
-              if (linkPath && onClick) toggleAlerts();
-            }}
-          >
             <div className={Styles.Row}>
-              <div className={Styles.Status}>{status || "Pending"}</div>
+              <div className={Styles.Status}>{title}</div>
             </div>
             <div className={Styles.Row}>
-              <span className={Styles.Title}>{title}</span>
+              <span className={Styles.Title}>{description}</span>
             </div>
             {description &&
               description !== "" && (
                 <div className={Styles.Row}>
                   <span className={Styles.Description}>
-                    {description}
+                    {details}
                   </span>
                 </div>
               )}
-          </Link>
           <div className={Styles.Row}>
             <span className={Styles.EtherLink}>
-              <EtherscanLink txhash={id} label="etherscan tx" />
+              <EtherscanLink txhash={id} label="view etherscan" />
             </span>
           </div>
         </div>
