@@ -7,6 +7,7 @@ import classNames from "classnames";
 import { Close } from "modules/common/icons";
 import Styles from "modules/alerts/components/alert.styles.less";
 import { ViewTransactionDetailsButton } from "modules/common/buttons";
+import { convertUnixToFormattedDate } from "utils/format-date";
 
 interface AlertProps {
   id: string;
@@ -64,6 +65,9 @@ export default class Alert extends Component<AlertProps, {}> {
           <div className={Styles.Row}>
             <span className={Styles.EtherLink}>
               <ViewTransactionDetailsButton dark transactionHash={id} label="view etherscan" />
+            </span>
+            <span className={Styles.Timestamp}>
+                {convertUnixToFormattedDate(timestamp).formattedUtc}
             </span>
           </div>
         </div>
