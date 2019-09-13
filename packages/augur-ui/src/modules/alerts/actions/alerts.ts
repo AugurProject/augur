@@ -275,38 +275,23 @@ export function updateAlert(id: string, alert: any) {
 
     // Set alert.params if it is not already set.
     // (This occurs the first time the alert is updated.)
-    if (alert && !alert.params) {
-      const { alerts } = store.getState();
-      for (let index = Object.keys(alerts).length - 1; index >= 0; index--) {
-        if (alerts[index].id === alert.id) {
-          alert.params = alerts[index].params;
-          alert.to = alerts[index].to;
-          if (alert.log && alert.log.amount) {
-            alert.amount = createBigNumber(alerts[index].amount || 0)
-              .plus(createBigNumber(alert.log.amount))
-              .toFixed();
+    alert.id = id;
+    if (alert) {
+      const { alerts } = store.getState() as AppState;
+      const foundAlert = alerts.find(findAlert => findAlert.id === id);
+      if (foundAlert) {
+        dispatch(removeAlert(id));
+        dispatch(addAlert({
+          ...alert,
+          ...foundAlert,
+          name: foundAlert.name !== "" ? foundAlert.name : alert.name,
+          params: {
+            ...foundAlert.params,
+            ...alert.params
           }
-          if (
-            alert.log &&
-            alerts[index].log &&
-            alert.log.eventName !== alerts[index].log.eventName &&
-            alerts[index].log.orderId &&
-            alert.log.orderId !== alerts[index].log.orderId &&
-            alert.log.eventName === "OrderCreated"
-          ) {
-            return dispatch(
-              addAlert({
-                id: `${alert.log.transactionHash}-${alert.log.orderId}`,
-                timestamp: alert.timestamp,
-                blockNumber: alert.log.blockNumber,
-                log: alert.log,
-                status: constants.CONFIRMED,
-                linkPath: makePath(TRANSACTIONS),
-                params: alert.params
-              })
-            );
-          }
-        }
+        }));
+      } else {
+        dispatch(addAlert(alert));
       }
     }
     return dispatch(setAlertText(alert, callback));
