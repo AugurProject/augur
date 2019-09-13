@@ -38,7 +38,7 @@ export interface NotificationsProps extends RouteComponentProps {
   updateReadNotifications: Function;
   getReportingFees: Function;
   currentAugurTimestamp: DateFormattedObject;
-  reportingWindowStatsEndTime: DateFormattedObject;
+  disputingWindowEndTime: DateFormattedObject;
   finalizeMarketModal: Function;
   claimMarketsProceeds: Function;
   claimReportingFees: Function;
@@ -184,7 +184,7 @@ class Notifications extends React.Component<
   }
 
   render() {
-    const { currentAugurTimestamp, reportingWindowStatsEndTime } = this.props;
+    const { currentAugurTimestamp, disputingWindowEndTime } = this.props;
     const notifications = this.props.notifications.map((notification) =>
       this.getButtonAction(notification),
     );
@@ -213,7 +213,7 @@ class Notifications extends React.Component<
         markets,
         market,
         currentTime: currentAugurTimestamp,
-        reportingWindowStatsEndTime,
+        disputingWindowEndTime,
         buttonAction,
         buttonLabel,
         type,

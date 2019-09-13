@@ -31,14 +31,11 @@ const assembleMarket = createSelector(
   (marketData): MarketData => {
     const market: MarketData = convertMarketInfoToMarketData(marketData);
 
-    // TODO: tags will get removed with new nav redesign
-    market.tags = (market.tags || []).filter(tag => !!tag);
-
-    // TODO: currently where this data comes from is unknown, need to have discussion about architecture.
-    market.unclaimedCreatorFees = formatDai(marketData.unclaimedCreatorFees);
-    market.marketCreatorFeesCollected = formatDai(
-      marketData.marketCreatorFeesCollected || 0
-    );
+  // TODO: currently where this data comes from is unknown, need to have discussion about architecture.
+  market.unclaimedCreatorFees = formatDai(marketData.unclaimedCreatorFees);
+  market.marketCreatorFeesCollected = formatDai(
+    marketData.marketCreatorFeesCollected || 0
+  );
 
     return market;
   }

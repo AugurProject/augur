@@ -2,14 +2,14 @@ import React from 'react';
 
 import PositionsHeader from 'modules/portfolio/components/common/positions-header';
 import PositionRow from 'modules/portfolio/containers/position-row';
-import { PositionData } from 'modules/types';
 import classNames from 'classnames';
 
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.style.less';
 import Styles from 'modules/portfolio/components/common/market-positions-table.styles.less';
+import { Getters } from '@augurproject/sdk';
 
 export interface MarketPositionsTableProps {
-  positions: Array<PositionData>;
+  positions: Getters.Usrs.TradingPosition[];
   extendedView: boolean;
   marketId: string;
   updateSelectedOrderProperties: Function;
