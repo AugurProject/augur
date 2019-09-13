@@ -3,7 +3,6 @@ import appStatus from "modules/app/reducers/app-status";
 import sidebarStatus from "modules/app/reducers/sidebar-status";
 import authStatus from "modules/auth/reducers/auth-status";
 import blockchain from "modules/app/reducers/blockchain";
-import categories from "modules/categories/reducers/categories-data";
 import connection from "modules/app/reducers/connection";
 import env from "modules/app/reducers/env";
 import favorites from "modules/markets/reducers/favorites";
@@ -34,7 +33,6 @@ import {
   AppStatus,
   AuthStatus,
   Blockchain,
-  Category,
   Connection,
   EnvObject,
   Favorite,
@@ -66,7 +64,6 @@ export function createReducer() {
     appStatus,
     authStatus,
     blockchain,
-    categories,
     connection,
     env,
     favorites,
@@ -102,7 +99,6 @@ export interface AppStateInterface {
   appStatus: AppStatus;
   authStatus: AuthStatus;
   blockchain: Blockchain;
-  categories: Array<Category>;
   connection: Connection;
   env: EnvObject;
   favorites: Favorite;
