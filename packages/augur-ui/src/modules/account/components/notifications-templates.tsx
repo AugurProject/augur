@@ -61,9 +61,9 @@ interface ProceedsToClaimTemplateProps extends BaseProps {
   totalProceeds: number | undefined;
 }
 
-interface ProceedsToClaimOnHoldTemplateProps extends BaseProps {
-  market: MarketData;
-}
+// interface ProceedsToClaimOnHoldTemplateProps extends BaseProps {
+//   market: MarketData;
+// }
 
 interface TemplateProps extends BaseProps {
   message: string;
@@ -238,7 +238,7 @@ export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemp
 
 export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => {
 console.log("IN notifications-templates.tsx");
-console.log(props);
+// console.log(props);
   const { totalProceeds } = props;
 
 // TODO: just give the total. not a good place for that on the object from the position getter. Create a simple selector to do the math.

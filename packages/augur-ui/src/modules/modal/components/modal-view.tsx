@@ -50,7 +50,7 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalCategories {...props} />;
     case TYPES.MODAL_CONTENT:
       return <ModalContent {...props} />;
-    case TYPES.MODAL_CLAIM_MARKETS_TRADING_PROCEEDS:
+    case TYPES.MODAL_CLAIM_MARKETS_PROCEEDS:
       return <ModalClaimMarketsProceeds {...props} />;
     // case TYPES.MODAL_CLAIM_TRADING_PROCEEDS:
     //   return <ModalClaimTradingProceeds {...props} />;

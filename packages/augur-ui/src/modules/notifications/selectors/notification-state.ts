@@ -10,7 +10,7 @@ import {
   selectLoginAccountReportingState,
 } from 'store/select-state';
 
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 // import canClaimProceeds from 'utils/can-claim-proceeds';
 import {
   NOTIFICATION_TYPES,
@@ -114,16 +114,21 @@ export const selectMarketsInDispute = createSelector(
 export const selectAllProceedsToClaim = createSelector(
   selectAccountPositionsState,
   positions => {
-console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!positions')
-console.log(positions)
     if (positions && Object.keys(positions).length > 0) {
-     return  Object.keys(positions).reduce(
-        (p, marketId) =>
-          positions[marketId].tradingPositionsPerMarket.totalUnclaimedProceeds
-            ? [...p, selectMarket(marketId)]
-            : p,
+      // TODO: Remove hard-coding of totalUnclaimedProceeds below
+      const markets = Object.keys(positions).reduce(
+        (p, marketId) => {
+          if (positions[marketId].tradingPositionsPerMarket.totalUnclaimedProceeds) {
+            const market: any = selectMarket(marketId);
+            market.totalUnclaimedProceeds = positions[marketId].tradingPositionsPerMarket.totalUnclaimedProceeds;
+            return [...p, market];
+          } else {
+            return p;
+          }
+        },
         []
       );
+      return markets;
     }
     return [];
   }
@@ -306,30 +311,21 @@ export const selectNotifications = createSelector(
         id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }
-console.log("IN notification-state");
-console.log(proceedsToClaim);
-proceedsToClaim = [{
-  id: '0x0000000000000000000000000000000000000000',
-  description: '',
-  endTime: '',
-  reportingState: '',
-  marketStatus: '',
-  disputeInfo: '',
-  myPositionsSummary: '',
-  outstandingReturns: 10,
-  finalizationTime: '',
-}];
+// console.log("proceedsToClaim");
+// console.log(proceedsToClaim);
     if (proceedsToClaim && proceedsToClaim.length > 0) {
-      let totalEth = createBigNumber(0);
+      let totalDai = createBigNumber(0);
 
       const marketIds = proceedsToClaim.map(market => market.id);
       proceedsToClaim.forEach(market => {
-        totalEth = totalEth.plus(
-          createBigNumber(Number(market.outstandingReturns || 0))
+        totalDai = totalDai.plus(
+          createBigNumber(Number(market.totalUnclaimedProceeds || 0))
         );
       });
 
-      if (totalEth.toNumber() > 0 && marketIds.length > 0) {
+// console.log(totalDai.toNumber());
+// console.log(marketIds);
+      if (totalDai.toNumber() > 0 && marketIds.length > 0) {
         notifications = notifications.concat({
           type: NOTIFICATION_TYPES.proceedsToClaim,
           isImportant: false,
@@ -338,7 +334,7 @@ proceedsToClaim = [{
           buttonLabel: TYPE_VIEW_DETAILS,
           market: null,
           markets: marketIds,
-          totalProceeds: totalEth.toNumber(),
+          totalProceeds: totalDai.toNumber(),
           id: NOTIFICATION_TYPES.proceedsToClaim,
         });
       }

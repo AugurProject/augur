@@ -83,7 +83,7 @@ console.log(sP);
             },
           ],
           text: "Claim Proceeds",
-          action: () => dP.claimTradingProceeds(marketId, () => {}),
+          action: () => dP.claimMarketProceeds(marketId, () => {}),
         });
         marketIds.push(marketId);
         totalProceeds = totalProceeds.plus(winningOutcomeShares.formatted);

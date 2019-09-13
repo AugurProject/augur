@@ -464,8 +464,8 @@ export class Users {
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
     ).filter(t => t !== null);
 
-console.log('tradingPositions');
-console.log(tradingPositions);
+// console.log('tradingPositions');
+// console.log(tradingPositions);
 
     const marketTradingPositions = _.mapValues(
       tradingPositionsByMarketAndOutcome,
@@ -476,8 +476,9 @@ console.log(tradingPositions);
         return sumTradingPositions(tradingPositions);
       }
     );
-console.error('marketTradingPositions');
-console.error(marketTradingPositions);
+
+// console.error('marketTradingPositions');
+// console.error(marketTradingPositions);
 
     // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
     const allProfitLossResults = _.flatten(
@@ -501,7 +502,7 @@ console.error(marketTradingPositions);
     });
 
     const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
-
+/*
 console.error('marketFinalizedByMarket');
 console.error(marketFinalizedByMarket);
 
@@ -510,7 +511,7 @@ console.log(reportingFeeDivisor);
 
 console.log('shareTokenBalancesByMarketandOutcome');
 console.log(shareTokenBalancesByMarketandOutcome);
-/*
+
     const unclaimedMarketProceeds = {};
     for (const marketId of marketIds) {
       // TODO: if marketIds[i] reportingState is FINALIZED or finalizable {
@@ -536,83 +537,97 @@ console.error(numberOfShares.toNumber());
     // TODO: Add above to tradingPositions & tradingPositionsPerMarket
 
     // TODO: Remove hard-coding below
-    // marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'].totalUnclaimedProceeds = '10';
-    // marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'].totalUnclaimedProfit = '8';
-    // marketTradingPositions['0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5'] = {
-    //   currentValue: "3.1031",
-    //   frozenFunds: "3.1031",
-    //   marketId: "0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5",
-    //   realized: "0",
-    //   realizedCost: "0",
-    //   realizedPercent: "0",
-    //   timestamp: 1568215292,
-    //   total: "0",
-    //   totalCost: "3.1031",
-    //   totalPercent: "0",
-    //   unrealized: "0",
-    //   unrealizedCost: "3.1031",
-    //   unrealizedPercent: "0",
-    //   totalUnclaimedProceeds: "10",
-    //   totalUnclaimedProfit: "8",
-    // };
-    // marketTradingPositions['0xa45bD3Fc355edf141B2F8edB34521128C5CBD38E'] = {
-    //   currentValue: "3.1031",
-    //   frozenFunds: "3.1031",
-    //   marketId: "0xa45bD3Fc355edf141B2F8edB34521128C5CBD38E",
-    //   realized: "0",
-    //   realizedCost: "0",
-    //   realizedPercent: "0",
-    //   timestamp: 1568215292,
-    //   total: "0",
-    //   totalCost: "3.1031",
-    //   totalPercent: "0",
-    //   unrealized: "0",
-    //   unrealizedCost: "3.1031",
-    //   unrealizedPercent: "0",
-    //   totalUnclaimedProceeds: "5",
-    //   totalUnclaimedProfit: "2",
-    // };
-    // tradingPositions[0] = {
-    //   currentValue: "3.1031",
-    //   frozenFunds: "3.1031",
-    //   marketId: "0xa45bD3Fc355edf141B2F8edB34521128C5CBD38E",
-    //   realized: "0",
-    //   realizedCost: "0",
-    //   realizedPercent: "0",
-    //   timestamp: 1568215292,
-    //   total: "0",
-    //   totalCost: "3.1031",
-    //   totalPercent: "0",
-    //   unrealized: "0",
-    //   unrealizedCost: "3.1031",
-    //   unrealizedPercent: "0",
-    //   totalUnclaimedProceeds: "10",
-    //   totalUnclaimedProfit: "8",
-    // };
-    // tradingPositions[1] = {
-    //   currentValue: "3.1031",
-    //   frozenFunds: "3.1031",
-    //   marketId: "0xa45bD3Fc355edf141B2F8edB34521128C5CBD38E",
-    //   realized: "0",
-    //   realizedCost: "0",
-    //   realizedPercent: "0",
-    //   timestamp: 1568215292,
-    //   total: "0",
-    //   totalCost: "3.1031",
-    //   totalPercent: "0",
-    //   unrealized: "0",
-    //   unrealizedCost: "3.1031",
-    //   unrealizedPercent: "0",
-    //   totalUnclaimedProceeds: "5",
-    //   totalUnclaimedProfit: "2",
-    // };
-
     return {
-      tradingPositions,
-      tradingPositionsPerMarket: marketTradingPositions,
-      frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
-      unrealizedRevenue24hChangePercent: profitLossSummary[1].unrealizedPercent,
+      tradingPositions: [
+        {
+          "timestamp": 1568286551,
+          "frozenFunds": "3.1031",
+          "marketId": "0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5",
+          "outcome": 2,
+          "netPosition": "10.01",
+          "rawPosition": "10.01",
+          "averagePrice": "0.31",
+          "realized": "0",
+          "unrealized": "0",
+          "total": "0",
+          "unrealizedCost": "3.1031",
+          "realizedCost": "0",
+          "totalCost": "3.1031",
+          "realizedPercent": "0",
+          "unrealizedPercent": "0",
+          "totalPercent": "0",
+          "currentValue": "3.1031",
+          "totalUnclaimedProceeds": "10",
+          "totalUnclaimedProfit": "8",
+        },
+        {
+          "timestamp": 1568286551,
+          "frozenFunds": "3.1031",
+          "marketId": "0xd86519c39B8859Bc646FA172B5191C42C4fded36",
+          "outcome": 2,
+          "netPosition": "10.01",
+          "rawPosition": "10.01",
+          "averagePrice": "0.31",
+          "realized": "0",
+          "unrealized": "0",
+          "total": "0",
+          "unrealizedCost": "3.1031",
+          "realizedCost": "0",
+          "totalCost": "3.1031",
+          "realizedPercent": "0",
+          "unrealizedPercent": "0",
+          "totalPercent": "0",
+          "currentValue": "3.1031",
+          "totalUnclaimedProceeds": "5",
+          "totalUnclaimedProfit": "2",
+        }
+      ],
+      tradingPositionsPerMarket: {
+        "0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5": {
+          "timestamp": 1568286551,
+          "frozenFunds": "3.1031",
+          "marketId": "0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5",
+          "realized": "0",
+          "unrealized": "0",
+          "total": "0",
+          "unrealizedCost": "3.1031",
+          "realizedCost": "0",
+          "totalCost": "3.1031",
+          "realizedPercent": "0",
+          "unrealizedPercent": "0",
+          "totalPercent": "0",
+          "currentValue": "3.1031",
+          "totalUnclaimedProceeds": "10",
+          "totalUnclaimedProfit": "8",
+        },
+        "0xd86519c39B8859Bc646FA172B5191C42C4fded36": {
+          "timestamp": 1568286551,
+          "frozenFunds": "3.1031",
+          "marketId": "0xd86519c39B8859Bc646FA172B5191C42C4fded36",
+          "realized": "0",
+          "unrealized": "0",
+          "total": "0",
+          "unrealizedCost": "3.1031",
+          "realizedCost": "0",
+          "totalCost": "3.1031",
+          "realizedPercent": "0",
+          "unrealizedPercent": "0",
+          "totalPercent": "0",
+          "currentValue": "3.1031",
+          "totalUnclaimedProceeds": "5",
+          "totalUnclaimedProfit": "2",
+        }
+      },
+      frozenFundsTotal: "6.2062",
+      unrealizedRevenue24hChangePercent: "0"
     };
+
+    // return {
+    //   tradingPositions,
+    //   tradingPositionsPerMarket: marketTradingPositions,
+    //   frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
+    //   unrealizedRevenue24hChangePercent: profitLossSummary[1].unrealizedPercent,
+    // };
   }
 
   @Getter('getProfitLossParams')
