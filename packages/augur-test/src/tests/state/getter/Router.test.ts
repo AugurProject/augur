@@ -31,7 +31,7 @@ test("State API :: Bad parameters to getter", async () => {
     message = error.message;
   }
 
-  expect(message).toEqual("Invalid request object: Invalid value undefined supplied to : (({ universe: string } & PartialType<{ creator: string, search: string, reportingStates: Array<string>, disputeWindow: string, designatedReporter: string, maxFee: string, maxEndTime: number, maxLiquiditySpread: string, includeInvalidMarkets: boolean, categories: Array<string>, sortBy: (keyof [\"marketOI\",\"liquidity\",\"volume\",\"timestamp\",\"endTime\",\"lastTradedTimestamp\"]) }>) & PartialType<{ sortBy: string, isSortDescending: boolean, limit: number, offset: number }>)/universe: string");
+  expect(message.startsWith("Invalid request object: Invalid value undefined supplied")).toBe(true);
 });
 
 test("State API :: Nonexistant getter", async () => {

@@ -102,8 +102,8 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
   }
 
   public async execTransactionDirectly(relayTransaction: RelayTransaction): Promise<string> {
-    const r = new BigNumber(relayTransaction.signatures[0].r).toString(16);
-    const s = new BigNumber(relayTransaction.signatures[0].s).toString(16);
+    const r = _.padStart(new BigNumber(relayTransaction.signatures[0].r).toString(16), 64, '0');
+    const s = _.padStart(new BigNumber(relayTransaction.signatures[0].s).toString(16), 64, '0');
     const v = relayTransaction.signatures[0].v!.toString(16);
     const signatures = `0x${r}${s}${v}`;
     const response = await this.gnosisSafe.execTransaction(
@@ -123,7 +123,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
 
   public async ethersTransactionToRelayTransaction(tx: Transaction<ethers.utils.BigNumber>): Promise<RelayTransaction> {
     const nonce = await this.getNonce();
-    console.log(`TX SENDING WITH NONCE: ${nonce}`);
     const to = tx.to;
     const value = tx.value;
     const data = tx.data;
@@ -145,8 +144,8 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       gasEstimates = await this.estimateTransactionDirectly(tx);
     }
 
-    const safeTxGas = gasEstimates.safeTxGas.multipliedBy(2);
-    const baseGas = gasEstimates.baseGas.multipliedBy(2);
+    const safeTxGas = gasEstimates.safeTxGas;
+    const baseGas = gasEstimates.baseGas;
     const gasPrice = this.gasPrice;
     const gasToken = this.gasToken;
     const refundReceiver = NULL_ADDRESS;
@@ -179,7 +178,6 @@ export class ContractDependenciesGnosis extends ContractDependenciesEthers {
       signatures,
     }, relayEstimateRequest);
 
-    console.log(`RELAY TX: ${JSON.stringify(relayTransaction)}`);
     return relayTransaction;
   }
 }
