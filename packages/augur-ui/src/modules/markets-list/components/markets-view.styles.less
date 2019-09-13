@@ -1,13 +1,39 @@
 @import (reference) '~assets/styles/shared';
 
-.MarketLabelGroup {
-  display: flex;
-
-  > div {
-    margin: 0 0 0 @size-24;
-  }
-
+.MarketsView {
   > div:first-of-type {
-    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: @size-8;
+
+    > div:first-of-type {
+      flex: 2;
+    }
+
+    > div:nth-of-type(2) {
+      margin: @size-8 @size-24 0 0;
+    }
+
+    @media @breakpoint-mobile {
+      align-items: baseline;
+      margin: 0;
+
+      > div:nth-of-type(2) {
+        margin-right: 0;
+      }
+
+      // Hide DropDownFilter on mobile
+      > div:last-of-type {
+        display: none;
+      }
+    }
+  }
+}
+
+.Disabled {
+  > div {
+    pointer-events: none;
+    opacity: 0.5;
   }
 }

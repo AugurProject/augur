@@ -160,6 +160,7 @@ export interface MarketStateLabelProps {
   loading: boolean;
   selected: boolean;
   handleClick: Function;
+  marketType: string;
 }
 
 interface ButtonObj {
@@ -1042,6 +1043,9 @@ export const MarketStateLabel = (
     className={classNames(Styles.MarketLabel, {
       [Styles.selected]: props.selected,
       [Styles.loading]: props.loading,
+      [Styles.open]: props.marketType === constants.MARKET_OPEN,
+      [Styles.inReporting]: props.marketType === constants.MARKET_REPORTING,
+      [Styles.resolved]: props.marketType === constants.MARKET_CLOSED,
     })}
   >
     <div>{props.label}</div>

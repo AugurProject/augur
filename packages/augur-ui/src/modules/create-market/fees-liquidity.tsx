@@ -15,7 +15,7 @@ import FilterSwitchBox from "modules/portfolio/containers/filter-switch-box";
 import OpenOrdersHeader from "modules/portfolio/components/common/open-orders-header";
 import MarketDepth from "modules/market-charts/containers/market-outcome-chart-depth";
 import QuadBox from "modules/portfolio/components/common/quad-box";
-import { Visibility } from "modules/create-market/components/visibility";
+import Visibility from "modules/create-market/containers/visibility";
 
 import Styles from "modules/create-market/fees-liquidity.styles.less";
 import { OutcomeFormatted, NewMarket } from "modules/types";
