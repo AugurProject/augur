@@ -6,7 +6,7 @@ import {
   loadCurrentlyDisputingMarkets,
   loadNextWindowDisputingMarkets,
 } from 'modules/markets/actions/load-markets';
-import { disputingMarkets } from 'modules/markets/selectors/select-disputing-markets';
+import { disputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
 
 const mapStateToProps = state => ({
   isConnected: state.connection.isConnected,
