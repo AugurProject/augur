@@ -296,8 +296,8 @@ export function updateAlert(id: string, alert: any) {
       if (foundAlert) {
         dispatch(removeAlert(id));
         dispatch(addAlert({
-          ...alert,
           ...foundAlert,
+          ...alert,
           name: foundAlert.name !== "" ? foundAlert.name : alert.name,
           params: {
             ...foundAlert.params,
