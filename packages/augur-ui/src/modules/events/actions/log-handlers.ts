@@ -34,6 +34,7 @@ import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { CANCELORDER, PUBLICTRADE, CLAIMTRADINGPROCEEDS, DOINITIALREPORT, CREATEMARKET, PUBLICFILLORDER, CONTRIBUTE } from 'modules/common/constants';
+import { loadAccountDataFromLocalStorage } from 'modules/auth/actions/load-account-data-from-local-storage';
 
 const handleAlert = (
   log: any,
@@ -105,8 +106,9 @@ export const handleUserDataSyncedEvent = (log: Events.UserDataSynced) => (
   getState: () => AppState
 ) => {
   const { loginAccount } = getState();
-  const { mixedCaseAddress } = loginAccount;
+  const { mixedCaseAddress, address } = loginAccount;
   if (mixedCaseAddress && log.trackedUsers.includes(mixedCaseAddress)) {
+    dispatch(loadAccountDataFromLocalStorage(address));
     dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(loadAccountData());
   }
