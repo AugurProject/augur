@@ -907,7 +907,7 @@ export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
         onClick={e => onClick()}
       >
         <span>{label}</span>
-        <span>{index + 1 !== items.length && '/'}</span>
+        <span>{index !== items.length - 1  && '/'}</span>
       </button>
     ))}
   </div>
