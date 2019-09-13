@@ -79,26 +79,6 @@ export default function setAlertText(alert: any, callback: any) {
     const { alerts } = getState();
 
     switch (alert.name.toUpperCase()) {
-      case PREFILLEDSTAKE: {
-        console.log(alert);
-        if (marketId && alert.params.preFilledStake.gt(ZERO)) {
-          alert.title = 'Pre-Filled Stake Added';
-          dispatch(
-            loadMarketsInfoIfNotLoaded([marketId], () => {
-              const marketInfo = selectMarket(marketId);
-              alert.description = marketInfo.description;
-              // const {
-              //   orderType,
-              //   amount,
-              //   price,
-              //   outcomeDescription
-              // } = getInfo(alert.params, alert.status, marketInfo);
-              // alert.details = `${orderType}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
-            }),
-          );
-        }
-        break;
-      }
       // CancelOrder
       case CANCELORDER: {
         alert.title = "Order Cancelled";
@@ -164,6 +144,10 @@ export default function setAlertText(alert: any, callback: any) {
       // Market
       case CONTRIBUTE:
         alert.title = alert.params.preFilled ? "Prefilled Stake" : "Market Disputed";
+        console.log(alert);
+        if (alert.params.preFilled && (alert.params._additionalStake.lte(ZERO) || !alert.params._additionalStake)) {
+          break;
+        }
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
@@ -172,7 +156,7 @@ export default function setAlertText(alert: any, callback: any) {
               marketInfo.minPrice,
               marketInfo.numTicks,
               marketInfo.marketType,
-              alert.params.payoutNumerators || alert.params._payoutNumerators
+              alert.params.preFilled ? alert.params._payoutNumerators : alert.params.payoutNumerators
             );
             const outcomeDescription =
               outcome === null
@@ -181,7 +165,7 @@ export default function setAlertText(alert: any, callback: any) {
             alert.description = marketInfo.description;
             alert.details = `${
               formatRep(
-                createBigNumber(alert.params._amount).dividedBy(
+                createBigNumber(alert.params.preFilled ? alert.params._additionalStake : alert.params._amount).dividedBy(
                   TEN_TO_THE_EIGHTEENTH_POWER
                 )
               ).formatted
@@ -239,7 +223,8 @@ export default function setAlertText(alert: any, callback: any) {
       case CREATEYESNOMARKET:
         alert.title = "Market created";
         if (!alert.description) {
-          alert.description = JSON.parse(alert.params.extraInfo).description;
+          const params = JSON.parse(alert.params.extraInfo);
+          alert.description = params && params.description;
         }
         break;
 

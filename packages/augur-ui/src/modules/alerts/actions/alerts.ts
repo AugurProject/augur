@@ -223,13 +223,6 @@ export function loadAlerts() {
   };
 }
 
-export function addCriticalAlert(alert: any) {
-  return addAlert({
-    level: constants.CRITICAL,
-    ...alert,
-  });
-}
-
 export function addAlert(alert: any) {
   return (dispatch: ThunkDispatch<void, any, Action>) => {
     if (alert != null) {
