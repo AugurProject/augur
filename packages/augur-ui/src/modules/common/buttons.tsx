@@ -1,13 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
   NEUTRAL,
   ASCENDING,
   DESCENDING,
   BUY,
-  SELL
-} from "modules/common/constants";
+  SELL,
+} from 'modules/common/constants';
 import {
   StarIcon,
   XIcon,
@@ -21,12 +21,12 @@ import {
   ViewIcon,
   DownloadIcon,
   RotatableChevron,
-  Filter
-} from "modules/common/icons";
-import classNames from "classnames";
-import { getNetworkId } from "modules/contracts/actions/contractCalls";
-import Styles from "modules/common/buttons.styles.less";
-import { AppState } from "store";
+  Filter,
+} from 'modules/common/icons';
+import classNames from 'classnames';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
+import Styles from 'modules/common/buttons.styles.less';
+import { AppState } from 'store';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -108,7 +108,9 @@ export const PrimaryButton = (props: DefaultButtonProps) => (
 export const SecondaryButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={classNames(Styles.SecondaryButton, {[Styles.Small]: props.small})}
+    className={classNames(Styles.SecondaryButton, {
+      [Styles.Small]: props.small,
+    })}
     disabled={props.disabled}
     title={props.title || props.text}
   >
@@ -121,15 +123,14 @@ export const OrderButton = (props: OrderButtonProps) => (
   <button
     onClick={e => props.action(e)}
     className={
-      props.type === BUY
-        ? Styles.BuyOrderButton
-        : Styles.SellOrderButton
+      props.type === BUY ? Styles.BuyOrderButton : Styles.SellOrderButton
     }
     disabled={props.disabled}
     title={props.title}
   >
-    {props.initialLiquidity && "Add Order"}
-    {!props.initialLiquidity && (props.type === BUY ? "Place Buy Order" : "Place Sell Order")}
+    {props.initialLiquidity && 'Add Order'}
+    {!props.initialLiquidity &&
+      (props.type === BUY ? 'Place Buy Order' : 'Place Sell Order')}
   </button>
 );
 
@@ -138,15 +139,15 @@ export const FavoritesButton = (props: FavoritesButtonProps) => (
     onClick={e => props.action(e)}
     className={classNames(Styles.FavoriteButton, {
       [Styles.FavoriteButton_Favorite]: props.isFavorite,
-      [Styles.FavoriteButton__small]: props.isSmall
+      [Styles.FavoriteButton__small]: props.isSmall,
     })}
     disabled={props.disabled}
     title={props.title}
-    style={props.hideText ? { marginRight: "0.5rem" } : undefined}
+    style={props.hideText ? { marginRight: '0.5rem' } : undefined}
   >
-    {StarIcon}{" "}
+    {StarIcon}{' '}
     {!props.hideText &&
-      `${props.isFavorite ? "Remove from" : "Add to"} watchlist`}
+      `${props.isFavorite ? 'Remove from' : 'Add to'} watchlist`}
   </button>
 );
 
@@ -200,7 +201,7 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
     onClick={e => props.action(e)}
     className={Styles.CurrenyActionButton}
     disabled={props.disabled}
-    title={props.title || "Deposit"}
+    title={props.title || 'Deposit'}
   >
     {QRCodeIcon}
     Receive
@@ -212,7 +213,7 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
     onClick={e => props.action(e)}
     className={Styles.CurrenyActionButton}
     disabled={props.disabled}
-    title={props.title || "Withdraw"}
+    title={props.title || 'Withdraw'}
   >
     {PaperAirplaneIcon}
     Send
@@ -224,7 +225,7 @@ export const ViewTransactionsButton = (props: DefaultActionButtonProps) => (
     onClick={e => props.action(e)}
     className={Styles.ViewTransactionsButton}
     disabled={props.disabled}
-    title={props.title || "View Transactions"}
+    title={props.title || 'View Transactions'}
   >
     {DoubleArrowIcon}
     View Transactions
@@ -236,7 +237,7 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
     onClick={e => props.action(e)}
     className={Styles.REPFaucetButton}
     disabled={props.disabled}
-    title={props.title || "REP Faucet"}
+    title={props.title || 'REP Faucet'}
   >
     {RepLogoIcon}
     <span>REP Faucet</span>
@@ -248,7 +249,7 @@ export const DAIFaucetButton = (props: DefaultActionButtonProps) => (
     onClick={e => props.action(e)}
     className={Styles.DAIFaucetButton}
     disabled={props.disabled}
-    title={props.title || "DAI Faucet"}
+    title={props.title || 'DAI Faucet'}
   >
     {DaiLogoIcon}
     <span>DAI Faucet</span>
@@ -260,7 +261,7 @@ export const ApprovalButton = (props: DefaultActionButtonProps) => (
     onClick={e => props.action(e)}
     className={Styles.DAIFaucetButton}
     disabled={props.disabled}
-    title={props.title || "Approval"}
+    title={props.title || 'Approval'}
   >
     <span>Approval</span>
   </button>
@@ -271,7 +272,7 @@ export const ExportButton = (props: DefaultActionButtonProps) => (
     onClick={e => props.action(e)}
     className={Styles.ExportButton}
     disabled={props.disabled}
-    title={props.title || "Export Complete History"}
+    title={props.title || 'Export Complete History'}
   >
     {DownloadIcon}
     Export Complete History
@@ -294,9 +295,17 @@ export const DirectionButton = (props: DirectionButtonProps) => (
 export const ViewTransactionDetailsButton = (
   props: ViewTransactionDetailsButtonProps
 ) => (
-  <div className={classNames(Styles.ViewTransactionDetailsButton, {[Styles.Dark]: props.dark})}>
+  <div
+    className={classNames(Styles.ViewTransactionDetailsButton, {
+      [Styles.Dark]: props.dark,
+    })}
+  >
     {ViewIcon}
-    <EtherscanLink showNonLink txhash={props.transactionHash} label={props.label ? props.label : "View"} />
+    <EtherscanLink
+      showNonLink
+      txhash={props.transactionHash}
+      label={props.label ? props.label : 'View'}
+    />
   </div>
 );
 
@@ -383,15 +392,15 @@ const mapStateToPropsEtherScanLink = (state: AppState) => {
   }
 
   const networkLink = {
-    1: "https://etherscan.io/tx/",
-    3: "https://ropsten.etherscan.io/tx/",
-    4: "https://rinkeby.etherscan.io/tx/",
-    19: "http://scan.thundercore.com/tx/",
-    42: "https://kovan.etherscan.io/tx/"
+    1: 'https://etherscan.io/tx/',
+    3: 'https://ropsten.etherscan.io/tx/',
+    4: 'https://rinkeby.etherscan.io/tx/',
+    19: 'http://scan.thundercore.com/tx/',
+    42: 'https://kovan.etherscan.io/tx/',
   };
 
   return {
-    baseUrl: networkLink[networkId]
+    baseUrl: networkLink[networkId],
   };
 };
 
