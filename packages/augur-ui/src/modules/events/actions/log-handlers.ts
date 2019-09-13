@@ -42,8 +42,7 @@ const handleAlert = (
   getState: () => AppState
 ) => {
   const { blockchain } = getState();
-  dispatch(addAlert({
-      id: log.transactionHash,
+  dispatch(updateAlert(log.transactionHash, {
       params: log,
       status: TXEventName.Success,
       timestamp: blockchain.currentAugurTimestamp * 1000,

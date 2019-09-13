@@ -13,40 +13,43 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   CANCELORDER,
   CLAIMTRADINGPROCEEDS,
-  PUBLICCREATEORDER,
   BUYPARTICIPATIONTOKENS,
   PUBLICFILLBESTORDER,
   PUBLICFILLBESTORDERWITHLIMIT,
   PUBLICFILLORDER,
   CONTRIBUTE,
-  DISAVOWCROWDSOURCERS,
   DOINITIALREPORT,
-  PUBLICBUY,
-  PUBLICBUYWITHLIMIT,
-  PUBLICSELL,
-  PUBLICSELLWITHLIMIT,
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
   CREATEMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
-  APPROVE
+  APPROVE,
+  PREFILLEDSTAKE
 } from "modules/common/constants";
 import { Outcomes } from "modules/types";
 import { AppState } from "store";
 import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { createBigNumber } from "utils/create-big-number";
+import { updateAlert } from "./alerts";
 
-function getInfo(params, marketInfo) {
+function getInfo(params, status, marketInfo) {
+  const outcome = params.outcome || params._outcome;
+
   const outcomeDescription = getOutcomeName(
     marketInfo,
-    { id: params.outcome },
+    { id: outcome },
   );
-  const price = convertOnChainPriceToDisplayPrice(createBigNumber(params.price), createBigNumber(marketInfo.minPrice), createBigNumber(marketInfo.tickSize));
-  const amount = convertOnChainAmountToDisplayAmount(createBigNumber(params.amount), createBigNumber(marketInfo.tickSize));
-  const orderType = params.orderType === 0 ? BUY : SELL;
+  let orderType = params.orderType === 0 ? BUY : SELL;
+
+  if (status === TXEventName.Failure) {
+    orderType =  params._direction.toNumber() === 0 ? BUY : SELL;
+  }
+
+  const price = convertOnChainPriceToDisplayPrice(createBigNumber(params.price || params._price), createBigNumber(marketInfo.minPrice), createBigNumber(marketInfo.tickSize));
+  const amount = convertOnChainAmountToDisplayAmount(createBigNumber(params.amount || params._amount), createBigNumber(marketInfo.tickSize));
     
   return {
     price,
@@ -68,23 +71,44 @@ export default function setAlertText(alert: any, callback: any) {
       return dispatch(callback(alert));
     }
 
+    const marketId = alert.params.market || alert.params._market;
+    const { alerts } = getState();
+
     switch (alert.name.toUpperCase()) {
-      // CancelOrder
-      case CANCELORDER: {
-        alert.title = "Order Cancelled";
+      case PREFILLEDSTAKE: {
+        alert.title = 'Pre-Filled Stake Added';
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
+            loadMarketsInfoIfNotLoaded([marketId], () => {
+              const marketInfo = selectMarket(marketId);
               alert.description = marketInfo.description;
               const {
                 orderType,
                 amount,
                 price,
                 outcomeDescription
-              } = getInfo(alert.params, marketInfo);
+              } = getInfo(alert.params, alert.status, marketInfo);
               alert.details = `${orderType}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
-              return dispatch(callback(alert));
+            }),
+          );
+        }
+        break;
+      }
+      // CancelOrder
+      case CANCELORDER: {
+        alert.title = "Order Cancelled";
+        if (!alert.description) {
+          dispatch(
+            loadMarketsInfoIfNotLoaded([marketId], () => {
+              const marketInfo = selectMarket(marketId);
+              alert.description = marketInfo.description;
+              const {
+                orderType,
+                amount,
+                price,
+                outcomeDescription
+              } = getInfo(alert.params, alert.status, marketInfo);
+              alert.details = `${orderType}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
             }),
           );
         }
@@ -120,19 +144,17 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = "Filled";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
+            loadMarketsInfoIfNotLoaded([marketId], () => {
+              const marketInfo = selectMarket(marketId);
               alert.description = marketInfo.description;
               const {
                 orderType,
                 amount,
                 price,
                 outcomeDescription
-              } = getInfo(alert.params, marketInfo);
+              } = getInfo(alert.params, alert.status, marketInfo);
               alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
               alert.toast = true;
-
-              return dispatch(callback(alert));
             })
           );
         }
@@ -143,8 +165,8 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = "Market Disputed";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
+            loadMarketsInfoIfNotLoaded([marketId], () => {
+              const marketInfo = selectMarket(marketId);
               const outcome = calculatePayoutNumeratorsValue(
                 marketInfo.maxPrice,
                 marketInfo.minPrice,
@@ -164,7 +186,6 @@ export default function setAlertText(alert: any, callback: any) {
                   )
                 ).formatted
               } REP added to "${outcomeDescription}"`;
-              return dispatch(callback(alert));
             })
           );
         }
@@ -173,8 +194,8 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = "Market Reported";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
+            loadMarketsInfoIfNotLoaded([marketId], () => {
+              const marketInfo = selectMarket(marketId);
               const outcome = calculatePayoutNumeratorsValue(
                 marketInfo.maxPrice,
                 marketInfo.minPrice,
@@ -188,7 +209,6 @@ export default function setAlertText(alert: any, callback: any) {
                   : getOutcomeName(marketInfo, { id: outcome }, false);
               alert.description = marketInfo.description;
               alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
-              return dispatch(callback(alert));
             })
           );
         }
@@ -200,19 +220,17 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = "Order placed";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
+            loadMarketsInfoIfNotLoaded([marketId], () => {
+              const marketInfo = selectMarket(marketId);
               alert.description = marketInfo.description;
               const {
                 orderType,
                 amount,
                 price,
                 outcomeDescription
-              } = getInfo(alert.params, marketInfo);
+              } = getInfo(alert.params, alert.status, marketInfo);
               alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
               alert.toast = true;
-
-              return dispatch(callback(alert));
             })
           );
         }
@@ -234,14 +252,9 @@ export default function setAlertText(alert: any, callback: any) {
       case APPROVE:
         alert.title = "Dai approval";
         alert.description = "You are approved to use Dai on Augur"
-        alert.details = `Transaction cost ${formatDai(alert.params._amount.toNumber()).formatted}`
         break;
       
       default: {
-        const result = alert.params.type
-          .replace(/([A-Z])/g, " $1")
-          .toLowerCase();
-        alert.title = result;
         break;
       }
     }
@@ -250,6 +263,6 @@ export default function setAlertText(alert: any, callback: any) {
       alert.title = 'Failed transaction';
     }
 
-    dispatch(callback(alert));
+    return dispatch(callback(alert));
   };
 }

@@ -16,6 +16,7 @@ export enum SizeTypes {
 export interface Alert {
   id: string;
   title: string;
+  name: string;
   description: string;
   timestamp: number;
   href: string;
@@ -23,6 +24,7 @@ export interface Alert {
   status: string;
   seen: boolean;
   level: string;
+  params: object;
 }
 
 export interface DateFormattedObject {
