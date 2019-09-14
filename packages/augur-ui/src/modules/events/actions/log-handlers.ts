@@ -33,7 +33,15 @@ import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
-import { CANCELORDER, PUBLICTRADE, CLAIMTRADINGPROCEEDS, DOINITIALREPORT, CREATEMARKET, PUBLICFILLORDER, CONTRIBUTE } from 'modules/common/constants';
+import {
+  CANCELORDER,
+  PUBLICTRADE,
+  CLAIMTRADINGPROCEEDS,
+  DOINITIALREPORT,
+  CREATEMARKET,
+  PUBLICFILLORDER,
+  CONTRIBUTE,
+} from 'modules/common/constants';
 
 const handleAlert = (
   log: any,
@@ -42,7 +50,8 @@ const handleAlert = (
   getState: () => AppState
 ) => {
   const { blockchain } = getState();
-  dispatch(updateAlert(log.transactionHash, {
+  dispatch(
+    updateAlert(log.transactionHash, {
       params: log,
       status: TXEventName.Success,
       timestamp: blockchain.currentAugurTimestamp * 1000,
@@ -234,7 +243,15 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
     // TODO: do we need to remove stuff based on events?
     // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
     //handleAlert(log, CANCELORDER, dispatch, getState);
-    dispatch(updateAlert(log.orderId, {name: CANCELORDER, status: TXEventName.Success, params: {...log}}));
+    const { blockchain } = getState();
+    dispatch(
+      updateAlert(log.orderId, {
+        name: CANCELORDER,
+        timestamp: blockchain.currentAugurTimestamp * 1000,
+        status: TXEventName.Success,
+        params: { ...log },
+      })
+    );
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
@@ -267,7 +284,8 @@ export const handleTradingProceedsClaimedLog = (
     log.sender,
     getState().loginAccount.address
   );
-  if (isStoredTransaction) handleAlert(log, CLAIMTRADINGPROCEEDS, dispatch, getState);
+  if (isStoredTransaction)
+    handleAlert(log, CLAIMTRADINGPROCEEDS, dispatch, getState);
 
   if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
 };
@@ -392,7 +410,9 @@ export const handleDisputeCrowdsourcerContributionLog = (
   log: Logs.DisputeCrowdsourcerContributionLog
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
-  if (log.reporter.toUpperCase() === getState().loginAccount.address.toUpperCase()) {
+  if (
+    log.reporter.toUpperCase() === getState().loginAccount.address.toUpperCase()
+  ) {
     // dispatch(loadReportingWindowBounds());
     handleAlert(log, CONTRIBUTE, dispatch, getState);
   }
