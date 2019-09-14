@@ -222,7 +222,7 @@ export default function setAlertText(alert: any, callback: any) {
       case CREATEYESNOMARKET:
         alert.title = "Market created";
         if (!alert.description) {
-          const params = JSON.parse(alert.params.extraInfo);
+          const params = JSON.parse(alert.params.extraInfo || alert.params._extraInfo);
           alert.description = params && params.description;
         }
         break;
