@@ -19,7 +19,7 @@ export interface MarketHeaderBarProps {
   disputeInfo: any;
   endTimeFormatted: DateFormattedObject;
   currentAugurTimestamp: number;
-  reportingWindowStatsEndTime: number;
+  disputingWindowEndTime: number;
 }
 
 class MarketHeaderBar extends Component<MarketHeaderBarProps> {
@@ -38,7 +38,7 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
       disputeInfo,
       endTimeFormatted,
       currentAugurTimestamp,
-      reportingWindowStatsEndTime,
+      disputingWindowEndTime,
     } = this.props;
 
     return (
@@ -49,7 +49,7 @@ class MarketHeaderBar extends Component<MarketHeaderBarProps> {
           disputeInfo={disputeInfo}
           endTimeFormatted={endTimeFormatted}
           currentAugurTimestamp={currentAugurTimestamp}
-          reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+          disputingWindowEndTime={disputingWindowEndTime}
         />
 
         {addToFavorites && (

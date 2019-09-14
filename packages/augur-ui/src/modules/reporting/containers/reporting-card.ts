@@ -2,12 +2,13 @@ import { connect } from 'react-redux';
 import { ReportingCard } from 'modules/reporting/common';
 import { updateModal } from "modules/modal/actions/update-modal";
 import { MODAL_REPORTING } from "modules/common/constants";
+import { AppState } from 'store';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: AppState, ownProps) => {
   return {
     isLogged: state.authStatus.isLogged,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    reportingWindowStatsEndTime: state.disputeWindowStats.endTime,
+    disputingWindowEndTime: state.universe.disputeWindow.endTime,
   };
 };
 

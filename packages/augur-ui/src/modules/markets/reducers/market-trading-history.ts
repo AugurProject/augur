@@ -2,14 +2,15 @@ import {
   BULK_MARKET_TRADING_HISTORY,
  } from "modules/markets/actions/market-trading-history-management";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { BaseAction, MarketTradingHistoryState } from "modules/types";
+import { BaseAction } from "modules/types";
+import { Getters } from "@augurproject/sdk";
 
-const DEFAULT_STATE: MarketTradingHistoryState = {};
+const DEFAULT_STATE: Getters.Trading.MarketTradingHistory = {};
 
 export default function(
-  tradingHistory: MarketTradingHistoryState = DEFAULT_STATE,
+  tradingHistory: Getters.Trading.MarketTradingHistory = DEFAULT_STATE,
   { type, data }: BaseAction,
-): MarketTradingHistoryState {
+): Getters.Trading.MarketTradingHistory {
   switch (type) {
     case BULK_MARKET_TRADING_HISTORY:
       return {
