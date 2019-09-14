@@ -13,6 +13,7 @@ import {
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
   OrderType,
+  TokenType,
 } from "../logs/types";
 import { sortOptions } from './types';
 import {
@@ -71,12 +72,13 @@ interface ContractInfo {
 
 interface ContractOverview {
   totalAmount: BigNumber;
-  contracts: Array<ContractInfo>;
+  contracts: ContractInfo[];
 }
 
 interface ParticipationContract {
   address: string;
   amount: BigNumber;
+  amountFees: BigNumber;
 }
 
 interface ParticipationOverview {
@@ -90,7 +92,7 @@ export interface AccountReportingHistory {
   profitAmount: BigNumber;
   reporting: ContractOverview | null;
   disputing: ContractOverview | null;
-  participationTokens: ParticipationOverview | null;
+  participationTokens: ParticipationOverview;
 }
 
 export interface AccountTransaction {
@@ -130,107 +132,177 @@ export class Accounts<TBigNumber> {
     params: t.TypeOf<typeof Accounts.getAccountReportingHistoryParams>
   ): Promise<AccountReportingHistory> {
     const [
+      marketCreatedLogs,
+      initialReporterRedeemedLogs,
       disputeCrowdsourcerContributionLogs,
       disputeCrowdsourcerRedeemedLogs,
-      initialReporterRedeemedLogs,
-      participationTokensRedeemedLogs,
+      tokensMintedLogs,
+      participationTokensRedeemedLogs
     ] = await Promise.all([
-      await db.findDisputeCrowdsourcerContributionLogs(        {
+      db.findMarketCreatedLogs({
+        selector: {
+          universe: params.universe,
+          designatedReporter: params.account
+        },
+      }).then((r) => Promise.all(
+        r.map(async ({ market }) => ({
+          marketId: market,
+          amount: await augur.getMarket(market).getValidityBondAttoCash_(),
+          address: await augur.getMarket(market).getInitialReporter_(),
+        }))
+        )).then((r) => r.reduce((acc, { amount, address, marketId }) => {
+          const compositeKey = `${marketId}-${address}`;
+          return {
+            ...acc,
+            [compositeKey]: {
+              marketId,
+              address,
+              amount,
+            }
+          };
+        }, {} as { [compositeKey: string]: ContractInfo })),
+        db.findInitialReporterRedeemedLogs(
+          {
+            selector: {
+              universe: params.universe,
+              reporter: params.account,
+            },
+          }
+        ).then((r) => r.reduce((acc, { amountRedeemed, initialReport, market, }) => {
+          const compositeKey = `${market}-${initialReport}`;
+          return {
+            ...acc,
+            [compositeKey]: {
+              marketId: market,
+              address: initialReport,
+              amount: amountRedeemed,
+            },
+          };
+        }, {} as { [compositeKey: string]: ContractInfo })),
+        db.findDisputeCrowdsourcerContributionLogs({
           selector: {
             universe: params.universe,
             reporter: params.account,
           },
-        }
-      ),
-      await db.findDisputeCrowdsourcerRedeemedLogs(
-        {
+        }).then((r) => r.reduce(
+            (acc, { amountStaked, disputeCrowdsourcer, market }) => {
+              const compositeKey = `${market}-${disputeCrowdsourcer}`;
+              return {
+                ...acc,
+                [compositeKey]: {
+                  marketId: market,
+                  address: disputeCrowdsourcer,
+                  amount: (compositeKey in acc) ?
+                    acc[compositeKey].amount.plus(amountStaked) :
+                    new BigNumber(amountStaked)
+                }
+              };
+            }, {} as { [compositeKey: string]: ContractInfo })),
+        db.findDisputeCrowdsourcerRedeemedLogs(
+          {
+            selector: {
+              universe: params.universe,
+              reporter: params.account
+            }
+          }
+        ).then((r) => r.reduce(
+            (acc, { amountRedeemed, disputeCrowdsourcer, market }) => ({
+              ...acc,
+              [`${market}-${disputeCrowdsourcer}`]: {
+                marketId: market,
+                address: disputeCrowdsourcer,
+                amount: new BigNumber(amountRedeemed),
+              },
+            }), {} as { [compositeKey: string]: ContractInfo })),
+      db.findTokensMintedLogs(params.account, {
           selector: {
             universe: params.universe,
-            reporter: params.account,
+            target: params.account,
+            tokenType: TokenType.ParticipationToken,
           },
         }
-      ),
-      await db.findInitialReporterRedeemedLogs(
-        {
-          selector: {
-            universe: params.universe,
-            reporter: params.account,
+      ).then((r) => r.reduce(
+        (acc, { target, token, amount }) => ({
+          ...acc,
+          [`${target}`]: {
+            address: target,
+            amount: new BigNumber(amount),
+            amountFees: new BigNumber(0),
           },
-        }
-      ),
-      await db.findParticipationTokensRedeemedLogs(
-      {
-          selector: {
-            universe: params.universe,
-            account: params.account,
-          },
-        }
-      ),
+        }), {} as { [compositeKey:string]: ParticipationContract })),
+      db.findParticipationTokensRedeemedLogs(
+          {
+            selector: {
+              universe: params.universe,
+              account: params.account,
+            },
+          }
+        ).then((r) => r.reduce(
+          (acc, { disputeWindow, attoParticipationTokens, feePayoutShare }) => ({
+            ...acc,
+            [`${disputeWindow}`]: {
+              address: disputeWindow,
+              amount: new BigNumber(attoParticipationTokens),
+              amountFees: new BigNumber(feePayoutShare),
+            },
+        }), {} as { [compositeKey:string]: ParticipationContract })),
     ]);
 
-    const reporting = initialReporterRedeemedLogs.reduce(({totalAmount, contracts}, log)=> {
-      const existingItemIndex = contracts.findIndex(({address, marketId}) => address === log.initialReport && marketId === log.market);
-      if(existingItemIndex === -1) {
-        contracts.push({
-          marketId: log.market,
-          address: log.initialReport,
-          amount: new BigNumber(log.amountRedeemed),
+    const disputeContractInfo:ContractInfo[] = [];
+    for(const compositeKey in disputeCrowdsourcerContributionLogs) {
+      const item = disputeCrowdsourcerContributionLogs[compositeKey];
+      if(disputeCrowdsourcerRedeemedLogs[compositeKey]) {
+        disputeContractInfo.push({
+          ...item,
+          amount: item.amount.minus(disputeCrowdsourcerRedeemedLogs[compositeKey].amount),
         });
       } else {
-        contracts[existingItemIndex].amount = contracts[existingItemIndex].amount.plus(log.amountRedeemed);
+        disputeContractInfo.push(item);
       }
+    }
 
-      return {
-        totalAmount: totalAmount.plus(log.amountRedeemed),
-        contracts,
-      };
-    }, {
-      totalAmount: new BigNumber(0),
-      contracts: [],
-    } as ContractOverview);
+    const disputing:ContractOverview = {
+      contracts: disputeContractInfo,
+      totalAmount: disputeContractInfo.reduce((acc, item) => acc.plus(item.amount), new BigNumber(0)),
+    };
 
-    const disputing = disputeCrowdsourcerRedeemedLogs.reduce(({totalAmount, contracts}, log)=> {
-      const existingItemIndex = contracts.findIndex(({address, marketId}) => address === log.disputeCrowdsourcer && marketId === log.market);
-      if(existingItemIndex === -1) {
-        contracts.push({
-          marketId: log.market,
-          address: log.disputeCrowdsourcer,
-          amount: new BigNumber(log.amountRedeemed),
+    const reportingContractInfo:ContractInfo[] = [];
+    for(const compositeKey in marketCreatedLogs) {
+      const item = marketCreatedLogs[compositeKey];
+      if(initialReporterRedeemedLogs[compositeKey]) {
+        reportingContractInfo.push({
+          ...item,
+          amount: item.amount.minus(initialReporterRedeemedLogs[compositeKey].amount),
         });
       } else {
-        contracts[existingItemIndex].amount = contracts[existingItemIndex].amount.plus(log.amountRedeemed);
+        reportingContractInfo.push(item);
       }
+    }
 
-      return {
-        totalAmount: totalAmount.plus(log.amountRedeemed),
-        contracts,
-      };
-    }, {
-      totalAmount: new BigNumber(0),
-      contracts: [],
-    } as ContractOverview);
+    const reporting:ContractOverview =  {
+      contracts: reportingContractInfo,
+      totalAmount: reportingContractInfo.reduce((acc, item) => acc.plus(item.amount), new BigNumber(0)),
+    };
 
-  const participationTokens = participationTokensRedeemedLogs.reduce(({totalAmount, totalFees, contracts}, log)=> {
-      const existingItemIndex = contracts.findIndex(({address }) => address === log.disputeWindow);
-      if(existingItemIndex === -1) {
-        contracts.push({
-          address: log.disputeWindow,
-          amount: new BigNumber(log.feePayoutShare),
+    const participationTokenContractInfo:ParticipationContract[] = [];
+    for(const compositeKey in tokensMintedLogs) {
+      const item = tokensMintedLogs[compositeKey];
+      if(participationTokensRedeemedLogs[compositeKey]) {
+        participationTokenContractInfo.push({
+          ...item,
+          amount: item.amount.minus(participationTokensRedeemedLogs[compositeKey].amount),
+          amountFees: new BigNumber(participationTokensRedeemedLogs[compositeKey].amountFees),
         });
       } else {
-        contracts[existingItemIndex].amount = contracts[existingItemIndex].amount.plus(log.feePayoutShare);
+        participationTokenContractInfo.push(item);
       }
+    }
 
-      return {
-        totalAmount: totalAmount.plus(log.attoParticipationTokens),
-        totalFees: totalFees.plus(log.feePayoutShare),
-        contracts,
-      };
-    }, {
-      totalAmount: new BigNumber(0),
-      totalFees: new BigNumber(0),
-      contracts: [],
-    } as ParticipationOverview);
+    const participationTokens:ParticipationOverview =  {
+      contracts: participationTokenContractInfo,
+      totalAmount: participationTokenContractInfo.reduce((acc, item) => acc.plus(item.amount), new BigNumber(0)),
+      totalFees: participationTokenContractInfo.reduce((acc, item) => acc.plus(item.amountFees), new BigNumber(0)),
+    };
 
     return  {
       profitLoss: new BigNumber(0),
