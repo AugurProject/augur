@@ -25,8 +25,9 @@ export const SubCategories = ({
 
   const tertiarySelected = categories[2].length > 0;
   const categorySelected = tertiaryOptions.map(options => options.value).includes(categories[2]);
-  const isCustomSelected = tertiaryOptions.length === 0 || !categorySelected && tertiaryOptions.length > 0 && tertiarySelected ;
+  const isCustomSelected = tertiaryOptions.length === 0 || !categorySelected && tertiaryOptions.length > 0;
   const customOption = { label: CUSTOM, value: CUSTOM };
+
   return (
     <section className={Styles.SubCategories}>
       <LargeSubheaders

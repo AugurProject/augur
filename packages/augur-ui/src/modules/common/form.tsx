@@ -514,13 +514,9 @@ export class CategorySingleSelect extends Component<
     showText: this.props.initialSelected === CUSTOM,
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.initialSelected !== this.props.initialSelected) {
-      this.setState({
-        selected: nextProps.initialSelected,
-        value: nextProps.initialValue,
-        showText: nextProps.initialSelected === CUSTOM,
-      });
+  componentDidUpdate(prevProps) {
+    if (this.props.initialSelected !== prevProps.initialSelected) {
+      this.handleUpdate(this.props.initialSelected, this.props.initialValue);
     }
   }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { LocationDisplay, Error, RadioCardGroup } from 'modules/common/form';
+import { LocationDisplay, Error } from 'modules/common/form';
 import {
   BACK,
   NEXT,
@@ -32,7 +32,6 @@ import {
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
-  YES_NO,
   SCALAR,
   EXPIRY_SOURCE_SPECIFIC,
   DESIGNATED_REPORTER_SPECIFIC,
@@ -45,15 +44,13 @@ import {
   LargeHeader,
   ExplainerBlock,
   ContentBlock,
-  Header,
-  Subheaders,
-  LargeSubheaders,
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
+import { MarketType } from 'modules/create-market/components/market-type';
 import makePath from 'modules/routes/helpers/make-path';
 import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
 import { DEFAULT_STATE } from 'modules/markets/reducers/new-market';
@@ -79,7 +76,6 @@ import Styles from 'modules/create-market/components/form.styles.less';
 
 import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
-import { Popcorn } from 'modules/common/icons';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -592,44 +588,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === SUB_CATEGORIES && <SubCategories />}
-              {mainContent === MARKET_TYPE &&
-                <section>
-                  <LargeSubheaders
-                    link
-                    underline
-                    header='Choose a market type'
-                    subheader='Market types vary based on the amount of possible outcomes.'
-                  />
-
-                  <RadioCardGroup
-                    onChange={(value) => updateNewMarket({ marketType: value })}
-                    defaultSelected={marketType}
-                    radioButtons={[
-                      {
-                        value: YES_NO,
-                        header: 'Yes / No',
-                        description: 'There are two possible outcomes: “Yes” or “No”',
-                        icon: Popcorn,
-                        useIconColors: true,
-                      },
-                      {
-                        value: CATEGORICAL,
-                        header: 'Multiple Choice',
-                        description: 'There are up to 7 possible outcomes: “A”, “B”, “C” etc ',
-                        icon: Popcorn,
-                        useIconColors: true,
-                      },
-                      {
-                        value: SCALAR,
-                        header: 'Scalar',
-                        description: 'A range of numeric outcomes: “USD range” between “1” and “100”.',
-                        icon: Popcorn,
-                        useIconColors: true,
-                      },
-                    ]}
-                  />
-                </section>
-              }
+              {mainContent === MARKET_TYPE && <MarketType updateNewMarket={updateNewMarket} marketType={marketType} />}
               {saveDraftError && (
                 <Error
                   header="Unable to save draft"
