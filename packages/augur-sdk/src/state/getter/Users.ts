@@ -377,8 +377,7 @@ export class Users {
     );
 
     const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
-// console.log('marketIds');
-// console.log(marketIds);
+
     const marketsResponse = await db.findMarketCreatedLogs({
       selector: { market: { $in: marketIds } },
     });
@@ -464,9 +463,6 @@ export class Users {
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
     ).filter(t => t !== null);
 
-// console.log('tradingPositions');
-// console.log(tradingPositions);
-
     const marketTradingPositions = _.mapValues(
       tradingPositionsByMarketAndOutcome,
       tradingPositionsByOutcome => {
@@ -476,9 +472,6 @@ export class Users {
         return sumTradingPositions(tradingPositions);
       }
     );
-
-// console.error('marketTradingPositions');
-// console.error(marketTradingPositions);
 
     // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
     const allProfitLossResults = _.flatten(
@@ -501,133 +494,12 @@ export class Users {
       account: params.account,
     });
 
-    const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
-/*
-console.error('marketFinalizedByMarket');
-console.error(marketFinalizedByMarket);
-
-console.log('reportingFeeDivisor');
-console.log(reportingFeeDivisor);
-
-console.log('shareTokenBalancesByMarketandOutcome');
-console.log(shareTokenBalancesByMarketandOutcome);
-
-    const unclaimedMarketProceeds = {};
-    for (const marketId of marketIds) {
-      // TODO: if marketIds[i] reportingState is FINALIZED or finalizable {
-        // TODO: Get tentative outcome
-        const tentativeOutcome = '0x02';
-console.log(shareTokenBalancesByMarketandOutcome[marketId][tentativeOutcome]);
-        const numberOfShares = new BigNumber(shareTokenBalancesByMarketandOutcome[marketId][tentativeOutcome].balance);
-console.error('numberOfShares');
-console.error(numberOfShares.toNumber());
-        const reportingFee = numberOfShares.div(reportingFeeDivisor);
-        const contracts = augur.contracts;
-        const totalUnclaimedProceeds = (await contracts.claimTradingProceeds.calculateProceeds_(marketId, new BigNumber(tentativeOutcome), numberOfShares))
-            .minus(await contracts.claimTradingProceeds.calculateCreatorFee_(marketId, numberOfShares))
-            .minus(reportingFee);
-        const cost = new BigNumber(1); // TODO: Get cost
-        unclaimedMarketProceeds[marketId] = {
-          totalUnclaimedProceeds,
-          totalUnclaimedProfit: totalUnclaimedProceeds.minus(cost),
-        };
-      // }
-    }
-*/
-    // TODO: Add above to tradingPositions & tradingPositionsPerMarket
-
-    // TODO: Remove hard-coding below
     return {
-      tradingPositions: [
-        {
-          "timestamp": 1568286551,
-          "frozenFunds": "3.1031",
-          "marketId": "0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5",
-          "outcome": 2,
-          "netPosition": "10.01",
-          "rawPosition": "10.01",
-          "averagePrice": "0.31",
-          "realized": "0",
-          "unrealized": "0",
-          "total": "0",
-          "unrealizedCost": "3.1031",
-          "realizedCost": "0",
-          "totalCost": "3.1031",
-          "realizedPercent": "0",
-          "unrealizedPercent": "0",
-          "totalPercent": "0",
-          "currentValue": "3.1031",
-          "totalUnclaimedProceeds": "10",
-          "totalUnclaimedProfit": "8",
-        },
-        {
-          "timestamp": 1568286551,
-          "frozenFunds": "3.1031",
-          "marketId": "0xd86519c39B8859Bc646FA172B5191C42C4fded36",
-          "outcome": 2,
-          "netPosition": "10.01",
-          "rawPosition": "10.01",
-          "averagePrice": "0.31",
-          "realized": "0",
-          "unrealized": "0",
-          "total": "0",
-          "unrealizedCost": "3.1031",
-          "realizedCost": "0",
-          "totalCost": "3.1031",
-          "realizedPercent": "0",
-          "unrealizedPercent": "0",
-          "totalPercent": "0",
-          "currentValue": "3.1031",
-          "totalUnclaimedProceeds": "5",
-          "totalUnclaimedProfit": "2",
-        }
-      ],
-      tradingPositionsPerMarket: {
-        "0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5": {
-          "timestamp": 1568286551,
-          "frozenFunds": "3.1031",
-          "marketId": "0xcB4D43F9799d6320f8cDFF2c757D85c82832A9C5",
-          "realized": "0",
-          "unrealized": "0",
-          "total": "0",
-          "unrealizedCost": "3.1031",
-          "realizedCost": "0",
-          "totalCost": "3.1031",
-          "realizedPercent": "0",
-          "unrealizedPercent": "0",
-          "totalPercent": "0",
-          "currentValue": "3.1031",
-          "totalUnclaimedProceeds": "10",
-          "totalUnclaimedProfit": "8",
-        },
-        "0xd86519c39B8859Bc646FA172B5191C42C4fded36": {
-          "timestamp": 1568286551,
-          "frozenFunds": "3.1031",
-          "marketId": "0xd86519c39B8859Bc646FA172B5191C42C4fded36",
-          "realized": "0",
-          "unrealized": "0",
-          "total": "0",
-          "unrealizedCost": "3.1031",
-          "realizedCost": "0",
-          "totalCost": "3.1031",
-          "realizedPercent": "0",
-          "unrealizedPercent": "0",
-          "totalPercent": "0",
-          "currentValue": "3.1031",
-          "totalUnclaimedProceeds": "5",
-          "totalUnclaimedProfit": "2",
-        }
-      },
-      frozenFundsTotal: "6.2062",
-      unrealizedRevenue24hChangePercent: "0"
+      tradingPositions,
+      tradingPositionsPerMarket: marketTradingPositions,
+      frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
+      unrealizedRevenue24hChangePercent: profitLossSummary[1].unrealizedPercent,
     };
-
-    // return {
-    //   tradingPositions,
-    //   tradingPositionsPerMarket: marketTradingPositions,
-    //   frozenFundsTotal: frozenFundsTotal.dividedBy(QUINTILLION).toFixed(),
-    //   unrealizedRevenue24hChangePercent: profitLossSummary[1].unrealizedPercent,
-    // };
   }
 
   @Getter('getProfitLossParams')
