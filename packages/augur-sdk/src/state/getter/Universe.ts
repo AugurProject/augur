@@ -39,6 +39,7 @@ export class Universe {
     universe: t.string,
   });
 
+  // TODO: refractor getDisputeWindow getter to make a contract call to get the needed information, time isn't saved because of the getTime contract call
   @Getter('getDisputeWindowParams')
   static async getDisputeWindow(augur: Augur, db: DB): Promise<DisputeWindow> {
     const universe = augur.addresses.Universe;
