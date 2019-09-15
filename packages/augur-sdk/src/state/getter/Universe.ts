@@ -157,11 +157,11 @@ async function getDisputeWindow(db: DB, universe: string, time: number): Promise
   const logs = await db.findDisputeWindowCreatedLogs({
     selector: {
       universe,
-      initial: false, // we only want standard (7-day) dispute windows for the getDisputeWindow getter
       $and: [
         // dispute window starts at startTime and ends before endTime
         { startTime: { $lte: hexTime} },
         { endTime: { $gt: hexTime} },
+        { initial: false }, // we only want standard (7-day) dispute windows for the getDisputeWindow getter
       ],
     },
   });
