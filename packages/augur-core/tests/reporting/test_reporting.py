@@ -184,6 +184,8 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
         "nextWindowEndTime": disputeWindow.getEndTime(),
         "totalRepStakedInMarket": universe.getInitialReportMinValue() * 3,
         "disputeRound": 2,
+        "payoutNumerators": [0, 0, market.getNumTicks()],
+        "totalRepStakedInPayout": universe.getInitialReportMinValue() * 2,
     }
 
     with AssertLog(localFixture, "DisputeCrowdsourcerCreated", crowdsourcerCreatedLog):

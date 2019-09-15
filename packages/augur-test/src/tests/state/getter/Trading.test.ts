@@ -4,7 +4,7 @@ import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import {
   MarketReportingState,
-} from '@augurproject/sdk/build/state/getter/Markets';
+} from '@augurproject/sdk/build/constants';
 import {
   MarketTradingHistory,
   Orders,

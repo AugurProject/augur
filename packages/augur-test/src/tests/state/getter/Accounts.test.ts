@@ -3,7 +3,7 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
 import {
   MarketReportingState,
-} from '@augurproject/sdk/build/state/getter/Markets';
+} from '@augurproject/sdk/build/constants';
 import { AllOrders } from '@augurproject/sdk/build/state/getter/Trading';
 import { makeDbMock, makeProvider } from '../../../libs';
 import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
@@ -988,23 +988,5 @@ describe('State API :: Accounts :: ', () => {
       ignoreReportingStates: [MarketReportingState.Finalized],
     });
     await expect(Object.keys(allOrders).length).toEqual(5);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.Forking],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.AwaitingNoReportMigration],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
-
-    allOrders = await api.route('getAllOrders', {
-      account: john.account.publicKey,
-      ignoreReportingStates: [MarketReportingState.AwaitingForkMigration],
-    });
-    await expect(Object.keys(allOrders).length).toEqual(8);
   }, 60000);
 });

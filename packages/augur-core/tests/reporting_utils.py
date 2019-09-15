@@ -108,13 +108,9 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
             "universe": universe.address,
             "market": market.address,
         }
-        forkFinalizedLog = {
-            "universe": universe.address,
-        }
         with AssertLog(fixture, "MarketFinalized", marketFinalizedLog):
-            with AssertLog(fixture, "ForkFinalized", forkFinalizedLog):
-                with TokenDelta(noUniverseReputationToken, amount, account0, "No REP token balance was no correct"):
-                    reputationToken.migrateOutByPayout(noPayoutNumerators, amount)
+            with TokenDelta(noUniverseReputationToken, amount, account0, "No REP token balance was no correct"):
+                reputationToken.migrateOutByPayout(noPayoutNumerators, amount)
         assert reputationToken.balanceOf(account0) == 20
         assert market.getWinningPayoutDistributionHash() == noUniverse.getParentPayoutDistributionHash()
     else:
@@ -124,12 +120,8 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
             "universe": universe.address,
             "market": market.address,
         }
-        forkFinalizedLog = {
-            "universe": universe.address,
-        }
         with AssertLog(fixture, "MarketFinalized", marketFinalizedLog):
-            with AssertLog(fixture, "ForkFinalized", forkFinalizedLog):
-                assert market.finalize()
+            assert market.finalize()
         assert market.getWinningPayoutDistributionHash() == yesUniverse.getParentPayoutDistributionHash()
         # If the fork is past the fork period we can not migrate
         with raises(TransactionFailed):

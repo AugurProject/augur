@@ -212,7 +212,7 @@ contract Market is Initializable, Ownable, IMarket {
         IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators, _overload);
         uint256 _actualAmount = _crowdsourcer.contribute(_contributor, _amount, _overload);
         uint256 _amountRemainingToFill = _overload ? 0 : _crowdsourcer.getRemainingToFill();
-        augur.logDisputeCrowdsourcerContribution(universe, _contributor, address(this), address(_crowdsourcer), _actualAmount, _description, _payoutNumerators, _crowdsourcer.getStake(), _amountRemainingToFill);
+        augur.logDisputeCrowdsourcerContribution(universe, _contributor, address(this), address(_crowdsourcer), _actualAmount, _description, _payoutNumerators, _crowdsourcer.getStake(), _amountRemainingToFill, getNumParticipants());
         if (!_overload) {
             if (_amountRemainingToFill == 0) {
                 finishedCrowdsourcingDisputeBond(_crowdsourcer);
@@ -235,7 +235,17 @@ contract Market is Initializable, Ownable, IMarket {
             }
             disputeWindow = universe.getOrCreateNextDisputeWindow(false);
         }
-        augur.logDisputeCrowdsourcerCompleted(universe, address(this), address(_crowdsourcer), disputeWindow.getStartTime(), disputeWindow.getEndTime(), disputePacingOn, getParticipantStake(), participants.length);
+        augur.logDisputeCrowdsourcerCompleted(
+            universe,
+            address(this),
+            address(_crowdsourcer),
+            _crowdsourcer.getPayoutNumerators(),
+            disputeWindow.getStartTime(),
+            disputeWindow.getEndTime(),
+            disputePacingOn,
+            getStakeInOutcome(_crowdsourcer.getPayoutDistributionHash()),
+            getParticipantStake(),
+            participants.length);
         if (preemptiveDisputeCrowdsourcer != IDisputeCrowdsourcer(0)) {
             IDisputeCrowdsourcer _newCrowdsourcer = preemptiveDisputeCrowdsourcer;
             preemptiveDisputeCrowdsourcer = IDisputeCrowdsourcer(0);
@@ -269,7 +279,6 @@ contract Market is Initializable, Ownable, IMarket {
             IUniverse _winningUniverse = universe.getWinningChildUniverse();
             winningPayoutDistributionHash = _winningUniverse.getParentPayoutDistributionHash();
             _winningPayoutNumerators = _winningUniverse.getPayoutNumerators();
-            augur.logForkFinalized();
         } else {
             require(disputeWindow.isOver());
             require(!universe.isForking());
@@ -401,7 +410,7 @@ contract Market is Initializable, Ownable, IMarket {
             } else {
                 preemptiveDisputeCrowdsourcer = _crowdsourcer;
             }
-            augur.disputeCrowdsourcerCreated(universe, address(this), address(_crowdsourcer), _payoutNumerators, _size);
+            augur.disputeCrowdsourcerCreated(universe, address(this), address(_crowdsourcer), _payoutNumerators, _size, getNumParticipants());
         }
         return _crowdsourcer;
     }

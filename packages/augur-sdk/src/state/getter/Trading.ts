@@ -8,7 +8,6 @@ import {
   convertOnChainPriceToDisplayPrice,
   numTicksToTickSize,
 } from "../../index";
-import { getMarketReportingState } from "./Markets";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
 import {
@@ -202,7 +201,6 @@ export class Trading {
       marketIds,
       db,
       params.ignoreReportingStates,
-      await augur.getTimestamp(),
     );
 
     return orderFilledResponse.reduce(
@@ -305,7 +303,6 @@ export class Trading {
       marketIds,
       db,
       params.ignoreReportingStates,
-      await augur.getTimestamp(),
     );
 
     return currentOrdersResponse.reduce(
@@ -430,7 +427,6 @@ export class Trading {
       marketIds,
       db,
       params.ignoreReportingStates,
-      await augur.getTimestamp(),
     );
 
     return currentOrdersResponse.reduce(
@@ -586,33 +582,18 @@ export class Trading {
   }
 }
 
+// TODO: Review if we could specify _desired_ reporting states instead. $not cannot make use of indexes
 export async function filterMarketsByReportingState(
   marketIds: string[],
   db: DB,
   ignoreReportingStates: string[],
-  currentTimestamp: BigNumber,
 ) {
-  const marketsResponse = await db.findMarketCreatedLogs({
-    selector: { market: { $in: marketIds } },
+  const marketsResponse = await db.findMarkets({
+    selector: {
+      market: { $in: marketIds },
+      $not: { reportingState: { $in: ignoreReportingStates } }
+    },
   });
   const markets = _.keyBy(marketsResponse, 'market');
-  if (ignoreReportingStates) {
-    const marketIds = Object.keys(_.keyBy(marketsResponse, 'market'));
-    const marketFinalizedLogs = await db.findMarketFinalizedLogs({
-      selector: { market: { $in: marketIds } },
-    });
-
-    for (const marketCreatedLog of marketsResponse) {
-      const reportingState = await getMarketReportingState(
-        db,
-        marketCreatedLog,
-        marketFinalizedLogs,
-        currentTimestamp,
-      );
-      if (ignoreReportingStates.includes(reportingState)) {
-        delete markets[marketCreatedLog.market];
-      }
-    }
-  }
   return markets;
 }

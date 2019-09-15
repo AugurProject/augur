@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 import { AbstractDB, BaseDocument } from './AbstractDB';
 import { SyncStatus } from './SyncStatus';
 import { Log, ParsedLog } from '@augurproject/types';
-import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { sleep } from '../utils/utils';
 import { augurEmitter } from '../../events';
@@ -70,11 +69,13 @@ export class DerivedDB extends AbstractDB {
         this.stateDB.getDatabaseName(eventName),
         request
       );
-      await this.handleMergeEvent(
-        highestAvailableBlockNumber,
-        (result.docs as unknown[]) as ParsedLog[],
-        true
-      );
+      if (result.docs) {
+        await this.handleMergeEvent(
+          highestAvailableBlockNumber,
+          (result.docs as unknown[]) as ParsedLog[],
+          true
+        );
+      }
     }
 
     await this.syncStatus.updateSyncingToFalse(this.dbName);
@@ -140,9 +141,9 @@ export class DerivedDB extends AbstractDB {
             documents[0]
           );
         });
-        const processedMostRecentTopics = _.map(mostRecentTopics, this.processDocument.bind(this));
         // TODO do the additional processing of documents here. no need to do processing on old logs we ignore
-        return _.assign({}, ...processedMostRecentTopics);
+        const processedDocs = _.map(mostRecentTopics, this.processDoc.bind(this));
+        return _.assign({}, ...processedDocs);
       }) as any[];
 
       success = await this.bulkUpsertUnorderedDocuments(documentsByIdByTopic);
@@ -170,6 +171,7 @@ export class DerivedDB extends AbstractDB {
     return blocknumber;
   };
 
+  // Processes a log entry such that it can be classified and filtered appropriately for the Database
   protected processLog(log: Log): BaseDocument {
     let _id = '';
     delete log['_id'];
@@ -180,8 +182,8 @@ export class DerivedDB extends AbstractDB {
     return Object.assign({ _id }, log);
   }
 
-  // By default this is a no op. Subclasses may implement log specific processing here
-  protected processDocument(doc: BaseDocument): BaseDocument {
-    return doc;
+  // No-op by default. Can be overriden to provide custom document processing before being upserted into the DB.
+  protected processDoc(log: ParsedLog): ParsedLog {
+    return log;
   }
 }
