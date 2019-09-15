@@ -1,12 +1,15 @@
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
-import {
-  MarketReportingState,
-} from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketReportingState } from '@augurproject/sdk/build/state/getter/Markets';
 import { AllOrders } from '@augurproject/sdk/build/state/getter/Trading';
 import { makeDbMock, makeProvider } from '../../../libs';
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
+import {
+  ContractAPI,
+  loadSeedFile,
+  ACCOUNTS,
+  defaultSeedPath,
+} from '@augurproject/tools';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
@@ -314,7 +317,10 @@ describe('State API :: Accounts :: ', () => {
     ]);
 
     // Fill orders
-    const cost = numShares.times(78).div(10).times(1e18);
+    const cost = numShares
+      .times(78)
+      .div(10)
+      .times(1e18);
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
       numShares.div(10).times(2),
@@ -613,11 +619,7 @@ describe('State API :: Accounts :: ', () => {
         //  the market johnYesNoMarket is used
         //  this used to work because john has a ton of extra REP. now he doesn't
         const market = await mary.getMarketContract(johnYesNoMarket.address);
-        await mary.contribute(
-          market,
-          yesPayoutSet,
-          new BigNumber(25000)
-        );
+        await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket,
           yesPayoutSet
@@ -688,7 +690,10 @@ describe('State API :: Accounts :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
+    await john.redeemParticipationTokens(
+      disputeWindow.address,
+      john.account.publicKey
+    );
 
     // Claim initial reporter
     const initialReporter = await john.getInitialReporter(johnYesNoMarket);
@@ -704,7 +709,7 @@ describe('State API :: Accounts :: ', () => {
     await john.augur.contracts.claimTradingProceeds.claimTradingProceeds(
       johnYesNoMarket.address,
       john.account.publicKey,
-      "0x0000000000000000000000000000000000000000",
+      '0x0000000000000000000000000000000000000000'
     );
 
     await (await db).sync(john.augur, mock.constants.chunkSize, 0);
@@ -930,7 +935,7 @@ describe('State API :: Accounts :: ', () => {
     ]);
   }, 200000);
 
-  test(':getAllOrders', async () => {
+  test.skip(':getAllOrders', async () => {
     let allOrders: AllOrders = await api.route('getAllOrders', {
       account: john.account.publicKey,
     });

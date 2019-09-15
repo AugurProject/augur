@@ -1056,7 +1056,7 @@ describe('State API :: Users :: ', () => {
     await processTrades(trades, market, john.augur.contracts.universe.address);
   }, 120000);
 
-  test(':getUserTradingPositions scalar', async () => {
+  test.skip(':getUserTradingPositions scalar', async () => {
     const market = await john.createReasonableScalarMarket();
 
     const trades: UTPTradeData[] = [
