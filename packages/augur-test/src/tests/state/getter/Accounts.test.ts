@@ -935,6 +935,7 @@ describe('State API :: Accounts :: ', () => {
     ]);
   }, 200000);
 
+  // TODO: figure out why this test is failing
   test.skip(':getAllOrders', async () => {
     let allOrders: AllOrders = await api.route('getAllOrders', {
       account: john.account.publicKey,

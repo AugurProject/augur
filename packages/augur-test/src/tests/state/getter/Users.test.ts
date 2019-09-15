@@ -8,7 +8,12 @@ import {
 } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
+import {
+  ContractAPI,
+  loadSeedFile,
+  ACCOUNTS,
+  defaultSeedPath,
+} from '@augurproject/tools';
 import { makeDbMock, makeProvider } from '../../../libs';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
@@ -289,11 +294,7 @@ describe('State API :: Users :: ', () => {
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
         const market = await mary.getMarketContract(johnYesNoMarket.address);
-        await mary.contribute(
-          market,
-          yesPayoutSet,
-          new BigNumber(25000)
-        );
+        await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket,
           yesPayoutSet
@@ -329,7 +330,10 @@ describe('State API :: Users :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
+    await john.redeemParticipationTokens(
+      disputeWindow.address,
+      john.account.publicKey
+    );
 
     // Claim initial reporter
     let initialReporter = await john.getInitialReporter(johnYesNoMarket);
@@ -383,7 +387,9 @@ describe('State API :: Users :: ', () => {
     } catch (error) {
       errorMessage = error.message;
     }
-    expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
+    expect(errorMessage).toEqual(
+      'startTime must be less than or equal to endTime'
+    );
 
     let stats = await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
@@ -635,11 +641,7 @@ describe('State API :: Users :: ', () => {
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
         const market = await mary.getMarketContract(johnYesNoMarket2.address);
-        await mary.contribute(
-          market,
-          yesPayoutSet,
-          new BigNumber(25000)
-        );
+        await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket2,
           yesPayoutSet
@@ -675,7 +677,10 @@ describe('State API :: Users :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
+    await john.redeemParticipationTokens(
+      disputeWindow.address,
+      john.account.publicKey
+    );
 
     // Claim initial reporter
     initialReporter = await john.getInitialReporter(johnYesNoMarket2);
@@ -800,12 +805,13 @@ describe('State API :: Users :: ', () => {
     await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(1.5);
 
-    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(0.4697);
+    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(
+      0.4697
+    );
     await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
       9.5
     );
-
   }, 120000);
 
   test(':getUserTradingPositions binary-1', async () => {
@@ -1048,7 +1054,7 @@ describe('State API :: Users :: ', () => {
         price: 0.1,
         position: 0,
         avgPrice: 0,
-        realizedPL: -.5,
+        realizedPL: -0.5,
         frozenFunds: 2,
       },
     ];
@@ -1056,6 +1062,7 @@ describe('State API :: Users :: ', () => {
     await processTrades(trades, market, john.augur.contracts.universe.address);
   }, 120000);
 
+  // TODO: figure out why this test is failing
   test.skip(':getUserTradingPositions scalar', async () => {
     const market = await john.createReasonableScalarMarket();
 
