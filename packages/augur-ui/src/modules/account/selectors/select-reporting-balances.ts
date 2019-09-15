@@ -23,7 +23,7 @@ export const selectReportingBalances = createSelector(
     const {
       reporting,
       disputing,
-      pariticipationTokens,
+      participationTokens,
       profitAmount,
       profitLoss,
     } = accountReporting;
@@ -38,9 +38,9 @@ export const selectReportingBalances = createSelector(
     let reportingAmountFormatted = formatAttoRep(ZERO);
     let disputingAmountFormatted = formatAttoRep(ZERO);
 
-    if (pariticipationTokens && pariticipationTokens.totalAmount) {
+    if (participationTokens && participationTokens.totalAmount) {
       participationAmountFormatted = formatAttoRep(
-        pariticipationTokens.totalAmount
+        participationTokens.totalAmount
       );
       if (!hasStakedRep) hasStakedRep = true;
     }

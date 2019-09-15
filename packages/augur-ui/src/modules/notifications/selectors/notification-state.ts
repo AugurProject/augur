@@ -174,15 +174,15 @@ export const selectUsersReportingFees = createSelector(
     let unclaimed = { unclaimedDai: formatDai(ZERO), unclaimedRep: formatRep(ZERO) };
     if (
       userReportingStats &&
-      userReportingStats.pariticipationTokens &&
-      userReportingStats.pariticipationTokens.contracts.length > 0
+      userReportingStats.participationTokens &&
+      userReportingStats.participationTokens.contracts.length > 0
     ) {
-      const calcUnclaimed = userReportingStats.pariticipationTokens.contracts.reduce(
+      const calcUnclaimed = userReportingStats.participationTokens.contracts.reduce(
         (p, c) => {
           // filter out current dispute window rep staking
           if (c.address === currentDisputeWindow.address) return p;
           return {
-            dai: p.dai.plus(c.fees),
+            dai: p.dai.plus(c.amountFees),
             rep: p.rep.plus(createBigNumber(c.amount)),
           };
         },
