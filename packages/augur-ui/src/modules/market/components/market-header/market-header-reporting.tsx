@@ -49,8 +49,7 @@ export default class MarketHeaderReporting extends Component {
       reportingState,
       id,
       consensus,
-      finalizationTime,
-    } = market
+    } = market;
     let content = null;
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
       content = (
@@ -67,7 +66,7 @@ export default class MarketHeaderReporting extends Component {
             <span>
               {consensus.isInvalid
                 ? "Invalid"
-                : consensus.outcomeName || consensus.winningOutcome}}
+                : consensus.outcomeName || consensus.winningOutcome}
             </span>
           </div>
           {canClaimProceeds && (

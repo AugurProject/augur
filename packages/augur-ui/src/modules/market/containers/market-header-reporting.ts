@@ -10,7 +10,8 @@ import {
   DESIGNATED_REPORTER_SELF,
 } from 'modules/common/constants';
 import { NodeStyleCallback } from 'modules/types';
-import { canClaimProceeds } from '../../../utils/can-claim-proceeds';
+import { createBigNumber } from '../../../utils/create-big-number';
+import { ZERO } from 'modules/common/constants';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
@@ -25,8 +26,15 @@ const mapStateToProps = (state, ownProps) => {
     tentativeWinner:
       disputeOutcomes[ownProps.marketId] &&
       disputeOutcomes[ownProps.marketId].find(o => o.tentativeWinning),
-    accountPositions: state.accountPositions,
-    canClaimProceeds: canClaimProceeds(state, ownProps.marketId),
+    canClaimProceeds:
+      state.accountPositions[ownProps.marketId] &&
+      state.accountPositions[ownProps.marketId].tradingPositionsPerMarket &&
+      createBigNumber(
+        state.accountPositions[ownProps.marketId].tradingPositionsPerMarket
+          .totalUnclaimedProceeds
+      ).gt(ZERO)
+        ? true
+        : false,
   };
 };
 
