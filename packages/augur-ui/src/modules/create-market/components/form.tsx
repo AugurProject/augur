@@ -28,6 +28,7 @@ import {
   AFFILIATE_FEE,
   SETTLEMENT_FEE,
   SUB_CATEGORIES,
+  MARKET_TYPE,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -49,6 +50,7 @@ import FormDetails from 'modules/create-market/containers/form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
+import { MarketType } from 'modules/create-market/components/market-type';
 import makePath from 'modules/routes/helpers/make-path';
 import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
 import { DEFAULT_STATE } from 'modules/markets/reducers/new-market';
@@ -507,14 +509,15 @@ export default class Form extends React.Component<FormProps, FormState> {
     const {
       newMarket,
       drafts,
-      template,
+      updateNewMarket,
       openCreateMarketModal,
       history,
-      needsApproval
+      needsApproval,
+      template,
     } = this.props;
     const { contentPages } = this.state;
 
-    const { currentStep, validations, uniqueId } = newMarket;
+    const { currentStep, validations, uniqueId, marketType } = newMarket;
 
     const {
       mainContent,
@@ -585,6 +588,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               )}
               {mainContent === REVIEW && <Review />}
               {mainContent === SUB_CATEGORIES && <SubCategories />}
+              {mainContent === MARKET_TYPE && <MarketType updateNewMarket={updateNewMarket} marketType={marketType} />}
               {saveDraftError && (
                 <Error
                   header="Unable to save draft"
@@ -602,11 +606,11 @@ export default class Form extends React.Component<FormProps, FormState> {
                   <SecondaryButton text="Back" action={this.prevPage} />
                 )}
                 <div>
-                  <SecondaryButton
+                  {!template && <SecondaryButton
                     text={disabledSave ? 'Saved' : 'Save draft'}
                     disabled={disabledSave}
                     action={this.saveDraft}
-                  />
+                  />}
                   {secondButton === NEXT && (
                     <PrimaryButton text="Next" action={this.nextPage} />
                   )}

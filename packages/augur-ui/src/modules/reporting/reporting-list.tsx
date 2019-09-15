@@ -32,10 +32,10 @@ export const ReportingList = (props: ReportingListProps) => {
       ))
     );
     if (props.showLoggedOut)
-      content.push(<span key={"loggedOut"}>{props.loggedOutMessage}</span>);
+      content.push(<span key={'loggedOut'}>{props.loggedOutMessage}</span>);
     if (props.markets.length === 0 && !props.showLoggedOut) {
       content.push(
-        <React.Fragment key={"empty"}>
+        <React.Fragment key={'empty'}>
           <span>{props.emptyHeader}</span>
           <span>{props.emptySubheader}</span>
         </React.Fragment>
@@ -66,12 +66,12 @@ interface PaginatorProps extends ReportingListProps {
   isLogged: boolean;
   loadMarkets: Function;
   reportingType: string;
+  markets: MarketData[];
 }
 
 interface PaginatorState {
   offset: number;
   limit: number;
-  markets: MarketData[];
   showPagination: boolean;
   marketCount: number;
   isLoadingMarkets: boolean;
@@ -81,7 +81,6 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
   state: PaginatorState = {
     offset: 1,
     limit: ITEMS_PER_SECTION,
-    markets: [],
     showPagination: false,
     marketCount: 0,
     isLoadingMarkets: true,
@@ -119,11 +118,10 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
     this.setState({ isLoadingMarkets }, () => {
       if (err) return console.log('error', err);
       const { limit } = this.state;
-      if (!marketResults || !marketResults.markets || !marketResults.meta) return;
-      const markets: MarketData[] = marketResults.markets.map(m => selectMarket(m.id));
+      if (!marketResults || !marketResults.markets || !marketResults.meta)
+        return;
       const showPagination = marketResults.meta.marketCount > limit;
       this.setState({
-        markets,
         showPagination,
         marketCount: marketResults.meta.marketCount,
         isLoadingMarkets,
@@ -140,9 +138,9 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
   };
 
   render() {
+    const { markets } = this.props;
     const {
       isLoadingMarkets,
-      markets,
       showPagination,
       offset,
       limit,

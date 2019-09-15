@@ -217,7 +217,8 @@ interface RadioCardProps {
   description: string;
   checked?: boolean;
   onChange?: Function;
-  icon?: SVGElement;
+  icon?: JSX.Element;
+  useIconColors?: boolean;
 }
 
 interface RadioGroupProps {
@@ -509,9 +510,15 @@ export class CategorySingleSelect extends Component<
 > {
   state: CategorySingleSelectState = {
     selected: this.props.initialSelected || '',
-    value: this.props.initialValue || this.props.initialSelected || '',
+    value: this.props.initialValue || (this.props.initialSelected === CUSTOM ? '' : this.props.initialSelected || ''),
     showText: this.props.initialSelected === CUSTOM,
   };
+
+  componentDidUpdate(prevProps) {
+    if (this.props.initialSelected !== prevProps.initialSelected) {
+      this.handleUpdate(this.props.initialSelected, this.props.initialValue);
+    }
+  }
 
   onChangeDropdown(choice) {
     let value = choice;
@@ -1146,11 +1153,12 @@ const RadioCard = ({
   onChange,
   checked,
   icon,
+  useIconColors = false,
 }: RadioCardProps) => (
   <div
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
-      [Styles.CustomIcon]: icon,
+      [Styles.CustomIcon]: icon && !useIconColors,
     })}
     role="button"
     onClick={e => onChange(value)}
