@@ -288,6 +288,12 @@ export interface ParticipationTokensRedeemedLog extends Log, Doc, Timestamped {
   feePayoutShare: string;
 }
 
+export interface ReportingParticipantDisavowedLog extends Log, Doc, Timestamped {
+  universe: Address;
+  market: Address;
+  reportingParticipant: Address;
+}
+
 export interface ProfitLossChangedLog extends Log, Doc, Timestamped {
   universe: Address;
   market: Address;

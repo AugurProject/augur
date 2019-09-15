@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { LoginAccount, MarketInfos, MarketsList, AccountBalances } from 'modules/types';
+import { LoginAccount, MarketInfos, MarketsList, AccountBalances, ReportingList } from 'modules/types';
 import { AppState } from 'store';
 import { Getters } from '@augurproject/sdk/build';
 
@@ -14,6 +14,9 @@ export const selectLoginAccountState = (state: AppState): LoginAccount =>
 export const selectLoginAccountReportingState = (
   state: AppState
 ): Getters.Accounts.AccountReportingHistory => state.loginAccount.reporting;
+export const selectReportingListState = (
+  state: AppState
+): ReportingList => state.reportingList;
 export const selectLoginAccountBalancesState = (
   state: AppState
 ): AccountBalances => state.loginAccount.balances;

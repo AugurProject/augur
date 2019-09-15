@@ -17,7 +17,7 @@ import { ActionRowsProps } from "modules/modal/common";
 import {
   CLAIM_FEES_GAS_COST,
   redeemStake,
-} from "modules/reports/actions/claim-reporting-fees";
+} from "modules/reporting/actions/claim-reporting-fees";
 import {
   ALL,
   CLAIM_FEE_WINDOWS,
@@ -34,9 +34,9 @@ const mapStateToProps = (state: AppState) => ({
     getGasPrice(state),
   ),
   pendingQueue: state.pendingQueue || [],
-  reportingFees: state.disputeWindowStats.reportingFees,
-  feeWindows: state.disputeWindowStats.reportingFees.feeWindows,
-  nonforkedMarkets: state.disputeWindowStats.reportingFees.nonforkedMarkets,
+  reportingFees: "0",
+  feeWindows: "0",
+  nonforkedMarkets: [],
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -154,7 +154,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     markets.push({
       title: "Reedeem all participation tokens",
       text: "Claim",
-      status: feeWindowsPending && feeWindowsPending.status,
+      status: feeWindowsPending,
       properties: [
         {
           label: "Reporting Stake",

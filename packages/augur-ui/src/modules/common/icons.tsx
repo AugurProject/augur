@@ -1217,3 +1217,13 @@ export const MagnifyingGlass = (
     <path fillRule="evenodd" clipRule="evenodd" d="M3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10C17 11.887 16.2533 13.5997 15.0393 14.8586L14.8586 15.0393C13.5997 16.2533 11.887 17 10 17C6.13401 17 3 13.866 3 10ZM15.6177 17.0319C14.078 18.2635 12.125 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1C14.9706 1 19 5.02944 19 10C19 12.125 18.2635 14.078 17.0319 15.6177L23.4142 22L22 23.4142L15.6177 17.0319Z" />
   </svg>
 );
+
+export const Popcorn = (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path d="M36.6907 11.2729C36.6907 9.82627 36.1161 8.43889 35.0931 7.41597C34.0702 6.39305 32.6828 5.81838 31.2362 5.81838C30.2969 5.82398 29.3753 6.07467 28.5626 6.54565C28.0744 5.7665 27.3963 5.12415 26.5918 4.67887C25.7874 4.2336 24.883 4 23.9635 4C23.0441 4 22.1397 4.2336 21.3352 4.67887C20.5308 5.12415 19.8527 5.7665 19.3645 6.54565C18.5517 6.07467 17.6302 5.82398 16.6908 5.81838C15.2442 5.81838 13.8568 6.39305 12.8339 7.41597C11.811 8.43889 11.2363 9.82627 11.2363 11.2729" stroke="#18D9C2" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M17.6002 43.9999L15.782 14.9092" stroke="#18D9C2" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M30.3271 43.9999L32.1453 14.9092" stroke="#18D9C2" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M23.9636 14.9092V43.9999" stroke="white" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M40.3272 14.9092H7.6001L11.2364 43.9999H36.6908L40.3272 14.9092Z" stroke="white" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
