@@ -10,8 +10,6 @@ import {
   REPORTING_STATE,
 } from "modules/common/constants";
 import { PrimaryButton } from "modules/common/buttons";
-import { createBigNumber } from "utils/create-big-number";
-import { ZERO } from 'modules/common/constants';
 
 export default class MarketHeaderReporting extends Component {
   static propTypes = {
@@ -21,7 +19,7 @@ export default class MarketHeaderReporting extends Component {
     tentativeWinner: PropTypes.object,
     isLogged: PropTypes.bool,
     location: PropTypes.object.isRequired,
-    accountPositions: PropTypes.object.isRequired,
+    canClaimProceeds: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -45,26 +43,14 @@ export default class MarketHeaderReporting extends Component {
       tentativeWinner,
       isLogged,
       location,
-      accountPositions
+      canClaimProceeds
     } = this.props;
     const {
       reportingState,
       id,
       consensus,
       finalizationTime,
-    } = market;
-
-    let canClaim = false;
-    if (
-      accountPositions[id] &&
-      accountPositions[id].tradingPositionsPerMarket &&
-      createBigNumber(
-        accountPositions[id].tradingPositionsPerMarket.totalUnclaimedProceeds
-      ).gt(ZERO)
-    ) {
-      canClaim = true;
-    }
-
+    } = market
     let content = null;
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
       content = (
@@ -84,14 +70,14 @@ export default class MarketHeaderReporting extends Component {
                 : consensus.outcomeName || consensus.winningOutcome}}
             </span>
           </div>
-          {canClaim && (
+          {canClaimProceeds && (
               <PrimaryButton
                 id="button"
                 action={() => {
                   claimMarketsProceeds([id]);
                 }}
                 text="Claim Proceeds"
-                disabled={!isLogged || !canClaim}
+                disabled={!isLogged || !canClaimProceeds}
               />
             )}
         </div>
