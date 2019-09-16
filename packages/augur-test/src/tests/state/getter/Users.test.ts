@@ -8,12 +8,7 @@ import {
 } from '@augurproject/sdk';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
-import {
-  ContractAPI,
-  loadSeedFile,
-  ACCOUNTS,
-  defaultSeedPath,
-} from '@augurproject/tools';
+import { ContractAPI, loadSeedFile, ACCOUNTS, defaultSeedPath } from '@augurproject/tools';
 import { makeDbMock, makeProvider } from '../../../libs';
 import { stringTo32ByteHex } from '../../../libs/Utils';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
@@ -81,8 +76,7 @@ describe('State API :: Users :: ', () => {
     await mary.approveCentralAuthority();
   }, 120000);
 
-  // TODO Figure out why the additional los dissapeared.
-  test.skip(':getAccountTimeRangedStats', async () => {
+  test(':getAccountTimeRangedStats', async () => {
     // Create markets with multiple users
     const universe = john.augur.contracts.universe;
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
@@ -294,7 +288,11 @@ describe('State API :: Users :: ', () => {
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
         const market = await mary.getMarketContract(johnYesNoMarket.address);
-        await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
+        await mary.contribute(
+          market,
+          yesPayoutSet,
+          new BigNumber(25000)
+        );
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket,
           yesPayoutSet
@@ -330,10 +328,7 @@ describe('State API :: Users :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(
-      disputeWindow.address,
-      john.account.publicKey
-    );
+    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
 
     // Claim initial reporter
     let initialReporter = await john.getInitialReporter(johnYesNoMarket);
@@ -387,9 +382,7 @@ describe('State API :: Users :: ', () => {
     } catch (error) {
       errorMessage = error.message;
     }
-    expect(errorMessage).toEqual(
-      'startTime must be less than or equal to endTime'
-    );
+    expect(errorMessage).toEqual('startTime must be less than or equal to endTime');
 
     let stats = await api.route('getAccountTimeRangedStats', {
       universe: universe.address,
@@ -641,7 +634,11 @@ describe('State API :: Users :: ', () => {
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
       if (disputeRound % 2 !== 0) {
         const market = await mary.getMarketContract(johnYesNoMarket2.address);
-        await mary.contribute(market, yesPayoutSet, new BigNumber(25000));
+        await mary.contribute(
+          market,
+          yesPayoutSet,
+          new BigNumber(25000)
+        );
         const remainingToFill = await john.getRemainingToFill(
           johnYesNoMarket2,
           yesPayoutSet
@@ -677,10 +674,7 @@ describe('State API :: Users :: ', () => {
     );
 
     // Redeem participation tokens
-    await john.redeemParticipationTokens(
-      disputeWindow.address,
-      john.account.publicKey
-    );
+    await john.redeemParticipationTokens(disputeWindow.address, john.account.publicKey);
 
     // Claim initial reporter
     initialReporter = await john.getInitialReporter(johnYesNoMarket2);
@@ -716,8 +710,7 @@ describe('State API :: Users :: ', () => {
     });
   }, 300000);
 
-  // TODO: figure out why this is failing
-  test.skip(':getProfitLoss & getProfitLossSummary ', async () => {
+  test(':getProfitLoss & getProfitLossSummary ', async () => {
     const market1 = await john.createReasonableYesNoMarket();
     const market2 = await john.createReasonableYesNoMarket();
 
@@ -806,17 +799,15 @@ describe('State API :: Users :: ', () => {
     await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(1.5);
 
-    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(
-      0.4697
-    );
+    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(0.4697);
     await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
       9.5
     );
+
   }, 120000);
 
-  // TODO: figure out why this is failing
-  test.skip(':getUserTradingPositions binary-1', async () => {
+  test(':getUserTradingPositions binary-1', async () => {
     const market = await john.createReasonableYesNoMarket();
 
     const trades: UTPTradeData[] = [
@@ -928,8 +919,7 @@ describe('State API :: Users :: ', () => {
     await processTrades(trades, market, john.augur.contracts.universe.address);
   }, 120000);
 
-  // TODO: figure out why this is failing
-  test.skip(':getUserTradingPositions cat3-2', async () => {
+  test(':getUserTradingPositions cat3-2', async () => {
     const market = await john.createReasonableMarket([
       stringTo32ByteHex('A'),
       stringTo32ByteHex('B'),
@@ -982,8 +972,7 @@ describe('State API :: Users :: ', () => {
     await processTrades(trades, market, john.augur.contracts.universe.address);
   }, 120000);
 
-  // TODO: figure out why this is failing
-  test.skip(':getUserTradingPositions cat3-3', async () => {
+  test(':getUserTradingPositions cat3-3', async () => {
     const market = await john.createReasonableMarket([
       stringTo32ByteHex('A'),
       stringTo32ByteHex('B'),
@@ -1058,7 +1047,7 @@ describe('State API :: Users :: ', () => {
         price: 0.1,
         position: 0,
         avgPrice: 0,
-        realizedPL: -0.5,
+        realizedPL: -.5,
         frozenFunds: 2,
       },
     ];
@@ -1066,8 +1055,7 @@ describe('State API :: Users :: ', () => {
     await processTrades(trades, market, john.augur.contracts.universe.address);
   }, 120000);
 
-  // TODO: figure out why this test is failing
-  test.skip(':getUserTradingPositions scalar', async () => {
+  test(':getUserTradingPositions scalar', async () => {
     const market = await john.createReasonableScalarMarket();
 
     const trades: UTPTradeData[] = [
