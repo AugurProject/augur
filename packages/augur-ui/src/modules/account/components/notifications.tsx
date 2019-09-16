@@ -34,13 +34,13 @@ import {
 } from "modules/common/constants";
 
 export interface NotificationsProps extends RouteComponentProps {
-  notifications: Array<Notification>;
+  notifications: Notification[];
   updateReadNotifications: Function;
   getReportingFees: Function;
   currentAugurTimestamp: DateFormattedObject;
-  reportingWindowStatsEndTime: DateFormattedObject;
+  disputingWindowEndTime: DateFormattedObject;
   finalizeMarketModal: Function;
-  claimTradingProceeds: Function;
+  claimMarketsProceeds: Function;
   claimReportingFees: Function;
   unsignedOrdersModal: Function;
   openOrdersModal: Function;
@@ -69,7 +69,7 @@ class Notifications extends React.Component<
           this.disableNotification(notification.id, true);
           if (notification.market) {
             this.props.openOrdersModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false),
+              this.disableNotification(notification.id, false)
             );
           }
         };
@@ -95,7 +95,7 @@ class Notifications extends React.Component<
           this.disableNotification(notification.id, true);
           if (notification.market) {
             this.props.finalizeMarketModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false),
+              this.disableNotification(notification.id, false)
             );
           }
         };
@@ -121,7 +121,7 @@ class Notifications extends React.Component<
           this.disableNotification(notification.id, true);
           if (notification.market) {
             this.props.unsignedOrdersModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false),
+              this.disableNotification(notification.id, false)
             );
           }
         };
@@ -132,7 +132,7 @@ class Notifications extends React.Component<
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
           this.props.claimReportingFees(notification.claimReportingFees, () =>
-            this.disableNotification(notification.id, false),
+            this.disableNotification(notification.id, false)
           );
         };
         break;
@@ -141,23 +141,9 @@ class Notifications extends React.Component<
         buttonAction = () => {
           this.markAsRead(notification);
           this.disableNotification(notification.id, true);
-          this.props.claimTradingProceeds(() =>
-            this.disableNotification(notification.id, false),
+          this.props.claimMarketsProceeds(notification.markets, () =>
+            this.disableNotification(notification.id, false)
           );
-        };
-        break;
-
-      case NOTIFICATION_TYPES.proceedsToClaimOnHold:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          const queryLink = {
-            [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
-            [RETURN_PARAM_NAME]: location.hash,
-          };
-          history.push({
-            pathname: makePath(MARKET, null),
-            search: makeQuery(queryLink),
-          });
         };
         break;
 
@@ -198,7 +184,7 @@ class Notifications extends React.Component<
   }
 
   render() {
-    const { currentAugurTimestamp, reportingWindowStatsEndTime } = this.props;
+    const { currentAugurTimestamp, disputingWindowEndTime } = this.props;
     const notifications = this.props.notifications.map((notification) =>
       this.getButtonAction(notification),
     );
@@ -227,7 +213,7 @@ class Notifications extends React.Component<
         markets,
         market,
         currentTime: currentAugurTimestamp,
-        reportingWindowStatsEndTime,
+        disputingWindowEndTime,
         buttonAction,
         buttonLabel,
         type,
@@ -278,12 +264,6 @@ class Notifications extends React.Component<
           ) as any : null}
           {type === NOTIFICATION_TYPES.claimReportingFees ? (
             <ClaimReportingFeesTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.proceedsToClaimOnHold ? (
-            <ProceedsToClaimOnHoldTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />

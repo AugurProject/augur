@@ -4,7 +4,7 @@ import { augurSdk } from 'services/augursdk';
 import { AppState } from 'store';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 
-export const loadAccountReportingHistory = (marketIdAggregator: Function) => async (
+export const loadAccountReportingHistory = (marketIdAggregator?: Function) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {

@@ -147,23 +147,6 @@ export interface FormattedNumberOptions {
   blankZero?: boolean;
   bigUnitPostfix?: boolean;
 }
-export interface ReportingWindowStats {
-  startTime?: string;
-  endTime?: string;
-  stake?: string;
-  reportingFees: {
-    unclaimedEth: FormattedNumber;
-    unclaimedRep: FormattedNumber;
-    unclaimedForkEth: FormattedNumber;
-    unclaimedForkRepStaked: FormattedNumber;
-    unclaimedParticipationTokenEthFees: FormattedNumber;
-    participationTokenRepStaked: FormattedNumber;
-    feeWindows: Array<string>;
-    forkedMarket: string | null;
-    nonforkedMarkets: Array<string>;
-    gasCosts: string;
-  };
-}
 
 export interface CreateMarketData {
   id?: string;
@@ -220,7 +203,7 @@ export interface Notification {
   buttonAction: ButtonActionType;
   Template: ReactNode;
   market: MarketData;
-  markets: Array<string>;
+  markets: string[];
   claimReportingFees?: object;
   totalProceeds?: number;
 }
@@ -392,16 +375,15 @@ export interface MarketsList {
   marketCardFormat: string;
 }
 
+export interface ReportingList {
+  [reportingState: string]: []
+}
 export interface FilledOrders {
   [account: string]: Getters.Trading.Orders;
 }
 
 export interface OpenOrders {
   [account: string]: Getters.Trading.Orders;
-}
-
-export interface MarketTradingHistoryState extends Getters.Trading.MarketTradingHistory {
-
 }
 
 export interface MarketsInReporting {
@@ -499,44 +481,6 @@ export interface AuthStatus {
   isConnectionTrayOpen?: boolean;
 }
 
-export interface PositionsTotal {
-  currentValue: string;
-  frozenFunds: string;
-  realized: string;
-  realizedCost: string;
-  realizedPercent: string;
-  total: string;
-  totalCost: string;
-  totalPercent: string;
-  unrealized: string;
-  unrealizedCost: string;
-  unrealizedPercent: string;
-  unrealizedRevenue: string;
-  unrealizedRevenue24hAgo: string;
-  unrealizedRevenue24hChangePercent: string;
-}
-
-export interface MarketPositionsTotal extends PositionsTotal {
-  marketId: string;
-}
-export interface PositionData extends PositionsTotal {
-  averagePrice: string;
-  frozenFunds: string;
-  lastTradePrice: string;
-  lastTradePrice24hAgo: string;
-  lastTradePrice24hChangePercent: string;
-  marketId: string;
-  netPosition: string;
-  outcome: number;
-  outcomeId: string;
-  position: string;
-  timestamp: number;
-}
-
-export interface TradingPositionsPerMarket {
-  [marketId: string]: PositionsTotal;
-}
-
 export interface AccountPositionAction {
   marketId: string;
   positionData: AccountPosition;
@@ -544,9 +488,9 @@ export interface AccountPositionAction {
 
 export interface AccountPosition {
   [market: string]: {
-    tradingPositionsPerMarket?: MarketPositionsTotal;
+    tradingPositionsPerMarket?: Getters.Users.MarketTradingPosition;
     tradingPositions: {
-      [outcomeId: number]: PositionData;
+      [outcomeId: number]: Getters.Users.TradingPosition;
     };
   };
 }

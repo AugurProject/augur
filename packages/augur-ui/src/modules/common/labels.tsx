@@ -42,7 +42,7 @@ export interface InReportingLabelProps extends MarketStatusProps {
   reportingState: string;
   disputeInfo: any;
   endTimeFormatted: DateFormattedObject;
-  reportingWindowStatsEndTime: number;
+  disputingWindowEndTime: number;
   currentAugurTimestamp: number;
 }
 
@@ -576,7 +576,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     reportingState,
     disputeInfo,
     endTimeFormatted,
-    reportingWindowStatsEndTime,
+    disputingWindowEndTime,
     currentAugurTimestamp,
   } = props;
 

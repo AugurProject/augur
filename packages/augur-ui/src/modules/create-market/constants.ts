@@ -63,6 +63,7 @@ export const CUSTOM_CONTENT_PAGES = [
 
 // template page content
 export const SUB_CATEGORIES = 'subCategories';
+export const MARKET_TYPE = 'marketType';
 
 export const TEMPLATE_CONTENT_PAGES = [
   { title: 'Category' },
@@ -72,7 +73,7 @@ export const TEMPLATE_CONTENT_PAGES = [
     firstButton: BACK,
     secondButton: NEXT,
   },
-  { title: 'Market Type', firstButton: BACK, secondButton: NEXT },
+  { title: 'Market Type', mainContent: MARKET_TYPE, firstButton: BACK, secondButton: NEXT },
   { title: 'Template', firstButton: BACK, secondButton: NEXT },
   { title: 'Event Details', firstButton: BACK, secondButton: NEXT },
   LiquidityContent,

@@ -90,6 +90,8 @@ export interface MarketTradingPosition {
   unrealizedPercent: string; // unrealized profit percent (ie. profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
+  totalUnclaimedProceeds?: string;
+  totalUnclaimedProfit?: string;
 }
 
 export interface TradingPosition {
@@ -110,6 +112,8 @@ export interface TradingPosition {
   unrealizedPercent: string; // unrealized profit percent (ie. profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
+  totalUnclaimedProceeds?: string;
+  totalUnclaimedProfit?: string;
 }
 
 export interface UserTradingPositions {
@@ -360,7 +364,7 @@ export class Users {
     const allOrderFilledRequest = {
       selector: {
         universe: params.universe,
-        market: params.marketId
+        market: params.marketId,
       },
     };
 
@@ -373,6 +377,7 @@ export class Users {
     );
 
     const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
+
     const marketsResponse = await db.findMarketCreatedLogs({
       selector: { market: { $in: marketIds } },
     });
@@ -468,7 +473,7 @@ export class Users {
       }
     );
 
-    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total fronzen funds
+    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
     const allProfitLossResults = _.flatten(
       _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
     );
@@ -750,6 +755,8 @@ export function sumTradingPositions(
       unrealizedPercent: '0',
       totalPercent: '0',
       currentValue: '0',
+      // totalUnclaimedProceeds: '15',
+      // totalUnclaimedProfit: '10',
     } as MarketTradingPosition
   );
 

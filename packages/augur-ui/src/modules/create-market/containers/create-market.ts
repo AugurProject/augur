@@ -18,7 +18,6 @@ const mapStateToProps = state => ({
   availableRep: state.loginAccount.balances.rep,
   meta: getValue(state, "loginAccount.meta"),
   newMarket: state.newMarket,
-  categories: state.categories,
   isMobileSmall: state.appStatus.isMobileSmall,
   currentTimestamp: selectCurrentTimestamp(state),
   gasPrice: getGasPrice(state)
