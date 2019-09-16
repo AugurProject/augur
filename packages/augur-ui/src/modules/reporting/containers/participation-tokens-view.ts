@@ -12,7 +12,7 @@ const mapStateToProps = state => {
     disputeWindowFees: formatAttoDai(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.fees : 0),
     purchasedParticipationTokens: formatAttoRep(state.universe && state.universe.disputeWindow ? state.universe.disputeWindow.purchased : 0),
     tokensOwned: formatAttoRep(tokenAmount),
-    participationTokens: participationTokens,
+    participationTokens,
   };
 };
 
