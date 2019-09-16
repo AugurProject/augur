@@ -1,69 +1,108 @@
-import React from "react";
-import Media from "react-media";
+import React from 'react';
+import Media from 'react-media';
 
-import MyPositions from "modules/portfolio/containers/positions";
-import MyMarkets from "modules/portfolio/containers/my-markets";
-import OpenOrders from "modules/portfolio/containers/open-orders";
-import FilledOrders from "modules/portfolio/containers/filled-orders";
-import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
-import ModulePane from "modules/market/components/common/module-tabs/module-pane";
-import { SMALL_MOBILE, LARGE_DESKTOP } from "modules/common/constants";
+import MyPositions from 'modules/portfolio/containers/positions';
+import MyMarkets from 'modules/portfolio/containers/my-markets';
+import OpenOrders from 'modules/portfolio/containers/open-orders';
+import FilledOrders from 'modules/portfolio/containers/filled-orders';
+import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
+import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
+import { SMALL_MOBILE } from 'modules/common/constants';
 
-import Styles from "modules/portfolio/components/portfolio-view/portfolio-view.styles.less";
+import Styles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles.less';
 
-const PortfolioView = () => (
-  <div>
-    <Media query={SMALL_MOBILE}>
-      {(matches) =>
-        matches ? (
-          <ModuleTabs selected={0} fillWidth noBorder>
-            <ModulePane label="Positions">
-              <MyPositions />
-            </ModulePane>
-            <ModulePane label="Open Orders">
-              <OpenOrders />
-            </ModulePane>
-            <ModulePane label="Filled Orders">
-              <FilledOrders />
-            </ModulePane>
-            <ModulePane label="My Created Markets">
-              <MyMarkets />
-            </ModulePane>
-          </ModuleTabs>
-        ) : (
-          <section className={Styles.PortfolioView}>
-            <Media query={LARGE_DESKTOP}>
-              {(matches) =>
-                matches ? (
-                  <>
-                    <div>
-                      <OpenOrders />
-                      <MyMarkets />
-                    </div>
-                    <div>
-                      <FilledOrders />
-                      <MyPositions />
-                    </div>
-                  </>
-                ) : (
-                <>
-                    <div>
-                      <MyPositions />
-                      <MyMarkets />
-                    </div>
-                    <div>
-                      <OpenOrders />
-                      <FilledOrders />
-                    </div>
-                  </>
-                )
-              }
-            </Media>
-          </section>
-        )
-      }
-    </Media>
-  </div>
-);
+interface PortfolioViewProps {}
 
-export default PortfolioView;
+interface PortfolioViewState {
+  extendPositions: boolean;
+  extendMarkets: boolean;
+  extendOpenOrders: boolean;
+  extendFilledOrders: boolean;
+}
+
+export default class PortfolioView extends React.Component<
+  PortfolioViewProps,
+  PortfolioViewState
+> {
+  state: PortfolioViewState = {
+    extendPositions: false,
+    extendMarkets: false,
+    extendOpenOrders: false,
+    extendFilledOrders: false,
+  };
+
+  toggle = (extend: string, hide: string) => {
+    if (!this.state[extend] && this.state[hide]) {
+      this.setState({ [extend]: false, [hide]: false });
+    } else {
+      this.setState({
+        [extend]: !this.state[extend],
+        [hide]: false,
+      });
+    }
+  };
+
+  render() {
+    const s = this.state;
+
+    return (
+      <div className={Styles.PortfolioView}>
+        <Media query={SMALL_MOBILE}>
+          {matches =>
+            matches ? (
+              <ModuleTabs selected={0} fillWidth noBorder>
+                <ModulePane label="Positions">
+                  <MyPositions />
+                </ModulePane>
+                <ModulePane label="Open Orders">
+                  <OpenOrders />
+                </ModulePane>
+                <ModulePane label="Filled Orders">
+                  <FilledOrders />
+                </ModulePane>
+                <ModulePane label="My Created Markets">
+                  <MyMarkets />
+                </ModulePane>
+              </ModuleTabs>
+            ) : (
+              <section>
+                <div>
+                  <MyPositions
+                    toggle={() =>
+                      this.toggle('extendPositions', 'extendMarkets')
+                    }
+                    extend={s.extendPositions}
+                    hide={s.extendMarkets}
+                  />
+                  <MyMarkets
+                    toggle={() =>
+                      this.toggle('extendMarkets', 'extendPositions')
+                    }
+                    extend={s.extendMarkets}
+                    hide={s.extendPositions}
+                  />
+                </div>
+                <div>
+                  <OpenOrders
+                    toggle={() =>
+                      this.toggle('extendOpenOrders', 'extendFilledOrders')
+                    }
+                    extend={s.extendOpenOrders}
+                    hide={s.extendFilledOrders}
+                  />
+                  <FilledOrders
+                    toggle={() =>
+                      this.toggle('extendFilledOrders', 'extendOpenOrders')
+                    }
+                    extend={s.extendFilledOrders}
+                    hide={s.extendOpenOrders}
+                  />
+                </div>
+              </section>
+            )
+          }
+        </Media>
+      </div>
+    );
+  }
+}

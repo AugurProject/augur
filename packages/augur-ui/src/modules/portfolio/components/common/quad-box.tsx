@@ -1,12 +1,12 @@
-import React, { ReactNode } from "react";
-import classNames from "classnames";
+import React, { ReactNode } from 'react';
+import classNames from 'classnames';
 
-import BoxHeader from "modules/portfolio/components/common/box-header";
-import { NameValuePair } from "modules/portfolio/types";
-import { SearchSort } from "modules/common/search-sort";
-import { SquareDropdown } from "modules/common/selection";
+import BoxHeader from 'modules/portfolio/components/common/box-header';
+import { NameValuePair } from 'modules/portfolio/types';
+import { SearchSort } from 'modules/common/search-sort';
+import { SquareDropdown } from 'modules/common/selection';
 
-import Styles from "modules/portfolio/components/common/quad-box.styles.less";
+import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 
 export interface QuadBoxProps {
   title: string;
@@ -26,6 +26,9 @@ export interface QuadBoxProps {
   extraTitlePadding?: boolean;
   noBorders?: boolean;
   normalOnMobile?: boolean;
+  toggle?: Function;
+  hide?: boolean;
+  extend?: boolean;
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (
@@ -59,6 +62,10 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
         />
       )
     }
+    showToggle={Boolean(props.toggle)}
+    toggle={props.toggle}
+    hide={props.hide}
+    extend={props.extend}
     bottomRightBarContent={props.bottomRightBarContent}
     bottomBarContent={props.bottomBarContent}
     noBackgroundBottom={props.noBackgroundBottom}
@@ -66,18 +73,28 @@ const BoxHeaderElement = (props: QuadBoxProps) => (
 );
 
 const QuadBox = (props: QuadBoxProps) => (
-  <div className={classNames(Styles.Quad, {[Styles.NoBorders]: props.noBorders, [Styles.NormalOnMobile]: props.normalOnMobile})}>
-    <div className={classNames({[Styles.HideOnMobile]: !props.normalOnMobile})}>
+  <div
+    className={classNames(Styles.Quad, {
+      [Styles.NoBorders]: props.noBorders,
+      [Styles.NormalOnMobile]: props.normalOnMobile,
+      [Styles.HideToggle]: props.hide,
+      [Styles.Extend]: props.extend
+    })}
+  >
+    <div
+      className={classNames({ [Styles.HideOnMobile]: !props.normalOnMobile })}
+    >
       <BoxHeaderElement {...props} switchHeaders={false} />
     </div>
     <div>
-      <div className={classNames(Styles.ShowOnMobile, {[Styles.Hide]: props.normalOnMobile})}>
-        <BoxHeaderElement
-          {...props}
-          switchHeaders={props.switchHeaders}
-        />
+      <div
+        className={classNames(Styles.ShowOnMobile, {
+          [Styles.Hide]: props.normalOnMobile,
+        })}
+      >
+        <BoxHeaderElement {...props} switchHeaders={props.switchHeaders} />
       </div>
-      {(props.content) ? props.content : null}
+      {props.content ? props.content : null}
     </div>
   </div>
 );
