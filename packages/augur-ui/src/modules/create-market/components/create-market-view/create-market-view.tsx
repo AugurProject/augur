@@ -47,7 +47,6 @@ export default class CreateMarketView extends React.Component<
 }
 
 CreateMarketView.propTypes = {
-  categories: PropTypes.array.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,
   currentTimestamp: PropTypes.number.isRequired,
   gasPrice: PropTypes.number.isRequired,

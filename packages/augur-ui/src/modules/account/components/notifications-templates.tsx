@@ -21,7 +21,7 @@ interface BaseProps {
   market: MarketData;
   type: string;
   currentTime?: DateFormattedObject;
-  reportingWindowStatsEndTime?: DateFormattedObject;
+  disputingWindowEndTime?: DateFormattedObject;
   isDisabled: boolean;
   buttonAction: Function;
   buttonLabel: string;
@@ -61,10 +61,6 @@ interface ProceedsToClaimTemplateProps extends BaseProps {
   totalProceeds: number | undefined;
 }
 
-interface ProceedsToClaimOnHoldTemplateProps extends BaseProps {
-  market: MarketData;
-}
-
 interface TemplateProps extends BaseProps {
   message: string;
 }
@@ -76,7 +72,7 @@ const Template = (props: TemplateProps) => (
       <Counter
         type={props.type}
         market={props.market}
-        reportingWindowStatsEndTime={props.reportingWindowStatsEndTime}
+        disputingWindowEndTime={props.disputingWindowEndTime}
         currentTime={props.currentTime}
       />
 
@@ -119,7 +115,7 @@ interface CounterProps {
   type: string;
   market: MarketData;
   currentTime?: DateFormattedObject;
-  reportingWindowStatsEndTime?: DateFormattedObject;
+  disputingWindowEndTime?: DateFormattedObject;
 }
 
 const Counter = (props: CounterProps) => {
@@ -144,14 +140,14 @@ const Counter = (props: CounterProps) => {
         </div>
       );
     } else {
-      if (props.currentTime && props.reportingWindowStatsEndTime) {
+      if (props.currentTime && props.disputingWindowEndTime) {
         counter = (
           <div className={Styles.Countdown}>
             <MarketProgress
               reportingState={reportingState}
               currentTime={props.currentTime}
               endTimeFormatted={endTimeFormatted}
-              reportingWindowEndtime={props.reportingWindowStatsEndTime}
+              reportingWindowEndtime={props.disputingWindowEndTime}
               customLabel={REPORTING_ENDS}
             />
           </div>
@@ -239,9 +235,13 @@ export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemp
 export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => {
   const { totalProceeds } = props;
 
+  let messageText = `You have ${totalProceeds} DAI available to be claimed from one market.`;
+  if (props.markets.length > 1) {
+    messageText = `You have ${totalProceeds} DAI available to be claimed from multiple markets.`;
+  }
   return (
     <Template
-      message={`You have ${totalProceeds} DAI available to be claimed from multiple markets.`}
+      message={messageText}
       {...props}
     />
   );

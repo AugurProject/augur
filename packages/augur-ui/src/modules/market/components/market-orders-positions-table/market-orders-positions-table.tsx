@@ -59,7 +59,7 @@ MarketOrdersPositionsTable.propTypes = {
   openOrders: PropTypes.array,
   market: PropTypes.object.isRequired,
   filledOrders: PropTypes.array,
-  cancelAllOpenOrders: PropTypes.func.isRequired
+  cancelAllOpenOrders: PropTypes.func.isRequired,
 };
 
 MarketOrdersPositionsTable.defaultProps = {

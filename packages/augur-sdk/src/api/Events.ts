@@ -12,7 +12,7 @@ export class Events {
     this.provider.storeAbiData(abi.Augur as Abi, "Augur");
   }
 
-  async getLogs(eventName: string, fromBlock: number, toBlock: number, additionalTopics?: Array<string | string[]>): Promise<ParsedLog[]> {
+  async getLogs(eventName: string, fromBlock: number, toBlock: number | "latest", additionalTopics?: Array<string | string[]>): Promise<ParsedLog[]> {
     let topics: Array<string | string[]> = this.getEventTopics(eventName);
     if (additionalTopics) {
       topics = topics.concat(additionalTopics);

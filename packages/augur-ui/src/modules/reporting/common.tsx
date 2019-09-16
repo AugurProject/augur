@@ -157,7 +157,7 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
           Pre-fund future dispute rounds to accelerate market resolution. Any
           contributed REP will automatically go toward disputing in favor of
           [insert outcome user is staking on], if it is no longer the tentative
-          winning outcome in future rounds 
+          winning outcome in future rounds
         </span>
         {!this.props.showInput && (
           <SecondaryButton
@@ -536,7 +536,7 @@ interface UserRepDisplayState {
 export interface ReportingCardProps {
   market: MarketData;
   currentAugurTimestamp: number;
-  reportingWindowStatsEndTime: number;
+  disputingWindowEndTime: number;
   showReportingModal: Function;
   callback: Function;
   isLogged: boolean;
@@ -546,7 +546,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
   const {
     market,
     currentAugurTimestamp,
-    reportingWindowStatsEndTime,
+    disputingWindowEndTime,
     showReportingModal,
     isLogged,
   } = props;
@@ -572,7 +572,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         disputeInfo={disputeInfo}
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
-        reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+        disputingWindowEndTime={disputingWindowEndTime}
       />
       <MarketLink id={id}>{description}</MarketLink>
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
@@ -580,7 +580,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
           reportingState={reportingState}
           currentTime={currentAugurTimestamp}
           endTimeFormatted={endTimeFormatted}
-          reportingWindowEndtime={reportingWindowStatsEndTime}
+          reportingWindowEndtime={disputingWindowEndTime}
         />
       )}
       <div data-tip data-for={'tooltip--preReporting' + id}>
@@ -761,7 +761,7 @@ export interface ParticipationTokensViewProps {
   disputeWindowFees: FormattedNumber;
   purchasedParticipationTokens: FormattedNumber;
   disputeWindow: string;
-  pariticipationTokens: object;
+  participationTokens: object;
   tokensOwned: FormattedNumber;
 }
 
