@@ -1,5 +1,10 @@
 import { formatDai } from 'utils/format-number';
-import { YES_NO, SCALAR } from 'modules/common/constants';
+import {
+  YES_NO,
+  SCALAR,
+  INVALID_OUTCOME_ID,
+  SCALAR_DOWN_ID,
+} from 'modules/common/constants';
 import store, { AppState } from 'store';
 import { selectMarketInfosState } from 'store/select-state';
 import { MarketData, OutcomeFormatted } from 'modules/types';
@@ -60,12 +65,8 @@ export const selectSortedDisputingOutcomes = (
   outcomes: OutcomeFormatted[],
   stakes: Getters.Markets.StakeDetails[] | null
 ): OutcomeFormatted[] => {
-  if (marketType === SCALAR) {
-    return outcomes;
-  }
-  if (stakes && stakes.length > 0)
-    return stakes
-      .sort((a, b) => {
+  const sorted = stakes
+    ? stakes.sort((a, b) => {
         if (
           createBigNumber(a.bondSizeCurrent).gt(
             createBigNumber(b.bondSizeCurrent)
@@ -80,7 +81,33 @@ export const selectSortedDisputingOutcomes = (
           return 1;
         return 0;
       })
-      .map(s => outcomes.find(o => o.id === parseInt(s.outcome, 10)));
+    : [];
+  if (marketType === SCALAR) {
+    const filteredSortedOutcomes = [
+      outcomes.find(o => (o.id = INVALID_OUTCOME_ID)),
+    ];
+    const genericScalarOutcome = outcomes.find(o => (o.id = SCALAR_DOWN_ID));
+    if (sorted.length === 0) return filteredSortedOutcomes;
+    const result = sorted.reduce(
+      (p, s) => [...p, { ...genericScalarOutcome, id: s.outcome }],
+      []
+    );
+    return result;
+  }
+
+  if (stakes.length > 0) {
+    const sortedOutcomes: OutcomeFormatted[] = sorted
+      .reduce(
+        (p, s) => [...p, outcomes.find(o => o.id === parseInt(s.outcome, 10))],
+        []
+      )
+      .filter(o => !!o);
+
+    return outcomes.reduce(
+      (p, outcome) => (p.find(s => s.id === outcome.id) ? p : [...p, outcome]),
+      sortedOutcomes
+    );
+  }
 
   return selectSortedMarketOutcomes(marketType, outcomes);
 };
