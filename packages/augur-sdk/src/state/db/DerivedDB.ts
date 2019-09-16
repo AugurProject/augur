@@ -141,7 +141,6 @@ export class DerivedDB extends AbstractDB {
             documents[0]
           );
         });
-        // TODO do the additional processing of documents here. no need to do processing on old logs we ignore
         const processedDocs = _.map(mostRecentTopics, this.processDoc.bind(this));
         return _.assign({}, ...processedDocs);
       }) as any[];

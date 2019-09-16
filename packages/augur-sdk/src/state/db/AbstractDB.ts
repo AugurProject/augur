@@ -79,6 +79,7 @@ export abstract class AbstractDB {
   }
 
   private async bulkUpsertDocuments(previousDocs: DocumentIDToDoc, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
+    if (documents.length < 1) return true;
     const mergedRevisionDocuments = _.map(documents, (doc) => {
       // The c'tor needs to be deleted since indexeddb bulkUpsert cannot accept objects with methods on them
       delete doc.constructor;

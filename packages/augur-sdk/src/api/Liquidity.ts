@@ -55,8 +55,8 @@ export class Liquidity {
   }
 
   async getLiquidityForSpread(params: GetLiquidityParams): Promise<BigNumber> {
-    const marketFeeDivisor = new BigNumber(params.feePerCashInAttoCash).dividedBy(QUINTILLION);
-    const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(params.reportingFeeDivisor)).minus(new BigNumber(1).div(marketFeeDivisor));
+    const marketFee = new BigNumber(params.feePerCashInAttoCash).dividedBy(QUINTILLION);
+    const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(params.reportingFeeDivisor)).minus(marketFee);
     const horizontalLiquidity = this.getHorizontalLiquidity(params.orderBook, params.numTicks, feeMultiplier, params.numOutcomes, params.spread);
     const verticalLiquidity = this.getVerticalLiquidity(params.orderBook, params.numTicks, params.marketType, feeMultiplier, params.numOutcomes, params.spread);
 

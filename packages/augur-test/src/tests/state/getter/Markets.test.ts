@@ -519,6 +519,20 @@ describe('State API :: Markets :: ', () => {
     expect(marketList.markets[4].id).toEqual(scalarMarket2.address);
     expect(marketList.markets[5].id).toEqual(yesNoMarket2.address);
 
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      sortBy: GetMarketsSortBy.disputeRound,
+    });
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+
+    marketList = await api.route('getMarkets', {
+      universe: universe.address,
+      sortBy: GetMarketsSortBy.totalRepStakedInMarket,
+    });
+    expect(marketList.markets.length).toEqual(6);
+    expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
+
     // @TODO: Add tests for filtering markets maxLiquiditySpread = '0'
   }, 120000);
 

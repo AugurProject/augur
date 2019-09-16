@@ -1,28 +1,19 @@
 import { BigNumber } from 'bignumber.js';
 import { SearchResults } from 'flexsearch';
-import { MarketCreated } from "../../event-handlers";
 import { DB } from '../db/DB';
 import { MarketFields } from '../db/SyncableFlexSearch';
 import { Getter } from './Router';
 import { Order, Orders, OutcomeParam, Trading, OrderState } from './Trading';
 import {
   Address,
-  DisputeCrowdsourcerCompletedLog,
-  DisputeCrowdsourcerCreatedLog,
-  InitialReportSubmittedLog,
-  MarketCreatedLog,
   MarketData,
-  MarketFinalizedLog, MarketOIChangedLog,
   MarketType,
   MarketTypeName,
-  MarketVolumeChangedLog,
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
-  Timestamp,
-  UniverseForkedLog
 } from "../logs/types";
-import { NULL_ADDRESS, sortOptions } from './types';
+import { sortOptions } from './types';
 import { MarketReportingState } from '../../constants';
 import {
   Augur,
@@ -30,14 +21,11 @@ import {
   QUINTILLION,
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
-  SECONDS_IN_A_DAY
 } from '../../index';
 import { calculatePayoutNumeratorsValue } from '../../utils';
-import { Liquidity, OrderBook } from '../../api/Liquidity';
-
+import { OrderBook } from '../../api/Liquidity';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
-import { parseAsync } from '@babel/core';
 
 export enum GetMarketsSortBy {
   marketOI = 'marketOI',
@@ -46,6 +34,8 @@ export enum GetMarketsSortBy {
   timestamp = 'timestamp',
   endTime = 'endTime',
   lastTradedTimestamp = 'lastTradedTimestamp',
+  disputeRound = 'disputeRound',
+  totalRepStakedInMarket = 'totalRepStakedInMarket'
 }
 
 // Valid market liquidity spreads
@@ -518,6 +508,7 @@ export class Markets {
     }
 
     // TODO rearrange filters and search such that this only gets the number of markets given the search and "non-filter" filters
+    // TODO Really this data should come in a standalone request. This data (number filtered out) requires 2 extra distinct queries which we could do after the actual markets are returned. The UI element which uses this is at the bottom of the results if any exist so in a normal case the user wont see it till they scroll for a while.
     const numMarketDocs = (await db.getNumRowsFromDB("Markets", true)) - 1;
     const numMarketDocsAfterFilters = await db.getNumRowsFromDB("Markets", true, request);
 
@@ -528,7 +519,7 @@ export class Markets {
 
     // Sort search results by categories
     // @TODO Use actual type instead of any[] below
-    // TODO Either find a way to search in the standard query or do this first and simply pass in the marketIds to the original query
+    // TODO Either find a way to search in the standard query or do this first and simply pass in the marketIds to the original query. This will let us do all pagination and sorting in the base query.
     let marketsResults: any[]  = _.sortBy(
       await getMarketsSearchResults(params.universe, params.search, params.categories),
       ['category1', 'category2', 'category3']
@@ -561,7 +552,7 @@ export class Markets {
     const meta = getMarketsMeta(marketsResults, filteredOutCount);
 
     // Sort & limit markets
-    // TODO sort and limit in the standard query of the derived DB once we refactor how the FTS is done as noted above
+    // TODO sort and limit in the standard query of the derived DB once we refactor how the FTS is done as noted above. Part of this may involve transforming these values in log processing in the derived DB into sort-friendly formats. For BNs padded hex or for numbers actual JS numbers
     const orderBy = params.isSortDescending ? 'desc' : 'asc';
     if (params.sortBy === GetMarketsSortBy.liquidity) {
       marketsResults = marketsResults.sort((x, y) => {
@@ -582,6 +573,7 @@ export class Markets {
     marketsResults = marketsResults.slice(params.offset, params.offset + params.limit);
 
     // Get markets info to return
+    // TODO this should just take the market data (and any data available from calls in this function) and format it instead of doing additional queries
     const marketsInfo = await Markets.getMarketsInfo(
       augur,
       db,

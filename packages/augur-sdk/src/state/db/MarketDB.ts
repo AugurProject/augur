@@ -14,12 +14,14 @@ import {
   SECONDS_IN_A_YEAR,
   WORST_CASE_FILL,
 } from '../../constants';
-import { MarketData, MarketType, OrderType } from '../logs/types';
+import { MarketData, MarketType, OrderType, TimestampSetLog } from '../logs/types';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
 import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
 import { QUINTILLION } from '../../utils';
+import { Block } from "ethereumjs-blockstream";
+
 
 interface MarketOrderBookData {
   _id: string;
@@ -52,7 +54,8 @@ export class MarketDB extends DerivedDB {
     this.augur = augur;
 
     this.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
-    // TODO subscribe to block updates and pass timestamp and blockNumber to processTimestamp
+    this.events.subscribe('controller:new:block', this.processNewBlock);
+    this.events.subscribe('TimestampSet', this.processTimestampSet);
   }
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
@@ -220,8 +223,10 @@ export class MarketDB extends DerivedDB {
   private processMarketCreated(log: ParsedLog): ParsedLog {
     log['reportingState'] = MarketReportingState.PreReporting;
     log['invalidFilter'] = false;
-    log['marketOI'] = '0x0';
-    log['volume'] = '0x0';
+    log['marketOI'] = '0x00';
+    log['volume'] = '0x00';
+    log['disputeRound'] = '0x00';
+    log['totalRepStakedInMarket'] = '0x00';
     log['hasRecentlyDepletedLiquidity'] = false;
     log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     return log;
@@ -249,10 +254,15 @@ export class MarketDB extends DerivedDB {
     return log;
   }
 
-  PreReporting = 'PreReporting'
-  DesignatedReporting = 'DesignatedReporting'
-  CrowdsourcingDispute = 'CrowdsourcingDispute'
-  AwaitingNextWindow = 'AwaitingNextWindow'
+  processNewBlock = async (block: Block): Promise<void> => {
+    const timestamp = (await this.augur.getTimestamp()).toNumber();
+    await this.processTimestamp(timestamp, parseInt(block.number))
+  }
+
+  processTimestampSet = async (log: TimestampSetLog): Promise<void> => {
+    const timestamp = new BigNumber(log.newTimestamp).toNumber();
+    await this.processTimestamp(timestamp, log.blockNumber)
+  }
 
   private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
     const eligibleMarketDocs = await this.find({

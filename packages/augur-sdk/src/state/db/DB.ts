@@ -154,7 +154,7 @@ export class DB {
 
     // Custom Derived DBs here
     this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], ['market', 'payoutNumerators']);
-    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId'])
+    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], ['orderId']);
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
 
     // Zero X Orders. Only on if a mesh client has been provided

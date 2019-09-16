@@ -360,27 +360,29 @@ export class Trading {
       limit: params.limit,
       skip: params.offset,
     };
-    if (params.makerTaker === 'either') {
-      request.selector = Object.assign(request.selector, {
-        $or: [
-          { orderCreator: params.account },
-          { orderFiller: params.account },
-        ],
-      });
-    }
-    if (params.makerTaker === 'maker') {
-      request.selector = Object.assign(request.selector, {
-        orderCreator: params.account,
-      });
-    }
-    if (params.makerTaker === 'taker') {
-      request.selector = Object.assign(request.selector, {
-        orderFiller: params.account,
-      });
+    if (params.account) {
+      if (params.makerTaker === 'either') {
+        request.selector = Object.assign(request.selector, {
+          $or: [
+            { orderCreator: params.account },
+            { orderFiller: params.account },
+          ],
+        });
+      }
+      if (params.makerTaker === 'maker') {
+        request.selector = Object.assign(request.selector, {
+          orderCreator: params.account,
+        });
+      }
+      if (params.makerTaker === 'taker') {
+        request.selector = Object.assign(request.selector, {
+          orderFiller: params.account,
+        });
+      }
     }
     if (params.orderState === OrderState.OPEN) {
       request.selector = Object.assign(request.selector, {
-        amount: { $gt: '0x00' },
+        amount: { $ne: '0x00' },
         eventType: { $ne: 1 },
       });
     }
@@ -588,12 +590,13 @@ export async function filterMarketsByReportingState(
   db: DB,
   ignoreReportingStates: string[],
 ) {
-  const marketsResponse = await db.findMarkets({
-    selector: {
-      market: { $in: marketIds },
+  let request = { selector: { market: { $in: marketIds }}};
+  if (ignoreReportingStates && ignoreReportingStates.length > 0) {
+    request.selector = Object.assign(request.selector, {
       $not: { reportingState: { $in: ignoreReportingStates } }
-    },
-  });
+    })
+  }
+  const marketsResponse = await db.findMarkets(request);
   const markets = _.keyBy(marketsResponse, 'market');
   return markets;
 }
