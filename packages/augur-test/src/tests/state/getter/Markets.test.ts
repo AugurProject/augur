@@ -1769,15 +1769,9 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    expect(markets[0].reportingState).toBe(
-      MarketReportingState.CrowdsourcingDispute
-    );
-    expect(markets[1].reportingState).toBe(
-      MarketReportingState.CrowdsourcingDispute
-    );
-    expect(markets[2].reportingState).toBe(
-      MarketReportingState.OpenReporting
-    );
+    let reportingStates = _.map(markets, "reportingState");
+    expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
+    expect(reportingStates).toContain(MarketReportingState.OpenReporting);
 
     // Dispute 10 times
     mary.repFaucet(new BigNumber(10**18).multipliedBy(1000000))
@@ -1811,15 +1805,10 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    expect(markets[0].reportingState).toBe(
-      MarketReportingState.CrowdsourcingDispute
-    );
-    expect(markets[1].reportingState).toBe(
-      MarketReportingState.AwaitingNextWindow
-    );
-    expect(markets[2].reportingState).toBe(
-      MarketReportingState.OpenReporting
-    );
+    reportingStates = _.map(markets, "reportingState");
+    expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
+    expect(reportingStates).toContain(MarketReportingState.AwaitingNextWindow);
+    expect(reportingStates).toContain(MarketReportingState.OpenReporting);
 
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(7));
     await john.setTimestamp(newTime);
@@ -1834,15 +1823,10 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    expect(markets[0].reportingState).toBe(
-      MarketReportingState.AwaitingFinalization
-    );
-    expect(markets[1].reportingState).toBe(
-      MarketReportingState.CrowdsourcingDispute
-    );
-    expect(markets[2].reportingState).toBe(
-      MarketReportingState.OpenReporting
-    );
+    reportingStates = _.map(markets, "reportingState");
+    expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
+    expect(reportingStates).toContain(MarketReportingState.AwaitingFinalization);
+    expect(reportingStates).toContain(MarketReportingState.OpenReporting);
 
     // Continue disputing
     for (let disputeRound = 12; disputeRound <= 19; disputeRound++) {
