@@ -617,6 +617,7 @@ export const WITHDRAWINEMERGENCY = 'WITHDRAWINEMERGENCY';
 export const SENDETHER = 'SENDETHER';
 export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
+export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';

@@ -1,6 +1,6 @@
 import { loadFavoritesMarkets } from "modules/markets/actions/update-favorites";
 import { loadDrafts } from "modules/create-market/actions/update-drafts";
-import { addAlert } from "modules/alerts/actions/alerts";
+import { updateAlert } from "modules/alerts/actions/alerts";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";
 import { updateReadNotifications } from "modules/notifications/actions/update-notifications";
 import { loadPendingOrdersTransactions } from "modules/orders/actions/pending-orders-management";
@@ -64,7 +64,7 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
         );
       }
       if (alerts) {
-        alerts.map(n => dispatch(addAlert(n)));
+        alerts.map(n => dispatch(updateAlert(n.id, n)));
       }
       if (
         pendingLiquidityOrders

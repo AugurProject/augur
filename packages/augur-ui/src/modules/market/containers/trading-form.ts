@@ -9,7 +9,6 @@ import {
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
-import { handleFilledOnly } from 'modules/alerts/actions/alerts';
 import {
   updateTradeCost,
   updateTradeShares,
@@ -63,7 +62,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   toggleConnectionTray: value =>
     dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
-  handleFilledOnly: trade => dispatch(handleFilledOnly(trade)),
+  handleFilledOnly: trade => null,
   updateTradeCost: (marketId, outcomeId, order, callback) =>
     dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
   updateTradeShares: (marketId, outcomeId, order, callback) =>

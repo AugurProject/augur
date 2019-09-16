@@ -60,6 +60,9 @@ function renderToggleContent(market) {
 
 interface PositionsProps {
   markets: Array<MarketData>;
+  toggle: Function;
+  hide: boolean;
+  extend: boolean;
 }
 
 interface PositionsState {
@@ -102,7 +105,7 @@ export default class Positions extends Component<PositionsProps, PositionsState>
   }
 
   render() {
-    const { markets } = this.props;
+    const { markets, toggle, hide, extend } = this.props;
     const { showCurrentValue } = this.state;
 
     return (
@@ -112,6 +115,9 @@ export default class Positions extends Component<PositionsProps, PositionsState>
         sortByOptions={sortByOptions}
         markets={markets}
         filterComp={filterComp}
+        toggle={toggle}
+        hide={hide}
+        extend={extend}
         bottomRightContent={
           <CompactButton
             text={showCurrentValue ? "Current Value" : "Total Returns"}
