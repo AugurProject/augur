@@ -144,7 +144,7 @@ export default function setAlertText(alert: any, callback: any) {
       // Market
       case CONTRIBUTE:
         alert.title = alert.params.preFilled ? "Prefilled Stake" : "Market Disputed";
-        if (alert.params.preFilled && (alert.params._additionalStake.lte(ZERO) || !alert.params._additionalStake)) {
+        if (alert.params.preFilled && (createBigNumber(alert.params._additionalStake).lte(ZERO) || !alert.params._additionalStake)) {
           break;
         }
         dispatch(
