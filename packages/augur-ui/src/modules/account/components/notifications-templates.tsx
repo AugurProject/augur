@@ -61,10 +61,6 @@ interface ProceedsToClaimTemplateProps extends BaseProps {
   totalProceeds: number | undefined;
 }
 
-interface ProceedsToClaimOnHoldTemplateProps extends BaseProps {
-  market: MarketData;
-}
-
 interface TemplateProps extends BaseProps {
   message: string;
 }
@@ -239,9 +235,13 @@ export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemp
 export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => {
   const { totalProceeds } = props;
 
+  let messageText = `You have ${totalProceeds} DAI available to be claimed from one market.`;
+  if (props.markets.length > 1) {
+    messageText = `You have ${totalProceeds} DAI available to be claimed from multiple markets.`;
+  }
   return (
     <Template
-      message={`You have ${totalProceeds} DAI available to be claimed from multiple markets.`}
+      message={messageText}
       {...props}
     />
   );

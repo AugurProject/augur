@@ -49,7 +49,7 @@ getPrivateKey(null, function(err, auth) {
         chalk.green.dim("claimTradingPayload:"),
         chalk.green(JSON.stringify(claimTradingPayload))
       );
-      augur.trading.claimMarketsTradingProceeds(claimTradingPayload);
+      augur.trading.claimMarketsProceeds(claimTradingPayload);
     }
   );
 });

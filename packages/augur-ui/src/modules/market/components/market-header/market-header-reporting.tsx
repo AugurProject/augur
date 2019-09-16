@@ -7,39 +7,31 @@ import MarketLink from "modules/market/components/market-link/market-link";
 import {
   TYPE_DISPUTE,
   TYPE_REPORT,
-  MARKET_STATUS_MESSAGES,
   REPORTING_STATE,
 } from "modules/common/constants";
-import {
-  CountdownProgress,
-  formatTime
-} from "modules/common/progress";
 import { PrimaryButton } from "modules/common/buttons";
-
-import canClaimProceeds from "utils/can-claim-proceeds";
 
 export default class MarketHeaderReporting extends Component {
   static propTypes = {
-    currentTimestamp: PropTypes.number.isRequired,
     market: PropTypes.object.isRequired,
     isDesignatedReporter: PropTypes.bool,
-    finalizeMarket: PropTypes.func.isRequired,
-    claimTradingProceeds: PropTypes.func.isRequired,
+    claimMarketsProceeds: PropTypes.func.isRequired,
     tentativeWinner: PropTypes.object,
     isLogged: PropTypes.bool,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    canClaimProceeds: PropTypes.bool,
   };
 
   static defaultProps = {
     isDesignatedReporter: false,
     tentativeWinner: {},
-    isLogged: false
+    isLogged: false,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      disableFinalize: false
+      disableFinalize: false,
     };
   }
 
@@ -47,27 +39,17 @@ export default class MarketHeaderReporting extends Component {
     const {
       market,
       isDesignatedReporter,
-      finalizeMarket,
-      claimTradingProceeds,
+      claimMarketsProceeds,
       tentativeWinner,
       isLogged,
-      currentTimestamp,
-      location
+      location,
+      canClaimProceeds
     } = this.props;
     const {
       reportingState,
       id,
       consensus,
-      outstandingReturns,
-      finalizationTime
     } = market;
-
-    const canClaim = canClaimProceeds(
-      finalizationTime,
-      outstandingReturns,
-      currentTimestamp
-    );
-
     let content = null;
     if (consensus && (consensus.winningOutcome || consensus.isInvalid)) {
       content = (
@@ -87,15 +69,14 @@ export default class MarketHeaderReporting extends Component {
                 : consensus.outcomeName || consensus.winningOutcome}
             </span>
           </div>
-          {outstandingReturns &&
-            reportingState === REPORTING_STATE.FINALIZED && (
+          {canClaimProceeds && (
               <PrimaryButton
                 id="button"
                 action={() => {
-                  claimTradingProceeds(id);
+                  claimMarketsProceeds([id]);
                 }}
                 text="Claim Proceeds"
-                disabled={!isLogged || !canClaim}
+                disabled={!isLogged || !canClaimProceeds}
               />
             )}
         </div>
