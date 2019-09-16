@@ -7,7 +7,6 @@
   color: @color-secondary-text;
   flex: 1;
   min-height: 50%;
-  padding-bottom: @size-24;
 
   @media @breakpoint-mobile-mid {
     background: unset;
@@ -37,6 +36,17 @@
     > div:last-of-type {
       border-bottom: 0;
     }
+  }
+
+  &.HideToggle {
+    max-height: 60px;
+    min-height: unset;
+    overflow-y: hidden;
+    flex: 0;
+  }
+
+  &.Extend {
+    min-height: calc(100% - 60px);
   }
 }
 

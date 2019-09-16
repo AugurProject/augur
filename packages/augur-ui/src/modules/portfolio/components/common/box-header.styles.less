@@ -102,6 +102,20 @@
   flex-direction: column;
 }
 
+.Toggle {
+  margin-left: @size-16;
+  display: flex;
+  
+  > svg {
+    width: @size-12;
+    height: @size-22;
+
+    > path {
+      fill: @color-tertiary-info-text;
+    }
+  }
+}
+
 @media @breakpoint-mobile-mid {
   .ShowOnMobile {
     display: flex;
