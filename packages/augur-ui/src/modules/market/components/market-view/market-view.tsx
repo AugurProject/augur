@@ -31,6 +31,7 @@ import { LeftChevron } from 'modules/common/icons';
 import { TEMP_TABLET } from 'modules/common/constants';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -285,6 +286,8 @@ export default class MarketView extends Component<
     );
     const selectedOutcomeName: string = outcome ? outcome.description : '';
 
+    const networkId = getNetworkId();
+
     return (
       <section
         ref={node => {
@@ -449,13 +452,15 @@ export default class MarketView extends Component<
                     </div>
                   </ModulePane>
                 </ModuleTabs>
-
-                <MarketComments
-                  marketId={marketId}
-                  colorScheme='dark'
-                  dataWidth='1045'
-                >
-                </MarketComments>
+                <section className={Styles.MarketView__comments}>
+                  <MarketComments
+                    marketId={marketId}
+                    colorScheme='dark'
+                    dataWidth='500'
+                    networkId={networkId}
+                  >
+                  </MarketComments>
+                </section>
               </>
             ) : (
               <>
@@ -578,7 +583,8 @@ export default class MarketView extends Component<
                   <MarketComments
                     marketId={marketId}
                     colorScheme='dark'
-                    dataWidth='1045'
+                    dataWidth='800'
+                    networkId={networkId}
                   >
                   </MarketComments>
                 </section>

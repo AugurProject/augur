@@ -9,12 +9,14 @@ export default class MarketComments extends Component {
     marketId: PropTypes.string.isRequired,
     colorScheme: PropTypes.string.isRequired,
     dataWidth: PropTypes.string.isRequired,
+    networkId: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
     marketId: PropTypes.string.isRequired,
     colorScheme: PropTypes.string.isRequired,
     dataWidth: PropTypes.string.isRequired,
+    networkId: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -27,25 +29,28 @@ export default class MarketComments extends Component {
       marketId,
       colorScheme,
       dataWidth,
+      networkId,
     } = this.props;
 
     let content = null;
 
     content = (
       <div id='fb-comments-container'>
-        <div id='fb-comments' className='fb-comments' data-colorscheme={colorScheme} data-href={'www.augur.net/comments/marketId=' + marketId} data-width={dataWidth} data-numposts='10'></div>
+        <div id='fb-comments' className='fb-comments' data-colorscheme={colorScheme} data-href={'www.augur.net/comments/' + networkId + '/' + marketId} data-width={dataWidth} data-numposts='10'></div>
       </div>
     );
 
     if (!window.document.getElementById('fb-root')) {
       const fbRoot = window.document.createElement('div');
       fbRoot.id = 'fb-root';
+      window.document.body.appendChild(fbRoot);
+    }
+    if (!window.document.getElementById('fb-jssdk')) {
       const js = window.document.createElement('script');
       js.id = 'facebook-jssdk';
       js.async = true;
       js.defer = true;
       js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v4.0';
-      window.document.body.appendChild(fbRoot);
       window.document.body.appendChild(js);
     }
 
