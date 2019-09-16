@@ -15,6 +15,7 @@ import OrderBook from 'modules/market-charts/containers/order-book';
 import MarketChartsPane from 'modules/market-charts/containers/market-charts-pane';
 import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
 import MarketTradeHistory from 'modules/market/containers/market-trade-history';
+import MarketComments from 'modules/market/containers/market-comments';
 import {
   CATEGORICAL,
   BUY,
@@ -448,6 +449,9 @@ export default class MarketView extends Component<
                     </div>
                   </ModulePane>
                 </ModuleTabs>
+
+                <MarketComments>
+                </MarketComments>
               </>
             ) : (
               <>
@@ -564,6 +568,11 @@ export default class MarketView extends Component<
                       </div>
                     </div>
                   </div>
+                </section>
+
+                <section className={Styles.MarketView__comments}>
+                  <MarketComments>
+                  </MarketComments>
                 </section>
               </>
             )
