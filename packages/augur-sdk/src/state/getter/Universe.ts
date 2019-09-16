@@ -12,10 +12,9 @@ import {
 import {
   Augur,
   calculatePayoutNumeratorsValue,
-  getOutcomeDescriptionFromOutcome,
-  marketTypeToName,
+  describeUniverseOutcome,
   GENESIS,
-  MALFORMED_OUTCOME,
+  marketTypeToName
 } from '../../index';
 import { NULL_ADDRESS } from './types';
 import { ContractInterfaces } from '@augurproject/core';
@@ -139,7 +138,7 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string): Promis
     // but we need its parent's forking info
     const universeForkedLog = await getUniverseForkedLog(db, universeCreationLog.parentUniverse);
     const forkingMarketLog = await getMarket(db, universeForkedLog.forkingMarket); // the market that created this universe
-    outcomeName = getOutcomeName(universeCreationLog, universeForkedLog, forkingMarketLog);
+    outcomeName = getOutcomeNameFromLogs(universeCreationLog, forkingMarketLog);
   }
 
   const creationTimestamp = Number(universeCreationLog.creationTimestamp);
@@ -160,24 +159,26 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string): Promis
   };
 }
 
-function getOutcomeName(
+function getOutcomeNameFromLogs(
   universeCreationLog: UniverseCreatedLog,
-  universeForkedLog: UniverseForkedLog,
   forkingMarketLog: MarketCreatedLog
 ): string {
+  const outcome = calculateOutcomeFromLogs(universeCreationLog, forkingMarketLog);
+  return describeUniverseOutcome(outcome, forkingMarketLog);
+}
+
+function calculateOutcomeFromLogs(
+  universeCreationLog: UniverseCreatedLog,
+  forkingMarketLog: MarketCreatedLog
+) {
   const { marketType, prices, numTicks } = forkingMarketLog;
-  const outcome = calculatePayoutNumeratorsValue(
+  return calculatePayoutNumeratorsValue(
     prices[0],
     prices[1],
     numTicks,
     marketTypeToName(marketType),
     universeCreationLog.payoutNumerators.map((bn) => bn.toString())
   );
-  if (outcome === MALFORMED_OUTCOME) {
-    return MALFORMED_OUTCOME;
-  } else {
-    return getOutcomeDescriptionFromOutcome(Number(outcome), forkingMarketLog);
-  }
 }
 
 async function getMigrationOutcomes(
@@ -191,21 +192,17 @@ async function getMigrationOutcomes(
   const maxPrice = Number(forkingMarket.prices[forkingMarket.prices.length - 1]).toString(10);
 
   return Promise.all(children.map(async (child): Promise<MigrationOutcome> => {
-    const payoutNumerators = child.payoutNumerators.map((hex) => Number(hex).toString(10));
-
-    const outcome = calculatePayoutNumeratorsValue(maxPrice, minPrice, numTicks, marketTypeName, payoutNumerators);
-    const isMalformed = outcome === MALFORMED_OUTCOME;
-
     const childUniverse = augur.contracts.universeFromAddress(child.childUniverse);
-    const amount = (await getRepSupply(augur, childUniverse)).toString();
+    const payoutNumerators = child.payoutNumerators.map((hex) => Number(hex).toString(10));
+    const outcome = calculatePayoutNumeratorsValue(maxPrice, minPrice, numTicks, marketTypeName, payoutNumerators);
 
     return {
-      outcomeName: isMalformed ? MALFORMED_OUTCOME : getOutcomeDescriptionFromOutcome(Number(outcome), forkingMarket),
-      outcome,
-      amount,
-      isMalformed,
+      outcomeName: describeUniverseOutcome(outcome, forkingMarket),
+      outcome: outcome.outcome,
+      isMalformed: outcome.malformed,
+      isInvalid: outcome.invalid,
+      amount: (await getRepSupply(augur, childUniverse)).toString(),
       payoutNumerators,
-      isInvalid: (!isMalformed) && Number(payoutNumerators[0]) > 0,
     };
   }));
 }

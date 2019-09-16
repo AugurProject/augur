@@ -242,8 +242,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'description',
         outcome: 0,
-        outcomeDescription:
-          'A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+        outcomeDescription: 'Invalid',
         price: '22',
         quantity: '1000000000000',
         total: '-22000000000000',
@@ -255,8 +254,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'description',
         outcome: 1,
-        outcomeDescription:
-          'B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+        outcomeDescription: 'A'.padEnd(32, '\u0000'),
         price: '22',
         quantity: '1000000000000',
         total: '-22000000000000',
@@ -268,8 +266,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'description',
         outcome: 2,
-        outcomeDescription:
-          'C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+        outcomeDescription: 'B'.padEnd(32, '\u0000'),
         price: '22',
         quantity: '1000000000000',
         total: '-22000000000000',
@@ -417,8 +414,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'description',
         outcome: 0,
-        outcomeDescription:
-          'A\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+        outcomeDescription: 'Invalid',
         price: '22',
         quantity: '800000000000',
         total: '-17600000000000',
@@ -430,8 +426,8 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'description',
         outcome: 1,
-        outcomeDescription:
-          'B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+        outcomeDescription:'A'.padEnd(32, '\u0000'),
+
         price: '22',
         quantity: '700000000000',
         total: '-15400000000000',
@@ -443,8 +439,7 @@ describe('State API :: Accounts :: ', () => {
         fee: '0',
         marketDescription: 'description',
         outcome: 2,
-        outcomeDescription:
-          'C\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000',
+        outcomeDescription: 'B'.padEnd(32, '\u0000'),
         price: '22',
         quantity: '700000000000',
         total: '-15400000000000',

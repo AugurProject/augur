@@ -382,7 +382,7 @@ describe('State API :: Universe :: ', () => {
       numberOfMarkets: 1,
       children: [
         {
-          outcomeName: 'malformed outcome',
+          outcomeName: 'Invalid',
           totalRepSupply: '1000000000000000000000',
           totalOpenInterest: '0',
           numberOfMarkets: 0,

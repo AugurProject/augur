@@ -129,7 +129,7 @@ export const ORDER_TYPES = {
   ASK: new BigNumber(1),
 };
 
-export const MALFORMED_OUTCOME = "malformed outcome";
+export const MALFORMED_OUTCOME = 'malformed outcome';
 
 export const INVALID_OUTCOME = 0;
 

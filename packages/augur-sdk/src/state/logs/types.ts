@@ -1,3 +1,5 @@
+import { MALFORMED_OUTCOME } from "../../constants";
+
 export type Address = string;
 export type Bytes32 = string;
 export type PayoutNumerators = string[];
@@ -159,14 +161,14 @@ export enum MarketTypeName {
   Scalar = 'scalar',
 }
 
-export enum YesNoOutcomes {
+export enum CommonOutcomes {
+  Malformed = 'malformed outcome',
   Invalid = 'Invalid',
-  No = 'No',
-  Yes = 'Yes',
 }
 
-export enum ScalarOutcomes {
-  Invalid = 'Invalid',
+export enum YesNoOutcomes {
+  No = 'No',
+  Yes = 'Yes',
 }
 
 export interface MarketVolumeChangedLog extends Log, Doc {

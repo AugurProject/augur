@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js';
 import { SearchResults } from 'flexsearch';
-import { MarketCreated } from "../../event-handlers";
 import { DB } from '../db/DB';
 import { MarketFields } from '../db/SyncableFlexSearch';
 import { Getter } from './Router';
@@ -12,16 +11,15 @@ import {
   InitialReportSubmittedLog,
   MarketCreatedLog,
   MarketData,
-  MarketFinalizedLog, MarketOIChangedLog,
+  MarketFinalizedLog,
   MarketType,
   MarketTypeName,
   MarketVolumeChangedLog,
   OrderEventType,
   OrderType,
   ParsedOrderEventLog,
-  Timestamp,
   UniverseForkedLog
-} from "../logs/types";
+} from '../logs/types';
 import { NULL_ADDRESS, sortOptions } from './types';
 import {
   Augur,
@@ -180,6 +178,8 @@ export interface DisputeInfo {
 
 export interface StakeDetails {
   outcome: string;
+  isInvalidOutcome: boolean;
+  isMalformedOutcome: boolean;
   bondSizeCurrent: string;
   bondSizeTotal: string;
   preFilledStake: string;
@@ -1388,14 +1388,17 @@ async function formatStakeDetails(db: DB, marketId: Address, stakeDetails: any[]
   }
 
   for (let i = 0; i < stakeDetails.length; i++) {
+    const value = calculatePayoutNumeratorsValue(
+      convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
+      convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
+      numTicks.toString(),
+      marketType,
+      stakeDetails[i].payout
+    );
     formattedStakeDetails[i] = {
-      outcome: calculatePayoutNumeratorsValue(
-        convertOnChainPriceToDisplayPrice(maxPrice, minPrice, tickSize).toString(),
-        convertOnChainPriceToDisplayPrice(minPrice, minPrice, tickSize).toString(),
-        numTicks.toString(),
-        marketType,
-        stakeDetails[i].payout
-      ),
+      outcome: value.outcome,
+      isInvalidOutcome: Boolean(value.invalid),
+      isMalformedOutcome: Boolean(value.malformed),
       bondSizeCurrent: stakeDetails[i].bondSizeCurrent.toString(10),
       bondSizeTotal: stakeDetails[i].bondSizeTotal.toString(10),
       stakeCurrent: stakeDetails[i].stakeCurrent.toString(10),

@@ -261,9 +261,9 @@ export default function setAlertText(alert: any, callback: any) {
                 alert.params._payoutNumerators
               );
               const outcomeDescription =
-                outcome === MALFORMED_OUTCOME
+                outcome.malformed
                   ? "Market Is Invalid"
-                  : getOutcomeName(marketInfo, { id: outcome }, false);
+                  : getOutcomeName(marketInfo, { id: Number(outcome.outcome) }, false);
               alert.description = `Place ${
                 formatRep(
                   createBigNumber(alert.params._amount).dividedBy(
@@ -293,9 +293,9 @@ export default function setAlertText(alert: any, callback: any) {
                 alert.params._payoutNumerators
               );
               const outcomeDescription =
-                outcome === MALFORMED_OUTCOME
+                outcome.malformed
                   ? "Market Is Invalid"
-                  : getOutcomeName(marketInfo, { id: outcome }, false);
+                  : getOutcomeName(marketInfo, { id: Number(outcome.outcome) }, false);
               alert.description = `Report "${outcomeDescription}" on "${
                 marketInfo.description
               }"`;
@@ -355,7 +355,7 @@ export default function setAlertText(alert: any, callback: any) {
               );
               const outcomeDescription = getOutcomeName(
                 marketInfo,
-                { id: outcome },
+                { id: Number(outcome.outcome) },
                 false,
               );
               alert.description = `Migrate ${
