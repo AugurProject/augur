@@ -1,4 +1,3 @@
-import * as speedomatic from 'speedomatic';
 import logError from 'utils/log-error';
 import { formatGasCostToEther } from 'utils/format-number';
 import { closeModal } from 'modules/modal/actions/close-modal';
