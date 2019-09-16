@@ -15,7 +15,7 @@ const DEFAULT_STATE: LoginAccount = {
     profitLoss: 0,
     reporting: null,
     disputing: null,
-    pariticipationTokens: null,
+    participationTokens: null,
   },
   tradingPositionsTotal: {
     unrealizedRevenue24hChangePercent: "0",
