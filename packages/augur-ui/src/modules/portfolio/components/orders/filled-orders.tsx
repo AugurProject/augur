@@ -9,12 +9,12 @@ import { MarketData, Order } from 'modules/types';
 
 const sortByOptions = [
   {
-    label: 'View by Most Recently Traded Market',
+    label: 'Most Recently Traded Market',
     value: 'tradedMarket',
     comp: null,
   },
   {
-    label: 'View by Most Recently Traded Outcome',
+    label: 'Most Recently Traded Outcome',
     value: 'tradedOutcome',
     comp: null,
   },
