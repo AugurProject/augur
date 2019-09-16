@@ -624,7 +624,7 @@ export class Markets {
           const liquidity = new Liquidity(augur);
           liquidityParams[marketsResults[i]['market']].spread = parseInt(params.maxLiquiditySpread, 10);
           const marketLiquidity = await liquidity.getLiquidityForSpread(liquidityParams[marketsResults[i]['market']]);
-          marketsResults[i][GetMarketsSortBy.liquidity] = new BigNumber(0).toString();
+          marketsResults[i][GetMarketsSortBy.liquidity] = marketLiquidity.toString();
         } else {
           marketsResults[i][GetMarketsSortBy.liquidity] = new BigNumber(0).toString();
         }

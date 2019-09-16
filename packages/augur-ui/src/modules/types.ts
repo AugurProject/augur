@@ -203,7 +203,7 @@ export interface Notification {
   buttonAction: ButtonActionType;
   Template: ReactNode;
   market: MarketData;
-  markets: Array<string>;
+  markets: string[];
   claimReportingFees?: object;
   totalProceeds?: number;
 }
