@@ -8,7 +8,7 @@ import {
   SmallSubheaders,
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
-import { MAX_SPREAD_10_PERCENT, BUY } from 'modules/common/constants';
+import { MAX_SPREAD_10_PERCENT, BUY, ZERO } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -19,7 +19,6 @@ import {
 } from '@augurproject/sdk';
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
-import { validation } from 'fp-ts/lib/Validation';
 
 export interface VisibilityProps {
   newMarket: NewMarket;
@@ -136,7 +135,7 @@ export default class Visibility extends Component<
     Object.entries(orderBook).forEach(([outcome, orders]: Array<any>) => {
       const numOutcome = parseInt(outcome);
       formattedOrderBook[numOutcome] = { bids: [], asks: [] };
-      let spreadCheck = [createBigNumber('0'), createBigNumber('0')];
+      let spreadCheck = [ZERO, ZERO];
       orders.forEach(order => {
         const bnPrice = convertDisplayPriceToOnChainPrice(
           createBigNumber(order.price),
