@@ -22,4 +22,3 @@ tsconfig.tsbuildinfo
 tsconfig-local.json
 
 package-lock.json
-venv/
