@@ -12,10 +12,14 @@
 	}
 }
 
+.Positive {
+	color: @color-positive;
+}
+
 .Passing {
 	> div:nth-of-type(2) {
 		> span {
-			color: @color-positive;
+			.Positive;
 		}
 	}
 }

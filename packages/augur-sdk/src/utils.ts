@@ -11,12 +11,6 @@ import { toAscii } from './state/utils/utils';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
-export function marketNameToType(
-  marketName: string
-): number {
-  return MarketType[marketName];
-}
-
 export function numTicksToTickSize(
   numTicks: BigNumber,
   minPrice: BigNumber,
@@ -257,5 +251,18 @@ export function marketTypeToName(marketType: MarketType): MarketTypeName {
       return MarketTypeName.Scalar;
     default:
       throw Error(`Invalid market type "${marketType}"`);
+  }
+}
+
+export function marketNameToType(marketTypeName: MarketTypeName): MarketType {
+  switch(marketTypeName) {
+    case MarketTypeName.YesNo:
+      return MarketType.YesNo;
+    case MarketTypeName.Categorical:
+      return MarketType.Categorical;
+    case MarketTypeName.Scalar:
+      return MarketType.Scalar;
+    default:
+      throw Error(`Invalid market type "${marketTypeName}"`);
   }
 }
