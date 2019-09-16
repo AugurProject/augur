@@ -4,10 +4,10 @@ import ReportingCardContainer from 'modules/reporting/containers/reporting-card'
 import Styles from 'modules/reporting/common.styles.less';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
-import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
+import { selectMarket } from 'modules/markets/selectors/market';
 
 const ITEMS_PER_SECTION = 5;
 const NUM_LOADING_CARDS = 2;
@@ -87,7 +87,7 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
     isLoadingMarkets: true,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { loadMarkets, reportingType, isConnected } = this.props;
     const { offset, limit } = this.state;
     if (isConnected) {
@@ -95,7 +95,7 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
     }
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(nextProps) {
     const { isConnected, reportingType, isLogged } = this.props;
     const { offset, limit } = this.state;
     if (
@@ -114,19 +114,18 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
     );
   };
 
-  processMarkets = (err, results: Getters.Markets.MarketList) => {
+  processMarkets = (err, marketResults: Getters.Markets.MarketList) => {
     const isLoadingMarkets = false;
     this.setState({ isLoadingMarkets }, () => {
       if (err) return console.log('error', err);
       const { limit } = this.state;
-      const { markets: marketInfos, meta } = results;
-      if (!marketInfos || !meta) return;
-      const markets = marketInfos.map(m => convertMarketInfoToMarketData(m));
-      const showPagination = meta.marketCount > limit;
+      if (!marketResults || !marketResults.markets || !marketResults.meta) return;
+      const markets: MarketData[] = marketResults.markets.map(m => selectMarket(m.id));
+      const showPagination = marketResults.meta.marketCount > limit;
       this.setState({
         markets,
         showPagination,
-        marketCount: meta.marketCount,
+        marketCount: marketResults.meta.marketCount,
         isLoadingMarkets,
       });
     });
@@ -164,6 +163,7 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
               itemCount={marketCount}
               itemsPerPage={limit}
               action={this.setOffset}
+              updateLimit={null}
             />
           </div>
         )}

@@ -89,6 +89,7 @@ const getMarketsParamsSpecific = t.intersection([
     includeInvalidMarkets: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
+    userPortfolioAddress: t.string,
   }),
 ]);
 
@@ -470,6 +471,28 @@ export class Markets {
     if (params.maxEndTime) {
       request.selector = Object.assign(request.selector, {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
+      });
+    }
+    // Filter out markets not related to the specified user
+    if (params.userPortfolioAddress) {
+      const profitLossLogs = await db.findProfitLossChangedLogs(params.userPortfolioAddress, { selector: { universe: params.universe }});
+      const stakeLogs = await db.findDisputeCrowdsourcerContributionLogs({ selector: {
+        universe: params.universe,
+        reporter: params.userPortfolioAddress
+      }});
+      const initialReportLogs = await db.findInitialReportSubmittedLogs({ selector: {
+        universe: params.universe,
+        reporter: params.userPortfolioAddress
+      }});
+      const profitLossMarketIds = _.map(profitLossLogs, "market");
+      const stakeMarketIds = _.map(stakeLogs, "market");
+      const initialReportMarketIds = _.map(initialReportLogs, "market");
+      const userMarketIds = profitLossMarketIds.concat(stakeMarketIds, initialReportMarketIds);
+      request.selector = Object.assign(request.selector, {
+        $or: [
+          { market: { $in: userMarketIds } },
+          { marketCreator: params.userPortfolioAddress },
+        ]
       });
     }
     let marketCreatedLogs = await db.findMarketCreatedLogs(request);

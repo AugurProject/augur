@@ -5,82 +5,33 @@ import { isEmpty } from "utils/is-empty";
 import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { getOutcomeName } from "utils/get-outcome";
-import { formatEther, formatRep, formatShares } from "utils/format-number";
-import { calculatePayoutNumeratorsValue } from "@augurproject/sdk";
+import { formatEther, formatRep, formatShares, formatDai } from "utils/format-number";
+import { calculatePayoutNumeratorsValue, TXEventName, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/sdk";
 import {
   BUY,
   SELL,
-  REP,
-  DAI,
   TEN_TO_THE_EIGHTEENTH_POWER,
-  CREATEGENESISUNIVERSE,
   CANCELORDER,
-  WITHDRAWETHERTOIFPOSSIBLE,
-  CALCULATEREPORTINGFEE,
   CLAIMTRADINGPROCEEDS,
   PUBLICCREATEORDER,
   BUYPARTICIPATIONTOKENS,
   PUBLICFILLBESTORDER,
   PUBLICFILLBESTORDERWITHLIMIT,
   PUBLICFILLORDER,
-  MIGRATEREP,
-  WITHDRAWETHER,
-  WITHDRAWTOKENS,
   CONTRIBUTE,
   DISAVOWCROWDSOURCERS,
   DOINITIALREPORT,
-  FINALIZE,
-  FINALIZEFORK,
-  MIGRATETHROUGHONEFORK,
-  MIGRATEBALANCESFROMLEGACYREP,
-  MIGRATEALLOWANCESFROMLEGACYREP,
-  MIGRATEIN,
-  MIGRATEOUT,
-  MIGRATEOUTBYPAYOUT,
-  UPDATEPARENTTOTALTHEORETICALSUPPLY,
-  UPDATESIBLINGMIGRATIONTOTAL,
   PUBLICBUY,
   PUBLICBUYWITHLIMIT,
   PUBLICSELL,
   PUBLICSELLWITHLIMIT,
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
-  FAUCET,
-  CLAIMSHARESINUPDATE,
-  GETFROZENSHAREVALUEINMARKET,
   CREATEMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
-  CREATECHILDUNIVERSE,
-  FORK,
-  REDEEMSTAKE,
-  GETINITIALREPORTSTAKESIZE,
-  GETORCACHEDESIGNATEDREPORTNOSHOWBOND,
-  GETORCACHEDESIGNATEDREPORTSTAKE,
-  GETORCACHEREPORTINGFEEDIVISOR,
-  GETORCACHEVALIDITYBOND,
-  GETORCREATECURRENTFEEWINDOW,
-  GETORCREATEFEEWINDOWBYTIMESTAMP,
-  GETORCREATENEXTFEEWINDOW,
-  GETORCREATEPREVIOUSFEEWINDOW,
-  UPDATEFORKVALUES,
-  APPROVE,
-  DECREASEAPPROVAL,
-  DEPOSITETHER,
-  DEPOSITETHERFOR,
-  FORKANDREDEEM,
-  REDEEMFORREPORTINGPARTICIPANT,
-  REDEEM,
-  INCREASEAPPROVAL,
-  MIGRATE,
-  TRANSFER,
-  TRANSFERFROM,
-  TRANSFEROWNERSHIP,
-  WITHDRAWETHERTO,
-  WITHDRAWINEMERGENCY,
-  SENDETHER,
-  SENDREPUTATION,
+  APPROVE
 } from "modules/common/constants";
 import { Outcomes } from "modules/types";
 import { AppState } from "store";
@@ -88,6 +39,22 @@ import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { createBigNumber } from "utils/create-big-number";
 
+function getInfo(params, marketInfo) {
+  const outcomeDescription = getOutcomeName(
+    marketInfo,
+    { id: params.outcome },
+  );
+  const price = convertOnChainPriceToDisplayPrice(createBigNumber(params.price), createBigNumber(marketInfo.minPrice), createBigNumber(marketInfo.tickSize));
+  const amount = convertOnChainAmountToDisplayAmount(createBigNumber(params.amount), createBigNumber(marketInfo.tickSize));
+  const orderType = params.orderType === 0 ? BUY : SELL;
+    
+  return {
+    price,
+    amount,
+    orderType: orderType.charAt(0).toUpperCase() + orderType.slice(1),
+    outcomeDescription
+  }
+}
 export default function setAlertText(alert: any, callback: any) {
   return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState): void => {
     if (!alert || isEmpty(alert)) {
@@ -97,32 +64,26 @@ export default function setAlertText(alert: any, callback: any) {
       throw new Error("Callback function is not set");
     }
 
-    if (!alert.params || (alert.title && alert.description)) {
+    if (!alert.params || !alert.name) {
       return dispatch(callback(alert));
     }
 
-    switch (alert.title.toUpperCase()) {
-      // Augur
-      case CREATEGENESISUNIVERSE:
-        alert.title = "Create genesis universe";
-        break;
-
+    switch (alert.name.toUpperCase()) {
       // CancelOrder
       case CANCELORDER: {
-        alert.title = "Cancel order";
+        alert.title = "Order Cancelled";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params._market], () => {
-              const marketInfo = selectMarket(alert.params._market);
-              const outcomeDescription = getOutcomeName(
-                marketInfo,
-                { id: alert.params._outcome.toNumber() },
-              );
-              alert.description = `Cancel order for ${formatShares(
-                alert.params._amount.toNumber(),
-              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
-                formatEther(alert.params._price.toNumber()).formatted
-              } ETH`;
+            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
+              const marketInfo = selectMarket(alert.params.market);
+              alert.description = marketInfo.description;
+              const {
+                orderType,
+                amount,
+                price,
+                outcomeDescription
+              } = getInfo(alert.params, marketInfo);
+              alert.details = `${orderType}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
               return dispatch(callback(alert));
             }),
           );
@@ -130,43 +91,10 @@ export default function setAlertText(alert: any, callback: any) {
         break;
       }
 
-      // Cash
-      case WITHDRAWETHERTOIFPOSSIBLE:
-        alert.title = "Withdraw ETH";
-        break;
-
       // ClaimTradingProceeds
-      case CALCULATEREPORTINGFEE:
-        alert.title = "Calculate reporting fee";
-        break;
       case CLAIMTRADINGPROCEEDS:
         alert.title = "Claim trading proceeds";
         break;
-
-      // CreateOrder
-      case PUBLICCREATEORDER: {
-        alert.title = "Create order";
-        if (!alert.description && alert.log) {
-          dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params._market], () => {
-              const marketInfo = selectMarket(alert.params._market);
-              const outcomeDescription = getOutcomeName(
-                marketInfo,
-                { id: alert.log.outcome },
-              );
-              alert.description = `Create ${alert.log.orderType} order for ${
-                formatShares(alert.log.amount).formatted
-              } ${
-                formatShares(alert.log.amount).denomination
-              } of "${outcomeDescription}" at ${
-                formatEther(alert.log.price).formatted
-              } ETH`;
-              return dispatch(callback(alert));
-            })
-          );
-        }
-        break;
-      }
 
       // FeeWindow & Universe
       case BUY:
@@ -189,223 +117,101 @@ export default function setAlertText(alert: any, callback: any) {
       case PUBLICFILLBESTORDER:
       case PUBLICFILLBESTORDERWITHLIMIT:
       case PUBLICFILLORDER:
-        alert.title = "Place trade";
-        if (!alert.description && alert.log) {
-          const price = "mock value"
-          /*
-          // this won't be needed with new log emitted.
-          const price = convertOnChainPriceToDisplayPrice(
-            createBigNumber(alert.params._price),
-            createBigNumber(marketInfo.minPrice),
-            marketInfo.tickSize
-          )
-          */
+        alert.title = "Filled";
+        if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params._market], () => {
-              const marketInfo = selectMarket(alert.params._market);
-              const outcomeDescription = getOutcomeName(
-                marketInfo,
-                marketInfo.outcomes.find(
-                  (outcome: Outcomes) =>
-                    outcome.id ===
-                    createBigNumber(alert.params._outcome).toFixed(),
-                ).description,
-              );
+            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
+              const marketInfo = selectMarket(alert.params.market);
+              alert.description = marketInfo.description;
+              const {
+                orderType,
+                amount,
+                price,
+                outcomeDescription
+              } = getInfo(alert.params, marketInfo);
+              alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+              alert.toast = true;
 
-              alert.description = `Fill ${
-                alert.log.orderType === BUY ? "selling" : "buying"
-              } ${formatShares(alert.log.amount || 0).formatted} ${
-                formatShares(alert.log.amount || 0).denomination
-              } of "${outcomeDescription}" at ${
-                formatEther(alert.log.price).formatted
-              } ETH`;
-
-              if (alert.log.noFill) {
-                alert.description = `Unable to ${
-                  alert.log.orderType === BUY ? "sell" : "buy"
-                } ${alert.log.difference || ""} ${
-                  formatShares(alert.log.difference || 10).denomination
-                } of "${outcomeDescription}" at ${price} ETH.`;
-              }
               return dispatch(callback(alert));
             })
           );
         }
         break;
 
-      // InitialReporter
-      case MIGRATEREP:
-        alert.title = "Migrate REP";
-        break;
-
-      // Mailbox
-      case WITHDRAWETHER:
-        alert.title = "Withdraw ETH";
-        break;
-      case WITHDRAWTOKENS:
-        alert.title = "Withdraw tokens";
-        break;
-
       // Market
       case CONTRIBUTE:
-        alert.title = "Contribute to Dispute Bond";
+        alert.title = "Market Disputed";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.to], () => {
-              const marketInfo = selectMarket(alert.to);
+            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
+              const marketInfo = selectMarket(alert.params.market);
               const outcome = calculatePayoutNumeratorsValue(
                 marketInfo.maxPrice,
                 marketInfo.minPrice,
                 marketInfo.numTicks,
                 marketInfo.marketType,
-                alert.params._payoutNumerators
+                alert.params.payoutNumerators
               );
               const outcomeDescription =
                 outcome.malformed
                   ? "Market Is Invalid"
                   : getOutcomeName(marketInfo, { id: Number(outcome.outcome) }, false);
-              alert.description = `Place ${
+              alert.description = marketInfo.description;
+              alert.details = `${
                 formatRep(
                   createBigNumber(alert.params._amount).dividedBy(
                     TEN_TO_THE_EIGHTEENTH_POWER
                   )
                 ).formatted
-              } REP on "${outcomeDescription}"`;
+              } REP added to "${outcomeDescription}"`;
               return dispatch(callback(alert));
             })
           );
         }
         break;
-      case DISAVOWCROWDSOURCERS:
-        alert.title = "Make staked REP available for claiming";
-        break;
       case DOINITIALREPORT:
-        alert.title = "Submit report";
+        alert.title = "Market Reported";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.to], () => {
-              const marketInfo = selectMarket(alert.to);
+            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
+              const marketInfo = selectMarket(alert.params.market);
               const outcome = calculatePayoutNumeratorsValue(
                 marketInfo.maxPrice,
                 marketInfo.minPrice,
                 marketInfo.numTicks,
                 marketInfo.marketType,
-                alert.params._payoutNumerators
+                alert.params.payoutNumerators
               );
               const outcomeDescription =
                 outcome.malformed
                   ? "Market Is Invalid"
                   : getOutcomeName(marketInfo, { id: Number(outcome.outcome) }, false);
-              alert.description = `Report "${outcomeDescription}" on "${
-                marketInfo.description
-              }"`;
+              alert.description = marketInfo.description;
+              alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
               return dispatch(callback(alert));
             })
           );
         }
-        break;
-      case FINALIZE:
-        // Market finalization alerts should only be displayed if
-        // the market creator is the same as the account that's logged in
-        alert.title = "Finalize market";
-        if (!alert.description && alert.log) {
-          dispatch(
-            loadMarketsInfoIfNotLoaded([alert.log.market], () => {
-              const marketDescription = selectMarket(alert.log.market)
-                .description;
-              alert.description = 'Finalize market "' + marketDescription + '"';
-              return dispatch(callback(alert));
-            })
-          );
-        }
-        break;
-      case FINALIZEFORK:
-        alert.title = "Finalize forked market";
-        break;
-      case MIGRATETHROUGHONEFORK:
-        alert.title = "Migrate market to winning child universe";
-        break;
-
-      // ReputationToken
-      case MIGRATEBALANCESFROMLEGACYREP:
-        alert.title = "Migrate balances from legacy REP contract";
-        break;
-      case MIGRATEALLOWANCESFROMLEGACYREP:
-        alert.title = "Migrate allowances from legacy REP contract";
-        break;
-      case MIGRATEIN:
-        alert.title = "Migrate REP into universe";
-        break;
-      case MIGRATEOUT:
-        alert.title = "Migrate REP out of universe";
-        break;
-      case MIGRATEOUTBYPAYOUT:
-        alert.title = "Migrate REP out of universe";
-        if (!alert.description && alert.log) {
-          const forkingMarketId = getState().universe.forkingMarket;
-          dispatch(
-            loadMarketsInfoIfNotLoaded([forkingMarketId], () => {
-              const marketInfo = selectMarket(forkingMarketId);
-              const outcome = calculatePayoutNumeratorsValue(
-                marketInfo.maxPrice,
-                marketInfo.minPrice,
-                marketInfo.numTicks,
-                marketInfo.marketType,
-                alert.params._payoutNumerators
-              );
-              const outcomeDescription = getOutcomeName(
-                marketInfo,
-                { id: Number(outcome.outcome) },
-                false,
-              );
-              alert.description = `Migrate ${
-                formatRep(
-                  createBigNumber(alert.log.value).dividedBy(
-                    TEN_TO_THE_EIGHTEENTH_POWER,
-                  )).formatted
-              } REP to child universe "${outcomeDescription}"`;
-              return dispatch(callback(alert));
-            }),
-          );
-        }
-        break;
-      case UPDATEPARENTTOTALTHEORETICALSUPPLY:
-        alert.title = "Update theoretical REP supply for parent universe";
-        break;
-      case UPDATESIBLINGMIGRATIONTOTAL:
-        alert.title = "Update theoretical REP supply for sibling universe";
         break;
 
       // Trade
-      case PUBLICBUY:
-      case PUBLICBUYWITHLIMIT:
-        alert.title = "Buy share(s)";
-        break;
-      case PUBLICSELL:
-      case PUBLICSELLWITHLIMIT:
-        alert.title = "Sell share(s)";
-        break;
       case PUBLICTRADE:
       case PUBLICTRADEWITHLIMIT: {
-        alert.title = "Place trade";
+        alert.title = "Order placed";
         if (!alert.description) {
           dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params._market], () => {
-              const marketInfo = selectMarket(alert.params._market);
-              const orderType = alert.params._direction === "0x0" ? BUY : SELL;
-              const outcome =
-                alert.params._outcome !== undefined &&
-                marketInfo.outcomes.find(
-                  (o: any) => o.id === alert.params._outcome.toString(),
-                );
-              const outcomeDescription = getOutcomeName(marketInfo, outcome);
-              alert.description = `Place ${orderType} order for ${
-                formatShares(alert.amount || alert.params._amount.toString()).formatted
-              } ${formatShares(
-                alert.params._amount.toString(),
-              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
-                formatEther(alert.params._price.toString()).formatted
-              } ETH`;
+            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
+              const marketInfo = selectMarket(alert.params.market);
+              alert.description = marketInfo.description;
+              const {
+                orderType,
+                amount,
+                price,
+                outcomeDescription
+              } = getInfo(alert.params, marketInfo);
+              alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+              alert.toast = true;
+
               return dispatch(callback(alert));
             })
           );
@@ -413,136 +219,24 @@ export default function setAlertText(alert: any, callback: any) {
         break;
       }
 
-      // TestNetReputationToken
-      case FAUCET:
-        let token = REP;
-        // TODO: we'll need to differentiate between rep and dai faucet
-        if (alert.params._amount.indexOf("3635c9adc5dea00000") > -1) {
-          token = DAI;
-        }
-        alert.title = `Get ${token} from faucet`;
-        break;
-
-      // TradingEscapeHatch
-      case CLAIMSHARESINUPDATE:
-        alert.title = "Claim share(s) from market";
-        break;
-      case GETFROZENSHAREVALUEINMARKET:
-        alert.title = "Liquidate share(s) in market to ETH";
-        break;
-
       // Universe
       case CREATEMARKET:
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET:
-        alert.title = "Create new market";
+        alert.title = "Market created";
         if (!alert.description) {
-          alert.description = `Create market "${alert.params._description}"`;
+          alert.description = JSON.parse(alert.params.extraInfo).description;
         }
-        break;
-      case CREATECHILDUNIVERSE:
-        alert.title = "Create child universe";
-        break;
-      case FORK:
-        alert.title = "Initiate fork";
-        break;
-      case REDEEMSTAKE:
-        alert.title = "Claim staked REP/Ether";
-        break;
-      case GETINITIALREPORTSTAKESIZE:
-        alert.title = "Get initial report stake size";
-        break;
-      case GETORCACHEDESIGNATEDREPORTNOSHOWBOND:
-        alert.title = "Get no-show bond size for markets";
-        break;
-      case GETORCACHEDESIGNATEDREPORTSTAKE:
-        alert.title = "Get stake size required for desginated reports";
-        break;
-      case GETORCACHEREPORTINGFEEDIVISOR:
-        alert.title = "Get reporting fee divisor";
-        break;
-      case GETORCACHEVALIDITYBOND:
-        alert.title = "Get validity bond size required for market creation";
-        break;
-      case GETORCREATECURRENTFEEWINDOW:
-        alert.title = "Get/create current fee window address";
-        break;
-      case GETORCREATEFEEWINDOWBYTIMESTAMP:
-        alert.title = "Get/create fee window by timestamp";
-        break;
-      case GETORCREATENEXTFEEWINDOW:
-        alert.title = "Get/create next fee window";
-        break;
-      case GETORCREATEPREVIOUSFEEWINDOW:
-        alert.title = "Get/create previous fee window";
-        break;
-      case UPDATEFORKVALUES:
-        alert.title = "Update fork values";
         break;
 
       // These transaction names are overloaded across multiple contracts
       case APPROVE:
-        alert.title = "Approve spending";
+        alert.title = "Dai approval";
+        alert.description = "You are approved to use Dai on Augur"
+        alert.details = `Transaction cost ${formatDai(alert.params._amount.toNumber()).formatted}`
         break;
-      case DECREASEAPPROVAL:
-        alert.title = "Decrease spending approval";
-        break;
-      case DEPOSITETHER:
-      case DEPOSITETHERFOR:
-        alert.title = "Deposit ETH";
-        break;
-      case FORKANDREDEEM:
-      case REDEEMFORREPORTINGPARTICIPANT:
-        alert.title = "Redeem funds";
-        break;
-      case REDEEM:
-        alert.title = "Redeem funds";
-        if (!alert.description && alert.log) {
-          alert.description = `Claim ${
-            formatRep(
-              createBigNumber(alert.log.value).dividedBy(
-                TEN_TO_THE_EIGHTEENTH_POWER
-              )
-            ).formatted
-          } REP`;
-        }
-        break;
-      case INCREASEAPPROVAL:
-        alert.title = "Increase spending approval";
-        break;
-      case MIGRATE:
-        alert.title = "Migrate funds";
-        break;
-      case TRANSFER:
-      case TRANSFERFROM:
-      case TRANSFEROWNERSHIP:
-        // Ignore this case for now, since it seems redundant with some other alerts
-        break;
-      case WITHDRAWETHERTO:
-        alert.title = "Withdraw ETH";
-        break;
-      case WITHDRAWINEMERGENCY:
-        alert.title = "Withdraw funds";
-        break;
-
-      case SENDETHER:
-        alert.title = "Send ETH";
-        if (!alert.description && alert.params) {
-          alert.description = `Send ${
-            formatEther(alert.params.etherToSend).formatted
-          } ETH to ${alert.params.to}`;
-        }
-        break;
-      case SENDREPUTATION:
-        alert.title = "Send REP";
-        if (!alert.description && alert.params) {
-          alert.description = `Send ${
-            formatRep(alert.params.reputationToSend).formatted
-          } REP to ${alert.params._to}`;
-        }
-        break;
-
+      
       default: {
         const result = alert.params.type
           .replace(/([A-Z])/g, " $1")
@@ -550,6 +244,10 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = result;
         break;
       }
+    }
+
+    if (alert.status === TXEventName.Failure) {
+      alert.title = 'Failed transaction';
     }
 
     dispatch(callback(alert));
