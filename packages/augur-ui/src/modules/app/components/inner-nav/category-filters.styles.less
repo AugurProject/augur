@@ -3,11 +3,11 @@
 .CategoryFilters {
   display: flex;
   flex-direction: column;
-  margin: @size-48 0 0 0;
+  margin: @size-32 0 0 0;
   overflow: auto;
 
   > .CategoriesGroup:first-of-type {
-    margin: 0 @size-40 @size-40;
+    margin: 0 @size-32 @size-24;
 
     @media @breakpoint-mobile {
       margin: @size-16;
@@ -20,7 +20,7 @@
   }
 
   > .CategoriesGroup:nth-of-type(2) {
-    margin: 0 @size-40 0 @size-40;
+    margin: 0 @size-32;
 
     @media @breakpoint-mobile {
       margin: @size-16;
@@ -37,7 +37,7 @@
     .text-10-bold;
 
     display: block;
-    color: @color-shadow-text;
+    color: @color-tertiary-info-text;
     margin: 0 0 @size-16 0;
   }
 }

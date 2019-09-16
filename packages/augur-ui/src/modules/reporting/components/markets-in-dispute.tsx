@@ -15,6 +15,7 @@ import { Getters } from '@augurproject/sdk/src';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
+import { REPORTING_STATE } from 'modules/common/constants';
 
 const ITEMS_PER_SECTION = 10;
 const NUM_LOADING_CARDS = 5;
@@ -30,11 +31,16 @@ const DEFAULT_PAGINATION = {
   filteredData: [],
 };
 
+interface DisputingMarkets {
+  [reportingState: string]: MarketData[];
+}
+
 interface MarketsInDisputeProps {
   isConnected: boolean;
   userAddress: string;
   loadCurrentlyDisputingMarkets: Function;
   loadNextWindowDisputingMarkets: Function;
+  markets: DisputingMarkets;
 }
 
 interface MarketsInDisputeState {
@@ -102,7 +108,7 @@ export default class MarketsInDispute extends Component<
     prevProps: MarketsInDisputeProps,
     prevState: MarketsInDisputeState
   ) {
-    const { isConnected } = this.props;
+    const { isConnected, markets } = this.props;
     const {
       filterByMyPortfolio,
       sortByRepAmount,
@@ -122,6 +128,9 @@ export default class MarketsInDispute extends Component<
     ) {
       this.loadMarkets();
     }
+    if (markets !== prevProps.markets) {
+      this.getFilteredDataMarkets(markets);
+    }
   }
 
   componentDidMount() {
@@ -138,11 +147,9 @@ export default class MarketsInDispute extends Component<
       filterOptions,
       (err, marketResults: Getters.Markets.MarketList) => {
         if (err) return console.log('error', err);
-        const filteredData = marketResults.markets.map(m => selectMarket(m.id));
         const marketCount = marketResults.meta.marketCount;
         const showPagination = marketCount > limit;
         this.setState({
-          filteredData,
           showPagination,
           marketCount,
           isLoadingMarkets: false,
@@ -224,18 +231,26 @@ export default class MarketsInDispute extends Component<
     });
   };
 
+  getFilteredDataMarkets = (markets: DisputingMarkets) => {
+    const { selectedTab } = this.state;
+    let filteredData = markets[REPORTING_STATE.CROWDSOURCING_DISPUTE];
+    if (selectedTab === TAB_AWAITING)
+      filteredData = markets[REPORTING_STATE.AWAITING_NEXT_WINDOW];
+    this.setState({ filteredData });
+  };
+
   render() {
     const {
       selectedTab,
       tabs,
       search,
-      filteredData,
       filterByMyPortfolio,
       isLoadingMarkets,
       showPagination,
       offset,
       limit,
       marketCount,
+      filteredData,
     } = this.state;
     const { label } = tabs.find(tab => tab.key === selectedTab);
     const { userAddress } = this.props;

@@ -11,7 +11,7 @@
   flex-flow: row nowrap;
   height: 40px;
   padding-left: 1.5rem;
-  transition: background 0.25s ease-in;
+  transition: none;
   width: auto;
 
   > span {
@@ -80,6 +80,8 @@
   background: @color-secondary-action;
   transition: background 0.25s ease-in;
   width: 100%;
+  margin-left: @size-24;
+
 
   > span {
     display: none;
@@ -115,6 +117,8 @@
   }
 
   .isFocused {
+    margin-left: 0;
+
     > div {
       display: none;
     }
@@ -122,7 +126,6 @@
 
   .Container {
     flex: 1;
-    padding-left: 0.5rem;
     width: 100%;
   }
 

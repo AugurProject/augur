@@ -49,15 +49,16 @@
     }
 
     > h1 {
-      .text-30-bold;
+      .text-24-bold;
 
       color: @color-alternate-info-text;
       letter-spacing: 0.125rem;
-      margin-bottom: @size-16;
+      margin-bottom: 0;
       text-transform: capitalize;
 
       @media @breakpoint-mobile {
         order: 0;
+        margin-bottom: @size-16;
       }
     }
 
@@ -74,84 +75,20 @@
   > div > article {
     flex: 1;
     margin-bottom: @size-16;
+    height: 44px;
 
     @media @breakpoint-mobile {
       margin-bottom: @size-16;
       order: 0;
-      height: @size-40;
     }
   }
 }
 
 .DisableFilters {
-  button,
-  button > div {
-    pointer-events: none;
-    opacity: 0.5;
-  }
-
   article,
   input,
   > div > div {
     pointer-events: none;
     opacity: 1;
-  }
-}
-
-.MarketCardsFormat {
-  .text-14;
-
-  color: @color-alternate-info-text;
-  display: flex;
-  margin: 0 @size-24 @size-16 0;
-
-  @media @breakpoint-mobile {
-    .text-16;
-
-    margin: 0;
-    width: 100%;
-  }
-
-  > span {
-    margin: 0 @size-4;
-    cursor: pointer;
-  }
-
-  > span:first-of-type {
-    margin: 0 @size-4 0 @size-12;
-  }
-
-  > span:nth-of-type(3) {
-      @media @breakpoint-mobile {
-        display: none;
-      }
-  }
-
-  > span:nth-of-type(1) {
-    @media @breakpoint-mobile {
-      margin: 0 @size-4 0 @size-12;
-    }
-  }
-}
-
-.ViewSwitcher {
-
-  @media @breakpoint-mobile {
-    svg {
-      height: @size-20;
-      width: @size-20;
-    }
-  }
-
-  > svg rect,
-  > svg path {
-    fill: @color-primary-light;
-  }
-
-  &.selected {
-    > svg rect,
-    > svg path {
-      fill: @color-alternate-info-text;
-    }
   }
 }

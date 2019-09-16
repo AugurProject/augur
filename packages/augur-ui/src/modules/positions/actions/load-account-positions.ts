@@ -4,24 +4,22 @@ import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppState } from 'store';
 import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
 import {
-  PositionData,
   AccountPositionAction,
-  PositionsTotal,
   AccountPosition,
-  TradingPositionsPerMarket,
   NodeStyleCallback,
 } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
+import { Getters } from '@augurproject/sdk';
 
 interface UserTradingPositions {
   frozenFundsTotal: {
     frozenFunds: string;
   };
-  tradingPositions: Array<PositionData>;
-  tradingPositionsPerMarket: TradingPositionsPerMarket;
-  tradingPositionsTotal?: PositionsTotal;
+  tradingPositions: Getters.Users.TradingPosition[];
+  tradingPositionsPerMarket: Getters.Users.MarketTradingPosition;
+  tradingPositionsTotal?: Getters.Users.TradingPosition;
 }
 
 export const loadAllAccountPositions = (
@@ -127,7 +125,7 @@ const postProcessing = (
     const outcomeIds: Array<number> = Array.from(
       new Set([
         ...marketPositions.reduce(
-          (p: Array<number>, position: PositionData) => [
+          (p: Array<number>, position: Getters.Users.TradingPosition) => [
             ...p,
             position.outcome,
           ],
@@ -152,7 +150,7 @@ const postProcessing = (
       marketPositionData[marketId].tradingPositions[
         outcomeId
       ] = positions.tradingPositions.filter(
-        (position: PositionData) =>
+        (position: Getters.Users.TradingPosition) =>
           position.marketId === marketId && position.outcome === outcomeId
       )[0];
     });

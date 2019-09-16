@@ -26,7 +26,7 @@ interface MarketCardProps {
   location: Location;
   toggleFavorite: Function;
   currentAugurTimestamp: number;
-  reportingWindowStatsEndTime: number;
+  disputingWindowEndTime: number;
   condensed?: boolean;
   expandedView?: boolean;
   address: string;
@@ -66,7 +66,7 @@ export default class MarketCard extends React.Component<
       history,
       isLogged,
       currentAugurTimestamp,
-      reportingWindowStatsEndTime,
+      disputingWindowEndTime,
       condensed,
       address,
       expandedView,
@@ -158,6 +158,7 @@ export default class MarketCard extends React.Component<
 
     const categoriesLowerCased = categories.map(item => item.toLowerCase());
     const categoriesWithClick = categoriesLowerCased
+      .filter(Boolean)
       .map((label, idx) => ({
         label,
         onClick: toggleCategory(categoriesLowerCased.slice(0, idx + 1).toString(), path, history),
@@ -180,7 +181,7 @@ export default class MarketCard extends React.Component<
                 disputeInfo={disputeInfo}
                 endTimeFormatted={endTimeFormatted}
                 currentAugurTimestamp={currentAugurTimestamp}
-                reportingWindowStatsEndTime={reportingWindowStatsEndTime}
+                disputingWindowEndTime={disputingWindowEndTime}
               />
               <MarketTypeLabel marketType={marketType} />
               <CategoryTagTrail
@@ -190,7 +191,7 @@ export default class MarketCard extends React.Component<
                 reportingState={reportingState}
                 currentTime={currentAugurTimestamp}
                 endTimeFormatted={endTimeFormatted}
-                reportingWindowEndtime={reportingWindowStatsEndTime}
+                reportingWindowEndtime={disputingWindowEndTime}
                 alignRight
               />
               <div>
@@ -247,7 +248,7 @@ export default class MarketCard extends React.Component<
                 reportingState={reportingState}
                 currentTime={currentAugurTimestamp}
                 endTimeFormatted={endTimeFormatted}
-                reportingWindowEndtime={reportingWindowStatsEndTime}
+                reportingWindowEndtime={disputingWindowEndTime}
                 alignRight
               />
             </div>

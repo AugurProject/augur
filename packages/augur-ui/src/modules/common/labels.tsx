@@ -42,7 +42,7 @@ export interface InReportingLabelProps extends MarketStatusProps {
   reportingState: string;
   disputeInfo: any;
   endTimeFormatted: DateFormattedObject;
-  reportingWindowStatsEndTime: number;
+  disputingWindowEndTime: number;
   currentAugurTimestamp: number;
 }
 
@@ -160,6 +160,7 @@ export interface MarketStateLabelProps {
   loading: boolean;
   selected: boolean;
   handleClick: Function;
+  marketType: string;
 }
 
 interface ButtonObj {
@@ -575,7 +576,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     reportingState,
     disputeInfo,
     endTimeFormatted,
-    reportingWindowStatsEndTime,
+    disputingWindowEndTime,
     currentAugurTimestamp,
   } = props;
 
@@ -906,7 +907,7 @@ export const WordTrail = ({ items, typeLabel, children }: WordTrailProps) => (
         onClick={e => onClick()}
       >
         <span>{label}</span>
-        <span>{index + 1 !== items.length && '/'}</span>
+        <span>{index !== items.length - 1  && '/'}</span>
       </button>
     ))}
   </div>
@@ -1042,6 +1043,9 @@ export const MarketStateLabel = (
     className={classNames(Styles.MarketLabel, {
       [Styles.selected]: props.selected,
       [Styles.loading]: props.loading,
+      [Styles.open]: props.marketType === constants.MARKET_OPEN,
+      [Styles.inReporting]: props.marketType === constants.MARKET_REPORTING,
+      [Styles.resolved]: props.marketType === constants.MARKET_CLOSED,
     })}
   >
     <div>{props.label}</div>

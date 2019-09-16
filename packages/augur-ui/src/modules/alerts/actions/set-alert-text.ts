@@ -5,53 +5,56 @@ import { isEmpty } from "utils/is-empty";
 import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { getOutcomeName } from "utils/get-outcome";
-import { formatEther, formatRep, formatShares, formatDai } from "utils/format-number";
-import { calculatePayoutNumeratorsValue, TXEventName, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/sdk";
+import { formatRep, formatShares, formatDai } from "utils/format-number";
+import { calculatePayoutNumeratorsValue, TXEventName, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertPayoutNumeratorsToStrings } from "@augurproject/sdk";
 import {
   BUY,
   SELL,
   TEN_TO_THE_EIGHTEENTH_POWER,
   CANCELORDER,
   CLAIMTRADINGPROCEEDS,
-  PUBLICCREATEORDER,
   BUYPARTICIPATIONTOKENS,
   PUBLICFILLBESTORDER,
   PUBLICFILLBESTORDERWITHLIMIT,
   PUBLICFILLORDER,
   CONTRIBUTE,
-  DISAVOWCROWDSOURCERS,
   DOINITIALREPORT,
-  PUBLICBUY,
-  PUBLICBUYWITHLIMIT,
-  PUBLICSELL,
-  PUBLICSELLWITHLIMIT,
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
   CREATEMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
-  APPROVE
+  APPROVE,
 } from "modules/common/constants";
-import { Outcomes } from "modules/types";
 import { AppState } from "store";
 import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { createBigNumber } from "utils/create-big-number";
 
-function getInfo(params, marketInfo) {
+function toCapitalizeCase(label) {
+  return label.charAt(0).toUpperCase() + label.slice(1)
+}
+function getInfo(params, status, marketInfo) {
+  const outcome = params.outcome || params._outcome;
+
   const outcomeDescription = getOutcomeName(
     marketInfo,
-    { id: params.outcome },
+    { id: outcome },
   );
-  const price = convertOnChainPriceToDisplayPrice(createBigNumber(params.price), createBigNumber(marketInfo.minPrice), createBigNumber(marketInfo.tickSize));
-  const amount = convertOnChainAmountToDisplayAmount(createBigNumber(params.amount), createBigNumber(marketInfo.tickSize));
-  const orderType = params.orderType === 0 ? BUY : SELL;
+  let orderType = params.orderType === 0 ? BUY : SELL;
+
+  if (status === TXEventName.Failure) {
+    orderType =  params._direction.toNumber() === 0 ? BUY : SELL;
+  }
+
+  const price = convertOnChainPriceToDisplayPrice(createBigNumber(params.price || params._price), createBigNumber(marketInfo.minPrice), createBigNumber(marketInfo.tickSize));
+  const amount = convertOnChainAmountToDisplayAmount(createBigNumber(params.amount || params._amount), createBigNumber(marketInfo.tickSize));
     
   return {
     price,
     amount,
-    orderType: orderType.charAt(0).toUpperCase() + orderType.slice(1),
+    orderType: toCapitalizeCase(orderType),
     outcomeDescription
   }
 }
@@ -68,26 +71,26 @@ export default function setAlertText(alert: any, callback: any) {
       return dispatch(callback(alert));
     }
 
+    const marketId = alert.params.market || alert.params._market;
+    const { alerts } = getState();
+
     switch (alert.name.toUpperCase()) {
       // CancelOrder
       case CANCELORDER: {
         alert.title = "Order Cancelled";
-        if (!alert.description) {
-          dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
-              alert.description = marketInfo.description;
-              const {
-                orderType,
-                amount,
-                price,
-                outcomeDescription
-              } = getInfo(alert.params, marketInfo);
-              alert.details = `${orderType}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
-              return dispatch(callback(alert));
-            }),
-          );
-        }
+        dispatch(
+          loadMarketsInfoIfNotLoaded([marketId], () => {
+            const marketInfo = selectMarket(marketId);
+            alert.description = marketInfo.description;
+            const amount = alert.params.order.amount;
+            const price = alert.params.order.price;
+            const orderType = alert.params.orderTypeLabel;
+            const outcomeDescription = alert.params.outcomeId === null
+                ? "Market Is Invalid"
+                : getOutcomeName(marketInfo, { id: alert.params.outcomeId }, false);
+            alert.details = `${toCapitalizeCase(orderType)}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
+          })
+        );
         break;
       }
 
@@ -118,24 +121,20 @@ export default function setAlertText(alert: any, callback: any) {
       case PUBLICFILLBESTORDERWITHLIMIT:
       case PUBLICFILLORDER:
         alert.title = "Filled";
-        if (!alert.description) {
-          dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
-              alert.description = marketInfo.description;
-              const {
-                orderType,
-                amount,
-                price,
-                outcomeDescription
-              } = getInfo(alert.params, marketInfo);
-              alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
-              alert.toast = true;
-
-              return dispatch(callback(alert));
-            })
-          );
-        }
+        dispatch(
+          loadMarketsInfoIfNotLoaded([marketId], () => {
+            const marketInfo = selectMarket(marketId);
+            alert.description = marketInfo.description;
+            const {
+              orderType,
+              amount,
+              price,
+              outcomeDescription
+            } = getInfo(alert.params, alert.status, marketInfo);
+            alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+            alert.toast = true;
+          })
+        );
         break;
 
       // Market
@@ -168,54 +167,71 @@ export default function setAlertText(alert: any, callback: any) {
             })
           );
         }
+        dispatch(
+          loadMarketsInfoIfNotLoaded([marketId], () => {
+            const marketInfo = selectMarket(marketId);
+            const outcome = calculatePayoutNumeratorsValue(
+              marketInfo.maxPrice,
+              marketInfo.minPrice,
+              marketInfo.numTicks,
+              marketInfo.marketType,
+              alert.params._payoutNumerators ? convertPayoutNumeratorsToStrings(alert.params._payoutNumerators) : alert.params.payoutNumerators
+            );
+            const outcomeDescription =
+              outcome === null
+                ? "Market Is Invalid"
+                : getOutcomeName(marketInfo, { id: outcome }, false);
+            alert.description = marketInfo.description;
+            alert.details = `${
+              formatRep(
+                createBigNumber(alert.params.preFilled ? alert.params._additionalStake : alert.params._amount).dividedBy(
+                  TEN_TO_THE_EIGHTEENTH_POWER
+                )
+              ).formatted
+            } REP added to "${outcomeDescription}"`;
+          })
+        );
         break;
       case DOINITIALREPORT:
         alert.title = "Market Reported";
-        if (!alert.description) {
-          dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
-              const outcome = calculatePayoutNumeratorsValue(
-                marketInfo.maxPrice,
-                marketInfo.minPrice,
-                marketInfo.numTicks,
-                marketInfo.marketType,
-                alert.params.payoutNumerators
-              );
-              const outcomeDescription =
-                outcome.malformed
-                  ? "Market Is Invalid"
-                  : getOutcomeName(marketInfo, { id: Number(outcome.outcome) }, false);
-              alert.description = marketInfo.description;
-              alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
-              return dispatch(callback(alert));
-            })
-          );
-        }
+        dispatch(
+          loadMarketsInfoIfNotLoaded([marketId], () => {
+            const marketInfo = selectMarket(marketId);
+            const outcome = calculatePayoutNumeratorsValue(
+              marketInfo.maxPrice,
+              marketInfo.minPrice,
+              marketInfo.numTicks,
+              marketInfo.marketType,
+              alert.params.payoutNumerators || convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
+            );
+            const outcomeDescription =
+              outcome === null
+                ? "Market Is Invalid"
+                : getOutcomeName(marketInfo, { id: Number(outcome.outcome) }, false);
+            alert.description = marketInfo.description;
+            alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
+          })
+        );
         break;
 
       // Trade
       case PUBLICTRADE:
       case PUBLICTRADEWITHLIMIT: {
         alert.title = "Order placed";
-        if (!alert.description) {
-          dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
-              alert.description = marketInfo.description;
-              const {
-                orderType,
-                amount,
-                price,
-                outcomeDescription
-              } = getInfo(alert.params, marketInfo);
-              alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
-              alert.toast = true;
-
-              return dispatch(callback(alert));
-            })
-          );
-        }
+        dispatch(
+          loadMarketsInfoIfNotLoaded([marketId], () => {
+            const marketInfo = selectMarket(marketId);
+            alert.description = marketInfo.description;
+            const {
+              orderType,
+              amount,
+              price,
+              outcomeDescription
+            } = getInfo(alert.params, alert.status, marketInfo);
+            alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+            alert.toast = true;
+          })
+        );
         break;
       }
 
@@ -226,7 +242,8 @@ export default function setAlertText(alert: any, callback: any) {
       case CREATEYESNOMARKET:
         alert.title = "Market created";
         if (!alert.description) {
-          alert.description = JSON.parse(alert.params.extraInfo).description;
+          const params = JSON.parse(alert.params.extraInfo || alert.params._extraInfo);
+          alert.description = params && params.description;
         }
         break;
 
@@ -234,14 +251,9 @@ export default function setAlertText(alert: any, callback: any) {
       case APPROVE:
         alert.title = "Dai approval";
         alert.description = "You are approved to use Dai on Augur"
-        alert.details = `Transaction cost ${formatDai(alert.params._amount.toNumber()).formatted}`
         break;
       
       default: {
-        const result = alert.params.type
-          .replace(/([A-Z])/g, " $1")
-          .toLowerCase();
-        alert.title = result;
         break;
       }
     }
@@ -250,6 +262,6 @@ export default function setAlertText(alert: any, callback: any) {
       alert.title = 'Failed transaction';
     }
 
-    dispatch(callback(alert));
+    return dispatch(callback(alert));
   };
 }

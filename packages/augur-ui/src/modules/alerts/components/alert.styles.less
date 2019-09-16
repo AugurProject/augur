@@ -26,9 +26,15 @@
     }
 
     &:last-of-type {
-      justify-content: center;
+      justify-content: flex-start;
     }
   }
+}
+
+.Timestamp {
+  .text-9;
+
+  color:@color-dark-alternate;
 }
 
 .Seen {
@@ -44,6 +50,12 @@
 
 .Row {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  &:not(:first-of-type) {
+    margin-top: @size-2;
+  }
 }
 
 .Title {
@@ -54,6 +66,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   margin: @size-2 0;
+  max-width: 66%;
 }
 
 .Status {

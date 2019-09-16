@@ -1,5 +1,3 @@
-import { MALFORMED_OUTCOME } from "../../constants";
-
 export type Address = string;
 export type Bytes32 = string;
 export type PayoutNumerators = string[];
@@ -98,6 +96,7 @@ export interface InitialReporterRedeemedLog extends Log, Doc, Timestamped {
   universe: Address;
   reporter: Address;
   market: Address;
+  initialReport: Address;
   amountRedeemed: string;
   repReceived: string;
   payoutNumerators: PayoutNumerators;
@@ -290,6 +289,12 @@ export interface ParticipationTokensRedeemedLog extends Log, Doc, Timestamped {
   feePayoutShare: string;
 }
 
+export interface ReportingParticipantDisavowedLog extends Log, Doc, Timestamped {
+  universe: Address;
+  market: Address;
+  reportingParticipant: Address;
+}
+
 export interface ProfitLossChangedLog extends Log, Doc, Timestamped {
   universe: Address;
   market: Address;
@@ -306,11 +311,30 @@ export interface TimestampSetLog extends Log, Doc {
   newTimestamp: Timestamp;
 }
 
+export enum TokenType {
+  ReputationToken,
+  ShareToken,
+  DisputeCrowdsourcer,
+  FeeWindow, // No longer a valid type but here for backward compat with Augur Node processing
+  FeeToken, // No longer a valid type but here for backward compat with Augur Node processing
+  ParticipationToken,
+}
+
+export interface TokensMinted extends Log, Doc {
+  universe: Address;
+  token: Address;
+  target: Address;
+  amount: string;
+  tokenType: TokenType;
+  market: Address;
+  totalSupply: string;
+}
+
 export interface TokenBalanceChangedLog extends Log, Doc {
   universe: Address;
   owner: Address;
   token: string;
-  tokenType: string;
+  tokenType: TokenType;
   market: Address;
   balance: string;
 }

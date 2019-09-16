@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import ModalParticipate from "modules/modal/components/modal-participate";
-import { purchaseParticipationTokens } from "modules/reports/actions/participation-tokens-management";
+import { purchaseParticipationTokens } from "modules/reporting/actions/participation-tokens-management";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { AppState } from "store";
 import { ThunkDispatch } from "redux-thunk";

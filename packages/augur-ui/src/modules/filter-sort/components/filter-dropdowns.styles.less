@@ -5,16 +5,9 @@
   display: flex;
   flex-flow: row nowrap;
 
-  @media @breakpoint-mobile {
-    flex-flow: row wrap;
-    justify-content: space-between;
-    margin-bottom: @size-16;
-  }
-
   > div {
-    margin-bottom: @size-16;
     min-width: 250px;
-    height: 44px;
+    height: @size-36;
     background: @color-secondary-action;
     border-color: @color-primary-light;
 
@@ -23,10 +16,6 @@
 
       color: @color-alternate-info-text;
       background: @color-secondary-action;
-
-      @media @breakpoint-mobile {
-        padding: 0 @size-16;
-      }
 
       > span {
         font-weight: bold;
@@ -51,9 +40,5 @@
 
   > label {
     margin: 0;
-
-    @media @breakpoint-mobile {
-      margin-right: @size-12;
-    }
   }
 }
