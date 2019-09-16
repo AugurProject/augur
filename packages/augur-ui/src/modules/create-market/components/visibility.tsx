@@ -8,7 +8,7 @@ import {
   SmallSubheaders,
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
-import { MAX_SPREAD_10_PERCENT, BUY, ZERO } from 'modules/common/constants';
+import { MAX_SPREAD_10_PERCENT, BUY } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -17,6 +17,7 @@ import {
   convertDisplayPriceToOnChainPrice,
   marketNameToType,
 } from '@augurproject/sdk';
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
 
@@ -37,7 +38,6 @@ export interface VisibilityState {
   hasLiquidity: boolean;
   validations: Validations;
   validationMessage: string;
-  previousRank: number;
 }
 
 // 1. spread to wide
@@ -62,6 +62,8 @@ const VALIDATION_TIPS = {
     `Tighten spread to less than ${MAX_SPREAD_10_PERCENT}% on "${outcomeName}" to pass spread filter check.`,
 };
 
+const bnSpreadFilter = createBigNumber(`.${MAX_SPREAD_10_PERCENT}`);
+
 export default class Visibility extends Component<
   VisibilityProps,
   VisibilityState
@@ -75,30 +77,51 @@ export default class Visibility extends Component<
       hasLiquidity: false,
       validations: DEFAULT_VALIDATIONS,
       validationMessage: VALIDATION_TIPS.liquidity(),
-      previousRank: 0,
     };
   }
 
-  validate(newMarket, hasBuys, hasSells, closestOutcome, spreadValid) {
+  validate(newMarket) {
     const validations = DEFAULT_VALIDATIONS;
-    const closestOutcomeName = newMarket.outcomesFormatted.find(
-      outcome => outcome.id === closestOutcome
-    ).description;
     let validationMessage = '';
+
     validations.hasLiquidity = newMarket.initialLiquidityDai.toString() !== '0';
-    validations.hasBuys = hasBuys;
-    validations.hasSells = hasSells;
-    validations.validSpread = spreadValid;
 
     if (!validations.hasLiquidity) {
       validationMessage = VALIDATION_TIPS.liquidity();
-    } else if (!hasBuys || !hasSells) {
-      validationMessage = !hasBuys
+      return { validations, validationMessage };
+    }
+
+    let closestOutcome = 0;
+
+    Object.entries(newMarket.orderBook).forEach(
+      ([outcome, orders]: Array<any>) => {
+        const { asks, bids, spread } = formatOrderBook(orders);
+        if (asks.length > 0) validations.hasSells = true;
+        if (bids.length > 0) validations.hasBuys = true;
+        if (asks.length > 0 || bids.length > 0) {
+          closestOutcome = parseInt(outcome);
+        }
+        if (spread) {
+          validations.validSpread = createBigNumber(spread).isLessThanOrEqualTo(
+            bnSpreadFilter
+          );
+        }
+        if (validations.validSpread) return { validations, validationMessage };
+      }
+    );
+
+    const closestOutcomeName = newMarket.outcomesFormatted.find(
+      outcome => outcome.id === closestOutcome
+    ).description;
+
+    if (!validations.hasBuys || !validations.hasSells) {
+      validationMessage = !validations.hasBuys
         ? VALIDATION_TIPS.buys(closestOutcomeName)
         : VALIDATION_TIPS.sells(closestOutcomeName);
-    } else if (!spreadValid) {
+    } else if (!validations.validSpread) {
       validationMessage = VALIDATION_TIPS.spread(closestOutcomeName);
     }
+
     return { validations, validationMessage };
   }
 
@@ -120,74 +143,37 @@ export default class Visibility extends Component<
     );
     const marketTypeNumber = marketNameToType(marketType);
     let formattedOrderBook = {};
-    let hasBuys = false;
-    let hasSells = false;
-    let closestOutcome = 0;
-    let spreadValid = false;
-    const maxOnChain = convertDisplayPriceToOnChainPrice(
-      maxPriceBigNumber,
-      minPriceBigNumber,
-      tickSizeBigNumber
-    );
-    const onChainSpread = createBigNumber(`.${MAX_SPREAD_10_PERCENT}`).times(
-      maxOnChain
-    );
+
     Object.entries(orderBook).forEach(([outcome, orders]: Array<any>) => {
       const numOutcome = parseInt(outcome);
       formattedOrderBook[numOutcome] = { bids: [], asks: [] };
-      let spreadCheck = [ZERO, ZERO];
       orders.forEach(order => {
-        const bnPrice = convertDisplayPriceToOnChainPrice(
-          createBigNumber(order.price),
-          minPriceBigNumber,
-          tickSizeBigNumber
-        );
         const formattedOrder = {
-          price: bnPrice.toFixed(),
+          price: convertDisplayPriceToOnChainPrice(
+            createBigNumber(order.price),
+            minPriceBigNumber,
+            tickSizeBigNumber
+          ).toFixed(),
           amount: convertDisplayValuetoAttoValue(
             createBigNumber(order.quantity)
           ).toFixed(),
         };
         if (order.type === BUY) {
-          hasBuys = true;
           formattedOrderBook[numOutcome].bids.push(formattedOrder);
-          if (bnPrice.isGreaterThan(spreadCheck[0])) {
-            spreadCheck[0] = bnPrice;
-          }
         } else {
-          hasSells = true;
           formattedOrderBook[numOutcome].asks.push(formattedOrder);
-          if (
-            bnPrice.isLessThan(spreadCheck[1]) ||
-            spreadCheck[1].toFixed() === '0'
-          ) {
-            spreadCheck[1] = bnPrice;
-          }
         }
-        if (hasBuys || (hasSells && !spreadValid && closestOutcome === 0))
-          closestOutcome = numOutcome;
-        if (
-          spreadCheck[0].plus(onChainSpread).isGreaterThan(spreadCheck[1]) &&
-          spreadCheck[1].isGreaterThan(0)
-        )
-          spreadValid = true;
       });
     });
-    const params = {
+
+    return {
       orderBook: formattedOrderBook,
       numTicks: numTicks.toFixed(),
       numOutcomes: outcomesFormatted.length,
       marketType: marketTypeNumber,
       marketFeeDivisor: `${settlementFee}`,
       reportingFeeDivisor: '0',
-      spread: parseFloat(MAX_SPREAD_10_PERCENT),
-    };
-    return {
-      params,
-      hasBuys,
-      hasSells,
-      closestOutcome,
-      spreadValid,
+      spread: parseInt(MAX_SPREAD_10_PERCENT),
     };
   }
 
@@ -202,33 +188,26 @@ export default class Visibility extends Component<
     callback(null, MarketLiquidityRanking);
   };
 
-  getRanking() {
+  getRanking(forceCall = false) {
     const { newMarket } = this.props;
-    const { marketRank } = this.state;
-    const {
-      params,
-      hasBuys,
-      hasSells,
-      closestOutcome,
-      spreadValid,
-    } = this.calculateParams(newMarket);
-    const { validations, validationMessage } = this.validate(
-      newMarket,
-      hasBuys,
-      hasSells,
-      closestOutcome,
-      spreadValid
-    );
-    this.getMarketLiquidityRanking(params, (err, updates) => {
-      this.setState({
-        ...updates,
-        marketRank:
-          updates.marketRank === 0 ? updates.totalMarkets : updates.marketRank,
-        previousRank: marketRank === 0 ? updates.totalMarkets : marketRank,
-        validations,
-        validationMessage,
+    const { validations, validationMessage } = this.validate(newMarket);
+    const { hasLiquidity, hasSells, hasBuys, validSpread } = validations;
+    if ((hasLiquidity && hasSells && hasBuys && validSpread) || forceCall) {
+      const params = this.calculateParams(newMarket);
+      this.getMarketLiquidityRanking(params, (err, updates) => {
+        this.setState({
+          ...updates,
+          marketRank:
+            updates.marketRank === 0
+              ? updates.totalMarkets
+              : updates.marketRank,
+          validations,
+          validationMessage,
+        });
       });
-    });
+    } else {
+      this.setState({ validations, validationMessage });
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -243,19 +222,14 @@ export default class Visibility extends Component<
   }
 
   componentDidMount() {
-    this.getRanking();
+    this.getRanking(true);
   }
 
   render() {
-    const {
-      marketRank,
-      totalMarkets,
-      validationMessage,
-      previousRank,
-    } = this.state;
+    const { marketRank, totalMarkets, validationMessage } = this.state;
     const isValid = validationMessage.length === 0;
     const rankUpdate = totalMarkets - marketRank;
-    const rankingString = `+ ${rankUpdate} ranking`;
+    const rankingString = `+${rankUpdate} ranking`;
 
     return (
       <ContentBlock dark>
