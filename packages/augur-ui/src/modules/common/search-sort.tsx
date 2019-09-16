@@ -65,7 +65,7 @@ export class SearchSort extends React.Component<
         </div>
         <div
           className={classNames(Styles.SearchSort, Styles.HideOnMobile, {
-            [Styles.HideDropdown]: !showSortByOptions,
+            [Styles.HideDropdown]: sortByOptions && !showSortByOptions,
           })}
         >
           {sortByOptions && (

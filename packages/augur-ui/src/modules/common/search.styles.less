@@ -54,16 +54,6 @@
 
 .Container {
   display: flex;
-
-  > button {
-    .mono-12;
-
-    color: @color-secondary-text;
-    display: none;
-    margin-left: 1rem;
-    margin-right: -0.5rem;
-    text-transform: uppercase;
-  }
 }
 
 .ContainerFocused {
@@ -93,6 +83,17 @@
 
   > div {
     display: none;
+  }
+  
+  > button {
+    display: flex;
+    > svg {
+      width: @size-10;
+      height: @size-10;
+  
+      > path {
+        stroke: @color-highlight-fade;
+      }
   }
 }
 
