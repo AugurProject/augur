@@ -68,14 +68,14 @@ export const selectSortedDisputingOutcomes = (
   const sorted = stakes
     ? stakes.sort((a, b) => {
         if (
-          createBigNumber(a.bondSizeCurrent).gt(
-            createBigNumber(b.bondSizeCurrent)
+          createBigNumber(a.stakeCompleted).gt(
+            createBigNumber(b.stakeCompleted)
           )
         )
           return -1;
         if (
-          createBigNumber(b.bondSizeCurrent).gt(
-            createBigNumber(a.bondSizeCurrent)
+          createBigNumber(b.stakeCompleted).gt(
+            createBigNumber(a.stakeCompleted)
           )
         )
           return 1;
@@ -96,6 +96,8 @@ export const selectSortedDisputingOutcomes = (
   }
 
   if (stakes.length > 0) {
+    console.log("yes no, cat")
+    stakes.map(s => console.log(JSON.stringify(s)));
     const sortedOutcomes: OutcomeFormatted[] = sorted
       .reduce(
         (p, s) => [...p, outcomes.find(o => o.id === parseInt(s.outcome, 10))],
