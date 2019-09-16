@@ -443,7 +443,7 @@ export class Markets {
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
 
     const universe = augur.getUniverse(params.universe);
-    const reportingFeeDivisor = new BigNumber((await universe.getOrCacheReportingFeeDivisor_()).toNumber());
+    const reportingFeeDivisor = await universe.getOrCacheReportingFeeDivisor_();
 
     // Get Market docs for all markets with the specified filters
     const request = {
@@ -483,19 +483,18 @@ export class Markets {
       });
     }
 
-    let marketCreatorFeeDivisor: BigNumber | undefined = undefined;
-    if (params.maxFee) {
-      const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
-      const marketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
-      marketCreatorFeeDivisor = new BigNumber(10 ** 18).multipliedBy(marketCreatorFee);
-      request.selector = Object.assign(request.selector, {
-        feeDivisor: { $lt: `0x${marketCreatorFeeDivisor.toString(16)}` },
-      });
-    }
-
     if (params.reportingStates) {
       request.selector = Object.assign(request.selector, {
         reportingState: { $in: params.reportingStates },
+      });
+    }
+
+    if (params.maxFee) {
+      const reportingFee = new BigNumber(1).div(reportingFeeDivisor);
+      const maxMarketCreatorFee = new BigNumber(params.maxFee).minus(reportingFee);
+      const maxMarketCreatorFeeDivisor = new BigNumber(1).dividedBy(maxMarketCreatorFee);
+      request.selector = Object.assign(request.selector, {
+        feeDivisor: { $gte: maxMarketCreatorFeeDivisor.toNumber() },
       });
     }
 
@@ -512,13 +511,20 @@ export class Markets {
       }
     }
 
-    if (params.includeInvalidMarkets === false) {
+    if (params.includeInvalidMarkets !== true) {
       request.selector = Object.assign(request.selector, {
-        invalidFilter: false,
+        invalidFilter: { $ne: true },
       });
     }
 
+    // TODO rearrange filters and search such that this only gets the number of markets given the search and "non-filter" filters
+    const numMarketDocs = (await db.getNumRowsFromDB("Markets", true)) - 1;
+    const numMarketDocsAfterFilters = await db.getNumRowsFromDB("Markets", true, request);
+
+    // TODO: Add the sort and pagination params to the request at this point. We want to get the full filtered row count in the query above
+
     let marketData = await db.findMarkets(request);
+    let marketDataById = _.keyBy(marketData, "market");
 
     // Sort search results by categories
     // @TODO Use actual type instead of any[] below
@@ -538,8 +544,8 @@ export class Markets {
     // Create intersection array of marketsResults & marketDocs
     // TODO see above about optimization so we dont have to do in memeory merge handling and sorting
     for (let i = marketsResults.length - 1; i >= 0; i--) {
-      if (marketData[marketsResults[i].market]) {
-        marketsResults[i] = Object.assign(marketsResults[i], marketData[marketsResults[i].market]);
+      if (marketDataById[marketsResults[i].market]) {
+        marketsResults[i] = Object.assign(marketsResults[i], marketDataById[marketsResults[i].market]);
       } else {
         marketsResults.splice(i, 1);
       }
@@ -551,11 +557,11 @@ export class Markets {
       marketsResults = await setLastTradedTimestamp(db, marketsResults);
     }
 
-    const filteredOutCount = 1; // TODO numMarketDocs - numInResults;
+    const filteredOutCount = numMarketDocs - numMarketDocsAfterFilters;
     const meta = getMarketsMeta(marketsResults, filteredOutCount);
 
     // Sort & limit markets
-    // TODO sort in the standard query of the derived DB once we refacotr how the FTS is done as noted above
+    // TODO sort and limit in the standard query of the derived DB once we refactor how the FTS is done as noted above
     const orderBy = params.isSortDescending ? 'desc' : 'asc';
     if (params.sortBy === GetMarketsSortBy.liquidity) {
       marketsResults = marketsResults.sort((x, y) => {
@@ -788,7 +794,7 @@ export class Markets {
           : null;
       }
       const marketCreatorFeeRate = new BigNumber(
-        marketData.feeDivisor
+        marketData.feePerCashInAttoCash
       ).dividedBy(QUINTILLION);
 
       const reportingFeeRate = new BigNumber(
@@ -838,7 +844,7 @@ export class Markets {
         creationTime: parseInt(marketData.timestamp, 10),
         categories,
         volume: new BigNumber(marketData.volume || 0).dividedBy(QUINTILLION).toString(),
-        openInterest: new BigNumber(marketData.marketOI).dividedBy(QUINTILLION).toString(),
+        openInterest: new BigNumber(marketData.marketOI || 0).dividedBy(QUINTILLION).toString(),
         reportingState,
         needsMigration,
         endTime: new BigNumber(marketData.endTime).toNumber(),

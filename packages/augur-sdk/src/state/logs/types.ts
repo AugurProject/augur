@@ -130,7 +130,7 @@ export interface MarketCreatedLog extends Log, Doc, Timestamped {
   market: Address;
   marketCreator: Address;
   designatedReporter: Address;
-  feeDivisor: string;
+  feePerCashInAttoCash: string;
   prices: string[];
   marketType: MarketType;
   numTicks: string;
@@ -375,7 +375,7 @@ export interface MarketData extends Log, Doc {
   market: Address;
   marketCreator: Address;
   designatedReporter: Address;
-  feeDivisor: string;
+  feePerCashInAttoCash: string;
   prices: string[];
   marketType: MarketType;
   numTicks: string;
@@ -386,6 +386,7 @@ export interface MarketData extends Log, Doc {
   marketOI: string;
   invalidFilter: boolean;
   liquidity: LiquidityData;
+  feeDivisor: number;
   hasRecentlyDepletedLiquidity: boolean;
   finalizationBlockNumber: string;
   finalizationTime: string;

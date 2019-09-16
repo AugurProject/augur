@@ -19,6 +19,7 @@ import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
 import { ParsedLog } from '@augurproject/types';
 import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
+import { QUINTILLION } from '../../utils';
 
 interface MarketOrderBookData {
   _id: string;
@@ -113,10 +114,11 @@ export class MarketDB extends DerivedDB {
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
     const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(estimatedTradeGasCost);
     const estimatedClaimGasCostInAttoDai = estimatedGasCost.multipliedBy(CLAIM_GAS_COST);
-    const marketFeeDivisor = new BigNumber(marketData.feeDivisor);
+    const feePerCashInAttoCash = new BigNumber(marketData.feePerCashInAttoCash);
+    const feeDivisor = new BigNumber(marketData.feeDivisor);
     const numTicks = new BigNumber(marketData.numTicks);
 
-    const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(marketFeeDivisor));
+    const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
 
     const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
 
@@ -134,7 +136,7 @@ export class MarketDB extends DerivedDB {
         numTicks,
         marketType: marketData.marketType,
         reportingFeeDivisor,
-        marketFeeDivisor,
+        feePerCashInAttoCash,
         numOutcomes,
         spread,
       })).toFixed();
@@ -217,6 +219,11 @@ export class MarketDB extends DerivedDB {
 
   private processMarketCreated(log: ParsedLog): ParsedLog {
     log['reportingState'] = MarketReportingState.PreReporting;
+    log['invalidFilter'] = false;
+    log['marketOI'] = '0x0';
+    log['volume'] = '0x0';
+    log['hasRecentlyDepletedLiquidity'] = false;
+    log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
     return log;
   }
 

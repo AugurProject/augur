@@ -941,7 +941,7 @@
 					"type": "address"
 				},
 				{
-					"name": "_feeDivisor",
+					"name": "_feePerCashInAttoCash",
 					"type": "uint256"
 				},
 				{
@@ -1554,7 +1554,7 @@
 					"type": "address"
 				},
 				{
-					"name": "_feeDivisor",
+					"name": "_feePerCashInAttoCash",
 					"type": "uint256"
 				}
 			],
@@ -1797,7 +1797,7 @@
 					"type": "address"
 				},
 				{
-					"name": "_feeDivisor",
+					"name": "_feePerCashInAttoCash",
 					"type": "uint256"
 				},
 				{
@@ -1876,7 +1876,7 @@
 				},
 				{
 					"indexed": false,
-					"name": "feeDivisor",
+					"name": "feePerCashInAttoCash",
 					"type": "uint256"
 				},
 				{

@@ -43,7 +43,7 @@ contract Augur is IAugur {
         Fill
     }
 
-    event MarketCreated(IUniverse indexed universe, uint256 endTime, string extraInfo, IMarket market, address indexed marketCreator, address designatedReporter, uint256 feeDivisor, int256[] prices, IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes, uint256 timestamp);
+    event MarketCreated(IUniverse indexed universe, uint256 endTime, string extraInfo, IMarket market, address indexed marketCreator, address designatedReporter, uint256 feePerCashInAttoCash, int256[] prices, IMarket.MarketType marketType, uint256 numTicks, bytes32[] outcomes, uint256 timestamp);
     event InitialReportSubmitted(address indexed universe, address indexed reporter, address indexed market, uint256 amountStaked, bool isDesignatedReporter, uint256[] payoutNumerators, string description, uint256 nextWindowStartTime, uint256 nextWindowEndTime, uint256 timestamp);
     event DisputeCrowdsourcerCreated(address indexed universe, address indexed market, address disputeCrowdsourcer, uint256[] payoutNumerators, uint256 size, uint256 disputeRound);
     event DisputeCrowdsourcerContribution(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountStaked, string description, uint256[] payoutNumerators, uint256 currentStake, uint256 stakeRemaining, uint256 disputeRound, uint256 timestamp);
@@ -271,7 +271,7 @@ contract Augur is IAugur {
     // Logging
     //
 
-    function logCategoricalMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, bytes32[] memory _outcomes) public returns (bool) {
+    function logCategoricalMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, bytes32[] memory _outcomes) public returns (bool) {
         IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
         recordMarketShareTokens(_market);
@@ -279,11 +279,11 @@ contract Augur is IAugur {
         int256[] memory _prices = new int256[](2);
         _prices[0] = DEFAULT_MIN_PRICE;
         _prices[1] = DEFAULT_MAX_PRICE;
-        emit MarketCreated(_universe, _endTime, _extraInfo, _market,_marketCreator, _designatedReporter, _feeDivisor, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, getTimestamp());
+        emit MarketCreated(_universe, _endTime, _extraInfo, _market,_marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, getTimestamp());
         return true;
     }
 
-    function logYesNoMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor) public returns (bool) {
+    function logYesNoMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash) public returns (bool) {
         IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
         recordMarketShareTokens(_market);
@@ -291,18 +291,18 @@ contract Augur is IAugur {
         int256[] memory _prices = new int256[](2);
         _prices[0] = DEFAULT_MIN_PRICE;
         _prices[1] = DEFAULT_MAX_PRICE;
-        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feeDivisor, _prices, IMarket.MarketType.YES_NO, 100, new bytes32[](0), getTimestamp());
+        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100, new bytes32[](0), getTimestamp());
         return true;
     }
 
-    function logScalarMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feeDivisor, int256[] memory _prices, uint256 _numTicks)  public returns (bool) {
+    function logScalarMarketCreated(uint256 _endTime, string memory _extraInfo, IMarket _market, address _marketCreator, address _designatedReporter, uint256 _feePerCashInAttoCash, int256[] memory _prices, uint256 _numTicks)  public returns (bool) {
         IUniverse _universe = IUniverse(msg.sender);
         require(isKnownUniverse(_universe));
         require(_prices.length == 2);
         require(_prices[0] < _prices[1]);
         recordMarketShareTokens(_market);
         markets[address(_market)] = true;
-        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feeDivisor, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), getTimestamp());
+        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.SCALAR, _numTicks, new bytes32[](0), getTimestamp());
         return true;
     }
 

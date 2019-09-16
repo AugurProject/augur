@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import { Augur } from '../Augur';
 import { MarketType } from '../state/logs/types';
+import { QUINTILLION } from '../utils';
 
 export interface Order {
   price: string;
@@ -41,7 +42,7 @@ export interface GetLiquidityParams {
   numTicks: BigNumber;
   marketType: MarketType;
   reportingFeeDivisor: BigNumber;
-  marketFeeDivisor: BigNumber;
+  feePerCashInAttoCash: BigNumber;
   numOutcomes: number;
   spread?: number;
 }
@@ -54,7 +55,8 @@ export class Liquidity {
   }
 
   async getLiquidityForSpread(params: GetLiquidityParams): Promise<BigNumber> {
-    const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(params.reportingFeeDivisor)).minus(new BigNumber(1).div(params.marketFeeDivisor));
+    const marketFeeDivisor = new BigNumber(params.feePerCashInAttoCash).dividedBy(QUINTILLION);
+    const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(params.reportingFeeDivisor)).minus(new BigNumber(1).div(marketFeeDivisor));
     const horizontalLiquidity = this.getHorizontalLiquidity(params.orderBook, params.numTicks, feeMultiplier, params.numOutcomes, params.spread);
     const verticalLiquidity = this.getVerticalLiquidity(params.orderBook, params.numTicks, params.marketType, feeMultiplier, params.numOutcomes, params.spread);
 
