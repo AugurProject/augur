@@ -89,7 +89,7 @@ export class WithdrawForm extends Component<
     const { errors: updatedErrors, currency } = this.state;
     updatedErrors.amount = "";
     const availableEth = createBigNumber(loginAccount.balances.eth);
-    let amountMinusGas = createBigNumber(0);
+    let amountMinusGas = ZERO;
     if (currency === ETH && newAmount) {
       amountMinusGas = availableEth
         .minus(bnNewAmount)
