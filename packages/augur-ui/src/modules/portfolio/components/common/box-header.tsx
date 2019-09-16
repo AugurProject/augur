@@ -1,7 +1,8 @@
-import React, { ReactNode } from "react";
-import classNames from "classnames";
+import React, { ReactNode } from 'react';
+import classNames from 'classnames';
 
-import Styles from "modules/portfolio/components/common/box-header.styles.less";
+import Styles from 'modules/portfolio/components/common/box-header.styles.less';
+import { TwoArrowsOutline } from 'modules/common/icons';
 
 export interface BoxHeaderProps {
   title: string;
@@ -16,23 +17,25 @@ export interface BoxHeaderProps {
   extraTitlePadding?: boolean;
   noBorders?: boolean;
   normalOnMobile?: boolean;
+  showToggle?: boolean;
+  toggle?: Function;
+  hide?: boolean;
+  extend?: boolean;
 }
 
 const BoxHeader = (props: BoxHeaderProps) => (
   <>
     <div className={Styles.ShowOnMobile}>
-      <div className={Styles.RightContent}>
-        {props.rightContent}
-      </div>
+      <div className={Styles.RightContent}>{props.rightContent}</div>
       <div
         className={classNames(Styles.Middle, {
-          [Styles.isSwitched]: props.switchHeaders
+          [Styles.isSwitched]: props.switchHeaders,
         })}
       >
         {props.bottomBarContent && (
           <div
             className={classNames(Styles.BottomContent, {
-              [Styles.noBackground]: props.noBackgroundBottom
+              [Styles.noBackground]: props.noBackgroundBottom,
             })}
           >
             {props.bottomBarContent}
@@ -50,23 +53,29 @@ const BoxHeader = (props: BoxHeaderProps) => (
         </div>
       )}
     </div>
-    <div 
-      className={
-        classNames(Styles.BoxHeader, 
-          {
-            [Styles.HideOnMobile]: !props.normalOnMobile,
-            [Styles.ExtraTitlePadding]: props.extraTitlePadding, 
-            [Styles.NoBorders]: props.noBorders,
-            [Styles.Normal]: props.normalOnMobile
-          }
-        )
-      }
+    <div
+      className={classNames(Styles.BoxHeader, {
+        [Styles.HideOnMobile]: !props.normalOnMobile,
+        [Styles.ExtraTitlePadding]: props.extraTitlePadding,
+        [Styles.NoBorders]: props.noBorders,
+        [Styles.Normal]: props.normalOnMobile,
+      })}
     >
       <div>
         <div>{props.title}</div>
         <div>
           {props.rightContent}
           {props.mostRightContent}
+          {props.showToggle && (
+            <button
+              className={Styles.Toggle}
+              onClick={() => {
+                props.toggle();
+              }}
+            >
+              {TwoArrowsOutline}
+            </button>
+          )}
         </div>
       </div>
       {props.bottomBarContent && (

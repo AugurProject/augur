@@ -9,7 +9,7 @@ export interface EmptyDisplayProps {
 }
 
 const EmptyDisplay = (props: EmptyDisplayProps) => {
-  let emptyTitle = `You don't have any ${
+  let emptyTitle = `No ${
     props.selectedTab
   } ${props.filterLabel.toLowerCase()}`;
 

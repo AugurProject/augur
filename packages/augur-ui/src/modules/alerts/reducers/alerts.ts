@@ -1,7 +1,7 @@
 import {
   ADD_ALERT,
   REMOVE_ALERT,
-  UPDATE_ALERT,
+  UPDATE_EXISTING_ALERT,
   CLEAR_ALERTS
 } from "modules/alerts/actions/alerts";
 import { RESET_STATE } from "modules/app/actions/reset-state";
@@ -42,35 +42,25 @@ const DEFAULT_STATE: Array<Alert> = [];
 export default function alert(alerts = DEFAULT_STATE, { data, type }: BaseAction): Array<Alert> {
   switch (type) {
     case ADD_ALERT: {
-      const isDuplicate =
-        alerts.findIndex(
-          alert =>
-            alert.id === data.alert.id && alert.title === data.alert.title
-        ) !== -1;
-
-      if (isDuplicate) return alerts;
-
+      if (!data.alert.name || data.alert.name === "") return alerts;
       return [...alerts, data.alert];
     }
-    case REMOVE_ALERT:
-      return alerts.filter((alert, i) => alert.id !== data.id);
-    case UPDATE_ALERT:
-      return alerts.map((alert, i) => {
+
+    case UPDATE_EXISTING_ALERT:
+      let updatedAlerts = alerts.map((alert, i) => {
         if (alert.id !== data.id) {
           return alert;
         }
-        // don't except false unless status has changed
-        if (data.alert.status && alert.status !== data.alert.status) {
-          data.alert.seen = data.alert.seen || false;
-        } else if (alert.status === data.alert.status && !data.alert.seen) {
-          data.alert.seen = alert.seen;
-        }
 
-        return {
-          ...alert,
-          ...data.alert
-        };
+        return {...alert, ...data.alert};
       });
+
+      return updatedAlerts;
+
+    case REMOVE_ALERT:
+      let newAlerts = alerts;
+      newAlerts = newAlerts.filter((alert, i) => alert.id !== data.id)
+      return newAlerts;
 
     case CLEAR_ALERTS:
       return alerts.filter(it => it.level !== data.level);

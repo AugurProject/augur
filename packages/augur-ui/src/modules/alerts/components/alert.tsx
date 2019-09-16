@@ -6,7 +6,8 @@ import classNames from "classnames";
 
 import { Close } from "modules/common/icons";
 import Styles from "modules/alerts/components/alert.styles.less";
-import { EtherscanLink } from "modules/common/buttons";
+import { ViewTransactionDetailsButton } from "modules/common/buttons";
+import { convertUnixToFormattedDate } from "utils/format-date";
 
 interface AlertProps {
   id: string;
@@ -21,6 +22,7 @@ interface AlertProps {
   status: string;
   toggleAlerts: Function;
   noShow?: boolean;
+  toast?: boolean;
 }
 
 export default class Alert extends Component<AlertProps, {}> {
@@ -34,8 +36,11 @@ export default class Alert extends Component<AlertProps, {}> {
       seen,
       timestamp,
       title,
-      noShow
+      noShow,
+      toast
     } = this.props;
+
+    if (!title || title === "") return null;
 
     if (noShow) return null;
     return (
@@ -60,9 +65,16 @@ export default class Alert extends Component<AlertProps, {}> {
                 </div>
               )}
           <div className={Styles.Row}>
-            <span className={Styles.EtherLink}>
-              <EtherscanLink txhash={id} label="view etherscan" />
-            </span>
+            {!toast &&
+              <>
+                <span className={Styles.EtherLink}>
+                  <ViewTransactionDetailsButton dark transactionHash={id} label="view etherscan" />
+                </span>
+                <span className={Styles.Timestamp}>
+                    {convertUnixToFormattedDate(timestamp / 1000).formattedLocalShortTime}
+                </span>
+              </>
+            }
           </div>
         </div>
         <div>

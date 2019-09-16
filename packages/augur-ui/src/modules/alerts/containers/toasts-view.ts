@@ -3,8 +3,8 @@ import { AppState } from "store";
 import ToastsView from "modules/alerts/components/toasts-view";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import {
-  updateAlert,
   removeAlert,
+  updateExistingAlert,
 } from "modules/alerts/actions/alerts";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   removeAlert: (id: string) => dispatch(removeAlert(id)),
-  updateAlert: (id: string, alert: any) => dispatch(updateAlert(id, alert)),
+  updateAlert: (id: string, alert: any) => dispatch(updateExistingAlert(id, alert)),
 });
 
 const ToastsContainer = connect(
