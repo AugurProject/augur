@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
-
 import PropTypes from 'prop-types';
-import Styles from 'modules/market/components/market-view/market-view.styles.less';
 
 export default class MarketComments extends Component {
   static propTypes = {
