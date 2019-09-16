@@ -125,8 +125,7 @@ jobs:
       and
       (
         succeeded(),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
-        ne(variables['Build.SourceBranch'], 'refs/heads/azure/tags')
+        ne(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -528,7 +527,7 @@ jobs:
       - checkout: self
       - task: NodeTool@0
         inputs:
-          versionSpec: $(node_version)
+          versionSpec: $(PRIMARY_NODE_VERSION)
       - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
         inputs:
           keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
