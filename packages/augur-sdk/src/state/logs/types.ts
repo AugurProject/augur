@@ -1,3 +1,5 @@
+import { FormattedEventLog } from "../../event-handlers";
+
 export type Address = string;
 export type Bytes32 = string;
 export type PayoutNumerators = string[];

@@ -35,6 +35,7 @@ import { createBigNumber } from "utils/create-big-number";
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1)
 }
+
 function getInfo(params, status, marketInfo) {
   const outcome = params.outcome || params._outcome;
 
@@ -139,33 +140,9 @@ export default function setAlertText(alert: any, callback: any) {
 
       // Market
       case CONTRIBUTE:
-        alert.title = "Market Disputed";
-        if (!alert.description) {
-          dispatch(
-            loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-              const marketInfo = selectMarket(alert.params.market);
-              const outcome = calculatePayoutNumeratorsValue(
-                marketInfo.maxPrice,
-                marketInfo.minPrice,
-                marketInfo.numTicks,
-                marketInfo.marketType,
-                alert.params.payoutNumerators
-              );
-              const outcomeDescription =
-                outcome.malformed
-                  ? "Market Is Invalid"
-                  : getOutcomeName(marketInfo, { id: Number(outcome.outcome) }, false);
-              alert.description = marketInfo.description;
-              alert.details = `${
-                formatRep(
-                  createBigNumber(alert.params._amount).dividedBy(
-                    TEN_TO_THE_EIGHTEENTH_POWER
-                  )
-                ).formatted
-              } REP added to "${outcomeDescription}"`;
-              return dispatch(callback(alert));
-            })
-          );
+        alert.title = alert.params.preFilled ? "Prefilled Stake" : "Market Disputed";
+        if (alert.params.preFilled && !alert.params._additionalStake) {
+          break;
         }
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
