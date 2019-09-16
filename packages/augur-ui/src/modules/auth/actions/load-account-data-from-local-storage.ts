@@ -20,7 +20,7 @@ export const loadAccountDataFromLocalStorage = (address: string): ThunkAction<an
   getState: () => AppState
 ) => {
   const localStorageRef = typeof window !== "undefined" && window.localStorage;
-  const { universe, connection } = getState();
+  const { universe } = getState();
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {

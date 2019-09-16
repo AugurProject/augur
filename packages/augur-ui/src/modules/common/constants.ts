@@ -513,8 +513,8 @@ export const MODAL_DEPOSIT = 'MODAL_DEPOSIT';
 export const MODAL_WITHDRAW = 'MODAL_WITHDRAW';
 export const MODAL_TRANSACTIONS = 'MODAL_TRANSACTIONS';
 export const MODAL_UNSIGNED_ORDERS = 'MODAL_UNSIGNED_ORDERS';
-export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
-export const MODAL_CLAIM_PROCEEDS = 'MODAL_CLAIM_PROCEEDS';
+// export const MODAL_CLAIM_TRADING_PROCEEDS = 'MODAL_CLAIM_TRADING_PROCEEDS';
+export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_TRADING_OVERLAY = 'MODAL_TRADING_OVERLAY';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
@@ -653,6 +653,10 @@ export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.00000001');
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
+// TODO: Get actual gas cost from augur-core
+export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(3000000); // Estimate for categorical market (worst-case gas cost)
+export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
+export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT).div(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE).toNumber());
 export const MAX_BULK_ORDER_COUNT = 5;
 export const ETHER = createBigNumber(10).pow(18);
 
@@ -811,7 +815,7 @@ export const TIMEFRAME_OPTIONS = [
 
 // Pending Queue Types
 export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
-export const CLAIM_PROCEEDS = 'CLAIM_PROCEEDS';
+export const CLAIM_MARKETS_PROCEEDS = 'CLAIM_MARKETS_PROCEEDS';
 export const CREATE_MARKET = 'CREATE_MARKET';
 
 // Pending Queue SINGLE TYPE
