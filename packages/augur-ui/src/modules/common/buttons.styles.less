@@ -459,6 +459,30 @@
       color: @color-secondary-text;
     }
   }
+
+
+  &.Dark {
+    .mono-9;
+
+    background: @color-tertiary-background-theme;
+    border-radius: @size-3;
+    padding: @size-4;
+
+    > span > a {
+      color: @color-tertiary-info-text;
+    }
+
+    > svg {
+      > path {
+        &:nth-child(even) {
+          stroke: @color-tertiary-info-text;
+        }
+        &:nth-child(odd) {
+          fill: @color-tertiary-info-text;
+        }
+      }
+    }
+  }
 }
 
 .ExternalLinkButton {
