@@ -144,9 +144,9 @@ def test_initialReport_methods(localFixture, universe, market, constants):
 
 @mark.parametrize('rounds', [
     2,
-    #3,
-    #6,
-    #16
+    3,
+    6,
+    16
 ])
 def test_roundsOfReporting(rounds, localFixture, market, universe):
     disputeWindow = universe.getOrCreateCurrentDisputeWindow(False)
