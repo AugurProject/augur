@@ -63,7 +63,8 @@ jobs:
       and
       (
         succeeded(),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+        ne(variables['Build.SourceBranch'], 'refs/heads/master'),
+        ne(variables['Build.SourceBranch'], 'refs/heads/azure/tags')
       )
     variables:
       JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
