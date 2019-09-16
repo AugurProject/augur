@@ -552,10 +552,10 @@ jobs:
         displayName: ui build
       - bash: |
           set -euo pipefail
-          apt update
-          apt install golang-go -y
+          sudo apt update
+          sudo apt install golang-go -y
           curl -l https://dist.ipfs.io/go-ipfs/v0.4.22/go-ipfs_v0.4.22_linux-amd64.tar.gz | tar xvzf -
-          mv go-ipfs/ipfs /usr/local/bin/ipfs
+          sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
         displayName: install ipfs
       - bash: |
           set -euo pipefail
