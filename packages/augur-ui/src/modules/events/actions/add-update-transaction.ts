@@ -18,7 +18,10 @@ import {
   YES_NO,
   PUBLICCREATEORDER,
   PUBLICCREATEORDERS,
-  APPROVE
+  APPROVE,
+  DOINITIALREPORT,
+  ZERO,
+  PREFILLEDSTAKE
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
 import { convertTransactionOrderToUIOrder } from './transaction-conversions';
@@ -45,7 +48,7 @@ import {
   setLiquidityOrderStatus,
   deleteLiquidityOrder,
 } from 'modules/events/actions/liquidity-transactions';
-import { addAlert } from "modules/alerts/actions/alerts";
+import { addAlert, updateAlert } from "modules/alerts/actions/alerts";
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -54,31 +57,26 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => (
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
-    const { blockchain } = getState();
+    const { blockchain, alerts } = getState();
 
-    if (hash && eventName === TXEventName.Failure) {
+    if (eventName === TXEventName.Failure) {
       dispatch(addAlert({
-        id: hash,
+        id: hash ? hash : generateTxParameterId(transaction.params),
         params: transaction.params,
         status: eventName,
         timestamp: blockchain.currentAugurTimestamp * 1000,
-        name: transaction.name,
+        name: methodCall,
       }));
+    } else if (hash && eventName === TXEventName.Success && methodCall && methodCall !== "" && methodCall !== CANCELORDER) {
+      dispatch(updateAlert(hash, {
+        params: transaction.params,
+        status: TXEventName.Success,
+        timestamp: blockchain.currentAugurTimestamp * 1000,
+        name: methodCall,
+      }))
     }
     
     switch (methodCall) {
-      case APPROVE: {
-        if (eventName === TXEventName.Success) {
-          dispatch(addAlert({
-            id: hash,
-            params: transaction.params,
-            status: eventName,
-            timestamp: blockchain.currentAugurTimestamp * 1000,
-            name: transaction.name,
-          }));
-        }
-        break;
-      }
       case PUBLICCREATEORDERS: {
         const { marketInfos } = getState();
         const marketId = transaction.params[TX_MARKET_ID];

@@ -306,7 +306,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       },
       res => {
         if (s.doNotCreateOrders && res.res !== res.sharesToFill) {
-          this.props.handleFilledOnly(res.tradeInProgress);
+          //this.props.handleFilledOnly(res.tradeInProgress);
           // onComplete CB
         }
       }
