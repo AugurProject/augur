@@ -6,7 +6,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { getOutcomeName } from "utils/get-outcome";
 import { formatEther, formatRep, formatShares, formatDai } from "utils/format-number";
-import { calculatePayoutNumeratorsValue, TXEventName, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice } from "@augurproject/sdk";
+import { calculatePayoutNumeratorsValue, TXEventName, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertPayoutNumeratorsToStrings } from "@augurproject/sdk";
 import {
   BUY,
   SELL,
@@ -155,7 +155,7 @@ export default function setAlertText(alert: any, callback: any) {
               marketInfo.minPrice,
               marketInfo.numTicks,
               marketInfo.marketType,
-              alert.params.preFilled ? alert.params._payoutNumerators : alert.params.payoutNumerators
+              alert.params._payoutNumerators ? convertPayoutNumeratorsToStrings(alert.params._payoutNumerators) : alert.params.payoutNumerators
             );
             const outcomeDescription =
               outcome === null
@@ -182,7 +182,7 @@ export default function setAlertText(alert: any, callback: any) {
               marketInfo.minPrice,
               marketInfo.numTicks,
               marketInfo.marketType,
-              alert.params.payoutNumerators || alert.params._payoutNumerators
+              alert.params.payoutNumerators || convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
             );
             const outcomeDescription =
               outcome === null
