@@ -761,7 +761,7 @@ export interface ParticipationTokensViewProps {
   disputeWindowFees: FormattedNumber;
   purchasedParticipationTokens: FormattedNumber;
   disputeWindow: string;
-  pariticipationTokens: object;
+  participationTokens: object;
   tokensOwned: FormattedNumber;
 }
 
