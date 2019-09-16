@@ -1,5 +1,5 @@
 import { Augur } from '../../Augur';
-import { augurEmitter } from '../../events';
+import { augurEmitter } from "../../events";
 import { SECONDS_IN_A_DAY, SECONDS_IN_AN_HOUR, SubscriptionEventName } from '../../constants';
 import { PouchDBFactoryType, AbstractDB } from './AbstractDB';
 import { SyncableDB } from './SyncableDB';
@@ -33,6 +33,7 @@ import {
   ProfitLossChangedLog,
   TimestampSetLog,
   TokenBalanceChangedLog,
+  TokensMinted,
   TradingProceedsClaimedLog,
   UniverseForkedLog,
   UniverseCreatedLog,
@@ -78,6 +79,11 @@ export class DB {
 
   // TODO Update numAdditionalTopics/userTopicIndexes once contract events are updated
   readonly userSpecificDBs: UserSpecificDBConfiguration[] = [
+    {
+      'name': 'TokensMinted',
+      'numAdditionalTopics': 3,
+      'userTopicIndicies': [2],
+    },
     {
       'name': 'TokensTransferred',
       'numAdditionalTopics': 3,
@@ -739,6 +745,11 @@ export class DB {
   async findTokenBalanceChangedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokenBalanceChangedLog[]> {
     const results = await this.findInSyncableDB(this.getDatabaseName('TokenBalanceChanged', user), request);
     return results.docs as unknown as TokenBalanceChangedLog[];
+  }
+
+  async findTokensMintedLogs(user: string, request: PouchDB.Find.FindRequest<{}>): Promise<TokensMinted[]> {
+    const results = await this.findInSyncableDB(this.getDatabaseName('TokensMinted', user), request);
+    return results.docs as unknown as TokensMinted[];
   }
 
   /**

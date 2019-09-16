@@ -2033,6 +2033,11 @@
 				},
 				{
 					"indexed": false,
+					"name": "initialReporter",
+					"type": "address"
+				},
+				{
+					"indexed": false,
 					"name": "amountRedeemed",
 					"type": "uint256"
 				},
