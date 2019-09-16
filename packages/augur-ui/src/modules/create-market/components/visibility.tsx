@@ -145,8 +145,7 @@ export default class Visibility extends Component<
     let formattedOrderBook = {};
 
     Object.entries(orderBook).forEach(([outcome, orders]: Array<any>) => {
-      const numOutcome = parseInt(outcome);
-      formattedOrderBook[numOutcome] = { bids: [], asks: [] };
+      formattedOrderBook[outcome] = { bids: [], asks: [] };
       orders.forEach(order => {
         const formattedOrder = {
           price: convertDisplayPriceToOnChainPrice(
@@ -159,9 +158,9 @@ export default class Visibility extends Component<
           ).toFixed(),
         };
         if (order.type === BUY) {
-          formattedOrderBook[numOutcome].bids.push(formattedOrder);
+          formattedOrderBook[outcome].bids.push(formattedOrder);
         } else {
-          formattedOrderBook[numOutcome].asks.push(formattedOrder);
+          formattedOrderBook[outcome].asks.push(formattedOrder);
         }
       });
     });
