@@ -1,4 +1,4 @@
-import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
+import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
   loadMarketAccountPositions,
   loadAccountPositionsTotals,
@@ -6,8 +6,6 @@ import {
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-order-book';
 import { removeMarket } from 'modules/markets/actions/update-markets-data';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import makePath from 'modules/routes/helpers/make-path';
-import { TRANSACTIONS } from 'modules/routes/constants/views';
 import {
   loadMarketsInfo,
   loadMarketsInfoIfNotLoaded,
@@ -17,7 +15,6 @@ import {
   loadUserFilledOrders,
 } from 'modules/markets/actions/market-trading-history-management';
 import { updateAssets } from 'modules/auth/actions/update-assets';
-import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -27,7 +24,6 @@ import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs, TXEventName } from '@augurproject/sdk';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
-import { Augur } from '@augurproject/sdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
@@ -53,8 +49,8 @@ const handleAlert = (
 ) => {
   const { blockchain } = getState();
   dispatch(
-    addAlert({
-      id: log.transactionHash,
+
+    updateAlert(log.transactionHash, {
       params: log,
       status: TXEventName.Success,
       timestamp: blockchain.currentAugurTimestamp * 1000,
@@ -245,7 +241,16 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   if (isUserDataUpdate) {
     // TODO: do we need to remove stuff based on events?
     // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
-    handleAlert(log, CANCELORDER, dispatch, getState);
+    //handleAlert(log, CANCELORDER, dispatch, getState);
+    const { blockchain } = getState();
+    dispatch(
+      updateAlert(log.orderId, {
+        name: CANCELORDER,
+        timestamp: blockchain.currentAugurTimestamp * 1000,
+        status: TXEventName.Success,
+        params: { ...log },
+      })
+    );
     dispatch(loadAccountOpenOrders({ marketId }));
     dispatch(loadAccountPositionsTotals());
   }
@@ -278,8 +283,9 @@ export const handleTradingProceedsClaimedLog = (
     log.sender,
     getState().loginAccount.address
   );
-  if (isUserDataUpdate)
+  if (isUserDataUpdate) {
     handleAlert(log, CLAIMTRADINGPROCEEDS, dispatch, getState);
+  }
 
   if (isCurrentMarket(log.market)) dispatch(loadMarketOrderBook(log.market));
 };
@@ -426,6 +432,7 @@ export const handleDisputeCrowdsourcerContributionLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
+
     handleAlert(log, CONTRIBUTE, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
