@@ -51,7 +51,7 @@ function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 function getInfo(params, status, marketInfo) {
-  const outcome = params.outcome || params._outcome;
+  const outcome = params.outcome ? new BigNumber(params.outcome).toNumber() : params._outcome;
 
   const outcomeDescription = getOutcomeName(marketInfo, { id: outcome });
   let orderType = params.orderType === 0 ? BUY : SELL;
@@ -239,12 +239,8 @@ export default function setAlertText(alert: any, callback: any) {
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             alert.description = marketInfo.description;
-            const params = {
-              ...alert.params,
-              outcome: new BigNumber(alert.params.outcome).toNumber(),
-            };
             const { orderType, amount, price, outcomeDescription } = getInfo(
-              params,
+              alert.params,
               alert.status,
               marketInfo
             );
