@@ -12,9 +12,6 @@ interface ToastsViewProps {
 }
 
 export default class ToastsView extends Component<ToastsViewProps, {}> {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
     this.timeout = setInterval(() => {
