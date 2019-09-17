@@ -2,15 +2,6 @@
 
 .MarketRow {
   border-bottom: 1px solid @color-theme-primary;
-
-  @media @breakpoint-mobile-mid {
-    border: 1px solid @color-primary-alternate;
-    border-radius: 3px;
-
-    &:not(:last-of-type) {
-      margin-bottom: @size-4;
-    }
-  }
 }
 
 .MarketRowContent {
@@ -96,9 +87,9 @@
 
 @media @breakpoint-mobile-mid {
   .MarketRow {
+    border-bottom: 0;
+    
     > div {
-      padding-left: @size-16;
-
       &.Show {
         padding-left: @size-16;
       }
@@ -106,6 +97,12 @@
   }
 
   .Arrow {
-    margin-right: @size-16;
+    margin-right: @size-12;
+  }
+
+  .MarketRowContent {
+    > div {
+      padding: @size-8 0 @size-8 @size-12;
+    }
   }
 }
