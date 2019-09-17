@@ -130,9 +130,6 @@ const reportingStateToLabelTime = (
       label = 'Forking';
       time = endTimeFormatted;
       break;
-    case REPORTING_STATE.AWAITING_NO_REPORT_MIGRATION:
-      label = 'Awaiting No Report Migration';
-      break;
     case REPORTING_STATE.AWAITING_FORK_MIGRATION:
       label = 'Awaiting Fork Migration';
       break;
