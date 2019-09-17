@@ -2,14 +2,11 @@
  * @todo Update text for FINALIZE once alert triggering is moved
  */
 
-import { isEmpty } from "utils/is-empty";
-import { selectMarket } from "modules/markets/selectors/market";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-import { getOutcomeNameWithOutcome } from "utils/get-outcome";
-import { formatRep, formatShares, formatDai } from "utils/format-number";
-import { calculatePayoutNumeratorsValue, TXEventName, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertPayoutNumeratorsToStrings } from "@augurproject/sdk";
+import { isEmpty } from 'utils/is-empty';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import {
-  formatEther,
   formatRep,
   formatShares,
   formatDai,
@@ -43,9 +40,9 @@ import {
   PREFILLEDSTAKE,
   ZERO,
 } from 'modules/common/constants';
-import { AppState } from "store";
-import { Action } from "redux";
-import { ThunkDispatch } from "redux-thunk";
+import { AppState } from 'store';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { updateAlert } from './alerts';
 
@@ -53,7 +50,9 @@ function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 function getInfo(params, status, marketInfo) {
-  const outcome = params.outcome ? new BigNumber(params.outcome).toNumber() : new BigNumber(params._outcome).toNumber();
+  const outcome = params.outcome
+    ? new BigNumber(params.outcome).toNumber()
+    : new BigNumber(params._outcome).toNumber();
 
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType = params.orderType === 0 ? BUY : SELL;
@@ -109,10 +108,19 @@ export default function setAlertText(alert: any, callback: any) {
             const amount = alert.params.order.amount;
             const price = alert.params.order.price;
             const orderType = alert.params.orderTypeLabel;
-            const outcomeDescription = alert.params.outcomeId === null
-                ? "Market Is Invalid"
-                : getOutcomeNameWithOutcome(marketInfo, alert.params.outcomeId, false);
-            alert.details = `${toCapitalizeCase(orderType)}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
+            const outcomeDescription =
+              alert.params.outcomeId === null
+                ? 'Market Is Invalid'
+                : getOutcomeNameWithOutcome(
+                    marketInfo,
+                    alert.params.outcomeId,
+                    false
+                  );
+            alert.details = `${toCapitalizeCase(orderType)}  ${
+              formatShares(amount).formatted
+            } of ${
+              formatDai(price).formatted
+            } of ${outcomeDescription} has been cancelled`;
           })
         );
         break;
@@ -188,7 +196,7 @@ export default function setAlertText(alert: any, callback: any) {
             );
             const outcomeDescription =
               outcome === null
-                ? "Market Is Invalid"
+                ? 'Market Is Invalid'
                 : getOutcomeNameWithOutcome(marketInfo, outcome, false);
             alert.description = marketInfo.description;
             alert.details = `${
@@ -219,7 +227,7 @@ export default function setAlertText(alert: any, callback: any) {
             );
             const outcomeDescription =
               outcome === null
-                ? "Market Is Invalid"
+                ? 'Market Is Invalid'
                 : getOutcomeNameWithOutcome(marketInfo, outcome, false);
             alert.description = marketInfo.description;
             alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
