@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { augurSdk } from 'services/augursdk';
-import classNames from 'classNames';
-import Styles from 'modules/create-market/components/visibility.styles';
+import classNames from 'classnames';
+import Styles from 'modules/create-market/components/visibility.styles.less';
 import {
   LargeSubheaders,
   ContentBlock,
