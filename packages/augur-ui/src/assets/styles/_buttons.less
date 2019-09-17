@@ -1,12 +1,11 @@
 .button {
-  .border;
-
   align-items: center;
+  border: none;
   border-radius: 3px;
   color: @color-secondary-text;
   cursor: pointer;
   display: flex;
-  font-size: @font-size-medium;
+  font-size: @size-14;
   font-weight: bold;
   justify-content: center;
   letter-spacing: 0.3px;
@@ -42,31 +41,12 @@
   color: inherit;
 }
 
-.button--lightpurple {
-  .button;
-
-  background-color: @color-primary-light;
-  color: @color-secondary-text;
-
-  &:hover {
-    background-color: #6a528a;
-  }
-}
-
-.button--lightpurple--disabled,
-.button--lightpurple:disabled,
-.button--lightpurple:disabled:hover {
-  background-color: @color-tertiary-info-text;
-  color: @color-alternate-info-text;
-  cursor: default;
-}
-
 .button--offWhite {
   .button;
 
   background-color: @color-alternate-contrast;
   color: @color-secondary-action;
-  font-size: @font-size-medium;
+  font-size: @size-14;
   text-transform: capitalize;
 
   &:hover {
@@ -80,41 +60,6 @@
   background-color: @color-tertiary-info-text;
   color: @color-alternate-info-text;
   cursor: default;
-}
-
-.button--disabled {
-  background-color: @color-disabled-text-secondary;
-  color: @color-disabled-text;
-  cursor: default;
-
-  &:hover {
-    background-color: @color-disabled-text-secondary;
-  }
-}
-
-.button--white--short {
-  .button;
-
-  background-color: @color-secondary-text;
-  color: @color-theme-primary;
-
-  &:hover {
-    background-color: @color-primary-light;
-    color: @color-secondary-text;
-  }
-
-  &:disabled,
-  &:disabled:hover {
-    background-color: @color-tertiary-info-text;
-    color: @color-alternate-info-text;
-    cursor: auto;
-  }
-}
-
-.button--white {
-  .button--white--short;
-
-  padding: 1.1em 2em;
 }
 
 .button--gray {
@@ -144,7 +89,7 @@
   border-radius: 3px;
   color: @color-secondary-action;
   font-family: @roboto;
-  font-size: @font-size-medium;
+  font-size: @size-14;
   font-weight: 700;
   padding: 0.75rem 1.5rem;
 

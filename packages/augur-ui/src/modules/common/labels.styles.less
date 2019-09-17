@@ -38,9 +38,12 @@
 }
 
 .TextLabel {
-  &:extend(.caps--small);
-
   color: inherit;
+  font-size: @size-12;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  line-height: @size-12;
+  text-transform: capitalize;
   z-index: @default-z-index;
 
   > label {

@@ -7,9 +7,12 @@
 }
 
 .MarketOutcomeDepth__depth-hover-values {
-  &:extend(.caps--small all);
-
   display: flex;
+  font-size: @size-12;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  line-height: @size-12;
+  text-transform: capitalize;
 }
 
 .MarketOutcomeDepth__hover-depth {
@@ -170,10 +173,12 @@
     }
 
     .tick-value {
-      &:extend(.caps--extra-small all);
-
       fill: @color-secondary-text;
-      font-size: @font-size-small;
+      font-size: @size-12;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+      line-height: @size-10;
+      text-transform: capitalize;
     }
 
     .tick-value-midpoint,

@@ -1,8 +1,7 @@
 label {
-
   color: @color-secondary-text;
   display: block;
-  margin-bottom: 0.625rem;
+  margin-bottom: @size-10;
 
   &[for] {
     cursor: pointer;
@@ -15,17 +14,16 @@ label {
 
 input,
 textarea {
-  .border(true, @border-all, transparent, @border-width-1);
-
   background-color: @color-secondary-text;
+  border: @size-1 solid transparent;
   color: @color-theme-primary;
   display: block;
   font-family: @roboto;
-  padding: 0.75rem 1rem;
+  padding: @size-12 @size-16;
   width: 100%;
 
   &:focus {
-    .border(true, @border-all, @color-input-border, @border-width-1);
+    border: @size-1 solid @color-primary-light;
   }
 
   &:disabled {

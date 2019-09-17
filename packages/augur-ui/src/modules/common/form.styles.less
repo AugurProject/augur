@@ -901,9 +901,8 @@ div.FormDropdownActive {
 }
 
 .Input {
-  .border(true, @border-all, @color-alternate-info-text, 1px);
-
   background-color: @color-secondary-text;
+  border: @size-1 solid @color-alternate-info-text;
   display: flex;
 
   button,
@@ -913,8 +912,7 @@ div.FormDropdownActive {
   }
 
   input {
-    .border(true, @border-all, transparent, 1px);
-
+    border: @size-1 solid transparent;
     display: flex;
     flex: 1;
   }
@@ -924,11 +922,11 @@ div.FormDropdownActive {
   }
 
   input:focus {
-    .border(true, @border-all, transparent, 1px);
+    border: @size-1 solid transparent;
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, 1px);
+    border: @size-1 solid @color-primary-light;
   }
 
   .box {
@@ -961,7 +959,7 @@ div.FormDropdownActive {
 
 .noFocus {
   &:focus-within {
-    .border(true, @border-all, transparent, 1px);
+    border: @size-1 solid transparent;
   }
 }
 
@@ -978,9 +976,8 @@ div.FormDropdownActive {
 }
 
 .Incremental {
-  .border(true, @border-all, transparent, 1px);
-
   background-color: @color-secondary-text;
+  border: @size-1 solid transparent;
   display: flex;
 
   .box {
@@ -999,8 +996,7 @@ div.FormDropdownActive {
   }
 
   input {
-    .border(true, @border-all, transparent, 1px);
-
+    border: @size-1 solid transparent;
     display: flex;
     flex: 1 auto;
   }
@@ -1010,11 +1006,11 @@ div.FormDropdownActive {
   }
 
   input:focus {
-    .border(true, @border-all, transparent, 1px);
+    border: @size-1 solid transparent;
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, 1px);
+    border: @size-1 solid @color-primary-light;
   }
 
   input[type='number'] {
@@ -1029,8 +1025,6 @@ div.FormDropdownActive {
 }
 
 .ValueIncrementers {
-  // .border(true, @border-left);
-
   display: flex;
   flex-direction: column;
 
@@ -1046,14 +1040,14 @@ div.FormDropdownActive {
 }
 
 .FocusBorder {
-  .border(true, @border-all, @color-input-border, @border-width-2);
+  border: @size-2 solid @color-primary-light;
 }
 
 .LightBorder {
-  .border(true, @border-all, @color-tertiary-info-text, 1px);
+  border: @size-1 solid @color-tertiary-info-text;
 
   &:focus-within {
-    .border(true, @border-all, @color-tertiary-info-text, 1px);
+    border: @size-1 solid @color-tertiary-info-text;
   }
 }
 

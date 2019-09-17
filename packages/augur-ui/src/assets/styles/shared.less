@@ -1,21 +1,18 @@
 // NOTE -- There is import order dependence, so please don't reorder before checking inheritence
 // This is so that there is not circular dependencies amoung these stylesheets
 @import '_normalize';
-@import '_colors_redesign';
+@import '_colors';
 @import '_typography';
-@import '_typography_redesign';
 @import '_misc_redesign';
-@import '_animations';
-@import '_arrangement';
-@import '_borders';
-@import '_buttons';
 @import '_responsive';
+@import '_animations';
+@import '_buttons';
 @import '_inputs';
 
 @max-width: 75rem;
 
 html {
-  font-size: 16px;
+  font-size: @size-16;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -23,14 +20,14 @@ html {
 body {
   color: @color-secondary-action;
   font-family: @roboto;
-  font-size: 16px;
+  font-size: @size-16;
   font-style: normal;
   font-weight: 400;
 }
 
 .view {
   min-height: 100%;
-  padding: 2rem;
+  padding: @size-32;
   width: 100%;
 
   @media @breakpoint-mobile {
@@ -45,7 +42,7 @@ body {
 
 :global .App--windowsScrollBars {
   ::-webkit-scrollbar {
-    width: 0.375rem;
+    width: @size-6;
   }
 
   ::-webkit-scrollbar-thumb {
