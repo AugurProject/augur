@@ -20,7 +20,7 @@ import {
     Cash,
     ProfitLoss,
     SimulateTrade,
-    ZeroXTradeToken
+    ZeroXTrade
 } from './ContractInterfaces';
 import { NetworkConfiguration } from './NetworkConfiguration';
 import { Contracts, ContractData } from './Contracts';
@@ -333,9 +333,9 @@ Deploying to: ${networkConfiguration.networkName}
         const simulateTrade = new SimulateTrade(this.dependencies, simulateTradeContract);
         promises.push(simulateTrade.initialize(this.augur!.address));
 
-        const zeroXTradeTokenContract = await this.getContractAddress("ZeroXTradeToken");
-        const zeroXTradeToken = new ZeroXTradeToken(this.dependencies, zeroXTradeTokenContract);
-        promises.push(zeroXTradeToken.initialize(this.augur!.address));
+        const ZeroXTradeContract = await this.getContractAddress("ZeroXTrade");
+        const ZeroXTrade = new ZeroXTrade(this.dependencies, ZeroXTradeContract);
+        promises.push(ZeroXTrade.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");

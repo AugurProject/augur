@@ -2218,15 +2218,15 @@ title: Trading
 
 
 
-### `IZeroXTradeToken`
+### `IZeroXTrade`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IZeroXTradeToken.parseAssetData(bytes)"><code class="function-signature">parseAssetData(bytes _assetData)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IZeroXTrade.parseAssetData(bytes)"><code class="function-signature">parseAssetData(bytes _assetData)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IZeroXTradeToken.parseAssetData(bytes)"></a><code class="function-signature">parseAssetData(bytes _assetData) <span class="return-arrow">→</span> <span class="return-type">struct IZeroXTradeToken.AugurOrderData</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IZeroXTrade.parseAssetData(bytes)"></a><code class="function-signature">parseAssetData(bytes _assetData) <span class="return-arrow">→</span> <span class="return-type">struct IZeroXTrade.AugurOrderData</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3359,45 +3359,45 @@ Fills an order with specified parameters and ECDSA signature.
 
 
 
-### `ZeroXTradeToken`
+### `ZeroXTrade`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ZeroXTradeToken.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#ZeroXTradeToken.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address, address, uint256)</code></a></li><li><a href="#ZeroXTradeToken.trade(uint256,address,bytes32,struct IExchange.Order[],bytes[])"><code class="function-signature">trade(uint256 _requestedFillAmount, address _affiliateAddress, bytes32 _tradeGroupId, struct IExchange.Order[] _orders, bytes[] _signatures)</code></a></li><li><a href="#ZeroXTradeToken.creatorHasFundsForTrade(struct IZeroXTradeToken.AugurOrderData,address,uint256)"><code class="function-signature">creatorHasFundsForTrade(struct IZeroXTradeToken.AugurOrderData _augurOrderData, address _creator, uint256 _amount)</code></a></li><li><a href="#ZeroXTradeToken.parseAssetData(bytes)"><code class="function-signature">parseAssetData(bytes _assetData)</code></a></li><li><a href="#ZeroXTradeToken.createZeroXOrder(uint8,uint256,uint256,address,uint8,address,uint256,uint256)"><code class="function-signature">createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li class="inherited"><a href="trading#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="trading#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ZeroXTrade.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#ZeroXTrade.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address, address, uint256)</code></a></li><li><a href="#ZeroXTrade.trade(uint256,address,bytes32,struct IExchange.Order[],bytes[])"><code class="function-signature">trade(uint256 _requestedFillAmount, address _affiliateAddress, bytes32 _tradeGroupId, struct IExchange.Order[] _orders, bytes[] _signatures)</code></a></li><li><a href="#ZeroXTrade.creatorHasFundsForTrade(struct IZeroXTrade.AugurOrderData,address,uint256)"><code class="function-signature">creatorHasFundsForTrade(struct IZeroXTrade.AugurOrderData _augurOrderData, address _creator, uint256 _amount)</code></a></li><li><a href="#ZeroXTrade.parseAssetData(bytes)"><code class="function-signature">parseAssetData(bytes _assetData)</code></a></li><li><a href="#ZeroXTrade.createZeroXOrder(uint8,uint256,uint256,address,uint8,address,uint256,uint256)"><code class="function-signature">createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li class="inherited"><a href="trading#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="trading#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ZeroXTradeToken.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ZeroXTradeToken.transferFrom(address,address,uint256)"></a><code class="function-signature">transferFrom(address, address, uint256) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ZeroXTrade.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ZeroXTradeToken.trade(uint256,address,bytes32,struct IExchange.Order[],bytes[])"></a><code class="function-signature">trade(uint256 _requestedFillAmount, address _affiliateAddress, bytes32 _tradeGroupId, struct IExchange.Order[] _orders, bytes[] _signatures) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ZeroXTrade.transferFrom(address,address,uint256)"></a><code class="function-signature">transferFrom(address, address, uint256) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ZeroXTradeToken.creatorHasFundsForTrade(struct IZeroXTradeToken.AugurOrderData,address,uint256)"></a><code class="function-signature">creatorHasFundsForTrade(struct IZeroXTradeToken.AugurOrderData _augurOrderData, address _creator, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ZeroXTrade.trade(uint256,address,bytes32,struct IExchange.Order[],bytes[])"></a><code class="function-signature">trade(uint256 _requestedFillAmount, address _affiliateAddress, bytes32 _tradeGroupId, struct IExchange.Order[] _orders, bytes[] _signatures) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ZeroXTradeToken.parseAssetData(bytes)"></a><code class="function-signature">parseAssetData(bytes _assetData) <span class="return-arrow">→</span> <span class="return-type">struct IZeroXTradeToken.AugurOrderData</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ZeroXTrade.creatorHasFundsForTrade(struct IZeroXTrade.AugurOrderData,address,uint256)"></a><code class="function-signature">creatorHasFundsForTrade(struct IZeroXTrade.AugurOrderData _augurOrderData, address _creator, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ZeroXTradeToken.createZeroXOrder(uint8,uint256,uint256,address,uint8,address,uint256,uint256)"></a><code class="function-signature">createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.Order,bytes32</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ZeroXTrade.parseAssetData(bytes)"></a><code class="function-signature">parseAssetData(bytes _assetData) <span class="return-arrow">→</span> <span class="return-type">struct IZeroXTrade.AugurOrderData</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ZeroXTrade.createZeroXOrder(uint8,uint256,uint256,address,uint8,address,uint256,uint256)"></a><code class="function-signature">createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) <span class="return-arrow">→</span> <span class="return-type">struct IExchange.Order,bytes32</span></code><span class="function-visibility">public</span></h4>
 
 
 

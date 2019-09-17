@@ -141,7 +141,7 @@ export class ContractCompiler {
         });
         // The flattener removes the pragma experimental line from output so we add it back here
         let result = await this.getCommandOutputFromInput(childProcess, "");
-        if (['IExchange', 'FillOrder', 'ZeroXTradeToken', 'ZeroXExchange', 'SimulateTrade', 'IZeroXTradeToken'].includes(path.parse(filePath).base.replace(".sol", ""))) {
+        if (['IExchange', 'FillOrder', 'ZeroXTrade', 'ZeroXExchange', 'SimulateTrade', 'IZeroXTrade'].includes(path.parse(filePath).base.replace(".sol", ""))) {
             result = "pragma experimental ABIEncoderV2;\n" + result;
         }
         return result;

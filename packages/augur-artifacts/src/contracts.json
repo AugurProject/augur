@@ -15669,7 +15669,7 @@
 					{
 						"constant": true,
 						"inputs": [],
-						"name": "zeroXTradeToken",
+						"name": "ZeroXTrade",
 						"outputs": [
 							{
 								"name": "",
@@ -15981,7 +15981,7 @@
 					{
 						"constant": true,
 						"inputs": [],
-						"name": "zeroXTradeToken",
+						"name": "ZeroXTrade",
 						"outputs": [
 							{
 								"name": "",
@@ -19593,8 +19593,8 @@
 				}
 			}
 		},
-		"trading/ZeroXTradeToken.sol": {
-			"ZeroXTradeToken": {
+		"trading/ZeroXTrade.sol": {
+			"ZeroXTrade": {
 				"abi": [
 					{
 						"constant": false,

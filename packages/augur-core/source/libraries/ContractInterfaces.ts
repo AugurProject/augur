@@ -91,7 +91,7 @@ export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 }
 export class Trade extends c.Trade<BigNumber> {
 }
-export class ZeroXTradeToken extends c.ZeroXTradeToken<BigNumber> {
+export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
 }
 export class Formulas extends c.Formulas<BigNumber> {
 }

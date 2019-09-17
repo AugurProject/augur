@@ -120,7 +120,7 @@ export class ZeroX {
 
     let result: Event[] = [];
 
-    result = await this.augur.contracts.zeroXTradeToken.trade(
+    result = await this.augur.contracts.ZeroXTrade.trade(
       params.amount,
       params.affiliateAddress,
       params.tradeGroupId,
@@ -142,7 +142,7 @@ export class ZeroX {
 
   async placeOnChainOrder(params: ZeroXPlaceTradeParams): Promise<string> {
     const salt = new BigNumber(Date.now());
-    const result = await this.augur.contracts.zeroXTradeToken.createZeroXOrder_(
+    const result = await this.augur.contracts.ZeroXTrade.createZeroXOrder_(
       new BigNumber(params.direction),
       params.amount,
       params.price,
