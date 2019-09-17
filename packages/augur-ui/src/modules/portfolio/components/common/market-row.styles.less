@@ -1,11 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketRow {
-  border-bottom: 2px solid @color-theme-primary;
-
-  &:not(:last-of-type) {
-    margin-bottom: 2px;
-  }
+  border-bottom: 1px solid @color-theme-primary;
 
   @media @breakpoint-mobile-mid {
     border: 1px solid @color-primary-alternate;
@@ -30,10 +26,10 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding: @size-16 0 @size-16 @size-24;
+    padding: @size-16 0 @size-16 @size-16;
 
     &.Show {
-      padding-bottom: @size-24;
+      padding-bottom: @size-10;
       padding-top: @size-8;
     }
 
@@ -48,17 +44,17 @@
     }
 
     > div {
-      padding: 0 0 @size-10;
+      padding: 0 0 @size-8;
     }
 
     > span {
-      .text-12-medium;
+      .text-10;
 
       align-items: center;
       color: @color-secondary-text;
       display: flex;
       flex: 1;
-      line-height: @size-16;
+      line-height: @size-10;
       margin-right: @size-16;
 
       > a {
@@ -70,7 +66,7 @@
     }
 
     > span:nth-of-type(2) {
-      .text-12;
+      .text-10;
 
       color: @color-tertiary-info-text;
       margin-top: @size-4;
@@ -78,7 +74,7 @@
   }
 
   > span {
-    .mono-12;
+    .mono-10;
 
     align-items: center;
     color: @color-tertiary-text;
@@ -94,8 +90,8 @@
 }
 
 .Arrow {
-  margin-left: @size-20;
-  margin-right: @size-24;
+  margin-left: @size-16;
+  margin-right: @size-16;
 }
 
 @media @breakpoint-mobile-mid {
