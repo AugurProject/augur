@@ -1,5 +1,6 @@
 import {
   Getters,
+  MarketReportingState
 } from '@augurproject/sdk';
 import {
   Edge,
@@ -264,15 +265,14 @@ export const SEARCH_FILTER_PLACHOLDER = 'Search markets and categories';
 // Resolved (FINALIZED)
 // TODO: this will come from SDK in the near future
 export const REPORTING_STATE = {
-  PRE_REPORTING: Getters.Markets.MarketReportingState.PreReporting,
-  DESIGNATED_REPORTING: Getters.Markets.MarketReportingState.DesignatedReporting,
-  OPEN_REPORTING: Getters.Markets.MarketReportingState.OpenReporting,
-  CROWDSOURCING_DISPUTE: Getters.Markets.MarketReportingState.CrowdsourcingDispute,
-  AWAITING_NEXT_WINDOW: Getters.Markets.MarketReportingState.AwaitingNextWindow,
-  FINALIZED: Getters.Markets.MarketReportingState.Finalized,
-  FORKING: Getters.Markets.MarketReportingState.Forking,
-  AWAITING_NO_REPORT_MIGRATION: Getters.Markets.MarketReportingState.AwaitingNoReportMigration,
-  AWAITING_FORK_MIGRATION: Getters.Markets.MarketReportingState.AwaitingForkMigration
+  PRE_REPORTING: MarketReportingState.PreReporting,
+  DESIGNATED_REPORTING: MarketReportingState.DesignatedReporting,
+  OPEN_REPORTING: MarketReportingState.OpenReporting,
+  CROWDSOURCING_DISPUTE: MarketReportingState.CrowdsourcingDispute,
+  AWAITING_NEXT_WINDOW: MarketReportingState.AwaitingNextWindow,
+  FINALIZED: MarketReportingState.Finalized,
+  FORKING: MarketReportingState.Forking,
+  AWAITING_FORK_MIGRATION: MarketReportingState.AwaitingForkMigration
 }
 
 // TODO: this no longer exists and can be removed during refactor of claiming winnings
@@ -617,6 +617,7 @@ export const WITHDRAWINEMERGENCY = 'WITHDRAWINEMERGENCY';
 export const SENDETHER = 'SENDETHER';
 export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
+export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';

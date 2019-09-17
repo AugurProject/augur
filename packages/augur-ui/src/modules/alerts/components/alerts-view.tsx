@@ -85,7 +85,7 @@ export default class AlertsView extends Component<AlertsViewProps> {
             >
               {alerts.map((alert, i) => (
                 <Alert
-                  key={`${alert.id}-${alert.title}`}
+                  key={`${i}-${alert.id}-${alert.title}`}
                   removeAlert={() => removeAlert(alert.id)}
                   toggleAlerts={toggleAlerts}
                   {...alert}

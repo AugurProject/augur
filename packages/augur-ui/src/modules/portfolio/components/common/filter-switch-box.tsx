@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import QuadBox from "modules/portfolio/components/common/quad-box";
-import { NameValuePair, Market } from "modules/portfolio/types";
-import EmptyDisplay from "modules/portfolio/components/common/empty-display";
+import QuadBox from 'modules/portfolio/components/common/quad-box';
+import { NameValuePair, Market } from 'modules/portfolio/types';
+import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -35,18 +35,21 @@ export default class FilterSwitchBox extends React.Component<
   FilterBoxState
 > {
   state: FilterBoxState = {
-    search: "",
+    search: '',
     filteredData: this.props.data,
     view: false,
   };
 
-  componentWillUpdate({ data }: FilterBoxProps, { search, view }: FilterBoxState) {
+  componentWillUpdate(
+    { data }: FilterBoxProps,
+    { search, view }: FilterBoxState
+  ) {
     if (
       JSON.stringify(data) !== JSON.stringify(this.props.data) ||
       this.state.view !== view
     ) {
       let filteredData = data;
-      if (search !== "") {
+      if (search !== '') {
         filteredData = this.applySearch(search, data);
       }
       this.updateFilteredData(filteredData);
@@ -60,24 +63,24 @@ export default class FilterSwitchBox extends React.Component<
     const filteredData = this.applySearch(input, data);
 
     this.updateFilteredData(filteredData);
-  }
+  };
 
   applySearch = (input: string, filteredData: Array<Market>) => {
     const { filterComp } = this.props;
 
     return filteredData.filter(filterComp.bind(this, input));
-  }
+  };
 
   updateView = () => {
     if (this.props.switchView) {
       this.props.switchView();
     }
     this.setState({ view: !this.state.view });
-  }
+  };
 
   updateFilteredData = (filteredData: Array<Market>) => {
     this.setState({ filteredData });
-  }
+  };
 
   render() {
     const {
@@ -90,7 +93,10 @@ export default class FilterSwitchBox extends React.Component<
       filterLabel,
       sortByStyles,
       noBackgroundBottom,
-      normalOnMobile
+      normalOnMobile,
+      toggle,
+      extend,
+      hide,
     } = this.props;
 
     const { search, filteredData } = this.state;
@@ -107,6 +113,9 @@ export default class FilterSwitchBox extends React.Component<
         bottomBarContent={bottomBarContent}
         noBackgroundBottom={noBackgroundBottom}
         normalOnMobile={normalOnMobile}
+        toggle={toggle}
+        extend={extend}
+        hide={hide}
         content={
           <>
             {filteredData.length === 0 && (
@@ -117,7 +126,7 @@ export default class FilterSwitchBox extends React.Component<
               />
             )}
             {filteredData.length > 0 &&
-              filteredData.map((data) => renderRows(data))}
+              filteredData.map(data => renderRows(data))}
           </>
         }
       />
