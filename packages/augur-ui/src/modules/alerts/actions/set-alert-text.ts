@@ -51,7 +51,7 @@ function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 function getInfo(params, status, marketInfo) {
-  const outcome = params.outcome ? new BigNumber(params.outcome).toNumber() : params._outcome;
+  const outcome = params.outcome ? new BigNumber(params.outcome).toNumber() : new BigNumber(params._outcome).toNumber();
 
   const outcomeDescription = getOutcomeName(marketInfo, { id: outcome });
   let orderType = params.orderType === 0 ? BUY : SELL;
