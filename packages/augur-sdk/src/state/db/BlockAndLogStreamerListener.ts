@@ -149,7 +149,7 @@ export class BlockAndLogStreamerListener implements IBlockAndLogStreamerListener
       await Promise.all(logCallbackPromises);
 
       // let the controller know a new block was added so it can update the UI
-      augurEmitter.emit('controller:new:block', {});
+      augurEmitter.emit('controller:new:block', block);
     }
   };
 

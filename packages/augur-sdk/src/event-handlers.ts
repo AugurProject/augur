@@ -125,7 +125,7 @@ export interface MarketCreated extends FormattedEventLog {
   market: Address;
   marketCreator: Address;
   designatedReporter: Address;
-  feeDivisor: number;
+  feePerCashInAttoCash: number;
   prices: string[];
   marketType: number;
   numTicks: string;

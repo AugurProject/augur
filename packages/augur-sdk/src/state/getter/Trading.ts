@@ -8,7 +8,6 @@ import {
   convertOnChainPriceToDisplayPrice,
   numTicksToTickSize,
 } from "../../index";
-import { getMarketReportingState } from "./Markets";
 import { BigNumber } from "bignumber.js";
 import { Getter } from "./Router";
 import {
@@ -202,7 +201,6 @@ export class Trading {
       marketIds,
       db,
       params.ignoreReportingStates,
-      await augur.getTimestamp(),
     );
 
     return orderFilledResponse.reduce(
@@ -305,7 +303,6 @@ export class Trading {
       marketIds,
       db,
       params.ignoreReportingStates,
-      await augur.getTimestamp(),
     );
 
     return currentOrdersResponse.reduce(
@@ -363,27 +360,29 @@ export class Trading {
       limit: params.limit,
       skip: params.offset,
     };
-    if (params.makerTaker === 'either') {
-      request.selector = Object.assign(request.selector, {
-        $or: [
-          { orderCreator: params.account },
-          { orderFiller: params.account },
-        ],
-      });
-    }
-    if (params.makerTaker === 'maker') {
-      request.selector = Object.assign(request.selector, {
-        orderCreator: params.account,
-      });
-    }
-    if (params.makerTaker === 'taker') {
-      request.selector = Object.assign(request.selector, {
-        orderFiller: params.account,
-      });
+    if (params.account) {
+      if (params.makerTaker === 'either') {
+        request.selector = Object.assign(request.selector, {
+          $or: [
+            { orderCreator: params.account },
+            { orderFiller: params.account },
+          ],
+        });
+      }
+      if (params.makerTaker === 'maker') {
+        request.selector = Object.assign(request.selector, {
+          orderCreator: params.account,
+        });
+      }
+      if (params.makerTaker === 'taker') {
+        request.selector = Object.assign(request.selector, {
+          orderFiller: params.account,
+        });
+      }
     }
     if (params.orderState === OrderState.OPEN) {
       request.selector = Object.assign(request.selector, {
-        amount: { $gt: '0x00' },
+        amount: { $ne: '0x00' },
         eventType: { $ne: 1 },
       });
     }
@@ -430,7 +429,6 @@ export class Trading {
       marketIds,
       db,
       params.ignoreReportingStates,
-      await augur.getTimestamp(),
     );
 
     return currentOrdersResponse.reduce(
@@ -586,33 +584,19 @@ export class Trading {
   }
 }
 
+// TODO: Review if we could specify _desired_ reporting states instead. $not cannot make use of indexes
 export async function filterMarketsByReportingState(
   marketIds: string[],
   db: DB,
   ignoreReportingStates: string[],
-  currentTimestamp: BigNumber,
 ) {
-  const marketsResponse = await db.findMarketCreatedLogs({
-    selector: { market: { $in: marketIds } },
-  });
-  const markets = _.keyBy(marketsResponse, 'market');
-  if (ignoreReportingStates) {
-    const marketIds = Object.keys(_.keyBy(marketsResponse, 'market'));
-    const marketFinalizedLogs = await db.findMarketFinalizedLogs({
-      selector: { market: { $in: marketIds } },
-    });
-
-    for (const marketCreatedLog of marketsResponse) {
-      const reportingState = await getMarketReportingState(
-        db,
-        marketCreatedLog,
-        marketFinalizedLogs,
-        currentTimestamp,
-      );
-      if (ignoreReportingStates.includes(reportingState)) {
-        delete markets[marketCreatedLog.market];
-      }
-    }
+  let request = { selector: { market: { $in: marketIds }}};
+  if (ignoreReportingStates && ignoreReportingStates.length > 0) {
+    request.selector = Object.assign(request.selector, {
+      $not: { reportingState: { $in: ignoreReportingStates } }
+    })
   }
+  const marketsResponse = await db.findMarkets(request);
+  const markets = _.keyBy(marketsResponse, 'market');
   return markets;
 }
