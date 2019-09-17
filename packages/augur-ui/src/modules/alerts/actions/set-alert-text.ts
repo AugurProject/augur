@@ -37,23 +37,18 @@ import {
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
   APPROVE,
-  PREFILLEDSTAKE,
-  ZERO,
 } from 'modules/common/constants';
 import { AppState } from 'store';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import { updateAlert } from './alerts';
+import { createBigNumber } from 'utils/create-big-number';
+import { MarketData } from 'modules/types';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
-function getInfo(params, status, marketInfo) {
-  const outcome = params.outcome
-    ? new BigNumber(params.outcome).toNumber()
-    : new BigNumber(params._outcome).toNumber();
-
+function getInfo(params: any, status: string, marketInfo: MarketData) {
+  const outcome = params.outcome || params._outcome;
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType = params.orderType === 0 ? BUY : SELL;
 
@@ -78,7 +73,7 @@ function getInfo(params, status, marketInfo) {
     outcomeDescription,
   };
 }
-export default function setAlertText(alert: any, callback: any) {
+export default function setAlertText(alert: any, callback: Function) {
   return (
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState

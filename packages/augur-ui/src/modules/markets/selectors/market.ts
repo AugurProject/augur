@@ -66,22 +66,20 @@ export const selectSortedDisputingOutcomes = (
   stakes: Getters.Markets.StakeDetails[] | null
 ): OutcomeFormatted[] => {
   const sorted = stakes
-    ? stakes.sort((a, b) => {
-        if (a.tentativeWinning) return 1;
-        if (
-          createBigNumber(a.stakeCurrent).gt(
-            createBigNumber(b.stakeCurrent)
+    ? stakes
+        .sort((a, b) => {
+          if (a.tentativeWinning) return -1;
+          if (
+            createBigNumber(a.stakeCurrent).gt(createBigNumber(b.stakeCurrent))
           )
-        )
-          return 1;
-        if (
-          createBigNumber(b.stakeCurrent).gt(
-            createBigNumber(a.stakeCurrent)
+            return 1;
+          if (
+            createBigNumber(b.stakeCurrent).gt(createBigNumber(a.stakeCurrent))
           )
-        )
-          return -1;
-        return 0;
-      })
+            return -1;
+          return 0;
+        })
+        .map(s => createBigNumber(s.outcome))
     : [];
   if (marketType === SCALAR) {
     const filteredSortedOutcomes = [
@@ -90,25 +88,24 @@ export const selectSortedDisputingOutcomes = (
     const genericScalarOutcome = outcomes.find(o => (o.id = SCALAR_DOWN_ID));
     if (sorted.length === 0) return filteredSortedOutcomes;
     const result = sorted.reduce(
-      (p, s) => [...p, { ...genericScalarOutcome, id: s.outcome }],
+      (p, s) => [...p, { ...genericScalarOutcome, id: s }],
       []
     );
     return result;
   }
 
   if (stakes.length > 0) {
-    const sortedOutcomes: OutcomeFormatted[] = sorted
-      .reduce(
-        (p, s) => [...p, outcomes.find(o => o.id === parseInt(s.outcome, 10))],
-        []
-      )
-      .filter(o => !!o);
-
-    const result = outcomes.reduce(
-      (p, outcome) => (p.find(s => s.id === outcome.id) ? p : [...p, outcome]),
-      sortedOutcomes
+    const stakedOutcomes: OutcomeFormatted[] = sorted.map(id =>
+      outcomes.find(o => createBigNumber(o.id).eq(createBigNumber(id)))
     );
-    return result;
+
+    return outcomes.reduce(
+      (p, outcome) =>
+        p.find(s => createBigNumber(s.id).eq(createBigNumber(outcome.id)))
+          ? p
+          : [...p, outcome],
+      stakedOutcomes
+    );
   }
 
   return selectSortedMarketOutcomes(marketType, outcomes);
