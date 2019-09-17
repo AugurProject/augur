@@ -15,6 +15,7 @@ export const getOutcomeName = (
   const { marketType } = market;
   // default to handle app loading
   if (!marketType) return YES_NO_YES_OUTCOME_NAME;
+
   switch (marketType) {
     case YES_NO: {
       if (!alwaysReturnYesForBinaryMarket && outcome.id === 0) {
@@ -23,6 +24,7 @@ export const getOutcomeName = (
       return YES_NO_YES_OUTCOME_NAME;
     }
     case CATEGORICAL: {
+      outcome.description = market.outcomes.find(mOutcome => mOutcome.id === outcome.id).description;
       return outcome.description || "N/A";
     }
     default: {

@@ -3,11 +3,10 @@ import { Augur } from '@augurproject/sdk';
 import { makeTestAugur, makeDbMock } from '../../libs';
 import { ACCOUNTS, loadSeedFile, defaultSeedPath } from "@augurproject/tools";
 
-const mock = makeDbMock();
+let mock = null;
 
 beforeEach(async () => {
-  mock.cancelFail();
-  await mock.wipeDB();
+  mock = makeDbMock();
 });
 
 let augur: Augur;
