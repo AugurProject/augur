@@ -128,13 +128,7 @@ export function calculatePayoutNumeratorsValue(
   marketType: string,
   payout: string[]
 ): PayoutNumeratorValue {
-  const isScalar = marketType === MarketTypeName.Scalar;
-
-  if (!payout || payout.length === 0) {
-    return { malformed: true };
-  }
-
-  if (isScalar) {
+  if (marketType === MarketTypeName.Scalar) {
     if (!isWellFormedScalar(payout)) {
       return { malformed: true };
     }
@@ -155,8 +149,14 @@ export function calculatePayoutNumeratorsValue(
       .toString();
     return { outcome };
   } else {
-    if (!isWellFormedCategorical(payout)) { // or yes/no
-      return { malformed: true };
+    switch(marketType) {
+      case MarketTypeName.Categorical:
+        if (!isWellFormedCategorical(payout)) return { malformed: true };
+        break;
+      case MarketTypeName.YesNo:
+        if (!isWellFormedYesNo(payout)) return { malformed: true };
+        break;
+      default: return { malformed: true }; // bad market type
     }
 
     const outcome = payout.findIndex((item: string) => Number(item) > 0);
@@ -168,26 +168,42 @@ export function calculatePayoutNumeratorsValue(
   }
 }
 
-function isWellFormedCategorical(payout: string[]): boolean {
-  // A categorical or Yes/No payout is well-formed if:
-  // 1. Exactly one of its payouts is non-zero.
+export function isWellFormedYesNo(payout: string[]): boolean {
+  // A Yes/No payout is well-formed if:
+  // 1. There are exactly 3 payout values.
+  // 2. Exactly one of its payouts is non-zero.
+
+  if (payout.length !== 3) return false;
   return countNonZeroes(payout) === 1;
 }
 
-function isWellFormedScalar(payout: string[]): boolean {
+export function isWellFormedCategorical(payout: string[]): boolean {
+  // A categorical is well-formed if:
+  // 1. There are between 3 and 9 payout values (2-8 plus invalid)
+  // 2. Exactly one of its payouts is non-zero.
+
+  if (payout.length < 3 || payout.length > 10) return false;
+  return countNonZeroes(payout) === 1;
+}
+
+export function isWellFormedScalar(payout: string[]): boolean {
   // A scalar payout is well-formed if:
-  // 1. Its invalid payout is >0 and its short and long payouts are 0.
-  // 2. Its invalid payout is 0 and at least one of its short or long payouts is non-0.
+  // 1. There are exactly 3 payout values.
+  // 2. Its invalid payout is >0 and its short and long payouts are 0.
+  // 3. Its invalid payout is 0 and at least one of its short or long payouts is non-0.
+
+  if (payout.length !== 3) return false;
+
   const invalidPayout = Number(payout[0]);
   const validPayouts = payout.slice(1);
   if (invalidPayout > 0) { // invalid payout
     return countNonZeroes(validPayouts) === 0;
   } else { // some valid payout
-    return countNonZeroes(validPayouts) > 1;
+    return countNonZeroes(validPayouts) >= 1;
   }
 }
 
-function countNonZeroes(numbers: string[]): number {
+export function countNonZeroes(numbers: string[]): number {
   let count = 0;
   for (let i = 0; i < numbers.length; i++) {
     if (Number(numbers[i]) !== 0) {
@@ -236,10 +252,16 @@ export function calculatePayoutNumeratorsArray(
 }
 
 export function describeYesNoOutcome(outcome: number): string {
-  return outcome === 1 ? YesNoOutcomes.No : YesNoOutcomes.Yes;
+  switch(outcome) {
+    case 0: return CommonOutcomes.Invalid;
+    case 1: return YesNoOutcomes.No;
+    case 2: return YesNoOutcomes.Yes;
+    default: throw Error(`Invalid yes/no outcome "${outcome}"`);
+  }
 }
 
 export function describeCategoricalOutcome(outcome: number, outcomes: string[]): string {
+  if (outcome === 0) return CommonOutcomes.Invalid;
   // Outcome 0 is invalid, so, subtract 1 to outcome to map to outcome description.
   return toAscii(outcomes[outcome-1]);
 }
