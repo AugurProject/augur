@@ -3,7 +3,6 @@ import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-
 import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
 import { loadUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
-import { loadAlerts } from 'modules/alerts/actions/alerts';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
@@ -16,9 +15,7 @@ export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   getState: () => AppState
 ) => {
   dispatch(clearTransactions());
-  loadTransactions(dispatch, getState(), () => {
-    dispatch(loadAlerts());
-  });
+  loadTransactions(dispatch, getState(), () => {});
 };
 
 function loadTransactions(

@@ -37,7 +37,7 @@ describe('State API :: Liquidity', () => {
         numTicks: "100",
         marketType: 0,
         reportingFeeDivisor: "0",
-        marketFeeDivisor: "0",
+        feePerCashInAttoCash: "0",
         numOutcomes: 3,
         spread: 10,
     }
