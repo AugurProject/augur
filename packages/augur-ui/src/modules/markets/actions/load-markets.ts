@@ -130,7 +130,7 @@ export const loadMarketsByFilter = (
     limit: filterOptions.limit,
     offset: paginationOffset * filterOptions.limit,
     reportingStates,
-    maxLiquiditySpread: filterOptions.maxLiquiditySpread,
+    maxLiquiditySpread: filterOptions.maxLiquiditySpread as '100' | '20' | '15' | '10' | '0',
     ...sort,
   };
 
