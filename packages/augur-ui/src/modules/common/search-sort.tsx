@@ -1,11 +1,11 @@
-import React, { ReactNode } from "react";
-import classNames from "classnames";
+import React, { ReactNode } from 'react';
+import classNames from 'classnames';
 
-import { SquareDropdown } from "modules/common/selection";
-import { SearchBar } from "modules/common/search";
-import { NameValuePair } from "modules/portfolio/types";
+import { SquareDropdown } from 'modules/common/selection';
+import { SearchBar } from 'modules/common/search';
+import { NameValuePair } from 'modules/portfolio/types';
 
-import Styles from "modules/common/search-sort.styles";
+import Styles from 'modules/common/search-sort.styles';
 
 export interface SearchSortProps {
   sortByOptions: Array<NameValuePair>;
@@ -28,7 +28,7 @@ export class SearchSort extends React.Component<
 > {
   state: SearchSortState = {
     showSortByOptions: true,
-    showCheckbox: true
+    showCheckbox: true,
   };
 
   onFocus = (hide: Boolean) => {
@@ -41,7 +41,7 @@ export class SearchSort extends React.Component<
       updateDropdown,
       sortByStyles,
       onChange,
-      checkBox
+      checkBox,
     } = this.props;
 
     const { showSortByOptions, showCheckbox } = this.state;
@@ -63,11 +63,14 @@ export class SearchSort extends React.Component<
             </div>
           )}
         </div>
-        <div className={classNames(Styles.SearchSort, Styles.HideOnMobile)}>
+        <div
+          className={classNames(Styles.SearchSort, Styles.HideOnMobile, {
+            [Styles.HideDropdown]: sortByOptions && !showSortByOptions,
+          })}
+        >
           {sortByOptions && (
             <SquareDropdown
               defaultValue={sortByOptions[0].value}
-              className={classNames({ [Styles.Hide]: !showSortByOptions })}
               options={sortByOptions}
               onChange={updateDropdown}
               stretchOutOnMobile

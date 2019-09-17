@@ -14,7 +14,7 @@ import { MarketData } from 'modules/types';
 
 const sortByOptions = [
   {
-    label: 'Sort by Expiring Soonest',
+    label: 'Expiring Soonest',
     value: END_TIME,
     comp(marketA, marketB) {
       if (marketA.pending) return 1;
@@ -23,7 +23,7 @@ const sortByOptions = [
     },
   },
   {
-    label: 'Sort by Most Recently Traded',
+    label: 'Most Recently Traded',
     value: 'recentlyTraded',
     comp(marketA, marketB) {
       return (
@@ -32,7 +32,7 @@ const sortByOptions = [
     },
   },
   {
-    label: 'Sort by Creation Time',
+    label: 'Creation Time',
     value: 'creationTime',
     comp(marketA, marketB) {
       return marketB.creationTime.timestamp - marketA.creationTime.timestamp;
