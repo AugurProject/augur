@@ -63,7 +63,11 @@ jobs:
       and
       (
         succeeded(),
-        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+        or
+        (
+          ne(variables['Build.SourceBranch'], 'refs/heads/master'),
+          ne(variables['Build.SourceBranch'], 'refs/tags')
+        )
       )
     variables:
       JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
@@ -510,3 +514,75 @@ jobs:
           command: logout
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
+
+  - job: tag_build
+    displayName: build tag
+    dependsOn: PreFlightCheck
+    condition: |
+      and
+      (
+        succeeded(),
+        startsWith(variables['build.sourceBranch'], 'refs/tags/v')
+      )
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(PRIMARY_NODE_VERSION)
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          yarn workspace @augurproject/ui build
+          ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
+        displayName: ui build
+      - bash: |
+          set -euo pipefail
+          sudo apt update
+          sudo apt install golang-go -y
+          curl -l https://dist.ipfs.io/go-ipfs/v0.4.22/go-ipfs_v0.4.22_linux-amd64.tar.gz | tar xvzf -
+          sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
+        displayName: install ipfs
+      - bash: |
+          set -euo pipefail
+          ipfs init > /dev/null 2>&1
+          ipfs add -r -Q packages/augur-ui/build | tee augur_ipfs_hash.txt
+        displayName: ipfs hash of build dir
+      - task: CopyFiles@2
+        inputs:
+          #sourceFolder: # Optional
+          contents: |
+            augur.zip
+            augur_ipfs_hash.txt
+          targetFolder: $(Build.ArtifactStagingDirectory)
+          cleanTargetFolder: true
+          #overWrite: false # Optional
+          #flattenFolders: false # Optional
+          #preserveTimestamp: false # Optional
+#     - task: GitHubRelease@1
+#       displayName: 'GitHub release (create)'
+#       inputs:
+#         gitHubConnection: 'github connection release pipeline'
+#         tagPattern: 'v*'
+#         title: Augur
+#         releaseNotesSource: inline
+#         assets: '$(Build.ArtifactStagingDirectory)/*'
+#         isDraft: true
+#         isPreRelease: true

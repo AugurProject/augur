@@ -132,7 +132,6 @@
 .Normal {
   .Dropdown;
 
-  height: 2rem;
   max-width: fit-content;
 
   &:active,
@@ -141,18 +140,19 @@
   }
 
   > button {
-    .text-10;
+    .mono-9;
 
     line-height: @size-12;
-    padding: @size-10 @size-12;
+    text-transform: uppercase;
+    padding: 0 @size-8;
 
     > svg {
-      height: 0.25rem;
-      margin-left: 0.5rem;
-      width: 0.5rem;
+      height: @size-6;
+      margin-left: @size-8;
+      width: @size-10;
 
       > path {
-        stroke-width: 0.125rem;
+        fill: #E9E5F2;
       }
     }
     
@@ -161,6 +161,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      padding: @size-6 0;
+      border-right: 1px solid @color-primary-alternate;
+      flex: 1;
+      display: flex;
     }
   }
 
