@@ -22,6 +22,7 @@ import {
   convertOnChainPriceToDisplayPrice,
 } from '../../index';
 import { sortOptions } from './types';
+import { MarketReportingState } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -90,8 +91,8 @@ export interface MarketTradingPosition {
   unrealizedPercent: string; // unrealized profit percent (ie. profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
-  totalUnclaimedProceeds?: string;
-  totalUnclaimedProfit?: string;
+  totalUnclaimedProceeds?: string; // Unclaimed trading proceeds after market creator fee & reporting fee have been subtracted
+  totalUnclaimedProfit?: string; // totalUnclaimedProceeds - totalCost
 }
 
 export interface TradingPosition {
@@ -112,8 +113,6 @@ export interface TradingPosition {
   unrealizedPercent: string; // unrealized profit percent (ie. profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
-  totalUnclaimedProceeds?: string;
-  totalUnclaimedProfit?: string;
 }
 
 export interface UserTradingPositions {
@@ -493,6 +492,27 @@ export class Users {
       universe,
       account: params.account,
     });
+
+    const derivedDbMarketsInfos = await db.findMarkets({
+      selector: { market: { $in: marketIds } },
+    });
+    for (const derivedMarketDbInfo of derivedDbMarketsInfos) {
+      if (derivedMarketDbInfo.reportingState === MarketReportingState.Finalized || MarketReportingState.AwaitingFinalization) {
+        const derivedDbDisputeInfo = await db.findDisputeDocs({
+          selector: { market: { $eq: derivedMarketDbInfo.market } },
+        });
+        const reportingFeeDivisor = derivedMarketDbInfo.feeDivisor;
+        // TODO: set numberOfShares based on winning/tentative outcome
+        const reportingFee = numberOfShares.div(reportingFeeDivisor);
+        const contracts = augur.contracts;
+        const totalUnclaimedProceeds = (await contracts.claimTradingProceeds.calculateProceeds_(derivedMarketDbInfo.market, new BigNumber(tentativeOutcome), numberOfShares))
+            .minus(await contracts.claimTradingProceeds.calculateCreatorFee_(derivedMarketDbInfo.market, numberOfShares))
+            .minus(reportingFee);
+
+        marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProceeds = totalUnclaimedProceeds.toString();
+        marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProceeds = totalUnclaimedProceeds.minus(marketTradingPositions[derivedMarketDbInfo.market].totalCost).toString();
+      }
+    }
 
     return {
       tradingPositions,
