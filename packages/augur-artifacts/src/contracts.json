@@ -372,23 +372,39 @@
 								"type": "address"
 							},
 							{
+								"name": "_reporter",
+								"type": "address"
+							},
+							{
 								"name": "_market",
 								"type": "address"
 							},
 							{
-								"name": "_disputeCrowdsourcer",
-								"type": "address"
+								"name": "_amountStaked",
+								"type": "uint256"
+							},
+							{
+								"name": "_isDesignatedReporter",
+								"type": "bool"
 							},
 							{
 								"name": "_payoutNumerators",
 								"type": "uint256[]"
 							},
 							{
-								"name": "_size",
+								"name": "_description",
+								"type": "string"
+							},
+							{
+								"name": "_nextWindowStartTime",
+								"type": "uint256"
+							},
+							{
+								"name": "_nextWindowEndTime",
 								"type": "uint256"
 							}
 						],
-						"name": "disputeCrowdsourcerCreated",
+						"name": "logInitialReportSubmitted",
 						"outputs": [
 							{
 								"name": "",
@@ -677,10 +693,6 @@
 								"type": "address"
 							},
 							{
-								"name": "_reporter",
-								"type": "address"
-							},
-							{
 								"name": "_market",
 								"type": "address"
 							},
@@ -689,15 +701,19 @@
 								"type": "address"
 							},
 							{
-								"name": "_amountStaked",
+								"name": "_payoutNumerators",
+								"type": "uint256[]"
+							},
+							{
+								"name": "_size",
 								"type": "uint256"
 							},
 							{
-								"name": "_description",
-								"type": "string"
+								"name": "_disputeRound",
+								"type": "uint256"
 							}
 						],
-						"name": "logDisputeCrowdsourcerContribution",
+						"name": "disputeCrowdsourcerCreated",
 						"outputs": [
 							{
 								"name": "",
@@ -782,6 +798,116 @@
 							{
 								"name": "_market",
 								"type": "address"
+							},
+							{
+								"name": "_disputeCrowdsourcer",
+								"type": "address"
+							},
+							{
+								"name": "_payoutNumerators",
+								"type": "uint256[]"
+							},
+							{
+								"name": "_nextWindowStartTime",
+								"type": "uint256"
+							},
+							{
+								"name": "_nextWindowEndTime",
+								"type": "uint256"
+							},
+							{
+								"name": "_pacingOn",
+								"type": "bool"
+							},
+							{
+								"name": "_totalRepStakedInPayout",
+								"type": "uint256"
+							},
+							{
+								"name": "_totalRepStakedInMarket",
+								"type": "uint256"
+							},
+							{
+								"name": "_disputeRound",
+								"type": "uint256"
+							}
+						],
+						"name": "logDisputeCrowdsourcerCompleted",
+						"outputs": [
+							{
+								"name": "",
+								"type": "bool"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
+					},
+					{
+						"constant": false,
+						"inputs": [
+							{
+								"name": "_universe",
+								"type": "address"
+							},
+							{
+								"name": "_reporter",
+								"type": "address"
+							},
+							{
+								"name": "_market",
+								"type": "address"
+							},
+							{
+								"name": "_disputeCrowdsourcer",
+								"type": "address"
+							},
+							{
+								"name": "_amountStaked",
+								"type": "uint256"
+							},
+							{
+								"name": "_description",
+								"type": "string"
+							},
+							{
+								"name": "_payoutNumerators",
+								"type": "uint256[]"
+							},
+							{
+								"name": "_currentStake",
+								"type": "uint256"
+							},
+							{
+								"name": "_stakeRemaining",
+								"type": "uint256"
+							},
+							{
+								"name": "_disputeRound",
+								"type": "uint256"
+							}
+						],
+						"name": "logDisputeCrowdsourcerContribution",
+						"outputs": [
+							{
+								"name": "",
+								"type": "bool"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
+					},
+					{
+						"constant": false,
+						"inputs": [
+							{
+								"name": "_universe",
+								"type": "address"
+							},
+							{
+								"name": "_market",
+								"type": "address"
 							}
 						],
 						"name": "logMarketOIChanged",
@@ -819,7 +945,7 @@
 								"type": "address"
 							},
 							{
-								"name": "_feeDivisor",
+								"name": "_feePerCashInAttoCash",
 								"type": "uint256"
 							},
 							{
@@ -1172,49 +1298,6 @@
 					},
 					{
 						"constant": false,
-						"inputs": [
-							{
-								"name": "_universe",
-								"type": "address"
-							},
-							{
-								"name": "_reporter",
-								"type": "address"
-							},
-							{
-								"name": "_market",
-								"type": "address"
-							},
-							{
-								"name": "_amountStaked",
-								"type": "uint256"
-							},
-							{
-								"name": "_isDesignatedReporter",
-								"type": "bool"
-							},
-							{
-								"name": "_payoutNumerators",
-								"type": "uint256[]"
-							},
-							{
-								"name": "_description",
-								"type": "string"
-							}
-						],
-						"name": "logInitialReportSubmitted",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
 						"inputs": [],
 						"name": "createGenesisUniverse",
 						"outputs": [
@@ -1397,41 +1480,6 @@
 						"constant": false,
 						"inputs": [
 							{
-								"name": "_universe",
-								"type": "address"
-							},
-							{
-								"name": "_market",
-								"type": "address"
-							},
-							{
-								"name": "_disputeCrowdsourcer",
-								"type": "address"
-							},
-							{
-								"name": "_nextWindowStartTime",
-								"type": "uint256"
-							},
-							{
-								"name": "_pacingOn",
-								"type": "bool"
-							}
-						],
-						"name": "logDisputeCrowdsourcerCompleted",
-						"outputs": [
-							{
-								"name": "",
-								"type": "bool"
-							}
-						],
-						"payable": false,
-						"stateMutability": "nonpayable",
-						"type": "function"
-					},
-					{
-						"constant": false,
-						"inputs": [
-							{
 								"name": "_newTimestamp",
 								"type": "uint256"
 							}
@@ -1510,7 +1558,7 @@
 								"type": "address"
 							},
 							{
-								"name": "_feeDivisor",
+								"name": "_feePerCashInAttoCash",
 								"type": "uint256"
 							}
 						],
@@ -1753,7 +1801,7 @@
 								"type": "address"
 							},
 							{
-								"name": "_feeDivisor",
+								"name": "_feePerCashInAttoCash",
 								"type": "uint256"
 							},
 							{
@@ -1832,7 +1880,7 @@
 							},
 							{
 								"indexed": false,
-								"name": "feeDivisor",
+								"name": "feePerCashInAttoCash",
 								"type": "uint256"
 							},
 							{
@@ -1904,6 +1952,16 @@
 							},
 							{
 								"indexed": false,
+								"name": "nextWindowStartTime",
+								"type": "uint256"
+							},
+							{
+								"indexed": false,
+								"name": "nextWindowEndTime",
+								"type": "uint256"
+							},
+							{
+								"indexed": false,
 								"name": "timestamp",
 								"type": "uint256"
 							}
@@ -1937,6 +1995,11 @@
 							{
 								"indexed": false,
 								"name": "size",
+								"type": "uint256"
+							},
+							{
+								"indexed": false,
+								"name": "disputeRound",
 								"type": "uint256"
 							}
 						],
@@ -1978,6 +2041,26 @@
 							},
 							{
 								"indexed": false,
+								"name": "payoutNumerators",
+								"type": "uint256[]"
+							},
+							{
+								"indexed": false,
+								"name": "currentStake",
+								"type": "uint256"
+							},
+							{
+								"indexed": false,
+								"name": "stakeRemaining",
+								"type": "uint256"
+							},
+							{
+								"indexed": false,
+								"name": "disputeRound",
+								"type": "uint256"
+							},
+							{
+								"indexed": false,
 								"name": "timestamp",
 								"type": "uint256"
 							}
@@ -2005,13 +2088,38 @@
 							},
 							{
 								"indexed": false,
+								"name": "payoutNumerators",
+								"type": "uint256[]"
+							},
+							{
+								"indexed": false,
 								"name": "nextWindowStartTime",
+								"type": "uint256"
+							},
+							{
+								"indexed": false,
+								"name": "nextWindowEndTime",
 								"type": "uint256"
 							},
 							{
 								"indexed": false,
 								"name": "pacingOn",
 								"type": "bool"
+							},
+							{
+								"indexed": false,
+								"name": "totalRepStakedInPayout",
+								"type": "uint256"
+							},
+							{
+								"indexed": false,
+								"name": "totalRepStakedInMarket",
+								"type": "uint256"
+							},
+							{
+								"indexed": false,
+								"name": "disputeRound",
+								"type": "uint256"
 							}
 						],
 						"name": "DisputeCrowdsourcerCompleted",

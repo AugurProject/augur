@@ -8,7 +8,7 @@ import {
 } from 'modules/common/constants';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'store';
-import { Getters } from '@augurproject/sdk';
+import { Getters, MarketReportingState } from '@augurproject/sdk';
 import {
   UpdateMarketsAction,
   addUpdateMarketInfos,
@@ -158,7 +158,7 @@ export const loadNextWindowDisputingMarkets = (
 ) => {
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
-    reportingStates: [Getters.Markets.MarketReportingState.AwaitingNextWindow],
+    reportingStates: [MarketReportingState.AwaitingNextWindow],
     ...filterOptions,
   };
   dispatch(loadReportingMarkets(params, cb));
@@ -173,9 +173,7 @@ export const loadCurrentlyDisputingMarkets = (
 ) => {
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
-    reportingStates: [
-      Getters.Markets.MarketReportingState.CrowdsourcingDispute,
-    ],
+    reportingStates: [MarketReportingState.CrowdsourcingDispute],
     ...filterOptions,
   };
   dispatch(loadReportingMarkets(params, cb));
@@ -190,7 +188,7 @@ export const loadOpenReportingMarkets = (
 ) => {
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
-    reportingStates: [Getters.Markets.MarketReportingState.OpenReporting],
+    reportingStates: [MarketReportingState.OpenReporting],
     ...filterOptions,
   };
   dispatch(loadReportingMarkets(params, cb));
@@ -212,7 +210,7 @@ export const loadUpcomingDesignatedReportingMarkets = (
     return cb(null, { markets: [], meta: { marketCount: 0 } });
 
   const params = {
-    reportingStates: [Getters.Markets.MarketReportingState.PreReporting],
+    reportingStates: [MarketReportingState.PreReporting],
     designatedReporter,
     maxEndTime,
     ...filterOptions,
@@ -233,7 +231,7 @@ export const loadDesignatedReportingMarkets = (
     return cb(null, { markets: [], meta: { marketCount: 0 } });
 
   const params = {
-    reportingStates: [Getters.Markets.MarketReportingState.DesignatedReporting],
+    reportingStates: [MarketReportingState.DesignatedReporting],
     designatedReporter,
     ...filterOptions,
   };

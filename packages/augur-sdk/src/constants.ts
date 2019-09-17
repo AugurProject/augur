@@ -148,3 +148,13 @@ export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(365);
 
 export const GENESIS = 'Genesis';
+
+export enum MarketReportingState {
+  PreReporting = 'PreReporting',
+  DesignatedReporting = 'DesignatedReporting',
+  OpenReporting = 'OpenReporting',
+  CrowdsourcingDispute = 'CrowdsourcingDispute',
+  AwaitingNextWindow = 'AwaitingNextWindow',
+  AwaitingFinalization = 'AwaitingFinalization',
+  Finalized = 'Finalized',
+}

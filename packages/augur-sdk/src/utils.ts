@@ -137,10 +137,8 @@ export function calculatePayoutNumeratorsValue(
       return { invalid: true };
     }
 
-    const longPayout = new BigNumber(payout[1], 10);
-    const priceRange = new BigNumber(displayMaxPrice, 10).minus(
-      new BigNumber(displayMinPrice, 10)
-    );
+    const longPayout = new BigNumber(payout[1]);
+    const priceRange = new BigNumber(displayMaxPrice, 10).minus(new BigNumber(displayMinPrice, 10));
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
     const outcome = longPayout
       .times(priceRange)
