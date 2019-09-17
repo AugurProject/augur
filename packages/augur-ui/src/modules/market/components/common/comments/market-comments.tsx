@@ -1,25 +1,17 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
-export default class MarketComments extends Component {
-  static propTypes = {
-    marketId: PropTypes.string.isRequired,
-    colorScheme: PropTypes.string.isRequired,
-    dataWidth: PropTypes.string.isRequired,
-    networkId: PropTypes.string.isRequired,
-  };
+interface MarketCommentsProps {
+  marketId: string;
+  colorScheme: string;
+  dataWidth: string;
+  networkId: string;
+}
 
+export class MarketComments extends Component<MarketCommentsProps> {
   static defaultProps = {
-    marketId: PropTypes.string.isRequired,
-    colorScheme: PropTypes.string.isRequired,
-    dataWidth: PropTypes.string.isRequired,
-    networkId: PropTypes.string.isRequired,
+    colorScheme: 'dark',
+    dataWidth: '500',
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
 
   render() {
     const {
@@ -29,22 +21,21 @@ export default class MarketComments extends Component {
       networkId,
     } = this.props;
 
+    const fbCommentsUrl = `www.augur.net/comments/${networkId}/${marketId}`;
+
     let content = null;
 
     content = (
       <div id='fb-comments-container'>
-        <div id='fb-comments' className='fb-comments' data-colorscheme={colorScheme} data-href={'www.augur.net/comments/' + networkId + '/' + marketId} data-width={dataWidth} data-numposts='10'></div>
+        <div id='fb-root'></div>
+        <div id='fb-comments' className='fb-comments' data-colorscheme={colorScheme} data-href={fbCommentsUrl} data-width={dataWidth} data-numposts='10'></div>
       </div>
     );
 
-    if (!window.document.getElementById('fb-root')) {
-      const fbRoot = window.document.createElement('div');
-      fbRoot.id = 'fb-root';
-      window.document.body.appendChild(fbRoot);
-    }
+    // This is a hack that is required because putting the JS script in index.ejs does not work
     if (!window.document.getElementById('fb-jssdk')) {
       const js = window.document.createElement('script');
-      js.id = 'facebook-jssdk';
+      js.id = 'fb-jssdk';
       js.async = true;
       js.defer = true;
       js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v4.0';
