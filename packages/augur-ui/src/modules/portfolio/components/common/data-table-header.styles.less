@@ -5,7 +5,7 @@
   flex-direction: row;
   grid-template-columns: repeat(5, 1fr);
   min-height: @size-32;
-  padding: @size-10 2.8rem @size-10 0;
+  padding: @size-10 @size-24 @size-10 0;
   width: 100%;
 
   > li {
@@ -43,17 +43,12 @@
   grid-template-columns: repeat(5, 1fr) minmax(5rem, 1fr) 3.2rem;
   padding-bottom: @size-4;
   padding-top: @size-4;
-
-  &:last-child {
-    margin-right: -@size-8;
-  }
 }
 
 .PositionHeader {
   background: fade(@color-primary-alternate, 40%);
   grid-template-columns: repeat(8, 1fr);
-  padding-left: @size-24;
-  padding-right: 4rem;
+  padding: @size-3 @size-42 @size-3 @size-16;
 }
 
 .DataTableHeader__extended {
@@ -92,7 +87,7 @@
   .DataTableHeader {
     grid-template-columns: repeat(3, 1fr);
     padding-left: @size-16;
-    padding-right: @size-48;
+    padding-right: @size-42;
 
     > li {
       color: @color-shadow-text;
@@ -150,7 +145,7 @@
 
   .PositionHeader {
     grid-template-columns: repeat(6, 1fr);
-    padding: @size-8 @size-24 @size-8 @size-16;
+    padding: @size-4 @size-12;
 
     > li {
       &:last-child {
