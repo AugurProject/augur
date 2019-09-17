@@ -69,14 +69,14 @@ export const selectSortedDisputingOutcomes = (
     ? stakes.sort((a, b) => {
         if (a.tentativeWinning) return 1;
         if (
-          createBigNumber(a.stakeCompleted).gt(
-            createBigNumber(b.stakeCompleted)
+          createBigNumber(a.stakeCurrent).gt(
+            createBigNumber(b.stakeCurrent)
           )
         )
           return 1;
         if (
-          createBigNumber(b.stakeCompleted).gt(
-            createBigNumber(a.stakeCompleted)
+          createBigNumber(b.stakeCurrent).gt(
+            createBigNumber(a.stakeCurrent)
           )
         )
           return -1;
@@ -108,9 +108,6 @@ export const selectSortedDisputingOutcomes = (
       (p, outcome) => (p.find(s => s.id === outcome.id) ? p : [...p, outcome]),
       sortedOutcomes
     );
-    console.log(JSON.stringify(stakes));
-    console.log(JSON.stringify(result));
-    console.log('bob');
     return result;
   }
 

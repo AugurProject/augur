@@ -76,7 +76,7 @@ export interface DisputeOutcomeProps {
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
   const stakeCurrent = props.stake && formatAttoRep(props.stake.stakeCurrent);
-  const bondSizeTotal = props.stake && formatAttoRep(props.stake.bondSizeTotal);
+  const bondSizeCurrent = props.stake && formatAttoRep(props.stake.bondSizeCurrent);
 
   return (
     <div
@@ -94,7 +94,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
             props.stake
               ? calculatePosition(
                   ZERO,
-                  createBigNumber(bondSizeTotal.value),
+                  createBigNumber(bondSizeCurrent.value),
                   stakeCurrent
                 )
               : 0
@@ -110,7 +110,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
           </span>
           <span>
             {props.stake ? stakeCurrent.formatted : 0}
-            <span>/ {props.stake ? bondSizeTotal.formatted : 0} REP</span>
+            <span>/ {props.stake ? bondSizeCurrent.formatted : 0} REP</span>
           </span>
         </div>
         <SecondaryButton
