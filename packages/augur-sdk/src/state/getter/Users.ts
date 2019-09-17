@@ -472,27 +472,6 @@ export class Users {
       }
     );
 
-    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
-    const allProfitLossResults = _.flatten(
-      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
-    );
-    const frozenFundsTotal = _.reduce(
-      allProfitLossResults,
-      (value, tradingPosition) => {
-        return value.plus(tradingPosition.frozenFunds);
-      },
-      new BigNumber(0)
-    );
-    // TODO add market validity bond to total. Need to send a log for this since it is variable over time.
-
-    const universe = params.universe
-      ? params.universe
-      : await augur.getMarket(params.marketId).getUniverse_();
-    const profitLossSummary = await Users.getProfitLossSummary(augur, db, {
-      universe,
-      account: params.account,
-    });
-
     const derivedDbMarketsInfos = await db.findMarkets({
       selector: { market: { $in: marketIds } },
     });
@@ -513,6 +492,27 @@ export class Users {
         marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProceeds = totalUnclaimedProceeds.minus(marketTradingPositions[derivedMarketDbInfo.market].totalCost).toString();
       }
     }
+
+    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
+    const allProfitLossResults = _.flatten(
+      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
+    );
+    const frozenFundsTotal = _.reduce(
+      allProfitLossResults,
+      (value, tradingPosition) => {
+        return value.plus(tradingPosition.frozenFunds);
+      },
+      new BigNumber(0)
+    );
+    // TODO add market validity bond to total. Need to send a log for this since it is variable over time.
+
+    const universe = params.universe
+      ? params.universe
+      : await augur.getMarket(params.marketId).getUniverse_();
+    const profitLossSummary = await Users.getProfitLossSummary(augur, db, {
+      universe,
+      account: params.account,
+    });
 
     return {
       tradingPositions,
@@ -775,8 +775,6 @@ export function sumTradingPositions(
       unrealizedPercent: '0',
       totalPercent: '0',
       currentValue: '0',
-      // totalUnclaimedProceeds: '15',
-      // totalUnclaimedProfit: '10',
     } as MarketTradingPosition
   );
 
