@@ -1,7 +1,7 @@
 import * as React from "react";
 import classNames from "classnames";
 import Styles from "modules/common/selection.styles";
-import { Chevron, DotDotDot, TwoArrows } from "modules/common/icons";
+import { ThickChevron, Chevron, DotDotDot, TwoArrows } from "modules/common/icons";
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/tooltip.styles.less";
 
@@ -173,7 +173,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           })}
         >
           <span ref={ref => (this.labelRef = ref)}>{selected ? selected.label : staticLabel}</span>
-          {large ? TwoArrows : Chevron}
+          {large ? TwoArrows : ThickChevron}
         </button>
         <div
           className={classNames(Styles.list, {

@@ -12,7 +12,7 @@ import { MarketData, SizeTypes } from "modules/types";
 
 const sortByOptions = [
   {
-    label: "Sort by Most Recently Traded",
+    label: "Most Recently Traded",
     value: "recentlyTraded",
     comp(marketA, marketB) {
       return (
@@ -21,7 +21,7 @@ const sortByOptions = [
     }
   },
   {
-    label: "Sort by Current Value",
+    label: "Current Value",
     value: "currentValue",
     comp(marketA, marketB) {
       return (
@@ -31,7 +31,7 @@ const sortByOptions = [
     }
   },
   {
-    label: "Sort by Total Returns",
+    label: "Total Returns",
     value: "totalReturns",
     comp(marketA, marketB) {
       return (
@@ -41,7 +41,7 @@ const sortByOptions = [
     }
   },
   {
-    label: "Sort by Expiring Soonest",
+    label: "Expiring Soonest",
     value: END_TIME,
     comp(marketA, marketB) {
       return marketA.endTime.timestamp - marketB.endTime.timestamp;

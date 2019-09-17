@@ -3,7 +3,7 @@
 import * as React from "react";
 import classNames from "classnames";
 import Styles from "modules/common/search.styles";
-import { SearchIcon } from "modules/common/icons";
+import { SearchIcon, XIcon } from "modules/common/icons";
 
 export interface SearchBarProps {
   onChange: (value: string) => void;
@@ -78,10 +78,11 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             placeholder={placeholderText}
           />
           <div>Search</div>
-          {SearchIcon}
+          {isFocused ? 
+            <button onClick={this.deFocus}>{XIcon}</button> 
+            : SearchIcon}
         </div>
 
-        <button onClick={this.deFocus}>cancel</button>
       </div>
     );
   }

@@ -12,21 +12,21 @@ import { convertUnixToFormattedDate } from "utils/format-date";
 
 const sortByOptions = [
   {
-    label: "Sort by Most Recently Added",
+    label: "Most Recently Added",
     value: "recentlyTraded",
     comp(marketA, marketB) {
       return marketB.favoriteAddedData - marketA.favoriteAddedData;
     }
   },
   {
-    label: "Sort by Market Creation",
+    label: "Market Creation",
     value: "marketCreation",
     comp(marketA, marketB) {
       return marketB.creationTime.timestamp - marketA.creationTime.timestamp;
     }
   },
   {
-    label: "Sort by Expiring Soonest",
+    label: "Expiring Soonest",
     value: END_TIME,
     comp(marketA, marketB) {
       return marketA.endTime.timestamp - marketB.endTime.timestamp;
