@@ -6,7 +6,6 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { getOutcomeName } from 'utils/get-outcome';
 import {
-  formatEther,
   formatRep,
   formatShares,
   formatDai,
@@ -37,11 +36,11 @@ import {
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
   APPROVE,
-} from "modules/common/constants";
-import { AppState } from "store";
-import { Action } from "redux";
-import { ThunkDispatch } from "redux-thunk";
-import { createBigNumber, BigNumber } from "utils/create-big-number";
+} from 'modules/common/constants';
+import { AppState } from 'store';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -191,7 +190,7 @@ export default function setAlertText(alert: any, callback: any) {
             const outcomeDescription =
               outcome === null
                 ? 'Market Is Invalid'
-                : getOutcomeName(marketInfo, { id: outcome }, false);
+                : getOutcomeName(marketInfo, { id: Number(outcome.outcome) }, false);
             alert.description = marketInfo.description;
             alert.details = `${
               formatRep(
@@ -220,7 +219,7 @@ export default function setAlertText(alert: any, callback: any) {
             );
             const outcomeDescription =
               outcome === null
-                ? "Market Is Invalid"
+                ? 'Market Is Invalid'
                 : getOutcomeName(marketInfo, { id: Number(outcome.outcome) }, false);
             alert.description = marketInfo.description;
             alert.details = `Tentative winning outcome: "${outcomeDescription}"`;

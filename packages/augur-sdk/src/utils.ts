@@ -177,10 +177,10 @@ export function isWellFormedYesNo(payout: string[]): boolean {
 
 export function isWellFormedCategorical(payout: string[]): boolean {
   // A categorical is well-formed if:
-  // 1. There are between 3 and 9 payout values (2-8 plus invalid)
+  // 1. There are between 3 and 8 payout values (2-7 plus invalid)
   // 2. Exactly one of its payouts is non-zero.
 
-  if (payout.length < 3 || payout.length > 10) return false;
+  if (payout.length < 3 || payout.length > 9) return false;
   return countNonZeroes(payout) === 1;
 }
 
@@ -265,6 +265,7 @@ export function describeCategoricalOutcome(outcome: number, outcomes: string[]):
 }
 
 export function describeScalarOutcome(outcome: number, prices: string[]): string {
+  if (outcome === 0) return CommonOutcomes.Invalid;
   const price = outcome === 1 ? prices[0] : prices[1];
   return String(new BigNumber(price));
 }
