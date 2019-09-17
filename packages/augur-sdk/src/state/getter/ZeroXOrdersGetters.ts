@@ -90,7 +90,6 @@ export class ZeroXOrdersGetters {
       marketIds,
       db,
       params.ignoreReportingStates,
-      await augur.getTimestamp()
     );
 
     return currentOrdersResponse.reduce(

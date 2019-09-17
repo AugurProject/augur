@@ -133,10 +133,8 @@ export function calculatePayoutNumeratorsValue(
       return MALFORMED_OUTCOME;
     }
 
-    const longPayout = new BigNumber(payout[1], 10);
-    const priceRange = new BigNumber(displayMaxPrice, 10).minus(
-      new BigNumber(displayMinPrice, 10)
-    );
+    const longPayout = new BigNumber(payout[1]);
+    const priceRange = new BigNumber(displayMaxPrice, 10).minus(new BigNumber(displayMinPrice, 10));
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
     return longPayout
       .times(priceRange)

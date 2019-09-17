@@ -1,6 +1,6 @@
 import {
   Getters,
-  Logs
+  Logs,
 } from '@augurproject/sdk';
 import {
   Edge,
@@ -272,7 +272,6 @@ export const REPORTING_STATE = {
   AWAITING_NEXT_WINDOW: Getters.Markets.MarketReportingState.AwaitingNextWindow,
   FINALIZED: Getters.Markets.MarketReportingState.Finalized,
   FORKING: Getters.Markets.MarketReportingState.Forking,
-  AWAITING_NO_REPORT_MIGRATION: Getters.Markets.MarketReportingState.AwaitingNoReportMigration,
   AWAITING_FORK_MIGRATION: Getters.Markets.MarketReportingState.AwaitingForkMigration
 }
 
