@@ -1,12 +1,26 @@
 /**
  * @todo Update text for FINALIZE once alert triggering is moved
  */
+
 import { isEmpty } from "utils/is-empty";
 import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { getOutcomeNameWithOutcome } from "utils/get-outcome";
 import { formatRep, formatShares, formatDai } from "utils/format-number";
 import { calculatePayoutNumeratorsValue, TXEventName, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertPayoutNumeratorsToStrings } from "@augurproject/sdk";
+import {
+  formatEther,
+  formatRep,
+  formatShares,
+  formatDai,
+} from 'utils/format-number';
+import {
+  calculatePayoutNumeratorsValue,
+  TXEventName,
+  convertOnChainAmountToDisplayAmount,
+  convertOnChainPriceToDisplayPrice,
+  convertPayoutNumeratorsToStrings,
+} from '@augurproject/sdk';
 import {
   BUY,
   SELL,
@@ -26,42 +40,55 @@ import {
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
   APPROVE,
-} from "modules/common/constants";
+  PREFILLEDSTAKE,
+  ZERO,
+} from 'modules/common/constants';
 import { AppState } from "store";
 import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
-import { createBigNumber } from "utils/create-big-number";
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { updateAlert } from './alerts';
 
 function toCapitalizeCase(label) {
-  return label.charAt(0).toUpperCase() + label.slice(1)
+  return label.charAt(0).toUpperCase() + label.slice(1);
 }
 function getInfo(params, status, marketInfo) {
-  const outcome = params.outcome || params._outcome;
+  const outcome = params.outcome ? new BigNumber(params.outcome).toNumber() : new BigNumber(params._outcome).toNumber();
 
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType = params.orderType === 0 ? BUY : SELL;
 
   if (status === TXEventName.Failure) {
-    orderType =  params._direction.toNumber() === 0 ? BUY : SELL;
+    orderType = params._direction.toNumber() === 0 ? BUY : SELL;
   }
 
-  const price = convertOnChainPriceToDisplayPrice(createBigNumber(params.price || params._price), createBigNumber(marketInfo.minPrice), createBigNumber(marketInfo.tickSize));
-  const amount = convertOnChainAmountToDisplayAmount(createBigNumber(params.amount || params._amount), createBigNumber(marketInfo.tickSize));
+  const price = convertOnChainPriceToDisplayPrice(
+    createBigNumber(params.price || params._price),
+    createBigNumber(marketInfo.minPrice),
+    createBigNumber(marketInfo.tickSize)
+  );
+  const amount = convertOnChainAmountToDisplayAmount(
+    createBigNumber(params.amount || params._amount),
+    createBigNumber(marketInfo.tickSize)
+  );
 
   return {
     price,
     amount,
     orderType: toCapitalizeCase(orderType),
-    outcomeDescription
-  }
+    outcomeDescription,
+  };
 }
 export default function setAlertText(alert: any, callback: any) {
-  return (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState): void => {
+  return (
+    dispatch: ThunkDispatch<void, any, Action>,
+    getState: () => AppState
+  ): void => {
     if (!alert || isEmpty(alert)) {
       return dispatch(callback(alert));
     }
     if (!callback) {
-      throw new Error("Callback function is not set");
+      throw new Error('Callback function is not set');
     }
 
     if (!alert.params || !alert.name) {
@@ -73,7 +100,7 @@ export default function setAlertText(alert: any, callback: any) {
     switch (alert.name.toUpperCase()) {
       // CancelOrder
       case CANCELORDER: {
-        alert.title = "Order Cancelled";
+        alert.title = 'Order Cancelled';
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
@@ -93,13 +120,13 @@ export default function setAlertText(alert: any, callback: any) {
 
       // ClaimTradingProceeds
       case CLAIMTRADINGPROCEEDS:
-        alert.title = "Claim trading proceeds";
+        alert.title = 'Claim trading proceeds';
         break;
 
       // FeeWindow & Universe
       case BUY:
       case BUYPARTICIPATIONTOKENS:
-        alert.title = "Buy participation token(s)";
+        alert.title = 'Buy participation token(s)';
         if (!alert.description && alert.log) {
           alert.description = `Purchase ${
             formatRep(
@@ -108,7 +135,7 @@ export default function setAlertText(alert: any, callback: any) {
               )
             ).formatted
           } Participation Token${
-            alert.log.value === TEN_TO_THE_EIGHTEENTH_POWER ? "" : "s"
+            alert.log.value === TEN_TO_THE_EIGHTEENTH_POWER ? '' : 's'
           }`;
         }
         break;
@@ -117,19 +144,20 @@ export default function setAlertText(alert: any, callback: any) {
       case PUBLICFILLBESTORDER:
       case PUBLICFILLBESTORDERWITHLIMIT:
       case PUBLICFILLORDER:
-        alert.title = "Filled";
+        alert.title = 'Filled';
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
-            const {
-              orderType,
-              amount,
-              price,
-              outcomeDescription
-            } = getInfo(alert.params, alert.status, marketInfo);
-            alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+            const { orderType, amount, price, outcomeDescription } = getInfo(
+              alert.params,
+              alert.status,
+              marketInfo
+            );
+            alert.details = `${orderType}  ${
+              formatShares(amount).formatted
+            } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
             alert.toast = true;
           })
         );
@@ -137,7 +165,9 @@ export default function setAlertText(alert: any, callback: any) {
 
       // Market
       case CONTRIBUTE:
-        alert.title = alert.params.preFilled ? "Prefilled Stake" : "Market Disputed";
+        alert.title = alert.params.preFilled
+          ? 'Prefilled Stake'
+          : 'Market Disputed';
         if (alert.params.preFilled && !alert.params._additionalStake) {
           break;
         }
@@ -150,7 +180,11 @@ export default function setAlertText(alert: any, callback: any) {
               marketInfo.minPrice,
               marketInfo.numTicks,
               marketInfo.marketType,
-              alert.params._payoutNumerators ? convertPayoutNumeratorsToStrings(alert.params._payoutNumerators) : alert.params.payoutNumerators
+              alert.params._payoutNumerators
+                ? convertPayoutNumeratorsToStrings(
+                    alert.params._payoutNumerators
+                  )
+                : alert.params.payoutNumerators
             );
             const outcomeDescription =
               outcome === null
@@ -159,16 +193,18 @@ export default function setAlertText(alert: any, callback: any) {
             alert.description = marketInfo.description;
             alert.details = `${
               formatRep(
-                createBigNumber(alert.params.preFilled ? alert.params._additionalStake : alert.params._amount).dividedBy(
-                  TEN_TO_THE_EIGHTEENTH_POWER
-                )
+                createBigNumber(
+                  alert.params.preFilled
+                    ? alert.params._additionalStake
+                    : alert.params._amount
+                ).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER)
               ).formatted
             } REP added to "${outcomeDescription}"`;
           })
         );
         break;
       case DOINITIALREPORT:
-        alert.title = "Market Reported";
+        alert.title = 'Market Reported';
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
@@ -178,7 +214,8 @@ export default function setAlertText(alert: any, callback: any) {
               marketInfo.minPrice,
               marketInfo.numTicks,
               marketInfo.marketType,
-              alert.params.payoutNumerators || convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
+              alert.params.payoutNumerators ||
+                convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
             );
             const outcomeDescription =
               outcome === null
@@ -193,19 +230,20 @@ export default function setAlertText(alert: any, callback: any) {
       // Trade
       case PUBLICTRADE:
       case PUBLICTRADEWITHLIMIT: {
-        alert.title = "Order placed";
+        alert.title = 'Order placed';
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
-            const {
-              orderType,
-              amount,
-              price,
-              outcomeDescription
-            } = getInfo(alert.params, alert.status, marketInfo);
-            alert.details = `${orderType}  ${formatShares(amount).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+            const { orderType, amount, price, outcomeDescription } = getInfo(
+              alert.params,
+              alert.status,
+              marketInfo
+            );
+            alert.details = `${orderType}  ${
+              formatShares(amount).formatted
+            } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
             alert.toast = true;
           })
         );
@@ -217,17 +255,19 @@ export default function setAlertText(alert: any, callback: any) {
       case CREATECATEGORICALMARKET:
       case CREATESCALARMARKET:
       case CREATEYESNOMARKET:
-        alert.title = "Market created";
+        alert.title = 'Market created';
         if (!alert.description) {
-          const params = JSON.parse(alert.params.extraInfo || alert.params._extraInfo);
+          const params = JSON.parse(
+            alert.params.extraInfo || alert.params._extraInfo
+          );
           alert.description = params && params.description;
         }
         break;
 
       // These transaction names are overloaded across multiple contracts
       case APPROVE:
-        alert.title = "Dai approval";
-        alert.description = "You are approved to use Dai on Augur"
+        alert.title = 'Dai approval';
+        alert.description = 'You are approved to use Dai on Augur';
         break;
 
       default: {
