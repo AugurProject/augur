@@ -455,8 +455,7 @@ export default class MarketView extends Component<
                 <MarketComments
                   marketId={marketId}
                   networkId={networkId}
-                >
-                </MarketComments>
+                />
               </>
             ) : (
               <>
@@ -578,8 +577,7 @@ export default class MarketView extends Component<
                 <MarketComments
                   marketId={marketId}
                   networkId={networkId}
-                >
-                </MarketComments>
+                />
               </>
             )
           }
