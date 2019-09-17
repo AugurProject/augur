@@ -192,9 +192,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
   );
   const removedInvalid = outcomesShow.splice(0, 1)[0];
   outcomesShow.splice(2, 0, removedInvalid);
-  console.log(props.outcomes[0].marketId, props.outcomes.map(o => o.id.toString()));
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(props.marketType, props.outcomes, props.stakes);
-  console.log("result", sortedStakeOutcomes.map(o => o.id.toString()));
   outcomesShow = inDispute ? sortedStakeOutcomes : outcomesShow;
   return (
     <div
