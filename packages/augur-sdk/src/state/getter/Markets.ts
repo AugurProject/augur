@@ -151,17 +151,17 @@ export interface DisputeInfo {
     startTime: number | null;
     endTime: number | null;
   };
-  disputePacingOn: boolean;
-  stakeCompletedTotal: string;
-  bondSizeOfNewStake: string;
+  disputePacingOn: boolean; // false for fast disputing, true for weekly dispute cadance
+  stakeCompletedTotal: string; // total stake on market
+  bondSizeOfNewStake: string; // is size of bond if outcome hasn't been staked on
   stakes: StakeDetails[];
 }
 
 export interface StakeDetails {
   outcome: string;
-  bondSizeCurrent: string;
-  stakeCurrent: string;
-  stakeRemaining: string;
+  bondSizeCurrent: string; // current dispute round bond size
+  stakeCurrent: string; // will be pre-filled stake if tentative winning is true
+  stakeRemaining: string; // bondSizeCurrent - stakeCurrent
   tentativeWinning: boolean;
 }
 
@@ -449,7 +449,7 @@ export class Markets {
         endTime: { $lt: `0x${params.maxEndTime.toString(16)}` },
       });
     }
-    
+
     // Filter out markets not related to the specified user
     if (params.userPortfolioAddress) {
       const profitLossLogs = await db.findProfitLossChangedLogs(params.userPortfolioAddress, { selector: { universe: params.universe }});
