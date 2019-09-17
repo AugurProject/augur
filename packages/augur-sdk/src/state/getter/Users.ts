@@ -489,7 +489,7 @@ export class Users {
             .minus(reportingFee);
 
         marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProceeds = totalUnclaimedProceeds.toString();
-        marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProceeds = totalUnclaimedProceeds.minus(marketTradingPositions[derivedMarketDbInfo.market].totalCost).toString();
+        marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProfit = totalUnclaimedProceeds.minus(marketTradingPositions[derivedMarketDbInfo.market].totalCost).toString();
       }
     }
 
