@@ -7,11 +7,123 @@ from pytest import raises, mark
 from reporting_utils import proceedToNextRound
 from decimal import Decimal
 from old_eth_utils import ecsign, sha3, normalize_key, int_to_32bytearray, bytearray_to_bytestr, zpad
+from math import floor
 
 def signOrder(orderHash, private_key):
     key = normalize_key(private_key.to_hex())
     v, r, s = ecsign(sha3("\x19Ethereum Signed Message:\n32".encode('utf-8') + orderHash), key)
     return "0x" + v.to_bytes(1, "big").hex() + (zpad(bytearray_to_bytestr(int_to_32bytearray(r)), 32) + zpad(bytearray_to_bytestr(int_to_32bytearray(s)), 32)).hex() + "03"
+
+def test_trade_token(contractsFixture, cash, market, categoricalMarket, universe):
+    ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
+    completeSets = contractsFixture.contracts['CompleteSets']
+    marketZeroXTradeToken = contractsFixture.applySignature("ZeroXTradeToken", market.getZeroXTradeToken())
+    catMarketZeroXTradeToken = contractsFixture.applySignature("ZeroXTradeToken", categoricalMarket.getZeroXTradeToken())
+
+    account = contractsFixture.accounts[0]
+    account2 = contractsFixture.accounts[1]
+
+    price = 60
+    outcome = YES
+    orderType = BID
+
+    tokenId = ZeroXTrade.getTokenId(price, outcome, orderType)
+
+    # By default the trade tokens will give a 0 balance
+    assert marketZeroXTradeToken.balanceOf(account, tokenId) == 0
+    assert marketZeroXTradeToken.balanceOf(account2, tokenId) == 0
+    assert catMarketZeroXTradeToken.balanceOf(account, tokenId) == 0
+    assert catMarketZeroXTradeToken.balanceOf(account2, tokenId) == 0
+
+    # If we provide some Cash it will affect the balances since Cash can always be used to perform trades
+    accountCash = 1000
+    account2Cash = 2000
+    cash.faucet(accountCash, sender=account)
+    cash.faucet(account2Cash, sender=account2)
+
+    assert marketZeroXTradeToken.balanceOf(account, tokenId) == floor(accountCash / price)
+    assert marketZeroXTradeToken.balanceOf(account2, tokenId) == floor(account2Cash / price)
+    assert catMarketZeroXTradeToken.balanceOf(account, tokenId) == floor(accountCash / price)
+    assert catMarketZeroXTradeToken.balanceOf(account2, tokenId) == floor(account2Cash / price)
+
+    # If we reverse the trade type it will change our available balance since we dont need to put up as much Cash for the trade
+
+    orderType = ASK
+    askPrice = 100 - price
+
+    tokenId = ZeroXTrade.getTokenId(price, outcome, orderType)
+
+    assert marketZeroXTradeToken.balanceOf(account, tokenId) == floor(accountCash / askPrice)
+    assert marketZeroXTradeToken.balanceOf(account2, tokenId) == floor(account2Cash / askPrice)
+    assert catMarketZeroXTradeToken.balanceOf(account, tokenId) == floor(accountCash / askPrice)
+    assert catMarketZeroXTradeToken.balanceOf(account2, tokenId) == floor(account2Cash / askPrice)
+
+    # Lets try with just shares. Get rid of account 1 Cash
+    cash.transfer(contractsFixture.accounts[3], accountCash, sender=account)
+
+    # Make some complete sets for both markets and transfer our outcome shares to account 1
+    completeSets.publicBuyCompleteSets(market.address, 10, sender=account2)
+    completeSets.publicBuyCompleteSets(categoricalMarket.address, 10, sender=account2)
+
+    marketOutcomeShareToken = contractsFixture.applySignature('ShareToken', market.getShareToken(outcome))
+    catMarketOutcomeShareToken = contractsFixture.applySignature('ShareToken', categoricalMarket.getShareToken(outcome))
+
+    marketOutcomeShareToken.transfer(account, 10, sender=account2)
+    catMarketOutcomeShareToken.transfer(account, 10, sender=account2)
+
+    assert cash.balanceOf(account) == 0
+    assert cash.balanceOf(account2) == 0
+
+    # The shares should determine an available balance when appropriate. In this case the order type is ASK so account 1 should have a balance
+    assert marketZeroXTradeToken.balanceOf(account, tokenId) == 10
+    assert marketZeroXTradeToken.balanceOf(account2, tokenId) == 0
+    assert catMarketZeroXTradeToken.balanceOf(account, tokenId) == 10
+    assert catMarketZeroXTradeToken.balanceOf(account2, tokenId) == 0
+
+    # If we modify the order type back to BID account 2 will have a balance since they own shares in every other outcome
+    orderType = BID
+
+    tokenId = ZeroXTrade.getTokenId(price, outcome, orderType)
+
+    assert marketZeroXTradeToken.balanceOf(account, tokenId) == 0
+    assert marketZeroXTradeToken.balanceOf(account2, tokenId) == 10
+    assert catMarketZeroXTradeToken.balanceOf(account, tokenId) == 0
+    assert catMarketZeroXTradeToken.balanceOf(account2, tokenId) == 10
+
+    # If we change the outcome we'll see that neither account has a BID compatible balance
+    outcome = NO
+
+    tokenId = ZeroXTrade.getTokenId(price, outcome, orderType)
+
+    assert marketZeroXTradeToken.balanceOf(account, tokenId) == 0
+    assert marketZeroXTradeToken.balanceOf(account2, tokenId) == 0
+    assert catMarketZeroXTradeToken.balanceOf(account, tokenId) == 0
+    assert catMarketZeroXTradeToken.balanceOf(account2, tokenId) == 0
+
+    # However if the type is an ASK then account 2 will have a balance since they own those shares
+    orderType = ASK
+
+    tokenId = ZeroXTrade.getTokenId(price, outcome, orderType)
+
+    assert marketZeroXTradeToken.balanceOf(account, tokenId) == 0
+    assert marketZeroXTradeToken.balanceOf(account2, tokenId) == 10
+    assert catMarketZeroXTradeToken.balanceOf(account, tokenId) == 0
+    assert catMarketZeroXTradeToken.balanceOf(account2, tokenId) == 10
+
+    # Now lets give the account some Cash again and confirm the Cash is simply summed onto the share balances
+    cash.faucet(accountCash, sender=account)
+    cash.faucet(account2Cash, sender=account2)
+
+    assert marketZeroXTradeToken.balanceOf(account, tokenId) == floor(accountCash / askPrice)
+    assert marketZeroXTradeToken.balanceOf(account2, tokenId) == 10 + floor(account2Cash / askPrice)
+    assert catMarketZeroXTradeToken.balanceOf(account, tokenId) == floor(accountCash / askPrice)
+    assert catMarketZeroXTradeToken.balanceOf(account2, tokenId) == 10 + floor(account2Cash / askPrice)
+
+    # We also have a method of checking multiple balances
+
+    (marketAccount1Balance, marketAccount2Balance) = marketZeroXTradeToken.balanceOfBatch([account, account2], [tokenId, tokenId])
+    assert marketAccount1Balance == floor(accountCash / askPrice)
+    assert marketAccount2Balance == 10 + floor(account2Cash / askPrice)
 
 def test_basic_trading(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']

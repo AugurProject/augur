@@ -6,6 +6,7 @@ import "ROOT/trading/ICash.sol";
 import "ROOT/trading/IZeroXTrade.sol";
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
+import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/IAugur.sol';
 
 
@@ -18,13 +19,13 @@ contract ZeroXTradeToken is IERC1155, Initializable {
 
     ICash public cash;
     IZeroXTrade public zeroXTrade;
-    address public market;
+    IMarket public market;
 
     function initialize(address _augur, address _market) external beforeInitialized {
         endInitialization();
         cash = ICash(IAugur(_augur).lookup("Cash"));
         zeroXTrade = IZeroXTrade(IAugur(_augur).lookup("ZeroXTrade"));
-        market = _market;
+        market = IMarket(_market);
     }
 
     /// @notice Transfers value amount of an _id from the _from address to the _to address specified.
@@ -56,9 +57,39 @@ contract ZeroXTradeToken is IERC1155, Initializable {
     /// @param id     ID of the Token
     /// @return        The _owner's balance of the Token type requested
     function balanceOf(address owner, uint256 id) external view returns (uint256) {
-        // TODO unpack data from id
-        // Check balance of Cash / Price + Shares 
-        return 0;
+        (uint240 _price, uint8 _outcome, uint8 _type) = zeroXTrade.unpackTokenId(id);
+        Order.Types _orderType = Order.Types(_type);
+        if (_orderType == Order.Types.Ask) {
+            return askBalance(owner, _outcome, _price);
+        } else if (_orderType == Order.Types.Bid) {
+            return bidBalance(owner, _outcome, _price);
+        }
+    }
+
+    function bidBalance(address _owner, uint8 _outcome, uint240 _compressedPrice) private view returns (uint256) {
+        uint256 _numberOfOutcomes = market.getNumberOfOutcomes();
+        uint256 _price = uint256(_compressedPrice);
+
+        // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
+        uint256 _attoSharesOwned = 2**254;
+        for (uint256 _i = 0; _i < _numberOfOutcomes; _i++) {
+            if (_i != _outcome) {
+                uint256 _creatorShareTokenBalance = market.getShareToken(_i).balanceOf(_owner);
+                _attoSharesOwned = _creatorShareTokenBalance.min(_attoSharesOwned);
+            }
+        }
+
+        uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(_price);
+
+        return _attoSharesOwned.add(_attoSharesPurchasable);
+    }
+
+    function askBalance(address _owner, uint8 _outcome, uint240 _compressedPrice) private view returns (uint256) {
+        uint256 _price = uint256(_compressedPrice);
+        uint256 _attoSharesOwned = market.getShareToken(_outcome).balanceOf(_owner);
+        uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(market.getNumTicks().sub(_price));
+
+        return _attoSharesOwned.add(_attoSharesPurchasable);
     }
 
     /// @notice Get the balance of multiple account/token pairs
@@ -66,8 +97,10 @@ contract ZeroXTradeToken is IERC1155, Initializable {
     /// @param ids    ID of the Tokens
     /// @return        The _owner's balance of the Token types requested
     function balanceOfBatch(address[] calldata owners, uint256[] calldata ids) external view returns (uint256[] memory balances_) {
-        // TODO unpack data from ids
-        // Check balance of Cash / Price + Shares 
+        balances_ = new uint256[](owners.length);
+        for (uint256 _i = 0; _i < owners.length; _i++) {
+            balances_[_i] = this.balanceOf(owners[_i], ids[_i]);
+        }
     }
 
     function setApprovalForAll(address operator, bool approved) external {
@@ -79,6 +112,6 @@ contract ZeroXTradeToken is IERC1155, Initializable {
     }
 
     function getMarket() public view returns (address) {
-        return market;
+        return address(market);
     }
 }

@@ -15,7 +15,6 @@ import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
 
 
-
 contract ZeroXTrade is Initializable, IZeroXTrade {
     using SafeMathUint256 for uint256;
 
@@ -140,7 +139,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         AugurOrderData memory _augurOrderData = parseOrderData(_order);
         // If the signed order creator doesnt have enough funds we still want to continue and take their order out of the list
         // If the filler doesn't have funds this will just fail, which is fine
-        if (!creatorHasFundsForTrade(_augurOrderData, _order.makerAddress, _amount)) {
+        if (!creatorHasFundsForTrade(_order, _amount)) {
             return 0;
         }
         // If the maker is also the taker we also just skip the trade
@@ -151,39 +150,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         return _amount;
     }
 
-    function creatorHasFundsForTrade(AugurOrderData memory _augurOrderData, address _creator, uint256 _amount) public view returns (bool) {
-        Order.Types _orderType = Order.Types(_augurOrderData.orderType);
-        if (_orderType == Order.Types.Ask) {
-            return partyHasFundsForAsk(_creator, _amount, IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, _augurOrderData.price);
-        } else if (_orderType == Order.Types.Bid) {
-            return partyHasFundsForBid(_creator, _amount, IMarket(_augurOrderData.marketAddress), _augurOrderData.outcome, _augurOrderData.price);
-        }
-    }
-
-    function partyHasFundsForBid(address _party, uint256 _attosharesToCover, IMarket _market, uint256 _outcome, uint256 _price) private view returns (bool) {
-        uint256 _numberOfOutcomes = _market.getNumberOfOutcomes();
-
-        // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
-        uint256 _attosharesHeld = 2**254;
-        for (uint256 _i = 0; _i < _numberOfOutcomes; _i++) {
-            if (_i != _outcome) {
-                uint256 _creatorShareTokenBalance = _market.getShareToken(_i).balanceOf(_party);
-                _attosharesHeld = _creatorShareTokenBalance.min(_attosharesHeld);
-            }
-        }
-
-        _attosharesToCover -= _attosharesHeld;
-
-        // If not able to cover entire order with shares alone, then cover remaining with tokens
-        return cash.balanceOf(_party) >= _attosharesToCover.mul(_price);
-    }
-
-    function partyHasFundsForAsk(address _party, uint256 _attosharesToCover, IMarket _market, uint256 _outcome, uint256 _price) private view returns (bool) {
-        // Figure out how many shares of the outcome the creator has
-        _attosharesToCover -= _market.getShareToken(_outcome).balanceOf(_party);
-
-        // If not able to cover entire order with shares alone, then cover remaining with tokens
-        return cash.balanceOf(_party) >= _market.getNumTicks().sub(_price).mul(_attosharesToCover);
+    function creatorHasFundsForTrade(IExchange.Order memory _order, uint256 _amount) public view returns (bool) {
+        (IERC1155 _zeroXTradeToken, uint256 _tokenId) = getZeroXTradeTokenData(_order);
+        return _amount <= _zeroXTradeToken.balanceOf(_order.makerAddress, _tokenId);
     }
 
     function getTransferFromAllowed() public view returns (bool) {
@@ -297,6 +266,12 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         _data.orderType = _type;
         _data.outcome = _outcome;
         _data.kycToken = _kycToken;
+    }
+
+    function getZeroXTradeTokenData(IExchange.Order memory _order) public view returns (IERC1155 _token, uint256 _tokenId) {
+        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_order.makerAssetData);
+        _token = IERC1155(_tokenAddress);
+        _tokenId = _tokenIds[0];
     }
 
     function createZeroXOrder(uint8 _type, uint256 _attoshares, uint240 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
