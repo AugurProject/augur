@@ -84,7 +84,7 @@ export interface FavoritesButtonProps {
 export interface ViewTransactionDetailsButtonProps {
   transactionHash: string;
   label?: string;
-  dark?: boolean;
+  light?: boolean;
 }
 
 export interface ExternalLinkButtonProps {
@@ -297,7 +297,7 @@ export const ViewTransactionDetailsButton = (
 ) => (
   <div
     className={classNames(Styles.ViewTransactionDetailsButton, {
-      [Styles.Dark]: props.dark,
+      [Styles.Light]: props.light,
     })}
   >
     {ViewIcon}

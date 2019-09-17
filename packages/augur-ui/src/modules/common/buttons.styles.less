@@ -461,24 +461,27 @@
   }
 
 
-  &.Dark {
+  &.Light {
     .mono-9;
 
-    background: @color-tertiary-background-theme;
+    background: transparent;
     border-radius: @size-3;
     padding: @size-4;
+    border: 1px solid @color-dark-alternate;
 
+    > span > span,
     > span > a {
-      color: @color-tertiary-info-text;
+      text-decoration: none;
+      color: @color-dark-alternate;
     }
 
     > svg {
       > path {
         &:nth-child(even) {
-          stroke: @color-tertiary-info-text;
+          stroke: @color-dark-alternate
         }
         &:nth-child(odd) {
-          fill: @color-tertiary-info-text;
+          fill: @color-dark-alternate
         }
       }
     }
