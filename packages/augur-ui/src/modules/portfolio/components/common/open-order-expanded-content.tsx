@@ -57,7 +57,6 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
               value={creationTime}
             />
           </div>
-          <div>{creationTime}</div>
           {openOrder.cancelOrder && (
             <CancelTextButton
               disabled={openOrder.pending}
