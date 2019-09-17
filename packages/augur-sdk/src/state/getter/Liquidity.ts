@@ -26,7 +26,7 @@ export const GetMarketLiquidityRankingParams = t.type({
     numTicks: t.string,
     marketType: t.number,
     reportingFeeDivisor: t.string,
-    marketFeeDivisor: t.string,
+    feePerCashInAttoCash: t.string,
     numOutcomes: t.number,
     spread: t.number,
 });
@@ -47,7 +47,7 @@ export class Liquidity {
         numTicks: new BigNumber(params.numTicks),
         marketType: params.marketType,
         reportingFeeDivisor: new BigNumber(params.reportingFeeDivisor),
-        marketFeeDivisor: new BigNumber(params.marketFeeDivisor),
+        feePerCashInAttoCash: new BigNumber(params.feePerCashInAttoCash),
         numOutcomes: params.numOutcomes,
         spread: params.spread,
     });

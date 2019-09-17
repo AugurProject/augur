@@ -7,6 +7,7 @@ import pouchdbDebug from 'pouchdb-debug';
 
 import * as _ from 'lodash';
 import DatabaseConfiguration = PouchDB.Configuration.DatabaseConfiguration;
+import PouchDb from 'pouchdb-browser';
 
 PouchDB.plugin(Find);
 PouchDB.plugin(Memory);
@@ -78,13 +79,14 @@ export abstract class AbstractDB {
   }
 
   private async bulkUpsertDocuments(previousDocs: DocumentIDToDoc, documents: Array<PouchDB.Core.PutDocument<{}>>): Promise<boolean> {
+    if (documents.length < 1) return true;
     const mergedRevisionDocuments = _.map(documents, (doc) => {
       // The c'tor needs to be deleted since indexeddb bulkUpsert cannot accept objects with methods on them
       delete doc.constructor;
 
-      const previousDoc = previousDocs[doc._id!];
+      const previousDoc = previousDocs[doc._id!] || { _id: doc._id, _rev: undefined };
       return Object.assign(
-        previousDoc ? previousDoc : {},
+        previousDoc,
         doc
       );
     });

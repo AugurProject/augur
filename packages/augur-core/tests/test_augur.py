@@ -18,10 +18,10 @@ def test_trusted_transfer_amount_failure(augur):
 
 def test_log_requires(augur, universe):
     with raises(TransactionFailed):
-        augur.logInitialReportSubmitted(universe.address, universe.address, universe.address, 1, False, [0, 0, 100], "")
+        augur.logInitialReportSubmitted(universe.address, universe.address, universe.address, 1, False, [0, 0, 100], "", 0, 0)
 
     with raises(TransactionFailed):
-        augur.logInitialReportSubmitted(augur.address, augur.address, augur.address, 1, False, [0, 0, 100], "")
+        augur.logInitialReportSubmitted(augur.address, augur.address, augur.address, 1, False, [0, 0, 100], "", 0, 0)
 
 def test_register_non_contract(localFixture, augur):
     with raises(TransactionFailed):

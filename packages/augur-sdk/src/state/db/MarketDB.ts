@@ -14,9 +14,14 @@ import {
   SECONDS_IN_A_YEAR,
   WORST_CASE_FILL,
 } from '../../constants';
-import { MarketData, MarketType, OrderType } from '../logs/types';
+import { MarketData, MarketType, OrderType, TimestampSetLog } from '../logs/types';
 import { BigNumber } from 'bignumber.js';
 import { OrderBook } from '../../api/Liquidity';
+import { ParsedLog } from '@augurproject/types';
+import { MarketReportingState, SECONDS_IN_A_DAY } from '../../constants';
+import { QUINTILLION } from '../../utils';
+import { Block } from "ethereumjs-blockstream";
+
 
 interface MarketOrderBookData {
   _id: string;
@@ -37,16 +42,27 @@ export class MarketDB extends DerivedDB {
   readonly liquiditySpreads = [10, 15, 20, 100];
 
   constructor(db: DB, networkId: number, augur: Augur) {
-    super(db, networkId, 'Markets', ['MarketCreated', 'MarketVolumeChanged', 'MarketOIChanged'], ['market']);
+    super(db, networkId, 'Markets', [
+      'MarketCreated',
+      'MarketVolumeChanged',
+      'MarketOIChanged',
+      'InitialReportSubmitted',
+      'DisputeCrowdsourcerCompleted',
+      'MarketFinalized',
+    ], ['market']);
 
     this.augur = augur;
 
     this.events.subscribe('DerivedDB:updated:CurrentOrders', this.syncOrderBooks);
+    this.events.subscribe('controller:new:block', this.processNewBlock);
+    this.events.subscribe('TimestampSet', this.processTimestampSet);
   }
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     await super.doSync(highestAvailableBlockNumber);
     await this.syncOrderBooks(true);
+    const timestamp = (await this.augur.getTimestamp()).toNumber();
+    await this.processTimestamp(timestamp, highestAvailableBlockNumber);
   }
 
   syncOrderBooks = async (syncing: boolean): Promise<void> => {
@@ -78,7 +94,10 @@ export class MarketDB extends DerivedDB {
     const ETHInAttoDAI = new BigNumber(200).multipliedBy(10**18);
 
     for (const marketId of marketIds) {
-      documents.push(await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI));
+      const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI);
+      // This is needed to make rollbacks work properly
+      doc['blockNumber'] = highestBlockNumber;
+      documents.push(doc);
     }
 
     success = await this.bulkUpsertUnorderedDocuments(documents);
@@ -98,10 +117,11 @@ export class MarketDB extends DerivedDB {
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
     const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(estimatedTradeGasCost);
     const estimatedClaimGasCostInAttoDai = estimatedGasCost.multipliedBy(CLAIM_GAS_COST);
-    const marketFeeDivisor = new BigNumber(marketData.feeDivisor);
+    const feePerCashInAttoCash = new BigNumber(marketData.feePerCashInAttoCash);
+    const feeDivisor = new BigNumber(marketData.feeDivisor);
     const numTicks = new BigNumber(marketData.numTicks);
 
-    const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(marketFeeDivisor));
+    const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
 
     const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
 
@@ -119,7 +139,7 @@ export class MarketDB extends DerivedDB {
         numTicks,
         marketType: marketData.marketType,
         reportingFeeDivisor,
-        marketFeeDivisor,
+        feePerCashInAttoCash,
         numOutcomes,
         spread,
       })).toFixed();
@@ -185,5 +205,103 @@ export class MarketDB extends DerivedDB {
     const validProfit = validRevenue.minus(validCost);
 
     return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI);
+  }
+
+  protected processDoc(log: ParsedLog): ParsedLog {
+    if (log.name === 'MarketCreated') {
+      return this.processMarketCreated(log);
+    } else if (log.name === 'InitialReportSubmitted') {
+      return this.processInitialReportSubmitted(log);
+    } else if (log.name === 'DisputeCrowdsourcerCompleted') {
+      return this.processDisputeCrowdsourcerCompleted(log);
+    } else if (log.name === 'MarketFinalized') {
+      return this.processMarketFinalized(log);
+    }
+    return log;
+  }
+
+  private processMarketCreated(log: ParsedLog): ParsedLog {
+    log['reportingState'] = MarketReportingState.PreReporting;
+    log['invalidFilter'] = false;
+    log['marketOI'] = '0x00';
+    log['volume'] = '0x00';
+    log['disputeRound'] = '0x00';
+    log['totalRepStakedInMarket'] = '0x00';
+    log['hasRecentlyDepletedLiquidity'] = false;
+    log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
+    return log;
+  }
+
+  private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
+    log['reportingState'] = MarketReportingState.CrowdsourcingDispute;
+    log['totalRepStakedInMarket'] = log['amountStaked']
+    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
+    log['disputeRound'] = '0x1';
+    return log;
+  }
+
+  private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
+    const pacingOn: boolean = log['pacingOn'];
+    log['reportingState'] = pacingOn ? MarketReportingState.AwaitingNextWindow : MarketReportingState.CrowdsourcingDispute;
+    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
+    return log;
+  }
+
+  private processMarketFinalized(log: ParsedLog): ParsedLog {
+    log['reportingState'] = MarketReportingState.Finalized;
+    log['finalizationBlockNumber'] = log['blockNumber'];
+    log['finalizationTime'] = log['timestamp'];
+    return log;
+  }
+
+  processNewBlock = async (block: Block): Promise<void> => {
+    const timestamp = (await this.augur.getTimestamp()).toNumber();
+    await this.processTimestamp(timestamp, parseInt(block.number))
+  }
+
+  processTimestampSet = async (log: TimestampSetLog): Promise<void> => {
+    const timestamp = new BigNumber(log.newTimestamp).toNumber();
+    await this.processTimestamp(timestamp, log.blockNumber)
+  }
+
+  private async processTimestamp(timestamp: number, blockNumber: number): Promise<void> {
+    const eligibleMarketDocs = await this.find({
+      selector: {
+        reportingState: { $in: [
+          MarketReportingState.PreReporting,
+          MarketReportingState.DesignatedReporting,
+          MarketReportingState.CrowdsourcingDispute,
+          MarketReportingState.AwaitingNextWindow,
+        ] }
+      }
+    });
+    const eligibleMarketsData = eligibleMarketDocs.docs as unknown as MarketData[];
+    const updateDocs = [];
+
+    for (const marketData of eligibleMarketsData) {
+      let reportingState: MarketReportingState = null;
+      const marketEnd = new BigNumber(marketData.endTime, 16);
+      const openReportingStart = marketEnd.plus(SECONDS_IN_A_DAY).plus(1);
+
+      if (marketData.nextWindowEndTime && timestamp >= new BigNumber(marketData.nextWindowEndTime, 16).toNumber()) {
+        reportingState = MarketReportingState.AwaitingFinalization;
+      } else if (marketData.nextWindowStartTime && timestamp >= new BigNumber(marketData.nextWindowStartTime, 16).toNumber()) {
+        reportingState = MarketReportingState.CrowdsourcingDispute;
+      } else if ((marketData.reportingState == MarketReportingState.PreReporting || marketData.reportingState == MarketReportingState.DesignatedReporting) && timestamp >= openReportingStart.toNumber()) {
+          reportingState = MarketReportingState.OpenReporting;
+      } else if (marketData.reportingState == MarketReportingState.PreReporting && timestamp >= marketEnd.toNumber() && timestamp < openReportingStart.toNumber()) {
+          reportingState = MarketReportingState.DesignatedReporting;
+      }
+
+      if (reportingState) {
+        updateDocs.push({
+          _id: marketData._id,
+          blockNumber,
+          reportingState
+        });
+      }
+    }
+
+    await this.bulkUpsertUnorderedDocuments(updateDocs);
   }
 }
