@@ -18,7 +18,7 @@ interface AlertProps {
   onClick?: Function;
   removeAlert: Function;
   seen: boolean;
-  timestamp: number;
+  timestampInMilliseconds: number;
   status: string;
   toggleAlerts: Function;
   noShow?: boolean;
@@ -33,7 +33,7 @@ export default class Alert extends Component<AlertProps, {}> {
       description,
       removeAlert,
       seen,
-      timestamp,
+      timestampInMilliseconds,
       title,
       noShow,
       toast,
@@ -73,7 +73,7 @@ export default class Alert extends Component<AlertProps, {}> {
               <>
                 <span className={Styles.Timestamp}>
                   {
-                    convertUnixToFormattedDate(timestamp / 1000)
+                    convertUnixToFormattedDate(timestampInMilliseconds / 1000)
                       .formattedLocalShortTime
                   }
                 </span>
