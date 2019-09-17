@@ -373,8 +373,6 @@ export default class AppView extends Component<AppProps> {
             [Styles['App--blur']]: Object.keys(modal).length !== 0,
           })}
         >
-          <section className={Styles.App__loadingIndicator} />
-
           <section className={Styles.Main}>
             <section
               className={classNames(Styles.TopBar, Styles.TopBar__floatAbove)}

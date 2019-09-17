@@ -78,7 +78,7 @@
 
   form.ModalTightForm > p.Error,
   > p.Error {
-    color: @color-red;
+    color: @color-error-text;
   }
 
   form.ModalTightForm > p.Error {
@@ -99,7 +99,7 @@
     }
 
     > input::placeholder {
-      color: @color-input-border-no-focus;
+      color: @color-alternate-info-text;
     }
   }
 
@@ -161,7 +161,7 @@
     }
 
     > input::placeholder {
-      color: @color-input-border-no-focus;
+      color: @color-alternate-info-text;
     }
   }
 
@@ -224,7 +224,7 @@
 }
 
 .Error {
-  color: @color-red;
+  color: @color-error-text;
   display: flex;
   padding: 0;
 
@@ -239,7 +239,7 @@
 div.ErrorField,
 div.ErrorField:focus-within,
 div.ErrorField:focus {
-  .border(true, @border-all, @color-red, @border-width-2);
+  .border(true, @border-all, @color-error-text, @border-width-2);
 
   margin-bottom: 0.5rem;
 }
@@ -511,40 +511,6 @@ div.ErrorField:focus {
 
     > div {
       margin-right: 2rem;
-    }
-  }
-}
-
-.ModalDisclaimer__ActionButtons {
-  border-top: 1px solid #d8d8d8;
-  display: flex;
-  flex-flow: column;
-  justify-content: space-between;
-  max-width: 35rem;
-  padding: 0 2rem;
-
-  > label {
-    align-items: flex-end;
-    color: @color-almostblack;
-    display: flex;
-    margin: 1.5rem 0;
-
-    > input {
-      height: 1rem;
-      margin-left: 1rem;
-      width: 1rem;
-    }
-  }
-
-  > button {
-    &:extend(.button--purple all);
-
-    margin: 0 auto;
-
-    &.disabled {
-      &:extend(.button--purple--disabled);
-
-      pointer-events: none;
     }
   }
 }

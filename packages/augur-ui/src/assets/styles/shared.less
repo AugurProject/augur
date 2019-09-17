@@ -1,7 +1,6 @@
 // NOTE -- There is import order dependence, so please don't reorder before checking inheritence
 // This is so that there is not circular dependencies amoung these stylesheets
 @import '_normalize';
-@import '_colors';
 @import '_colors_redesign';
 @import '_typography';
 @import '_typography_redesign';
@@ -9,7 +8,6 @@
 @import '_animations';
 @import '_arrangement';
 @import '_borders';
-@import '_box-shadow';
 @import '_buttons';
 @import '_responsive';
 @import '_inputs';
@@ -23,7 +21,7 @@ html {
 }
 
 body {
-  color: @color-extra-darkpurple;
+  color: @color-secondary-action;
   font-family: @roboto;
   font-size: 16px;
   font-style: normal;

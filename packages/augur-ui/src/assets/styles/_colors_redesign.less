@@ -21,6 +21,7 @@
 @color-theme-primary: #211A32;
 @color-theme-secondary: #141313;
 @color-contrast-background: #FBE9A6;
+@color-modal-veil: rgba(0, 0, 0, 0.8);
 
 @color-tertiary-background-theme: #252429;
 @color-contrast-background-theme: #E9E7F3;
@@ -36,7 +37,7 @@
 @color-in-reporting: #F1E700;
 @color-resolved: #F12B00;
 
-@color-highlight: #665789;
+@color-highlight: @color-primary-alternate-two;
 @color-bright-highlight: #988FEA;
 @color-highlight-fade: #C4C4C4;
 @color-highlight-masked: fade(@color-highlight-fade, 10%);
@@ -55,6 +56,8 @@
 @color-active-hover: #211B2E;
 
 @color-underline: #7EC9FF;
+
+@color-input-border: @color-primary-light;
 
 @color-primary-button-background-hover: fade(@color-primary-action, 90%);
 @color-primary-button-background-focus: fade(@color-primary-action, 80%);
@@ -80,7 +83,7 @@
 //  Chart
 @color-outcome-one: #fadca2;
 @color-outcome-two: #f3a2fa;
-@color-outcome-three: #ffffff;
+@color-outcome-three: @color-secondary-text;
 @color-outcome-four: #00EAFF;
 @color-outcome-five: #a5a5a5;
 @color-outcome-six: #665cdf;
@@ -103,7 +106,7 @@
 @color-four: #09CFE1;
 @color-five: #FCBD43;
 @color-six: #FF6DE8;
-@color-seven: #FFFFFF;
+@color-seven: @color-secondary-text;
 @color-invalid: #FF7E9D;
 @color-outcome-alternate-list: @color-one @color-two @color-three @color-four @color-five @color-six @color-seven @color-invalid;
 

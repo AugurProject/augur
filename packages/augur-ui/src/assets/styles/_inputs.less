@@ -10,15 +10,15 @@ label {
 }
 
 .Label--dark {
-  color: @color-text-dark;
+  color: @color-theme-primary;
 }
 
 input,
 textarea {
-  .border(true, @border-all, @color-transparent, @border-width-1);
+  .border(true, @border-all, transparent, @border-width-1);
 
-  background-color: @color-input-background;
-  color: @color-text-dark;
+  background-color: @color-secondary-text;
+  color: @color-theme-primary;
   display: block;
   font-family: @roboto;
   padding: 0.75rem 1rem;
@@ -29,12 +29,12 @@ textarea {
   }
 
   &:disabled {
-    background-color: @color-disabled;
+    background-color: @color-disabled-text-secondary;
     cursor: default;
   }
 
   &::placeholder {
-    color: @color-offwhite;
+    color: @color-alternate-contrast;
     font-family: @roboto;
   }
 }
