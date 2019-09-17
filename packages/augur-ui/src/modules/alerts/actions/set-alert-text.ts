@@ -4,8 +4,8 @@
 import { isEmpty } from "utils/is-empty";
 import { selectMarket } from "modules/markets/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
-import { getOutcomeName } from "utils/get-outcome";
-import { formatEther, formatRep, formatShares, formatDai } from "utils/format-number";
+import { getOutcomeNameWithOutcome } from "utils/get-outcome";
+import { formatRep, formatShares, formatDai } from "utils/format-number";
 import { calculatePayoutNumeratorsValue, TXEventName, convertOnChainAmountToDisplayAmount, convertOnChainPriceToDisplayPrice, convertPayoutNumeratorsToStrings } from "@augurproject/sdk";
 import {
   BUY,
@@ -26,15 +26,11 @@ import {
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
   APPROVE,
-  PREFILLEDSTAKE,
-  ZERO
 } from "modules/common/constants";
-import { Outcomes } from "modules/types";
 import { AppState } from "store";
 import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { createBigNumber } from "utils/create-big-number";
-import { updateAlert } from "./alerts";
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1)
@@ -42,10 +38,7 @@ function toCapitalizeCase(label) {
 function getInfo(params, status, marketInfo) {
   const outcome = params.outcome || params._outcome;
 
-  const outcomeDescription = getOutcomeName(
-    marketInfo,
-    { id: outcome },
-  );
+  const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType = params.orderType === 0 ? BUY : SELL;
 
   if (status === TXEventName.Failure) {
@@ -54,7 +47,7 @@ function getInfo(params, status, marketInfo) {
 
   const price = convertOnChainPriceToDisplayPrice(createBigNumber(params.price || params._price), createBigNumber(marketInfo.minPrice), createBigNumber(marketInfo.tickSize));
   const amount = convertOnChainAmountToDisplayAmount(createBigNumber(params.amount || params._amount), createBigNumber(marketInfo.tickSize));
-    
+
   return {
     price,
     amount,
@@ -76,7 +69,6 @@ export default function setAlertText(alert: any, callback: any) {
     }
 
     const marketId = alert.params.market || alert.params._market;
-    const { alerts } = getState();
 
     switch (alert.name.toUpperCase()) {
       // CancelOrder
@@ -85,13 +77,14 @@ export default function setAlertText(alert: any, callback: any) {
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
+            if (marketInfo === null) return;
             alert.description = marketInfo.description;
             const amount = alert.params.order.amount;
             const price = alert.params.order.price;
             const orderType = alert.params.orderTypeLabel;
             const outcomeDescription = alert.params.outcomeId === null
                 ? "Market Is Invalid"
-                : getOutcomeName(marketInfo, { id: alert.params.outcomeId }, false);
+                : getOutcomeNameWithOutcome(marketInfo, alert.params.outcomeId, false);
             alert.details = `${toCapitalizeCase(orderType)}  ${formatShares(amount).formatted} of ${formatDai(price).formatted} of ${outcomeDescription} has been cancelled`;
           })
         );
@@ -128,6 +121,7 @@ export default function setAlertText(alert: any, callback: any) {
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
+            if (marketInfo === null) return;
             alert.description = marketInfo.description;
             const {
               orderType,
@@ -150,6 +144,7 @@ export default function setAlertText(alert: any, callback: any) {
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
+            if (marketInfo === null) return;
             const outcome = calculatePayoutNumeratorsValue(
               marketInfo.maxPrice,
               marketInfo.minPrice,
@@ -160,7 +155,7 @@ export default function setAlertText(alert: any, callback: any) {
             const outcomeDescription =
               outcome === null
                 ? "Market Is Invalid"
-                : getOutcomeName(marketInfo, { id: outcome }, false);
+                : getOutcomeNameWithOutcome(marketInfo, outcome, false);
             alert.description = marketInfo.description;
             alert.details = `${
               formatRep(
@@ -177,6 +172,7 @@ export default function setAlertText(alert: any, callback: any) {
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
+            if (marketInfo === null) return;
             const outcome = calculatePayoutNumeratorsValue(
               marketInfo.maxPrice,
               marketInfo.minPrice,
@@ -187,7 +183,7 @@ export default function setAlertText(alert: any, callback: any) {
             const outcomeDescription =
               outcome === null
                 ? "Market Is Invalid"
-                : getOutcomeName(marketInfo, { id: outcome }, false);
+                : getOutcomeNameWithOutcome(marketInfo, outcome, false);
             alert.description = marketInfo.description;
             alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
           })
@@ -201,6 +197,7 @@ export default function setAlertText(alert: any, callback: any) {
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
+            if (marketInfo === null) return;
             alert.description = marketInfo.description;
             const {
               orderType,
@@ -232,7 +229,7 @@ export default function setAlertText(alert: any, callback: any) {
         alert.title = "Dai approval";
         alert.description = "You are approved to use Dai on Augur"
         break;
-      
+
       default: {
         break;
       }
