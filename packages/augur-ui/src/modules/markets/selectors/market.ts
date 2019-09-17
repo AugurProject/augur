@@ -67,18 +67,19 @@ export const selectSortedDisputingOutcomes = (
 ): OutcomeFormatted[] => {
   const sorted = stakes
     ? stakes.sort((a, b) => {
+        if (a.tentativeWinning) return 1;
         if (
           createBigNumber(a.stakeCompleted).gt(
             createBigNumber(b.stakeCompleted)
           )
         )
-          return -1;
+          return 1;
         if (
           createBigNumber(b.stakeCompleted).gt(
             createBigNumber(a.stakeCompleted)
           )
         )
-          return 1;
+          return -1;
         return 0;
       })
     : [];
@@ -96,8 +97,6 @@ export const selectSortedDisputingOutcomes = (
   }
 
   if (stakes.length > 0) {
-    console.log("yes no, cat")
-    stakes.map(s => console.log(JSON.stringify(s)));
     const sortedOutcomes: OutcomeFormatted[] = sorted
       .reduce(
         (p, s) => [...p, outcomes.find(o => o.id === parseInt(s.outcome, 10))],
@@ -105,10 +104,14 @@ export const selectSortedDisputingOutcomes = (
       )
       .filter(o => !!o);
 
-    return outcomes.reduce(
+    const result = outcomes.reduce(
       (p, outcome) => (p.find(s => s.id === outcome.id) ? p : [...p, outcome]),
       sortedOutcomes
     );
+    console.log(JSON.stringify(stakes));
+    console.log(JSON.stringify(result));
+    console.log('bob');
+    return result;
   }
 
   return selectSortedMarketOutcomes(marketType, outcomes);
