@@ -1,23 +1,25 @@
 import React, { Component } from 'react';
 
+import Styles from 'modules/market/components/market-view/market-view.styles.less';
+
 interface MarketCommentsProps {
   marketId: string;
   colorScheme: string;
-  dataWidth: string;
+  numPosts: number;
   networkId: string;
 }
 
 export class MarketComments extends Component<MarketCommentsProps> {
   static defaultProps = {
     colorScheme: 'dark',
-    dataWidth: '500',
+    numPosts: 10,
   };
 
   render() {
     const {
       marketId,
       colorScheme,
-      dataWidth,
+      numPosts,
       networkId,
     } = this.props;
 
@@ -26,10 +28,10 @@ export class MarketComments extends Component<MarketCommentsProps> {
     let content = null;
 
     content = (
-      <div id='fb-comments-container'>
+      <section className={Styles.MarketView__comments}>
         <div id='fb-root'></div>
-        <div id='fb-comments' className='fb-comments' data-colorscheme={colorScheme} data-href={fbCommentsUrl} data-width={dataWidth} data-numposts='10'></div>
-      </div>
+        <div id='fb-comments' className='fb-comments' data-colorscheme={colorScheme} data-href={fbCommentsUrl} data-width='100%' data-numposts={numPosts.toString()}></div>
+      </section>
     );
 
     // This is a hack that is required because putting the JS script in index.ejs does not work

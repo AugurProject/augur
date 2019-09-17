@@ -452,15 +452,11 @@ export default class MarketView extends Component<
                     </div>
                   </ModulePane>
                 </ModuleTabs>
-                <section className={Styles.MarketView__comments}>
-                  <MarketComments
-                    marketId={marketId}
-                    colorScheme='dark'
-                    dataWidth='500'
-                    networkId={networkId}
-                  >
-                  </MarketComments>
-                </section>
+                <MarketComments
+                  marketId={marketId}
+                  networkId={networkId}
+                >
+                </MarketComments>
               </>
             ) : (
               <>
@@ -579,15 +575,11 @@ export default class MarketView extends Component<
                   </div>
                 </section>
 
-                <section className={Styles.MarketView__comments}>
-                  <MarketComments
-                    marketId={marketId}
-                    colorScheme='dark'
-                    dataWidth='800'
-                    networkId={networkId}
-                  >
-                  </MarketComments>
-                </section>
+                <MarketComments
+                  marketId={marketId}
+                  networkId={networkId}
+                >
+                </MarketComments>
               </>
             )
           }

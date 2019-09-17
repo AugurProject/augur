@@ -193,8 +193,11 @@
 }
 
 .MarketView__comments {
-  clear: both;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  margin: 0rem 1.5rem;
 }
 
 div.OutcomeNameDisplay {
@@ -284,5 +287,12 @@ div.OutcomeNameDisplay {
     font-size: @size-14;
     height: @size-48;
     min-height: @size-48;
+  }
+
+  .MarketView__comments {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
   }
 }
