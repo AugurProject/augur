@@ -155,4 +155,6 @@ export enum MarketReportingState {
   AwaitingNextWindow = 'AwaitingNextWindow',
   AwaitingFinalization = 'AwaitingFinalization',
   Finalized = 'Finalized',
+  Forking = 'Forking',
+  AwaitingForkMigration = 'AwaitingForkMigration'
 }
