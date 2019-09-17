@@ -27,7 +27,6 @@ export class MarketComments extends Component<MarketCommentsProps> {
 
     return (
       <section className={Styles.MarketView__comments}>
-        <div id='fb-root'></div>
         <div id='fb-comments' className='fb-comments' data-colorscheme={colorScheme} data-href={fbCommentsUrl} data-width='100%' data-numposts={numPosts.toString()}></div>
       </section>
     );
