@@ -27,21 +27,21 @@ export class DisputeDatabase extends DerivedDB {
   protected processDoc(log: ParsedLog): ParsedLog {
     if (log.name === 'InitialReportSubmitted') {
         return this.processInitialReportSubmitted(log);
-    } else if (log.name === 'DisputeCrowdsourcerCompleted') {
-        return this.processDisputeCrowdsourcerCompleted(log);
-    } else if (log.name === 'InitialDisputeCrowdsourcerContribution') {
-        return this.processDisputeCrowdsourcerContribution(log);
-    } else if (log.name === 'DisputeCrowdsourcerCompleted') {
-        return this.processDisputeCrowdsourcerCompleted(log);
-    }
-    return log;
-  }
+        } else if (log.name === 'DisputeCrowdsourcerCreated') {
+            return this.processDisputeCrowdsourcerCreated(log);
+        } else if (log.name === 'DisputeCrowdsourcerContribution') {
+            return this.processDisputeCrowdsourcerContribution(log);
+        } else if (log.name === 'DisputeCrowdsourcerCompleted') {
+            return this.processDisputeCrowdsourcerCompleted(log);
+        }
+        return log;
+      }
 
-  private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
-    log['stakeCurrent'] = '0x0';
-    log['stakeRemaining'] = '0x0';
-    log['tentativeWinningOnRound'] = '0x1';
+      private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
+        log['stakeCurrent'] = '0x0';
+        log['stakeRemaining'] = '0x0';
     log['totalRepStakedInPayout'] = log['amountStaked'];
+        log['disputeRound'] = '0x01';
     return log;
   }
 
@@ -52,15 +52,14 @@ export class DisputeDatabase extends DerivedDB {
     return log;
   }
 
-  private processDisputeCrowdsourcerContribution(log: ParsedLog): ParsedLog {
-    log['stakeCurrent'] = log['currentStake']
-    return log;
-  }
+      private processDisputeCrowdsourcerContribution(log: ParsedLog): ParsedLog {
+        log['stakeCurrent'] = log['currentStake']
+        return log;
+      }
 
-  private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
-    log['stakeCurrent'] = '0x0';
-    log['stakeRemaining'] = '0x0';
-    log['tentativeWinningOnRound'] = log['disputeRound'];
+      private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
+        log['stakeCurrent'] = '0x0';
+        log['stakeRemaining'] = '0x0';
     return log;
   }
 }
