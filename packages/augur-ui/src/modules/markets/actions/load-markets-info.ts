@@ -16,7 +16,7 @@ export const loadMarketsInfo = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  if (!marketIds || marketIds.length === 0) {
+  if (!marketIds || marketIds !== undefined || marketIds.length === 0) {
     return callback(null, []);
   }
   const augur = augurSdk.get();
