@@ -15,6 +15,7 @@ import OrderBook from 'modules/market-charts/containers/order-book';
 import MarketChartsPane from 'modules/market-charts/containers/market-charts-pane';
 import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
 import MarketTradeHistory from 'modules/market/containers/market-trade-history';
+import MarketComments from 'modules/market/containers/market-comments';
 import {
   CATEGORICAL,
   BUY,
@@ -30,6 +31,7 @@ import { LeftChevron } from 'modules/common/icons';
 import { TEMP_TABLET } from 'modules/common/constants';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
+import { getNetworkId } from "modules/contracts/actions/contractCalls";
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -284,6 +286,8 @@ export default class MarketView extends Component<
     );
     const selectedOutcomeName: string = outcome ? outcome.description : '';
 
+    const networkId = getNetworkId();
+
     return (
       <section
         ref={node => {
@@ -448,6 +452,10 @@ export default class MarketView extends Component<
                     </div>
                   </ModulePane>
                 </ModuleTabs>
+                <MarketComments
+                  marketId={marketId}
+                  networkId={networkId}
+                />
               </>
             ) : (
               <>
@@ -565,6 +573,11 @@ export default class MarketView extends Component<
                     </div>
                   </div>
                 </section>
+
+                <MarketComments
+                  marketId={marketId}
+                  networkId={networkId}
+                />
               </>
             )
           }

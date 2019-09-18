@@ -220,6 +220,18 @@ export async function getCreateMarketBreakdown() {
   return { validityBondFormatted, noShowFormatted };
 }
 
+export async function buyParticipationTokensEstimateGas(universeId: string, disputeWindow: string, amount: string) {
+  // TODO: get gas estimation for buying participation tokens
+  return "100000000"
+}
+
+export async function buyParticipationTokens(universeId: string, disputeWindow: string, amount: string) {
+  const { contracts } = augurSdk.get();
+  // TODO: call new method on universe contract when it becomes available.
+  const attoAmount = convertDisplayValuetoAttoValue(new BigNumber(amount));
+  return contracts.disputeWindowFromAddress(disputeWindow).buy(attoAmount);
+}
+
 export interface doReportDisputeAddStake {
   marketId: string;
   maxPrice: string;
