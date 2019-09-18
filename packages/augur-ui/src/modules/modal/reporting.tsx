@@ -172,7 +172,7 @@ export default class ModalReporting extends Component<
           stake = {
             tentativeWinning: false,
             bondSizeCurrent: '0',
-            bondSizeTotal: disputeInfo.bondSizeOfNewStake,
+            bondSizeCurrent: disputeInfo.bondSizeOfNewStake,
             preFilledStake: '0',
             stakeCurrent: '0',
           };
@@ -187,7 +187,7 @@ export default class ModalReporting extends Component<
             stakeCurrent: formatAttoRep(stake.stakeCurrent),
             preFilledStake: formatAttoRep(stake.preFilledStake),
             bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
-            bondSizeTotal: formatAttoRep(stake.bondSizeTotal),
+            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
           },
         };
       });
@@ -204,7 +204,7 @@ export default class ModalReporting extends Component<
             ...stake,
             preFilledStake: formatAttoRep(stake.preFilledStake),
             bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
-            bondSizeTotal: formatAttoRep(stake.bondSizeTotal),
+            bondSizeCurrent: formatAttoRep(stake.bondSizeCurrent),
           },
         })
       })

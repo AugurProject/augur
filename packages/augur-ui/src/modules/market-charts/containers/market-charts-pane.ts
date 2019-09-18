@@ -2,9 +2,9 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import MarketChartsPane from "modules/market-charts/components/market-charts-pane/market-charts-pane";
 import { selectMarket } from "modules/markets/selectors/market";
-import { createBigNumber } from "utils/create-big-number";
 import { getMarketAgeInDays } from "utils/format-date";
 import { AppState } from "store";
+import { ZERO } from "modules/common/constants";
 
 const mapStateToProps = (state: AppState, ownProps: any) => {
   const {
@@ -19,8 +19,8 @@ const mapStateToProps = (state: AppState, ownProps: any) => {
   return {
     currentTimestamp,
     daysPassed,
-    minPrice: market.minPriceBigNumber || createBigNumber(0),
-    maxPrice: market.maxPriceBigNumber || createBigNumber(0),
+    minPrice: market.minPriceBigNumber || ZERO,
+    maxPrice: market.maxPriceBigNumber || ZERO,
   };
 };
 
