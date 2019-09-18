@@ -127,7 +127,7 @@ function processConsensus(market: Getters.Markets.MarketInfo): Consensus | null 
     );
     // for scalars, we will just use the winningOutcome for display
     const marketOutcome = market.outcomes.find(
-      outcome => outcome.id === parseInt(winningOutcome, 10)
+      outcome => outcome.id === Number(winningOutcome.outcome)
     );
     if (marketOutcome) outcomeName = marketOutcome.description;
   }
