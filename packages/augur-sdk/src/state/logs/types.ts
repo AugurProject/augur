@@ -157,9 +157,9 @@ export enum MarketType {
 }
 
 export enum MarketTypeName {
-  YesNo = 'yesNo',
-  Categorical = 'categorical',
-  Scalar = 'scalar',
+  YesNo = 'YesNo',
+  Categorical = 'Categorical',
+  Scalar = 'Scalar',
 }
 
 export enum CommonOutcomes {
