@@ -10,7 +10,7 @@ import getPrecision from 'utils/get-number-precision';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { selectCurrentTimestampInSeconds } from 'store/select-state';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { ASKS, BIDS } from "modules/common/constants";
+import { ASKS, BIDS, ZERO } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.marketId ? selectMarket(ownProps.marketId) : ownProps.market;
@@ -20,8 +20,8 @@ const mapStateToProps = (state, ownProps) => {
     };
   }
 
-  const minPrice = createBigNumber(market.minPriceBigNumber) || createBigNumber(0);
-  const maxPrice = createBigNumber(market.maxPriceBigNumber) || createBigNumber(0);
+  const minPrice = createBigNumber(market.minPriceBigNumber) || ZERO;
+  const maxPrice = createBigNumber(market.maxPriceBigNumber) || ZERO;
   const marketOutcome =
     market.outcomesFormatted.find(
       outcome => outcome.id === ownProps.selectedOutcomeId

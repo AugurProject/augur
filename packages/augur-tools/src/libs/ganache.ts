@@ -66,15 +66,10 @@ interface LevelDBRow {
   type: "put";
 }
 
-export async function createSeed(provider: EthersProvider, db: MemDown, addresses: ContractAddresses): Promise<Seed> {
-  const contractsHash = hashContracts();
-
-  const leveledDB = levelup(db);
-
-  const payload: LevelDBRow[] = [];
-
-  await new Promise((resolve, reject) => {
-    leveledDB.createReadStream({
+export async function extractSeed(db: MemDown):Promise<LevelDBRow[]> {
+  return new Promise((resolve, reject) => {
+    const payload: LevelDBRow[] = [];
+    levelup(db).createReadStream({
       keyAsBuffer: false,
       valueAsBuffer: false,
     }).on("data", (data: LevelDBRow) => {
@@ -89,14 +84,17 @@ export async function createSeed(provider: EthersProvider, db: MemDown, addresse
       console.log("Stream closed");
     }).on("end", () => {
       console.log("Stream ended");
-      resolve();
+      resolve(payload);
     });
   });
 
+}
+
+export async function createSeed(provider: EthersProvider, db: MemDown, addresses: ContractAddresses): Promise<Seed> {
   return {
     addresses,
-    contractsHash,
-    data: payload,
+    contractsHash: hashContracts(),
+    data: await extractSeed(db),
   };
 }
 

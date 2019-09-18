@@ -221,10 +221,9 @@
 
   > span:nth-of-type(2),
   > span:last-of-type {
-    .mono-12;
+    .mono-9;
 
     color: @color-secondary-text;
-    line-height: @size-16;
     padding-left: @size-8;
 
     &.isAccented {
@@ -241,7 +240,7 @@
 
   &.HighlightFirst {
     > span:first-of-type {
-      .mono-10;
+      .mono-9-bold;
 
       color: @color-shadow-text;
     }
@@ -409,10 +408,6 @@ div.LinearPropertyViewTransaction {
   position: relative;
   border-radius: @border-radius-default;
   text-transform: uppercase;
-
-  @media @breakpoint-mobile {
-    .text-10-bold;
-  }
 }
 
 .MarketStatus_open {
@@ -476,7 +471,7 @@ div.LinearPropertyViewTransaction {
 
 .PendingLabel {
   > span {
-    .mono-10;
+    .mono-9;
 
     align-items: center;
     background: @color-primary-light;
@@ -487,6 +482,7 @@ div.LinearPropertyViewTransaction {
     height: @size-16;
     line-height: @size-10;
     padding: 1px 0.375rem;
+    text-transform: uppercase;
 
     > div {
       border-width: 1px;
@@ -533,7 +529,7 @@ div.LinearPropertyViewTransaction {
   }
 
   &_normal {
-    .mono-11;
+    .mono-9;
   }
 
   &_large {
