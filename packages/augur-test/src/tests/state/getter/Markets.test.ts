@@ -1552,8 +1552,6 @@ describe('State API :: Markets :: ', () => {
     });
   });
 
-  // TODO figure out why this breaks when mary actually starts disputing
-  //      (before, is was john disputing every time)
   test(':getMarketsInfo', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();
     const categoricalMarket = await john.createReasonableMarket(
@@ -1713,6 +1711,9 @@ describe('State API :: Markets :: ', () => {
     expect(markets[2].reportingState).toBe(
       MarketReportingState.DesignatedReporting
     );
+
+    const expectedRepBond = await john.getRepBond();
+    expect(markets[0].noShowBondAmount).toEqual(expectedRepBond.toFixed());
 
     // Skip to open reporting
     newTime = newTime.plus(SECONDS_IN_A_DAY.times(7));
