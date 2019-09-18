@@ -118,9 +118,6 @@ jobs:
           export NODE_OPTIONS="--max-old-space-size=6144"
           yarn test --runInBand --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
-      - bash: |
-          set -euo pipefail
-          yarn test
         condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
       - task: PublishTestResults@2
         condition: succeededOrFailed()
