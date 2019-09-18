@@ -1,40 +1,68 @@
 import React, { Component } from 'react';
-
-import Styles from 'modules/create-market/components/visibility.styles';
+import { augurSdk } from 'services/augursdk';
+import classNames from 'classnames';
+import Styles from 'modules/create-market/components/visibility.styles.less';
 import {
   LargeSubheaders,
   ContentBlock,
-  SmallHeaderLink,
   SmallSubheaders,
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
-import { getMarketLiquidityRanking } from 'modules/create-market/actions/get-market-liquidity-ranking';
-import { CATEGORICAL, SCALAR } from 'modules/common/constants';
+import { MAX_SPREAD_10_PERCENT, BUY } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
-  constructMarketParamsReturn,
-  constructMarketParams,
-} from 'modules/create-market/helpers/construct-market-params';
-import {
-  CreateYesNoMarketParams,
-  CreateCategoricalMarketParams,
-  CreateScalarMarketParams,
-  stringTo32ByteHex,
   tickSizeToNumTickWithDisplayPrices,
   convertDisplayValuetoAttoValue,
   convertDisplayPriceToOnChainPrice,
+  marketNameToType,
 } from '@augurproject/sdk';
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import logError from 'utils/log-error';
+import { NodeStyleCallback } from 'modules/types';
 
 export interface VisibilityProps {
   newMarket: NewMarket;
+}
+
+export interface Validations {
+  hasLiquidity: boolean;
+  hasSells: boolean;
+  hasBuys: boolean;
+  validSpread: boolean;
 }
 
 export interface VisibilityState {
   marketRank: number;
   totalMarkets: number;
   hasLiquidity: boolean;
+  validations: Validations;
+  validationMessage: string;
 }
+
+// 1. spread to wide
+// 2. no bids
+// 3. no sells
+// 4. no liquidity at all
+const DEFAULT_VALIDATIONS = {
+  hasLiquidity: false,
+  hasSells: false,
+  hasBuys: false,
+  validSpread: false,
+};
+
+const VALIDATION_TIPS = {
+  liquidity: () =>
+    'Add Buy and Sell orders to a single outcome to pass the spread filter check.',
+  sells: outcomeName =>
+    `Add a Sell order on "${outcomeName}" to pass the spread filter check.`,
+  buys: outcomeName =>
+    `Add a Buy order on "${outcomeName}" to pass the spread filter check.`,
+  spread: outcomeName =>
+    `Tighten spread to less than ${MAX_SPREAD_10_PERCENT}% on "${outcomeName}" to pass spread filter check.`,
+};
+
+const bnSpreadFilter = createBigNumber(`.${MAX_SPREAD_10_PERCENT}`);
 
 export default class Visibility extends Component<
   VisibilityProps,
@@ -46,8 +74,55 @@ export default class Visibility extends Component<
     this.state = {
       marketRank: 0,
       totalMarkets: 0,
-      hasLiquidity: props.newMarket.initialLiquidityDai.toString() !== '0',
-		};
+      hasLiquidity: false,
+      validations: DEFAULT_VALIDATIONS,
+      validationMessage: VALIDATION_TIPS.liquidity(),
+    };
+  }
+
+  validate(newMarket) {
+    const validations = DEFAULT_VALIDATIONS;
+    let validationMessage = '';
+
+    validations.hasLiquidity = newMarket.initialLiquidityDai.toString() !== '0';
+
+    if (!validations.hasLiquidity) {
+      validationMessage = VALIDATION_TIPS.liquidity();
+      return { validations, validationMessage };
+    }
+
+    let closestOutcome = 0;
+
+    Object.entries(newMarket.orderBook).forEach(
+      ([outcome, orders]: Array<any>) => {
+        const { asks, bids, spread } = formatOrderBook(orders);
+        if (asks.length > 0) validations.hasSells = true;
+        if (bids.length > 0) validations.hasBuys = true;
+        if (asks.length > 0 || bids.length > 0) {
+          closestOutcome = parseInt(outcome);
+        }
+        if (spread) {
+          validations.validSpread = createBigNumber(spread).isLessThanOrEqualTo(
+            bnSpreadFilter
+          );
+        }
+        if (validations.validSpread) return { validations, validationMessage };
+      }
+    );
+
+    const closestOutcomeName = newMarket.outcomesFormatted.find(
+      outcome => outcome.id === closestOutcome
+    ).description;
+
+    if (!validations.hasBuys || !validations.hasSells) {
+      validationMessage = !validations.hasBuys
+        ? VALIDATION_TIPS.buys(closestOutcomeName)
+        : VALIDATION_TIPS.sells(closestOutcomeName);
+    } else if (!validations.validSpread) {
+      validationMessage = VALIDATION_TIPS.spread(closestOutcomeName);
+    }
+
+    return { validations, validationMessage };
   }
 
   calculateParams(newMarket) {
@@ -66,24 +141,11 @@ export default class Visibility extends Component<
       minPriceBigNumber,
       maxPriceBigNumber
     );
-    let marketTypeNumber = 0;
-    switch (marketType) {
-      case CATEGORICAL:
-        marketTypeNumber = 1;
-        break;
-      case SCALAR:
-        marketTypeNumber = 2;
-        break;
-      default:
-        break;
-    }
-    const formattedOrderBook = {};
+    const marketTypeNumber = marketNameToType(marketType);
+    let formattedOrderBook = {};
 
-    Object.entries(orderBook).forEach(([outcome, orders]) => {
-      formattedOrderBook[outcome] = {
-        bids: [],
-        asks: [],
-      };
+    Object.entries(orderBook).forEach(([outcome, orders]: Array<any>) => {
+      formattedOrderBook[outcome] = { bids: [], asks: [] };
       orders.forEach(order => {
         const formattedOrder = {
           price: convertDisplayPriceToOnChainPrice(
@@ -91,60 +153,90 @@ export default class Visibility extends Component<
             minPriceBigNumber,
             tickSizeBigNumber
           ).toFixed(),
-          quantity: convertDisplayValuetoAttoValue(
+          amount: convertDisplayValuetoAttoValue(
             createBigNumber(order.quantity)
           ).toFixed(),
         };
-        if (order.type === 'buy') {
+        if (order.type === BUY) {
           formattedOrderBook[outcome].bids.push(formattedOrder);
         } else {
           formattedOrderBook[outcome].asks.push(formattedOrder);
         }
       });
     });
-		const params = {
-			orderBook: formattedOrderBook,
+
+    return {
+      orderBook: formattedOrderBook,
       numTicks: numTicks.toFixed(),
       numOutcomes: outcomesFormatted.length,
       marketType: marketTypeNumber,
       marketFeeDivisor: `${settlementFee}`,
       reportingFeeDivisor: '0',
-			spread: 10,
+      spread: parseInt(MAX_SPREAD_10_PERCENT),
     };
-    return params;
   }
 
-  getRanking() {
+  getMarketLiquidityRanking = async (
+    params,
+    callback: NodeStyleCallback = logError
+  ) => {
+    const Augur = augurSdk.get();
+    const MarketLiquidityRanking = await Augur.getMarketLiquidityRanking(
+      params
+    );
+    callback(null, MarketLiquidityRanking);
+  };
+
+  getRanking(forceCall = false) {
     const { newMarket } = this.props;
-		const params = this.calculateParams(newMarket);
-    getMarketLiquidityRanking(params, (err, updates) => {
-			if (err) return null;
-      this.setState({ ...updates });
-    });
+    const { validations, validationMessage } = this.validate(newMarket);
+    const { hasLiquidity, hasSells, hasBuys, validSpread } = validations;
+    if ((hasLiquidity && hasSells && hasBuys && validSpread) || forceCall) {
+      const params = this.calculateParams(newMarket);
+      this.getMarketLiquidityRanking(params, (err, updates) => {
+        this.setState({
+          ...updates,
+          marketRank:
+            updates.marketRank === 0
+              ? updates.totalMarkets
+              : updates.marketRank,
+          validations,
+          validationMessage,
+        });
+      });
+    } else {
+      this.setState({ validations, validationMessage });
+    }
   }
 
   componentDidUpdate(prevProps) {
-		const { newMarket } = this.props;
+    const { newMarket } = this.props;
     if (
       prevProps.newMarket.initialLiquidityDai.comparedTo(
         newMarket.initialLiquidityDai
-      ) !== 0 ||
-      prevProps.newMarket.settlementFee !== newMarket.settlementFee
+      ) !== 0
     ) {
       this.getRanking();
     }
   }
 
   componentDidMount() {
-    this.getRanking();
+    this.getRanking(true);
   }
 
   render() {
-    const { marketRank, totalMarkets } = this.state;
+    const { marketRank, totalMarkets, validationMessage } = this.state;
+    const isValid = validationMessage.length === 0;
+    const rankUpdate = totalMarkets - marketRank;
+    const rankingString = `+${rankUpdate} ranking`;
 
     return (
       <ContentBlock dark>
-        <div className={Styles.Visibility}>
+        <div
+          className={classNames(Styles.Visibility, {
+            [Styles.Passing]: isValid,
+          })}
+        >
           <LargeSubheaders
             link
             header="Market visibility"
@@ -152,24 +244,31 @@ export default class Visibility extends Component<
           />
           <SmallSubheadersTooltip
             header="default Spread filter check"
-            subheader="Fail"
+            subheader={isValid ? 'Pass' : 'Fail'}
             text="Info text"
           />
 
-          <SmallSubheaders
-            header="How to pass spread filter check"
-            subheader="New suggestion: Tighten spread to less than 15% on [Outcome: X] to pass spread filter check"
-          />
+          {!isValid && (
+            <SmallSubheaders
+              header="How to pass spread filter check"
+              subheader={validationMessage}
+            />
+          )}
 
           <SmallSubheadersTooltip
             header="Market ranking"
-            subheader={`${marketRank} / ${totalMarkets}`}
+            subheader={
+              <span>
+                {`${marketRank} / ${totalMarkets} `}
+                <span className={Styles.Positive}>{rankingString}</span>
+              </span>
+            }
             text="Info text"
           />
 
           <SmallSubheaders
-            header="default Spread filter check"
-            subheader="1. Add Buy and Sell orders to any outcomes that do not have orders"
+            header="how to improve market ranking"
+            subheader="Add both Buy and Sell orders to an outcome, increase quantity to increase ranking."
           />
         </div>
       </ContentBlock>
