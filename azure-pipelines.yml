@@ -171,21 +171,21 @@ jobs:
   - job: Augur_build_docker_image
     dependsOn:
 #   - TestAndLint
-    - PreFlightCheck
-    condition: |
-      or
-      (
-        and
-        (
-          succeeded(),
-          or
-          (
-            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
-            eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-          )
-        ),
-        eq(variables['Build.SourceBranch'], 'refs/heads/master')
-      )
+#   - PreFlightCheck
+#   condition: |
+#     or
+#     (
+#       and
+#       (
+#         succeeded(),
+#         or
+#         (
+#           eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
+#           eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+#         )
+#       ),
+#       eq(variables['Build.SourceBranch'], 'refs/heads/master')
+#     )
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
@@ -241,18 +241,18 @@ jobs:
   - job: Build_Core_Docker
     dependsOn:
 #   - TestAndLint
-    - Augur_build_docker_image
-    - PreFlightCheck
-    condition: |
-      and
-      (
-        succeeded(),
-        or
-        (
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
-        )
-      )
+#   - Augur_build_docker_image
+#   - PreFlightCheck
+#   condition: |
+#     and
+#     (
+#       succeeded(),
+#       or
+#       (
+#         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_GETH_POA'], 'true'),
+#         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
+#       )
+#     )
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
