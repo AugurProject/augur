@@ -23,6 +23,8 @@ function loadTransactions(
   appState: AppState,
   callback: NodeStyleCallback
 ) {
+
+  dispatch(loadCreateMarketHistory()); // uses getMarkets so marketInfo objects are already returned
   const options = {};
   const promises = [];
   promises.push(
@@ -40,12 +42,6 @@ function loadTransactions(
   promises.push(
     new Promise(resolve =>
       dispatch(loadAccountOpenOrders(options, resolve))
-    )
-  );
-
-  promises.push(
-    new Promise(resolve =>
-      dispatch(loadCreateMarketHistory(options, resolve))
     )
   );
 
