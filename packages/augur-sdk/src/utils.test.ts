@@ -204,11 +204,11 @@ test('is well-formed categorical', () => {
   expect(isWellFormedCategorical([])).toEqual(false);
   expect(isWellFormedCategorical(['1'])).toEqual(false);
   expect(isWellFormedCategorical(['1', '0'])).toEqual(false);
-  expect(isWellFormedCategorical(['1', '0', '0', '0', '0', '0', '0', '0', '0', '0'])).toEqual(true);
+  expect(isWellFormedCategorical(['1', '0', '0', '0', '0', '0', '0', '0', '0'])).toEqual(false);
 
   expect(isWellFormedCategorical(['1', '0', '0'])).toEqual(true);
   expect(isWellFormedCategorical(['0', '1', '0'])).toEqual(true);
-  expect(isWellFormedCategorical(['0', '0', '0', '0', '0', '0', '0', '0', '1110'])).toEqual(true);
+  expect(isWellFormedCategorical(['0', '0', '0', '0', '0', '0', '0', '1110'])).toEqual(true);
 });
 
 test('is well-formed scalar', () => {
