@@ -235,7 +235,7 @@ export class ZeroX {
       marketId: params.market,
       outcome: params.outcome,
       orderType,
-      matchPrice: `0x${params.price.toString(16)}`, // TODO: apply padding to match a uint240 hex number
+      matchPrice: `0x${params.price.toString(16).padStart(60, "0")}`,
       ignoreOrders
     });
 
