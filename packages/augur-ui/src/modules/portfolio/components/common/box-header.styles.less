@@ -74,7 +74,6 @@
 .BottomContent {
   background: @color-theme-primary;
   margin-top: @size-16;
-  padding: 0 @size-8;
 }
 
 .noBackground {
@@ -119,6 +118,24 @@
     display: flex;
     flex: 1;
     flex-direction: column;
+
+    > div:first-of-type {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: @size-10;
+
+      > div:first-of-type {
+        flex: 1;
+      }
+
+      > div::nth-of-type(2) {
+        flex: 0;
+      }
+    }
+  }
+
+  .BottomRightContent {
+    margin-bottom: 0;
   }
 
   .HideOnMobile {
