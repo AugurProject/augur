@@ -143,14 +143,14 @@
     textarea {
       .text-18;
 
-      background-color: @color-lightergray;
+      background-color: @color-alternate-info-text;
 
       &.error {
         border-color: @color-error-text;
       }
 
       &::placeholder {
-        color: @color-lightgray;
+        color: @color-tertiary-info-text;
       }
     }
 
@@ -217,7 +217,7 @@ li.field--short {
       text-align: left;
 
       &::before {
-        border: 1px solid @color-lightgray;
+        border: 1px solid @color-tertiary-info-text;
         border-radius: 100%;
         content: "";
         height: @size-24;
@@ -229,7 +229,7 @@ li.field--short {
       }
 
       &::after {
-        background-color: @color-lightgray;
+        background-color: @color-tertiary-info-text;
         border-radius: 100%;
         content: "";
         display: none;
@@ -255,10 +255,6 @@ li.field--short {
 
   > li {
     > button {
-      &.isInvalidField {
-        color: @color-lighter-purple;
-      }
-
       text-transform: capitalize;
     }
   }
@@ -315,7 +311,7 @@ li.field--short {
       text-align: left;
 
       &::after {
-        background-color: @color-lightgray;
+        background-color: @color-tertiary-info-text;
         border-radius: 100%;
         content: "";
         display: none;
@@ -335,7 +331,7 @@ li.field--short {
         background-color: transparent;
         border: none;
         border-radius: 0;
-        color: @color-gray;
+        color: @color-shadow-text;
         display: inline-block;
         margin-left: 75%;
       }
@@ -391,12 +387,6 @@ li.field--short {
     &.hide-button {
       display: none;
     }
-  }
-
-  .Form__next,
-  .Form__submit {
-    background-color: @color-purple;
-    color: @color-secondary-text;
   }
 
   .Form__prev.hide-button + .Form__next {
