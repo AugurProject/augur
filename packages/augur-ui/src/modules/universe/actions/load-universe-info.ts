@@ -239,19 +239,18 @@ function getUniverseName(parentUniverseData: any, universeData: any) {
 
   if (universeData.isInvalid) return 'Invalid';
 
-  // @ts-ignore
-  const outcomeId = calculatePayoutNumeratorsValue(
+  const value = calculatePayoutNumeratorsValue(
     parentUniverseData.market.maxPrice,
     parentUniverseData.market.minPrice,
     parentUniverseData.market.numTicks,
     parentUniverseData.market.marketType,
     universeData.payout
-  ).toString();
+  );
   if (parentUniverseData.market.marketType === SCALAR) {
-    return outcomeId;
+    return value.outcome;
   }
 
-  const outcome = parentUniverseData.outcomes[outcomeId];
+  const outcome = parentUniverseData.outcomes[value.outcome];
   const outComeLabel = outcome && (outcome.description || outcome.name);
   return outComeLabel || 'Unidentified';
 }

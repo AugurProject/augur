@@ -534,7 +534,7 @@ describe('State API :: Markets :: ', () => {
     expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);
 
     // @TODO: Add tests for filtering markets maxLiquiditySpread = '0'
-  }, 120000);
+  }, 200000);
 
   test(':getMarkets userPortfolioAddress', async () => {
     const universe = john.augur.contracts.universe;
