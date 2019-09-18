@@ -58,7 +58,7 @@ export default class MarketOutcomesList extends Component<MarketOutcomesListProp
             <li>Ask Qty</li>
             <li>Last</li>
           </ul>
-          {outcomesFormatted.filter(o => o.isTradable).map(outcome => (
+          {outcomesFormatted.map(outcome => (
             <MarketOutcomesListOutcome
               key={outcome.id}
               marketId={marketId}
