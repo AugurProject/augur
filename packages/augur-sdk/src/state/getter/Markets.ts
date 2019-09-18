@@ -22,7 +22,7 @@ import {
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
 } from '../../index';
-import { calculatePayoutNumeratorsValue } from '../../utils';
+import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -162,6 +162,8 @@ export interface StakeDetails {
   bondSizeCurrent: string; // current dispute round bond size
   stakeCurrent: string; // will be pre-filled stake if tentative winning is true
   stakeRemaining: string; // bondSizeCurrent - stakeCurrent
+  isInvalidOutcome: boolean;
+  isMalformedOutcome: boolean;
   tentativeWinning: boolean;
 }
 
@@ -1051,11 +1053,13 @@ async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: any[
 
   for (let i = 0; i < stakeDetails.length; i++) {
     const outcomeDetails = stakeDetails[i];
-    const outcomeKey = getOutcomeKey(market, outcomeDetails.payoutNumerators);
+    const outcomeValue = getOutcomeValue(market, outcomeDetails.payoutNumerators);
     if (outcomeDetails.disputeRound < market.disputeRound) {
       const bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16).multipliedBy(2).minus(new BigNumber(outcomeDetails.totalRepStakedInPayout).multipliedBy(3)).toFixed();
       formattedStakeDetails[i] = {
-        outcome: outcomeKey,
+        outcome: outcomeValue.outcome,
+        isInvalidOutcome: outcomeValue.invalid,
+        isMalformedOutcome: outcomeValue.malformed,
         bondSizeCurrent,
         stakeCurrent: "0",
         stakeRemaining: bondSizeCurrent,
@@ -1063,7 +1067,9 @@ async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: any[
       };
     } else {
       formattedStakeDetails[i] = {
-        outcome: outcomeKey,
+        outcome: outcomeValue.outcome,
+        isInvalidOutcome: outcomeValue.invalid,
+        isMalformedOutcome: outcomeValue.malformed,
         bondSizeCurrent: new BigNumber(outcomeDetails.bondSizeCurrent || '0x0', 16).toFixed(),
         stakeCurrent: new BigNumber(outcomeDetails.stakeCurrent || '0x0', 16).toFixed(),
         stakeRemaining: new BigNumber(outcomeDetails.stakeRemaining || '0x0', 16).toFixed(),
@@ -1074,7 +1080,7 @@ async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: any[
   return formattedStakeDetails;
 }
 
-function getOutcomeKey(market: MarketData, payoutNumerators: string[]): string {
+function getOutcomeValue(market: MarketData, payoutNumerators: string[]): PayoutNumeratorValue {
   const maxPrice = new BigNumber(market['prices'][1]);
   const minPrice = new BigNumber(market['prices'][0]);
   const numTicks = new BigNumber(market['numTicks']);

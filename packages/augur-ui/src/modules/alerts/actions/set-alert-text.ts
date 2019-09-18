@@ -41,8 +41,8 @@ import {
 import { AppState } from 'store';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { createBigNumber } from 'utils/create-big-number';
 import { MarketData } from 'modules/types';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
