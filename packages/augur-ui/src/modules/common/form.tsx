@@ -942,7 +942,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       stake = {
         preFilledStake: formatRep("0"),
         bondSizeCurrent: formatRep("1"),
-        bondSizeTotal: formatRep("1"),
+        bondSizeCurrent: formatRep("1"),
       }
     }
 
@@ -985,7 +985,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   changeStake={updateDisputeStake}
                   minPrice={minPrice}
                   maxPrice={maxPrice}
-                  stakeRemaining={stake && stake.bondSizeTotal.value}
+                  stakeRemaining={stake && stake.bondSizeCurrent.value}
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
                 />

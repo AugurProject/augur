@@ -15,6 +15,7 @@ import { Proceeds } from 'modules/modal/proceeds';
 import {
   CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
+  ZERO,
 } from 'modules/common/constants';
 import { ActionRowsProps } from 'modules/modal/common';
 import { CLAIM_MARKETS_PROCEEDS } from 'modules/common/constants';
@@ -48,8 +49,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const marketIds = Object.keys(sP.accountPositions);
-  let totalUnclaimedProceeds: any = createBigNumber(0); // BigNumber @type required
-  let totalUnclaimedProfit: any = createBigNumber(0);
+  let totalUnclaimedProceeds: any = ZERO; // BigNumber @type required
+  let totalUnclaimedProfit: any = ZERO;
   const markets = marketIds.map(marketId => {
     const market = selectMarket(marketId);
     const unclaimedProceeds = formatDai(
