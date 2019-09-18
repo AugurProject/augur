@@ -14,6 +14,7 @@ export {
   makeGanacheProvider,
   loadSeedFile,
   createDbFromSeed,
+  createSeed,
   Seed,
 } from "./libs/ganache";
 
