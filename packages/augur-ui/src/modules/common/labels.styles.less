@@ -630,7 +630,9 @@ div.LinearPropertyViewTransaction {
   min-width: 0;
 
   > button {
-    .overflow-ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     &:not(:first-of-type)::before {
       margin: 0 @size-4;
