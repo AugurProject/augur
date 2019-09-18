@@ -409,4 +409,5 @@ export interface DisputeDoc extends Log, Doc {
   tentativeWinning: boolean; // outcome is currently tentative winner
   totalRepStakedInPayout: string; // total REP across all rounds staked in completed bonds for this payout
   tentativeWinningOnRound: string; // Indicates that on a particular round this was the tentative winning payout
+  disputeRound: string; // Used in markets getter. Unsure what it is. TODO better description
 }

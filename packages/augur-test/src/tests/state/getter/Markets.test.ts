@@ -14,9 +14,10 @@ import { BigNumber } from 'bignumber.js';
 import { ContractInterfaces } from '@augurproject/core';
 import { ORDER_TYPES } from '@augurproject/sdk';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
-import { getAddress } from "ethers/utils/address";
+import { getAddress } from 'ethers/utils/address';
 
-import * as _ from "lodash";
+import * as _ from 'lodash';
+import { fork } from '@augurproject/tools/build';
 
 const mock = makeDbMock();
 
@@ -365,7 +366,7 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(marketList.markets.length).toEqual(3);
-    let marketIds = _.map(marketList.markets, "id");
+    let marketIds = _.map(marketList.markets, 'id');
     expect(marketIds).toContain(yesNoMarket2.address);
     expect(marketIds).toContain(categoricalMarket2.address);
     expect(marketIds).toContain(scalarMarket2.address);
@@ -438,7 +439,7 @@ describe('State API :: Markets :: ', () => {
     });
 
     expect(marketList.markets.length).toEqual(3);
-    marketIds = _.map(marketList.markets, "id");
+    marketIds = _.map(marketList.markets, 'id');
     expect(marketIds).toContain(categoricalMarket1.address);
     expect(marketIds).toContain(scalarMarket1.address);
     expect(marketIds).toContain(yesNoMarket1.address);
@@ -1552,8 +1553,49 @@ describe('State API :: Markets :: ', () => {
     });
   });
 
-  // TODO figure out why this breaks when mary actually starts disputing
-  //      (before, is was john disputing every time)
+  test(':getMarketsInfo disputeinfo.stakes', async () => {
+    const market = await john.createReasonableYesNoMarket();
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    let infos = await api.route('getMarketsInfo', {
+      marketIds: [market.address],
+    });
+    expect(infos.length).toEqual(1);
+    let info = infos[0];
+
+    await fork(john, info);
+
+    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
+    infos = await api.route('getMarketsInfo', {
+      marketIds: [market.address],
+    });
+    expect(infos.length).toEqual(1);
+    info = infos[0];
+
+    expect(info).toHaveProperty('disputeInfo');
+    expect(info.disputeInfo).toHaveProperty('stakes');
+    expect(info.disputeInfo.stakes).toEqual([
+      {
+        outcome: '1',
+        isInvalidOutcome: false,
+        isMalformedOutcome: false,
+        bondSizeCurrent: '4500537135601043701171200',
+        stakeCurrent: '0',
+        stakeRemaining: '4500537135601043701171200',
+        tentativeWinning: false,
+      },
+      {
+        outcome: '0', // this test was written to verify this specific value
+        isInvalidOutcome: true,
+        isMalformedOutcome: false,
+        bondSizeCurrent: '0',
+        stakeCurrent: '0',
+        stakeRemaining: '0',
+        tentativeWinning: true,
+      },
+    ]);
+  }, 180000);
+
   test(':getMarketsInfo', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();
     const categoricalMarket = await john.createReasonableMarket(
@@ -1769,13 +1811,13 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    let reportingStates = _.map(markets, "reportingState");
+    let reportingStates = _.map(markets, 'reportingState');
     expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
     expect(reportingStates).toContain(MarketReportingState.OpenReporting);
 
     // Dispute 10 times
-    mary.repFaucet(new BigNumber(10**18).multipliedBy(1000000))
-    john.repFaucet(new BigNumber(10**18).multipliedBy(1000000))
+    mary.repFaucet(new BigNumber(10**18).multipliedBy(1000000));
+    john.repFaucet(new BigNumber(10**18).multipliedBy(1000000));
     for (let disputeRound = 1; disputeRound <= 11; disputeRound++) {
       if (disputeRound % 2 !== 0) {
         const market = await mary.getMarketContract(yesNoMarket.address);
@@ -1805,7 +1847,7 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    reportingStates = _.map(markets, "reportingState");
+    reportingStates = _.map(markets, 'reportingState');
     expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
     expect(reportingStates).toContain(MarketReportingState.AwaitingNextWindow);
     expect(reportingStates).toContain(MarketReportingState.OpenReporting);
@@ -1823,7 +1865,7 @@ describe('State API :: Markets :: ', () => {
       ],
     });
 
-    reportingStates = _.map(markets, "reportingState");
+    reportingStates = _.map(markets, 'reportingState');
     expect(reportingStates).toContain(MarketReportingState.CrowdsourcingDispute);
     expect(reportingStates).toContain(MarketReportingState.AwaitingFinalization);
     expect(reportingStates).toContain(MarketReportingState.OpenReporting);
