@@ -240,8 +240,8 @@ jobs:
 
   - job: Build_Core_Docker
     dependsOn:
-#   - TestAndLint
-#   - Augur_build_docker_image
+    - TestAndLint
+    - Augur_build_docker_image
 #   - PreFlightCheck
 #   condition: |
 #     and
@@ -410,9 +410,9 @@ jobs:
           dockerRegistryEndpoint: dockerhub-augurproject
 
   - job: Docker_populated_geth_images
-#   dependsOn:
-#   - PreFlightCheck
-#   - Test_Augur_Core
+    dependsOn:
+    - PreFlightCheck
+    - Test_Augur_Core
 #   - Docker_geth_dev
 #   condition: |
 #     or
