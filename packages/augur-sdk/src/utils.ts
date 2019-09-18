@@ -1,13 +1,12 @@
-import { BigNumber } from 'bignumber.js';
-import { MALFORMED_OUTCOME } from './constants';
+import { BigNumber } from "bignumber.js";
 import {
+  CommonOutcomes,
   MarketCreatedLog,
   MarketType,
   MarketTypeName,
-  ScalarOutcomes,
   YesNoOutcomes
-} from './state/logs/types';
-import { toAscii } from './state/utils/utils';
+} from "./state/logs/types";
+import { toAscii } from "./state/utils/utils";
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
@@ -112,7 +111,14 @@ export function logError(
   if (err != null) {
     console.error(err);
     if (result != null) console.log(result);
+
   }
+}
+
+export interface PayoutNumeratorValue {
+  malformed?: boolean;
+  invalid?: boolean;
+  outcome?: string;
 }
 
 export function calculatePayoutNumeratorsValue(
@@ -121,53 +127,81 @@ export function calculatePayoutNumeratorsValue(
   numTicks: string,
   marketType: string,
   payout: string[]
-): string | null {
-  const isScalar = marketType === MarketTypeName.Scalar;
-
-  if (!payout) return null;
-  if (payout.length === 0) return null;
-
-
-  if (isScalar) {
+): PayoutNumeratorValue {
+  if (marketType === MarketTypeName.Scalar) {
     if (!isWellFormedScalar(payout)) {
-      return MALFORMED_OUTCOME;
+      return { malformed: true };
+    }
+
+    if (Number(payout[0]) > 0) {
+      return { invalid: true };
     }
 
     const longPayout = new BigNumber(payout[1]);
     const priceRange = new BigNumber(displayMaxPrice, 10).minus(new BigNumber(displayMinPrice, 10));
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
-    return longPayout
+    const outcome = longPayout
       .times(priceRange)
       .dividedBy(new BigNumber(numTicks, 10))
       .plus(new BigNumber(displayMinPrice, 10))
       .toString();
+    return { outcome };
   } else {
-    if (!isWellFormedCategorical(payout)) { // or yes/no
-      return MALFORMED_OUTCOME;
+    switch(marketType) {
+      case MarketTypeName.Categorical:
+        if (!isWellFormedCategorical(payout)) return { malformed: true };
+        break;
+      case MarketTypeName.YesNo:
+        if (!isWellFormedYesNo(payout)) return { malformed: true };
+        break;
+      default: return { malformed: true }; // bad market type
     }
 
-    return payout.findIndex((item: string) => Number(item) > 0).toString();
+    const outcome = payout.findIndex((item: string) => Number(item) > 0);
+    if (outcome === 0) {
+      return { invalid: true };
+    } else {
+      return { outcome: String(outcome) };
+    }
   }
 }
 
-function isWellFormedCategorical(payout: string[]): boolean {
-  // A categorical or Yes/No payout is well-formed if:
-  // 1. Exactly one of its payouts is non-zero.
+export function isWellFormedYesNo(payout: string[]): boolean {
+  // A Yes/No payout is well-formed if:
+  // 1. There are exactly 3 payout values.
+  // 2. Exactly one of its payouts is non-zero.
+
+  if (payout.length !== 3) return false;
   return countNonZeroes(payout) === 1;
 }
 
-function isWellFormedScalar(payout: string[]): boolean {
+export function isWellFormedCategorical(payout: string[]): boolean {
+  // A categorical is well-formed if:
+  // 1. There are between 3 and 8 payout values (2-7 plus invalid)
+  // 2. Exactly one of its payouts is non-zero.
+
+  if (payout.length < 3 || payout.length > 8) return false;
+  return countNonZeroes(payout) === 1;
+}
+
+export function isWellFormedScalar(payout: string[]): boolean {
   // A scalar payout is well-formed if:
-  // 1. Its invalid payout is >0 and its short and long payouts are 0.
-  // 2. Its invalid payout is 0 and at least one of its short or long payouts is non-0.
-  if (Number(payout[0]) > 0) { // invalid payout
-    return countNonZeroes(payout) === 0;
+  // 1. There are exactly 3 payout values.
+  // 2. Its invalid payout is >0 and its short and long payouts are 0.
+  // 3. Its invalid payout is 0 and at least one of its short or long payouts is non-0.
+
+  if (payout.length !== 3) return false;
+
+  const invalidPayout = Number(payout[0]);
+  const validPayouts = payout.slice(1);
+  if (invalidPayout > 0) { // invalid payout
+    return countNonZeroes(validPayouts) === 0;
   } else { // some valid payout
-    return countNonZeroes(payout.slice(1)) > 1;
+    return countNonZeroes(validPayouts) >= 1;
   }
 }
 
-function countNonZeroes(numbers: string[]): number {
+export function countNonZeroes(numbers: string[]): number {
   let count = 0;
   for (let i = 0; i < numbers.length; i++) {
     if (Number(numbers[i]) !== 0) {
@@ -184,8 +218,9 @@ export function calculatePayoutNumeratorsArray(
   numOutcomes: number,
   marketType: string,
   outcome: number,
-  isInvalid: boolean = false,
+  isInvalid = false
 ): BigNumber[] {
+  // tslint:disable-next-line:ban
   const payoutNumerators = Array(numOutcomes).fill(new BigNumber(0));
   const isScalar = marketType === MarketTypeName.Scalar;
   const numTicksBN = new BigNumber(numTicks);
@@ -214,28 +249,63 @@ export function calculatePayoutNumeratorsArray(
   return payoutNumerators;
 }
 
-export function getOutcomeDescriptionFromOutcome(
-  outcome: number,
-  market: MarketCreatedLog
+export function describeYesNoOutcome(outcome: number): string {
+  switch(outcome) {
+    case 0: return CommonOutcomes.Invalid;
+    case 1: return YesNoOutcomes.No;
+    case 2: return YesNoOutcomes.Yes;
+    default: throw Error(`Invalid yes/no outcome "${outcome}"`);
+  }
+}
+
+export function describeCategoricalOutcome(outcome: number, outcomes: string[]): string {
+  if (outcome === 0) return CommonOutcomes.Invalid;
+  // Outcome 0 is invalid, so, subtract 1 to outcome to map to outcome description.
+  return toAscii(outcomes[outcome-1]);
+}
+
+export function describeScalarOutcome(outcome: number, prices: string[]): string {
+  if (outcome === 0) return CommonOutcomes.Invalid;
+  const price = outcome === 1 ? prices[0] : prices[1];
+  return String(new BigNumber(price));
+}
+
+export function describeUniverseOutcome(
+  outcome: PayoutNumeratorValue,
+  forkingMarket: MarketCreatedLog
 ): string {
-  if (market.marketType === MarketType.YesNo) {
-    if (outcome === 0) {
-      return YesNoOutcomes.Invalid;
-    } else if (outcome === 1) {
-      return YesNoOutcomes.No;
-    } else {
-      return YesNoOutcomes.Yes;
-    }
-  } else if (market.marketType === MarketType.Scalar) {
-    if (outcome === 0) {
-      return ScalarOutcomes.Invalid;
-    } else if (outcome === 1) {
-      return new BigNumber(market.prices[0]).toString(10);
-    } else {
-      return new BigNumber(market.prices[1]).toString(10);
-    }
-  } else { // Categorical
-    return toAscii(market.outcomes[new BigNumber(outcome).toNumber()]);
+  if (outcome.malformed) {
+    return CommonOutcomes.Malformed;
+  } else if (outcome.invalid) {
+    return CommonOutcomes.Invalid;
+  }
+
+  switch (forkingMarket.marketType) {
+    case MarketType.YesNo:
+      return describeYesNoOutcome(Number(outcome.outcome));
+    case MarketType.Categorical:
+      return describeCategoricalOutcome(Number(outcome.outcome), forkingMarket.outcomes);
+    case MarketType.Scalar:
+      return outcome.outcome;
+    default: throw Error(`Invalid market type: ${forkingMarket.marketType}`);
+  }
+}
+
+export function describeMarketOutcome(outcome: string|number, market: MarketCreatedLog): string {
+  outcome = Number(outcome);
+
+  if (outcome === 0) {
+    return CommonOutcomes.Invalid;
+  }
+
+  switch (market.marketType) {
+    case MarketType.YesNo:
+      return describeYesNoOutcome(outcome);
+    case MarketType.Categorical:
+      return describeCategoricalOutcome(outcome, market.outcomes);
+    case MarketType.Scalar:
+      return describeScalarOutcome(outcome, market.prices);
+    default: throw Error(`Invalid market type: ${market.marketType}`);
   }
 }
 
