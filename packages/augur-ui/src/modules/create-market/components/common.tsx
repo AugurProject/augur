@@ -131,8 +131,8 @@ export const SmallSubheaders = (props: SubheadersProps) => (
 );
 
 export interface SubheadersTooltipProps {
-  header: string;
-  subheader: string;
+  header: string | Element;
+  subheader: string | Element;
   link?: Boolean;
   href?: string;
   underline?: Boolean;

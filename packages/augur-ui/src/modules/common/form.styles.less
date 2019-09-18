@@ -721,7 +721,7 @@
       }
 
       &:disabled {
-        background-color: @color-extra-darkpurple;
+        background-color: @color-secondary-action;
         border: 1px solid @color-shadow-text;
         color: @color-shadow-text;
         opacity: 0.5;
@@ -871,7 +871,7 @@
     }
 
     &.disabled {
-      background-color: @color-extra-darkpurple;
+      background-color: @color-secondary-action;
       border: 1px solid @color-shadow-text;
       color: @color-shadow-text;
       opacity: 0.5;
@@ -901,34 +901,32 @@ div.FormDropdownActive {
 }
 
 .Input {
-  .border(true, @border-all, @color-input-border-no-focus, 1px);
-
-  background-color: @color-input-background;
+  background-color: @color-secondary-text;
+  border: @size-1 solid @color-alternate-info-text;
   display: flex;
 
   button,
   .input-value-comparison {
-    background-color: @color-input-background;
+    background-color: @color-secondary-text;
     font-weight: @weight-medium;
   }
 
   input {
-    .border(true, @border-all, @color-transparent, 1px);
-
+    border: @size-1 solid transparent;
     display: flex;
     flex: 1;
   }
 
   input::placeholder {
-    color: @color-input-border-no-focus;
+    color: @color-alternate-info-text;
   }
 
   input:focus {
-    .border(true, @border-all, @color-transparent, 1px);
+    border: @size-1 solid transparent;
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, 1px);
+    border: @size-1 solid @color-primary-light;
   }
 
   .box {
@@ -942,7 +940,7 @@ div.FormDropdownActive {
   }
 
   .close {
-    background-color: @color-transparent;
+    background-color: transparent;
     height: @size-16;
     line-height: @size-16;
     width: @size-16;
@@ -961,7 +959,7 @@ div.FormDropdownActive {
 
 .noFocus {
   &:focus-within {
-    .border(true, @border-all, @color-transparent, 1px);
+    border: @size-1 solid transparent;
   }
 }
 
@@ -974,13 +972,12 @@ div.FormDropdownActive {
 }
 
 .MaxDark {
-  background-color: @color-lightergray !important;
+  background-color: @color-alternate-info-text !important;
 }
 
 .Incremental {
-  .border(true, @border-all, @color-transparent, 1px);
-
-  background-color: @color-input-background;
+  background-color: @color-secondary-text;
+  border: @size-1 solid transparent;
   display: flex;
 
   .box {
@@ -995,26 +992,25 @@ div.FormDropdownActive {
 
   button,
   .ValueComparison {
-    background-color: @color-input-background;
+    background-color: @color-secondary-text;
   }
 
   input {
-    .border(true, @border-all, @color-transparent, 1px);
-
+    border: @size-1 solid transparent;
     display: flex;
     flex: 1 auto;
   }
 
   input::placeholder {
-    color: @color-input-border-no-focus;
+    color: @color-alternate-info-text;
   }
 
   input:focus {
-    .border(true, @border-all, @color-transparent, 1px);
+    border: @size-1 solid transparent;
   }
 
   &:focus-within {
-    .border(true, @border-all, @color-input-border, 1px);
+    border: @size-1 solid @color-primary-light;
   }
 
   input[type='number'] {
@@ -1029,8 +1025,6 @@ div.FormDropdownActive {
 }
 
 .ValueIncrementers {
-  // .border(true, @border-left);
-
   display: flex;
   flex-direction: column;
 
@@ -1040,20 +1034,20 @@ div.FormDropdownActive {
     padding: 0 @size-4;
 
     &:active {
-      background-color: @color-gray;
+      background-color: @color-shadow-text;
     }
   }
 }
 
 .FocusBorder {
-  .border(true, @border-all, @color-input-border, @border-width-2);
+  border: @size-2 solid @color-primary-light;
 }
 
 .LightBorder {
-  .border(true, @border-all, @color-lightgray, 1px);
+  border: @size-1 solid @color-tertiary-info-text;
 
   &:focus-within {
-    .border(true, @border-all, @color-lightgray, 1px);
+    border: @size-1 solid @color-tertiary-info-text;
   }
 }
 
@@ -1130,7 +1124,7 @@ div.FormDropdownActive {
     }
 
     .DayPicker__horizontal_2 {
-      background-color: @color-input-background;
+      background-color: @color-secondary-text;
       border-radius: 0;
       box-shadow: 0 2px @size-4 rgba(0, 0, 0, 0.5);
       font-size: @size-12;
@@ -1318,8 +1312,8 @@ div.FormDropdownActive {
 }
 
 .InputDropdown {
-  background-color: @color-input-background;
-  color: @color-lightgray;
+  background-color: @color-secondary-text;
+  color: @color-tertiary-info-text;
   cursor: pointer;
   display: flex;
   padding: @size-8 @size-16;
@@ -1340,7 +1334,7 @@ div.FormDropdownActive {
     width: 100%;
 
     &.selected {
-      color: @color-darkpurple;
+      color: @color-theme-primary;
     }
   }
 
@@ -1349,7 +1343,7 @@ div.FormDropdownActive {
 
     background-color: @color-secondary-text;
     box-shadow: 0 2px @size-4 rgba(0, 0, 0, 0.5);
-    color: @color-darkpurple;
+    color: @color-theme-primary;
     display: none;
     line-height: @size-24;
     max-height: 10rem;
@@ -1375,7 +1369,7 @@ div.FormDropdownActive {
 
       &:hover,
       &.active {
-        background-color: @color-lightergray;
+        background-color: @color-alternate-info-text;
       }
     }
   }
@@ -1385,7 +1379,7 @@ div.FormDropdownActive {
     width: 100%;
 
     &.selected {
-      color: @color-darkpurple;
+      color: @color-theme-primary;
     }
   }
 
@@ -1396,7 +1390,7 @@ div.FormDropdownActive {
       height: @size-16;
 
       polyline {
-        stroke: @color-lightgray;
+        stroke: @color-tertiary-info-text;
       }
     }
   }

@@ -38,6 +38,8 @@ import {
   YES_NO_OUTCOMES,
   SCALAR_OUTCOMES,
   NON_EXISTENT,
+  ZERO,
+  ONE,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
@@ -435,7 +437,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         this.onError('maxPrice', '');
         this.onError('scalarDenomination', '');
         this.onError('tickSize', '');
-        updateNewMarket({ minPrice: 0, maxPrice: 1, minPriceBigNumber: createBigNumber(0), maxPriceBigNumber: createBigNumber(1) });
+        updateNewMarket({ minPrice: 0, maxPrice: 1, minPriceBigNumber: ZERO, maxPriceBigNumber: ONE });
       }
       if (value !== CATEGORICAL) {
         this.onError('outcomes', '');
