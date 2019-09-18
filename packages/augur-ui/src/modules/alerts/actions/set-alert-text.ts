@@ -49,12 +49,12 @@ function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 function getInfo(params: any, status: string, marketInfo: MarketData) {
-  const outcome = params.outcome || params._outcome;
+  const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType = params.orderType === 0 ? BUY : SELL;
 
   if (status === TXEventName.Failure) {
-    orderType = params._direction.toNumber() === 0 ? BUY : SELL;
+    orderType = new BigNumber(params._direction).toNumber() === 0 ? BUY : SELL;
   }
 
   const price = convertOnChainPriceToDisplayPrice(
@@ -165,7 +165,7 @@ export default function setAlertText(alert: any, callback: Function) {
               const outcome = new BigNumber(alert.params.outcome).toString()
               const foundOrder = orders[outcome] && orders[outcome][alert.params.orderType] && orders[outcome][alert.params.orderType][alert.params.orderId];
               if (foundOrder) {
-                originalQuantity = createBigNumber(foundOrder.amount).plus(createBigNumber(foundOrder.amountFilled)).plus(originalQuantity);
+                originalQuantity = createBigNumber(foundOrder.originalFullPrecisionAmount);
               }
             } else {
               // filler
