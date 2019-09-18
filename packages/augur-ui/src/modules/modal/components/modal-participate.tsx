@@ -61,6 +61,7 @@ export default class ModalParticipate extends Component<ModalParticipateProps, M
     purchaseParticipationTokens(this.state.quantity, false, (err) => {
       if (err)
         console.log("ERR for purchaseParticipationTokens", err);
+      this.props.closeModal();
     });
   }
 
