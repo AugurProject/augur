@@ -481,7 +481,7 @@ export class Users {
           selector: { market: { $eq: derivedMarketDbInfo.market } },
         });
         const reportingFeeDivisor = derivedMarketDbInfo.feeDivisor;
-        // TODO: set numberOfShares based on winning/tentative outcome
+        // TODO: set numberOfShares based on winning/tentative payout
         const reportingFee = numberOfShares.div(reportingFeeDivisor);
         const contracts = augur.contracts;
         const totalUnclaimedProceeds = (await contracts.claimTradingProceeds.calculateProceeds_(derivedMarketDbInfo.market, new BigNumber(tentativeOutcome), numberOfShares))
@@ -489,6 +489,7 @@ export class Users {
             .minus(reportingFee);
 
         marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProceeds = totalUnclaimedProceeds.toString();
+        // Is the value below the same as `unrealized`? Maybe this doesn't need to be calculated?
         marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProfit = totalUnclaimedProceeds.minus(marketTradingPositions[derivedMarketDbInfo.market].totalCost).toString();
       }
     }
