@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import NullStateMessage from "modules/common/null-state-message";
@@ -20,15 +19,6 @@ interface AlertsViewProps {
 }
 
 export default class AlertsView extends Component<AlertsViewProps> {
-  static propTypes = {
-    alerts: PropTypes.array.isRequired,
-    updateAlert: PropTypes.func.isRequired,
-    removeAlert: PropTypes.func.isRequired,
-    clearAlerts: PropTypes.func.isRequired,
-    toggleAlerts: PropTypes.func.isRequired,
-    alertsVisible: PropTypes.bool.isRequired
-  };
-
   alertsContainer: any = null;
   alerts: any = null;
 

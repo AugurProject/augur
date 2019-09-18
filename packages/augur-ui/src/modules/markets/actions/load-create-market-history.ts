@@ -1,14 +1,11 @@
 import { augurSdk } from 'services/augursdk';
-import logError from 'utils/log-error';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { NodeStyleCallback } from 'modules/types';
+import { updateMarketsData } from './update-markets-data';
+import { keyMarketInfoCollectionByMarketId } from 'utils/convert-marketInfo-marketData';
 
-export function loadCreateMarketHistory(
-  options = {},
-  marketIdAggregator: Function | undefined
-) {
+export function loadCreateMarketHistory() {
   return async (
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
@@ -19,12 +16,11 @@ export function loadCreateMarketHistory(
     const universeId = universe.id;
     if (universeId) {
       const marketList = await Augur.getMarkets({
-        ...options,
         creator: loginAccount.address,
         universe: universeId,
       });
-      const marketIds = marketList.markets.map(marketInfo => marketInfo.id);
-      if (marketIdAggregator) marketIdAggregator(marketIds);
+      const marketInfos = keyMarketInfoCollectionByMarketId(marketList.markets);
+      dispatch(updateMarketsData(marketInfos));
     }
   };
 }
