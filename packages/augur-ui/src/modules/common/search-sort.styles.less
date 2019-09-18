@@ -5,11 +5,7 @@
   display: flex;
   flex: 1;
   justify-content: flex-end;
-
-  @media @breakpoint-mobile-mid {
-    flex-direction: column;
-  }
-
+  
   &.HideDropdown {
     > div:first-of-type {
       display: none;
@@ -21,20 +17,4 @@
   flex: 1;
   margin-top: 0.85rem;
   width: 100%;
-}
-
-.ShowOnMobile,
-.Hide {
-  display: none;
-}
-
-@media @breakpoint-mobile-mid {
-  .ShowOnMobile {
-    display: flex;
-    flex-flow: row nowrap;
-  }
-
-  .HideOnMobile {
-    display: none;
-  }
 }
