@@ -13,6 +13,7 @@ import {
 import { convertUnixToFormattedDate } from './format-date';
 import { formatPercent, formatDai, formatNone, formatNumber, formatAttoRep } from './format-number';
 import { createBigNumber } from './create-big-number';
+import { keyBy } from './key-by';
 
 export function convertMarketInfoToMarketData(marketInfo: Getters.Markets.MarketInfo) {
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
@@ -125,4 +126,9 @@ function processConsensus(market: Getters.Markets.MarketInfo): Consensus | null 
     if (marketOutcome) outcomeName = marketOutcome.description;
   }
   return { payout: market.consensus, winningOutcome, outcomeName };
+}
+
+
+export const keyMarketInfoCollectionByMarketId = (marketInfos: Getters.Markets.MarketInfo[]) => {
+  return keyBy(marketInfos, 'id');
 }

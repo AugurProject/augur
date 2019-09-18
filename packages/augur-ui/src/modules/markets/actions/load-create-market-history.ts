@@ -3,7 +3,7 @@ import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { updateMarketsData } from './update-markets-data';
-import { keyBy } from 'utils/key-by';
+import { keyMarketInfoCollectionByMarketId } from 'utils/convert-marketInfo-marketData';
 
 export function loadCreateMarketHistory() {
   return async (
@@ -19,7 +19,7 @@ export function loadCreateMarketHistory() {
         creator: loginAccount.address,
         universe: universeId,
       });
-      const marketInfos = keyBy(marketList.markets, 'id');
+      const marketInfos = keyMarketInfoCollectionByMarketId(marketList.markets);
       dispatch(updateMarketsData(marketInfos));
     }
   };
