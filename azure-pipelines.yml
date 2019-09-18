@@ -113,6 +113,7 @@ jobs:
           set -euo pipefail
           yarn workspace @augurproject/ui build
         displayName: ui build
+        condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
       - bash: |
           set -euo pipefail
           export NODE_OPTIONS="--max-old-space-size=6144"
