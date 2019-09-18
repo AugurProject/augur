@@ -17,5 +17,5 @@ contract IZeroXTrade {
 
     function getTransferFromAllowed() public view returns (bool);
     function parseOrderData(IExchange.Order memory _order) public view returns (AugurOrderData memory _data);
-    function unpackTokenId(uint256 _tokenId) public pure returns (uint240 _price, uint8 _outcome, uint8 _type);
+    function unpackTokenId(uint256 _tokenId) public pure returns (uint256 _price, uint8 _outcome, uint8 _type);
 }

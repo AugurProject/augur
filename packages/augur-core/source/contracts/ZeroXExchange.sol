@@ -1322,12 +1322,7 @@ contract ZeroXExchange is IExchange, ReentrancyGuard {
         private
     {
         // Decode params from `assetData`
-        // solhint-disable indent
-        (address erc1155TokenAddress, uint256[] memory ids, uint256[] memory values, bytes memory data) = abi.decode(
-            sliceDestructive(assetData, 4, assetData.length),
-            (address, uint256[], uint256[], bytes)
-        );
-        // solhint-enable indent
+        (address erc1155TokenAddress, uint256[] memory ids, uint256[] memory values, bytes memory data) = abi.decode(sliceDestructive(assetData, 4, assetData.length), (address, uint256[], uint256[], bytes));
 
         // Scale values up by `amount`
         uint256 length = values.length;

@@ -57,7 +57,7 @@ contract ZeroXTradeToken is IERC1155, Initializable {
     /// @param id     ID of the Token
     /// @return        The _owner's balance of the Token type requested
     function balanceOf(address owner, uint256 id) external view returns (uint256) {
-        (uint240 _price, uint8 _outcome, uint8 _type) = zeroXTrade.unpackTokenId(id);
+        (uint256 _price, uint8 _outcome, uint8 _type) = zeroXTrade.unpackTokenId(id);
         Order.Types _orderType = Order.Types(_type);
         if (_orderType == Order.Types.Ask) {
             return askBalance(owner, _outcome, _price);
@@ -66,9 +66,8 @@ contract ZeroXTradeToken is IERC1155, Initializable {
         }
     }
 
-    function bidBalance(address _owner, uint8 _outcome, uint240 _compressedPrice) private view returns (uint256) {
+    function bidBalance(address _owner, uint8 _outcome, uint256 _price) private view returns (uint256) {
         uint256 _numberOfOutcomes = market.getNumberOfOutcomes();
-        uint256 _price = uint256(_compressedPrice);
 
         // Figure out how many almost-complete-sets (just missing `outcome` share) the creator has
         uint256 _attoSharesOwned = 2**254;
@@ -84,8 +83,7 @@ contract ZeroXTradeToken is IERC1155, Initializable {
         return _attoSharesOwned.add(_attoSharesPurchasable);
     }
 
-    function askBalance(address _owner, uint8 _outcome, uint240 _compressedPrice) private view returns (uint256) {
-        uint256 _price = uint256(_compressedPrice);
+    function askBalance(address _owner, uint8 _outcome, uint256 _price) private view returns (uint256) {
         uint256 _attoSharesOwned = market.getShareToken(_outcome).balanceOf(_owner);
         uint256 _attoSharesPurchasable = cash.balanceOf(_owner).div(market.getNumTicks().sub(_price));
 

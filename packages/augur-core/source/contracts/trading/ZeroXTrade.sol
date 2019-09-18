@@ -168,7 +168,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
     /// @return AssetProxy-compliant asset data describing the set of assets.
     function encodeAssetData(
         IMarket _market,
-        uint240 _price,
+        uint256 _price,
         uint8 _outcome,
         uint8 _type,
         IERC20 _kycToken
@@ -196,14 +196,15 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         return _assetData;
     }
 
-    function getTokenId(uint240 _price, uint8 _outcome, uint8 _type) public pure returns (uint256 _tokenId) {
-        bytes memory _tokenIdBytes = abi.encodePacked(_price, _outcome, _type);
+    function getTokenId(uint256 _price, uint8 _outcome, uint8 _type) public pure returns (uint256 _tokenId) {
+        // NOTE: we're assuming no one needs a full uint256 for the price value here and cutting to uint240 so we can pack this in a uint256.
+        bytes memory _tokenIdBytes = abi.encodePacked(uint240(_price), _outcome, _type);
         assembly {
             _tokenId := mload(add(_tokenIdBytes, add(0x20, 0)))
         }
     }
 
-    function unpackTokenId(uint256 _tokenId) public pure returns (uint240 _price, uint8 _outcome, uint8 _type) {
+    function unpackTokenId(uint256 _tokenId) public pure returns (uint256 _price, uint8 _outcome, uint8 _type) {
         assembly {
             _price := shr(16, and(_tokenId, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000))
             _outcome := shr(8, and(_tokenId, 0x000000000000000000000000000000000000000000000000000000000000FF00))
@@ -259,7 +260,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
 
     function parseOrderData(IExchange.Order memory _order) public view returns (AugurOrderData memory _data) {
         (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_order.makerAssetData);
-        (uint240 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIds[0]);
+        (uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIds[0]);
         _data.marketAddress = IZeroXTradeToken(_tokenAddress).getMarket();
         require(IMarket(_data.marketAddress).getZeroXTradeToken() == IZeroXTradeToken(_tokenAddress));
         _data.price = _price;
@@ -268,13 +269,13 @@ contract ZeroXTrade is Initializable, IZeroXTrade {
         _data.kycToken = _kycToken;
     }
 
-    function getZeroXTradeTokenData(IExchange.Order memory _order) public view returns (IERC1155 _token, uint256 _tokenId) {
+    function getZeroXTradeTokenData(IExchange.Order memory _order) public pure returns (IERC1155 _token, uint256 _tokenId) {
         (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData, address _kycToken) = decodeAssetData(_order.makerAssetData);
         _token = IERC1155(_tokenAddress);
         _tokenId = _tokenIds[0];
     }
 
-    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint240 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
+    function createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, address _kycToken, uint256 _expirationTimeSeconds, uint256 _salt) public view returns (IExchange.Order memory _zeroXOrder, bytes32 _orderHash) {
         bytes memory _assetData = encodeAssetData(IMarket(_market), _price, _outcome, _type, IERC20(_kycToken));
         _zeroXOrder.makerAddress = msg.sender;
         _zeroXOrder.takerAddress = address(0);

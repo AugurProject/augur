@@ -53,6 +53,8 @@ export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFacto
 }
 export class UniverseFactory extends c.UniverseFactory<BigNumber> {
 }
+export class ZeroXTradeTokenFactory extends c.ZeroXTradeTokenFactory<BigNumber> {
+}
 export class DelegationTarget extends c.DelegationTarget<BigNumber> {
 }
 export class Map extends c.Map<BigNumber> {
@@ -92,6 +94,8 @@ export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 export class Trade extends c.Trade<BigNumber> {
 }
 export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
+}
+export class ZeroXTradeToken extends c.ZeroXTradeToken<BigNumber> {
 }
 export class Formulas extends c.Formulas<BigNumber> {
 }

@@ -334,8 +334,8 @@ Deploying to: ${networkConfiguration.networkName}
         promises.push(simulateTrade.initialize(this.augur!.address));
 
         const ZeroXTradeContract = await this.getContractAddress("ZeroXTrade");
-        const ZeroXTrade = new ZeroXTrade(this.dependencies, ZeroXTradeContract);
-        promises.push(ZeroXTrade.initialize(this.augur!.address));
+        const zeroXTrade = new ZeroXTrade(this.dependencies, ZeroXTradeContract);
+        promises.push(zeroXTrade.initialize(this.augur!.address));
 
         if (!this.configuration.useNormalTime) {
             const timeContract = await this.getContractAddress("TimeControlled");
