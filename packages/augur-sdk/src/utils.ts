@@ -133,7 +133,7 @@ export function calculatePayoutNumeratorsValue(
     }
 
     if (Number(payout[0]) > 0) {
-      return { invalid: true };
+      return { outcome: '0', invalid: true };
     }
 
     const longPayout = new BigNumber(payout[1]);
