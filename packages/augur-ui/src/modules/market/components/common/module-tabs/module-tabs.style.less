@@ -24,9 +24,17 @@
         position: relative;
         white-space: nowrap;
         width: 100%;
+      }
+    }
+  }
 
-        @media @breakpoint-mobile {
-          .mono-12;
+  @media @breakpoint-mobile-mid {
+    > ul {
+      > li {
+        > button {
+          .text-9-bold;
+
+          padding: @size-18 @size-16;
         }
       }
     }
