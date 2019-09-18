@@ -22,20 +22,20 @@ export const constructRelayTransaction = (tx: any) => (
   const blockNumber =
     tx.response.blockNumber && parseInt(tx.response.blockNumber, 16);
   if (!alerts.filter((alert: any) => alert.id === hash).length) {
-    dispatch(
-      addAlert({
-        id: hash,
-        timestamp,
-        blockNumber,
-        params: unpackedParams,
-        status,
-        // @ts-ignore
-        title: unpackedParams.type,
-        description: "",
-        linkPath: makePath(TRANSACTIONS, false),
-        to: tx.data.to,
-      }),
-    );
+    // dispatch(
+    //   addAlert({
+    //     id: hash,
+    //     timestamp,
+    //     blockNumber,
+    //     params: unpackedParams,
+    //     status,
+    //     // @ts-ignore
+    //     title: unpackedParams.type,
+    //     description: "",
+    //     linkPath: makePath(TRANSACTIONS, false),
+    //     to: tx.data.to,
+    //   }),
+    // );
   }
   return {
     [hash]: constructBasicTransaction({

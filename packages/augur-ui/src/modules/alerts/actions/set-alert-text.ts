@@ -43,6 +43,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { isSameAddress } from 'utils/isSameAddress';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -152,15 +153,38 @@ export default function setAlertText(alert: any, callback: Function) {
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
+            const { loginAccount, userOpenOrders } = getState() as AppState;
+            let originalQuantity = convertOnChainAmountToDisplayAmount(
+              createBigNumber(alert.params.amountFilled),
+              createBigNumber(marketInfo.tickSize)
+            );
+            let updatedOrderType = alert.params.orderType;
+            if (alert.params.orderCreator.toUpperCase() === loginAccount.address.toUpperCase()) {
+              // creator
+              const orders = userOpenOrders[alert.params.market];
+              const outcome = new BigNumber(alert.params.outcome).toString()
+              const foundOrder = orders[outcome] && orders[outcome][alert.params.orderType] && orders[outcome][alert.params.orderType][alert.params.orderId];
+              if (foundOrder) {
+                originalQuantity = createBigNumber(foundOrder.amount).plus(createBigNumber(foundOrder.amountFilled)).plus(originalQuantity);
+              }
+            } else {
+              // filler
+              updatedOrderType = alert.params.orderType === 0 ? 1 : 0;
+            }
             alert.description = marketInfo.description;
+            const params = {
+              ...alert.params,
+              orderType: updatedOrderType,
+              amount: alert.params.amountFilled,
+            }
             const { orderType, amount, price, outcomeDescription } = getInfo(
-              alert.params,
+              params,
               alert.status,
               marketInfo
             );
             alert.details = `${orderType}  ${
               formatShares(amount).formatted
-            } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+            } of ${formatShares(originalQuantity).formatted} of ${outcomeDescription} @ ${formatDai(price).formatted}`;
             alert.toast = true;
           })
         );

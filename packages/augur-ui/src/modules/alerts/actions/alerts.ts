@@ -1,5 +1,4 @@
 import store, { AppState } from 'store';
-import * as constants from 'modules/common/constants';
 import setAlertText from 'modules/alerts/actions/set-alert-text';
 import { createBigNumber } from 'utils/create-big-number';
 import makePath from 'modules/routes/helpers/make-path';
@@ -16,6 +15,10 @@ import {
   CREATEYESNOMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
+  PUBLICFILLORDER,
+  INFO,
+  PUBLICFILLBESTORDER,
+  PUBLICFILLBESTORDERWITHLIMIT,
 } from 'modules/common/constants';
 
 export const ADD_ALERT = 'ADD_ALERT';
@@ -33,7 +36,7 @@ export function addAlert(alert: any) {
           data: {
             alert: {
               seen: false,
-              level: constants.INFO,
+              level: INFO,
               networkId: getNetworkId(),
               universe: universe.id,
               ...alert,
@@ -42,7 +45,11 @@ export function addAlert(alert: any) {
         };
         return fullAlert;
       };
-      dispatch(setAlertText(alert, callback));
+     // try {
+        dispatch(setAlertText(alert, callback));
+      // } catch (error) {
+      //   callback(error, null);
+      // }
     }
   };
 }
@@ -66,7 +73,11 @@ export function updateExistingAlert(id, alert) {
       };
       return fullAlert;
     };
-    return dispatch(setAlertText(alert, callback));
+   // try {
+      return dispatch(setAlertText(alert, callback));
+    // } catch (error) {
+    //   return callback(error, null);
+    // }
   };
 }
 
@@ -86,7 +97,7 @@ export function updateAlert(id: string, alert: any) {
             name: CONTRIBUTE,
           })
         );
-      }
+      } 
       const foundAlert = alerts.find(findAlert => {
         if (
           (findAlert.id === id && alert.name.toUpperCase() === CREATEMARKET) ||
@@ -127,7 +138,7 @@ export function updateAlert(id: string, alert: any) {
 }
 // We clear by 'alert level'.
 // This will not surface in the UI just yet.
-export function clearAlerts(alertLevel = constants.INFO) {
+export function clearAlerts(alertLevel = INFO) {
   return {
     type: CLEAR_ALERTS,
     data: {
