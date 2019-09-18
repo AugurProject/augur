@@ -129,7 +129,7 @@ export function calculatePayoutNumeratorsValue(
 ): PayoutNumeratorValue {
   if (marketType === MarketTypeName.Scalar) {
     if (!isWellFormedScalar(payout)) {
-      return { malformed: true };
+      return { outcome: null, malformed: true };
     }
 
     if (Number(payout[0]) > 0) {
