@@ -158,7 +158,7 @@ export interface DisputeInfo {
 }
 
 export interface StakeDetails {
-  outcome: string;
+  outcome: string|null;
   bondSizeCurrent: string; // current dispute round bond size
   stakeCurrent: string; // will be pre-filled stake if tentative winning is true
   stakeRemaining: string; // bondSizeCurrent - stakeCurrent

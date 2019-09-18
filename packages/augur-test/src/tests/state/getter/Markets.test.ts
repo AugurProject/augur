@@ -1579,9 +1579,9 @@ describe('State API :: Markets :: ', () => {
         outcome: '1',
         isInvalidOutcome: false,
         isMalformedOutcome: false,
-        bondSizeCurrent: '4500537135601043701171200',
+        bondSizeCurrent: '4500537581443786621092864',
         stakeCurrent: '0',
-        stakeRemaining: '4500537135601043701171200',
+        stakeRemaining: '4500537581443786621092864',
         tentativeWinning: false,
       },
       {

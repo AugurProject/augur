@@ -118,7 +118,7 @@ export function logError(
 export interface PayoutNumeratorValue {
   malformed?: boolean;
   invalid?: boolean;
-  outcome: string;
+  outcome: string|null;
 }
 
 export function calculatePayoutNumeratorsValue(
@@ -130,7 +130,7 @@ export function calculatePayoutNumeratorsValue(
 ): PayoutNumeratorValue {
   if (marketType === MarketTypeName.Scalar) {
     if (!isWellFormedScalar(payout)) {
-      return { outcome: '0', malformed: true };
+      return { outcome: null, malformed: true };
     }
 
     if (Number(payout[0]) > 0) {
@@ -149,12 +149,12 @@ export function calculatePayoutNumeratorsValue(
   } else {
     switch(marketType) {
       case MarketTypeName.Categorical:
-        if (!isWellFormedCategorical(payout)) return { outcome: '0', malformed: true };
+        if (!isWellFormedCategorical(payout)) return { outcome: null, malformed: true };
         break;
       case MarketTypeName.YesNo:
-        if (!isWellFormedYesNo(payout)) return { outcome: '0', malformed: true };
+        if (!isWellFormedYesNo(payout)) return { outcome: null, malformed: true };
         break;
-      default: return { outcome: '0', malformed: true }; // bad market type
+      default: return { outcome: null, malformed: true }; // bad market type
     }
 
     const outcome = payout.findIndex((item: string) => Number(item) > 0);

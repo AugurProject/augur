@@ -77,7 +77,7 @@ test('calculate payout numerators value : malformed : no payout', () => {
     '',
     []
   );
-  expect(value).toEqual({ outcome: '0', malformed: true });
+  expect(value).toEqual({ outcome: null, malformed: true });
 });
 
 test('calculate payout numerators value : scalar : malformed', () => {
@@ -88,7 +88,7 @@ test('calculate payout numerators value : scalar : malformed', () => {
     MarketTypeName.Scalar,
     ['5000', '5000', '0']
   );
-  expect(value).toEqual({ outcome: '0', malformed: true });
+  expect(value).toEqual({ outcome: null, malformed: true });
 });
 
 test('calculate payout numerators value : scalar : invalid', () => {
@@ -132,7 +132,7 @@ test('calculate payout numerators value : categorical : malformed', () => {
     MarketTypeName.Categorical,
     ['3000', '4000', '3000', '0']
   );
-  expect(value).toEqual({ outcome: '0', malformed: true });
+  expect(value).toEqual({ outcome: null, malformed: true });
 });
 
 test('calculate payout numerators value : categorical : invalid', () => {
@@ -165,7 +165,7 @@ test('calculate payout numerators value : yes/no : malformed', () => {
     MarketTypeName.YesNo,
     ['3000', '4000', '3000',]
   );
-  expect(value).toEqual({ outcome: '0', malformed: true });
+  expect(value).toEqual({ outcome: null, malformed: true });
 });
 
 test('calculate payout numerators value : yes/no : invalid', () => {
@@ -252,7 +252,7 @@ test('describe scalar outcome', () => {
 });
 
 test('describe universe outcome : malformed', () => {
-  const outcome: PayoutNumeratorValue = { outcome: '0', malformed: true };
+  const outcome: PayoutNumeratorValue = { outcome: null, malformed: true };
   const log = {} as MarketCreatedLog;
   expect(describeUniverseOutcome(outcome, log)).toEqual(CommonOutcomes.Malformed);
 });
