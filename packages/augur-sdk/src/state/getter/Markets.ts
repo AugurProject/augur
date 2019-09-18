@@ -8,6 +8,7 @@ import {
   Address,
   DisputeDoc,
   MarketData,
+  MarketType,
   OrderEventType,
   OrderType,
   ParsedOrderEventLog
@@ -20,7 +21,8 @@ import {
   QUINTILLION,
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
-  marketTypeToName
+  marketTypeToName,
+  numTicksToTickSizeWithDisplayPrices
 } from '../../index';
 import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from '../../utils';
 import { OrderBook } from '../../api/Liquidity';
@@ -1053,7 +1055,7 @@ async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: Disp
         .multipliedBy(2)
         .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout).multipliedBy(3)).toFixed();
       formattedStakeDetails[i] = {
-        outcome: outcomeValue.outcome,
+        outcome: formatOutcome(outcomeValue, market),
         isInvalidOutcome: outcomeValue.invalid || false,
         isMalformedOutcome: outcomeValue.malformed || false,
         bondSizeCurrent,
@@ -1063,7 +1065,7 @@ async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: Disp
       };
     } else {
       formattedStakeDetails[i] = {
-        outcome: outcomeValue.outcome,
+        outcome: formatOutcome(outcomeValue, market),
         isInvalidOutcome: outcomeValue.invalid || false,
         isMalformedOutcome: outcomeValue.malformed || false,
         bondSizeCurrent: new BigNumber(outcomeDetails.bondSizeCurrent || '0x0', 16).toFixed(),
@@ -1074,6 +1076,24 @@ async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: Disp
     }
   }
   return formattedStakeDetails;
+}
+
+function formatOutcome(value: PayoutNumeratorValue, market: MarketData): string {
+  if (value.invalid || value.malformed || market.marketType !== MarketType.Scalar) {
+    return value.outcome;
+  }
+
+  const minPrice = new BigNumber(market.prices[0]);
+  const maxPrice = new BigNumber(market.prices[1]);
+  return convertOnChainPriceToDisplayPrice(
+    new BigNumber(value.outcome),
+    minPrice,
+    numTicksToTickSizeWithDisplayPrices(
+      new BigNumber(market.numTicks),
+      minPrice,
+      maxPrice
+    )
+  ).toString();
 }
 
 function getOutcomeValue(market: MarketData, payoutNumerators: string[]): PayoutNumeratorValue {

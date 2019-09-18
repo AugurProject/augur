@@ -1553,49 +1553,6 @@ describe('State API :: Markets :: ', () => {
     });
   });
 
-  test(':getMarketsInfo disputeinfo.stakes', async () => {
-    const market = await john.createReasonableYesNoMarket();
-
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    let infos = await api.route('getMarketsInfo', {
-      marketIds: [market.address],
-    });
-    expect(infos.length).toEqual(1);
-    let info = infos[0];
-
-    await fork(john, info);
-
-    await (await db).sync(john.augur, mock.constants.chunkSize, 0);
-    infos = await api.route('getMarketsInfo', {
-      marketIds: [market.address],
-    });
-    expect(infos.length).toEqual(1);
-    info = infos[0];
-
-    expect(info).toHaveProperty('disputeInfo');
-    expect(info.disputeInfo).toHaveProperty('stakes');
-    expect(info.disputeInfo.stakes).toEqual([
-      {
-        outcome: '1',
-        isInvalidOutcome: false,
-        isMalformedOutcome: false,
-        bondSizeCurrent: '4500537581443786621092864',
-        stakeCurrent: '0',
-        stakeRemaining: '4500537581443786621092864',
-        tentativeWinning: false,
-      },
-      {
-        outcome: '0', // this test was written to verify this specific value
-        isInvalidOutcome: true,
-        isMalformedOutcome: false,
-        bondSizeCurrent: '0',
-        stakeCurrent: '0',
-        stakeRemaining: '0',
-        tentativeWinning: true,
-      },
-    ]);
-  }, 180000);
-
   test(':getMarketsInfo', async () => {
     const yesNoMarket = await john.createReasonableYesNoMarket();
     const categoricalMarket = await john.createReasonableMarket(
