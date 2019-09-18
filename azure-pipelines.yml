@@ -72,7 +72,6 @@ jobs:
         (
           ne(variables['Build.SourceBranch'], 'refs/heads/master'),
           ne(variables['Build.SourceBranch'], 'refs/tags'),
-          eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST'], 'true')
         )
       )
     variables:
@@ -120,7 +119,8 @@ jobs:
         displayName: yarn test
       - bash: |
           set -euo pipefail
-          yarn workspace @augurproject/sdk test
+          yarn test
+        condition:  eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST'], 'true')
       - task: PublishTestResults@2
         condition: succeededOrFailed()
         inputs:
