@@ -1,14 +1,8 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
 
-import NullStateMessage from "modules/common/null-state-message";
 import Alert from "modules/alerts/components/alert";
 
-import { Close } from "modules/common/icons";
-
 import Styles from "modules/alerts/components/toasts-view.styles.less";
-import ToggleHeightStyles from "utils/toggle-height.styles.less";
 
 interface ToastsViewProps {
   toasts: Array<any>;
