@@ -1045,7 +1045,7 @@ async function getStakes(
   market: MarketData
 ): Promise<StakeDetails[]> {
   const disputeRecords = await db.findDisputeDocs({selector: { market: { $eq: market.market } }})
-  return await formatStakeDetails(db, market, disputeRecords);
+  return formatStakeDetails(db, market, disputeRecords);
 }
 
 async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: any[]): Promise<StakeDetails[]> {

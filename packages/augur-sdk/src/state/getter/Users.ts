@@ -462,6 +462,10 @@ export class Users {
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
     ).filter(t => t !== null);
 
+    const marketsData = await db.findMarkets({
+      selector: { market: { $in: marketIds } },
+    });
+
     const marketTradingPositions = _.mapValues(
       tradingPositionsByMarketAndOutcome,
       tradingPositionsByOutcome => {
@@ -472,25 +476,36 @@ export class Users {
       }
     );
 
-    const derivedDbMarketsInfos = await db.findMarkets({
-      selector: { market: { $in: marketIds } },
-    });
-    for (const derivedMarketDbInfo of derivedDbMarketsInfos) {
-      if (derivedMarketDbInfo.reportingState === MarketReportingState.Finalized || MarketReportingState.AwaitingFinalization) {
-        const derivedDbDisputeInfo = await db.findDisputeDocs({
-          selector: { market: { $eq: derivedMarketDbInfo.market } },
-        });
-        const reportingFeeDivisor = derivedMarketDbInfo.feeDivisor;
-        // TODO: set numberOfShares based on winning/tentative payout
-        const reportingFee = numberOfShares.div(reportingFeeDivisor);
-        const contracts = augur.contracts;
-        const totalUnclaimedProceeds = (await contracts.claimTradingProceeds.calculateProceeds_(derivedMarketDbInfo.market, new BigNumber(tentativeOutcome), numberOfShares))
-            .minus(await contracts.claimTradingProceeds.calculateCreatorFee_(derivedMarketDbInfo.market, numberOfShares))
-            .minus(reportingFee);
+    // Set totalUnclaimedProceeds & totalUnclaimedProfit
+    for (const marketData of marketsData) {
+      marketTradingPositions[marketData.market].totalUnclaimedProceeds = '0';
+      marketTradingPositions[marketData.market].totalUnclaimedProfit = '0';
 
-        marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProceeds = totalUnclaimedProceeds.toString();
-        // Is the value below the same as `unrealized`? Maybe this doesn't need to be calculated?
-        marketTradingPositions[derivedMarketDbInfo.market].totalUnclaimedProfit = totalUnclaimedProceeds.minus(marketTradingPositions[derivedMarketDbInfo.market].totalCost).toString();
+      if (marketData.reportingState === MarketReportingState.Finalized || MarketReportingState.AwaitingFinalization) {
+        if (marketData.tentativeWinningPayoutNumerators) {
+          const outcome = marketData.tentativeWinningPayoutNumerators.findIndex((item: string) => Number(item) > 0);
+          const tokenBalanceChangedLogs = await db.findTokenBalanceChangedLogs(
+            params.account,
+            {
+              selector: {
+                market: marketData.market,
+                outcome: `0x0${outcome}`,
+              },
+            }
+          );
+          if (tokenBalanceChangedLogs.length > 0) {
+            const lastTokenBalanceChanged = tokenBalanceChangedLogs[tokenBalanceChangedLogs.length - 1];
+            const numShares = new BigNumber(lastTokenBalanceChanged.balance);
+            const reportingFeeDivisor = marketData.feeDivisor;
+            const reportingFee = new BigNumber(tokenBalanceChangedLogs[0].balance).div(reportingFeeDivisor);
+            const totalUnclaimedProceeds = numShares.times(marketData.tentativeWinningPayoutNumerators[outcome])
+              .minus(marketData.feePerCashInAttoCash)
+              .minus(reportingFee);
+
+            marketTradingPositions[marketData.market].totalUnclaimedProceeds = totalUnclaimedProceeds.toString();
+            marketTradingPositions[marketData.market].totalUnclaimedProfit = totalUnclaimedProceeds.minus(marketTradingPositions[marketData.market].unrealizedCost).toString();
+          }
+        }
       }
     }
 
