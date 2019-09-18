@@ -61,6 +61,7 @@ export class Universe {
     universe: t.string,
   });
 
+  // TODO: refractor getDisputeWindow getter to make a contract call to get the needed information, time isn't saved because of the getTime contract call
   @Getter('getDisputeWindowParams')
   static async getDisputeWindow(augur: Augur, db: DB): Promise<DisputeWindow> {
     const universe = augur.addresses.Universe;
@@ -309,11 +310,11 @@ async function getDisputeWindow(db: DB, universe: string, time: number): Promise
   const logs = await db.findDisputeWindowCreatedLogs({
     selector: {
       universe,
-      initial: false, // we only want standard (7-day) dispute windows for the getDisputeWindow getter
       $and: [
         // dispute window starts at startTime and ends before endTime
         { startTime: { $lte: hexTime} },
         { endTime: { $gt: hexTime} },
+        { initial: false }, // we only want standard (7-day) dispute windows for the getDisputeWindow getter
       ],
     },
   });
