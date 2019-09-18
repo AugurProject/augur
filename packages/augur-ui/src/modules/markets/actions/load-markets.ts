@@ -15,6 +15,7 @@ import {
 } from 'modules/markets/actions//update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
+import { LoadReportingMarketsOptions } from 'modules/types';
 
 interface SortOptions {
   sortBy?: Getters.Markets.GetMarketsSortBy;
@@ -139,16 +140,6 @@ export const loadMarketsByFilter = (
   cb(null, marketList);
 };
 
-export interface LoadReportingMarketsOptions {
-  limit: number;
-  offset: number;
-  userPortfolioAddress?: string;
-  sortByRepAmount?: boolean;
-  sortByDisputeRounds?: boolean;
-  search?: string;
-  reportingStates?: string[];
-}
-
 export const loadNextWindowDisputingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
@@ -251,7 +242,7 @@ const loadReportingMarkets = (
   let reportingState = null;
   if (filterOptions.reportingStates.length === 1) {
     reportingState = filterOptions.reportingStates[0];
-    dispatch(updateReportingList(reportingState, []));
+    dispatch(updateReportingList(reportingState, [], filterOptions));
   }
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
@@ -273,7 +264,7 @@ const loadReportingMarkets = (
   dispatch(addUpdateMarketInfos(marketList.markets));
   if (reportingState) {
     const marketIds = marketList.markets.map(m => m.id);
-    dispatch(updateReportingList(reportingState, marketIds));
+    dispatch(updateReportingList(reportingState, marketIds, filterOptions));
   }
   if (cb) cb(null, marketList);
 };

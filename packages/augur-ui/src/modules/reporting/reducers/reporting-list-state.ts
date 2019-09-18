@@ -1,19 +1,22 @@
 import { RESET_STATE } from 'modules/app/actions/reset-state';
-import { ReportingList } from 'modules/types';
+import { ReportingListState } from 'modules/types';
 import { UPDATE_REPORTING_LIST } from 'modules/reporting/actions/update-reporting-list';
 
-const DEFAULT_STATE: ReportingList = {};
+const DEFAULT_STATE: ReportingListState = {};
 
 export default function(
-  reportingList: Partial<ReportingList> = DEFAULT_STATE,
+  reportingList: Partial<ReportingListState> = DEFAULT_STATE,
   { type, data }
-): ReportingList {
+): ReportingListState {
   switch (type) {
     case UPDATE_REPORTING_LIST: {
-      const { reportingState, marketIds } = data;
+      const { reportingState, marketIds, params } = data;
       return {
         ...reportingList,
-        [reportingState]: marketIds,
+        [reportingState]: {
+          marketIds,
+          params
+        }
       };
     }
     case RESET_STATE:

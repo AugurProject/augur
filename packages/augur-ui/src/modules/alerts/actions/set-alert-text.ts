@@ -17,6 +17,7 @@ import {
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   convertPayoutNumeratorsToStrings,
+  MALFORMED_OUTCOME,
 } from '@augurproject/sdk';
 import {
   BUY,
@@ -109,6 +110,7 @@ export default function setAlertText(alert: any, callback: Function) {
                 : getOutcomeNameWithOutcome(
                     marketInfo,
                     alert.params.outcomeId,
+                    false,
                     false
                   );
             alert.details = `${toCapitalizeCase(orderType)}  ${
@@ -178,7 +180,7 @@ export default function setAlertText(alert: any, callback: Function) {
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
-            const outcome = calculatePayoutNumeratorsValue(
+            const payoutNumeratorResultObject = calculatePayoutNumeratorsValue(
               marketInfo.maxPrice,
               marketInfo.minPrice,
               marketInfo.numTicks,
@@ -190,9 +192,9 @@ export default function setAlertText(alert: any, callback: Function) {
                 : alert.params.payoutNumerators
             );
             const outcomeDescription =
-              outcome === null
-                ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(marketInfo, outcome, false);
+            payoutNumeratorResultObject.malformed
+                ? MALFORMED_OUTCOME
+                : getOutcomeNameWithOutcome(marketInfo, payoutNumeratorResultObject.outcome, payoutNumeratorResultObject.invalid, false);
             alert.description = marketInfo.description;
             alert.details = `${
               formatRep(
@@ -212,7 +214,7 @@ export default function setAlertText(alert: any, callback: Function) {
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
-            const outcome = calculatePayoutNumeratorsValue(
+            const payoutNumeratorResultObject = calculatePayoutNumeratorsValue(
               marketInfo.maxPrice,
               marketInfo.minPrice,
               marketInfo.numTicks,
@@ -221,9 +223,9 @@ export default function setAlertText(alert: any, callback: Function) {
                 convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
             );
             const outcomeDescription =
-              outcome === null
-                ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(marketInfo, outcome, false);
+            payoutNumeratorResultObject.malformed
+                ? MALFORMED_OUTCOME
+                : getOutcomeNameWithOutcome(marketInfo, payoutNumeratorResultObject.outcome, payoutNumeratorResultObject.invalid, false);
             alert.description = marketInfo.description;
             alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
           })

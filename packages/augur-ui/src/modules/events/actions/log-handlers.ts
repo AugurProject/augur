@@ -40,6 +40,8 @@ import {
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
+import { isOnReportingPage } from 'modules/trades/helpers/is-on-page';
+import { reloadReportingPage } from 'modules/reporting/actions/update-reporting-list';
 
 const handleAlert = (
   log: any,
@@ -304,6 +306,7 @@ export const handleInitialReportSubmittedLog = (
     handleAlert(log, DOINITIALREPORT, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
+  if(isOnReportingPage()) dispatch(reloadReportingPage(getState()));
 };
 
 export const handleInitialReporterRedeemedLog = (
