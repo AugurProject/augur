@@ -1053,7 +1053,7 @@ async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: Disp
         .multipliedBy(2)
         .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout).multipliedBy(3)).toFixed();
       formattedStakeDetails[i] = {
-        outcome: outcomeValue.outcome || '0',
+        outcome: outcomeValue.outcome,
         isInvalidOutcome: outcomeValue.invalid || false,
         isMalformedOutcome: outcomeValue.malformed || false,
         bondSizeCurrent,
@@ -1063,7 +1063,7 @@ async function formatStakeDetails(db: DB, market: MarketData, stakeDetails: Disp
       };
     } else {
       formattedStakeDetails[i] = {
-        outcome: outcomeValue.outcome || '0',
+        outcome: outcomeValue.outcome,
         isInvalidOutcome: outcomeValue.invalid || false,
         isMalformedOutcome: outcomeValue.malformed || false,
         bondSizeCurrent: new BigNumber(outcomeDetails.bondSizeCurrent || '0x0', 16).toFixed(),

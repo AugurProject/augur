@@ -77,7 +77,7 @@ test('calculate payout numerators value : malformed : no payout', () => {
     '',
     []
   );
-  expect(value).toEqual({ malformed: true });
+  expect(value).toEqual({ outcome: '0', malformed: true });
 });
 
 test('calculate payout numerators value : scalar : malformed', () => {
@@ -88,7 +88,7 @@ test('calculate payout numerators value : scalar : malformed', () => {
     MarketTypeName.Scalar,
     ['5000', '5000', '0']
   );
-  expect(value).toEqual({ malformed: true });
+  expect(value).toEqual({ outcome: '0', malformed: true });
 });
 
 test('calculate payout numerators value : scalar : invalid', () => {
@@ -99,7 +99,7 @@ test('calculate payout numerators value : scalar : invalid', () => {
     MarketTypeName.Scalar,
     ['10000', '0', '0']
   );
-  expect(value).toEqual({ invalid: true });
+  expect(value).toEqual({ outcome: '0', invalid: true });
 });
 
 test('calculate payout numerators value : scalar : outcome is zero without being invalid', () => {
@@ -132,7 +132,7 @@ test('calculate payout numerators value : categorical : malformed', () => {
     MarketTypeName.Categorical,
     ['3000', '4000', '3000', '0']
   );
-  expect(value).toEqual({ malformed: true });
+  expect(value).toEqual({ outcome: '0', malformed: true });
 });
 
 test('calculate payout numerators value : categorical : invalid', () => {
@@ -143,7 +143,7 @@ test('calculate payout numerators value : categorical : invalid', () => {
     MarketTypeName.Categorical,
     ['10000', '0', '0', '0']
   );
-  expect(value).toEqual({ invalid: true });
+  expect(value).toEqual({ outcome: '0', invalid: true });
 });
 
 test('calculate payout numerators value : categorical', () => {
@@ -165,7 +165,7 @@ test('calculate payout numerators value : yes/no : malformed', () => {
     MarketTypeName.YesNo,
     ['3000', '4000', '3000',]
   );
-  expect(value).toEqual({ malformed: true });
+  expect(value).toEqual({ outcome: '0', malformed: true });
 });
 
 test('calculate payout numerators value : yes/no : invalid', () => {
@@ -176,7 +176,7 @@ test('calculate payout numerators value : yes/no : invalid', () => {
     MarketTypeName.YesNo,
     ['10000', '0', '0']
   );
-  expect(value).toEqual({ invalid: true });
+  expect(value).toEqual({ outcome: '0', invalid: true });
 });
 
 test('calculate payout numerators value : yes/no', () => {
@@ -252,13 +252,13 @@ test('describe scalar outcome', () => {
 });
 
 test('describe universe outcome : malformed', () => {
-  const outcome: PayoutNumeratorValue = { malformed: true };
+  const outcome: PayoutNumeratorValue = { outcome: '0', malformed: true };
   const log = {} as MarketCreatedLog;
   expect(describeUniverseOutcome(outcome, log)).toEqual(CommonOutcomes.Malformed);
 });
 
 test('describe universe outcome : invalid', () => {
-  const outcome: PayoutNumeratorValue = { invalid: true };
+  const outcome: PayoutNumeratorValue = { outcome: '0', invalid: true };
   const log = {} as MarketCreatedLog;
   expect(describeUniverseOutcome(outcome, log)).toEqual(CommonOutcomes.Invalid);
 });
