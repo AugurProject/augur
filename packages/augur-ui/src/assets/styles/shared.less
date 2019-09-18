@@ -7,7 +7,6 @@
 @import '_responsive';
 @import '_animations';
 @import '_buttons';
-@import '_inputs';
 
 @max-width: 75rem;
 
@@ -25,19 +24,39 @@ body {
   font-weight: 400;
 }
 
-.view {
-  min-height: 100%;
-  padding: @size-32;
-  width: 100%;
+label {
+  color: @color-secondary-text;
+  display: block;
+  margin-bottom: @size-10;
 
-  @media @breakpoint-mobile {
-    padding: 0;
+  &[for] {
+    cursor: pointer;
   }
 }
 
-.view--constrained {
-  max-width: @max-width;
-  min-height: 100%;
+input,
+textarea {
+  background-color: @color-secondary-text;
+  border: @size-1 solid transparent;
+  color: @color-theme-primary;
+  display: block;
+  font-family: @roboto;
+  padding: @size-12 @size-16;
+  width: 100%;
+
+  &:focus {
+    border: @size-1 solid @color-primary-light;
+  }
+
+  &:disabled {
+    background-color: @color-disabled-text-secondary;
+    cursor: default;
+  }
+
+  &::placeholder {
+    color: @color-alternate-contrast;
+    font-family: @roboto;
+  }
 }
 
 :global .App--windowsScrollBars {

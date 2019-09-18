@@ -103,8 +103,8 @@
   right: @size-16;
 
   &.error {
-    background: @color-error-message-fade;
-    border: 1px solid @color-error-text;
+    background: fade(@color-error-fade, 90%);
+    border: 1px solid @color-error;
   }
 
   div:first-child {
@@ -159,15 +159,15 @@
 
     > circle {
       opacity: 1;
-      stroke: @color-error-text;
+      stroke: @color-error;
     }
 
     > rect {
-      fill: @color-error-text;
+      fill: @color-error;
     }
 
     > path {
-      fill: @color-error-text;
+      fill: @color-error;
     }
   }
 }

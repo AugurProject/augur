@@ -97,8 +97,8 @@
 }
 
 .TradingForm__error_message_container {
-  background: @color-error-message-bright-fade;
-  border: 1px solid @color-error-text;
+  background: fade(@color-error, 20%);
+  border: 1px solid @color-error;
   border-radius: 3px;
   box-sizing: border-box;
   display: block;
@@ -126,17 +126,17 @@
     width: @size-12;
 
     > circle {
-      fill: @color-error-message-fade;
+      fill: fade(@color-error-fade, 90%);
       opacity: 0.5;
-      stroke: @color-error-text;
+      stroke: @color-error;
     }
 
     > rect {
-      fill: @color-error-text;
+      fill: @color-error;
     }
 
     > path {
-      fill: @color-error-text;
+      fill: @color-error;
     }
   }
 
@@ -201,11 +201,11 @@
   }
 
   &.error {
-    border: 1px solid fade(@color-error-text, 50%);
+    border: 1px solid fade(@color-error, 50%);
 
     &:focus-within,
     &:focus {
-      border: 1px solid fade(@color-error-text, 50%);
+      border: 1px solid fade(@color-error, 50%);
     }
   }
 
@@ -232,7 +232,7 @@
     }
 
     &.error {
-      background: @color-error-message-bright-fade;
+      background: fade(@color-error, 20%);
       border-left: 0;
       opacity: 0.5;
     }
@@ -251,7 +251,7 @@
       border-left: 0;
 
       &.error {
-        background: @color-error-message-bright-fade;
+        background: fade(@color-error, 20%);
         opacity: 0.5;
       }
     }

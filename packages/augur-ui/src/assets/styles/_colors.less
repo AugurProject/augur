@@ -1,117 +1,125 @@
 // Colors for the V2 Redesign
-@color-primary-text: #1A1D23;
-@color-secondary-text: #FFFFFF;
-@color-alternate-text: #777777;
-@color-tertiary-text: #CED7D8;
-@color-primary-light: #443B59;
-@color-primary-alternate: #2B2438;
-@color-primary-alternate-two: #665789;
-@color-tertiary-one: #1A1627;
-@color-primary-dark: #000000;
-@color-secondary-dark: #07030E;
 
-@color-alternate-info-text: #E9E5F2;
-@color-tertiary-info-text: #AFA7C1;
-@color-shadow-text: #76737E;
-@color-disabled-text: #666666;
-@color-disabled-text-secondary: #BDBDBD;
-@color-primary-background: #0F0A19;
-@color-secondary-background: #120D1B;
-@color-tertiary-background: #1B1528;
-@color-theme-primary: #211A32;
-@color-theme-secondary: #141313;
-@color-contrast-background: #FBE9A6;
-@color-modal-veil: rgba(0, 0, 0, 0.8);
+// Plans to fix this file should include the following:
 
-@color-tertiary-background-theme: #252429;
-@color-contrast-background-theme: #E9E7F3;
-@color-alternate-contrast: #FBFBFF;
-@color-dark-alternate: #4E4C57;
-@color-contrast-dark: #0E0E0F;
-@color-contrast-dark-alternate: #3C3B43;
+// Text
+// @color-primary-text: #E9E5F2;
+// @color-secondary-text: #AFA7C1;
+@color-inactive-text: #4E4C57;
 
-@color-primary-action: #09CFE1;
-@color-secondary-action: #161022;
-@color-highlight-background: #4F4761;
-@color-open: #7DFFA8;
-@color-in-reporting: #F1E700;
-@color-resolved: #F12B00;
+// UI
+@color-dark-grey: #0E0E0F; // (TBD Name) - 3 files
+// @color-table-header: #161518;
+// @color-module-background: #1B1A1E;
+// @color-page-background: #201E22;
 
-@color-highlight: @color-primary-alternate-two;
-@color-bright-highlight: #988FEA;
-@color-highlight-fade: #C4C4C4;
-@color-highlight-masked: fade(@color-highlight-fade, 10%);
+// Market status
+@color-open: #7DFFA8; // 5 files
+@color-reporting: #F1E700; // 7 files
+@color-resolved: #F12B00; // 5 files
 
-@color-positive: #00F1C4;
-@color-neutral: #999999;
-@color-negative: #FF7D5E;
-@color-error-text: #ff2727;
-@color-error-fade: #52121D;
-@color-neutral-secondary: #484552;
-@color-invalid-primary: #FD6266;
-@color-neutral-affirmative: #AEFFF0;
-@color-faded-bright: #FFB47E;
+// Trades
+@color-positive: #00F1C4; // 13 files
+@color-negative: #FF7D5E; // 14 files
 
-@color-active: #8579A1;
-@color-active-hover: #211B2E;
+// Interactions:
+// @color-primary-action: #09CFE1;
+// @color-primary-action-outline: ???;
+// @color-secondary-action: #252429;
+@color-secondary-action-outline: #3C3B43; // - 3 files
 
-@color-underline: #7EC9FF;
+// Other
+@color-error: #FF2727; // 9 files
 
-@color-primary-button-background-hover: fade(@color-primary-action, 90%);
-@color-primary-button-background-focus: fade(@color-primary-action, 80%);
-@color-primary-button-background-active: fade(@color-primary-action, 70%);
-@color-primary-button-background-disabled: fade(@color-primary-action, 40%);
+// Outcomes:
+// @color-tenative-winner: #AEFFF0;
+@color-outcome-invalid: #FF7E9D; // 5 files
+// @color-outcome-one: #3DDE8D;
+// @color-outcome-two: #FE367E;
+// @color-outcome-three: #3E8BFF;
+// @color-outcome-four: #FCBD43;
+// @color-outcome-five: #6980E9;
+// @color-outcome-six: #F59300;
+// @color-outcome-seven: #09CFE1;
+// @color-outcome-eight: #FF7E9D;
 
-@color-buy-order-button-background: fade(@color-positive, 40%);
-@color-buy-order-button-background-hover: fade(@color-positive, 60%);
-@color-buy-order-button-background-disabled: fade(@color-positive, 20%);
-@color-buy-order-button-border-disabled: fade(@color-positive, 10%);
+// Temporary -- find replacement color that i'll chnage all the unobvious refactor ones to:
+// @color-replace-me: #77FF00;
 
-@color-sell-order-button-background: fade(@color-negative, 40%);
-@color-sell-order-button-background-hover: fade(@color-negative, 60%);
-@color-sell-order-button-background-disabled: fade(@color-negative, 20%);
+// Current vars named incorrectly:
+@color-alternate-info-text: #E9E5F2; // primary text - 24 files
+@color-tertiary-info-text: #AFA7C1; // secondary text - 33 files
+@color-primary-action: #09CFE1; // primary-action - 15 files
 
-@color-sell-order-button-border-disabled: fade(@color-negative, 10%);
-
-@color-secondary-button-text-disabled: fade(@color-secondary-text, 20%);
-
-@color-error-message-fade: fade(@color-error-fade, 90%);
-@color-error-message-bright-fade: fade(@color-error-text, 20%);
-
+// Refactor Out/Change/Add (ROCAs)
+@color-primary-text: #1A1D23; // ROCA - 1A1D23 - 5 files
+@color-secondary-text: #FFFFFF; // ROCA - FFFFFF - 66 files
+@color-alternate-text: #777777;  // ROCA - 777777 - 6 files
+@color-tertiary-text: #CED7D8; // ROCA - CED7D8 - 22 files
+@color-primary-light: #443B59; // ROCA - 443B59 - 31 files
+@color-primary-alternate: #2B2438; // ROCA - 2B2438 - 20 files
+@color-primary-alternate-two: #665789; // ROCA - 665789 - 8 files
+@color-tertiary-one: #1A1627; // ROCA - 1A1627 - 7 files
+@color-primary-dark: #000000; // ROCA - 000000 - 2 files
+@color-secondary-dark: #07030E; // ROCA - 07030E - 2 files
+@color-shadow-text: #76737E; // ROCA - 76737E - 27 files
+@color-disabled-text: #666666; // ROCA - 666666 - 3 files
+@color-disabled-text-secondary: #BDBDBD; // ROCA - BDBDBD - 4 files
+@color-primary-background: #0F0A19; // ROCA - 0F0A19 - 24 files
+@color-secondary-background: #120D1B; // ROCA - 120D1B - 3 files
+@color-tertiary-background: #1B1528; // ROCA - 1B1528 - 34 files
+@color-theme-primary: #211A32; // ROCA - 211A32 - 43 files
+@color-theme-secondary: #141313; // ROCA - 141313 - 2 files
+@color-modal-veil: rgba(0, 0, 0, 0.8); // ROCA 000000 .8 opacity - 2 files
+@color-tertiary-background-theme: #252429; // ROCA - 252429 - 3 files
+@color-contrast-background-theme: #E9E7F3; // ROCA - E9E7F3 - 3 files
+// @color-contrast-background-theme  is real close to Primary Text, on purpose?
+@color-alternate-contrast: #FBFBFF; // ROCA - FBFBFF - 4 files
+@color-secondary-action: #161022; // ROCA - 161022 - 20 files
+@color-highlight: @color-primary-alternate-two; // ROCA - 665789 - 16 files
+@color-highlight-fade: #C4C4C4; // ROCA - C4C4C4 - 3 files
+@color-highlight-masked: fade(@color-highlight-fade, 10%); // ROCA - C4C4C4 10% fade - 2 files
+@color-neutral: #999999; // ROCA - 999999 - 22 files
+@color-error-fade: #52121D; // ROCA - 52121D - 2 files
+@color-neutral-secondary: #484552; // ROCA - 484552 - 2 files
+@color-neutral-affirmative: #AEFFF0; // ROCA - AEFFF0 - 2 files
+@color-faded-bright: #FFB47E; // ROCA - FFB47E - 4 files
+@color-active: #8579A1; // ROCA - 8579A1 - 2 files
+@color-active-hover: #211B2E; // ROCA - 211B2E - 5 files
+@color-underline: #7EC9FF; // ROCA - 7EC9FF - 2 files
 //  Chart
-@color-outcome-one: #fadca2;
-@color-outcome-two: #f3a2fa;
-@color-outcome-three: @color-secondary-text;
-@color-outcome-four: #00EAFF;
-@color-outcome-five: #a5a5a5;
-@color-outcome-six: #665cdf;
-@color-outcome-seven: #09cfe1;
-@color-outcome-eight: #5cdf88;
-@color-outcome-nine: #F12B00;
-@color-outcome-list: @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven @color-outcome-eight @color-outcome-nine;
-
+@color-outcome-one: #fadca2; // 2f
+@color-outcome-two: #f3a2fa; // 2f
+@color-outcome-three: @color-secondary-text; // 2f
+@color-outcome-four: #00EAFF; // 8f
+@color-outcome-five: #a5a5a5; // 2f
+@color-outcome-six: #665cdf; // 2f
+@color-outcome-seven: #09cfe1; // 4f
+@color-outcome-eight: #5cdf88; // 2f
+@color-outcome-list: @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven @color-outcome-eight; // 1 file, this one -- however is used in 2 files, see below
+ 
 .generate-indexed-color-outcome-classes(@rules) {
   each(@color-outcome-list, {
     @newIndex: @index;
     @rules();
   });
-}
+} // 2 files
 
 // Outcomes
-@color-one: #3DDE8D;
-@color-two: #FE367E;
-@color-three: #3E8BFF;
-@color-four: #09CFE1;
-@color-five: #FCBD43;
-@color-six: #FF6DE8;
-@color-seven: @color-secondary-text;
-@color-invalid: #FF7E9D;
-@color-outcome-alternate-list: @color-one @color-two @color-three @color-four @color-five @color-six @color-seven @color-invalid;
+@color-one: #3DDE8D; // 1 file
+@color-two: #FE367E; // 1 file
+@color-three: #3E8BFF; // 1 file
+@color-four: #09CFE1; // 1 file
+@color-five: #FCBD43; // 1 file
+@color-six: #FF6DE8; // 1 file
+@color-seven: @color-secondary-text; // 1 file
+@color-outcome-invalid-alternate-list: @color-one @color-two @color-three @color-four @color-five @color-six @color-seven @color-outcome-invalid; 
+// 1 file
 
 .generate-indexed-color-outcome-alternate-classes(@rules) {
   each(@color-outcome-alternate-list, {
     @newIndex: @index;
     @rules();
   });
-}
+}// 2 files
 

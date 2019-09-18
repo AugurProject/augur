@@ -22,19 +22,19 @@
   padding: @size-12 @size-24;
 
   &:not(:disabled):hover {
-    background: @color-primary-button-background-hover;
+    background: fade(@color-primary-action, 90%);
   }
 
   &:not(:disabled):focus {
-    background: @color-primary-button-background-focus;
+    background: fade(@color-primary-action, 80%);
   }
 
   &:not(:disabled):active {
-    background: @color-primary-button-background-active;
+    background: fade(@color-primary-action, 70%);
   }
 
   &:disabled {
-    background: @color-primary-button-background-disabled;
+    background: fade(@color-primary-action, 40%);
   }
 }
 
@@ -73,7 +73,7 @@
 .BuyOrderButton {
   .Button;
 
-  background: @color-buy-order-button-background;
+  background: fade(@color-positive, 40%);
   border-color: @color-positive;
   color: @color-secondary-text;
   height: @button-height-orders;
@@ -81,20 +81,20 @@
   padding: @button-padding-orders;
 
   &:disabled {
-    background: @color-buy-order-button-background-disabled;
-    border-color: @color-buy-order-button-border-disabled;
-    color: @color-secondary-button-text-disabled;
+    background: fade(@color-positive, 20%);
+    border-color: fade(@color-positive, 10%);
+    color: fade(@color-secondary-text, 20%);
   }
 
   &:hover:enabled {
-    background: @color-buy-order-button-background-hover;
+    background: fade(@color-positive, 60%);
   }
 }
 
 .SellOrderButton {
   .Button;
 
-  background: @color-sell-order-button-background;
+  background: fade(@color-negative, 40%);
   border-color: @color-negative;
   color: @color-secondary-text;
   height: @button-height-orders;
@@ -102,13 +102,13 @@
   padding: @button-padding-orders;
 
   &:disabled {
-    background: @color-sell-order-button-background-disabled;
-    border-color: @color-sell-order-button-border-disabled;
-    color: @color-secondary-button-text-disabled;
+    background: fade(@color-negative, 20%);
+    border-color: fade(@color-negative, 10%);
+    color: fade(@color-secondary-text, 20%);
   }
 
   &:hover:enabled {
-    background: @color-sell-order-button-background-hover;
+    background: fade(@color-negative, 60%);
   }
 }
 
@@ -134,12 +134,12 @@
   }
 
   &:disabled {
-    color: @color-secondary-button-text-disabled;
+    color: fade(@color-secondary-text, 20%);
     cursor: @button-cursor-disabled;
 
     > svg > path {
       fill-opacity: 0.1;
-      stroke: @color-secondary-button-text-disabled;
+      stroke: fade(@color-secondary-text, 20%);
       stroke-opacity: 0.3;
     }
   }
@@ -204,7 +204,7 @@
   flex-flow: row nowrap;
   text-transform: uppercase;
   background: @color-tertiary-background-theme;
-  border: 1px solid @color-contrast-dark-alternate;
+  border: 1px solid @color-secondary-action-outline;
   border-radius: @size-3;
   color: @color-alternate-info-text;
   padding: @size-1 @size-4;

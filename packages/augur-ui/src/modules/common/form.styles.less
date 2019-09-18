@@ -287,7 +287,7 @@
 
   &.Invalid {
     > h5 {
-      color: @color-invalid;
+      color: @color-outcome-invalid;
     }
   }
 
@@ -437,7 +437,7 @@
 
 .RadioBarError {
   background: @color-secondary-action;
-  border: 1px solid @color-error-text;
+  border: 1px solid @color-error;
 }
 
 .RadioCardGroup {
@@ -818,7 +818,7 @@
 .ErrorText {
   .text-12;
 
-  color: @color-error-text;
+  color: @color-error;
   margin-top: @size-4;
 }
 
@@ -878,7 +878,7 @@
     }
 
     &.error {
-      border: 1px solid fade(@color-error-text, 50%);
+      border: 1px solid fade(@color-error, 50%);
     }
   }
 }
@@ -1564,7 +1564,7 @@ div.FormDropdownActive {
 .ErrorLabel {
   background: @color-error-fade;
   border-radius: @border-radius-default;
-  border: 1px solid @color-error-text;
+  border: 1px solid @color-error;
   border-left-width: @size-4;
   display: flex;
   padding: @size-12;
@@ -1579,15 +1579,15 @@ div.FormDropdownActive {
     > circle {
       fill: @color-error-fade;
       opacity: 1;
-      stroke: @color-error-text;
+      stroke: @color-error;
     }
 
     > rect {
-      fill: @color-error-text;
+      fill: @color-error;
     }
 
     > path {
-      fill: @color-error-text;
+      fill: @color-error;
     }
   }
 
@@ -1636,11 +1636,11 @@ div.FormDropdownActive {
 textarea.error,
 input.error,
 button.error {
-  border: 1px solid fade(@color-error-text, 50%) !important;
+  border: 1px solid fade(@color-error, 50%) !important;
 }
 
 div.error > div > div > div > div > input {
-  border: 1px solid fade(@color-error-text, 50%) !important;
+  border: 1px solid fade(@color-error, 50%) !important;
 }
 
 .Timezones {

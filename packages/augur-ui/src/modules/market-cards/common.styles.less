@@ -28,11 +28,11 @@
 
 	&.invalid {
 		> div:first-of-type > span:first-of-type {
-			color: @color-invalid;
+			color: @color-outcome-invalid;
 		}
 
 		> div:last-of-type > span {
-    		background: fade(@color-invalid, 50);
+    		background: fade(@color-outcome-invalid, 50);
     	}
 	}
 
@@ -126,7 +126,7 @@
 
 	&.invalid {
 		> span:first-of-type {
-			color: @color-invalid;
+			color: @color-outcome-invalid;
 		}
 	}
 }
@@ -141,7 +141,7 @@
 	}
 
 	&.invalid {
-		background-color: fade(@color-invalid, 50);
+		background-color: fade(@color-outcome-invalid, 50);
 	}
 }
 
@@ -160,7 +160,7 @@
 		border-radius: @size-4;
 		height: @size-4;
 		margin-bottom: @size-3;
-		color: @color-invalid-primary;
+		color: @color-outcome-invalid;
 		position: relative;
 
 		> span {
@@ -168,7 +168,7 @@
 			bottom: @size-5;
 
 			&::before {
-	            background-color: @color-invalid-primary;
+	            background-color: @color-outcome-invalid;
 	            border-radius: 50%;
 	            content: "";
 	            height: @size-6;
