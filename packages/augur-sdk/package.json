@@ -62,7 +62,7 @@
     "express": "4.16.4",
     "flexsearch": "0.6.30",
     "ganache-core": "2.5.5",
-    "io-ts": "1.4.2",
+    "io-ts": "2.0.1",
     "isomorphic-ws": "4.0.1",
     "lodash": "4.17.13",
     "postinstall-build": "5.0.3",
