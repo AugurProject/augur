@@ -26,6 +26,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     IAugur public augur;
     IUniverse private universe;
     ICash public cash;
+    address public buyParticipationTokens;
     uint256 private startTime;
 
     uint256 public windowId;
@@ -38,6 +39,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
         duration = _duration;
         windowId = _disputeWindowId;
         cash = ICash(augur.lookup("Cash"));
+        buyParticipationTokens = augur.lookup("BuyParticipationTokens");
         startTime = _startTime;
         erc1820Registry = IERC1820Registry(_erc1820RegistryAddress);
         initialize1820InterfaceImplementations();
@@ -82,12 +84,22 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
      * @return bool True
      */
     function buy(uint256 _attotokens) public returns (bool) {
+        buyInternal(msg.sender, _attotokens);
+        return true;
+    }
+
+    function trustedBuy(address _buyer, uint256 _attotokens) public returns (bool) {
+        require(msg.sender == buyParticipationTokens);
+        buyInternal(_buyer, _attotokens);
+        return true;
+    }
+
+    function buyInternal(address _buyer, uint256 _attotokens) private {
         require(_attotokens > 0, "DisputeWindow.buy: amount cannot be 0");
         require(isActive(), "DisputeWindow.buy: window is not active");
         require(!universe.isForking(), "DisputeWindow.buy: universe is forking");
-        getReputationToken().trustedDisputeWindowTransfer(msg.sender, address(this), _attotokens);
-        mint(msg.sender, _attotokens);
-        return true;
+        getReputationToken().trustedDisputeWindowTransfer(_buyer, address(this), _attotokens);
+        mint(_buyer, _attotokens);
     }
 
     /**
@@ -106,15 +118,15 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
 
         uint256 _cashBalance = cash.balanceOf(address(this));
 
+        // Burn tokens and send back REP
+        burn(_account, _attoParticipationTokens);
+        require(getReputationToken().transfer(_account, _attoParticipationTokens));
+
         if (_cashBalance == 0) {
             return true;
         }
 
         uint256 _supply = totalSupply();
-
-        // Burn tokens and send back REP
-        burn(_account, _attoParticipationTokens);
-        require(getReputationToken().transfer(_account, _attoParticipationTokens));
 
         // Pay out fees
         uint256 _feePayoutShare = _cashBalance.mul(_attoParticipationTokens).div(_supply);
