@@ -6,6 +6,7 @@ import store from "store";
 
 import getValue from "utils/get-value";
 import { createBigNumber } from "utils/create-big-number";
+import { ZERO } from "modules/common/constants";
 
 export default function() {
   return selectLoginAccount(store.getState());
@@ -44,8 +45,8 @@ export const selectLoginAccount = createSelector(
 export const selectAccountFunds = createSelector(
   selectLoginAccount,
   loginAccount => {
-    let totalAvailableTradingBalance = createBigNumber(0);
-    let totalFrozenFunds = createBigNumber(0);
+    let totalAvailableTradingBalance = ZERO;
+    let totalFrozenFunds = ZERO;
 
     if (loginAccount.balances.dai && loginAccount.balances.dai) {
       totalAvailableTradingBalance = createBigNumber(loginAccount.balances.dai);
