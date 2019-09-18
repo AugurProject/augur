@@ -99,11 +99,9 @@ const buildScalarDisputingOutcomes = (
   const results = sortedStakes.map(s =>
     s.isInvalidOutcome
       ? invalidOutcome
-      : {
-          outcome: s.outcome,
+      : { // only need id and description properties for disputing card
           id: s.outcome,
           description: denom,
-          price: s.outcome,
         }
   );
   return results.find(o => o.id === INVALID_OUTCOME_ID)
