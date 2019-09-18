@@ -52,6 +52,11 @@ jobs:
                 echo "found a sdk change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_SDK;isOutput=true]true"
               fi
+              if [[ $f =~ .*packages/augur-artifacts/src/.* ]]
+              then
+                echo "artifacts changed: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_ARTIFACTS;isOutput=true]true"
+              fi
             done
         displayName: check git for changes
         name: setVars
@@ -412,7 +417,8 @@ jobs:
       or
       (
         in(dependencies.Test_Augur_Core.result, 'Succeeded'),
-        in(dependencies.Docker_geth_dev.result, 'Succeeded')
+        in(dependencies.Docker_geth_dev.result, 'Succeeded'),
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_ARTIFACTS'], 'true')
       )
     pool:
       vmImage: 'Ubuntu 16.04'
