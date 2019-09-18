@@ -2337,6 +2337,11 @@
 					"indexed": false,
 					"name": "payoutNumerators",
 					"type": "uint256[]"
+				},
+				{
+					"indexed": false,
+					"name": "creationTimestamp",
+					"type": "uint256"
 				}
 			],
 			"name": "UniverseCreated",
