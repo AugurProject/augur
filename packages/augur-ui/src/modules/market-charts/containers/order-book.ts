@@ -6,7 +6,7 @@ import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-as
 import { selectMarket } from "modules/markets/selectors/market";
 import { selectCurrentTimestampInSeconds } from "store/select-state";
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { ASKS, BIDS } from "modules/common/constants";
+import { ASKS, BIDS, ZERO } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
@@ -16,8 +16,8 @@ const mapStateToProps = (state, ownProps) => {
     ownProps.initialLiquidity ? market.orderBook[selectedOutcomeId] : state.orderBooks[market.marketId] &&
     state.orderBooks[market.marketId][selectedOutcomeId];
 
-  const minPrice = createBigNumber(market.minPriceBigNumber) || createBigNumber(0);
-  const maxPrice = createBigNumber(market.maxPriceBigNumber) || createBigNumber(0);
+  const minPrice = createBigNumber(market.minPriceBigNumber) || ZERO;
+  const maxPrice = createBigNumber(market.maxPriceBigNumber) || ZERO;
 
   if (ownProps.initialLiquidity) {
     outcomeOrderBook = formatOrderBook(outcomeOrderBook);

@@ -1,23 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import {
   CATEGORICAL,
   SCALAR,
   YES_NO,
-  REPORTING_STATE
+  REPORTING_STATE,
+  ZERO,
 } from 'modules/common/constants';
-import { createBigNumber } from 'utils/create-big-number';
-import ReactTooltip from "react-tooltip";
-import TooltipStyles from "modules/common/tooltip.styles.less";
-import { CheckCircleIcon } from "modules/common/icons";
-import { OutcomeFormatted, FormattedNumber, MarketData } from "modules/types";
-import { formatDai, formatAttoRep } from "utils/format-number";
-import { Getters } from "@augurproject/sdk";
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { CheckCircleIcon } from 'modules/common/icons';
+import { OutcomeFormatted, FormattedNumber, MarketData } from 'modules/types';
+import { formatDai, formatAttoRep } from 'utils/format-number';
+import { Getters } from '@augurproject/sdk';
 import { SecondaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/market-cards/common.styles.less';
 import MarketCard from 'modules/market-cards/market-card';
+import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 
 export interface PercentProps {
   percent: number;
@@ -25,7 +27,7 @@ export interface PercentProps {
 
 export const Percent = (props: PercentProps) => (
   <div className={Styles.Percent}>
-  	<span style={{width: props.percent + "%"}}></span>
+    <span style={{ width: props.percent + '%' }}></span>
   </div>
 );
 
@@ -40,45 +42,90 @@ export interface OutcomeProps {
 }
 
 export const Outcome = (props: OutcomeProps) => {
-  const percent = props.lastPricePercent ? calculatePosition(props.min, props.max, props.lastPricePercent) : 0;
+  const percent = props.lastPricePercent
+    ? calculatePosition(props.min, props.max, props.lastPricePercent)
+    : 0;
   return (
-      <div className={classNames(Styles.Outcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
-    	<div>
-      	<span>{props.description}</span>
-        <span>{percent === 0 ? `-${props.isScalar ? '' : '%'}` : `${formatDai(percent).formatted}%`}</span>
+    <div
+      className={classNames(Styles.Outcome, {
+        [Styles.invalid]: props.invalid,
+        [Styles[`Outcome-${props.index}`]]: !props.invalid,
+      })}
+    >
+      <div>
+        <span>{props.description}</span>
+        <span>
+          {percent === 0
+            ? `-${props.isScalar ? '' : '%'}`
+            : `${formatDai(percent).formatted}%`}
+        </span>
       </div>
       <Percent percent={percent} />
     </div>
   );
-}
+};
 
 export interface DisputeOutcomeProps {
   description: string;
   invalid?: Boolean;
   index: number;
-  stake: Getters.Markets.StakeDetails|null;
+  stake: Getters.Markets.StakeDetails | null;
   dispute: Function;
   id: number;
 }
 
 export const DisputeOutcome = (props: DisputeOutcomeProps) => {
   const stakeCurrent = props.stake && formatAttoRep(props.stake.stakeCurrent);
-  const bondSizeTotal = props.stake && formatAttoRep(props.stake.bondSizeTotal);
+  const bondSizeCurrent = props.stake && formatAttoRep(props.stake.bondSizeCurrent);
 
   return (
-    <div className={classNames(Styles.DisputeOutcome, {[Styles.invalid]: props.invalid, [Styles[`Outcome-${props.index}`]]: !props.invalid})}>
+    <div
+      className={classNames(Styles.DisputeOutcome, {
+        [Styles.invalid]: props.invalid,
+        [Styles[`Outcome-${props.index}`]]: !props.invalid,
+      })}
+    >
       <span>{props.description}</span>
-      {props.stake && props.stake.tentativeWinning ? <span>tentative winner</span> : <Percent percent={props.stake ? calculatePosition(createBigNumber(0), createBigNumber(bondSizeTotal.value), stakeCurrent) : 0} />}
+      {props.stake && props.stake.tentativeWinning ? (
+        <span>tentative winner</span>
+      ) : (
+        <Percent
+          percent={
+            props.stake
+              ? calculatePosition(
+                  ZERO,
+                  createBigNumber(bondSizeCurrent.value),
+                  stakeCurrent
+                )
+              : 0
+          }
+        />
+      )}
       <div>
         <div>
-          <span>{props.stake && props.stake.tentativeWinning ? "pre-filled stake" : "make tentative winner"}</span>
-          <span>{props.stake ? stakeCurrent.formatted : 0}<span>/ {props.stake ? bondSizeTotal.formatted : 0} REP</span></span>
+          <span>
+            {props.stake && props.stake.tentativeWinning
+              ? 'pre-filled stake'
+              : 'make tentative winner'}
+          </span>
+          <span>
+            {props.stake ? stakeCurrent.formatted : 0}
+            <span>/ {props.stake ? bondSizeCurrent.formatted : 0} REP</span>
+          </span>
         </div>
-        <SecondaryButton small text={props.stake && props.stake.tentativeWinning ? "Support Tentative Winner" : "Dispute Tentative Winner"} action={() => props.dispute(props.id.toString())} />
+        <SecondaryButton
+          small
+          text={
+            props.stake && props.stake.tentativeWinning
+              ? 'Support Tentative Winner'
+              : 'Dispute Tentative Winner'
+          }
+          action={() => props.dispute(props.id.toString())}
+        />
       </div>
     </div>
   );
-}
+};
 
 export interface ScalarOutcomeProps {
   scalarDenomination: string;
@@ -87,68 +134,90 @@ export interface ScalarOutcomeProps {
   lastPrice?: FormattedNumber;
 }
 
-export function calculatePosition(min: BigNumber, max: BigNumber, lastPrice: FormattedNumber) {
+export function calculatePosition(
+  min: BigNumber,
+  max: BigNumber,
+  lastPrice: FormattedNumber
+) {
   const range = max.minus(min);
-	const pricePercentage = createBigNumber(lastPrice ? lastPrice.value : 0)
-	  .minus(min)
-	  .dividedBy(range)
-	  .times(createBigNumber(100)).toNumber();
+  const pricePercentage = createBigNumber(lastPrice ? lastPrice.value : 0)
+    .minus(min)
+    .dividedBy(range)
+    .times(createBigNumber(100))
+    .toNumber();
 
-	return lastPrice === null
-	  ? 50
-    : pricePercentage
+  return lastPrice === null ? 50 : pricePercentage;
 }
 
 export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   <div className={Styles.ScalarOutcome}>
-  	<div>
-  		{ props.lastPrice !== null &&
-  			<span style={{left: calculatePosition(props.min, props.max, props.lastPrice) + '%'}}>{props.lastPrice.formatted}</span>
-  		}
-  	</div>
-  	<div>
-	  	{formatDai(props.min).formatted}
-	  	<span>{props.scalarDenomination}</span>
-	  	{formatDai(props.max).formatted}
-  	</div>
+    <div>
+      {props.lastPrice !== null && (
+        <span
+          style={{
+            left:
+              calculatePosition(props.min, props.max, props.lastPrice) + '%',
+          }}
+        >
+          {props.lastPrice.formatted}
+        </span>
+      )}
+    </div>
+    <div>
+      {formatDai(props.min).formatted}
+      <span>{props.scalarDenomination}</span>
+      {formatDai(props.max).formatted}
+    </div>
   </div>
 );
 
 export interface OutcomeGroupProps {
-	outcomes: Array<OutcomeFormatted>;
-	expanded?: Boolean;
-	marketType: string;
-	scalarDenomination?: string;
-	min?: BigNumber;
-	max?: BigNumber;
+  outcomes: OutcomeFormatted[];
+  expanded?: Boolean;
+  marketType: string;
+  scalarDenomination?: string;
+  min?: BigNumber;
+  max?: BigNumber;
   reportingState: string;
   stakes: Getters.Markets.StakeDetails[];
   dispute?: Function;
 }
 
 export const OutcomeGroup = (props: OutcomeGroupProps) => {
-  const inDispute = props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE || props.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
-  let outcomesShow = props.outcomes.filter(outcome => inDispute || outcome.isTradable);
+  const inDispute =
+    props.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+    props.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
+  let outcomesShow = props.outcomes.filter(
+    outcome => inDispute || outcome.isTradable
+  );
   const removedInvalid = outcomesShow.splice(0, 1)[0];
   outcomesShow.splice(2, 0, removedInvalid);
+  const sortedStakeOutcomes = selectSortedDisputingOutcomes(props.marketType, props.outcomes, props.stakes);
+  outcomesShow = inDispute ? sortedStakeOutcomes : outcomesShow;
   return (
-    <div className={classNames(Styles.OutcomeGroup, {
-			[Styles.Categorical]: props.marketType === CATEGORICAL,
-			[Styles.Scalar]: props.marketType === SCALAR,
-			[Styles.YesNo]: props.marketType === YES_NO,
-      [Styles.Dispute]: inDispute
-		})}>
-  		{props.marketType === SCALAR && !inDispute &&
+    <div
+      className={classNames(Styles.OutcomeGroup, {
+        [Styles.Categorical]: props.marketType === CATEGORICAL,
+        [Styles.Scalar]: props.marketType === SCALAR,
+        [Styles.YesNo]: props.marketType === YES_NO,
+        [Styles.Dispute]: inDispute,
+      })}
+    >
+      {props.marketType === SCALAR && !inDispute && (
         <>
-    			<ScalarOutcome
-    				min={props.min}
-    				max={props.max}
-    				lastPrice={outcomesShow[0].price ? outcomesShow[0].lastPricePercent : null}
-    				scalarDenomination={props.scalarDenomination}
-    			/>
+          <ScalarOutcome
+            min={props.min}
+            max={props.max}
+            lastPrice={
+              outcomesShow[0].price ? outcomesShow[0].lastPricePercent : null
+            }
+            scalarDenomination={props.scalarDenomination}
+          />
           <Outcome
             description={removedInvalid.description}
-            lastPricePercent={removedInvalid.price ? removedInvalid.lastPricePercent : null}
+            lastPricePercent={
+              removedInvalid.price ? removedInvalid.lastPricePercent : null
+            }
             invalid={true}
             index={0}
             min={props.min}
@@ -156,34 +225,40 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             isScalar={props.marketType === SCALAR}
           />
         </>
-  		}
-	  	{(props.marketType !== SCALAR || inDispute) && outcomesShow.map((outcome: OutcomeFormatted, index: number) =>
-	  		(!props.expanded && index < 3 || (props.expanded || props.marketType === YES_NO)) && (
-          inDispute ?
-             <DisputeOutcome
-               key={outcome.id}
-               description={outcome.description}
-               invalid={outcome.id === 0}
-               index={index > 2 ? index : index + 1}
-               stake={props.stakes.find(stake => parseFloat(stake.outcome) === outcome.id)}
-               dispute={props.dispute}
-               id={outcome.id}
-             />
-          : <Outcome
-              key={outcome.id}
-    	  			description={outcome.description}
-    	  			lastPricePercent={outcome.lastPricePercent}
-    	  			invalid={outcome.id === 0}
-    	  			index={index > 2 ? index : index + 1}
-              min={props.min}
-              max={props.max}
-              isScalar={props.marketType === SCALAR}
-    	  		/>
-        )
-	  	)}
-  	</div>
+      )}
+      {(props.marketType !== SCALAR || inDispute) &&
+        outcomesShow.map(
+          (outcome: OutcomeFormatted, index: number) =>
+            ((!props.expanded && index < 3) ||
+              (props.expanded || props.marketType === YES_NO)) &&
+            (inDispute ? (
+              <DisputeOutcome
+                key={outcome.id}
+                description={outcome.description}
+                invalid={outcome.id === 0}
+                index={index > 2 ? index : index + 1}
+                stake={props.stakes.find(
+                  stake => parseFloat(stake.outcome) === outcome.id
+                )}
+                dispute={props.dispute}
+                id={outcome.id}
+              />
+            ) : (
+              <Outcome
+                key={outcome.id}
+                description={outcome.description}
+                lastPricePercent={outcome.lastPricePercent}
+                invalid={outcome.id === 0}
+                index={index > 2 ? index : index + 1}
+                min={props.min}
+                max={props.max}
+                isScalar={props.marketType === SCALAR}
+              />
+            ))
+        )}
+    </div>
   );
-}
+};
 
 export interface LabelValueProps {
   label: string;
@@ -192,8 +267,15 @@ export interface LabelValueProps {
 }
 
 export const LabelValue = (props: LabelValueProps) => (
-  <div className={classNames(Styles.LabelValue, {[Styles.Condensed]: props.condensed})}>
-    <span>{props.label}<span>:</span></span>
+  <div
+    className={classNames(Styles.LabelValue, {
+      [Styles.Condensed]: props.condensed,
+    })}
+  >
+    <span>
+      {props.label}
+      <span>:</span>
+    </span>
     <span>{props.value}</span>
   </div>
 );
@@ -209,7 +291,7 @@ export const HoverIcon = (props: HoverIconProps) => (
     className={Styles.HoverIcon}
     data-tip
     data-for={`tooltip-${props.label}`}
-   >
+  >
     {props.icon}
     <ReactTooltip
       id={`tooltip-${props.label}`}
@@ -237,33 +319,28 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
 
   return (
     <div className={Styles.ResolvedOutcomes}>
-       <span>Winning Outcome {CheckCircleIcon} </span>
-       <span>{winner && winner.description}</span>
-       {props.expanded &&
-         <div>
-           <span>other outcomes</span>
-           <div>
-             {outcomes.map((outcome, index) =>
-               outcome.isTradable && (
-                 <span>
-                   {outcome.description}
-                   {index + 1 !== outcomes.length &&
-                    <span>
-                      |
-                    </span>
-                   }
-                 </span>
-               )
-              )}
-           </div>
-         </div>
-       }
+      <span>Winning Outcome {CheckCircleIcon} </span>
+      <span>{winner && winner.description}</span>
+      {props.expanded && (
+        <div>
+          <span>other outcomes</span>
+          <div>
+            {outcomes.map(
+              (outcome, index) =>
+                outcome.isTradable && (
+                  <span>
+                    {outcome.description}
+                    {index + 1 !== outcomes.length && <span>|</span>}
+                  </span>
+                )
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
-export const LoadingMarketCard = () =>
-  <MarketCard
-    loading={true}
-    market={{} as MarketData}
-  />
+export const LoadingMarketCard = () => (
+  <MarketCard loading={true} market={{} as MarketData} />
+);
