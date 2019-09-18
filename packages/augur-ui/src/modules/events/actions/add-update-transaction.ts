@@ -24,7 +24,7 @@ import {
   PREFILLEDSTAKE
 } from 'modules/common/constants';
 import { UIOrder, CreateMarketData } from 'modules/types';
-import { convertTransactionOrderToUIOrder } from './transaction-conversions';
+import { convertTransactionOrderToUIOrder } from 'modules/events/actions/transaction-conversions';
 import {
   addPendingOrder,
   updatePendingOrderStatus,
