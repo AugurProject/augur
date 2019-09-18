@@ -1,18 +1,18 @@
 /* eslint react/no-array-index-key: 0 */
 
-import React from "react";
+import React from 'react';
 
-import { formatShares } from "utils/format-number";
-import { MarketData } from "modules/types";
-import MarketLink from "modules/market/components/market-link/market-link";
+import { formatShares } from 'utils/format-number';
+import { MarketData } from 'modules/types';
+import MarketLink from 'modules/market/components/market-link/market-link';
 import {
   LinearPropertyLabel,
   LinearPropertyViewTransaction,
-  ValueLabel
-} from "modules/common/labels";
-import { ViewTransactionDetailsButton } from "modules/common/buttons";
+  ValueLabel,
+} from 'modules/common/labels';
+import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 
-import Styles from "modules/portfolio/components/common/filled-orders-table.styles.less";
+import Styles from 'modules/portfolio/components/common/filled-orders-table.styles.less';
 
 export interface FilledOrdersTableProps {
   filledOrder: MarketData;
@@ -42,6 +42,8 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <li>{trade.timestamp.formattedShort}</li>
             <li>
               <ViewTransactionDetailsButton
+                label={'VIEW'}
+                dark
                 transactionHash={trade.transactionHash}
               />
             </li>
