@@ -151,7 +151,7 @@
     "html-webpack-plugin": "3.2.0",
     "http": "0.0.0",
     "https": "1.0.0",
-    "husky": "0.14.3",
+    "husky": "3.0.5",
     "ignore-styles": "5.0.1",
     "import-glob-loader": "1.1.0",
     "inline-source-cli": "1.2.0",
