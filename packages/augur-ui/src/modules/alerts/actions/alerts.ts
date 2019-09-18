@@ -48,7 +48,7 @@ export function addAlert(alert: any) {
         return fullAlert;
       };
       try {
-      dispatch(setAlertText(alert, callback));
+        dispatch(setAlertText(alert, callback));
       } catch (error) {
         callback(error, null);
       }
@@ -119,17 +119,21 @@ export function updateAlert(id: string, alert: any) {
           );
           if (foundOpenOrder) {
             const amountFilled = new BigNumber(alert.params.amountFilled);
-            const orderAmount = new BigNumber(foundOpenOrder.params._amount || foundOpenOrder.params.amount);
+            const orderAmount = new BigNumber(
+              foundOpenOrder.params._amount || foundOpenOrder.params.amount
+            );
 
             if (amountFilled.lt(orderAmount)) {
               // if part of order is unfilled, update placed order
-              dispatch(updateExistingAlert(foundOpenOrder.id, {
-                ...foundOpenOrder,
-                params: {
-                  ...foundOpenOrder.params,
-                  _amount: orderAmount.minus(amountFilled)
-                }
-              }));
+              dispatch(
+                updateExistingAlert(foundOpenOrder.id, {
+                  ...foundOpenOrder,
+                  params: {
+                    ...foundOpenOrder.params,
+                    _amount: orderAmount.minus(amountFilled),
+                  },
+                })
+              );
             } else {
               // if full order was filled, then delete placed order
               dispatch(removeAlert(foundOpenOrder.id));
@@ -153,8 +157,12 @@ export function updateAlert(id: string, alert: any) {
             foundFilledOrder.params.orderCreator.toUpperCase() !==
             loginAccount.address.toUpperCase()
           ) {
-            const amountFilled = new BigNumber(foundFilledOrder.params.amountFilled);
-            const orderAmount = new BigNumber(alert.params._amount || alert.params.amount);
+            const amountFilled = new BigNumber(
+              foundFilledOrder.params.amountFilled
+            );
+            const orderAmount = new BigNumber(
+              alert.params._amount || alert.params.amount
+            );
 
             if (amountFilled.lt(orderAmount)) {
               // if part of order is unfilled, update placed order

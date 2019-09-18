@@ -3,6 +3,7 @@ import store, { AppState } from "store";
 import * as alertLevels from "modules/common/constants";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import getValue from "utils/get-value";
+import { SUCCESS, FAILURE } from "modules/common/constants";
 
 export const selectAlertsByLevel = level => state =>
   state.alerts.filter(it => it.level === level);
@@ -24,7 +25,7 @@ export const selectInfoAlertsAndSeenCount = createSelector(
         .filter(
           alert =>
             (alert.networkId === networkId.toString() &&
-              alert.universe === universe.id && (alert.status === "Failure" || alert.status === "Success")) ||
+              alert.universe === universe.id && (alert.status.toUpperCase() === FAILURE.toUpperCase() || alert.status.toUpperCase() === SUCCESS.toUpperCase())) ||
             typeof alert.networkId === "undefined" ||
             typeof alert.universe === "undefined"
         )
