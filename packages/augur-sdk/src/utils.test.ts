@@ -246,8 +246,9 @@ test('describe categorical outcome', () => {
 });
 
 test('describe scalar outcome', () => {
-  expect(describeScalarOutcome(0, ['-10', '10'])).toEqual('10');
+  expect(describeScalarOutcome(0, ['-10', '10'])).toEqual(CommonOutcomes.Invalid);
   expect(describeScalarOutcome(1, ['-10', '10'])).toEqual('-10');
+  expect(describeScalarOutcome(2, ['-10', '10'])).toEqual('10');
 });
 
 test('describe universe outcome : malformed', () => {

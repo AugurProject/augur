@@ -180,7 +180,7 @@ export function isWellFormedCategorical(payout: string[]): boolean {
   // 1. There are between 3 and 8 payout values (2-7 plus invalid)
   // 2. Exactly one of its payouts is non-zero.
 
-  if (payout.length < 3 || payout.length > 9) return false;
+  if (payout.length < 3 || payout.length > 8) return false;
   return countNonZeroes(payout) === 1;
 }
 
