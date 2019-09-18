@@ -321,3 +321,16 @@ export function marketTypeToName(marketType: MarketType): MarketTypeName {
       throw Error(`Invalid market type "${marketType}"`);
   }
 }
+
+export function marketNameToType(marketTypeName: MarketTypeName): MarketType {
+  switch(marketTypeName) {
+    case MarketTypeName.YesNo:
+      return MarketType.YesNo;
+    case MarketTypeName.Categorical:
+      return MarketType.Categorical;
+    case MarketTypeName.Scalar:
+      return MarketType.Scalar;
+    default:
+      throw Error(`Invalid market type "${marketTypeName}"`);
+  }
+}
