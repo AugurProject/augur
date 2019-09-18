@@ -86,8 +86,7 @@
 @media @breakpoint-mobile-mid {
   .DataTableHeader {
     grid-template-columns: repeat(3, 1fr);
-    padding-left: @size-16;
-    padding-right: @size-42;
+    padding: @size-10 @size-42 @size-10 @size-12;
 
     > li {
       color: @color-shadow-text;
@@ -99,10 +98,6 @@
 
       &:nth-of-type(2) {
         justify-content: flex-start;
-      }
-
-      &:nth-of-type(3) {
-        justify-content: center;
       }
     }
   }
