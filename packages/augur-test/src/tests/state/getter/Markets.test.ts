@@ -17,7 +17,6 @@ import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { getAddress } from 'ethers/utils/address';
 
 import * as _ from 'lodash';
-import { fork } from '@augurproject/tools/build';
 
 const mock = makeDbMock();
 
