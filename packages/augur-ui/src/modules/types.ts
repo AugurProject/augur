@@ -73,7 +73,7 @@ export interface Outcomes extends Getters.Markets.MarketInfoOutcome {
   name?: string;
 }
 export interface Consensus {
-  payout: Array<string>;
+  payout: string[];
   winningOutcome: string | null;
   outcomeName: string | null;
 }
@@ -185,7 +185,7 @@ export interface PendingQueue {
   };
 }
 export interface PendingOrders {
-  [marketId: string]: Array<UIOrder>;
+  [marketId: string]: UIOrder[];
 }
 
 export interface OrderBooks {
@@ -252,7 +252,7 @@ export interface UIOrder {
 
 export interface LiquidityOrders {
   [txParamHash: string]: {
-    [outcome: number]: Array<LiquidityOrder>;
+    [outcome: number]: LiquidityOrder[];
   };
 }
 
@@ -295,13 +295,12 @@ export interface NewMarketPropertyValidations {
 }
 export interface NewMarket {
   isValid: boolean;
-  validations: Array<
-    NewMarketPropertiesValidations | NewMarketPropertyValidations
-  >;
+  validations:
+    NewMarketPropertiesValidations[] | NewMarketPropertyValidations[];
   backupSource: string;
   currentStep: number;
   type: string;
-  outcomes: Array<string>;
+  outcomes: string[];
   scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
@@ -322,11 +321,11 @@ export interface NewMarket {
   meridiem: string;
   marketType: string;
   detailsText: string;
-  categories: Array<string>;
+  categories: string[];
   settlementFee: number;
   affiliateFee: number;
-  orderBook: { [outcome: number]: Array<LiquidityOrder> };
-  orderBookSorted: { [outcome: number]: Array<LiquidityOrder> };
+  orderBook: { [outcome: number]: LiquidityOrder[] };
+  orderBookSorted: { [outcome: number]: LiquidityOrder[] };
   initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
@@ -339,12 +338,11 @@ export interface Draft {
   created: number;
   updated: number;
   isValid: boolean;
-  validations: Array<
-    NewMarketPropertiesValidations | NewMarketPropertyValidations
-  >;
+  validations:
+    NewMarketPropertiesValidations[] | NewMarketPropertyValidations[]
   currentStep: number;
   type: string;
-  outcomes: Array<string>;
+  outcomes: string[];
   scalarSmallNum: string;
   scalarBigNum: string;
   scalarDenomination: string;
@@ -362,11 +360,11 @@ export interface Draft {
   meridiem: string;
   marketType: string;
   detailsText: string;
-  categories: Array<string>;
+  categories: string[];
   settlementFee: number;
   affiliateFee: number;
-  orderBook: { [outcome: number]: Array<LiquidityOrder> };
-  orderBookSorted: { [outcome: number]: Array<LiquidityOrder> };
+  orderBook: { [outcome: number]: LiquidityOrder[] };
+  orderBookSorted: { [outcome: number]: LiquidityOrder[] };
   initialLiquidityDai: any; // TODO: big number type
   initialLiquidityGas: any; // TODO: big number type
   creationError: string;
@@ -409,15 +407,6 @@ export interface FilledOrders {
 
 export interface OpenOrders {
   [account: string]: Getters.Trading.Orders;
-}
-
-export interface MarketsInReporting {
-  designated?: Array<string>;
-  open?: Array<string>;
-  upcoming?: Array<string>;
-  awaiting?: Array<string>;
-  dispute?: Array<string>;
-  resolved?: Array<string>;
 }
 
 export interface GasPriceInfo {
