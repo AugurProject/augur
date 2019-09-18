@@ -40,8 +40,14 @@ import {
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
-import { isOnReportingPage } from 'modules/trades/helpers/is-on-page';
-import { reloadReportingPage } from 'modules/reporting/actions/update-reporting-list';
+import {
+  isOnReportingPage,
+  isOnDisputingPage,
+} from 'modules/trades/helpers/is-on-page';
+import {
+  reloadReportingPage,
+  reloadDisputingPage,
+} from 'modules/reporting/actions/update-reporting-list';
 
 const handleAlert = (
   log: any,
@@ -51,7 +57,6 @@ const handleAlert = (
 ) => {
   const { blockchain } = getState();
   dispatch(
-
     updateAlert(log.transactionHash, {
       params: log,
       status: TXEventName.Success,
@@ -306,7 +311,7 @@ export const handleInitialReportSubmittedLog = (
     handleAlert(log, DOINITIALREPORT, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
-  if(isOnReportingPage()) dispatch(reloadReportingPage(getState()));
+  if (isOnReportingPage()) dispatch(reloadReportingPage());
 };
 
 export const handleInitialReporterRedeemedLog = (
@@ -333,6 +338,7 @@ export const handleInitialReporterTransferredLog = (log: any) => (
   if (isUserDataUpdate) {
     dispatch(loadAccountReportingHistory());
   }
+  if (isOnReportingPage()) dispatch(reloadReportingPage());
 };
 // ---- ------------ ----- //
 
@@ -424,6 +430,7 @@ export const handleDisputeCrowdsourcerCreatedLog = (
   log: Logs.DisputeCrowdsourcerCreatedLog
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(loadMarketsInfo([log.market]));
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleDisputeCrowdsourcerContributionLog = (
@@ -435,10 +442,10 @@ export const handleDisputeCrowdsourcerContributionLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-
     handleAlert(log, CONTRIBUTE, dispatch, getState);
     dispatch(loadAccountReportingHistory());
   }
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleDisputeCrowdsourcerCompletedLog = (
@@ -446,6 +453,7 @@ export const handleDisputeCrowdsourcerCompletedLog = (
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   dispatch(loadMarketsInfo([log.market]));
   handleAlert(log, CONTRIBUTE, dispatch, getState);
+  if (isOnDisputingPage()) dispatch(reloadDisputingPage());
 };
 
 export const handleDisputeCrowdsourcerRedeemedLog = (
