@@ -31,7 +31,7 @@ export default class SideNav extends Component {
     };
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.currentBasePath === MARKETS) {
       this.setState({ selectedItem: null, selectedKey: null });
     }

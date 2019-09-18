@@ -160,7 +160,7 @@ export default class AppView extends Component<AppProps> {
     },
   ];
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {
       env,
       ethereumNodeHttp,
@@ -206,7 +206,7 @@ export default class AppView extends Component<AppProps> {
     this.checkIsMobile();
   }
 
-  componentWillReceiveProps(nextProps: AppProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: AppProps) {
     const {
       isMobile,
       location,

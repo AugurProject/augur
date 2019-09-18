@@ -53,7 +53,7 @@ export default class CategoryFilters extends React.Component<
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (JSON.stringify(nextProps.categoryMetaData) !== JSON.stringify(this.props.categoryMetaData)) {
       if (nextProps.categoryMetaData && nextProps.categoryMetaData.categories) {
         const newCategory = this.lookupCategoryFromMeta(this.state.selectedCategory, nextProps.categoryMetaData.categories);

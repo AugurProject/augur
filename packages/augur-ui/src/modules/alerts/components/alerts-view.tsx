@@ -32,7 +32,7 @@ export default class AlertsView extends Component<AlertsViewProps> {
   alertsContainer: any = null;
   alerts: any = null;
 
-  componentWillUpdate(nextProps: AlertsViewProps) {
+  UNSAFE_componentWillUpdate(nextProps: AlertsViewProps) {
     if (this.props.alertsVisible && !nextProps.alertsVisible) {
       const { updateAlert, alerts } = this.props;
       alerts.forEach(alert => {
