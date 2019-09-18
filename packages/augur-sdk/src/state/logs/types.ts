@@ -157,19 +157,19 @@ export enum MarketType {
 }
 
 export enum MarketTypeName {
-  YesNo = 'yesNo',
-  Categorical = 'categorical',
-  Scalar = 'scalar',
+  YesNo = 'YesNo',
+  Categorical = 'Categorical',
+  Scalar = 'Scalar',
+}
+
+export enum CommonOutcomes {
+  Malformed = 'malformed outcome',
+  Invalid = 'Invalid',
 }
 
 export enum YesNoOutcomes {
-  Invalid = 'Invalid',
   No = 'No',
   Yes = 'Yes',
-}
-
-export enum ScalarOutcomes {
-  Invalid = 'Invalid',
 }
 
 export interface MarketVolumeChangedLog extends Log, Doc {
@@ -362,6 +362,7 @@ export interface UniverseCreatedLog extends Log, Doc {
   parentUniverse: Address;
   childUniverse: Address;
   payoutNumerators: string[];
+  creationTimestamp: string;
 }
 
 export interface LiquidityData {

@@ -3,10 +3,11 @@
 .SwitchLabelsGroup {
   display: flex;
   flex: 1;
-  padding-top: @size-8;
+  padding-top: @size-10;
 
   @media @breakpoint-mobile-mid {
-    padding-top: @size-18;
+    padding: @size-12 @size-10 0 @size-10;
+    justify-content: space-evenly;
   }
 
   > label {
@@ -16,7 +17,7 @@
     margin-left: auto;
     display: flex;
     flex-flow: row nowrap;
-    
+
     @media @breakpoint-mobile {
       display: none;
     }
@@ -31,7 +32,7 @@
   .mono-11;
 
   color: @color-shadow-text;
-  padding-bottom: @size-8;
+  padding-bottom: @size-10;
   text-transform: uppercase;
   white-space: nowrap;
 
@@ -57,7 +58,7 @@
         background-color: @color-secondary-text;
         border-radius: 0.1875rem;
         bottom: 0;
-        content: "";
+        content: '';
         height: 0.125rem;
         left: 0;
         position: absolute;
@@ -66,28 +67,28 @@
     }
   }
 
-  // TODO: Circle back and remove this when SIDE NAV is removed
-  // Temporary quick fix for sizing issues between 1281 - 1420
-  @media @breakpoint-temp {
-    .mono-9;
-  }
-
   @media @breakpoint-mobile-mid {
-    flex: 1;
-    padding-bottom: @size-18;
+    padding-bottom: @size-12;
+    position: relative;
+
 
     > span {
-      .mono-10;
-
-      position: relative;
+      .mono-9;
 
       &::after {
-        bottom: unset;
-        margin-top: 4px;
-        top: 100%;
+        bottom: 0;
       }
     }
+
+    &:not(:last-of-type) {
+      margin-right: 10%;
+    }
+
+    &:not(:first-of-type) {
+      margin-left: 0;
+    }
   }
+
 }
 
 .Open {

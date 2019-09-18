@@ -8,6 +8,7 @@
     border-bottom: 1px solid @color-tertiary-one;
     display: flex;
     flex: 1;
+    width: @size-40;
 
     > li {
       color: rgba(255, 255, 255, 0.4);
@@ -23,9 +24,17 @@
         position: relative;
         white-space: nowrap;
         width: 100%;
+      }
+    }
+  }
 
-        @media @breakpoint-mobile {
-          .mono-12;
+  @media @breakpoint-mobile-mid {
+    > ul {
+      > li {
+        > button {
+          .text-9-bold;
+
+          padding: @size-18 @size-16;
         }
       }
     }

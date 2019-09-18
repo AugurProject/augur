@@ -68,7 +68,6 @@
 
     padding: @size-6 @size-12;
   }
-
 }
 
 .BuyOrderButton {
@@ -198,14 +197,17 @@
 }
 
 .CancelTextButton {
-  .mono-10;
+  .mono-9;
 
   align-items: center;
-  color: @color-neutral;
   display: flex;
   flex-flow: row nowrap;
-  line-height: @size-10;
   text-transform: uppercase;
+  background: @color-tertiary-background-theme;
+  border: 1px solid @color-contrast-dark-alternate;
+  border-radius: @size-3;
+  color: @color-alternate-info-text;
+  padding: @size-1 @size-4;
 
   > svg {
     fill: none;
@@ -459,7 +461,6 @@
       color: @color-secondary-text;
     }
   }
-
 
   &.Light {
     .mono-9;

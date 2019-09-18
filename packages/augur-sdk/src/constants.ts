@@ -129,7 +129,7 @@ export const ORDER_TYPES = {
   ASK: new BigNumber(1),
 };
 
-export const MALFORMED_OUTCOME = "malformed outcome";
+export const MALFORMED_OUTCOME = 'malformed outcome';
 
 export const INVALID_OUTCOME = 0;
 
@@ -147,6 +147,8 @@ export const SECONDS_IN_A_DAY = new BigNumber(86400, 10);
 
 export const SECONDS_IN_A_YEAR = new BigNumber(SECONDS_IN_A_DAY).multipliedBy(365);
 
+export const GENESIS = 'Genesis';
+
 export enum MarketReportingState {
   PreReporting = 'PreReporting',
   DesignatedReporting = 'DesignatedReporting',
@@ -155,4 +157,6 @@ export enum MarketReportingState {
   AwaitingNextWindow = 'AwaitingNextWindow',
   AwaitingFinalization = 'AwaitingFinalization',
   Finalized = 'Finalized',
+  Forking = 'Forking',
+  AwaitingForkMigration = 'AwaitingForkMigration'
 }

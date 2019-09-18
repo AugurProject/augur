@@ -180,7 +180,6 @@ export const CancelTextButton = (props: DefaultButtonProps) => (
     disabled={props.disabled}
     title={props.title}
   >
-    {!props.noIcon && XIcon}
     {props.text}
   </button>
 );

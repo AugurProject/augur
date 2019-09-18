@@ -2,30 +2,29 @@
 
 .OrderMarket {
   background: @color-tertiary-background;
-  border-bottom: 2px solid @color-theme-primary;
 
   &:not(:last-of-type) {
-    margin-bottom: 1px;
+    margin-bottom: @size-2;
   }
 
   > div:first-of-type {
-    .text-12-bold;
+    .text-10;
 
     color: @color-secondary-text;
-    margin-bottom: @size-16;
-    padding: @size-16 @size-24 0;
+    margin-bottom: @size-12;
+    padding: @size-12 @size-16 0;
   }
 }
 
 @media @breakpoint-mobile {
   .OrderMarket {
-    border: 1px solid @color-theme-primary;
-    border-radius: 3px;
     margin-top: 2px;
 
     > div:first-of-type {
-      font-size: @size-11;
-      padding: @size-16 @size-16 0;
+      .text-10;
+
+      padding: @size-8 @size-12 0;
+      margin-bottom: @size-8;
     }
   }
 }

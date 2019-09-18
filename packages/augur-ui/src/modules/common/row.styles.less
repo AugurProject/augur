@@ -7,35 +7,31 @@
   grid-template-columns: repeat(5, 1fr);
 
   > li {
+    .mono-9-bold;
+
     align-items: center;
     color: @color-tertiary-text;
     display: flex;
     flex-grow: 1;
-    font-family: @roboto-mono;
-    font-size: @size-11;
     white-space: nowrap;
 
     > span > label {
-      font-size: @size-11;
-      font-weight: 500;
+      .mono-9;
+      
       margin-bottom: 0;
     }
 
     &:first-child {
-      .text-12-bold;
+      .mono-9-bold;
 
       display: block;
-      font-family: @roboto;
-      font-weight: 500;
       margin: auto 0;
       max-width: 100%;
       overflow: hidden;
-      padding-left: 0.5rem;
       text-overflow: ellipsis;
     }
 
     &:nth-of-type(2) {
-      font-family: @roboto;
       position: relative;
 
       > span:nth-of-type(2) {
@@ -70,15 +66,15 @@
 }
 
 .GroupRow {
-  padding: 0 1.75rem 0 1.5rem;
+  padding: 0 @size-16;
 }
 
 .InnerGroupRow {
   border-top: 0.0625rem solid @color-primary-background;
-  padding: 0.5rem 0;
+  padding: @size-4 0;
 
   @media @breakpoint-mobile {
-    border-top: 0;
+    border-top: 1px solid @color-primary-alternate;
   }
 }
 
@@ -150,15 +146,15 @@
 
 .SingleRow3 {
   background-color: @color-active-hover;
-  padding: 0 1.75rem 0 1.5rem;
+  padding: 0 @size-16;
 
   > div {
-    padding: 0.5rem 0;
+    padding: @size-4 0;
   }
 }
 
 .Arrow {
-  margin-left: 1.25rem;
+  margin-left: @size-16;
   padding-right: 0;
 }
 
@@ -297,8 +293,8 @@
   }
 
   .GroupRow {
-    padding-left: @size-16;
-    padding-right: @size-20;
+    padding-left: @size-12;
+    padding-right: @size-12;
   }
 
   .Row2 {
@@ -347,7 +343,7 @@
   .SingleRow3 {
     background: fade(@color-primary-alternate, 40%);
     border: 0;
-    padding: 0 1rem;
+    padding: 0 @size-12;
   }
 
   .Row2__a {
