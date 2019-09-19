@@ -117,7 +117,7 @@ export function logError(
 export interface PayoutNumeratorValue {
   malformed?: boolean;
   invalid?: boolean;
-  outcome?: string;
+  outcome: string|null;
 }
 
 export function calculatePayoutNumeratorsValue(
