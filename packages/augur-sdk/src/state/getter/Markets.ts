@@ -40,6 +40,14 @@ export enum GetMarketsSortBy {
   totalRepStakedInMarket = 'totalRepStakedInMarket',
 }
 
+const MaxLiquiditySpreadValue  = {
+  '100': null,
+  '20': null,
+  '15': null,
+  '10': null,
+  '0': null,
+}
+
 // Valid market liquidity spreads
 export enum MaxLiquiditySpread {
   OneHundredPercent = '100', // all liquidity spreads
@@ -50,6 +58,7 @@ export enum MaxLiquiditySpread {
 }
 
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
+export const GetMaxLiquiditySpread = t.keyof(MaxLiquiditySpreadValue);
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -62,13 +71,7 @@ const getMarketsParamsSpecific = t.intersection([
     designatedReporter: t.string,
     maxFee: t.string,
     maxEndTime: t.number,
-    maxLiquiditySpread: t.keyof({
-      '100': null,
-      '20': null,
-      '15': null,
-      '10': null,
-      '0': null,
-    }),
+    maxLiquiditySpread: GetMaxLiquiditySpread,
     includeInvalidMarkets: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
