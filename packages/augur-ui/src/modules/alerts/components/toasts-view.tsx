@@ -8,7 +8,7 @@ interface ToastsViewProps {
   toasts: Array<any>;
   removeAlert: Function;
   toggleAlerts: Function;
-  updateAlert: Function;
+  updateExistingAlert: Function;
 }
 
 export default class ToastsView extends Component<ToastsViewProps, {}> {
@@ -16,7 +16,12 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
   componentDidMount() {
     this.timeout = setInterval(() => {
       if (this.props.toasts.length > 0) {
-        this.props.updateAlert(this.props.toasts[0].id, { toast: false });
+        const newToast = { 
+          name: this.props.toasts[0].name, 
+          toast: false,
+        };
+        console.log(newToast);
+        this.props.updateExistingAlert(this.props.toasts[0].id, newToast);
       }
     }, 3000);
   }
@@ -36,7 +41,7 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
           {toasts.map((toast, i) => (
               <Alert
                   key={`${toast.id}-${toast.title}`}
-                  removeAlert={() => removeAlert(toast.id)}
+                  removeAlert={() => removeAlert(toast.id, toast.name)}
                   toggleAlerts={toggleAlerts}
                   noShow={i !== 0}
                   showToast={true}

@@ -56,10 +56,10 @@ export function addAlert(alert: any) {
   };
 }
 
-export function removeAlert(id: string) {
+export function removeAlert(id: string, name: string) {
   return {
     type: REMOVE_ALERT,
-    data: { id },
+    data: { id, name },
   };
 }
 
@@ -136,7 +136,7 @@ export function updateAlert(id: string, alert: any) {
               );
             } else {
               // if full order was filled, then delete placed order
-              dispatch(removeAlert(foundOpenOrder.id));
+              dispatch(removeAlert(foundOpenOrder.id, foundOpenOrder.name));
             }
           }
         }
@@ -194,7 +194,7 @@ export function updateAlert(id: string, alert: any) {
         );
       });
       if (foundAlert) {
-        dispatch(removeAlert(id));
+        dispatch(removeAlert(id, alert.name));
         dispatch(
           addAlert({
             ...foundAlert,

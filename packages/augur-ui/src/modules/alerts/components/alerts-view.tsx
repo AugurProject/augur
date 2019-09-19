@@ -11,7 +11,7 @@ import ToggleHeightStyles from "utils/toggle-height.styles.less";
 
 interface AlertsViewProps {
   alerts: Array<any>;
-  updateAlert: Function;
+  updateExistingAlert: Function;
   removeAlert: Function;
   clearAlerts: Function;
   toggleAlerts: Function;
@@ -24,9 +24,9 @@ export default class AlertsView extends Component<AlertsViewProps> {
 
   componentWillUpdate(nextProps: AlertsViewProps) {
     if (this.props.alertsVisible && !nextProps.alertsVisible) {
-      const { updateAlert, alerts } = this.props;
+      const { updateExistingAlert, alerts } = this.props;
       alerts.forEach(alert => {
-        updateAlert(alert.id, { seen: true });
+        updateExistingAlert(alert.id, { ...alert, seen: true });
       });
     }
   }
@@ -76,7 +76,7 @@ export default class AlertsView extends Component<AlertsViewProps> {
               {alerts.map((alert, i) => (
                 <Alert
                   key={`${i}-${alert.id}-${alert.title}`}
-                  removeAlert={() => removeAlert(alert.id)}
+                  removeAlert={() => removeAlert(alert.id, alert.name)}
                   toggleAlerts={toggleAlerts}
                   timestampInMilliseconds={alert.timestamp}
                   {...alert}
