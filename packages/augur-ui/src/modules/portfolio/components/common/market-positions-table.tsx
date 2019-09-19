@@ -4,7 +4,7 @@ import PositionsHeader from 'modules/portfolio/components/common/positions-heade
 import PositionRow from 'modules/portfolio/containers/position-row';
 import classNames from 'classnames';
 
-import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.style.less';
+import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import Styles from 'modules/portfolio/components/common/market-positions-table.styles.less';
 import { Getters } from '@augurproject/sdk';
 

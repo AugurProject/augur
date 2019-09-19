@@ -48,6 +48,7 @@ import {
   reloadReportingPage,
   reloadDisputingPage,
 } from 'modules/reporting/actions/update-reporting-list';
+import { loadCreateMarketHistory } from 'modules/markets/actions/load-create-market-history';
 
 const handleAlert = (
   log: any,
@@ -162,9 +163,7 @@ export const handleMarketCreatedLog = (log: any) => (
   }
   if (isUserDataUpdate) {
     handleAlert(log, CREATEMARKET, dispatch, getState);
-    // TODO: could tell that logged in user can create liquidity orders
-    // My Market? start kicking off liquidity orders
-    // if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
+    dispatch(loadCreateMarketHistory());
   }
 };
 
