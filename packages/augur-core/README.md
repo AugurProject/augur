@@ -19,15 +19,15 @@ You need system-wide installations of Python 3.6+, Node.js 10+, and [Solidity 0.
 
 ```bash
 yarn
-pip install -r requirements.txt # macOS users will likely need to run this as `sudo pip install -r requirements.txt --ignore-installed`
+pip install -r requirements.txt
 ```
 
-Note: on macOS, you need to use [virtualenv](https://python-guide-pt-br.readthedocs.io/en/latest/dev/virtualenvs/) or [homebrew](https://brew.sh/) Python to work around System Integrity Protection. To do this using virtualenv, run:
+Note: on macOS, you'll need to use [virtualenv](https://python-guide-pt-br.readthedocs.io/en/latest/dev/virtualenvs/) or [homebrew](https://brew.sh/) Python to work around System Integrity Protection. To do this using virtualenv, run:
 
 ```bash
-virtualenv -p $(which python3) venv
+python3 -m venv venv
 source venv/bin/activate
-sudo pip install -r requirements.txt --ignore-installed
+python3 -m pip install -r requirements.txt
 ```
 
 ## Deployment
