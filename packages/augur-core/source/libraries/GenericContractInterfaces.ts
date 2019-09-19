@@ -10446,6 +10446,32 @@ export class ZeroXTradeToken<TBigNumber> extends Contract<TBigNumber> {
 }
 
 
+export class BuyParticipationTokens<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public buyParticipationTokens = async (universe: string, attotokens: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_attotokens","type":"uint256"}],"name":"buyParticipationTokens","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [universe, attotokens], 'buyParticipationTokens', options.sender)
+	}
+	
+	public buyParticipationTokens_estimateGas = async (universe: string, attotokens: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_attotokens","type":"uint256"}],"name":"buyParticipationTokens","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [universe, attotokens], 'buyParticipationTokens', options.sender)
+	}
+
+	public buyParticipationTokens_ = async (universe: string, attotokens: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"name":"_universe","type":"address"},{"name":"_attotokens","type":"uint256"}],"name":"buyParticipationTokens","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [universe, attotokens], options.sender)
+		return <boolean>result[0]
+	}
+}
+
+
 export class Formulas<TBigNumber> extends Contract<TBigNumber> {
 	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
 		super(dependencies, address)
