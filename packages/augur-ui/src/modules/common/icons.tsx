@@ -500,18 +500,6 @@ export const nextIcon = (
     </g>
   </svg>
 );
-// PaginationArrow: is for the legacy arrow for pagination, need to refactor out old paginaton.
-export const PaginationArrow = (
-  <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
-    <path
-      d="M5 9L1 5L5 1"
-      strokeWidth="2"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
 
 export const Person = (
   <svg viewBox="0 0 15 16">
@@ -1064,46 +1052,6 @@ export const ChevronDown = p => (
 export const ThickChevron = (
   <svg viewBox="0 0 10 6" fill="none">
     <path d="M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L5 3.58579L8.29289 0.292893C8.68342 -0.0976311 9.31658 -0.0976311 9.70711 0.292893C10.0976 0.683417 10.0976 1.31658 9.70711 1.70711L5.70711 5.70711C5.31658 6.09763 4.68342 6.09763 4.29289 5.70711L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683417 0.292893 0.292893Z"/>
-  </svg>
-);
-// TODO: Chevron Left and Right are only used in create-market-form-time -- refactor.
-export const ChevronLeft = (
-  <svg viewBox="0 0 16 16">
-    <g
-      stroke="none"
-      strokeWidth="1"
-      fill="none"
-      fillRule="evenodd"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <g stroke="#231A3A">
-        <polyline
-          transform="translate(11.156854, 7.863961) rotate(-135.000000) translate(-11.156854, -7.863961) "
-          points="6.65685425 3.36396103 15.6568542 3.36396103 15.6568542 12.363961"
-        />
-      </g>
-    </g>
-  </svg>
-);
-
-export const ChevronRight = (
-  <svg viewBox="0 0 9 14">
-    <g
-      fill="none"
-      fillRule="evenodd"
-      strokeLinecap="round"
-      opacity=".54"
-      strokeLinejoin="round"
-    >
-      <g stroke="#231A3A">
-        <g>
-          <g>
-            <path d="M1.16 13.228l6.363-6.364L1.16.5" />
-          </g>
-        </g>
-      </g>
-    </g>
   </svg>
 );
 

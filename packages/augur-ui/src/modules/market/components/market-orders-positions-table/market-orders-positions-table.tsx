@@ -8,7 +8,7 @@ import PositionsTable from "modules/market/containers/positions-table";
 import FilledOrdersTable from "modules/market/components/market-orders-positions-table/filled-orders-table";
 import { CancelTextButton } from "modules/common/buttons";
 
-import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.style";
+import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.styles";
 
 const MarketOrdersPositionsTable = ({
   hasPending,
