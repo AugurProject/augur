@@ -1,81 +1,67 @@
 // Text
-@color-primary-text: #E9E5F2; // 71 files
-@color-secondary-text: #AFA7C1;
-@color-inactive-text: #4E4C57; // 6 files
+@color-primary-text: #E9E5F2; // 74 files
+@color-secondary-text: #AFA7C1; // 33 files
+@color-inactive-text: #4E4C57; // 44 files
 
 // UI
-@color-dark-grey: #0E0E0F; // (TBD Name) - 3 files
-@color-table-header: #161518;
-@color-module-background: #1B1A1E;
-@color-page-background: #201E22;
+@color-dark-grey: #0E0E0F; // (TBD Name) - 39 files
+@color-table-header: #161518; // 1 file (this one)
+@color-module-background: #1B1A1E; // 1 file (this one)
+@color-page-background: #201E22; // 2 files
 
 // Market status
-@color-open: #7DFFA8; // 5 files
+@color-open: #7DFFA8; // 5 files 
 @color-reporting: #F1E700; // 7 files
 @color-resolved: #F12B00; // 5 files
 
 // Trades
 @color-positive: #00F1C4; // 13 files
-@color-negative: #FF7D5E; // 14 files
+@color-negative: #FF7D5E; // 15 files
 
 // Interactions:
-@color-primary-action: #09CFE1; // 15 files
+@color-primary-action: #09CFE1; // 17 files
 // @color-primary-action-outline: ???;
-// @color-secondary-action: #252429;
-@color-secondary-action-outline: #3C3B43; // - 3 files
+@color-secondary-action: #252429; // 5 files
+@color-secondary-action-outline: #3C3B43; // 1 file
 
 // Other
 @color-error: #FF2727; // 9 files
 
 // Outcomes:
-@color-tenative-winner: #AEFFF0;
-@color-outcome-invalid: #FF7E9D; // 5 files
-@color-outcome-one: #3DDE8D;
-@color-outcome-two: #FE367E;
-@color-outcome-three: #3E8BFF;
-@color-outcome-four: #FCBD43;
-@color-outcome-five: #6980E9;
-@color-outcome-six: #F59300;
-@color-outcome-seven: #09CFE1;
+@color-tenative-winner: #AEFFF0; // 2 files
+@color-outcome-invalid: #FF7E9D; // 6 files
+@color-outcome-one: #3DDE8D; // 2 files
+@color-outcome-two: #FE367E; // 2 files
+@color-outcome-three: #3E8BFF; // 2 files
+@color-outcome-four: #FCBD43; // 8 files
+@color-outcome-five: #6980E9; // 2 files
+@color-outcome-six: #F59300; // 2 files
+@color-outcome-seven: #09CFE1; // 4 files
 
 //  Chart / Outcome color helpers
-@color-outcome-list: @color-outcome-invalid @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven ;
+@color-outcome-list: @color-outcome-invalid @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven; 
  
 .generate-indexed-color-outcome-classes(@rules) {
   each(@color-outcome-list, {
     @newIndex: @index;
     @rules();
   });
-}
+} // 2 files
 
 .generate-indexed-color-outcome-alternate-classes(@rules) {
   each(@color-outcome-list, {
     @newIndex: @index;
     @rules();
   });
-}
-
-// answered
-// black
-@color-tertiary-background-theme: #252429; // ROCA - 252429 - 3 files - new secondary action -- can't change until variable name is freed up
-
-// Un answered
-//purples -- no answer yet
+} // 2 files
+//purples -- no answer yet -- TO BE REPLACED SHORTLY
 @color-primary-light: #443B59; // ROCA - 443B59 - 31 files
 @color-primary-alternate: #2B2438; // ROCA - 2B2438 - 20 files
 @color-primary-alternate-two: #665789; // ROCA - 665789 - 8 files
 @color-theme-primary: #211A32; // ROCA - 211A32 - 43 files
-@color-secondary-action: #161022; // ROCA - 161022 - 20 files
 @color-active-hover: #211B2E; // ROCA - 211B2E - 5 files
 @color-tertiary-one: #1A1627; // ROCA - 1A1627 - 7 files
 @color-secondary-background: #120D1B; // ROCA - 120D1B - 3 files
 @color-tertiary-background: #1B1528; // ROCA - 1B1528 - 34 files
 @color-highlight: @color-primary-alternate-two; // ROCA - 665789 - 16 files
 @color-active: #8579A1; // ROCA - 8579A1 - 2 files
-
-// blacks -- new answer yet
-@color-primary-dark: #000000; // ROCA - 000000 - 2 files
-@color-secondary-dark: #07030E; // ROCA - 07030E - 2 files
-@color-primary-background: #0F0A19; // ROCA - 0F0A19 - 24 files
-@color-theme-secondary: #141313; // ROCA - 141313 - 2 files
-@color-modal-veil: rgba(0, 0, 0, 0.8); // ROCA 000000 .8 opacity - 2 files

@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .ModalView {
-  background-color: @color-modal-veil;
+  background-color: fade(@color-page-background, 80%);
   height: 100vh;
   position: fixed;
   width: 100vw;
@@ -271,7 +271,7 @@ div.ErrorField:focus {
 }
 
 .Receipt {
-  background-color: @color-secondary-action;
+  background-color: @color-dark-grey;
   color: @color-primary-text;
   list-style: none;
   margin: 0 2rem 1.5rem;
@@ -452,7 +452,7 @@ div.ErrorField:focus {
 }
 
 .ModalDisclaimer__TextBox {
-  background-color: @color-secondary-action;
+  background-color: @color-dark-grey;
   margin: 0 2rem 1.5rem;
   max-height: 25rem;
   max-width: 35rem;
