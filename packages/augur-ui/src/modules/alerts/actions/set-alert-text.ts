@@ -6,11 +6,7 @@ import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import {
-  formatRep,
-  formatShares,
-  formatDai,
-} from 'utils/format-number';
+import { formatRep, formatShares, formatDai } from 'utils/format-number';
 import {
   calculatePayoutNumeratorsValue,
   TXEventName,
@@ -174,25 +170,28 @@ export default function setAlertText(alert: any, callback: Function) {
         if (alert.params.preFilled && !alert.params._additionalStake) {
           break;
         }
+        const payoutNums = convertPayoutNumeratorsToStrings(
+          alert.params._payoutNumerators || alert.params.payoutNumerators
+        );
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
-            const outcome = calculatePayoutNumeratorsValue(
+            const calcValue = calculatePayoutNumeratorsValue(
               marketInfo.maxPrice,
               marketInfo.minPrice,
               marketInfo.numTicks,
               marketInfo.marketType,
-              alert.params._payoutNumerators
-                ? convertPayoutNumeratorsToStrings(
-                    alert.params._payoutNumerators
-                  )
-                : alert.params.payoutNumerators
+              payoutNums
             );
             const outcomeDescription =
-              outcome === null
+              calcValue.outcome === null
                 ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(marketInfo, outcome, false);
+                : getOutcomeNameWithOutcome(
+                    marketInfo,
+                    calcValue.outcome,
+                    false
+                  );
             alert.description = marketInfo.description;
             alert.details = `${
               formatRep(
