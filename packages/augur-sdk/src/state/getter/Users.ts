@@ -91,8 +91,8 @@ export interface MarketTradingPosition {
   unrealizedPercent: string; // unrealized profit percent (ie. profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
-  totalUnclaimedProceeds?: string; // Unclaimed trading proceeds after market creator fee & reporting fee have been subtracted
-  totalUnclaimedProfit?: string; // totalUnclaimedProceeds - totalCost
+  unclaimedProceeds?: string; // Unclaimed trading proceeds after market creator fee & reporting fee have been subtracted
+  unclaimedProfit?: string; // unclaimedProceeds - unrealizedCost
 }
 
 export interface TradingPosition {
@@ -462,10 +462,6 @@ export class Users {
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
     ).filter(t => t !== null);
 
-    const marketsData = await db.findMarkets({
-      selector: { market: { $in: marketIds } },
-    });
-
     const marketTradingPositions = _.mapValues(
       tradingPositionsByMarketAndOutcome,
       tradingPositionsByOutcome => {
@@ -476,11 +472,13 @@ export class Users {
       }
     );
 
-    // Set totalUnclaimedProceeds & totalUnclaimedProfit
+    // Set unclaimedProceeds & unclaimedProfit
+    const marketsData = await db.findMarkets({
+      selector: { market: { $in: marketIds } },
+    });
     for (const marketData of marketsData) {
-      marketTradingPositions[marketData.market].totalUnclaimedProceeds = '0';
-      marketTradingPositions[marketData.market].totalUnclaimedProfit = '0';
-
+      marketTradingPositions[marketData.market].unclaimedProceeds = '0';
+      marketTradingPositions[marketData.market].unclaimedProfit = '0';
       if (marketData.reportingState === MarketReportingState.Finalized || MarketReportingState.AwaitingFinalization) {
         if (marketData.tentativeWinningPayoutNumerators) {
           const outcome = marketData.tentativeWinningPayoutNumerators.findIndex((item: string) => Number(item) > 0);
@@ -498,12 +496,12 @@ export class Users {
             const numShares = new BigNumber(lastTokenBalanceChanged.balance);
             const reportingFeeDivisor = marketData.feeDivisor;
             const reportingFee = new BigNumber(tokenBalanceChangedLogs[0].balance).div(reportingFeeDivisor);
-            const totalUnclaimedProceeds = numShares.times(marketData.tentativeWinningPayoutNumerators[outcome])
+            const unclaimedProceeds = numShares.times(marketData.tentativeWinningPayoutNumerators[outcome])
               .minus(marketData.feePerCashInAttoCash)
               .minus(reportingFee);
 
-            marketTradingPositions[marketData.market].totalUnclaimedProceeds = totalUnclaimedProceeds.toString();
-            marketTradingPositions[marketData.market].totalUnclaimedProfit = totalUnclaimedProceeds.minus(marketTradingPositions[marketData.market].unrealizedCost).toString();
+            marketTradingPositions[marketData.market].unclaimedProceeds = unclaimedProceeds.dividedBy(QUINTILLION).toFixed(2);
+            marketTradingPositions[marketData.market].unclaimedProfit = unclaimedProceeds.dividedBy(QUINTILLION).minus(marketTradingPositions[marketData.market].unrealizedCost).toFixed(2);
           }
         }
       }

@@ -8,7 +8,7 @@ import {
 } from "modules/common/progress";
 import { SubmitTextButton } from "modules/common/buttons";
 import { DateFormattedObject, MarketData, FormattedNumber } from "modules/types";
-
+import { formatDai } from "utils/format-number";
 import Styles from "modules/account/components/notification.styles.less";
 
 import {
@@ -58,6 +58,7 @@ interface ClaimReportingFeesTemplateTemplateProps extends BaseProps {
 
 interface ProceedsToClaimTemplateProps extends BaseProps {
   market: MarketData;
+  markets: string[];
   totalProceeds: number | undefined;
 }
 
@@ -233,11 +234,12 @@ export const ClaimReportingFeesTemplate = (props: ClaimReportingFeesTemplateTemp
 };
 
 export const ProceedsToClaimTemplate = (props: ProceedsToClaimTemplateProps) => {
-  const { totalProceeds } = props;
+  const { markets, totalProceeds } = props;
+  const formattedProceeds = formatDai(totalProceeds).formatted;
 
-  let messageText = `You have ${totalProceeds} DAI available to be claimed from one market.`;
-  if (props.markets.length > 1) {
-    messageText = `You have ${totalProceeds} DAI available to be claimed from multiple markets.`;
+  let messageText = `You have $${formattedProceeds} available to be claimed from one market.`;
+  if (markets.length > 1) {
+    messageText = `You have $${formattedProceeds} available to be claimed from multiple markets.`;
   }
   return (
     <Template

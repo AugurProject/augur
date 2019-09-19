@@ -231,13 +231,13 @@ export const selectNotifications = createSelector(
         accountPositions[marketId] &&
         createBigNumber(
           accountPositions[marketId].tradingPositionsPerMarket
-            .totalUnclaimedProceeds
+            .unclaimedProceeds
         ).gt(0)
       ) {
         claimableMarketInfo.totalDai = claimableMarketInfo.totalDai.plus(
           createBigNumber(
             accountPositions[marketId].tradingPositionsPerMarket
-              .totalUnclaimedProceeds
+              .unclaimedProceeds
           )
         );
         claimableMarketInfo.marketIds.push(marketId);

@@ -55,11 +55,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     const market = selectMarket(marketId);
     const unclaimedProceeds = formatDai(
       sP.accountPositions[market.marketId].tradingPositionsPerMarket
-        .totalUnclaimedProceeds
+        .unclaimedProceeds
     );
     const unclaimedProfit = formatDai(
       sP.accountPositions[market.marketId].tradingPositionsPerMarket
-        .totalUnclaimedProfit
+        .unclaimedProfit
     );
 
     const pending =

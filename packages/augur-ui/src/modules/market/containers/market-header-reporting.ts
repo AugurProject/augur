@@ -31,7 +31,7 @@ const mapStateToProps = (state, ownProps) => {
       state.accountPositions[ownProps.marketId].tradingPositionsPerMarket &&
       createBigNumber(
         state.accountPositions[ownProps.marketId].tradingPositionsPerMarket
-          .totalUnclaimedProceeds
+          .unclaimedProceeds
       ).gt(ZERO)
         ? true
         : false,
