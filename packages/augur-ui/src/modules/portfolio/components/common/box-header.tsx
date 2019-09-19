@@ -26,7 +26,14 @@ export interface BoxHeaderProps {
 const BoxHeader = (props: BoxHeaderProps) => (
   <>
     <div className={Styles.ShowOnMobile}>
-      <div className={Styles.RightContent}>{props.rightContent}</div>
+      <div>
+        <div className={Styles.RightContent}>{props.rightContent}</div>
+        {props.bottomRightBarContent && (
+          <div className={Styles.BottomRightContent}>
+            {props.bottomRightBarContent}
+          </div>
+        )}
+      </div>
       <div
         className={classNames(Styles.Middle, {
           [Styles.isSwitched]: props.switchHeaders,
@@ -47,11 +54,6 @@ const BoxHeader = (props: BoxHeaderProps) => (
           </div>
         )}
       </div>
-      {props.bottomRightBarContent && (
-        <div className={Styles.BottomRightContent}>
-          {props.bottomRightBarContent}
-        </div>
-      )}
     </div>
     <div
       className={classNames(Styles.BoxHeader, {
