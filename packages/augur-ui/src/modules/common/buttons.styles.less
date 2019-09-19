@@ -462,15 +462,18 @@
     }
   }
 
-  &.Dark {
+  &.Light {
     .mono-9;
 
     background: @color-secondary-action;
     border-radius: @size-3;
     padding: @size-4;
+    border: 1px solid @color-dark-alternate;
 
+    > span > span,
     > span > a {
       color: @color-secondary-text;
+      text-decoration: none;
     }
 
     > svg {

@@ -9,7 +9,7 @@
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-bottom: @size-4;
+  margin-bottom: @size-1;
   border: 1px solid @color-dark-grey-outline;
   border-radius: @size-3;
 
@@ -20,6 +20,7 @@
   > div {
     display: flex;
     flex-direction: column;
+    max-width: 100%;
 
     &:first-of-type {
       flex: 1;
@@ -52,9 +53,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   &:not(:first-of-type) {
     margin-top: @size-2;
+  }
+
+  &:first-of-type {
+    > button {
+      display: flex;
+    }
+  }
+
+  &:last-of-type {
+    margin-top: @size-4;
   }
 }
 

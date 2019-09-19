@@ -18,8 +18,8 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  updateAlert: (id: string, alert: any) => dispatch(updateExistingAlert(id, alert)),
-  removeAlert: (id: string) => dispatch(removeAlert(id)),
+  updateExistingAlert: (id: string, alert: any) => dispatch(updateExistingAlert(id, alert)),
+  removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
   clearAlerts: () => dispatch(clearAlerts())
 });
 
